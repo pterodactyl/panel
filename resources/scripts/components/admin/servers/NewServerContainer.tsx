@@ -36,7 +36,7 @@ function InternalForm () {
         }
 
         setFieldValue('eggId', egg.id);
-        setFieldValue('startup', egg.startup);
+        setFieldValue('startup', '');
         setFieldValue('image', egg.dockerImages.length > 0 ? egg.dockerImages[0] : '');
     }, [ egg ]);
 

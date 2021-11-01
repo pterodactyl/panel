@@ -27,12 +27,12 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
         }
 
         if (server.eggId === egg.id) {
-            setFieldValue('startup', server.container.startup);
+            setFieldValue('startup', server.container.startup || '');
             return;
         }
 
         // Whenever the egg is changed, set the server's startup command to the egg's default.
-        setFieldValue('startup', egg.startup);
+        setFieldValue('startup', '');
     }, [ egg ]);
 
     return (
@@ -46,6 +46,7 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
                     label={'Startup Command'}
                     type={'text'}
                     description={'Edit your server\'s startup command here. The following variables are available by default: {{SERVER_MEMORY}}, {{SERVER_IP}}, and {{SERVER_PORT}}.'}
+                    placeholder={egg?.startup || ''}
                 />
             </div>
 
@@ -212,7 +213,7 @@ export default () => {
         <Formik
             onSubmit={submit}
             initialValues={{
-                startup: server.container.startup,
+                startup: server.container.startup || '',
                 environment: [] as Record<string, any>,
                 image: server.container.image,
                 eggId: server.eggId,

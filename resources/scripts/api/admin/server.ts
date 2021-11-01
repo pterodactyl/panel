@@ -50,7 +50,7 @@ export interface Server extends Model {
         backups: number;
     };
     container: {
-        startup: string;
+        startup: string | null;
         image: string;
         environment: Record<string, string>;
     };
