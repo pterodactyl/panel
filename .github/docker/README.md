@@ -33,7 +33,7 @@ Note: If your `APP_URL` starts with `https://` you need to provide an `LETSENCRY
 | ------------------- | ------------------------------------------------------------------------------ | -------- |
 | `APP_URL`           | The URL the panel will be reachable with (including protocol)                  | yes      |
 | `APP_TIMEZONE`      | The timezone to use for the panel                                              | yes      |
-| `LETSENCRYPT_EMAIL` | The email used for letsencrypt certificate generation                          | yes      |
+| `LE_EMAIL`          | The email used for letsencrypt certificate generation                          | yes      |
 | `DB_HOST`           | The host of the mysql instance                                                 | yes      |
 | `DB_PORT`           | The port of the mysql instance                                                 | yes      |
 | `DB_DATABASE`       | The name of the mysql database                                                 | yes      |
