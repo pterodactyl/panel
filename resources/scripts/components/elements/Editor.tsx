@@ -203,17 +203,20 @@ export interface Props {
 export default ({ className, style, overrides, initialContent, extensions, mode, filename, onModeChanged, fetchContent, onContentSaved }: Props) => {
     const [ languageConfig ] = useState<Compartment>(new Compartment());
     const [ keybinds ] = useState<Compartment>(new Compartment());
-    const [ state ] = useState<EditorState>(EditorState.create({
-        doc: initialContent,
-        extensions: [
-            ...defaultExtensions,
-            ...(extensions !== undefined ? extensions : []),
-
-            languageConfig.of(mode !== undefined ? modeToExtension(mode) : findLanguageExtensionByMode(findModeByFilename(filename || ''))),
-            keybinds.of([]),
-        ],
-    }));
     const [ view, setView ] = useState<EditorView>();
+
+    const createEditorState = () => {
+        return EditorState.create({
+            doc: initialContent,
+            extensions: [
+                ...defaultExtensions,
+                ...(extensions !== undefined ? extensions : []),
+
+                languageConfig.of(mode !== undefined ? modeToExtension(mode) : findLanguageExtensionByMode(findModeByFilename(filename || ''))),
+                keybinds.of([]),
+            ],
+        });
+    };
 
     const ref = useCallback((node) => {
         if (!node) {
@@ -221,7 +224,7 @@ export default ({ className, style, overrides, initialContent, extensions, mode,
         }
 
         const view = new EditorView({
-            state: state,
+            state: createEditorState(),
             parent: node,
         });
         setView(view);
@@ -277,9 +280,9 @@ export default ({ className, style, overrides, initialContent, extensions, mode,
             return;
         }
 
-        view.dispatch({
-            changes: { from: 0, insert: initialContent },
-        });
+        // We could dispatch a view update to replace the content, but this would keep the edit history,
+        // and previously would duplicate the content of the editor.
+        view.setState(createEditorState());
     }, [ initialContent ]);
 
     useEffect(() => {
