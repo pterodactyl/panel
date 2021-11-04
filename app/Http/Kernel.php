@@ -70,6 +70,8 @@ class Kernel extends HttpKernel
         'api' => [
             HandleStatelessRequest::class,
             IsValidJson::class,
+            StartSession::class,
+            AuthenticateSession::class,
             ApiSubstituteBindings::class,
             'api..key:' . ApiKey::TYPE_APPLICATION,
             AuthenticateApplicationUser::class,

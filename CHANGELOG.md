@@ -3,7 +3,13 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.5
+### Fixed
+* Fixes broken application API endpoints due to changes introduced with session management in 1.6.4.
+
 ## v1.6.4
+_This release should not be used, please use `1.6.5`. It has been pulled from our releases._
+
 ### Fixed
 * Fixes a session management bug that would cause a user who signs out of one browser to be unintentionally logged out of other browser sessions when using the client API.
 
