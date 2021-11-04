@@ -42,8 +42,10 @@ class AuthenticateKey
     }
 
     /**
-     * Handle an API request by verifying that the provided API key
-     * is in a valid format and exists in the database.
+     * Handle an API request by verifying that the provided API key is in a valid
+     * format and exists in the database. If there is currently a user in the session
+     * do not even bother to look at the token (they provided a cookie for this to
+     * be the case).
      *
      * @return mixed
      *
@@ -56,17 +58,17 @@ class AuthenticateKey
             throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
         }
 
-        $raw = $request->bearerToken();
-
-        // This is a request coming through using cookies, we have an authenticated user not using
-        // an API key. Make some fake API key models and continue on through the process.
-        if (empty($raw) && $request->user() instanceof User) {
+        // This is a request coming through using cookies, we have an authenticated user
+        // not using an API key. Make some fake API key models and continue on through
+        // the process.
+        if ($request->user() instanceof User) {
             $model = (new ApiKey())->forceFill([
                 'user_id' => $request->user()->id,
                 'key_type' => ApiKey::TYPE_ACCOUNT,
             ]);
         } else {
-            $model = $this->authenticateApiKey($raw, $keyType);
+            $model = $this->authenticateApiKey($request->bearerToken(), $keyType);
+
             $this->auth->guard()->loginUsingId($model->user_id);
         }
 

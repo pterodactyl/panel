@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.4
+### Fixed
+* Fixes a session management bug that would cause a user who signs out of one browser to be unintentionally logged out of other browser sessions when using the client API.
+
 ## v1.6.3
 ### Fixed
 * **[Security]** Changes logout endpoint to be a POST request with CSRF-token validation to prevent a malicious actor from triggering a user logout.
