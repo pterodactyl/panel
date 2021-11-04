@@ -5,7 +5,7 @@ import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import React, { useState } from 'react';
 import tw from 'twin.macro';
 import { array, boolean, object, string } from 'yup';
-import getEgg, { Egg, EggVariable } from '@/api/admin/eggs/getEgg';
+import { EggVariable, useEggFromRoute } from '@/api/admin/egg';
 import updateEggVariables from '@/api/admin/eggs/updateEggVariables';
 import NewVariableButton from '@/components/admin/nests/eggs/NewVariableButton';
 import AdminBox from '@/components/admin/AdminBox';
@@ -19,10 +19,10 @@ import { TrashIcon } from '@heroicons/react/outline';
 export const validationSchema = object().shape({
     name: string().required().min(1).max(191),
     description: string(),
-    envVariable: string().required().min(1).max(191),
+    environmentVariable: string().required().min(1).max(191),
     defaultValue: string(),
-    userViewable: boolean().required(),
-    userEditable: boolean().required(),
+    isUserViewable: boolean().required(),
+    isUserEditable: boolean().required(),
     rules: string().required(),
 });
 
@@ -47,8 +47,8 @@ export function EggVariableForm ({ prefix }: { prefix: string }) {
 
             <FieldRow>
                 <Field
-                    id={`${prefix}envVariable`}
-                    name={`${prefix}envVariable`}
+                    id={`${prefix}environmentVariable`}
+                    name={`${prefix}environmentVariable`}
                     label={'Environment Variable'}
                     type={'text'}
                 />
@@ -63,14 +63,14 @@ export function EggVariableForm ({ prefix }: { prefix: string }) {
 
             <div css={tw`flex flex-row mb-6`}>
                 <Checkbox
-                    id={`${prefix}userViewable`}
-                    name={`${prefix}userViewable`}
+                    id={`${prefix}isUserViewable`}
+                    name={`${prefix}isUserViewable`}
                     label={'User Viewable'}
                 />
 
                 <Checkbox
-                    id={`${prefix}userEditable`}
-                    name={`${prefix}userEditable`}
+                    id={`${prefix}isUserEditable`}
+                    name={`${prefix}isUserEditable`}
                     label={'User Editable'}
                     css={tw`ml-auto`}
                 />
@@ -95,7 +95,7 @@ function EggVariableDeleteButton ({ onClick }: { onClick: (success: () => void) 
         setLoading(true);
 
         onClick(() => {
-            setLoading(false);
+            //setLoading(false);
         });
     };
 
@@ -140,14 +140,18 @@ function EggVariableBox ({ onDeleteClick, variable, prefix }: { onDeleteClick: (
     );
 }
 
-export default function EggVariablesContainer ({ egg }: { egg: Egg }) {
+export default function EggVariablesContainer () {
     const { clearAndAddHttpError } = useFlash();
 
-    const { mutate } = getEgg(egg.id);
+    const { data: egg, mutate } = useEggFromRoute();
+
+    if (!egg) {
+        return null;
+    }
 
     const submit = (values: EggVariable[], { setSubmitting }: FormikHelpers<EggVariable[]>) => {
         updateEggVariables(egg.id, values)
-            .then(async (variables) => await mutate(egg => ({ ...egg!, relations: { variables: variables } })))
+            .then(async () => await mutate())
             .catch(error => clearAndAddHttpError({ key: 'egg', error }))
             .then(() => setSubmitting(false));
     };
@@ -155,17 +159,17 @@ export default function EggVariablesContainer ({ egg }: { egg: Egg }) {
     return (
         <Formik
             onSubmit={submit}
-            initialValues={egg.relations?.variables || []}
+            initialValues={egg.relationships.variables}
             validationSchema={array().of(validationSchema)}
         >
             {({ isSubmitting, isValid }) => (
                 <Form>
                     <div css={tw`flex flex-col mb-16`}>
-                        {egg.relations?.variables?.length === 0 ?
+                        {egg.relationships.variables?.length === 0 ?
                             <NoItems css={tw`bg-neutral-700 rounded-md shadow-md`}/>
                             :
-                            <div css={tw`grid grid-cols-1 lg:grid-cols-2 gap-x-8 gap-y-6`}>
-                                {egg.relations?.variables?.map((v, i) => (
+                            <div css={tw`grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-x-8 gap-y-6`}>
+                                {egg.relationships.variables.map((v, i) => (
                                     <EggVariableBox
                                         key={i}
                                         prefix={`[${i}].`}
@@ -175,8 +179,9 @@ export default function EggVariablesContainer ({ egg }: { egg: Egg }) {
                                                 .then(async () => {
                                                     await mutate(egg => ({
                                                         ...egg!,
-                                                        relations: {
-                                                            variables: egg!.relations.variables!.filter(v2 => v.id === v2.id),
+                                                        relationships: {
+                                                            ...egg!.relationships,
+                                                            variables: egg!.relationships.variables!.filter(v2 => v.id === v2.id),
                                                         },
                                                     }));
                                                     success();
@@ -190,7 +195,7 @@ export default function EggVariablesContainer ({ egg }: { egg: Egg }) {
 
                         <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-4 mt-6`}>
                             <div css={tw`flex flex-row`}>
-                                <NewVariableButton eggId={egg.id}/>
+                                <NewVariableButton/>
 
                                 <Button type={'submit'} size={'small'} css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
                                     Save Changes

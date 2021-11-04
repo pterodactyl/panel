@@ -1,3 +1,4 @@
+import { useEggFromRoute } from '@/api/admin/egg';
 import updateEgg from '@/api/admin/eggs/updateEgg';
 import EggDeleteButton from '@/components/admin/nests/eggs/EggDeleteButton';
 import EggExportButton from '@/components/admin/nests/eggs/EggExportButton';
@@ -13,7 +14,6 @@ import { faDocker } from '@fortawesome/free-brands-svg-icons';
 import { faEgg, faFireAlt, faMicrochip, faTerminal } from '@fortawesome/free-solid-svg-icons';
 import React, { forwardRef, useImperativeHandle, useRef } from 'react';
 import AdminBox from '@/components/admin/AdminBox';
-import { Egg } from '@/api/admin/eggs/getEgg';
 import { useHistory } from 'react-router-dom';
 import tw from 'twin.macro';
 import { object } from 'yup';
@@ -45,7 +45,13 @@ export function EggInformationContainer () {
     );
 }
 
-function EggDetailsContainer ({ egg }: { egg: Egg }) {
+function EggDetailsContainer () {
+    const { data: egg } = useEggFromRoute();
+
+    if (!egg) {
+        return null;
+    }
+
     return (
         <AdminBox icon={faEgg} title={'Egg Details'} css={tw`relative`}>
             <div css={tw`mb-6`}>
@@ -200,12 +206,18 @@ interface Values {
     configFiles: string;
 }
 
-export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
+export default function EggSettingsContainer () {
     const history = useHistory();
+
+    const ref = useRef<EggProcessContainerRef>();
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    const ref = useRef<EggProcessContainerRef>();
+    const { data: egg } = useEggFromRoute();
+
+    if (!egg) {
+        return null;
+    }
 
     const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('egg');
@@ -240,7 +252,7 @@ export default function EggSettingsContainer ({ egg }: { egg: Egg }) {
                 <Form>
                     <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
                         <EggInformationContainer/>
-                        <EggDetailsContainer egg={egg}/>
+                        <EggDetailsContainer/>
                     </div>
 
                     <EggStartupContainer css={tw`mb-6`}/>

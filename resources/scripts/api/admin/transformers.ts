@@ -168,7 +168,7 @@ export class AdminTransformers {
         defaultValue: attributes.default_value,
         isUserViewable: attributes.user_viewable,
         isUserEditable: attributes.user_editable,
-        isRequired: attributes.required,
+        // isRequired: attributes.required,
         rules: attributes.rules,
         createdAt: new Date(attributes.created_at),
         updatedAt: new Date(attributes.updated_at),

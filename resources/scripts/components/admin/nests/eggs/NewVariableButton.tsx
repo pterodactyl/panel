@@ -1,26 +1,32 @@
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import React, { useState } from 'react';
 import tw from 'twin.macro';
-import createEggVariable from '@/api/admin/eggs/createEggVariable';
-import getEgg from '@/api/admin/eggs/getEgg';
+import createEggVariable, { CreateEggVariable } from '@/api/admin/eggs/createEggVariable';
+import { useEggFromRoute } from '@/api/admin/egg';
 import { EggVariableForm, validationSchema } from '@/components/admin/nests/eggs/EggVariablesContainer';
 import Modal from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import useFlash from '@/plugins/useFlash';
 
-export default function NewVariableButton ({ eggId }: { eggId: number }) {
+export default function NewVariableButton () {
+    const { setValues } = useFormikContext();
     const [ visible, setVisible ] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    const { mutate } = getEgg(eggId);
+    const { data: egg, mutate } = useEggFromRoute();
 
-    const submit = (values: any, { setSubmitting }: FormikHelpers<any>) => {
+    if (!egg) {
+        return null;
+    }
+
+    const submit = (values: CreateEggVariable, { setSubmitting }: FormikHelpers<CreateEggVariable>) => {
         clearFlashes('variable:create');
 
-        createEggVariable(eggId, values)
-            .then(async (v) => {
-                await mutate(egg => ({ ...egg!, relations: { variables: [ ...egg!.relations.variables!, v ] } }));
+        createEggVariable(egg.id, values)
+            .then(async (variable) => {
+                setValues([ ...egg.relationships.variables, variable ]);
+                await mutate(egg => ({ ...egg!, relationships: { ...egg!.relationships, variables: [ ...egg!.relationships.variables, variable ] } }));
                 setVisible(false);
             })
             .catch(error => {
@@ -36,15 +42,15 @@ export default function NewVariableButton ({ eggId }: { eggId: number }) {
                 initialValues={{
                     name: '',
                     description: '',
-                    envVariable: '',
+                    environmentVariable: '',
                     defaultValue: '',
-                    userViewable: false,
-                    userEditable: false,
+                    isUserViewable: false,
+                    isUserEditable: false,
                     rules: '',
                 }}
                 validationSchema={validationSchema}
             >
-                {({ isSubmitting, resetForm }) => (
+                {({ isSubmitting, isValid, resetForm }) => (
                     <Modal
                         visible={visible}
                         dismissable={!isSubmitting}
@@ -70,7 +76,7 @@ export default function NewVariableButton ({ eggId }: { eggId: number }) {
                                 >
                                     Cancel
                                 </Button>
-                                <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
+                                <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'} disabled={isSubmitting || !isValid}>
                                     Create Variable
                                 </Button>
                             </div>

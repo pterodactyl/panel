@@ -1,22 +1,21 @@
 import http from '@/api/http';
-import { EggVariable, rawDataToEggVariable } from '@/api/admin/eggs/getEgg';
+import { EggVariable } from '@/api/admin/egg';
+import { AdminTransformers } from '@/api/admin/transformers';
 
-export default (eggId: number, variables: Omit<EggVariable, 'eggId' | 'createdAt' | 'updatedAt'>[]): Promise<EggVariable[]> => {
-    return new Promise((resolve, reject) => {
-        http.patch(
-            `/api/application/eggs/${eggId}/variables`,
-            variables.map(variable => ({
-                id: variable.id,
-                name: variable.name,
-                description: variable.description,
-                env_variable: variable.envVariable,
-                default_value: variable.defaultValue,
-                user_viewable: variable.userViewable,
-                user_editable: variable.userEditable,
-                rules: variable.rules,
-            })),
-        )
-            .then(({ data }) => resolve((data.data || []).map(rawDataToEggVariable)))
-            .catch(reject);
-    });
+export default async (eggId: number, variables: Omit<EggVariable, 'eggId' | 'createdAt' | 'updatedAt'>[]): Promise<EggVariable[]> => {
+    const { data } = await http.patch(
+        `/api/application/eggs/${eggId}/variables`,
+        variables.map(variable => ({
+            id: variable.id,
+            name: variable.name,
+            description: variable.description,
+            env_variable: variable.environmentVariable,
+            default_value: variable.defaultValue,
+            user_viewable: variable.isUserViewable,
+            user_editable: variable.isUserEditable,
+            rules: variable.rules,
+        })),
+    );
+
+    return data.data.map(AdminTransformers.toEggVariable);
 };

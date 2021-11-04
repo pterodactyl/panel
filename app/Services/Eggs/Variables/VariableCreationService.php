@@ -55,8 +55,8 @@ class VariableCreationService
             'description' => $data['description'] ?? '',
             'env_variable' => $data['env_variable'] ?? '',
             'default_value' => $data['default_value'] ?? '',
-            'user_viewable' => in_array('user_viewable', $options),
-            'user_editable' => in_array('user_editable', $options),
+            'user_viewable' => $data['user_viewable'],
+            'user_editable' => $data['user_editable'],
             'rules' => $data['rules'] ?? '',
         ]);
 

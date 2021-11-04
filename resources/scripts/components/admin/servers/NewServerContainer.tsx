@@ -146,7 +146,6 @@ export default () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const submit = (r: CreateServerRequest, { setSubmitting }: FormikHelpers<CreateServerRequest>) => {
-        console.log(r);
         clearFlashes('server:create');
 
         createServer(r)

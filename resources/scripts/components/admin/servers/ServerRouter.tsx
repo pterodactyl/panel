@@ -32,7 +32,7 @@ export default () => {
     if (!server || (error && isValidating)) {
         return (
             <AdminContentBlock showFlashKey={'server'}>
-                <Spinner size={'large'} centered/>;
+                <Spinner size={'large'} centered/>
             </AdminContentBlock>
         );
     }

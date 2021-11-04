@@ -2,6 +2,9 @@ import { Model, UUID, WithRelationships, withRelationships } from '@/api/admin/i
 import { Nest } from '@/api/admin/nest';
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
 import { AdminTransformers } from '@/api/admin/transformers';
+import { AxiosError } from 'axios';
+import { useRouteMatch } from 'react-router-dom';
+import useSWR, { SWRResponse } from 'swr';
 
 export interface Egg extends Model {
     id: number;
@@ -39,16 +42,22 @@ export interface EggVariable extends Model {
     defaultValue: string;
     isUserViewable: boolean;
     isUserEditable: boolean;
-    isRequired: boolean;
+    // isRequired: boolean;
     rules: string;
     createdAt: Date;
     updatedAt: Date;
 }
 
 /**
+ * A standard API response with the minimum viable details for the frontend
+ * to correctly render a egg.
+ */
+type LoadedEgg = WithRelationships<Egg, 'nest' | 'variables'>;
+
+/**
  * Gets a single egg from the database and returns it.
  */
-export const getEgg = async (id: number | string): Promise<WithRelationships<Egg, 'nest' | 'variables'>> => {
+export const getEgg = async (id: number | string): Promise<LoadedEgg> => {
     const { data } = await http.get(`/api/application/eggs/${id}`, {
         params: {
             include: [ 'nest', 'variables' ],
@@ -72,4 +81,17 @@ export const searchEggs = async (nestId: number, params: QueryBuilderParams<'nam
 export const exportEgg = async (eggId: number): Promise<Record<string, any>> => {
     const { data } = await http.get(`/api/application/eggs/${eggId}/export`);
     return data;
+};
+
+/**
+ * Returns an SWR instance by automatically loading in the server for the currently
+ * loaded route match in the admin area.
+ */
+export const useEggFromRoute = (): SWRResponse<LoadedEgg, AxiosError> => {
+    const { params } = useRouteMatch<{ id: string }>();
+
+    return useSWR(`/api/application/eggs/${params.id}`, async () => getEgg(params.id), {
+        revalidateOnMount: false,
+        revalidateOnFocus: false,
+    });
 };

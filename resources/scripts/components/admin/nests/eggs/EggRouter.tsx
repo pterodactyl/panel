@@ -1,10 +1,11 @@
+import { useEggFromRoute } from '@/api/admin/egg';
 import EggInstallContainer from '@/components/admin/nests/eggs/EggInstallContainer';
 import EggVariablesContainer from '@/components/admin/nests/eggs/EggVariablesContainer';
-import React from 'react';
+import useFlash from '@/plugins/useFlash';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import getEgg from '@/api/admin/eggs/getEgg';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -13,18 +14,24 @@ import EggSettingsContainer from '@/components/admin/nests/eggs/EggSettingsConta
 
 const EggRouter = () => {
     const location = useLocation();
-    const match = useRouteMatch<{ id?: string }>();
+    const match = useRouteMatch();
 
-    const { data: egg } = getEgg(Number(match.params?.id));
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { data: egg, error, isValidating, mutate } = useEggFromRoute();
 
-    if (egg === undefined) {
+    useEffect(() => {
+        mutate();
+    }, []);
+
+    useEffect(() => {
+        if (!error) clearFlashes('egg');
+        if (error) clearAndAddHttpError({ error, key: 'egg' });
+    }, [ error ]);
+
+    if (!egg || (error && isValidating)) {
         return (
-            <AdminContentBlock>
-                <FlashMessageRender byKey={'egg'} css={tw`mb-4`}/>
-
-                <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
-                    <Spinner size={'base'}/>
-                </div>
+            <AdminContentBlock showFlashKey={'egg'}>
+                <Spinner size={'large'} centered/>
             </AdminContentBlock>
         );
     }
@@ -62,15 +69,15 @@ const EggRouter = () => {
 
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
-                    <EggSettingsContainer egg={egg}/>
+                    <EggSettingsContainer/>
                 </Route>
 
                 <Route path={`${match.path}/variables`} exact>
-                    <EggVariablesContainer egg={egg}/>
+                    <EggVariablesContainer/>
                 </Route>
 
                 <Route path={`${match.path}/install`} exact>
-                    <EggInstallContainer egg={egg}/>
+                    <EggInstallContainer/>
                 </Route>
             </Switch>
         </AdminContentBlock>
