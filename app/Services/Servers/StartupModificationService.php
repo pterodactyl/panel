@@ -93,10 +93,15 @@ class StartupModificationService
             ]);
         }
 
+        $startup = $server->startup;
+        if (Arr::exists($data, 'startup')) {
+            $startup = $data['startup'];
+        }
+
         $server->fill([
-            'startup' => $data['startup'] ?? $server->startup,
+            'startup' => $startup,
             'skip_scripts' => $data['skip_scripts'] ?? isset($data['skip_scripts']),
-            'image' => $data['docker_image'] ?? $server->image,
+            'image' => $data['image'] ?? $server->image,
         ])->save();
     }
 }
