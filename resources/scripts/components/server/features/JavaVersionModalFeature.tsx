@@ -13,6 +13,7 @@ const dockerImageList = [
     { name: 'Java 8', image: 'ghcr.io/pterodactyl/yolks:java_8' },
     { name: 'Java 11', image: 'ghcr.io/pterodactyl/yolks:java_11' },
     { name: 'Java 16', image: 'ghcr.io/pterodactyl/yolks:java_16' },
+    { name: 'Java 17', image: 'ghcr.io/pterodactyl/yolks:java_17' },
 ];
 
 const JavaVersionModalFeature = () => {
