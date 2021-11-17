@@ -27,11 +27,13 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
         }
 
         if (server.eggId === egg.id) {
+            setFieldValue('image', server.container.image);
             setFieldValue('startup', server.container.startup || '');
             return;
         }
 
         // Whenever the egg is changed, set the server's startup command to the egg's default.
+        setFieldValue('image', egg.dockerImages.length > 0 ? egg.dockerImages[0] : '');
         setFieldValue('startup', '');
     }, [ egg ]);
 
