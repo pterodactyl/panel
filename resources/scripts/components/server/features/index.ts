@@ -10,4 +10,4 @@ const EulaModalFeature = lazy(() => import(/* webpackChunkName: "feature.eula" *
 const JavaVersionModalFeature = lazy(() => import(/* webpackChunkName: "feature.java_version" */'@feature/JavaVersionModalFeature'));
 const GSLTokenModalFeature = lazy(() => import(/* webpackChunkName: "feature.gsl_token" */'@feature/GSLTokenModalFeature'));
 
-export { EulaModalFeature, JavaVersionModalFeature };
+export { EulaModalFeature, JavaVersionModalFeature, GSLTokenModalFeature };
