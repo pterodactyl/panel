@@ -245,9 +245,11 @@ export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder
 
     return (
         <div className={className}>
-            <Label htmlFor={id + '-select-label'}>{label}</Label>
+            <div css={tw`flex flex-row`}>
+                <Label htmlFor={id + '-select-label'}>{label}</Label>
+            </div>
 
-            <div css={tw`relative mt-1`}>
+            <div css={tw`relative`}>
                 <InputSpinner visible={loading}>
                     <Input
                         ref={searchInput}

@@ -1,4 +1,7 @@
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import FormikSwitch from '@/components/elements/FormikSwitch';
+import Input from '@/components/elements/Input';
+import Label from '@/components/elements/Label';
 import React from 'react';
 import tw from 'twin.macro';
 import { action, Action, createContextStore } from 'easy-peasy';
@@ -10,7 +13,7 @@ import { bool, object, string } from 'yup';
 import { Role } from '@/api/admin/roles/getRoles';
 import { Values } from '@/api/admin/users/updateUser';
 import Button from '@/components/elements/Button';
-import Field from '@/components/elements/Field';
+import Field, { FieldRow } from '@/components/elements/Field';
 import RoleSelect from '@/components/admin/users/RoleSelect';
 
 interface ctx {
@@ -33,16 +36,18 @@ export interface Params {
 
     onSubmit: (values: Values, helpers: FormikHelpers<Values>) => void;
 
+    uuid?: string;
     role: Role | null;
 }
 
-export default function UserForm ({ title, initialValues, children, onSubmit, role }: Params) {
+export default function UserForm ({ title, initialValues, children, onSubmit, uuid, role }: Params) {
     const submit = (values: Values, helpers: FormikHelpers<Values>) => {
         onSubmit(values, helpers);
     };
 
     if (!initialValues) {
         initialValues = {
+            externalId: '',
             username: '',
             email: '',
             password: '',
@@ -68,45 +73,56 @@ export default function UserForm ({ title, initialValues, children, onSubmit, ro
                             <SpinnerOverlay visible={isSubmitting}/>
 
                             <Form css={tw`mb-0`}>
-                                <div css={tw`md:w-full md:flex md:flex-row`}>
-                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mt-6 md:mt-0`}>
-                                        <Field
-                                            id={'username'}
-                                            name={'username'}
-                                            label={'Username'}
-                                            type={'text'}
-                                        />
-                                    </div>
+                                <FieldRow>
+                                    {uuid &&
+                                        <div>
+                                            <Label>UUID</Label>
+                                            <CopyOnClick text={uuid}>
+                                                <Input
+                                                    type={'text'}
+                                                    value={uuid}
+                                                    readOnly
+                                                />
+                                            </CopyOnClick>
+                                        </div>
+                                    }
+                                    <Field
+                                        id={'externalId'}
+                                        name={'externalId'}
+                                        label={'External ID'}
+                                        type={'text'}
+                                        description={'Used by external integrations, this field should not be modified unless you know what you are doing.'}
+                                    />
+                                    <Field
+                                        id={'username'}
+                                        name={'username'}
+                                        label={'Username'}
+                                        type={'text'}
+                                        description={'The user\'s username, what else would go here?'}
+                                    />
+                                    <Field
+                                        id={'email'}
+                                        name={'email'}
+                                        label={'Email Address'}
+                                        type={'email'}
+                                        description={'The user\'s email address, what else would go here?'}
+                                    />
+                                    <Field
+                                        id={'password'}
+                                        name={'password'}
+                                        label={'Password'}
+                                        type={'password'}
+                                        placeholder={'••••••••'}
+                                        autoComplete={'new-password'}
+                                        /* TODO: Change description depending on if user is being created or updated. */
+                                        description={'Leave empty to email the user a link where they will be required to set a password.'}
+                                    />
+                                    <RoleSelect selected={role}/>
+                                </FieldRow>
 
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
-                                        <Field
-                                            id={'email'}
-                                            name={'email'}
-                                            label={'Email Address'}
-                                            type={'email'}
-                                        />
-                                    </div>
-                                </div>
-
-                                <div css={tw`md:w-full md:flex md:flex-row mt-6`}>
-                                    <div css={tw`md:w-full md:flex md:flex-col md:mr-4 mt-6 md:mt-0`}>
-                                        <Field
-                                            id={'password'}
-                                            name={'password'}
-                                            label={'Password'}
-                                            type={'password'}
-                                            placeholder={'••••••••'}
-                                            autoComplete={'new-password'}
-                                        />
-                                    </div>
-
-                                    <div css={tw`md:w-full md:flex md:flex-col md:ml-4 mt-6 md:mt-0`}>
-                                        <RoleSelect selected={role}/>
-                                    </div>
-                                </div>
-
+                                {/* TODO: Remove toggle once role permissions are implemented. */}
                                 <div css={tw`w-full flex flex-row mb-6`}>
-                                    <div css={tw`w-full bg-neutral-800 border border-neutral-900 shadow-inner mt-6 p-4 rounded`}>
+                                    <div css={tw`w-full bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
                                         <FormikSwitch
                                             name={'rootAdmin'}
                                             label={'Root Admin'}
