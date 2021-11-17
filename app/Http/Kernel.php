@@ -75,6 +75,7 @@ class Kernel extends HttpKernel
             ApiSubstituteBindings::class,
             'api..key:' . ApiKey::TYPE_APPLICATION,
             AuthenticateApplicationUser::class,
+            VerifyCsrfToken::class,
             AuthenticateIPAccess::class,
         ],
         'client-api' => [
@@ -85,6 +86,7 @@ class Kernel extends HttpKernel
             SubstituteClientApiBindings::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
+            VerifyCsrfToken::class,
             // This is perhaps a little backwards with the Client API, but logically you'd be unable
             // to create/get an API key without first enabling 2FA on the account, so I suppose in the
             // end it makes sense.

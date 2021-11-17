@@ -145,9 +145,9 @@
                 showLoaderOnConfirm: true
             }, function () {
                 $.ajax({
-                    method: 'GET',
+                    method: 'POST',
                     url: '/admin/settings/mail/test',
-                    headers: { 'X-CSRF-Token': $('input[name="_token"]').val() }
+                    headers: { 'X-CSRF-TOKEN': $('input[name="_token"]').val() }
                 }).fail(function (jqXHR) {
                     showErrorDialog(jqXHR, 'test');
                 }).done(function () {
