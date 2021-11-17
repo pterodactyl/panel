@@ -23,7 +23,8 @@ export default () => {
 
     return (
         <ServerContentBlock title={'Settings'}>
-            <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={'server:settings'} css={tw`mb-4`}/>
+
             <div css={tw`md:flex`}>
                 <div css={tw`w-full md:flex-1 md:mr-10`}>
                     <Can action={'file.sftp'}>

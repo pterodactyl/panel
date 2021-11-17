@@ -24,7 +24,7 @@ const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
             })
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ error, key: 'schedules' });
+                clearAndAddHttpError({ key: 'schedules', error });
             })
             .then(() => setLoading(false));
     }, []);

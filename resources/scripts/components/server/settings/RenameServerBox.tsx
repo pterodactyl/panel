@@ -45,12 +45,12 @@ export default () => {
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const submit = ({ name }: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('settings');
+        clearFlashes('server:settings');
         renameServer(server.uuid, name)
             .then(() => setServer({ ...server, name }))
             .catch(error => {
                 console.error(error);
-                addError({ key: 'settings', message: httpErrorToHuman(error) });
+                addError({ key: 'server:settings', message: httpErrorToHuman(error) });
             })
             .then(() => setSubmitting(false));
     };

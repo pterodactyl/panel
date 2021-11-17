@@ -25,7 +25,7 @@ const BackupContainer = () => {
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'backups' });
+        clearAndAddHttpError({ key: 'backups', error });
     }, [ error ]);
 
     if (!backups || (error && isValidating)) {

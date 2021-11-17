@@ -81,7 +81,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
         clearFlashes('schedule:task');
         if (backupLimit === 0 && values.action === 'backup') {
             setSubmitting(false);
-            addError({ message: 'A backup task cannot be created when the server\'s backup limit is set to 0.', key: 'schedule:task' });
+            addError({ key: 'schedule:task', message: 'A backup task cannot be created when the server\'s backup limit is set to 0.' });
         } else {
             createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
                 .then(task => {
@@ -96,7 +96,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                 .catch(error => {
                     console.error(error);
                     setSubmitting(false);
-                    addError({ message: httpErrorToHuman(error), key: 'schedule:task' });
+                    addError({ key: 'schedule:task', message: httpErrorToHuman(error) });
                 });
         }
     };

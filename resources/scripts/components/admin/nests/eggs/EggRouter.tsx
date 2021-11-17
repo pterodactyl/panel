@@ -25,7 +25,7 @@ const EggRouter = () => {
 
     useEffect(() => {
         if (!error) clearFlashes('egg');
-        if (error) clearAndAddHttpError({ error, key: 'egg' });
+        if (error) clearAndAddHttpError({ key: 'egg', error });
     }, [ error ]);
 
     if (!egg || (error && isValidating)) {

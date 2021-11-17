@@ -21,7 +21,7 @@ export default () => {
                 </div>
             </div>
 
-            <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={'admin:settings'} css={tw`mb-4`}/>
 
             <SubNavigation>
                 <SubNavigationLink to="/admin/settings" name="General">

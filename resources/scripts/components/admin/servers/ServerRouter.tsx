@@ -26,7 +26,7 @@ export default () => {
 
     useEffect(() => {
         if (!error) clearFlashes('server');
-        if (error) clearAndAddHttpError({ error, key: 'server' });
+        if (error) clearAndAddHttpError({ key: 'server', error });
     }, [ error ]);
 
     if (!server || (error && isValidating)) {

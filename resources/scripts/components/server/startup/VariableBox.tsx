@@ -38,7 +38,7 @@ const VariableBox = ({ variable }: Props) => {
             }), false))
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ error, key: FLASH_KEY });
+                clearAndAddHttpError({ key: FLASH_KEY, error });
             })
             .then(() => setLoading(false));
     }, 500);

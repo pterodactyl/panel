@@ -31,7 +31,7 @@ const SetupTwoFactorModal = () => {
             .then(setToken)
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ error, key: 'account:two-factor' });
+                clearAndAddHttpError({ key: 'account:two-factor', error });
             });
     }, []);
 
@@ -44,7 +44,7 @@ const SetupTwoFactorModal = () => {
             .catch(error => {
                 console.error(error);
 
-                clearAndAddHttpError({ error, key: 'account:two-factor' });
+                clearAndAddHttpError({ key: 'account:two-factor', error });
             })
             .then(() => {
                 setSubmitting(false);
