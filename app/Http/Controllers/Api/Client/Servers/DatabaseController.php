@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Models\AuditLog;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
@@ -74,7 +75,10 @@ class DatabaseController extends ClientApiController
      */
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
-        $database = $this->deployDatabaseService->handle($server, $request->validated());
+        $database = $server->audit(AuditLog::SERVER__DATABASE_CREATED, function (AuditLog $model, Server $server) use ($request) {
+            $database = $this->deployDatabaseService->handle($server, $request->validated());
+            return $database;
+        });
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
@@ -92,7 +96,10 @@ class DatabaseController extends ClientApiController
      */
     public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database)
     {
-        $this->passwordService->handle($database);
+        $server->audit(AuditLog::SERVER__DATABASE_PASSWORD, function (AuditLog $audit) use ($database) {
+            $this->passwordService->handle($database);
+        });
+
         $database->refresh();
 
         return $this->fractal->item($database)
@@ -109,6 +116,10 @@ class DatabaseController extends ClientApiController
     public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {
         $this->managementService->delete($database);
+
+        $server->audit(AuditLog::SERVER__DATABASE_DELETE, function (AuditLog $audit) use ($database) {
+            $this->passwordService->handle($database);
+        });
 
         return Response::create('', Response::HTTP_NO_CONTENT);
     }
