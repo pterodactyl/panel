@@ -3,11 +3,49 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.6
+### Fixed
+* **[security]** Fixes a CSRF vulnerability for both the administrative test email endpoint and node auto-deployment token generation endpoint. [GHSA-wwgq-9jhf-qgw6](https://github.com/pterodactyl/panel/security/advisories/GHSA-wwgq-9jhf-qgw6)
+
+### Changed
+* Updates Minecraft eggs to include latest Java 17 yolk by default.
+
+## v1.6.5
+### Fixed
+* Fixes broken application API endpoints due to changes introduced with session management in 1.6.4.
+
+## v1.6.4
+_This release should not be used, please use `1.6.5`. It has been pulled from our releases._
+
+### Fixed
+* Fixes a session management bug that would cause a user who signs out of one browser to be unintentionally logged out of other browser sessions when using the client API.
+
+## v1.6.3
+### Fixed
+* **[Security]** Changes logout endpoint to be a POST request with CSRF-token validation to prevent a malicious actor from triggering a user logout.
+* Fixes Wings receiving the wrong server suspension state when syncing servers.
+
+### Added
+* Adds additional throttling to login and password reset endpoints.
+* Adds server uptime display when viewing a server console.
+
+## v1.6.2
+### Fixed
+* **[Security]** Fixes an authentication bypass vulerability that could allow a malicious actor to login as another user in the Panel without knowing that user's email or password.
+
+## v1.6.1
+### Fixed
+* Fixes server build modifications not being properly persisted to the database when edited.
+* Correctly exposes the `oom_disabled` field in the `build` limits block for a server build so that Wings can pick it up.
+* 
 ## v1.6.0
 ### Fixed
 * Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
 * Fixes user password updates not correctly logging the user out and returning a failure message even upon successful update.
 * Fixes the count of used backups when browsing a paginated backup list for a server.
+* Fixes an error being triggered when API endpoints are called with no `User-Agent` header and an audit log is generated for the action.
+* Fixes state management on the frontend not properly resetting the loading indicator when adding subusers to a server.
+* Fixes extraneous API calls being made to Wings for the server file listing when not on a file manager screen.
 
 ### Added
 * Adds foreign key relationship on the `mount_node`, `mount_server` and `egg_mount` tables.

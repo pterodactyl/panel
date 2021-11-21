@@ -58,9 +58,13 @@ class ServerConfigurationStructureService
                 'cpu_limit' => $server->cpu,
                 'threads' => $server->threads,
                 'disk_space' => $server->disk,
+                'oom_disabled' => $server->oom_disabled,
             ],
             'container' => [
                 'image' => $server->image,
+                // This field is deprecated — use the value in the "build" block.
+                //
+                // TODO: remove this key in V2.
                 'oom_disabled' => $server->oom_disabled,
                 'requires_rebuild' => false,
             ],
