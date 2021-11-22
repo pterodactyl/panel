@@ -20,6 +20,7 @@ const ServerConsole = () => {
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
+    const isSuspended = ServerContext.useStoreState(state => state.server.data!.status) === 'suspended';
 
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
@@ -45,9 +46,23 @@ const ServerConsole = () => {
                             </ContentContainer>
                         </div>
                         :
+                        isSuspended ?
+                            <div css={tw`mt-4 rounded bg-red-500 p-3`}>
+                                <ContentContainer css={tw`flex items-center justify-center bg-red-500`}>
+                                    <div css={tw`text-sm text-red-900`}>
+                                        <>
+                                            <p css={tw`ml-2 text-sm text-red-100 bg-red-500 text-white`} style={{ fontWeight: 'lighter' }}>
+                                                <div style={{ fontWeight: 'bold' }}>Server suspended</div> <br /> Your server is suspended please contact an administrator
+                                            </p>
+                                        </>
+                                    </div>
+                                </ContentContainer>
+                            </div>
+                        :
                         <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
                             <PowerControls/>
                         </Can>
+
                 }
             </div>
             <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
