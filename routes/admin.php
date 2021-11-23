@@ -66,8 +66,8 @@ Route::group(['prefix' => 'databases'], function () {
 Route::group(['prefix' => 'settings'], function () {
     Route::get('/', 'Settings\IndexController@index')->name('admin.settings');
     Route::get('/mail', 'Settings\MailController@index')->name('admin.settings.mail');
-    Route::get('/mail/test', 'Settings\MailController@test')->name('admin.settings.mail.test');
     Route::get('/advanced', 'Settings\AdvancedController@index')->name('admin.settings.advanced');
+    Route::post('/mail/test', 'Settings\MailController@test')->name('admin.settings.mail.test');
 
     Route::patch('/', 'Settings\IndexController@update');
     Route::patch('/mail', 'Settings\MailController@update');
@@ -153,12 +153,12 @@ Route::group(['prefix' => 'nodes'], function () {
     Route::get('/view/{node}/allocation', 'Nodes\NodeViewController@allocations')->name('admin.nodes.view.allocation');
     Route::get('/view/{node}/servers', 'Nodes\NodeViewController@servers')->name('admin.nodes.view.servers');
     Route::get('/view/{node}/system-information', 'Nodes\SystemInformationController');
-    Route::get('/view/{node}/settings/token', 'NodeAutoDeployController')->name('admin.nodes.view.configuration.token');
 
     Route::post('/new', 'NodesController@store');
     Route::post('/view/{node}/allocation', 'NodesController@createAllocation');
     Route::post('/view/{node}/allocation/remove', 'NodesController@allocationRemoveBlock')->name('admin.nodes.view.allocation.removeBlock');
     Route::post('/view/{node}/allocation/alias', 'NodesController@allocationSetAlias')->name('admin.nodes.view.allocation.setAlias');
+    Route::post('/view/{node}/settings/token', 'NodeAutoDeployController')->name('admin.nodes.view.configuration.token');
 
     Route::patch('/view/{node}/settings', 'NodesController@updateSettings');
 

@@ -3,6 +3,13 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.6
+### Fixed
+* **[security]** Fixes a CSRF vulnerability for both the administrative test email endpoint and node auto-deployment token generation endpoint. [GHSA-wwgq-9jhf-qgw6](https://github.com/pterodactyl/panel/security/advisories/GHSA-wwgq-9jhf-qgw6)
+
+### Changed
+* Updates Minecraft eggs to include latest Java 17 yolk by default.
+
 ## v1.6.5
 ### Fixed
 * Fixes broken application API endpoints due to changes introduced with session management in 1.6.4.

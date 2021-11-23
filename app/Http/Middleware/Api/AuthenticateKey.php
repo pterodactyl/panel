@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Session;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
@@ -55,7 +56,7 @@ class AuthenticateKey
     public function handle(Request $request, Closure $next, int $keyType)
     {
         if (is_null($request->bearerToken()) && is_null($request->user())) {
-            throw new HttpException(401, null, null, ['WWW-Authenticate' => 'Bearer']);
+            throw new HttpException(401, 'A bearer token or valid user session cookie must be provided to access this endpoint.', null, ['WWW-Authenticate' => 'Bearer']);
         }
 
         // This is a request coming through using cookies, we have an authenticated user
