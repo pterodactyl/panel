@@ -64,6 +64,7 @@ const VariableBox = ({ variable }: Props) => {
                 {useSwitch ?
                     <>
                         <Switch
+                            readOnly={!canEdit || !variable.isEditable}
                             name={variable.envVariable}
                             defaultChecked={variable.serverValue === '1'}
                             onChange={() => {
