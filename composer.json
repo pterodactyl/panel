@@ -90,6 +90,9 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "optimize-autoloader": false
+        "optimize-autoloader": false,
+        "platform": {
+            "php": "7.4"
+        }
     }
 }
