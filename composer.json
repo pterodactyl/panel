@@ -42,7 +42,7 @@
         "spatie/laravel-fractal": "^5.8",
         "spatie/laravel-query-builder": "^3.3",
         "staudenmeir/belongs-to-through": "^2.11",
-        "socialiteproviders/discord": "^2.0",
+        "socialiteproviders/discord": "^4.1",
         "symfony/yaml": "^4.4",
         "webmozart/assert": "^1.9"
     },
