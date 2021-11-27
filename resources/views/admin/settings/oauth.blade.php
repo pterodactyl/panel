@@ -193,11 +193,13 @@
         let drivers = {!! $drivers !!};
 
         function saveSettings() {
-            for(driver in drivers) {
-                if (drivers[driver].hasOwnProperty('custom')) continue;
+            for(const driver in drivers) {
+                if (drivers[driver].hasOwnProperty('custom')) continue
+
                 drivers[driver]['enabled'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':enabled"]').is(":checked");
                 drivers[driver]['client_id'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':client_id"]').val();
                 drivers[driver]['client_secret'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':client_secret"]').val();
+
                 if (drivers[driver].hasOwnProperty('listener')) {
                     drivers[driver]['listener'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':listener"]').val();
                 }
@@ -243,7 +245,6 @@
 
         $(document).ready(function () {
             $('.form-save').on('click', function () {
-
                 saveSettings().done(function () {
                     swal({
                         title: 'Success',
@@ -258,6 +259,13 @@
                 let driverId = $(this).attr('driver');
                 $('tr[driver="' + driverId + '"]').remove();
                 delete drivers[driverId];
+                saveSettings().done(function () {
+                    swal({
+                        title: 'Success',
+                        text: 'The driver has successfully been deleted.',
+                        type: 'success'
+                    });
+                });
             });
 
             $('.add-new').on('click', function () {
