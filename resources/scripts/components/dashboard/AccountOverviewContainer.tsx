@@ -52,7 +52,7 @@ export default () => {
                     <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
                         <ConfigureTwoFactorForm/>
                     </ContentBox>
-                    <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure OAuth'}>
+                    <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-2`} title={'Configure OAuth'}>
                         <ConfigureOAuthForm/>
                     </ContentBox>
                 </div>
