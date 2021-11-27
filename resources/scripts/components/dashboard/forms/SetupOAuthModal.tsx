@@ -4,7 +4,7 @@ import { State, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import ContentBox from '@/components/elements/ContentBox';
 import tw from 'twin.macro';
-import Button, { LinkButton } from "@/components/elements/Button";
+import { LinkButton } from '@/components/elements/Button';
 
 export default ({ ...props }: RequiredModalProps) => {
     const { drivers } = useStoreState<ApplicationStore, any>(state => state.settings.data!.oauth);
@@ -17,7 +17,7 @@ export default ({ ...props }: RequiredModalProps) => {
             {JSON.parse(drivers).map((driver: string) => (
                 <ContentBox
                     key={driver}
-                    css={tw`mt-8 md:mt-0 mx-4 my-4 inline-block`}
+                    css={tw`mx-4 my-4 inline-block`}
                 >
                     <div css={tw`w-48`}>
                         <img src={'/assets/svgs/' + driver + '.svg'} css={tw`w-16 float-right`} alt={driver}/>
