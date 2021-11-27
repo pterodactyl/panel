@@ -3,35 +3,30 @@
 namespace Pterodactyl\Http\Controllers\Base;
 
 use Illuminate\Http\Request;
-use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class OAuthController extends Controller
 {
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
+    private UserUpdateService $updateService;
 
     /**
      * The route to redirect a user once unlinked with the OAuth provider or if the provider doesn't exist.
      *
      * @var string
      */
-    protected $redirectRoute = 'account';
+    protected string $redirectRoute = 'account';
 
     /**
      * LoginController constructor.
      *
-     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
+     * @param UserUpdateService $updateService
      */
     public function __construct(UserUpdateService $updateService)
     {
@@ -41,8 +36,10 @@ class OAuthController extends Controller
     /**
      * Redirect to the provider's website
      *
-     * @param \Illuminate\Http\Request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function link(Request $request): RedirectResponse
     {
@@ -69,14 +66,14 @@ class OAuthController extends Controller
         return Socialite::with($driver)->redirect();
     }
 
-
     /**
      * Link OAuth id to user
      *
-     * @param \Illuminate\Http\Request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Throwable
      */
     protected function unlink(Request $request): RedirectResponse
     {

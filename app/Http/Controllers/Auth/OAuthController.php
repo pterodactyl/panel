@@ -6,46 +6,39 @@ use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\NotFoundExceptionInterface;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
-use Illuminate\Foundation\Auth\SendsPasswordResetEmails;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Throwable;
 
 class OAuthController extends Controller
 {
+    protected AuthManager $auth;
 
-    /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    protected $auth;
+    private UserUpdateService $updateService;
 
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
+    private UserRepositoryInterface $repository;
 
     /**
      * The route to redirect a user once linked with the OAuth provider or if the provider doesn't exist.
      *
      * @var string
      */
-    protected $redirectRoute = 'account';
+    protected string $redirectRoute = 'account';
 
     /**
      * LoginController constructor.
      *
-     * @param \Illuminate\Auth\AuthManager $auth
-     * @param \Pterodactyl\Services\Users\UserUpdateService $updateService
-     * @param \Pterodactyl\Contracts\Repository\UserRepositoryInterface $repository
+     * @param AuthManager $auth
+     * @param UserUpdateService $updateService
+     * @param UserRepositoryInterface $repository
      */
-    public function __construct(AuthManager $auth,  UserUpdateService $updateService, UserRepositoryInterface $repository)
+    public function __construct(AuthManager $auth, UserUpdateService $updateService, UserRepositoryInterface $repository)
     {
         $this->auth = $auth;
         $this->updateService = $updateService;
@@ -55,8 +48,10 @@ class OAuthController extends Controller
     /**
      * Redirect to the provider's website
      *
-     * @param \Illuminate\Http\Request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
      */
     protected function redirect(Request $request): RedirectResponse
     {
@@ -86,8 +81,13 @@ class OAuthController extends Controller
     /**
      * Validate and login OAuth user.
      *
-     * @param \Illuminate\Http\Request
-     * @return \Illuminate\Http\RedirectResponse
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws RecordNotFoundException
+     * @throws DataValidationException
+     * @throws Throwable
      */
     protected function callback(Request $request): RedirectResponse
     {
@@ -102,7 +102,6 @@ class OAuthController extends Controller
             return redirect()->route('auth.login');
         }
 
-
         $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
 
         // Dirty hack
@@ -115,7 +114,7 @@ class OAuthController extends Controller
         $oauthUser = Socialite::driver($driver)->user();
 
         try {
-            $user = $this->repository->findFirstWhere([['oauth->'. $driver, $oauthUser->getId()]]);
+            $user = $this->repository->findFirstWhere([['oauth->' . $driver, $oauthUser->getId()]]);
         } catch (RecordNotFoundException $e) {
             return redirect()->route('auth.login');
         }
@@ -129,10 +128,11 @@ class OAuthController extends Controller
     /**
      * Link OAuth id to user
      *
-     * @param \Illuminate\Http\Request
-     * @return \Illuminate\Http\RedirectResponse
-     * @throws RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @param Request $request
+     * @return RedirectResponse
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     * @throws Throwable
      */
     protected function link(Request $request): RedirectResponse
     {

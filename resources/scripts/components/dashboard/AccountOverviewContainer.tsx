@@ -10,6 +10,7 @@ import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
+import { useStoreState } from 'easy-peasy';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -29,6 +30,7 @@ const Container = styled.div`
 
 export default () => {
     const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
+    const { enabled: oauthEnabled } = useStoreState(state => state.settings.data!.oauth);
 
     return (
         <PageContentBlock title={'Account Overview'}>
@@ -52,9 +54,11 @@ export default () => {
                     <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
                         <ConfigureTwoFactorForm/>
                     </ContentBox>
+                    {oauthEnabled &&
                     <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-2`} title={'Configure OAuth'}>
                         <ConfigureOAuthForm/>
                     </ContentBox>
+                    }
                 </div>
             </Container>
         </PageContentBlock>
