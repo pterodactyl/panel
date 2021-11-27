@@ -103,7 +103,7 @@
                                 </tr>
                                 @foreach(json_decode($drivers, true) as $driver => $options)
                                     <tr driver="{{ $driver }}">
-                                        <td>{{ $driver }} @if (array_has($options, 'custom')) <button class="btn btn-danger btn-tiny btn-pill delete-driver" driver="{{ $driver }}">DELETE</button>@endif</td>
+                                        <td>{{ $driver }}</td>
                                         <td class="text-center"><input type="checkbox" class="inline-block" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':enabled' }}"  @if ($options['enabled']) checked @endif></td>
                                         <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_id' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_id', $options['client_id']) }}"></td>
                                         <td><input type="password" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_secret' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_secret') }}"></td>
@@ -111,6 +111,11 @@
                                             <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':listener' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':listener', array_has($options, 'listener') ? $options['listener'] : '') }}"></td>
                                         @else
                                             <td class="text-center">—</td>
+                                        @endif
+                                        @if (array_has($options, 'custom'))
+                                            <td class="align-middle">
+                                                <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover delete-driver" driver="{{ $driver }}"><i class="fa fa-trash-o"></i></button>
+                                            </td>
                                         @endif
                                     </tr>
                                 @endforeach
@@ -120,15 +125,15 @@
                 </div>
                 <div class="box-footer">
                     <div class="pull-right">
-                        <button class="btn btn-sm btn-success add-new">Add New</button>
+                        <button class="btn btn-sm btn-success add-new" id="add-modal-save">Add New</button>
                         <button class="btn btn-sm btn-primary form-save">Save</button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal" tabindex="-1" role="dialog" id="add-modal">
-        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Add New Driver</h5>
@@ -138,8 +143,6 @@
                 </div>
                 <div class="modal-body">
                     <p>Before adding a new driver you must first install the matching <a href="https://socialiteproviders.netlify.app/" target="_blank">Socialite Driver</a>.</p>
-
-
                     <div class="row">
                         <div class="form-group col-md-6">
                             <label class="control-label">Driver ID</label>
@@ -175,8 +178,8 @@
                     <p>To add an icon on the login page please add the image as an svg in the folder <code>public/assets/svgs/&lt;driver id&gt;.svg</code></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="add-modal-save">Add New</button>
-                    <button type="button" class="btn btn-secondary add-modal-close">Close</button>
+                    <button type="button" class="btn btn-success btn-sm">Add New</button>
+                    <button type="button" class="btn btn-default btn-sm pull-left">Close</button>
                 </div>
             </div>
         </div>
@@ -186,22 +189,6 @@
 
 @section('footer-scripts')
     @parent
-
-    <style>
-        .modal-dialog-centered {
-            top: 25%;
-        }
-
-        .btn-tiny {
-            padding: .25rem .5rem;
-            font-size: .875rem;
-        }
-
-        .btn-pill {
-            border-radius: 9999px;
-        }
-    </style>
-
     <script>
         let drivers = {!! $drivers !!};
 
