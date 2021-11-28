@@ -23,33 +23,31 @@ export default ({ ...props }: RequiredModalProps) => {
                         <img src={'/assets/svgs/' + driver + '.svg'} css={tw`w-16 float-right`} alt={driver}/>
                         <h3>{driver.charAt(0).toUpperCase() + driver.slice(1)}</h3>
 
-                        { oauth[driver] != null &&
-                        <div>
-                            <div css={tw`mt-8 mb-4`}>
-                                Linked with id <code>{oauth[driver]}</code>
-                            </div>
-                            <div css={tw`mb-4`}>
+                        {oauth[driver] == null ?
+                            <div css={tw`mt-16 mb-4`}>
                                 <LinkButton
-                                    color={'red'}
                                     isSecondary
-                                    href={`/account/oauth/unlink?driver=${driver}`}
+                                    href={`/account/oauth/link?driver=${driver}`}
                                 >
-                                    Unlink {driver}
+                                    Link {driver}
                                 </LinkButton>
                             </div>
-                        </div>
+                            :
+                            <div>
+                                <div css={tw`mt-8 mb-4`}>
+                                    Linked with id <code>{oauth[driver]}</code>
+                                </div>
+                                <div css={tw`mb-4`}>
+                                    <LinkButton
+                                        color={'red'}
+                                        isSecondary
+                                        href={`/account/oauth/unlink?driver=${driver}`}
+                                    >
+                                        Unlink {driver}
+                                    </LinkButton>
+                                </div>
+                            </div>
                         }
-                        { oauth[driver] == null &&
-                        <div css={tw`mt-16 mb-4`}>
-                            <LinkButton
-                                isSecondary
-                                href={`/account/oauth/link?driver=${driver}`}
-                            >
-                                Link {driver}
-                            </LinkButton>
-                        </div>
-                        }
-
                     </div>
                 </ContentBox>
             ))}

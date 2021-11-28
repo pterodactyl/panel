@@ -2,11 +2,12 @@ import React, { useState } from 'react';
 import SetupOAuthModal from '@/components/dashboard/forms/SetupOAuthModal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { useStoreState } from 'easy-peasy';
+import { State, useStoreState } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
 
 export default () => {
     const [ visible, setVisible ] = useState(false);
-    const { enabled: oauthEnabled } = useStoreState(state => state.settings.data!.oauth);
+    const oauth = JSON.parse(useStoreState((state: State<ApplicationStore>) => state.user.data!.oauth));
 
     return (
         <div>
@@ -18,10 +19,10 @@ export default () => {
                 />
             }
             <p className={'text-sm'}>
-                {oauthEnabled ?
-                    'Click the button below to link and unlink OAuth services from your account.'
-                    :
+                {oauth.length === 0 ?
                     'Click the button below to link your account to third party OAuth services for more ways of logging in.'
+                    :
+                    'Click the button below to link and unlink OAuth services from your account.'
                 }
             </p>
             <div css={tw`mt-6`}>
@@ -30,7 +31,7 @@ export default () => {
                     isSecondary
                     onClick={() => setVisible(true)}
                 >
-                    Begin Setup
+                    { oauth.length === 0 ? 'Begin Setup' : 'Configure'}
                 </Button>
             </div>
         </div>
