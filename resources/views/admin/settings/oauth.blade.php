@@ -94,12 +94,7 @@
                                             <p class="text-muted"><small>Leave blank to continue using the existing client secret.</small></p>
                                         </div>
                                     </th>
-                                    <th>
-                                        <div>
-                                            Listener
-                                            <p class="text-muted"><small>Facebook, Twitter, LinkedIn, Google, Github, GitLab and BitBucket do not require one.</small></p>
-                                        </div>
-                                    </th>
+                                    <th>Listener</th>
                                 </tr>
                                 @foreach(json_decode($drivers, true) as $driver => $options)
                                     <tr driver="{{ $driver }}">
