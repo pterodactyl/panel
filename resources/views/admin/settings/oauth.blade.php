@@ -80,7 +80,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Driver Settings</h3>
                     <div class="box-tools">
-                        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#newHostModal">Add New</button>
+                        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#newDriverModal">Add New</button>
                         <button class="btn btn-sm btn-primary form-save">Save</button>
                     </div>
                 </div>
