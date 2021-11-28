@@ -131,38 +131,40 @@
                 <div class="modal-body">
                     <p>Before adding a new driver you must first install the matching <a href="https://socialiteproviders.com/usage/#_1-installation" target="_blank">Socialite Driver</a>.</p>
                     <div class="row">
-                        <div class="form-group col-md-6">
-                            <label class="control-label" for="pDriverId">Driver ID</label>
+                        <div class="col-md-6">
+                            <label class="form-label" for="pDriverId">Driver ID</label>
                             <div>
                                 <input required type="text" class="form-control" name="pDriverId" id="pDriverId"/>
                                 <p class="text-muted small">This must be the <b>exact</b> same as the Socialite Driver (usually in lowercase).</p>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="control-label" for="pClientId">Client ID</label>
+                        <div class="col-md-6">
+                            <label class="form-label" for="pClientId">Client ID</label>
                             <div>
                                 <input required type="text" class="form-control" name="pClientId" id="pClientId"/>
-                                <p class="text-muted small">The client ID obtained from your OAuth provider.</p>
+                                <p class="text-muted small">The client id obtained from your OAuth provider.</p>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="control-label" for="pClientSecret">Client Secret</label>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <label class="form-label" for="pClientSecret">Client Secret</label>
                             <div>
                                 <input required type="password" class="form-control" name="pClientSecret" id="pClientSecret"/>
-                                <p class="text-muted small">The client Secret obtained from your OAuth provider.</p>
+                                <p class="text-muted small">The client secret obtained from your OAuth provider.</p>
                             </div>
                         </div>
-                        <div class="form-group col-md-6">
-                            <label class="control-label" for="pDriverListener">Driver Listener</label>
+                        <div class="col-md-6">
+                            <label class="form-label" for="pDriverListener">Driver Listener</label>
                             <div>
                                 <input required type="text" class="form-control" name="pDriverListener" id="pDriverListener"/>
                                 <p class="text-muted small">The Socialite Driver Listener (usually written in the code block under section <code>3. Event Listener</code> on the driver page).</p>
                             </div>
                         </div>
                     </div>
-                    <p>To add an icon on the login page please add the image as an svg in the folder <code>public/assets/svgs/&lt;driver id&gt;.svg</code></p>
                 </div>
                 <div class="modal-footer">
+                    <p>To add an icon on the login page please add the image as an svg in the folder <code>public/assets/svgs/&lt;driver id&gt;.svg</code></p>
                     <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
                     <button type="button" id="add-modal-save" class="btn btn-success btn-sm">Create</button>
                 </div>
