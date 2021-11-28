@@ -80,7 +80,7 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">Driver Settings</h3>
                     <div class="box-tools">
-                        <button class="btn btn-sm btn-success add-new">Add New</button>
+                        <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#newHostModal">Add New</button>
                         <button class="btn btn-sm btn-primary form-save">Save</button>
                     </div>
                 </div>
@@ -111,7 +111,7 @@
                                 @endif
                                 @if (array_has($options, 'custom'))
                                     <td class="align-middle">
-                                        <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover delete-driver" driver="{{ $driver }}"><i class="fa fa-trash-o"></i></button>
+                                        <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover delete-driver"><i class="fa fa-trash-o"></i></button>
                                     </td>
                                 @endif
                             </tr>
@@ -163,8 +163,8 @@
                     <p>To add an icon on the login page please add the image as an svg in the folder <code>public/assets/svgs/&lt;driver id&gt;.svg</code></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-sm" id="add-modal-save">Add New</button>
-                    <button type="button" class="btn btn-default btn-sm pull-left close add-modal-close">Close</button>
+                    <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
+                    <button type="button" id="add-modal-save" class="btn btn-success btn-sm">Create</button>
                 </div>
             </div>
         </div>
