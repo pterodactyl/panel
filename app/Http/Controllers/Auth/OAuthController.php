@@ -8,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
 use Psr\Container\ContainerExceptionInterface;
 use Psr\Container\NotFoundExceptionInterface;
-use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
@@ -85,8 +84,6 @@ class OAuthController extends Controller
      * @return RedirectResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
-     * @throws RecordNotFoundException
-     * @throws DataValidationException
      * @throws Throwable
      */
     protected function callback(Request $request): RedirectResponse
@@ -124,17 +121,11 @@ class OAuthController extends Controller
         return redirect('/');
     }
 
-
     /**
      * Link OAuth id to user
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     * @throws ContainerExceptionInterface
-     * @throws NotFoundExceptionInterface
      * @throws Throwable
      */
-    protected function link(Request $request): RedirectResponse
+    private function link(Request $request): RedirectResponse
     {
         $driver = $request->session()->pull('oauth_linking');
 

@@ -12,7 +12,7 @@ use Pterodactyl\Services\Users\UserUpdateService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Throwable;
 
-class OAuthController extends Controller
+class OAuthBaseController extends Controller
 {
     private UserUpdateService $updateService;
 
@@ -50,7 +50,7 @@ class OAuthController extends Controller
         $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
         $driver = $request->get('driver');
 
-        if ($driver == null || !array_has($drivers, $driver) || !$drivers[$driver]['enabled']) {
+        if (empty($driver) || !array_has($drivers, $driver) || !$drivers[$driver]['enabled']) {
             return redirect($this->redirectRoute);
         }
 
@@ -77,15 +77,14 @@ class OAuthController extends Controller
      */
     protected function unlink(Request $request): RedirectResponse
     {
-        $driver = $request->get('driver');
-
-        if (empty($driver)) {
-            return redirect($this->redirectRoute);
+        if (!app('config')->get('pterodactyl.auth.oauth.enabled')) {
+            throw new NotFoundHttpException();
         }
 
         $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $driver = $request->get('driver');
 
-        if (!array_has($drivers, $driver) || !$drivers[$driver]['enabled']) {
+        if (empty($driver) || !array_has($drivers, $driver) || !$drivers[$driver]['enabled']) {
             return redirect($this->redirectRoute);
         }
 
