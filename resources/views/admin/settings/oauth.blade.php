@@ -82,7 +82,7 @@
                     <h3 class="box-title">Driver Settings</h3>
                     <div class="box-tools">
                         <button class="btn btn-sm btn-success" data-toggle="modal" data-target="#newDriverModal">Add New</button>
-                        <button class="btn btn-sm btn-primary" id="saveButton">Save</button>
+                        <button class="btn btn-sm btn-primary" id="saveButton2">Save</button>
                     </div>
                 </div>
                 <div class="box-body table-responsive no-padding">
@@ -242,6 +242,7 @@
 
         $(document).ready(function () {
             $('#saveButton').on('click', save);
+            $('#saveButton2').on('click', save);
             $('.delete-driver').on('click', function () {
                 let driverId = $(this).attr('driver');
                 $('tr[driver="' + driverId + '"]').remove();
