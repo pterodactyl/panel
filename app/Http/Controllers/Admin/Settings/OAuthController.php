@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
-use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
+use Illuminate\Http\Response;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Psr\Container\ContainerExceptionInterface;
@@ -64,13 +64,13 @@ class OAuthController extends Controller
      * Handle settings update.
      *
      * @param OAuthSettingsFormRequest $request
-     * @return RedirectResponse
+     * @return Response
      * @throws DataValidationException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws RecordNotFoundException
      */
-    public function update(OAuthSettingsFormRequest $request): RedirectResponse
+    public function update(OAuthSettingsFormRequest $request): Response
     {
         // Set current client_secret if empty
         $newDrivers = json_decode($request->normalize()['oauth:drivers'], true);
@@ -87,8 +87,7 @@ class OAuthController extends Controller
         }
 
         $this->kernel->call('queue:restart');
-        $this->alert->success('OAuth settings have been updated successfully and the queue worker was restarted to apply these changes.')->flash();
 
-        return redirect()->route('admin.settings.oauth');
+        return response('', 204);
     }
 }
