@@ -81,11 +81,6 @@ return [
                     'client_id' => env('APP_OAUTH_BITBUCKET_KEY'),
                     'client_secret' => env('APP_OAUTH_BITBUCKET_SECRET'),
                 ],
-                'linkedin' => [
-                    'enabled' => false,
-                    'client_id' => env('APP_OAUTH_LINKEDIN_KEY'),
-                    'client_secret' => env('APP_OAUTH_LINKEDIN_SECRET'),
-                ],
                 'facebook' => [
                     'enabled' => false,
                     'client_id' => env('APP_OAUTH_FACEBOOK_KEY'),
