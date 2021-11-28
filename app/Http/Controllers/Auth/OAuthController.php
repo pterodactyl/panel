@@ -49,11 +49,11 @@ class OAuthController extends Controller
      * Redirect to the provider's website
      *
      * @param Request $request
-     * @return RedirectResponse
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
-    protected function redirect(Request $request): RedirectResponse
+    protected function redirect(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
         if (!app('config')->get('pterodactyl.auth.oauth.enabled')) {
             throw new NotFoundHttpException();
@@ -75,7 +75,7 @@ class OAuthController extends Controller
 
         $request->session()->put('oauth_driver', $driver);
 
-        return Socialite::with($driver)->redirect();
+        return Socialite::driver($driver)->redirect();
     }
 
     /**

@@ -51,7 +51,7 @@ return [
                     'listener' => 'Pterodactyl\\Extensions\\Socialite\\GenericExtendSocialite@handle',
                 ],
                 'discord' => [
-                    'enabled' => true,
+                    'enabled' => false,
                     'client_id' => env('APP_OAUTH_DISCORD_KEY'),
                     'client_secret' => env('APP_OAUTH_DISCORD_SECRET'),
                     'listener' => 'SocialiteProviders\\Discord\\DiscordExtendSocialite@handle',
