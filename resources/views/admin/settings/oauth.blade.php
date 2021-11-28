@@ -76,105 +76,95 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="box">
+            <div class="box box-primary">
                 <div class="box-header with-border">
                     <h3 class="box-title">Driver Settings</h3>
-                </div>
-                <div class="box-body">
-                    <div class="row">
-                        <div class="form-group col-md-12">
-                            <table class="table">
-                                <tr>
-                                    <th>Driver</th>
-                                    <th class="text-center">Status</th>
-                                    <th>Client ID</th>
-                                    <th>
-                                        <div>
-                                            Client Secret
-                                            <p class="text-muted"><small>Leave blank to continue using the existing client secret.</small></p>
-                                        </div>
-                                    </th>
-                                    <th>Listener</th>
-                                </tr>
-                                @foreach(json_decode($drivers, true) as $driver => $options)
-                                    <tr driver="{{ $driver }}">
-                                        <td>{{ $driver }}</td>
-                                        <td class="text-center"><input type="checkbox" class="inline-block" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':enabled' }}"  @if ($options['enabled']) checked @endif></td>
-                                        <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_id' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_id', $options['client_id']) }}"></td>
-                                        <td><input type="password" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_secret' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_secret') }}"></td>
-                                        @if (array_has($options, 'listener'))
-                                            <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':listener' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':listener', array_has($options, 'listener') ? $options['listener'] : '') }}"></td>
-                                        @else
-                                            <td class="text-center">built-in</td>
-                                        @endif
-                                        @if (array_has($options, 'custom'))
-                                            <td class="align-middle">
-                                                <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover delete-driver" driver="{{ $driver }}"><i class="fa fa-trash-o"></i></button>
-                                            </td>
-                                        @endif
-                                    </tr>
-                                @endforeach
-                            </table>
-                        </div>
-                    </div>
-                </div>
-                <div class="box-footer">
-                    <div class="pull-right">
-                        <button class="btn btn-sm btn-success add-new" id="add-modal-save">Add New</button>
+                    <div class="box-tools">
+                        <button class="btn btn-sm btn-success add-new">Add New</button>
                         <button class="btn btn-sm btn-primary form-save">Save</button>
                     </div>
+                </div>
+                <div class="box-body table-responsive no-padding">
+                    <table class="table table-hover">
+                        <tr>
+                            <th>Driver</th>
+                            <th class="text-center">Status</th>
+                            <th>Client ID</th>
+                            <th>
+                                <div>
+                                    Client Secret
+                                    <p class="text-muted"><small>Leave blank to continue using the existing client secret.</small></p>
+                                </div>
+                            </th>
+                            <th class="text-center">Listener</th>
+                        </tr>
+                        @foreach(json_decode($drivers, true) as $driver => $options)
+                            <tr>
+                                <td>{{ $driver }}</td>
+                                <td class="text-center"><input type="checkbox" class="inline-block" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':enabled' }}"  @if ($options['enabled']) checked @endif></td>
+                                <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_id' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_id', $options['client_id']) }}"></td>
+                                <td><input type="password" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_secret' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_secret') }}"></td>
+                                @if (array_has($options, 'listener'))
+                                    <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':listener' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':listener', array_has($options, 'listener') ? $options['listener'] : '') }}"></td>
+                                @else
+                                    <td class="text-center">built-in</td>
+                                @endif
+                                @if (array_has($options, 'custom'))
+                                    <td class="align-middle">
+                                        <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover delete-driver" driver="{{ $driver }}"><i class="fa fa-trash-o"></i></button>
+                                    </td>
+                                @endif
+                            </tr>
+                        @endforeach
+                    </table>
                 </div>
             </div>
         </div>
     </div>
-    <div class="modal fade" id="add-modal" tabindex="-1" role="dialog">
+    <div class="modal fade" id="newDriverModal" tabindex="-1" role="dialog">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add New Driver</h5>
-                    <button type="button" class="close add-modal-close" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title">Add New Driver</h4>
                 </div>
                 <div class="modal-body">
-                    <p>Before adding a new driver you must first install the matching <a href="https://socialiteproviders.netlify.app/" target="_blank">Socialite Driver</a>.</p>
+                    <p>Before adding a new driver you must first install the matching <a href="https://socialiteproviders.com/usage/#_1-installation" target="_blank">Socialite Driver</a>.</p>
                     <div class="row">
                         <div class="form-group col-md-6">
-                            <label class="control-label">Driver ID</label>
+                            <label class="control-label" for="pDriverId">Driver ID</label>
                             <div>
-                                <input required type="text" class="form-control" name="add-new:driver-id"/>
+                                <input required type="text" class="form-control" name="pDriverId" id="pDriverId"/>
                                 <p class="text-muted small">This must be the <b>exact</b> same as the Socialite Driver (usually in lowercase).</p>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="control-label">Client ID</label>
+                            <label class="control-label" for="pClientId">Client ID</label>
                             <div>
-                                <input required type="text" class="form-control" name="add-new:client-id"/>
+                                <input required type="text" class="form-control" name="pClientId" id="pClientId"/>
                                 <p class="text-muted small">The client ID obtained from your OAuth provider.</p>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="control-label">Client Secret</label>
+                            <label class="control-label" for="pClientSecret">Client Secret</label>
                             <div>
-                                <input required type="password" class="form-control" name="add-new:client-secret"/>
+                                <input required type="password" class="form-control" name="pClientSecret" id="pClientSecret"/>
                                 <p class="text-muted small">The client Secret obtained from your OAuth provider.</p>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
-                            <label class="control-label">Driver Listener</label>
+                            <label class="control-label" for="pDriverListener">Driver Listener</label>
                             <div>
-                                <input required type="text" class="form-control" name="add-new:driver-listener"/>
+                                <input required type="text" class="form-control" name="pDriverListener" id="pDriverListener"/>
                                 <p class="text-muted small">The Socialite Driver Listener (usually written in the code block under section <code>3. Event Listener</code> on the driver page).</p>
                             </div>
                         </div>
                     </div>
-
-
                     <p>To add an icon on the login page please add the image as an svg in the folder <code>public/assets/svgs/&lt;driver id&gt;.svg</code></p>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success btn-sm">Add New</button>
-                    <button type="button" class="btn btn-default btn-sm pull-left">Close</button>
+                    <button type="button" class="btn btn-success btn-sm" id="add-modal-save">Add New</button>
+                    <button type="button" class="btn btn-default btn-sm pull-left close add-modal-close">Close</button>
                 </div>
             </div>
         </div>
@@ -249,7 +239,6 @@
                 });
             });
 
-
             $('.delete-driver').on('click', function () {
                 let driverId = $(this).attr('driver');
                 $('tr[driver="' + driverId + '"]').remove();
@@ -272,16 +261,16 @@
             });
 
             // Empty on load
-            $('input[name="add-new:driver-id"]').val('');
-            $('input[name="add-new:client-id"]').val('');
-            $('input[name="add-new:client-secret"]').val('');
-            $('input[name="add-new:driver-listener"]').val('');
+            $('input[name="pDriverId"]').val('');
+            $('input[name="pClientId"]').val('');
+            $('input[name="pClientSecret"]').val('');
+            $('input[name="pDriverListener"]').val('');
 
             $('#add-modal-save').on('click', function () {
-                let driverId = $('input[name="add-new:driver-id"]').val();
-                let clientId = $('input[name="add-new:client-id"]').val();
-                let clientSecret = $('input[name="add-new:client-secret"]').val();
-                let driverListener = $('input[name="add-new:driver-listener"]').val();
+                let driverId = $('input[name="pDriverId"]').val();
+                let clientId = $('input[name="pClientId"]').val();
+                let clientSecret = $('input[name="pClientSecret"]').val();
+                let driverListener = $('input[name="pDriverListener"]').val();
 
                 drivers[driverId] = {
                     'enabled': true,
