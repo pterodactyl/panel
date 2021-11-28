@@ -21,56 +21,59 @@
                 <div class="box-header with-border">
                     <h3 class="box-title">OAuth Settings</h3>
                 </div>
-                <div class="box-body">
-                    <div class="row">
-                        <div class="form-group col-md-4">
-                            <label class="control-label">Status</label>
-                            <div>
-                                <select class="form-control" name="pterodactyl:auth:oauth:enabled">
-                                    <option value="true">Enabled</option>
-                                    <option value="false" @if(old('pterodactyl:auth:oauth:enabled', config('pterodactyl.auth.oauth.enabled') == 0)) selected @endif>Disabled</option>
-                                </select>
-                                <p class="text-muted small">If enabled, login from OAuth sources will be enabled.</p>
-                            </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="control-label">Require OAuth Authentication</label>
-                            <div>
-                                <div class="btn-group" data-toggle="buttons">
-                                    @php
-                                        $level = old('pterodactyl:auth:oauth:required', config('pterodactyl.auth.oauth.required'));
-                                    @endphp
-                                    <label class="btn btn-primary @if ($level == 0) active @endif">
-                                        <input type="radio" name="pterodactyl:auth:oauth:required" autocomplete="off" value="0" @if ($level == 0) checked @endif> Not Required
-                                    </label>
-                                    <label class="btn btn-primary @if ($level == 1) active @endif">
-                                        <input type="radio" name="pterodactyl:auth:oauth:required" autocomplete="off" value="1" @if ($level == 1) checked @endif> Users Only
-                                    </label>
-                                    <label class="btn btn-primary @if ($level == 2) active @endif">
-                                        <input type="radio" name="pterodactyl:auth:oauth:required" autocomplete="off" value="2" @if ($level == 2) checked @endif> Admin Only
-                                    </label>
-                                    <label class="btn btn-primary @if ($level == 3) active @endif">
-                                        <input type="radio" name="pterodactyl:auth:oauth:required" autocomplete="off" value="3" @if ($level == 3) checked @endif> All Users
-                                    </label>
+                <form>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label" for="pStatus">Status</label>
+                                <div>
+                                    <select class="form-control" name="oauth:enabled" id="pStatus">
+                                        <option value="true">Enabled</option>
+                                        <option value="false" @if(old('oauth:enabled', config('pterodactyl.auth.oauth.enabled') == 0)) selected @endif>Disabled</option>
+                                    </select>
+                                    <p class="text-muted small">If enabled, login from OAuth sources will be enabled.</p>
                                 </div>
-                                <p class="text-muted"><small>If enabled, any account falling into the selected grouping will be required to authenticate using OAuth.</small></p>
                             </div>
-                        </div>
-                        <div class="form-group col-md-4">
-                            <label class="control-label">Disable Other Authentication Options If Required</label>
-                            <div>
-                                <select class="form-control" name="pterodactyl:auth:oauth:disable_other_authentication_if_required">
-                                    <option value="true">Enabled</option>
-                                    <option value="false" @if(old('pterodactyl:auth:oauth:disable_other_authentication_if_required', config('pterodactyl.auth.oauth.disable_other_authentication_if_required') == 0)) selected @endif>Disabled</option>
-                                </select>
-                                <p class="text-muted"><small>If enabled, any account falling into the grouping specified before will be required to authenticate using OAuth and will not be able to login using other authentication options.</small></p>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Require OAuth Authentication</label>
+                                <div>
+                                    <div class="btn-group" data-toggle="buttons">
+                                        @php
+                                            $level = old('oauth:required', config('pterodactyl.auth.oauth.required'));
+                                        @endphp
+                                        <label class="btn btn-primary @if ($level == 0) active @endif">
+                                            <input type="radio" name="oauth:required" autocomplete="off" value="0" @if ($level == 0) checked @endif> Not Required
+                                        </label>
+                                        <label class="btn btn-primary @if ($level == 1) active @endif">
+                                            <input type="radio" name="oauth:required" autocomplete="off" value="1" @if ($level == 1) checked @endif> Users Only
+                                        </label>
+                                        <label class="btn btn-primary @if ($level == 2) active @endif">
+                                            <input type="radio" name="oauth:required" autocomplete="off" value="2" @if ($level == 2) checked @endif> Admin Only
+                                        </label>
+                                        <label class="btn btn-primary @if ($level == 3) active @endif">
+                                            <input type="radio" name="oauth:required" autocomplete="off" value="3" @if ($level == 3) checked @endif> All Users
+                                        </label>
+                                    </div>
+                                    <p class="text-muted"><small>If enabled, any account falling into the selected grouping will be required to authenticate using OAuth.</small></p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label" for="pDisableOtherOptions">Disable Other Authentication Options If Required</label>
+                                <div>
+                                    <select class="form-control" name="oauth:disable_other_authentication_if_required" id="pDisableOtherOptions">
+                                        <option value="true">Enabled</option>
+                                        <option value="false" @if(old('oauth:disable_other_authentication_if_required', config('pterodactyl.auth.oauth.disable_other_authentication_if_required') == 0)) selected @endif>Disabled</option>
+                                    </select>
+                                    <p class="text-muted"><small>If enabled, any account falling into the grouping specified before will be required to authenticate using OAuth and will not be able to login using other authentication options.</small></p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="box-footer">
-                    <button class="btn btn-sm btn-primary pull-right form-save">Save</button>
-                </div>
+                    <div class="box-footer">
+                        {{ csrf_field() }}
+                        <button class="btn btn-sm btn-primary pull-right" id="saveButton">Save</button>
+                    </div>
+                </form>
             </div>
         </div>
     </div>
@@ -101,17 +104,17 @@
                         @foreach(json_decode($drivers, true) as $driver => $options)
                             <tr>
                                 <td>{{ $driver }}</td>
-                                <td class="text-center"><input type="checkbox" class="inline-block" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':enabled' }}"  @if ($options['enabled']) checked @endif></td>
-                                <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_id' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_id', $options['client_id']) }}"></td>
-                                <td><input type="password" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':client_secret' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':client_secret') }}"></td>
+                                <td class="text-center"><input type="checkbox" class="inline-block" name="{{ 'oauth:driver:' . $driver . ':enabled' }}"  @if ($options['enabled']) checked @endif></td>
+                                <td><input type="text" class="form-control" name="{{ 'oauth:driver:' . $driver . ':client_id' }}" value="{{ old('oauth:driver:' . $driver . ':client_id', $options['client_id']) }}"></td>
+                                <td><input type="password" class="form-control" name="{{ 'oauth:driver:' . $driver . ':client_secret' }}" value="{{ old('oauth:driver:' . $driver . ':client_secret') }}"></td>
                                 @if (array_has($options, 'listener'))
-                                    <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':listener' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':listener', array_has($options, 'listener') ? $options['listener'] : '') }}"></td>
+                                    <td><input type="text" class="form-control" name="{{ 'oauth:driver:' . $driver . ':listener' }}" value="{{ old('oauth:driver:' . $driver . ':listener', array_has($options, 'listener') ? $options['listener'] : '') }}"></td>
                                 @else
                                     <td class="text-center">built-in</td>
                                 @endif
                                 @if (array_has($options, 'custom'))
                                     <td class="align-middle">
-                                        <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover delete-driver"><i class="fa fa-trash-o"></i></button>
+                                        <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover delete-driver" driver="{{$driver}}"><i class="fa fa-trash-o"></i></button>
                                     </td>
                                 @endif
                             </tr>
@@ -171,7 +174,6 @@
             </div>
         </div>
     </div>
-    {!! csrf_field() !!}
 @endsection
 
 @section('footer-scripts')
@@ -183,12 +185,12 @@
             for(const driver in drivers) {
                 if (drivers[driver].hasOwnProperty('custom')) continue
 
-                drivers[driver]['enabled'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':enabled"]').is(":checked");
-                drivers[driver]['client_id'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':client_id"]').val();
-                drivers[driver]['client_secret'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':client_secret"]').val();
+                drivers[driver]['enabled'] = $('input[name="oauth:driver:' + driver + ':enabled"]').is(":checked");
+                drivers[driver]['client_id'] = $('input[name="oauth:driver:' + driver + ':client_id"]').val();
+                drivers[driver]['client_secret'] = $('input[name="oauth:driver:' + driver + ':client_secret"]').val();
 
                 if (drivers[driver].hasOwnProperty('listener')) {
-                    drivers[driver]['listener'] = $('input[name="pterodactyl:oauth:driver:' + driver + ':listener"]').val();
+                    drivers[driver]['listener'] = $('input[name="oauth:driver:' + driver + ':listener"]').val();
                 }
             }
 
@@ -197,14 +199,24 @@
                 url: '/admin/settings/oauth',
                 contentType: 'application/json',
                 data: JSON.stringify({
-                    'pterodactyl:auth:oauth:enabled': $('select[name="pterodactyl:auth:oauth:enabled"]').val(),
-                    'pterodactyl:auth:oauth:drivers': JSON.stringify(drivers),
-                    'pterodactyl:auth:oauth:required': $('input[name="pterodactyl:auth:oauth:required"]:checked').val(),
-                    'pterodactyl:auth:oauth:disable_other_authentication_if_required': $('select[name="pterodactyl:auth:oauth:disable_other_authentication_if_required"]').val(),
+                    'oauth:enabled': $('select[name="oauth:enabled"]').val(),
+                    'oauth:drivers': JSON.stringify(drivers),
+                    'oauth:required': $('input[name="oauth:required"]:checked').val(),
+                    'oauth:disable_other_authentication_if_required': $('select[name="oauth:disable_other_authentication_if_required"]').val(),
                 }),
                 headers: { 'X-CSRF-Token': $('input[name="_token"]').val() }
             }).fail(function (jqXHR) {
                 showErrorDialog(jqXHR, 'save');
+            });
+        }
+
+        function save() {
+            saveSettings().done(function () {
+                swal({
+                    title: 'Success',
+                    text: 'OAuth settings have been updated successfully and the queue worker was restarted to apply these changes.',
+                    type: 'success'
+                });
             });
         }
 
@@ -231,35 +243,13 @@
         }
 
         $(document).ready(function () {
-            $('.form-save').on('click', function () {
-                saveSettings().done(function () {
-                    swal({
-                        title: 'Success',
-                        text: 'OAuth settings have been updated successfully and the queue worker was restarted to apply these changes.',
-                        type: 'success'
-                    });
-                });
-            });
+            $('.saveButton').on('click', save);
 
             $('.delete-driver').on('click', function () {
                 let driverId = $(this).attr('driver');
                 $('tr[driver="' + driverId + '"]').remove();
                 delete drivers[driverId];
-                saveSettings().done(function () {
-                    swal({
-                        title: 'Success',
-                        text: 'The driver has successfully been deleted.',
-                        type: 'success'
-                    });
-                });
-            });
-
-            $('.add-new').on('click', function () {
-                $('#add-modal').modal('show');
-            });
-
-            $('.add-modal-close').on('click', function () {
-                $('#add-modal').modal('hide');
+                save();
             });
 
             // Empty on load

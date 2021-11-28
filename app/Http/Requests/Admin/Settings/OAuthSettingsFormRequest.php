@@ -16,10 +16,10 @@ class OAuthSettingsFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'pterodactyl:auth:oauth:enabled' => 'required|in:true,false',
-            'pterodactyl:auth:oauth:drivers' => 'required|json',
-            'pterodactyl:auth:oauth:required' => 'required|integer|in:0,1,2,3',
-            'pterodactyl:auth:oauth:disable_other_authentication_if_required' => 'required|in:true,false',
+            'oauth:enabled' => 'required|in:true,false',
+            'oauth:drivers' => 'required|json',
+            'oauth:required' => 'required|integer|in:0,1,2,3',
+            'oauth:disable_other_authentication_if_required' => 'required|in:true,false',
         ];
     }
 
@@ -29,10 +29,10 @@ class OAuthSettingsFormRequest extends AdminFormRequest
     public function attributes()
     {
         return [
-            'pterodactyl:auth:oauth:enabled' => 'OAuth Enabled',
-            'pterodactyl:auth:oauth:drivers' => 'OAuth Drivers',
-            'pterodactyl:auth:oauth:required' => 'Require OAuth Authentication',
-            'pterodactyl:auth:oauth:disable_other_authentication_if_required' => 'Disable Other Authentication Options If Required',
+            'oauth:enabled' => 'OAuth Enabled',
+            'oauth:drivers' => 'OAuth Drivers',
+            'oauth:required' => 'Require OAuth Authentication',
+            'oauth:disable_other_authentication_if_required' => 'Disable Other Authentication Options If Required',
         ];
     }
 }

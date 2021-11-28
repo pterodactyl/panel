@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Http\Response;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Psr\Container\ContainerExceptionInterface;
@@ -64,16 +64,16 @@ class OAuthController extends Controller
      * Handle settings update.
      *
      * @param OAuthSettingsFormRequest $request
-     * @return Response
+     * @return RedirectResponse
      * @throws DataValidationException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws RecordNotFoundException
      */
-    public function update(OAuthSettingsFormRequest $request): Response
+    public function update(OAuthSettingsFormRequest $request): RedirectResponse
     {
         // Set current client_secret if empty
-        $newDrivers = json_decode($request->normalize()['pterodactyl:auth:oauth:drivers'], true);
+        $newDrivers = json_decode($request->normalize()['oauth:drivers'], true);
         $currentDrivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
 
         foreach ($newDrivers as $driver => $options) {
@@ -83,11 +83,12 @@ class OAuthController extends Controller
         }
 
         foreach ($request->normalize() as $key => $value) {
-            $this->settings->set('settings::' . $key, $key == 'pterodactyl:auth:oauth:drivers' ? json_encode($newDrivers) : $value);
+            $this->settings->set('settings::' . $key, $key == 'oauth:drivers' ? json_encode($newDrivers) : $value);
         }
 
         $this->kernel->call('queue:restart');
+        $this->alert->success('OAuth settings have been updated successfully and the queue worker was restarted to apply these changes.')->flash();
 
-        return response('', 204);
+        return redirect()->route('admin.settings.oauth');
     }
 }
