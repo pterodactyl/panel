@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Requests\Admin\Settings;
 
-use Illuminate\Validation\Rule;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 

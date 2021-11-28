@@ -2,18 +2,18 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Throwable;
 
 class OAuthController extends Controller
 {
@@ -25,17 +25,11 @@ class OAuthController extends Controller
 
     /**
      * The route to redirect a user once linked with the OAuth provider or if the provider doesn't exist.
-     *
-     * @var string
      */
     protected string $redirectRoute = 'account';
 
     /**
      * LoginController constructor.
-     *
-     * @param AuthManager $auth
-     * @param UserUpdateService $updateService
-     * @param UserRepositoryInterface $repository
      */
     public function __construct(AuthManager $auth, UserUpdateService $updateService, UserRepositoryInterface $repository)
     {
@@ -45,10 +39,8 @@ class OAuthController extends Controller
     }
 
     /**
-     * Redirect to the provider's website
+     * Redirect to the provider's website.
      *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -80,8 +72,6 @@ class OAuthController extends Controller
     /**
      * Validate and login OAuth user.
      *
-     * @param Request $request
-     * @return RedirectResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws Throwable
@@ -122,7 +112,8 @@ class OAuthController extends Controller
     }
 
     /**
-     * Link OAuth id to user
+     * Link OAuth id to user.
+     *
      * @throws Throwable
      */
     private function link(Request $request): RedirectResponse

@@ -2,15 +2,15 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Throwable;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Laravel\Socialite\Facades\Socialite;
-use Psr\Container\ContainerExceptionInterface;
-use Psr\Container\NotFoundExceptionInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Throwable;
 
 class OAuthBaseController extends Controller
 {
@@ -18,15 +18,11 @@ class OAuthBaseController extends Controller
 
     /**
      * The route to redirect a user once unlinked with the OAuth provider or if the provider doesn't exist.
-     *
-     * @var string
      */
     protected string $redirectRoute = 'account';
 
     /**
      * LoginController constructor.
-     *
-     * @param UserUpdateService $updateService
      */
     public function __construct(UserUpdateService $updateService)
     {
@@ -34,10 +30,8 @@ class OAuthBaseController extends Controller
     }
 
     /**
-     * Redirect to the provider's website
+     * Redirect to the provider's website.
      *
-     * @param Request $request
-     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -67,10 +61,8 @@ class OAuthBaseController extends Controller
     }
 
     /**
-     * Link OAuth id to user
+     * Link OAuth id to user.
      *
-     * @param Request $request
-     * @return RedirectResponse
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      * @throws Throwable

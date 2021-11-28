@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Carbon\CarbonInterface;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
@@ -110,9 +110,6 @@ class LoginCheckpointController extends AbstractLoginController
      * Determines if the data provided from the session is valid or not. This
      * will return false if the data is invalid, or if more time has passed than
      * was configured when the session was written.
-     *
-     * @param array $data
-     * @return bool
      */
     protected function hasValidSessionData(array $data): bool
     {

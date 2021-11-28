@@ -92,9 +92,6 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Determine if the user is logging in using an email or username,.
-     *
-     * @param string|null $input
-     * @return string
      */
     protected function getField(string $input = null): string
     {

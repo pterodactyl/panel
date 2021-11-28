@@ -6,11 +6,11 @@ use Illuminate\View\View;
 use Illuminate\Http\Response;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
-use Psr\Container\ContainerExceptionInterface;
+use Pterodactyl\Http\Controllers\Controller;
 use Psr\Container\NotFoundExceptionInterface;
+use Psr\Container\ContainerExceptionInterface;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
-use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Settings\OAuthSettingsFormRequest;
 
@@ -24,15 +24,12 @@ class OAuthController extends Controller
 
     /**
      * IndexController constructor.
-     *
-     * @param AlertsMessageBag $alert
-     * @param Kernel $kernel
-     * @param SettingsRepositoryInterface $settings
      */
     public function __construct(
         AlertsMessageBag $alert,
         Kernel $kernel,
-        SettingsRepositoryInterface $settings)
+        SettingsRepositoryInterface $settings
+    )
     {
         $this->alert = $alert;
         $this->kernel = $kernel;
@@ -42,7 +39,6 @@ class OAuthController extends Controller
     /**
      * Render the UI for basic Panel settings.
      *
-     * @return View
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface
      */
@@ -56,15 +52,13 @@ class OAuthController extends Controller
         }
 
         return view('admin.settings.oauth', [
-            'drivers' => json_encode($drivers)
+            'drivers' => json_encode($drivers),
         ]);
     }
 
     /**
      * Handle settings update.
      *
-     * @param OAuthSettingsFormRequest $request
-     * @return Response
      * @throws DataValidationException
      * @throws ContainerExceptionInterface
      * @throws NotFoundExceptionInterface

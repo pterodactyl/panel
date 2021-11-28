@@ -28,7 +28,7 @@ class VerifyCsrfToken extends BaseVerifier
      * to using Sanctum for the API endpoints, which handles that for us automatically.
      *
      * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
+     *
      * @return mixed
      *
      * @throws \Illuminate\Session\TokenMismatchException

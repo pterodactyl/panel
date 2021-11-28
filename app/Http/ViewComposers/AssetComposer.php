@@ -29,7 +29,9 @@ class AssetComposer
         $driversConfig = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
 
         foreach ($driversConfig as $driver => $options) {
-            if ($options['enabled']) array_push($drivers, $driver);
+            if ($options['enabled']) {
+                array_push($drivers, $driver);
+            }
         }
 
         $view->with('asset', $this->assetHashService);

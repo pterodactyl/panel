@@ -25,7 +25,9 @@ class EventServiceProvider extends ServiceProvider
         parent::boot();
 
         // Add dynamic Socialite providers from settings
-        if (!app('config')->get('pterodactyl.auth.oauth.enabled')) return;
+        if (!app('config')->get('pterodactyl.auth.oauth.enabled')) {
+            return;
+        }
 
         $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
 

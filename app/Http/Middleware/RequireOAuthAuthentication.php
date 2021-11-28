@@ -10,10 +10,10 @@ use Prologue\Alerts\AlertsMessageBag;
 
 class RequireOAuthAuthentication
 {
-    const LEVEL_NONE = 0;
-    const LEVEL_USER = 1;
-    const LEVEL_ADMIN = 2;
-    const LEVEL_ALL = 3;
+    public const LEVEL_NONE = 0;
+    public const LEVEL_USER = 1;
+    public const LEVEL_ADMIN = 2;
+    public const LEVEL_ALL = 3;
 
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -29,8 +29,6 @@ class RequireOAuthAuthentication
 
     /**
      * RequireTwoFactorAuthentication constructor.
-     *
-     * @param \Prologue\Alerts\AlertsMessageBag $alert
      */
     public function __construct(AlertsMessageBag $alert)
     {
@@ -40,13 +38,11 @@ class RequireOAuthAuthentication
     /**
      * Handle an incoming request.
      *
-     * @param \Illuminate\Http\Request $request
-     * @param \Closure $next
      * @return mixed
      */
     public function handle(Request $request, Closure $next)
     {
-        if (! $request->user()) {
+        if (!$request->user()) {
             return $next($request);
         }
 
@@ -62,7 +58,7 @@ class RequireOAuthAuthentication
                 }
                 break;
             case self::LEVEL_ADMIN:
-                if (! $request->user()->root_admin || $this->hasActiveOAuthProvider($request->user())) {
+                if (!$request->user()->root_admin || $this->hasActiveOAuthProvider($request->user())) {
                     return $next($request);
                 }
                 break;
@@ -88,8 +84,11 @@ class RequireOAuthAuthentication
         $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
 
         foreach ($drivers as $driver => $options) {
-            if ($options['enabled'] && array_has($userDrivers, $driver)) return true;
+            if ($options['enabled'] && array_has($userDrivers, $driver)) {
+                return true;
+            }
         }
+
         return false;
     }
 }
