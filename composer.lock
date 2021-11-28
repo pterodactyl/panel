@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "d948454c94f3214a14ac002ba345a5ac",
+    "content-hash": "281c7e2dd8dc84685193f71d831ad93f",
     "packages": [
         {
             "name": "appstract/laravel-blade-directives",
@@ -1103,6 +1103,63 @@
                 "source": "https://github.com/fideloper/TrustedProxy/tree/4.4.1"
             },
             "time": "2020-10-22T13:48:01+00:00"
+        },
+        {
+            "name": "firebase/php-jwt",
+            "version": "v5.5.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/firebase/php-jwt.git",
+                "reference": "83b609028194aa042ea33b5af2d41a7427de80e6"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/firebase/php-jwt/zipball/83b609028194aa042ea33b5af2d41a7427de80e6",
+                "reference": "83b609028194aa042ea33b5af2d41a7427de80e6",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "require-dev": {
+                "phpunit/phpunit": ">=4.8 <=9"
+            },
+            "suggest": {
+                "paragonie/sodium_compat": "Support EdDSA (Ed25519) signatures when libsodium is not present"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Firebase\\JWT\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-3-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Neuman Vong",
+                    "email": "neuman+pear@twilio.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Anant Narayanan",
+                    "email": "anant@php.net",
+                    "role": "Developer"
+                }
+            ],
+            "description": "A simple library to encode and decode JSON Web Tokens (JWT) in PHP. Should conform to the current spec.",
+            "homepage": "https://github.com/firebase/php-jwt",
+            "keywords": [
+                "jwt",
+                "php"
+            ],
+            "support": {
+                "issues": "https://github.com/firebase/php-jwt/issues",
+                "source": "https://github.com/firebase/php-jwt/tree/v5.5.1"
+            },
+            "time": "2021-11-08T20:18:51+00:00"
         },
         {
             "name": "graham-campbell/result-type",
@@ -4543,6 +4600,73 @@
             "time": "2018-09-19T06:15:53+00:00"
         },
         {
+            "name": "socialiteproviders/apple",
+            "version": "5.0.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Apple.git",
+                "reference": "afeda500417d98378f974f4bccaeeb35b1f69b55"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Apple/zipball/afeda500417d98378f974f4bccaeeb35b1f69b55",
+                "reference": "afeda500417d98378f974f4bccaeeb35b1f69b55",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "ext-openssl": "*",
+                "firebase/php-jwt": "^5.2",
+                "lcobucci/jwt": "^4.0",
+                "php": "^7.4 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
+            },
+            "suggest": {
+                "ahilmurugesan/socialite-apple-helper": "Automatic Apple client key generation and management."
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Apple\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Ahilan",
+                    "email": "ahilmurugesan@gmail.com",
+                    "role": "Developer"
+                },
+                {
+                    "name": "Vamsi Krishna V",
+                    "email": "vamsi@vonectech.com",
+                    "homepage": "https://vonectech.com/",
+                    "role": "Farmer"
+                }
+            ],
+            "description": "Apple OAuth2 Provider for Laravel Socialite",
+            "keywords": [
+                "apple",
+                "apple client key",
+                "apple sign in",
+                "client key generator",
+                "client key refresh",
+                "laravel",
+                "laravel apple",
+                "laravel socialite",
+                "sign in with apple",
+                "socialite",
+                "socialite apple"
+            ],
+            "support": {
+                "source": "https://github.com/SocialiteProviders/Apple/tree/5.0.3"
+            },
+            "time": "2021-08-04T07:43:47+00:00"
+        },
+        {
             "name": "socialiteproviders/discord",
             "version": "4.1.1",
             "source": {
@@ -4649,6 +4773,47 @@
                 "source": "https://github.com/SocialiteProviders/Manager/tree/4.0.1"
             },
             "time": "2020-12-01T23:09:06+00:00"
+        },
+        {
+            "name": "socialiteproviders/microsoft",
+            "version": "4.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/SocialiteProviders/Microsoft.git",
+                "reference": "2892499be9339c76853fd7e077e28f5f04120523"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/SocialiteProviders/Microsoft/zipball/2892499be9339c76853fd7e077e28f5f04120523",
+                "reference": "2892499be9339c76853fd7e077e28f5f04120523",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "php": "^7.2 || ^8.0",
+                "socialiteproviders/manager": "~4.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "SocialiteProviders\\Microsoft\\": ""
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Brian Faust",
+                    "email": "hello@brianfaust.de"
+                }
+            ],
+            "description": "Microsoft OAuth2 Provider for Laravel Socialite",
+            "support": {
+                "source": "https://github.com/SocialiteProviders/Microsoft/tree/4.1.1"
+            },
+            "time": "2021-03-16T01:16:00+00:00"
         },
         {
             "name": "spatie/fractalistic",

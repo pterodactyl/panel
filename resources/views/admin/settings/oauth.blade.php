@@ -110,7 +110,7 @@
                                         @if (array_has($options, 'listener'))
                                             <td><input type="text" class="form-control" name="{{ 'pterodactyl:oauth:driver:' . $driver . ':listener' }}" value="{{ old('pterodactyl:oauth:driver:' . $driver . ':listener', array_has($options, 'listener') ? $options['listener'] : '') }}"></td>
                                         @else
-                                            <td class="text-center">—</td>
+                                            <td class="text-center">built-in</td>
                                         @endif
                                         @if (array_has($options, 'custom'))
                                             <td class="align-middle">
