@@ -47,6 +47,8 @@ class OAuthController extends Controller
         // Don't send the client_secret
         $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
 
+        info($drivers);
+
         foreach ($drivers as $driver => $options) {
             unset($drivers[$driver]['client_secret']);
         }
