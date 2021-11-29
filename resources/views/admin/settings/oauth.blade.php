@@ -181,8 +181,6 @@
 
         function saveSettings() {
             for(const driver in drivers) {
-                if (drivers[driver].hasOwnProperty('custom')) continue
-
                 drivers[driver]['enabled'] = $('input[name="oauth:driver:' + driver + ':enabled"]').is(":checked");
                 drivers[driver]['client_id'] = $('input[name="oauth:driver:' + driver + ':client_id"]').val();
                 drivers[driver]['client_secret'] = $('input[name="oauth:driver:' + driver + ':client_secret"]').val();

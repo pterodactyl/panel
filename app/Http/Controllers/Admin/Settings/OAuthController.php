@@ -47,8 +47,6 @@ class OAuthController extends Controller
         // Don't send the client_secret
         $drivers = json_decode(app('config')->get('oauth.drivers'), true);
 
-        info($drivers);
-
         foreach ($drivers as $driver => $options) {
             unset($drivers[$driver]['client_secret']);
         }
@@ -77,8 +75,6 @@ class OAuthController extends Controller
                 $newDrivers[$driver]['client_secret'] = $currentDrivers[$driver]['client_secret'];
             }
         }
-
-        info($newDrivers);
 
         foreach ($request->normalize() as $key => $value) {
             $this->settings->set('settings::' . $key, $key == 'oauth:drivers' ? json_encode($newDrivers) : $value);
