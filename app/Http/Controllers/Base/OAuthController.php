@@ -12,7 +12,7 @@ use Psr\Container\ContainerExceptionInterface;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-class OAuthBaseController extends Controller
+class OAuthController extends Controller
 {
     private UserUpdateService $updateService;
 
