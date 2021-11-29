@@ -78,6 +78,7 @@ class OAuthController extends Controller
             }
         }
 
+        info(json_encode($newDrivers));
         foreach ($request->normalize() as $key => $value) {
             $this->settings->set('settings::' . $key, $key == 'oauth:drivers' ? json_encode($newDrivers) : $value);
         }
