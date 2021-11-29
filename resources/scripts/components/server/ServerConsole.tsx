@@ -7,7 +7,7 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
-import { EulaModalFeature } from '@feature/index';
+import { EulaModalFeature, JavaVersionModalFeature } from '@feature/index';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import Spinner from '@/components/elements/Spinner';
 
@@ -57,11 +57,10 @@ const ServerConsole = () => {
                     </ErrorBoundary>
                     <ChunkedStatGraphs/>
                 </Spinner.Suspense>
-                {eggFeatures.includes('eula') &&
                 <React.Suspense fallback={null}>
-                    <EulaModalFeature/>
+                    {eggFeatures.includes('eula') && <EulaModalFeature/>}
+                    {eggFeatures.includes('java_version') && <JavaVersionModalFeature/>}
                 </React.Suspense>
-                }
             </div>
         </ServerContentBlock>
     );

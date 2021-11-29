@@ -69,6 +69,7 @@ class AuditLog extends Model
      * @var string[]
      */
     protected $casts = [
+        'is_system' => 'bool',
         'device' => 'array',
         'metadata' => 'array',
     ];
@@ -119,8 +120,8 @@ class AuditLog extends Model
             'server_id' => null,
             'action' => $action,
             'device' => $request ? [
-                'ip_address' => $request->getClientIp(),
-                'user_agent' => $request->userAgent(),
+                'ip_address' => $request->getClientIp() ?? '127.0.0.1',
+                'user_agent' => $request->userAgent() ?? '',
             ] : [],
             'metadata' => $metadata,
         ]);

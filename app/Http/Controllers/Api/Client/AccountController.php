@@ -58,12 +58,17 @@ class AccountController extends ClientApiController
      * Update the authenticated user's password. All existing sessions will be logged
      * out immediately.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws \Throwable
      */
     public function updatePassword(UpdatePasswordRequest $request): JsonResponse
     {
-        $this->updateService->handle($request->user(), $request->validated());
+        $user = $this->updateService->handle($request->user(), $request->validated());
+
+        // If you do not update the user in the session you'll end up working with a
+        // cached copy of the user that does not include the updated password. Do this
+        // to correctly store the new user details in the guard and allow the logout
+        // other devices functionality to work.
+        $this->sessionGuard->setUser($user);
 
         $this->sessionGuard->logoutOtherDevices($request->input('password'));
 

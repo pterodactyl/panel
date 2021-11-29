@@ -21,6 +21,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property \Carbon\CarbonImmutable $updated_at
  * @property \Carbon\CarbonImmutable|null $deleted_at
  * @property \Pterodactyl\Models\Server $server
+ * @property \Pterodactyl\Models\AuditLog[] $audits
  */
 class Backup extends Model
 {
@@ -63,7 +64,7 @@ class Backup extends Model
      * @var array
      */
     protected $attributes = [
-        'is_successful' => true,
+        'is_successful' => false,
         'is_locked' => false,
         'checksum' => null,
         'bytes' => 0,
@@ -97,5 +98,15 @@ class Backup extends Model
     public function server()
     {
         return $this->belongsTo(Server::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function audits()
+    {
+        return $this->hasMany(AuditLog::class, 'metadata->backup_uuid', 'uuid')
+            ->where('action', 'LIKE', 'server:backup.%');
+        // ->where('metadata->backup_uuid', $this->uuid);
     }
 }

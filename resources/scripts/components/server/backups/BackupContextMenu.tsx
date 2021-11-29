@@ -58,6 +58,7 @@ export default ({ backup }: Props) => {
             .then(() => mutate(data => ({
                 ...data,
                 items: data.items.filter(b => b.uuid !== backup.uuid),
+                backupCount: data.backupCount - 1,
             }), false))
             .catch(error => {
                 console.error(error);

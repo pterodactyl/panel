@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
-import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import { useHistory, useParams } from 'react-router-dom';
 import getServerSchedule from '@/api/server/schedules/getServerSchedule';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -23,10 +22,6 @@ interface Params {
     id: string;
 }
 
-interface State {
-    schedule?: Schedule;
-}
-
 const CronBox = ({ title, value }: { title: string; value: string }) => (
     <div css={tw`bg-neutral-700 rounded p-3`}>
         <p css={tw`text-neutral-300 text-sm`}>{title}</p>
@@ -47,7 +42,6 @@ const ActivePill = ({ active }: { active: boolean }) => (
 
 export default () => {
     const history = useHistory();
-    const { state } = useLocation<State>();
     const { id: scheduleId } = useParams<Params>();
 
     const id = ServerContext.useStoreState(state => state.server.data!.id);
@@ -57,7 +51,7 @@ export default () => {
     const [ isLoading, setIsLoading ] = useState(true);
     const [ showEditModal, setShowEditModal ] = useState(false);
 
-    const schedule = ServerContext.useStoreState(st => st.schedules.data.find(s => s.id === state.schedule?.id), isEqual);
+    const schedule = ServerContext.useStoreState(st => st.schedules.data.find(s => s.id === Number(scheduleId)), isEqual);
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
 
     useEffect(() => {

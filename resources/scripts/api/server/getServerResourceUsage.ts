@@ -10,6 +10,7 @@ export interface ServerStats {
     diskUsageInBytes: number;
     networkRxInBytes: number;
     networkTxInBytes: number;
+    uptime: number;
 }
 
 export default (server: string): Promise<ServerStats> => {
@@ -23,6 +24,7 @@ export default (server: string): Promise<ServerStats> => {
                 diskUsageInBytes: attributes.resources.disk_bytes,
                 networkRxInBytes: attributes.resources.network_rx_bytes,
                 networkTxInBytes: attributes.resources.network_tx_bytes,
+                uptime: attributes.resources.uptime,
             }))
             .catch(reject);
     });

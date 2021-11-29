@@ -3,6 +3,90 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.6.6
+### Fixed
+* **[security]** Fixes a CSRF vulnerability for both the administrative test email endpoint and node auto-deployment token generation endpoint. [GHSA-wwgq-9jhf-qgw6](https://github.com/pterodactyl/panel/security/advisories/GHSA-wwgq-9jhf-qgw6)
+
+### Changed
+* Updates Minecraft eggs to include latest Java 17 yolk by default.
+
+## v1.6.5
+### Fixed
+* Fixes broken application API endpoints due to changes introduced with session management in 1.6.4.
+
+## v1.6.4
+_This release should not be used, please use `1.6.5`. It has been pulled from our releases._
+
+### Fixed
+* Fixes a session management bug that would cause a user who signs out of one browser to be unintentionally logged out of other browser sessions when using the client API.
+
+## v1.6.3
+### Fixed
+* **[Security]** Changes logout endpoint to be a POST request with CSRF-token validation to prevent a malicious actor from triggering a user logout.
+* Fixes Wings receiving the wrong server suspension state when syncing servers.
+
+### Added
+* Adds additional throttling to login and password reset endpoints.
+* Adds server uptime display when viewing a server console.
+
+## v1.6.2
+### Fixed
+* **[Security]** Fixes an authentication bypass vulerability that could allow a malicious actor to login as another user in the Panel without knowing that user's email or password.
+
+## v1.6.1
+### Fixed
+* Fixes server build modifications not being properly persisted to the database when edited.
+* Correctly exposes the `oom_disabled` field in the `build` limits block for a server build so that Wings can pick it up.
+* 
+## v1.6.0
+### Fixed
+* Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
+* Fixes user password updates not correctly logging the user out and returning a failure message even upon successful update.
+* Fixes the count of used backups when browsing a paginated backup list for a server.
+* Fixes an error being triggered when API endpoints are called with no `User-Agent` header and an audit log is generated for the action.
+* Fixes state management on the frontend not properly resetting the loading indicator when adding subusers to a server.
+* Fixes extraneous API calls being made to Wings for the server file listing when not on a file manager screen.
+
+### Added
+* Adds foreign key relationship on the `mount_node`, `mount_server` and `egg_mount` tables.
+* Adds environment variable `PER_SCHEDULE_TASK_LIMIT` to allow manual overrides for the number of tasks that can exist on a single schedule. This is currently defaulted to `10`.
+* OOM killer can now be configured at the time of server creation.
+
+### Changed
+* Server updates are not dependent on a successful call to Wings occurring — if the API call fails internally the error will be logged but the server update will still be persisted.
+
+### Removed
+* Removed `WingsServerRepository::update()` function — if you were previously using this to modify server elements on Wings please replace calls to it with `::sync()` after updating Wings.
+
+## v1.5.1
+### Fixed
+* Fixes Docker image 404ing instead of being able to access the Panel.
+* Fixes Java version feature being only loaded when the `eula` feature is specified.
+* Fixes `php artisan p:upgrade` not forcing and seeding while running migrations.
+* Fixes spinner overlays overlapping on the server console page.
+* Fixes Wings being unable to update backup statuses.
+
+## v1.5.0
+### Fixed
+* Fixes deleting a locked backup that has also been marked as failed to allow deletion rather than returning an error about being locked.
+* Fixes server creation process not correctly sending `start_on_completion` to Wings instance.
+* Fixes `z-index` on file mass delete modal so it is displayed on top of all elements, rather than hidden under some.
+* Supports re-sending requests to the Panel API for backups that are currently marked as failed, allowing a previously failed backup to be marked as successful.
+* Minor updates to multiple default eggs for improved error handling and more accurate field-level validation.
+
+### Updated
+* Updates help text for CPU limiting when creating a new server to properly indicate virtual threads are included, rather than only physical threads.
+* Updates all of the default eggs shipped with the Panel to reference new [`ghcr.io` yolks repository](https://github.com/pterodactyl/yolks).
+* When adding 2FA to an account the key used to generate the token is now displayed to the user allowing them to manually input into their app if necessary.
+
+### Added
+* Adds SSL/TLS options for MySQL and Redis in line with most recent Laravel updates.
+* New users created for server MySQL instances will now have the correct permissions for creating foreign keys on tables.
+* Adds new automatic popup feature to allow users to quickly update their Minecraft servers to the latest Java® eggs as necessary if unsupported versions are detected.
+
+### Removed
+* Removes legacy `userInteraction` key from eggs which was unused.
+
 ## v1.4.2
 ### Fixed
 * Fixes logic to disallow creating a backup schedule if the server's backup limit is set to 0.

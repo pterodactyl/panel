@@ -67,7 +67,6 @@ class ServerCreationServiceTest extends IntegrationTestCase
             $allocations[0]->port,
         ]);
 
-        /** @noinspection PhpParamsInspection */
         $egg = $this->cloneEggAndVariables(Egg::query()->findOrFail(1));
         // We want to make sure that the validator service runs as an admin, and not as a regular
         // user when saving variables.
@@ -94,19 +93,10 @@ class ServerCreationServiceTest extends IntegrationTestCase
                 'BUNGEE_VERSION' => '123',
                 'SERVER_JARFILE' => 'server2.jar',
             ],
+            'start_on_completion' => true,
         ];
 
-        $this->daemonServerRepository->expects('setServer')->andReturnSelf();
-        $this->daemonServerRepository->expects('create')->with(Mockery::on(function ($value) {
-            $this->assertIsArray($value);
-            // Just check for some keys to make sure we're getting the expected configuration
-            // structure back. Other tests exist to confirm it is the correct structure.
-            $this->assertArrayHasKey('uuid', $value);
-            $this->assertArrayHasKey('environment', $value);
-            $this->assertArrayHasKey('invocation', $value);
-
-            return true;
-        }))->andReturnUndefined();
+        $this->daemonServerRepository->expects('setServer->create')->with(true)->andReturnUndefined();
 
         try {
             $this->getService()->handle(array_merge($data, [
@@ -115,7 +105,8 @@ class ServerCreationServiceTest extends IntegrationTestCase
                     'SERVER_JARFILE' => 'server2.jar',
                 ],
             ]), $deployment);
-            $this->assertTrue(false, 'This statement should not be reached.');
+
+            $this->fail('This execution pathway should not be reached.');
         } catch (ValidationException $exception) {
             $this->assertCount(1, $exception->errors());
             $this->assertArrayHasKey('environment.BUNGEE_VERSION', $exception->errors());
@@ -133,11 +124,11 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertSame('server2.jar', $response->variables[1]->server_value);
 
         foreach ($data as $key => $value) {
-            if (in_array($key, ['allocation_additional', 'environment'])) {
+            if (in_array($key, ['allocation_additional', 'environment', 'start_on_completion'])) {
                 continue;
             }
 
-            $this->assertSame($value, $response->{$key});
+            $this->assertSame($value, $response->{$key}, "Failed asserting equality of '$key' in server response. Got: [{$response->{$key}}] Expected: [$value]");
         }
 
         $this->assertCount(2, $response->allocations);

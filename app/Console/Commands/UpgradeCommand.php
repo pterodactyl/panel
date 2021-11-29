@@ -57,7 +57,7 @@ class UpgradeCommand extends Command
                 $userDetails = posix_getpwuid(fileowner('public'));
                 $user = $userDetails['name'] ?? 'www-data';
 
-                if (!$this->confirm("Your webserver user has been detected as [{$user}]: is this correct?", true)) {
+                if (!$this->confirm("Your webserver user has been detected as <fg=blue>[{$user}]:</> is this correct?", true)) {
                     $user = $this->anticipate(
                         'Please enter the name of the user running your webserver process. This varies from system to system, but is generally "www-data", "nginx", or "apache".',
                         [
@@ -68,12 +68,12 @@ class UpgradeCommand extends Command
                     );
                 }
             }
-            
+
             if (is_null($this->option('group'))) {
                 $groupDetails = posix_getgrgid(filegroup('public'));
                 $group = $groupDetails['name'] ?? 'www-data';
 
-                if (!$this->confirm("Your webserver group has been detected as [{$group}]: is this correct?", true)) {
+                if (!$this->confirm("Your webserver group has been detected as <fg=blue>[{$group}]:</> is this correct?", true)) {
                     $group = $this->anticipate(
                         'Please enter the name of the group running your webserver process. Normally this is the same as your user.',
                         [
@@ -86,6 +86,7 @@ class UpgradeCommand extends Command
             }
 
             if (!$this->confirm('Are you sure you want to run the upgrade process for your Panel?')) {
+                $this->warn('Upgrade process terminated by user.');
                 return;
             }
         }
@@ -150,8 +151,8 @@ class UpgradeCommand extends Command
         });
 
         $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan migrate --seed --force');
-            $this->call('migrate', ['--seed' => '', '--force' => '']);
+            $this->line('$upgrader> php artisan migrate --force --seed');
+            $this->call('migrate', ['--force' => true, '--seed' => true]);
         });
 
         $this->withProgress($bar, function () use ($user, $group) {
@@ -173,8 +174,8 @@ class UpgradeCommand extends Command
             $this->call('up');
         });
 
-        $this->newLine();
-        $this->info('Finished running upgrade.');
+        $this->newLine(2);
+        $this->info('Panel has been successfully upgraded. Please ensure you also update any Wings instances: https://pterodactyl.io/wings/1.0/upgrading.html');
     }
 
     protected function withProgress(ProgressBar $bar, Closure $callback)
