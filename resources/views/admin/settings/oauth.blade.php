@@ -28,7 +28,7 @@
                             <div>
                                 <select class="form-control" name="oauth:enabled" id="pStatus">
                                     <option value="true">Enabled</option>
-                                    <option value="false" @if(old('oauth:enabled', config('pterodactyl.auth.oauth.enabled') == 0)) selected @endif>Disabled</option>
+                                    <option value="false" @if(old('oauth:enabled', config('oauth.enabled') == 0)) selected @endif>Disabled</option>
                                 </select>
                                 <p class="text-muted small">If enabled, login from OAuth sources will be enabled.</p>
                             </div>
@@ -38,7 +38,7 @@
                             <div>
                                 <div class="btn-group" data-toggle="buttons">
                                     @php
-                                        $level = old('oauth:required', config('pterodactyl.auth.oauth.required'));
+                                        $level = old('oauth:required', config('oauth.required'));
                                     @endphp
                                     <label class="btn btn-primary @if ($level == 0) active @endif">
                                         <input type="radio" name="oauth:required" autocomplete="off" value="0" @if ($level == 0) checked @endif> Not Required
@@ -61,7 +61,7 @@
                             <div>
                                 <select class="form-control" name="oauth:disable_other_authentication_if_required" id="pDisableOtherOptions">
                                     <option value="true">Enabled</option>
-                                    <option value="false" @if(old('oauth:disable_other_authentication_if_required', config('pterodactyl.auth.oauth.disable_other_authentication_if_required') == 0)) selected @endif>Disabled</option>
+                                    <option value="false" @if(old('oauth:disable_other_authentication_if_required', config('oauth.disable_other_authentication_if_required') == 0)) selected @endif>Disabled</option>
                                 </select>
                                 <p class="text-muted"><small>If enabled, any account falling into the grouping specified before will be required to authenticate using OAuth and will not be able to login using other authentication options.</small></p>
                             </div>

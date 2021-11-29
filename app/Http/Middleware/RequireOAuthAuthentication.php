@@ -51,7 +51,7 @@ class RequireOAuthAuthentication
             return $next($request);
         }
 
-        switch ((int) config('pterodactyl.auth.oauth.required')) {
+        switch ((int) config('oauth.required')) {
             case self::LEVEL_ALL:
                 if ($this->hasActiveOAuthProvider($request->user())) {
                     return $next($request);
@@ -81,7 +81,7 @@ class RequireOAuthAuthentication
     {
         $userDrivers = json_decode($user->oauth, true);
 
-        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $drivers = json_decode(app('config')->get('oauth.drivers'), true);
 
         foreach ($drivers as $driver => $options) {
             if ($options['enabled'] && array_has($userDrivers, $driver)) {

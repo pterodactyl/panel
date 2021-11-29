@@ -37,11 +37,11 @@ class OAuthBaseController extends Controller
      */
     protected function link(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        if (!app('config')->get('pterodactyl.auth.oauth.enabled')) {
+        if (!app('config')->get('oauth.enabled')) {
             throw new NotFoundHttpException();
         }
 
-        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $drivers = json_decode(app('config')->get('oauth.drivers'), true);
         $driver = $request->get('driver');
 
         if (empty($driver) || !array_has($drivers, $driver) || !$drivers[$driver]['enabled']) {
@@ -69,11 +69,11 @@ class OAuthBaseController extends Controller
      */
     protected function unlink(Request $request): RedirectResponse
     {
-        if (!app('config')->get('pterodactyl.auth.oauth.enabled')) {
+        if (!app('config')->get('oauth.enabled')) {
             throw new NotFoundHttpException();
         }
 
-        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $drivers = json_decode(app('config')->get('oauth.drivers'), true);
         $driver = $request->get('driver');
 
         if (empty($driver) || !array_has($drivers, $driver) || !$drivers[$driver]['enabled']) {

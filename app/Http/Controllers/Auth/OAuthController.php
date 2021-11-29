@@ -46,11 +46,11 @@ class OAuthController extends Controller
      */
     protected function redirect(Request $request): \Symfony\Component\HttpFoundation\RedirectResponse
     {
-        if (!app('config')->get('pterodactyl.auth.oauth.enabled')) {
+        if (!app('config')->get('oauth.enabled')) {
             throw new NotFoundHttpException();
         }
 
-        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $drivers = json_decode(app('config')->get('oauth.drivers'), true);
         $driver = $request->get('driver');
 
         if ($driver == null || !array_has($drivers, $driver) || !$drivers[$driver]['enabled']) {
@@ -89,7 +89,7 @@ class OAuthController extends Controller
             return redirect()->route('auth.login');
         }
 
-        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $drivers = json_decode(app('config')->get('oauth.drivers'), true);
 
         // Dirty hack
         // Can't use SocialiteProviders\Manager\Config since all providers are hardcoded for services.php
@@ -124,7 +124,7 @@ class OAuthController extends Controller
             return redirect($this->redirectRoute);
         }
 
-        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $drivers = json_decode(app('config')->get('oauth.drivers'), true);
 
         // Dirty hack
         // Can't use SocialiteProviders\Manager\Config since all providers are hardcoded for services.php

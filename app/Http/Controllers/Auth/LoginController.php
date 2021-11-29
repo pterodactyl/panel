@@ -46,8 +46,8 @@ class LoginController extends AbstractLoginController
     public function login(Request $request): JsonResponse
     {
         // If oauth is required for all users & other ways are disabled
-        if (config('pterodactyl.auth.oauth.required') == 3
-            && config('pterodactyl.auth.oauth.disable_other_authentication_if_required')) {
+        if (config('oauth.required') == 3
+            && config('oauth.disable_other_authentication_if_required')) {
             $this->sendFailedLoginResponse($request);
         }
 
@@ -66,13 +66,13 @@ class LoginController extends AbstractLoginController
         }
 
         // If OAuth is required specific users & other ways are disabled
-        if (config('pterodactyl.auth.oauth.disable_other_authentication_if_required')) {
+        if (config('oauth.disable_other_authentication_if_required')) {
             if ($user->root_admin) {
-                if (config('pterodactyl.auth.oauth.required') == 2) {
+                if (config('oauth.required') == 2) {
                     $this->sendFailedLoginResponse($request);
                 }
             } else {
-                if (config('pterodactyl.auth.oauth.required') == 1) {
+                if (config('oauth.required') == 1) {
                     $this->sendFailedLoginResponse($request);
                 }
             }

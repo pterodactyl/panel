@@ -45,7 +45,7 @@ class OAuthController extends Controller
     public function index(): View
     {
         // Don't send the client_secret
-        $drivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $drivers = json_decode(app('config')->get('oauth.drivers'), true);
 
         info($drivers);
 
@@ -70,7 +70,7 @@ class OAuthController extends Controller
     {
         // Set current client_secret if empty
         $newDrivers = json_decode($request->normalize()['oauth:drivers'], true);
-        $currentDrivers = json_decode(app('config')->get('pterodactyl.auth.oauth.drivers'), true);
+        $currentDrivers = json_decode(app('config')->get('oauth.drivers'), true);
 
         foreach ($newDrivers as $driver => $options) {
             if (!array_has($options, 'client_secret') || empty($options['client_secret'])) {
@@ -78,7 +78,6 @@ class OAuthController extends Controller
             }
         }
 
-        info(json_encode($newDrivers));
         foreach ($request->normalize() as $key => $value) {
             $this->settings->set('settings::' . $key, $key == 'oauth:drivers' ? json_encode($newDrivers) : $value);
         }
