@@ -29,8 +29,7 @@ class OAuthController extends Controller
         AlertsMessageBag $alert,
         Kernel $kernel,
         SettingsRepositoryInterface $settings
-    )
-    {
+    ) {
         $this->alert = $alert;
         $this->kernel = $kernel;
         $this->settings = $settings;
