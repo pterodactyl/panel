@@ -4,12 +4,12 @@
     "dashboard_desc_enabled": "Two-factor authentication is currently enabled on your account",
     "dashboard_desc_disabled": "You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.",
     "disable_title": "Disable Two-Factor",
-    "disable_password_desc": "In order to disable two-factor authentication you will need to provide your account password.",
+    "disable_password_desc": "You must provide your current password in order to continue.",
     "setup": {
       "input_title": "Code From Authenticator",
       "input_desc": "Enter the code from your authenticator device after scanning the QR image.",
       "enabled_title": "Two-factor authentication enabled",
-      "enabled_desc": "Two-factor authentication has been enabled on your account. Should you loose access to this device you'll need to use one of the codes displayed below in order to access your account.",
+      "enabled_desc": "Two-factor authentication has been enabled on your account. Should you lose access to your authenticator device, you'll need to use one of the codes displayed below in order to access your account.",
       "store_securely": "<bold>These codes will not be displayed again.</bold> Please take note of them now by storing them in a secure repository such as a password manager."
     },
     "validation": {
