@@ -60,19 +60,19 @@ const AccountApiContainer = ({ t }: WithTranslation) => {
                     <ConfirmationModal
                         visible={!!deleteIdentifier}
                         title={t('account:api.delete_title')}
-                        buttonText={t('account:delete_button')}
+                        buttonText={t('account:api.delete_button')}
                         onConfirmed={() => {
                             doDeletion(deleteIdentifier);
                             setDeleteIdentifier('');
                         }}
                         onModalDismissed={() => setDeleteIdentifier('')}
                     >
-                        {t('account:delete_desc')}
+                        {t('account:api.delete_desc')}
                     </ConfirmationModal>
                     {
                         keys.length === 0 ?
                             <p css={tw`text-center text-sm`}>
-                                {loading ? t('elements:loading') : t('account.api.no_keys')}
+                                {loading ? t('elements:loading') : t('account:api.no_keys')}
                             </p>
                             :
                             keys.map((key, index) => (

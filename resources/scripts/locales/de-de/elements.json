@@ -1,0 +1,12 @@
+{
+  "enable": "TEEnable",
+  "disable": "TEDisable",
+  "description": "TEDescription",
+  "create": "TECreate",
+  "close": "TEClose",
+  "setup": "TESetup",
+  "email": "TEEmail",
+  "loading": "TELoading...",
+  "never": "TENever",
+  "error": "TEError"
+  }

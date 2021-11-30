@@ -23,7 +23,7 @@ const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
 
     const schema = Yup.object().shape({
         email: Yup.string().email().required(),
-        password: Yup.string().required(t('elements:password_required')),
+        password: Yup.string().required(t('account:password.required')),
     });
 
     const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
@@ -74,7 +74,7 @@ const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
                             </div>
                             <div css={tw`mt-6`}>
                                 <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                    {t('account:email.updated')}
+                                    {t('account:email.update')}
                                 </Button>
                             </div>
                         </Form>

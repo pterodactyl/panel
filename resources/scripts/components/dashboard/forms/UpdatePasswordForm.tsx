@@ -86,7 +86,7 @@ const UpdatePasswordForm = ({ t }: WithTranslation) => {
                                 </div>
                                 <div css={tw`mt-6`}>
                                     <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                        {t('password.update')}
+                                        {t('account:password.update')}
                                     </Button>
                                 </div>
                             </Form>

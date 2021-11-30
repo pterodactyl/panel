@@ -26,17 +26,14 @@
     "title": "API Keys",
     "delete_title": "Confirm key deletion",
     "delete_button": "Yes, delete key",
-    "delete_desc": "Yes, delete key",
+    "delete_desc": "Confirm key deletion",
     "no_keys": "No API keys exist for this account.",
-    "last_used": "",
-    
+    "last_used": "Last used: ",
+    "new_title": "Your API Key",
+    "new_desc": "The API key you have requested is shown below. Please store this in a safe location, it will not be shown again.",
     "key_desc": "Are you sure you wish to delete this API key? All requests using it will immediately be invalidated and will fail.",
     "allowed_ips_title": "Allowed IPs",
-    "allowed_ips_desc": "Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line.",
-  
-  
-  
-    "": ""
+    "allowed_ips_desc": "Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line."
   },
 
   "password": {
@@ -56,5 +53,4 @@
   },
 
   "page_title": "Account Overview"
-
 }
