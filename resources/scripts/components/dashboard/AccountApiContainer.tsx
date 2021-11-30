@@ -49,30 +49,30 @@ const AccountApiContainer = ({ t }: WithTranslation) => {
     };
 
     return (
-        <PageContentBlock title={t('account_api')}>
+        <PageContentBlock title={t('account:api.page_title')}>
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={t('create_api_key')} css={tw`flex-none w-full md:w-1/2`}>
+                <ContentBox title={t('account:api.create')} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
-                <ContentBox title={t('api_keys')} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
+                <ContentBox title={t('account:api.title')} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteIdentifier}
-                        title={t('delete_api_key_title')}
-                        buttonText={t('delete_api_key_button')}
+                        title={t('account:api.delete_title')}
+                        buttonText={t('account:delete_button')}
                         onConfirmed={() => {
                             doDeletion(deleteIdentifier);
                             setDeleteIdentifier('');
                         }}
                         onModalDismissed={() => setDeleteIdentifier('')}
                     >
-                        {t('delete_api_key_text')}
+                        {t('account:delete_desc')}
                     </ConfirmationModal>
                     {
                         keys.length === 0 ?
                             <p css={tw`text-center text-sm`}>
-                                {loading ? t('loading') : t('no_api_keys_exist')}
+                                {loading ? t('elements:loading') : t('account.api.no_keys')}
                             </p>
                             :
                             keys.map((key, index) => (
@@ -84,8 +84,8 @@ const AccountApiContainer = ({ t }: WithTranslation) => {
                                     <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                         <p css={tw`text-sm break-words`}>{key.description}</p>
                                         <p css={tw`text-2xs text-neutral-300 uppercase`}>
-                                            {t('last_used')}
-                                            {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : t('never')}
+                                            {t('account:api.last_used')}
+                                            {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : t('elements:never')}
                                         </p>
                                     </div>
                                     <p css={tw`text-sm ml-4 hidden md:block`}>
@@ -111,4 +111,4 @@ const AccountApiContainer = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('dashboard')(AccountApiContainer);
+export default withTranslation([ 'elements', 'account' ])(AccountApiContainer);

@@ -73,18 +73,18 @@ const SetupTwoFactorModal = ({ t }: WithTranslation) => {
             initialValues={{ code: '' }}
             validationSchema={object().shape({
                 code: string()
-                    .required(t('dashboard:2fa.validation.code_required'))
-                    .matches(/^(\d){6}$/, t('dashboard:2fa.validation.code_length')),
+                    .required(t('account:2fa.validation.code_required'))
+                    .matches(/^(\d){6}$/, t('account:2fa.validation.code_length')),
             })}
         >
             {recoveryTokens.length > 0 ?
                 <>
-                    <h2 css={tw`text-2xl mb-4`}>{t('dashboard:2fa.setup.enabled_title')}</h2>
+                    <h2 css={tw`text-2xl mb-4`}>{t('account:2fa.setup.enabled_title')}</h2>
                     <p css={tw`text-neutral-300`}>
-                        {t('dashboard:2fa.setup.enabled_desc')}
+                        {t('account:2fa.setup.enabled_desc')}
                     </p>
                     <p css={tw`text-neutral-300 mt-4`}>
-                        <Trans i18nKey={'2fa.setup.store_securely'} components={{ bold: <strong/> }} ns={'dashboard'}/>
+                        <Trans i18nKey={'2fa.setup.store_securely'} components={{ bold: <strong/> }} ns={'account'}/>
                     </p>
                     <pre css={tw`text-sm mt-4 rounded font-mono bg-neutral-900 p-4`}>
                         {recoveryTokens.map(token => <code key={token} css={tw`block mb-1`}>{token}</code>)}
@@ -121,12 +121,12 @@ const SetupTwoFactorModal = ({ t }: WithTranslation) => {
                                     id={'code'}
                                     name={'code'}
                                     type={'text'}
-                                    title={t('dashboard:2fa.setup.input_title')}
-                                    description={t('dashboard:2fa.setup.input_desc')}
+                                    title={t('account:2fa.setup.input_title')}
+                                    description={t('account:2fa.setup.input_desc')}
                                 />
                                 {token &&
                                 <div css={tw`mt-4 pt-4 border-t border-neutral-500 text-neutral-200`}>
-                                    Alternatively, enter the following token into your authenticator application:
+                                    {t('account:2fa.setup.qr_alternative_desc')}
                                     <CopyOnClick text={token.secret}>
                                         <div css={tw`text-sm bg-neutral-900 rounded mt-2 py-2 px-4 font-mono`}>
                                             <code css={tw`font-mono`}>
@@ -150,4 +150,4 @@ const SetupTwoFactorModal = ({ t }: WithTranslation) => {
     );
 };
 
-export default asModal()(withTranslation([ 'elements', 'dashboard' ])(SetupTwoFactorModal));
+export default asModal()(withTranslation([ 'elements', 'account' ])(SetupTwoFactorModal));

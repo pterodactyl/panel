@@ -25,7 +25,7 @@ const CustomTextarea = styled(Textarea)`${tw`h-32`}`;
 export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
     const [ apiKey, setApiKey ] = useState('');
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const { t } = useTranslation('dashboard');
+    const { t } = useTranslation([ 'account', 'elements' ]);
 
     const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('account');
@@ -63,22 +63,22 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                     <Form>
                         <SpinnerOverlay visible={isSubmitting}/>
                         <FormikFieldWrapper
-                            label={t('description')}
+                            label={t('description', { ns: 'elements' })}
                             name={'description'}
-                            description={t('description_text')}
+                            description={t('api.key_desc')}
                             css={tw`mb-6`}
                         >
                             <Field name={'description'} as={Input}/>
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
-                            label={t('allowed_ips')}
+                            label={t('api.allowed_ips_title')}
                             name={'allowedIps'}
-                            description={t('allowed_ips_text')}
+                            description={t('api.allowed_ips_desc')}
                         >
                             <Field name={'allowedIps'} as={CustomTextarea}/>
                         </FormikFieldWrapper>
                         <div css={tw`flex justify-end mt-6`}>
-                            <Button>{t('create')}</Button>
+                            <Button>{t('create', { ns: 'elements' })}</Button>
                         </div>
                     </Form>
                 )}

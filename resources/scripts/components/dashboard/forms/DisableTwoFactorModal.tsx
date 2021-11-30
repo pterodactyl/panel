@@ -44,7 +44,7 @@ const DisableTwoFactorModal = ({ t }: WithTranslation) => {
                 password: '',
             }}
             validationSchema={object().shape({
-                password: string().required(t('dashboard:2fa.disable_password_desc')),
+                password: string().required(t('account:password.required')),
             })}
         >
             {({ isValid }) => (
@@ -54,8 +54,8 @@ const DisableTwoFactorModal = ({ t }: WithTranslation) => {
                         id={'password'}
                         name={'password'}
                         type={'password'}
-                        label={t('elements:current_password')}
-                        description={t('dashboard:2fa.disable_password_desc')}
+                        label={t('account:password.current')}
+                        description={t('account:2fa.disable_password_desc')}
                         autoFocus
                     />
                     <div css={tw`mt-6 text-right`}>
@@ -69,4 +69,4 @@ const DisableTwoFactorModal = ({ t }: WithTranslation) => {
     );
 };
 
-export default asModal()(withTranslation([ 'elements', 'dashboard' ])(DisableTwoFactorModal));
+export default asModal()(withTranslation([ 'elements', 'account' ])(DisableTwoFactorModal));

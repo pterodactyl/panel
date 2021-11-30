@@ -23,7 +23,7 @@ const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
 
     const schema = Yup.object().shape({
         email: Yup.string().email().required(),
-        password: Yup.string().required(t('need_current_password')),
+        password: Yup.string().required(t('elements:password_required')),
     });
 
     const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
@@ -33,12 +33,12 @@ const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
             .then(() => addFlash({
                 type: 'success',
                 key: 'account:email',
-                message: t('email_updated'),
+                message: t('account:email.updated'),
             }))
             .catch(error => addFlash({
                 type: 'error',
                 key: 'account:email',
-                title: t('error'),
+                title: t('elements:error'),
                 message: httpErrorToHuman(error),
             }))
             .then(() => {
@@ -62,19 +62,19 @@ const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
                                 id={'current_email'}
                                 type={'email'}
                                 name={'email'}
-                                label={t('email')}
+                                label={t('elements:email')}
                             />
                             <div css={tw`mt-6`}>
                                 <Field
                                     id={'confirm_password'}
                                     type={'password'}
                                     name={'password'}
-                                    label={t('confirm_password')}
+                                    label={t('account:password.confirm')}
                                 />
                             </div>
                             <div css={tw`mt-6`}>
                                 <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                    {t('update_email')}
+                                    {t('account:email.updated')}
                                 </Button>
                             </div>
                         </Form>
@@ -85,4 +85,4 @@ const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('dashboard')(UpdateEmailAddressForm);
+export default withTranslation([ 'elements', 'account' ])(UpdateEmailAddressForm);

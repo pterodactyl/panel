@@ -20,7 +20,7 @@ const ConfigureTwoFactorForm = ({ t }: WithTranslation) => {
                     <SetupTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)}/>
             )}
             <p css={tw`text-sm`}>
-                {isEnabled ? ('dashboard:2fa.dashboard_desc_enabled') : t('dashboard:2fa.dashboard_desc_disabled')}
+                {isEnabled ? t('account:2fa.dashboard_desc_enabled') : t('account:2fa.dashboard_desc_disabled')}
             </p>
             <div css={tw`mt-6`}>
                 <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
@@ -31,4 +31,4 @@ const ConfigureTwoFactorForm = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation([ 'elements', 'dashboard' ])(ConfigureTwoFactorForm);
+export default withTranslation([ 'elements', 'account' ])(ConfigureTwoFactorForm);

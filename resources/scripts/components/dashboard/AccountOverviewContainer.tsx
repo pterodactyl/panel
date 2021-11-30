@@ -31,19 +31,19 @@ const AccountOverviewContainer = ({ t }: WithTranslation) => {
     const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
 
     return (
-        <PageContentBlock title={'Account Overview'}>
+        <PageContentBlock title={t('page_title')}>
             {state?.twoFactorRedirect &&
-            <MessageBox title={t('2fa_required_title')} type={'error'}>
-                {t('2fa_required_desc')}
+            <MessageBox title={t('2fa.forced_title')} type={'error'}>
+                {t('2fa.forced_desc')}
             </MessageBox>
             }
             <Container css={[ tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
-                <ContentBox title={t('update_password')} showFlashes={'account:password'}>
+                <ContentBox title={t('password.update')} showFlashes={'account:password'}>
                     <UpdatePasswordForm/>
                 </ContentBox>
                 <ContentBox
                     css={tw`mt-8 md:mt-0 md:ml-8`}
-                    title={t('update_email')}
+                    title={t('email.update')}
                     showFlashes={'account:email'}
                 >
                     <UpdateEmailAddressForm/>
@@ -56,4 +56,4 @@ const AccountOverviewContainer = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('dashboard')(AccountOverviewContainer);
+export default withTranslation('account')(AccountOverviewContainer);

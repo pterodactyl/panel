@@ -82,7 +82,6 @@ export default () => {
                                     :
                                     'There are no servers associated with your account.'
                                 }
-
                             </p>
                     )}
                 </Pagination>

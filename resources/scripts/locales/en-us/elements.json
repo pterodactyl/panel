@@ -1,0 +1,22 @@
+{
+  "enable": "Enable",
+  "disable": "Disable",
+  "description": "Description",
+  "create": "Create",
+  "close": "Close",
+  "setup": "Setup",
+  "email": "Email",
+  "loading": "Loading...",
+  "never": "Never",
+  "error": "Error",
+
+
+
+  "cancel": "Cancel",
+  "dashboard": "Dashboard",
+  "installing": "Installing",
+  "unlimited": "Unlimited",
+  "copied_to_clipboard": "Copied {{text}} to clipboard.",
+  "resource_not_found": "The requested resource was not found.",
+  "something_went_wrong": "Something went wrong"
+  }

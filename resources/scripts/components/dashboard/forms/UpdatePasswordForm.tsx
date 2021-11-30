@@ -26,9 +26,9 @@ const UpdatePasswordForm = ({ t }: WithTranslation) => {
     }
 
     const schema = Yup.object().shape({
-        current: Yup.string().min(1).required(t('need_current_password')),
+        current: Yup.string().min(1).required(t('account:password.required')),
         password: Yup.string().min(8).required(),
-        confirmPassword: Yup.string().test('password', t('password_confirmation_not_match'), function (value) {
+        confirmPassword: Yup.string().test('password', t('account:password.confirm_failed'), function (value) {
             return value === this.parent.password;
         }),
     });
@@ -43,7 +43,7 @@ const UpdatePasswordForm = ({ t }: WithTranslation) => {
             .catch(error => addFlash({
                 key: 'account:password',
                 type: 'error',
-                title: t('error'),
+                title: t('elements:error'),
                 message: httpErrorToHuman(error),
             }))
             .then(() => setSubmitting(false));
@@ -65,15 +65,15 @@ const UpdatePasswordForm = ({ t }: WithTranslation) => {
                                     id={'current_password'}
                                     type={'password'}
                                     name={'current'}
-                                    label={t('current_password')}
+                                    label={t('account:password.current')}
                                 />
                                 <div css={tw`mt-6`}>
                                     <Field
                                         id={'new_password'}
                                         type={'password'}
                                         name={'password'}
-                                        label={t('new_password')}
-                                        description={t('new_password_description')}
+                                        label={t('account:password.new')}
+                                        description={t('account:password.new_desc')}
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
@@ -81,12 +81,12 @@ const UpdatePasswordForm = ({ t }: WithTranslation) => {
                                         id={'confirm_new_password'}
                                         type={'password'}
                                         name={'confirmPassword'}
-                                        label={t('confirm_new_password')}
+                                        label={t('account:password.new_confirm')}
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
                                     <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                        {t('update_password')}
+                                        {t('password.update')}
                                     </Button>
                                 </div>
                             </Form>
@@ -98,4 +98,4 @@ const UpdatePasswordForm = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('dashboard')(UpdatePasswordForm);
+export default withTranslation([ 'elements', 'account' ])(UpdatePasswordForm);

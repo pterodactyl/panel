@@ -15,16 +15,16 @@ const ApiKeyModal = ({ t, apiKey }: Props & WithTranslation) => {
 
     return (
         <>
-            <h3 css={tw`mb-6 text-2xl`}>{t('new_api_key_title')}</h3>
+            <h3 css={tw`mb-6 text-2xl`}>{t('account:api.new_title')}</h3>
             <p css={tw`text-sm mb-6`}>
-                {t('new_api_key_desc')}
+                {t('account:api.new_desc')}
             </p>
             <pre css={tw`text-sm bg-neutral-900 rounded py-2 px-4 font-mono`}>
                 <CopyOnClick text={apiKey}><code css={tw`font-mono`}>{apiKey}</code></CopyOnClick>
             </pre>
             <div css={tw`flex justify-end mt-6`}>
                 <Button type={'button'} onClick={dismiss}>
-                    {t('close')}
+                    {t('elements:close')}
                 </Button>
             </div>
         </>
@@ -36,4 +36,4 @@ ApiKeyModal.displayName = 'ApiKeyModal';
 export default asModal<Props>({
     closeOnEscape: false,
     closeOnBackground: false,
-})(withTranslation('dashboard')(ApiKeyModal));
+})(withTranslation([ 'elements', 'account' ])(ApiKeyModal));
