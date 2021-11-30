@@ -22,7 +22,7 @@ const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const schema = Yup.object().shape({
-        email: Yup.string().email().required(),
+        email: Yup.string().email(t('account:email.valid')).required(t('account:email.required')),
         password: Yup.string().required(t('account:password.required')),
     });
 

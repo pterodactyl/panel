@@ -56,7 +56,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                 initialValues={{ description: '', allowedIps: '' }}
                 validationSchema={object().shape({
                     allowedIps: string(),
-                    description: string().required().min(4),
+                    description: string().required(t('api.required', { ns: 'account' })).min(4, t('api.valid', { ns: 'account' })),
                 })}
             >
                 {({ isSubmitting }) => (

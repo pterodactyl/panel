@@ -27,7 +27,7 @@ const UpdatePasswordForm = ({ t }: WithTranslation) => {
 
     const schema = Yup.object().shape({
         current: Yup.string().min(1).required(t('account:password.required')),
-        password: Yup.string().min(8).required(),
+        password: Yup.string().min(8, t('account:password.valid')).required(t('account:password.required')),
         confirmPassword: Yup.string().test('password', t('account:password.confirm_failed'), function (value) {
             return value === this.parent.password;
         }),

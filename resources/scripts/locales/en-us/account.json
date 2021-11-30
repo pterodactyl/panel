@@ -23,6 +23,8 @@
   "api": {
     "page_title": "Account API",
     "create": "Create API Key",
+    "required": "You must provide a description in order to continue",
+    "valid": "Your description must be at least 4 characters in length",
     "title": "API Keys",
     "delete_title": "Confirm key deletion",
     "delete_button": "Yes, delete key",
@@ -44,12 +46,15 @@
     "current": "Current Password",
     "new": "New Password",
     "new_desc": "Your new password should be at least 8 characters in length and unique to this website.",
-    "new_confirm": "Confirm New Password"
+    "new_confirm": "Confirm New Password",
+    "valid": "Your new password must be at least 8 characters in length"
   },
 
   "email": {
     "update": "Update Email Address",
-    "updated": "Your primary email has been updated."
+    "updated": "Your primary email has been updated.",
+    "required": "You must provide an email address in order to continue",
+    "valid": "You must provide an valid email address in order to continue"
   },
 
   "page_title": "Account Overview"

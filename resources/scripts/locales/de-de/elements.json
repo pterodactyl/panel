@@ -8,5 +8,6 @@
   "email": "TEEmail",
   "loading": "TELoading...",
   "never": "TENever",
-  "error": "TEError"
+  "error": "TEError",
+  "cancel": "TECancel"
   }
