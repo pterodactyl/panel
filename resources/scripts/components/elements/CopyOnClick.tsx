@@ -4,7 +4,6 @@ import tw from 'twin.macro';
 import styled, { keyframes } from 'styled-components/macro';
 import Fade from '@/components/elements/Fade';
 import { SwitchTransition } from 'react-transition-group';
-import { useTranslation } from 'react-i18next';
 
 const fade = keyframes`
     from { opacity: 0 }
@@ -22,7 +21,6 @@ const Toast = styled.div`
 
 const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
     const [ copied, setCopied ] = useState(false);
-    const { t } = useTranslation('elements');
 
     useEffect(() => {
         if (!copied) return;
@@ -47,7 +45,7 @@ const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
                     {copied ?
                         <Toast>
                             <div>
-                                <p>{t('copied_to_clipboard', { text: '&quot;' + text + '&quot;' })}</p>
+                                <p>Copied &quot;{text}&quot; to clipboard.</p>
                             </div>
                         </Toast>
                         :
