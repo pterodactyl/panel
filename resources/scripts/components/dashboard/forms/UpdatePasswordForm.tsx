@@ -9,7 +9,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface Values {
     current: string;

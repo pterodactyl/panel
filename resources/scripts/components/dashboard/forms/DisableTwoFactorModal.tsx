@@ -8,7 +8,7 @@ import { ApplicationStore } from '@/state';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
 

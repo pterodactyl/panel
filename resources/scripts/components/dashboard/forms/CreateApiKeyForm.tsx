@@ -13,7 +13,7 @@ import Button from '@/components/elements/Button';
 import Input, { Textarea } from '@/components/elements/Input';
 import styled from 'styled-components/macro';
 import ApiKeyModal from '@/components/dashboard/ApiKeyModal';
-import { useTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface Values {
     description: string;
@@ -22,10 +22,9 @@ interface Values {
 
 const CustomTextarea = styled(Textarea)`${tw`h-32`}`;
 
-export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
+const CreateApiKeyForm = ({ onKeyCreated, t }: { onKeyCreated: (key: ApiKey) => void } & WithTranslation) => {
     const [ apiKey, setApiKey ] = useState('');
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const { t } = useTranslation([ 'account', 'elements' ]);
 
     const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
         clearFlashes('account');
@@ -56,29 +55,29 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                 initialValues={{ description: '', allowedIps: '' }}
                 validationSchema={object().shape({
                     allowedIps: string(),
-                    description: string().required(t('api.required', { ns: 'account' })).min(4, t('api.valid', { ns: 'account' })),
+                    description: string().required(t('account:api.required')).min(4, t('account:api.valid')),
                 })}
             >
                 {({ isSubmitting }) => (
                     <Form>
                         <SpinnerOverlay visible={isSubmitting}/>
                         <FormikFieldWrapper
-                            label={t('description', { ns: 'elements' })}
+                            label={t('elements:description')}
                             name={'description'}
-                            description={t('api.key_desc')}
+                            description={t('account:api.key_desc')}
                             css={tw`mb-6`}
                         >
                             <Field name={'description'} as={Input}/>
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
-                            label={t('api.allowed_ips_title')}
+                            label={t('account:api.allowed_ips_title')}
                             name={'allowedIps'}
-                            description={t('api.allowed_ips_desc')}
+                            description={t('account:api.allowed_ips_desc')}
                         >
                             <Field name={'allowedIps'} as={CustomTextarea}/>
                         </FormikFieldWrapper>
                         <div css={tw`flex justify-end mt-6`}>
-                            <Button>{t('create', { ns: 'elements' })}</Button>
+                            <Button>{t('elements:create')}</Button>
                         </div>
                     </Form>
                 )}
@@ -86,3 +85,5 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
         </>
     );
 };
+
+export default withTranslation([ 'account', 'elements' ])(CreateApiKeyForm);
