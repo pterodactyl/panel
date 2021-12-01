@@ -9,5 +9,6 @@
   "loading": "Loading...",
   "never": "Never",
   "error": "Error",
-  "cancel": "Cancel"
-  }
+  "cancel": "Cancel",
+  "error_long": "An error was encountered by the application while rendering this view. Try refreshing the page."
+}

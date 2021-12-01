@@ -9,5 +9,6 @@
   "loading": "TELoading...",
   "never": "TENever",
   "error": "TEError",
-  "cancel": "TECancel"
-  }
+  "cancel": "TECancel",
+  "error_long": "TEAn error was encountered by the application while rendering this view. Try refreshing the page."
+}

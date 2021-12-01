@@ -86,4 +86,4 @@ const CreateApiKeyForm = ({ onKeyCreated, t }: { onKeyCreated: (key: ApiKey) => 
     );
 };
 
-export default withTranslation([ 'account', 'elements' ])(CreateApiKeyForm);
+export default withTranslation([ 'elements', 'account' ])(CreateApiKeyForm);

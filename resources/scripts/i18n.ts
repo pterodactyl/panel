@@ -11,9 +11,9 @@ class FixedWebpackBackend extends WebpackBackend {
 }
 
 i18n.use(initReactI18next).use(FixedWebpackBackend).init({
-    lng: 'de-de',
+    lng: 'test-lng',
     fallbackLng: 'en-us',
-    ns: [ 'en-us', 'de-de' ],
+    ns: [ 'en-us', 'test-lng' ],
     debug: process.env.NODE_ENV !== 'production',
     lowerCaseLng: true,
     keySeparator: '.',
