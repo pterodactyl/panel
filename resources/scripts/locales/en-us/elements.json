@@ -10,6 +10,7 @@
   "never": "Never",
   "error": "Error",
   "cancel": "Cancel",
+  "password": "Password",
   "error_long": "An error was encountered by the application while rendering this view. Try refreshing the page.",
   "copied_on_click": "Copied {{text}} to clipboard."
 }

@@ -41,7 +41,7 @@ const ResetPasswordContainer = ({ t }: WithTranslation) => {
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: t('error'), message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('elements:error'), message: httpErrorToHuman(error) });
             });
     };
 
@@ -53,36 +53,36 @@ const ResetPasswordContainer = ({ t }: WithTranslation) => {
                 passwordConfirmation: '',
             }}
             validationSchema={object().shape({
-                password: string().required(t('new_password_required'))
-                    .min(8, t('')),
+                password: string().required(t('auth:password.valid'))
+                    .min(8, t('auth:password.valid')),
                 passwordConfirmation: string()
-                    .required(t('new_password_not_match'))
+                    .required(t('auth:password.confirm_failed'))
                     // @ts-ignore
-                    .oneOf([ ref('password'), null ], t('new_password_not_match')),
+                    .oneOf([ ref('password'), null ], t('auth:password.confirm_failed')),
             })}
         >
             {({ isSubmitting }) => (
                 <LoginFormContainer
-                    title={t('reset_password')}
+                    title={t('auth:password.reset.title')}
                     css={tw`w-full flex`}
                 >
                     <div>
-                        <label>{t('email')}</label>
+                        <label>{t('elements:email')}</label>
                         <Input value={email} isLight disabled/>
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={t('new_password')}
+                            label={t('auth:password.reset.new_password')}
                             name={'password'}
                             type={'password'}
-                            description={t('new_password_min_length')}
+                            description={t('auth:password.valid')}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={t('new_password_confirm')}
+                            label={t('auth:password.confirm')}
                             name={'passwordConfirmation'}
                             type={'password'}
                         />
@@ -94,7 +94,7 @@ const ResetPasswordContainer = ({ t }: WithTranslation) => {
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            {t('reset_password')}
+                            {t('auth:password.reset.title')}
                         </Button>
                     </div>
                     <div css={tw`mt-6 text-center`}>
@@ -102,7 +102,7 @@ const ResetPasswordContainer = ({ t }: WithTranslation) => {
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            {t('return_to_login')}
+                            {t('auth:return_to_login')}
                         </Link>
                     </div>
                 </LoginFormContainer>
@@ -111,4 +111,4 @@ const ResetPasswordContainer = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('auth')(ResetPasswordContainer);
+export default withTranslation([ 'auth', 'elements' ])(ResetPasswordContainer);

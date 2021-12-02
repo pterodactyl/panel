@@ -12,7 +12,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
@@ -39,7 +39,7 @@ const ForgotPasswordContainer = ({ t }: WithTranslation) => {
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: t('error'), message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('elements:error'), message: httpErrorToHuman(error) });
             });
 
             return;
@@ -48,11 +48,11 @@ const ForgotPasswordContainer = ({ t }: WithTranslation) => {
         requestPasswordResetEmail(email, token)
             .then(response => {
                 resetForm();
-                addFlash({ type: 'success', title: t('success'), message: response });
+                addFlash({ type: 'success', title: t('elements:success'), message: response });
             })
             .catch(error => {
                 console.error(error);
-                addFlash({ type: 'error', title: t('error'), message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('elements:error'), message: httpErrorToHuman(error) });
             })
             .then(() => {
                 setToken('');
@@ -67,19 +67,19 @@ const ForgotPasswordContainer = ({ t }: WithTranslation) => {
             onSubmit={handleSubmission}
             initialValues={{ email: '' }}
             validationSchema={object().shape({
-                email: string().email(t('invalid_email'))
-                    .required(t('invalid_email')),
+                email: string().email(t('auth:mail.invalid'))
+                    .required(t('auth:mail.invalid')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer
-                    title={t('request_password_reset')}
+                    title={t('auth:password.reset.request')}
                     css={tw`w-full flex`}
                 >
                     <Field
                         light
-                        label={t('email')}
-                        description={t('email_description')}
+                        label={t('elements:email')}
+                        description={t('auth:password.reset.email_desc')}
                         name={'email'}
                         type={'email'}
                     />
@@ -90,7 +90,7 @@ const ForgotPasswordContainer = ({ t }: WithTranslation) => {
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            {t('send_email')}
+                            {t('auth:password.reset.email_send')}
                         </Button>
                     </div>
                     {recaptchaEnabled &&
@@ -113,7 +113,7 @@ const ForgotPasswordContainer = ({ t }: WithTranslation) => {
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                         >
-                            {t('return_to_login')}
+                            {t('auth:return_to_login')}
                         </Link>
                     </div>
                 </LoginFormContainer>
@@ -122,4 +122,4 @@ const ForgotPasswordContainer = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('auth')(ForgotPasswordContainer);
+export default withTranslation([ 'auth', 'elements' ])(ForgotPasswordContainer);

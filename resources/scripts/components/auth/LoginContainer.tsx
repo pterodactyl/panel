@@ -10,7 +10,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import { useHistory } from 'react-router';
 
 interface Values {
@@ -72,16 +72,16 @@ const LoginContainer = ({ t }: WithTranslation) => {
             onSubmit={onSubmit}
             initialValues={{ username: '', password: '' }}
             validationSchema={object().shape({
-                username: string().required(t('username_required')),
-                password: string().required(t('password_required')),
+                username: string().required(t('auth:login.username_required')),
+                password: string().required(t('auth:password.required')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={t('login_title')} css={tw`w-full flex`}>
+                <LoginFormContainer title={t('auth:login.title')} css={tw`w-full flex`}>
                     <Field
                         light
                         type={'text'}
-                        label={t('username')}
+                        label={t('auth:login.username')}
                         name={'username'}
                         disabled={isSubmitting}
                     />
@@ -89,14 +89,14 @@ const LoginContainer = ({ t }: WithTranslation) => {
                         <Field
                             light
                             type={'password'}
-                            label={t('password')}
+                            label={t('elements:password')}
                             name={'password'}
                             disabled={isSubmitting}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
-                            {t('login_button')}
+                            {t('auth:login.login')}
                         </Button>
                     </div>
                     {recaptchaEnabled &&
@@ -119,7 +119,7 @@ const LoginContainer = ({ t }: WithTranslation) => {
                             to={'/auth/password'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            {t('forgot_password')}
+                            {t('auth:login.forgot_password')}
                         </Link>
                     </div>
                 </LoginFormContainer>
@@ -128,4 +128,4 @@ const LoginContainer = ({ t }: WithTranslation) => {
     );
 };
 
-export default withTranslation('auth')(LoginContainer);
+export default withTranslation([ 'auth', 'elements' ])(LoginContainer);

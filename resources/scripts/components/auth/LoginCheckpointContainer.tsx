@@ -10,7 +10,7 @@ import { FlashStore } from '@/state/flashes';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import { WithTranslation, withTranslation } from 'react-i18next';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface Values {
     code: string;
@@ -28,16 +28,16 @@ const LoginCheckpointContainer = ({ t }: WithTranslation) => {
     const [ isMissingDevice, setIsMissingDevice ] = useState(false);
 
     return (
-        <LoginFormContainer title={t('2fa_login_title')} css={tw`w-full flex`}>
+        <LoginFormContainer title={t('auth:2fa.login_title')} css={tw`w-full flex`}>
             <div css={tw`mt-6`}>
                 <Field
                     light
                     name={isMissingDevice ? 'recoveryCode' : 'code'}
-                    title={isMissingDevice ? t('recovery_code') : t('authentication_code')}
+                    title={isMissingDevice ? t('auth:2fa.recovery_code') : t('auth:2fa.authentication_code')}
                     description={
                         isMissingDevice
-                            ? t('enter_recovery_code')
-                            : t('enter_2fa_code')
+                            ? t('auth:2fa.enter_recovery_code')
+                            : t('auth:2fa.enter_authentication_code')
                     }
                     type={'text'}
                     autoFocus
@@ -50,7 +50,7 @@ const LoginCheckpointContainer = ({ t }: WithTranslation) => {
                     disabled={isSubmitting}
                     isLoading={isSubmitting}
                 >
-                    {t('continue')}
+                    {t('elements:continue')}
                 </Button>
             </div>
             <div css={tw`mt-6 text-center`}>
@@ -62,7 +62,7 @@ const LoginCheckpointContainer = ({ t }: WithTranslation) => {
                     }}
                     css={tw`cursor-pointer text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                 >
-                    {!isMissingDevice ? t('2fa_lost_device') : t('2fa_have_device')}
+                    {!isMissingDevice ? t('auth:2fa.lost_device') : t('auth:2fa.have_device')}
                 </span>
             </div>
             <div css={tw`mt-6 text-center`}>
@@ -70,7 +70,7 @@ const LoginCheckpointContainer = ({ t }: WithTranslation) => {
                     to={'/auth/login'}
                     css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                 >
-                    {t('return_to_login')}
+                    {t('auth:return_to_login')}
                 </Link>
             </div>
         </LoginFormContainer>
@@ -102,7 +102,7 @@ const EnhancedForm = withFormik<Props, Values>({
     }),
 })(LoginCheckpointContainer);
 
-export default withTranslation('auth')(({ history, location, ...props }: OwnProps & WithTranslation) => {
+export default withTranslation([ 'auth', 'elements' ])(({ history, location, ...props }: OwnProps & WithTranslation) => {
     const { clearAndAddHttpError } = useFlash();
 
     if (!location.state?.token) {
