@@ -11,7 +11,5 @@
   "error": "Error",
   "cancel": "Cancel",
   "error_long": "An error was encountered by the application while rendering this view. Try refreshing the page.",
-  "copied_on_click": "Copied {{text}} to clipboard.",
-  "settings": "Settings",
-  "api_credentials": "API Credentials"
+  "copied_on_click": "Copied {{text}} to clipboard."
 }

@@ -11,7 +11,5 @@
   "error": "TEError",
   "cancel": "TECancel",
   "error_long": "TEAn error was encountered by the application while rendering this view. Try refreshing the page.",
-  "copied_on_click": "TECopied {{text}} to clipboard.",
-  "settings": "TESettings",
-  "api_credentials": "TEAPI Credentials"
+  "copied_on_click": "TECopied {{text}} to clipboard."
 }
