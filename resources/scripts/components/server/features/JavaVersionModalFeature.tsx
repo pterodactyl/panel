@@ -10,16 +10,16 @@ import { SocketEvent, SocketRequest } from '@/components/server/events';
 import Select from '@/components/elements/Select';
 
 const dockerImageList = [
-    { name: 'Java 8', image: 'ghcr.io/pterodactyl/yolks:java_8' },
-    { name: 'Java 11', image: 'ghcr.io/pterodactyl/yolks:java_11' },
-    { name: 'Java 16', image: 'ghcr.io/pterodactyl/yolks:java_16' },
     { name: 'Java 17', image: 'ghcr.io/pterodactyl/yolks:java_17' },
+    { name: 'Java 16', image: 'ghcr.io/pterodactyl/yolks:java_16' },
+    { name: 'Java 11', image: 'ghcr.io/pterodactyl/yolks:java_11' },
+    { name: 'Java 8', image: 'ghcr.io/pterodactyl/yolks:java_8' },
 ];
 
 const JavaVersionModalFeature = () => {
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
-    const [ selectedVersion, setSelectedVersion ] = useState('ghcr.io/pterodactyl/yolks:java_16');
+    const [ selectedVersion, setSelectedVersion ] = useState('ghcr.io/pterodactyl/yolks:java_17');
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const status = ServerContext.useStoreState(state => state.status.value);
