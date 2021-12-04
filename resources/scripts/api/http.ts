@@ -7,8 +7,19 @@ const http: AxiosInstance = axios.create({
         'X-Requested-With': 'XMLHttpRequest',
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-CSRF-Token': (window as any).X_CSRF_TOKEN as string || '',
     },
+});
+
+http.interceptors.request.use(req => {
+    const cookies = document.cookie.split(';').reduce((obj, val) => {
+        const [ key, value ] = val.trim().split('=').map(decodeURIComponent);
+
+        return { ...obj, [key]: value };
+    }, {} as Record<string, string>);
+
+    req.headers['X-XSRF-TOKEN'] = cookies['XSRF-TOKEN'] || 'nil';
+
+    return req;
 });
 
 http.interceptors.request.use(req => {
