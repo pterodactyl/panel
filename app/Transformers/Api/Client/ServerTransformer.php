@@ -55,6 +55,8 @@ class ServerTransformer extends BaseClientTransformer
                 'disk' => $server->disk,
                 'io' => $server->io,
                 'cpu' => $server->cpu,
+                'threads' => $server->threads,
+                'oom_disabled' => $server->oom_disabled,
             ],
             'invocation' => $service->handle($server, !$this->getUser()->can(Permission::ACTION_STARTUP_READ, $server)),
             'docker_image' => $server->image,

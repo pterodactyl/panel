@@ -34,7 +34,7 @@ x-common:
 #
 services:
   database:
-    image: library/mysql:8.0
+    image: mariadb:10.5
     restart: always
     command: --default-authentication-plugin=mysql_native_password
     volumes:
@@ -57,7 +57,7 @@ services:
       - cache
     volumes:
       - "/srv/pterodactyl/var/:/app/var/"
-      - "/srv/pterodactyl/nginx/:/etc/nginx/conf.d/"
+      - "/srv/pterodactyl/nginx/:/etc/nginx/http.d/"
       - "/srv/pterodactyl/certs/:/etc/letsencrypt/"
       - "/srv/pterodactyl/logs/:/app/storage/logs"
     environment:

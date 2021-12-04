@@ -10,15 +10,16 @@ import { SocketEvent, SocketRequest } from '@/components/server/events';
 import Select from '@/components/elements/Select';
 
 const dockerImageList = [
-    { name: 'Java 8', image: 'ghcr.io/pterodactyl/yolks:java_8' },
-    { name: 'Java 11', image: 'ghcr.io/pterodactyl/yolks:java_11' },
+    { name: 'Java 17', image: 'ghcr.io/pterodactyl/yolks:java_17' },
     { name: 'Java 16', image: 'ghcr.io/pterodactyl/yolks:java_16' },
+    { name: 'Java 11', image: 'ghcr.io/pterodactyl/yolks:java_11' },
+    { name: 'Java 8', image: 'ghcr.io/pterodactyl/yolks:java_8' },
 ];
 
 const JavaVersionModalFeature = () => {
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
-    const [ selectedVersion, setSelectedVersion ] = useState('ghcr.io/pterodactyl/yolks:java_16');
+    const [ selectedVersion, setSelectedVersion ] = useState('ghcr.io/pterodactyl/yolks:java_17');
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -30,6 +31,7 @@ const JavaVersionModalFeature = () => {
 
         const errors = [
             'minecraft 1.17 requires running the server with java 16 or above',
+            'minecraft 1.18 requires running the server with java 17 or above',
             'java.lang.unsupportedclassversionerror',
             'unsupported major.minor version',
             'has been compiled by a more recent version of the java runtime',

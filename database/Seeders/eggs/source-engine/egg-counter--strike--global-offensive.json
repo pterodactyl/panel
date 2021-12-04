@@ -8,7 +8,9 @@
     "name": "Counter-Strike: Global Offensive",
     "author": "support@pterodactyl.io",
     "description": "Counter-Strike: Global Offensive is a multiplayer first-person shooter video game developed by Hidden Path Entertainment and Valve Corporation.",
-    "features": null,
+    "features": [
+        "gsl_token"
+    ],
     "images": [
         "ghcr.io\/pterodactyl\/games:source"
     ],
