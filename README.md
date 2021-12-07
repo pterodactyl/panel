@@ -37,6 +37,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**Aussie Server Hosts**](https://aussieserverhosts.com/) | No frills Australian Owned and operated High Performance Server hosting for some of the most demanding games serving Australia and New Zealand. |
 | [**VibeGAMES**](https://vibegames.net/) | VibeGAMES is a game server provider that specializes in DDOS protection for the games we offer. We have multiple locations in the US, Brazil, France, Germany, Singapore, Australia and South Africa.|
 | [**RocketNode**](https://rocketnode.net) | RocketNode is a VPS and Game Server provider that offers the best performing VPS and Game hosting Solutions at affordable prices! |
+| [**HostEZ**](https://hostez.io) | Providing North America Valheim, Minecraft and other popular games with low latency, high uptime and maximum availability. EZ! |
 
 ## Documentation
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
