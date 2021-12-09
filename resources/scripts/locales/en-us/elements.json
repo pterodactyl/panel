@@ -13,5 +13,7 @@
   "password": "Password",
   "continue": "Continue",
   "error_long": "An error was encountered by the application while rendering this view. Try refreshing the page.",
-  "copied_on_click": "Copied {{text}} to clipboard."
+  "copied_on_click": "Copied {{text}} to clipboard.",
+  "settings": "Settings",
+  "api_credentials": "API Credentials"
 }

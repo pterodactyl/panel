@@ -7,6 +7,7 @@ import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
+import { useTranslation } from 'react-i18next';
 
 export default ({ location }: RouteComponentProps) => (
     <>
@@ -14,8 +15,8 @@ export default ({ location }: RouteComponentProps) => (
         {location.pathname.startsWith('/account') &&
         <SubNavigation>
             <div>
-                <NavLink to={'/account'} exact>Settings</NavLink>
-                <NavLink to={'/account/api'}>API Credentials</NavLink>
+                <NavLink to={'/account'} exact>{useTranslation('elements').t('settings')}</NavLink>
+                <NavLink to={'/account/api'}>{useTranslation('elements').t('api_credentials')}</NavLink>
             </div>
         </SubNavigation>
         }
