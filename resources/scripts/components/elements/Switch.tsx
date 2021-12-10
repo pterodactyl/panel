@@ -59,7 +59,7 @@ const Switch = ({ name, label, description, defaultChecked, readOnly, onChange, 
                     type={'checkbox'}
                     onChange={e => onChange && onChange(e)}
                     defaultChecked={defaultChecked}
-                    readOnly={readOnly}
+                    disabled={readOnly}
                 />
                 }
                 <Label htmlFor={uuid}/>
