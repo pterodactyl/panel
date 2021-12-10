@@ -78,19 +78,25 @@ const VariableBox = ({ variable }: Props) => {
                     <>
                         {selectValues.length > 0 ?
                             <>
-                                <Select
-                                    onChange={e => {
-                                        if (canEdit && variable.isEditable) {
-                                            setVariableValue(e.target.value);
-                                        }
-                                    }}
-                                    name={variable.envVariable}
-                                    defaultValue={variable.serverValue}
-                                >
-                                    {selectValues.map(selectValue => (
-                                        <option key={selectValue.replace('in:', '')} value={selectValue.replace('in:', '')}>{selectValue.replace('in:', '')}</option>
-                                    ))}
-                                </Select>
+                                { canEdit && variable.isEditable ?
+                                    <Select
+                                        onChange={e => setVariableValue(e.target.value)}
+                                        name={variable.envVariable}
+                                        defaultValue={variable.serverValue}
+                                    >
+                                        {selectValues.map(selectValue => (
+                                            <option key={selectValue.replace('in:', '')} value={selectValue.replace('in:', '')}>{selectValue.replace('in:', '')}</option>
+                                        ))}
+                                    </Select>
+                                    :
+                                    <Input
+                                        readOnly
+                                        name={variable.envVariable}
+                                        defaultValue={variable.serverValue}
+                                        placeholder={variable.defaultValue}
+                                    />
+                                }
+
                             </>
                             :
                             <>
