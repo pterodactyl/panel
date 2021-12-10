@@ -78,24 +78,16 @@ const VariableBox = ({ variable }: Props) => {
                     <>
                         {selectValues.length > 0 ?
                             <>
-                                { canEdit && variable.isEditable ?
-                                    <Select
-                                        onChange={e => setVariableValue(e.target.value)}
-                                        name={variable.envVariable}
-                                        defaultValue={variable.serverValue}
-                                    >
-                                        {selectValues.map(selectValue => (
-                                            <option key={selectValue.replace('in:', '')} value={selectValue.replace('in:', '')}>{selectValue.replace('in:', '')}</option>
-                                        ))}
-                                    </Select>
-                                    :
-                                    <Input
-                                        readOnly
-                                        name={variable.envVariable}
-                                        defaultValue={variable.serverValue}
-                                        placeholder={variable.defaultValue}
-                                    />
-                                }
+                                <Select
+                                    onChange={e => setVariableValue(e.target.value)}
+                                    name={variable.envVariable}
+                                    defaultValue={variable.serverValue}
+                                    disabled={!canEdit || !variable.isEditable}
+                                >
+                                    {selectValues.map(selectValue => (
+                                        <option key={selectValue.replace('in:', '')} value={selectValue.replace('in:', '')}>{selectValue.replace('in:', '')}</option>
+                                    ))}
+                                </Select>
 
                             </>
                             :
