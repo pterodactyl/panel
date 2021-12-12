@@ -14,8 +14,7 @@ interface Stats {
     cpu: number;
     disk: number;
     uptime: number;
-    networkrx: number;
-    networktx: number;
+    networkDataRate: number;
 }
 
 function statusToColor (status: string | null, installing: boolean): TwStyle {
@@ -33,8 +32,44 @@ function statusToColor (status: string | null, installing: boolean): TwStyle {
     }
 }
 
+// Store old values to compare to new values for network speed.
+let oldBytesReceived = 0;
+let oldBytesSent = 0;
+
+function setOldNetworkValues (bytesReceived: number, bytesSent: number): void {
+    oldBytesReceived = bytesReceived;
+    oldBytesSent = bytesSent;
+}
+
+// Convert bytes to bits per second (bps) by comparing to old values.
+function bytesToBps (bytesReceived: number, bytesSent: number): number {
+    const bpsReceived = (bytesReceived - oldBytesReceived) * 8;
+    const bpsSent = (bytesSent - oldBytesSent) * 8;
+
+    setOldNetworkValues(bytesReceived, bytesSent);
+
+    return bpsReceived + bpsSent;
+}
+
+// Convert bits per second (bps) to human readable format.
+function bpsToHuman (bps: number): string {
+    if (bps < 1000) {
+        return `${bps} bps`;
+    }
+
+    if (bps < 1000000) {
+        return `${(bps / 1000).toFixed(2)} kbps`;
+    }
+
+    if (bps < 1000000000) {
+        return `${(bps / 1000000).toFixed(2)} mbps`;
+    }
+
+    return `${(bps / 1000000000).toFixed(2)} gbps`;
+}
+
 const ServerDetailsBlock = () => {
-    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, networkrx: 0, networktx: 0 });
+    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, networkDataRate: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
@@ -53,8 +88,7 @@ const ServerDetailsBlock = () => {
             cpu: stats.cpu_absolute,
             disk: stats.disk_bytes,
             uptime: stats.uptime || 0,
-            networkrx: stats.network.rx_bytes,
-            networktx: stats.network.tx_bytes,
+            networkDataRate: bytesToBps(stats.network.rx_bytes, stats.network.tx_bytes)
         });
     };
 
@@ -120,7 +154,7 @@ const ServerDetailsBlock = () => {
                 <span css={tw`text-neutral-500`}> / {diskLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faNetworkWired} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.networkrx)} RX / {bytesToHuman(stats.networktx)} TX
+                <FontAwesomeIcon icon={faNetworkWired} fixedWidth css={tw`mr-1`}/>&nbsp;{bpsToHuman(stats.networkDataRate)}
             </p>
         </TitledGreyBox>
     );
