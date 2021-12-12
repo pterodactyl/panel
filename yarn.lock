@@ -8040,7 +8040,7 @@ xterm-addon-web-links@^0.4.0:
   resolved "https://registry.yarnpkg.com/xterm-addon-web-links/-/xterm-addon-web-links-0.4.0.tgz#265cbf8221b9b315d0a748e1323bee331cd5da03"
   integrity sha512-xv8GeiINmx0zENO9hf5k+5bnkaE8mRzF+OBAr9WeFq2eLaQSudioQSiT34M1ofKbzcdjSsKiZm19Rw3i4eXamg==
 
-xterm@^4.12.0:
+xterm@^4.15.0:
   version "4.15.0"
   resolved "https://registry.yarnpkg.com/xterm/-/xterm-4.15.0.tgz#e52038507eba7e0d36d47f81e29fe548c82b9561"
   integrity sha512-Ik1GoSq1yqKZQ2LF37RPS01kX9t4TP8gpamUYblD09yvWX5mEYuMK4CcqH6+plgiNEZduhTz/UrcaWs97gOlOw==
