@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tw, { TwStyle } from 'twin.macro';
 import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer, faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
+import { bytesToHuman, megabytesToHuman, formatIp, bytesToBps, bpsToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
@@ -32,42 +32,6 @@ function statusToColor (status: string | null, installing: boolean): TwStyle {
     }
 }
 
-// Store old values to compare to new values for network speed.
-let oldBytesReceived = 0;
-let oldBytesSent = 0;
-
-function setOldNetworkValues (bytesReceived: number, bytesSent: number): void {
-    oldBytesReceived = bytesReceived;
-    oldBytesSent = bytesSent;
-}
-
-// Convert bytes to bits per second (bps) by comparing to old values.
-function bytesToBps (bytesReceived: number, bytesSent: number): number {
-    const bpsReceived = (bytesReceived - oldBytesReceived) * 8;
-    const bpsSent = (bytesSent - oldBytesSent) * 8;
-
-    setOldNetworkValues(bytesReceived, bytesSent);
-
-    return bpsReceived + bpsSent;
-}
-
-// Convert bits per second (bps) to human readable format.
-function bpsToHuman (bps: number): string {
-    if (bps < 1000) {
-        return `${bps} bps`;
-    }
-
-    if (bps < 1000000) {
-        return `${(bps / 1000).toFixed(2)} kbps`;
-    }
-
-    if (bps < 1000000000) {
-        return `${(bps / 1000000).toFixed(2)} mbps`;
-    }
-
-    return `${(bps / 1000000000).toFixed(2)} gbps`;
-}
-
 const ServerDetailsBlock = () => {
     const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, networkDataRate: 0 });
 
@@ -88,7 +52,7 @@ const ServerDetailsBlock = () => {
             cpu: stats.cpu_absolute,
             disk: stats.disk_bytes,
             uptime: stats.uptime || 0,
-            networkDataRate: bytesToBps(stats.network.rx_bytes, stats.network.tx_bytes)
+            networkDataRate: bytesToBps(stats.network.rx_bytes, stats.network.tx_bytes, false),
         });
     };
 

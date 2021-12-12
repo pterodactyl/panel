@@ -67,3 +67,49 @@ export function hashToPath (hash: string): string {
 export function formatIp (ip: string): string {
     return /([a-f0-9:]+:+)+[a-f0-9]+/.test(ip) ? `[${ip}]` : ip;
 }
+
+/**
+ * Network helpers
+ */
+// Store old values to compare to new values for network speed.
+export let oldBytesReceived = 0;
+export let oldBytesSent = 0;
+export let oldBytesReceivedChart = 0;
+export let oldBytesSentChart = 0;
+
+export function setOldNetworkValues (bytesReceived: number, bytesSent: number, chart: boolean | null): void {
+    if (chart === true && chart !== null) {
+        oldBytesReceivedChart = bytesReceived;
+        oldBytesSentChart = bytesSent;
+    } else {
+        oldBytesReceived = bytesReceived;
+        oldBytesSent = bytesSent;
+    }
+}
+
+// Convert bytes to bits per second (bps) by comparing to old values.
+export function bytesToBps (bytesReceived: number, bytesSent: number, chart: boolean | null): number {
+    const bpsReceived = (bytesReceived - (chart === true ? oldBytesReceivedChart : oldBytesReceived)) * 8;
+    const bpsSent = (bytesSent - (chart === true ? oldBytesSentChart : oldBytesSent)) * 8;
+
+    setOldNetworkValues(bytesReceived, bytesSent, chart);
+
+    return bpsReceived + bpsSent;
+}
+
+// Convert bits per second (bps) to human-readable format.
+export function bpsToHuman (bps: number): string {
+    if (bps < 1000) {
+        return `${bps} bps`;
+    }
+
+    if (bps < 1000000) {
+        return `${(bps / 1000).toFixed(2)} kbps`;
+    }
+
+    if (bps < 1000000000) {
+        return `${(bps / 1000000).toFixed(2)} mbps`;
+    }
+
+    return `${(bps / 1000000000).toFixed(2)} gbps`;
+}
