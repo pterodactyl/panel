@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import tw, { TwStyle } from 'twin.macro';
-import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
+import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer, faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -14,6 +14,8 @@ interface Stats {
     cpu: number;
     disk: number;
     uptime: number;
+    networkrx: number;
+    networktx: number;
 }
 
 function statusToColor (status: string | null, installing: boolean): TwStyle {
@@ -32,7 +34,7 @@ function statusToColor (status: string | null, installing: boolean): TwStyle {
 }
 
 const ServerDetailsBlock = () => {
-    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
+    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, networkrx: 0, networktx: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
@@ -51,6 +53,8 @@ const ServerDetailsBlock = () => {
             cpu: stats.cpu_absolute,
             disk: stats.disk_bytes,
             uptime: stats.uptime || 0,
+            networkrx: stats.network.rx_bytes,
+            networktx: stats.network.tx_bytes,
         });
     };
 
@@ -114,6 +118,9 @@ const ServerDetailsBlock = () => {
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.disk)}
                 <span css={tw`text-neutral-500`}> / {diskLimit}</span>
+            </p>
+            <p css={tw`text-xs mt-2`}>
+                <FontAwesomeIcon icon={faNetworkWired} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.networkrx)} RX / {bytesToHuman(stats.networktx)} TX
             </p>
         </TitledGreyBox>
     );
