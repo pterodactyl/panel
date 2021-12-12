@@ -10,15 +10,15 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: '16'
 
       - name: Create release branch and bump version
         env:
           REF: ${{ github.ref }}
         run: |
           BRANCH=release/${REF:10}
-          git config --local user.email "ci@pterodactyl.io"
-          git config --local user.name "Pterodactyl CI"
+          git config --local user.email "ci@jexactyl.xyz"
+          git config --local user.name "Jexactyl CI"
           git checkout -b $BRANCH
           git push -u origin $BRANCH
           sed -i "s/    'version' => 'canary',/    'version' => '${REF:11}',/" config/app.php
