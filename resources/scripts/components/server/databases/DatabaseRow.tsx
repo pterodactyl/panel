@@ -76,7 +76,7 @@ export default ({ database, className }: Props) => {
                             <FlashMessageRender byKey={'database:delete'} css={tw`mb-6`}/>
                             <h2 css={tw`text-2xl mb-6`}>Confirm database deletion</h2>
                             <p css={tw`text-sm`}>
-                                Deleting a database is a permanent action, it cannot be undone. This will permanetly
+                                Deleting a database is a permanent action, it cannot be undone. This will permanently
                                 delete the <strong>{database.name}</strong> database and remove all associated data.
                             </p>
                             <Form css={tw`m-0 mt-6`}>
