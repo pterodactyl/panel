@@ -12,7 +12,7 @@ return [
     |
     */
     'lockout' => [
-        'time' => 2,
+        'time' => 5,
         'attempts' => 3,
     ],
 
@@ -108,7 +108,7 @@ return [
         'users' => [
             'provider' => 'users',
             'table' => 'password_resets',
-            'expire' => 60,
+            'expire' => 10,
         ],
     ],
 ];
