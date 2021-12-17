@@ -30,7 +30,6 @@ const LoginCheckpointContainer = () => {
         <LoginFormContainer title={'Device Checkpoint'} css={tw`w-full flex`}>
             <div css={tw`mt-6`}>
                 <Field
-                    light
                     name={isMissingDevice ? 'recoveryCode' : 'code'}
                     title={isMissingDevice ? 'Recovery Code' : 'Authentication Code'}
                     description={

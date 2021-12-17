@@ -76,7 +76,6 @@ export default () => {
                     css={tw`w-full flex`}
                 >
                     <Field
-                        light
                         label={'Email'}
                         description={'Enter your account email address to receive instructions on resetting your password.'}
                         name={'email'}

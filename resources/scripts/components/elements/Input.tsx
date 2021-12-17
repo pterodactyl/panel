@@ -11,12 +11,12 @@ const light = css<Props>`
     &:focus { ${tw`border-primary-400`} }
         
     &:disabled {
-        ${tw`bg-neutral-100 border-neutral-200`};
+        ${tw`bg-neutral-900 border-neutral-200`};
     }
 `;
 
 const checkboxStyle = css<Props>`
-    ${tw`bg-neutral-500 cursor-pointer appearance-none inline-block align-middle select-none flex-shrink-0 w-4 h-4 text-primary-400 border border-neutral-300 rounded-sm`};
+    ${tw`bg-neutral-900 cursor-pointer appearance-none inline-block align-middle select-none flex-shrink-0 w-4 h-4 text-primary-400 border border-neutral-300 rounded-sm`};
     color-adjust: exact;
     background-origin: border-box;
     transition: all 75ms linear, box-shadow 25ms linear;
@@ -39,7 +39,7 @@ const inputStyle = css<Props>`
     resize: none;
     ${tw`appearance-none outline-none w-full min-w-0`};
     ${tw`p-3 border-2 rounded text-sm transition-all duration-150`};
-    ${tw`bg-neutral-600 border-neutral-500 hover:border-neutral-400 text-neutral-200 shadow-none focus:ring-0`};
+    ${tw`bg-neutral-900 border-neutral-500 hover:border-neutral-400 text-neutral-200 shadow-none focus:ring-0`};
     
     & + .input-help {
         ${tw`mt-1 text-xs`};

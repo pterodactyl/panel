@@ -17,7 +17,7 @@ import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 const theme = {
-    background: th`colors.black`.toString(),
+    background: th`colors.neutral.900`.toString(),
     cursor: 'transparent',
     black: th`colors.black`.toString(),
     red: '#E54B4B',
@@ -44,7 +44,7 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: 'Menlo, Monaco, Consolas, monospace',
-    rows: 30,
+    rows: Math.round((window.innerHeight - 250) / 14),
     theme: theme,
 };
 
@@ -52,7 +52,6 @@ const TerminalDiv = styled.div`
     &::-webkit-scrollbar {
         width: 8px;
     }
-
     &::-webkit-scrollbar-thumb {
         ${tw`bg-neutral-900`};
     }
@@ -203,29 +202,29 @@ export default () => {
 
     return (
         <div css={tw`text-xs font-mono relative`}>
-            <SpinnerOverlay visible={!connected} size={'large'} />
+            <SpinnerOverlay visible={!connected} size={'large'}/>
             <div
                 css={[
-                    tw`rounded-t p-2 bg-black w-full`,
-                    !canSendCommands && tw`rounded-b`,
+                    tw`rounded-t p-2 bg-neutral-900 w-full`,
+                    canSendCommands ? tw`border-b-2` : tw`rounded-b`,
                 ]}
                 style={{ minHeight: '16rem' }}
             >
-                <TerminalDiv id={'terminal'} ref={ref} />
+                <TerminalDiv id={'terminal'} ref={ref}/>
             </div>
             {canSendCommands &&
-                <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
-                    <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
-                    <div css={tw`w-full`}>
-                        <CommandInput
-                            type={'text'}
-                            placeholder={'Type a command...'}
-                            aria-label={'Console command input.'}
-                            disabled={!instance || !connected}
-                            onKeyDown={handleCommandKeyDown}
-                        />
-                    </div>
+            <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
+                <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
+                <div css={tw`w-full`}>
+                    <CommandInput
+                        type={'text'}
+                        placeholder={'Type a command...'}
+                        aria-label={'Console command input.'}
+                        disabled={!instance || !connected}
+                        onKeyDown={handleCommandKeyDown}
+                    />
                 </div>
+            </div>
             }
         </div>
     );
