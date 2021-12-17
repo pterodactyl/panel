@@ -3,11 +3,9 @@
 ![Tests](https://img.shields.io/github/workflow/status/pterodactyl/panel/tests?label=Tests&style=for-the-badge)
 ![Maintained](https://img.shields.io/maintenance/yes/2021?style=for-the-badge)
 # Jexactyl
-Jexactyl is based off of Pterodactyl Panel, which is an open-source 
-game server management panel built with PHP 8 and React. 
-Designed with security in mind, Pterodactyl runs all game servers 
-in isolated Docker containers while exposing a beautiful 
-and intuitive UI to end users.
+Jexactyl is an all-in-one server management panel
+built with [Pterodactyl](https://pterodactyl.io) and includes
+better security, advanced features and blazing fast performance.
 
 Stop settling for less. Make game servers a first class citizen on your platform.
 
