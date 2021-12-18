@@ -55,10 +55,11 @@ const ServerConsole = () => {
                             </ContentContainer>
                         </div>
                         :
-                        <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
-                            <PowerControls/>
-                        </Can>
+                        false
                 }
+                <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
+                    <PowerControls/>
+                </Can>
                 <Spinner.Suspense>
                     <ServerDetailsBlock/>
                 </Spinner.Suspense>
