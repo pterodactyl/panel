@@ -15,7 +15,7 @@ import { usePermissions } from '@/plugins/usePermissions';
 import { join } from 'path';
 
 const Row = styled.div`
-    ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
+    ${tw`flex bg-neutral-900 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
 `;
 
 const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
