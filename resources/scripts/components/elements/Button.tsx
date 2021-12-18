@@ -14,7 +14,7 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
     ${tw`relative inline-block rounded p-2 uppercase tracking-wide text-sm transition-all duration-150 border`};
     
     ${props => ((!props.isSecondary && !props.color) || props.color === 'primary') && css<Props>`
-        ${props => !props.isSecondary && tw`bg-primary-900 border-primary-600 border text-primary-50`};
+        ${props => !props.isSecondary && tw`bg-neutral-900 border-primary-600 border text-primary-50`};
         
         &:hover:not(:disabled) {
             ${tw`bg-primary-600 border-primary-700`};
