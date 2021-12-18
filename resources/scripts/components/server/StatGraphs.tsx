@@ -131,7 +131,7 @@ export default () => {
 
     return (
         <div css={tw`flex flex-wrap mt-4`}>
-            <div css={tw`w-full sm:w-1/2`}>
+            <div css={tw`w-full`}>
                 <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`mr-0 sm:mr-4`}>
                     {status !== 'offline' ?
                         <canvas
@@ -148,7 +148,7 @@ export default () => {
                 </TitledGreyBox>
             </div>
             <br/>
-            <div css={tw`w-full sm:w-1/2 mt-4 sm:mt-0`}>
+            <div css={tw`w-full mt-4 sm:mt-0`}>
                 <TitledGreyBox title={'CPU usage'} icon={faMicrochip} css={tw`ml-0 sm:ml-4`}>
                     {status !== 'offline' ?
                         <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
