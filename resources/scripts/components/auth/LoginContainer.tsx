@@ -10,6 +10,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
+import Label from '@/components/elements/Label';
 
 interface Values {
     username: string;
@@ -93,18 +94,17 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
+                    <Label css={'text-white'}>Username or Email</Label>
                     <Field
-                        light
                         type={'text'}
-                        label={'Username or Email'}
                         name={'username'}
                         disabled={isSubmitting}
                     />
                     <div css={tw`mt-6`}>
+                        <Label css={'text-white'}>Password</Label>
                         <Field
                             light
                             type={'password'}
-                            label={'Password'}
                             name={'password'}
                             disabled={isSubmitting}
                         />
