@@ -98,7 +98,7 @@ export default () => {
                             : null
                         :
                         keys.map((key, index) => (
-                            <GreyRowBox key={index} css={[ tw`bg-neutral-600 flex items-center`, index > 0 && tw`mt-2` ]}>
+                            <GreyRowBox key={index} css={[ tw`bg-neutral-900 flex items-center`, index > 0 && tw`mt-2` ]}>
                                 <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                     <p css={tw`text-sm break-words`}>{key.name}</p>
