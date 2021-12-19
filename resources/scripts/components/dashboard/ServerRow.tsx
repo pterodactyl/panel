@@ -75,96 +75,98 @@ export default ({ server, className }: { server: Server; className?: string }) =
     }
 
     return (
-        <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
-            <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
-                <div css={tw`mr-4`}>
-                    <FontAwesomeIcon icon={faLayerGroup}/>
+        <div className="serverRow">
+            <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
+                <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
+                    <div css={tw`mr-4`}>
+                        <FontAwesomeIcon icon={faLayerGroup}/>
+                    </div>
+                    <div>
+                        <p css={tw`text-lg break-words`}>{server.name}</p>
+                        <p css={tw`text-sm text-neutral-400`}>
+                            {
+                                server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
+                                    <React.Fragment key={allocation.ip + allocation.port.toString()}>
+                                        {allocation.alias || allocation.ip}
+                                    </React.Fragment>
+                                ))
+                            }
+                        </p>
+                    </div>
                 </div>
-                <div>
-                    <p css={tw`text-lg break-words`}>{server.name}</p>
-                    <p css={tw`text-sm text-neutral-400`}>
-                        {
-                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
-                                <React.Fragment key={allocation.ip + allocation.port.toString()}>
-                                    {allocation.alias || allocation.ip}
-                                </React.Fragment>
-                            ))
-                        }
-                    </p>
-                </div>
-            </div>
-            <div css={tw`hidden col-span-10 lg:col-span-6 sm:flex items-baseline justify-center`}>
-                {(!stats || isSuspended) ?
-                    isSuspended ?
-                        <div css={tw`flex-1 text-center`}>
-                            <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
-                                {server.status === 'suspended' ? 'Suspended' : 'Connection Error'}
-                            </span>
-                        </div>
-                        :
-                        (server.isTransferring || server.status) ?
+                <div css={tw`hidden col-span-10 lg:col-span-6 sm:flex items-baseline justify-center`}>
+                    {(!stats || isSuspended) ?
+                        isSuspended ?
                             <div css={tw`flex-1 text-center`}>
-                                <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
-                                    {server.isTransferring ?
-                                        'Transferring'
-                                        :
-                                        server.status === 'installing' ? 'Installing' : (
-                                            server.status === 'restoring_backup' ?
-                                                'Restoring Backup'
-                                                :
-                                                'Unavailable'
-                                        )
-                                    }
+                                <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
+                                    {server.status === 'suspended' ? 'Suspended' : 'Connection Error'}
                                 </span>
                             </div>
                             :
-                            <Spinner size={'small'}/>
-                    :
-                    <React.Fragment>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faMicrochip} $alarm={alarms.cpu}/>
-                                <IconDescription $alarm={alarms.cpu}>
-                                    {stats.cpuUsagePercent.toFixed(0)}%
-                                </IconDescription>
+                            (server.isTransferring || server.status) ?
+                                <div css={tw`flex-1 text-center`}>
+                                    <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
+                                        {server.isTransferring ?
+                                            'Transferring'
+                                            :
+                                            server.status === 'installing' ? 'Installing' : (
+                                                server.status === 'restoring_backup' ?
+                                                    'Restoring Backup'
+                                                    :
+                                                    'Unavailable'
+                                            )
+                                        }
+                                    </span>
+                                </div>
+                                :
+                                <Spinner size={'small'}/>
+                        :
+                        <React.Fragment>
+                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                                <div css={tw`flex justify-center`}>
+                                    <Icon icon={faMicrochip} $alarm={alarms.cpu}/>
+                                    <IconDescription $alarm={alarms.cpu}>
+                                        {stats.cpuUsagePercent.toFixed(0)}%
+                                    </IconDescription>
+                                </div>
                             </div>
-                        </div>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faMemory} $alarm={alarms.memory}/>
-                                <IconDescription $alarm={alarms.memory}>
-                                    {bytesToHuman(stats.memoryUsageInBytes)}
-                                </IconDescription>
+                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                                <div css={tw`flex justify-center`}>
+                                    <Icon icon={faMemory} $alarm={alarms.memory}/>
+                                    <IconDescription $alarm={alarms.memory}>
+                                        {bytesToHuman(stats.memoryUsageInBytes)}
+                                    </IconDescription>
+                                </div>
                             </div>
-                        </div>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faHdd} $alarm={alarms.disk}/>
-                                <IconDescription $alarm={alarms.disk}>
-                                    {bytesToHuman(stats.diskUsageInBytes)}
-                                </IconDescription>
+                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                                <div css={tw`flex justify-center`}>
+                                    <Icon icon={faHdd} $alarm={alarms.disk}/>
+                                    <IconDescription $alarm={alarms.disk}>
+                                        {bytesToHuman(stats.diskUsageInBytes)}
+                                    </IconDescription>
+                                </div>
                             </div>
-                        </div>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faDownload} $alarm={alarms.disk}/>
-                                <IconDescription $alarm={alarms.disk}>
-                                    {bytesToHuman(stats.networkRxInBytes)}
-                                </IconDescription>
+                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                                <div css={tw`flex justify-center`}>
+                                    <Icon icon={faDownload} $alarm={alarms.disk}/>
+                                    <IconDescription $alarm={alarms.disk}>
+                                        {bytesToHuman(stats.networkRxInBytes)}
+                                    </IconDescription>
+                                </div>
                             </div>
-                        </div>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faUpload} $alarm={alarms.disk}/>
-                                <IconDescription $alarm={alarms.disk}>
-                                    {bytesToHuman(stats.networkTxInBytes)}
-                                </IconDescription>
+                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                                <div css={tw`flex justify-center`}>
+                                    <Icon icon={faUpload} $alarm={alarms.disk}/>
+                                    <IconDescription $alarm={alarms.disk}>
+                                        {bytesToHuman(stats.networkTxInBytes)}
+                                    </IconDescription>
+                                </div>
                             </div>
-                        </div>
-                    </React.Fragment>
-                }
-            </div>
-            <div className={'status-bar'}/>
-        </StatusIndicatorBox>
+                        </React.Fragment>
+                    }
+                </div>
+                <div className={'status-bar'}/>
+            </StatusIndicatorBox>
+        </div>
     );
 };

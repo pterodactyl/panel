@@ -5,6 +5,7 @@ import './i18n';
 import { setConfig } from 'react-hot-loader';
 
 import 'tailwindcss/dist/base.min.css';
+import './assets/css/jexactyl.css';
 
 // Prevents page reloads while making component changes which
 // also avoids triggering constant loading indicators all over
