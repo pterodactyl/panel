@@ -17,7 +17,6 @@
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
-        "asbiin/laravel-webauthn": "^1.1",
         "aws/aws-sdk-php": "^3.171",
         "doctrine/dbal": "^2.12",
         "fideloper/proxy": "^4.4",
