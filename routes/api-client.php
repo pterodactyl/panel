@@ -28,6 +28,11 @@ Route::group(['prefix' => '/account'], function () {
     Route::get('/api-keys', 'ApiKeyController@index');
     Route::post('/api-keys', 'ApiKeyController@store');
     Route::delete('/api-keys/{identifier}', 'ApiKeyController@delete');
+
+    Route::get('/webauthn', 'WebauthnController@index')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::get('/webauthn/register', 'WebauthnController@register')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::post('/webauthn/register', 'WebauthnController@create')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::delete('/webauthn/{id}', 'WebauthnController@deleteKey')->withoutMiddleware(RequireTwoFactorAuthentication::class);
 });
 
 /*

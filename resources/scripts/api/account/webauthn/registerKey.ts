@@ -1,5 +1,5 @@
 import http from '@/api/http';
-import { Key, rawDataToKey } from '@/api/account/webauthn/getWebauthn';
+import { WebauthnKey, rawDataToWebauthnKey } from '@/api/account/webauthn/getWebauthnKeys';
 
 export const base64Decode = (input: string): string => {
     input = input.replace(/-/g, '+').replace(/_/g, '/');
@@ -32,7 +32,7 @@ export const decodeCredentials = (credentials: PublicKeyCredentialDescriptor[]) 
     });
 };
 
-export default (name: string): Promise<Key> => {
+export default (name: string): Promise<WebauthnKey> => {
     return new Promise((resolve, reject) => {
         http.get('/api/client/account/webauthn/register').then((res) => {
             const publicKey = res.data.public_key;
@@ -67,7 +67,7 @@ export default (name: string): Promise<Key> => {
                         clientDataJSON: bufferEncode(response.clientDataJSON),
                     },
                 }),
-            }).then(({ data }) => resolve(rawDataToKey(data.attributes))).catch(reject);
+            }).then(({ data }) => resolve(rawDataToWebauthnKey(data.attributes))).catch(reject);
         }).catch(reject);
     });
 };
