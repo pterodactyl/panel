@@ -44,7 +44,6 @@ const LoginCheckpointContainer = () => {
             <div css={tw`flex flex-col items-center justify-center w-full md:h-full md:pt-4`}>
                 <div>
                     <Field
-                        light
                         name={isMissingDevice ? 'recoveryCode' : 'code'}
                         title={isMissingDevice ? 'Recovery Code' : 'Authentication Code'}
                         description={
