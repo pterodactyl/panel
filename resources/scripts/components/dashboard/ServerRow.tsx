@@ -1,6 +1,6 @@
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faDownload, faHdd, faLayerGroup, faMemory, faMicrochip, faUpload } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
@@ -67,11 +67,10 @@ export default ({ server, className }: { server: Server; className?: string }) =
         };
     }, [ isSuspended ]);
 
-    const alarms = { cpu: false, memory: false, disk: false };
+    const alarms = { cpu: false, memory: false };
     if (stats) {
         alarms.cpu = server.limits.cpu === 0 ? false : (stats.cpuUsagePercent >= (server.limits.cpu * 0.9));
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
-        alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
     return (
@@ -87,7 +86,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             {
                                 server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
                                     <React.Fragment key={allocation.ip + allocation.port.toString()}>
-                                        {allocation.alias || allocation.ip}
+                                        {allocation.ip}
                                     </React.Fragment>
                                 ))
                             }
@@ -135,30 +134,6 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                     <Icon icon={faMemory} $alarm={alarms.memory}/>
                                     <IconDescription $alarm={alarms.memory}>
                                         {bytesToHuman(stats.memoryUsageInBytes)}
-                                    </IconDescription>
-                                </div>
-                            </div>
-                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                                <div css={tw`flex justify-center`}>
-                                    <Icon icon={faHdd} $alarm={alarms.disk}/>
-                                    <IconDescription $alarm={alarms.disk}>
-                                        {bytesToHuman(stats.diskUsageInBytes)}
-                                    </IconDescription>
-                                </div>
-                            </div>
-                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                                <div css={tw`flex justify-center`}>
-                                    <Icon icon={faDownload} $alarm={alarms.disk}/>
-                                    <IconDescription $alarm={alarms.disk}>
-                                        {bytesToHuman(stats.networkRxInBytes)}
-                                    </IconDescription>
-                                </div>
-                            </div>
-                            <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                                <div css={tw`flex justify-center`}>
-                                    <Icon icon={faUpload} $alarm={alarms.disk}/>
-                                    <IconDescription $alarm={alarms.disk}>
-                                        {bytesToHuman(stats.networkTxInBytes)}
                                     </IconDescription>
                                 </div>
                             </div>
