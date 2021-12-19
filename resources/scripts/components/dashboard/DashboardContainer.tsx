@@ -52,9 +52,6 @@ export default () => {
         <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
             {rootAdmin &&
             <div css={tw`mb-2 flex justify-end items-center`}>
-                <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                    {showOnlyAdmin ? 'Showing others\' servers' : 'Showing your servers'}
-                </p>
                 <Switch
                     name={'show_all_servers'}
                     defaultChecked={showOnlyAdmin}
@@ -72,6 +69,7 @@ export default () => {
                                 <ServerRow
                                     key={server.uuid}
                                     server={server}
+                                    css={index > 0 ? tw`mt-2` : undefined}
                                 />
                             ))
                             :
