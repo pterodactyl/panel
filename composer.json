@@ -40,6 +40,7 @@
         "spatie/laravel-query-builder": "^3.3",
         "staudenmeir/belongs-to-through": "^2.11",
         "symfony/yaml": "^4.4",
+        "web-auth/webauthn-lib": "^3.3",
         "webmozart/assert": "^1.9"
     },
     "require-dev": {
