@@ -66,11 +66,10 @@ export default () => {
                     <Pagination data={servers} onPageSelect={setPage}>
                         {({ items }) => (
                             items.length > 0 ?
-                                items.map((server, index) => (
+                                items.map((server) => (
                                     <ServerRow
                                         key={server.uuid}
                                         server={server}
-                                        css={index > 0 ? tw`mt-2` : undefined}
                                     />
                                 ))
                                 :
