@@ -225,7 +225,10 @@ class User extends Model implements
         return $this->hasMany(RecoveryToken::class);
     }
 
-    public function webauthnKeys(): HasMany
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
+    public function webauthnKeys()
     {
         return $this->hasMany(WebauthnKey::class);
     }
