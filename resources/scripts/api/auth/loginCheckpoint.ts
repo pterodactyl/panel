@@ -9,8 +9,8 @@ export default (token: string, code: string, recoveryToken?: string): Promise<Lo
             recovery_token: (recoveryToken && recoveryToken.length > 0) ? recoveryToken : undefined,
         })
             .then(response => resolve({
-                complete: response.data.data.complete,
-                intended: response.data.data.intended || undefined,
+                complete: response.data.complete,
+                intended: response.data.intended || undefined,
             }))
             .catch(reject);
     });
