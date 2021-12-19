@@ -165,7 +165,7 @@ class User extends Model implements
     /**
      * Return the user model in a format that can be passed over to Vue templates.
      */
-    public function toVueObject(): array
+    public function toReactObject(): array
     {
         return (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
     }
