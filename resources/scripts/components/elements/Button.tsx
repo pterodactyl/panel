@@ -17,7 +17,7 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
         ${props => !props.isSecondary && tw`bg-neutral-900 border-neutral-600 border text-primary-50`};
         
         &:hover:not(:disabled) {
-            ${tw`bg-primary-600 border-primary-700`};
+            ${tw`bg-neutral-800 border-neutral-700`};
         }
     `};
     
