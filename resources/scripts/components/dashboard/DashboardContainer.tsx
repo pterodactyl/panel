@@ -72,7 +72,6 @@ export default () => {
                                 <ServerRow
                                     key={server.uuid}
                                     server={server}
-                                    css={index > 0 ? tw`mt-2` : undefined}
                                 />
                             ))
                             :
