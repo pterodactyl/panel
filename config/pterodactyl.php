@@ -122,7 +122,7 @@ return [
     | if panel is up to date.
     */
     'cdn' => [
-        'cache_time' => => env('PTERODACTYL_UPDATE_CHECKER_CACHE_TIME', 60),
+        'cache_time' => => env('PTERODACTYL_UPDATE_CACHE_TIME', 60),
         'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
     ],
 
