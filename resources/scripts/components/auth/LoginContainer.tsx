@@ -103,7 +103,6 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     <div css={tw`mt-6`}>
                         <Label css={'text-white'}>Password</Label>
                         <Field
-                            light
                             type={'password'}
                             name={'password'}
                             disabled={isSubmitting}
