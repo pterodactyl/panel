@@ -7,6 +7,7 @@ import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer
 import LoginKeyCheckpointContainer from '@/components/auth/LoginKeyCheckpointContainer';
 import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
 import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
+import RegisterContainer from '@/components/auth/RegisterContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 
 export default ({ location, history, match }: RouteComponentProps) => (
@@ -14,7 +15,7 @@ export default ({ location, history, match }: RouteComponentProps) => (
         <TransitionRouter>
             <Switch location={location}>
                 {settings.userRegistration.enabled === true &&
-                    <Route path={`${match.path}/register`}/>
+                    <Route path={`${match.path}/register`} component={RegisterContainer} exact/>
                 }
                 <Route path={`${match.path}/login`} component={LoginContainer} exact/>
                 <Route path={`${match.path}/login/checkpoint`} component={LoginCheckpointContainer}/>
