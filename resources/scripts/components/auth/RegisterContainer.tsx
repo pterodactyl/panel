@@ -82,7 +82,6 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                 <LoginFormContainer title={'Enter details to register'} css={tw`w-full flex`}>
                     <div css={tw`mt-6`}>
                         <Field
-                            light
                             type={'text'}
                             label={'Username'}
                             name={'username'}
@@ -92,7 +91,6 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                     <div css={tw`mt-6`}>
 
                         <Field
-                            light
                             type={'email'}
                             label={'Email Address'}
                             name={'email'}
@@ -101,7 +99,6 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
-                            light
                             type={'text'}
                             label={'First Name'}
                             name={'NameFirst'}
@@ -110,7 +107,6 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
-                            light
                             type={'text'}
                             label={'Last Name'}
                             name={'NameLast'}
