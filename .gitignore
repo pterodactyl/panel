@@ -38,3 +38,5 @@ resources/lang/locales.js
 resources/assets/pterodactyl/scripts/helpers/ziggy.js
 resources/assets/scripts/helpers/ziggy.js
 .phpunit.result.cache
+
+settings.json
