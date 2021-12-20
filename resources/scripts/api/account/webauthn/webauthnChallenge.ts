@@ -1,6 +1,6 @@
 import http from '@/api/http';
 import { LoginResponse } from '@/api/auth/login';
-import { base64Decode, bufferDecode, bufferEncode, decodeCredentials } from '@/api/account/webauthn/registerKey';
+import { base64Decode, bufferDecode, bufferEncode, decodeCredentials } from '@/api/account/webauthn/registerWebauthnKey';
 
 export default (token: string, publicKey: PublicKeyCredentialRequestOptions): Promise<LoginResponse> => {
     return new Promise((resolve, reject) => {
