@@ -1,7 +1,7 @@
 import React from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import TransitionRouter from '@/TransitionRouter';
-import NavigationBar from '@/components/NavigationBar';
+import SidePanel from '@/components/SidePanel';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
@@ -11,7 +11,7 @@ import SubNavigation from '@/components/elements/SubNavigation';
 
 export default ({ location }: RouteComponentProps) => (
     <>
-        <NavigationBar/>
+        <SidePanel/>
         {location.pathname.startsWith('/account') &&
         <SubNavigation>
             <div>
