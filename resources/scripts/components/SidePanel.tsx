@@ -4,7 +4,7 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { NavLink, Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faLayerGroup, faSignOutAlt, faSitemap, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCogs, faKey, faLayerGroup, faSignOutAlt, faSitemap, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import styled from 'styled-components/macro';
 import http from '@/api/http';
@@ -56,6 +56,8 @@ export default (props: { children?: React.ReactNode }) => {
                 <SidePanelLink icon={faUserCircle} react link={'/account'}/>
                 <br />
                 <SidePanelLink icon={faSitemap} react link={'/account/api'}/>
+                <br />
+                <SidePanelLink icon={faKey} react link={'/account/keys/security'}/>
                 {rootAdmin &&
                     <>
                         <br />

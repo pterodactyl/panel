@@ -42,6 +42,7 @@ import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
+import tw from 'twin.macro';
 
 const ConflictStateRenderer = () => {
     const status = ServerContext.useStoreState(state => state.server.data?.status || null);
@@ -101,125 +102,129 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
 
     return (
         <React.Fragment key={'server-router'}>
-            <SidePanel/>
-            {(!uuid || !id) ?
-                error ?
-                    <ServerError message={error}/>
-                    :
-                    <Spinner size={'large'} centered/>
-                :
-                <>
-                    <CSSTransition timeout={150} classNames={'fade'} appear in>
-                        <SubNavigation>
-                            <div>
-                                <NavLink to={`${match.url}`} exact>
-                                    <FontAwesomeIcon icon={faTerminal}/> Console
-                                </NavLink>
-                                <Can action={'file.*'}>
-                                    <NavLink to={`${match.url}/files`}>
-                                        <FontAwesomeIcon icon={faFolder}/> File Manager
-                                    </NavLink>
-                                </Can>
-                                <Can action={'database.*'}>
-                                    <NavLink to={`${match.url}/databases`}>
-                                        <FontAwesomeIcon icon={faDatabase}/> Databases
-                                    </NavLink>
-                                </Can>
-                                <Can action={'schedule.*'}>
-                                    <NavLink to={`${match.url}/schedules`}>
-                                        <FontAwesomeIcon icon={faClock}/> Schedules
-                                    </NavLink>
-                                </Can>
-                                <Can action={'user.*'}>
-                                    <NavLink to={`${match.url}/users`}>
-                                        <FontAwesomeIcon icon={faUser}/> Users
-                                    </NavLink>
-                                </Can>
-                                <Can action={'backup.*'}>
-                                    <NavLink to={`${match.url}/backups`}>
-                                        <FontAwesomeIcon icon={faArchive}/> Backups
-                                    </NavLink>
-                                </Can>
-                                <Can action={'allocation.*'}>
-                                    <NavLink to={`${match.url}/network`}>
-                                        <FontAwesomeIcon icon={faSitemap}/> Network
-                                    </NavLink>
-                                </Can>
-                                <Can action={'startup.*'}>
-                                    <NavLink to={`${match.url}/startup`}>
-                                        <FontAwesomeIcon icon={faPlay}/> Startup
-                                    </NavLink>
-                                </Can>
-                                <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
-                                    <NavLink to={`${match.url}/settings`}>
-                                        <FontAwesomeIcon icon={faCog}/> Settings
-                                    </NavLink>
-                                </Can>
-                                {rootAdmin &&
-                                <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
-                                    <FontAwesomeIcon icon={faExternalLinkAlt}/> Admin
-                                </a>
-                                }
-                            </div>
-                        </SubNavigation>
-                    </CSSTransition>
-                    <InstallListener/>
-                    <TransferListener/>
-                    <WebsocketHandler/>
-                    {(inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
-                        <ConflictStateRenderer/>
+            <div css={tw`flex flex-row`}>
+                <SidePanel />
+                <div css={tw`flex-shrink flex-grow pl-56`}>
+                    {(!uuid || !id) ?
+                        error ?
+                            <ServerError message={error}/>
+                            :
+                            <Spinner size={'large'} centered/>
                         :
-                        <ErrorBoundary>
-                            <TransitionRouter>
-                                <Switch location={location}>
-                                    <Route path={`${match.path}`} component={ServerConsole} exact/>
-                                    <Route path={`${match.path}/files`} exact>
-                                        <RequireServerPermission permissions={'file.*'}>
-                                            <FileManagerContainer/>
-                                        </RequireServerPermission>
-                                    </Route>
-                                    <Route path={`${match.path}/files/:action(edit|new)`} exact>
-                                        <Spinner.Suspense>
-                                            <FileEditContainer/>
-                                        </Spinner.Suspense>
-                                    </Route>
-                                    <Route path={`${match.path}/databases`} exact>
-                                        <RequireServerPermission permissions={'database.*'}>
-                                            <DatabasesContainer/>
-                                        </RequireServerPermission>
-                                    </Route>
-                                    <Route path={`${match.path}/schedules`} exact>
-                                        <RequireServerPermission permissions={'schedule.*'}>
-                                            <ScheduleContainer/>
-                                        </RequireServerPermission>
-                                    </Route>
-                                    <Route path={`${match.path}/schedules/:id`} exact>
-                                        <ScheduleEditContainer/>
-                                    </Route>
-                                    <Route path={`${match.path}/users`} exact>
-                                        <RequireServerPermission permissions={'user.*'}>
-                                            <UsersContainer/>
-                                        </RequireServerPermission>
-                                    </Route>
-                                    <Route path={`${match.path}/backups`} exact>
-                                        <RequireServerPermission permissions={'backup.*'}>
-                                            <BackupContainer/>
-                                        </RequireServerPermission>
-                                    </Route>
-                                    <Route path={`${match.path}/network`} exact>
-                                        <RequireServerPermission permissions={'allocation.*'}>
-                                            <NetworkContainer/>
-                                        </RequireServerPermission>
-                                    </Route>
-                                    <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
-                                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
-                                    <Route path={'*'} component={NotFound}/>
-                                </Switch>
-                            </TransitionRouter>
-                        </ErrorBoundary>
+                        <>
+                            <CSSTransition timeout={150} classNames={'fade'} appear in>
+                                <SubNavigation>
+                                    <div>
+                                        <NavLink to={`${match.url}`} exact>
+                                            <FontAwesomeIcon icon={faTerminal}/> Console
+                                        </NavLink>
+                                        <Can action={'file.*'}>
+                                            <NavLink to={`${match.url}/files`}>
+                                                <FontAwesomeIcon icon={faFolder}/> File Manager
+                                            </NavLink>
+                                        </Can>
+                                        <Can action={'database.*'}>
+                                            <NavLink to={`${match.url}/databases`}>
+                                                <FontAwesomeIcon icon={faDatabase}/> Databases
+                                            </NavLink>
+                                        </Can>
+                                        <Can action={'schedule.*'}>
+                                            <NavLink to={`${match.url}/schedules`}>
+                                                <FontAwesomeIcon icon={faClock}/> Schedules
+                                            </NavLink>
+                                        </Can>
+                                        <Can action={'user.*'}>
+                                            <NavLink to={`${match.url}/users`}>
+                                                <FontAwesomeIcon icon={faUser}/> Users
+                                            </NavLink>
+                                        </Can>
+                                        <Can action={'backup.*'}>
+                                            <NavLink to={`${match.url}/backups`}>
+                                                <FontAwesomeIcon icon={faArchive}/> Backups
+                                            </NavLink>
+                                        </Can>
+                                        <Can action={'allocation.*'}>
+                                            <NavLink to={`${match.url}/network`}>
+                                                <FontAwesomeIcon icon={faSitemap}/> Network
+                                            </NavLink>
+                                        </Can>
+                                        <Can action={'startup.*'}>
+                                            <NavLink to={`${match.url}/startup`}>
+                                                <FontAwesomeIcon icon={faPlay}/> Startup
+                                            </NavLink>
+                                        </Can>
+                                        <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
+                                            <NavLink to={`${match.url}/settings`}>
+                                                <FontAwesomeIcon icon={faCog}/> Settings
+                                            </NavLink>
+                                        </Can>
+                                        {rootAdmin &&
+                                        <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
+                                            <FontAwesomeIcon icon={faExternalLinkAlt}/> Admin
+                                        </a>
+                                        }
+                                    </div>
+                                </SubNavigation>
+                            </CSSTransition>
+                            <InstallListener/>
+                            <TransferListener/>
+                            <WebsocketHandler/>
+                            {(inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
+                                <ConflictStateRenderer/>
+                                :
+                                <ErrorBoundary>
+                                    <TransitionRouter>
+                                        <Switch location={location}>
+                                            <Route path={`${match.path}`} component={ServerConsole} exact/>
+                                            <Route path={`${match.path}/files`} exact>
+                                                <RequireServerPermission permissions={'file.*'}>
+                                                    <FileManagerContainer/>
+                                                </RequireServerPermission>
+                                            </Route>
+                                            <Route path={`${match.path}/files/:action(edit|new)`} exact>
+                                                <Spinner.Suspense>
+                                                    <FileEditContainer/>
+                                                </Spinner.Suspense>
+                                            </Route>
+                                            <Route path={`${match.path}/databases`} exact>
+                                                <RequireServerPermission permissions={'database.*'}>
+                                                    <DatabasesContainer/>
+                                                </RequireServerPermission>
+                                            </Route>
+                                            <Route path={`${match.path}/schedules`} exact>
+                                                <RequireServerPermission permissions={'schedule.*'}>
+                                                    <ScheduleContainer/>
+                                                </RequireServerPermission>
+                                            </Route>
+                                            <Route path={`${match.path}/schedules/:id`} exact>
+                                                <ScheduleEditContainer/>
+                                            </Route>
+                                            <Route path={`${match.path}/users`} exact>
+                                                <RequireServerPermission permissions={'user.*'}>
+                                                    <UsersContainer/>
+                                                </RequireServerPermission>
+                                            </Route>
+                                            <Route path={`${match.path}/backups`} exact>
+                                                <RequireServerPermission permissions={'backup.*'}>
+                                                    <BackupContainer/>
+                                                </RequireServerPermission>
+                                            </Route>
+                                            <Route path={`${match.path}/network`} exact>
+                                                <RequireServerPermission permissions={'allocation.*'}>
+                                                    <NetworkContainer/>
+                                                </RequireServerPermission>
+                                            </Route>
+                                            <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
+                                            <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                                            <Route path={'*'} component={NotFound}/>
+                                        </Switch>
+                                    </TransitionRouter>
+                                </ErrorBoundary>
+                            }
+                        </>
                     }
-                </>
-            }
+                </div>
+            </div>
         </React.Fragment>
     );
 };
