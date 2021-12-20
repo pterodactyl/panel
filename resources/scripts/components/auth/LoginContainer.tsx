@@ -8,6 +8,7 @@ import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import settings from '@/../../settings.json';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
 import Label from '@/components/elements/Label';
@@ -128,6 +129,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         }}
                     />
                     }
+                    {settings.userRegistration.enabled === true &&
                     <div css={tw`mt-6 text-center`}>
                         <Link
                             to={'/auth/register'}
@@ -136,6 +138,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             Register Account
                         </Link>
                     </div>
+                    }
                     <div css={tw`mt-6 text-center`}>
                         <Link
                             to={'/auth/password'}
