@@ -1,7 +1,7 @@
 import React from 'react';
 import { Route, RouteComponentProps, Switch } from 'react-router-dom';
 import TransitionRouter from '@/TransitionRouter';
-import settings from '@/settings.json';
+import settings from '@root/settings.json';
 import LoginContainer from '@/components/auth/LoginContainer';
 import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
 import LoginKeyCheckpointContainer from '@/components/auth/LoginKeyCheckpointContainer';
