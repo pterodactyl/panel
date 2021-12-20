@@ -12,7 +12,7 @@ import tw from 'twin.macro';
 export default ({ location }: RouteComponentProps) => (
     <div css={tw`flex flex-row`}>
         <SidePanel />
-        <div css={tw`flex-grow flex-shrink pl-56`}>
+        <div css={tw`flex-grow flex-shrink pl-40`}>
             <TransitionRouter>
                 <Switch location={location}>
                     <Route path={'/'} exact>
