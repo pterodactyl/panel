@@ -104,7 +104,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
         <React.Fragment key={'server-router'}>
             <div css={tw`flex flex-row`}>
                 <SidePanel />
-                <div css={tw`flex-shrink flex-grow pl-40`}>
+                <div css={tw`flex-shrink flex-grow pl-32`}>
                     {(!uuid || !id) ?
                         error ?
                             <ServerError message={error}/>
