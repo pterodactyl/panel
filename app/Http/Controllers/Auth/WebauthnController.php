@@ -3,15 +3,14 @@
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use Exception;
-use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Auth\AuthManager;
+use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use LaravelWebauthn\Facades\Webauthn;
 use Webauthn\PublicKeyCredentialRequestOptions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class WebauthnController extends AbstractLoginController
 {
@@ -19,11 +18,14 @@ class WebauthnController extends AbstractLoginController
 
     private CacheRepository $cache;
 
-    public function __construct(AuthManager $auth, ConfigRepository $config, CacheRepository $cache)
+    private ValidationFactory $validation;
+
+    public function __construct(CacheRepository $cache, ValidationFactory $validation)
     {
-        parent::__construct($auth, $config);
+        parent::__construct();
 
         $this->cache = $cache;
+        $this->validation = $validation;
     }
 
     /**
@@ -36,23 +38,32 @@ class WebauthnController extends AbstractLoginController
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
+
             return;
         }
 
-        $token = $request->input('confirmation_token');
+        $details = $request->session()->get('auth_confirmation_token');
+        if (!LoginCheckpointController::isValidSessionData($this->validation, $details)) {
+            $this->sendFailedLoginResponse($request, null, LoginCheckpointController::TOKEN_EXPIRED_MESSAGE);
+
+            return;
+        }
+
+        if (!hash_equals($request->input('confirmation_token') ?? '', $details['token_value'])) {
+            $this->sendFailedLoginResponse($request);
+
+            return;
+        }
+
         try {
             /** @var \Pterodactyl\Models\User $user */
-            $user = User::query()->findOrFail($this->cache->get($token, 0));
+            $user = User::query()->findOrFail($details['user_id']);
         } catch (ModelNotFoundException $exception) {
-            $this->incrementLoginAttempts($request);
+            $this->sendFailedLoginResponse($request, null, LoginCheckpointController::TOKEN_EXPIRED_MESSAGE);
 
-            $this->sendFailedLoginResponse(
-                $request,
-                null,
-                'The authentication token provided has expired, please refresh the page and try again.'
-            );
             return;
         }
+
         $this->auth->guard()->onceUsingId($user->id);
 
         try {
@@ -74,8 +85,6 @@ class WebauthnController extends AbstractLoginController
                     ],
                 ], JsonResponse::HTTP_I_AM_A_TEAPOT);
             }
-
-            $this->cache->delete($token);
 
             return $this->sendLoginResponse($user, $request);
         } catch (Exception $e) {

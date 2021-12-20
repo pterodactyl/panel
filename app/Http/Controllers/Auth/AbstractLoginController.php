@@ -62,7 +62,7 @@ abstract class AbstractLoginController extends Controller
             $this->getField($request->input('user')) => $request->input('user'),
         ]);
 
-        if ($request->route()->named('auth.login-checkpoint')) {
+        if ($request->route()->named('auth.checkpoint') || $request->route()->named('auth.checkpoint.key')) {
             throw new DisplayException($message ?? trans('auth.two_factor.checkpoint_failed'));
         }
 
@@ -91,9 +91,6 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Determine if the user is logging in using an email or username,.
-     *
-     * @param string|null $input
-     * @return string
      */
     protected function getField(string $input = null): string
     {
