@@ -23,9 +23,6 @@
       "@/*": [
         "./resources/scripts/*"
       ],
-      "@root/*": [
-        "./*"
-      ],
       "@feature/*": [
         "./resources/scripts/components/server/features/*"
       ]
