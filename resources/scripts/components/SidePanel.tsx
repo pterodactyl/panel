@@ -16,7 +16,7 @@ export function Category (props: { children: React.ReactNode }) {
         </div>);
 }
 
-export function SidePanelLink (props: { icon: IconProp, react?: boolean, link: string, exact?: boolean }) {
+export function SidePanelLink (props: { icon: IconProp, react?: boolean, link: string, exact?: boolean, title: string }) {
     return props.react ?? false ? (
         <NavLink to={props.link} exact={props.exact ?? false} css={tw`flex flex-row mx-auto`} className={'navigation-link'}>
             <FontAwesomeIcon icon={props.icon} size={'lg'} css={tw`mx-auto`}/>
@@ -51,21 +51,21 @@ export default (props: { children?: React.ReactNode }) => {
                 </Link>
             </div>
             <Category>
-                <SidePanelLink icon={faLayerGroup} react link={'/'} exact/>
+                <SidePanelLink title={'Servers'} icon={faLayerGroup} react link={'/'} exact/>
                 <br />
-                <SidePanelLink icon={faUserCircle} react link={'/account'}/>
+                <SidePanelLink title={'Account'} icon={faUserCircle} react link={'/account'}/>
                 <br />
-                <SidePanelLink icon={faSitemap} react link={'/account/api'}/>
+                <SidePanelLink title={'Account API'} icon={faSitemap} react link={'/account/api'}/>
                 <br />
-                <SidePanelLink icon={faKey} react link={'/account/keys/security'}/>
+                <SidePanelLink title={'Account Security'} icon={faKey} react link={'/account/keys/security'}/>
                 {rootAdmin &&
                     <>
                         <br />
-                        <SidePanelLink icon={faCogs} link={'/admin'}/>
+                        <SidePanelLink title={'Administration'} icon={faCogs} link={'/admin'}/>
                     </>
                 }
                 <br />
-                <button onClick={onTriggerLogout} css={tw`flex flex-row mx-auto`} className={'navigation-link'}>
+                <button title={'Logout'} onClick={onTriggerLogout} css={tw`flex flex-row mx-auto`} className={'navigation-link'}>
                     <FontAwesomeIcon icon={faSignOutAlt} size={'lg'} css={tw`mx-auto`}/>
                 </button>
             </Category>
