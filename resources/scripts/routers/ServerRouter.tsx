@@ -1,10 +1,10 @@
 import TransferListener from '@/components/server/TransferListener';
 import React, { useEffect, useState } from 'react';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
-import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
 import TransitionRouter from '@/TransitionRouter';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
+import SidePanel from '@/components/SidePanel';
 import { ServerContext } from '@/state/server';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
@@ -101,7 +101,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
 
     return (
         <React.Fragment key={'server-router'}>
-            <NavigationBar/>
+            <SidePanel/>
             {(!uuid || !id) ?
                 error ?
                     <ServerError message={error}/>
