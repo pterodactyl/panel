@@ -1,0 +1,324 @@
+# Snyk (https://snyk.io) policy file, patches or ignores known vulnerabilities.
+version: v1.22.1
+ignore: {}
+# patches apply the minimum changes required to fix a vulnerability
+patch:
+  SNYK-JS-LODASH-567746:
+    - '@typescript-eslint/eslint-plugin > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - babel-plugin-styled-components > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - webpack-bundle-analyzer > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - formik > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - yup > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - webpack-dev-server > http-proxy-middleware > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > babel-plugin-styled-components > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - babel-plugin-styled-components > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - webpack-dev-server > portfinder > async > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > @babel/generator > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helpers > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-function-name > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx-experimental > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-react > @babel/plugin-transform-react-pure-annotations > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-react > @babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-exponentiation-operator > @babel/helper-builder-binary-assignment-operator-visitor > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-hoist-variables > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > @babel/helper-function-name > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > @babel/helper-split-export-declaration > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > @babel/generator > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > babel-plugin-styled-components > @babel/helper-annotate-as-pure > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > babel-plugin-styled-components > @babel/helper-module-imports > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-object-super > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-function-name > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-function-name > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helpers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-define-map > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-split-export-declaration > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-react > @babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-react > @babel/plugin-transform-react-jsx > @babel/helper-builder-react-jsx-experimental > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-react > @babel/plugin-transform-react-jsx-development > @babel/helper-builder-react-jsx-experimental > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-unicode-property-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-named-capturing-groups-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-unicode-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - styled-components > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash:
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/helper-optimise-call-expression > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helpers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-define-map > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helpers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-define-map > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-object-super > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/preset-modules > @babel/plugin-proposal-unicode-property-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/preset-modules > @babel/plugin-transform-dotall-regex > @babel/helper-create-regexp-features-plugin > @babel/helper-annotate-as-pure > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-object-super > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/core > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-classes > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-object-super > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/traverse > @babel/helper-function-name > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/traverse > @babel/helper-function-name > @babel/helper-get-function-arity > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-amd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-commonjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-systemjs > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-modules-umd > @babel/helper-module-transforms > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-class-properties > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-private-methods > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-typescript > @babel/plugin-transform-typescript > @babel/helper-create-class-features-plugin > @babel/helper-replace-supers > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-proposal-async-generator-functions > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
+    - '@babel/preset-env > @babel/plugin-transform-async-to-generator > @babel/helper-remap-async-to-generator > @babel/helper-wrap-function > @babel/traverse > @babel/helper-function-name > @babel/template > @babel/types > lodash':
+        patched: '2021-12-28T23:09:59.942Z'
