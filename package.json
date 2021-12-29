@@ -4,6 +4,7 @@
     "@fortawesome/fontawesome-svg-core": "^1.2.32",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.11",
+    "@snyk/protect": "latest",
     "@tailwindcss/forms": "^0.2.1",
     "axios": "^0.21.3",
     "chart.js": "^2.9.4",
@@ -43,8 +44,7 @@
     "xterm-addon-search": "^0.7.0",
     "xterm-addon-search-bar": "^0.2.0",
     "xterm-addon-web-links": "^0.4.0",
-    "yup": "^0.29.1",
-    "@snyk/protect": "latest"
+    "yup": "^0.29.1"
   },
   "devDependencies": {
     "@babel/core": "^7.12.1",
