@@ -31,6 +31,7 @@ import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
+import LogsContainer from '@/components/server/logs/logsContainer';
 
 const ConflictStateRenderer = () => {
     const status = ServerContext.useStoreState(state => state.server.data?.status || null);
@@ -126,6 +127,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
                                     <NavLink to={`${match.url}/settings`}>Settings</NavLink>
                                 </Can>
+                                <Can action={'logs.*'}>
+                                    <NavLink to={`${match.url}/logs`}>Audit Logs</NavLink>
+                                </Can>
                                 {rootAdmin &&
                                 <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
                                     <FontAwesomeIcon icon={faExternalLinkAlt}/>
@@ -183,7 +187,12 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
-                                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact />
+                                    <Route path={`${match.path}/logs`} exact>
+                                        <RequireServerPermission permissions={'logs.*'}>
+                                            <LogsContainer/>
+                                        </RequireServerPermission>
+                                    </Route>
                                     <Route path={'*'} component={NotFound}/>
                                 </Switch>
                             </TransitionRouter>

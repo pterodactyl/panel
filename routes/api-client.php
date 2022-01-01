@@ -28,7 +28,9 @@ Route::group(['prefix' => '/account'], function () {
     Route::get('/api-keys', 'ApiKeyController@index');
     Route::post('/api-keys', 'ApiKeyController@store');
     Route::delete('/api-keys/{identifier}', 'ApiKeyController@delete');
+    Route::get('/', 'ClogsController@index');
 });
+
 
 /*
 |--------------------------------------------------------------------------
@@ -112,7 +114,9 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::get('/', 'Servers\StartupController@index');
         Route::put('/variable', 'Servers\StartupController@update');
     });
-
+	Route::group(['prefix' => 'logs'], function () {
+	    Route::get('/', 'Servers\ClogsController@index');
+    });
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', 'Servers\SettingsController@rename');
         Route::post('/reinstall', 'Servers\SettingsController@reinstall');

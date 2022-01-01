@@ -110,6 +110,13 @@ class Permission extends Model
      * @see \Pterodactyl\Models\Permission::permissions()
      */
     protected static $permissions = [
+		'logs' => [
+			'description' => 'Server Logs.',
+			'keys' => [
+				'view' => 'Permissions that control a user\'s ability to view logs for this server.',
+			],
+		],
+
         'websocket' => [
             'description' => 'Allows the user to connect to the server websocket, giving them access to view console output and realtime server stats.',
             'keys' => [
