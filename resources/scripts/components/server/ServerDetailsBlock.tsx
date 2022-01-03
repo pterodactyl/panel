@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import tw, { TwStyle } from 'twin.macro';
 import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { bytesToHuman, megabytesToHuman } from '@/helpers';
+import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
@@ -72,7 +72,7 @@ const ServerDetailsBlock = () => {
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
-        allocation => (allocation.alias || allocation.ip) + ':' + allocation.port,
+        allocation => (allocation.alias || formatIp(allocation.ip)) + ':' + allocation.port,
     )).toString();
 
     const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
