@@ -24,6 +24,21 @@ class AuditLog extends Model
 {
     public const UPDATED_AT = null;
 
+    public const SERVER__BACKUP_START = 'server:backup.start';
+    public const SERVER__BACKUP_FAIL = 'server:backup.fail';
+    public const SERVER__BACKUP_COMPLETE = 'server:backup.complete';
+    public const SERVER__BACKUP_DELETE = 'server:backup.delete';
+    public const SERVER__BACKUP_DOWNLOAD = 'server:backup.download';
+    public const SERVER__BACKUP_LOCK = 'server:backup.lock';
+    public const SERVER__BACKUP_UNLOCK = 'server:backup.unlock';
+    public const SERVER__BACKUP_RESTORE_START = 'server:backup.restore.start';
+    public const SERVER__BACKUP_RESTORE_COMPLET = 'server:backup.restore.complete';
+    public const SERVER__BACKUP_RESTORE_FAIL = 'server:backup.restore.fail';
+
+    public const SERVER__DATABASE_CREATE = 'server:database.create';
+    public const SERVER__DATABASE_PASSWORD_ROTATE = 'server:database.password.rotate';
+    public const SERVER__DATABASE_DELETE = 'server:database.delete';
+
     public const SERVER__FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
     public const SERVER__FILESYSTEM_WRITE = 'server:filesystem.write';
     public const SERVER__FILESYSTEM_DELETE = 'server:filesystem.delete';
@@ -31,16 +46,26 @@ class AuditLog extends Model
     public const SERVER__FILESYSTEM_COMPRESS = 'server:filesystem.compress';
     public const SERVER__FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
     public const SERVER__FILESYSTEM_PULL = 'server:filesystem.pull';
-    public const SERVER__BACKUP_STARTED = 'server:backup.started';
-    public const SERVER__BACKUP_FAILED = 'server:backup.failed';
-    public const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
-    public const SERVER__BACKUP_DELETED = 'server:backup.deleted';
-    public const SERVER__BACKUP_DOWNLOADED = 'server:backup.downloaded';
-    public const SERVER__BACKUP_LOCKED = 'server:backup.locked';
-    public const SERVER__BACKUP_UNLOCKED = 'server:backup.unlocked';
-    public const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
-    public const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
-    public const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
+
+    public const SERVER__ALLOCATION_SET_PRIMARY = 'server:allocation.set.primary';
+    public const SERVER__ALLOCATION_DELETE = 'server:allocation.delete';
+    public const SERVER__ALLOCATION_CREATE = 'server:allocation.create';
+
+    public const SERVER__SCHEDULE_CREATE = 'server:schedule.create';
+    public const SERVER__SCHEDULE_UPDATE = 'server:schedule.update';
+    public const SERVER__SCHEDULE_DELETE = 'server:schedule.delete';
+    public const SERVER__SCHEDULE_RUN = 'server:schedule.run';
+    public const SERVER__SCHEDULE_TASK_CREATE = 'server:schedule.task.create';
+    public const SERVER__SCHEDULE_TASK_UPDATE = 'server:schedule.task.update';
+    public const SERVER__SCHEDULE_TASK_DELETE = 'server:schedule.task.delete';
+
+    public const SERVER__SETTINGS_NAME = 'server:settings.name.update';
+    public const SERVER__SETTINGS_REINSTALL = 'server:settings.reinstall';
+    public const SERVER__SETTINGS_IMAGE = 'server:settings.image.update';
+
+    public const SERVER__SUBUSER_CREATED = 'server:subuser.create';
+    public const SERVER__SUBUSER_UPDATE = 'server:subuser.update';
+    public const SERVER__SUBUSER_DELETE = 'server:subuser.delete';
 
     /**
      * @var string[]

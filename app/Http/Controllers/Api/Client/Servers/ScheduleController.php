@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Exceptions\DisplayException;
@@ -71,18 +72,22 @@ class ScheduleController extends ClientApiController
     public function store(StoreScheduleRequest $request, Server $server)
     {
         /** @var \Pterodactyl\Models\Schedule $model */
-        $model = $this->repository->create([
-            'server_id' => $server->id,
-            'name' => $request->input('name'),
-            'cron_day_of_week' => $request->input('day_of_week'),
-            'cron_month' => $request->input('month'),
-            'cron_day_of_month' => $request->input('day_of_month'),
-            'cron_hour' => $request->input('hour'),
-            'cron_minute' => $request->input('minute'),
-            'is_active' => (bool) $request->input('is_active'),
-            'only_when_online' => (bool) $request->input('only_when_online'),
-            'next_run_at' => $this->getNextRunAt($request),
-        ]);
+        $model = $server->audit(AuditLog::SERVER__SCHEDULE_CREATE, function (AuditLog $audit, Server $server) use ($request) {
+            $schedule = $this->repository->create([
+                'server_id' => $server->id,
+                'name' => $request->input('name'),
+                'cron_day_of_week' => $request->input('day_of_week'),
+                'cron_month' => $request->input('month'),
+                'cron_day_of_month' => $request->input('day_of_month'),
+                'cron_hour' => $request->input('hour'),
+                'cron_minute' => $request->input('minute'),
+                'is_active' => (bool) $request->input('is_active'),
+                'only_when_online' => (bool) $request->input('only_when_online'),
+                'next_run_at' => $this->getNextRunAt($request),
+            ]);
+            $audit->metadata = ['schedule_name' => $schedule->name];
+            return $schedule;
+        });
 
         return $this->fractal->item($model)
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
@@ -140,7 +145,10 @@ class ScheduleController extends ClientApiController
             $data['is_processing'] = false;
         }
 
-        $this->repository->update($schedule->id, $data);
+        $server->audit(AuditLog::SERVER__SCHEDULE_UPDATE, function (AuditLog $audit) use ($schedule, $data) {
+            $audit->metadata = ['schedule_name' => $schedule->name];
+            $this->repository->update($schedule->id, $data);
+        });
 
         return $this->fractal->item($schedule->refresh())
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
@@ -157,7 +165,10 @@ class ScheduleController extends ClientApiController
      */
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule)
     {
-        $this->service->handle($schedule, true);
+        $server->audit(AuditLog::SERVER__SCHEDULE_RUN, function (AuditLog $audit) use ($schedule) {
+            $audit->metadata = ['schedule_name' => $schedule->name];
+            $this->service->handle($schedule, true);
+        });
 
         return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
     }
@@ -169,7 +180,10 @@ class ScheduleController extends ClientApiController
      */
     public function delete(DeleteScheduleRequest $request, Server $server, Schedule $schedule)
     {
-        $this->repository->delete($schedule->id);
+        $server->audit(AuditLog::SERVER__SCHEDULE_DELETE, function (AuditLog $audit) use ($schedule) {
+            $audit->metadata = ['schedule_name' => $schedule->name];
+            $this->repository->delete($schedule->id);
+        });
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

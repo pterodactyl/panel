@@ -55,7 +55,7 @@ class DeleteBackupTest extends ClientApiIntegrationTestCase
 
         $this->actingAs($user)->deleteJson($this->link($backup))->assertStatus(Response::HTTP_NOT_FOUND);
 
-        $event = $backup->audits()->where('action', AuditLog::SERVER__BACKUP_DELETED)->latest()->first();
+        $event = $backup->audits()->where('action', AuditLog::SERVER__BACKUP_DELETE)->latest()->first();
 
         $this->assertNotNull($event);
         $this->assertFalse($event->is_system);

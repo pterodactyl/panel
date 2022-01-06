@@ -47,12 +47,12 @@ class BackupStatusController extends Controller
         }
 
         $action = $request->input('successful')
-            ? AuditLog::SERVER__BACKUP_COMPELTED
-            : AuditLog::SERVER__BACKUP_FAILED;
+            ? AuditLog::SERVER__BACKUP_COMPLETE
+            : AuditLog::SERVER__BACKUP_FAIL;
 
         $model->server->audit($action, function (AuditLog $audit) use ($model, $request) {
             $audit->is_system = true;
-            $audit->metadata = ['backup_uuid' => $model->uuid];
+            $audit->metadata = ['backup_name' => $model->name];
 
             $successful = $request->boolean('successful');
             $model->fill([
@@ -94,14 +94,14 @@ class BackupStatusController extends Controller
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
         $action = $request->get('successful')
-            ? AuditLog::SERVER__BACKUP_RESTORE_COMPLETED
-            : AuditLog::SERVER__BACKUP_RESTORE_FAILED;
+            ? AuditLog::SERVER__BACKUP_RESTORE_COMPLETE
+            : AuditLog::SERVER__BACKUP_RESTORE_FAIL;
 
         // Just create a new audit entry for this event and update the server state
         // so that power actions, file management, and backups can resume as normal.
-        $model->server->audit($action, function (AuditLog $audit, Server $server) use ($backup) {
+        $model->server->audit($action, function (AuditLog $audit, Server $server) use ($model, $backup) {
             $audit->is_system = true;
-            $audit->metadata = ['backup_uuid' => $backup];
+            $audit->metadata = ['backup_name' => $model->name];
             $server->update(['status' => null]);
         });
 

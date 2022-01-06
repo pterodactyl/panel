@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Exceptions\DisplayException;
@@ -85,7 +86,10 @@ class NetworkAllocationController extends ClientApiController
      */
     public function setPrimary(SetPrimaryAllocationRequest $request, Server $server, Allocation $allocation): array
     {
-        $this->serverRepository->update($server->id, ['allocation_id' => $allocation->id]);
+        $server->audit(AuditLog::SERVER__ALLOCATION_SET_PRIMARY, function (AuditLog $audit) use ($server, $allocation) {
+            $audit->metadata = ['allocation_port' => $allocation->port];
+            $this->serverRepository->update($server->id, ['allocation_id' => $allocation->id]);
+        });
 
         return $this->fractal->item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -104,7 +108,11 @@ class NetworkAllocationController extends ClientApiController
             throw new DisplayException('Cannot assign additional allocations to this server: limit has been reached.');
         }
 
-        $allocation = $this->assignableAllocationService->handle($server);
+        $allocation = $server->audit(AuditLog::SERVER__ALLOCATION_CREATE, function (AuditLog $audit) use ($server) {
+            $allocation = $this->assignableAllocationService->handle($server);
+            $audit->metadata = ['allocation_port' => $allocation->port];
+            return $allocation;
+        });
 
         return $this->fractal->item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -124,10 +132,13 @@ class NetworkAllocationController extends ClientApiController
             throw new DisplayException('You cannot delete the primary allocation for this server.');
         }
 
-        Allocation::query()->where('id', $allocation->id)->update([
-            'notes' => null,
-            'server_id' => null,
-        ]);
+        $server->audit(AuditLog::SERVER__ALLOCATION_DELETE, function (AuditLog $audit) use ($allocation) {
+            $audit->metadata = ['allocation_port' => $allocation->port];
+            Allocation::query()->where('id', $allocation->id)->update([
+                'notes' => null,
+                'server_id' => null,
+            ]);
+        });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Models\AuditLog;
 use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
@@ -74,7 +75,11 @@ class DatabaseController extends ClientApiController
      */
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
-        $database = $this->deployDatabaseService->handle($server, $request->validated());
+        $database = $server->audit(AuditLog::SERVER__DATABASE_CREATE, function (AuditLog $audit, Server $server) use ($request) {
+            $database = $this->deployDatabaseService->handle($server, $request->validated());
+            $audit->metadata = ['database_name' => $database->database];
+            return $database;
+        });
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
@@ -92,7 +97,11 @@ class DatabaseController extends ClientApiController
      */
     public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database)
     {
-        $this->passwordService->handle($database);
+        $server->audit(AuditLog::SERVER__DATABASE_PASSWORD_ROTATE, function (AuditLog $audit) use ($database) {
+            $audit->metadata = ['database_name' => $database->database];
+            $this->passwordService->handle($database);
+        });
+
         $database->refresh();
 
         return $this->fractal->item($database)
@@ -108,7 +117,10 @@ class DatabaseController extends ClientApiController
      */
     public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {
-        $this->managementService->delete($database);
+        $server->audit(AuditLog::SERVER__DATABASE_DELETE, function (AuditLog $audit) use ($database) {
+            $audit->metadata = ['database_name' => $database->database];
+            $this->managementService->delete($database);
+        });
 
         return Response::create('', Response::HTTP_NO_CONTENT);
     }

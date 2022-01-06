@@ -6,6 +6,7 @@ use Pterodactyl\Models\Task;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
@@ -58,14 +59,18 @@ class ScheduleTaskController extends ClientApiController
         $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
 
         /** @var \Pterodactyl\Models\Task $task */
-        $task = $this->repository->create([
-            'schedule_id' => $schedule->id,
-            'sequence_id' => ($lastTask->sequence_id ?? 0) + 1,
-            'action' => $request->input('action'),
-            'payload' => $request->input('payload') ?? '',
-            'time_offset' => $request->input('time_offset'),
-            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
-        ]);
+        $task = $server->audit(AuditLog::SERVER__SCHEDULE_TASK_CREATE, function (AuditLog $audit, Server $server) use ($request, $schedule) {
+            $task = $this->repository->create([
+                'schedule_id' => $schedule->id,
+                'sequence_id' => ($lastTask->sequence_id ?? 0) + 1,
+                'action' => $request->input('action'),
+                'payload' => $request->input('payload') ?? '',
+                'time_offset' => $request->input('time_offset'),
+                'continue_on_failure' => (bool) $request->input('continue_on_failure'),
+            ]);
+            $audit->metadata = ['schedule_name' => $schedule->name];
+            return $task;
+        });
 
         return $this->fractal->item($task)
             ->transformWith($this->getTransformer(TaskTransformer::class))
@@ -91,12 +96,15 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        $this->repository->update($task->id, [
-            'action' => $request->input('action'),
-            'payload' => $request->input('payload') ?? '',
-            'time_offset' => $request->input('time_offset'),
-            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
-        ]);
+        $server->audit(AuditLog::SERVER__SCHEDULE_TASK_UPDATE, function (AuditLog $audit) use ($task, $schedule, $request) {
+            $audit->metadata = ['schedule_name' => $schedule->name];
+            $this->repository->update($task->id, [
+                'action' => $request->input('action'),
+                'payload' => $request->input('payload') ?? '',
+                'time_offset' => $request->input('time_offset'),
+                'continue_on_failure' => (bool) $request->input('continue_on_failure'),
+            ]);
+        });
 
         return $this->fractal->item($task->refresh())
             ->transformWith($this->getTransformer(TaskTransformer::class))
@@ -125,7 +133,10 @@ class ScheduleTaskController extends ClientApiController
             'sequence_id' => $schedule->tasks()->getConnection()->raw('(sequence_id - 1)'),
         ]);
 
-        $task->delete();
+        $server->audit(AuditLog::SERVER__SCHEDULE_TASK_DELETE, function (AuditLog $audit) use ($task, $schedule) {
+            $audit->metadata = ['schedule_name' => $schedule->name];
+            $task->delete();
+        });
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }

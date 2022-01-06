@@ -110,18 +110,18 @@ class ServerDetailsController extends Controller
         /** @var \Pterodactyl\Models\Server[] $servers */
         $servers = Server::query()
             ->select('servers.*')
-            ->selectRaw('JSON_UNQUOTE(JSON_EXTRACT(started.metadata, "$.backup_uuid")) as backup_uuid')
+            ->selectRaw('JSON_UNQUOTE(JSON_EXTRACT(started.metadata, "$.backup_name")) as backup_name')
             ->leftJoinSub(function (Builder $builder) {
                 $builder->select('*')->from('audit_logs')
-                    ->where('action', AuditLog::SERVER__BACKUP_RESTORE_STARTED)
+                    ->where('action', AuditLog::SERVER__BACKUP_RESTORE_START)
                     ->orderByDesc('created_at')
                     ->limit(1);
             }, 'started', 'started.server_id', '=', 'servers.id')
             ->leftJoin('audit_logs as completed', function (JoinClause $clause) {
                 $clause->whereColumn('completed.created_at', '>', 'started.created_at')
                     ->whereIn('completed.action', [
-                        AuditLog::SERVER__BACKUP_RESTORE_COMPLETED,
-                        AuditLog::SERVER__BACKUP_RESTORE_FAILED,
+                        AuditLog::SERVER__BACKUP_RESTORE_COMPLETE,
+                        AuditLog::SERVER__BACKUP_RESTORE_FAIL,
                     ]);
             })
             ->whereNotNull('started.id')
@@ -133,9 +133,9 @@ class ServerDetailsController extends Controller
         foreach ($servers as $server) {
             // Just create a new audit entry for this event and update the server state
             // so that power actions, file management, and backups can resume as normal.
-            $server->audit(AuditLog::SERVER__BACKUP_RESTORE_FAILED, function (AuditLog $audit, Server $server) {
+            $server->audit(AuditLog::SERVER__BACKUP_RESTORE_FAIL, function (AuditLog $audit, Server $server) {
                 $audit->is_system = true;
-                $audit->metadata = ['backup_uuid' => $server->getAttribute('backup_uuid')];
+                $audit->metadata = ['backup_name' => $server->getAttribute('backup_name')];
                 $server->update(['status' => null]);
             });
         }
