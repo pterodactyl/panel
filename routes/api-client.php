@@ -113,6 +113,10 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::put('/variable', 'Servers\StartupController@update');
     });
 
+    Route::group(['prefix' => '/logs'], function () {
+        Route::get('/', 'Servers\LogsController@index');
+    });
+
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', 'Servers\SettingsController@rename');
         Route::post('/reinstall', 'Servers\SettingsController@reinstall');

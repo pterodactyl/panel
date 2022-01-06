@@ -1,7 +1,7 @@
 import { Allocation } from '@/api/server/getServer';
 import { FractalResponseData } from '@/api/http';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import { ServerBackup, ServerEggVariable } from '@/api/server/types';
+import { ServerBackup, ServerEggVariable, ServerLog } from '@/api/server/types';
 
 export const rawDataToServerAllocation = (data: FractalResponseData): Allocation => ({
     id: data.attributes.id,
@@ -75,4 +75,14 @@ export const rawDataToServerEggVariable = ({ attributes }: FractalResponseData):
     serverValue: attributes.server_value,
     isEditable: attributes.is_editable,
     rules: attributes.rules.split('|'),
+});
+
+export const rawDataToServerLog = ({ attributes }: FractalResponseData): ServerLog => ({
+    uuid: attributes.uuid,
+    user: attributes.user,
+    action: attributes.action,
+    device: attributes.device,
+    metadata: attributes.metadata,
+    isSystem: attributes.is_system,
+    createdAt: new Date(attributes.created_at),
 });

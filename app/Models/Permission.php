@@ -56,6 +56,8 @@ class Permission extends Model
     public const ACTION_FILE_ARCHIVE = 'file.archive';
     public const ACTION_FILE_SFTP = 'file.sftp';
 
+    public const ACTION_LOGS_READ = 'logs.read';
+
     public const ACTION_STARTUP_READ = 'startup.read';
     public const ACTION_STARTUP_UPDATE = 'startup.update';
     public const ACTION_STARTUP_DOCKER_IMAGE = 'startup.docker-image';
@@ -200,6 +202,13 @@ class Permission extends Model
                 'read' => 'Allows a user to view schedules and the tasks associated with them for this server.', // task.view-schedule, task.list-schedules
                 'update' => 'Allows a user to update schedules and schedule tasks for this server.', // task.edit-schedule, task.queue-schedule, task.toggle-schedule
                 'delete' => 'Allows a user to delete schedules for this server.', // task.delete-schedule
+            ],
+        ],
+
+        'logs' => [
+            'description' => 'Permissions that control a user\'s access to the logs for this server.',
+            'keys' => [
+                'see' => 'Allows a user to see logs.',
             ],
         ],
 

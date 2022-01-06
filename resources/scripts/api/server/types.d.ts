@@ -21,3 +21,13 @@ export interface ServerEggVariable {
     isEditable: boolean;
     rules: string[];
 }
+
+export interface ServerLog {
+    uuid: string;
+    user: string;
+    action: string;
+    device: string[];
+    metadata: string[];
+    isSystem: boolean;
+    createdAt: Date;
+}
