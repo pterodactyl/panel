@@ -26,8 +26,6 @@ const LogsContainer = () => {
     if (!logs || (error && isValidating)) {
         return <Spinner size={'large'} centered/>;
     }
-
-    console.log(logs)
     
     return (
         <ServerContentBlock title={'Audit Logs'}>
