@@ -75,8 +75,9 @@ class DatabaseController extends ClientApiController
      */
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
-        $database = $server->audit(AuditLog::SERVER__DATABASE_CREATED, function (AuditLog $model, Server $server) use ($request) {
+        $database = $server->audit(AuditLog::SERVER__DATABASE_CREATE, function (AuditLog $model, Server $server) use ($request) {
             $database = $this->deployDatabaseService->handle($server, $request->validated());
+            $model->metadata = ['database_name' => $database->database];
             return $database;
         });
 
@@ -96,7 +97,8 @@ class DatabaseController extends ClientApiController
      */
     public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database)
     {
-        $server->audit(AuditLog::SERVER__DATABASE_PASSWORD, function (AuditLog $audit) use ($database) {
+        $server->audit(AuditLog::SERVER__DATABASE_PASSWORD_ROTATE, function (AuditLog $audit) use ($database) {
+            $audit->metadata = ['database_name' => $database->database];
             $this->passwordService->handle($database);
         });
 
@@ -115,10 +117,9 @@ class DatabaseController extends ClientApiController
      */
     public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
     {
-        $this->managementService->delete($database);
-
         $server->audit(AuditLog::SERVER__DATABASE_DELETE, function (AuditLog $audit) use ($database) {
-            $this->passwordService->handle($database);
+            $audit->metadata = ['database_name' => $database->database];
+            $this->managementService->delete($database);
         });
 
         return Response::create('', Response::HTTP_NO_CONTENT);
