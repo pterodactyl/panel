@@ -92,7 +92,7 @@ class BackupController extends ClientApiController
 
             $backup = $action->handle($server, $request->input('name'));
 
-            $model->metadata = ['backup_uuid' => $backup->uuid];
+            $model->metadata = ['backup_name' => $backup->name];
 
             return $backup;
         });
@@ -116,7 +116,7 @@ class BackupController extends ClientApiController
 
         $action = $backup->is_locked ? AuditLog::SERVER__BACKUP_UNLOCKED : AuditLog::SERVER__BACKUP_LOCKED;
         $server->audit($action, function (AuditLog $audit) use ($backup) {
-            $audit->metadata = ['backup_uuid' => $backup->uuid];
+            $audit->metadata = ['backup_name' => $backup->name];
 
             $backup->update(['is_locked' => !$backup->is_locked]);
         });
@@ -157,7 +157,7 @@ class BackupController extends ClientApiController
         }
 
         $server->audit(AuditLog::SERVER__BACKUP_DELETED, function (AuditLog $audit) use ($backup) {
-            $audit->metadata = ['backup_uuid' => $backup->uuid];
+            $audit->metadata = ['backup_name' => $backup->name];
 
             $this->deleteBackupService->handle($backup);
         });
@@ -185,7 +185,7 @@ class BackupController extends ClientApiController
 
         $url = $this->downloadLinkService->handle($backup, $request->user());
         $server->audit(AuditLog::SERVER__BACKUP_DOWNLOADED, function (AuditLog $audit) use ($backup) {
-            $audit->metadata = ['backup_uuid' => $backup->uuid];
+            $audit->metadata = ['backup_name' => $backup->name];
         });
 
         return new JsonResponse([
@@ -222,7 +222,7 @@ class BackupController extends ClientApiController
         }
 
         $server->audit(AuditLog::SERVER__BACKUP_RESTORE_STARTED, function (AuditLog $audit, Server $server) use ($backup, $request) {
-            $audit->metadata = ['backup_uuid' => $backup->uuid];
+            $audit->metadata = ['backup_name' => $backup->name];
 
             // If the backup is for an S3 file we need to generate a unique Download link for
             // it that will allow Wings to actually access the file.
