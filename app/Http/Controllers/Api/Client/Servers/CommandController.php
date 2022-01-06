@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\AuditLog;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -37,7 +38,11 @@ class CommandController extends ClientApiController
     public function index(SendCommandRequest $request, Server $server): Response
     {
         try {
-            $this->repository->setServer($server)->send($request->input('command'));
+            $server->audit(AuditLog::SERVER__COMMAND_SEND, function (AuditLog $audit) use ($server) {
+                $audit->metadata = ['command' => $request->input('command')];
+
+                $this->repository->setServer($server)->send($request->input('command'));
+            });
         } catch (DaemonConnectionException $exception) {
             $previous = $exception->getPrevious();
 
