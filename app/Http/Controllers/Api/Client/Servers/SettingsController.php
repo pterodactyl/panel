@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ReinstallServerService;
@@ -48,9 +49,12 @@ class SettingsController extends ClientApiController
      */
     public function rename(RenameServerRequest $request, Server $server)
     {
-        $this->repository->update($server->id, [
-            'name' => $request->input('name'),
-        ]);
+        $server->audit(AuditLog::SERVER__SETTINGS_NAME, function (AuditLog $audit) use ($server, $request) {
+            $audit->metadata = ['old' => $server->name, 'new' => $request->input('name')];
+            $this->repository->update($server->id, [
+                'name' => $request->input('name'),
+            ]);
+        });
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -64,7 +68,10 @@ class SettingsController extends ClientApiController
      */
     public function reinstall(ReinstallServerRequest $request, Server $server)
     {
-        $this->reinstallServerService->handle($server);
+        $server->audit(AuditLog::SERVER__SETTINGS_REINSTALL, function (AuditLog $audit) use ($server) {
+            $audit->metadata = [];
+            $this->reinstallServerService->handle($server);
+        });
 
         return new JsonResponse([], Response::HTTP_ACCEPTED);
     }
@@ -82,7 +89,10 @@ class SettingsController extends ClientApiController
             throw new BadRequestHttpException('This server\'s Docker image has been manually set by an administrator and cannot be updated.');
         }
 
-        $server->forceFill(['image' => $request->input('docker_image')])->saveOrFail();
+        $server->audit(AuditLog::SERVER__SETTINGS_IMAGE, function (AuditLog $audit) use ($server, $request) {
+            $audit->metadata = ['old' => $server->image, 'new' => $request->input('docker_image')];
+            $server->forceFill(['image' => $request->input('docker_image')])->saveOrFail();
+        });
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
