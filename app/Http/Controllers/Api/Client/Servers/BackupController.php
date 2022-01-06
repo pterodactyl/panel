@@ -78,7 +78,7 @@ class BackupController extends ClientApiController
     public function store(StoreBackupRequest $request, Server $server): array
     {
         /** @var \Pterodactyl\Models\Backup $backup */
-        $backup = $server->audit(AuditLog::SERVER__BACKUP_STARTED, function (AuditLog $audit, Server $server) use ($request) {
+        $backup = $server->audit(AuditLog::SERVER__BACKUP_START, function (AuditLog $audit, Server $server) use ($request) {
             $action = $this->initiateBackupService
                 ->setIgnoredFiles(explode(PHP_EOL, $request->input('ignored') ?? ''));
 
@@ -114,7 +114,7 @@ class BackupController extends ClientApiController
             throw new AuthorizationException();
         }
 
-        $action = $backup->is_locked ? AuditLog::SERVER__BACKUP_UNLOCKED : AuditLog::SERVER__BACKUP_LOCKED;
+        $action = $backup->is_locked ? AuditLog::SERVER__BACKUP_UNLOCK : AuditLog::SERVER__BACKUP_LOCK;
         $server->audit($action, function (AuditLog $audit) use ($backup) {
             $audit->metadata = ['backup_name' => $backup->name];
 
@@ -156,7 +156,7 @@ class BackupController extends ClientApiController
             throw new AuthorizationException();
         }
 
-        $server->audit(AuditLog::SERVER__BACKUP_DELETED, function (AuditLog $audit) use ($backup) {
+        $server->audit(AuditLog::SERVER__BACKUP_DELETE, function (AuditLog $audit) use ($backup) {
             $audit->metadata = ['backup_name' => $backup->name];
 
             $this->deleteBackupService->handle($backup);
@@ -184,7 +184,7 @@ class BackupController extends ClientApiController
         }
 
         $url = $this->downloadLinkService->handle($backup, $request->user());
-        $server->audit(AuditLog::SERVER__BACKUP_DOWNLOADED, function (AuditLog $audit) use ($backup) {
+        $server->audit(AuditLog::SERVER__BACKUP_DOWNLOAD, function (AuditLog $audit) use ($backup) {
             $audit->metadata = ['backup_name' => $backup->name];
         });
 
@@ -221,7 +221,7 @@ class BackupController extends ClientApiController
             throw new BadRequestHttpException('This backup cannot be restored at this time: not completed or failed.');
         }
 
-        $server->audit(AuditLog::SERVER__BACKUP_RESTORE_STARTED, function (AuditLog $audit, Server $server) use ($backup, $request) {
+        $server->audit(AuditLog::SERVER__BACKUP_RESTORE_START, function (AuditLog $audit, Server $server) use ($backup, $request) {
             $audit->metadata = ['backup_name' => $backup->name];
 
             // If the backup is for an S3 file we need to generate a unique Download link for

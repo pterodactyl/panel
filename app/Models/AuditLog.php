@@ -24,16 +24,16 @@ class AuditLog extends Model
 {
     public const UPDATED_AT = null;
 
-    public const SERVER__BACKUP_STARTED = 'server:backup.started';
-    public const SERVER__BACKUP_FAILED = 'server:backup.failed';
-    public const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
-    public const SERVER__BACKUP_DELETED = 'server:backup.deleted';
-    public const SERVER__BACKUP_DOWNLOADED = 'server:backup.downloaded';
-    public const SERVER__BACKUP_LOCKED = 'server:backup.locked';
-    public const SERVER__BACKUP_UNLOCKED = 'server:backup.unlocked';
-    public const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
-    public const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
-    public const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
+    public const SERVER__BACKUP_START = 'server:backup.start';
+    public const SERVER__BACKUP_FAIL = 'server:backup.fail';
+    public const SERVER__BACKUP_COMPLETE = 'server:backup.complete';
+    public const SERVER__BACKUP_DELETE = 'server:backup.delete';
+    public const SERVER__BACKUP_DOWNLOAD = 'server:backup.download';
+    public const SERVER__BACKUP_LOCK = 'server:backup.lock';
+    public const SERVER__BACKUP_UNLOCK = 'server:backup.unlock';
+    public const SERVER__BACKUP_RESTORE_START = 'server:backup.restore.start';
+    public const SERVER__BACKUP_RESTORE_COMPLET = 'server:backup.restore.complete';
+    public const SERVER__BACKUP_RESTORE_FAIL = 'server:backup.restore.fail';
 
     public const SERVER__DATABASE_CREATE = 'server:database.create';
     public const SERVER__DATABASE_PASSWORD_ROTATE = 'server:database.password.rotate';
