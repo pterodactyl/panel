@@ -35,8 +35,6 @@ class AuditLog extends Model
     public const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
     public const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
 
-    public const SERVER__COMMAND_SEND = 'server:command.send';
-
     public const SERVER__DATABASE_CREATE = 'server:database.create';
     public const SERVER__DATABASE_PASSWORD_ROTATE = 'server:database.password.rotate';
     public const SERVER__DATABASE_DELETE = 'server:database.delete';
