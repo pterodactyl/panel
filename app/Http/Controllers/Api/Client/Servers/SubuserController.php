@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Log;
@@ -88,11 +89,15 @@ class SubuserController extends ClientApiController
      */
     public function store(StoreSubuserRequest $request, Server $server)
     {
-        $response = $this->creationService->handle(
-            $server,
-            $request->input('email'),
-            $this->getDefaultPermissions($request)
-        );
+        $response = $server->audit(AuditLog::SERVER__SUBUSER_CREATED, function (AuditLog $audit, Server $server) use ($request) {
+            $response = $this->creationService->handle(
+                $server,
+                $request->input('email'),
+                $this->getDefaultPermissions($request)
+            );
+            $audit->metadata = ['user' => $request->input('email')];
+            return $response;
+        });
 
         return $this->fractal->item($response)
             ->transformWith($this->getTransformer(SubuserTransformer::class))
@@ -119,9 +124,12 @@ class SubuserController extends ClientApiController
         // Only update the database and hit up the Wings instance to invalidate JTI's if the permissions
         // have actually changed for the user.
         if ($permissions !== $current) {
-            $this->repository->update($subuser->id, [
-                'permissions' => $this->getDefaultPermissions($request),
-            ]);
+            $server->audit(AuditLog::SERVER__SUBUSER_UPDATE, function (AuditLog $audit) use ($subuser, $request) {
+                $audit->metadata = ['user' => $subuser->email];
+                $this->repository->update($subuser->id, [
+                    'permissions' => $this->getDefaultPermissions($request),
+                ]);
+            });
 
             try {
                 $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
@@ -147,7 +155,10 @@ class SubuserController extends ClientApiController
         /** @var \Pterodactyl\Models\Subuser $subuser */
         $subuser = $request->attributes->get('subuser');
 
-        $this->repository->delete($subuser->id);
+        $server->audit(AuditLog::SERVER__SUBUSER_DELETE, function (AuditLog $audit) use ($subuser) {
+            $audit->metadata = ['user' => $subuser->email];
+            $this->repository->delete($subuser->id);
+        });
 
         try {
             $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
