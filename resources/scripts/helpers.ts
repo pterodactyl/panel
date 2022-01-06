@@ -63,3 +63,7 @@ export function encodePathSegments (path: string): string {
 export function hashToPath (hash: string): string {
     return hash.length > 0 ? decodeURIComponent(hash.substr(1)) : '/';
 }
+
+export function formatIp (ip: string): string {
+    return /([a-f0-9:]+:+)+[a-f0-9]+/.test(ip) ? `[${ip}]` : ip;
+}
