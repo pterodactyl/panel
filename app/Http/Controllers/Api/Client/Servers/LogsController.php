@@ -33,11 +33,11 @@ class LogsController extends ClientApiController
 
         $limit = min($request->query('per_page') ?? 20, 50);
 
-        return $this->fractal->collection($server->audits()->paginate($limit))
+        return array_reverse($this->fractal->collection($server->audits()->paginate($limit))
             ->transformWith($this->getTransformer(AuditLogTransformer::class))
             ->addMeta([
                 'log_count' => $server->audits()->count(),
             ])
-            ->toArray();
+            ->toArray());
     }
 }
