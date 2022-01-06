@@ -75,9 +75,9 @@ class DatabaseController extends ClientApiController
      */
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
-        $database = $server->audit(AuditLog::SERVER__DATABASE_CREATE, function (AuditLog $model, Server $server) use ($request) {
+        $database = $server->audit(AuditLog::SERVER__DATABASE_CREATE, function (AuditLog $audit, Server $server) use ($request) {
             $database = $this->deployDatabaseService->handle($server, $request->validated());
-            $model->metadata = ['database_name' => $database->database];
+            $audit->metadata = ['database_name' => $database->database];
             return $database;
         });
 
