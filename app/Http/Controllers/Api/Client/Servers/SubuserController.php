@@ -125,7 +125,7 @@ class SubuserController extends ClientApiController
         // have actually changed for the user.
         if ($permissions !== $current) {
             $server->audit(AuditLog::SERVER__SUBUSER_UPDATE, function (AuditLog $audit) use ($subuser, $request) {
-                $audit->metadata = ['user' => $subuser->email];
+                $audit->metadata = ['user' => $subuser->user->email];
                 $this->repository->update($subuser->id, [
                     'permissions' => $this->getDefaultPermissions($request),
                 ]);
@@ -156,7 +156,7 @@ class SubuserController extends ClientApiController
         $subuser = $request->attributes->get('subuser');
 
         $server->audit(AuditLog::SERVER__SUBUSER_DELETE, function (AuditLog $audit) use ($subuser) {
-            $audit->metadata = ['user' => $subuser->email];
+            $audit->metadata = ['user' => $subuser->user->email];
             $this->repository->delete($subuser->id);
         });
 
