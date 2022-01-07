@@ -9,6 +9,7 @@ use Pterodactyl\Models\Permission;
 use Illuminate\Auth\Access\AuthorizationException;
 use Pterodactyl\Transformers\Api\Client\AuditLogTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Logs\GetLogsRequest;
 
 class LogsController extends ClientApiController
 {
@@ -25,12 +26,8 @@ class LogsController extends ClientApiController
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Request $request, Server $server): array
+    public function index(GetLogsRequest $request, Server $server): array
     {
-        if (!$request->user()->can(Permission::ACTION_LOGS_READ, $server)) {
-            throw new AuthorizationException();
-        }
-
         $limit = min($request->query('per_page') ?? 20, 50);
 
         return array_reverse($this->fractal->collection($server->audits()->paginate($limit))
