@@ -23,7 +23,7 @@ use Illuminate\Container\Container;
 class AuditLog extends Model
 {
     public const UPDATED_AT = null;
-    public const RESOURCE_NAME = 'auditlogs';
+    public const RESOURCE_NAME = 'audit_log';
 
     public const SERVER__FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
     public const SERVER__FILESYSTEM_WRITE = 'server:filesystem.write';
