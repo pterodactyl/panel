@@ -208,7 +208,7 @@ class Permission extends Model
         'logs' => [
             'description' => 'Permissions that control a user\'s access to the logs for this server.',
             'keys' => [
-                'see' => 'Allows a user to see logs.',
+                'read' => 'Allows a user to read logs.',
             ],
         ],
 
