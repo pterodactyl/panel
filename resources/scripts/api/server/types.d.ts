@@ -26,8 +26,8 @@ export interface ServerLog {
     uuid: string;
     user: string;
     action: string;
-    device: string[];
-    metadata: string[];
+    device: Record<string, any>;
+    metadata: Record<string, any>;
     isSystem: boolean;
     createdAt: Date;
 }

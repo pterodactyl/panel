@@ -1,4 +1,6 @@
-export function LogHandler (log: any) {
+import { ServerLog } from '@/api/server/types';
+
+export function LogHandler (log: ServerLog) {
     switch (log.action) {
         case "server:backup.start":
             return `Backup ${log.metadata.backup_name} got created`;
