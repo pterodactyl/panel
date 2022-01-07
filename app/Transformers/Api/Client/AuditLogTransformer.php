@@ -25,10 +25,9 @@ class AuditLogTransformer extends BaseClientTransformer
      */
     public function transform(AuditLog $model)
     {
-        $user = User::where("id", $model->user_id)->first();
         return [
             'uuid' => $model->uuid,
-            'user' => $user ? $user->email : "System",
+            'user' => $model->user ? $model->user->email : "System",
             'action' => $model->action,
             'device' => $model->device,
             'metadata' => $model->metadata,
