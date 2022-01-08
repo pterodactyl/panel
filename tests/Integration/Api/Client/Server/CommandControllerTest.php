@@ -64,7 +64,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
      */
     public function testCommandCanSendToServer()
     {
-        [$user, $server] = $this->generateTestAccount([Permission::ACTION_CONTROL_CONSOLE]);
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_CONTROL_CONSOLE_SEND]);
 
         $this->repository->expects('setServer')->with(Mockery::on(function ($value) use ($server) {
             return $value->uuid === $server->uuid;

@@ -58,7 +58,7 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([
             Permission::ACTION_USER_CREATE,
             Permission::ACTION_USER_READ,
-            Permission::ACTION_CONTROL_CONSOLE,
+            Permission::ACTION_CONTROL_CONSOLE_SEND,
         ]);
 
         $response = $this->actingAs($user)->postJson($this->link($server) . '/users', [
