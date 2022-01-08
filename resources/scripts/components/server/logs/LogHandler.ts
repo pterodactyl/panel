@@ -3,91 +3,91 @@ import { ServerLog } from '@/api/server/types';
 export function LogHandler (log: ServerLog) {
     switch (log.action) {
         case "server:backup.start":
-            return `Backup ${log.metadata.backup_name} got created`;
+            return `Created backup ${log.metadata.backup_name}`;
         case "server:backup.fail":
             return `Backup ${log.metadata.backup_name} failed`;
         case "server:backup.complete":
-            return `Backup ${log.metadata.backup_name} got completed`;
+            return `Backup ${log.metadata.backup_name} completed`;
         case "server:backup.delete":
-            return `Backup ${log.metadata.backup_name} got deleted`;
+            return `Deleted backup ${log.metadata.backup_name}`;
         case "server:backup.download":
-            return `Backup ${log.metadata.backup_name} got downloaded`;
+            return `Downloaded backup ${log.metadata.backup_name}`;
         case "server:backup.lock":
-            return `Backup ${log.metadata.backup_name} got locked`;
+            return `Locked backup ${log.metadata.backup_name}`;
         case "server:backup.unlock":
-            return `Backup ${log.metadata.backup_name} got unlocked`;
+            return `Unlocked backup ${log.metadata.backup_name}`;
         case "server:backup.restore.start":
             return `Backup ${log.metadata.backup_name} restoration started`;
         case "server:backup.restore.complete":
-            return `Backup ${log.metadata.backup_name} restoration got completed`;
+            return `Backup ${log.metadata.backup_name} restoration completed`;
         case "server:backup.restore.fail":
             return `Backup ${log.metadata.backup_name} restoration failed`;
 
         case "server:database.create":
-            return `Database ${log.metadata.database_name} got created`;
+            return `Created database ${log.metadata.database_name}`;
         case "server:database.password.rotate":
-            return `Password of database ${log.metadata.database_name} got rotated`;
+            return `Rotated password of database ${log.metadata.database_name}`;
         case "server:database.delete":
-            return `Database ${log.metadata.database_name} got deleted`;
+            return `Deleted database ${log.metadata.database_name}`;
 
         case "server:filesystem.download":
-            return `File ${log.metadata.file} got downloaded`;
+            return `Downloaded file ${log.metadata.file}`;
         case "server:filesystem.write":
-            return `File ${log.metadata.file} got edited`;
+            return `Edited file ${log.metadata.file}`;
         case "server:filesystem.delete":
-            if(log.metadata.files.length > 1){
-                return `Files ${log.metadata.files.join(", ")} got deleted`;
-            }else{
-                return `File ${log.metadata.files[0]} got deleted`;
+            if (log.metadata.files.length > 1) {
+                return `Deleted files ${log.metadata.files.join(", ")}`;
+            } else {
+                return `Deleted file ${log.metadata.files[0]}`;
             }
         case "server:filesystem.rename":
-            return `File ${log.metadata.file} got renamed`;
+            return `Renamed file ${log.metadata.file}`;
         case "server:filesystem.compress":
-            if(log.metadata.files.length > 1){
-                return `Files ${log.metadata.files.join(", ")} got compressed in ${log.metadata.root}`;
-            }else{
-                return `File ${log.metadata.root+log.metadata.files[0]} got compressed`;
+            if (log.metadata.files.length > 1) {
+                return `Compressed files ${log.metadata.files.join(", ")} in ${log.metadata.root}`;
+            } else {
+                return `Compressed file ${log.metadata.root+log.metadata.files[0]}`;
             }
         case "server:filesystem.decompress":
-            return `File ${log.metadata.root+log.metadata.files} got decompressed`;
+            return `Decompressed file ${log.metadata.root+log.metadata.files}`;
         case "server:filesystem.pull":
-            return `URL ${log.metadata.url} got pulled into ${log.metadata.directory}`;
+            return `URL ${log.metadata.url} pulled into ${log.metadata.directory}`;
 
         case "server:allocation.set.primary":
-            return `Allocation port ${log.metadata.allocation_port} got set as primary`;
+            return `Set allocation port ${log.metadata.allocation_port} as primary`;
         case "server:allocation.delete":
-            return `Allocation port ${log.metadata.allocation_port} got deleted`;
+            return `Deleted allocation port ${log.metadata.allocation_port}`;
         case "server:allocation.create":
-            return `Allocation port ${log.metadata.allocation_port} got created`;
+            return `Created allocation port ${log.metadata.allocation_port}`;
 
         case "server:schedule.create":
-            return `Schedule ${log.metadata.schedule_name} got created`;
+            return `Created schedule ${log.metadata.schedule_name}`;
         case "server:schedule.update":
-            return `Schedule ${log.metadata.schedule_name} got updated`;
+            return `Updated schedule ${log.metadata.schedule_name}`;
         case "server:schedule.delete":
-            return `Schedule ${log.metadata.schedule_name} got deleted`;
+            return `Deleted schedule ${log.metadata.schedule_name}`;
         case "server:schedule.run":
-            return `Schedule ${log.metadata.schedule_name} got executed`;
+            return `Executed schedule ${log.metadata.schedule_name}`;
         case "server:schedule.task.create":
-            return `Task inside schedule ${log.metadata.schedule_name} got created`;
+            return `Created task inside schedule ${log.metadata.schedule_name}`;
         case "server:schedule.task.update":
-            return `Task inside schedule ${log.metadata.schedule_name} got updated`;
+            return `Updated task inside schedule ${log.metadata.schedule_name}`;
         case "server:schedule.task.delete":
-            return `Task inside schedule ${log.metadata.schedule_name} got deleted`;
+            return `Deleted task inside schedule ${log.metadata.schedule_name}`;
 
         case "server:settings.name.update":
-            return `Server got renamed from ${log.metadata.old} to ${log.metadata.new}`;
+            return `Renamed server from ${log.metadata.old} to ${log.metadata.new}`;
         case "server:settings.reinstall":
-            return `Server got reinstalled`;
+            return `Reinstalled server`;
         case "server:settings.image.update":
-            return `Server Docker image got updated from ${log.metadata.old} to ${log.metadata.new}`;
+            return `Updated Docker image from ${log.metadata.old} to ${log.metadata.new}`;
 
         case "server:subuser.create":
-            return `Subuser ${log.metadata.user} got created`;
+            return `Created subuser ${log.metadata.user}`;
         case "server:subuser.update":
-            return `Subuser ${log.metadata.user} got updated`;
+            return `Updated subuser ${log.metadata.user}`;
         case "server:subuser.delete":
-            return `Subuser ${log.metadata.user} got deleted`;
+            return `Deleted subuser ${log.metadata.user}`;
 
         default:
             return `Log type not matching any know types`;
