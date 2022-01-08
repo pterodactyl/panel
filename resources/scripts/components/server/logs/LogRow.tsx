@@ -17,6 +17,7 @@ interface Props {
 
 export default ({ log, className }: Props) => {
     const [ visible, setVisible ] = useState(false);
+    const [ showIP, setShowIP ] = useState(false);
     return (
         <>
             <Modal visible={visible} onDismissed={() => setVisible(false)}>
@@ -31,7 +32,13 @@ export default ({ log, className }: Props) => {
                 </div>
                 <div css={tw`mt-6`}>
                     <Label>IP Address</Label>
-                    <p css={tw`text-sm`}>{log.device.ip_address}</p>
+                    <p
+                        css={tw`text-sm max-w-max`}
+                        onMouseEnter={() => setShowIP(true)}
+                        onMouseLeave={() => setShowIP(false)}
+                    >
+                        {showIP?log.device.ip_address:"X.X.X.X (hover to show)"}
+                    </p>
                 </div>
                 <div css={tw`mt-6`}>
                     <Label>Created</Label>
