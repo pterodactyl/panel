@@ -8,7 +8,7 @@ import useFlash from '@/plugins/useFlash';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import Field from '@/components/elements/Field';
 import updateStartupVariable from '@/api/server/updateStartupVariable';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik } from 'formik';
 
 interface Values {
     gslToken: string;
@@ -44,7 +44,7 @@ const GSLTokenModalFeature = () => {
         };
     }, [ connected, instance, status ]);
 
-    const updateGSLToken = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const updateGSLToken = (values: Values) => {
         setLoading(true);
         clearFlashes('feature:gslToken');
 
