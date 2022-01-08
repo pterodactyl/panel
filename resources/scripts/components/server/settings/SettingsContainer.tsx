@@ -13,6 +13,7 @@ import { LinkButton } from '@/components/elements/Button';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import { formatIp } from '@/helpers';
 
 export default () => {
     const username = useStoreState(state => state.user.data!.username);
@@ -31,10 +32,10 @@ export default () => {
                         <TitledGreyBox title={'SFTP Details'} css={tw`mb-6 md:mb-10`}>
                             <div>
                                 <Label>Server Address</Label>
-                                <CopyOnClick text={`sftp://${sftp.ip}:${sftp.port}`}>
+                                <CopyOnClick text={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}>
                                     <Input
                                         type={'text'}
-                                        value={`sftp://${sftp.ip}:${sftp.port}`}
+                                        value={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}
                                         readOnly
                                     />
                                 </CopyOnClick>
@@ -60,7 +61,7 @@ export default () => {
                                 <div css={tw`ml-4`}>
                                     <LinkButton
                                         isSecondary
-                                        href={`sftp://${username}.${id}@${sftp.ip}:${sftp.port}`}
+                                        href={`sftp://${username}.${id}@${formatIp(sftp.ip)}:${sftp.port}`}
                                     >
                                         Launch SFTP
                                     </LinkButton>

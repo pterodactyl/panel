@@ -6,13 +6,19 @@
 ![GitHub contributors](https://img.shields.io/github/contributors/pterodactyl/panel?style=for-the-badge)
 
 # Pterodactyl Panel
-Pterodactyl is an open-source game server management panel built with PHP 7, React, and Go. Designed with security 
+Pterodactyl® is a free, open-source game server management panel built with PHP, React, and Go. Designed with security 
 in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive
 UI to end users.
 
 Stop settling for less. Make game servers a first class citizen on your platform.
 
 ![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
+
+## Documentation
+* [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
+* [Wings Documentation](https://pterodactyl.io/wings/1.0/installing.html)
+* [Community Guides](https://pterodactyl.io/community/about.html)
+* Or, get additional help [via Discord](https://discord.gg/pterodactyl)
 
 ## Sponsors
 I would like to extend my sincere thanks to the following sponsors for helping fund Pterodactyl's developement.
@@ -37,16 +43,11 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**Aussie Server Hosts**](https://aussieserverhosts.com/) | No frills Australian Owned and operated High Performance Server hosting for some of the most demanding games serving Australia and New Zealand. |
 | [**VibeGAMES**](https://vibegames.net/) | VibeGAMES is a game server provider that specializes in DDOS protection for the games we offer. We have multiple locations in the US, Brazil, France, Germany, Singapore, Australia and South Africa.|
 | [**RocketNode**](https://rocketnode.net) | RocketNode is a VPS and Game Server provider that offers the best performing VPS and Game hosting Solutions at affordable prices! |
-
-## Documentation
-* [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
-* [Wings Documentation](https://pterodactyl.io/wings/1.0/installing.html)
-* [Community Guides](https://pterodactyl.io/community/about.html)
-* Or, get additional help [via Discord](https://discord.gg/pterodactyl)
+| [**HostEZ**](https://hostez.io) | Providing North America Valheim, Minecraft and other popular games with low latency, high uptime and maximum availability. EZ! |
 
 ### Supported Games
-We support a huge variety of games by utilizing Docker containers to isolate each instance, giving you the power to
-host your games across the world without having to bloat each physical machine with additional dependencies.
+Pterodactyl supports a wide variety of games by utilizing Docker containers to isolate each instance. This gives
+you the power to run game servers without bloating machines with a host of additional dependencies.
 
 Some of our core supported games include:
 
@@ -73,27 +74,6 @@ and there are plenty more games available provided by the community. Some of the
 * [and many more...](https://github.com/parkervcp/eggs)
 
 ## License
-```
-Copyright (c) 2015 - 2021 Dane Everitt <dane@daneeveritt.com> and Contributors
+Pterodactyl® Copyright © 2015 - 2022 Dane Everitt and contributors.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
-
-Some Javascript and CSS used within the panel are licensed under a `MIT` or `Apache 2.0` license. Please check their
-respective header files for more information.
+Code released under the [MIT License](./LICENSE.md).

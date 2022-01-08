@@ -46,7 +46,7 @@ export default () => {
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={'Configure Two Factor'}>
+                <ContentBox css={tw`lg:ml-8 mt-8 lg:mt-0`} title={'Configure Two Factor'}>
                     <ConfigureTwoFactorForm/>
                 </ContentBox>
             </Container>
