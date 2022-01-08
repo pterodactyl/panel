@@ -10,6 +10,7 @@ import PowerControls from '@/components/server/PowerControls';
 import { EulaModalFeature, JavaVersionModalFeature, GSLTokenModalFeature } from '@feature/index';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import Spinner from '@/components/elements/Spinner';
+import { usePermissions } from '@/plugins/usePermissions';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -50,6 +51,7 @@ const ServerConsole = () => {
                         </Can>
                 }
             </div>
+            
             <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
                 <Spinner.Suspense>
                     <ErrorBoundary>

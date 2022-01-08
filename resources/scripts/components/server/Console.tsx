@@ -75,7 +75,8 @@ export default () => {
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
+    const [ canSendCommands ] = usePermissions([ 'control.sendconsole' ]);
+    const [ canReadConsole ] = usePermissions([ 'control.readconsole' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
@@ -202,31 +203,35 @@ export default () => {
     }, [ connected, instance ]);
 
     return (
-        <div css={tw`text-xs font-mono relative`}>
-            <SpinnerOverlay visible={!connected} size={'large'} />
-            <div
-                css={[
-                    tw`rounded-t p-2 bg-black w-full`,
-                    !canSendCommands && tw`rounded-b`,
-                ]}
-                style={{ minHeight: '16rem' }}
-            >
-                <TerminalDiv id={'terminal'} ref={ref} />
-            </div>
-            {canSendCommands &&
-                <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
-                    <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
-                    <div css={tw`w-full`}>
-                        <CommandInput
-                            type={'text'}
-                            placeholder={'Type a command...'}
-                            aria-label={'Console command input.'}
-                            disabled={!instance || !connected}
-                            onKeyDown={handleCommandKeyDown}
-                        />
+        <>
+            {canReadConsole &&
+                <div css={tw`text-xs font-mono relative`}>
+                    <SpinnerOverlay visible={!connected} size={'large'} />
+                    <div
+                        css={[
+                            tw`rounded-t p-2 bg-black w-full`,
+                            !canSendCommands && tw`rounded-b`,
+                        ]}
+                        style={{ minHeight: '16rem' }}
+                    >
+                        <TerminalDiv id={'terminal'} ref={ref} />
                     </div>
+                    {canSendCommands &&
+                        <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
+                            <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
+                            <div css={tw`w-full`}>
+                                <CommandInput
+                                    type={'text'}
+                                    placeholder={'Type a command...'}
+                                    aria-label={'Console command input.'}
+                                    disabled={!instance || !connected}
+                                    onKeyDown={handleCommandKeyDown}
+                                />
+                            </div>
+                        </div>
+                    }
                 </div>
             }
-        </div>
+        </>
     );
 };

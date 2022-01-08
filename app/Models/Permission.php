@@ -16,7 +16,8 @@ class Permission extends Model
      * Constants defining different permissions available.
      */
     public const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
-    public const ACTION_CONTROL_CONSOLE = 'control.console';
+    public const ACTION_CONTROL_CONSOLE_SEND = 'control.sendconsole';
+    public const ACTION_CONTROL_CONSOLE_READ = 'control.sendconsole';
     public const ACTION_CONTROL_START = 'control.start';
     public const ACTION_CONTROL_STOP = 'control.stop';
     public const ACTION_CONTROL_RESTART = 'control.restart';
@@ -120,7 +121,8 @@ class Permission extends Model
         'control' => [
             'description' => 'Permissions that control a user\'s ability to control the power state of a server, or send commands.',
             'keys' => [
-                'console' => 'Allows a user to send commands to the server instance via the console.',
+                'sendconsole' => 'Allows a user to send commands to the server instance via the console.',
+                'readconsole' => 'Allows a user to read the console.',
                 'start' => 'Allows a user to start the server if it is stopped.',
                 'stop' => 'Allows a user to stop a server if it is running.',
                 'restart' => 'Allows a user to perform a server restart. This allows them to start the server if it is offline, but not put the server in a completely stopped state.',

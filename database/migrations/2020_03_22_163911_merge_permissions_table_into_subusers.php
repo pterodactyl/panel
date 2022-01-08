@@ -21,7 +21,7 @@ class MergePermissionsTableIntoSubusers extends Migration
         'power-stop' => P::ACTION_CONTROL_STOP,
         'power-restart' => P::ACTION_CONTROL_RESTART,
         'power-kill' => P::ACTION_CONTROL_STOP,
-        'send-command' => P::ACTION_CONTROL_CONSOLE,
+        'send-command' => P::ACTION_CONTROL_CONSOLE_SEND,
         'list-subusers' => P::ACTION_USER_READ,
         'view-subuser' => P::ACTION_USER_READ,
         'edit-subuser' => P::ACTION_USER_UPDATE,

@@ -12,7 +12,7 @@ class SendCommandRequest extends ClientApiRequest
      */
     public function permission(): string
     {
-        return Permission::ACTION_CONTROL_CONSOLE;
+        return Permission::ACTION_CONTROL_CONSOLE_SEND;
     }
 
     /**
