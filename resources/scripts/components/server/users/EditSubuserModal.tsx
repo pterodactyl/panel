@@ -1,22 +1,23 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { Subuser } from '@/state/server/subusers';
-import { Form, Formik } from 'formik';
-import { array, object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
-import { ServerContext } from '@/state/server';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import Can from '@/components/elements/Can';
-import { usePermissions } from '@/plugins/usePermissions';
-import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
-import asModal from '@/hoc/asModal';
+import Can from '@/components/elements/Can';
+import CheckBox from '@/components/elements/Checkbox';
+import Field from '@/components/elements/Field';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import PermissionRow from '@/components/server/users/PermissionRow';
+import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import ModalContext from '@/context/ModalContext';
+import asModal from '@/hoc/asModal';
+import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
+import { usePermissions } from '@/plugins/usePermissions';
+import { ApplicationStore } from '@/state';
+import { ServerContext } from '@/state/server';
+import { Subuser } from '@/state/server/subusers';
+import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
+import { Form, Formik } from 'formik';
+import React, { useContext, useEffect, useRef } from 'react';
+import tw from 'twin.macro';
+import { array, object, string } from 'yup';
 
 type Props = {
     subuser?: Subuser;
@@ -115,6 +116,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                     </div>
                 }
                 {!subuser &&
+                <>
                     <div css={tw`mt-6`}>
                         <Field
                             name={'email'}
@@ -122,6 +124,19 @@ const EditSubuserModal = ({ subuser }: Props) => {
                             description={'Enter the email address of the user you wish to invite as a subuser for this server.'}
                         />
                     </div>
+                    <div css={tw`bg-neutral-900 mt-4 p-3 rounded-t`}>
+                        <div css={tw`flex items-center`}>
+                            <p css={tw`text-sm uppercase flex-1`}>Select All</p>
+                            <CheckBox
+                                id={`permission_${permissions}`}
+                                name={'permissions'}
+                                css={tw`w-5 h-5`}
+                                value={''}
+                            >
+                            </CheckBox>
+                        </div>
+                    </div>
+                </>
                 }
                 <div css={tw`my-6`}>
                     {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => (
