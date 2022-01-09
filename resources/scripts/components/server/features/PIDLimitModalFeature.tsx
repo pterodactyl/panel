@@ -56,8 +56,8 @@ const PIDLimitModalFeature = () => {
                         <h2 css={tw`text-2xl mb-4 text-neutral-100 `}>Memory or process limit reached...</h2>
                     </div>
                     <p css={tw`mt-4`}>The server has reached the maximum process or memory limit.</p>
-                    <p css={tw`mt-4`}>Please increase the <code css={tw`font-mono bg-neutral-900`}>container_pid_limit</code> in the Wings <code css={tw`font-mono bg-neutral-900`}>config.yml</code> file, located at <code css={tw`font-mono bg-neutral-900`}>/etc/pterodactyl</code>, by default.</p>
-                    <p css={tw`mt-4`}>Restart Wings and the affected server to apply these new limits.</p>
+                    <p css={tw`mt-4`}>Increasing <code css={tw`font-mono bg-neutral-900`}>container_pid_limit</code> in the wings configuration, <code css={tw`font-mono bg-neutral-900`}>config.yml</code>, might help resolve this issue.</p>
+                    <p css={tw`mt-4`}><b>Note: If the configuration file is modified, then wings will need to be restarted for the changes to take effect.</b></p>
                     <div css={tw`mt-8 sm:flex items-center justify-end`}>
                         <Button onClick={() => setVisible(false)} css={tw`w-full sm:w-auto border-transparent`}>
                             Close
