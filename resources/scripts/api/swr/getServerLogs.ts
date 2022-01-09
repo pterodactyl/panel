@@ -1,7 +1,7 @@
 import useSWR from 'swr';
 import http, { getPaginationSet, PaginatedResult } from '@/api/http';
-import { ServerLog } from '@/api/server/types';
-import { rawDataToServerLog } from '@/api/transformers';
+import { ServerAuditLog } from '@/api/server/types';
+import { rawDataToServerAuditLog } from '@/api/transformers';
 import { ServerContext } from '@/state/server';
 import { createContext, useContext } from 'react';
 
@@ -12,7 +12,7 @@ interface ctx {
 
 export const Context = createContext<ctx>({ page: 1, setPage: () => 1 });
 
-type LogResponse = PaginatedResult<ServerLog> & { logCount: number };
+type LogResponse = PaginatedResult<ServerAuditLog> & { logCount: number };
 
 export default () => {
     const { page } = useContext(Context);
@@ -22,7 +22,7 @@ export default () => {
         const { data } = await http.get(`/api/client/servers/${uuid}/logs`, { params: { page } });
 
         return ({
-            items: (data.data || []).map(rawDataToServerLog),
+            items: (data.data || []).map(rawDataToServerAuditLog),
             pagination: getPaginationSet(data.meta.pagination),
             logCount: data.meta.log_count,
         });

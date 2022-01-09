@@ -22,7 +22,7 @@ export interface ServerEggVariable {
     rules: string[];
 }
 
-export interface ServerLog {
+export interface ServerAuditLog {
     uuid: string;
     user: string;
     action: string;

@@ -56,7 +56,7 @@ class Permission extends Model
     public const ACTION_FILE_ARCHIVE = 'file.archive';
     public const ACTION_FILE_SFTP = 'file.sftp';
 
-    public const ACTION_LOGS_READ = 'logs.read';
+    public const ACTION_AUDIT_READ = 'audit.read';
 
     public const ACTION_STARTUP_READ = 'startup.read';
     public const ACTION_STARTUP_UPDATE = 'startup.update';
@@ -205,10 +205,10 @@ class Permission extends Model
             ],
         ],
 
-        'logs' => [
-            'description' => 'Permissions that control a user\'s access to the logs for this server.',
+        'audit' => [
+            'description' => 'Permissions that control a user\'s access to the audit logs for this server.',
             'keys' => [
-                'read' => 'Allows a user to read logs.',
+                'read' => 'Allows a user to read audit logs.',
             ],
         ],
 

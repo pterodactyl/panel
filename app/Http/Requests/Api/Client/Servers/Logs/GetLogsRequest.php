@@ -10,6 +10,6 @@ class GetLogsRequest extends ClientApiRequest implements ClientPermissionsReques
 {
     public function permission(): string
     {
-        return Permission::ACTION_LOGS_READ;
+        return Permission::ACTION_AUDIT_READ;
     }
 }

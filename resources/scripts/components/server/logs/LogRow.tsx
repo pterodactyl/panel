@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { formatDistanceToNow } from 'date-fns';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import { ServerLog } from '@/api/server/types';
+import { ServerAuditLog } from '@/api/server/types';
 import { LogHandler } from '@/components/server/logs/LogHandler';
 import Modal from '@/components/elements/Modal';
 import Label from '@/components/elements/Label';
@@ -11,7 +11,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEye } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
-    log: ServerLog;
+    log: ServerAuditLog;
     className?: string;
 }
 
