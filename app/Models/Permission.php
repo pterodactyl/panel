@@ -16,8 +16,8 @@ class Permission extends Model
      * Constants defining different permissions available.
      */
     public const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
-    public const ACTION_CONTROL_CONSOLE_SEND = 'control.sendconsole';
-    public const ACTION_CONTROL_CONSOLE_READ = 'control.sendconsole';
+    public const ACTION_CONTROL_CONSOLE_SEND = 'control.send-console';
+    public const ACTION_CONTROL_CONSOLE_READ = 'control.read-console';
     public const ACTION_CONTROL_START = 'control.start';
     public const ACTION_CONTROL_STOP = 'control.stop';
     public const ACTION_CONTROL_RESTART = 'control.restart';

@@ -75,8 +75,8 @@ export default () => {
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [ canSendCommands ] = usePermissions([ 'control.sendconsole' ]);
-    const [ canReadConsole ] = usePermissions([ 'control.readconsole' ]);
+    const [ canSendCommands ] = usePermissions([ 'control.send-console' ]);
+    const [ canReadConsole ] = usePermissions([ 'control.read-console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
