@@ -124,7 +124,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                             description={'Enter the email address of the user you wish to invite as a subuser for this server.'}
                         />
                     </div>
-                    <div css={tw`bg-neutral-900 mt-4 p-3 rounded-t`}>
+                    <div css={tw`bg-neutral-900 mt-4 p-3 rounded-t rounded-b`}>
                         <div css={tw`flex items-center`}>
                             <p css={tw`text-sm uppercase flex-1`}>Select All</p>
                             <CheckBox
