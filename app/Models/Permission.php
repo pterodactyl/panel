@@ -121,8 +121,8 @@ class Permission extends Model
         'control' => [
             'description' => 'Permissions that control a user\'s ability to control the power state of a server, or send commands.',
             'keys' => [
-                'sendconsole' => 'Allows a user to send commands to the server instance via the console.',
-                'readconsole' => 'Allows a user to read the console.',
+                'send-console' => 'Allows a user to send commands to the server instance via the console.',
+                'read-console' => 'Allows a user to read the console.',
                 'start' => 'Allows a user to start the server if it is stopped.',
                 'stop' => 'Allows a user to stop a server if it is running.',
                 'restart' => 'Allows a user to perform a server restart. This allows them to start the server if it is offline, but not put the server in a completely stopped state.',
