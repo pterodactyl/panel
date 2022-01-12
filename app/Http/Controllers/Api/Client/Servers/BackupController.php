@@ -17,7 +17,12 @@ use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\BackupRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\LockBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DeleteBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DownloadBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\RestoreBackupRequest;
 
 class BackupController extends ClientApiController
 {
@@ -52,12 +57,8 @@ class BackupController extends ClientApiController
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(Request $request, Server $server): array
+    public function index(BackupRequest $request, Server $server): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new AuthorizationException();
-        }
-
         $limit = min($request->query('per_page') ?? 20, 50);
 
         return $this->fractal->collection($server->backups()->paginate($limit))
@@ -108,12 +109,8 @@ class BackupController extends ClientApiController
      * @throws \Throwable
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function toggleLock(Request $request, Server $server, Backup $backup): array
+    public function toggleLock(LockBackupRequest $request, Server $server, Backup $backup): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            throw new AuthorizationException();
-        }
-
         $action = $backup->is_locked ? AuditLog::SERVER__BACKUP_UNLOCKED : AuditLog::SERVER__BACKUP_LOCKED;
         $server->audit($action, function (AuditLog $audit) use ($backup) {
             $audit->metadata = ['backup_uuid' => $backup->uuid];
@@ -133,12 +130,8 @@ class BackupController extends ClientApiController
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function view(Request $request, Server $server, Backup $backup): array
+    public function view(BackupRequest $request, Server $server, Backup $backup): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new AuthorizationException();
-        }
-
         return $this->fractal->item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->toArray();
@@ -150,12 +143,8 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function delete(Request $request, Server $server, Backup $backup): JsonResponse
+    public function delete(DeleteBackupRequest $request, Server $server, Backup $backup): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            throw new AuthorizationException();
-        }
-
         $server->audit(AuditLog::SERVER__BACKUP_DELETED, function (AuditLog $audit) use ($backup) {
             $audit->metadata = ['backup_uuid' => $backup->uuid];
 
@@ -173,12 +162,8 @@ class BackupController extends ClientApiController
      * @throws \Throwable
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function download(Request $request, Server $server, Backup $backup): JsonResponse
+    public function download(DownloadBackupRequest $request, Server $server, Backup $backup): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DOWNLOAD, $server)) {
-            throw new AuthorizationException();
-        }
-
         if ($backup->disk !== Backup::ADAPTER_AWS_S3 && $backup->disk !== Backup::ADAPTER_WINGS) {
             throw new BadRequestHttpException('The backup requested references an unknown disk driver type and cannot be downloaded.');
         }
@@ -205,12 +190,8 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function restore(Request $request, Server $server, Backup $backup): JsonResponse
+    public function restore(RestoreBackupRequest $request, Server $server, Backup $backup): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
-            throw new AuthorizationException();
-        }
-
         // Cannot restore a backup unless a server is fully installed and not currently
         // processing a different backup restoration request.
         if (!is_null($server->status)) {
