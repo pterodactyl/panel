@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Request;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
