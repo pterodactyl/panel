@@ -18,7 +18,6 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\GetBackupRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\LockBackupRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\GetBackupsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DeleteBackupRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\RestoreBackupRequest;
@@ -57,7 +56,7 @@ class BackupController extends ClientApiController
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(GetBackupsRequest $request, Server $server): array
+    public function index(GetBackupRequest $request, Server $server): array
     {
         $limit = min($request->query('per_page') ?? 20, 50);
 
