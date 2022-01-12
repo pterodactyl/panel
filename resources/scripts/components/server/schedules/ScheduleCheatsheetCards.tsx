@@ -12,7 +12,7 @@ export default () => {
                         <div css={tw`w-1/2`}>every 5 minutes</div>
                     </div>
                     <div css={tw`flex py-4 px-6 bg-neutral-500`}>
-                        <div css={tw`w-1/2`}>* */1 * * *</div>
+                        <div css={tw`w-1/2`}>0 */1 * * *</div>
                         <div css={tw`w-1/2`}>every hour</div>
                     </div>
                     <div css={tw`flex py-4 px-6`}>
