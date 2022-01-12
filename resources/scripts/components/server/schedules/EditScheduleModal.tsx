@@ -102,6 +102,10 @@ const EditScheduleModal = ({ schedule }: Props) => {
                         <Field name={'month'} label={'Month'}/>
                         <Field name={'dayOfWeek'} label={'Day of week'}/>
                     </div>
+                    <p css={tw`text-neutral-400 text-xs mt-2`}>
+                        The schedule system supports the use of Cronjob syntax when defining when tasks should begin
+                        running. Use the fields above to specify when these tasks should begin running.
+                    </p>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <Switch
                             name={'show_cheatsheet'}
@@ -116,10 +120,6 @@ const EditScheduleModal = ({ schedule }: Props) => {
                             </div>
                         }
                     </div>
-                    <p css={tw`text-neutral-400 text-xs mt-2`}>
-                        The schedule system supports the use of Cronjob syntax when defining when tasks should begin
-                        running. Use the fields above to specify when these tasks should begin running.
-                    </p>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'onlyWhenOnline'}
