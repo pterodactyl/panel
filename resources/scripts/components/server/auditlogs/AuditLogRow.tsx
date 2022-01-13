@@ -3,7 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { ServerAuditLog } from '@/api/server/types';
-import { LogHandler } from '@/components/server/logs/LogHandler';
+import { AuditLogHandler } from '@/components/server/logs/AuditLogHandler';
 import Modal from '@/components/elements/Modal';
 import Label from '@/components/elements/Label';
 import Button from '@/components/elements/Button';
@@ -24,7 +24,7 @@ export default ({ log, className }: Props) => {
                 <h3 css={tw`mb-6 text-2xl`}>Audit log details</h3>
                 <div>
                     <Label>Action</Label>
-                    <p css={tw`text-sm`}>{LogHandler(log)}</p>
+                    <p css={tw`text-sm`}>{AuditLogHandler(log)}</p>
                 </div>
                 <div css={tw`mt-6`}>
                     <Label>User</Label>
@@ -56,7 +56,7 @@ export default ({ log, className }: Props) => {
             </Modal>
             <GreyRowBox css={tw`mb-2 w-full`} className={className}>
                 <div css={tw`flex-1 ml-4`}>
-                    <p css={tw`text-sm`}>{LogHandler(log)}</p>
+                    <p css={tw`text-sm`}>{AuditLogHandler(log)}</p>
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Action</p>
                 </div>
                 <div css={tw`flex-1 ml-4`}>

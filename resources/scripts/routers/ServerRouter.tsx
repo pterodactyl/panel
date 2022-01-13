@@ -10,7 +10,7 @@ import DatabasesContainer from '@/components/server/databases/DatabasesContainer
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import { CSSTransition } from 'react-transition-group';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
-import LogsContainer from '@/components/server/logs/LogsContainer';
+import AuditLogsContainer from '@/components/server/logs/AuditLogsContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditContainer';
@@ -187,9 +187,9 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
-                                    <Route path={`${match.path}/logs`} exact>
-                                        <RequireServerPermission permissions={'logs.*'}>
-                                            <LogsContainer/>
+                                    <Route path={`${match.path}/auditlogs`} exact>
+                                        <RequireServerPermission permissions={'auditlogs.*'}>
+                                            <AuditLogsContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>

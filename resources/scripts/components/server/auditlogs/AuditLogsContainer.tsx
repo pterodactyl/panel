@@ -2,16 +2,16 @@ import React, { useContext, useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import LogRow from '@/components/server/logs/LogRow';
+import AuditLogRow from '@/components/server/logs/AuditLogRow';
 import tw from 'twin.macro';
-import getServerLogs, { Context as ServerLogsContext } from '@/api/swr/getServerLogs';
+import getServerAuditLogs, { Context as ServerLogsContext } from '@/api/swr/getServerAuditLogs';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import Pagination from '@/components/elements/Pagination';
 
-const LogsContainer = () => {
+const AuditLogsContainer = () => {
     const { page, setPage } = useContext(ServerLogsContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: logs, error, isValidating } = getServerLogs();
+    const { data: logs, error, isValidating } = getServerAuditLogs();
 
     useEffect(() => {
         if (!error) {
@@ -41,7 +41,7 @@ const LogsContainer = () => {
                                 }
                             </p>
                         :
-                        items.map((log, index) => <LogRow
+                        items.map((log, index) => <AuditLogRow
                             key={log.uuid}
                             log={log}
                             css={index > 0 ? tw`mt-2` : undefined}
@@ -56,7 +56,7 @@ export default () => {
     const [ page, setPage ] = useState<number>(1);
     return (
         <ServerLogsContext.Provider value={{ page, setPage }}>
-            <LogsContainer/>
+            <AuditLogsContainer/>
         </ServerLogsContext.Provider>
     );
 };

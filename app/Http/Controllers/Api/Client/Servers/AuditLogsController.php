@@ -9,12 +9,12 @@ use Pterodactyl\Models\Permission;
 use Illuminate\Auth\Access\AuthorizationException;
 use Pterodactyl\Transformers\Api\Client\AuditLogTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Logs\GetLogsRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\AuditLogs\GetAuditLogsRequest;
 
-class LogsController extends ClientApiController
+class AuditLogsController extends ClientApiController
 {
     /**
-     * LogsController constructor.
+     * AuditLogsController constructor.
      */
     public function __construct() {
         parent::__construct();

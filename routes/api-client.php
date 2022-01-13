@@ -113,8 +113,8 @@ Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServ
         Route::put('/variable', 'Servers\StartupController@update');
     });
 
-    Route::group(['prefix' => '/logs'], function () {
-        Route::get('/', 'Servers\LogsController@index');
+    Route::group(['prefix' => '/auditlogs'], function () {
+        Route::get('/', 'Servers\AuditLogsController@index');
     });
 
     Route::group(['prefix' => '/settings'], function () {

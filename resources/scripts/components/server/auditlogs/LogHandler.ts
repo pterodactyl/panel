@@ -1,6 +1,6 @@
 import { ServerAuditLog } from '@/api/server/types';
 
-export function LogHandler (log: ServerAuditLog) {
+export function AuditLogHandler (log: ServerAuditLog) {
     switch (log.action) {
         case 'server:backup.start':
             return `Created backup ${log.metadata.backup_name}`;

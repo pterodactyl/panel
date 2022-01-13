@@ -9,7 +9,7 @@ export type SubuserPermission =
     'startup.read' | 'startup.update' |
     'database.create' | 'database.read' | 'database.update' | 'database.delete' | 'database.view_password' |
     'schedule.create' | 'schedule.read' | 'schedule.update' | 'schedule.delete' |
-    'audit.read'
+    'audit-logs.read'
     ;
 
 export interface Subuser {
