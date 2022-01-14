@@ -3,7 +3,7 @@ import { formatDistanceToNow } from 'date-fns';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { ServerAuditLog } from '@/api/server/types';
-import { AuditLogHandler } from '@/components/server/logs/AuditLogHandler';
+import { AuditLogHandler } from '@/components/server/auditlogs/AuditLogHandler';
 import Modal from '@/components/elements/Modal';
 import Label from '@/components/elements/Label';
 import Button from '@/components/elements/Button';

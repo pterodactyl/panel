@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import AuditLogRow from '@/components/server/logs/AuditLogRow';
+import AuditLogRow from '@/components/server/auditlogs/AuditLogRow';
 import tw from 'twin.macro';
 import getServerAuditLogs, { Context as ServerLogsContext } from '@/api/swr/getServerAuditLogs';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';

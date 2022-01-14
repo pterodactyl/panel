@@ -10,7 +10,7 @@ import DatabasesContainer from '@/components/server/databases/DatabasesContainer
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import { CSSTransition } from 'react-transition-group';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
-import AuditLogsContainer from '@/components/server/logs/AuditLogsContainer';
+import AuditLogsContainer from '@/components/server/auditlogs/AuditLogsContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditContainer';
