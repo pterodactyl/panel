@@ -26,7 +26,7 @@ class AuditLogsController extends ClientApiController
      *
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function index(GetLogsRequest $request, Server $server): array
+    public function index(GetAuditLogsRequest $request, Server $server): array
     {
         $limit = min($request->query('per_page') ?? 20, 50);
 
