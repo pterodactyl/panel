@@ -124,7 +124,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                 <Can action={'startup.*'}>
                                     <NavLink to={`${match.url}/startup`}>Startup</NavLink>
                                 </Can>
-                                <Can action={'auditlogs.*'}>
+                                <Can action={'audit-logs.*'}>
                                     <NavLink to={`${match.url}/auditlogs`}>Audit Logs</NavLink>
                                 </Can>
                                 <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
@@ -188,7 +188,7 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                                     </Route>
                                     <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
                                     <Route path={`${match.path}/auditlogs`} exact>
-                                        <RequireServerPermission permissions={'auditlogs.*'}>
+                                        <RequireServerPermission permissions={'audit-logs.*'}>
                                             <AuditLogsContainer/>
                                         </RequireServerPermission>
                                     </Route>
