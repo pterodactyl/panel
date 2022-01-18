@@ -70,6 +70,7 @@ services:
       QUEUE_DRIVER: "redis"
       REDIS_HOST: "cache"
       DB_HOST: "database"
+      DB_PORT: "3306"
 networks:
   default:
     ipam:
