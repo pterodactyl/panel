@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
@@ -62,7 +63,7 @@ class UserDeletionService
 
         $servers = $this->serverRepository->setColumns('id')->findCountWhere([['owner_id', '=', $user]]);
         if ($servers > 0) {
-            throw new DisplayException($this->translator->trans('admin/user.exceptions.user_has_servers'));
+            throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
         }
 
         return $this->repository->delete($user);
