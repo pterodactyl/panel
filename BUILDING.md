@@ -5,9 +5,9 @@ Release versions of Pterodactyl will include pre-compiled, minified, and hashed 
 However, if you are interested in running custom themes or making modifications to the React files you'll need a build
 system in place to generate these compiled assets. To get your environment setup you'll need at minimum:
 
-* Node.js 12
-* [Yarn](https://classic.yarnpkg.com/lang/en/) v1
-* [Go](https://golang.org/) 1.15.
+* [Node.js](https://nodejs.org/en/) v14.x.x
+* [Yarn](https://classic.yarnpkg.com/lang/en/) v1.x.x
+* [Go](https://golang.org/) 1.17.x
 
 ### Install Dependencies
 ```bash

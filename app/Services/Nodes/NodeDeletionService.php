@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Pterodactyl - Panel
  * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
@@ -62,7 +63,7 @@ class NodeDeletionService
 
         $servers = $this->serverRepository->setColumns('id')->findCountWhere([['node_id', '=', $node]]);
         if ($servers > 0) {
-            throw new HasActiveServersException($this->translator->trans('exceptions.node.servers_attached'));
+            throw new HasActiveServersException($this->translator->get('exceptions.node.servers_attached'));
         }
 
         return $this->repository->delete($node);
