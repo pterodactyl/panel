@@ -12,7 +12,7 @@ You can provide additional settings using a custom `.env` file or by setting the
 
 ## Setup
 
-Start the docker container and the required dependencies (either provide existing ones or start containers as well, see the [docker-compose.yml](docker-compose.yml) file as an example).
+Start the docker container and the required dependencies (either provide existing ones or start containers as well, see the [docker-compose.yml](https://github.com/pterodactyl/panel/blob/develop/docker-compose.example.yml) file as an example.
 
 After the startup is complete you'll need to create a user.
 If you are running the docker container without docker-compose, use:

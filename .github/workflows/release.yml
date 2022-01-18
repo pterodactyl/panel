@@ -34,7 +34,7 @@ jobs:
       - name: Create release archive
         run: |
           rm -rf node_modules/ test/ codecov.yml CODE_OF_CONDUCT.md CONTRIBUTING.md phpunit.dusk.xml phpunit.xml Vagrantfile
-          tar -czf panel.tar.gz * .env.example .babel-plugin-macrosrc.js
+          tar -czf panel.tar.gz * .env.example .eslintignore .eslintrc.yml .babel-plugin-macrosrc.js
 
       - name: Extract changelog
         id: extract_changelog
