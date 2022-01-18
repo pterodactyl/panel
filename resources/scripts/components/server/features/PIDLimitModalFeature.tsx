@@ -24,7 +24,7 @@ const PIDLimitModalFeature = () => {
 
         const errors = [
             'pthread_create failed',
-            'Exception in thread "Craft Async Scheduler Management Thread"',
+            'exception in thread "craft async scheduler management thread"',
             'unable to create new native thread',
             'unable to create native thread',
         ];
