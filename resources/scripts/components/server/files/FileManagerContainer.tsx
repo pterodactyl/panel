@@ -22,8 +22,8 @@ import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox
 import { hashToPath } from '@/helpers';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
-    return files.sort((a, b) => a.name.localeCompare(b.name))
-        .sort((a, b) => a.isFile === b.isFile ? 0 : (a.isFile ? 1 : -1));
+    const sortedFiles: FileObject[] = files.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.isFile === b.isFile ? 0 : (a.isFile ? 1 : -1));
+    return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name);
 };
 
 export default () => {
