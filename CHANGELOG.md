@@ -13,6 +13,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes missing validation of Egg Author email addresses during the setup process that could cause unexpected failures later on.
 * Fixes font rendering issues of the console on Firefox due to an outdated version of xterm.js being used.
 * Fixes display overlap issues of the two-factor configuration form in a user's settings.
+* **[security]** When authenticating using an API key a user session is now only persisted for the duration of the request before being destroyed.
 
 ### Changed
 * CPU graph changed to show the maximum amount of CPU available to a server to better match how the memory graph is displayed.
