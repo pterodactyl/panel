@@ -83,10 +83,6 @@ class ServerDeletionService
                 try {
                     $this->deleteBackupService->handle($backup);
                 } catch (Exception $exception) {
-                    if (!$this->force) {
-                        throw $exception;
-                    }
-
                     // Oh well, just try to delete the backup entry we have from the database
                     // so that the server itself can be deleted. This will leave it dangling on
                     // the host instance, but we couldn't delete it anyways so not sure how we would
@@ -96,6 +92,10 @@ class ServerDeletionService
                     $backup->delete();
 
                     Log::warning($exception);
+
+                    if (!$this->force) {
+                        throw $exception;
+                    }
                 }
             }
 
@@ -103,10 +103,6 @@ class ServerDeletionService
                 try {
                     $this->databaseManagementService->delete($database);
                 } catch (Exception $exception) {
-                    if (!$this->force) {
-                        throw $exception;
-                    }
-
                     // Oh well, just try to delete the database entry we have from the database
                     // so that the server itself can be deleted. This will leave it dangling on
                     // the host instance, but we couldn't delete it anyways so not sure how we would
@@ -116,6 +112,10 @@ class ServerDeletionService
                     $database->delete();
 
                     Log::warning($exception);
+
+                    if (!$this->force) {
+                        throw $exception;
+                    }
                 }
             }
 
