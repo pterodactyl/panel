@@ -13,7 +13,6 @@ import { usePermissions } from '@/plugins/usePermissions';
 import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import Input from '@/components/elements/Input';
 import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import PermissionSelectAll from '@/components/server/users/PermissionSelectAll';
 import asModal from '@/hoc/asModal';
