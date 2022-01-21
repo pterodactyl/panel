@@ -1,6 +1,5 @@
 import React, { memo, useCallback } from 'react';
 import { useField } from 'formik';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import isEqual from 'react-fast-compare';
@@ -8,10 +7,9 @@ import isEqual from 'react-fast-compare';
 interface Props {
   isEditable: boolean;
   permissions: string[];
-  className?: string;
 }
 
-const PermissionSelectAll: React.FC<Props> = memo(({ isEditable, permissions, className }) => {
+const PermissionSelectAll: React.FC<Props> = memo(({ isEditable, permissions }) => {
     const [ { value }, , { setValue } ] = useField<string[]>('permissions');
 
     const onCheckboxClicked = useCallback(
