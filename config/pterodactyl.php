@@ -193,6 +193,7 @@ return [
     */
     'environment_variables' => [
         'P_SERVER_ALLOCATION_LIMIT' => 'allocation_limit',
+        'P_SERVER_NODE_FQDN' => 'node.fqdn'
     ],
 
     /*
