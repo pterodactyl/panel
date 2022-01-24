@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
@@ -155,8 +156,8 @@ class Node extends Model
                 'port' => $this->daemonListen,
                 'ssl' => [
                     'enabled' => (!$this->behind_proxy && $this->scheme === 'https'),
-                    'cert' => '/etc/letsencrypt/live/' . $this->fqdn . '/fullchain.pem',
-                    'key' => '/etc/letsencrypt/live/' . $this->fqdn . '/privkey.pem',
+                    'cert' => '/etc/letsencrypt/live/' . Str::lower($this->fqdn) . '/fullchain.pem',
+                    'key' => '/etc/letsencrypt/live/' . Str::lower($this->fqdn) . '/privkey.pem',
                 ],
                 'upload_limit' => $this->upload_size,
             ],
