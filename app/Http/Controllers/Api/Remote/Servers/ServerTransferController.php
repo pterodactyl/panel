@@ -128,6 +128,8 @@ class ServerTransferController extends Controller
     /**
      * The daemon notifies us about a transfer success.
      *
+     * @return \Illuminate\Http\JsonResponse
+     *
      * @throws \Throwable
      */
     public function success(string $uuid): JsonResponse
