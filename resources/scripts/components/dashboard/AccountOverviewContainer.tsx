@@ -37,7 +37,7 @@ export default () => {
                 </MessageBox>
             }
 
-            <Container css={[tw`lg:grid lg:grid-rows-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
+            <Container css={[tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
