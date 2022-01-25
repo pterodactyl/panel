@@ -38,17 +38,17 @@ export default () => {
             }
 
             <Container css={[tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
-                <ContentBox css={tw`md:w-fit`} title={'Update Password'} showFlashes={'account:password'}>
+                <ContentBox css={tw`md:w-max`} title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
                 <ContentBox
-                    css={tw`mt-8 md:mt-0 md:ml-8 md:w-fit`}
+                    css={tw`mt-8 md:mt-0 md:ml-8 md:w-max`}
                     title={'Update Email Address'}
                     showFlashes={'account:email'}
                 >
                     <UpdateEmailAddressForm />
                 </ContentBox>
-                <ContentBox css={tw`lg:ml-8 mt-8 lg:mt-0 md:w-fit`} title={'Configure Two Factor'}>
+                <ContentBox css={tw`lg:ml-8 mt-8 lg:mt-0 md:w-max`} title={'Configure Two Factor'}>
                     <ConfigureTwoFactorForm />
                 </ContentBox>
             </Container>
