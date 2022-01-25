@@ -16,10 +16,6 @@ const Container = styled.div`
     & > div {
         ${tw`w-full`};
 
-        ${breakpoint('md')`
-            width: calc(50% - 1rem);
-        `}
-
         ${breakpoint('xl')`
             ${tw`w-auto flex-1`};
         `}
