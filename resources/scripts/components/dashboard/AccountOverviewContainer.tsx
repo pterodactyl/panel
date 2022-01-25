@@ -36,7 +36,7 @@ export default () => {
                     Your account must have two-factor authentication enabled in order to continue.
                 </MessageBox>
             }
-            <div css={tw`lg:grid lg:grid-cols-3`}>
+            <div css={tw`lg:grid lg:grid-rows-3`}>
                 <Container css={[tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
                     <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                         <UpdatePasswordForm />
