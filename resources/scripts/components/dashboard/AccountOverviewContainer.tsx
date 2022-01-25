@@ -42,7 +42,7 @@ export default () => {
                     <UpdatePasswordForm />
                 </ContentBox>
                 <ContentBox
-                    css={tw`mt-8 md:mt-0 md:ml-8`}
+                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
                     title={'Update Email Address'}
                     showFlashes={'account:email'}
                 >
