@@ -20,7 +20,7 @@ const Container = styled.div`
             width: calc(50% - 1rem);
         `}
 
-        ${breakpoint('xl')`
+        ${breakpoint('md')`
             ${tw`w-auto flex-1`};
         `}
     }
