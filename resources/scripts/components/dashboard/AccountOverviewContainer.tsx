@@ -16,7 +16,7 @@ const Container = styled.div`
     & > div {
         ${tw`w-full`};
 
-        ${breakpoint('md')`
+        ${breakpoint('sm')`
             width: calc(50% - 1rem);
         `}
 
