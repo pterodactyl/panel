@@ -32,25 +32,28 @@ export default () => {
     return (
         <PageContentBlock title={'Account Overview'}>
             {state?.twoFactorRedirect &&
-            <MessageBox title={'2-Factor Required'} type={'error'}>
-                Your account must have two-factor authentication enabled in order to continue.
-            </MessageBox>
+                <MessageBox title={'2-Factor Required'} type={'error'}>
+                    Your account must have two-factor authentication enabled in order to continue.
+                </MessageBox>
             }
-            <Container css={[ tw`lg:inline mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
-                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
-                    <UpdatePasswordForm/>
-                </ContentBox>
-                <ContentBox
-                    css={tw`lg:inline mt-8 md:mt-0 md:ml-8`}
-                    title={'Update Email Address'}
-                    showFlashes={'account:email'}
-                >
-                    <UpdateEmailAddressForm/>
-                </ContentBox>
-                <ContentBox css={tw`lg:inline lg:ml-8 mt-8 lg:mt-0`} title={'Configure Two Factor'}>
-                    <ConfigureTwoFactorForm/>
-                </ContentBox>
-            </Container>
+            <div css={tw`lg:grid lg:grid-cols-3`}>
+                <Container css={[tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
+                    <ContentBox title={'Update Password'} showFlashes={'account:password'}>
+                        <UpdatePasswordForm />
+                    </ContentBox>
+                    <ContentBox
+                        css={tw`mt-8 md:mt-0 md:ml-8`}
+                        title={'Update Email Address'}
+                        showFlashes={'account:email'}
+                    >
+                        <UpdateEmailAddressForm />
+                    </ContentBox>
+                    <ContentBox css={tw`lg:ml-8 mt-8 lg:mt-0`} title={'Configure Two Factor'}>
+                        <ConfigureTwoFactorForm />
+                    </ContentBox>
+                </Container>
+            </div>
+
         </PageContentBlock>
     );
 };
