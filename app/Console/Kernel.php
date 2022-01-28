@@ -21,14 +21,14 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // Execute scheduled commands for servers every minute, as if there was a normal cron running.
-        $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping();
+        $schedule->command('p:schedule:process')->everyMinute()->withoutOverlapping()->onOneServer();
 
         if (config('backups.prune_age')) {
             // Every 30 minutes, run the backup pruning command so that any abandoned backups can be deleted.
-            $schedule->command('p:maintenance:prune-backups')->everyThirtyMinutes();
+            $schedule->command('p:maintenance:prune-backups')->everyThirtyMinutes()->onOneServer();
         }
 
         // Every day cleanup any internal backups of service files.
-        $schedule->command('p:maintenance:clean-service-backups')->daily();
+        $schedule->command('p:maintenance:clean-service-backups')->daily()->onOneServer();
     }
 }
