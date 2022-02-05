@@ -24,7 +24,6 @@
         "react-copy-to-clipboard": "^5.0.2",
         "react-dom": "npm:@hot-loader/react-dom",
         "react-fast-compare": "^3.2.0",
-        "react-ga": "^3.1.2",
         "react-google-recaptcha": "^2.0.1",
         "react-hot-loader": "^4.12.21",
         "react-i18next": "^11.2.1",
