@@ -90,6 +90,6 @@ export function AuditLogHandler (log: ServerAuditLog) {
             return `Deleted subuser ${log.metadata.user}`;
 
         default:
-            return 'Log type not matching any know types';
+            return 'Log type not matching any known types';
     }
 }
