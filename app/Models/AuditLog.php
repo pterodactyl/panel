@@ -32,7 +32,7 @@ class AuditLog extends Model
     public const SERVER__BACKUP_LOCK = 'server:backup.lock';
     public const SERVER__BACKUP_UNLOCK = 'server:backup.unlock';
     public const SERVER__BACKUP_RESTORE_START = 'server:backup.restore.start';
-    public const SERVER__BACKUP_RESTORE_COMPLET = 'server:backup.restore.complete';
+    public const SERVER__BACKUP_RESTORE_COMPLETE = 'server:backup.restore.complete';
     public const SERVER__BACKUP_RESTORE_FAIL = 'server:backup.restore.fail';
 
     public const SERVER__DATABASE_CREATE = 'server:database.create';
