@@ -77,7 +77,7 @@ export const rawDataToServerEggVariable = ({ attributes }: FractalResponseData):
     rules: attributes.rules.split('|'),
 });
 
-export const rawDataToServerAuditLog= ({ attributes }: FractalResponseData): ServerAuditLog => ({
+export const rawDataToServerAuditLog = ({ attributes }: FractalResponseData): ServerAuditLog => ({
     uuid: attributes.uuid,
     user: attributes.user,
     action: attributes.action,
