@@ -63,7 +63,7 @@ class AuditLog extends Model
     public const SERVER__SETTINGS_REINSTALL = 'server:settings.reinstall';
     public const SERVER__SETTINGS_IMAGE = 'server:settings.image.update';
 
-    public const SERVER__SUBUSER_CREATED = 'server:subuser.create';
+    public const SERVER__SUBUSER_CREATE = 'server:subuser.create';
     public const SERVER__SUBUSER_UPDATE = 'server:subuser.update';
     public const SERVER__SUBUSER_DELETE = 'server:subuser.delete';
 

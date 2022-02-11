@@ -89,7 +89,7 @@ class SubuserController extends ClientApiController
      */
     public function store(StoreSubuserRequest $request, Server $server)
     {
-        $response = $server->audit(AuditLog::SERVER__SUBUSER_CREATED, function (AuditLog $audit, Server $server) use ($request) {
+        $response = $server->audit(AuditLog::SERVER__SUBUSER_CREATE, function (AuditLog $audit, Server $server) use ($request) {
             $response = $this->creationService->handle(
                 $server,
                 $request->input('email'),
