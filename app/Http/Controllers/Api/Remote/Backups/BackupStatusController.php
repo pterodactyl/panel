@@ -52,7 +52,7 @@ class BackupStatusController extends Controller
 
         $model->server->audit($action, function (AuditLog $audit) use ($model, $request) {
             $audit->is_system = true;
-            $audit->metadata = ['backup_name' => $model->name];
+            $audit->metadata = ['backup_uuid' => $model->uuid, 'backup_name' => $model->name];
 
             $successful = $request->boolean('successful');
             $model->fill([
@@ -101,7 +101,7 @@ class BackupStatusController extends Controller
         // so that power actions, file management, and backups can resume as normal.
         $model->server->audit($action, function (AuditLog $audit, Server $server) use ($model, $backup) {
             $audit->is_system = true;
-            $audit->metadata = ['backup_name' => $model->name];
+            $audit->metadata = ['backup_uuid' => $model->uuid, 'backup_name' => $model->name];
             $server->update(['status' => null]);
         });
 

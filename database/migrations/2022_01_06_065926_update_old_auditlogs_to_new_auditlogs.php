@@ -28,7 +28,7 @@ class UpdateOldAuditlogsToNewAuditlogs extends Migration
         foreach ($logs as $record) {
             $record_metadata = json_decode($record->metadata);
             $backup = DB::table('backups')->where('uuid', '=', $record_metadata->backup_uuid)->first();
-            $record_metadata = ['backup_name' => $backup->name];
+            $record_metadata = ['backup_uuid' => $backup->uuid, 'backup_name' => $backup->name];
             DB::table('audit_logs')->where('id', '=', $record->id)->update(['metadata' => $record_metadata]);
 
             if($record->action == "server:backup.started"){
@@ -77,13 +77,7 @@ class UpdateOldAuditlogsToNewAuditlogs extends Migration
 
         foreach ($logs as $record) {
             $record_metadata = json_decode($record->metadata);
-            $backup = DB::table('backups')
-            ->where([
-                ['name', '=', $record_metadata->backup_name],
-                ['server_id', '=', $record->server_id]
-            ])
-            ->first();
-            $record_metadata = ['backup_uuid' => $backup->uuid];
+            $record_metadata = ['backup_uuid' => $record_metadata->backup_uuid];
             DB::table('audit_logs')->where('id', '=', $record->id)->update(['metadata' => $record_metadata]);
 
             if($record->action == "server:backup.start"){
