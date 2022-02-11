@@ -41,7 +41,7 @@ export function AuditLogHandler (log: ServerAuditLog) {
                 return `Deleted file ${log.metadata.files[0]}`;
             }
         case 'server:filesystem.rename':
-            return `Renamed file ${log.metadata.file}`;
+            return `Renamed file ${log.metadata.files[0].from} to ${log.metadata.files[0].to}`;
         case 'server:filesystem.compress':
             if (log.metadata.files.length > 1) {
                 return `Compressed files ${log.metadata.files.join(', ')} in ${log.metadata.root}`;
