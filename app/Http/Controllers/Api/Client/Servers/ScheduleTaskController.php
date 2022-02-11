@@ -59,7 +59,7 @@ class ScheduleTaskController extends ClientApiController
         $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
 
         /** @var \Pterodactyl\Models\Task $task */
-        $task = $server->audit(AuditLog::SERVER__SCHEDULE_TASK_CREATE, function (AuditLog $audit, Server $server) use ($request, $schedule) {
+        $task = $server->audit(AuditLog::SERVER__SCHEDULE_TASK_CREATE, function (AuditLog $audit, Server $server) use ($request, $schedule, $lastTask) {
             $task = $this->repository->create([
                 'schedule_id' => $schedule->id,
                 'sequence_id' => ($lastTask->sequence_id ?? 0) + 1,
