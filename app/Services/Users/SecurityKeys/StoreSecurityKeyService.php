@@ -61,7 +61,7 @@ class StoreSecurityKeyService
         // void — so we need to just query the database immediately after this to pull the information
         // we just stored to return to the caller.
         /** @var \Pterodactyl\Models\SecurityKey $key */
-        $key = $user->securityKeys()->forceCreate([
+        $key = $user->securityKeys()->make()->forceFill([
             'uuid' => Uuid::uuid4(),
             'name' => $this->keyName ?? 'Security Key (' . Str::random() . ')',
             'public_key_id' => $source->getPublicKeyCredentialId(),
@@ -75,6 +75,8 @@ class StoreSecurityKeyService
             'counter' => $source->getCounter(),
             'other_ui' => $source->getOtherUI(),
         ]);
+
+        $key->saveOrFail();
 
         return $key;
     }
