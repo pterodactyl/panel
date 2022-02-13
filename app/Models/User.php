@@ -7,6 +7,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
+use Webauthn\PublicKeyCredentialUserEntity;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Relations\HasOne;
@@ -228,5 +229,13 @@ class User extends Model implements
                 $builder->where('servers.owner_id', $this->id)->orWhere('subusers.user_id', $this->id);
             })
             ->groupBy('servers.id');
+    }
+
+    /**
+     * @return \Webauthn\PublicKeyCredentialUserEntity
+     */
+    public function toPublicKeyCredentialEntity(): PublicKeyCredentialUserEntity
+    {
+        return new PublicKeyCredentialUserEntity($this->username, $this->uuid, $this->email, null);
     }
 }

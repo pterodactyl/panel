@@ -4,7 +4,6 @@ namespace Pterodactyl\Repositories\SecurityKeys;
 
 use Webauthn\Server;
 use Pterodactyl\Models\User;
-use Illuminate\Container\Container;
 use Webauthn\PublicKeyCredentialRpEntity;
 
 final class WebauthnServerRepository

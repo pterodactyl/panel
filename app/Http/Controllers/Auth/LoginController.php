@@ -16,7 +16,6 @@ class LoginController extends AbstractLoginController
 {
     private const METHOD_TOTP = 'totp';
     private const METHOD_WEBAUTHN = 'webauthn';
-    private const SESSION_PUBLICKEY_REQUEST = 'webauthn.publicKeyRequest';
 
     protected GeneratePublicKeyCredentialsRequestService $service;
 
@@ -98,7 +97,7 @@ class LoginController extends AbstractLoginController
         if (!empty($user->securityKeys)) {
             $key = $this->service->handle($user);
 
-            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $key);
+            $request->session()->put(SecurityKey::PK_SESSION_NAME, $key);
 
             $response['webauthn'] = ['public_key' => $key];
         }

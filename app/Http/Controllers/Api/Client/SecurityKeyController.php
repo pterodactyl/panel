@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\SecurityKey;
 use Nyholm\Psr7\Factory\Psr17Factory;
 use Illuminate\Contracts\Cache\Repository;
 use Psr\Http\Message\ServerRequestInterface;
@@ -97,7 +98,7 @@ class SecurityKeyController extends ClientApiController
         }
 
         $key = $this->storeSecurityKeyService
-            ->setRequest($this->getServerRequest($request))
+            ->setRequest(SecurityKey::getPsrRequestFactory($request))
             ->setKeyName($request->input('name'))
             ->handle($request->user(), $request->input('registration'), $credentials);
 
@@ -114,14 +115,5 @@ class SecurityKeyController extends ClientApiController
         $request->user()->securityKeys()->where('uuid', $securityKey)->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
-    }
-
-    protected function getServerRequest(Request $request): ServerRequestInterface
-    {
-        $factory = new Psr17Factory();
-
-        $httpFactory = new PsrHttpFactory($factory, $factory, $factory, $factory);
-
-        return $httpFactory->createRequest($request);
     }
 }

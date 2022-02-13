@@ -8,6 +8,9 @@
 | Endpoint: /auth
 |
 */
+
+use Pterodactyl\Http\Controllers\Auth;
+
 Route::group(['middleware' => 'guest'], function () {
     // These routes are defined so that we can continue to reference them programmatically.
     // They all route to the same controller function which passes off to React.
@@ -21,9 +24,9 @@ Route::group(['middleware' => 'guest'], function () {
     // @see \Pterodactyl\Providers\RouteServiceProvider
     Route::middleware(['throttle:authentication'])->group(function () {
         // Login endpoints.
-        Route::post('/login', 'LoginController@login')->middleware('recaptcha');
-        Route::post('/login/checkpoint', 'LoginCheckpointController')->name('auth.login-checkpoint');
-        Route::post('/login/checkpoint/key', 'WebauthnController@auth')->name('auth.login-checkpoint-key');
+        Route::post('/login', [Auth\LoginController::class, 'login'])->middleware('recaptcha');
+        Route::post('/login/checkpoint', [Auth\LoginCheckpointController::class, 'token'])->name('auth.login-checkpoint');
+        Route::post('/login/checkpoint/key', [Auth\LoginCheckpointController::class, 'key'])->name('auth.login-checkpoint-key');
 
         // Forgot password route. A post to this endpoint will trigger an
         // email to be sent containing a reset token.

@@ -22,12 +22,10 @@ export default (token: string, publicKey: PublicKeyCredentialRequestOptions): Pr
 
             const data = {
                 confirmation_token: token,
-
                 data: JSON.stringify({
                     id: credential.id,
                     type: credential.type,
                     rawId: bufferEncode(credential.rawId),
-
                     response: {
                         authenticatorData: bufferEncode(response.authenticatorData),
                         clientDataJSON: bufferEncode(response.clientDataJSON),

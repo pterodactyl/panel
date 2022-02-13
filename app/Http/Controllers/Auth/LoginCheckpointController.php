@@ -5,32 +5,44 @@ namespace Pterodactyl\Http\Controllers\Auth;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Pterodactyl\Models\User;
+use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
+use Pterodactyl\Models\SecurityKey;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Webauthn\PublicKeyCredentialRequestOptions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
+use Pterodactyl\Repositories\SecurityKeys\WebauthnServerRepository;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LoginCheckpointController extends AbstractLoginController
 {
     public const TOKEN_EXPIRED_MESSAGE = 'The authentication token provided has expired, please refresh the page and try again.';
 
-    private Encrypter $encrypter;
+    protected Encrypter $encrypter;
 
-    private Google2FA $google2FA;
+    protected Google2FA $google2FA;
 
-    private ValidationFactory $validation;
+    protected WebauthnServerRepository $repository;
+
+    protected ValidationFactory $validation;
 
     /**
      * LoginCheckpointController constructor.
      */
-    public function __construct(Encrypter $encrypter, Google2FA $google2FA, ValidationFactory $validation)
-    {
+    public function __construct(
+        Encrypter $encrypter,
+        Google2FA $google2FA,
+        ValidationFactory $validation,
+        WebauthnServerRepository $repository
+    ) {
         parent::__construct();
 
         $this->encrypter = $encrypter;
         $this->google2FA = $google2FA;
         $this->validation = $validation;
+        $this->repository = $repository;
     }
 
     /**
@@ -46,35 +58,9 @@ class LoginCheckpointController extends AbstractLoginController
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function __invoke(LoginCheckpointRequest $request)
+    public function token(LoginCheckpointRequest $request)
     {
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $this->sendLockoutResponse($request);
-
-            return;
-        }
-
-        $details = $request->session()->get('auth_confirmation_token');
-        if (!$this->hasValidSessionData($details)) {
-            $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
-
-            return;
-        }
-
-        if (!hash_equals($request->input('confirmation_token') ?? '', $details['token_value'])) {
-            $this->sendFailedLoginResponse($request);
-
-            return;
-        }
-
-        try {
-            /** @var \Pterodactyl\Models\User $user */
-            $user = User::query()->findOrFail($details['user_id']);
-        } catch (ModelNotFoundException $exception) {
-            $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
-
-            return;
-        }
+        $user = $this->extractUserFromRequest($request);
 
         // Recovery tokens go through a slightly different pathway for usage.
         if (!is_null($recoveryToken = $request->input('recovery_token'))) {
@@ -90,6 +76,65 @@ class LoginCheckpointController extends AbstractLoginController
         }
 
         $this->sendFailedLoginResponse($request, $user, !empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
+    }
+
+    /**
+     * Authenticates a login request using a security key for a user.
+     *
+     * @param \Illuminate\Http\Request $request
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function key(Request $request)
+    {
+        $key = $request->session()->get(SecurityKey::PK_SESSION_NAME);
+        if (!$key instanceof PublicKeyCredentialRequestOptions) {
+            throw new BadRequestHttpException('No security keys configured in session.');
+        }
+        
+        $user = $this->extractUserFromRequest($request);
+
+        $source = $this->repository->getServer($user)->loadAndCheckAssertionResponse(
+            $request->input('data'),
+            $key,
+            $user->toPublicKeyCredentialEntity(),
+            SecurityKey::getPsrRequestFactory($request)
+        );
+
+        dd($source->getUserHandle());
+    }
+
+    /**
+     * @param \Illuminate\Http\Request $request
+     * @return \Pterodactyl\Models\User
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    protected function extractUserFromRequest(Request $request): User
+    {
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $this->sendLockoutResponse($request);
+        }
+
+        $details = $request->session()->get('auth_confirmation_token');
+        if (!$this->hasValidSessionData($details)) {
+            $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+        }
+
+        if (!hash_equals($request->input('confirmation_token') ?? '', $details['token_value'])) {
+            $this->sendFailedLoginResponse($request);
+        }
+
+        try {
+            /** @var \Pterodactyl\Models\User $user */
+            $user = User::query()->findOrFail($details['user_id']);
+        } catch (ModelNotFoundException $exception) {
+            $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
+        }
+
+        return $user;
     }
 
     /**

@@ -3,19 +3,24 @@
 namespace Pterodactyl\Models;
 
 use Ramsey\Uuid\Uuid;
+use Illuminate\Http\Request;
 use Ramsey\Uuid\UuidInterface;
 use Webauthn\TrustPath\TrustPath;
+use Nyholm\Psr7\Factory\Psr17Factory;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\TrustPath\TrustPathLoader;
 use Webauthn\PublicKeyCredentialDescriptor;
+use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
 
 class SecurityKey extends Model
 {
     use HasFactory;
 
     public const RESOURCE_NAME = 'security_key';
+    public const PK_SESSION_NAME = 'security_key_pk_request';
 
     protected $casts = [
         'user_id' => 'int',
@@ -108,5 +113,20 @@ class SecurityKey extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Returns a PSR17 Request factory to be used by different Webauthn tooling.
+     *
+     * @param \Illuminate\Http\Request $request
+     * @return \Psr\Http\Message\ServerRequestInterface
+     */
+    public static function getPsrRequestFactory(Request $request): ServerRequestInterface
+    {
+        $factory = new Psr17Factory();
+
+        $httpFactory = new PsrHttpFactory($factory, $factory, $factory, $factory);
+
+        return $httpFactory->createRequest($request);
     }
 }
