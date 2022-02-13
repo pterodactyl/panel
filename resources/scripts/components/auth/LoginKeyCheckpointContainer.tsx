@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import tw from 'twin.macro';
 import { DivContainer as LoginFormContainer } from '@/components/auth/LoginFormContainer';
 import useFlash from '@/plugins/useFlash';
@@ -20,7 +20,7 @@ interface Credential extends PublicKeyCredential {
     response: AuthenticatorAssertionResponse;
 }
 
-const challenge = async (publicKey: PublicKeyCredentialRequestOptions): Promise<Credential> => {
+const challenge = async (publicKey: PublicKeyCredentialRequestOptions, signal?: AbortSignal): Promise<Credential> => {
     const publicKeyCredential = Object.assign({}, publicKey);
 
     publicKeyCredential.challenge = bufferDecode(base64Decode(publicKey.challenge.toString()));
@@ -28,7 +28,7 @@ const challenge = async (publicKey: PublicKeyCredentialRequestOptions): Promise<
         publicKeyCredential.allowCredentials = decodeSecurityKeyCredentials(publicKey.allowCredentials);
     }
 
-    const credential = await navigator.credentials.get({ publicKey: publicKeyCredential }) as Credential | null;
+    const credential = await navigator.credentials.get({ signal, publicKey: publicKeyCredential }) as Credential | null;
     if (!credential) return Promise.reject(new Error('No credentials provided for challenge.'));
 
     return credential;
@@ -37,13 +37,14 @@ const challenge = async (publicKey: PublicKeyCredentialRequestOptions): Promise<
 export default () => {
     const history = useHistory();
     const location = useLocation<LocationParams>();
+    const controller = useRef(new AbortController());
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ redirecting, setRedirecting ] = useState(false);
 
     const triggerChallengePrompt = () => {
         clearFlashes();
 
-        challenge(location.state.publicKey)
+        challenge(location.state.publicKey, controller.current.signal)
             .then((credential) => {
                 setRedirecting(true);
 
@@ -81,6 +82,12 @@ export default () => {
     };
 
     useEffect(() => {
+        return () => {
+            controller.current.abort();
+        };
+    });
+
+    useEffect(() => {
         if (!location.state?.token) {
             history.replace('/auth/login');
         } else {
@@ -111,14 +118,14 @@ export default () => {
                 </div>
                 <Link
                     css={tw`block mt-12 mb-6`}
-                    to={{ pathname: '/auth/login/checkpoint' }}
+                    to={{ pathname: '/auth/login/checkpoint', state: location.state }}
                 >
                     <Button size={'small'} type={'button'} css={tw`block w-full`}>
                         Use a Different Method
                     </Button>
                 </Link>
                 <Link
-                    to={{ pathname: '/auth/login/checkpoint', state: { ...location.state, recovery: true } }}
+                    to={{ pathname: '/auth/login/checkpoint', state: { token: location.state.token, recovery: true } }}
                     css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700 text-center cursor-pointer`}
                 >
                     {'I\'ve Lost My Device'}

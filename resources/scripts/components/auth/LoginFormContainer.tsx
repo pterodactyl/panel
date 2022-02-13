@@ -3,6 +3,7 @@ import { Form } from 'formik';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import tw, { styled } from 'twin.macro';
 import PterodactylLogo from '@/assets/images/pterodactyl.svg';
+import { Link } from 'react-router-dom';
 
 const Wrapper = styled.div`
   ${tw`sm:w-4/5 sm:mx-auto md:p-10 lg:w-3/5 xl:w-full`}
@@ -17,7 +18,7 @@ interface InnerContentProps {
 const InnerContainer = ({ children, sidebar }: InnerContentProps) => (
     <div css={tw`md:flex w-full bg-white shadow-lg rounded-lg p-6 md:pl-0 mx-1`}>
         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center w-48 md:w-64 mx-auto`}>
-            {sidebar || <img src={PterodactylLogo} css={tw`block w-full`}/>}
+            {sidebar || <Link to={'/auth/login'}><img src={PterodactylLogo} css={tw`block w-full`}/></Link>}
         </div>
         <div css={tw`flex-1`}>
             {children}
