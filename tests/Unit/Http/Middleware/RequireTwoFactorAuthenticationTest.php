@@ -108,6 +108,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertEmpty($user->securityKeys);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);

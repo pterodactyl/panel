@@ -74,7 +74,7 @@ class LoginController extends AbstractLoginController
             return;
         }
 
-        if (!$user->use_totp && empty($user->securityKeys)) {
+        if (!$user->use_totp && $user->securityKeys->isEmpty()) {
             return $this->sendLoginResponse($user, $request);
         }
 
@@ -89,12 +89,12 @@ class LoginController extends AbstractLoginController
             'complete' => false,
             'methods' => array_values(array_filter([
                 $user->use_totp ? self::METHOD_TOTP : null,
-                !empty($user->securityKeys) ? self::METHOD_WEBAUTHN : null,
+                $user->securityKeys->isNotEmpty() ? self::METHOD_WEBAUTHN : null,
             ])),
             'confirmation_token' => $token,
         ];
 
-        if (!empty($user->securityKeys)) {
+        if ($user->securityKeys->isNotEmpty()) {
             $key = $this->service->handle($user);
 
             $request->session()->put(SecurityKey::PK_SESSION_NAME, $key);
