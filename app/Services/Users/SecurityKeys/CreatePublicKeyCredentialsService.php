@@ -22,7 +22,7 @@ class CreatePublicKeyCredentialsService
         $entity = new PublicKeyCredentialUserEntity($user->username, $user->uuid, $user->email, null);
 
         $excluded = $user->securityKeys->map(function (SecurityKey $key) {
-            return $key->public_key_credentials_descriptor;
+            return $key->getPublicKeyCredentialDescriptor();
         })->values()->toArray();
 
         $server = $this->webauthnServerRepository->getServer($user);

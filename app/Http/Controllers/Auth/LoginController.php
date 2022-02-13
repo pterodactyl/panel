@@ -7,27 +7,27 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Contracts\View\View;
-use LaravelWebauthn\Facades\Webauthn;
-use Illuminate\Contracts\View\Factory as ViewFactory;
+use Pterodactyl\Models\SecurityKey;
+use Illuminate\Support\Facades\View;
+use Illuminate\Contracts\View\View as ViewContract;
+use Pterodactyl\Services\Users\SecurityKeys\GeneratePublicKeyCredentialsRequestService;
 
 class LoginController extends AbstractLoginController
 {
-    private const SESSION_PUBLICKEY_REQUEST = 'webauthn.publicKeyRequest';
-
     private const METHOD_TOTP = 'totp';
     private const METHOD_WEBAUTHN = 'webauthn';
+    private const SESSION_PUBLICKEY_REQUEST = 'webauthn.publicKeyRequest';
 
-    private ViewFactory $view;
+    protected GeneratePublicKeyCredentialsRequestService $service;
 
     /**
-     * LoginController constructor.
+     * @param \Pterodactyl\Services\Users\SecurityKeys\GeneratePublicKeyCredentialsRequestService $service
      */
-    public function __construct(ViewFactory $view)
+    public function __construct(GeneratePublicKeyCredentialsRequestService $service)
     {
         parent::__construct();
 
-        $this->view = $view;
+        $this->service = $service;
     }
 
     /**
@@ -35,9 +35,9 @@ class LoginController extends AbstractLoginController
      * base authentication view component. React will take over at this point and
      * turn the login area into an SPA.
      */
-    public function index(): View
+    public function index(): ViewContract
     {
-        return $this->view->make('templates/auth.core');
+        return View::make('templates/auth.core');
     }
 
     /**
@@ -75,23 +75,11 @@ class LoginController extends AbstractLoginController
             return;
         }
 
-        $useTotp = $user->use_totp;
-        $webauthnKeys = $user->webauthnKeys()->get();
-
-        if (!$useTotp && count($webauthnKeys) < 1) {
+        if (!$user->use_totp && empty($user->security_keys_count)) {
             return $this->sendLoginResponse($user, $request);
         }
 
-        $methods = [];
-        if ($useTotp) {
-            $methods[] = self::METHOD_TOTP;
-        }
-        if (count($webauthnKeys) > 0) {
-            $methods[] = self::METHOD_WEBAUTHN;
-        }
-
         $token = Str::random(64);
-
         $request->session()->put('auth_confirmation_token', [
             'user_id' => $user->id,
             'token_value' => $token,
@@ -100,17 +88,21 @@ class LoginController extends AbstractLoginController
 
         $response = [
             'complete' => false,
-            'methods' => $methods,
+            'methods' => array_filter([
+                $user->use_totp ? self::METHOD_TOTP : null,
+                $user->security_keys_count > 0 ? self::METHOD_WEBAUTHN : null,
+            ]),
             'confirmation_token' => $token,
         ];
 
-        if (count($webauthnKeys) > 0) {
-            $publicKey = Webauthn::getAuthenticateData($user);
-            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
-
-            $response['webauthn'] = [
-                'public_key' => $publicKey,
-            ];
+        if ($user->security_keys_count > 0) {
+//            $key = $this->service->handle($user);
+//
+//            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
+//
+//            $response['webauthn'] = [
+//                'public_key' => $publicKey,
+//            ];
         }
 
         return new JsonResponse($response);

@@ -29,7 +29,7 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
             ->where('public_key_id', $id)
             ->first();
 
-        return $key ? $key->public_key_credential_source : null;
+        return optional($key)->getPublicKeyCredentialSource();
     }
 
     /**
@@ -43,7 +43,7 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
             ->get();
 
         return $results->map(function (SecurityKey $key) {
-            return $key->public_key_credential_source;
+            return $key->getPublicKeyCredentialSource();
         })->values()->toArray();
     }
 

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Models;
 
-use Stringable;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\UuidInterface;
 use Webauthn\TrustPath\TrustPath;
@@ -82,12 +81,7 @@ class SecurityKey extends Model
         return null;
     }
 
-    public function user(): BelongsTo
-    {
-        return $this->belongsTo(User::class);
-    }
-
-    public function getPublicKeyCredentialsDescriptorAttribute(): PublicKeyCredentialDescriptor
+    public function getPublicKeyCredentialDescriptor(): PublicKeyCredentialDescriptor
     {
         return new PublicKeyCredentialDescriptor(
             $this->type,
@@ -96,7 +90,7 @@ class SecurityKey extends Model
         );
     }
 
-    public function getPublicKeyCredentialSourceAttribute(): PublicKeyCredentialSource
+    public function getPublicKeyCredentialSource(): PublicKeyCredentialSource
     {
         return new PublicKeyCredentialSource(
             $this->public_key_id,
@@ -109,5 +103,10 @@ class SecurityKey extends Model
             (string) $this->user_id,
             $this->counter
         );
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
     }
 }

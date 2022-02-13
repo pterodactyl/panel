@@ -61,6 +61,7 @@ class SecurityKeyController extends ClientApiController
         $tokenId = Str::random(64);
         $credentials = $this->createPublicKeyCredentials->handle($request->user());
 
+        // TODO: session
         $this->cache->put(
             "register-security-key:$tokenId",
             serialize($credentials),
