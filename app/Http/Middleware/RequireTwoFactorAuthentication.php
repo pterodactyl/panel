@@ -55,7 +55,7 @@ class RequireTwoFactorAuthentication
         // send them right through, nothing else needs to be checked.
         //
         // If the level is set as admin and the user is not an admin, pass them through as well.
-        if ($level === self::LEVEL_NONE || ($user->use_totp || $user->webauthnKeys()->count() > 0)) {
+        if ($level === self::LEVEL_NONE || ($user->use_totp || !empty($user->securityKeys))) {
             return $next($request);
         } elseif ($level === self::LEVEL_ADMIN && !$user->root_admin) {
             return $next($request);

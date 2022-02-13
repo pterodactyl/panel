@@ -63,9 +63,9 @@ jobs:
         run: php artisan test tests/Unit
         if: ${{ always() }}
         env:
-          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports[3306] }}
       - name: Execute Integration Tests
         run: php artisan test tests/Integration
         if: ${{ always() }}
         env:
-          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_PORT: ${{ job.services.database.ports[3306] }}

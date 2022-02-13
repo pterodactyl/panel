@@ -57,36 +57,6 @@ return [
                 PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', true),
             ]) : [],
         ],
-
-        /*
-        | -------------------------------------------------------------------------
-        | Test Database Connection
-        | -------------------------------------------------------------------------
-        |
-        | This connection is used by the integration and HTTP tests for Pterodactyl
-        | development. Normal users of the Panel do not need to adjust any settings
-        | in here.
-        */
-        'testing' => [
-            'driver' => 'mysql',
-            'host' => env('TESTING_DB_HOST', '127.0.0.1'),
-            'port' => env('TESTING_DB_PORT', '3306'),
-            'database' => env('TESTING_DB_DATABASE', 'panel_test'),
-            'username' => env('TESTING_DB_USERNAME', 'pterodactyl_test'),
-            'password' => env('TESTING_DB_PASSWORD', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'strict' => env('TESTING_DB_STRICT_MODE', false),
-            'timezone' => env('TESTING_DB_TIMEZONE', Time::getMySQLTimezoneOffset(env('APP_TIMEZONE', 'UTC'))),
-            'sslmode' => env('TESTING_DB_SSLMODE', 'prefer'),
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-                PDO::MYSQL_ATTR_SSL_CERT => env('MYSQL_ATTR_SSL_CERT'),
-                PDO::MYSQL_ATTR_SSL_KEY => env('MYSQL_ATTR_SSL_KEY'),
-                PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT => env('MYSQL_ATTR_SSL_VERIFY_SERVER_CERT', true),
-            ]) : [],
-        ],
     ],
 
     /*

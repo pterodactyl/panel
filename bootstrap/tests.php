@@ -22,9 +22,12 @@ $kernel->bootstrap();
 
 $output = new ConsoleOutput();
 
-if (config('database.default') !== 'testing') {
+$connection = config('database.default');
+$database = config("database.connections.$connection.database");
+
+if ($database !== 'panel_test') {
     $output->writeln(PHP_EOL . '<error>Cannot run test process against non-testing database.</error>');
-    $output->writeln(PHP_EOL . '<error>Environment is currently pointed at: "' . config('database.default') . '".</error>');
+    $output->writeln(PHP_EOL . "<error>Environment is currently pointed at: [$database]</error>");
     exit(1);
 }
 
@@ -34,10 +37,10 @@ if (config('database.default') !== 'testing') {
  */
 if (!env('SKIP_MIGRATIONS')) {
     $output->writeln(PHP_EOL . '<info>Refreshing database for Integration tests...</info>');
-    $kernel->call('migrate:fresh', ['--database' => 'testing']);
+    $kernel->call('migrate:fresh');
 
     $output->writeln('<info>Seeding database for Integration tests...</info>' . PHP_EOL);
-    $kernel->call('db:seed', ['--database' => 'testing']);
+    $kernel->call('db:seed');
 } else {
     $output->writeln(PHP_EOL . '<comment>Skipping database migrations...</comment>' . PHP_EOL);
 }

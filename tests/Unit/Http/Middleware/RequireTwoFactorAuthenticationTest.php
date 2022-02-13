@@ -73,7 +73,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
-        $this->assertNotEmpty($user->webauthnKeys);
+        $this->assertNotEmpty($user->securityKeys);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -148,7 +148,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
-        $this->assertNotEmpty($user->webauthnKeys);
+        $this->assertNotEmpty($user->securityKeys);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -262,7 +262,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
         $this->assertFalse($user->root_admin);
-        $this->assertNotEmpty($user->webauthnKeys);
+        $this->assertNotEmpty($user->securityKeys);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -286,7 +286,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
         $this->assertTrue($user->root_admin);
-        $this->assertNotEmpty($user->webauthnKeys);
+        $this->assertNotEmpty($user->securityKeys);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
