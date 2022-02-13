@@ -88,11 +88,7 @@ class SecurityKey extends Model
 
     public function getPublicKeyCredentialDescriptor(): PublicKeyCredentialDescriptor
     {
-        return new PublicKeyCredentialDescriptor(
-            $this->type,
-            $this->public_key_id,
-            $this->transports
-        );
+        return new PublicKeyCredentialDescriptor($this->type, $this->public_key_id, $this->transports);
     }
 
     public function getPublicKeyCredentialSource(): PublicKeyCredentialSource
@@ -105,7 +101,7 @@ class SecurityKey extends Model
             $this->trust_path,
             $this->aaguid ?? Uuid::fromString(Uuid::NIL),
             $this->public_key,
-            (string) $this->user_id,
+            $this->user_handle,
             $this->counter
         );
     }

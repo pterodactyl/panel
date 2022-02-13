@@ -26,7 +26,7 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
     {
         /** @var \Pterodactyl\Models\SecurityKey $key */
         $key = $this->user->securityKeys()
-            ->where('public_key_id', $id)
+            ->where('public_key_id', base64_encode($id))
             ->first();
 
         return optional($key)->getPublicKeyCredentialSource();

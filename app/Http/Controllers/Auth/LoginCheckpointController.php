@@ -92,7 +92,7 @@ class LoginCheckpointController extends AbstractLoginController
         if (!$key instanceof PublicKeyCredentialRequestOptions) {
             throw new BadRequestHttpException('No security keys configured in session.');
         }
-        
+
         $user = $this->extractUserFromRequest($request);
 
         $source = $this->repository->getServer($user)->loadAndCheckAssertionResponse(
@@ -102,7 +102,11 @@ class LoginCheckpointController extends AbstractLoginController
             SecurityKey::getPsrRequestFactory($request)
         );
 
-        dd($source->getUserHandle());
+        if (!hash_equals($user->uuid, $source->getUserHandle())) {
+            throw new BadRequestHttpException('An unexpected error was encountered while validating that security key.');
+        }
+
+        return $this->sendLoginResponse($user, $request);
     }
 
     /**
