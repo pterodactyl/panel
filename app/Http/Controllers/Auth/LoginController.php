@@ -75,7 +75,7 @@ class LoginController extends AbstractLoginController
             return;
         }
 
-        if (!$user->use_totp && empty($user->security_keys_count)) {
+        if (!$user->use_totp && empty($user->securityKeys)) {
             return $this->sendLoginResponse($user, $request);
         }
 
@@ -88,21 +88,19 @@ class LoginController extends AbstractLoginController
 
         $response = [
             'complete' => false,
-            'methods' => array_filter([
+            'methods' => array_values(array_filter([
                 $user->use_totp ? self::METHOD_TOTP : null,
-                $user->security_keys_count > 0 ? self::METHOD_WEBAUTHN : null,
-            ]),
+                !empty($user->securityKeys) ? self::METHOD_WEBAUTHN : null,
+            ])),
             'confirmation_token' => $token,
         ];
 
-        if ($user->security_keys_count > 0) {
-//            $key = $this->service->handle($user);
-//
-//            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
-//
-//            $response['webauthn'] = [
-//                'public_key' => $publicKey,
-//            ];
+        if (!empty($user->securityKeys)) {
+            $key = $this->service->handle($user);
+
+            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $key);
+
+            $response['webauthn'] = ['public_key' => $key];
         }
 
         return new JsonResponse($response);

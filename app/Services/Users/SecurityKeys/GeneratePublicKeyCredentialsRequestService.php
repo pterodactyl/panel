@@ -27,7 +27,7 @@ class GeneratePublicKeyCredentialsRequestService
     {
         $credentials = $user->securityKeys->map(function (SecurityKey $key) {
             return $key->getPublicKeyCredentialDescriptor();
-        });
+        })->values()->toArray();
 
         $response = $this->serverRepository->getServer($user)
             ->generatePublicKeyCredentialRequestOptions(
