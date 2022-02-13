@@ -1,34 +1,26 @@
 import React, { useState } from 'react';
 import { useFormikContext } from 'formik';
-import { User } from '@/api/admin/users/getUsers';
-import searchUsers from '@/api/admin/users/searchUsers';
 import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
+import { User, searchUserAccounts } from '@/api/admin/user';
 
-export default ({ selected }: { selected: User | null }) => {
-    const context = useFormikContext();
+export default ({ selected }: { selected?: User }) => {
+    const { setFieldValue } = useFormikContext();
 
-    const [ user, setUser ] = useState<User | null>(selected);
+    const [ user, setUser ] = useState<User | null>(selected || null);
     const [ users, setUsers ] = useState<User[] | null>(null);
 
-    const onSearch = (query: string): Promise<void> => {
-        return new Promise((resolve, reject) => {
-            searchUsers({ username: query, email: query })
-                .then((users) => {
-                    setUsers(users);
-                    return resolve();
-                })
-                .catch(reject);
-        });
+    const onSearch = async (query: string) => {
+        setUsers(
+            await searchUserAccounts({ filters: { username: query, email: query } })
+        );
     };
 
     const onSelect = (user: User | null) => {
         setUser(user);
-        context.setFieldValue('ownerId', user?.id || null);
+        setFieldValue('ownerId', user?.id || null);
     };
 
-    const getSelectedText = (user: User | null): string => {
-        return user?.email || '';
-    };
+    const getSelectedText = (user: User | null): string => user?.email || '';
 
     return (
         <SearchableSelect

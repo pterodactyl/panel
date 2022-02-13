@@ -36,6 +36,8 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     public function getScheduleWithTasks(int $schedule): Schedule
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('tasks')->findOrFail($schedule, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();

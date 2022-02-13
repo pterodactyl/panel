@@ -25,8 +25,6 @@ class UserUpdateService
 
     /**
      * Update the user model instance and return the updated model.
-     *
-     * @throws \Throwable
      */
     public function handle(User $user, array $data): User
     {

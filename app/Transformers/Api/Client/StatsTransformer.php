@@ -23,6 +23,7 @@ class StatsTransformer extends Transformer
                 'disk_bytes' => Arr::get($data, 'utilization.disk_bytes', 0),
                 'network_rx_bytes' => Arr::get($data, 'utilization.network.rx_bytes', 0),
                 'network_tx_bytes' => Arr::get($data, 'utilization.network.tx_bytes', 0),
+                'uptime' => Arr::get($data, 'utilization.uptime', 0),
             ],
         ];
     }

@@ -39,6 +39,7 @@ const UserAboutContainer = () => {
         <UserForm
             title={'Edit User'}
             initialValues={{
+                externalId: user.externalId,
                 username: user.username,
                 email: user.email,
                 adminRoleId: user.adminRoleId,
@@ -46,7 +47,8 @@ const UserAboutContainer = () => {
                 rootAdmin: user.rootAdmin,
             }}
             onSubmit={submit}
-            role={user?.relationships.role || null}
+            uuid={user.uuid}
+            role={user.relationships.role || null}
         >
             <div css={tw`flex`}>
                 <UserDeleteButton

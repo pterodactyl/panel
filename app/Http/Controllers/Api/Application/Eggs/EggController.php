@@ -2,11 +2,13 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Eggs;
 
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
+use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
 use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggRequest;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
@@ -14,20 +16,31 @@ use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\StoreEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\DeleteEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\UpdateEggRequest;
+use Pterodactyl\Http\Requests\Api\Application\Eggs\ExportEggRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class EggController extends ApplicationApiController
 {
+    private EggExporterService $eggExporterService;
+
+    public function __construct(EggExporterService $eggExporterService)
+    {
+        parent::__construct();
+
+        $this->eggExporterService = $eggExporterService;
+    }
+
     /**
      * Return an array of all eggs on a given nest.
      */
     public function index(GetEggsRequest $request, Nest $nest): array
     {
-        $perPage = $request->query('per_page', 10);
+        $perPage = (int) $request->query('per_page', '10');
         if ($perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
 
+        // @phpstan-ignore-next-line
         $eggs = QueryBuilder::for(Egg::query())
             ->where('nest_id', '=', $nest->id)
             ->allowedFilters(['id', 'name', 'author'])
@@ -56,11 +69,18 @@ class EggController extends ApplicationApiController
      */
     public function store(StoreEggRequest $request): JsonResponse
     {
-        $egg = Egg::query()->create($request->validated());
+        $validated = $request->validated();
+        $merged = array_merge($validated, [
+            'uuid' => Uuid::uuid4()->toString(),
+            // TODO: allow this to be set in the request, and default to config value if null or not present.
+            'author' => config('pterodactyl.service.author'),
+        ]);
+
+        $egg = Egg::query()->create($merged);
 
         return $this->fractal->item($egg)
             ->transformWith(EggTransformer::class)
-            ->respond(JsonResponse::HTTP_CREATED);
+            ->respond(Response::HTTP_CREATED);
     }
 
     /**
@@ -85,5 +105,15 @@ class EggController extends ApplicationApiController
         $egg->delete();
 
         return $this->returnNoContent();
+    }
+
+    /**
+     * Exports an egg.
+     *
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function export(ExportEggRequest $request, int $eggId): JsonResponse
+    {
+        return new JsonResponse($this->eggExporterService->handle($eggId));
     }
 }

@@ -4,7 +4,6 @@ namespace Pterodactyl\Tests\Integration\Api\Application\Users;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
@@ -194,11 +193,10 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonCount(3);
+        $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
             'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'created_at', 'updated_at'],
-            'meta' => ['resource'],
         ]);
 
         $this->assertDatabaseHas('users', ['username' => 'testuser', 'email' => 'test@example.com']);
@@ -207,9 +205,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJson([
             'object' => 'user',
             'attributes' => (new UserTransformer())->transform($user),
-            'meta' => [
-                'resource' => route('api.application.users.view', $user->id),
-            ],
         ], true);
     }
 

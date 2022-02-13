@@ -29,6 +29,8 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     public function getWithVariables(int $id): Egg
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('variables')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();
@@ -55,6 +57,8 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
         Assert::true((is_digit($value) || is_string($value)), 'First argument passed to getWithCopyAttributes must be an integer or string, received %s.');
 
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('scriptFrom', 'configFrom')->where($column, '=', $value)->firstOrFail($this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();
@@ -69,6 +73,8 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     public function getWithExportAttributes(int $id): Egg
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->findOrFail($id, $this->getColumns());
         } catch (ModelNotFoundException $exception) {
             throw new RecordNotFoundException();

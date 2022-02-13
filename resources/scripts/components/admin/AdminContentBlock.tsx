@@ -15,11 +15,8 @@ const AdminContentBlock: React.FC<{ title?: string; showFlashKey?: string; class
     return (
         // <CSSTransition timeout={150} classNames={'fade'} appear in>
         <>
-            {showFlashKey &&
-            <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`}/>
-            }
+            {showFlashKey && <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`}/>}
             {children}
-
             {/* <p css={tw`text-center text-neutral-500 text-xs mt-4`}>
                 &copy; 2015 - 2021&nbsp;
                 <a

@@ -2,17 +2,6 @@
 
 namespace Pterodactyl\Models;
 
-/**
- * @property int $id
- * @property string $name
- * @property string $host
- * @property int $port
- * @property string $username
- * @property string $password
- * @property int|null $max_databases
- * @property \Carbon\CarbonImmutable $created_at
- * @property \Carbon\CarbonImmutable $updated_at
- */
 class DatabaseHost extends Model
 {
     /**

@@ -205,6 +205,7 @@ class EggConfigurationService
             // Replace anything starting with "server." with the value out of the server configuration
             // array that used to be created for the old daemon.
             if (Str::startsWith($key, 'server.')) {
+                // @phpstan-ignore-next-line
                 $plucked = Arr::get($structure, preg_replace('/^server\./', '', $key), '');
 
                 $value = str_replace("{{{$key}}}", $plucked, $value);
@@ -215,6 +216,7 @@ class EggConfigurationService
             // variable from the server configuration.
             $plucked = Arr::get(
                 $structure,
+                // @phpstan-ignore-next-line
                 preg_replace('/^env\./', 'build.env.', $key),
                 ''
             );

@@ -65,7 +65,7 @@ export default () => {
             .then(schedule => appendSchedule(schedule))
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ error, key: 'schedules' });
+                clearAndAddHttpError({ key: 'schedules', error });
             })
             .then(() => setIsLoading(false));
     }, [ scheduleId ]);

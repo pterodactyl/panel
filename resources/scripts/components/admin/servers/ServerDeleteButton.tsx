@@ -5,27 +5,29 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteServer from '@/api/admin/servers/deleteServer';
+import { TrashIcon } from '@heroicons/react/outline';
+import { useServerFromRoute } from '@/api/admin/server';
+import { useHistory } from 'react-router-dom';
 
-interface Props {
-    serverId: number;
-    onDeleted: () => void;
-}
-
-export default ({ serverId, onDeleted }: Props) => {
+export default () => {
+    const history = useHistory();
     const [ visible, setVisible ] = useState(false);
     const [ loading, setLoading ] = useState(false);
+    const { data: server } = useServerFromRoute();
 
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const {
+        clearFlashes,
+        clearAndAddHttpError,
+    } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const onDelete = () => {
+        if (!server) return;
+
         setLoading(true);
         clearFlashes('server');
 
-        deleteServer(serverId)
-            .then(() => {
-                setLoading(false);
-                onDeleted();
-            })
+        deleteServer(server.id)
+            .then(() => history.push('/admin/servers'))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'server', error });
@@ -34,6 +36,8 @@ export default ({ serverId, onDeleted }: Props) => {
                 setVisible(false);
             });
     };
+
+    if (!server) return null;
 
     return (
         <>
@@ -47,11 +51,14 @@ export default ({ serverId, onDeleted }: Props) => {
             >
                 Are you sure you want to delete this server?
             </ConfirmationModal>
-
-            <Button type={'button'} size={'xsmall'} color={'red'} onClick={() => setVisible(true)}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" css={tw`h-5 w-5`}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                </svg>
+            <Button
+                type={'button'}
+                size={'small'}
+                color={'red'}
+                onClick={() => setVisible(true)}
+                css={tw`flex items-center justify-center`}
+            >
+                <TrashIcon css={tw`w-5 h-5 mr-2`}/> Delete Server
             </Button>
         </>
     );

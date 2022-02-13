@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Auth\SessionGuard;
+use Illuminate\Auth\AuthManager;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -12,24 +12,26 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 
 class AccountController extends ClientApiController
 {
-    private SessionGuard $sessionGuard;
     private UserUpdateService $updateService;
+
+    /**
+     * @var \Illuminate\Auth\AuthManager
+     */
+    private $sessionGuard;
 
     /**
      * AccountController constructor.
      */
-    public function __construct(SessionGuard $sessionGuard, UserUpdateService $updateService)
+    public function __construct(UserUpdateService $updateService, AuthManager $sessionGuard)
     {
         parent::__construct();
 
-        $this->sessionGuard = $sessionGuard;
         $this->updateService = $updateService;
+        $this->sessionGuard = $sessionGuard;
     }
 
     /**
      * Gets information about the currently authenticated user.
-     *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function index(Request $request): array
     {
@@ -40,9 +42,6 @@ class AccountController extends ClientApiController
 
     /**
      * Update the authenticated user's email address.
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function updateEmail(UpdateEmailRequest $request): Response
     {
@@ -65,9 +64,12 @@ class AccountController extends ClientApiController
         // cached copy of the user that does not include the updated password. Do this
         // to correctly store the new user details in the guard and allow the logout
         // other devices functionality to work.
-        $this->sessionGuard->setUser($user);
+        if (method_exists($this->sessionGuard, 'setUser')) {
+            $this->sessionGuard->setUser($user);
+        }
 
-        $this->sessionGuard->logoutOtherDevices($request->input('password'));
+        // TODO: Find another way to do this, function doesn't exist due to API changes.
+        //$this->sessionGuard->logoutOtherDevices($request->input('password'));
 
         return $this->returnNoContent();
     }

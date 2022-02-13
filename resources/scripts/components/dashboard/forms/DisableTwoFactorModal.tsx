@@ -30,7 +30,7 @@ const DisableTwoFactorModal = () => {
             .catch(error => {
                 console.error(error);
 
-                clearAndAddHttpError({ error, key: 'account:two-factor' });
+                clearAndAddHttpError({ key: 'account:two-factor', error });
                 setSubmitting(false);
                 setPropOverrides(null);
             });

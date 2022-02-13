@@ -12,7 +12,7 @@ export interface Filters {
 
 export const Context = createContext<Filters>();
 
-export default (id: string | number, include: string[] = []) => {
+export default (id: number, include: string[] = []) => {
     const { page, filters, sort, sortDirection } = useContext(Context);
 
     const params = {};

@@ -134,7 +134,7 @@ export const InformationContainer = ({ title, initialValues, children, onSubmit 
                                     {children}
                                     <div css={tw`flex ml-auto`}>
                                         <Button type={'submit'} disabled={isSubmitting || !isValid}>
-                                            Save
+                                            Save Changes
                                         </Button>
                                     </div>
                                 </div>

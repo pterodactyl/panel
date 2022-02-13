@@ -16,12 +16,12 @@ export default () => {
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const reinstall = () => {
-        clearFlashes('settings');
+        clearFlashes('server:settings');
         setIsSubmitting(true);
         reinstallServer(uuid)
             .then(() => {
                 addFlash({
-                    key: 'settings',
+                    key: 'server:settings',
                     type: 'success',
                     message: 'Your server has begun the reinstallation process.',
                 });
@@ -29,7 +29,7 @@ export default () => {
             .catch(error => {
                 console.error(error);
 
-                addFlash({ key: 'settings', type: 'error', message: httpErrorToHuman(error) });
+                addFlash({ key: 'server:settings', type: 'error', message: httpErrorToHuman(error) });
             })
             .then(() => {
                 setIsSubmitting(false);

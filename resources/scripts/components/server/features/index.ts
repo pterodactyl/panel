@@ -6,7 +6,10 @@ import { lazy } from 'react';
  * whenever they are actually loaded for the client (which may be never, depending
  * on the feature and the egg).
  */
-const EulaModalFeature = lazy(() => import(/* webpackChunkName: "feature.eula" */'feature/eula/EulaModalFeature'));
-const JavaVersionModalFeature = lazy(() => import(/* webpackChunkName: "feature.java_version" */'feature/java_version/JavaVersionModalFeature'));
+const EulaModalFeature = lazy(() => import(/* webpackChunkName: "feature.eula" */'@feature/EulaModalFeature'));
+const JavaVersionModalFeature = lazy(() => import(/* webpackChunkName: "feature.java_version" */'@feature/JavaVersionModalFeature'));
+const GSLTokenModalFeature = lazy(() => import(/* webpackChunkName: "feature.gsl_token" */'@feature/GSLTokenModalFeature'));
+const PIDLimitModalFeature = lazy(() => import(/* webpackChunkName: "feature.pid_limit" */'@feature/PIDLimitModalFeature'));
+const SteamDiskSpaceFeature = lazy(() => import(/* webpackChunkName: "feature.steam_disk_space" */'@feature/SteamDiskSpaceFeature'));
 
-export { EulaModalFeature, JavaVersionModalFeature };
+export { EulaModalFeature, JavaVersionModalFeature, GSLTokenModalFeature, PIDLimitModalFeature, SteamDiskSpaceFeature };

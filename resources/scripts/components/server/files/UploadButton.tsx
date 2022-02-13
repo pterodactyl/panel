@@ -110,7 +110,7 @@ export default ({ className }: WithClassname) => {
             .then(() => mutate())
             .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ error, key: 'files' });
+                clearAndAddHttpError({ key: 'files', error });
             });
     };
 

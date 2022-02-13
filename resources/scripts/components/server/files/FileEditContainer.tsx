@@ -73,7 +73,7 @@ export default () => {
             })
             .catch(error => {
                 console.error(error);
-                addError({ message: httpErrorToHuman(error), key: 'files:view' });
+                addError({ key: 'files:view', message: httpErrorToHuman(error) });
             })
             .then(() => setLoading(false));
     };

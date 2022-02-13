@@ -1,6 +1,7 @@
 import { Nest } from '@/api/admin/nests/getNests';
 import { rawDataToServer, Server } from '@/api/admin/servers/getServers';
 import http, { FractalResponseData, FractalResponseList } from '@/api/http';
+import useSWR from 'swr';
 
 export interface EggVariable {
     id: number;
@@ -12,12 +13,11 @@ export interface EggVariable {
     userViewable: boolean;
     userEditable: boolean;
     rules: string;
-    required: boolean;
     createdAt: Date;
     updatedAt: Date;
 }
 
-const rawDataToEggVariable = ({ attributes }: FractalResponseData): EggVariable => ({
+export const rawDataToEggVariable = ({ attributes }: FractalResponseData): EggVariable => ({
     id: attributes.id,
     eggId: attributes.egg_id,
     name: attributes.name,
@@ -27,7 +27,6 @@ const rawDataToEggVariable = ({ attributes }: FractalResponseData): EggVariable 
     userViewable: attributes.user_viewable,
     userEditable: attributes.user_editable,
     rules: attributes.rules,
-    required: attributes.required,
     createdAt: new Date(attributes.created_at),
     updatedAt: new Date(attributes.updated_at),
 });
@@ -90,10 +89,16 @@ export const rawDataToEgg = ({ attributes }: FractalResponseData): Egg => ({
     },
 });
 
-export default (id: number, include: string[] = []): Promise<Egg> => {
-    return new Promise((resolve, reject) => {
-        http.get(`/api/application/eggs/${id}`, { params: { include: include.join(',') } })
-            .then(({ data }) => resolve(rawDataToEgg(data)))
-            .catch(reject);
+export const getEgg = async (id: number): Promise<Egg> => {
+    const { data } = await http.get(`/api/application/eggs/${id}`, { params: { include: [ 'variables' ] } });
+
+    return rawDataToEgg(data);
+};
+
+export default (id: number) => {
+    return useSWR<Egg>(`egg:${id}`, async () => {
+        const { data } = await http.get(`/api/application/eggs/${id}`, { params: { include: [ 'variables' ] } });
+
+        return rawDataToEgg(data);
     });
 };

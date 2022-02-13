@@ -1,61 +1,37 @@
+import { useEggFromRoute } from '@/api/admin/egg';
 import EggInstallContainer from '@/components/admin/nests/eggs/EggInstallContainer';
 import EggVariablesContainer from '@/components/admin/nests/eggs/EggVariablesContainer';
-import React, { useEffect, useState } from 'react';
+import useFlash from '@/plugins/useFlash';
+import React, { useEffect } from 'react';
 import { useLocation } from 'react-router';
 import tw from 'twin.macro';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
-import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
-import getEgg, { Egg } from '@/api/admin/eggs/getEgg';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { ApplicationStore } from '@/state';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
 import EggSettingsContainer from '@/components/admin/nests/eggs/EggSettingsContainer';
 
-interface ctx {
-    egg: Egg | undefined;
-    setEgg: Action<ctx, Egg | undefined>;
-}
-
-export const Context = createContextStore<ctx>({
-    egg: undefined,
-
-    setEgg: action((state, payload) => {
-        state.egg = payload;
-    }),
-});
-
 const EggRouter = () => {
     const location = useLocation();
-    const match = useRouteMatch<{ id?: string }>();
+    const match = useRouteMatch();
 
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const [ loading, setLoading ] = useState(true);
-
-    const egg = Context.useStoreState(state => state.egg);
-    const setEgg = Context.useStoreActions(actions => actions.setEgg);
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { data: egg, error, isValidating, mutate } = useEggFromRoute();
 
     useEffect(() => {
-        clearFlashes('egg');
-
-        getEgg(Number(match.params?.id))
-            .then(egg => setEgg(egg))
-            .catch(error => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'egg', error });
-            })
-            .then(() => setLoading(false));
+        mutate();
     }, []);
 
-    if (loading || egg === undefined) {
-        return (
-            <AdminContentBlock>
-                <FlashMessageRender byKey={'egg'} css={tw`mb-4`}/>
+    useEffect(() => {
+        if (!error) clearFlashes('egg');
+        if (error) clearAndAddHttpError({ key: 'egg', error });
+    }, [ error ]);
 
-                <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
-                    <Spinner size={'base'}/>
-                </div>
+    if (!egg || (error && isValidating)) {
+        return (
+            <AdminContentBlock showFlashKey={'egg'}>
+                <Spinner size={'large'} centered/>
             </AdminContentBlock>
         );
     }
@@ -93,15 +69,15 @@ const EggRouter = () => {
 
             <Switch location={location}>
                 <Route path={`${match.path}`} exact>
-                    <EggSettingsContainer egg={egg}/>
+                    <EggSettingsContainer/>
                 </Route>
 
                 <Route path={`${match.path}/variables`} exact>
-                    <EggVariablesContainer egg={egg}/>
+                    <EggVariablesContainer/>
                 </Route>
 
                 <Route path={`${match.path}/install`} exact>
-                    <EggInstallContainer egg={egg}/>
+                    <EggInstallContainer/>
                 </Route>
             </Switch>
         </AdminContentBlock>
@@ -109,9 +85,5 @@ const EggRouter = () => {
 };
 
 export default () => {
-    return (
-        <Context.Provider>
-            <EggRouter/>
-        </Context.Provider>
-    );
+    return <EggRouter/>;
 };

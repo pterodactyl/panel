@@ -5,6 +5,7 @@ import tw from 'twin.macro';
 import getAllocations, { Context as AllocationsContext, Filters } from '@/api/admin/nodes/allocations/getAllocations';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import AdminTable, { ContentWrapper, Loading, NoItems, Pagination, TableBody, TableHead, TableHeader, useTableHooks } from '@/components/admin/AdminTable';
+import DeleteAllocationButton from '@/components/admin/nodes/allocations/DeleteAllocationButton';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import useFlash from '@/plugins/useFlash';
 
@@ -29,7 +30,7 @@ function RowCheckbox ({ id }: { id: number }) {
 }
 
 interface Props {
-    nodeId: string;
+    nodeId: number;
     filters?: Filters;
 }
 
@@ -37,7 +38,7 @@ function AllocationsTable ({ nodeId, filters }: Props) {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(AllocationsContext);
-    const { data: allocations, error, isValidating } = getAllocations(nodeId, [ 'server' ]);
+    const { data: allocations, error, isValidating, mutate } = getAllocations(nodeId, [ 'server' ]);
 
     const length = allocations?.items?.length || 0;
 
@@ -49,7 +50,7 @@ function AllocationsTable ({ nodeId, filters }: Props) {
     };
 
     const onSearch = (query: string): Promise<void> => {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             if (query.length < 2) {
                 setFilters(filters || null);
             } else {
@@ -87,6 +88,7 @@ function AllocationsTable ({ nodeId, filters }: Props) {
                                 <TableHeader name={'Alias'}/>
                                 <TableHeader name={'Port'} direction={sort === 'port' ? (sortDirection ? 1 : 2) : null} onClick={() => setSort('port')}/>
                                 <TableHeader name={'Assigned To'}/>
+                                <TableHeader/>
                             </TableHead>
 
                             <TableBody>
@@ -128,6 +130,24 @@ function AllocationsTable ({ nodeId, filters }: Props) {
                                             :
                                             <td/>
                                         }
+
+                                        <td>
+                                            <DeleteAllocationButton
+                                                nodeId={nodeId}
+                                                allocationId={allocation.id}
+                                                onDeleted={async () => {
+                                                    await mutate(allocations => ({
+                                                        pagination: allocations!.pagination,
+                                                        items: allocations!.items.filter(a => a.id === allocation.id),
+                                                    }));
+
+                                                    // Go back a page if no more items will exist on the current page.
+                                                    if (allocations?.items.length - 1 % 10 === 0) {
+                                                        setPage(p => p - 1);
+                                                    }
+                                                }}
+                                            />
+                                        </td>
                                     </tr>
                                 ))
                                 }

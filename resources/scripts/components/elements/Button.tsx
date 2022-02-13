@@ -4,18 +4,14 @@ import Spinner from '@/components/elements/Spinner';
 
 interface Props {
     isLoading?: boolean;
-    size?: 'xsmall' | 'small' | 'large' | 'xlarge';
+    size?: 'inline' | 'xsmall' | 'small' | 'large' | 'xlarge';
     color?: 'green' | 'red' | 'primary' | 'grey';
     isSecondary?: boolean;
 }
 
-const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
+const ButtonStyle = styled.button<Props>`
     ${tw`relative inline-block rounded p-2 tracking-wide text-sm transition-all duration-150 border`};
-
-    & > span {
-        ${tw`select-none`};
-    }
-
+  
     ${props => ((!props.isSecondary && !props.color) || props.color === 'primary') && css<Props>`
         ${props => !props.isSecondary && tw`bg-primary-500 border-primary-600 border text-primary-50`};
 
@@ -60,6 +56,7 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
         `};
     `};
 
+    ${props => props.size === 'inline' && tw`p-1 text-xs`};
     ${props => props.size === 'xsmall' && tw`p-2 text-xs`};
     ${props => (!props.size || props.size === 'small') && tw`p-3`};
     ${props => props.size === 'large' && tw`p-4 text-sm`};
@@ -75,22 +72,24 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
             ${props => props.color === 'green' && tw`bg-green-500 border-green-600 text-green-50`};
         }
     `};
+  
+    ${props => props.isLoading && tw`text-transparent`};
 
-    &:disabled { opacity: 0.55; cursor: default }
+    &:disabled {
+      ${tw`opacity-75 cursor-not-allowed`};
+    }
 `;
 
 type ComponentProps = Omit<JSX.IntrinsicElements['button'], 'ref' | keyof Props> & Props;
 
-const Button: React.FC<ComponentProps> = ({ children, isLoading, ...props }) => (
-    <ButtonStyle {...props}>
+const Button: React.FC<ComponentProps> = ({ children, isLoading, disabled, ...props }) => (
+    <ButtonStyle {...props} isLoading={isLoading} disabled={isLoading || disabled}>
         {isLoading &&
         <div css={tw`flex absolute justify-center items-center w-full h-full left-0 top-0`}>
             <Spinner size={'small'}/>
         </div>
         }
-        <span css={isLoading ? tw`text-transparent` : undefined}>
-            {children}
-        </span>
+        {children}
     </ButtonStyle>
 );
 

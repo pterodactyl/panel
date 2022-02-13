@@ -74,6 +74,8 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function findWithVariables(int $id): Server
     {
         try {
+            /* @noinspection PhpIncompatibleReturnTypeInspection */
+            // @phpstan-ignore-next-line
             return $this->getBuilder()->with('egg.variables', 'variables')
                 ->where($this->getModel()->getKeyName(), '=', $id)
                 ->firstOrFail($this->getColumns());

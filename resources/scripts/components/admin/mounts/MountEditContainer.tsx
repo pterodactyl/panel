@@ -97,7 +97,7 @@ const MountEditContainer = () => {
             <FlashMessageRender byKey={'mount'} css={tw`mb-4`}/>
 
             <MountForm
-                action={'Save'}
+                action={'Save Changes'}
                 title={'Edit Mount'}
                 initialValues={{
                     name: mount.name,

@@ -196,9 +196,9 @@ export const Loading = () => {
     );
 };
 
-export const NoItems = () => {
+export const NoItems = ({ className }: { className?: string }) => {
     return (
-        <div css={tw`w-full flex flex-col items-center justify-center py-6 px-8`}>
+        <div css={tw`w-full flex flex-col items-center justify-center py-6 px-8`} className={className}>
             <div css={tw`h-48 flex`}>
                 <img src={'/assets/svgs/not_found.svg'} alt={'No Items'} css={tw`h-full select-none`}/>
             </div>
@@ -227,7 +227,8 @@ export const ContentWrapper = ({ checked, onSelectAllClick, onSearch, children }
             }
 
             setLoading(true);
-            onSearch(query).then(() => setLoading(false));
+            onSearch(query)
+                .then(() => setLoading(false));
         }, 200),
         [],
     );

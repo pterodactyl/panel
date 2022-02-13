@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Application\Location;
 
-use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
+use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
@@ -87,6 +87,77 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
                 'updated_at' => $this->formatTimestamp($location->updated_at),
             ],
         ], true);
+    }
+
+    /**
+     * Test that a location can be created.
+     */
+    public function testCreateLocation()
+    {
+        $response = $this->postJson('/api/application/locations', [
+            'short' => 'inhouse',
+            'long' => 'This is my inhouse location',
+        ]);
+
+        $response->assertStatus(Response::HTTP_CREATED);
+        $response->assertJsonCount(3);
+        $response->assertJsonStructure([
+            'object',
+            'attributes' => ['id', 'short', 'long', 'created_at', 'updated_at'],
+            'meta' => ['resource'],
+        ]);
+
+        $this->assertDatabaseHas('locations', ['short' => 'inhouse', 'long' => 'This is my inhouse location']);
+
+        $location = Location::where('short', 'inhouse')->first();
+        $response->assertJson([
+            'object' => 'location',
+            'attributes' => $this->getTransformer(LocationTransformer::class)->transform($location),
+            'meta' => [
+                'resource' => route('api.application.locations.view', $location->id),
+            ],
+        ], true);
+    }
+
+    /**
+     * Test that a location can be updated.
+     */
+    public function testUpdateLocation()
+    {
+        $location = Location::factory()->create();
+
+        $response = $this->patchJson('/api/application/locations/' . $location->id, [
+            'short' => 'new inhouse',
+            'long' => 'This is my new inhouse location'
+        ]);
+        $response->assertStatus(Response::HTTP_OK);
+        $response->assertJsonCount(2);
+        $response->assertJsonStructure([
+            'object',
+            'attributes' => ['id', 'short', 'long', 'created_at', 'updated_at']
+        ]);
+
+        $this->assertDatabaseHas('locations', ['short' => 'new inhouse', 'long' => 'This is my new inhouse location']);
+        $location = $location->fresh();
+
+        $response->assertJson([
+            'object' => 'location',
+            'attributes' => $this->getTransformer(LocationTransformer::class)->transform($location),
+        ]);
+    }
+
+    /**
+     * Test that a location can be deleted from the database.
+     */
+    public function testDeleteLocation()
+    {
+        $location = Location::factory()->create();
+        $this->assertDatabaseHas('locations', ['id' => $location->id]);
+
+        $response = $this->delete('/api/application/locations/' . $location->id);
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $this->assertDatabaseMissing('locations', ['id' => $location->id]);
     }
 
     /**

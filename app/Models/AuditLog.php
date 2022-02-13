@@ -101,7 +101,7 @@ class AuditLog extends Model
      * currently authenticated user if available. This model is not saved at this point, so
      * you can always make modifications to it as needed before saving.
      *
-     * @return $this
+     * @return self
      */
     public static function instance(string $action, array $metadata, bool $isSystem = false)
     {

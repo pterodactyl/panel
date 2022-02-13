@@ -31,7 +31,7 @@ export default () => {
         getServerSchedules(uuid)
             .then(schedules => setSchedules(schedules))
             .catch(error => {
-                addError({ message: httpErrorToHuman(error), key: 'schedules' });
+                addError({ key: 'schedules', message: httpErrorToHuman(error) });
                 console.error(error);
             })
             .then(() => setLoading(false));

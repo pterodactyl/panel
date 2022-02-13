@@ -2,10 +2,12 @@
 
 namespace Pterodactyl\Providers;
 
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Observers\UserObserver;
@@ -30,6 +32,15 @@ class AppServiceProvider extends ServiceProvider
          * @see https://laravel.com/docs/8.x/sanctum#overriding-default-models
          */
         Sanctum::usePersonalAccessTokenModel(PersonalAccessToken::class);
+
+        // If the APP_URL value is set with https:// make sure we force it here. Theoretically
+        // this should just work with the proxy logic, but there are a lot of cases where it
+        // doesn't, and it triggers a lot of support requests, so lets just head it off here.
+        //
+        // @see https://github.com/pterodactyl/panel/issues/3623
+        if (Str::startsWith(config('app.url') ?? '', 'https://')) {
+            URL::forceScheme('https');
+        }
     }
 
     /**

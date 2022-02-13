@@ -1,4 +1,4 @@
-import { Egg } from '@/api/admin/eggs/getEgg';
+import { useEggFromRoute } from '@/api/admin/egg';
 import updateEgg from '@/api/admin/eggs/updateEgg';
 import Field from '@/components/elements/Field';
 import useFlash from '@/plugins/useFlash';
@@ -18,8 +18,14 @@ interface Values {
     scriptInstall: string;
 }
 
-export default function EggInstallContainer ({ egg }: { egg: Egg }) {
+export default function EggInstallContainer () {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
+
+    const { data: egg } = useEggFromRoute();
+
+    if (!egg) {
+        return null;
+    }
 
     let fetchFileContent: (() => Promise<string>) | null = null;
 
@@ -50,7 +56,7 @@ export default function EggInstallContainer ({ egg }: { egg: Egg }) {
             }}
         >
             {({ isSubmitting, isValid }) => (
-                <AdminBox icon={faScroll} title={'Install Script'} padding={false}>
+                <AdminBox icon={faScroll} title={'Install Script'} noPadding>
                     <div css={tw`relative pb-4`}>
                         <SpinnerOverlay visible={isSubmitting}/>
 

@@ -4,7 +4,7 @@ import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToHuman, megabytesToHuman } from '@/helpers';
+import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
 import tw, { styled } from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
@@ -96,7 +96,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     {
                         server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
                             <React.Fragment key={allocation.ip + allocation.port.toString()}>
-                                {allocation.alias || allocation.ip}:{allocation.port}
+                                {allocation.alias || formatIp(allocation.ip)}:{allocation.port}
                             </React.Fragment>
                         ))
                     }

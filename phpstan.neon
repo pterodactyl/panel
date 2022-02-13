@@ -1,0 +1,15 @@
+includes:
+    - ./phpstan-baseline.neon
+    - ./vendor/nunomaduro/larastan/extension.neon
+    - ./vendor/phpstan/phpstan-webmozart-assert/extension.neon
+
+parameters:
+    paths:
+        - app
+        - database/Seeders
+    level: 7
+    ignoreErrors:
+        - '#Unsafe usage of new static#'
+        - '#has no return typehint specified.#'
+        - '#has no typehint specified.#'
+    checkMissingIterableValueType: false

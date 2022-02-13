@@ -7,8 +7,19 @@ const http: AxiosInstance = axios.create({
         'X-Requested-With': 'XMLHttpRequest',
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'X-CSRF-Token': (window as any).X_CSRF_TOKEN as string || '',
     },
+});
+
+http.interceptors.request.use(req => {
+    const cookies = document.cookie.split(';').reduce((obj, val) => {
+        const [ key, value ] = val.trim().split('=').map(decodeURIComponent);
+
+        return { ...obj, [key]: value };
+    }, {} as Record<string, string>);
+
+    req.headers['X-XSRF-TOKEN'] = cookies['XSRF-TOKEN'] || 'nil';
+
+    return req;
 });
 
 http.interceptors.request.use(req => {
@@ -111,3 +122,43 @@ export function getPaginationSet (data: any): PaginationDataSet {
         totalPages: data.total_pages,
     };
 }
+
+type QueryBuilderFilterValue = string | number | boolean | null;
+
+export interface QueryBuilderParams<FilterKeys extends string = string, SortKeys extends string = string> {
+    filters?: {
+        [K in FilterKeys]?: QueryBuilderFilterValue | Readonly<QueryBuilderFilterValue[]>;
+    };
+    sorts?: {
+        [K in SortKeys]?: -1 | 0 | 1 | 'asc' | 'desc' | null;
+    };
+}
+
+/**
+ * Helper function that parses a data object provided and builds query parameters
+ * for the Laravel Query Builder package automatically. This will apply sorts and
+ * filters deterministically based on the provided values.
+ */
+export const withQueryBuilderParams = (data?: QueryBuilderParams): Record<string, unknown> => {
+    if (!data) return {};
+
+    const filters = Object.keys(data.filters || {}).reduce((obj, key) => {
+        const value = data.filters?.[key];
+
+        return !value || value === '' ? obj : { ...obj, [`filter[${key}]`]: value };
+    }, {} as NonNullable<QueryBuilderParams['filters']>);
+
+    const sorts = Object.keys(data.sorts || {}).reduce((arr, key) => {
+        const value = data.sorts?.[key];
+        if (!value || ![ 'asc', 'desc', 1, -1 ].includes(value)) {
+            return arr;
+        }
+
+        return [ ...arr, (value === -1 || value === 'desc' ? '-' : '') + key ];
+    }, [] as string[]);
+
+    return {
+        ...filters,
+        sorts: !sorts.length ? undefined : sorts.join(','),
+    };
+};

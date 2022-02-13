@@ -54,7 +54,7 @@ class SubstituteApplicationApiBindings
         try {
             $this->router->substituteImplicitBindings($route = $request->route());
         } catch (ModelNotFoundException $exception) {
-            if (isset($route) && $route->getMissing()) {
+            if (!empty($route) && $route->getMissing()) {
                 $route->getMissing()($request);
             }
 

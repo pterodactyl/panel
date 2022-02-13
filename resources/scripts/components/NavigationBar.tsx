@@ -6,6 +6,8 @@ import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 import tw, { styled, theme } from 'twin.macro';
+import http from '@/api/http';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
 const Navigation = styled.div`
     ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};
@@ -26,7 +28,7 @@ const Navigation = styled.div`
 const RightNavigation = styled.div`
     ${tw`flex h-full items-center justify-center`};
 
-    & > a, & > .navigation-link {
+    & > a, & > button, & > .navigation-link {
         ${tw`flex items-center h-full no-underline text-neutral-300 px-6 cursor-pointer transition-all duration-150`};
 
         &:active, &:hover {
@@ -42,9 +44,19 @@ const RightNavigation = styled.div`
 export default () => {
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
+    const [ isLoggingOut, setIsLoggingOut ] = React.useState(false);
+
+    const onTriggerLogout = () => {
+        setIsLoggingOut(true);
+        http.post('/auth/logout').finally(() => {
+            // @ts-ignore
+            window.location = '/';
+        });
+    };
 
     return (
         <Navigation>
+            <SpinnerOverlay visible={isLoggingOut} />
             <div css={tw`mx-auto w-full flex items-center`} style={{ maxWidth: '1200px', height: '3.5rem' }}>
                 <div id={'logo'}>
                     <Link to={'/'}>
@@ -60,16 +72,14 @@ export default () => {
                     <NavLink to={'/account'}>
                         <FontAwesomeIcon icon={faUserCircle}/>
                     </NavLink>
-
                     {rootAdmin &&
-                    <a href={'/admin'}>
+                    <NavLink to={'/admin'}>
                         <FontAwesomeIcon icon={faCogs}/>
-                    </a>
+                    </NavLink>
                     }
-
-                    <a href={'/auth/logout'}>
+                    <button onClick={onTriggerLogout}>
                         <FontAwesomeIcon icon={faSignOutAlt}/>
-                    </a>
+                    </button>
                 </RightNavigation>
             </div>
         </Navigation>

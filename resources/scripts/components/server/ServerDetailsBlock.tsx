@@ -2,19 +2,21 @@ import React, { useEffect, useState } from 'react';
 import tw, { TwStyle } from 'twin.macro';
 import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { bytesToHuman, megabytesToHuman } from '@/helpers';
+import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import UptimeDuration from '@/components/server/UptimeDuration';
 
 interface Stats {
     memory: number;
     cpu: number;
     disk: number;
+    uptime: number;
 }
 
-function statusToColor (status: string|null, installing: boolean): TwStyle {
+function statusToColor (status: string | null, installing: boolean): TwStyle {
     if (installing) {
         status = '';
     }
@@ -30,7 +32,7 @@ function statusToColor (status: string|null, installing: boolean): TwStyle {
 }
 
 const ServerDetailsBlock = () => {
-    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0 });
+    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
@@ -48,6 +50,7 @@ const ServerDetailsBlock = () => {
             memory: stats.memory_bytes,
             cpu: stats.cpu_absolute,
             disk: stats.disk_bytes,
+            uptime: stats.uptime || 0,
         });
     };
 
@@ -69,7 +72,7 @@ const ServerDetailsBlock = () => {
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
-        allocation => (allocation.alias || allocation.ip) + ':' + allocation.port
+        allocation => (allocation.alias || formatIp(allocation.ip)) + ':' + allocation.port,
     )).toString();
 
     const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
@@ -88,6 +91,11 @@ const ServerDetailsBlock = () => {
                     ]}
                 />
                 &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
+                {stats.uptime > 0 &&
+                <span css={tw`ml-2 lowercase`}>
+                    (<UptimeDuration uptime={stats.uptime / 1000}/>)
+                </span>
+                }
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>

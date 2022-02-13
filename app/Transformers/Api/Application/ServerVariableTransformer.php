@@ -40,6 +40,8 @@ class ServerVariableTransformer extends Transformer
             return $this->null();
         }
 
+        // TODO: confirm this code?
+        // @phpstan-ignore-next-line This might actually be wrong, not sure?
         return $this->item($variable->variable, new EggVariableTransformer());
     }
 }

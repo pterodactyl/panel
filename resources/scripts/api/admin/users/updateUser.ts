@@ -2,6 +2,7 @@ import http from '@/api/http';
 import { User, rawDataToUser } from '@/api/admin/users/getUsers';
 
 export interface Values {
+    externalId: string;
     username: string;
     email: string;
     password: string;

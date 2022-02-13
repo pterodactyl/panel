@@ -5,14 +5,11 @@ namespace Pterodactyl\Http\Controllers\Auth;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-use Illuminate\Auth\AuthManager;
+use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\View\View;
-use Illuminate\Contracts\Config\Repository;
+use LaravelWebauthn\Facades\Webauthn;
 use Illuminate\Contracts\View\Factory as ViewFactory;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class LoginController extends AbstractLoginController
 {
@@ -21,31 +18,22 @@ class LoginController extends AbstractLoginController
     private const METHOD_TOTP = 'totp';
     private const METHOD_WEBAUTHN = 'webauthn';
 
-    private CacheRepository $cache;
-    private UserRepositoryInterface $repository;
     private ViewFactory $view;
 
     /**
      * LoginController constructor.
      */
-    public function __construct(
-        AuthManager $auth,
-        Repository $config,
-        CacheRepository $cache,
-        UserRepositoryInterface $repository,
-        ViewFactory $view
-    ) {
-        parent::__construct($auth, $config);
+    public function __construct(ViewFactory $view)
+    {
+        parent::__construct();
 
-        $this->cache = $cache;
-        $this->repository = $repository;
         $this->view = $view;
     }
 
     /**
      * Handle all incoming requests for the authentication routes and render the
-     * base authentication view component.  React will take over at this point and
-     * turn the login area into a SPA.
+     * base authentication view component. React will take over at this point and
+     * turn the login area into an SPA.
      */
     public function index(): View
     {
@@ -62,9 +50,6 @@ class LoginController extends AbstractLoginController
      */
     public function login(Request $request)
     {
-        $username = $request->input('user');
-        $useColumn = $this->getField($username);
-
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->fireLockoutEvent($request);
             $this->sendLockoutResponse($request);
@@ -72,13 +57,12 @@ class LoginController extends AbstractLoginController
             return;
         }
 
-        try {
-            /** @var \Pterodactyl\Models\User $user */
-            $user = $this->repository->findFirstWhere([[$useColumn, '=', $username]]);
-        } catch (RecordNotFoundException $exception) {
-            $this->sendFailedLoginResponse($request);
+        $username = $request->input('user');
 
-            return;
+        /** @var \Pterodactyl\Models\User|null $user */
+        $user = User::query()->where($this->getField($username), $username)->first();
+        if (is_null($user)) {
+            $this->sendFailedLoginResponse($request);
         }
 
         // Ensure that the account is using a valid username and password before trying to
@@ -91,17 +75,44 @@ class LoginController extends AbstractLoginController
             return;
         }
 
-        if ($user->use_totp) {
-            $token = Str::random(64);
-            $this->cache->put($token, $user->id, CarbonImmutable::now()->addMinutes(5));
+        $useTotp = $user->use_totp;
+        $webauthnKeys = $user->webauthnKeys()->get();
 
-            return new JsonResponse([
-                'complete' => false,
-                'methods' => [self::METHOD_TOTP],
-                'confirmation_token' => $token,
-            ]);
+        if (!$useTotp && count($webauthnKeys) < 1) {
+            return $this->sendLoginResponse($user, $request);
         }
 
-        return $this->sendLoginResponse($user, $request);
+        $methods = [];
+        if ($useTotp) {
+            $methods[] = self::METHOD_TOTP;
+        }
+        if (count($webauthnKeys) > 0) {
+            $methods[] = self::METHOD_WEBAUTHN;
+        }
+
+        $token = Str::random(64);
+
+        $request->session()->put('auth_confirmation_token', [
+            'user_id' => $user->id,
+            'token_value' => $token,
+            'expires_at' => CarbonImmutable::now()->addMinutes(5),
+        ]);
+
+        $response = [
+            'complete' => false,
+            'methods' => $methods,
+            'confirmation_token' => $token,
+        ];
+
+        if (count($webauthnKeys) > 0) {
+            $publicKey = Webauthn::getAuthenticateData($user);
+            $request->session()->put(self::SESSION_PUBLICKEY_REQUEST, $publicKey);
+
+            $response['webauthn'] = [
+                'public_key' => $publicKey,
+            ];
+        }
+
+        return new JsonResponse($response);
     }
 }

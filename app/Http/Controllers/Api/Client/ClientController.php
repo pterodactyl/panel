@@ -66,7 +66,7 @@ class ClientController extends ClientApiController
             $builder = $builder->whereIn('servers.id', $user->accessibleServers()->pluck('id')->all());
         }
 
-        $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
+        $servers = $builder->paginate(min((int) $request->query('per_page', '50'), 100))->appends($request->query());
 
         return $this->fractal->transformWith(new ServerTransformer())->collection($servers)->toArray();
     }

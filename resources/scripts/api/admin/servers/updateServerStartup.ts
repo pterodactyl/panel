@@ -14,7 +14,7 @@ export default (id: number, values: Partial<Values>, include: string[] = []): Pr
         http.patch(
             `/api/application/servers/${id}/startup`,
             {
-                startup: values.startup,
+                startup: values.startup !== '' ? values.startup : null,
                 environment: values.environment,
                 egg_id: values.eggId,
                 image: values.image,

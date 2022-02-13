@@ -4,6 +4,7 @@ namespace Pterodactyl\Repositories\Eloquent;
 
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
+use Pterodactyl\Models\Model;
 use Illuminate\Support\Collection;
 use Pterodactyl\Repositories\Repository;
 use Illuminate\Database\Eloquent\Builder;
@@ -25,12 +26,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      * Determines if the repository function should use filters off the request object
      * present when returning results. This allows repository methods to be called in API
      * context's such that we can pass through ?filter[name]=Dane&sort=desc for example.
-     *
-     * @param bool $usingFilters
-     *
-     * @return $this
      */
-    public function usingRequestFilters($usingFilters = true)
+    public function usingRequestFilters(bool $usingFilters = true): self
     {
         $this->useRequestFilters = $usingFilters;
 
@@ -39,26 +36,22 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
     /**
      * Returns the request instance.
-     *
-     * @return \Illuminate\Http\Request
      */
-    protected function request()
+    protected function request(): Request
     {
         return $this->app->make(Request::class);
     }
 
     /**
      * Paginate the response data based on the page para.
-     *
-     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    protected function paginate(Builder $instance, int $default = 50)
+    protected function paginate(Builder $instance, int $default = 50): LengthAwarePaginator
     {
         if (!$this->useRequestFilters) {
             return $instance->paginate($default);
         }
 
-        return $instance->paginate($this->request()->query('per_page', $default));
+        return $instance->paginate((int) $this->request()->query('per_page', (string) $default));
     }
 
     /**
@@ -91,15 +84,20 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function create(array $fields, bool $validate = true, bool $force = false)
     {
+        /** @phpstan-var \Illuminate\Database\Eloquent\Model $instance */
         $instance = $this->getBuilder()->newModelInstance();
         ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 
-        if (!$validate) {
-            $saved = $instance->skipValidation()->save();
-        } else {
-            if (!$saved = $instance->save()) {
-                throw new DataValidationException($instance->getValidator());
+        if ($instance instanceof Model) {
+            if (!$validate) {
+                $saved = $instance->skipValidation()->save();
+            } else {
+                if (!$saved = $instance->save()) {
+                    throw new DataValidationException($instance->getValidator());
+                }
             }
+        } else {
+            $saved = $instance->save();
         }
 
         return ($this->withFresh) ? $instance->fresh() : $saved;
@@ -150,6 +148,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function findCountWhere(array $fields): int
     {
+        // @phpstan-ignore-next-line
         return $this->getBuilder()->where($fields)->count($this->getColumns());
     }
 
@@ -191,12 +190,16 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
 
         ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 
-        if (!$validate) {
-            $saved = $instance->skipValidation()->save();
-        } else {
-            if (!$saved = $instance->save()) {
-                throw new DataValidationException($instance->getValidator());
+        if ($instance instanceof Model) {
+            if (!$validate) {
+                $saved = $instance->skipValidation()->save();
+            } else {
+                if (!$saved = $instance->save()) {
+                    throw new DataValidationException($instance->getValidator());
+                }
             }
+        } else {
+            $saved = $instance->save();
         }
 
         return ($this->withFresh) ? $instance->fresh() : $saved;
@@ -245,6 +248,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
             return $this->create(array_merge($where, $fields), $validate, $force);
         }
 
+        // @phpstan-ignore-next-line
         return $this->update($instance->id, $fields, $validate, $force);
     }
 

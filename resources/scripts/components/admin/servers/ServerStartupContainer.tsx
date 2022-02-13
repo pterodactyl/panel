@@ -1,9 +1,7 @@
-import getEgg, { Egg, EggVariable } from '@/api/admin/eggs/getEgg';
-import { Server } from '@/api/admin/servers/getServers';
+import { Egg, EggVariable, getEgg } from '@/api/admin/egg';
 import updateServerStartup, { Values } from '@/api/admin/servers/updateServerStartup';
 import EggSelect from '@/components/admin/servers/EggSelect';
-import NestSelect from '@/components/admin/servers/NestSelect';
-import { Context, ServerIncludes } from '@/components/admin/servers/ServerRouter';
+import NestSelector from '@/components/admin/servers/NestSelector';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import React, { useEffect, useState } from 'react';
 import Button from '@/components/elements/Button';
@@ -12,11 +10,13 @@ import AdminBox from '@/components/admin/AdminBox';
 import tw from 'twin.macro';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
+import { Form, Formik, FormikHelpers, useField, useFormikContext } from 'formik';
 import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
 import Label from '@/components/elements/Label';
 import { object } from 'yup';
+import { Server, useServerFromRoute } from '@/api/admin/server';
+import { InferModel } from '@/api/admin';
 
 function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server: Server }) {
     const { isSubmitting, setFieldValue } = useFormikContext();
@@ -27,12 +27,14 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
         }
 
         if (server.eggId === egg.id) {
-            setFieldValue('startup', server.container.startup);
+            setFieldValue('image', server.container.image);
+            setFieldValue('startup', server.container.startup || '');
             return;
         }
 
         // Whenever the egg is changed, set the server's startup command to the egg's default.
-        setFieldValue('startup', egg.startup);
+        setFieldValue('image', egg.dockerImages.length > 0 ? egg.dockerImages[0] : '');
+        setFieldValue('startup', '');
     }, [ egg ]);
 
     return (
@@ -46,6 +48,7 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
                     label={'Startup Command'}
                     type={'text'}
                     description={'Edit your server\'s startup command here. The following variables are available by default: {{SERVER_MEMORY}}, {{SERVER_IP}}, and {{SERVER_PORT}}.'}
+                    placeholder={egg?.startup || ''}
                 />
             </div>
 
@@ -57,35 +60,27 @@ function ServerStartupLineContainer ({ egg, server }: { egg: Egg | null; server:
     );
 }
 
-function ServerServiceContainer ({ egg, setEgg, server }: { egg: Egg | null, setEgg: (value: Egg | null) => void, server: Server }) {
+export function ServerServiceContainer ({ egg, setEgg, nestId: _nestId }: { egg: Egg | null, setEgg: (value: Egg | null) => void, nestId: number }) {
     const { isSubmitting } = useFormikContext();
 
-    const [ nestId, setNestId ] = useState<number | null>(server.nestId);
+    const [ nestId, setNestId ] = useState<number>(_nestId);
 
     return (
-        <AdminBox title={'Service Configuration'} css={tw`relative w-full`}>
-            <SpinnerOverlay visible={isSubmitting}/>
-
+        <AdminBox title={'Service Configuration'} isLoading={isSubmitting} css={tw`w-full`}>
             <div css={tw`mb-6`}>
-                <NestSelect nestId={nestId} setNestId={setNestId}/>
+                <NestSelector selectedNestId={nestId} onNestSelect={setNestId}/>
             </div>
-
             <div css={tw`mb-6`}>
-                <EggSelect nestId={nestId} egg={egg} setEgg={setEgg}/>
+                <EggSelect nestId={nestId} selectedEggId={egg?.id} onEggSelect={setEgg}/>
             </div>
-
             <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
-                <FormikSwitch
-                    name={'skipScript'}
-                    label={'Skip Egg Install Script'}
-                    description={'SoonTM'}
-                />
+                <FormikSwitch name={'skipScripts'} label={'Skip Egg Install Script'} description={'Soon™'}/>
             </div>
         </AdminBox>
     );
 }
 
-function ServerImageContainer () {
+export function ServerImageContainer () {
     const { isSubmitting } = useFormikContext();
 
     return (
@@ -106,14 +101,21 @@ function ServerImageContainer () {
     );
 }
 
-function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVariable, defaultValue: string }) {
-    const key = 'environment.' + variable.envVariable;
+export function ServerVariableContainer ({ variable, value }: { variable: EggVariable, value?: string }) {
+    const key = 'environment.' + variable.environmentVariable;
 
-    const { isSubmitting, setFieldValue } = useFormikContext();
+    const [ , , { setValue, setTouched } ] = useField<string | undefined>(key);
+
+    const { isSubmitting } = useFormikContext();
 
     useEffect(() => {
-        setFieldValue(key, defaultValue);
-    }, [ variable, defaultValue ]);
+        if (value === undefined) {
+            return;
+        }
+
+        setValue(value);
+        setTouched(true);
+    }, [ value ]);
 
     return (
         <AdminBox css={tw`relative w-full`} title={<p css={tw`text-sm uppercase`}>{variable.name}</p>}>
@@ -131,7 +133,7 @@ function ServerVariableContainer ({ variable, defaultValue }: { variable: EggVar
 }
 
 function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: (value: Egg | null) => void; server: Server }) {
-    const { isSubmitting, isValid } = useFormikContext();
+    const { isSubmitting, isValid, values: { environment } } = useFormikContext<Values>();
 
     return (
         <Form>
@@ -148,7 +150,7 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
                         <ServerServiceContainer
                             egg={egg}
                             setEgg={setEgg}
-                            server={server}
+                            nestId={server.nestId}
                         />
                     </div>
 
@@ -158,11 +160,12 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
                 </div>
 
                 <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8`}>
-                    {egg?.relations.variables?.map((v, i) => (
+                    {/* This ensures that no variables are rendered unless the environment has a value for the variable. */}
+                    {egg?.relationships.variables?.filter(v => Object.keys(environment).find(e => e === v.environmentVariable) !== undefined).map((v, i) => (
                         <ServerVariableContainer
                             key={i}
                             variable={v}
-                            defaultValue={server.relations?.variables.find(v2 => v.eggId === v2.eggId && v.envVariable === v2.envVariable)?.serverValue || v.defaultValue}
+                            value={server.relationships.variables?.find(v2 => v.eggId === v2.eggId && v.environmentVariable === v2.environmentVariable)?.serverValue}
                         />
                     ))}
                 </div>
@@ -179,26 +182,28 @@ function ServerStartupForm ({ egg, setEgg, server }: { egg: Egg | null, setEgg: 
     );
 }
 
-export default function ServerStartupContainer ({ server }: { server: Server }) {
+export default () => {
+    const { data: server } = useServerFromRoute();
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
-    const [ egg, setEgg ] = useState<Egg | null>(null);
-
-    const setServer = Context.useStoreActions(actions => actions.setServer);
+    const [ egg, setEgg ] = useState<InferModel<typeof getEgg> | null>(null);
 
     useEffect(() => {
-        getEgg(server.eggId, [ 'variables' ])
+        if (!server) return;
+
+        getEgg(server.eggId)
             .then(egg => setEgg(egg))
             .catch(error => console.error(error));
-    }, []);
+    }, [ server?.eggId ]);
+
+    if (!server) return null;
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('server');
 
-        updateServerStartup(server.id, values, ServerIncludes)
-            .then(s => {
-                setServer({ ...server, ...s });
-            })
+        updateServerStartup(server.id, values)
+            // .then(s => {
+            //     mutate(data => { ...data, ...s });
+            // })
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'server', error });
@@ -210,21 +215,20 @@ export default function ServerStartupContainer ({ server }: { server: Server }) 
         <Formik
             onSubmit={submit}
             initialValues={{
-                startup: server.container.startup,
-                // Don't ask.
-                environment: Object.fromEntries(egg?.relations.variables?.map(v => [ v.envVariable, '' ]) || []),
+                startup: server.container.startup || '',
+                environment: [] as Record<string, any>,
                 image: server.container.image,
                 eggId: server.eggId,
                 skipScripts: false,
             }}
-            validationSchema={object().shape({
-            })}
+            validationSchema={object().shape({})}
         >
             <ServerStartupForm
                 egg={egg}
+                // @ts-ignore
                 setEgg={setEgg}
                 server={server}
             />
         </Formik>
     );
-}
+};
