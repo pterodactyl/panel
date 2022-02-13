@@ -23,7 +23,7 @@ http.interceptors.request.use(req => {
 });
 
 http.interceptors.request.use(req => {
-    if (!req.url?.endsWith('/resources') && (req.url?.indexOf('_debugbar') || -1) < 0) {
+    if (!req.url?.endsWith('/resources')) {
         store.getActions().progress.startContinuous();
     }
 
@@ -31,7 +31,7 @@ http.interceptors.request.use(req => {
 });
 
 http.interceptors.response.use(resp => {
-    if (!resp.request?.url?.endsWith('/resources') && (resp.request?.url?.indexOf('_debugbar') || -1) < 0) {
+    if (!resp.request?.url?.endsWith('/resources')) {
         store.getActions().progress.setComplete();
     }
 
@@ -41,18 +41,6 @@ http.interceptors.response.use(resp => {
 
     throw error;
 });
-
-// If we have a phpdebugbar instance registered at this point in time go
-// ahead and route the response data through to it so things show up.
-// @ts-ignore
-if (typeof window.phpdebugbar !== 'undefined') {
-    http.interceptors.response.use(response => {
-        // @ts-ignore
-        window.phpdebugbar.ajaxHandler.handle(response.request);
-
-        return response;
-    });
-}
 
 export default http;
 
