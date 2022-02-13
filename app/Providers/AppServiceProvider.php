@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Providers;
 
+use Illuminate\Support\Str;
 use Laravel\Sanctum\Sanctum;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
