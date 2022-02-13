@@ -2,19 +2,14 @@ import React, { useEffect, useRef, useState } from 'react';
 import tw from 'twin.macro';
 import { DivContainer as LoginFormContainer } from '@/components/auth/LoginFormContainer';
 import useFlash from '@/plugins/useFlash';
-import { useLocation } from 'react-router';
-import { Link, useHistory } from 'react-router-dom';
+import { StaticContext } from 'react-router';
+import { Link, RouteComponentProps } from 'react-router-dom';
 import Button from '@/components/elements/Button';
 import { authenticateSecurityKey } from '@/api/account/security-keys';
 import { base64Decode, bufferDecode, bufferEncode, decodeSecurityKeyCredentials } from '@/helpers';
 import { FingerPrintIcon } from '@heroicons/react/outline';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-
-interface LocationParams {
-    token: string;
-    publicKey: any;
-    hasTotp: boolean;
-}
+import { LoginCheckpointState } from '@/components/auth/LoginCheckpointContainer';
 
 interface Credential extends PublicKeyCredential {
     response: AuthenticatorAssertionResponse;
@@ -34,9 +29,9 @@ const challenge = async (publicKey: PublicKeyCredentialRequestOptions, signal?: 
     return credential;
 };
 
-export default () => {
-    const history = useHistory();
-    const location = useLocation<LocationParams>();
+type Props = RouteComponentProps<Record<string, string | undefined>, StaticContext, LoginCheckpointState | undefined>;
+
+export default ({ history, location }: Props) => {
     const controller = useRef(new AbortController());
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [ redirecting, setRedirecting ] = useState(false);
@@ -44,12 +39,12 @@ export default () => {
     const triggerChallengePrompt = () => {
         clearFlashes();
 
-        challenge(location.state.publicKey, controller.current.signal)
+        challenge(location.state!.publicKey!, controller.current.signal)
             .then((credential) => {
                 setRedirecting(true);
 
                 return authenticateSecurityKey({
-                    confirmation_token: location.state.token,
+                    confirmation_token: location.state!.token,
                     data: JSON.stringify({
                         id: credential.id,
                         type: credential.type,
@@ -88,7 +83,7 @@ export default () => {
     });
 
     useEffect(() => {
-        if (!location.state?.token) {
+        if (!location.state?.token || !location.state?.publicKey) {
             history.replace('/auth/login');
         } else {
             triggerChallengePrompt();
@@ -103,7 +98,7 @@ export default () => {
         >
             <SpinnerOverlay size={'base'} visible={redirecting}/>
             <div css={tw`flex flex-col md:h-full`}>
-                <div css={tw`flex-1`}>
+                <div css={tw`flex-1 mb-12`}>
                     <p css={tw`text-neutral-700`}>Insert your security key and touch it.</p>
                     <p css={tw`text-neutral-700 mt-2`}>
                         If your security key does not respond,&nbsp;
@@ -116,16 +111,18 @@ export default () => {
                         </a>.
                     </p>
                 </div>
+                {(location.state?.methods || []).includes('totp') &&
                 <Link
-                    css={tw`block mt-12 mb-6`}
+                    css={tw`block mb-6`}
                     to={{ pathname: '/auth/login/checkpoint', state: location.state }}
                 >
                     <Button size={'small'} type={'button'} css={tw`block w-full`}>
                         Use a Different Method
                     </Button>
                 </Link>
+                }
                 <Link
-                    to={{ pathname: '/auth/login/checkpoint', state: { token: location.state.token, recovery: true } }}
+                    to={{ pathname: '/auth/login/checkpoint', state: { ...(location.state || {}), recovery: true } }}
                     css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700 text-center cursor-pointer`}
                 >
                     {'I\'ve Lost My Device'}

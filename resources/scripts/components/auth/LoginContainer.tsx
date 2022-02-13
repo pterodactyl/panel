@@ -50,17 +50,16 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     return;
                 }
 
-                if (response.methods?.includes('webauthn')) {
+                response.methods = response.methods || [];
+
+                if (response.methods.includes('webauthn')) {
                     history.replace('/auth/login/key', {
                         token: response.confirmationToken,
+                        methods: response.methods,
                         publicKey: response.publicKey,
-                        hasTotp: response.methods?.includes('totp'),
                     });
-                    return;
-                }
-
-                if (response.methods?.includes('totp')) {
-                    history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                } else if (response.methods.includes('totp')) {
+                    history.replace('/auth/login/checkpoint', { token: response.confirmationToken, methods: response.methods });
                 }
             })
             .catch(async (error) => {

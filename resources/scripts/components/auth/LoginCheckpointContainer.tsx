@@ -14,9 +14,16 @@ interface Values {
     recoveryCode: '',
 }
 
-type OwnProps = RouteComponentProps<Record<string, string | undefined>, StaticContext, { token?: string, recovery?: boolean }>
+export interface LoginCheckpointState {
+    token: string;
+    methods: string[];
+    publicKey?: PublicKeyCredentialRequestOptions;
+    recovery?: boolean;
+}
 
-export default ({ history, location }: OwnProps) => {
+type Props = RouteComponentProps<Record<string, string | undefined>, StaticContext, LoginCheckpointState>;
+
+export default ({ history, location }: Props) => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const onSubmit = ({ code, recoveryCode }: Values, { setSubmitting }: FormikHelpers<Values>) => {
@@ -47,9 +54,9 @@ export default ({ history, location }: OwnProps) => {
     return (
         <Formik initialValues={{ code: '', recoveryCode: '' }} onSubmit={onSubmit}>
             {({ isSubmitting, setFieldValue }) => (
-                <LoginFormContainer title={'Two-Factor Authentication'} css={tw`w-full flex h-full`}>
-                    <div css={tw`flex flex-col`}>
-                        <div css={tw`flex-1`}>
+                <LoginFormContainer title={'Two-Factor Authentication'}>
+                    <div css={tw`flex flex-col h-full`}>
+                        <div css={tw`flex-1 mb-12`}>
                             <Field
                                 light
                                 name={isMissingDevice ? 'recoveryCode' : 'code'}
@@ -67,13 +74,14 @@ export default ({ history, location }: OwnProps) => {
                             />
                         </div>
                         <Button
-                            css={tw`mt-12 w-full block`}
+                            css={tw`w-full block`}
                             type={'submit'}
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Login
+                            Submit
                         </Button>
+                        {(!isMissingDevice || (isMissingDevice && (location.state?.methods || []).includes('totp'))) &&
                         <button
                             type={'button'}
                             onClick={() => {
@@ -85,6 +93,7 @@ export default ({ history, location }: OwnProps) => {
                         >
                             {!isMissingDevice ? 'I\'ve Lost My Device' : 'I Have My Device'}
                         </button>
+                        }
                     </div>
                 </LoginFormContainer>
             )}

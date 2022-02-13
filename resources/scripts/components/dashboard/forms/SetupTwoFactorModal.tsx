@@ -139,7 +139,7 @@ const SetupTwoFactorModal = () => {
                                 </div>
                                 }
                             </div>
-                            <div css={tw`mt-6 md:mt-0 text-right`}>
+                            <div css={tw`mt-6 text-right`}>
                                 <Button>Setup</Button>
                             </div>
                         </div>
