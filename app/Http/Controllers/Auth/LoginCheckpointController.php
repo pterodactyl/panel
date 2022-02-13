@@ -69,6 +69,10 @@ class LoginCheckpointController extends AbstractLoginController
                 return $this->sendLoginResponse($user, $request);
             }
         } else {
+            if (!$user->use_totp) {
+                $this->sendFailedLoginResponse($request, $user);
+            }
+
             $decrypted = $this->encrypter->decrypt($user->totp_secret);
 
             if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {

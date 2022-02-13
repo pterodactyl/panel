@@ -25,8 +25,8 @@ Route::group(['middleware' => 'guest'], function () {
     Route::middleware(['throttle:authentication'])->group(function () {
         // Login endpoints.
         Route::post('/login', [Auth\LoginController::class, 'login'])->middleware('recaptcha');
-        Route::post('/login/checkpoint', [Auth\LoginCheckpointController::class, 'token'])->name('auth.login-checkpoint');
-        Route::post('/login/checkpoint/key', [Auth\LoginCheckpointController::class, 'key'])->name('auth.login-checkpoint-key');
+        Route::post('/login/checkpoint', [Auth\LoginCheckpointController::class, 'token'])->name('auth.checkpoint');
+        Route::post('/login/checkpoint/key', [Auth\LoginCheckpointController::class, 'key'])->name('auth.checkpoint.key');
 
         // Forgot password route. A post to this endpoint will trigger an
         // email to be sent containing a reset token.
