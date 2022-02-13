@@ -82,8 +82,8 @@ const ButtonStyle = styled.button<Props>`
 
 type ComponentProps = Omit<JSX.IntrinsicElements['button'], 'ref' | keyof Props> & Props;
 
-const Button: React.FC<ComponentProps> = ({ children, isLoading, disabled, ...props }) => (
-    <ButtonStyle {...props} isLoading={isLoading} disabled={isLoading || disabled}>
+const Button: React.FC<ComponentProps> = ({ children, isLoading, disabled, className, ...props }) => (
+    <ButtonStyle {...props} isLoading={isLoading} disabled={isLoading || disabled} className={className}>
         {isLoading &&
         <div css={tw`flex absolute justify-center items-center w-full h-full left-0 top-0`}>
             <Spinner size={'small'}/>

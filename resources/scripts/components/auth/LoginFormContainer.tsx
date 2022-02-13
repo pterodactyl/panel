@@ -1,32 +1,23 @@
 import React, { forwardRef } from 'react';
 import { Form } from 'formik';
-import { breakpoint } from '@/theme';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import tw, { styled } from 'twin.macro';
+import PterodactylLogo from '@/assets/images/pterodactyl.svg';
 
 const Wrapper = styled.div`
-    ${breakpoint('sm')`
-        ${tw`w-4/5 mx-auto`}
-    `};
-
-    ${breakpoint('md')`
-        ${tw`p-10`}
-    `};
-
-    ${breakpoint('lg')`
-        ${tw`w-3/5`}
-    `};
-
-    ${breakpoint('xl')`
-        ${tw`w-full`}
-        max-width: 700px;
-    `};
+  ${tw`sm:w-4/5 sm:mx-auto md:p-10 lg:w-3/5 xl:w-full`}
+  max-width: 700px;
 `;
 
-const Inner = ({ children }: { children: React.ReactNode }) => (
+interface InnerContentProps {
+    children: React.ReactNode;
+    sidebar?: React.ReactNode;
+}
+
+const InnerContainer = ({ children, sidebar }: InnerContentProps) => (
     <div css={tw`md:flex w-full bg-white shadow-lg rounded-lg p-6 md:pl-0 mx-1`}>
-        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-            <img src={'/assets/svgs/pterodactyl.svg'} css={tw`block w-48 md:w-64 mx-auto`}/>
+        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center w-48 md:w-64 mx-auto`}>
+            {sidebar || <img src={PterodactylLogo} css={tw`block w-full`}/>}
         </div>
         <div css={tw`flex-1`}>
             {children}
@@ -59,24 +50,26 @@ const Container = ({ title, children }: { title?: string, children: React.ReactN
 
 type FormContainerProps = React.DetailedHTMLProps<React.FormHTMLAttributes<HTMLFormElement>, HTMLFormElement> & {
     title?: string;
+    sidebar?: React.ReactNode;
 }
 
-const FormContainer = forwardRef<HTMLFormElement, FormContainerProps>(({ title, ...props }, ref) => (
+const FormContainer = forwardRef<HTMLFormElement, FormContainerProps>(({ title, sidebar, ...props }, ref) => (
     <Container title={title}>
         <Form {...props} ref={ref}>
-            <Inner>{props.children}</Inner>
+            <InnerContainer sidebar={sidebar}>{props.children}</InnerContainer>
         </Form>
     </Container>
 ));
 
 type DivContainerProps = React.DetailedHTMLProps<React.HTMLAttributes<HTMLDivElement>, HTMLDivElement> & {
     title?: string;
+    sidebar?: React.ReactNode;
 }
 
-export const DivContainer = ({ title, ...props }: DivContainerProps) => (
+export const DivContainer = ({ title, sidebar, ...props }: DivContainerProps) => (
     <Container title={title}>
         <div {...props}>
-            <Inner>{props.children}</Inner>
+            <InnerContainer sidebar={sidebar}>{props.children}</InnerContainer>
         </div>
     </Container>
 );

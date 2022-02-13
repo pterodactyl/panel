@@ -5,7 +5,7 @@ import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
-import SecurityKeyContainer from '@/components/dashboard/SecurityKeyContainer';
+import SecurityKeyContainer from '@/components/dashboard/security/SecurityKeyContainer';
 import SSHKeyContainer from '@/components/dashboard/SSHKeyContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';

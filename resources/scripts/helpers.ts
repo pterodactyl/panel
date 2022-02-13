@@ -67,3 +67,26 @@ export function hashToPath (hash: string): string {
 export function formatIp (ip: string): string {
     return /([a-f0-9:]+:+)+[a-f0-9]+/.test(ip) ? `[${ip}]` : ip;
 }
+
+export const base64Decode = (input: string): string => {
+    input = input.replace(/-/g, '+').replace(/_/g, '/');
+    const pad = input.length % 4;
+    if (pad) {
+        if (pad === 1) {
+            throw new Error('InvalidLengthError: Input base64url string is the wrong length to determine padding');
+        }
+        input += new Array(5 - pad).join('=');
+    }
+    return input;
+};
+
+export const bufferDecode = (value: string): ArrayBuffer => Uint8Array.from(window.atob(value), c => c.charCodeAt(0));
+
+// @ts-ignore
+export const bufferEncode = (value: ArrayBuffer): string => window.btoa(String.fromCharCode.apply(null, new Uint8Array(value)));
+
+export const decodeSecurityKeyCredentials = (credentials: PublicKeyCredentialDescriptor[]) => credentials.map(c => ({
+    id: bufferDecode(base64Decode(c.id.toString())),
+    type: c.type,
+    transports: c.transports,
+}));
