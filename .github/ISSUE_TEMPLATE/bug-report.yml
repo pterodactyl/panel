@@ -7,14 +7,6 @@ body:
     value: |
       Bug reports should only be used for reporting issues with how the software works. For assistance installing this software, as well as debugging issues with dependencies, please use our [Discord server](https://discord.gg/pterodactyl).
 
-- type: checkboxes
-  attributes:
-    label: Is there an existing issue for this?
-    description: Please [search here](https://github.com/pterodactyl/panel/issues) to see if an issue already exists for your problem.
-    options:
-    - label: I have searched the existing issues before opening this issue.
-      required: true
-
 - type: textarea      
   attributes:
     label: Current Behavior
@@ -32,7 +24,7 @@ body:
 - type: textarea      
   attributes:
     label: Steps to Reproduce
-    description: Please be as detailed as possible when providing steps to reproduce, failure to provide steps will likely result in this issue being closed.
+    description: Please be as detailed as possible when providing steps to reproduce, failure to provide steps will result in this issue being closed.
   validations:
     required: true
 
@@ -53,6 +45,20 @@ body:
     placeholder: 1.4.2
   validations:
     required: true
+    
+- type: input
+  id: egg-details
+  attributes:
+    label: Games and/or Eggs Affected
+    description: Please include the specific game(s) or egg(s) you are running into this bug with.
+    placeholder: Minecraft (Paper), Minecraft (Forge)
+ 
+- type: input
+  id: docker-image
+  attributes:
+    label: Docker Image
+    description: The specific Docker image you are using for the game(s) above.
+    placeholder: ghcr.io/pterodactyl/yolks:java_17
 
 - type: textarea
   id: panel-logs
@@ -67,3 +73,15 @@ body:
     render: bash
   validations:
     required: false
+    
+- type: checkboxes
+  attributes:
+    label: Is there an existing issue for this?
+    description: Please [search here](https://github.com/pterodactyl/panel/issues) to see if an issue already exists for your problem.
+    options:
+    - label: I have searched the existing issues before opening this issue.
+      required: true
+    - label: I have provided all relevant details, including the specific game and Docker images I am using if this issue is related to running a server.
+      required: true
+    - label: I have checked in the Discord server and believe this is a bug with the software, and not a configuration issue with my specific system.
+      required: true
