@@ -7,10 +7,9 @@
         "watch": "$npm_execpath cross-env NODE_ENV=development $npm_execpath webpack --watch --progress",
         "build": "$npm_execpath cross-env NODE_ENV=development $npm_execpath webpack --progress",
         "build:production": "$npm_execpath run clean && $npm_execpath cross-env NODE_ENV=production $npm_execpath webpack --mode production",
-        "serve": "$npm_execpath run clean && $npm_execpath cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development $npm_execpath webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
+        "serve": "$npm_execpath run clean && $npm_execpath cross-env WEBPACK_PUBLIC_PATH=/webpack@hmr/ NODE_ENV=development $npm_execpath webpack-dev-server --host 0.0.0.0 --port 8080 --public https://pterodactyl.test --hot"
     },
     "dependencies": {
-        "@": "link:./resources/scripts",
         "@codemirror/autocomplete": "^0.19.0",
         "@codemirror/closebrackets": "^0.19.0",
         "@codemirror/commands": "^0.19.0",

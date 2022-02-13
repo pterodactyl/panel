@@ -60,7 +60,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@': path.join(__dirname, '/resources/scripts'),
-            'feature': path.join(__dirname, '/resources/scripts/components/server/features'),
+            '@feature': path.join(__dirname, '/resources/scripts/components/server/features'),
             'react-dom': '@hot-loader/react-dom',
         },
         symlinks: false,
