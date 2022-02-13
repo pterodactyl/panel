@@ -7,6 +7,7 @@ use Carbon\CarbonInterface;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
 use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\SecurityKey;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Webauthn\PublicKeyCredentialRequestOptions;
@@ -81,12 +82,10 @@ class LoginCheckpointController extends AbstractLoginController
     /**
      * Authenticates a login request using a security key for a user.
      *
-     * @param \Illuminate\Http\Request $request
-     *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function key(Request $request)
+    public function key(Request $request): JsonResponse
     {
         $key = $request->session()->get(SecurityKey::PK_SESSION_NAME);
         if (!$key instanceof PublicKeyCredentialRequestOptions) {
@@ -102,16 +101,15 @@ class LoginCheckpointController extends AbstractLoginController
             SecurityKey::getPsrRequestFactory($request)
         );
 
-        if (!hash_equals($user->uuid, $source->getUserHandle())) {
-            throw new BadRequestHttpException('An unexpected error was encountered while validating that security key.');
+        if (hash_equals($user->uuid, $source->getUserHandle())) {
+            return $this->sendLoginResponse($user, $request);
         }
 
-        return $this->sendLoginResponse($user, $request);
+        throw new BadRequestHttpException('An unexpected error was encountered while validating that security key.');
     }
 
     /**
-     * @param \Illuminate\Http\Request $request
-     * @return \Pterodactyl\Models\User
+     * Extracts the user from the session data using the provided confirmation token.
      *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -168,7 +166,7 @@ class LoginCheckpointController extends AbstractLoginController
      * will return false if the data is invalid, or if more time has passed than
      * was configured when the session was written.
      */
-    public static function isValidSessionData(ValidationFactory $validation, array $data): bool
+    protected static function isValidSessionData(ValidationFactory $validation, array $data): bool
     {
         $validator = $validation->make($data, [
             'user_id' => 'required|integer|min:1',

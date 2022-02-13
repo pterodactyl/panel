@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Users\SecurityKeys;
 
+use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
@@ -9,7 +10,6 @@ use Pterodactyl\Models\SecurityKey;
 use Psr\Http\Message\ServerRequestInterface;
 use Webauthn\PublicKeyCredentialCreationOptions;
 use Pterodactyl\Repositories\SecurityKeys\WebauthnServerRepository;
-use Pterodactyl\Repositories\SecurityKeys\PublicKeyCredentialSourceRepository;
 
 class StoreSecurityKeyService
 {
@@ -60,15 +60,22 @@ class StoreSecurityKeyService
         // Unfortunately this repository interface doesn't define a response — it is explicitly
         // void — so we need to just query the database immediately after this to pull the information
         // we just stored to return to the caller.
-        PublicKeyCredentialSourceRepository::factory($user)->saveCredentialSource($source);
+        /** @var \Pterodactyl\Models\SecurityKey $key */
+        $key = $user->securityKeys()->forceCreate([
+            'uuid' => Uuid::uuid4(),
+            'name' => $this->keyName ?? 'Security Key (' . Str::random() . ')',
+            'public_key_id' => $source->getPublicKeyCredentialId(),
+            'public_key' => $source->getCredentialPublicKey(),
+            'aaguid' => $source->getAaguid(),
+            'type' => $source->getType(),
+            'transports' => $source->getTransports(),
+            'attestation_type' => $source->getAttestationType(),
+            'trust_path' => $source->getTrustPath(),
+            'user_handle' => $user->uuid,
+            'counter' => $source->getCounter(),
+            'other_ui' => $source->getOtherUI(),
+        ]);
 
-        /** @var \Pterodactyl\Models\SecurityKey $created */
-        $created = $user->securityKeys()
-            ->where('public_key_id', base64_encode($source->getPublicKeyCredentialId()))
-            ->first();
-
-        $created->update(['name' => $this->keyName ?? 'Security Key (' . Str::random() . ')']);
-
-        return $created;
+        return $key;
     }
 }

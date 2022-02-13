@@ -54,24 +54,9 @@ class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterfac
      */
     public function saveCredentialSource(PublicKeyCredentialSource $source): void
     {
-        $key = $this->user->securityKeys()->make();
-
-        $key->forceFill([
-            'uuid' => Uuid::uuid4(),
-            'user_id' => $this->user->id,
-            'public_key_id' => $source->getPublicKeyCredentialId(),
-            'public_key' => $source->getCredentialPublicKey(),
-            'aaguid' => $source->getAaguid(),
-            'type' => $source->getType(),
-            'transports' => $source->getTransports(),
-            'attestation_type' => $source->getAttestationType(),
-            'trust_path' => $source->getTrustPath(),
-            'user_handle' => $source->getUserHandle(),
-            'counter' => $source->getCounter(),
-            'other_ui' => $source->getOtherUI(),
-        ]);
-
-        $key->saveOrFail();
+        // no-op — we handle creation of the keys in StoreSecurityKeyService
+        //
+        // If you put logic in here it is triggered on each login.
     }
 
     /**
