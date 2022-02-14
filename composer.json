@@ -54,7 +54,8 @@
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^5.11.0",
         "nunomaduro/larastan": "^1.0.3",
-        "php-mock/php-mock-phpunit": "^2.6",
+        "php-mock/php-mock-phpunit": "^2.6.0",
+        "phpstan/phpstan": "^1.4.6",
         "phpstan/phpstan-webmozart-assert": "^1.0.9",
         "phpunit/phpunit": "^9.5.13"
     },

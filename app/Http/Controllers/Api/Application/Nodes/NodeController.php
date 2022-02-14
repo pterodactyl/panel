@@ -9,7 +9,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest;
@@ -21,7 +20,6 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class NodeController extends ApplicationApiController
 {
-    private NodeRepositoryInterface $repository;
     private NodeCreationService $creationService;
     private NodeDeletionService $deletionService;
     private NodeUpdateService $updateService;
@@ -30,14 +28,12 @@ class NodeController extends ApplicationApiController
      * NodeController constructor.
      */
     public function __construct(
-        NodeRepositoryInterface $repository,
         NodeCreationService $creationService,
         NodeDeletionService $deletionService,
         NodeUpdateService $updateService
     ) {
         parent::__construct();
 
-        $this->repository = $repository;
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
         $this->updateService = $updateService;

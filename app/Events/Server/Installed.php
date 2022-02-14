@@ -17,8 +17,6 @@ class Installed extends Event
 
     /**
      * Create a new event instance.
-     *
-     * @var \Pterodactyl\Models\Server
      */
     public function __construct(Server $server)
     {

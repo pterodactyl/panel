@@ -4,7 +4,6 @@ namespace Pterodactyl\Services\Helpers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\FilesystemManager;
-use Illuminate\Contracts\Foundation\Application;
 
 class AssetHashService
 {
@@ -19,11 +18,6 @@ class AssetHashService
     private $filesystem;
 
     /**
-     * @var \Illuminate\Contracts\Foundation\Application
-     */
-    private $application;
-
-    /**
      * @var array|null
      */
     protected static $manifest;
@@ -31,9 +25,8 @@ class AssetHashService
     /**
      * AssetHashService constructor.
      */
-    public function __construct(Application $application, FilesystemManager $filesystem)
+    public function __construct(FilesystemManager $filesystem)
     {
-        $this->application = $application;
         $this->filesystem = $filesystem->createLocalDriver(['root' => public_path()]);
     }
 

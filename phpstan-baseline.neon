@@ -1,11 +1,6 @@
 parameters:
 	ignoreErrors:
 		-
-			message: "#^Parameter \\#1 \\$string of function strtoupper expects string, int\\|string given\\.$#"
-			count: 1
-			path: app/Console/Commands/Environment/AppSettingsCommand.php
-
-		-
 			message: "#^Parameter \\#2 \\$subject of function preg_match_all expects string, string\\|false\\|null given\\.$#"
 			count: 1
 			path: app/Console/Commands/Environment/AppSettingsCommand.php
@@ -16,11 +11,6 @@ parameters:
 			path: app/Console/Commands/Environment/AppSettingsCommand.php
 
 		-
-			message: "#^Parameter \\#1 \\$string of function strtoupper expects string, int\\|string given\\.$#"
-			count: 1
-			path: app/Console/Commands/Environment/DatabaseSettingsCommand.php
-
-		-
 			message: "#^Parameter \\#2 \\$subject of function preg_match_all expects string, string\\|false\\|null given\\.$#"
 			count: 1
 			path: app/Console/Commands/Environment/DatabaseSettingsCommand.php
@@ -29,11 +19,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|false\\|null given\\.$#"
 			count: 1
 			path: app/Console/Commands/Environment/DatabaseSettingsCommand.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function strtoupper expects string, int\\|string given\\.$#"
-			count: 1
-			path: app/Console/Commands/Environment/EmailSettingsCommand.php
 
 		-
 			message: "#^Parameter \\#1 \\$value of function studly_case expects string, array\\|bool\\|string given\\.$#"
@@ -56,12 +41,12 @@ parameters:
 			path: app/Console/Commands/Server/BulkPowerActionCommand.php
 
 		-
-			message: "#^Parameter \\#2 \\$string of function explode expects string, array\\|bool\\|string given\\.$#"
+			message: "#^Parameter \\#2 \\$string of function explode expects string, array\\|string\\|true given\\.$#"
 			count: 2
 			path: app/Console/Commands/Server/BulkPowerActionCommand.php
 
 		-
-			message: "#^Binary operation \"\\.\" between 'download/v' and array\\|bool\\|string\\|null results in an error\\.$#"
+			message: "#^Binary operation \"\\.\" between 'download/v' and non\\-empty\\-array\\|non\\-empty\\-string\\|true results in an error\\.$#"
 			count: 1
 			path: app/Console/Commands/UpgradeCommand.php
 
@@ -71,7 +56,7 @@ parameters:
 			path: app/Console/Commands/UpgradeCommand.php
 
 		-
-			message: "#^Method Pterodactyl\\\\Console\\\\Commands\\\\UpgradeCommand\\:\\:getUrl\\(\\) should return string but returns array\\|bool\\|string\\|null\\.$#"
+			message: "#^Method Pterodactyl\\\\Console\\\\Commands\\\\UpgradeCommand\\:\\:getUrl\\(\\) should return string but returns array\\|string\\|true\\.$#"
 			count: 1
 			path: app/Console/Commands/UpgradeCommand.php
 
@@ -86,17 +71,7 @@ parameters:
 			path: app/Console/Commands/UpgradeCommand.php
 
 		-
-			message: "#^Binary operation \"\\.\" between array\\|string and '\\.' results in an error\\.$#"
-			count: 1
-			path: app/Exceptions/Handler.php
-
-		-
-			message: "#^Possibly invalid array key type array\\|string\\.$#"
-			count: 1
-			path: app/Exceptions/Handler.php
-
-		-
-			message: "#^Unable to resolve the template type TReturn in call to method Illuminate\\\\Support\\\\Collection\\<mixed,array\\<int, mixed\\>\\>\\:\\:flatMap\\(\\)$#"
+			message: "#^Unable to resolve the template type TReturn in call to method Illuminate\\\\Support\\\\Collection\\<\\(int\\|string\\),array\\<int, mixed\\>\\>\\:\\:flatMap\\(\\)$#"
 			count: 1
 			path: app/Exceptions/Handler.php
 
@@ -104,11 +79,6 @@ parameters:
 			message: "#^Possibly invalid array key type array\\<string\\>\\|string\\.$#"
 			count: 1
 			path: app/Extensions/Backups/BackupManager.php
-
-		-
-			message: "#^Parameter \\#1 \\$message of static method Illuminate\\\\Log\\\\Logger\\:\\:info\\(\\) expects string, string\\|false given\\.$#"
-			count: 2
-			path: app/Http/Controllers/Api/Application/Eggs/EggController.php
 
 		-
 			message: "#^Parameter \\#2 \\$content of method Pterodactyl\\\\Services\\\\Eggs\\\\Sharing\\\\EggImporterService\\:\\:handleContent\\(\\) expects string, resource\\|string given\\.$#"
@@ -126,14 +96,89 @@ parameters:
 			path: app/Http/Controllers/Api/Client/Servers/FileController.php
 
 		-
+			message: "#^Access to an undefined property Pterodactyl\\\\Models\\\\EggVariable\\:\\:\\$server_value\\.$#"
+			count: 1
+			path: app/Http/Controllers/Api/Client/Servers/StartupController.php
+
+		-
+			message: "#^Property Pterodactyl\\\\Http\\\\Controllers\\\\Api\\\\Remote\\\\Backups\\\\BackupRemoteUploadController\\:\\:\\$repository is never read, only written\\.$#"
+			count: 1
+			path: app/Http/Controllers/Api/Remote/Backups/BackupRemoteUploadController.php
+
+		-
+			message: "#^Property Pterodactyl\\\\Http\\\\Controllers\\\\Api\\\\Remote\\\\Servers\\\\ServerTransferController\\:\\:\\$configurationStructureService is never read, only written\\.$#"
+			count: 1
+			path: app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+
+		-
+			message: "#^Offset 'server' on array\\{username\\: string, server\\: non\\-empty\\-string\\} on left side of \\?\\? always exists and is not nullable\\.$#"
+			count: 1
+			path: app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+
+		-
+			message: "#^Cannot call method named\\(\\) on object\\|string\\.$#"
+			count: 2
+			path: app/Http/Controllers/Auth/AbstractLoginController.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: app/Http/Controllers/Auth/LoginCheckpointController.php
+
+		-
+			message: "#^Variable \\$user might not be defined\\.$#"
+			count: 1
+			path: app/Http/Controllers/Auth/LoginCheckpointController.php
+
+		-
 			message: "#^Parameter \\#1 \\$string of function md5 expects string, string\\|false given\\.$#"
 			count: 1
 			path: app/Http/Controllers/Base/LocaleController.php
 
 		-
-			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Routing\\\\Router\\:\\:bind\\(\\) expects string, int\\|string given\\.$#"
+			message: "#^Parameter \\#1 \\$route of method Illuminate\\\\Contracts\\\\Routing\\\\Registrar\\:\\:substituteImplicitBindings\\(\\) expects Illuminate\\\\Routing\\\\Route, object\\|string\\|null given\\.$#"
 			count: 1
 			path: app/Http/Middleware/Api/Application/SubstituteApplicationApiBindings.php
+
+		-
+			message: "#^Result of && is always false\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Application/SubstituteApplicationApiBindings.php
+
+		-
+			message: "#^Variable \\$route in empty\\(\\) is never defined\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Application/SubstituteApplicationApiBindings.php
+
+		-
+			message: "#^Property Pterodactyl\\\\Http\\\\Middleware\\\\Api\\\\Client\\\\Server\\\\AuthenticateServerAccess\\:\\:\\$repository is never read, only written\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Client/Server/AuthenticateServerAccess.php
+
+		-
+			message: "#^Cannot call method parameters\\(\\) on object\\|string\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+
+		-
+			message: "#^Parameter \\#1 \\$route of method Illuminate\\\\Contracts\\\\Routing\\\\Registrar\\:\\:substituteBindings\\(\\) expects Illuminate\\\\Routing\\\\Route, object\\|string\\|null given\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Client/SubstituteClientApiBindings.php
+
+		-
+			message: "#^Result of && is always false\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Client/SubstituteClientApiBindings.php
+
+		-
+			message: "#^Variable \\$route in empty\\(\\) is never defined\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Client/SubstituteClientApiBindings.php
+
+		-
+			message: "#^Cannot call method getName\\(\\) on object\\|string\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
 
 		-
 			message: "#^Parameter \\#1 \\$json of function json_decode expects string, resource\\|string given\\.$#"
@@ -141,24 +186,89 @@ parameters:
 			path: app/Http/Middleware/Api/IsValidJson.php
 
 		-
+			message: "#^Cannot call method parameters\\(\\) on object\\|string\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/PreventUnboundModels.php
+
+		-
+			message: "#^Cannot call method signatureParameters\\(\\) on object\\|string\\.$#"
+			count: 1
+			path: app/Http/Middleware/Api/PreventUnboundModels.php
+
+		-
+			message: "#^Cannot call method getName\\(\\) on object\\|string\\.$#"
+			count: 1
+			path: app/Http/Middleware/RequireTwoFactorAuthentication.php
+
+		-
 			message: "#^Parameter \\#1 \\$array of function array_get expects array\\|ArrayAccess, array\\<string, int\\|string\\>\\|false given\\.$#"
 			count: 1
 			path: app/Http/Middleware/VerifyReCaptcha.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of function snake_case expects string, int\\|string given\\.$#"
-			count: 1
-			path: app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
-
-		-
-			message: "#^Method Pterodactyl\\\\Jobs\\\\Schedule\\\\RunTaskJob\\:\\:__construct\\(\\) has parameter \\$manualRun with no typehint specified\\.$#"
+			message: "#^Method Pterodactyl\\\\Jobs\\\\Schedule\\\\RunTaskJob\\:\\:__construct\\(\\) has parameter \\$manualRun with no type specified\\.$#"
 			count: 1
 			path: app/Jobs/Schedule/RunTaskJob.php
 
 		-
-			message: "#^Parameter \\#2 \\$column of static method Illuminate\\\\Validation\\\\Rule\\:\\:unique\\(\\) expects string, int\\|string given\\.$#"
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\AdminRole\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
 			count: 1
-			path: app/Models/Model.php
+			path: app/Models/AdminRole.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Allocation\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/Allocation.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Database\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/Database.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\DatabaseHost\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/DatabaseHost.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Egg\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/Egg.php
+
+		-
+			message: "#^PHPDoc type null of property Pterodactyl\\\\Models\\\\EggMount\\:\\:\\$primaryKey is not covariant with PHPDoc type string of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$primaryKey\\.$#"
+			count: 1
+			path: app/Models/EggMount.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\EggVariable\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/EggVariable.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Location\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/Location.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Mount\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/Mount.php
+
+		-
+			message: "#^PHPDoc type null of property Pterodactyl\\\\Models\\\\MountNode\\:\\:\\$primaryKey is not covariant with PHPDoc type string of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$primaryKey\\.$#"
+			count: 1
+			path: app/Models/MountNode.php
+
+		-
+			message: "#^PHPDoc type null of property Pterodactyl\\\\Models\\\\MountServer\\:\\:\\$primaryKey is not covariant with PHPDoc type string of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$primaryKey\\.$#"
+			count: 1
+			path: app/Models/MountServer.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Nest\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/Nest.php
 
 		-
 			message: "#^Method Pterodactyl\\\\Models\\\\Node\\:\\:getJsonConfiguration\\(\\) should return string but returns string\\|false\\.$#"
@@ -166,14 +276,144 @@ parameters:
 			path: app/Models/Node.php
 
 		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Node\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/Node.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Permission\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/Permission.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Schedule\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/Schedule.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Server\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/Server.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\ServerTransfer\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/ServerTransfer.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Setting\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/Setting.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Subuser\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/Subuser.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\Task\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/Task.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\TaskLog\\:\\:\\$guarded is not covariant with PHPDoc type array\\<string\\>\\|bool of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$guarded\\.$#"
+			count: 1
+			path: app/Models/TaskLog.php
+
+		-
+			message: "#^PHPDoc type array of property Pterodactyl\\\\Models\\\\User\\:\\:\\$fillable is not covariant with PHPDoc type array\\<string\\> of overridden property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$fillable\\.$#"
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$name\\.$#"
+			count: 1
+			path: app/Notifications/AddedToServer.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$uuidShort\\.$#"
+			count: 1
+			path: app/Notifications/AddedToServer.php
+
+		-
+			message: "#^Access to an undefined property object\\:\\:\\$name\\.$#"
+			count: 1
+			path: app/Notifications/RemovedFromServer.php
+
+		-
+			message: "#^Property Pterodactyl\\\\Observers\\\\UserObserver\\:\\:\\$uuid has no type specified\\.$#"
+			count: 1
+			path: app/Observers/UserObserver.php
+
+		-
+			message: "#^Cannot access offset 'config' on Illuminate\\\\Contracts\\\\Foundation\\\\Application\\.$#"
+			count: 1
+			path: app/Providers/HashidsServiceProvider.php
+
+		-
+			message: "#^Cannot call method named\\(\\) on object\\|string\\.$#"
+			count: 1
+			path: app/Providers/RouteServiceProvider.php
+
+		-
 			message: "#^Method Pterodactyl\\\\Repositories\\\\Eloquent\\\\EloquentRepository\\:\\:updateOrCreate\\(\\) should return Illuminate\\\\Database\\\\Eloquent\\\\Model but returns bool\\|Illuminate\\\\Database\\\\Eloquent\\\\Model\\.$#"
 			count: 1
 			path: app/Repositories/Eloquent/EloquentRepository.php
 
 		-
-			message: "#^Parameter \\#1 \\.\\.\\.\\$model of method Pterodactyl\\\\Repositories\\\\Repository\\:\\:initializeModel\\(\\) expects class\\-string\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, mixed given\\.$#"
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$sum_disk\\.$#"
+			count: 2
+			path: app/Repositories/Eloquent/NodeRepository.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$sum_memory\\.$#"
+			count: 2
+			path: app/Repositories/Eloquent/NodeRepository.php
+
+		-
+			message: "#^Method Pterodactyl\\\\Repositories\\\\Eloquent\\\\NodeRepository\\:\\:getNodeWithResourceUsage\\(\\) should return Pterodactyl\\\\Models\\\\Node but returns Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null\\.$#"
+			count: 1
+			path: app/Repositories/Eloquent/NodeRepository.php
+
+		-
+			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:\\$value\\.$#"
+			count: 1
+			path: app/Repositories/Eloquent/SettingsRepository.php
+
+		-
+			message: "#^Method Pterodactyl\\\\Repositories\\\\Eloquent\\\\SubuserRepository\\:\\:getWithPermissionsUsingUserAndServer\\(\\) should return Pterodactyl\\\\Models\\\\Subuser but returns Illuminate\\\\Database\\\\Eloquent\\\\Model\\.$#"
+			count: 1
+			path: app/Repositories/Eloquent/SubuserRepository.php
+
+		-
+			message: "#^Method Pterodactyl\\\\Repositories\\\\Eloquent\\\\TaskRepository\\:\\:getNextTask\\(\\) should return Pterodactyl\\\\Models\\\\Task\\|null but returns Illuminate\\\\Database\\\\Eloquent\\\\Model\\|null\\.$#"
+			count: 1
+			path: app/Repositories/Eloquent/TaskRepository.php
+
+		-
+			message: "#^Parameter \\#1 \\.\\.\\.\\$model of method Pterodactyl\\\\Repositories\\\\Repository\\:\\:initializeModel\\(\\) expects class\\-string\\<Illuminate\\\\Database\\\\Eloquent\\\\Model\\>, object\\|string given\\.$#"
 			count: 1
 			path: app/Repositories/Repository.php
+
+		-
+			message: "#^Expression on left side of \\?\\? is not nullable\\.$#"
+			count: 1
+			path: app/Repositories/Wings/DaemonFileRepository.php
+
+		-
+			message: "#^Dead catch \\- Exception is never thrown in the try block\\.$#"
+			count: 1
+			path: app/Services/Databases/DatabaseManagementService.php
+
+		-
+			message: "#^Argument of an invalid type iterable\\|object supplied for foreach, only iterables are supported\\.$#"
+			count: 1
+			path: app/Services/Eggs/EggConfigurationService.php
+
+		-
+			message: "#^Cannot clone non\\-object variable \\$data of type iterable\\|object\\.$#"
+			count: 1
+			path: app/Services/Eggs/EggConfigurationService.php
 
 		-
 			message: "#^Parameter \\#2 \\$content of method Pterodactyl\\\\Services\\\\Eggs\\\\Sharing\\\\EggImporterService\\:\\:handleContent\\(\\) expects string, string\\|false given\\.$#"
@@ -186,16 +426,6 @@ parameters:
 			path: app/Services/Eggs/Sharing/EggUpdateImporterService.php
 
 		-
-			message: "#^Parameter \\#1 \\$value of static method Illuminate\\\\Support\\\\Str\\:\\:snake\\(\\) expects string, array\\|string given\\.$#"
-			count: 1
-			path: app/Services/Eggs/Variables/VariableCreationService.php
-
-		-
-			message: "#^Parameter \\#1 \\$value of static method Illuminate\\\\Support\\\\Str\\:\\:snake\\(\\) expects string, array\\|string given\\.$#"
-			count: 1
-			path: app/Services/Eggs/Variables/VariableUpdateService.php
-
-		-
 			message: "#^Parameter \\#1 \\$string of function substr expects string, string\\|false given\\.$#"
 			count: 1
 			path: app/Services/Helpers/SoftwareVersionService.php
@@ -204,21 +434,6 @@ parameters:
 			message: "#^Parameter \\#2 \\$string of function explode expects string, string\\|false given\\.$#"
 			count: 1
 			path: app/Services/Helpers/SoftwareVersionService.php
-
-		-
-			message: "#^Parameter \\#1 \\$id of method Lcobucci\\\\JWT\\\\Builder\\:\\:identifiedBy\\(\\) expects string, string\\|false given\\.$#"
-			count: 1
-			path: app/Services/Nodes/NodeJWTService.php
-
-		-
-			message: "#^Parameter \\#1 \\$name of method Lcobucci\\\\JWT\\\\Builder\\:\\:withClaim\\(\\) expects string, int\\|string given\\.$#"
-			count: 1
-			path: app/Services/Nodes/NodeJWTService.php
-
-		-
-			message: "#^Parameter \\#1 \\$key of method Illuminate\\\\Database\\\\Eloquent\\\\Model\\:\\:setAttribute\\(\\) expects string, int\\|string given\\.$#"
-			count: 1
-			path: app/Services/Servers/ServerConfigurationStructureService.php
 
 		-
 			message: "#^Access to an undefined property Illuminate\\\\Database\\\\Eloquent\\\\Collection\\<Pterodactyl\\\\Models\\\\Allocation\\>\\|Pterodactyl\\\\Models\\\\Allocation\\:\\:\\$node_id\\.$#"
@@ -234,11 +449,6 @@ parameters:
 			message: "#^Parameter \\#3 \\$subject of function preg_replace expects array\\|string, string\\|false given\\.$#"
 			count: 1
 			path: app/Services/Subusers/SubuserCreationService.php
-
-		-
-			message: "#^Parameter \\#1 \\$string of function urlencode expects string, array\\|string\\|null given\\.$#"
-			count: 1
-			path: app/Services/Users/TwoFactorSetupService.php
 
 		-
 			message: "#^Cannot call method getResourceName\\(\\) on \\(callable&class\\-string\\)\\|\\(callable&object\\)\\|League\\\\Fractal\\\\TransformerAbstract\\.$#"

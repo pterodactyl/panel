@@ -88,7 +88,7 @@ class EggConfigurationService
     /**
      * @return array
      */
-    protected function replacePlaceholders(Server $server, object $configs)
+    protected function replacePlaceholders(Server $server, iterable $configs)
     {
         // Get the legacy configuration structure for the server so that we
         // can property map the egg placeholders to values.
@@ -112,6 +112,7 @@ class EggConfigurationService
 
             foreach ($this->iterate($data->find, $structure) as $find => $replace) {
                 if (is_object($replace)) {
+                    // @phpstan-ignore-next-line
                     foreach ($replace as $match => $replaceWith) {
                         $append['replace'][] = [
                             'match' => $find,
@@ -205,7 +206,6 @@ class EggConfigurationService
             // Replace anything starting with "server." with the value out of the server configuration
             // array that used to be created for the old daemon.
             if (Str::startsWith($key, 'server.')) {
-                // @phpstan-ignore-next-line
                 $plucked = Arr::get($structure, preg_replace('/^server\./', '', $key), '');
 
                 $value = str_replace("{{{$key}}}", $plucked, $value);
@@ -216,7 +216,6 @@ class EggConfigurationService
             // variable from the server configuration.
             $plucked = Arr::get(
                 $structure,
-                // @phpstan-ignore-next-line
                 preg_replace('/^env\./', 'build.env.', $key),
                 ''
             );

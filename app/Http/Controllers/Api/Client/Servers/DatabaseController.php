@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
-use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
@@ -19,7 +18,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest
 class DatabaseController extends ClientApiController
 {
     private DeployServerDatabaseService $deployDatabaseService;
-    private DatabaseRepository $repository;
     private DatabaseManagementService $managementService;
     private DatabasePasswordService $passwordService;
 
@@ -29,13 +27,11 @@ class DatabaseController extends ClientApiController
     public function __construct(
         DatabaseManagementService $managementService,
         DatabasePasswordService $passwordService,
-        DatabaseRepository $repository,
         DeployServerDatabaseService $deployDatabaseService
     ) {
         parent::__construct();
 
         $this->deployDatabaseService = $deployDatabaseService;
-        $this->repository = $repository;
         $this->managementService = $managementService;
         $this->passwordService = $passwordService;
     }

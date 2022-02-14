@@ -51,6 +51,11 @@ class AppSettingsCommand extends Command
     protected $config;
 
     /**
+     * @var \Illuminate\Validation\Factory
+     */
+    protected $validator;
+
+    /**
      * @var string
      */
     protected $description = 'Configure basic environment settings for the Panel.';

@@ -7,24 +7,11 @@ use Pterodactyl\Models\Permission;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Pterodactyl\Models\Filters\MultiFieldServerFilter;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Http\Requests\Api\Client\GetServersRequest;
 
 class ClientController extends ClientApiController
 {
-    private ServerRepository $repository;
-
-    /**
-     * ClientController constructor.
-     */
-    public function __construct(ServerRepository $repository)
-    {
-        parent::__construct();
-
-        $this->repository = $repository;
-    }
-
     /**
      * Return all of the servers available to the client making the API
      * request, including servers the user has access to as a subuser.

@@ -7,7 +7,6 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\AuditLog;
 use Pterodactyl\Services\Nodes\NodeJWTService;
-use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -26,7 +25,6 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 class FileController extends ClientApiController
 {
     private DaemonFileRepository $fileRepository;
-    private ResponseFactory $responseFactory;
     private NodeJWTService $jwtService;
 
     /**
@@ -34,13 +32,11 @@ class FileController extends ClientApiController
      */
     public function __construct(
         DaemonFileRepository $fileRepository,
-        ResponseFactory $responseFactory,
         NodeJWTService $jwtService
     ) {
         parent::__construct();
 
         $this->fileRepository = $fileRepository;
-        $this->responseFactory = $responseFactory;
         $this->jwtService = $jwtService;
     }
 

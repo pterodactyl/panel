@@ -9,7 +9,8 @@ parameters:
         - database/Seeders
     level: 7
     ignoreErrors:
-        - '#Unsafe usage of new static#'
-        - '#has no return typehint specified.#'
-        - '#has no typehint specified.#'
+        - "#Unsafe usage of new static#"
+        - "#has no return type specified\\.#"
+        # Just ignore this entirey, causes a lot of noise for minimal gain on the requests.
+        - "#^Cannot call method parameter\\(\\) on object\\|string\\.$#"
     checkMissingIterableValueType: false

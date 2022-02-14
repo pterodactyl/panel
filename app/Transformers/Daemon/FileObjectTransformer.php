@@ -8,13 +8,6 @@ use Illuminate\Support\Arr;
 class FileObjectTransformer extends BaseDaemonTransformer
 {
     /**
-     * An array of files we allow editing in the Panel.
-     *
-     * @var array
-     */
-    private $editable = [];
-
-    /**
      * Transform a file object response from the daemon into a standardized response.
      *
      * @return array

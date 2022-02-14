@@ -9,7 +9,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest;
@@ -21,7 +20,6 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class UserController extends ApplicationApiController
 {
-    private UserRepositoryInterface $repository;
     private UserCreationService $creationService;
     private UserDeletionService $deletionService;
     private UserUpdateService $updateService;
@@ -30,14 +28,12 @@ class UserController extends ApplicationApiController
      * UserController constructor.
      */
     public function __construct(
-        UserRepositoryInterface $repository,
         UserCreationService $creationService,
         UserDeletionService $deletionService,
         UserUpdateService $updateService
     ) {
         parent::__construct();
 
-        $this->repository = $repository;
         $this->creationService = $creationService;
         $this->deletionService = $deletionService;
         $this->updateService = $updateService;

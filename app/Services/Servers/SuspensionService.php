@@ -4,7 +4,6 @@ namespace Pterodactyl\Services\Servers;
 
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
-use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
@@ -12,12 +11,7 @@ class SuspensionService
 {
     public const ACTION_SUSPEND = 'suspend';
     public const ACTION_UNSUSPEND = 'unsuspend';
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
+    
     /**
      * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
@@ -26,11 +20,7 @@ class SuspensionService
     /**
      * SuspensionService constructor.
      */
-    public function __construct(
-        ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository
-    ) {
-        $this->connection = $connection;
+    public function __construct(DaemonServerRepository $daemonServerRepository) {
         $this->daemonServerRepository = $daemonServerRepository;
     }
 

@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\StartupCommandService;
-use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Transformers\Api\Client\EggVariableTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -14,18 +13,16 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRe
 
 class StartupController extends ClientApiController
 {
-    private VariableValidatorService $service;
     private ServerVariableRepository $repository;
     private StartupCommandService $startupCommandService;
 
     /**
      * StartupController constructor.
      */
-    public function __construct(VariableValidatorService $service, StartupCommandService $startupCommandService, ServerVariableRepository $repository)
+    public function __construct(StartupCommandService $startupCommandService, ServerVariableRepository $repository)
     {
         parent::__construct();
 
-        $this->service = $service;
         $this->repository = $repository;
         $this->startupCommandService = $startupCommandService;
     }

@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Repositories\Eloquent\EggRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
@@ -26,12 +25,7 @@ class ServerCreationService
      * @var \Pterodactyl\Services\Deployment\AllocationSelectionService
      */
     private $allocationSelectionService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $configurationStructureService;
-
+    
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */
@@ -46,11 +40,6 @@ class ServerCreationService
      * @var \Pterodactyl\Services\Servers\VariableValidatorService
      */
     private $validatorService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\EggRepository
-     */
-    private $eggRepository;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
@@ -74,29 +63,21 @@ class ServerCreationService
 
     /**
      * CreationService constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $configurationStructureService
-     * @param \Pterodactyl\Services\Servers\ServerDeletionService $serverDeletionService
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
     public function __construct(
         AllocationSelectionService $allocationSelectionService,
         ConnectionInterface $connection,
         DaemonServerRepository $daemonServerRepository,
-        EggRepository $eggRepository,
         FindViableNodesService $findViableNodesService,
-        ServerConfigurationStructureService $configurationStructureService,
         ServerDeletionService $serverDeletionService,
         ServerRepository $repository,
         ServerVariableRepository $serverVariableRepository,
         VariableValidatorService $validatorService
     ) {
         $this->allocationSelectionService = $allocationSelectionService;
-        $this->configurationStructureService = $configurationStructureService;
         $this->connection = $connection;
         $this->findViableNodesService = $findViableNodesService;
         $this->validatorService = $validatorService;
-        $this->eggRepository = $eggRepository;
         $this->repository = $repository;
         $this->serverVariableRepository = $serverVariableRepository;
         $this->daemonServerRepository = $daemonServerRepository;
