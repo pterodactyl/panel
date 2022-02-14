@@ -25,7 +25,7 @@ class ServerCreationService
      * @var \Pterodactyl\Services\Deployment\AllocationSelectionService
      */
     private $allocationSelectionService;
-    
+
     /**
      * @var \Illuminate\Database\ConnectionInterface
      */

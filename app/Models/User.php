@@ -231,9 +231,6 @@ class User extends Model implements
             ->groupBy('servers.id');
     }
 
-    /**
-     * @return \Webauthn\PublicKeyCredentialUserEntity
-     */
     public function toPublicKeyCredentialEntity(): PublicKeyCredentialUserEntity
     {
         return new PublicKeyCredentialUserEntity($this->username, $this->uuid, $this->email, null);

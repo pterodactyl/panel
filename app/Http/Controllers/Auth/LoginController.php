@@ -19,9 +19,6 @@ class LoginController extends AbstractLoginController
 
     protected GeneratePublicKeyCredentialsRequestService $service;
 
-    /**
-     * @param \Pterodactyl\Services\Users\SecurityKeys\GeneratePublicKeyCredentialsRequestService $service
-     */
     public function __construct(GeneratePublicKeyCredentialsRequestService $service)
     {
         parent::__construct();

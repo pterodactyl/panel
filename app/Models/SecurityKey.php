@@ -113,9 +113,6 @@ class SecurityKey extends Model
 
     /**
      * Returns a PSR17 Request factory to be used by different Webauthn tooling.
-     *
-     * @param \Illuminate\Http\Request $request
-     * @return \Psr\Http\Message\ServerRequestInterface
      */
     public static function getPsrRequestFactory(Request $request): ServerRequestInterface
     {

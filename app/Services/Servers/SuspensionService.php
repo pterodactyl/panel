@@ -11,7 +11,7 @@ class SuspensionService
 {
     public const ACTION_SUSPEND = 'suspend';
     public const ACTION_UNSUSPEND = 'unsuspend';
-    
+
     /**
      * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
      */
@@ -20,7 +20,8 @@ class SuspensionService
     /**
      * SuspensionService constructor.
      */
-    public function __construct(DaemonServerRepository $daemonServerRepository) {
+    public function __construct(DaemonServerRepository $daemonServerRepository)
+    {
         $this->daemonServerRepository = $daemonServerRepository;
     }
 

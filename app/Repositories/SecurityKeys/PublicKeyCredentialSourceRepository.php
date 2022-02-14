@@ -2,12 +2,11 @@
 
 namespace Pterodactyl\Repositories\SecurityKeys;
 
-use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
 use Illuminate\Container\Container;
+use Pterodactyl\Models\SecurityKey;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\PublicKeyCredentialUserEntity;
-use Pterodactyl\Models\SecurityKey;
 use Webauthn\PublicKeyCredentialSourceRepository as PublicKeyRepositoryInterface;
 
 class PublicKeyCredentialSourceRepository implements PublicKeyRepositoryInterface

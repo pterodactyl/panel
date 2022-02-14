@@ -15,8 +15,8 @@ use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\StoreEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\DeleteEggRequest;
-use Pterodactyl\Http\Requests\Api\Application\Eggs\UpdateEggRequest;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\ExportEggRequest;
+use Pterodactyl\Http\Requests\Api\Application\Eggs\UpdateEggRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class EggController extends ApplicationApiController

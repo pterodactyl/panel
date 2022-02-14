@@ -11,18 +11,11 @@ class GeneratePublicKeyCredentialsRequestService
 {
     protected WebauthnServerRepository $serverRepository;
 
-    /**
-     * @param \Pterodactyl\Repositories\SecurityKeys\WebauthnServerRepository $serverRepository
-     */
     public function __construct(WebauthnServerRepository $serverRepository)
     {
         $this->serverRepository = $serverRepository;
     }
 
-    /**
-     * @param \Pterodactyl\Models\User $user
-     * @return \Webauthn\PublicKeyCredentialRequestOptions
-     */
     public function handle(User $user): PublicKeyCredentialRequestOptions
     {
         $credentials = $user->securityKeys->map(function (SecurityKey $key) {
@@ -31,7 +24,8 @@ class GeneratePublicKeyCredentialsRequestService
 
         $response = $this->serverRepository->getServer($user)
             ->generatePublicKeyCredentialRequestOptions(
-                PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_PREFERRED, $credentials
+                PublicKeyCredentialRequestOptions::USER_VERIFICATION_REQUIREMENT_PREFERRED,
+                $credentials
             );
 
         return $response->setTimeout(300);

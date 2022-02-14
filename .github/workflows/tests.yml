@@ -12,8 +12,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 7.4, 8.0 ]
-        database: [ 'mariadb:10.2', 'mysql:8' ]
+        php: [ 7.4, 8.0, 8.1 ]
+        database: [ 'mariadb:10.6', 'mysql:8' ]
     services:
       database:
         image: ${{ matrix.database }}
@@ -51,21 +51,14 @@ jobs:
         run: composer install --prefer-dist --no-interaction --no-progress
       - name: Run cs-fixer
         run: vendor/bin/php-cs-fixer fix --dry-run --diff --format=txt --config .php-cs-fixer.dist.php
-        continue-on-error: true
       - name: Static Analysis
         if: ${{ matrix.php }} == '8.0'
         run: |
           php artisan ide-helper:models -N
           ./vendor/bin/phpstan analyse --memory-limit=2G
         env:
-          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
-      - name: Execute Unit Tests
-        run: php artisan test tests/Unit
-        if: ${{ always() }}
-        env:
           DB_PORT: ${{ job.services.database.ports[3306] }}
-      - name: Execute Integration Tests
-        run: php artisan test tests/Integration
-        if: ${{ always() }}
+      - name: Execute Tests
+        run: php artisan test
         env:
           DB_PORT: ${{ job.services.database.ports[3306] }}

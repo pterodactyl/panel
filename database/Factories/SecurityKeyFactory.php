@@ -26,7 +26,6 @@ class SecurityKeyFactory extends Factory
     }
 
     /**
-     * @param \Pterodactyl\Models\User $user
      * @return $this
      */
     public function withUser(User $user): self

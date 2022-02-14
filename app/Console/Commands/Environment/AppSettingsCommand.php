@@ -119,6 +119,7 @@ class AppSettingsCommand extends Command
             foreach ($validator->errors()->all() as $error) {
                 $this->output->error($error);
             }
+
             return 1;
         }
 
