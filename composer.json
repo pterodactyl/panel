@@ -11,13 +11,13 @@
         }
     ],
     "require": {
-        "php": "^7.4 || ^8.0.0 || ^8.1.0",
+        "php": "^8.0.0 || ^8.1.0",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
-        "aws/aws-sdk-php": "^3.186",
+        "aws/aws-sdk-php": "^3.209",
         "doctrine/dbal": "^3.3.2",
         "fideloper/proxy": "^4.4.1",
         "guzzlehttp/guzzle": "^7.4.1",
