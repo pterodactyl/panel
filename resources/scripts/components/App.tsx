@@ -15,6 +15,7 @@ import { setupInterceptors } from '@/api/interceptors';
 import GlobalStyles from '@/components/GlobalStyles';
 import Spinner from '@/components/elements/Spinner';
 
+import '@/assets/tailwind.css';
 const ChunkedAdminRouter = lazy(() => import(/* webpackChunkName: "admin" */'@/routers/AdminRouter'));
 
 interface ExtendedWindow extends Window {

@@ -31,7 +31,20 @@ module.exports = {
             },
             {
                 test: /\.css$/,
-                use: [ 'style-loader', 'css-loader' ],
+                use: [
+                    { loader: 'style-loader' },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            sourceMap: !isProduction,
+                            importLoaders: 1,
+                        },
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: { sourceMap: !isProduction },
+                    },
+                ],
             },
             {
                 test: /\.(png|jp(e?)g|gif)$/,
@@ -48,7 +61,7 @@ module.exports = {
                 test: /\.js$/,
                 enforce: 'pre',
                 loader: 'source-map-loader',
-            }
+            },
         ],
     },
     stats: {
@@ -84,12 +97,12 @@ module.exports = {
             },
             eslint: isProduction ? undefined : {
                 files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
-            }
+            },
         }),
         process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin({
             analyzerHost: '0.0.0.0',
             analyzerPort: 8081,
-        }) : null
+        }) : null,
     ].filter(p => p),
     optimization: {
         usedExports: true,
