@@ -9,3 +9,11 @@ interface SecurityKey extends Model {
     createdAt: Date;
     updatedAt: Date;
 }
+
+interface PersonalAccessToken extends Model {
+    identifier: string;
+    description: string;
+    createdAt: Date;
+    updatedAt: Date;
+    lastUsedAt: Date | null;
+}

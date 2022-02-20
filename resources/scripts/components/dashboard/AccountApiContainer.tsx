@@ -1,78 +1,42 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import ContentBox from '@/components/elements/ContentBox';
 import CreateApiKeyForm from '@/components/dashboard/forms/CreateApiKeyForm';
-import getApiKeys, { ApiKey } from '@/api/account/getApiKeys';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import deleteApiKey from '@/api/account/deleteApiKey';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { httpErrorToHuman } from '@/api/http';
 import { format } from 'date-fns';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+import { useAPIKeys } from '@/api/account/api-keys';
+import { useFlashKey } from '@/plugins/useFlash';
+import DeleteAPIKeyButton from '@/components/dashboard/security/DeleteAPIKeyButton';
 
 export default () => {
-    const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
-    const [ keys, setKeys ] = useState<ApiKey[]>([]);
-    const [ loading, setLoading ] = useState(true);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { clearAndAddHttpError } = useFlashKey('account');
+    const { data: keys, isValidating, error } = useAPIKeys({
+        revalidateOnMount: true,
+        revalidateOnFocus: false,
+    });
 
     useEffect(() => {
-        clearFlashes('account');
-        getApiKeys()
-            .then(keys => setKeys(keys))
-            .then(() => setLoading(false))
-            .catch(error => {
-                console.error(error);
-                addError({ key: 'account', message: httpErrorToHuman(error) });
-            });
-    }, []);
-
-    const doDeletion = (identifier: string) => {
-        setLoading(true);
-        clearFlashes('account');
-        deleteApiKey(identifier)
-            .then(() => setKeys(s => ([
-                ...(s || []).filter(key => key.identifier !== identifier),
-            ])))
-            .catch(error => {
-                console.error(error);
-                addError({ key: 'account', message: httpErrorToHuman(error) });
-            })
-            .then(() => setLoading(false));
-    };
+        clearAndAddHttpError(error);
+    }, [ error ]);
 
     return (
         <PageContentBlock title={'Account API'}>
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
                 <ContentBox title={'Create API Key'} css={tw`flex-none w-full md:w-1/2`}>
-                    <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
+                    <CreateApiKeyForm/>
                 </ContentBox>
                 <ContentBox title={'API Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
-                    <SpinnerOverlay visible={loading}/>
-                    <ConfirmationModal
-                        visible={!!deleteIdentifier}
-                        title={'Confirm key deletion'}
-                        buttonText={'Yes, delete key'}
-                        onConfirmed={() => {
-                            doDeletion(deleteIdentifier);
-                            setDeleteIdentifier('');
-                        }}
-                        onModalDismissed={() => setDeleteIdentifier('')}
-                    >
-                        Are you sure you wish to delete this API key? All requests using it will immediately be
-                        invalidated and will fail.
-                    </ConfirmationModal>
+                    <SpinnerOverlay visible={!keys && isValidating}/>
                     {
-                        keys.length === 0 ?
+                        !keys || !keys.length ?
                             <p css={tw`text-center text-sm`}>
-                                {loading ? 'Loading...' : 'No API keys exist for this account.'}
+                                {!keys ? 'Loading...' : 'No API keys exist for this account.'}
                             </p>
                             :
                             keys.map((key, index) => (
@@ -93,15 +57,7 @@ export default () => {
                                             {key.identifier}
                                         </code>
                                     </p>
-                                    <button
-                                        css={tw`ml-4 p-2 text-sm`}
-                                        onClick={() => setDeleteIdentifier(key.identifier)}
-                                    >
-                                        <FontAwesomeIcon
-                                            icon={faTrashAlt}
-                                            css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`}
-                                        />
-                                    </button>
+                                    <DeleteAPIKeyButton identifier={key.identifier}/>
                                 </GreyRowBox>
                             ))
                     }

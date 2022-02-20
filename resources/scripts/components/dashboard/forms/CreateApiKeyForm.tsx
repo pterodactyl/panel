@@ -2,41 +2,41 @@ import React, { useState } from 'react';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import createApiKey from '@/api/account/createApiKey';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { ApiKey } from '@/api/account/getApiKeys';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input from '@/components/elements/Input';
 import ApiKeyModal from '@/components/dashboard/ApiKeyModal';
+import { createAPIKey, useAPIKeys } from '@/api/account/api-keys';
+import { useFlashKey } from '@/plugins/useFlash';
 
 interface Values {
     description: string;
     allowedIps: string;
 }
 
-export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
+export default () => {
     const [ apiKey, setApiKey ] = useState('');
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { mutate } = useAPIKeys();
+    const { clearAndAddHttpError } = useFlashKey('account');
 
     const submit = (values: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
-        clearFlashes('account');
-        createApiKey(values.description, values.allowedIps)
-            .then(({ secretToken, ...key }) => {
-                resetForm();
-                setSubmitting(false);
-                setApiKey(secretToken);
-                onKeyCreated(key);
-            })
-            .catch(error => {
-                console.error(error);
+        clearAndAddHttpError();
 
-                addError({ key: 'account', message: httpErrorToHuman(error) });
-                setSubmitting(false);
-            });
+        createAPIKey(values.description)
+            .then(async ([ token, secretToken ]) => {
+                await mutate((data) => {
+                    return (data || []).filter((value) => value.identifier !== token.identifier).concat(token);
+                }, false);
+
+                return secretToken;
+            })
+            .then((token) => {
+                resetForm();
+                setApiKey(token);
+            })
+            .catch(error => clearAndAddHttpError(error))
+            .finally(() => setSubmitting(false));
     };
 
     return (

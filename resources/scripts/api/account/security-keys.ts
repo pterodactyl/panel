@@ -1,17 +1,17 @@
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
-import { useStoreState } from '@/state/hooks';
 import http, { FractalResponseList } from '@/api/http';
 import Transformers from '@transformers';
 import { SecurityKey } from '@models';
 import { AxiosError } from 'axios';
 import { base64Decode, bufferDecode, bufferEncode, decodeSecurityKeyCredentials } from '@/helpers';
 import { LoginResponse } from '@/api/auth/login';
+import useUserSWRContextKey from '@/plugins/useUserSWRContextKey';
 
 const useSecurityKeys = (config?: SWRConfiguration<SecurityKey[], AxiosError>): SWRResponse<SecurityKey[], AxiosError> => {
-    const uuid = useStoreState(state => state.user.data!.uuid);
+    const key = useUserSWRContextKey([ 'account', 'security-keys' ]);
 
     return useSWR<SecurityKey[], AxiosError>(
-        [ 'account', uuid, 'security-keys' ],
+        key,
         async (): Promise<SecurityKey[]> => {
             const { data } = await http.get('/api/client/account/security-keys');
 
