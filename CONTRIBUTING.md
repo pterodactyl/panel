@@ -1,40 +1,12 @@
 # Contributing
-We're glad you want to help us out and make this panel the best that it can be! We have a few simple things to follow
-when making changes to files and adding new features.
+Pterodactyl does not accept Pull Requests (PRs) _for new functionality_ from users that are not currently part of the
+core project team. It has become overwhelming to try and give the proper time and attention that such complicated PRs
+tend to require — and deserve. As a result, it is in the project's best interest to limit the scope of work on
+new functionality to work done within the core project team.
 
-### Development Environment
-Please check the [`pterodactyl/development`](https://github.com/pterodactyl/development) repository for a Vagrant &
-Docker setup that should run on most macOS and Linux distributions. In the event that your platform is not supported
-you're welcome to open a PR, or just take a look at our setup scripts to see what you'll need to successfully develop
-with Pterodactyl.
-
-#### Building Assets
-Please see [`BUILDING.md`](https://github.com/pterodactyl/panel/blob/develop/BUILDING.md) for details on how to actually
-build and run the development server.
-
-### Project Branches
-This section mainly applies to those with read/write access to our repositories, but can be helpful for others.
-
-The `develop` branch should always be in a runnable state, and not contain any major breaking features. For the most
-part, this means you will need to create `feature/` branches in order to add new functionality or change how things
-work. When making a feature branch, if it is referencing something in the issue tracker, please title the branch
-`feature/PTDL-###` where `###` is the issue number.
-
-All new code should contain tests to ensure their functionality is not unintentionally changed down the road. This
-is especially important for any API actions or authentication based controls.
-
-### The CHANGELOG
-You should not make any changes to the `CHANGELOG.md` file during your code updates. This is updated by the maintainers
-at the time of deployment to include the relevant changes that were made.
-
-### Code Guidelines
-We are a `PSR-4` and `PSR-0` compliant project, so please follow those guidelines at a minimum. In addition we run
-`php-cs-fixer` on all PRs and releases to enforce a consistent code style. The following command executed on your machine
-should show any areas where the code style does not line up correctly.
-
-```
-vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php_cs.dist
-```
+PRs that address existing _bugs_ with a corresponding issue opened in our issue tracker will continue to be accepted
+and reviewed. Their scope is often signficantly more targeted, and simply improving upon existing and well defined
+logic.
 
 ### Responsible Disclosure
 This is a fairly in-depth project and makes use of a lot of parts. We strive to keep everything as secure as possible
