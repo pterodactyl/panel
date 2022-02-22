@@ -24,7 +24,6 @@
         "react-copy-to-clipboard": "^5.0.2",
         "react-dom": "npm:@hot-loader/react-dom",
         "react-fast-compare": "^3.2.0",
-        "react-ga": "^3.1.2",
         "react-google-recaptcha": "^2.0.1",
         "react-hot-loader": "^4.12.21",
         "react-i18next": "^11.2.1",
@@ -113,7 +112,7 @@
         "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "yarn run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
-        "serve": "yarn run clean && cross-env PUBLIC_PATH=https://pterodactyl.test:8080 NODE_ENV=development webpack-dev-server --host 0.0.0.0 --hot --https --key /etc/ssl/private/pterodactyl.test-key.pem --cert /etc/ssl/private/pterodactyl.test.pem"
+        "serve": "yarn run clean && cross-env WEBPACK_PUBLIC_PATH=/webpack@hmr/ NODE_ENV=development webpack-dev-server --host 0.0.0.0 --port 8080 --public https://pterodactyl.test --hot"
     },
     "browserslist": [
         "> 0.5%",

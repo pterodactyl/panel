@@ -4,18 +4,19 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2022-01-18T07:06:24-05:00",
+    "exported_at": "2022-01-30T14:09:22-05:00",
     "name": "Team Fortress 2",
     "author": "support@pterodactyl.io",
     "description": "Team Fortress 2 is a team-based first-person shooter multiplayer video game developed and published by Valve Corporation. It is the sequel to the 1996 mod Team Fortress for Quake and its 1999 remake.",
     "features": [
+        "gsl_token",
         "steam_disk_space"
     ],
     "images": [
         "ghcr.io\/pterodactyl\/games:source"
     ],
     "file_denylist": [],
-    "startup": ".\/srcds_run -game tf -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart",
+    "startup": ".\/srcds_run -game tf -console -port {{SERVER_PORT}} +map {{SRCDS_MAP}} +ip 0.0.0.0 -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}}",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"gameserver Steam ID\"\r\n}",
@@ -47,6 +48,15 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|regex:\/^(\\w{1,20})$\/"
+        },
+        {
+            "name": "Steam",
+            "description": "The Steam Game Server Login Token to display servers publicly. Generate one at https:\/\/steamcommunity.com\/dev\/managegameservers",
+            "env_variable": "STEAM_ACC",
+            "default_value": "",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|alpha_num|size:32"
         }
     ]
 }
