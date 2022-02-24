@@ -70,7 +70,7 @@ class AuthenticateKey
         } else {
             $model = $this->authenticateApiKey($request->bearerToken(), $keyType);
 
-            $this->auth->guard()->loginUsingId($model->user_id);
+            $this->auth->guard()->onceUsingId($model->user_id);
         }
 
         $request->attributes->set('api_key', $model);

@@ -12,19 +12,19 @@ import { useLocation } from 'react-router-dom';
 import { withTranslation, WithTranslation } from 'react-i18next';
 
 const Container = styled.div`
-    ${tw`flex flex-wrap`};
+  ${tw`flex flex-wrap`};
 
-    & > div {
-        ${tw`w-full`};
+  & > div {
+    ${tw`w-full`};
 
-        ${breakpoint('md')`
-            width: calc(50% - 1rem);
-        `}
+    ${breakpoint('sm')`
+      width: calc(50% - 1rem);
+    `}
 
-        ${breakpoint('xl')`
-            ${tw`w-auto flex-1`};
-        `}
-    }
+    ${breakpoint('md')`
+      ${tw`w-auto flex-1`};
+    `}
+  }
 `;
 
 const AccountOverviewContainer = ({ t }: WithTranslation) => {
@@ -44,15 +44,23 @@ const AccountOverviewContainer = ({ t }: WithTranslation) => {
                 <ContentBox
                     css={tw`mt-8 md:mt-0 md:ml-8`}
                     title={t('email.update')}
+
+            <Container css={[ tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
+                <ContentBox title={t('password.update')} showFlashes={'account:password'}>
+                    <UpdatePasswordForm/>
+                </ContentBox>
+                <ContentBox
+                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
+                    title={t('email.update')}
                     showFlashes={'account:email'}
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`xl:ml-8 mt-8 xl:mt-0`} title={t('2fa.dashboard_title')}>
-
+                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={t('2fa.dashboard_title'}>
                     <ConfigureTwoFactorForm/>
                 </ContentBox>
             </Container>
+
         </PageContentBlock>
     );
 };

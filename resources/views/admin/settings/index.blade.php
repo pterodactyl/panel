@@ -32,13 +32,6 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="control-label">Google Analytics</label>
-                                <div>
-                                    <input type="text" class="form-control" name="app:analytics" value="{{ old('app:analytics', config('app.analytics')) }}" />
-                                    <p class="text-muted"><small>This is your Google Analytics Tracking ID, Ex. UA-123723645-2</small></p>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-4">
                                 <label class="control-label">Require 2-Factor Authentication</label>
                                 <div>
                                     <div class="btn-group" data-toggle="buttons">

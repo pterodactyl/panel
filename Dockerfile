@@ -14,7 +14,7 @@ FROM --platform=$TARGETOS/$TARGETARCH php:7.4-fpm-alpine
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
-RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot \
+RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot certbot-nginx \
     && docker-php-ext-configure zip \
     && docker-php-ext-install bcmath gd pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
@@ -27,6 +27,7 @@ RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar un
 
 RUN rm /usr/local/etc/php-fpm.conf \
     && echo "* * * * * /usr/local/bin/php /app/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root \
+    && echo "0 23 * * * certbot renew --nginx --quiet" >> /var/spool/cron/crontabs/root \
     && sed -i s/ssl_session_cache/#ssl_session_cache/g /etc/nginx/nginx.conf \
     && mkdir -p /var/run/php /var/run/nginx
 
@@ -35,5 +36,5 @@ COPY .github/docker/www.conf /usr/local/etc/php-fpm.conf
 COPY .github/docker/supervisord.conf /etc/supervisord.conf
 
 EXPOSE 80 443
-ENTRYPOINT ["/bin/ash", ".github/docker/entrypoint.sh"]
+ENTRYPOINT [ "/bin/ash", ".github/docker/entrypoint.sh" ]
 CMD [ "supervisord", "-n", "-c", "/etc/supervisord.conf" ]

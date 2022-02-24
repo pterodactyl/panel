@@ -3,6 +3,32 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.7.0
+### Fixed
+* Fixes typo in message shown to user when deleting a database.
+* Fixes formatting of IPv6 addresses when displaying allocations to users.
+* Fixes an exception thrown while trying to return error messages from API endpoints that inproperly masked the true underlying error.
+* Fixes SSL certificate path generation for Let's Encrypt by ensuring they are always transformed to lowercase.
+* Removes duplicate entries when creating a nested folder in the file manager.
+* Fixes missing validation of Egg Author email addresses during the setup process that could cause unexpected failures later on.
+* Fixes font rendering issues of the console on Firefox due to an outdated version of xterm.js being used.
+* Fixes display overlap issues of the two-factor configuration form in a user's settings.
+* **[security]** When authenticating using an API key a user session is now only persisted for the duration of the request before being destroyed.
+
+### Changed
+* CPU graph changed to show the maximum amount of CPU available to a server to better match how the memory graph is displayed.
+
+### Added
+* Adds support for `DB_PORT` environment variable in the Docker enterpoint for the Panel image.
+* Adds suport for ARM environments in the Docker image.
+* Adds a new warning modal for Steam servers shown when an invalid Game Server Login Token (GSL Token) is detected.
+* Adds a new warning modal for Steam servers shown when the installation process runs out of available disk space.
+* Adds a new warning modal for Minecraft servers shown when a server exceeds the maximum number of child processes.
+* Adds support for displaying certain server variable fields as a checkbox when they're detected as using `boolean` or `in:0,1` validation rules.
+* Adds support for Pug and Jade in the file editor.
+* Adds an entry to the `robots.txt` file to correctly disallow all bot indexing.
+
+
 ## v1.6.6
 ### Fixed
 * **[security]** Fixes a CSRF vulnerability for both the administrative test email endpoint and node auto-deployment token generation endpoint. [GHSA-wwgq-9jhf-qgw6](https://github.com/pterodactyl/panel/security/advisories/GHSA-wwgq-9jhf-qgw6)
