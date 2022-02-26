@@ -40,6 +40,7 @@
         "spatie/laravel-query-builder": "^5.0.0",
         "staudenmeir/belongs-to-through": "^2.11.2",
         "symfony/psr-http-message-bridge": "^2.1.2",
+        "symfony/process": "6.0.3 as 5.4.3",
         "symfony/yaml": "^6.0.3",
         "web-auth/webauthn-lib": "^3.3.11",
         "webmozart/assert": "^1.10.0"
@@ -56,9 +57,6 @@
         "phpstan/phpstan-webmozart-assert": "^1.0.9",
         "phpunit/phpunit": "^9.5.13",
         "spatie/laravel-ignition": "^1.0.6"
-    },
-    "provide": {
-        "web-auth/webauthn-lib": "^3.3.11"
     },
     "autoload": {
         "files": [
