@@ -12,7 +12,7 @@ class RecordNotFoundException extends RepositoryException implements HttpExcepti
      *
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
     }
@@ -22,7 +22,7 @@ class RecordNotFoundException extends RepositoryException implements HttpExcepti
      *
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return [];
     }

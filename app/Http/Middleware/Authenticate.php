@@ -2,25 +2,21 @@
 
 namespace Pterodactyl\Http\Middleware;
 
-use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Auth\AuthenticationException;
+use Illuminate\Auth\Middleware\Authenticate as Middleware;
 
-class Authenticate
+class Authenticate extends Middleware
 {
     /**
-     * Handle an incoming request.
+     * Get the path the user should be redirected to when they are not authenticated.
      *
-     * @return mixed
+     * @param \Illuminate\Http\Request $request
      *
-     * @throws \Illuminate\Auth\AuthenticationException
+     * @return string|null
      */
-    public function handle(Request $request, Closure $next)
+    protected function redirectTo($request)
     {
-        if (!$request->user()) {
-            throw new AuthenticationException();
+        if (!$request->expectsJson()) {
+            return '/';
         }
-
-        return $next($request);
     }
 }
