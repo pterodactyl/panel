@@ -8,7 +8,6 @@ use PDOException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Http\Response;
-use Swift_TransportException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
@@ -20,6 +19,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Mailer\Exception\TransportException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
     /**
      * A list of the exception types that should not be reported.
      *
-     * @var string[]
+     * @var array<int, class-string<Throwable>>
      */
     protected $dontReport = [
         AuthenticationException::class,
@@ -88,7 +88,7 @@ class Handler extends ExceptionHandler
             $ex = $this->generateCleanedExceptionStack($ex);
         });
 
-        $this->reportable(function (Swift_TransportException $ex) {
+        $this->reportable(function (TransportException $ex) {
             $ex = $this->generateCleanedExceptionStack($ex);
         });
     }

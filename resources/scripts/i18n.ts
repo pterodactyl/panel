@@ -8,7 +8,7 @@ i18n
     .use(Backend)
     .use(initReactI18next)
     .init({
-        debug: process.env.NODE_ENV !== 'production',
+        debug: process.env.I18N_DEBUG === 'true',
         lng: 'en',
         fallbackLng: 'en',
         keySeparator: '.',

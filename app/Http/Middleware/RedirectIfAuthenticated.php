@@ -4,32 +4,27 @@ namespace Pterodactyl\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Illuminate\Auth\AuthManager;
+use Illuminate\Support\Facades\Auth;
+use Pterodactyl\Providers\RouteServiceProvider;
 
 class RedirectIfAuthenticated
 {
     /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    private $authManager;
-
-    /**
-     * RedirectIfAuthenticated constructor.
-     */
-    public function __construct(AuthManager $authManager)
-    {
-        $this->authManager = $authManager;
-    }
-
-    /**
      * Handle an incoming request.
      *
-     * @return mixed
+     * @param string|null ...$guards
+     * @phpstan-param \Closure(\Illuminate\Http\Request): (\Illuminate\Http\Response|\Illuminate\Http\RedirectResponse) $next
+     *
+     * @return \Illuminate\Http\Response|\Illuminate\Http\RedirectResponse
      */
-    public function handle(Request $request, Closure $next, string $guard = null)
+    public function handle(Request $request, Closure $next, ...$guards)
     {
-        if ($this->authManager->guard($guard)->check()) {
-            return redirect()->route('index');
+        $guards = empty($guards) ? [null] : $guards;
+
+        foreach ($guards as $guard) {
+            if (Auth::guard($guard)->check()) {
+                return redirect(RouteServiceProvider::HOME);
+            }
         }
 
         return $next($request);

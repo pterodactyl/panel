@@ -7,7 +7,6 @@ use Throwable;
 use Psr\Log\LoggerInterface;
 use Illuminate\Http\Response;
 use Illuminate\Container\Container;
-use Prologue\Alerts\AlertsMessageBag;
 
 class DisplayException extends PterodactylException
 {
@@ -67,8 +66,6 @@ class DisplayException extends PterodactylException
                 'detail' => $this->getMessage(),
             ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : Response::HTTP_BAD_REQUEST);
         }
-
-        Container::getInstance()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();
 
         return redirect()->back()->withInput();
     }

@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Helpers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\FilesystemManager;
+use Illuminate\Contracts\Filesystem\FileNotFoundException;
 
 class AssetHashService
 {
@@ -114,6 +115,10 @@ class AssetHashService
      */
     protected function manifest(): array
     {
+        if (!$this->filesystem->exists(self::MANIFEST_PATH)) {
+            throw new FileNotFoundException('No manifest file was found: ' . self::MANIFEST_PATH);
+        }
+
         return self::$manifest ?: self::$manifest = json_decode(
             $this->filesystem->get(self::MANIFEST_PATH),
             true

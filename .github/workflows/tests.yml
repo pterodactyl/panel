@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 7.4, 8.0, 8.1 ]
+        php: [ 8.1 ]
         database: [ 'mariadb:10.6', 'mysql:8' ]
     services:
       database:
