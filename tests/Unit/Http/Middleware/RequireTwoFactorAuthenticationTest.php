@@ -5,23 +5,12 @@ namespace Pterodactyl\Tests\Unit\Http\Middleware;
 use Mockery as m;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\SecurityKey;
-use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 
 class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
 {
     private $alerts;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->alerts = m::mock(AlertsMessageBag::class);
-    }
 
     public function testNoRequirementUserWithout2fa()
     {

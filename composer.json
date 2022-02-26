@@ -35,7 +35,6 @@
         "nyholm/psr7": "^1.5.0",
         "pragmarx/google2fa": "^8.0.0",
         "predis/predis": "^1.1.10",
-        "prologue/alerts": "^0.4.8",
         "psr/cache": "^1.0.1",
         "s1lentium/iptools": "^1.1.1",
         "spatie/laravel-fractal": "^5.8.1",
