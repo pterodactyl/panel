@@ -9,8 +9,6 @@ class RecordNotFoundException extends RepositoryException implements HttpExcepti
 {
     /**
      * Returns the status code.
-     *
-     * @return int
      */
     public function getStatusCode(): int
     {
@@ -19,8 +17,6 @@ class RecordNotFoundException extends RepositoryException implements HttpExcepti
 
     /**
      * Returns response headers.
-     *
-     * @return array
      */
     public function getHeaders(): array
     {
