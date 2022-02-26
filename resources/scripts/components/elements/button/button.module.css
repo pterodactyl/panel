@@ -1,0 +1,30 @@
+.button {
+  @apply px-4 py-2 inline-flex items-center justify-center;
+  @apply bg-primary-500 rounded text-base font-semibold text-primary-50 transition-all duration-100;
+  @apply hover:bg-primary-600 active:bg-primary-600;
+
+  &.square {
+    @apply p-2;
+  }
+
+  &:focus {
+    @apply ring-[3px] ring-opacity-75 ring-primary-300;
+  }
+
+  /* Sizing Controls */
+  &.small {
+    @apply px-3 py-1 font-normal focus:ring-2;
+
+    &.square {
+      @apply p-1;
+    }
+  }
+}
+
+.text {
+  @apply bg-transparent focus:ring-neutral-300 focus:ring-opacity-50 hover:bg-neutral-600 active:bg-neutral-500;
+}
+
+.danger {
+  @apply bg-red-500 hover:bg-red-600 active:bg-red-600 focus:ring-red-400 text-red-50;
+}

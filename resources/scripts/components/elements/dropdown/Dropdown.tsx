@@ -1,6 +1,6 @@
 import React, { ElementType, forwardRef, useMemo } from 'react';
 import { Menu, Transition } from '@headlessui/react';
-import styles from './styles.module.css';
+import styles from './dropdown.module.css';
 import classNames from 'classnames';
 import DropdownItem from '@/components/elements/dropdown/DropdownItem';
 import DropdownButton from '@/components/elements/dropdown/DropdownButton';

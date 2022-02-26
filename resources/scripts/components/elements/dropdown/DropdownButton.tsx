@@ -1,5 +1,5 @@
 import classNames from 'classnames';
-import styles from '@/components/elements/dropdown/styles.module.css';
+import styles from '@/components/elements/dropdown/dropdown.module.css';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { Menu } from '@headlessui/react';
 import React from 'react';

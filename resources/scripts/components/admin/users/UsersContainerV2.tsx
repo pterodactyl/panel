@@ -3,13 +3,24 @@ import http from '@/api/http';
 import { User } from '@/api/admin/user';
 import { AdminTransformers } from '@/api/admin/transformers';
 import { Dropdown } from '@/components/elements/dropdown';
-import { DotsVerticalIcon, LockClosedIcon, PaperAirplaneIcon, PencilIcon, TrashIcon } from '@heroicons/react/solid';
+import {
+    DotsVerticalIcon,
+    LockClosedIcon,
+    PaperAirplaneIcon,
+    PencilIcon,
+    PlusIcon,
+    TrashIcon,
+} from '@heroicons/react/solid';
+import { Button } from '@/components/elements/button/index';
+import { Dialog } from '@/components/elements/dialog';
 
 const UsersContainerV2 = () => {
     const [ users, setUsers ] = useState<User[]>([]);
     useEffect(() => {
         document.title = 'Admin | Users';
     }, []);
+
+    const [ visible, setVisible ] = useState(false);
 
     useEffect(() => {
         http.get('/api/application/users')
@@ -20,8 +31,21 @@ const UsersContainerV2 = () => {
     }, []);
 
     return (
-        <div className={'bg-neutral-700'}>
-            <table className={'min-w-full rounded'}>
+        <div>
+            <div className={'flex justify-end mb-4'}>
+                <Button className={'shadow focus:ring-offset-2 focus:ring-offset-neutral-800'}>
+                    Add User <PlusIcon className={'ml-2 w-5 h-5'}/>
+                </Button>
+            </div>
+            <Dialog title={'Delete account'} visible={visible} onDismissed={() => setVisible(false)}>
+                <Dialog.Icon type={'danger'}/>
+                This account will be permanently deleted.
+                <Dialog.Buttons>
+                    <Button.Text onClick={() => setVisible(false)}>Cancel</Button.Text>
+                    <Button.Danger>Delete</Button.Danger>
+                </Dialog.Buttons>
+            </Dialog>
+            <table className={'min-w-full rounded bg-neutral-700'}>
                 <thead className={'bg-neutral-900'}>
                     <tr>
                         <th scope={'col'} className={'w-8'}/>
@@ -59,13 +83,13 @@ const UsersContainerV2 = () => {
                             <td className={'px-6 py-4 whitespace-nowrap'}>
                                 <Dropdown>
                                     <Dropdown.Button className={'px-2'}>
-                                        <DotsVerticalIcon />
+                                        <DotsVerticalIcon/>
                                     </Dropdown.Button>
-                                    <Dropdown.Item icon={<PencilIcon />}>Edit</Dropdown.Item>
-                                    <Dropdown.Item icon={<PaperAirplaneIcon />}>Reset Password</Dropdown.Item>
-                                    <Dropdown.Item icon={<LockClosedIcon />}>Suspend</Dropdown.Item>
-                                    <Dropdown.Gap />
-                                    <Dropdown.Item icon={<TrashIcon />} danger>Delete Account</Dropdown.Item>
+                                    <Dropdown.Item icon={<PencilIcon/>}>Edit</Dropdown.Item>
+                                    <Dropdown.Item icon={<PaperAirplaneIcon/>}>Reset Password</Dropdown.Item>
+                                    <Dropdown.Item icon={<LockClosedIcon/>}>Suspend</Dropdown.Item>
+                                    <Dropdown.Gap/>
+                                    <Dropdown.Item icon={<TrashIcon/>} onClick={() => setVisible(true)} danger>Delete Account</Dropdown.Item>
                                 </Dropdown>
                             </td>
                         </tr>

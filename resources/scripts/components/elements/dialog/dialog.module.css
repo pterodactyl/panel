@@ -1,0 +1,7 @@
+.wrapper {
+  @apply fixed z-10 inset-0 overflow-y-auto;
+}
+
+.overlay {
+  @apply fixed inset-0 bg-neutral-900 opacity-75;
+}

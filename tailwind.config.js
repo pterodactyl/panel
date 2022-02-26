@@ -5,12 +5,10 @@ module.exports = {
         './resources/scripts/**/*.{js,ts,tsx}',
     ],
     theme: {
-        fontFamily: {
-            sans: [ 'Rubik', '-apple-system', 'BlinkMacSystemFont', '"Helvetica Neue"', '"Roboto"', 'system-ui', 'sans-serif' ],
-            header: [ '"IBM Plex Sans"', '"Roboto"', 'system-ui', 'sans-serif' ],
-            mono: [ '"IBM Plex Mono"', '"Source Code Pro"', 'SourceCodePro', 'Menlo', 'Monaco', 'Consolas', 'monospace' ],
-        },
         extend: {
+            fontFamily: {
+                header: [ '"IBM Plex Sans"', '"Roboto"', 'system-ui', 'sans-serif' ],
+            },
             colors: {
                 black: '#131a20',
                 primary: {
