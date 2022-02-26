@@ -62,7 +62,6 @@ class Kernel extends HttpKernel
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
-            LanguageMiddleware::class,
             RequireTwoFactorAuthentication::class,
         ],
         'api' => [
