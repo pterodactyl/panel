@@ -8,9 +8,11 @@ import { Button } from '@/components/elements/button/index';
 
 interface Props {
     user: User;
+    selected?: boolean;
+    onRowChange: (user: User, selected: boolean) => void;
 }
 
-const UserTableRow = ({ user }: Props) => {
+const UserTableRow = ({ user, selected, onRowChange }: Props) => {
     const [ visible, setVisible ] = useState(false);
 
     return (
@@ -30,7 +32,7 @@ const UserTableRow = ({ user }: Props) => {
             <tr>
                 <td className={'whitespace-nowrap'}>
                     <div className={'flex justify-end items-center w-8'}>
-                        <Checkbox/>
+                        <Checkbox checked={selected} onChange={e => onRowChange(user, e.currentTarget.checked)}/>
                     </div>
                 </td>
                 <td className={'pl-6 py-4 whitespace-nowrap'}>
