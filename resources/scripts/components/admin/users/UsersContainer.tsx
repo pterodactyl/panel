@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import http, {
     FractalPaginatedResponse,
     PaginatedResult,
@@ -16,12 +16,16 @@ import { Checkbox, InputField } from '@/components/elements/inputs';
 import UserTableRow from '@/components/admin/users/UserTableRow';
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import { AxiosError } from 'axios';
+import debounce from 'debounce';
+
+const filters = [ 'id', 'uuid', 'external_id', 'username', 'email' ] as const;
+type Filters = typeof filters[number];
 
 const useGetUsers = (
-    params?: QueryBuilderParams<'id' | 'email' | 'uuid'>,
+    params?: QueryBuilderParams<Filters>,
     config?: SWRConfiguration,
 ): SWRResponse<PaginatedResult<User>, AxiosError> => {
-    return useSWR<PaginatedResult<User>>([ '/api/application/users', params ], async () => {
+    return useSWR<PaginatedResult<User>>([ '/api/application/users', JSON.stringify(params) ], async () => {
         const { data } = await http.get<FractalPaginatedResponse>(
             '/api/application/users',
             { params: withQueryBuilderParams(params) },
@@ -40,7 +44,7 @@ const PaginationFooter = ({ pagination, span }: { span: number; pagination: Pagi
             <tr className={'bg-neutral-800'}>
                 <td scope={'col'} colSpan={span} className={'px-4 py-2'}>
                     <p className={'text-sm text-neutral-500'}>
-                        Showing <span className={'font-semibold text-neutral-400'}>{Math.max(start, 1)}</span> to&nbsp;
+                        Showing <span className={'font-semibold text-neutral-400'}>{Math.max(start, Math.min(pagination.total, 1))}</span> to&nbsp;
                         <span className={'font-semibold text-neutral-400'}>{end}</span> of&nbsp;
                         <span className={'font-semibold text-neutral-400'}>{pagination.total}</span> results.
                     </p>
@@ -50,9 +54,33 @@ const PaginationFooter = ({ pagination, span }: { span: number; pagination: Pagi
     );
 };
 
+const extractFiltersFromString = (str: string, params: (keyof Filters)[]): QueryBuilderParams => {
+    const filters: Partial<Record<string, string[]>> = {};
+
+    const parts = str.split(' ');
+    for (const segment of parts) {
+        const [ filter, value ] = segment.split(':', 2);
+        // @ts-ignore
+        if (!filter || !value || !params.includes(filter)) {
+            continue;
+        }
+
+        const key = filter as string;
+        filters[key] = [ ...(filters[key] || []), value ];
+    }
+
+    if (!Object.keys(filters).length) {
+        return { filters: { email: str } };
+    }
+
+    // @ts-ignore
+    return { filters };
+};
+
 const UsersContainer = () => {
-    const { data: users } = useGetUsers();
+    const [ search, setSearch ] = useState('');
     const [ selected, setSelected ] = useState<UUID[]>([]);
+    const { data: users } = useGetUsers(extractFiltersFromString(search, filters as unknown as (keyof Filters)[]));
 
     useEffect(() => {
         document.title = 'Admin | Users';
@@ -66,6 +94,10 @@ const UsersContainer = () => {
 
     const selectAllChecked = users && users.items.length > 0 && selected.length > 0;
     const onSelectAll = () => setSelected((state) => state.length > 0 ? [] : users?.items.map(({ uuid }) => uuid) || []);
+
+    const setSearchTerm = useCallback(debounce((term: string) => {
+        setSearch(term);
+    }, 200), []);
 
     return (
         <div>
@@ -88,6 +120,7 @@ const UsersContainer = () => {
                         name={'filter'}
                         placeholder={'Begin typing to filter...'}
                         className={'w-56 focus:w-96'}
+                        onChange={e => setSearchTerm(e.currentTarget.value)}
                     />
                 </div>
                 <Transition.Fade as={Fragment} show={selected.length > 0} duration={'duration-75'}>
