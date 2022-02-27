@@ -34,7 +34,7 @@
     @apply w-4 h-4 mr-4 text-neutral-300;
   }
 
-  &:hover, &:focus, &:focus-within {
+  &:hover, &:focus {
     @apply bg-blue-500 text-blue-50;
 
     & svg {
@@ -43,12 +43,16 @@
   }
 
   &.danger {
-    &:hover, &:focus, &:focus-within {
+    &:hover, &:focus {
       @apply bg-red-500 text-red-50;
 
       & svg {
         @apply text-red-50;
       }
     }
+  }
+
+  &.disabled {
+    @apply cursor-not-allowed hover:bg-neutral-800 opacity-30 focus:bg-transparent focus:hover:bg-neutral-800;
   }
 }

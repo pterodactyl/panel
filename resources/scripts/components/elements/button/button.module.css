@@ -22,7 +22,7 @@
 }
 
 .text {
-  @apply bg-transparent focus:ring-neutral-300 focus:ring-opacity-50 hover:bg-neutral-600 active:bg-neutral-500;
+  @apply bg-transparent focus:ring-neutral-300 focus:ring-opacity-50 hover:bg-neutral-500 active:bg-neutral-500;
 }
 
 .danger {

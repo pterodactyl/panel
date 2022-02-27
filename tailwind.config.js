@@ -11,9 +11,10 @@ module.exports = {
             },
             colors: {
                 black: '#131a20',
-                // Deprecated, prefer the use of "blue" directly here.
+                // Deprecated, prefer "blue"...
                 primary: colors.blue,
-                neutral: colors.neutral,
+                // Deprecate, prefer "gray"...
+                neutral: colors.gray,
                 cyan: colors.cyan,
             },
             fontSize: {

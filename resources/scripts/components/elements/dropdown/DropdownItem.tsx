@@ -12,18 +12,28 @@ interface Props {
     onClick?: (e: React.MouseEvent) => void;
 }
 
-const DropdownItem = forwardRef<HTMLAnchorElement, Props>(({ disabled, danger, className, onClick, children, icon: IconComponent }, ref) => {
+const DropdownItem = forwardRef<HTMLAnchorElement, Props>(({
+    disabled,
+    danger,
+    className,
+    onClick,
+    children,
+    icon: IconComponent,
+}, ref) => {
     return (
         <Menu.Item disabled={disabled}>
-            {(args) => (
+            {({ disabled, active }) => (
                 <a
                     ref={ref}
                     href={'#'}
-                    className={classNames(styles.menu_item, { [styles.danger]: danger }, className)}
+                    className={classNames(styles.menu_item, {
+                        [styles.danger]: danger,
+                        [styles.disabled]: disabled,
+                    }, className)}
                     onClick={onClick}
                 >
                     {IconComponent}
-                    {typeof children === 'function' ? children(args) : children}
+                    {typeof children === 'function' ? children({ disabled, active }) : children}
                 </a>
             )}
         </Menu.Item>

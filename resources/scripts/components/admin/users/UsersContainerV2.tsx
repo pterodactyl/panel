@@ -4,11 +4,12 @@ import { User } from '@/api/admin/user';
 import { AdminTransformers } from '@/api/admin/transformers';
 import { Dropdown } from '@/components/elements/dropdown';
 import {
+    BanIcon,
     DotsVerticalIcon,
-    LockClosedIcon,
-    PaperAirplaneIcon,
+    LockOpenIcon,
     PencilIcon,
     PlusIcon,
+    SupportIcon,
     TrashIcon,
 } from '@heroicons/react/solid';
 import { Button } from '@/components/elements/button/index';
@@ -42,7 +43,11 @@ const UsersContainerV2 = () => {
                 <Dialog.Icon type={'danger'}/>
                 This account will be permanently deleted.
                 <Dialog.Buttons>
-                    <Button.Text className={'!ring-offset-neutral-800'} onClick={() => setVisible(false)}>Cancel</Button.Text>
+                    <Button.Text
+                        className={'!ring-offset-neutral-800'}
+                        onClick={() => setVisible(false)}
+                    >Cancel
+                    </Button.Text>
                     <Button.Danger className={'!ring-offset-neutral-800'}>Delete</Button.Danger>
                 </Dialog.Buttons>
             </Dialog>
@@ -52,6 +57,7 @@ const UsersContainerV2 = () => {
                         <th scope={'col'} className={'w-8'}/>
                         <th scope={'col'} className={'text-left px-6 py-2 w-full'}>Email</th>
                         <th scope={'col'}/>
+                        <th scope={'col'}/>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,7 +65,7 @@ const UsersContainerV2 = () => {
                         <tr key={user.uuid}>
                             <td className={'whitespace-nowrap'}>
                                 <div className={'flex justify-end items-center w-8'}>
-                                    <Checkbox />
+                                    <Checkbox/>
                                 </div>
                             </td>
                             <td className={'pl-6 py-4 whitespace-nowrap'}>
@@ -81,16 +87,28 @@ const UsersContainerV2 = () => {
                                     </div>
                                 </div>
                             </td>
+                            <td className={'pl-2 py-4 whitespace-nowrap'}>
+                                {user.isUsingTwoFactor &&
+                                <span className={'bg-green-100 uppercase text-green-600 font-semibold text-xs px-2 py-0.5 rounded'}>
+                                    2-FA Enabled
+                                </span>
+                                }
+                            </td>
                             <td className={'px-6 py-4 whitespace-nowrap'}>
                                 <Dropdown>
                                     <Dropdown.Button className={'px-2'}>
                                         <DotsVerticalIcon/>
                                     </Dropdown.Button>
                                     <Dropdown.Item icon={<PencilIcon/>}>Edit</Dropdown.Item>
-                                    <Dropdown.Item icon={<PaperAirplaneIcon/>}>Reset Password</Dropdown.Item>
-                                    <Dropdown.Item icon={<LockClosedIcon/>}>Suspend</Dropdown.Item>
+                                    <Dropdown.Item icon={<SupportIcon/>}>Reset Password</Dropdown.Item>
+                                    <Dropdown.Item icon={<LockOpenIcon/>} disabled={!user.isUsingTwoFactor}>
+                                        Disable 2-FA
+                                    </Dropdown.Item>
+                                    <Dropdown.Item icon={<BanIcon/>}>Suspend</Dropdown.Item>
                                     <Dropdown.Gap/>
-                                    <Dropdown.Item icon={<TrashIcon/>} onClick={() => setVisible(true)} danger>Delete Account</Dropdown.Item>
+                                    <Dropdown.Item icon={<TrashIcon/>} onClick={() => setVisible(true)} danger>Delete
+                                        Account
+                                    </Dropdown.Item>
                                 </Dropdown>
                             </td>
                         </tr>

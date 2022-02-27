@@ -78,12 +78,12 @@ const Dialog = ({ visible, title, onDismissed, children }: Props) => {
                         leaveFrom={'opacity-100 scale-100'}
                         leaveTo={'opacity-0 scale-95'}
                     >
-                        <div className={'relative bg-neutral-700 rounded max-w-xl w-full mx-auto shadow-lg ring-4 ring-neutral-800 ring-opacity-50'}>
+                        <div className={styles.container}>
                             <div className={'flex p-6'}>
                                 {icon && <div className={'mr-4'}>{icon}</div>}
                                 <div className={'flex-1'}>
                                     {title &&
-                                    <HeadlessDialog.Title className={'font-header text-xl font-medium mb-2 text-white pr-4'}>
+                                    <HeadlessDialog.Title className={styles.title}>
                                         {title}
                                     </HeadlessDialog.Title>
                                     }
@@ -92,11 +92,7 @@ const Dialog = ({ visible, title, onDismissed, children }: Props) => {
                                     </HeadlessDialog.Description>
                                 </div>
                             </div>
-                            {buttons &&
-                            <div className={'px-6 py-3 bg-neutral-800 flex items-center justify-end space-x-3 rounded-b'}>
-                                {buttons}
-                            </div>
-                            }
+                            {buttons && <div className={styles.button_bar}>{buttons}</div>}
                             {/* Keep this below the other buttons so that it isn't the default focus if they're present. */}
                             <div className={'absolute right-0 top-0 m-4'}>
                                 <Button.Text square small onClick={() => onDismissed()} className={'hover:rotate-90'}>
