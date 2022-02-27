@@ -1,7 +1,7 @@
 import { Model, UUID, WithRelationships, withRelationships } from '@/api/admin/index';
 import { Nest } from '@/api/admin/nest';
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
-import Transformers from '@definitions/admin/transformers';
+import { Transformers } from '@definitions/admin';
 import { AxiosError } from 'axios';
 import { useRouteMatch } from 'react-router-dom';
 import useSWR, { SWRResponse } from 'swr';

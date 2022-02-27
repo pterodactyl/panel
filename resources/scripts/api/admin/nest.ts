@@ -1,7 +1,7 @@
 import { Model, UUID } from '@/api/admin/index';
 import { Egg } from '@/api/admin/egg';
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
-import Transformers from '@definitions/admin/transformers';
+import { Transformers } from '@definitions/admin';
 
 export interface Nest extends Model {
     id: number;

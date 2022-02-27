@@ -1,6 +1,6 @@
 import http from '@/api/http';
 import { EggVariable } from '@/api/admin/egg';
-import Transformers from '@definitions/admin/transformers';
+import { Transformers } from '@definitions/admin';
 
 export type CreateEggVariable = Omit<EggVariable, 'id' | 'eggId' | 'createdAt' | 'updatedAt' | 'relationships'>;
 

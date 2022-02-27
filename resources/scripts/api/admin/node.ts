@@ -1,7 +1,7 @@
 import { Model, UUID, WithRelationships, withRelationships } from '@/api/admin/index';
 import { Location } from '@/api/admin/location';
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
-import Transformers from '@definitions/admin/transformers';
+import { Transformers } from '@definitions/admin';
 import { Server } from '@/api/admin/server';
 
 interface NodePorts {
