@@ -3,7 +3,7 @@ import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/f
 import { bytesToHuman, encodePathSegments } from '@/helpers';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import React, { memo } from 'react';
-import { FileObject } from '@/api/server/files/loadDirectory';
+import { FileObject } from '@/api/server/files';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 import { ServerContext } from '@/state/server';
 import { NavLink, useRouteMatch } from 'react-router-dom';
@@ -14,7 +14,7 @@ import { usePermissions } from '@/plugins/usePermissions';
 import { join } from 'path';
 
 const Row = styled.div`
-    ${tw`flex items-center w-full h-10 px-3 rounded-sm cursor-pointer bg-neutral-700 hover:bg-neutral-600 mb-px`};
+  ${tw`flex items-center w-full h-10 px-3 rounded-sm cursor-pointer bg-neutral-700 hover:bg-neutral-600 mb-px`};
 `;
 
 const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
@@ -70,7 +70,10 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
             </div>
 
             <div css={tw`hidden w-48 md:flex`}>
-                <span css={tw`ml-auto text-sm font-normal leading-none text-right text-neutral-300`} title={file.modifiedAt.toString()}>
+                <span
+                    css={tw`ml-auto text-sm font-normal leading-none text-right text-neutral-300`}
+                    title={file.modifiedAt.toString()}
+                >
                     {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48 ?
                         format(file.modifiedAt, 'MMM do, yyyy h:mma')
                         :

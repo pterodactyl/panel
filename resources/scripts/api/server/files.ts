@@ -1,5 +1,4 @@
-import http from '@/api/http';
-import { rawDataToFileObject } from '@/api/transformers';
+import http, { FractalResponseData } from '@/api/http';
 
 export interface FileObject {
     key: string;
@@ -15,6 +14,49 @@ export interface FileObject {
     isArchiveType: () => boolean;
     isEditable: () => boolean;
 }
+
+const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
+    key: `${data.attributes.is_file ? 'file' : 'dir'}_${data.attributes.name}`,
+    name: data.attributes.name,
+    mode: data.attributes.mode,
+    modeBits: data.attributes.mode_bits,
+    size: Number(data.attributes.size),
+    isFile: data.attributes.is_file,
+    isSymlink: data.attributes.is_symlink,
+    mimetype: data.attributes.mimetype,
+    createdAt: new Date(data.attributes.created_at),
+    modifiedAt: new Date(data.attributes.modified_at),
+
+    isArchiveType: function () {
+        return this.isFile && [
+            'application/vnd.rar', // .rar
+            'application/x-rar-compressed', // .rar (2)
+            'application/x-tar', // .tar
+            'application/x-br', // .tar.br
+            'application/x-bzip2', // .tar.bz2, .bz2
+            'application/gzip', // .tar.gz, .gz
+            'application/x-gzip',
+            'application/x-lzip', // .tar.lz4, .lz4 (not sure if this mime type is correct)
+            'application/x-sz', // .tar.sz, .sz (not sure if this mime type is correct)
+            'application/x-xz', // .tar.xz, .xz
+            'application/zstd', // .tar.zst, .zst
+            'application/zip', // .zip
+        ].indexOf(this.mimetype) >= 0;
+    },
+
+    isEditable: function () {
+        if (this.isArchiveType() || !this.isFile) return false;
+
+        const matches = [
+            'application/jar',
+            'application/octet-stream',
+            'inode/directory',
+            /^image\//,
+        ];
+
+        return matches.every(m => !this.mimetype.match(m));
+    },
+});
 
 const chmodFiles = (uuid: string, directory: string, files: { file: string; mode: string }[]): Promise<void> => {
     return new Promise((resolve, reject) => {

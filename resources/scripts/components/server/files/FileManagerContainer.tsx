@@ -4,7 +4,7 @@ import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-import { FileObject } from '@/api/server/files/loadDirectory';
+import { FileObject } from '@/api/server/files';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';

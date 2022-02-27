@@ -15,12 +15,11 @@ import {
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'path';
-import { compressFiles, copyFiles, decompressFiles, deleteFiles, getFileDownloadUrl } from '@/api/server/files';
+import { compressFiles, copyFiles, decompressFiles, deleteFiles, getFileDownloadUrl, FileObject } from '@/api/server/files';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Can from '@/components/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import tw, { styled } from 'twin.macro';
-import { FileObject } from '@/api/server/files/loadDirectory';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/components/elements/DropdownMenu';
 import useEventListener from '@/plugins/useEventListener';
