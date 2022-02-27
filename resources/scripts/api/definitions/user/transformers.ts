@@ -1,4 +1,4 @@
-import * as Models from '@models';
+import * as Models from './models';
 
 export default class Transformers {
     static toSecurityKey (data: Record<string, any>): Models.SecurityKey {

@@ -78,8 +78,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@': path.join(__dirname, '/resources/scripts'),
-            '@models': path.join(__dirname, '/resources/scripts/api/types/models.d.ts'),
-            '@transformers': path.join(__dirname, '/resources/scripts/api/types/transformers.ts'),
+            '@definitions': path.join(__dirname, '/resources/scripts/api/definitions'),
             '@feature': path.join(__dirname, '/resources/scripts/components/server/features'),
             'react-dom': '@hot-loader/react-dom',
         },

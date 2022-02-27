@@ -26,11 +26,8 @@
             "@feature/*": [
                 "./resources/scripts/components/server/features/*"
             ],
-            "@models": [
-                "./resources/scripts/api/types/models.d.ts"
-            ],
-            "@transformers": [
-                "./resources/scripts/api/types/transformers.ts"
+            "@definitions/*": [
+                "./resources/scripts/api/definitions/*"
             ]
         },
         "plugins": [

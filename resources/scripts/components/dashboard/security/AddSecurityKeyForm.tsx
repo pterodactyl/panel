@@ -1,4 +1,4 @@
-import { SecurityKey } from '@models';
+import { SecurityKey } from '@definitions/user/models';
 import { useFlashKey } from '@/plugins/useFlash';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { registerSecurityKey } from '@/api/account/security-keys';

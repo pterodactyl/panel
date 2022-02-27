@@ -1,7 +1,7 @@
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
-import Transformers from '@transformers';
-import { PersonalAccessToken } from '@models';
+import Transformers from '@definitions/user/transformers';
+import { PersonalAccessToken } from '@definitions/user/models';
 import { AxiosError } from 'axios';
 import useUserSWRContextKey from '@/plugins/useUserSWRContextKey';
 

@@ -1,7 +1,7 @@
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
-import Transformers from '@transformers';
-import { SecurityKey } from '@models';
+import Transformers from '@definitions/user/transformers';
+import { SecurityKey } from '@definitions/user/models';
 import { AxiosError } from 'axios';
 import { base64Decode, bufferDecode, bufferEncode, decodeSecurityKeyCredentials } from '@/helpers';
 import { LoginResponse } from '@/api/auth/login';
