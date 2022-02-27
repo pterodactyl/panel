@@ -109,4 +109,41 @@ export default class Transformers {
             can: permission => (attributes.permissions || []).indexOf(permission) >= 0,
         };
     }
+
+    static toServerTask ({ attributes }: FractalResponseData): Models.Task {
+        return {
+            id: attributes.id,
+            sequenceId: attributes.sequence_id,
+            action: attributes.action,
+            payload: attributes.payload,
+            timeOffset: attributes.time_offset,
+            isQueued: attributes.is_queued,
+            continueOnFailure: attributes.continue_on_failure,
+            createdAt: new Date(attributes.created_at),
+            updatedAt: new Date(attributes.updated_at),
+        };
+    }
+
+    static toServerSchedule ({ attributes }: FractalResponseData): Models.Schedule {
+        return {
+            id: attributes.id,
+            name: attributes.name,
+            cron: {
+                dayOfWeek: attributes.cron.day_of_week,
+                month: attributes.cron.month,
+                dayOfMonth: attributes.cron.day_of_month,
+                hour: attributes.cron.hour,
+                minute: attributes.cron.minute,
+            },
+            isActive: attributes.is_active,
+            isProcessing: attributes.is_processing,
+            onlyWhenOnline: attributes.only_when_online,
+            lastRunAt: attributes.last_run_at ? new Date(attributes.last_run_at) : null,
+            nextRunAt: attributes.next_run_at ? new Date(attributes.next_run_at) : null,
+            createdAt: new Date(attributes.created_at),
+            updatedAt: new Date(attributes.updated_at),
+            // @ts-expect-error
+            tasks: (attributes.relationships?.tasks?.data || []).map((row: any) => this.toServerTask(row.attributes)),
+        };
+    }
 }

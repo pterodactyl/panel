@@ -1,6 +1,6 @@
 import React from 'react';
 import tw from 'twin.macro';
-import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import { Schedule } from '@definitions/user';
 
 interface Props {
     cron: Schedule['cron'];

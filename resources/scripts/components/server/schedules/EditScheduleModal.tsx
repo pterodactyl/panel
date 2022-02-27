@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import { Schedule } from '@definitions/user';
 import Field from '@/components/elements/Field';
 import { Form, Formik, FormikHelpers } from 'formik';
 import FormikSwitch from '@/components/elements/FormikSwitch';
-import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
+import { createOrUpdateSchedule } from '@/api/server/schedules';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';

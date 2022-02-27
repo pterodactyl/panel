@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import { Schedule } from '@definitions/user';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';

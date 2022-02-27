@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
+import { Schedule, Task } from '@definitions/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowCircleDown,
@@ -10,7 +10,7 @@ import {
     faToggleOn,
     faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
+import { deleteScheduleTask } from '@/api/server/schedules';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
-import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
+import { Schedule, Task } from '@definitions/user';
 import { Field as FormikField, Form, Formik, FormikHelpers, useField } from 'formik';
 import { ServerContext } from '@/state/server';
-import createOrUpdateScheduleTask from '@/api/server/schedules/createOrUpdateScheduleTask';
+import { createOrUpdateScheduleTask } from '@/api/server/schedules';
 import { httpErrorToHuman } from '@/api/http';
 import Field from '@/components/elements/Field';
 import FlashMessageRender from '@/components/FlashMessageRender';
