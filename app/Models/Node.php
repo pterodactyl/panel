@@ -18,6 +18,11 @@ class Node extends Model
      */
     public const RESOURCE_NAME = 'node';
 
+    /**
+     * The default location of server files on the Wings instance.
+     */
+    final public const DEFAULT_DAEMON_BASE = '/var/lib/pterodactyl/volumes';
+
     public const DAEMON_TOKEN_ID_LENGTH = 16;
     public const DAEMON_TOKEN_LENGTH = 64;
 
@@ -104,7 +109,7 @@ class Node extends Model
         'behind_proxy' => false,
         'memory_overallocate' => 0,
         'disk_overallocate' => 0,
-        'daemon_base' => '/var/lib/pterodactyl/volumes',
+        'daemon_base' => self::DEFAULT_DAEMON_BASE,
         'maintenance_mode' => false,
     ];
 

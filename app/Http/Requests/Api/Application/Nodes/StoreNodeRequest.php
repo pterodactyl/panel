@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
@@ -58,12 +59,18 @@ class StoreNodeRequest extends ApplicationApiRequest
      * Change the formatting of some data keys in the validated response data
      * to match what the application expects in the services.
      *
-     * @return array
+     * @param string|null $key
+     * @param string|array|null $default
+     * @return mixed
      */
-    public function validated()
+    public function validated($key = null, $default = null)
     {
         $response = parent::validated();
-        $response['daemon_base'] = $response['daemon_base'] ?? (new Node())->getAttribute('daemon_base');
+        $response['daemon_base'] = $response['daemon_base'] ?? Node::DEFAULT_DAEMON_BASE;
+
+        if (!is_null($key)) {
+            return Arr::get($response, $key, $default);
+        }
 
         return $response;
     }
