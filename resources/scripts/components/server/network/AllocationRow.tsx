@@ -10,12 +10,11 @@ import Button from '@/components/elements/Button';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import { debounce } from 'debounce';
-import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
+import { setServerAllocationNotes, setPrimaryServerAllocation } from '@/api/server/network';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
-import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { formatIp } from '@/helpers';
 

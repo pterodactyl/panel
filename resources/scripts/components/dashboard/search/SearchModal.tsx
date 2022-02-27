@@ -6,7 +6,7 @@ import { object, string } from 'yup';
 import debounce from 'debounce';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import InputSpinner from '@/components/elements/InputSpinner';
-import getServers from '@/api/getServers';
+import { getServers } from '@/api/account';
 import { Server } from '@definitions/user';
 import { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';

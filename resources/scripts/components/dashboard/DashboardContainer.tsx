@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Server } from '@definitions/user';
-import getServers from '@/api/getServers';
+import { getServers } from '@/api/account';
 import ServerRow from '@/components/dashboard/ServerRow';
 import Spinner from '@/components/elements/Spinner';
 import PageContentBlock from '@/components/elements/PageContentBlock';

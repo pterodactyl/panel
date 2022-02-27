@@ -1,7 +1,5 @@
 import http from '@/api/http';
-import { Server, Transformers } from '@definitions/user';
-import { ServerEggVariable } from '@/api/server/types';
-import { rawDataToServerEggVariable } from '@/api/transformers';
+import { Server, ServerEggVariable, Transformers } from '@definitions/user';
 
 interface TokenResponse {
     token: string;
@@ -55,7 +53,7 @@ const setSelectedDockerImage = async (uuid: string, image: string): Promise<void
 const updateStartupVariable = async (uuid: string, key: string, value: string): Promise<[ ServerEggVariable, string ]> => {
     const { data } = await http.put(`/api/client/servers/${uuid}/startup/variable`, { key, value });
 
-    return [ rawDataToServerEggVariable(data), data.meta.startup_command ];
+    return [ Transformers.toServerEggVariable(data), data.meta.startup_command ];
 };
 
 const getServerResourceUsage = async (server: string): Promise<ServerStats> => {

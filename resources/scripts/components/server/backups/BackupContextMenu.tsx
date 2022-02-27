@@ -1,19 +1,24 @@
 import React, { useState } from 'react';
-import { faBoxOpen, faCloudDownloadAlt, faEllipsisH, faLock, faTrashAlt, faUnlock } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBoxOpen,
+    faCloudDownloadAlt,
+    faEllipsisH,
+    faLock,
+    faTrashAlt,
+    faUnlock,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
-import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
+import { getBackupDownloadUrl, deleteBackup, restoreServerBackup } from '@/api/server/backups';
 import useFlash from '@/plugins/useFlash';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import deleteBackup from '@/api/server/backups/deleteBackup';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import Can from '@/components/elements/Can';
 import tw from 'twin.macro';
 import getServerBackups from '@/api/swr/getServerBackups';
-import { ServerBackup } from '@/api/server/types';
+import { ServerBackup } from '@definitions/user';
 import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
-import { restoreServerBackup } from '@/api/server/backups';
 import http, { httpErrorToHuman } from '@/api/http';
 
 interface Props {

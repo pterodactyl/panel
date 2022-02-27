@@ -1,5 +1,5 @@
 import { action, Action, thunk, Thunk } from 'easy-peasy';
-import getSystemPermissions from '@/api/getSystemPermissions';
+import { getSystemPermissions } from '@/api/account';
 
 export interface PanelPermissions {
     [key: string]: {

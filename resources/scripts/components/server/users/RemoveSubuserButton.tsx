@@ -4,7 +4,7 @@ import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { Subuser } from '@/state/server/subusers';
-import deleteSubuser from '@/api/server/users/deleteSubuser';
+import { deleteSubuser } from '@/api/server/users';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';

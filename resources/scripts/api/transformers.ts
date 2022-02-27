@@ -1,16 +1,6 @@
 import { FractalResponseData } from '@/api/http';
-import { Allocation } from '@/api/server/getServer';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import { ServerBackup, ServerEggVariable } from '@/api/server/types';
-
-export const rawDataToServerAllocation = (data: FractalResponseData): Allocation => ({
-    id: data.attributes.id,
-    ip: data.attributes.ip,
-    alias: data.attributes.ip_alias,
-    port: data.attributes.port,
-    notes: data.attributes.notes,
-    isDefault: data.attributes.is_default,
-});
+import { Transformers } from '@definitions/user';
 
 export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
     key: `${data.attributes.is_file ? 'file' : 'dir'}_${data.attributes.name}`,
@@ -55,24 +45,4 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
     },
 });
 
-export const rawDataToServerBackup = ({ attributes }: FractalResponseData): ServerBackup => ({
-    uuid: attributes.uuid,
-    isSuccessful: attributes.is_successful,
-    isLocked: attributes.is_locked,
-    name: attributes.name,
-    ignoredFiles: attributes.ignored_files,
-    checksum: attributes.checksum,
-    bytes: attributes.bytes,
-    createdAt: new Date(attributes.created_at),
-    completedAt: attributes.completed_at ? new Date(attributes.completed_at) : null,
-});
-
-export const rawDataToServerEggVariable = ({ attributes }: FractalResponseData): ServerEggVariable => ({
-    name: attributes.name,
-    description: attributes.description,
-    envVariable: attributes.env_variable,
-    defaultValue: attributes.default_value,
-    serverValue: attributes.server_value,
-    isEditable: attributes.is_editable,
-    rules: attributes.rules.split('|'),
-});
+export const rawDataToServerAllocation = Transformers.toServerAllocation;

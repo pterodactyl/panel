@@ -1,5 +1,5 @@
 import { Action, action, Thunk, thunk } from 'easy-peasy';
-import updateAccountEmail from '@/api/account/updateAccountEmail';
+import { updateAccountEmail } from '@/api/account';
 
 export interface UserData {
     uuid: string;

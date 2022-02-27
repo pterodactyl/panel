@@ -7,11 +7,11 @@ import Field from '@/components/elements/Field';
 import { object, string } from 'yup';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerContext } from '@/state/server';
-import deleteServerDatabase from '@/api/server/databases/deleteServerDatabase';
+import { deleteServerDatabase } from '@/api/server/databases';
 import { httpErrorToHuman } from '@/api/http';
 import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
 import Can from '@/components/elements/Can';
-import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
+import { ServerDatabase } from '@definitions/user';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
@@ -114,15 +114,25 @@ export default ({ database, className }: Props) => {
                 <h3 css={tw`mb-6 text-2xl`}>Database connection details</h3>
                 <div>
                     <Label>Endpoint</Label>
-                    <CopyOnClick text={database.connectionString}><Input type={'text'} readOnly value={database.connectionString} /></CopyOnClick>
+                    <CopyOnClick text={database.connectionString}><Input
+                        type={'text'}
+                        readOnly
+                        value={database.connectionString}
+                    />
+                    </CopyOnClick>
                 </div>
                 <div css={tw`mt-6`}>
                     <Label>Connections from</Label>
-                    <Input type={'text'} readOnly value={database.allowConnectionsFrom} />
+                    <Input type={'text'} readOnly value={database.allowConnectionsFrom}/>
                 </div>
                 <div css={tw`mt-6`}>
                     <Label>Username</Label>
-                    <CopyOnClick text={database.username}><Input type={'text'} readOnly value={database.username} /></CopyOnClick>
+                    <CopyOnClick text={database.username}><Input
+                        type={'text'}
+                        readOnly
+                        value={database.username}
+                    />
+                    </CopyOnClick>
                 </div>
                 <Can action={'database.view_password'}>
                     <div css={tw`mt-6`}>
@@ -157,7 +167,8 @@ export default ({ database, className }: Props) => {
                     <CopyOnClick text={database.name}><p css={tw`text-lg`}>{database.name}</p></CopyOnClick>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
-                    <CopyOnClick text={database.connectionString}><p css={tw`text-sm`}>{database.connectionString}</p></CopyOnClick>
+                    <CopyOnClick text={database.connectionString}><p css={tw`text-sm`}>{database.connectionString}</p>
+                    </CopyOnClick>
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Endpoint</p>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>

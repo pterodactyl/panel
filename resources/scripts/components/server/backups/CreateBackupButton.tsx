@@ -5,7 +5,7 @@ import { boolean, object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import useFlash from '@/plugins/useFlash';
-import createServerBackup from '@/api/server/backups/createServerBackup';
+import { createServerBackup } from '@/api/server/backups';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
 import tw from 'twin.macro';

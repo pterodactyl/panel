@@ -5,7 +5,7 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
 import AllocationRow from '@/components/server/network/AllocationRow';
 import Button from '@/components/elements/Button';
-import createServerAllocation from '@/api/server/network/createServerAllocation';
+import { createServerAllocation } from '@/api/server/network';
 import tw from 'twin.macro';
 import Can from '@/components/elements/Can';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';

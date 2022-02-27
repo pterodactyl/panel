@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import Icon from '@/components/elements/Icon';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { ServerContext } from '@/state/server';
-import deleteServerAllocation from '@/api/server/network/deleteServerAllocation';
+import { deleteServerAllocation } from '@/api/server/network';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import useFlash from '@/plugins/useFlash';
 

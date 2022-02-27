@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import getServerDatabases from '@/api/server/databases/getServerDatabases';
+import { getServerDatabases } from '@/api/server/databases';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';

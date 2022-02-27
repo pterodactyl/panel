@@ -1,7 +1,6 @@
 import useSWR from 'swr';
 import http, { getPaginationSet, PaginatedResult } from '@/api/http';
-import { ServerBackup } from '@/api/server/types';
-import { rawDataToServerBackup } from '@/api/transformers';
+import { Transformers, ServerBackup } from '@definitions/user';
 import { ServerContext } from '@/state/server';
 import { createContext, useContext } from 'react';
 
@@ -22,7 +21,7 @@ export default () => {
         const { data } = await http.get(`/api/client/servers/${uuid}/backups`, { params: { page } });
 
         return ({
-            items: (data.data || []).map(rawDataToServerBackup),
+            items: (data.data || []).map(Transformers.toServerBackup),
             pagination: getPaginationSet(data.meta.pagination),
             backupCount: data.meta.backup_count,
         });
