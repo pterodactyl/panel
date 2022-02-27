@@ -36,6 +36,11 @@ module.exports = {
                     {
                         loader: 'css-loader',
                         options: {
+                            modules: {
+                                auto: true,
+                                localIdentName: isProduction ? '[name]_[hash:base64:8]' : '[path][name]__[local]',
+                                localIdentContext: path.join(__dirname, "resources/scripts/components"),
+                            },
                             sourceMap: !isProduction,
                             importLoaders: 1,
                         },

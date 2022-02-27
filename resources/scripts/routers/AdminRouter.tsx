@@ -15,7 +15,6 @@ import LocationEditContainer from '@/components/admin/locations/LocationEditCont
 import ServersContainer from '@/components/admin/servers/ServersContainer';
 import NewServerContainer from '@/components/admin/servers/NewServerContainer';
 import ServerRouter from '@/components/admin/servers/ServerRouter';
-import UsersContainer from '@/components/admin/users/UsersContainer';
 import NewUserContainer from '@/components/admin/users/NewUserContainer';
 import UserRouter from '@/components/admin/users/UserRouter';
 import RolesContainer from '@/components/admin/roles/RolesContainer';
@@ -46,6 +45,7 @@ import {
 import CollapsedIcon from '@/assets/images/pterodactyl.svg';
 import Sidebar from '@/components/admin/Sidebar';
 import useUserPersistedState from '@/plugins/useUserPersistedState';
+import UsersContainerV2 from '@/components/admin/users/UsersContainerV2';
 
 const AdminRouter = ({ location, match }: RouteComponentProps) => {
     const email = useStoreState((state: State<ApplicationStore>) => state.user.data!.email);
@@ -132,7 +132,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
                         <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
                         <Route path={`${match.path}/servers/:id`} component={ServerRouter}/>
-                        <Route path={`${match.path}/users`} component={UsersContainer} exact/>
+                        <Route path={`${match.path}/users`} component={UsersContainerV2} exact/>
                         <Route path={`${match.path}/users/new`} component={NewUserContainer} exact/>
                         <Route path={`${match.path}/users/:id`} component={UserRouter}/>
                         <Route path={`${match.path}/roles`} component={RolesContainer} exact/>

@@ -2474,6 +2474,16 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@headlessui/react@npm:^1.5.0":
+  version: 1.5.0
+  resolution: "@headlessui/react@npm:1.5.0"
+  peerDependencies:
+    react: ^16 || ^17 || ^18
+    react-dom: ^16 || ^17 || ^18
+  checksum: e3373dfb73936950d659a87718fb9fdedc599b344b30cb0d8b1ef0a2ec13d6f405c653fa51284236788658840ece82c6a8538a5a5931e595274e9590b2020079
+  languageName: node
+  linkType: hard
+
 "@heroicons/react@npm:^1.0.5":
   version: 1.0.5
   resolution: "@heroicons/react@npm:1.0.5"
@@ -4637,6 +4647,13 @@ __metadata:
     isobject: ^3.0.0
     static-extend: ^0.1.1
   checksum: be108900801e639e50f96a7e4bfa8867c753a7750a7603879f3981f8b0a89cba657497a2d5f40cd4ea557ff15d535a100818bb486baf6e26fe5d7872e75f1078
+  languageName: node
+  linkType: hard
+
+"classnames@npm:^2.3.1":
+  version: 2.3.1
+  resolution: "classnames@npm:2.3.1"
+  checksum: 14db8889d56c267a591f08b0834989fe542d47fac659af5a539e110cc4266694e8de86e4e3bbd271157dbd831361310a8293e0167141e80b0f03a0f175c80960
   languageName: node
   linkType: hard
 
@@ -10933,6 +10950,7 @@ fsevents@^1.2.7:
     "@fortawesome/free-regular-svg-icons": ^5.15.4
     "@fortawesome/free-solid-svg-icons": ^5.15.4
     "@fortawesome/react-fontawesome": ^0.1.16
+    "@headlessui/react": ^1.5.0
     "@heroicons/react": ^1.0.5
     "@hot-loader/react-dom": ^16.14.0
     "@tailwindcss/forms": ^0.4.0
@@ -10965,6 +10983,7 @@ fsevents@^1.2.7:
     babel-plugin-styled-components: ^2.0.3
     browserslist: ^4.17.6
     chart.js: ^2.9.4
+    classnames: ^2.3.1
     cross-env: ^7.0.3
     css-loader: ^5.2.7
     date-fns: ^2.25.0
