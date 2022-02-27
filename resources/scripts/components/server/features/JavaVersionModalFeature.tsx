@@ -3,7 +3,7 @@ import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
+import { setSelectedDockerImage } from '@/api/server';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent, SocketRequest } from '@/components/server/events';

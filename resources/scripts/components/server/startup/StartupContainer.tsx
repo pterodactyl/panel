@@ -12,7 +12,7 @@ import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
 import Select from '@/components/elements/Select';
 import isEqual from 'react-fast-compare';
 import Input from '@/components/elements/Input';
-import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
+import { setSelectedDockerImage } from '@/api/server';
 import InputSpinner from '@/components/elements/InputSpinner';
 import useFlash from '@/plugins/useFlash';
 

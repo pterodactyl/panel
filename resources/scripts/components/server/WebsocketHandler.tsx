@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
-import getWebsocketToken from '@/api/server/getWebsocketToken';
+import { getWebsocketToken } from '@/api/server';
 import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';

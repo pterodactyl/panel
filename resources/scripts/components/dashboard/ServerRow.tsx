@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
 import { Server } from '@definitions/user';
-import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
+import { getServerResourceUsage, ServerPowerState, ServerStats } from '@/api/server';
 import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
 import tw, { styled } from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';

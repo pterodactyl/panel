@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import reinstallServer from '@/api/server/reinstallServer';
+import { reinstallServer } from '@/api/server';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
