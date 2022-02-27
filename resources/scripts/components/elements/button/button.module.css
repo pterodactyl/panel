@@ -1,14 +1,14 @@
 .button {
   @apply px-4 py-2 inline-flex items-center justify-center;
-  @apply bg-primary-500 rounded text-base font-semibold text-primary-50 transition-all duration-100;
-  @apply hover:bg-primary-600 active:bg-primary-600;
+  @apply bg-blue-600 rounded text-base font-semibold text-blue-50 transition-all duration-100;
+  @apply hover:bg-blue-500 active:bg-blue-500;
 
   &.square {
     @apply p-2;
   }
 
   &:focus {
-    @apply ring-[3px] ring-opacity-75 ring-primary-300;
+    @apply ring-[3px] ring-blue-500 ring-offset-2 ring-offset-neutral-700;
   }
 
   /* Sizing Controls */
@@ -26,5 +26,5 @@
 }
 
 .danger {
-  @apply bg-red-500 hover:bg-red-600 active:bg-red-600 focus:ring-red-400 text-red-50;
+  @apply bg-red-600 hover:bg-red-500 active:bg-red-500 focus:ring-red-500 text-red-50;
 }

@@ -35,10 +35,10 @@
   }
 
   &:hover, &:focus, &:focus-within {
-    @apply bg-primary-600 text-primary-50;
+    @apply bg-blue-500 text-blue-50;
 
     & svg {
-      @apply text-primary-50;
+      @apply text-blue-50;
     }
   }
 

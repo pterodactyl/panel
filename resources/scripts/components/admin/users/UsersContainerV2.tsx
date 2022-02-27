@@ -13,6 +13,7 @@ import {
 } from '@heroicons/react/solid';
 import { Button } from '@/components/elements/button/index';
 import { Dialog } from '@/components/elements/dialog';
+import { Checkbox } from '@/components/elements/inputs';
 
 const UsersContainerV2 = () => {
     const [ users, setUsers ] = useState<User[]>([]);
@@ -41,8 +42,8 @@ const UsersContainerV2 = () => {
                 <Dialog.Icon type={'danger'}/>
                 This account will be permanently deleted.
                 <Dialog.Buttons>
-                    <Button.Text onClick={() => setVisible(false)}>Cancel</Button.Text>
-                    <Button.Danger>Delete</Button.Danger>
+                    <Button.Text className={'!ring-offset-neutral-800'} onClick={() => setVisible(false)}>Cancel</Button.Text>
+                    <Button.Danger className={'!ring-offset-neutral-800'}>Delete</Button.Danger>
                 </Dialog.Buttons>
             </Dialog>
             <table className={'min-w-full rounded bg-neutral-700'}>
@@ -58,7 +59,7 @@ const UsersContainerV2 = () => {
                         <tr key={user.uuid}>
                             <td className={'whitespace-nowrap'}>
                                 <div className={'flex justify-end items-center w-8'}>
-                                    <input type={'checkbox'}/>
+                                    <Checkbox />
                                 </div>
                             </td>
                             <td className={'pl-6 py-4 whitespace-nowrap'}>
