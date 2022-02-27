@@ -1,7 +1,6 @@
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
-import Transformers from '@definitions/user/transformers';
-import { SecurityKey } from '@definitions/user/models';
+import { Transformers, SecurityKey } from '@definitions/user';
 import { AxiosError } from 'axios';
 import { base64Decode, bufferDecode, bufferEncode, decodeSecurityKeyCredentials } from '@/helpers';
 import { LoginResponse } from '@/api/auth/login';
@@ -15,7 +14,7 @@ const useSecurityKeys = (config?: SWRConfiguration<SecurityKey[], AxiosError>): 
         async (): Promise<SecurityKey[]> => {
             const { data } = await http.get('/api/client/account/security-keys');
 
-            return (data as FractalResponseList).data.map((datum) => Transformers.toSecurityKey(datum.attributes));
+            return (data as FractalResponseList).data.map(Transformers.toSecurityKey);
         },
         config,
     );
@@ -40,7 +39,7 @@ const registerCredentialForAccount = async (name: string, tokenId: string, crede
         },
     });
 
-    return Transformers.toSecurityKey(data.attributes);
+    return Transformers.toSecurityKey(data);
 };
 
 const registerSecurityKey = async (name: string): Promise<SecurityKey> => {

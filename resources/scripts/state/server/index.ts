@@ -1,4 +1,4 @@
-import getServer, { Server } from '@/api/server/getServer';
+import { getServer } from '@/api/server';
 import { action, Action, computed, Computed, createContextStore, thunk, Thunk } from 'easy-peasy';
 import socket, { SocketStore } from './socket';
 import files, { ServerFileStore } from '@/state/server/files';
@@ -7,6 +7,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import schedules, { ServerScheduleStore } from '@/state/server/schedules';
 import databases, { ServerDatabaseStore } from '@/state/server/databases';
 import isEqual from 'react-fast-compare';
+import { Server } from '@definitions/user';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | null;
 

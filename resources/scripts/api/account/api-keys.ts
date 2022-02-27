@@ -1,7 +1,6 @@
 import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
-import Transformers from '@definitions/user/transformers';
-import { PersonalAccessToken } from '@definitions/user/models';
+import { Transformers, PersonalAccessToken } from '@definitions/user';
 import { AxiosError } from 'axios';
 import useUserSWRContextKey from '@/plugins/useUserSWRContextKey';
 
@@ -22,7 +21,7 @@ const useAPIKeys = (
 const createAPIKey = async (description: string): Promise<[ PersonalAccessToken, string ]> => {
     const { data } = await http.post('/api/client/account/api-keys', { description });
 
-    const token = Transformers.toPersonalAccessToken(data.attributes);
+    const token = Transformers.toPersonalAccessToken(data);
 
     return [ token, data.meta?.secret_token || '' ];
 };

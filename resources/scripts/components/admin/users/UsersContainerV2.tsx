@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import http from '@/api/http';
-import { User } from '@definitions/admin/models';
-import Transformers from '@definitions/admin/transformers';
+import { Transformers, User } from '@definitions/admin';
 import { LockOpenIcon, PlusIcon, SupportIcon, TrashIcon } from '@heroicons/react/solid';
 import { Button } from '@/components/elements/button/index';
 import { Checkbox, InputField } from '@/components/elements/inputs';

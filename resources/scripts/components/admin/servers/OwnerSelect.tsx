@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useFormikContext } from 'formik';
 import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
-import { User } from '@definitions/admin/models';
+import { User } from '@definitions/admin';
 import { searchUserAccounts } from '@/api/admin/user';
 
 export default ({ selected }: { selected?: User }) => {

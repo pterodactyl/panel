@@ -1,6 +1,5 @@
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
-import Transformers from '@definitions/admin/transformers';
-import { User } from '@definitions/admin/models';
+import { Transformers, User } from '@definitions/admin';
 
 export const getUser = async (id: string | number): Promise<User> => {
     const { data } = await http.get(`/api/application/users/${id}`);

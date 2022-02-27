@@ -7,7 +7,7 @@ import debounce from 'debounce';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import InputSpinner from '@/components/elements/InputSpinner';
 import getServers from '@/api/getServers';
-import { Server } from '@/api/server/getServer';
+import { Server } from '@definitions/user';
 import { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';
 import tw, { styled } from 'twin.macro';

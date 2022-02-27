@@ -3,9 +3,8 @@ import { AxiosError } from 'axios';
 import { useRouteMatch } from 'react-router-dom';
 import http from '@/api/http';
 import { Model, UUID, withRelationships, WithRelationships } from '@/api/admin/index';
-import Transformers from '@definitions/admin/transformers';
 import { Allocation, Node } from '@/api/admin/node';
-import { User } from '@definitions/admin/models';
+import { Transformers, User } from '@definitions/admin';
 import { Egg, EggVariable } from '@/api/admin/egg';
 import { Nest } from '@/api/admin/nest';
 

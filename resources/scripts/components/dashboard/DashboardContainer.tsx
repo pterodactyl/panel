@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Server } from '@/api/server/getServer';
+import { Server } from '@definitions/user';
 import getServers from '@/api/getServers';
 import ServerRow from '@/components/dashboard/ServerRow';
 import Spinner from '@/components/elements/Spinner';
