@@ -3,9 +3,9 @@ import { AxiosError } from 'axios';
 import { useRouteMatch } from 'react-router-dom';
 import http from '@/api/http';
 import { Model, UUID, withRelationships, WithRelationships } from '@/api/admin/index';
-import { AdminTransformers } from '@/api/admin/transformers';
+import Transformers from '@definitions/admin/transformers';
 import { Allocation, Node } from '@/api/admin/node';
-import { User } from '@/api/admin/user';
+import { User } from '@definitions/admin/models';
 import { Egg, EggVariable } from '@/api/admin/egg';
 import { Nest } from '@/api/admin/nest';
 
@@ -83,7 +83,7 @@ export const getServer = async (id: number | string): Promise<LoadedServer> => {
         },
     });
 
-    return withRelationships(AdminTransformers.toServer(data), 'allocations', 'user', 'node', 'variables');
+    return withRelationships(Transformers.toServer(data), 'allocations', 'user', 'node', 'variables');
 };
 
 /**

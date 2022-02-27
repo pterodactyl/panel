@@ -2,7 +2,7 @@ import { Checkbox } from '@/components/elements/inputs';
 import { Dropdown } from '@/components/elements/dropdown';
 import { BanIcon, DotsVerticalIcon, LockOpenIcon, PencilIcon, SupportIcon, TrashIcon } from '@heroicons/react/solid';
 import React, { useState } from 'react';
-import { User } from '@/api/admin/user';
+import { User } from '@definitions/admin/models';
 import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 

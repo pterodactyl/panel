@@ -1,8 +1,7 @@
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface Model {}
+import { Model, UUID } from '@/api/definitions';
 
 interface SecurityKey extends Model {
-    uuid: string;
+    uuid: UUID;
     name: string;
     type: 'public-key';
     publicKeyId: string;

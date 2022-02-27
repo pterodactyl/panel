@@ -1,7 +1,7 @@
 import { Model, UUID, WithRelationships, withRelationships } from '@/api/admin/index';
 import { Nest } from '@/api/admin/nest';
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
-import { AdminTransformers } from '@/api/admin/transformers';
+import Transformers from '@definitions/admin/transformers';
 import { AxiosError } from 'axios';
 import { useRouteMatch } from 'react-router-dom';
 import useSWR, { SWRResponse } from 'swr';
@@ -64,7 +64,7 @@ export const getEgg = async (id: number | string): Promise<LoadedEgg> => {
         },
     });
 
-    return withRelationships(AdminTransformers.toEgg(data), 'nest', 'variables');
+    return withRelationships(Transformers.toEgg(data), 'nest', 'variables');
 };
 
 export const searchEggs = async (nestId: number, params: QueryBuilderParams<'name'>): Promise<WithRelationships<Egg, 'variables'>[]> => {
@@ -75,7 +75,7 @@ export const searchEggs = async (nestId: number, params: QueryBuilderParams<'nam
         },
     });
 
-    return data.data.map(AdminTransformers.toEgg);
+    return data.data.map(Transformers.toEgg);
 };
 
 export const exportEgg = async (eggId: number): Promise<Record<string, any>> => {

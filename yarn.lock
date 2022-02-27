@@ -11036,6 +11036,7 @@ fsevents@^1.2.7:
     swr: ^1.0.1
     tailwindcss: ^3.0.23
     terser-webpack-plugin: ^4.2.3
+    ts-essentials: ^9.1.2
     twin.macro: ^2.8.2
     typescript: ^4.4.4
     uuid: ^3.4.0
@@ -13386,6 +13387,15 @@ resolve@^2.0.0-next.3:
   version: 1.1.0
   resolution: "totalist@npm:1.1.0"
   checksum: dfab80c7104a1d170adc8c18782d6c04b7df08352dec452191208c66395f7ef2af7537ddfa2cf1decbdcfab1a47afbbf0dec6543ea191da98c1c6e1599f86adc
+  languageName: node
+  linkType: hard
+
+"ts-essentials@npm:^9.1.2":
+  version: 9.1.2
+  resolution: "ts-essentials@npm:9.1.2"
+  peerDependencies:
+    typescript: ">=4.1.0"
+  checksum: 3b14d8511557bd1bdec068505074ee41d3b1cdb052d3c66a5046f00b483bd4722d529b32a99cca424a9d7db9caff7ba108acbf344a5477a741e0616af5649b47
   languageName: node
   linkType: hard
 

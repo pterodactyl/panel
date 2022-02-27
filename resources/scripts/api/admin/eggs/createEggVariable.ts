@@ -1,6 +1,6 @@
 import http from '@/api/http';
 import { EggVariable } from '@/api/admin/egg';
-import { AdminTransformers } from '@/api/admin/transformers';
+import Transformers from '@definitions/admin/transformers';
 
 export type CreateEggVariable = Omit<EggVariable, 'id' | 'eggId' | 'createdAt' | 'updatedAt' | 'relationships'>;
 
@@ -18,5 +18,5 @@ export default async (eggId: number, variable: CreateEggVariable): Promise<EggVa
         },
     );
 
-    return AdminTransformers.toEggVariable(data);
+    return Transformers.toEggVariable(data);
 };

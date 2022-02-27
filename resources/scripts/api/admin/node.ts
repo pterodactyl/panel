@@ -1,7 +1,7 @@
 import { Model, UUID, WithRelationships, withRelationships } from '@/api/admin/index';
 import { Location } from '@/api/admin/location';
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
-import { AdminTransformers } from '@/api/admin/transformers';
+import Transformers from '@definitions/admin/transformers';
 import { Server } from '@/api/admin/server';
 
 interface NodePorts {
@@ -64,7 +64,7 @@ export const getNode = async (id: string | number): Promise<WithRelationships<No
         },
     });
 
-    return withRelationships(AdminTransformers.toNode(data.data), 'location');
+    return withRelationships(Transformers.toNode(data.data), 'location');
 };
 
 export const searchNodes = async (params: QueryBuilderParams<'name'>): Promise<Node[]> => {
@@ -72,7 +72,7 @@ export const searchNodes = async (params: QueryBuilderParams<'name'>): Promise<N
         params: withQueryBuilderParams(params),
     });
 
-    return data.data.map(AdminTransformers.toNode);
+    return data.data.map(Transformers.toNode);
 };
 
 export const getAllocations = async (id: string | number, params?: QueryBuilderParams<'ip' | 'server_id'>): Promise<Allocation[]> => {
@@ -80,5 +80,5 @@ export const getAllocations = async (id: string | number, params?: QueryBuilderP
         params: withQueryBuilderParams(params),
     });
 
-    return data.data.map(AdminTransformers.toAllocation);
+    return data.data.map(Transformers.toAllocation);
 };

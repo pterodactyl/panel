@@ -1,7 +1,7 @@
 import { Model, UUID } from '@/api/admin/index';
 import { Egg } from '@/api/admin/egg';
 import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
-import { AdminTransformers } from '@/api/admin/transformers';
+import Transformers from '@definitions/admin/transformers';
 
 export interface Nest extends Model {
     id: number;
@@ -21,5 +21,5 @@ export const searchNests = async (params: QueryBuilderParams<'name'>): Promise<N
         params: withQueryBuilderParams(params),
     });
 
-    return data.data.map(AdminTransformers.toNest);
+    return data.data.map(Transformers.toNest);
 };

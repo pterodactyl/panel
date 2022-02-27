@@ -1,6 +1,6 @@
 import http from '@/api/http';
 import { EggVariable } from '@/api/admin/egg';
-import { AdminTransformers } from '@/api/admin/transformers';
+import Transformers from '@definitions/admin/transformers';
 
 export default async (eggId: number, variables: Omit<EggVariable, 'eggId' | 'createdAt' | 'updatedAt'>[]): Promise<EggVariable[]> => {
     const { data } = await http.patch(
@@ -17,5 +17,5 @@ export default async (eggId: number, variables: Omit<EggVariable, 'eggId' | 'cre
         })),
     );
 
-    return data.data.map(AdminTransformers.toEggVariable);
+    return data.data.map(Transformers.toEggVariable);
 };
