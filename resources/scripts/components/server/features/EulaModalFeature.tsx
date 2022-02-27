@@ -3,7 +3,7 @@ import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import saveFileContents from '@/api/server/files/saveFileContents';
+import { saveFileContents } from '@/api/server/files';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { SocketEvent, SocketRequest } from '@/components/server/events';

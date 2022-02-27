@@ -2,7 +2,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import { object, string } from 'yup';
-import pullFile from '@/api/server/files/pullFile';
+import { pullFile, FileObject } from '@/api/server/files';
 import { WithClassname } from '@/components/types';
 import Button from '@/components/elements/Button';
 import Field from '@/components/elements/Field';
@@ -10,7 +10,6 @@ import Modal from '@/components/elements/Modal';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import { FileObject } from '@/api/server/files/loadDirectory';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { join } from 'path';
 

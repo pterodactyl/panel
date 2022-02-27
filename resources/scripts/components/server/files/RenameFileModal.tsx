@@ -3,7 +3,7 @@ import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { join } from 'path';
-import renameFiles from '@/api/server/files/renameFiles';
+import { renameFiles } from '@/api/server/files';
 import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';

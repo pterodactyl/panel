@@ -7,10 +7,9 @@ import { faFileArchive, faLevelUpAlt, faTrashAlt } from '@fortawesome/free-solid
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
-import compressFiles from '@/api/server/files/compressFiles';
+import { compressFiles, deleteFiles } from '@/api/server/files';
 import { ServerContext } from '@/state/server';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import deleteFiles from '@/api/server/files/deleteFiles';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 
 const MassActionsBar = () => {
@@ -79,11 +78,11 @@ const MassActionsBar = () => {
                     Deleting the file(s) listed below is a permanent operation, you cannot undo this action.
                     <br/>
                     <code>
-                        { selectedFiles.slice(0, 15).map(file => (
+                        {selectedFiles.slice(0, 15).map(file => (
                             <li key={file}>{file}<br/></li>))
                         }
-                        { selectedFiles.length > 15 &&
-                                    <li> + {selectedFiles.length - 15} other(s) </li>
+                        {selectedFiles.length > 15 &&
+                        <li> + {selectedFiles.length - 15} other(s) </li>
                         }
                     </code>
                 </ConfirmationModal>

@@ -1,22 +1,29 @@
 import React, { memo, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBoxOpen, faCopy, faEllipsisH, faFileArchive, faFileCode, faFileDownload, faLevelUpAlt, faPencilAlt, faTrashAlt, IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import {
+    faBoxOpen,
+    faCopy,
+    faEllipsisH,
+    faFileArchive,
+    faFileCode,
+    faFileDownload,
+    faLevelUpAlt,
+    faPencilAlt,
+    faTrashAlt,
+    IconDefinition,
+} from '@fortawesome/free-solid-svg-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
 import { join } from 'path';
-import deleteFiles from '@/api/server/files/deleteFiles';
+import { compressFiles, copyFiles, decompressFiles, deleteFiles, getFileDownloadUrl } from '@/api/server/files';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import copyFile from '@/api/server/files/copyFile';
 import Can from '@/components/elements/Can';
-import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import useFlash from '@/plugins/useFlash';
 import tw, { styled } from 'twin.macro';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/components/elements/DropdownMenu';
 import useEventListener from '@/plugins/useEventListener';
-import compressFiles from '@/api/server/files/compressFiles';
-import decompressFiles from '@/api/server/files/decompressFiles';
 import isEqual from 'react-fast-compare';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
@@ -24,8 +31,8 @@ import ChmodFileModal from '@/components/server/files/ChmodFileModal';
 type ModalType = 'rename' | 'move' | 'chmod';
 
 const StyledRow = styled.div<{ $danger?: boolean }>`
-    ${tw`p-2 flex items-center rounded`};
-    ${props => props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
+  ${tw`p-2 flex items-center rounded`};
+  ${props => props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
 `;
 
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -75,7 +82,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         setShowSpinner(true);
         clearFlashes('files');
 
-        copyFile(uuid, join(directory, file.name))
+        copyFiles(uuid, join(directory, file.name))
             .then(async () => await mutate())
             .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
@@ -172,7 +179,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     </Can>
                 }
                 {file.isFile &&
-                    <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
+                <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
                 }
                 <Can action={'file.delete'}>
                     <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger/>

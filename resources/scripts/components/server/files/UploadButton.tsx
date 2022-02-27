@@ -1,5 +1,5 @@
 import axios from 'axios';
-import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
+import { getFileUploadUrl } from '@/api/server/files';
 import tw, { styled } from 'twin.macro';
 import Button from '@/components/elements/Button';
 import React, { useEffect, useRef, useState } from 'react';
