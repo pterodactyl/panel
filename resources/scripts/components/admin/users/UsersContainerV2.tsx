@@ -51,12 +51,26 @@ const UsersContainerV2 = () => {
                     <Button.Danger>Delete</Button.Danger>
                 </Dialog.Buttons>
             </Dialog>
-            <div className={'flex items-center rounded-t bg-neutral-700 px-4 py-2'}>
+            <div className={'relative flex items-center rounded-t bg-neutral-700 px-4 py-2'}>
                 <div className={'mr-6'}>
                     <Checkbox />
                 </div>
                 <div className={'flex-1'}>
                     <InputField type={'text'} name={'filter'} placeholder={'Begin typing to filter...'} className={'w-56 focus:w-96'} />
+                </div>
+                <div className={'absolute rounded-t bg-neutral-700 w-full h-full top-0 left-0 flex items-center justify-end space-x-4 px-4'}>
+                    <div className={'flex-1'}>
+                        <Checkbox indeterminate />
+                    </div>
+                    <Button.Text square>
+                        <SupportIcon className={'w-4 h-4'} />
+                    </Button.Text>
+                    <Button.Text square>
+                        <LockOpenIcon className={'w-4 h-4'} />
+                    </Button.Text>
+                    <Button.Text square>
+                        <TrashIcon className={'w-4 h-4'} />
+                    </Button.Text>
                 </div>
             </div>
             <table className={'min-w-full rounded bg-neutral-700'}>
