@@ -45,7 +45,7 @@ import {
 import CollapsedIcon from '@/assets/images/pterodactyl.svg';
 import Sidebar from '@/components/admin/Sidebar';
 import useUserPersistedState from '@/plugins/useUserPersistedState';
-import UsersContainerV2 from '@/components/admin/users/UsersContainerV2';
+import UsersContainer from '@/components/admin/users/UsersContainer';
 
 const AdminRouter = ({ location, match }: RouteComponentProps) => {
     const email = useStoreState((state: State<ApplicationStore>) => state.user.data!.email);
@@ -132,7 +132,7 @@ const AdminRouter = ({ location, match }: RouteComponentProps) => {
                         <Route path={`${match.path}/servers`} component={ServersContainer} exact/>
                         <Route path={`${match.path}/servers/new`} component={NewServerContainer} exact/>
                         <Route path={`${match.path}/servers/:id`} component={ServerRouter}/>
-                        <Route path={`${match.path}/users`} component={UsersContainerV2} exact/>
+                        <Route path={`${match.path}/users`} component={UsersContainer} exact/>
                         <Route path={`${match.path}/users/new`} component={NewUserContainer} exact/>
                         <Route path={`${match.path}/users/:id`} component={UserRouter}/>
                         <Route path={`${match.path}/roles`} component={RolesContainer} exact/>

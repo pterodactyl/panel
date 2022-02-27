@@ -43,7 +43,7 @@ class DataValidationException extends PterodactylException implements HttpExcept
      *
      * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 500;
     }
@@ -51,7 +51,7 @@ class DataValidationException extends PterodactylException implements HttpExcept
     /**
      * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return [];
     }

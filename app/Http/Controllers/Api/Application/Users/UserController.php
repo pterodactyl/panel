@@ -20,23 +20,15 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class UserController extends ApplicationApiController
 {
-    private UserCreationService $creationService;
-    private UserDeletionService $deletionService;
-    private UserUpdateService $updateService;
-
     /**
      * UserController constructor.
      */
     public function __construct(
-        UserCreationService $creationService,
-        UserDeletionService $deletionService,
-        UserUpdateService $updateService
+        protected UserCreationService $creationService,
+        protected UserDeletionService $deletionService,
+        protected UserUpdateService $updateService
     ) {
         parent::__construct();
-
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->updateService = $updateService;
     }
 
     /**
@@ -84,8 +76,6 @@ class UserController extends ApplicationApiController
      * Revocation errors are returned under the 'revocation_errors' key in the response
      * meta. If there are no errors this is an empty array.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
      */
     public function update(UpdateUserRequest $request, User $user): array

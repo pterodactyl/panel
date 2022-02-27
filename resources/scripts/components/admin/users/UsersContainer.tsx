@@ -1,5 +1,12 @@
 import React, { Fragment, useEffect, useState } from 'react';
-import http from '@/api/http';
+import http, {
+    FractalPaginatedResponse,
+    PaginatedResult,
+    PaginationDataSet,
+    QueryBuilderParams,
+    toPaginatedSet,
+    withQueryBuilderParams,
+} from '@/api/http';
 import { UUID } from '@/api/definitions';
 import { Transformers, User } from '@definitions/admin';
 import { Transition } from '@/components/elements/transitions';
@@ -7,21 +14,48 @@ import { LockOpenIcon, PlusIcon, SupportIcon, TrashIcon } from '@heroicons/react
 import { Button } from '@/components/elements/button/index';
 import { Checkbox, InputField } from '@/components/elements/inputs';
 import UserTableRow from '@/components/admin/users/UserTableRow';
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
+import { AxiosError } from 'axios';
 
-const UsersContainerV2 = () => {
-    const [ users, setUsers ] = useState<User[]>([]);
+const useGetUsers = (
+    params?: QueryBuilderParams<'id' | 'email' | 'uuid'>,
+    config?: SWRConfiguration,
+): SWRResponse<PaginatedResult<User>, AxiosError> => {
+    return useSWR<PaginatedResult<User>>([ '/api/application/users', params ], async () => {
+        const { data } = await http.get<FractalPaginatedResponse>(
+            '/api/application/users',
+            { params: withQueryBuilderParams(params) },
+        );
+
+        return toPaginatedSet(data, Transformers.toUser);
+    }, config || { revalidateOnMount: true, revalidateOnFocus: false });
+};
+
+const PaginationFooter = ({ pagination, span }: { span: number; pagination: PaginationDataSet }) => {
+    const start = (pagination.currentPage - 1) * pagination.perPage;
+    const end = ((pagination.currentPage - 1) * pagination.perPage) + pagination.count;
+
+    return (
+        <tfoot>
+            <tr className={'bg-neutral-800'}>
+                <td scope={'col'} colSpan={span} className={'px-4 py-2'}>
+                    <p className={'text-sm text-neutral-500'}>
+                        Showing <span className={'font-semibold text-neutral-400'}>{Math.max(start, 1)}</span> to&nbsp;
+                        <span className={'font-semibold text-neutral-400'}>{end}</span> of&nbsp;
+                        <span className={'font-semibold text-neutral-400'}>{pagination.total}</span> results.
+                    </p>
+                </td>
+            </tr>
+        </tfoot>
+    );
+};
+
+const UsersContainer = () => {
+    const { data: users } = useGetUsers();
     const [ selected, setSelected ] = useState<UUID[]>([]);
 
     useEffect(() => {
         document.title = 'Admin | Users';
-    }, []);
-
-    useEffect(() => {
-        http.get('/api/application/users')
-            .then(({ data }) => {
-                setUsers(data.data.map(Transformers.toUser));
-            })
-            .catch(console.error);
     }, []);
 
     const onRowChange = (user: User, checked: boolean) => {
@@ -30,8 +64,8 @@ const UsersContainerV2 = () => {
         });
     };
 
-    const selectAllChecked = users.length > 0 && selected.length > 0;
-    const onSelectAll = () => setSelected((state) => state.length > 0 ? [] : users.map(({ uuid }) => uuid));
+    const selectAllChecked = users && users.items.length > 0 && selected.length > 0;
+    const onSelectAll = () => setSelected((state) => state.length > 0 ? [] : users?.items.map(({ uuid }) => uuid) || []);
 
     return (
         <div>
@@ -44,7 +78,7 @@ const UsersContainerV2 = () => {
                 <div className={'mr-6'}>
                     <Checkbox
                         checked={selectAllChecked}
-                        indeterminate={selected.length !== users.length}
+                        indeterminate={selected.length !== users?.items.length}
                         onChange={onSelectAll}
                     />
                 </div>
@@ -61,7 +95,7 @@ const UsersContainerV2 = () => {
                         <div className={'flex-1'}>
                             <Checkbox
                                 checked={selectAllChecked}
-                                indeterminate={selected.length !== users.length}
+                                indeterminate={selected.length !== users?.items.length}
                                 onChange={onSelectAll}
                             />
                         </div>
@@ -87,7 +121,7 @@ const UsersContainerV2 = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {users.map(user => (
+                    {users?.items.map(user => (
                         <UserTableRow
                             key={user.uuid}
                             user={user}
@@ -96,9 +130,10 @@ const UsersContainerV2 = () => {
                         />
                     ))}
                 </tbody>
+                {users && <PaginationFooter span={4} pagination={users.pagination}/>}
             </table>
         </div>
     );
 };
 
-export default UsersContainerV2;
+export default UsersContainer;

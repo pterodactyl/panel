@@ -1,5 +1,6 @@
 import axios, { AxiosInstance } from 'axios';
 import { store } from '@/state';
+import { Model } from '@/api/definitions';
 
 const http: AxiosInstance = axios.create({
     timeout: 20000,
@@ -88,6 +89,20 @@ export interface FractalResponseList {
     data: FractalResponseData[];
 }
 
+export interface FractalPaginatedResponse extends FractalResponseList {
+    meta: {
+        pagination: {
+            total: number;
+            count: number;
+            /* eslint-disable camelcase */
+            per_page: number;
+            current_page: number;
+            total_pages: number;
+            /* eslint-enable camelcase */
+        };
+    };
+}
+
 export interface PaginatedResult<T> {
     items: T[];
     pagination: PaginationDataSet;
@@ -150,3 +165,13 @@ export const withQueryBuilderParams = (data?: QueryBuilderParams): Record<string
         sorts: !sorts.length ? undefined : sorts.join(','),
     };
 };
+
+type TransformerFunc = (data: FractalResponseData) => Model;
+
+export const toPaginatedSet = <T extends TransformerFunc> (
+    response: FractalPaginatedResponse,
+    transformer: T,
+): PaginatedResult<ReturnType<T>> => ({
+        items: response.data.map(transformer) as ReturnType<T>[],
+        pagination: getPaginationSet(response.meta.pagination),
+    });
