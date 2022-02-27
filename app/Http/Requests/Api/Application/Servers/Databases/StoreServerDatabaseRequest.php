@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers\Databases;
 
+use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
@@ -30,13 +31,20 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
         ];
     }
 
-    public function validated(): array
+    /**
+     * @param string|null $key
+     * @param string|array|null $default
+     * @return mixed
+     */
+    public function validated($key = null, $default = null)
     {
-        return [
+        $data = [
             'database' => $this->input('database'),
             'remote' => $this->input('remote'),
             'database_host_id' => $this->input('host'),
         ];
+
+        return is_null($key) ? $data : Arr::get($data, $key, $default);
     }
 
     public function attributes(): array

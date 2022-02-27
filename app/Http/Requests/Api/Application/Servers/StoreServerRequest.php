@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
@@ -43,11 +44,16 @@ class StoreServerRequest extends ApplicationApiRequest
         ];
     }
 
-    public function validated(): array
+    /**
+     * @param string|null $key
+     * @param string|array|null $default
+     * @return array
+     */
+    public function validated($key = null, $default = null)
     {
         $data = parent::validated();
 
-        return [
+        $response = [
             'external_id' => array_get($data, 'external_id'),
             'name' => array_get($data, 'name'),
             'description' => array_get($data, 'description'),
@@ -76,5 +82,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'skip_scripts' => array_get($data, 'skip_scripts'),
             'start_on_completion' => array_get($data, 'start_on_completion', false),
         ];
+
+        return is_null($key) ? $response : Arr::get($response, $key, $default);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 
@@ -52,9 +53,11 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
     /**
      * Convert the allocation field into the expected format for the service handler.
      *
-     * @return array
+     * @param string|null $key
+     * @param string|array|null $default
+     * @return mixed
      */
-    public function validated()
+    public function validated($key = null, $default = null)
     {
         $data = parent::validated();
 
@@ -71,6 +74,10 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             }
 
             unset($data['limits']);
+        }
+
+        if (!is_null($key)) {
+            return Arr::get($data, $key, $default);
         }
 
         return $data;
