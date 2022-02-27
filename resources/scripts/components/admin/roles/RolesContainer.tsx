@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from 'react';
-import getRoles, { Context as RolesContext, Filters } from '@/api/admin/roles/getRoles';
+import { getRoles, Context as RolesContext, Filters } from '@/api/admin/roles';
 import { AdminContext } from '@/state/admin';
 import NewRoleButton from '@/components/admin/roles/NewRoleButton';
 import FlashMessageRender from '@/components/FlashMessageRender';

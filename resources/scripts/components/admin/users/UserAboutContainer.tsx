@@ -1,4 +1,4 @@
-import updateUser, { Values } from '@/api/admin/users/updateUser';
+import { updateUser, UpdateUserValues } from '@/api/admin/users';
 import UserDeleteButton from '@/components/admin/users/UserDeleteButton';
 import UserForm from '@/components/admin/users/UserForm';
 import { Context } from '@/components/admin/users/UserRouter';
@@ -23,7 +23,7 @@ const UserAboutContainer = () => {
         );
     }
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = (values: UpdateUserValues, { setSubmitting }: FormikHelpers<UpdateUserValues>) => {
         clearFlashes('user');
 
         updateUser(user.id, values)
@@ -44,7 +44,7 @@ const UserAboutContainer = () => {
                 email: user.email,
                 adminRoleId: user.adminRoleId,
                 password: '',
-                rootAdmin: user.rootAdmin,
+                rootAdmin: user.isRootAdmin,
             }}
             onSubmit={submit}
             uuid={user.uuid}

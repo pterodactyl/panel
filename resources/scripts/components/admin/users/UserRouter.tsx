@@ -4,14 +4,14 @@ import { useLocation } from 'react-router';
 import tw from 'twin.macro';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import { action, Action, Actions, createContextStore, useStoreActions } from 'easy-peasy';
-import { User } from '@/api/admin/users/getUsers';
-import getUser from '@/api/admin/users/getUser';
+import { getUser } from '@/api/admin/users';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ApplicationStore } from '@/state';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
 import UserServers from '@/components/admin/users/UserServers';
+import { User } from '@definitions/admin';
 
 interface ctx {
     user: User | undefined;

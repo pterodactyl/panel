@@ -1,14 +1,14 @@
 import React, { useState } from 'react';
 import { useFormikContext } from 'formik';
-import { Role } from '@/api/admin/roles/getRoles';
-import searchRoles from '@/api/admin/roles/searchRoles';
+import { searchRoles } from '@/api/admin/roles';
 import SearchableSelect, { Option } from '@/components/elements/SearchableSelect';
+import { UserRole } from '@definitions/admin';
 
-export default ({ selected }: { selected: Role | null }) => {
+export default ({ selected }: { selected: UserRole | null }) => {
     const context = useFormikContext();
 
-    const [ role, setRole ] = useState<Role | null>(selected);
-    const [ roles, setRoles ] = useState<Role[] | null>(null);
+    const [ role, setRole ] = useState<UserRole | null>(selected);
+    const [ roles, setRoles ] = useState<UserRole[] | null>(null);
 
     const onSearch = (query: string): Promise<void> => {
         return new Promise((resolve, reject) => {
@@ -21,12 +21,12 @@ export default ({ selected }: { selected: Role | null }) => {
         });
     };
 
-    const onSelect = (role: Role | null) => {
+    const onSelect = (role: UserRole | null) => {
         setRole(role);
         context.setFieldValue('adminRoleId', role?.id || null);
     };
 
-    const getSelectedText = (role: Role | null): string | undefined => {
+    const getSelectedText = (role: UserRole | null): string | undefined => {
         return role?.name;
     };
 

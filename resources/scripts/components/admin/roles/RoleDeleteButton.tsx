@@ -1,7 +1,7 @@
 import { Actions, useStoreActions } from 'easy-peasy';
 import React, { useState } from 'react';
 import tw from 'twin.macro';
-import deleteRole from '@/api/admin/roles/deleteRole';
+import { deleteRole } from '@/api/admin/roles';
 import Button from '@/components/elements/Button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { ApplicationStore } from '@/state';

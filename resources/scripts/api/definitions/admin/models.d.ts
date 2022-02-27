@@ -23,7 +23,7 @@ interface User extends ModelWithRelationships {
 }
 
 interface UserRole extends ModelWithRelationships {
-    id: string;
+    id: number;
     name: string;
     description: string;
 }

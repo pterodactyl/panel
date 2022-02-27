@@ -5,13 +5,12 @@ import Label from '@/components/elements/Label';
 import React from 'react';
 import tw from 'twin.macro';
 import { action, Action, createContextStore } from 'easy-peasy';
-import { User } from '@/api/admin/users/getUsers';
+import { User, UserRole } from '@definitions/admin';
 import AdminBox from '@/components/admin/AdminBox';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { bool, object, string } from 'yup';
-import { Role } from '@/api/admin/roles/getRoles';
-import { Values } from '@/api/admin/users/updateUser';
+import { UpdateUserValues } from '@/api/admin/users';
 import Button from '@/components/elements/Button';
 import Field, { FieldRow } from '@/components/elements/Field';
 import RoleSelect from '@/components/admin/users/RoleSelect';
@@ -31,17 +30,17 @@ export const Context = createContextStore<ctx>({
 
 export interface Params {
     title: string;
-    initialValues?: Values;
+    initialValues?: UpdateUserValues;
     children?: React.ReactNode;
 
-    onSubmit: (values: Values, helpers: FormikHelpers<Values>) => void;
+    onSubmit: (values: UpdateUserValues, helpers: FormikHelpers<UpdateUserValues>) => void;
 
     uuid?: string;
-    role: Role | null;
+    role: UserRole | null;
 }
 
 export default function UserForm ({ title, initialValues, children, onSubmit, uuid, role }: Params) {
-    const submit = (values: Values, helpers: FormikHelpers<Values>) => {
+    const submit = (values: UpdateUserValues, helpers: FormikHelpers<UpdateUserValues>) => {
         onSubmit(values, helpers);
     };
 

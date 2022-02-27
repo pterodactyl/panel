@@ -7,14 +7,14 @@ import { useHistory } from 'react-router-dom';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { FormikHelpers } from 'formik';
-import createUser, { Values } from '@/api/admin/users/createUser';
+import { createUser, UpdateUserValues } from '@/api/admin/users';
 
 export default () => {
     const history = useHistory();
 
     const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = (values: UpdateUserValues, { setSubmitting }: FormikHelpers<UpdateUserValues>) => {
         clearFlashes('user:create');
 
         createUser(values)

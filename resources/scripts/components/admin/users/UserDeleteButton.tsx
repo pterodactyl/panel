@@ -4,7 +4,7 @@ import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import deleteUser from '@/api/admin/users/deleteUser';
+import { deleteUser } from '@/api/admin/users';
 
 interface Props {
     userId: number;

@@ -5,9 +5,7 @@ import { useHistory } from 'react-router';
 import { useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
 import { object, string } from 'yup';
-import { Role } from '@/api/admin/roles/getRoles';
-import getRole from '@/api/admin/roles/getRole';
-import updateRole from '@/api/admin/roles/updateRole';
+import { getRole, updateRole } from '@/api/admin/roles';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import AdminBox from '@/components/admin/AdminBox';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
@@ -17,10 +15,11 @@ import Field from '@/components/elements/Field';
 import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ApplicationStore } from '@/state';
+import { UserRole } from '@definitions/admin';
 
 interface ctx {
-    role: Role | undefined;
-    setRole: Action<ctx, Role | undefined>;
+    role: UserRole | undefined;
+    setRole: Action<ctx, UserRole | undefined>;
 }
 
 export const Context = createContextStore<ctx>({
@@ -39,7 +38,10 @@ interface Values {
 const EditInformationContainer = () => {
     const history = useHistory();
 
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const {
+        clearFlashes,
+        clearAndAddHttpError,
+    } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const role = Context.useStoreState(state => state.role);
     const setRole = Context.useStoreActions(actions => actions.setRole);
@@ -125,7 +127,10 @@ const EditInformationContainer = () => {
 const RoleEditContainer = () => {
     const match = useRouteMatch<{ id?: string }>();
 
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const {
+        clearFlashes,
+        clearAndAddHttpError,
+    } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const [ loading, setLoading ] = useState(true);
 
     const role = Context.useStoreState(state => state.role);

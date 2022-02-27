@@ -5,7 +5,7 @@ import { createContext } from '@/api/admin';
 import http, { FractalResponseData, FractalResponseList, getPaginationSet, PaginatedResult } from '@/api/http';
 import { Egg, rawDataToEgg } from '@/api/admin/eggs/getEgg';
 import { Node, rawDataToNode } from '@/api/admin/nodes/getNodes';
-import { User, rawDataToUser } from '@/api/admin/users/getUsers';
+import { Transformers, User } from '@definitions/admin';
 
 export interface ServerVariable {
     id: number;
@@ -132,7 +132,7 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server => 
         allocations: ((attributes.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(rawDataToAllocation),
         egg: attributes.relationships?.egg?.object === 'egg' ? rawDataToEgg(attributes.relationships.egg as FractalResponseData) : undefined,
         node: attributes.relationships?.node?.object === 'node' ? rawDataToNode(attributes.relationships.node as FractalResponseData) : undefined,
-        user: attributes.relationships?.user?.object === 'user' ? rawDataToUser(attributes.relationships.user as FractalResponseData) : undefined,
+        user: attributes.relationships?.user?.object === 'user' ? Transformers.toUser(attributes.relationships.user as FractalResponseData) : undefined,
         variables: ((attributes.relationships?.variables as FractalResponseList | undefined)?.data || []).map(rawDataToServerVariable),
     },
 }) as Server;
