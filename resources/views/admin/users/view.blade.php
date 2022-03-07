@@ -97,8 +97,8 @@
                         <label for="root_admin" class="control-label">Administrator</label>
                         <div>
                             <select name="root_admin" class="form-control">
-                                <option value="0">@lang('strings.no')</option>
-                                <option value="1" {{ $user->root_admin ? 'selected="selected"' : '' }}>@lang('strings.yes')</option>
+                                <option value="0">No</option>
+                                <option value="1" {{ $user->root_admin ? 'selected="selected"' : '' }}>Yes</option>
                             </select>
                             <p class="text-muted"><small>Setting this to 'Yes' gives a user full administrative access.</small></p>
                         </div>
