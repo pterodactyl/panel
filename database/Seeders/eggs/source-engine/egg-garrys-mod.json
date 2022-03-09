@@ -4,10 +4,10 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2022-01-18T07:04:20-05:00",
-    "name": "Garrys Mod",
-    "author": "support@pterodactyl.io",
-    "description": "Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios.",
+    "exported_at": "2022-03-09T13:08:34-07:00",
+    "name": "Garrys Mod x64",
+    "author": "wegj1@hotmail.com",
+    "description": "Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios. Now in x64",
     "features": [
         "gsl_token",
         "steam_disk_space"
@@ -16,7 +16,7 @@
         "ghcr.io\/pterodactyl\/games:source"
     ],
     "file_denylist": [],
-    "startup": ".\/srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}  $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' )",
+    "startup": ".\/srcds_run_x64 -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}  $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' )",
     "config": {
         "files": "{}",
         "startup": "{\r\n    \"done\": \"gameserver Steam ID\"\r\n}",
@@ -102,6 +102,15 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|boolean"
+        },
+        {
+            "name": "Extra Flags",
+            "description": "Updating it to x64",
+            "env_variable": "EXTRA_FLAGS",
+            "default_value": "-beta x86-64",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required"
         }
     ]
 }
