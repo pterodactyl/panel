@@ -1,40 +1,49 @@
 import { QueryBuilderParams } from '@/api/http';
 import splitStringWhitespace from '@/helpers/splitStringWhitespace';
 
-const extractSearchFilters = <T extends string, D extends string = string> (
+interface Options<D extends string = string> {
+    defaultFilter?: D;
+    splitUnmatched?: boolean;
+    returnUnmatched?: boolean;
+}
+
+const extractSearchFilters = <T extends string, D extends string = '*'> (
     str: string,
     params: Readonly<T[]>,
-    defaultFilter: D = '*' as D,
-): QueryBuilderParams<T> | QueryBuilderParams<D> => {
-    const filters: Map<T, string[]> = new Map();
+    options?: Options<D>,
+): QueryBuilderParams<T> | QueryBuilderParams<D> | QueryBuilderParams<T & D> => {
+    const opts: Required<Options<D>> = {
+        defaultFilter: options?.defaultFilter || '*' as D,
+        splitUnmatched: options?.splitUnmatched || false,
+        returnUnmatched: options?.returnUnmatched || false,
+    };
 
-    if (str.trim().length === 0) {
-        return { filters: {} };
-    }
+    const filters: Map<T, string[]> = new Map();
+    const unmatched: string[] = [];
 
     for (const segment of splitStringWhitespace(str)) {
         const parts = segment.split(':');
         const filter = parts[0] as T;
         const value = parts.slice(1).join(':');
-        // @ts-ignore
-        if (!filter || !value || !params.includes(filter)) {
-            continue;
+        if (!filter || (parts.length > 1 && filter && !value)) {
+            // do nothing
+        } else if (!params.includes(filter)) {
+            unmatched.push(segment);
+        } else {
+            filters.set(filter, [ ...(filters.get(filter) || []), value ]);
         }
+    }
 
-        filters.set(filter, [ ...(filters.get(filter) || []), value ]);
+    if (opts.returnUnmatched && str.trim().length > 0) {
+        filters.set(opts.defaultFilter as any, opts.splitUnmatched ? unmatched : [ unmatched.join(' ') ]);
     }
 
     if (filters.size === 0) {
-        return {
-            filters: {
-                [defaultFilter]: [ str ] as Readonly<string[]>,
-            } as unknown as QueryBuilderParams<D>['filters'],
-        };
+        return { filters: {} };
     }
 
-    return {
-        filters: Object.fromEntries(filters) as unknown as QueryBuilderParams<T>['filters'],
-    };
+    // @ts-expect-error
+    return { filters: Object.fromEntries(filters) };
 };
 
 export default extractSearchFilters;

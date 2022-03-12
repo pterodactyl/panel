@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Application\Users;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -49,20 +50,21 @@ class UserController extends ApplicationApiController
 
         $users = QueryBuilder::for(User::query())
             ->allowedFilters([
-                'id',
-                'uuid',
+                AllowedFilter::exact('id'),
+                AllowedFilter::exact('uuid'),
+                AllowedFilter::exact('external_id'),
                 'username',
                 'email',
-                'external_id',
-                AllowedFilter::callback('*', function (Builder $builder) use ($request) {
-                    $value = trim($request->input('filters.*'), '%');
-
-                    return $builder->where(function (Builder $builder) use ($value) {
-                        $builder->where('uuid', 'LIKE', $value . '%')
-                            ->orWhere('username', 'LIKE', $value . '%')
-                            ->orWhere('email', 'LIKE', $value . '%')
-                            ->orWhere('external_id', 'LIKE', $value . '%');
-                    });
+                AllowedFilter::callback('*', function (Builder $builder, $value) {
+                    foreach (Arr::wrap($value) as $datum) {
+                        $datum = '%' . $datum . '%';
+                        $builder->where(function (Builder $builder) use ($datum) {
+                            $builder->where('uuid', 'LIKE', $datum)
+                                ->orWhere('username', 'LIKE', $datum)
+                                ->orWhere('email', 'LIKE', $datum)
+                                ->orWhere('external_id', 'LIKE', $datum);
+                        });
+                    }
                 }),
             ])
             ->allowedSorts(['id', 'uuid', 'username', 'email', 'admin_role_id'])

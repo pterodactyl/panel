@@ -16,7 +16,10 @@ const filters = [ 'id', 'uuid', 'external_id', 'username', 'email' ] as const;
 const UsersContainer = () => {
     const [ search, setSearch ] = useDebouncedState('', 500);
     const [ selected, setSelected ] = useState<UUID[]>([]);
-    const { data: users } = useGetUsers(extractSearchFilters(search, filters));
+    const { data: users } = useGetUsers(extractSearchFilters(search, filters, {
+        splitUnmatched: true,
+        returnUnmatched: true,
+    }));
 
     useEffect(() => {
         document.title = 'Admin | Users';
