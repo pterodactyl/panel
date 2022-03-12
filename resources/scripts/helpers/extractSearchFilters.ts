@@ -3,7 +3,7 @@ import splitStringWhitespace from '@/helpers/splitStringWhitespace';
 
 const extractSearchFilters = <T extends string, D extends string = string> (
     str: string,
-    params: T[],
+    params: Readonly<T[]>,
     defaultFilter: D = '*' as D,
 ): QueryBuilderParams<T> | QueryBuilderParams<D> => {
     const filters: Map<T, string[]> = new Map();

@@ -1,5 +1,4 @@
-import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import { QueryBuilderParams } from '@/api/http';
+import React, { Fragment, useEffect, useState } from 'react';
 import { UUID } from '@/api/definitions';
 import { User } from '@definitions/admin';
 import { Transition } from '@/components/elements/transitions';
@@ -7,40 +6,17 @@ import { LockOpenIcon, PlusIcon, SupportIcon, TrashIcon } from '@heroicons/react
 import { Button } from '@/components/elements/button/index';
 import { Checkbox, InputField } from '@/components/elements/inputs';
 import UserTableRow from '@/components/admin/users/UserTableRow';
-import debounce from 'debounce';
 import { useGetUsers } from '@/api/admin/users';
 import TFootPaginated from '@/components/elements/table/TFootPaginated';
+import extractSearchFilters from '@/helpers/extractSearchFilters';
+import useDebouncedState from '@/plugins/useDebouncedState';
 
 const filters = [ 'id', 'uuid', 'external_id', 'username', 'email' ] as const;
-type Filters = typeof filters[number];
-
-const extractFiltersFromString = (str: string, params: (keyof Filters)[]): QueryBuilderParams => {
-    const filters: Partial<Record<string, string[]>> = {};
-
-    const parts = str.split(' ');
-    for (const segment of parts) {
-        const [ filter, value ] = segment.split(':', 2);
-        // @ts-ignore
-        if (!filter || !value || !params.includes(filter)) {
-            continue;
-        }
-
-        const key = filter as string;
-        filters[key] = [ ...(filters[key] || []), value ];
-    }
-
-    if (!Object.keys(filters).length) {
-        return { filters: { email: str } };
-    }
-
-    // @ts-ignore
-    return { filters };
-};
 
 const UsersContainer = () => {
-    const [ search, setSearch ] = useState('');
+    const [ search, setSearch ] = useDebouncedState('', 500);
     const [ selected, setSelected ] = useState<UUID[]>([]);
-    const { data: users } = useGetUsers(extractFiltersFromString(search, filters as unknown as (keyof Filters)[]));
+    const { data: users } = useGetUsers(extractSearchFilters(search, filters));
 
     useEffect(() => {
         document.title = 'Admin | Users';
@@ -55,10 +31,6 @@ const UsersContainer = () => {
     const selectAllChecked = users && users.items.length > 0 && selected.length > 0;
     const onSelectAll = () => setSelected((state) => state.length > 0 ? [] : users?.items.map(({ uuid }) => uuid) || []);
 
-    const setSearchTerm = useCallback(debounce((term: string) => {
-        setSearch(term);
-    }, 200), []);
-
     return (
         <div>
             <div className={'flex justify-end mb-4'}>
@@ -70,6 +42,7 @@ const UsersContainer = () => {
                 <div className={'mr-6'}>
                     <Checkbox
                         checked={selectAllChecked}
+                        disabled={!users?.items.length}
                         indeterminate={selected.length !== users?.items.length}
                         onChange={onSelectAll}
                     />
@@ -80,7 +53,7 @@ const UsersContainer = () => {
                         name={'filter'}
                         placeholder={'Begin typing to filter...'}
                         className={'w-56 focus:w-96'}
-                        onChange={e => setSearchTerm(e.currentTarget.value)}
+                        onChange={e => setSearch(e.currentTarget.value)}
                     />
                 </div>
                 <Transition.Fade as={Fragment} show={selected.length > 0} duration={'duration-75'}>
