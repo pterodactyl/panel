@@ -49,6 +49,7 @@
         "barryvdh/laravel-ide-helper": "^2.12.2",
         "fakerphp/faker": "^1.19.0",
         "friendsofphp/php-cs-fixer": "^3.0.0",
+        "itsgoingd/clockwork": "^5.1",
         "mockery/mockery": "^1.4.4",
         "nunomaduro/collision": "^6.1.0",
         "nunomaduro/larastan": "^1.0.3",
