@@ -1,58 +1,18 @@
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
-import http, {
-    FractalPaginatedResponse,
-    PaginatedResult,
-    PaginationDataSet,
-    QueryBuilderParams,
-    toPaginatedSet,
-    withQueryBuilderParams,
-} from '@/api/http';
+import { QueryBuilderParams } from '@/api/http';
 import { UUID } from '@/api/definitions';
-import { Transformers, User } from '@definitions/admin';
+import { User } from '@definitions/admin';
 import { Transition } from '@/components/elements/transitions';
 import { LockOpenIcon, PlusIcon, SupportIcon, TrashIcon } from '@heroicons/react/solid';
 import { Button } from '@/components/elements/button/index';
 import { Checkbox, InputField } from '@/components/elements/inputs';
 import UserTableRow from '@/components/admin/users/UserTableRow';
-import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
-import { AxiosError } from 'axios';
 import debounce from 'debounce';
+import { useGetUsers } from '@/api/admin/users';
+import TFootPaginated from '@/components/elements/table/TFootPaginated';
 
 const filters = [ 'id', 'uuid', 'external_id', 'username', 'email' ] as const;
 type Filters = typeof filters[number];
-
-const useGetUsers = (
-    params?: QueryBuilderParams<Filters>,
-    config?: SWRConfiguration,
-): SWRResponse<PaginatedResult<User>, AxiosError> => {
-    return useSWR<PaginatedResult<User>>([ '/api/application/users', JSON.stringify(params) ], async () => {
-        const { data } = await http.get<FractalPaginatedResponse>(
-            '/api/application/users',
-            { params: withQueryBuilderParams(params) },
-        );
-
-        return toPaginatedSet(data, Transformers.toUser);
-    }, config || { revalidateOnMount: true, revalidateOnFocus: false });
-};
-
-const PaginationFooter = ({ pagination, span }: { span: number; pagination: PaginationDataSet }) => {
-    const start = (pagination.currentPage - 1) * pagination.perPage;
-    const end = ((pagination.currentPage - 1) * pagination.perPage) + pagination.count;
-
-    return (
-        <tfoot>
-            <tr className={'bg-neutral-800'}>
-                <td scope={'col'} colSpan={span} className={'px-4 py-2'}>
-                    <p className={'text-sm text-neutral-500'}>
-                        Showing <span className={'font-semibold text-neutral-400'}>{Math.max(start, Math.min(pagination.total, 1))}</span> to&nbsp;
-                        <span className={'font-semibold text-neutral-400'}>{end}</span> of&nbsp;
-                        <span className={'font-semibold text-neutral-400'}>{pagination.total}</span> results.
-                    </p>
-                </td>
-            </tr>
-        </tfoot>
-    );
-};
 
 const extractFiltersFromString = (str: string, params: (keyof Filters)[]): QueryBuilderParams => {
     const filters: Partial<Record<string, string[]>> = {};
@@ -163,7 +123,7 @@ const UsersContainer = () => {
                         />
                     ))}
                 </tbody>
-                {users && <PaginationFooter span={4} pagination={users.pagination}/>}
+                {users && <TFootPaginated span={4} pagination={users.pagination}/>}
             </table>
         </div>
     );

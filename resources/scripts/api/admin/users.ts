@@ -1,5 +1,12 @@
-import http, { QueryBuilderParams, withQueryBuilderParams } from '@/api/http';
+import http, {
+    FractalPaginatedResponse,
+    PaginatedResult,
+    QueryBuilderParams, toPaginatedSet,
+    withQueryBuilderParams,
+} from '@/api/http';
 import { Transformers, User } from '@definitions/admin';
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
+import { AxiosError } from 'axios';
 
 export interface UpdateUserValues {
     externalId: string;
@@ -9,6 +16,23 @@ export interface UpdateUserValues {
     adminRoleId: number | null;
     rootAdmin: boolean;
 }
+
+const filters = [ 'id', 'uuid', 'external_id', 'username', 'email' ] as const;
+type Filters = typeof filters[number];
+
+const useGetUsers = (
+    params?: QueryBuilderParams<Filters>,
+    config?: SWRConfiguration,
+): SWRResponse<PaginatedResult<User>, AxiosError> => {
+    return useSWR<PaginatedResult<User>>([ '/api/application/users', JSON.stringify(params) ], async () => {
+        const { data } = await http.get<FractalPaginatedResponse>(
+            '/api/application/users',
+            { params: withQueryBuilderParams(params) },
+        );
+
+        return toPaginatedSet(data, Transformers.toUser);
+    }, config || { revalidateOnMount: true, revalidateOnFocus: false });
+};
 
 const getUser = (id: number, include: string[] = []): Promise<User> => {
     return new Promise((resolve, reject) => {
@@ -66,6 +90,7 @@ const deleteUser = (id: number): Promise<void> => {
 };
 
 export {
+    useGetUsers,
     getUser,
     searchUserAccounts,
     createUser,
