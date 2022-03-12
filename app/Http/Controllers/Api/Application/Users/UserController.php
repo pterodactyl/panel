@@ -6,6 +6,8 @@ use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
+use Spatie\QueryBuilder\AllowedFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
@@ -46,7 +48,23 @@ class UserController extends ApplicationApiController
         }
 
         $users = QueryBuilder::for(User::query())
-            ->allowedFilters(['id', 'uuid', 'username', 'email', 'external_id'])
+            ->allowedFilters([
+                'id',
+                'uuid',
+                'username',
+                'email',
+                'external_id',
+                AllowedFilter::callback('*', function (Builder $builder) use ($request) {
+                    $value = trim($request->input('filters.*'), '%');
+
+                    return $builder->where(function (Builder $builder) use ($value) {
+                        $builder->where('uuid', 'LIKE', $value . '%')
+                            ->orWhere('username', 'LIKE', $value . '%')
+                            ->orWhere('email', 'LIKE', $value . '%')
+                            ->orWhere('external_id', 'LIKE', $value . '%');
+                    });
+                }),
+            ])
             ->allowedSorts(['id', 'uuid', 'username', 'email', 'admin_role_id'])
             ->paginate($perPage);
 
