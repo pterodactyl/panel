@@ -104,7 +104,8 @@ class RunTaskJob extends Job implements ShouldQueue
     {
         /** @var \Pterodactyl\Models\Task|null $nextTask */
         $nextTask = Task::query()->where('schedule_id', $this->task->schedule_id)
-            ->where('sequence_id', $this->task->sequence_id + 1)
+            ->orderBy('sequence_id', 'asc')
+            ->where('sequence_id', '>', $this->task->sequence_id)
             ->first();
 
         if (is_null($nextTask)) {
