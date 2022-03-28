@@ -12,6 +12,7 @@ namespace Pterodactyl\Console\Commands\Environment;
 use DateTimeZone;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\Validation\Factory as ValidatorFactory;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
@@ -78,12 +79,13 @@ class AppSettingsCommand extends Command
     /**
      * AppSettingsCommand constructor.
      */
-    public function __construct(ConfigRepository $config, Kernel $command)
+    public function __construct(ConfigRepository $config, Kernel $command, ValidatorFactory $validator)
     {
         parent::__construct();
 
-        $this->command = $command;
         $this->config = $config;
+        $this->command = $command;
+        $this->validator = $validator;
     }
 
     /**
@@ -102,6 +104,18 @@ class AppSettingsCommand extends Command
             trans('command/messages.environment.app.author'),
             $this->config->get('pterodactyl.service.author', 'unknown@unknown.com')
         );
+
+        $validator = $this->validator->make(
+            ['email' => $this->variables['APP_SERVICE_AUTHOR']],
+            ['email' => 'email']
+        );
+
+        if ($validator->fails()) {
+            foreach ($validator->errors()->all() as $error) {
+                $this->output->error($error);
+            }
+            return 1;
+        }
 
         $this->output->comment(trans('command/messages.environment.app.app_url_help'));
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(

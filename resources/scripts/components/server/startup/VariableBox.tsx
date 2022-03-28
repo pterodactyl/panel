@@ -4,12 +4,14 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
 import InputSpinner from '@/components/elements/InputSpinner';
 import Input from '@/components/elements/Input';
+import Switch from '@/components/elements/Switch';
 import tw from 'twin.macro';
 import { debounce } from 'debounce';
 import updateStartupVariable from '@/api/server/updateStartupVariable';
 import useFlash from '@/plugins/useFlash';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import getServerStartup from '@/api/swr/getServerStartup';
+import Select from '@/components/elements/Select';
 import isEqual from 'react-fast-compare';
 import { ServerContext } from '@/state/server';
 
@@ -43,6 +45,9 @@ const VariableBox = ({ variable }: Props) => {
             .then(() => setLoading(false));
     }, 500);
 
+    const useSwitch = variable.rules.some(v => v === 'boolean' || v === 'in:0,1');
+    const selectValues = variable.rules.find(v => v.startsWith('in:'))?.split(',') || [];
+
     return (
         <TitledGreyBox
             title={
@@ -56,17 +61,52 @@ const VariableBox = ({ variable }: Props) => {
         >
             <FlashMessageRender byKey={FLASH_KEY} css={tw`mb-2 md:mb-4`}/>
             <InputSpinner visible={loading}>
-                <Input
-                    onKeyUp={e => {
-                        if (canEdit && variable.isEditable) {
-                            setVariableValue(e.currentTarget.value);
+                {useSwitch ?
+                    <>
+                        <Switch
+                            readOnly={!canEdit || !variable.isEditable}
+                            name={variable.envVariable}
+                            defaultChecked={variable.serverValue === '1'}
+                            onChange={() => {
+                                if (canEdit && variable.isEditable) {
+                                    setVariableValue(variable.serverValue === '1' ? '0' : '1');
+                                }
+                            }}
+                        />
+                    </>
+                    :
+                    <>
+                        {selectValues.length > 0 ?
+                            <>
+                                <Select
+                                    onChange={e => setVariableValue(e.target.value)}
+                                    name={variable.envVariable}
+                                    defaultValue={variable.serverValue}
+                                    disabled={!canEdit || !variable.isEditable}
+                                >
+                                    {selectValues.map(selectValue => (
+                                        <option key={selectValue.replace('in:', '')} value={selectValue.replace('in:', '')}>{selectValue.replace('in:', '')}</option>
+                                    ))}
+                                </Select>
+
+                            </>
+                            :
+                            <>
+                                <Input
+                                    onKeyUp={e => {
+                                        if (canEdit && variable.isEditable) {
+                                            setVariableValue(e.currentTarget.value);
+                                        }
+                                    }}
+                                    readOnly={!canEdit || !variable.isEditable}
+                                    name={variable.envVariable}
+                                    defaultValue={variable.serverValue}
+                                    placeholder={variable.defaultValue}
+                                />
+                            </>
                         }
-                    }}
-                    readOnly={!canEdit || !variable.isEditable}
-                    name={variable.envVariable}
-                    defaultValue={variable.serverValue}
-                    placeholder={variable.defaultValue}
-                />
+                    </>
+                }
             </InputSpinner>
             <p css={tw`mt-1 text-xs text-neutral-300`}>
                 {variable.description}

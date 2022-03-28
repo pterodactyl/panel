@@ -19,7 +19,7 @@ module.exports = {
         path: path.join(__dirname, '/public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
         chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[hash:8].js',
-        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
+        publicPath: (process.env.WEBPACK_PUBLIC_PATH || '/assets/'),
         crossOriginLoading: 'anonymous',
     },
     module: {
@@ -115,7 +115,7 @@ module.exports = {
     devServer: {
         compress: true,
         contentBase: path.join(__dirname, '/public'),
-        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
+        publicPath: process.env.WEBPACK_PUBLIC_PATH || '/assets/',
         allowedHosts: [
             '.pterodactyl.test',
         ],

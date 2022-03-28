@@ -3,6 +3,87 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.7.0
+### Fixed
+* Fixes typo in message shown to user when deleting a database.
+* Fixes formatting of IPv6 addresses when displaying allocations to users.
+* Fixes an exception thrown while trying to return error messages from API endpoints that inproperly masked the true underlying error.
+* Fixes SSL certificate path generation for Let's Encrypt by ensuring they are always transformed to lowercase.
+* Removes duplicate entries when creating a nested folder in the file manager.
+* Fixes missing validation of Egg Author email addresses during the setup process that could cause unexpected failures later on.
+* Fixes font rendering issues of the console on Firefox due to an outdated version of xterm.js being used.
+* Fixes display overlap issues of the two-factor configuration form in a user's settings.
+* **[security]** When authenticating using an API key a user session is now only persisted for the duration of the request before being destroyed.
+
+### Changed
+* CPU graph changed to show the maximum amount of CPU available to a server to better match how the memory graph is displayed.
+
+### Added
+* Adds support for `DB_PORT` environment variable in the Docker enterpoint for the Panel image.
+* Adds suport for ARM environments in the Docker image.
+* Adds a new warning modal for Steam servers shown when an invalid Game Server Login Token (GSL Token) is detected.
+* Adds a new warning modal for Steam servers shown when the installation process runs out of available disk space.
+* Adds a new warning modal for Minecraft servers shown when a server exceeds the maximum number of child processes.
+* Adds support for displaying certain server variable fields as a checkbox when they're detected as using `boolean` or `in:0,1` validation rules.
+* Adds support for Pug and Jade in the file editor.
+* Adds an entry to the `robots.txt` file to correctly disallow all bot indexing.
+
+
+## v1.6.6
+### Fixed
+* **[security]** Fixes a CSRF vulnerability for both the administrative test email endpoint and node auto-deployment token generation endpoint. [GHSA-wwgq-9jhf-qgw6](https://github.com/pterodactyl/panel/security/advisories/GHSA-wwgq-9jhf-qgw6)
+
+### Changed
+* Updates Minecraft eggs to include latest Java 17 yolk by default.
+
+## v1.6.5
+### Fixed
+* Fixes broken application API endpoints due to changes introduced with session management in 1.6.4.
+
+## v1.6.4
+_This release should not be used, please use `1.6.5`. It has been pulled from our releases._
+
+### Fixed
+* Fixes a session management bug that would cause a user who signs out of one browser to be unintentionally logged out of other browser sessions when using the client API.
+
+## v1.6.3
+### Fixed
+* **[Security]** Changes logout endpoint to be a POST request with CSRF-token validation to prevent a malicious actor from triggering a user logout.
+* Fixes Wings receiving the wrong server suspension state when syncing servers.
+
+### Added
+* Adds additional throttling to login and password reset endpoints.
+* Adds server uptime display when viewing a server console.
+
+## v1.6.2
+### Fixed
+* **[Security]** Fixes an authentication bypass vulerability that could allow a malicious actor to login as another user in the Panel without knowing that user's email or password.
+
+## v1.6.1
+### Fixed
+* Fixes server build modifications not being properly persisted to the database when edited.
+* Correctly exposes the `oom_disabled` field in the `build` limits block for a server build so that Wings can pick it up.
+* 
+## v1.6.0
+### Fixed
+* Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
+* Fixes user password updates not correctly logging the user out and returning a failure message even upon successful update.
+* Fixes the count of used backups when browsing a paginated backup list for a server.
+* Fixes an error being triggered when API endpoints are called with no `User-Agent` header and an audit log is generated for the action.
+* Fixes state management on the frontend not properly resetting the loading indicator when adding subusers to a server.
+* Fixes extraneous API calls being made to Wings for the server file listing when not on a file manager screen.
+
+### Added
+* Adds foreign key relationship on the `mount_node`, `mount_server` and `egg_mount` tables.
+* Adds environment variable `PER_SCHEDULE_TASK_LIMIT` to allow manual overrides for the number of tasks that can exist on a single schedule. This is currently defaulted to `10`.
+* OOM killer can now be configured at the time of server creation.
+
+### Changed
+* Server updates are not dependent on a successful call to Wings occurring — if the API call fails internally the error will be logged but the server update will still be persisted.
+
+### Removed
+* Removed `WingsServerRepository::update()` function — if you were previously using this to modify server elements on Wings please replace calls to it with `::sync()` after updating Wings.
+
 ## v1.5.1
 ### Fixed
 * Fixes Docker image 404ing instead of being able to access the Panel.

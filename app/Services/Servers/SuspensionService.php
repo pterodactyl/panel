@@ -58,15 +58,20 @@ class SuspensionService
             throw new ConflictHttpException('Cannot toggle suspension status on a server that is currently being transferred.');
         }
 
-        $this->connection->transaction(function () use ($action, $server, $isSuspending) {
-            $server->update([
-                'status' => $isSuspending ? Server::STATUS_SUSPENDED : null,
-            ]);
+        // Update the server's suspension status.
+        $server->update([
+            'status' => $isSuspending ? Server::STATUS_SUSPENDED : null,
+        ]);
 
-            // Only send the suspension request to wings if the server is not currently being transferred.
-            if (is_null($server->transfer)) {
-                $this->daemonServerRepository->setServer($server)->suspend($action === self::ACTION_UNSUSPEND);
-            }
-        });
+        try {
+            // Tell wings to re-sync the server state.
+            $this->daemonServerRepository->setServer($server)->sync();
+        } catch (\Exception $exception) {
+            // Rollback the server's suspension status if wings fails to sync the server.
+            $server->update([
+                'status' => $isSuspending ? null : Server::STATUS_SUSPENDED,
+            ]);
+            throw $exception;
+        }
     }
 }

@@ -127,7 +127,7 @@ class UserController extends Controller
     public function delete(Request $request, User $user)
     {
         if ($request->user()->id === $user->id) {
-            throw new DisplayException($this->translator->trans('admin/user.exceptions.user_has_servers'));
+            throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
         }
 
         $this->deletionService->handle($user);
