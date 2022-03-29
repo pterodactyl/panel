@@ -8,22 +8,23 @@ import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 interface Values {
     email: string;
     password: string;
 }
 
-const schema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    password: Yup.string().required('You must provide your current account password.'),
-});
-
-export default () => {
+const UpdateEmailAddressForm = ({ t }: WithTranslation) => {
     const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
     const updateEmail = useStoreActions((state: Actions<ApplicationStore>) => state.user.updateUserEmail);
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+
+    const schema = Yup.object().shape({
+        email: Yup.string().email(t('account:email.valid')).required(t('account:email.required')),
+        password: Yup.string().required(t('account:password.required')),
+    });
 
     const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('account:email');
@@ -32,12 +33,12 @@ export default () => {
             .then(() => addFlash({
                 type: 'success',
                 key: 'account:email',
-                message: 'Your primary email has been updated.',
+                message: t('account:email.updated'),
             }))
             .catch(error => addFlash({
                 type: 'error',
                 key: 'account:email',
-                title: 'Error',
+                title: t('elements:error'),
                 message: httpErrorToHuman(error),
             }))
             .then(() => {
@@ -61,19 +62,19 @@ export default () => {
                                 id={'current_email'}
                                 type={'email'}
                                 name={'email'}
-                                label={'Email'}
+                                label={t('elements:email')}
                             />
                             <div css={tw`mt-6`}>
                                 <Field
                                     id={'confirm_password'}
                                     type={'password'}
                                     name={'password'}
-                                    label={'Confirm Password'}
+                                    label={t('account:password.confirm')}
                                 />
                             </div>
                             <div css={tw`mt-6`}>
                                 <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                    Update Email
+                                    {t('account:email.update')}
                                 </Button>
                             </div>
                         </Form>
@@ -83,3 +84,5 @@ export default () => {
         </Formik>
     );
 };
+
+export default withTranslation([ 'elements', 'account' ])(UpdateEmailAddressForm);

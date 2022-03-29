@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { RouteComponentProps } from 'react-router';
 import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
 import performPasswordReset from '@/api/auth/performPasswordReset';
@@ -13,15 +12,17 @@ import Field from '@/components/elements/Field';
 import Input from '@/components/elements/Input';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { useParams } from 'react-router';
 
 interface Values {
     password: string;
     passwordConfirmation: string;
 }
 
-export default ({ match, location }: RouteComponentProps<{ token: string }>) => {
+const ResetPasswordContainer = ({ t }: WithTranslation) => {
     const [ email, setEmail ] = useState('');
-
+    const { token } = useParams<{ token: string }>();
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const parsed = parse(location.search);
@@ -31,7 +32,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
 
     const submit = ({ password, passwordConfirmation }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
-        performPasswordReset(email, { token: match.params.token, password, passwordConfirmation })
+        performPasswordReset(email, { token, password, passwordConfirmation })
             .then(() => {
                 // @ts-ignore
                 window.location = '/';
@@ -40,7 +41,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: t('elements:error'), message: httpErrorToHuman(error) });
             });
     };
 
@@ -52,36 +53,36 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 passwordConfirmation: '',
             }}
             validationSchema={object().shape({
-                password: string().required('A new password is required.')
-                    .min(8, 'Your new password should be at least 8 characters in length.'),
+                password: string().required(t('auth:password.valid'))
+                    .min(8, t('auth:password.valid')),
                 passwordConfirmation: string()
-                    .required('Your new password does not match.')
+                    .required(t('auth:password.confirm_failed'))
                     // @ts-ignore
-                    .oneOf([ ref('password'), null ], 'Your new password does not match.'),
+                    .oneOf([ ref('password'), null ], t('auth:password.confirm_failed')),
             })}
         >
             {({ isSubmitting }) => (
                 <LoginFormContainer
-                    title={'Reset Password'}
+                    title={t('auth:password.reset.title')}
                     css={tw`w-full flex`}
                 >
                     <div>
-                        <label>Email</label>
+                        <label>{t('elements:email')}</label>
                         <Input value={email} isLight disabled/>
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={'New Password'}
+                            label={t('auth:password.reset.new_password')}
                             name={'password'}
                             type={'password'}
-                            description={'Passwords must be at least 8 characters in length.'}
+                            description={t('auth:password.valid')}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={'Confirm New Password'}
+                            label={t('auth:password.confirm')}
                             name={'passwordConfirmation'}
                             type={'password'}
                         />
@@ -93,7 +94,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Reset Password
+                            {t('auth:password.reset.title')}
                         </Button>
                     </div>
                     <div css={tw`mt-6 text-center`}>
@@ -101,7 +102,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            Return to Login
+                            {t('auth:return_to_login')}
                         </Link>
                     </div>
                 </LoginFormContainer>
@@ -109,3 +110,5 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
         </Formik>
     );
 };
+
+export default withTranslation([ 'auth', 'elements' ])(ResetPasswordContainer);

@@ -1,0 +1,61 @@
+{
+  "2fa": {
+    "dashboard_title": "Configure Two Factor",
+    "dashboard_desc_enabled": "Two-factor authentication is currently enabled on your account",
+    "dashboard_desc_disabled": "You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.",
+    "disable_password_desc": "In order to disable two-factor authentication you will need to provide your account password.",
+    "forced_title": "2-Factor Required",
+    "forced_desc": "Your account must have two-factor authentication enabled in order to continue.",
+    "setup": {
+      "input_title": "Code From Authenticator",
+      "input_desc": "Enter the code from your authenticator device after scanning the QR image.",
+      "qr_alternative_desc": "Alternatively, enter the following token into your authenticator application:",
+      "enabled_title": "Two-factor authentication enabled",
+      "enabled_desc": "Two-factor authentication has been enabled on your account. Should you lose access to your authenticator device, you'll need to use one of the codes displayed below in order to access your account.",
+      "store_securely": "<bold>These codes will not be displayed again.</bold> Please take note of them now by storing them in a secure repository such as a password manager."
+    },
+    "validation": {
+      "code_required": "You must provide an authentication code to continue.",
+      "code_length": "Authenticator code must be 6 digits."
+    }
+  },
+
+  "api": {
+    "page_title": "Account API",
+    "create": "Create API Key",
+    "required": "You must provide a description in order to continue",
+    "valid": "Your description must be at least 4 characters in length",
+    "title": "API Keys",
+    "delete_title": "Confirm key deletion",
+    "delete_button": "Yes, delete key",
+    "delete_desc": "Confirm key deletion",
+    "no_keys": "No API keys exist for this account.",
+    "last_used": "Last used: ",
+    "new_title": "Your API Key",
+    "new_desc": "The API key you have requested is shown below. Please store this in a safe location, it will not be shown again.",
+    "key_desc": "Are you sure you wish to delete this API key? All requests using it will immediately be invalidated and will fail.",
+    "allowed_ips_title": "Allowed IPs",
+    "allowed_ips_desc": "Leave blank to allow any IP address to use this API key, otherwise provide each IP address on a new line."
+  },
+
+  "password": {
+    "update": "Update Password",
+    "required": "You must provide your current password in order to continue.",
+    "confirm": "Confirm Password",
+    "confirm_failed": "Password confirmation does not match the password you entered.",
+    "current": "Current Password",
+    "new": "New Password",
+    "new_desc": "Your new password should be at least 8 characters in length and unique to this website.",
+    "new_confirm": "Confirm New Password",
+    "valid": "Your new password must be at least 8 characters in length"
+  },
+
+  "email": {
+    "update": "Update Email Address",
+    "updated": "Your primary email has been updated.",
+    "required": "You must provide an email address in order to continue",
+    "valid": "You must provide an valid email address in order to continue"
+  },
+
+  "page_title": "Account Overview"
+}

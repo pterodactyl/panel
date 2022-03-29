@@ -9,6 +9,7 @@ import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
+import { withTranslation, WithTranslation } from 'react-i18next';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -26,29 +27,36 @@ const Container = styled.div`
   }
 `;
 
-export default () => {
+const AccountOverviewContainer = ({ t }: WithTranslation) => {
     const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
 
     return (
-        <PageContentBlock title={'Account Overview'}>
+        <PageContentBlock title={t('page_title')}>
             {state?.twoFactorRedirect &&
-            <MessageBox title={'2-Factor Required'} type={'error'}>
-                Your account must have two-factor authentication enabled in order to continue.
+            <MessageBox title={t('2fa.forced_title')} type={'error'}>
+                {t('2fa.forced_desc')}
             </MessageBox>
             }
+            <Container css={[ tw`mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
+                <ContentBox title={t('password.update')} showFlashes={'account:password'}>
+                    <UpdatePasswordForm/>
+                </ContentBox>
+                <ContentBox
+                    css={tw`mt-8 md:mt-0 md:ml-8`}
+                    title={t('email.update')}
 
             <Container css={[ tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
-                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
+                <ContentBox title={t('password.update')} showFlashes={'account:password'}>
                     <UpdatePasswordForm/>
                 </ContentBox>
                 <ContentBox
                     css={tw`mt-8 sm:mt-0 sm:ml-8`}
-                    title={'Update Email Address'}
+                    title={t('email.update')}
                     showFlashes={'account:email'}
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={'Configure Two Factor'}>
+                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={t('2fa.dashboard_title'}>
                     <ConfigureTwoFactorForm/>
                 </ContentBox>
             </Container>
@@ -56,3 +64,5 @@ export default () => {
         </PageContentBlock>
     );
 };
+
+export default withTranslation('account')(AccountOverviewContainer);

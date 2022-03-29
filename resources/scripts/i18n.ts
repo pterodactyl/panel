@@ -1,32 +1,28 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import LocalStorageBackend from 'i18next-localstorage-backend';
-import XHR from 'i18next-xhr-backend';
-import Backend from 'i18next-chained-backend';
+import { WebpackBackend } from 'i18next-webpack-backend';
 
-i18n
-    .use(Backend)
-    .use(initReactI18next)
-    .init({
-        debug: process.env.NODE_ENV !== 'production',
-        lng: 'en',
-        fallbackLng: 'en',
-        keySeparator: '.',
-        backend: {
-            backends: [
-                LocalStorageBackend,
-                XHR,
-            ],
-            backendOptions: [ {
-                prefix: 'pterodactyl_lng__',
-                expirationTime: 7 * 24 * 60 * 60 * 1000, // 7 days, in milliseconds
-                store: window.localStorage,
-            }, {
-                loadPath: '/locales/{{lng}}/{{ns}}.json',
-            } ],
-        },
-    });
+// Fixes issue with module not loading due to incorrect typings.
+//
+// @see https://github.com/i18next/i18next/pull/1442
+// @see https://github.com/i18next/i18next/issues/1440#issuecomment-621654219
+class FixedWebpackBackend extends WebpackBackend {
+    static readonly type: 'backend' = 'backend';
+}
 
-// i18n.loadNamespaces(['validation']);
+i18n.use(initReactI18next).use(FixedWebpackBackend).init({
+    lng: 'test-lng',
+    fallbackLng: 'en-us',
+    ns: [ 'en-us', 'test-lng' ],
+    debug: process.env.NODE_ENV !== 'production',
+    lowerCaseLng: true,
+    keySeparator: '.',
+    interpolation: {
+        escapeValue: false,
+    },
+    backend: {
+        context: require.context('./locales', true, /\.json$/, 'lazy-once'),
+    },
+});
 
 export default i18n;

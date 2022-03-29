@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import login from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStoreState } from 'easy-peasy';
@@ -10,14 +10,17 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
+import { withTranslation, WithTranslation } from 'react-i18next';
+import { useHistory } from 'react-router';
 
 interface Values {
     username: string;
     password: string;
 }
 
-const LoginContainer = ({ history }: RouteComponentProps) => {
+const LoginContainer = ({ t }: WithTranslation) => {
     const ref = useRef<Reaptcha>(null);
+    const { replace } = useHistory();
     const [ token, setToken ] = useState('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -51,7 +54,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     return;
                 }
 
-                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                replace('/auth/login/checkpoint', { token: response.confirmationToken });
             })
             .catch(error => {
                 console.error(error);
@@ -69,16 +72,16 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             onSubmit={onSubmit}
             initialValues={{ username: '', password: '' }}
             validationSchema={object().shape({
-                username: string().required('A username or email must be provided.'),
-                password: string().required('Please enter your account password.'),
+                username: string().required(t('auth:login.username_required')),
+                password: string().required(t('auth:password.required')),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
+                <LoginFormContainer title={t('auth:login.title')} css={tw`w-full flex`}>
                     <Field
                         light
                         type={'text'}
-                        label={'Username or Email'}
+                        label={t('auth:login.username')}
                         name={'username'}
                         disabled={isSubmitting}
                     />
@@ -86,14 +89,14 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         <Field
                             light
                             type={'password'}
-                            label={'Password'}
+                            label={t('elements:password')}
                             name={'password'}
                             disabled={isSubmitting}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
-                            Login
+                            {t('auth:login.login')}
                         </Button>
                     </div>
                     {recaptchaEnabled &&
@@ -116,7 +119,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             to={'/auth/password'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            Forgot password?
+                            {t('auth:login.forgot_password')}
                         </Link>
                     </div>
                 </LoginFormContainer>
@@ -125,4 +128,4 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
     );
 };
 
-export default LoginContainer;
+export default withTranslation([ 'auth', 'elements' ])(LoginContainer);

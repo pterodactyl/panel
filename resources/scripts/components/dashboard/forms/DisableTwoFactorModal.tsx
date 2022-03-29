@@ -8,6 +8,7 @@ import { ApplicationStore } from '@/state';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { withTranslation, WithTranslation } from 'react-i18next';
 import asModal from '@/hoc/asModal';
 import ModalContext from '@/context/ModalContext';
 
@@ -15,7 +16,7 @@ interface Values {
     password: string;
 }
 
-const DisableTwoFactorModal = () => {
+const DisableTwoFactorModal = ({ t }: WithTranslation) => {
     const { dismiss, setPropOverrides } = useContext(ModalContext);
     const { clearAndAddHttpError } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const updateUserData = useStoreActions((actions: Actions<ApplicationStore>) => actions.user.updateUserData);
@@ -43,7 +44,7 @@ const DisableTwoFactorModal = () => {
                 password: '',
             }}
             validationSchema={object().shape({
-                password: string().required('You must provide your current password in order to continue.'),
+                password: string().required(t('account:password.required')),
             })}
         >
             {({ isValid }) => (
@@ -53,13 +54,13 @@ const DisableTwoFactorModal = () => {
                         id={'password'}
                         name={'password'}
                         type={'password'}
-                        label={'Current Password'}
-                        description={'In order to disable two-factor authentication you will need to provide your account password.'}
+                        label={t('account:password.current')}
+                        description={t('account:2fa.disable_password_desc')}
                         autoFocus
                     />
                     <div css={tw`mt-6 text-right`}>
                         <Button color={'red'} disabled={!isValid}>
-                            Disable Two-Factor
+                            {t('elements:disable')}
                         </Button>
                     </div>
                 </Form>
@@ -68,4 +69,4 @@ const DisableTwoFactorModal = () => {
     );
 };
 
-export default asModal()(DisableTwoFactorModal);
+export default asModal()(withTranslation([ 'elements', 'account' ])(DisableTwoFactorModal));
