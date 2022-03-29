@@ -139,7 +139,7 @@ export default () => {
                         </div>
                         <div css={tw`bg-neutral-700 rounded-b`}>
                             {schedule.tasks.length > 0 ?
-                                schedule.tasks.map(task => (
+                                schedule.tasks.sort((a, b) => a.sequenceId === b.sequenceId ? 0 : (a.sequenceId > b.sequenceId ? 1 : -1)).map(task => (
                                     <ScheduleTaskRow key={`${schedule.id}_${task.id}`} task={task} schedule={schedule}/>
                                 ))
                                 :
