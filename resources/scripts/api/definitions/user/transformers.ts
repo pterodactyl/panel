@@ -2,7 +2,7 @@ import * as Models from './models';
 import { FractalResponseData, FractalResponseList } from '@/api/http';
 
 export default class Transformers {
-    static toSecurityKey ({ attributes }: FractalResponseData): Models.SecurityKey {
+    static toSecurityKey = ({ attributes }: FractalResponseData): Models.SecurityKey => {
         return {
             uuid: attributes.uuid,
             name: attributes.name,
@@ -13,7 +13,7 @@ export default class Transformers {
         };
     }
 
-    static toPersonalAccessToken ({ attributes }: FractalResponseData): Models.PersonalAccessToken {
+    static toPersonalAccessToken = ({ attributes }: FractalResponseData): Models.PersonalAccessToken => {
         return {
             identifier: attributes.token_id,
             description: attributes.description,
@@ -23,7 +23,7 @@ export default class Transformers {
         };
     }
 
-    static toServerAllocation ({ attributes }: FractalResponseData): Models.Allocation {
+    static toServerAllocation = ({ attributes }: FractalResponseData): Models.Allocation => {
         return {
             id: attributes.id,
             ip: attributes.ip,
@@ -34,7 +34,19 @@ export default class Transformers {
         };
     }
 
-    static toServer ({ attributes }: FractalResponseData): Models.Server {
+    static toServerEggVariable = ({ attributes }: FractalResponseData): Models.ServerEggVariable => {
+        return {
+            name: attributes.name,
+            description: attributes.description,
+            envVariable: attributes.env_variable,
+            defaultValue: attributes.default_value,
+            serverValue: attributes.server_value,
+            isEditable: attributes.is_editable,
+            rules: attributes.rules.split('|'),
+        };
+    }
+
+    static toServer = ({ attributes }: FractalResponseData): Models.Server => {
         return {
             id: attributes.identifier,
             internalId: attributes.internal_id,
@@ -59,7 +71,7 @@ export default class Transformers {
         };
     }
 
-    static toServerBackup ({ attributes }: FractalResponseData): Models.ServerBackup {
+    static toServerBackup = ({ attributes }: FractalResponseData): Models.ServerBackup => {
         return {
             uuid: attributes.uuid,
             isSuccessful: attributes.is_successful,
@@ -73,19 +85,7 @@ export default class Transformers {
         };
     }
 
-    static toServerEggVariable ({ attributes }: FractalResponseData): Models.ServerEggVariable {
-        return {
-            name: attributes.name,
-            description: attributes.description,
-            envVariable: attributes.env_variable,
-            defaultValue: attributes.default_value,
-            serverValue: attributes.server_value,
-            isEditable: attributes.is_editable,
-            rules: attributes.rules.split('|'),
-        };
-    }
-
-    static toServerDatabase ({ attributes }: FractalResponseData): Models.ServerDatabase {
+    static toServerDatabase = ({ attributes }: FractalResponseData): Models.ServerDatabase => {
         return {
             id: attributes.id,
             name: attributes.name,
@@ -97,7 +97,7 @@ export default class Transformers {
         };
     }
 
-    static toSubuser ({ attributes }: FractalResponseData): Models.Subuser {
+    static toSubuser = ({ attributes }: FractalResponseData): Models.Subuser => {
         return {
             uuid: attributes.uuid,
             username: attributes.username,
@@ -110,7 +110,7 @@ export default class Transformers {
         };
     }
 
-    static toServerTask ({ attributes }: FractalResponseData): Models.Task {
+    static toServerTask = ({ attributes }: FractalResponseData): Models.Task => {
         return {
             id: attributes.id,
             sequenceId: attributes.sequence_id,
@@ -124,7 +124,7 @@ export default class Transformers {
         };
     }
 
-    static toServerSchedule ({ attributes }: FractalResponseData): Models.Schedule {
+    static toServerSchedule = ({ attributes }: FractalResponseData): Models.Schedule => {
         return {
             id: attributes.id,
             name: attributes.name,
