@@ -88,7 +88,7 @@ class EggConfigurationService
     /**
      * @return array
      */
-    protected function replacePlaceholders(Server $server, iterable $configs)
+    protected function replacePlaceholders(Server $server, \stdClass $configs): array
     {
         // Get the legacy configuration structure for the server so that we
         // can property map the egg placeholders to values.
