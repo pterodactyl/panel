@@ -156,7 +156,7 @@ class ServerCreationService
             // Create the server and assign any additional allocations to it.
             $server = $this->createModel($data);
 
-            $this->storeMounts($server);
+            $this->storeActiveMounts($server);
             $this->storeAssignedAllocations($server, $data);
             $this->storeEggVariables($server, $eggVariableData);
 
