@@ -16,6 +16,7 @@ class EventServiceProvider extends ServiceProvider
     protected $listen = [
         ServerInstalledEvent::class => [
             ServerInstalledNotification::class,
+            RemoveMountsAfterInstall::class,
         ],
     ];
 }
