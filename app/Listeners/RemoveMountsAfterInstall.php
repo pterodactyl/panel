@@ -2,23 +2,11 @@
 
 namespace Pterodactyl\Listeners;
 
-use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Queue\InteractsWithQueue;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\MountServer;
 
 class RemoveMountsAfterInstall
 {
-    /**
-     * Create the event listener.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * Handle the event.
      *
