@@ -3,6 +3,7 @@
 namespace Pterodactyl\Providers;
 
 use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
+use Pterodactyl\Listeners\RemoveMountsAfterInstall;
 use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
