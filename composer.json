@@ -47,7 +47,7 @@
         "barryvdh/laravel-ide-helper": "^2.12",
         "facade/ignition": "^2.17",
         "fakerphp/faker": "^1.19",
-        "friendsofphp/php-cs-fixer": "^2.19",
+        "friendsofphp/php-cs-fixer": "^3.8",
         "laravel/dusk": "^6.23",
         "mockery/mockery": "^1.5",
         "nunomaduro/collision": "^5.11",
@@ -70,7 +70,8 @@
         }
     },
     "scripts": {
-        "php-cs-fixer": "php-cs-fixer fix --diff --diff-format=udiff --config=./.php_cs.dist",
+        "cs:fix": "php-cs-fixer fix",
+        "cs:check": "php-cs-fixer fix --dry-run --diff --verbose",
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
@@ -84,6 +85,9 @@
     },
     "prefer-stable": true,
     "config": {
+        "platform": {
+            "php": "7.4.0"
+        },
         "preferred-install": "dist",
         "sort-packages": true,
         "optimize-autoloader": false

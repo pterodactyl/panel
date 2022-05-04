@@ -33,8 +33,6 @@ class BuildModificationService
      * BuildModificationService constructor.
      *
      * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $structureService
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonServerRepository $daemonServerRepository
      */
     public function __construct(
         ServerConfigurationStructureService $structureService,
@@ -57,7 +55,7 @@ class BuildModificationService
     public function handle(Server $server, array $data)
     {
         /** @var \Pterodactyl\Models\Server $server */
-        $server = $this->connection->transaction(function() use ($server, $data) {
+        $server = $this->connection->transaction(function () use ($server, $data) {
             $this->processAllocations($server, $data);
 
             if (isset($data['allocation_id']) && $data['allocation_id'] != $server->allocation_id) {

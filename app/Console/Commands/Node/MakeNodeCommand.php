@@ -46,7 +46,6 @@ class MakeNodeCommand extends Command
      */
     protected $description = 'Creates a new node on the system via the CLI.';
 
-
     /**
      * Handle the command execution process.
      *
@@ -62,13 +61,18 @@ class MakeNodeCommand extends Command
         $data['fqdn'] = $this->option('fqdn') ?? $this->ask('Enter a domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node');
         if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
             $this->error('The FQDN or IP address provided does not resolve to a valid IP address.');
+
             return;
         }
         $data['public'] = $this->option('public') ?? $this->confirm('Should this node be public? As a note, setting a node to private you will be denying the ability to auto-deploy to this node.', true);
-        $data['scheme'] = $this->option('scheme') ?? $this->anticipate('Please either enter https for SSL or http for a non-ssl connection', 
-        ["https","http",],"https");
+        $data['scheme'] = $this->option('scheme') ?? $this->anticipate(
+            'Please either enter https for SSL or http for a non-ssl connection',
+            ['https', 'http'],
+            'https'
+        );
         if (filter_var($data['fqdn'], FILTER_VALIDATE_IP) && $data['scheme'] === 'https') {
             $this->error('A fully qualified domain name that resolves to a public IP address is required in order to use SSL for this node.');
+
             return;
         }
         $data['behind_proxy'] = $this->option('proxy') ?? $this->confirm('Is your FQDN behind a proxy?');

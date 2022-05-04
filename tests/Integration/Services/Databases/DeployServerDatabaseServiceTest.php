@@ -52,7 +52,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
 
         $this->expectException(InvalidArgumentException::class);
-        $this->expectExceptionMessageMatches('/^Expected a non-empty value\. Got: /', );
+        $this->expectExceptionMessageMatches('/^Expected a non-empty value\. Got: /');
         $this->getService()->handle($server, $data);
     }
 

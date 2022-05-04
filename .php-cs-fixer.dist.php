@@ -29,7 +29,7 @@ return (new Config())
         'no_unreachable_default_argument_value' => true,
         'no_useless_return' => true,
         'ordered_imports' => [
-            'sortAlgorithm' => 'length',
+            'sort_algorithm' => 'length',
         ],
         'phpdoc_align' => [
             'align' => 'left',
