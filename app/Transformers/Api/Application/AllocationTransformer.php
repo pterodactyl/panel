@@ -14,7 +14,7 @@ class AllocationTransformer extends BaseTransformer
      *
      * @var array
      */
-    protected $availableIncludes = ['node', 'server'];
+    protected array $availableIncludes = ['node', 'server'];
 
     /**
      * Return the resource name for the JSONAPI output.

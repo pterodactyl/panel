@@ -12,7 +12,7 @@ class NodeTransformer extends BaseTransformer
      *
      * @var array
      */
-    protected $availableIncludes = ['allocations', 'location', 'servers'];
+    protected array $availableIncludes = ['allocations', 'location', 'servers'];
 
     /**
      * Return the resource name for the JSONAPI output.

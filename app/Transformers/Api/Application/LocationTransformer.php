@@ -12,7 +12,7 @@ class LocationTransformer extends BaseTransformer
      *
      * @var array
      */
-    protected $availableIncludes = ['nodes', 'servers'];
+    protected array $availableIncludes = ['nodes', 'servers'];
 
     /**
      * Return the resource name for the JSONAPI output.

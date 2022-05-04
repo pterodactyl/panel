@@ -11,7 +11,7 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'databases',
     ];
 

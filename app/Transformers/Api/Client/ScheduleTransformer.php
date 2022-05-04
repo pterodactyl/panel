@@ -11,7 +11,7 @@ class ScheduleTransformer extends BaseClientTransformer
     /**
      * @var array
      */
-    protected $availableIncludes = ['tasks'];
+    protected array $availableIncludes = ['tasks'];
 
     /**
      * @var array
