@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Http;
 
+use Illuminate\Http\Middleware\TrustProxies;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
 use Pterodactyl\Http\Middleware\TrimStrings;
-use Pterodactyl\Http\Middleware\TrustProxies;
 use Illuminate\Session\Middleware\StartSession;
 use Pterodactyl\Http\Middleware\EncryptCookies;
 use Pterodactyl\Http\Middleware\Api\IsValidJson;

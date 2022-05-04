@@ -74,7 +74,7 @@ class NodeAutoDeployController extends Controller
             ], ['r_nodes' => 1]);
         }
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'node' => $node->id,
             'token' => $key->identifier . $this->encrypter->decrypt($key->token),
         ]);

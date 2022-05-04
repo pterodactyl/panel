@@ -45,7 +45,7 @@ class ServerInstallController extends Controller
         $server = $this->repository->getByUuid($uuid);
         $egg = $server->egg;
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'container_image' => $egg->copy_script_container,
             'entrypoint' => $egg->copy_script_entry,
             'script' => $egg->copy_script_install,

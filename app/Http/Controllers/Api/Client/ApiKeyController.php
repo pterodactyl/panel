@@ -102,6 +102,6 @@ class ApiKeyController extends ClientApiController
             throw new NotFoundHttpException();
         }
 
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 }

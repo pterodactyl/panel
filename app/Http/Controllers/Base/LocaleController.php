@@ -31,7 +31,7 @@ class LocaleController extends Controller
     {
         $data = $this->translator->getLoader()->load($locale, str_replace('.', '/', $namespace));
 
-        return JsonResponse::create($data, 200, [
+        return new JsonResponse($data, 200, [
             'E-Tag' => md5(json_encode($data)),
         ]);
     }

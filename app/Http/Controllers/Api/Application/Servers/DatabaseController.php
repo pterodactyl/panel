@@ -78,7 +78,7 @@ class DatabaseController extends ApplicationApiController
     {
         $this->databasePasswordService->handle($database);
 
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
