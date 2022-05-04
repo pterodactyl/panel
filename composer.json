@@ -43,11 +43,11 @@
         "webmozart/assert": "~1.10.0"
     },
     "require-dev": {
-        "barryvdh/laravel-debugbar": "^3.6",
         "barryvdh/laravel-ide-helper": "^2.12",
         "facade/ignition": "^2.17",
         "fakerphp/faker": "^1.19",
         "friendsofphp/php-cs-fixer": "^3.8",
+        "itsgoingd/clockwork": "^5.1",
         "laravel/dusk": "^6.23",
         "mockery/mockery": "^1.5",
         "nunomaduro/collision": "^5.11",
