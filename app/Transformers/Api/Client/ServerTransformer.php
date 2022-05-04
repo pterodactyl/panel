@@ -16,7 +16,7 @@ class ServerTransformer extends BaseClientTransformer
     /**
      * @var string[]
      */
-    protected $defaultIncludes = ['allocations', 'variables'];
+    protected array $defaultIncludes = ['allocations', 'variables'];
 
     /**
      * @var array

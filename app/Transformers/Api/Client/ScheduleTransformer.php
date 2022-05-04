@@ -16,7 +16,7 @@ class ScheduleTransformer extends BaseClientTransformer
     /**
      * @var array
      */
-    protected $defaultIncludes = ['tasks'];
+    protected array $defaultIncludes = ['tasks'];
 
     /**
      * {@inheritdoc}
