@@ -47,7 +47,6 @@
         "fakerphp/faker": "^1.19",
         "friendsofphp/php-cs-fixer": "^3.8",
         "itsgoingd/clockwork": "^5.1",
-        "laravel/dusk": "^6.23",
         "mockery/mockery": "^1.5",
         "nunomaduro/collision": "^5.11",
         "php-mock/php-mock-phpunit": "^2.6",

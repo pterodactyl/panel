@@ -1,7 +1,6 @@
 /vendor
 *.DS_Store*
 !.env.ci
-!.env.dusk
 !.env.example
 .env*
 .vagrant/*
