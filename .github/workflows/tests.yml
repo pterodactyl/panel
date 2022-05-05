@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 7.4, 8.0 ]
+        php: [ 7.4, 8.0, 8.1 ]
         database: [ 'mariadb:10.2', 'mysql:8' ]
     services:
       database:
@@ -50,10 +50,9 @@ jobs:
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
         if: ${{ always() }}
         env:
-          DB_CONNECTION: testing
-          TESTING_DB_HOST: UNIT_NO_DB
+          DB_HOST: UNIT_NO_DB
       - name: execute integration tests
         run: vendor/bin/phpunit tests/Integration
         env:
-          TESTING_DB_PORT: ${{ job.services.database.ports[3306] }}
-          TESTING_DB_USERNAME: root
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_USERNAME: root
