@@ -3,6 +3,8 @@
 namespace Pterodactyl\Tests\Integration\Jobs\Schedule;
 
 use Mockery;
+use Carbon\Carbon;
+use DateTimeInterface;
 use Carbon\CarbonImmutable;
 use GuzzleHttp\Psr7\Request;
 use Pterodactyl\Models\Task;
@@ -144,6 +146,36 @@ class RunTaskJobTest extends IntegrationTestCase
             $this->assertFalse($schedule->is_processing);
             $this->assertTrue(CarbonImmutable::now()->isSameAs(CarbonImmutable::ISO8601, $schedule->last_run_at));
         }
+    }
+
+    /**
+     * Test that a schedule is not executed if the server is suspended.
+     *
+     * @see https://github.com/pterodactyl/panel/issues/4008
+     */
+    public function testTaskIsNotRunIfServerIsSuspended()
+    {
+        $server = $this->createServerModel([
+            'status' => Server::STATUS_SUSPENDED,
+        ]);
+
+        $schedule = Schedule::factory()->for($server)->create([
+            'last_run_at' => Carbon::now()->subHour(),
+        ]);
+
+        $task = Task::factory()->for($schedule)->create([
+            'action' => Task::ACTION_POWER,
+            'payload' => 'start',
+        ]);
+
+        Bus::dispatchNow(new RunTaskJob($task));
+
+        $task->refresh();
+        $schedule->refresh();
+
+        $this->assertFalse($task->is_queued);
+        $this->assertFalse($schedule->is_processing);
+        $this->assertTrue(Carbon::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at));
     }
 
     /**

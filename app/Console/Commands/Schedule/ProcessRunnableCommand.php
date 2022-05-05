@@ -7,6 +7,7 @@ use Throwable;
 use Illuminate\Console\Command;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
 
 class ProcessRunnableCommand extends Command
@@ -26,7 +27,9 @@ class ProcessRunnableCommand extends Command
      */
     public function handle()
     {
-        $schedules = Schedule::query()->with('tasks')
+        $schedules = Schedule::query()
+            ->with('tasks')
+            ->whereRelation('server', fn (Builder $builder) => $builder->whereNull('status'))
             ->where('is_active', true)
             ->where('is_processing', false)
             ->whereRaw('next_run_at <= NOW()')
