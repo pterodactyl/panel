@@ -137,9 +137,4 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
     {
         return [[[]], [[Permission::ACTION_ALLOCATION_UPDATE]]];
     }
-
-    public function deletePermissionsDataProvider()
-    {
-        return [[[]], [[Permission::ACTION_ALLOCATION_DELETE]]];
-    }
 }

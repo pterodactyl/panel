@@ -89,6 +89,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * is assumed that the user is actually a subuser of the server.
      *
      * @param string[] $permissions
+     * @return array{\Pterodactyl\Models\User, \Pterodactyl\Models\Server}
      */
     protected function generateTestAccount(array $permissions = []): array
     {

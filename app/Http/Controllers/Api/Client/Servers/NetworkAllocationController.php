@@ -120,6 +120,12 @@ class NetworkAllocationController extends ClientApiController
      */
     public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation)
     {
+        // Don't allow the deletion of allocations if the server does not have an
+        // allocation limit set.
+        if (empty($server->allocation_limit)) {
+            throw new DisplayException('You cannot delete allocations for this server: no allocation limit is set.');
+        }
+
         if ($allocation->id === $server->allocation_id) {
             throw new DisplayException('You cannot delete the primary allocation for this server.');
         }
