@@ -12,7 +12,7 @@ namespace Pterodactyl\Models;
  * @property array|null $features
  * @property string $docker_image -- deprecated, use $docker_images
  * @property string $update_url
- * @property array $docker_images
+ * @property array<string, string> $docker_images
  * @property array|null $file_denylist
  * @property string|null $config_files
  * @property string|null $config_startup
@@ -49,6 +49,11 @@ class Egg extends Model
      * API representation using fractal.
      */
     public const RESOURCE_NAME = 'egg';
+
+    /**
+     * Defines the current egg export version.
+     */
+    public const EXPORT_VERSION = 'PTDL_v2';
 
     /**
      * Different features that can be enabled on any given egg. These are used internally

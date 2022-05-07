@@ -10,7 +10,6 @@ use Illuminate\Support\Collection;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
 use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
@@ -56,8 +55,8 @@ class EggImporterService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException
      * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
+     * @throws \JsonException
      */
     public function handle(UploadedFile $file, int $nest): Egg
     {
@@ -66,13 +65,13 @@ class EggImporterService
         }
 
         /** @var array $parsed */
-        $parsed = json_decode($file->openFile()->fread($file->getSize()), true);
-        if (json_last_error() !== 0) {
-            throw new BadJsonFormatException(trans('exceptions.nest.importer.json_error', ['error' => json_last_error_msg()]));
+        $parsed = json_decode($file->openFile()->fread($file->getSize()), true, 512, JSON_THROW_ON_ERROR);
+        if (!in_array(Arr::get($parsed, 'meta.version') ?? '', ['PTDL_v1', 'PTDL_v2'])) {
+            throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
         }
 
-        if (Arr::get($parsed, 'meta.version') !== 'PTDL_v1') {
-            throw new InvalidFileUploadException(trans('exceptions.nest.importer.invalid_json_provided'));
+        if ($parsed['meta']['version'] !== Egg::EXPORT_VERSION) {
+            $parsed = $this->convertV1ToV2($parsed);
         }
 
         $nest = $this->nestRepository->getWithEggs($nest);
@@ -86,9 +85,7 @@ class EggImporterService
             'name' => Arr::get($parsed, 'name'),
             'description' => Arr::get($parsed, 'description'),
             'features' => Arr::get($parsed, 'features'),
-            // Maintain backwards compatability for eggs that are still using the old single image
-            // string format. New eggs can provide an array of Docker images that can be used.
-            'docker_images' => Arr::get($parsed, 'images') ?? [Arr::get($parsed, 'image')],
+            'docker_images' => Arr::get($parsed, 'docker_images'),
             'file_denylist' => Collection::make(Arr::get($parsed, 'file_denylist'))->filter(function ($value) {
                 return !empty($value);
             }),
@@ -105,6 +102,8 @@ class EggImporterService
         ], true, true);
 
         Collection::make($parsed['variables'] ?? [])->each(function (array $variable) use ($egg) {
+            unset($variable['field_type']);
+
             $this->eggVariableRepository->create(array_merge($variable, [
                 'egg_id' => $egg->id,
             ]));
@@ -113,5 +112,34 @@ class EggImporterService
         $this->connection->commit();
 
         return $egg;
+    }
+
+    /**
+     * Converts a PTDL_V1 egg into the expected PTDL_V2 egg format. This just handles
+     * the "docker_images" field potentially not being present, and not being in the
+     * expected "key => value" format.
+     */
+    protected function convertV1ToV2(array $parsed): array
+    {
+        // Maintain backwards compatability for eggs that are still using the old single image
+        // string format. New eggs can provide an array of Docker images that can be used.
+        if (!isset($parsed['images'])) {
+            $images = [Arr::get($parsed, 'image') ?? 'nil'];
+        } else {
+            $images = $parsed['images'];
+        }
+
+        unset($parsed['images'], $parsed['image']);
+
+        $parsed['docker_images'] = [];
+        foreach ($images as $image) {
+            $parsed['docker_images'][$image] = $image;
+        }
+
+        $parsed['variables'] = array_map(function ($value) {
+            return array_merge($value, ['field_type' => 'text']);
+        }, $parsed['variables']);
+
+        return $parsed;
     }
 }

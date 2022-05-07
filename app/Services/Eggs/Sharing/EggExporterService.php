@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Eggs\Sharing;
 
 use Carbon\Carbon;
+use Pterodactyl\Models\Egg;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
@@ -34,7 +35,7 @@ class EggExporterService
         $struct = [
             '_comment' => 'DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO',
             'meta' => [
-                'version' => 'PTDL_v1',
+                'version' => Egg::EXPORT_VERSION,
                 'update_url' => $egg->update_url,
             ],
             'exported_at' => Carbon::now()->toIso8601String(),
@@ -42,7 +43,7 @@ class EggExporterService
             'author' => $egg->author,
             'description' => $egg->description,
             'features' => $egg->features,
-            'images' => $egg->docker_images,
+            'docker_images' => $egg->docker_images,
             'file_denylist' => Collection::make($egg->inherit_file_denylist)->filter(function ($value) {
                 return !empty($value);
             }),
@@ -63,6 +64,7 @@ class EggExporterService
             'variables' => $egg->variables->transform(function (EggVariable $item) {
                 return Collection::make($item->toArray())
                     ->except(['id', 'egg_id', 'created_at', 'updated_at'])
+                    ->merge(['field_type' => 'text'])
                     ->toArray();
             }),
         ];
