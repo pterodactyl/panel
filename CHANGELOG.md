@@ -3,6 +3,36 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.8.0
+**Important:** this version updates the `version` field on generated Eggs to be `PTDL_v2` due to formatting changes. This
+should be completely seamless for most installations as the Panel is able to convert between the two. Custom solutions
+using these eggs should be updated to account for the new format.
+
+### Fixed
+* Schedules are no longer run when a server is suspended or marked as installing.
+* The remote field when creating a database is no longer limited to an IP address and `%` wildcard — all expected MySQL remote host values are allowed.
+* Allocations cannot be deleted from a server by a user if the server is configured with an `allocation_limit` set to `0`.
+* The Java Version modal no longer shows a dropdown and update option to users that do not have permission to make those changes.
+* The Java Version modal now correctly returns only the images available to the server's selected Egg.
+
+### Changed
+* Forces HTTPS on URLs when the `APP_URL` value is set and includes `https://` within the URL. This addresses proxy misconfiguration issues that would cause URLs to be generated incorrectly.
+* Lowers the default timeout values for requests to Wings instances from 10 seconds to 5 seconds.
+* Additional permissions (`CREATE TEMPORARY TABLES`, `CREATE VIEW`, `SHOW VIEW`, `EVENT`, and `TRIGGER`) are granted to users when creating new databases for servers.
+* development: removed Laravel Debugbar in favor of Clockwork for debugging.
+* The 2FA input field when logging in is now correctly identified as `one-time-password` to help browser autofill capabilities.
+
+### Added
+* Added support for PHP 8.1 in addition to PHP 8.0 and 7.4.
+* Adds more support for catching potential PID exhaustion errors in different games.
+* It is now possible to create a new node on the Panel using an artisan command.
+* A new cron cheatsheet has been added which appears when creating a schedule.
+* Adds support for filtering the `/api/application/nodes/:id/allocations` endpoint using `?filter[server_id]=0` to only return allocations that are not currently assigned to a server on that node.
+* Adds support for naming docker image values in an Egg to improve front-end display capabilities.
+
+### Removed
+* Removes Google Analytics from the front end code.
+
 ## v1.7.0
 ### Fixed
 * Fixes typo in message shown to user when deleting a database.
