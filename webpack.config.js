@@ -60,6 +60,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@': path.join(__dirname, '/resources/scripts'),
+            '@definitions': path.join(__dirname, '/resources/scripts/api/definitions'),
             '@feature': path.join(__dirname, '/resources/scripts/components/server/features'),
         },
         symlinks: false,

@@ -22,6 +22,9 @@
       "@/*": [
         "./resources/scripts/*"
       ],
+      "@definitions/*": [
+        "./resources/scripts/api/definitions/*"
+      ],
       "@feature/*": [
         "./resources/scripts/components/server/features/*"
       ]
