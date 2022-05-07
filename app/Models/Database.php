@@ -67,7 +67,7 @@ class Database extends Model
         'database' => 'required|string|alpha_dash|between:3,48',
         'username' => 'string|alpha_dash|between:3,100',
         'max_connections' => 'nullable|integer',
-        'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
+        'remote' => 'required|string|regex:/^[\w\-\/.%:]+$/',
         'password' => 'string',
     ];
 

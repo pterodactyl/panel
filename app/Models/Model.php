@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Support\Str;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Factory;
@@ -109,6 +110,15 @@ abstract class Model extends IlluminateModel
         }
 
         return $rules;
+    }
+
+    /**
+     * Returns the rules for a specific field. If the field is not found an empty
+     * array is returned.
+     */
+    public static function getRulesForField(string $field): array
+    {
+        return Arr::get(static::getRules(), $field) ?? [];
     }
 
     /**

@@ -21,10 +21,8 @@ const schema = object().shape({
         .required('A database name must be provided.')
         .min(3, 'Database name must be at least 3 characters.')
         .max(48, 'Database name must not exceed 48 characters.')
-        .matches(/^[A-Za-z0-9_\-.]{3,48}$/, 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'),
-    connectionsFrom: string()
-        .required('A connection value must be provided.')
-        .matches(/^([0-9]{1,3}|%)(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?(\.([0-9]{1,3}|%))?$/, 'A valid connection address must be provided.'),
+        .matches(/^[\w\-.]{3,48}$/, 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'),
+    connectionsFrom: string().matches(/^[\w\-/.%:]+$/, 'A valid host address must be provided.'),
 });
 
 export default () => {
@@ -36,7 +34,10 @@ export default () => {
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('database:create');
-        createServerDatabase(uuid, { ...values })
+        createServerDatabase(uuid, {
+            databaseName: values.databaseName,
+            connectionsFrom: values.connectionsFrom || '%',
+        })
             .then(database => {
                 appendDatabase(database);
                 setVisible(false);
@@ -51,7 +52,7 @@ export default () => {
         <>
             <Formik
                 onSubmit={submit}
-                initialValues={{ databaseName: '', connectionsFrom: '%' }}
+                initialValues={{ databaseName: '', connectionsFrom: '' }}
                 validationSchema={schema}
             >
                 {
@@ -81,7 +82,7 @@ export default () => {
                                         id={'connections_from'}
                                         name={'connectionsFrom'}
                                         label={'Connections From'}
-                                        description={'Where connections should be allowed from. Use % for wildcards.'}
+                                        description={'Where connections should be allowed from. Leave blank to allow connections from anywhere.'}
                                     />
                                 </div>
                                 <div css={tw`flex flex-wrap justify-end mt-6`}>
