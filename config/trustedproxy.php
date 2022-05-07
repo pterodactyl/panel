@@ -24,31 +24,5 @@ return [
      * subsequently passed through.
      */
     'proxies' => in_array(env('TRUSTED_PROXIES', []), ['*', '**']) ?
-        env('TRUSTED_PROXIES') : explode(',', env('TRUSTED_PROXIES', null)),
-
-    /*
-     * Or, to trust all proxies that connect
-     * directly to your server, uncomment this:
-     */
-    // 'proxies' => '*',
-
-    /*
-     * Or, to trust ALL proxies, including those that
-     * are in a chain of forwarding, uncomment this:
-     */
-    // 'proxies' => '**',
-
-    /*
-     * Default Header Names
-     *
-     * Change these if the proxy does
-     * not send the default header names.
-     *
-     * Note that headers such as X-Forwarded-For
-     * are transformed to HTTP_X_FORWARDED_FOR format.
-     *
-     * The following are Symfony defaults, found in
-     * \Symfony\Component\HttpFoundation\Request::$trustedHeaders
-     */
-    'headers' => \Illuminate\Http\Request::HEADER_X_FORWARDED_ALL,
+        env('TRUSTED_PROXIES') : explode(',', env('TRUSTED_PROXIES') ?? ''),
 ];
