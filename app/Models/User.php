@@ -10,6 +10,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
@@ -17,6 +18,8 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 /**
+ * \Pterodactyl\Models\User.
+ *
  * @property int $id
  * @property string|null $external_id
  * @property string $uuid
@@ -38,6 +41,37 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
+ * @property string|null $remember_token
+ * @property int|null $api_keys_count
+ * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property int|null $notifications_count
+ * @property int|null $recovery_tokens_count
+ * @property int|null $servers_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\UserSSHKey[] $sshKeys
+ * @property int|null $ssh_keys_count
+ *
+ * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static Builder|User newModelQuery()
+ * @method static Builder|User newQuery()
+ * @method static Builder|User query()
+ * @method static Builder|User whereCreatedAt($value)
+ * @method static Builder|User whereEmail($value)
+ * @method static Builder|User whereExternalId($value)
+ * @method static Builder|User whereGravatar($value)
+ * @method static Builder|User whereId($value)
+ * @method static Builder|User whereLanguage($value)
+ * @method static Builder|User whereNameFirst($value)
+ * @method static Builder|User whereNameLast($value)
+ * @method static Builder|User wherePassword($value)
+ * @method static Builder|User whereRememberToken($value)
+ * @method static Builder|User whereRootAdmin($value)
+ * @method static Builder|User whereTotpAuthenticatedAt($value)
+ * @method static Builder|User whereTotpSecret($value)
+ * @method static Builder|User whereUpdatedAt($value)
+ * @method static Builder|User whereUseTotp($value)
+ * @method static Builder|User whereUsername($value)
+ * @method static Builder|User whereUuid($value)
+ * @mixin \Eloquent
  */
 class User extends Model implements
     AuthenticatableContract,
@@ -223,6 +257,11 @@ class User extends Model implements
     public function recoveryTokens()
     {
         return $this->hasMany(RecoveryToken::class);
+    }
+
+    public function sshKeys(): HasMany
+    {
+        return $this->hasMany(UserSSHKey::class);
     }
 
     /**

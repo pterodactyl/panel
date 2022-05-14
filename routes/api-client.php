@@ -29,6 +29,12 @@ Route::group(['prefix' => '/account'], function () {
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);
+
+    Route::prefix('/ssh-keys')->group(function () {
+        Route::get('/', [Client\SSHKeyController::class, 'index']);
+        Route::post('/', [Client\SSHKeyController::class, 'store']);
+        Route::delete('/{identifier}', [Client\SSHKeyController::class, 'delete']);
+    });
 });
 
 /*

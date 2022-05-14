@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Requests\Api\Application;
 
 use Pterodactyl\Models\ApiKey;
+use Illuminate\Validation\Validator;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
@@ -94,6 +95,16 @@ abstract class ApplicationApiRequest extends FormRequest
         }
 
         return $this->route()->parameter($parameterKey);
+    }
+
+    /**
+     * Helper method allowing a developer to easily hook into this logic without having
+     * to remember what the method name is called or where to use it. By default this is
+     * a no-op.
+     */
+    public function withValidator(Validator $validator): void
+    {
+        // do nothing
     }
 
     /**

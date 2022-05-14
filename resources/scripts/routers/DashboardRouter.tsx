@@ -7,6 +7,7 @@ import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
+import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 
 export default ({ location }: RouteComponentProps) => (
     <>
@@ -16,6 +17,7 @@ export default ({ location }: RouteComponentProps) => (
             <div>
                 <NavLink to={'/account'} exact>Settings</NavLink>
                 <NavLink to={'/account/api'}>API Credentials</NavLink>
+                <NavLink to={'/account/ssh'}>SSH Keys</NavLink>
             </div>
         </SubNavigation>
         }
@@ -29,6 +31,9 @@ export default ({ location }: RouteComponentProps) => (
                 </Route>
                 <Route path={'/account/api'} exact>
                     <AccountApiContainer/>
+                </Route>
+                <Route path={'/account/ssh'} exact>
+                    <AccountSSHContainer/>
                 </Route>
                 <Route path={'*'}>
                     <NotFound/>
