@@ -8,9 +8,6 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class DatabaseHostTransformer extends BaseTransformer
 {
-    /**
-     * @var array
-     */
     protected array $availableIncludes = [
         'databases',
     ];

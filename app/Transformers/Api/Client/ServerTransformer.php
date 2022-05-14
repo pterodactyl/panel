@@ -18,9 +18,6 @@ class ServerTransformer extends BaseClientTransformer
      */
     protected array $defaultIncludes = ['allocations', 'variables'];
 
-    /**
-     * @var array
-     */
     protected array $availableIncludes = ['egg', 'subusers'];
 
     public function getResourceName(): string

@@ -9,8 +9,6 @@ class SubuserTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
-     *
-     * @var array
      */
     protected array $availableIncludes = ['user', 'server'];
 

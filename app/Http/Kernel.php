@@ -4,8 +4,8 @@ namespace Pterodactyl\Http;
 
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
-use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Auth\Middleware\Authenticate;
+use Illuminate\Http\Middleware\TrustProxies;
 use Pterodactyl\Http\Middleware\TrimStrings;
 use Illuminate\Session\Middleware\StartSession;
 use Pterodactyl\Http\Middleware\EncryptCookies;

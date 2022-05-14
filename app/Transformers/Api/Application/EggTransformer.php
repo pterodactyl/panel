@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Egg;
 use Illuminate\Support\Arr;
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\EggVariable;
@@ -13,8 +13,6 @@ class EggTransformer extends BaseTransformer
 {
     /**
      * Relationships that can be loaded onto this transformation.
-     *
-     * @var array
      */
     protected array $availableIncludes = [
         'nest',

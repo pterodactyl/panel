@@ -9,9 +9,6 @@ use Illuminate\Contracts\Encryption\Encrypter;
 
 class ServerDatabaseTransformer extends BaseTransformer
 {
-    /**
-     * @var array
-     */
     protected array $availableIncludes = ['password', 'host'];
 
     /**

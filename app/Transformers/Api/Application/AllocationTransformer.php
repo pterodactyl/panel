@@ -11,8 +11,6 @@ class AllocationTransformer extends BaseTransformer
 {
     /**
      * Relationships that can be loaded onto allocation transformations.
-     *
-     * @var array
      */
     protected array $availableIncludes = ['node', 'server'];
 

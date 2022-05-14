@@ -9,8 +9,6 @@ class NodeTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
-     *
-     * @var array
      */
     protected array $availableIncludes = ['allocations', 'location', 'servers'];
 

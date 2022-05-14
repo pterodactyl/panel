@@ -8,14 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class ScheduleTransformer extends BaseClientTransformer
 {
-    /**
-     * @var array
-     */
     protected array $availableIncludes = ['tasks'];
 
-    /**
-     * @var array
-     */
     protected array $defaultIncludes = ['tasks'];
 
     /**
