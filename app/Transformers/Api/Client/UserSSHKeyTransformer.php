@@ -4,7 +4,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\UserSSHKey;
 
-class SSHKeyTransformer extends BaseClientTransformer
+class UserSSHKeyTransformer extends BaseClientTransformer
 {
     public function getResourceName(): string
     {

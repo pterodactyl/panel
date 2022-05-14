@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Transformers\Api\Client\SSHKeyTransformer;
+use Pterodactyl\Transformers\Api\Client\UserSSHKeyTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreSSHKeyRequest;
 
 class SSHKeyController extends ClientApiController
@@ -16,7 +16,7 @@ class SSHKeyController extends ClientApiController
     public function index(ClientApiRequest $request): array
     {
         return $this->fractal->collection($request->user()->sshKeys)
-            ->transformWith($this->getTransformer(SSHKeyTransformer::class))
+            ->transformWith($this->getTransformer(UserSSHKeyTransformer::class))
             ->toArray();
     }
 
@@ -32,7 +32,7 @@ class SSHKeyController extends ClientApiController
         ]);
 
         return $this->fractal->item($model)
-            ->transformWith($this->getTransformer(SSHKeyTransformer::class))
+            ->transformWith($this->getTransformer(UserSSHKeyTransformer::class))
             ->toArray();
     }
 
