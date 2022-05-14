@@ -29,6 +29,8 @@ using these eggs should be updated to account for the new format.
 * A new cron cheatsheet has been added which appears when creating a schedule.
 * Adds support for filtering the `/api/application/nodes/:id/allocations` endpoint using `?filter[server_id]=0` to only return allocations that are not currently assigned to a server on that node.
 * Adds support for naming docker image values in an Egg to improve front-end display capabilities.
+* Adds command to return the configuration for a specific node in both YAML and JSON format (`php artisan p:node:configuration`).
+* Adds command to return a list of all nodes available on the Panel in both table and JSON format (`php artisan p:node:list`).
 
 ### Removed
 * Removes Google Analytics from the front end code.
