@@ -1,5 +1,3 @@
-export const bytesToMegabytes = (bytes: number) => Math.floor(bytes / 1024 / 1024);
-
 export const megabytesToBytes = (mb: number) => Math.floor(mb * 1024 * 1024);
 
 export function bytesToHuman (bytes: number): string {

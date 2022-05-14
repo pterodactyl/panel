@@ -1,20 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import tw, { TwStyle } from 'twin.macro';
-import { faCircle, faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
+import {
+    faArrowCircleDown,
+    faArrowCircleUp,
+    faCircle,
+    faEthernet,
+    faHdd,
+    faMemory,
+    faMicrochip,
+    faServer,
+} from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
+import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
 
-interface Stats {
-    memory: number;
-    cpu: number;
-    disk: number;
-    uptime: number;
-}
+type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
 function statusToColor (status: string | null, installing: boolean): TwStyle {
     if (installing) {
@@ -32,7 +36,7 @@ function statusToColor (status: string | null, installing: boolean): TwStyle {
 }
 
 const ServerDetailsBlock = () => {
-    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
+    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
@@ -50,6 +54,8 @@ const ServerDetailsBlock = () => {
             memory: stats.memory_bytes,
             cpu: stats.cpu_absolute,
             disk: stats.disk_bytes,
+            tx: stats.network.tx_bytes,
+            rx: stats.network.rx_bytes,
             uptime: stats.uptime || 0,
         });
     };
@@ -114,6 +120,11 @@ const ServerDetailsBlock = () => {
             <p css={tw`text-xs mt-2`}>
                 <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.disk)}
                 <span css={tw`text-neutral-500`}> / {diskLimit}</span>
+            </p>
+            <p css={tw`text-xs mt-2`}>
+                <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
+                <FontAwesomeIcon icon={faArrowCircleUp} fixedWidth css={tw`mr-1`}/>{bytesToHuman(stats.tx)}
+                <FontAwesomeIcon icon={faArrowCircleDown} fixedWidth css={tw`mx-1`}/>{bytesToHuman(stats.rx)}
             </p>
         </TitledGreyBox>
     );

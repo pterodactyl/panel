@@ -1,15 +1,14 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useRef, useState } from 'react';
 import Chart, { ChartConfiguration } from 'chart.js';
 import { ServerContext } from '@/state/server';
-import { bytesToMegabytes } from '@/helpers';
 import merge from 'deepmerge';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
+import { faEthernet, faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
 import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 
-const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguration => ({
+const chartDefaults = (ticks?: Chart.TickOptions): ChartConfiguration => ({
     type: 'line',
     options: {
         legend: {
@@ -69,38 +68,43 @@ const chartDefaults = (ticks?: Chart.TickOptions | undefined): ChartConfiguratio
     },
 });
 
+type ChartState = [ (node: HTMLCanvasElement | null) => void, Chart | undefined ];
+
+/**
+ * Creates an element ref and a chart instance.
+ */
+const useChart = (options?: Chart.TickOptions): ChartState => {
+    const [ chart, setChart ] = useState<Chart>();
+
+    const ref = useCallback<(node: HTMLCanvasElement | null) => void>(node => {
+        if (!node) return;
+
+        const chart = new Chart(node.getContext('2d')!, chartDefaults(options));
+
+        setChart(chart);
+    }, []);
+
+    return [ ref, chart ];
+};
+
+const updateChartDataset = (chart: Chart | null | undefined, value: Chart.ChartPoint & number): void => {
+    if (!chart || !chart.data?.datasets) return;
+
+    const data = chart.data.datasets[0].data!;
+    data.push(value);
+    data.shift();
+    chart.update({ lazy: true });
+};
+
 export default () => {
     const status = ServerContext.useStoreState(state => state.status.value);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
 
-    const [ memory, setMemory ] = useState<Chart>();
-    const [ cpu, setCpu ] = useState<Chart>();
-
-    const memoryRef = useCallback<(node: HTMLCanvasElement | null) => void>(node => {
-        if (!node) {
-            return;
-        }
-
-        setMemory(
-            new Chart(node.getContext('2d')!, chartDefaults({
-                callback: (value) => `${value}Mb  `,
-                suggestedMax: limits.memory,
-            })),
-        );
-    }, []);
-
-    const cpuRef = useCallback<(node: HTMLCanvasElement | null) => void>(node => {
-        if (!node) {
-            return;
-        }
-
-        setCpu(
-            new Chart(node.getContext('2d')!, chartDefaults({
-                callback: (value) => `${value}%  `,
-                suggestedMax: limits.cpu,
-            })),
-        );
-    }, []);
+    const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
+    const [ cpuRef, cpu ] = useChart({ callback: (value) => `${value}%  `, suggestedMax: limits.cpu });
+    const [ memoryRef, memory ] = useChart({ callback: (value) => `${value}Mb  `, suggestedMax: limits.memory });
+    const [ txRef, tx ] = useChart({ callback: (value) => `${value}Kb/s  ` });
+    const [ rxRef, rx ] = useChart({ callback: (value) => `${value}Kb/s  ` });
 
     useWebsocketEvent(SocketEvent.STATS, (data: string) => {
         let stats: any = {};
@@ -110,54 +114,57 @@ export default () => {
             return;
         }
 
-        if (memory && memory.data.datasets) {
-            const data = memory.data.datasets[0].data!;
+        updateChartDataset(cpu, stats.cpu_absolute);
+        updateChartDataset(memory, Math.floor(stats.memory_bytes / 1024 / 1024));
+        updateChartDataset(tx, previous.current.tx < 0 ? 0 : Math.max(0, stats.network.tx_bytes - previous.current.tx) / 1024);
+        updateChartDataset(rx, previous.current.rx < 0 ? 0 : Math.max(0, stats.network.rx_bytes - previous.current.rx) / 1024);
 
-            data.push(bytesToMegabytes(stats.memory_bytes));
-            data.shift();
-
-            memory.update({ lazy: true });
-        }
-
-        if (cpu && cpu.data.datasets) {
-            const data = cpu.data.datasets[0].data!;
-
-            data.push(stats.cpu_absolute);
-            data.shift();
-
-            cpu.update({ lazy: true });
-        }
+        previous.current = { tx: stats.network.tx_bytes, rx: stats.network.rx_bytes };
     });
 
     return (
-        <div css={tw`flex flex-wrap mt-4`}>
-            <div css={tw`w-full sm:w-1/2`}>
-                <TitledGreyBox title={'Memory usage'} icon={faMemory} css={tw`mr-0 sm:mr-4`}>
-                    {status !== 'offline' ?
-                        <canvas
-                            id={'memory_chart'}
-                            ref={memoryRef}
-                            aria-label={'Server Memory Usage Graph'}
-                            role={'img'}
-                        />
-                        :
-                        <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                            Server is offline.
-                        </p>
-                    }
-                </TitledGreyBox>
-            </div>
-            <div css={tw`w-full sm:w-1/2 mt-4 sm:mt-0`}>
-                <TitledGreyBox title={'CPU usage'} icon={faMicrochip} css={tw`ml-0 sm:ml-4`}>
-                    {status !== 'offline' ?
-                        <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
-                        :
-                        <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                            Server is offline.
-                        </p>
-                    }
-                </TitledGreyBox>
-            </div>
+        <div css={tw`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4`}>
+            <TitledGreyBox title={'Memory usage'} icon={faMemory}>
+                {status !== 'offline' ?
+                    <canvas
+                        id={'memory_chart'}
+                        ref={memoryRef}
+                        aria-label={'Server Memory Usage Graph'}
+                        role={'img'}
+                    />
+                    :
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                        Server is offline.
+                    </p>
+                }
+            </TitledGreyBox>
+            <TitledGreyBox title={'CPU usage'} icon={faMicrochip}>
+                {status !== 'offline' ?
+                    <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
+                    :
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                        Server is offline.
+                    </p>
+                }
+            </TitledGreyBox>
+            <TitledGreyBox title={'Inbound Data'} icon={faEthernet}>
+                {status !== 'offline' ?
+                    <canvas id={'rx_chart'} ref={rxRef} aria-label={'Server Inbound Data'} role={'img'}/>
+                    :
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                        Server is offline.
+                    </p>
+                }
+            </TitledGreyBox>
+            <TitledGreyBox title={'Outbound Data'} icon={faEthernet}>
+                {status !== 'offline' ?
+                    <canvas id={'tx_chart'} ref={txRef} aria-label={'Server Outbound Data'} role={'img'}/>
+                    :
+                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
+                        Server is offline.
+                    </p>
+                }
+            </TitledGreyBox>
         </div>
     );
 };

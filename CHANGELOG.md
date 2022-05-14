@@ -31,6 +31,7 @@ using these eggs should be updated to account for the new format.
 * Adds support for naming docker image values in an Egg to improve front-end display capabilities.
 * Adds command to return the configuration for a specific node in both YAML and JSON format (`php artisan p:node:configuration`).
 * Adds command to return a list of all nodes available on the Panel in both table and JSON format (`php artisan p:node:list`).
+* Adds server network (inbound/outbound) usage graphs to the console screen.
 
 ### Removed
 * Removes Google Analytics from the front end code.

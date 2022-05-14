@@ -5,7 +5,7 @@ module.exports = {
     },
     styledComponents: {
         pure: true,
-        displayName: false,
-        fileName: false,
+        displayName: true,
+        fileName: true,
     },
 };
