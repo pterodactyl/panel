@@ -36,6 +36,12 @@ Route::group(['middleware' => 'guest'], function () {
     // is created).
     Route::post('/password/reset', 'ResetPasswordController')->name('auth.reset-password');
 
+    Route::namespace("\\Auth0\\Laravel\\Http\\Controller\\Stateful")->prefix('/providers/auth0')->group(function () {
+        Route::get('/login', 'Login')->name('auth.providers.auth0-login');
+        Route::get('/logout', 'Logout')->name('auth.providers.auth0-logout');
+        Route::get('/callback', 'Callback')->name('auth.providers.auth0-callback');
+    });
+
     // Catch any other combinations of routes and pass them off to the Vuejs component.
     Route::fallback('LoginController@index');
 });
@@ -48,4 +54,7 @@ Route::group(['middleware' => 'guest'], function () {
 | Endpoint: /auth
 |
 */
-Route::post('/logout', 'LoginController@logout')->name('auth.logout')->middleware('auth', 'csrf');
+Route::namespace("\\Auth0\\Laravel\\Http\\Controller\\Stateful")->group(function () {
+    Route::get('/logout', 'Logout');
+});
+//Route::post('/logout', 'LoginController@logout')->name('auth.logout')->middleware('auth', 'csrf');

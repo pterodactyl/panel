@@ -17,6 +17,7 @@
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-zip": "*",
+        "auth0/login": "^7.0",
         "aws/aws-sdk-php": "^3.171",
         "doctrine/dbal": "~2.13.9",
         "guzzlehttp/guzzle": "~7.4.2",

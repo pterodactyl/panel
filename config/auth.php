@@ -28,7 +28,7 @@ return [
     */
 
     'defaults' => [
-        'guard' => 'web',
+        'guard' => env('APP_AUTH_GUARD', 'web'),
         'passwords' => 'users',
     ],
 
@@ -59,6 +59,11 @@ return [
             'driver' => 'token',
             'provider' => 'users',
         ],
+
+        'auth0' => [
+            'driver' => 'auth0',
+            'provider' => 'auth0',
+        ],
     ],
 
     /*
@@ -82,6 +87,12 @@ return [
         'users' => [
             'driver' => 'eloquent',
             'model' => Pterodactyl\Models\User::class,
+        ],
+
+        'auth0' => [
+            'driver' => 'auth0',
+            // 'repository' => Auth0\Laravel\Auth\User\Repository::class,
+            'repository' => Pterodactyl\Extensions\Auth0\Laravel\UserRepository::class,
         ],
     ],
 

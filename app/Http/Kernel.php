@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Http;
 
-use Illuminate\Http\Middleware\TrustProxies;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Auth\Middleware\Authenticate;
 use Pterodactyl\Http\Middleware\TrimStrings;
 use Illuminate\Session\Middleware\StartSession;
@@ -60,7 +60,7 @@ class Kernel extends HttpKernel
         'web' => [
             AddQueuedCookiesToResponse::class,
             StartSession::class,
-            AuthenticateSession::class,
+            // AuthenticateSession::class,
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
@@ -82,7 +82,7 @@ class Kernel extends HttpKernel
             HandleStatelessRequest::class,
             IsValidJson::class,
             StartSession::class,
-            AuthenticateSession::class,
+            'auth0.authenticate',
             SubstituteClientApiBindings::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
