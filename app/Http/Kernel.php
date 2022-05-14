@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Http;
 
-use Illuminate\Http\Middleware\TrustProxies;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Http\Middleware\TrustProxies;
 use Illuminate\Auth\Middleware\Authenticate;
 use Pterodactyl\Http\Middleware\TrimStrings;
 use Illuminate\Session\Middleware\StartSession;
@@ -72,21 +72,18 @@ class Kernel extends HttpKernel
             IsValidJson::class,
             StartSession::class,
             AuthenticateSession::class,
+            VerifyCsrfToken::class,
+        ],
+        'application-api' => [
             ApiSubstituteBindings::class,
             'api..key:' . ApiKey::TYPE_APPLICATION,
             AuthenticateApplicationUser::class,
-            VerifyCsrfToken::class,
             AuthenticateIPAccess::class,
         ],
         'client-api' => [
-            HandleStatelessRequest::class,
-            IsValidJson::class,
-            StartSession::class,
-            AuthenticateSession::class,
             SubstituteClientApiBindings::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
-            VerifyCsrfToken::class,
             // This is perhaps a little backwards with the Client API, but logically you'd be unable
             // to create/get an API key without first enabling 2FA on the account, so I suppose in the
             // end it makes sense.

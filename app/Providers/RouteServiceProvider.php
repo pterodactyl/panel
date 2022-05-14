@@ -11,15 +11,6 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 class RouteServiceProvider extends ServiceProvider
 {
     /**
-     * This namespace is applied to the controller routes in your routes file.
-     *
-     * In addition, it is set as the URL generator's root namespace.
-     *
-     * @var string
-     */
-    protected $namespace = 'Pterodactyl\Http\Controllers';
-
-    /**
      * Define your route model bindings, pattern filters, etc.
      */
     public function boot()
@@ -27,35 +18,23 @@ class RouteServiceProvider extends ServiceProvider
         $this->configureRateLimiting();
 
         $this->routes(function () {
-            Route::middleware(['web', 'auth', 'csrf'])
-                ->namespace("$this->namespace\\Base")
-                ->group(base_path('routes/base.php'));
+            Route::middleware(['web', 'csrf'])->group(function () {
+                Route::middleware('auth')->group(base_path('routes/base.php'));
+                Route::middleware('guest')->prefix('/auth')->group(base_path('routes/auth.php'));
+                Route::middleware(['auth', 'admin'])->prefix('/admin')->group(base_path('routes/admin.php'));
+            });
 
-            Route::middleware(['web', 'auth', 'admin', 'csrf'])->prefix('/admin')
-                ->namespace("$this->namespace\\Admin")
-                ->group(base_path('routes/admin.php'));
+            Route::middleware('api')->group(function () {
+                Route::middleware(['application-api', 'throttle:api.application'])
+                    ->prefix('/api/application')
+                    ->group(base_path('routes/api-application.php'));
 
-            Route::middleware(['web', 'csrf'])->prefix('/auth')
-                ->namespace("$this->namespace\\Auth")
-                ->group(base_path('routes/auth.php'));
+                Route::middleware(['client-api', 'throttle:api.client'])
+                    ->prefix('/api/client')
+                    ->group(base_path('routes/api-client.php'));
+            });
 
-            Route::middleware(['web', 'csrf', 'auth', 'server', 'node.maintenance'])
-                ->prefix('/api/server/{server}')
-                ->namespace("$this->namespace\\Server")
-                ->group(base_path('routes/server.php'));
-
-            Route::middleware(['api', 'throttle:api.application'])
-                ->prefix('/api/application')
-                ->namespace("$this->namespace\\Api\\Application")
-                ->group(base_path('routes/api-application.php'));
-
-            Route::middleware(['client-api', 'throttle:api.client'])
-                ->prefix('/api/client')
-                ->namespace("$this->namespace\\Api\\Client")
-                ->group(base_path('routes/api-client.php'));
-
-            Route::middleware(['daemon'])->prefix('/api/remote')
-                ->namespace("$this->namespace\\Api\\Remote")
+            Route::middleware('daemon')->prefix('/api/remote')
                 ->group(base_path('routes/api-remote.php'));
         });
     }
