@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
-abstract class SftpAuthenticationController extends Controller
+class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
 
