@@ -25,7 +25,9 @@ class ServerCreationServiceTest extends IntegrationTestCase
     use WithFaker;
 
     /** @var \Mockery\MockInterface */
-    private $daemonServerRepository;
+    protected $daemonServerRepository;
+
+    protected Egg $bungeecord;
 
     /**
      * Stub the calls to Wings so that we don't actually hit those API endpoints.
@@ -33,6 +35,12 @@ class ServerCreationServiceTest extends IntegrationTestCase
     public function setUp(): void
     {
         parent::setUp();
+
+        /* @noinspection PhpFieldAssignmentTypeMismatchInspection */
+        $this->bungeecord = Egg::query()
+            ->where('author', 'support@pterodactyl.io')
+            ->where('name', 'Bungeecord')
+            ->firstOrFail();
 
         $this->daemonServerRepository = Mockery::mock(DaemonServerRepository::class);
         $this->swap(DaemonServerRepository::class, $this->daemonServerRepository);
@@ -67,7 +75,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
             $allocations[0]->port,
         ]);
 
-        $egg = $this->cloneEggAndVariables(Egg::query()->findOrFail(1));
+        $egg = $this->cloneEggAndVariables($this->bungeecord);
         // We want to make sure that the validator service runs as an admin, and not as a regular
         // user when saving variables.
         $egg->variables()->first()->update([
@@ -178,7 +186,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
             'cpu' => 0,
             'startup' => 'java server2.jar',
             'image' => 'java:8',
-            'egg_id' => 1,
+            'egg_id' => $this->bungeecord->id,
             'environment' => [
                 'BUNGEE_VERSION' => '123',
                 'SERVER_JARFILE' => 'server2.jar',

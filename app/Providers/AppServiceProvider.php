@@ -5,17 +5,11 @@ namespace Pterodactyl\Providers;
 use View;
 use Cache;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Observers\UserObserver;
 use Pterodactyl\Extensions\Themes\Theme;
-use Pterodactyl\Observers\ServerObserver;
-use Pterodactyl\Observers\SubuserObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,10 +19,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-
-        User::observe(UserObserver::class);
-        Server::observe(ServerObserver::class);
-        Subuser::observe(SubuserObserver::class);
 
         View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
         View::share('appIsGit', $this->versionData()['is_git'] ?? false);
