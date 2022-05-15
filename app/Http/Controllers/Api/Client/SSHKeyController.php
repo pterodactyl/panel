@@ -27,7 +27,7 @@ class SSHKeyController extends ClientApiController
     {
         $model = $request->user()->sshKeys()->create([
             'name' => $request->input('name'),
-            'public_key' => $request->input('public_key'),
+            'public_key' => $request->getPublicKey(),
             'fingerprint' => $request->getKeyFingerprint(),
         ]);
 

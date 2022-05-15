@@ -58,6 +58,14 @@ class StoreSSHKeyRequest extends ClientApiRequest
     }
 
     /**
+     * Returns the public key but formatted in a consistent manner.
+     */
+    public function getPublicKey(): string
+    {
+        return $this->key->toString('PKCS8');
+    }
+
+    /**
      * Returns the SHA256 fingerprint of the key provided.
      */
     public function getKeyFingerprint(): string

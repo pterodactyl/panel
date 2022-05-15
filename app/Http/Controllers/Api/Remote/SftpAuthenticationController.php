@@ -7,7 +7,9 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
+use phpseclib3\Crypt\PublicKeyLoader;
 use Pterodactyl\Http\Controllers\Controller;
+use phpseclib3\Exception\NoKeyLoadedException;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
@@ -52,7 +54,14 @@ class SftpAuthenticationController extends Controller
                 $this->reject($request);
             }
         } else {
-            if (!$user->sshKeys()->where('public_key', trim($request->input('password')))->exists()) {
+            $key = null;
+            try {
+                $key = PublicKeyLoader::loadPublicKey(trim($request->input('password')));
+            } catch (NoKeyLoadedException $exception) {
+                // do nothing
+            }
+
+            if (!$key || !$user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {
                 $this->reject($request, false);
             }
         }
@@ -61,7 +70,6 @@ class SftpAuthenticationController extends Controller
 
         return new JsonResponse([
             'server' => $server->uuid,
-            'public_keys' => $user->sshKeys->map(fn ($value) => $value->public_key)->toArray(),
             'permissions' => $permissions ?? ['*'],
         ]);
     }
