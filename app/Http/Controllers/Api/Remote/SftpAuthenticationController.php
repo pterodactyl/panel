@@ -11,7 +11,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ThrottlesLogins;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
@@ -34,8 +34,15 @@ class SftpAuthenticationController extends Controller
     public function __invoke(SftpAuthenticationFormRequest $request): JsonResponse
     {
         $connection = $this->parseUsername($request->input('username'));
+        if (empty($connection['server'])) {
+            throw new BadRequestHttpException('No valid server identifier was included in the request.');
+        }
 
-        $this->validateRequestState($request);
+        if ($this->hasTooManyLoginAttempts($request)) {
+            $seconds = $this->limiter()->availableIn($this->throttleKey($request));
+
+            throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in {$seconds} seconds.");
+        }
 
         $user = $this->getUser($request, $connection['username']);
         $server = $this->getServer($request, $connection['server']);
@@ -45,8 +52,8 @@ class SftpAuthenticationController extends Controller
                 $this->reject($request);
             }
         } else {
-            if (!$user->sshKeys()->where('public_key', $request->input('password'))->exists()) {
-                $this->reject($request);
+            if (!$user->sshKeys()->where('public_key', trim($request->input('password')))->exists()) {
+                $this->reject($request, false);
             }
         }
 
@@ -101,28 +108,13 @@ class SftpAuthenticationController extends Controller
     }
 
     /**
-     * Checks that the request should not be throttled yet, and that the server was
-     * provided in the username.
-     */
-    protected function validateRequestState(Request $request): void
-    {
-        if ($this->hasTooManyLoginAttempts($request)) {
-            $seconds = $this->limiter()->availableIn($this->throttleKey($request));
-
-            throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in {$seconds} seconds.");
-        }
-
-        if (empty($connection['server'])) {
-            throw new NotFoundHttpException();
-        }
-    }
-
-    /**
      * Rejects the request and increments the login attempts.
      */
-    protected function reject(Request $request): void
+    protected function reject(Request $request, bool $increment = true): void
     {
-        $this->incrementLoginAttempts($request);
+        if ($increment) {
+            $this->incrementLoginAttempts($request);
+        }
 
         throw new HttpForbiddenException('Authorization credentials were not correct, please try again.');
     }
