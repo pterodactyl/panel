@@ -62,7 +62,7 @@ class SftpAuthenticationController extends Controller
             }
 
             if (!$key || !$user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {
-                $this->reject($request, false);
+                $this->reject($request, is_null($key));
             }
         }
 
@@ -70,7 +70,7 @@ class SftpAuthenticationController extends Controller
 
         return new JsonResponse([
             'server' => $server->uuid,
-            'permissions' => $permissions ?? ['*'],
+            'permissions' => $this->permissions->handle($server, $user),
         ]);
     }
 
