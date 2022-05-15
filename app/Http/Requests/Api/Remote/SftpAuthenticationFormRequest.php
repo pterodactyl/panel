@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Requests\Api\Remote;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class SftpAuthenticationFormRequest extends FormRequest
@@ -27,9 +26,7 @@ class SftpAuthenticationFormRequest extends FormRequest
         return [
             'type' => ['nullable', 'in:password,public_key'],
             'username' => ['required', 'string'],
-            'password' => [
-                Rule::when(fn () => $this->input('type') !== 'public_key', ['required', 'string'], ['nullable']),
-            ],
+            'password' => ['required', 'string'],
         ];
     }
 

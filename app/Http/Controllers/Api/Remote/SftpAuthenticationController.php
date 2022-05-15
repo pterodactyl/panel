@@ -28,7 +28,8 @@ abstract class SftpAuthenticationController extends Controller
 
     /**
      * Authenticate a set of credentials and return the associated server details
-     * for a SFTP connection on the daemon.
+     * for a SFTP connection on the daemon. This supports both public key and password
+     * based credentials.
      */
     public function __invoke(SftpAuthenticationFormRequest $request): JsonResponse
     {
@@ -44,9 +45,7 @@ abstract class SftpAuthenticationController extends Controller
                 $this->reject($request);
             }
         } else {
-            // Start blocking requests when the user has no public keys in the first place —
-            // don't let the user spam this endpoint.
-            if ($user->sshKeys->isEmpty()) {
+            if (!$user->sshKeys()->where('public_key', $request->input('password'))->exists()) {
                 $this->reject($request);
             }
         }
