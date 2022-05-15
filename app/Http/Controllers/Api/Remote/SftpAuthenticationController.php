@@ -43,6 +43,12 @@ abstract class SftpAuthenticationController extends Controller
             if (!password_verify($request->input('password'), $user->password)) {
                 $this->reject($request);
             }
+        } else {
+            // Start blocking requests when the user has no public keys in the first place —
+            // don't let the user spam this endpoint.
+            if ($user->sshKeys->isEmpty()) {
+                $this->reject($request);
+            }
         }
 
         $this->validateSftpAccess($user, $server);
