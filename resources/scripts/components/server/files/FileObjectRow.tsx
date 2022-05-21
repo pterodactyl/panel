@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import { join } from 'path';
+import * as Icon from 'react-feather';
 import React, { memo } from 'react';
 import isEqual from 'react-fast-compare';
 import styled from 'styled-components/macro';
@@ -8,11 +9,9 @@ import { NavLink, useRouteMatch } from 'react-router-dom';
 import { usePermissions } from '@/plugins/usePermissions';
 import { bytesToHuman, encodePathSegments } from '@/helpers';
 import { FileObject } from '@/api/server/files/loadDirectory';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
-import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
 
 const Row = styled.div`
     ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
@@ -51,9 +50,17 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
         <Clickable file={file}>
             <div css={tw`flex-none self-center text-neutral-400 ml-6 mr-4 text-lg pl-3`}>
                 {file.isFile ?
-                    <FontAwesomeIcon icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}/>
+                    <>
+                        {file.isSymlink ?
+                            <Icon.Download />
+                            : file.isArchiveType() ?
+                                <Icon.Archive />
+                                :
+                                <Icon.File />
+                        }
+                    </>
                     :
-                    <FontAwesomeIcon icon={faFolder}/>
+                    <Icon.Folder />
                 }
             </div>
             <div css={tw`flex-1 truncate`}>

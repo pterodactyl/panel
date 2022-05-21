@@ -1,13 +1,12 @@
 import tw from 'twin.macro';
 import { format } from 'date-fns';
+import * as Icon from 'react-feather';
 import React, { useEffect } from 'react';
 import { useFlashKey } from '@/plugins/useFlash';
 import { useSSHKeys } from '@/api/account/ssh-keys';
 import ContentBox from '@/components/elements/ContentBox';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import CreateSSHKeyForm from '@/components/dashboard/ssh/CreateSSHKeyForm';
@@ -45,7 +44,7 @@ export default () => {
                                     key={key.fingerprint}
                                     css={[ tw`bg-neutral-600 flex space-x-4 items-center`, index > 0 && tw`mt-2` ]}
                                 >
-                                    <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
+                                    <Icon.Key css={tw`text-neutral-300`} />
                                     <div css={tw`flex-1`}>
                                         <p css={tw`text-sm break-words font-medium`}>{key.name}</p>
                                         <p css={tw`text-xs mt-1 font-mono truncate`}>

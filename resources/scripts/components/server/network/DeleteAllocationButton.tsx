@@ -1,9 +1,8 @@
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
-import Icon from '@/components/elements/Icon';
 import { ServerContext } from '@/state/server';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteServerAllocation from '@/api/server/network/deleteServerAllocation';
@@ -47,7 +46,7 @@ const DeleteAllocationButton = ({ allocation }: Props) => {
                 type={'button'}
                 onClick={() => setConfirm(true)}
             >
-                <Icon icon={faTrashAlt} css={tw`w-3 h-auto`}/>
+                <Icon.Trash css={tw`w-3 h-auto`} />
             </button>
         </>
     );

@@ -1,13 +1,12 @@
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import React, { useState } from 'react';
 import { useStoreState } from 'easy-peasy';
 import Can from '@/components/elements/Can';
 import { Subuser } from '@/state/server/subusers';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
 import RemoveSubuserButton from '@/components/server/users/RemoveSubuserButton';
-import { faPencilAlt, faUnlockAlt, faUserLock } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
     subuser: Subuser;
@@ -33,11 +32,11 @@ export default ({ subuser }: Props) => {
             <div css={tw`ml-4`}>
                 <p css={tw`font-medium text-center`}>
                     &nbsp;
-                    <FontAwesomeIcon
-                        icon={subuser.twoFactorEnabled ? faUserLock : faUnlockAlt}
-                        fixedWidth
-                        css={!subuser.twoFactorEnabled ? tw`text-red-400` : undefined}
-                    />
+                    {subuser.twoFactorEnabled ?
+                        <Icon.Lock css={!subuser.twoFactorEnabled ? tw`text-red-400` : undefined} />
+                        :
+                        <Icon.Unlock css={!subuser.twoFactorEnabled ? tw`text-red-400` : undefined} />
+                    }
                     &nbsp;
                 </p>
                 <p css={tw`text-2xs text-neutral-500 uppercase hidden md:block`}>2FA Enabled</p>
@@ -57,7 +56,7 @@ export default ({ subuser }: Props) => {
                             css={tw`block text-sm p-1 md:p-2 text-neutral-500 hover:text-neutral-100 transition-colors duration-150 mx-4`}
                             onClick={() => setVisible(true)}
                         >
-                            <FontAwesomeIcon icon={faPencilAlt} />
+                            <Icon.PenTool />
                         </button>
                     </Can>
                     <Can action={'user.delete'}>

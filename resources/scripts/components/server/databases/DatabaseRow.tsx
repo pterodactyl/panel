@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import { object, string } from 'yup';
+import * as Icon from 'react-feather';
 import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
@@ -13,11 +14,9 @@ import Button from '@/components/elements/Button';
 import { Form, Formik, FormikHelpers } from 'formik';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
 import deleteServerDatabase from '@/api/server/databases/deleteServerDatabase';
-import { faDatabase, faEye, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import RotatePasswordButton from '@/components/server/databases/RotatePasswordButton';
 
 interface Props {
@@ -151,7 +150,7 @@ export default ({ database, className }: Props) => {
             </Modal>
             <GreyRowBox $hoverable={false} className={className} css={tw`mb-2`}>
                 <div css={tw`hidden md:block`}>
-                    <FontAwesomeIcon icon={faDatabase} fixedWidth/>
+                    <Icon.Database />
                 </div>
                 <div css={tw`flex-1 ml-4`}>
                     <CopyOnClick text={database.name}><p css={tw`text-lg`}>{database.name}</p></CopyOnClick>
@@ -170,11 +169,11 @@ export default ({ database, className }: Props) => {
                 </div>
                 <div css={tw`ml-8`}>
                     <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>
-                        <FontAwesomeIcon icon={faEye} fixedWidth/>
+                        <Icon.Eye />
                     </Button>
                     <Can action={'database.delete'}>
                         <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
-                            <FontAwesomeIcon icon={faTrashAlt} fixedWidth/>
+                            <Icon.Trash />
                         </Button>
                     </Can>
                 </div>

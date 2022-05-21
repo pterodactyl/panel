@@ -1,6 +1,7 @@
 import tw from 'twin.macro';
 import { debounce } from 'debounce';
 import { formatIp } from '@/helpers';
+import * as Icon from 'react-feather';
 import isEqual from 'react-fast-compare';
 import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
@@ -13,9 +14,7 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import React, { memo, useCallback, useState } from 'react';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import InputSpinner from '@/components/elements/InputSpinner';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import getServerAllocations from '@/api/swr/getServerAllocations';
-import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
@@ -62,7 +61,7 @@ const AllocationRow = ({ allocation }: Props) => {
         <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-nowrap mt-2`}>
             <div css={tw`flex items-center w-full md:w-auto`}>
                 <div css={tw`pl-4 pr-6 text-neutral-400`}>
-                    <FontAwesomeIcon icon={faNetworkWired}/>
+                    <Icon.Wifi />
                 </div>
                 <div css={tw`mr-4 flex-1 md:w-40`}>
                     {allocation.alias ?

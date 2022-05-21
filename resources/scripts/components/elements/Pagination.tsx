@@ -1,10 +1,9 @@
 import React from 'react';
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import { PaginatedResult } from '@/api/http';
 import styled from 'styled-components/macro';
 import Button from '@/components/elements/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
 
 interface RenderFuncProps<T> {
     items: T[];
@@ -54,7 +53,7 @@ function Pagination<T> ({ data: { items, pagination }, onPageSelect, children }:
                     color={'primary'}
                     onClick={() => onPageSelect(1)}
                 >
-                    <FontAwesomeIcon icon={faAngleDoubleLeft}/>
+                    <Icon.ChevronLeft />
                 </Block>
                 }
                 {
@@ -75,7 +74,7 @@ function Pagination<T> ({ data: { items, pagination }, onPageSelect, children }:
                     color={'primary'}
                     onClick={() => onPageSelect(pagination.totalPages)}
                 >
-                    <FontAwesomeIcon icon={faAngleDoubleRight}/>
+                    <Icon.ChevronRight />
                 </Block>
                 }
             </div>

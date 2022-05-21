@@ -1,3 +1,4 @@
+import * as Icon from 'react-feather';
 import { useStoreState } from 'easy-peasy';
 import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
@@ -11,7 +12,6 @@ import ServerConsole from '@/components/server/ServerConsole';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import SubNavigation from '@/components/elements/SubNavigation';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import InstallListener from '@/components/server/InstallListener';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import TransferListener from '@/components/server/TransferListener';
@@ -19,7 +19,6 @@ import WebsocketHandler from '@/components/server/WebsocketHandler';
 import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import UsersContainer from '@/components/server/users/UsersContainer';
-import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 import BackupContainer from '@/components/server/backups/BackupContainer';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
@@ -103,32 +102,48 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                             <div>
                                 <NavLink to={`${match.url}`} exact>Console</NavLink>
                                 <Can action={'file.*'}>
-                                    <NavLink to={`${match.url}/files`}>File Manager</NavLink>
+                                    <NavLink to={`${match.url}/files`}>
+                                        File Manager <Icon.Folder />
+                                    </NavLink>
                                 </Can>
                                 <Can action={'database.*'}>
-                                    <NavLink to={`${match.url}/databases`}>Databases</NavLink>
+                                    <NavLink to={`${match.url}/databases`}>
+                                        Databases <Icon.Database />
+                                    </NavLink>
                                 </Can>
                                 <Can action={'schedule.*'}>
-                                    <NavLink to={`${match.url}/schedules`}>Schedules</NavLink>
+                                    <NavLink to={`${match.url}/schedules`}>
+                                        Schedules <Icon.Clock />
+                                    </NavLink>
                                 </Can>
                                 <Can action={'user.*'}>
-                                    <NavLink to={`${match.url}/users`}>Users</NavLink>
+                                    <NavLink to={`${match.url}/users`}>
+                                        Users <Icon.Users />
+                                    </NavLink>
                                 </Can>
                                 <Can action={'backup.*'}>
-                                    <NavLink to={`${match.url}/backups`}>Backups</NavLink>
+                                    <NavLink to={`${match.url}/backups`}>
+                                        Backups <Icon.Archive />
+                                    </NavLink>
                                 </Can>
                                 <Can action={'allocation.*'}>
-                                    <NavLink to={`${match.url}/network`}>Network</NavLink>
+                                    <NavLink to={`${match.url}/network`}>
+                                        Network <Icon.Share2 />
+                                    </NavLink>
                                 </Can>
                                 <Can action={'startup.*'}>
-                                    <NavLink to={`${match.url}/startup`}>Startup</NavLink>
+                                    <NavLink to={`${match.url}/startup`}>
+                                        Startup <Icon.Play />
+                                    </NavLink>
                                 </Can>
                                 <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
-                                    <NavLink to={`${match.url}/settings`}>Settings</NavLink>
+                                    <NavLink to={`${match.url}/settings`}>
+                                        Settings <Icon.Settings />
+                                    </NavLink>
                                 </Can>
                                 {rootAdmin &&
                                 <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
-                                    <FontAwesomeIcon icon={faExternalLinkAlt}/>
+                                    <Icon.ExternalLink />
                                 </a>
                                 }
                             </div>

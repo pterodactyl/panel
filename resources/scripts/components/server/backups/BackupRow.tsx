@@ -1,5 +1,6 @@
 import React from 'react';
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import { bytesToHuman } from '@/helpers';
 import Can from '@/components/elements/Can';
 import { ServerBackup } from '@/api/server/types';
@@ -9,9 +10,7 @@ import { SocketEvent } from '@/components/server/events';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
-import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
     backup: ServerBackup;
@@ -46,9 +45,9 @@ export default ({ backup, className }: Props) => {
                 <div css={tw`mr-4`}>
                     {backup.completedAt !== null ?
                         backup.isLocked ?
-                            <FontAwesomeIcon icon={faLock} css={tw`text-yellow-500`}/>
+                            <Icon.Lock css={tw`text-yellow-500`} />
                             :
-                            <FontAwesomeIcon icon={faArchive} css={tw`text-neutral-300`}/>
+                            <Icon.Unlock css={tw`text-neutral-300`} />
                         :
                         <Spinner size={'small'}/>
                     }
@@ -85,7 +84,7 @@ export default ({ backup, className }: Props) => {
                 <div css={tw`mt-4 md:mt-0 ml-6`} style={{ marginRight: '-0.5rem' }}>
                     {!backup.completedAt ?
                         <div css={tw`p-2 invisible`}>
-                            <FontAwesomeIcon icon={faEllipsisH}/>
+                            <Icon.MoreHorizontal />
                         </div>
                         :
                         <BackupContextMenu backup={backup}/>

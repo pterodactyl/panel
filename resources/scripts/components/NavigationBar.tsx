@@ -1,15 +1,14 @@
 import http from '@/api/http';
 import * as React from 'react';
 import { useState } from 'react';
+import * as Icon from 'react-feather';
 import tw, { theme } from 'twin.macro';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import styled from 'styled-components/macro';
 import { Link, NavLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
-import { faCogs, faLayerGroup, faSignOutAlt, faUserCircle, faStore } from '@fortawesome/free-solid-svg-icons';
 
 const Navigation = styled.div`
     ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};
@@ -66,23 +65,23 @@ export default () => {
                     </Link>
                 </div>
                 <RightNavigation>
-                    <SearchContainer/>
+                    <SearchContainer />
                     <NavLink to={'/'} exact>
-                        <FontAwesomeIcon icon={faLayerGroup}/>
+                        <Icon.Server />
                     </NavLink>
                     <NavLink to={'/account'}>
-                        <FontAwesomeIcon icon={faUserCircle}/>
+                        <Icon.User />
                     </NavLink>
                     <NavLink to={'/store'}>
-                        <FontAwesomeIcon icon={faStore} />
+                        <Icon.ShoppingCart />
                     </NavLink>
                     {rootAdmin &&
                     <a href={'/admin'} rel={'noreferrer'}>
-                        <FontAwesomeIcon icon={faCogs}/>
+                        <Icon.Settings />
                     </a>
                     }
                     <button onClick={onTriggerLogout}>
-                        <FontAwesomeIcon icon={faSignOutAlt}/>
+                        <Icon.LogOut />
                     </button>
                 </RightNavigation>
             </div>

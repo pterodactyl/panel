@@ -1,22 +1,12 @@
+import * as Icon from 'react-feather';
 import tw, { TwStyle } from 'twin.macro';
 import { ServerContext } from '@/state/server';
 import React, { useEffect, useState } from 'react';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import UptimeDuration from '@/components/server/UptimeDuration';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import {
-    faArrowCircleDown,
-    faArrowCircleUp,
-    faCircle,
-    faEthernet,
-    faHdd,
-    faMemory,
-    faMicrochip,
-    faServer,
-} from '@fortawesome/free-solid-svg-icons';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
@@ -86,11 +76,9 @@ const ServerDetailsBlock = () => {
     const cpuLimit = limits.cpu ? limits.cpu + '%' : 'Unlimited';
 
     return (
-        <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
+        <TitledGreyBox css={tw`break-words`} title={name}>
             <p css={tw`text-xs uppercase`}>
-                <FontAwesomeIcon
-                    icon={faCircle}
-                    fixedWidth
+                <Icon.Circle
                     css={[
                         tw`mr-1`,
                         statusToColor(status, isInstalling || isTransferring),
@@ -105,26 +93,26 @@ const ServerDetailsBlock = () => {
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>
-                    <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
+                    <Icon.Wifi css={tw`mr-1`} />
                     <code css={tw`ml-1`}>{primaryAllocation}</code>
                 </p>
             </CopyOnClick>
             <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {stats.cpu.toFixed(2)}%
+                <Icon.Cpu css={tw`mr-1`} /> {stats.cpu.toFixed(2)}%
                 <span css={tw`text-neutral-500`}> / {cpuLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1`}/> {bytesToHuman(stats.memory)}
+                <Icon.PieChart css={tw`mr-1`} /> {bytesToHuman(stats.memory)}
                 <span css={tw`text-neutral-500`}> / {memoryLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.disk)}
+                <Icon.HardDrive css={tw`mr-1`} />&nbsp;{bytesToHuman(stats.disk)}
                 <span css={tw`text-neutral-500`}> / {diskLimit}</span>
             </p>
             <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
-                <FontAwesomeIcon icon={faArrowCircleUp} fixedWidth css={tw`mr-1`}/>{bytesToHuman(stats.tx)}
-                <FontAwesomeIcon icon={faArrowCircleDown} fixedWidth css={tw`mx-1`}/>{bytesToHuman(stats.rx)}
+                <Icon.Wifi css={tw`mr-1`} />
+                <Icon.ArrowUpCircle css={tw`mr-1`} />{bytesToHuman(stats.tx)}
+                <Icon.ArrowDownCircle css={tw`mr-1`} />{bytesToHuman(stats.rx)}
             </p>
         </TitledGreyBox>
     );

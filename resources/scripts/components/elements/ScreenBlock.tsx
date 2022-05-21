@@ -1,12 +1,11 @@
 import React from 'react';
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import Button from '@/components/elements/Button';
 import NotFoundSvg from '@/assets/images/not_found.svg';
 import styled, { keyframes } from 'styled-components/macro';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import { faArrowLeft, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 
 interface BaseProps {
     title: string;
@@ -50,7 +49,11 @@ const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProp
                         onClick={() => onRetry ? onRetry() : (onBack ? onBack() : null)}
                         className={onRetry ? 'hover:spin' : undefined}
                     >
-                        <FontAwesomeIcon icon={onRetry ? faSyncAlt : faArrowLeft}/>
+                        {onRetry ?
+                            <Icon.RefreshCw />
+                            :
+                            <Icon.ChevronLeft />
+                        }
                     </ActionButton>
                 </div>
                 }

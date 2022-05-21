@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import Fade from '@/components/elements/Fade';
 import { ServerContext } from '@/state/server';
@@ -7,11 +8,9 @@ import React, { useEffect, useState } from 'react';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import compressFiles from '@/api/server/files/compressFiles';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
-import { faFileArchive, faLevelUpAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const MassActionsBar = () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -98,13 +97,13 @@ const MassActionsBar = () => {
                 }
                 <div css={tw`pointer-events-auto rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={() => setShowMove(true)}>
-                        <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> Move
+                        <Icon.ArrowUp css={tw`mr-2`} /> Move
                     </Button>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={onClickCompress}>
-                        <FontAwesomeIcon icon={faFileArchive} css={tw`mr-2`}/> Archive
+                        <Icon.Archive css={tw`mr-2`} /> Archive
                     </Button>
                     <Button size={'xsmall'} color={'red'} isSecondary onClick={() => setShowConfirm(true)}>
-                        <FontAwesomeIcon icon={faTrashAlt} css={tw`mr-2`}/> Delete
+                        <Icon.Trash css={tw`mr-2`} /> Delete
                     </Button>
                 </div>
             </div>

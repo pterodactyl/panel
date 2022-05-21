@@ -1,23 +1,17 @@
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import { Link } from 'react-router-dom';
-import isEqual from 'react-fast-compare';
 import styled from 'styled-components/macro';
 import { Server } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { useEffect, useRef, useState } from 'react';
 import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
-import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && (current / (limit * 1024 * 1024) >= 0.90);
-
-const Icon = memo(styled(FontAwesomeIcon)<{ $alarm: boolean }>`
-    ${props => props.$alarm ? tw`text-red-400` : tw`text-neutral-500`};
-`, isEqual);
 
 const IconDescription = styled.p<{ $alarm: boolean }>`
     ${tw`text-sm ml-2`};
@@ -82,7 +76,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
         <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
             <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
                 <div className={'icon'} css={tw`mr-4`}>
-                    <FontAwesomeIcon icon={faServer}/>
+                    <Icon.Server />
                 </div>
                 <div>
                     <p css={tw`text-lg break-words`}>{server.name}</p>
@@ -92,7 +86,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 </div>
             </div>
             <div css={tw`hidden lg:col-span-2 lg:flex ml-4 justify-end h-full`}>
-                <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
+                <Icon.Wifi css={tw`text-neutral-500`} />
                 <p css={tw`text-sm text-neutral-400 ml-2`}>
                     {
                         server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
@@ -133,7 +127,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     <React.Fragment>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <Icon icon={faMicrochip} $alarm={alarms.cpu}/>
+                                <Icon.Cpu />
                                 <IconDescription $alarm={alarms.cpu}>
                                     {stats.cpuUsagePercent.toFixed(2)} %
                                 </IconDescription>
@@ -142,7 +136,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <Icon icon={faMemory} $alarm={alarms.memory}/>
+                                <Icon.PieChart />
                                 <IconDescription $alarm={alarms.memory}>
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </IconDescription>
@@ -151,7 +145,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <Icon icon={faHdd} $alarm={alarms.disk}/>
+                                <Icon.HardDrive />
                                 <IconDescription $alarm={alarms.disk}>
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </IconDescription>

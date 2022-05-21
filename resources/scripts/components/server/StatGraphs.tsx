@@ -6,7 +6,6 @@ import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import React, { useCallback, useRef, useState } from 'react';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { faEthernet, faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 
 const chartDefaults = (ticks?: Chart.TickOptions): ChartConfiguration => ({
     type: 'line',
@@ -124,7 +123,7 @@ export default () => {
 
     return (
         <div css={tw`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4`}>
-            <TitledGreyBox title={'Memory usage'} icon={faMemory}>
+            <TitledGreyBox title={'Memory usage'}>
                 {status !== 'offline' ?
                     <canvas
                         id={'memory_chart'}
@@ -138,7 +137,7 @@ export default () => {
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'CPU usage'} icon={faMicrochip}>
+            <TitledGreyBox title={'CPU usage'}>
                 {status !== 'offline' ?
                     <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
                     :
@@ -147,7 +146,7 @@ export default () => {
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'Inbound Data'} icon={faEthernet}>
+            <TitledGreyBox title={'Inbound Data'}>
                 {status !== 'offline' ?
                     <canvas id={'rx_chart'} ref={rxRef} aria-label={'Server Inbound Data'} role={'img'}/>
                     :
@@ -156,7 +155,7 @@ export default () => {
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'Outbound Data'} icon={faEthernet}>
+            <TitledGreyBox title={'Outbound Data'}>
                 {status !== 'offline' ?
                     <canvas id={'tx_chart'} ref={txRef} aria-label={'Server Outbound Data'} role={'img'}/>
                     :

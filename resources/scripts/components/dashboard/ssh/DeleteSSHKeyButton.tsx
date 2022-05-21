@@ -1,8 +1,7 @@
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import React, { useState } from 'react';
 import { useFlashKey } from '@/plugins/useFlash';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { deleteSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
@@ -36,10 +35,7 @@ export default ({ fingerprint }: { fingerprint: string }) => {
                 Are you sure you wish to delete this SSH key?
             </ConfirmationModal>
             <button css={tw`ml-4 p-2 text-sm`} onClick={() => setVisible(true)}>
-                <FontAwesomeIcon
-                    icon={faTrashAlt}
-                    css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`}
-                />
+                <Icon.Trash css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`} />
             </button>
         </>
     );

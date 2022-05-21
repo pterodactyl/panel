@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import React, { useState } from 'react';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
@@ -6,8 +7,6 @@ import { ServerContext } from '@/state/server';
 import { Subuser } from '@/state/server/subusers';
 import { Actions, useStoreActions } from 'easy-peasy';
 import deleteSubuser from '@/api/server/users/deleteSubuser';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 export default ({ subuser }: { subuser: Subuser }) => {
@@ -52,7 +51,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
                 css={tw`block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150`}
                 onClick={() => setShowConfirmation(true)}
             >
-                <FontAwesomeIcon icon={faTrashAlt}/>
+                <Icon.Trash />
             </button>
         </>
     );

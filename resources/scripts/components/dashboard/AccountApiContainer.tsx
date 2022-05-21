@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import { format } from 'date-fns';
+import * as Icon from 'react-feather';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import React, { useEffect, useState } from 'react';
@@ -8,10 +9,8 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import ContentBox from '@/components/elements/ContentBox';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import getApiKeys, { ApiKey } from '@/api/account/getApiKeys';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { faKey, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import CreateApiKeyForm from '@/components/dashboard/forms/CreateApiKeyForm';
@@ -80,7 +79,7 @@ export default () => {
                                     key={key.identifier}
                                     css={[ tw`bg-neutral-600 flex items-center`, index > 0 && tw`mt-2` ]}
                                 >
-                                    <FontAwesomeIcon icon={faKey} css={tw`text-neutral-300`}/>
+                                    <Icon.Key css={tw`text-neutral-300`} />
                                     <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                         <p css={tw`text-sm break-words`}>{key.description}</p>
                                         <p css={tw`text-2xs text-neutral-300 uppercase`}>
@@ -97,10 +96,7 @@ export default () => {
                                         css={tw`ml-4 p-2 text-sm`}
                                         onClick={() => setDeleteIdentifier(key.identifier)}
                                     >
-                                        <FontAwesomeIcon
-                                            icon={faTrashAlt}
-                                            css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`}
-                                        />
+                                        <Icon.Trash css={tw`text-neutral-400 hover:text-red-400 transition-colors duration-150`} />
                                     </button>
                                 </GreyRowBox>
                             ))

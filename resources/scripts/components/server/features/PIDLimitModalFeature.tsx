@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { ServerContext } from '@/state/server';
@@ -7,8 +8,6 @@ import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import { SocketEvent } from '@/components/server/events';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
 
 const PIDLimitModalFeature = () => {
     const [ visible, setVisible ] = useState(false);
@@ -54,7 +53,7 @@ const PIDLimitModalFeature = () => {
             {isAdmin ?
                 <>
                     <div css={tw`mt-4 sm:flex items-center`}>
-                        <FontAwesomeIcon css={tw`pr-4`} icon={faExclamationTriangle} color={'orange'} size={'4x'}/>
+                        <Icon.AlertTriangle css={tw`pr-4`} color={'orange'} size={'4x'} />
                         <h2 css={tw`text-2xl mb-4 text-neutral-100 `}>Memory or process limit reached...</h2>
                     </div>
                     <p css={tw`mt-4`}>This server has reached the maximum process or memory limit.</p>
@@ -69,7 +68,7 @@ const PIDLimitModalFeature = () => {
                 :
                 <>
                     <div css={tw`mt-4 sm:flex items-center`}>
-                        <FontAwesomeIcon css={tw`pr-4`} icon={faExclamationTriangle} color={'orange'} size={'4x'}/>
+                        <Icon.AlertTriangle css={tw`pr-4`} color={'orange'} size={'4x'} />
                         <h2 css={tw`text-2xl mb-4 text-neutral-100`}>Possible resource limit reached...</h2>
                     </div>
                     <p css={tw`mt-4`}>This server is attempting to use more resources than allocated. Please contact the administrator and give them the error below.</p>

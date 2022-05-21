@@ -1,5 +1,6 @@
 import { join } from 'path';
 import tw from 'twin.macro';
+import * as Icon from 'react-feather';
 import isEqual from 'react-fast-compare';
 import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
@@ -13,25 +14,12 @@ import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import compressFiles from '@/api/server/files/compressFiles';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import DropdownMenu from '@/components/elements/DropdownMenu';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import decompressFiles from '@/api/server/files/decompressFiles';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
 import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import {
-    faBoxOpen,
-    faCopy,
-    faEllipsisH,
-    faFileArchive,
-    faFileCode,
-    faFileDownload,
-    faLevelUpAlt,
-    faPencilAlt,
-    faTrashAlt,
-    IconDefinition,
-} from '@fortawesome/free-solid-svg-icons';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
@@ -41,14 +29,12 @@ const StyledRow = styled.div<{ $danger?: boolean }>`
 `;
 
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
-    icon: IconDefinition;
     title: string;
     $danger?: boolean;
 }
 
-const Row = ({ icon, title, ...props }: RowProps) => (
+const Row = ({ title, ...props }: RowProps) => (
     <StyledRow {...props}>
-        <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth/>
         <span css={tw`ml-2`}>{title}</span>
     </StyledRow>
 );
@@ -141,7 +127,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 ref={onClickRef}
                 renderToggle={onClick => (
                     <div css={tw`p-3 hover:text-white`} onClick={onClick}>
-                        <FontAwesomeIcon icon={faEllipsisH}/>
+                        <Icon.MoreHorizontal />
                         {modal ?
                             modal === 'chmod' ?
                                 <ChmodFileModal
@@ -165,29 +151,29 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 )}
             >
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
-                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
-                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'}/>
+                    <Row onClick={() => setModal('rename')} title={'Rename'}/>
+                    <Row onClick={() => setModal('move')} title={'Move'}/>
+                    <Row onClick={() => setModal('chmod')} title={'Permissions'}/>
                 </Can>
                 {file.isFile &&
                 <Can action={'file.create'}>
-                    <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
+                    <Row onClick={doCopy} title={'Copy'}/>
                 </Can>
                 }
                 {file.isArchiveType() ?
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                        <Row onClick={doUnarchive} title={'Unarchive'}/>
                     </Can>
                     :
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                        <Row onClick={doArchive} title={'Archive'}/>
                     </Can>
                 }
                 {file.isFile &&
-                    <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
+                    <Row onClick={doDownload} title={'Download'}/>
                 }
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger/>
+                    <Row onClick={() => setShowConfirmation(true)} title={'Delete'} $danger/>
                 </Can>
             </DropdownMenu>
         </>

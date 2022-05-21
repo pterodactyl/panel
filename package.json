@@ -1,9 +1,6 @@
 {
     "name": "pterodactyl-panel",
     "dependencies": {
-        "@fortawesome/fontawesome-svg-core": "^1.2.32",
-        "@fortawesome/free-solid-svg-icons": "^5.15.1",
-        "@fortawesome/react-fontawesome": "^0.1.11",
         "@tailwindcss/forms": "^0.2.1",
         "axios": "^0.21.1",
         "chart.js": "^2.8.0",
@@ -24,6 +21,7 @@
         "react-copy-to-clipboard": "^5.0.2",
         "react-dom": "npm:@hot-loader/react-dom",
         "react-fast-compare": "^3.2.0",
+        "react-feather": "^2.0.9",
         "react-google-recaptcha": "^2.0.1",
         "react-hot-loader": "^4.12.21",
         "react-i18next": "^11.2.1",

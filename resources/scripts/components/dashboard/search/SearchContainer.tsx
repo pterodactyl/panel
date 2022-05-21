@@ -1,7 +1,6 @@
+import * as Icon from 'react-feather';
 import React, { useState } from 'react';
 import useEventListener from '@/plugins/useEventListener';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SearchModal from '@/components/dashboard/search/SearchModal';
 
 export default () => {
@@ -25,7 +24,7 @@ export default () => {
             />
             }
             <div className={'navigation-link'} onClick={() => setVisible(true)}>
-                <FontAwesomeIcon icon={faSearch}/>
+                <Icon.Search />
             </div>
         </>
     );
