@@ -5,6 +5,7 @@ import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
+import StoreOverviewContainer from '@/components/store/StoreOverviewContainer';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
@@ -34,6 +35,9 @@ export default ({ location }: RouteComponentProps) => (
                 </Route>
                 <Route path={'/account/ssh'} exact>
                     <AccountSSHContainer/>
+                </Route>
+                <Route path={'/store'} exact>
+                    <StoreOverviewContainer />
                 </Route>
                 <Route path={'*'}>
                     <NotFound/>

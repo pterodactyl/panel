@@ -5,7 +5,7 @@ namespace Pterodactyl\Http\ViewComposers;
 use Illuminate\View\View;
 use Pterodactyl\Services\Helpers\AssetHashService;
 
-class AssetComposer
+class SettingComposer
 {
     /**
      * @var \Pterodactyl\Services\Helpers\AssetHashService

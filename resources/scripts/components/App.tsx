@@ -7,6 +7,7 @@ import { SiteSettings } from '@/state/settings';
 import ServerRouter from '@/routers/ServerRouter';
 import { setupInterceptors } from '@/api/interceptors';
 import DashboardRouter from '@/routers/DashboardRouter';
+import { StorefrontSettings } from '@/state/storefront';
 import { Route, Router, Switch } from 'react-router-dom';
 import ProgressBar from '@/components/elements/ProgressBar';
 import { NotFound } from '@/components/elements/ScreenBlock';
@@ -16,6 +17,7 @@ import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
+    StoreConfiguration?: StorefrontSettings;
     PterodactylUser?: {
         uuid: string;
         username: string;
@@ -33,7 +35,12 @@ interface ExtendedWindow extends Window {
 setupInterceptors(history);
 
 const App = () => {
-    const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
+    const {
+        PterodactylUser,
+        SiteConfiguration,
+        StoreConfiguration,
+    } = (window as ExtendedWindow);
+
     if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
             uuid: PterodactylUser.uuid,
@@ -49,6 +56,10 @@ const App = () => {
 
     if (!store.getState().settings.data) {
         store.getActions().settings.setSettings(SiteConfiguration!);
+    }
+
+    if (!store.getState().storefront.data) {
+        store.getActions().storefront.setStorefront(StoreConfiguration!);
     }
 
     return (

@@ -9,7 +9,7 @@ import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
-import { faCogs, faLayerGroup, faSignOutAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCogs, faLayerGroup, faSignOutAlt, faUserCircle, faStore } from '@fortawesome/free-solid-svg-icons';
 
 const Navigation = styled.div`
     ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};
@@ -72,6 +72,9 @@ export default () => {
                     </NavLink>
                     <NavLink to={'/account'}>
                         <FontAwesomeIcon icon={faUserCircle}/>
+                    </NavLink>
+                    <NavLink to={'/store'}>
+                        <FontAwesomeIcon icon={faStore} />
                     </NavLink>
                     {rootAdmin &&
                     <a href={'/admin'} rel={'noreferrer'}>

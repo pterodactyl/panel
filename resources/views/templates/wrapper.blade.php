@@ -29,6 +29,11 @@
                     window.SiteConfiguration = {!! json_encode($siteConfiguration) !!};
                 </script>
             @endif
+            @if(!empty($storeConfiguration))
+                <script>
+                    window.StoreConfiguration = {!! json_encode($storeConfiguration) !!};
+                </script>
+            @endif
         @show
         <style>
             @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
