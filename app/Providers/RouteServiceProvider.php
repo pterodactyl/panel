@@ -6,16 +6,25 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
+use Pterodactyl\Http\Middleware\TrimStrings;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    protected const FILE_PATH_REGEX = '/^\/api\/client\/servers\/([a-z0-9-]{36})\/files(\/?$|\/(.)*$)/i';
+
     /**
      * Define your route model bindings, pattern filters, etc.
      */
     public function boot()
     {
         $this->configureRateLimiting();
+
+        // Disable trimming string values when requesting file information — it isn't helpful
+        // and messes up the ability to actually open a directory that ends with a space.
+        TrimStrings::skipWhen(function (Request $request) {
+            return preg_match(self::FILE_PATH_REGEX, $request->getPathInfo()) === 1;
+        });
 
         $this->routes(function () {
             Route::middleware(['web', 'csrf'])->group(function () {
