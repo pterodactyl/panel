@@ -14,6 +14,7 @@ using these eggs should be updated to account for the new format.
 * Allocations cannot be deleted from a server by a user if the server is configured with an `allocation_limit` set to `0`.
 * The Java Version modal no longer shows a dropdown and update option to users that do not have permission to make those changes.
 * The Java Version modal now correctly returns only the images available to the server's selected Egg.
+* Fixes leading and trailing spaces being removed from variable values on file manager endpoints, causing errors when trying to perform actions against certain files and folders.
 
 ### Changed
 * Forces HTTPS on URLs when the `APP_URL` value is set and includes `https://` within the URL. This addresses proxy misconfiguration issues that would cause URLs to be generated incorrectly.
