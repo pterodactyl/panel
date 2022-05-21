@@ -1,17 +1,17 @@
+import tw from 'twin.macro';
+import isEqual from 'react-fast-compare';
+import useFlash from '@/plugins/useFlash';
+import Can from '@/components/elements/Can';
+import { ServerContext } from '@/state/server';
+import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import useFlash from '@/plugins/useFlash';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import { ServerContext } from '@/state/server';
-import AllocationRow from '@/components/server/network/AllocationRow';
-import Button from '@/components/elements/Button';
-import createServerAllocation from '@/api/server/network/createServerAllocation';
-import tw from 'twin.macro';
-import Can from '@/components/elements/Can';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerAllocations from '@/api/swr/getServerAllocations';
-import isEqual from 'react-fast-compare';
+import AllocationRow from '@/components/server/network/AllocationRow';
 import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import createServerAllocation from '@/api/server/network/createServerAllocation';
 
 const NetworkContainer = () => {
     const [ loading, setLoading ] = useState(false);

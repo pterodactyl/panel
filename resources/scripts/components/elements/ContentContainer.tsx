@@ -1,6 +1,6 @@
-import styled from 'styled-components/macro';
-import { breakpoint } from '@/theme';
 import tw from 'twin.macro';
+import { breakpoint } from '@/theme';
+import styled from 'styled-components/macro';
 
 const ContentContainer = styled.div`
     max-width: 1200px;

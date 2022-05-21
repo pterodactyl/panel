@@ -1,15 +1,21 @@
-import React, { lazy, memo } from 'react';
-import { ServerContext } from '@/state/server';
-import Can from '@/components/elements/Can';
-import ContentContainer from '@/components/elements/ContentContainer';
 import tw from 'twin.macro';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
-import PowerControls from '@/components/server/PowerControls';
-import { EulaModalFeature, JavaVersionModalFeature, GSLTokenModalFeature, PIDLimitModalFeature, SteamDiskSpaceFeature } from '@feature/index';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import React, { lazy, memo } from 'react';
+import Can from '@/components/elements/Can';
+import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
+import PowerControls from '@/components/server/PowerControls';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ContentContainer from '@/components/elements/ContentContainer';
+import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import {
+    EulaModalFeature,
+    JavaVersionModalFeature,
+    GSLTokenModalFeature,
+    PIDLimitModalFeature,
+    SteamDiskSpaceFeature,
+} from '@feature/index';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 

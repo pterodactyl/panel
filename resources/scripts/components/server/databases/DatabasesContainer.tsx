@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import getServerDatabases from '@/api/server/databases/getServerDatabases';
-import { ServerContext } from '@/state/server';
+import tw from 'twin.macro';
+import useFlash from '@/plugins/useFlash';
+import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
+import Fade from '@/components/elements/Fade';
+import { ServerContext } from '@/state/server';
+import React, { useEffect, useState } from 'react';
+import Spinner from '@/components/elements/Spinner';
+import { useDeepMemoize } from '@/plugins/useDeepMemoize';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import DatabaseRow from '@/components/server/databases/DatabaseRow';
-import Spinner from '@/components/elements/Spinner';
-import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
-import Can from '@/components/elements/Can';
-import useFlash from '@/plugins/useFlash';
-import tw from 'twin.macro';
-import Fade from '@/components/elements/Fade';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import { useDeepMemoize } from '@/plugins/useDeepMemoize';
+import getServerDatabases from '@/api/server/databases/getServerDatabases';
+import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
 
 export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);

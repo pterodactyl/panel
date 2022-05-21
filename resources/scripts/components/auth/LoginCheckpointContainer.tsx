@@ -1,15 +1,15 @@
+import tw from 'twin.macro';
 import React, { useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
-import loginCheckpoint from '@/api/auth/loginCheckpoint';
-import LoginFormContainer from '@/components/auth/LoginFormContainer';
+import useFlash from '@/plugins/useFlash';
 import { ActionCreator } from 'easy-peasy';
 import { StaticContext } from 'react-router';
-import { useFormikContext, withFormik } from 'formik';
-import useFlash from '@/plugins/useFlash';
 import { FlashStore } from '@/state/flashes';
 import Field from '@/components/elements/Field';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
+import { useFormikContext, withFormik } from 'formik';
+import loginCheckpoint from '@/api/auth/loginCheckpoint';
+import { Link, RouteComponentProps } from 'react-router-dom';
+import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
 interface Values {
     code: string;

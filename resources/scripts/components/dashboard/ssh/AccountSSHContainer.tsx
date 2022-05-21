@@ -1,20 +1,21 @@
-import React, { useEffect } from 'react';
-import ContentBox from '@/components/elements/ContentBox';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import { useSSHKeys } from '@/api/account/ssh-keys';
-import { useFlashKey } from '@/plugins/useFlash';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faKey } from '@fortawesome/free-solid-svg-icons';
 import { format } from 'date-fns';
+import React, { useEffect } from 'react';
+import { useFlashKey } from '@/plugins/useFlash';
+import { useSSHKeys } from '@/api/account/ssh-keys';
+import ContentBox from '@/components/elements/ContentBox';
+import GreyRowBox from '@/components/elements/GreyRowBox';
+import { faKey } from '@fortawesome/free-solid-svg-icons';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 import CreateSSHKeyForm from '@/components/dashboard/ssh/CreateSSHKeyForm';
 import DeleteSSHKeyButton from '@/components/dashboard/ssh/DeleteSSHKeyButton';
 
 export default () => {
     const { clearAndAddHttpError } = useFlashKey('account');
+
     const { data, isValidating, error } = useSSHKeys({
         revalidateOnMount: true,
         revalidateOnFocus: false,

@@ -1,17 +1,17 @@
 import axios from 'axios';
-import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components/macro';
-import { ModalMask } from '@/components/elements/Modal';
-import Fade from '@/components/elements/Fade';
-import useEventListener from '@/plugins/useEventListener';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import styled from 'styled-components/macro';
+import Fade from '@/components/elements/Fade';
 import { ServerContext } from '@/state/server';
+import Button from '@/components/elements/Button';
 import { WithClassname } from '@/components/types';
+import { ModalMask } from '@/components/elements/Modal';
+import useEventListener from '@/plugins/useEventListener';
+import React, { useEffect, useRef, useState } from 'react';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 
 const InnerContainer = styled.div`
   max-width: 600px;

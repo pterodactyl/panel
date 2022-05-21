@@ -1,19 +1,19 @@
-import React, { memo, useState } from 'react';
-import { ServerEggVariable } from '@/api/server/types';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { usePermissions } from '@/plugins/usePermissions';
-import InputSpinner from '@/components/elements/InputSpinner';
-import Input from '@/components/elements/Input';
-import Switch from '@/components/elements/Switch';
 import tw from 'twin.macro';
 import { debounce } from 'debounce';
-import updateStartupVariable from '@/api/server/updateStartupVariable';
-import useFlash from '@/plugins/useFlash';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import getServerStartup from '@/api/swr/getServerStartup';
-import Select from '@/components/elements/Select';
 import isEqual from 'react-fast-compare';
+import useFlash from '@/plugins/useFlash';
+import React, { memo, useState } from 'react';
 import { ServerContext } from '@/state/server';
+import Input from '@/components/elements/Input';
+import Switch from '@/components/elements/Switch';
+import Select from '@/components/elements/Select';
+import { ServerEggVariable } from '@/api/server/types';
+import { usePermissions } from '@/plugins/usePermissions';
+import getServerStartup from '@/api/swr/getServerStartup';
+import InputSpinner from '@/components/elements/InputSpinner';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import updateStartupVariable from '@/api/server/updateStartupVariable';
 
 interface Props {
     variable: ServerEggVariable;

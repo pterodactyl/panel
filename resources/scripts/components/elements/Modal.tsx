@@ -1,10 +1,10 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
-import styled, { css } from 'styled-components/macro';
 import { breakpoint } from '@/theme';
-import Fade from '@/components/elements/Fade';
 import { createPortal } from 'react-dom';
+import Fade from '@/components/elements/Fade';
+import Spinner from '@/components/elements/Spinner';
+import styled, { css } from 'styled-components/macro';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 
 export interface RequiredModalProps {
     visible: boolean;

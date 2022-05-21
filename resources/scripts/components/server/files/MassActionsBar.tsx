@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from 'react';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Fade from '@/components/elements/Fade';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileArchive, faLevelUpAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
-import compressFiles from '@/api/server/files/compressFiles';
+import Fade from '@/components/elements/Fade';
 import { ServerContext } from '@/state/server';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import Button from '@/components/elements/Button';
+import React, { useEffect, useState } from 'react';
 import deleteFiles from '@/api/server/files/deleteFiles';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import compressFiles from '@/api/server/files/compressFiles';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
+import { faFileArchive, faLevelUpAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 
 const MassActionsBar = () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);

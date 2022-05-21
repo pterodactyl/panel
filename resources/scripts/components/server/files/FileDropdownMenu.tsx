@@ -1,5 +1,25 @@
+import { join } from 'path';
+import tw from 'twin.macro';
+import isEqual from 'react-fast-compare';
+import useFlash from '@/plugins/useFlash';
+import Can from '@/components/elements/Can';
+import styled from 'styled-components/macro';
+import { ServerContext } from '@/state/server';
+import copyFile from '@/api/server/files/copyFile';
 import React, { memo, useRef, useState } from 'react';
+import deleteFiles from '@/api/server/files/deleteFiles';
+import useEventListener from '@/plugins/useEventListener';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import compressFiles from '@/api/server/files/compressFiles';
+import { FileObject } from '@/api/server/files/loadDirectory';
+import DropdownMenu from '@/components/elements/DropdownMenu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import decompressFiles from '@/api/server/files/decompressFiles';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import ChmodFileModal from '@/components/server/files/ChmodFileModal';
+import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
+import RenameFileModal from '@/components/server/files/RenameFileModal';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import {
     faBoxOpen,
     faCopy,
@@ -12,26 +32,6 @@ import {
     faTrashAlt,
     IconDefinition,
 } from '@fortawesome/free-solid-svg-icons';
-import RenameFileModal from '@/components/server/files/RenameFileModal';
-import { ServerContext } from '@/state/server';
-import { join } from 'path';
-import deleteFiles from '@/api/server/files/deleteFiles';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import copyFile from '@/api/server/files/copyFile';
-import Can from '@/components/elements/Can';
-import getFileDownloadUrl from '@/api/server/files/getFileDownloadUrl';
-import useFlash from '@/plugins/useFlash';
-import tw from 'twin.macro';
-import { FileObject } from '@/api/server/files/loadDirectory';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import DropdownMenu from '@/components/elements/DropdownMenu';
-import styled from 'styled-components/macro';
-import useEventListener from '@/plugins/useEventListener';
-import compressFiles from '@/api/server/files/compressFiles';
-import decompressFiles from '@/api/server/files/decompressFiles';
-import isEqual from 'react-fast-compare';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import ChmodFileModal from '@/components/server/files/ChmodFileModal';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 

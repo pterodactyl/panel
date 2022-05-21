@@ -1,7 +1,7 @@
 import useSWR from 'swr';
-import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 import { cleanDirectoryPath } from '@/helpers';
 import { ServerContext } from '@/state/server';
+import loadDirectory, { FileObject } from '@/api/server/files/loadDirectory';
 
 export const getDirectorySwrKey = (uuid: string, directory: string): string => `${uuid}:files:${directory}`;
 

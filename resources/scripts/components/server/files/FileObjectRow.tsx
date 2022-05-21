@@ -1,18 +1,18 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
-import { bytesToHuman, encodePathSegments } from '@/helpers';
-import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
-import React, { memo } from 'react';
-import { FileObject } from '@/api/server/files/loadDirectory';
-import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
-import { ServerContext } from '@/state/server';
-import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
+import { join } from 'path';
+import React, { memo } from 'react';
 import isEqual from 'react-fast-compare';
 import styled from 'styled-components/macro';
-import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
+import { ServerContext } from '@/state/server';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import { usePermissions } from '@/plugins/usePermissions';
-import { join } from 'path';
+import { bytesToHuman, encodePathSegments } from '@/helpers';
+import { FileObject } from '@/api/server/files/loadDirectory';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
+import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
+import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
+import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
 
 const Row = styled.div`
     ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};

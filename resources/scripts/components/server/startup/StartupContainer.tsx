@@ -1,20 +1,20 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import tw from 'twin.macro';
-import VariableBox from '@/components/server/startup/VariableBox';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import getServerStartup from '@/api/swr/getServerStartup';
-import Spinner from '@/components/elements/Spinner';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import isEqual from 'react-fast-compare';
+import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
-import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
-import Select from '@/components/elements/Select';
-import isEqual from 'react-fast-compare';
 import Input from '@/components/elements/Input';
-import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
+import Select from '@/components/elements/Select';
+import Spinner from '@/components/elements/Spinner';
+import getServerStartup from '@/api/swr/getServerStartup';
 import InputSpinner from '@/components/elements/InputSpinner';
-import useFlash from '@/plugins/useFlash';
+import React, { useCallback, useEffect, useState } from 'react';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import { ServerError } from '@/components/elements/ScreenBlock';
+import VariableBox from '@/components/server/startup/VariableBox';
+import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
+import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 const StartupContainer = () => {
     const [ loading, setLoading ] = useState(false);

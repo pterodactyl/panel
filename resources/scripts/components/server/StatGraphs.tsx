@@ -1,12 +1,12 @@
-import React, { useCallback, useRef, useState } from 'react';
-import Chart, { ChartConfiguration } from 'chart.js';
-import { ServerContext } from '@/state/server';
-import merge from 'deepmerge';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { faEthernet, faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
+import merge from 'deepmerge';
+import { ServerContext } from '@/state/server';
+import Chart, { ChartConfiguration } from 'chart.js';
 import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import React, { useCallback, useRef, useState } from 'react';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import { faEthernet, faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
 
 const chartDefaults = (ticks?: Chart.TickOptions): ChartConfiguration => ({
     type: 'line',

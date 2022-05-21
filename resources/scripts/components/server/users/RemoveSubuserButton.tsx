@@ -1,14 +1,14 @@
+import tw from 'twin.macro';
 import React, { useState } from 'react';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import { ServerContext } from '@/state/server';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Subuser } from '@/state/server/subusers';
-import deleteSubuser from '@/api/server/users/deleteSubuser';
-import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
+import { ServerContext } from '@/state/server';
+import { Subuser } from '@/state/server/subusers';
+import { Actions, useStoreActions } from 'easy-peasy';
+import deleteSubuser from '@/api/server/users/deleteSubuser';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 export default ({ subuser }: { subuser: Subuser }) => {
     const [ loading, setLoading ] = useState(false);

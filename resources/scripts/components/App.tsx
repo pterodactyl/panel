@@ -1,18 +1,18 @@
 import React from 'react';
-import { hot } from 'react-hot-loader/root';
-import { Route, Router, Switch } from 'react-router-dom';
-import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
-import DashboardRouter from '@/routers/DashboardRouter';
-import ServerRouter from '@/routers/ServerRouter';
-import AuthenticationRouter from '@/routers/AuthenticationRouter';
+import { StoreProvider } from 'easy-peasy';
+import { hot } from 'react-hot-loader/root';
+import { history } from '@/components/history';
 import { SiteSettings } from '@/state/settings';
+import ServerRouter from '@/routers/ServerRouter';
+import { setupInterceptors } from '@/api/interceptors';
+import DashboardRouter from '@/routers/DashboardRouter';
+import { Route, Router, Switch } from 'react-router-dom';
 import ProgressBar from '@/components/elements/ProgressBar';
 import { NotFound } from '@/components/elements/ScreenBlock';
-import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import { history } from '@/components/history';
-import { setupInterceptors } from '@/api/interceptors';
+import AuthenticationRouter from '@/routers/AuthenticationRouter';
+import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;

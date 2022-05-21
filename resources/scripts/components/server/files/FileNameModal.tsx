@@ -1,12 +1,12 @@
 import React from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import { ServerContext } from '@/state/server';
 import { join } from 'path';
 import tw from 'twin.macro';
+import { object, string } from 'yup';
+import { ServerContext } from '@/state/server';
+import Field from '@/components/elements/Field';
 import Button from '@/components/elements/Button';
+import { Form, Formik, FormikHelpers } from 'formik';
+import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 
 type Props = RequiredModalProps & {
     onFileNamed: (name: string) => void;

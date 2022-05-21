@@ -1,24 +1,24 @@
-import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
+import useFlash from '@/plugins/useFlash';
+import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
-import { SocketEvent, SocketRequest } from '@/components/server/events';
 import Select from '@/components/elements/Select';
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import Can from '@/components/elements/Can';
+import React, { useEffect, useState } from 'react';
 import getServerStartup from '@/api/swr/getServerStartup';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import InputSpinner from '@/components/elements/InputSpinner';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
+import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
 
 const MATCH_ERRORS = [
+    'unsupported major.minor version',
+    'java.lang.unsupportedclassversionerror',
+    'has been compiled by a more recent version of the java runtime',
     'minecraft 1.17 requires running the server with java 16 or above',
     'minecraft 1.18 requires running the server with java 17 or above',
-    'java.lang.unsupportedclassversionerror',
-    'unsupported major.minor version',
-    'has been compiled by a more recent version of the java runtime',
 ];
 
 const JavaVersionModalFeature = () => {

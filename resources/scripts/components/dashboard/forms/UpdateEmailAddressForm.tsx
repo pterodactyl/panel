@@ -1,13 +1,13 @@
 import React from 'react';
-import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
-import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import Field from '@/components/elements/Field';
-import { httpErrorToHuman } from '@/api/http';
-import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
+import { ApplicationStore } from '@/state';
+import { httpErrorToHuman } from '@/api/http';
+import Field from '@/components/elements/Field';
 import Button from '@/components/elements/Button';
+import { Form, Formik, FormikHelpers } from 'formik';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
 
 interface Values {
     email: string;

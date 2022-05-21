@@ -1,18 +1,18 @@
-import React, { useEffect, useState } from 'react';
-import { Server } from '@/api/server/getServer';
+import useSWR from 'swr';
+import tw from 'twin.macro';
 import getServers from '@/api/getServers';
-import ServerRow from '@/components/dashboard/ServerRow';
-import Spinner from '@/components/elements/Spinner';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
-import { usePersistedState } from '@/plugins/usePersistedState';
-import Switch from '@/components/elements/Switch';
-import tw from 'twin.macro';
-import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
-import Pagination from '@/components/elements/Pagination';
 import { useLocation } from 'react-router-dom';
+import { Server } from '@/api/server/getServer';
+import Switch from '@/components/elements/Switch';
+import React, { useEffect, useState } from 'react';
+import Spinner from '@/components/elements/Spinner';
+import ServerRow from '@/components/dashboard/ServerRow';
+import Pagination from '@/components/elements/Pagination';
+import { usePersistedState } from '@/plugins/usePersistedState';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const { search } = useLocation();

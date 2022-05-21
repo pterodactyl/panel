@@ -1,15 +1,15 @@
+import tw from 'twin.macro';
+import { Link } from 'react-router-dom';
+import isEqual from 'react-fast-compare';
+import styled from 'styled-components/macro';
+import { Server } from '@/api/server/getServer';
+import Spinner from '@/components/elements/Spinner';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 import React, { memo, useEffect, useRef, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
-import { Server } from '@/api/server/getServer';
-import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
-import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import Spinner from '@/components/elements/Spinner';
-import styled from 'styled-components/macro';
-import isEqual from 'react-fast-compare';
+import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
+import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.

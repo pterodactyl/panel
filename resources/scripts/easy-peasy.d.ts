@@ -1,7 +1,7 @@
 // noinspection ES6UnusedImports
+import { ApplicationStore } from '@/state';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import EasyPeasy, { Actions, State } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 
 declare module 'easy-peasy' {
     export function useStoreState<Result>(

@@ -1,5 +1,12 @@
-import React, { useEffect, useState } from 'react';
 import tw, { TwStyle } from 'twin.macro';
+import { ServerContext } from '@/state/server';
+import React, { useEffect, useState } from 'react';
+import CopyOnClick from '@/components/elements/CopyOnClick';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import UptimeDuration from '@/components/server/UptimeDuration';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
+import { SocketEvent, SocketRequest } from '@/components/server/events';
 import {
     faArrowCircleDown,
     faArrowCircleUp,
@@ -10,13 +17,6 @@ import {
     faMicrochip,
     faServer,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { ServerContext } from '@/state/server';
-import CopyOnClick from '@/components/elements/CopyOnClick';
-import { SocketEvent, SocketRequest } from '@/components/server/events';
-import UptimeDuration from '@/components/server/UptimeDuration';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 

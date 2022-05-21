@@ -1,6 +1,6 @@
+import tw from 'twin.macro';
 import React, { createRef } from 'react';
 import styled from 'styled-components/macro';
-import tw from 'twin.macro';
 import Fade from '@/components/elements/Fade';
 
 interface Props {

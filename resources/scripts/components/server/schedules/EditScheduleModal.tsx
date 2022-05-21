@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Schedule } from '@/api/server/schedules/getServerSchedules';
-import Field from '@/components/elements/Field';
-import { Form, Formik, FormikHelpers } from 'formik';
-import FormikSwitch from '@/components/elements/FormikSwitch';
-import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
-import { ServerContext } from '@/state/server';
-import { httpErrorToHuman } from '@/api/http';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
+import asModal from '@/hoc/asModal';
+import useFlash from '@/plugins/useFlash';
+import { httpErrorToHuman } from '@/api/http';
+import { ServerContext } from '@/state/server';
+import Field from '@/components/elements/Field';
 import Button from '@/components/elements/Button';
 import ModalContext from '@/context/ModalContext';
-import asModal from '@/hoc/asModal';
 import Switch from '@/components/elements/Switch';
+import { Form, Formik, FormikHelpers } from 'formik';
+import FormikSwitch from '@/components/elements/FormikSwitch';
+import React, { useContext, useEffect, useState } from 'react';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
 import ScheduleCheatsheetCards from '@/components/server/schedules/ScheduleCheatsheetCards';
 
 interface Props {

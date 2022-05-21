@@ -1,6 +1,16 @@
+import tw from 'twin.macro';
 import React, { useState } from 'react';
-import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
+import useFlash from '@/plugins/useFlash';
+import Can from '@/components/elements/Can';
+import { httpErrorToHuman } from '@/api/http';
+import Icon from '@/components/elements/Icon';
+import { ServerContext } from '@/state/server';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
+import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
+import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 import {
     faArrowCircleDown,
     faClock,
@@ -10,16 +20,6 @@ import {
     faToggleOn,
     faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
-import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
-import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
-import Can from '@/components/elements/Can';
-import useFlash from '@/plugins/useFlash';
-import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import Icon from '@/components/elements/Icon';
 
 interface Props {
     schedule: Schedule;

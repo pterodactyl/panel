@@ -1,14 +1,14 @@
 import React from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
 import { join } from 'path';
-import renameFiles from '@/api/server/files/renameFiles';
-import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
+import { ServerContext } from '@/state/server';
+import Field from '@/components/elements/Field';
+import Button from '@/components/elements/Button';
+import { Form, Formik, FormikHelpers } from 'formik';
+import renameFiles from '@/api/server/files/renameFiles';
+import useFileManagerSwr from '@/plugins/useFileManagerSwr';
+import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 
 interface FormikValues {
     name: string;

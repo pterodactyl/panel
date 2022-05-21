@@ -1,5 +1,5 @@
-import { ServerContext } from '@/state/server';
 import { useEffect, useRef } from 'react';
+import { ServerContext } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
 
 const useWebsocketEvent = (event: SocketEvent, callback: (data: string) => void) => {

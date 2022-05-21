@@ -1,7 +1,7 @@
 import React from 'react';
-import MessageBox from '@/components/MessageBox';
-import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
+import { useStoreState } from 'easy-peasy';
+import MessageBox from '@/components/MessageBox';
 
 type Props = Readonly<{
     byKey?: string;

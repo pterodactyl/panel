@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components/macro';
 import tw from 'twin.macro';
+import styled, { css } from 'styled-components/macro';
 
 interface Props {
     hideDropdownArrow?: boolean;

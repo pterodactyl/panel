@@ -1,6 +1,6 @@
+import tw from 'twin.macro';
 import React, { CSSProperties } from 'react';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import tw from 'twin.macro';
 
 interface Props {
     icon: IconDefinition;

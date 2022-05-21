@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import rotateDatabasePassword from '@/api/server/databases/rotateDatabasePassword';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import { ServerContext } from '@/state/server';
-import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
-import { httpErrorToHuman } from '@/api/http';
-import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
+import React, { useState } from 'react';
+import { ApplicationStore } from '@/state';
+import { httpErrorToHuman } from '@/api/http';
+import { ServerContext } from '@/state/server';
+import Button from '@/components/elements/Button';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
+import rotateDatabasePassword from '@/api/server/databases/rotateDatabasePassword';
 
 export default ({ databaseId, onUpdate }: {
     databaseId: string;

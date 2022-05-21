@@ -1,10 +1,10 @@
+import tw from 'twin.macro';
 import React, { useState } from 'react';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
+import Button from '@/components/elements/Button';
 import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModal';
 import DisableTwoFactorModal from '@/components/dashboard/forms/DisableTwoFactorModal';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
 
 export default () => {
     const [ visible, setVisible ] = useState(false);

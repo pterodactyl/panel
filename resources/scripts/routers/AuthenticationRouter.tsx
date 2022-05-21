@@ -1,10 +1,10 @@
 import React from 'react';
-import { Route, RouteComponentProps, Switch } from 'react-router-dom';
-import LoginContainer from '@/components/auth/LoginContainer';
-import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
-import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
-import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
+import LoginContainer from '@/components/auth/LoginContainer';
+import { Route, RouteComponentProps, Switch } from 'react-router-dom';
+import ResetPasswordContainer from '@/components/auth/ResetPasswordContainer';
+import ForgotPasswordContainer from '@/components/auth/ForgotPasswordContainer';
+import LoginCheckpointContainer from '@/components/auth/LoginCheckpointContainer';
 
 export default ({ location, history, match }: RouteComponentProps) => (
     <div className={'pt-8 xl:pt-32'}>

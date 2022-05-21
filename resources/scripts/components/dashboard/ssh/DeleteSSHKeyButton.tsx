@@ -1,10 +1,10 @@
 import tw from 'twin.macro';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import React, { useState } from 'react';
 import { useFlashKey } from '@/plugins/useFlash';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { deleteSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 export default ({ fingerprint }: { fingerprint: string }) => {
     const { clearAndAddHttpError } = useFlashKey('account');

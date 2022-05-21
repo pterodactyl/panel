@@ -1,8 +1,8 @@
-import { ServerContext } from '@/state/server';
 import useSWR from 'swr';
 import http from '@/api/http';
-import { rawDataToServerAllocation } from '@/api/transformers';
+import { ServerContext } from '@/state/server';
 import { Allocation } from '@/api/server/getServer';
+import { rawDataToServerAllocation } from '@/api/transformers';
 
 export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);

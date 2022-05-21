@@ -1,9 +1,9 @@
 import React from 'react';
-import { Route } from 'react-router';
-import { SwitchTransition } from 'react-transition-group';
-import Fade from '@/components/elements/Fade';
-import styled from 'styled-components/macro';
 import tw from 'twin.macro';
+import { Route } from 'react-router';
+import styled from 'styled-components/macro';
+import Fade from '@/components/elements/Fade';
+import { SwitchTransition } from 'react-transition-group';
 
 const StyledSwitchTransition = styled(SwitchTransition)`
     ${tw`relative`};

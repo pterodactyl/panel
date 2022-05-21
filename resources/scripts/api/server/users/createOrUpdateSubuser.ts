@@ -1,6 +1,6 @@
 import http from '@/api/http';
-import { rawDataToServerSubuser } from '@/api/server/users/getServerSubusers';
 import { Subuser } from '@/state/server/subusers';
+import { rawDataToServerSubuser } from '@/api/server/users/getServerSubusers';
 
 interface Params {
     email: string;

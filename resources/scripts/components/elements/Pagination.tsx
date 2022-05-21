@@ -1,6 +1,6 @@
 import React from 'react';
-import { PaginatedResult } from '@/api/http';
 import tw from 'twin.macro';
+import { PaginatedResult } from '@/api/http';
 import styled from 'styled-components/macro';
 import Button from '@/components/elements/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

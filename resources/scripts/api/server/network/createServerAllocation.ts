@@ -1,5 +1,5 @@
-import { Allocation } from '@/api/server/getServer';
 import http from '@/api/http';
+import { Allocation } from '@/api/server/getServer';
 import { rawDataToServerAllocation } from '@/api/transformers';
 
 export default async (uuid: string): Promise<Allocation> => {

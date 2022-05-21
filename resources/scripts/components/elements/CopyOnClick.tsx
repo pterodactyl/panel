@@ -1,9 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
 import tw from 'twin.macro';
-import styled, { keyframes } from 'styled-components/macro';
 import Fade from '@/components/elements/Fade';
+import CopyToClipboard from 'react-copy-to-clipboard';
 import { SwitchTransition } from 'react-transition-group';
+import styled, { keyframes } from 'styled-components/macro';
+import React, { useCallback, useEffect, useState } from 'react';
 
 const fade = keyframes`
     from { opacity: 0 }

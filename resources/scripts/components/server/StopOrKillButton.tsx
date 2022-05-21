@@ -1,8 +1,8 @@
-import React, { memo, useEffect, useState } from 'react';
-import { ServerContext } from '@/state/server';
-import { PowerAction } from '@/components/server/ServerConsole';
-import Button from '@/components/elements/Button';
 import isEqual from 'react-fast-compare';
+import { ServerContext } from '@/state/server';
+import Button from '@/components/elements/Button';
+import React, { memo, useEffect, useState } from 'react';
+import { PowerAction } from '@/components/server/ServerConsole';
 
 const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void }) => {
     const [ clicked, setClicked ] = useState(false);

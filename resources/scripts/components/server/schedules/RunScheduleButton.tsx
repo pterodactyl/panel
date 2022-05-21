@@ -1,11 +1,11 @@
+import tw from 'twin.macro';
+import useFlash from '@/plugins/useFlash';
+import { ServerContext } from '@/state/server';
+import Button from '@/components/elements/Button';
 import React, { useCallback, useState } from 'react';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import triggerScheduleExecution from '@/api/server/schedules/triggerScheduleExecution';
-import { ServerContext } from '@/state/server';
-import useFlash from '@/plugins/useFlash';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import triggerScheduleExecution from '@/api/server/schedules/triggerScheduleExecution';
 
 const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
     const [ loading, setLoading ] = useState(false);

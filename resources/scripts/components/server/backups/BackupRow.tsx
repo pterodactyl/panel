@@ -1,17 +1,17 @@
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icons';
-import { format, formatDistanceToNow } from 'date-fns';
-import Spinner from '@/components/elements/Spinner';
+import tw from 'twin.macro';
 import { bytesToHuman } from '@/helpers';
 import Can from '@/components/elements/Can';
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
-import tw from 'twin.macro';
+import { ServerBackup } from '@/api/server/types';
+import Spinner from '@/components/elements/Spinner';
+import { format, formatDistanceToNow } from 'date-fns';
+import { SocketEvent } from '@/components/server/events';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import getServerBackups from '@/api/swr/getServerBackups';
-import { ServerBackup } from '@/api/server/types';
-import { SocketEvent } from '@/components/server/events';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
+import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icons';
 
 interface Props {
     backup: ServerBackup;

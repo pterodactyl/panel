@@ -1,19 +1,19 @@
 import React from 'react';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import { ServerContext } from '@/state/server';
-import { useStoreState } from 'easy-peasy';
-import RenameServerBox from '@/components/server/settings/RenameServerBox';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import Can from '@/components/elements/Can';
-import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 import tw from 'twin.macro';
+import { formatIp } from '@/helpers';
+import isEqual from 'react-fast-compare';
+import { useStoreState } from 'easy-peasy';
+import Can from '@/components/elements/Can';
+import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import { LinkButton } from '@/components/elements/Button';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import { formatIp } from '@/helpers';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import RenameServerBox from '@/components/server/settings/RenameServerBox';
+import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 
 export default () => {
     const username = useStoreState(state => state.user.data!.username);

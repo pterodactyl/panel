@@ -1,10 +1,10 @@
 import React from 'react';
 import tw from 'twin.macro';
 import Can from '@/components/elements/Can';
-import Button from '@/components/elements/Button';
-import StopOrKillButton from '@/components/server/StopOrKillButton';
-import { PowerAction } from '@/components/server/ServerConsole';
 import { ServerContext } from '@/state/server';
+import Button from '@/components/elements/Button';
+import { PowerAction } from '@/components/server/ServerConsole';
+import StopOrKillButton from '@/components/server/StopOrKillButton';
 
 const PowerControls = () => {
     const status = ServerContext.useStoreState(state => state.status.value);

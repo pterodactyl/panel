@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
-import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
+import React, { useState } from 'react';
+import Button from '@/components/elements/Button';
+import { faUserPlus } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import EditSubuserModal from '@/components/server/users/EditSubuserModal';
 
 export default () => {
     const [ visible, setVisible ] = useState(false);

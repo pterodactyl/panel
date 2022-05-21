@@ -1,6 +1,6 @@
-import { FileObject } from '@/api/server/files/loadDirectory';
 import http from '@/api/http';
 import { rawDataToFileObject } from '@/api/transformers';
+import { FileObject } from '@/api/server/files/loadDirectory';
 
 export default async (uuid: string, directory: string, files: string[]): Promise<FileObject> => {
     const { data } = await http.post(`/api/client/servers/${uuid}/files/compress`, { root: directory, files }, {

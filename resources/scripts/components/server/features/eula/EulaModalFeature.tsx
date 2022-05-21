@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
+import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import saveFileContents from '@/api/server/files/saveFileContents';
+import React, { useEffect, useState } from 'react';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
+import saveFileContents from '@/api/server/files/saveFileContents';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 
 const EulaModalFeature = () => {

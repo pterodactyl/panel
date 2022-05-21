@@ -1,15 +1,15 @@
-import React, { useContext } from 'react';
-import { Form, Formik, FormikHelpers } from 'formik';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import Field from '@/components/elements/Field';
-import { object, string } from 'yup';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
 import asModal from '@/hoc/asModal';
+import { object, string } from 'yup';
+import React, { useContext } from 'react';
+import { ApplicationStore } from '@/state';
+import Field from '@/components/elements/Field';
+import Button from '@/components/elements/Button';
 import ModalContext from '@/context/ModalContext';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { Actions, useStoreActions } from 'easy-peasy';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 
 interface Values {
     password: string;

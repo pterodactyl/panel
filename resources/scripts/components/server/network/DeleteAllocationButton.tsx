@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
-import Icon from '@/components/elements/Icon';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import { ServerContext } from '@/state/server';
-import deleteServerAllocation from '@/api/server/network/deleteServerAllocation';
-import getServerAllocations from '@/api/swr/getServerAllocations';
+import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
+import Icon from '@/components/elements/Icon';
+import { ServerContext } from '@/state/server';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import getServerAllocations from '@/api/swr/getServerAllocations';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
+import deleteServerAllocation from '@/api/server/network/deleteServerAllocation';
 
 interface Props {
     allocation: number;

@@ -1,8 +1,8 @@
+import tw from 'twin.macro';
 import React, { useState } from 'react';
+import Button from '@/components/elements/Button';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
-import Button from '@/components/elements/Button';
-import tw from 'twin.macro';
 
 interface Props {
     schedule: Schedule;

@@ -1,11 +1,11 @@
+import tw from 'twin.macro';
 import React, { useState } from 'react';
-import deleteSchedule from '@/api/server/schedules/deleteSchedule';
-import { ServerContext } from '@/state/server';
-import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
+import { ServerContext } from '@/state/server';
 import Button from '@/components/elements/Button';
+import { Actions, useStoreActions } from 'easy-peasy';
+import deleteSchedule from '@/api/server/schedules/deleteSchedule';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 interface Props {

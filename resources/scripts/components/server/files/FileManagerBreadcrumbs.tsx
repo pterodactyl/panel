@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import tw from 'twin.macro';
 import { ServerContext } from '@/state/server';
+import React, { useEffect, useState } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import { encodePathSegments, hashToPath } from '@/helpers';
-import tw from 'twin.macro';
 
 interface Props {
     renderLeft?: JSX.Element;

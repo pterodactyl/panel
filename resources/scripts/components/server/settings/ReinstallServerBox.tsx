@@ -1,13 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { ServerContext } from '@/state/server';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import reinstallServer from '@/api/server/reinstallServer';
-import { Actions, useStoreActions } from 'easy-peasy';
+import tw from 'twin.macro';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
+import { ServerContext } from '@/state/server';
 import Button from '@/components/elements/Button';
+import React, { useEffect, useState } from 'react';
+import { Actions, useStoreActions } from 'easy-peasy';
+import reinstallServer from '@/api/server/reinstallServer';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);

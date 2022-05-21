@@ -1,7 +1,7 @@
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import { mutate } from 'swr';
 import { ServerContext } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
-import { mutate } from 'swr';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import { getDirectorySwrKey } from '@/plugins/useFileManagerSwr';
 
 const InstallListener = () => {

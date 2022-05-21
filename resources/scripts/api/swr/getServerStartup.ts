@@ -1,7 +1,7 @@
 import useSWR, { ConfigInterface } from 'swr';
 import http, { FractalResponseList } from '@/api/http';
-import { rawDataToServerEggVariable } from '@/api/transformers';
 import { ServerEggVariable } from '@/api/server/types';
+import { rawDataToServerEggVariable } from '@/api/transformers';
 
 interface Response {
     invocation: string;

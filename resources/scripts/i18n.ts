@@ -1,8 +1,8 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
-import LocalStorageBackend from 'i18next-localstorage-backend';
 import XHR from 'i18next-xhr-backend';
 import Backend from 'i18next-chained-backend';
+import { initReactI18next } from 'react-i18next';
+import LocalStorageBackend from 'i18next-localstorage-backend';
 
 i18n
     .use(Backend)

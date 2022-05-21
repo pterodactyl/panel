@@ -1,5 +1,5 @@
-import axios, { AxiosInstance } from 'axios';
 import { store } from '@/state';
+import axios, { AxiosInstance } from 'axios';
 
 const http: AxiosInstance = axios.create({
     timeout: 20000,

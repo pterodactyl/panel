@@ -1,6 +1,6 @@
+import tw from 'twin.macro';
 import React, { Suspense } from 'react';
 import styled, { css, keyframes } from 'styled-components/macro';
-import tw from 'twin.macro';
 
 export type SpinnerSize = 'small' | 'base' | 'large';
 

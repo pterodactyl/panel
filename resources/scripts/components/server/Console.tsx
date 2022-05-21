@@ -1,20 +1,20 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Terminal, ITerminalOptions } from 'xterm';
-import { FitAddon } from 'xterm-addon-fit';
-import { SearchAddon } from 'xterm-addon-search';
-import { SearchBarAddon } from 'xterm-addon-search-bar';
-import { WebLinksAddon } from 'xterm-addon-web-links';
-import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { ServerContext } from '@/state/server';
-import styled from 'styled-components/macro';
-import { usePermissions } from '@/plugins/usePermissions';
-import tw, { theme as th } from 'twin.macro';
 import 'xterm/css/xterm.css';
-import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
+import { FitAddon } from 'xterm-addon-fit';
+import styled from 'styled-components/macro';
+import tw, { theme as th } from 'twin.macro';
+import { ServerContext } from '@/state/server';
+import { SearchAddon } from 'xterm-addon-search';
+import { Terminal, ITerminalOptions } from 'xterm';
+import { WebLinksAddon } from 'xterm-addon-web-links';
+import { SearchBarAddon } from 'xterm-addon-search-bar';
+import { usePermissions } from '@/plugins/usePermissions';
+import useEventListener from '@/plugins/useEventListener';
 import { usePersistedState } from '@/plugins/usePersistedState';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 
 const theme = {
     background: th`colors.black`.toString(),

@@ -1,18 +1,18 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
-import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
-import enableAccountTwoFactor from '@/api/account/enableAccountTwoFactor';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import asModal from '@/hoc/asModal';
-import ModalContext from '@/context/ModalContext';
 import QRCode from 'qrcode.react';
+import asModal from '@/hoc/asModal';
+import { object, string } from 'yup';
+import { ApplicationStore } from '@/state';
+import Field from '@/components/elements/Field';
+import Button from '@/components/elements/Button';
+import ModalContext from '@/context/ModalContext';
+import { Form, Formik, FormikHelpers } from 'formik';
+import { Actions, useStoreActions } from 'easy-peasy';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import React, { useContext, useEffect, useState } from 'react';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import enableAccountTwoFactor from '@/api/account/enableAccountTwoFactor';
+import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
 
 interface Values {
     code: string;

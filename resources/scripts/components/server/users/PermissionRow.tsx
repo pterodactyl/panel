@@ -1,9 +1,9 @@
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
-import Checkbox from '@/components/elements/Checkbox';
 import React from 'react';
+import tw from 'twin.macro';
 import { useStoreState } from 'easy-peasy';
+import styled from 'styled-components/macro';
 import Label from '@/components/elements/Label';
+import Checkbox from '@/components/elements/Checkbox';
 
 const Container = styled.label`
   ${tw`flex items-center border border-transparent rounded md:p-2 transition-colors duration-75`};
