@@ -1,3 +1,4 @@
+import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { useStoreState } from 'easy-peasy';
 import Can from '@/components/elements/Can';
@@ -100,50 +101,52 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
                     <CSSTransition timeout={150} classNames={'fade'} appear in>
                         <SubNavigation>
                             <div>
-                                <NavLink to={`${match.url}`} exact>Console</NavLink>
+                                <NavLink to={`${match.url}`} exact>
+                                    <div css={tw`flex items-center justify-between`}>Console <Icon.Terminal css={tw`ml-1`} size={18} /> </div>
+                                </NavLink>
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>
-                                        File Manager <Icon.Folder />
+                                        <div css={tw`flex items-center justify-between`}>Files <Icon.Folder css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'database.*'}>
                                     <NavLink to={`${match.url}/databases`}>
-                                        Databases <Icon.Database />
+                                        <div css={tw`flex items-center justify-between`}>Databases <Icon.Database css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'schedule.*'}>
                                     <NavLink to={`${match.url}/schedules`}>
-                                        Schedules <Icon.Clock />
+                                        <div css={tw`flex items-center justify-between`}>Tasks <Icon.Clock css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'user.*'}>
                                     <NavLink to={`${match.url}/users`}>
-                                        Users <Icon.Users />
+                                        <div css={tw`flex items-center justify-between`}>Users <Icon.Users css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'backup.*'}>
                                     <NavLink to={`${match.url}/backups`}>
-                                        Backups <Icon.Archive />
+                                        <div css={tw`flex items-center justify-between`}>Backups <Icon.Archive css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'allocation.*'}>
                                     <NavLink to={`${match.url}/network`}>
-                                        Network <Icon.Share2 />
+                                        <div css={tw`flex items-center justify-between`}>Network <Icon.Share2 css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'startup.*'}>
                                     <NavLink to={`${match.url}/startup`}>
-                                        Startup <Icon.Play />
+                                        <div css={tw`flex items-center justify-between`}>Startup <Icon.Play css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
                                     <NavLink to={`${match.url}/settings`}>
-                                        Settings <Icon.Settings />
+                                        <div css={tw`flex items-center justify-between`}>Settings <Icon.Settings css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
                                 {rootAdmin &&
                                 <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
-                                    <Icon.ExternalLink />
+                                    <div css={tw`flex items-center justify-between`}>Admin <Icon.ExternalLink css={tw`ml-1`} size={18} /> </div>
                                 </a>
                                 }
                             </div>
