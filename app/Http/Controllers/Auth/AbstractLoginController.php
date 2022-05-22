@@ -49,7 +49,7 @@ abstract class AbstractLoginController extends Controller
     /**
      * LoginController constructor.
      */
-    public function __construct(AccountLog $log)
+    public function __construct()
     {
         $this->lockoutTime = config('auth.lockout.time');
         $this->maxLoginAttempts = config('auth.lockout.attempts');
@@ -72,12 +72,6 @@ abstract class AbstractLoginController extends Controller
         if ($request->route()->named('auth.login-checkpoint')) {
             throw new DisplayException($message ?? trans('auth.two_factor.checkpoint_failed'));
         }
-
-        $this->log->create([
-            'user_id' => $user->id ? $user->id : 'N/A',
-            'action' => 'Login attempt failed.',
-            'ip_address' => $request->getClientIp(),
-        ]);
 
         throw new DisplayException(trans('auth.failed'));
     }
