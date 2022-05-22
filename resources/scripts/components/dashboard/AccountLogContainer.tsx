@@ -10,7 +10,7 @@ import ContentBox from '@/components/elements/ContentBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import getAccountLogs, { AccountLog } from '@/api/account/getAccountLogs';
 
-const SessionLogContainer = () => {
+const AccountLogContainer = () => {
     const [ loading, setLoading ] = useState(false);
     const [ logs, setLogs ] = useState<AccountLog[]>([]);
 
@@ -42,11 +42,11 @@ const SessionLogContainer = () => {
                             css={[ tw`bg-neutral-850 flex items-center`, index > 0 && tw`mt-2` ]}
                         >
                             <p css={tw`text-sm ml-4 hidden md:block`}>
-                                Action:&nbsp;
+                                    Action:&nbsp;
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
                                     {log.action}
                                 </code>
-                                IP address:&nbsp;
+                                    IP address:&nbsp;
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
                                     {log.ipAddress}
                                 </code>
@@ -58,4 +58,4 @@ const SessionLogContainer = () => {
     );
 };
 
-export default SessionLogContainer;
+export default AccountLogContainer;

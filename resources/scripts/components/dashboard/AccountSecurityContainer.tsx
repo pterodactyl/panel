@@ -4,7 +4,7 @@ import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import ContentBox from '@/components/elements/ContentBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import SessionLogContainer from '@/components/dashboard/SessionLogContainer';
+import AccountLogContainer from '@/components/dashboard/AccountLogContainer';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 
 const Container = styled.div`
@@ -30,8 +30,8 @@ export default () => {
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox title={'Session Logs'} showFlashes={'account:password'}>
-                    <SessionLogContainer />
+                <ContentBox title={'Session Logs'} showFlashes={'account:logs'}>
+                    <AccountLogContainer />
                 </ContentBox>
             </Container>
         </PageContentBlock>
