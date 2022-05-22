@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateNotifsTable extends Migration
+class AddAccountLogsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -21,6 +21,7 @@ class CreateNotifsTable extends Migration
             $table->string('action');
 
             $table->timestamp('created_at', 0);
+            $table->timestamp('updated_at', 0);
         });
     }
 

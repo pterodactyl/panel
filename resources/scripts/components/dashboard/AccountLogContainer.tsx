@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import { Actions } from 'easy-peasy';
+import * as Icon from 'react-feather';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { useStoreActions } from '@/state/hooks';
@@ -41,12 +42,17 @@ const AccountLogContainer = () => {
                             key={log.id}
                             css={[ tw`bg-neutral-850 flex items-center`, index > 0 && tw`mt-2` ]}
                         >
-                            <p css={tw`text-sm ml-4 hidden md:block`}>
-                                    Action:&nbsp;
+                            <p css={tw`text-lg ml-4 md:block`}>
+                                <Icon.Info /> Audit #{log.id}
+                            </p>
+                            <p css={tw`text-sm ml-4 md:block`}>
+                                Action:&nbsp;
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
                                     {log.action}
                                 </code>
-                                    IP address:&nbsp;
+                            </p>
+                            <p css={tw`text-sm ml-4 hidden md:block`}>
+                                IP address:&nbsp;
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
                                     {log.ipAddress}
                                 </code>

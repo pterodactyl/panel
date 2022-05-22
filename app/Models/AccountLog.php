@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Pterodactyl\Models\User|null $user
  */
-class AuthLog extends Model
+class AccountLog extends Model
 {
     use HasFactory;
 
@@ -31,12 +31,19 @@ class AuthLog extends Model
     public static $validationRules = [
         'user_id' => 'integer',
         'action' => 'string|max:191',
+        'ip_address' => 'string|max:15|min:7'
     ];
 
     /**
-     * The attributes that are mass assignable.
+     * Fields that are not mass assignable.
+     *
+     * @var array
      */
-    protected array $fillable = ['user_id', 'action'];
+    protected $fillable = [
+        'user_id',
+        'action',
+        'ip_address',
+    ];
 
     public function user(): BelongsTo
     {

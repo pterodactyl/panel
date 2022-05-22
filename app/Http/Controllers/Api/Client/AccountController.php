@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -14,8 +15,12 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdateUsernameRequest;
 
 class AccountController extends ClientApiController
 {
+    /**
+     * @var \Illuminate\Auth\SessionGuard
+     */
+    private $sessionGuard;
+
     private UserUpdateService $updateService;
-    private SessionGuard $sessionGuard;
     private AccountLog $log;
 
     /**
