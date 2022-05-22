@@ -197,7 +197,7 @@ class Handler extends ExceptionHandler
     /**
      * Return the exception as a JSONAPI representation for use on API requests.
      */
-    public static function convertToArray(Throwable $exception, array $override = []): array
+    protected function convertExceptionToArray(Throwable $exception, array $override = []): array
     {
         $match = self::$exceptionResponseCodes[get_class($exception)] ?? null;
 
@@ -226,7 +226,13 @@ class Handler extends ExceptionHandler
                     'file' => str_replace(Application::getInstance()->basePath(), '', $exception->getFile()),
                 ],
                 'meta' => [
-                    'trace' => explode("\n", $exception->getTraceAsString()),
+                    'trace' => Collection::make($exception->getTrace())
+                        ->map(fn ($trace) => Arr::except($trace, ['args']))
+                        ->all(),
+                    'previous' => Collection::make($this->extractPrevious($exception))
+                        ->map(fn ($exception) => $exception->getTrace())
+                        ->map(fn ($trace) => Arr::except($trace, ['args']))
+                        ->all(),
                 ],
             ]);
         }
@@ -252,20 +258,30 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return new JsonResponse(self::convertToArray($exception), JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse($this->convertExceptionToArray($exception), JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        return $this->container->make('redirect')->guest('/auth/login');
+        return redirect()->guest('/auth/login');
     }
 
     /**
-     * Converts an exception into an array to render in the response. Overrides
-     * Laravel's built-in converter to output as a JSONAPI spec compliant object.
+     * Extracts all of the previous exceptions that lead to the one passed into this
+     * function being thrown.
      *
-     * @return array
+     * @param  \Throwable  $e
+     * @return \Throwable[]
      */
-    protected function convertExceptionToArray(Throwable $exception)
+    protected function extractPrevious(Throwable $e): array
     {
-        return self::convertToArray($exception);
+        $previous = [];
+        while ($value = $e->getPrevious()) {
+            if (!$value instanceof Throwable) {
+                break;
+            }
+            $previous[] = $value;
+            $e = $value;
+        }
+
+        return $previous;
     }
 }

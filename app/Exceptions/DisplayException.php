@@ -58,17 +58,11 @@ class DisplayException extends PterodactylException
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\RedirectResponse
      */
     public function render($request)
     {
-        if ($request->expectsJson()) {
-            return response()->json(Handler::convertToArray($this, [
-                'detail' => $this->getMessage(),
-            ]), method_exists($this, 'getStatusCode') ? $this->getStatusCode() : Response::HTTP_BAD_REQUEST);
-        }
-
-        Container::getInstance()->make(AlertsMessageBag::class)->danger($this->getMessage())->flash();
+        app(AlertsMessageBag::class)->danger($this->getMessage())->flash();
 
         return redirect()->back()->withInput();
     }

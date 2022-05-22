@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Webmozart\Assert\Assert;
-use Pterodactyl\Transformers\Daemon\BaseDaemonTransformer;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
@@ -55,13 +54,8 @@ abstract class ClientApiController extends ApplicationApiController
      */
     public function getTransformer(string $abstract)
     {
-        Assert::methodExists($abstract, 'fromRequest');
+        Assert::subclassOf($abstract, BaseClientTransformer::class);
 
-        /** @var T $transformer */
-        $transformer = $abstract::fromRequest($this->request);
-
-        Assert::isInstanceOfAny($transformer, [BaseClientTransformer::class, BaseDaemonTransformer::class]);
-
-        return $transformer;
+        return $abstract::fromRequest($this->request);
     }
 }
