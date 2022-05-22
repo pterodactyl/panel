@@ -24,6 +24,7 @@
         "laracasts/utilities": "~3.2.1",
         "laravel/framework": "^8.83",
         "laravel/helpers": "~1.5.0",
+        "laravel/sanctum": "~2.15.1",
         "laravel/tinker": "~2.7.2",
         "laravel/ui": "~3.4.5",
         "lcobucci/jwt": "~4.1.5",

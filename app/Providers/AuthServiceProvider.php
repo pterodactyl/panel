@@ -2,6 +2,10 @@
 
 namespace Pterodactyl\Providers;
 
+use Laravel\Sanctum\Sanctum;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Policies\ServerPolicy;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -12,7 +16,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'Pterodactyl\Models\Server' => 'Pterodactyl\Policies\ServerPolicy',
+        Server::class => ServerPolicy::class,
     ];
 
     /**
@@ -20,6 +24,8 @@ class AuthServiceProvider extends ServiceProvider
      */
     public function boot()
     {
+        Sanctum::usePersonalAccessTokenModel(ApiKey::class);
+
         $this->registerPolicies();
     }
 }
