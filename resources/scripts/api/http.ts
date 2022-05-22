@@ -2,6 +2,7 @@ import axios, { AxiosInstance } from 'axios';
 import { store } from '@/state';
 
 const http: AxiosInstance = axios.create({
+    withCredentials: true,
     timeout: 20000,
     headers: {
         'X-Requested-With': 'XMLHttpRequest',
