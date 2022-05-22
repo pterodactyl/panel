@@ -78,41 +78,53 @@ const ServerDetailsBlock = () => {
     return (
         <TitledGreyBox css={tw`break-words`} title={name}>
             <p css={tw`text-xs uppercase`}>
-                <Icon.Circle
-                    css={[
-                        tw`mr-1`,
-                        statusToColor(status, isInstalling || isTransferring),
-                    ]}
-                />
-                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
-                {stats.uptime > 0 &&
-                <span css={tw`ml-2 lowercase`}>
-                    (<UptimeDuration uptime={stats.uptime / 1000}/>)
-                </span>
-                }
+                <div css={tw`flex flex-row`}>
+                    <Icon.Circle
+                        css={[
+                            tw`mr-1`,
+                            statusToColor(status, isInstalling || isTransferring),
+                        ]}
+                        size={16}
+                    />
+                    &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
+                    {stats.uptime > 0 &&
+                        <span css={tw`ml-2 lowercase`}>
+                            (<UptimeDuration uptime={stats.uptime / 1000} />)
+                        </span>
+                    }
+                </div>
             </p>
             <CopyOnClick text={primaryAllocation}>
                 <p css={tw`text-xs mt-2`}>
-                    <Icon.Wifi css={tw`mr-1`} />
-                    <code css={tw`ml-1`}>{primaryAllocation}</code>
+                    <div css={tw`flex flex-row`}>
+                        <Icon.Wifi css={tw`mr-1`} size={16} />
+                        <code css={tw`ml-1`}>{primaryAllocation}</code>
+                    </div>
                 </p>
             </CopyOnClick>
             <p css={tw`text-xs mt-2`}>
-                <Icon.Cpu css={tw`mr-1`} /> {stats.cpu.toFixed(2)}%
-                <span css={tw`text-neutral-500`}> / {cpuLimit}</span>
+                <div css={tw`flex flex-row`}>
+                    <Icon.Cpu css={tw`mr-1`} size={16} /> {stats.cpu.toFixed(0)}%
+                    <span css={tw`text-neutral-500`}> / {cpuLimit}</span>
+                </div>
             </p>
             <p css={tw`text-xs mt-2`}>
-                <Icon.PieChart css={tw`mr-1`} /> {bytesToHuman(stats.memory)}
-                <span css={tw`text-neutral-500`}> / {memoryLimit}</span>
+                <div css={tw`flex flex-row`}>
+                    <Icon.PieChart css={tw`mr-1`} size={16} /> {bytesToHuman(stats.memory)}
+                    <span css={tw`text-neutral-500`}> / {memoryLimit}</span>
+                </div>
             </p>
             <p css={tw`text-xs mt-2`}>
-                <Icon.HardDrive css={tw`mr-1`} />&nbsp;{bytesToHuman(stats.disk)}
-                <span css={tw`text-neutral-500`}> / {diskLimit}</span>
+                <div css={tw`flex flex-row`}>
+                    <Icon.HardDrive css={tw`mr-1`} size={16} />&nbsp;{bytesToHuman(stats.disk)}
+                    <span css={tw`text-neutral-500`}> / {diskLimit}</span>
+                </div>
             </p>
             <p css={tw`text-xs mt-2`}>
-                <Icon.Wifi css={tw`mr-1`} />
-                <Icon.ArrowUpCircle css={tw`mr-1`} />{bytesToHuman(stats.tx)}
-                <Icon.ArrowDownCircle css={tw`mr-1`} />{bytesToHuman(stats.rx)}
+                <div css={tw`flex flex-row`}>
+                    <Icon.Wifi css={tw`mr-1`} size={16} />
+                    {bytesToHuman(stats.tx)} / {bytesToHuman(stats.rx)}
+                </div>
             </p>
         </TitledGreyBox>
     );

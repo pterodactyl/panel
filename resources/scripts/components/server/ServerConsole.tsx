@@ -6,6 +6,7 @@ import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
 import PowerControls from '@/components/server/PowerControls';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ServerConfigurationBlock from './ServerConfigurationBlock';
 import ContentContainer from '@/components/elements/ContentContainer';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
@@ -30,7 +31,8 @@ const ServerConsole = () => {
     return (
         <ServerContentBlock title={'Console'} css={tw`flex flex-wrap`}>
             <div css={tw`w-full lg:w-1/4`}>
-                <ServerDetailsBlock/>
+                <ServerDetailsBlock />
+                <ServerConfigurationBlock />
                 {isInstalling ?
                     <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                         <ContentContainer>
