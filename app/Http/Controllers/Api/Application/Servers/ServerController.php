@@ -86,9 +86,9 @@ class ServerController extends ApplicationApiController
     /**
      * Show a single server transformed for the application API.
      */
-    public function view(GetServerRequest $request): array
+    public function view(GetServerRequest $request, Server $server): array
     {
-        return $this->fractal->item($request->getModel(Server::class))
+        return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }

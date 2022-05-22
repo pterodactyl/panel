@@ -202,18 +202,6 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
     }
 
     /**
-     * Test that a users's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
-
-        $response = $this->getJson('/api/application/users/nil');
-        $this->assertAccessDeniedJson($response);
-    }
-
-    /**
      * Test that a user can be created.
      */
     public function testCreateUser()

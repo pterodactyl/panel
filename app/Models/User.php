@@ -201,7 +201,7 @@ class User extends Model implements
      */
     public function toVueObject(): array
     {
-        return (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
+        return Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
     }
 
     /**

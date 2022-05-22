@@ -124,6 +124,14 @@ class Schedule extends Model
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function getRouteKeyName(): string
+    {
+        return $this->getKeyName();
+    }
+
+    /**
      * Returns the schedule's execution crontab entry as a string.
      *
      * @return \Carbon\CarbonImmutable

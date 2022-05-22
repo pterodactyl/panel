@@ -11,7 +11,7 @@ class UpdateUserRequest extends StoreUserRequest
      */
     public function rules(array $rules = null): array
     {
-        $userId = $this->getModel(User::class)->id;
+        $userId = $this->parameter('user', User::class)->id;
 
         return parent::rules(User::getRulesForUpdate($userId));
     }

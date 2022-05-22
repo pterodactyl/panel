@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Middleware\Api;
 
 use Closure;
+use JsonException;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -18,10 +19,10 @@ class IsValidJson
     public function handle(Request $request, Closure $next)
     {
         if ($request->isJson() && !empty($request->getContent())) {
-            json_decode($request->getContent(), true);
-
-            if (json_last_error() !== JSON_ERROR_NONE) {
-                throw new BadRequestHttpException(sprintf('The JSON data passed in the request appears to be malformed. err_code: %d err_message: "%s"', json_last_error(), json_last_error_msg()));
+            try {
+                json_decode($request->getContent(), true, 512, JSON_THROW_ON_ERROR);
+            } catch (JsonException $exception) {
+                throw new BadRequestHttpException('The JSON data passed in the request appears to be malformed: ' . $exception->getMessage());
             }
         }
 

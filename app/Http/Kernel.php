@@ -24,7 +24,6 @@ use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Pterodactyl\Http\Middleware\Api\HandleStatelessRequest;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
@@ -32,7 +31,7 @@ use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
-use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
+use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientBindings;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 
 class Kernel extends HttpKernel
@@ -75,13 +74,13 @@ class Kernel extends HttpKernel
             VerifyCsrfToken::class,
         ],
         'application-api' => [
-            ApiSubstituteBindings::class,
+            SubstituteBindings::class,
             'api..key:' . ApiKey::TYPE_APPLICATION,
             AuthenticateApplicationUser::class,
             AuthenticateIPAccess::class,
         ],
         'client-api' => [
-            SubstituteClientApiBindings::class,
+            SubstituteClientBindings::class,
             'api..key:' . ApiKey::TYPE_ACCOUNT,
             AuthenticateIPAccess::class,
             // This is perhaps a little backwards with the Client API, but logically you'd be unable

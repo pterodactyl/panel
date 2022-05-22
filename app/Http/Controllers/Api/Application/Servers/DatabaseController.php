@@ -105,12 +105,10 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * Handle a request to delete a specific server database from the Panel.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function delete(ServerDatabaseWriteRequest $request): Response
+    public function delete(ServerDatabaseWriteRequest $request, Server $server, Database $database): Response
     {
-        $this->databaseManagementService->delete($request->getModel(Database::class));
+        $this->databaseManagementService->delete($database);
 
         return response('', 204);
     }
