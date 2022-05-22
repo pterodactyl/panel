@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Requests\Api\Application;
 
 use Webmozart\Assert\Assert;
+use Pterodactyl\Models\ApiKey;
 use Laravel\Sanctum\TransientToken;
 use Illuminate\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
@@ -42,6 +43,10 @@ abstract class ApplicationApiRequest extends FormRequest
 
         $token = $this->user()->currentAccessToken();
         if ($token instanceof TransientToken) {
+            return true;
+        }
+
+        if ($token->key_type === ApiKey::TYPE_ACCOUNT) {
             return true;
         }
 

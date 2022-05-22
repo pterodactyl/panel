@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Support\Str;
+use Webmozart\Assert\Assert;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -194,10 +195,10 @@ class ApiKey extends Model
      */
     public static function findToken($token)
     {
-        $id = Str::substr($token, 0, self::IDENTIFIER_LENGTH);
+        $identifier = substr($token, 0, self::IDENTIFIER_LENGTH);
 
-        $model = static::where('identifier', $id)->first();
-        if (!is_null($model) && decrypt($model->token) === Str::substr($token, strlen($id))) {
+        $model = static::where('identifier', $identifier)->first();
+        if (!is_null($model) && decrypt($model->token) === substr($token, strlen($identifier))) {
             return $model;
         }
 
@@ -205,10 +206,22 @@ class ApiKey extends Model
     }
 
     /**
+     * Returns the standard prefix for API keys in the system.
+     */
+    public static function getPrefixForType(int $type): string
+    {
+        Assert::oneOf($type, [self::TYPE_ACCOUNT, self::TYPE_APPLICATION]);
+
+        return $type === self::TYPE_ACCOUNT ? 'ptlc_' : 'ptla_';
+    }
+
+    /**
      * Generates a new identifier for an API key.
      */
-    public static function generateTokenIdentifier(): string
+    public static function generateTokenIdentifier(int $type): string
     {
-        return 'ptdl_' . Str::random(self::IDENTIFIER_LENGTH - 5);
+        $prefix = self::getPrefixForType($type);
+
+        return $prefix . Str::random(self::IDENTIFIER_LENGTH - strlen($prefix));
     }
 }

@@ -27,6 +27,7 @@ use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
+use Pterodactyl\Http\Middleware\Api\Client\RequireClientApiKey;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientBindings;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
@@ -74,9 +75,10 @@ class Kernel extends HttpKernel
             SubstituteBindings::class,
             AuthenticateApplicationUser::class,
         ],
-        // TODO: don't allow an application key to use the client API, but do allow a client
-        //  api key to access the application API.
-        'client-api' => [SubstituteClientBindings::class],
+        'client-api' => [
+            SubstituteClientBindings::class,
+            RequireClientApiKey::class,
+        ],
         'daemon' => [
             SubstituteBindings::class,
             DaemonAuthenticate::class,
