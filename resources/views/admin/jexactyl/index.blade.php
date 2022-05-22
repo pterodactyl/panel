@@ -41,7 +41,7 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Jexactyl Storefront</h3>
             </div>
-            <form action="{{ route('admin.jexactyl.store') }}" method="POST">
+            <form action="{{ route('admin.jexactyl') }}" method="POST">
                 <div class="box-body">
                     <div class="row">
                         <div class="form-group col-md-4">

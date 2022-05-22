@@ -58,6 +58,7 @@ class IndexController extends Controller
     {
         return view('admin.jexactyl.index', [
             'version' => $this->versionService,
+            'enabled' => $this->settings->get('jexactyl::store:enabled', true),
         ]);
     }
 

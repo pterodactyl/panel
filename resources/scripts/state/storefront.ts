@@ -1,7 +1,7 @@
 import { action, Action } from 'easy-peasy';
 
 export interface StorefrontSettings {
-    enabled: boolean;
+    enabled: string;
 }
 
 export interface StorefrontStore {

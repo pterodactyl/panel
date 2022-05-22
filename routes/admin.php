@@ -87,7 +87,7 @@ Route::group(['prefix' => 'settings'], function () {
 Route::group(['prefix' => 'jexactyl'], function () {
     Route::get('/', [Admin\Jexactyl\IndexController::class, 'index'])->name('admin.jexactyl');
 
-    Route::patch('/', [Admin\Jexactyl\IndexController::class, 'update']);
+    Route::patch('/', [Admin\Jexactyl\IndexController::class, 'update'])->name('admin.jexactyl');
 });
 
 /*
