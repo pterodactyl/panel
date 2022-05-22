@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Requests\Api\Application;
 
 use Webmozart\Assert\Assert;
+use Laravel\Sanctum\TransientToken;
 use Illuminate\Validation\Validator;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
@@ -11,14 +12,6 @@ use Pterodactyl\Exceptions\PterodactylException;
 
 abstract class ApplicationApiRequest extends FormRequest
 {
-    /**
-     * Tracks if the request has been validated internally or not to avoid
-     * making duplicate validation calls.
-     *
-     * @var bool
-     */
-    private $hasValidated = false;
-
     /**
      * The resource that should be checked when performing the authorization
      * function for this request.
@@ -47,7 +40,12 @@ abstract class ApplicationApiRequest extends FormRequest
             throw new PterodactylException('An ACL resource must be defined on API requests.');
         }
 
-        return AdminAcl::check($this->attributes->get('api_key'), $this->resource, $this->permission);
+        $token = $this->user()->currentAccessToken();
+        if ($token instanceof TransientToken) {
+            return true;
+        }
+
+        return AdminAcl::check($token, $this->resource, $this->permission);
     }
 
     /**

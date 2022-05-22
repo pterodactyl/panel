@@ -59,7 +59,7 @@ class DatabaseTransformer extends BaseClientTransformer
      */
     public function includePassword(Database $database)
     {
-        if (!$this->getUser()->can(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
+        if (!$this->request->user()->can(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
             return $this->null();
         }
 

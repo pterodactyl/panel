@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Webmozart\Assert\Assert;
-use Illuminate\Container\Container;
 use Pterodactyl\Transformers\Daemon\BaseDaemonTransformer;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -45,21 +44,23 @@ abstract class ClientApiController extends ApplicationApiController
     /**
      * Return an instance of an application transformer.
      *
-     * @return \Pterodactyl\Transformers\Api\Client\BaseClientTransformer
+     * @template T of \Pterodactyl\Transformers\Api\Client\BaseClientTransformer
+     *
+     * @param class-string<T> $abstract
+     *
+     * @return T
+     *
+     * @noinspection PhpUndefinedClassInspection
+     * @noinspection PhpDocSignatureInspection
      */
     public function getTransformer(string $abstract)
     {
-        /** @var \Pterodactyl\Transformers\Api\Client\BaseClientTransformer $transformer */
-        $transformer = Container::getInstance()->make($abstract);
-        Assert::isInstanceOfAny($transformer, [
-            BaseClientTransformer::class,
-            BaseDaemonTransformer::class,
-        ]);
+        Assert::methodExists($abstract, 'fromRequest');
 
-        if ($transformer instanceof BaseClientTransformer) {
-            $transformer->setKey($this->request->attributes->get('api_key'));
-            $transformer->setUser($this->request->user());
-        }
+        /** @var T $transformer */
+        $transformer = $abstract::fromRequest($this->request);
+
+        Assert::isInstanceOfAny($transformer, [BaseClientTransformer::class, BaseDaemonTransformer::class]);
 
         return $transformer;
     }
