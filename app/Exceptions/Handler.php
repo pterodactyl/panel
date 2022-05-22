@@ -48,6 +48,18 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * Maps exceptions to a specific response code. This handles special exception
+     * types that don't have a defined response code.
+     *
+     * @var array<string, int>
+     */
+    protected static array $exceptionResponseCodes = [
+        AuthenticationException::class => 401,
+        AuthorizationException::class => 403,
+        ValidationException::class => 422,
+    ];
+
+    /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
      * @var array
@@ -187,12 +199,14 @@ class Handler extends ExceptionHandler
      */
     public static function convertToArray(Throwable $exception, array $override = []): array
     {
+        $match = self::$exceptionResponseCodes[get_class($exception)] ?? null;
+
         $error = [
             'code' => class_basename($exception),
             'status' => method_exists($exception, 'getStatusCode')
                 ? strval($exception->getStatusCode())
-                : ($exception instanceof ValidationException ? '422' : '500'),
-            'detail' => $exception instanceof HttpExceptionInterface
+                : strval($match ?? '500'),
+            'detail' => $exception instanceof HttpExceptionInterface || !is_null($match)
                 ? $exception->getMessage()
                 : 'An unexpected error was encountered while processing this request, please try again.',
         ];

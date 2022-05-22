@@ -195,9 +195,13 @@ class ApiKey extends Model
     public static function findToken($token)
     {
         $id = Str::substr($token, 0, self::IDENTIFIER_LENGTH);
-        $token = Str::substr($token, strlen($id));
 
-        return static::where('identifier', $id)->where('token', encrypt($token))->first();
+        $model = static::where('identifier', $id)->first();
+        if (!is_null($model) && decrypt($model->token) === Str::substr($token, strlen($id))) {
+            return $model;
+        }
+
+        return null;
     }
 
     /**

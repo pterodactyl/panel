@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Application;
 
-use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use PHPUnit\Framework\Assert;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
@@ -41,10 +41,9 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
         $this->user = $this->createApiUser();
         $this->key = $this->createApiKey($this->user);
 
-        $this->withHeader('Accept', 'application/vnd.pterodactyl.v1+json');
-        $this->withHeader('Authorization', 'Bearer ' . $this->getApiKey()->identifier . decrypt($this->getApiKey()->token));
-
-        $this->withMiddleware('api..key:' . ApiKey::TYPE_APPLICATION);
+        $this
+            ->withHeader('Accept', 'application/vnd.pterodactyl.v1+json')
+            ->withHeader('Authorization', 'Bearer ' . $this->key->identifier . decrypt($this->key->token));
     }
 
     public function getApiUser(): User
@@ -63,17 +62,10 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     protected function createNewDefaultApiKey(User $user, array $permissions = []): ApiKey
     {
         $this->key = $this->createApiKey($user, $permissions);
-        $this->refreshHeaders($this->key);
+
+        $this->withHeader('Authorization', 'Bearer ' . $this->key->identifier . decrypt($this->key->token));
 
         return $this->key;
-    }
-
-    /**
-     * Refresh the authorization header for a request to use a different API key.
-     */
-    protected function refreshHeaders(ApiKey $key)
-    {
-        $this->withHeader('Authorization', 'Bearer ' . $key->identifier . decrypt($key->token));
     }
 
     /**
