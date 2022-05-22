@@ -9,6 +9,7 @@ use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Pterodactyl\Http\Middleware\TrimStrings;
 use Pterodactyl\Http\Middleware\AdminAuthenticate;
+use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
@@ -35,12 +36,17 @@ class RouteServiceProvider extends ServiceProvider
 
         $this->routes(function () {
             Route::middleware('web')->group(function () {
-                Route::middleware('auth')->group(base_path('routes/base.php'));
+                Route::middleware(['auth.session', RequireTwoFactorAuthentication::class])
+                    ->group(base_path('routes/base.php'));
+
+                Route::middleware(['auth.session', RequireTwoFactorAuthentication::class, AdminAuthenticate::class])
+                    ->prefix('/admin')
+                    ->group(base_path('routes/admin.php'));
+
                 Route::middleware('guest')->prefix('/auth')->group(base_path('routes/auth.php'));
-                Route::middleware(['auth', AdminAuthenticate::class])->prefix('/admin')->group(base_path('routes/admin.php'));
             });
 
-            Route::middleware('api')->group(function () {
+            Route::middleware(['api', RequireTwoFactorAuthentication::class])->group(function () {
                 Route::middleware(['application-api', 'throttle:api.application'])
                     ->prefix('/api/application')
                     ->scopeBindings()
