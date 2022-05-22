@@ -8,8 +8,9 @@ use Psr\Log\LoggerInterface;
 use Illuminate\Http\Response;
 use Illuminate\Container\Container;
 use Prologue\Alerts\AlertsMessageBag;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 
-class DisplayException extends PterodactylException
+class DisplayException extends PterodactylException implements HttpExceptionInterface
 {
     public const LEVEL_DEBUG = 'debug';
     public const LEVEL_INFO = 'info';
@@ -52,16 +53,28 @@ class DisplayException extends PterodactylException
     }
 
     /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return [];
+    }
+
+    /**
      * Render the exception to the user by adding a flashed message to the session
      * and then redirecting them back to the page that they came from. If the
      * request originated from an API hit, return the error in JSONAPI spec format.
      *
      * @param \Illuminate\Http\Request $request
      *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\JsonResponse|\Illuminate\Http\RedirectResponse
      */
     public function render($request)
     {
+        if ($request->expectsJson()) {
+            return response()->json(Handler::toArray($this), $this->getStatusCode(), $this->getHeaders());
+        }
+
         app(AlertsMessageBag::class)->danger($this->getMessage())->flash();
 
         return redirect()->back()->withInput();

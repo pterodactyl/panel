@@ -284,4 +284,13 @@ class Handler extends ExceptionHandler
 
         return $previous;
     }
+
+    /**
+     * Helper method to allow reaching into the handler to convert an exception
+     * into the expected array response type.
+     */
+    public static function toArray(Throwable $e): array
+    {
+        return (new self(app()))->convertExceptionToArray($e);
+    }
 }
