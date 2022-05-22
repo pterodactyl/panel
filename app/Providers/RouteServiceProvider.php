@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
 use Pterodactyl\Http\Middleware\TrimStrings;
+use Pterodactyl\Http\Middleware\AdminAuthenticate;
 use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvider;
 
 class RouteServiceProvider extends ServiceProvider
@@ -33,10 +34,10 @@ class RouteServiceProvider extends ServiceProvider
         Route::model('database', Database::class);
 
         $this->routes(function () {
-            Route::middleware(['web', 'csrf'])->group(function () {
+            Route::middleware('web')->group(function () {
                 Route::middleware('auth')->group(base_path('routes/base.php'));
                 Route::middleware('guest')->prefix('/auth')->group(base_path('routes/auth.php'));
-                Route::middleware(['auth', 'admin'])->prefix('/admin')->group(base_path('routes/admin.php'));
+                Route::middleware(['auth', AdminAuthenticate::class])->prefix('/admin')->group(base_path('routes/admin.php'));
             });
 
             Route::middleware('api')->group(function () {

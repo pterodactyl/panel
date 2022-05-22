@@ -86,6 +86,8 @@ class LoginController extends AbstractLoginController
 
         $this->auth->guard()->login($user, true);
 
+        $request->session()->regenerate();
+
         return $this->sendLoginResponse($user, $request);
     }
 }

@@ -12,18 +12,6 @@ const http: AxiosInstance = axios.create({
 });
 
 http.interceptors.request.use(req => {
-    const cookies = document.cookie.split(';').reduce((obj, val) => {
-        const [ key, value ] = val.trim().split('=').map(decodeURIComponent);
-
-        return { ...obj, [key]: value };
-    }, {} as Record<string, string>);
-
-    req.headers['X-XSRF-TOKEN'] = cookies['XSRF-TOKEN'] || 'nil';
-
-    return req;
-});
-
-http.interceptors.request.use(req => {
     if (!req.url?.endsWith('/resources')) {
         store.getActions().progress.startContinuous();
     }
