@@ -78,6 +78,20 @@ Route::group(['prefix' => 'settings'], function () {
 
 /*
 |--------------------------------------------------------------------------
+| Jexactyl Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /admin/jexactyl
+|
+*/
+Route::group(['prefix' => 'jexactyl'], function () {
+    Route::get('/', [Admin\Jexactyl\IndexController::class, 'index'])->name('admin.jexactyl');
+
+    Route::patch('/', [Admin\Jexactyl\IndexController::class, 'update']);
+});
+
+/*
+|--------------------------------------------------------------------------
 | User Controller Routes
 |--------------------------------------------------------------------------
 |

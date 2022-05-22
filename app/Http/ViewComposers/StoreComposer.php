@@ -12,7 +12,7 @@ class StoreComposer
     public function compose(View $view)
     {
         $view->with('storeConfiguration', [
-            'enabled' => true,
+            'enabled' => config('store.enabled') ?? false,
         ]);
     }
 }

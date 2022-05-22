@@ -11,12 +11,12 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 const Navigation = styled.div`
-    ${tw`w-full bg-neutral-800 shadow-md overflow-x-auto`};
-    
+    ${tw`w-full bg-neutral-850 shadow-md overflow-x-auto`};
+
     & > div {
         ${tw`mx-auto w-full flex items-center`};
     }
-    
+
     & #logo {
         ${tw`flex-1`};
         
@@ -31,11 +31,11 @@ const RightNavigation = styled.div`
     
     & > a, & > button, & > .navigation-link {
         ${tw`flex items-center h-full no-underline text-neutral-300 px-6 cursor-pointer transition-all duration-150`};
-        
+
         &:active, &:hover {
             ${tw`text-neutral-100 bg-black`};
         }
-        
+
         &:active, &:hover, &.active {
             box-shadow: inset 0 -2px ${theme`colors.cyan.700`.toString()};
         }
