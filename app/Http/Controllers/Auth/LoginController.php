@@ -86,12 +86,6 @@ class LoginController extends AbstractLoginController
 
         $this->auth->guard()->login($user, true);
 
-        $this->log->create([
-            'user_id' => $user->id,
-            'action' => 'Login attempt successful.',
-            'ip_address' => $request->getClientIp(),
-        ]);
-
         return $this->sendLoginResponse($user, $request);
     }
 }

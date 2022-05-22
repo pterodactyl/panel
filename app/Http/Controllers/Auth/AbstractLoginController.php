@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\AccountLog;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
 use Pterodactyl\Exceptions\DisplayException;
@@ -43,7 +44,7 @@ abstract class AbstractLoginController extends Controller
     /**
      * @var \Pterodactyl\Models\AccountLog
      */
-    private $log;
+    protected $log;
 
     /**
      * LoginController constructor.
@@ -53,7 +54,7 @@ abstract class AbstractLoginController extends Controller
         $this->lockoutTime = config('auth.lockout.time');
         $this->maxLoginAttempts = config('auth.lockout.attempts');
         $this->auth = Container::getInstance()->make(AuthManager::class);
-        $this->log = $log;
+        $this->log = Container::getInstance()->make(AccountLog::class);
     }
 
     /**
@@ -95,7 +96,7 @@ abstract class AbstractLoginController extends Controller
 
         $this->log->create([
             'user_id' => $user->id,
-            'action' => 'Login successful.',
+            'action' => 'Login attempt successful.',
             'ip_address' => $request->getClientIp(),
         ]);
 
