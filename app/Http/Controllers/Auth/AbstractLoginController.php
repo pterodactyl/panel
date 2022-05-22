@@ -41,13 +41,19 @@ abstract class AbstractLoginController extends Controller
     protected $redirectTo = '/';
 
     /**
+     * @var \Pterodactyl\Models\AccountLog
+     */
+    private $log;
+
+    /**
      * LoginController constructor.
      */
-    public function __construct()
+    public function __construct(AccountLog $log)
     {
         $this->lockoutTime = config('auth.lockout.time');
         $this->maxLoginAttempts = config('auth.lockout.attempts');
         $this->auth = Container::getInstance()->make(AuthManager::class);
+        $this->log = $log;
     }
 
     /**
@@ -66,6 +72,12 @@ abstract class AbstractLoginController extends Controller
             throw new DisplayException($message ?? trans('auth.two_factor.checkpoint_failed'));
         }
 
+        $this->log->create([
+            'user_id' => $user->id ? $user->id : 'N/A',
+            'action' => 'Login attempt failed.',
+            'ip_address' => $request->getClientIp(),
+        ]);
+
         throw new DisplayException(trans('auth.failed'));
     }
 
@@ -80,6 +92,12 @@ abstract class AbstractLoginController extends Controller
         $this->clearLoginAttempts($request);
 
         $this->auth->guard()->login($user, true);
+
+        $this->log->create([
+            'user_id' => $user->id,
+            'action' => 'Login successful.',
+            'ip_address' => $request->getClientIp(),
+        ]);
 
         return new JsonResponse([
             'data' => [

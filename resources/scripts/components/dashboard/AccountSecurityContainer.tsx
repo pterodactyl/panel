@@ -26,11 +26,11 @@ const Container = styled.div`
 export default () => {
     return (
         <PageContentBlock title={'Account Security'}>
-            <Container css={tw`lg:grid lg:grid-cols-2 mb-10 mt-10`}>
-                <ContentBox title={'Update Password'} css={tw`flex-none w-full md:w-1/2`} showFlashes={'account:password'}>
+            <Container css={tw`lg:grid lg:grid-cols-3 mb-10 mt-10`}>
+                <ContentBox title={'Update Password'} css={tw`flex-none w-full md:w-1/3`} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox title={'Session Logs'} css={tw`ml-8`} showFlashes={'account:logs'}>
+                <ContentBox title={'Account Logs'} css={tw`ml-8 col-span-2`} showFlashes={'account:logs'}>
                     <AccountLogContainer />
                 </ContentBox>
             </Container>

@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\AccountLog;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
@@ -30,18 +31,25 @@ class TwoFactorController extends ClientApiController
     private $toggleTwoFactorService;
 
     /**
+     * @var \Pterodactyl\Models\AccountLog
+     */
+    private $log;
+
+    /**
      * TwoFactorController constructor.
      */
     public function __construct(
         ToggleTwoFactorService $toggleTwoFactorService,
         TwoFactorSetupService $setupService,
-        Factory $validation
+        Factory $validation,
+        AccountLog $log,
     ) {
         parent::__construct();
 
         $this->setupService = $setupService;
         $this->validation = $validation;
         $this->toggleTwoFactorService = $toggleTwoFactorService;
+        $this->log = $log;
     }
 
     /**
@@ -89,6 +97,12 @@ class TwoFactorController extends ClientApiController
 
         $tokens = $this->toggleTwoFactorService->handle($request->user(), $request->input('code'), true);
 
+        $this->log->create([
+            'user_id' => $request->user()->id,
+            'action' => '2FA has been enabled.',
+            'ip_address' => $request->getClientIp(),
+        ]);
+
         return new JsonResponse([
             'object' => 'recovery_tokens',
             'attributes' => [
@@ -115,6 +129,12 @@ class TwoFactorController extends ClientApiController
         $user->update([
             'totp_authenticated_at' => Carbon::now(),
             'use_totp' => false,
+        ]);
+
+        $this->log->create([
+            'user_id' => $request->user()->id,
+            'action' => '2FA has been disabled.',
+            'ip_address' => $request->getClientIp(),
         ]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);

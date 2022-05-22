@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
@@ -31,18 +32,25 @@ class ApiKeyController extends ClientApiController
     private $repository;
 
     /**
+     * @var \Pterodactyl\Models\AccountLog
+     */
+    private $log;
+
+    /**
      * ApiKeyController constructor.
      */
     public function __construct(
         Encrypter $encrypter,
         KeyCreationService $keyCreationService,
-        ApiKeyRepository $repository
+        ApiKeyRepository $repository,
+        AccountLog $log,
     ) {
         parent::__construct();
 
         $this->encrypter = $encrypter;
         $this->keyCreationService = $keyCreationService;
         $this->repository = $repository;
+        $this->log = $log;
     }
 
     /**
@@ -77,6 +85,12 @@ class ApiKeyController extends ClientApiController
             'allowed_ips' => $request->input('allowed_ips') ?? [],
         ]);
 
+        $this->log->create([
+            'user_id' => $request->user()->id,
+            'action' => 'API key ('.$key->identifier.') was created.',
+            'ip_address' => $request->getClientIp(),
+        ]);
+
         return $this->fractal->item($key)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
             ->addMeta([
@@ -96,6 +110,12 @@ class ApiKeyController extends ClientApiController
             'key_type' => ApiKey::TYPE_ACCOUNT,
             'user_id' => $request->user()->id,
             'identifier' => $identifier,
+        ]);
+
+        $this->log->create([
+            'user_id' => $request->user()->id,
+            'action' => 'API key ('.$key->identifier.') was deleted.',
+            'ip_address' => $request->getClientIp(),
         ]);
 
         if (!$response) {
