@@ -10,28 +10,24 @@ use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
+use Pterodactyl\Http\Requests\Api\Client\Account\UpdateUsernameRequest;
 
 class AccountController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
-
-    /**
-     * @var \Illuminate\Auth\SessionGuard
-     */
-    private $sessionGuard;
+    private UserUpdateService $updateService;
+    private SessionGuard $sessionGuard;
+    private AccountLog $log;
 
     /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $sessionGuard, UserUpdateService $updateService)
+    public function __construct(AuthManager $sessionGuard, UserUpdateService $updateService, AccountLog $log)
     {
         parent::__construct();
 
         $this->updateService = $updateService;
         $this->sessionGuard = $sessionGuard;
+        $this->log = $log;
     }
 
     public function index(Request $request): array
@@ -50,6 +46,12 @@ class AccountController extends ClientApiController
     public function updateEmail(UpdateEmailRequest $request): JsonResponse
     {
         $this->updateService->handle($request->user(), $request->validated());
+
+        $this->log->create([
+            'user_id' => $request->user()->id,
+            'action' => 'Email has been updated successfully.',
+            'ip_address' => $request->getClientIp(),
+        ]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -71,6 +73,31 @@ class AccountController extends ClientApiController
         $this->sessionGuard->setUser($user);
 
         $this->sessionGuard->logoutOtherDevices($request->input('password'));
+
+        $this->log->create([
+            'user_id' => $request->user()->id,
+            'action' => 'Password has been updated successfully.',
+            'ip_address' => $request->getClientIp(),
+        ]);
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Update the authenticated user's username.
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function updateUsername(UpdateUsernameRequest $request): JsonResponse
+    {
+        $this->updateService->handle($request->user(), $request->validated());
+
+        $this->log->create([
+            'user_id' => $request->user()->id,
+            'action' => 'Username has been updated successfully.',
+            'ip_address' => $request->getClientIp(),
+        ]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

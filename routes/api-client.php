@@ -23,8 +23,11 @@ Route::group(['prefix' => '/account'], function () {
     Route::post('/two-factor', [Client\TwoFactorController::class, 'store'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
     Route::delete('/two-factor', [Client\TwoFactorController::class, 'delete'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
 
+    Route::get('/logs', [Client\AccountLogController::class, 'index'])->name('api:client.logs')->withoutMiddleware(RequireTwoFactorAuthentication::class);
+
     Route::put('/email', [Client\AccountController::class, 'updateEmail'])->name('api:client.account.update-email');
     Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
+    Route::put('/username', [Client\AccountController::class, 'updateUsername'])->name('api:client.account.update-username');
 
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);

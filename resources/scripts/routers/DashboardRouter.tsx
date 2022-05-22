@@ -11,6 +11,7 @@ import StoreOverviewContainer from '@/components/store/StoreOverviewContainer';
 import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
+import AccountSecurityContainer from '@/components/dashboard/AccountSecurityContainer';
 
 export default ({ location }: RouteComponentProps) => (
     <>
@@ -20,6 +21,9 @@ export default ({ location }: RouteComponentProps) => (
             <div>
                 <NavLink to={'/account'} exact>
                     <div css={tw`flex items-center justify-between`}>Account <Icon.User css={tw`ml-1`} size={18} /></div>
+                </NavLink>
+                <NavLink to={'/account/security'}>
+                    <div css={tw`flex items-center justify-between`}>Security <Icon.Key css={tw`ml-1`} size={18} /></div>
                 </NavLink>
                 <NavLink to={'/account/api'}>
                     <div css={tw`flex items-center justify-between`}>API <Icon.Code css={tw`ml-1`} size={18} /></div>
@@ -37,6 +41,9 @@ export default ({ location }: RouteComponentProps) => (
                 </Route>
                 <Route path={'/account'} exact>
                     <AccountOverviewContainer/>
+                </Route>
+                <Route path={'/account/security'} exact>
+                    <AccountSecurityContainer />
                 </Route>
                 <Route path={'/account/api'} exact>
                     <AccountApiContainer/>

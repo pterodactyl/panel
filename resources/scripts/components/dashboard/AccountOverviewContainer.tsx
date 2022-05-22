@@ -6,7 +6,7 @@ import { useLocation } from 'react-router-dom';
 import MessageBox from '@/components/MessageBox';
 import ContentBox from '@/components/elements/ContentBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
+import UpdateUsernameForm from '@/components/dashboard/forms/UpdateUsernameForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 
@@ -38,8 +38,8 @@ export default () => {
             }
 
             <Container css={[ tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
-                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
-                    <UpdatePasswordForm/>
+                <ContentBox title={'Update Username'} showFlashes={'account:username'}>
+                    <UpdateUsernameForm/>
                 </ContentBox>
                 <ContentBox
                     css={tw`mt-8 sm:mt-0 sm:ml-8`}
