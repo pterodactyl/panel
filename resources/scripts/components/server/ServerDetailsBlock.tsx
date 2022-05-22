@@ -105,19 +105,19 @@ const ServerDetailsBlock = () => {
             <p css={tw`text-xs mt-2`}>
                 <div css={tw`flex flex-row`}>
                     <Icon.Cpu css={tw`mr-1`} size={16} /> {stats.cpu.toFixed(0)}%
-                    <span css={tw`text-neutral-500`}> / {cpuLimit}</span>
+                    <span css={tw`text-neutral-500`}>&nbsp;/ {cpuLimit}</span>
                 </div>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <div css={tw`flex flex-row`}>
                     <Icon.PieChart css={tw`mr-1`} size={16} /> {bytesToHuman(stats.memory)}
-                    <span css={tw`text-neutral-500`}> / {memoryLimit}</span>
+                    <span css={tw`text-neutral-500`}>&nbsp;/ {memoryLimit}</span>
                 </div>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <div css={tw`flex flex-row`}>
-                    <Icon.HardDrive css={tw`mr-1`} size={16} />&nbsp;{bytesToHuman(stats.disk)}
-                    <span css={tw`text-neutral-500`}> / {diskLimit}</span>
+                    <Icon.HardDrive css={tw`mr-1`} size={16} /> {bytesToHuman(stats.disk)}
+                    <span css={tw`text-neutral-500`}>&nbsp;/ {diskLimit}</span>
                 </div>
             </p>
             <p css={tw`text-xs mt-2`}>

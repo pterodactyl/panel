@@ -10,7 +10,7 @@ const ServerConfigurationBlock = () => {
     const image = ServerContext.useStoreState(state => state.server.data!.dockerImage);
 
     return (
-        <TitledGreyBox css={tw`break-words`} title={'Server Information'}>
+        <TitledGreyBox css={tw`break-words mt-4`} title={'Server Information'}>
             <p css={tw`text-xs mt-2`}>
                 <div css={tw`flex flex-row`}>
                     <Icon.List css={tw`mr-1`} size={16} />
