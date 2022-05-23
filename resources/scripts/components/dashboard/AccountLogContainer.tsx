@@ -29,7 +29,7 @@ const AccountLogContainer = () => {
 
     return (
         <ContentBox css={tw`flex-1 overflow-hidden mt-8 md:mt-0`}>
-            <FlashMessageRender byKey={'account:notifications'} css={tw`mb-2`} />
+            <FlashMessageRender byKey={'account:logs'} css={tw`mb-2`} />
             {
                 logs.length === 0 ?
                     <p css={tw`text-center text-sm`}>
@@ -39,17 +39,17 @@ const AccountLogContainer = () => {
                     logs.map((log, index) => (
                         <GreyRowBox
                             key={log.id}
-                            css={[ tw`bg-neutral-800`, index > 0 && tw`mt-2` ]}
+                            css={[ tw`bg-neutral-800 flex`, index > 0 && tw`mt-2` ]}
                         >
-                            <p css={tw`text-lg ml-4`}>
+                            <p css={tw`flex-inline text-lg ml-2`}>
                                 #{log.id}
                             </p>
-                            <p css={tw`text-xs ml-4 inline-block`}>
+                            <p css={tw`flex-1 text-xs ml-4 inline-block`}>
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
                                     {log.action}
                                 </code>
                             </p>
-                            <p css={tw`text-xs ml-4 hidden inline-block`}>
+                            <p css={tw`flex-inlinetext-xs ml-4 hidden inline-block`}>
                                 IP address:&nbsp;
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
                                     {log.ipAddress}

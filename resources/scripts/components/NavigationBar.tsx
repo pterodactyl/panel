@@ -11,7 +11,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 const Navigation = styled.div`
-    ${tw`w-full bg-neutral-850 shadow-md overflow-x-auto`};
+    ${tw`w-full bg-neutral-875 shadow-xl overflow-x-auto`};
 
     & > div {
         ${tw`mx-auto w-full flex items-center`};

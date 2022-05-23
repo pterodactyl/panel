@@ -3,7 +3,7 @@ import { createGlobalStyle } from 'styled-components/macro';
 
 export default createGlobalStyle`
     body {
-        ${tw`font-sans bg-neutral-800 text-neutral-200`};
+        ${tw`font-sans bg-neutral-850 text-neutral-200`};
         letter-spacing: 0.015em;
     }
 

@@ -127,7 +127,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     <React.Fragment>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <Icon.Cpu />
+                                <Icon.Cpu size={20} css={tw`text-neutral-600`} />
                                 <IconDescription $alarm={alarms.cpu}>
                                     {stats.cpuUsagePercent.toFixed(2)} %
                                 </IconDescription>
@@ -136,7 +136,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <Icon.PieChart />
+                                <Icon.PieChart size={20} css={tw`text-neutral-600`} />
                                 <IconDescription $alarm={alarms.memory}>
                                     {bytesToHuman(stats.memoryUsageInBytes)}
                                 </IconDescription>
@@ -145,7 +145,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                         </div>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
-                                <Icon.HardDrive />
+                                <Icon.HardDrive size={20} css={tw`text-neutral-600`} />
                                 <IconDescription $alarm={alarms.disk}>
                                     {bytesToHuman(stats.diskUsageInBytes)}
                                 </IconDescription>
