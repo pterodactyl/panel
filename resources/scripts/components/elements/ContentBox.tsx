@@ -21,7 +21,7 @@ const ContentBox = ({ title, borderColor, showFlashes, showLoadingOverlay, child
         }
         <div
             css={[
-                tw`bg-neutral-700 p-4 rounded shadow-lg relative`,
+                tw`bg-neutral-900 p-4 rounded shadow-lg relative`,
                 !!borderColor && tw`border-t-4`,
             ]}
         >

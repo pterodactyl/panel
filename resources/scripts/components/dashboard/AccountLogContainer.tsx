@@ -1,8 +1,6 @@
 import tw from 'twin.macro';
-import { Actions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
+import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
-import { useStoreActions } from '@/state/hooks';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import GreyRowBox from '@/components/elements/GreyRowBox';
@@ -14,7 +12,7 @@ const AccountLogContainer = () => {
     const [ loading, setLoading ] = useState(false);
     const [ logs, setLogs ] = useState<AccountLog[]>([]);
 
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { addError, clearFlashes } = useFlash();
 
     useEffect(() => {
         clearFlashes('account:logs');
@@ -41,7 +39,7 @@ const AccountLogContainer = () => {
                             key={log.id}
                             css={[ tw`bg-neutral-800 flex`, index > 0 && tw`mt-2` ]}
                         >
-                            <p css={tw`flex-inline text-lg ml-2`}>
+                            <p css={tw`flex-initial text-lg ml-2`}>
                                 #{log.id}
                             </p>
                             <p css={tw`flex-1 text-xs ml-4 inline-block`}>
@@ -49,7 +47,7 @@ const AccountLogContainer = () => {
                                     {log.action}
                                 </code>
                             </p>
-                            <p css={tw`flex-inlinetext-xs ml-4 hidden inline-block`}>
+                            <p css={tw`flex-initial text-xs ml-4 hidden inline-block`}>
                                 IP address:&nbsp;
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
                                     {log.ipAddress}

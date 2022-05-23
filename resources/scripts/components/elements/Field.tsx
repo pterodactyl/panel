@@ -25,7 +25,7 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
                         id={id}
                         {...field}
                         {...props}
-                        isLight={light}
+                        isLight={false}
                         hasError={!!(touched[field.name] && errors[field.name])}
                     />
                     {touched[field.name] && errors[field.name] ?
