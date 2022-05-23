@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
  * @property \Pterodactyl\Models\User $user
+ *
  * @method static \Illuminate\Database\Eloquent\Builder|UserSSHKey newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserSSHKey newQuery()
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey onlyTrashed()
@@ -32,6 +33,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withTrashed()
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withoutTrashed()
  * @mixin \Eloquent
+ *
  * @method static \Database\Factories\UserSSHKeyFactory factory(...$parameters)
  */
 class UserSSHKey extends Model

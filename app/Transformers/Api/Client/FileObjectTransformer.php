@@ -1,19 +1,12 @@
 <?php
 
-namespace Pterodactyl\Transformers\Daemon;
+namespace Pterodactyl\Transformers\Api\Client;
 
 use Carbon\Carbon;
 use Illuminate\Support\Arr;
 
-class FileObjectTransformer extends BaseDaemonTransformer
+class FileObjectTransformer extends BaseClientTransformer
 {
-    /**
-     * An array of files we allow editing in the Panel.
-     *
-     * @var array
-     */
-    private $editable = [];
-
     /**
      * Transform a file object response from the daemon into a standardized response.
      *

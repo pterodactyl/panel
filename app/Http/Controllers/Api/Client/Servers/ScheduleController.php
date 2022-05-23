@@ -52,8 +52,7 @@ class ScheduleController extends ClientApiController
      */
     public function index(ViewScheduleRequest $request, Server $server)
     {
-        $schedules = $server->schedule;
-        $schedules->loadMissing('tasks');
+        $schedules = $server->schedules->loadMissing('tasks');
 
         return $this->fractal->collection($schedules)
             ->transformWith($this->getTransformer(ScheduleTransformer::class))

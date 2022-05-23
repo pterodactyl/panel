@@ -120,17 +120,4 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
         $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs');
         $this->assertAccessDeniedJson($response);
     }
-
-    /**
-     * Test that a nests's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $egg = Egg::query()->findOrFail(1);
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_eggs' => 0]);
-
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
-        $this->assertAccessDeniedJson($response);
-    }
 }

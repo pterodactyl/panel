@@ -9,6 +9,7 @@ use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -19,7 +20,7 @@ use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
 
 /**
- * \Pterodactyl\Models\User.
+ * Pterodactyl\Models\User.
  *
  * @property int $id
  * @property string|null $external_id
@@ -29,27 +30,28 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string|null $name_first
  * @property string|null $name_last
  * @property string $password
- * @property string|null $remeber_token
+ * @property string|null $remember_token
  * @property string $language
  * @property bool $root_admin
  * @property bool $use_totp
  * @property string|null $totp_secret
- * @property \Carbon\Carbon|null $totp_authenticated_at
+ * @property \Illuminate\Support\Carbon|null $totp_authenticated_at
  * @property bool $gravatar
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $name
- * @property \Pterodactyl\Models\ApiKey[]|\Illuminate\Database\Eloquent\Collection $apiKeys
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\RecoveryToken[]|\Illuminate\Database\Eloquent\Collection $recoveryTokens
- * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $apiKeys
  * @property int|null $api_keys_count
+ * @property string $name
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property int|null $notifications_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\RecoveryToken[] $recoveryTokens
  * @property int|null $recovery_tokens_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  * @property int|null $servers_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\UserSSHKey[] $sshKeys
  * @property int|null $ssh_keys_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $tokens
+ * @property int|null $tokens_count
  *
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
@@ -83,6 +85,7 @@ class User extends Model implements
     use Authorizable;
     use AvailableLanguages;
     use CanResetPassword;
+    use HasAccessTokens;
     use Notifiable;
 
     public const USER_LEVEL_USER = 0;
@@ -212,7 +215,7 @@ class User extends Model implements
      */
     public function toVueObject(): array
     {
-        return (new Collection($this->toArray()))->except(['id', 'external_id'])->toArray();
+        return Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
     }
 
     /**

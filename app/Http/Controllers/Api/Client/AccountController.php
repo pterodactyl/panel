@@ -16,22 +16,29 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdateUsernameRequest;
 class AccountController extends ClientApiController
 {
     /**
-     * @var \Illuminate\Auth\SessionGuard
+     * @var \Pterodactyl\Services\Users\UserUpdateService
      */
-    private $sessionGuard;
+    private $updateService;
 
-    private UserUpdateService $updateService;
-    private AccountLog $log;
+    /**
+     * @var \Illuminate\Auth\AuthManager
+     */
+    private $manager;
+
+    /**
+     * @var \Pterodactyl\Models\AccountLog
+     */
+    private $log;
 
     /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $sessionGuard, UserUpdateService $updateService, AccountLog $log)
+    public function __construct(AuthManager $manager, UserUpdateService $updateService, AccountLog $log)
     {
         parent::__construct();
 
         $this->updateService = $updateService;
-        $this->sessionGuard = $sessionGuard;
+        $this->manager = $manager;
         $this->log = $log;
     }
 
@@ -71,13 +78,17 @@ class AccountController extends ClientApiController
     {
         $user = $this->updateService->handle($request->user(), $request->validated());
 
+        $guard = $this->manager->guard();
         // If you do not update the user in the session you'll end up working with a
         // cached copy of the user that does not include the updated password. Do this
         // to correctly store the new user details in the guard and allow the logout
         // other devices functionality to work.
-        $this->sessionGuard->setUser($user);
+        $guard->setUser($user);
 
-        $this->sessionGuard->logoutOtherDevices($request->input('password'));
+        // This method doesn't exist in the stateless Sanctum world.
+        if (method_exists($guard, 'logoutOtherDevices')) {
+            $guard->logoutOtherDevices($request->input('password'));
+        }
 
         $this->log->create([
             'user_id' => $request->user()->id,

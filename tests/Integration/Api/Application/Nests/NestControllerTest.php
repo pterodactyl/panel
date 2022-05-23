@@ -127,17 +127,4 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
         $response = $this->getJson('/api/application/nests/' . $nest->id);
         $this->assertAccessDeniedJson($response);
     }
-
-    /**
-     * Test that a nest's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $nest = $this->repository->find(1);
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_nests' => 0]);
-
-        $response = $this->getJson('/api/application/nests/' . $nest->id);
-        $this->assertAccessDeniedJson($response);
-    }
 }

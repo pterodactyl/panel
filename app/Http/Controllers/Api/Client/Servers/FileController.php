@@ -10,7 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Illuminate\Contracts\Routing\ResponseFactory;
 use Pterodactyl\Repositories\Wings\DaemonFileRepository;
-use Pterodactyl\Transformers\Daemon\FileObjectTransformer;
+use Pterodactyl\Transformers\Api\Client\FileObjectTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\CopyFileRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\PullFileRequest;

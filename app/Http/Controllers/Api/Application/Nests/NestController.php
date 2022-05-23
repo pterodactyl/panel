@@ -40,9 +40,9 @@ class NestController extends ApplicationApiController
     /**
      * Return information about a single Nest model.
      */
-    public function view(GetNestsRequest $request): array
+    public function view(GetNestsRequest $request, Nest $nest): array
     {
-        return $this->fractal->item($request->getModel(Nest::class))
+        return $this->fractal->item($nest)
             ->transformWith($this->getTransformer(NestTransformer::class))
             ->toArray();
     }

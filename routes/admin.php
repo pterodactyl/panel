@@ -33,10 +33,10 @@ Route::group(['prefix' => 'api'], function () {
 */
 Route::group(['prefix' => 'locations'], function () {
     Route::get('/', [Admin\LocationController::class, 'index'])->name('admin.locations');
-    Route::get('/view/{location}', [Admin\LocationController::class, 'view'])->name('admin.locations.view');
+    Route::get('/view/{location:id}', [Admin\LocationController::class, 'view'])->name('admin.locations.view');
 
     Route::post('/', [Admin\LocationController::class, 'create']);
-    Route::patch('/view/{location}', [Admin\LocationController::class, 'update']);
+    Route::patch('/view/{location:id}', [Admin\LocationController::class, 'update']);
 });
 
 /*
@@ -49,11 +49,11 @@ Route::group(['prefix' => 'locations'], function () {
 */
 Route::group(['prefix' => 'databases'], function () {
     Route::get('/', [Admin\DatabaseController::class, 'index'])->name('admin.databases');
-    Route::get('/view/{host}', [Admin\DatabaseController::class, 'view'])->name('admin.databases.view');
+    Route::get('/view/{host:id}', [Admin\DatabaseController::class, 'view'])->name('admin.databases.view');
 
     Route::post('/', [Admin\DatabaseController::class, 'create']);
-    Route::patch('/view/{host}', [Admin\DatabaseController::class, 'update']);
-    Route::delete('/view/{host}', [Admin\DatabaseController::class, 'delete']);
+    Route::patch('/view/{host:id}', [Admin\DatabaseController::class, 'update']);
+    Route::delete('/view/{host:id}', [Admin\DatabaseController::class, 'delete']);
 });
 
 /*
@@ -102,12 +102,12 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/', [Admin\UserController::class, 'index'])->name('admin.users');
     Route::get('/accounts.json', [Admin\UserController::class, 'json'])->name('admin.users.json');
     Route::get('/new', [Admin\UserController::class, 'create'])->name('admin.users.new');
-    Route::get('/view/{user}', [Admin\UserController::class, 'view'])->name('admin.users.view');
+    Route::get('/view/{user:id}', [Admin\UserController::class, 'view'])->name('admin.users.view');
 
     Route::post('/new', [Admin\UserController::class, 'store']);
 
-    Route::patch('/view/{user}', [Admin\UserController::class, 'update']);
-    Route::delete('/view/{user}', [Admin\UserController::class, 'delete']);
+    Route::patch('/view/{user:id}', [Admin\UserController::class, 'update']);
+    Route::delete('/view/{user:id}', [Admin\UserController::class, 'delete']);
 });
 
 /*
@@ -121,35 +121,35 @@ Route::group(['prefix' => 'users'], function () {
 Route::group(['prefix' => 'servers'], function () {
     Route::get('/', [Admin\Servers\ServerController::class, 'index'])->name('admin.servers');
     Route::get('/new', [Admin\Servers\CreateServerController::class, 'index'])->name('admin.servers.new');
-    Route::get('/view/{server}', [Admin\Servers\ServerViewController::class, 'index'])->name('admin.servers.view');
+    Route::get('/view/{server:id}', [Admin\Servers\ServerViewController::class, 'index'])->name('admin.servers.view');
 
     Route::group(['middleware' => [ServerInstalled::class]], function () {
-        Route::get('/view/{server}/details', [Admin\Servers\ServerViewController::class, 'details'])->name('admin.servers.view.details');
-        Route::get('/view/{server}/build', [Admin\Servers\ServerViewController::class, 'build'])->name('admin.servers.view.build');
-        Route::get('/view/{server}/startup', [Admin\Servers\ServerViewController::class, 'startup'])->name('admin.servers.view.startup');
-        Route::get('/view/{server}/database', [Admin\Servers\ServerViewController::class, 'database'])->name('admin.servers.view.database');
-        Route::get('/view/{server}/mounts', [Admin\Servers\ServerViewController::class, 'mounts'])->name('admin.servers.view.mounts');
+        Route::get('/view/{server:id}/details', [Admin\Servers\ServerViewController::class, 'details'])->name('admin.servers.view.details');
+        Route::get('/view/{server:id}/build', [Admin\Servers\ServerViewController::class, 'build'])->name('admin.servers.view.build');
+        Route::get('/view/{server:id}/startup', [Admin\Servers\ServerViewController::class, 'startup'])->name('admin.servers.view.startup');
+        Route::get('/view/{server:id}/database', [Admin\Servers\ServerViewController::class, 'database'])->name('admin.servers.view.database');
+        Route::get('/view/{server:id}/mounts', [Admin\Servers\ServerViewController::class, 'mounts'])->name('admin.servers.view.mounts');
     });
 
-    Route::get('/view/{server}/manage', [Admin\Servers\ServerViewController::class, 'manage'])->name('admin.servers.view.manage');
-    Route::get('/view/{server}/delete', [Admin\Servers\ServerViewController::class, 'delete'])->name('admin.servers.view.delete');
+    Route::get('/view/{server:id}/manage', [Admin\Servers\ServerViewController::class, 'manage'])->name('admin.servers.view.manage');
+    Route::get('/view/{server:id}/delete', [Admin\Servers\ServerViewController::class, 'delete'])->name('admin.servers.view.delete');
 
     Route::post('/new', [Admin\Servers\CreateServerController::class, 'store']);
-    Route::post('/view/{server}/build', [Admin\ServersController::class, 'updateBuild']);
-    Route::post('/view/{server}/startup', [Admin\ServersController::class, 'saveStartup']);
-    Route::post('/view/{server}/database', [Admin\ServersController::class, 'newDatabase']);
-    Route::post('/view/{server}/mounts/{mount}', [Admin\ServersController::class, 'addMount'])->name('admin.servers.view.mounts.toggle');
-    Route::post('/view/{server}/manage/toggle', [Admin\ServersController::class, 'toggleInstall'])->name('admin.servers.view.manage.toggle');
-    Route::post('/view/{server}/manage/suspension', [Admin\ServersController::class, 'manageSuspension'])->name('admin.servers.view.manage.suspension');
-    Route::post('/view/{server}/manage/reinstall', [Admin\ServersController::class, 'reinstallServer'])->name('admin.servers.view.manage.reinstall');
-    Route::post('/view/{server}/manage/transfer', [Admin\Servers\ServerTransferController::class, 'transfer'])->name('admin.servers.view.manage.transfer');
-    Route::post('/view/{server}/delete', [Admin\ServersController::class, 'delete']);
+    Route::post('/view/{server:id}/build', [Admin\ServersController::class, 'updateBuild']);
+    Route::post('/view/{server:id}/startup', [Admin\ServersController::class, 'saveStartup']);
+    Route::post('/view/{server:id}/database', [Admin\ServersController::class, 'newDatabase']);
+    Route::post('/view/{server:id}/mounts/{mount:id}', [Admin\ServersController::class, 'addMount'])->name('admin.servers.view.mounts.toggle');
+    Route::post('/view/{server:id}/manage/toggle', [Admin\ServersController::class, 'toggleInstall'])->name('admin.servers.view.manage.toggle');
+    Route::post('/view/{server:id}/manage/suspension', [Admin\ServersController::class, 'manageSuspension'])->name('admin.servers.view.manage.suspension');
+    Route::post('/view/{server:id}/manage/reinstall', [Admin\ServersController::class, 'reinstallServer'])->name('admin.servers.view.manage.reinstall');
+    Route::post('/view/{server:id}/manage/transfer', [Admin\Servers\ServerTransferController::class, 'transfer'])->name('admin.servers.view.manage.transfer');
+    Route::post('/view/{server:id}/delete', [Admin\ServersController::class, 'delete']);
 
-    Route::patch('/view/{server}/details', [Admin\ServersController::class, 'setDetails']);
-    Route::patch('/view/{server}/database', [Admin\ServersController::class, 'resetDatabasePassword']);
+    Route::patch('/view/{server:id}/details', [Admin\ServersController::class, 'setDetails']);
+    Route::patch('/view/{server:id}/database', [Admin\ServersController::class, 'resetDatabasePassword']);
 
-    Route::delete('/view/{server}/database/{database}/delete', [Admin\ServersController::class, 'deleteDatabase'])->name('admin.servers.view.database.delete');
-    Route::delete('/view/{server}/mounts/{mount}', [Admin\ServersController::class, 'deleteMount']);
+    Route::delete('/view/{server:id}/database/{database:id}/delete', [Admin\ServersController::class, 'deleteDatabase'])->name('admin.servers.view.database.delete');
+    Route::delete('/view/{server:id}/mounts/{mount:id}', [Admin\ServersController::class, 'deleteMount']);
 });
 
 /*
@@ -163,24 +163,24 @@ Route::group(['prefix' => 'servers'], function () {
 Route::group(['prefix' => 'nodes'], function () {
     Route::get('/', [Admin\Nodes\NodeController::class, 'index'])->name('admin.nodes');
     Route::get('/new', [Admin\NodesController::class, 'create'])->name('admin.nodes.new');
-    Route::get('/view/{node}', [Admin\Nodes\NodeViewController::class, 'index'])->name('admin.nodes.view');
-    Route::get('/view/{node}/settings', [Admin\Nodes\NodeViewController::class, 'settings'])->name('admin.nodes.view.settings');
-    Route::get('/view/{node}/configuration', [Admin\Nodes\NodeViewController::class, 'configuration'])->name('admin.nodes.view.configuration');
-    Route::get('/view/{node}/allocation', [Admin\Nodes\NodeViewController::class, 'allocations'])->name('admin.nodes.view.allocation');
-    Route::get('/view/{node}/servers', [Admin\Nodes\NodeViewController::class, 'servers'])->name('admin.nodes.view.servers');
-    Route::get('/view/{node}/system-information', Admin\Nodes\SystemInformationController::class);
+    Route::get('/view/{node:id}', [Admin\Nodes\NodeViewController::class, 'index'])->name('admin.nodes.view');
+    Route::get('/view/{node:id}/settings', [Admin\Nodes\NodeViewController::class, 'settings'])->name('admin.nodes.view.settings');
+    Route::get('/view/{node:id}/configuration', [Admin\Nodes\NodeViewController::class, 'configuration'])->name('admin.nodes.view.configuration');
+    Route::get('/view/{node:id}/allocation', [Admin\Nodes\NodeViewController::class, 'allocations'])->name('admin.nodes.view.allocation');
+    Route::get('/view/{node:id}/servers', [Admin\Nodes\NodeViewController::class, 'servers'])->name('admin.nodes.view.servers');
+    Route::get('/view/{node:id}/system-information', Admin\Nodes\SystemInformationController::class);
 
     Route::post('/new', [Admin\NodesController::class, 'store']);
-    Route::post('/view/{node}/allocation', [Admin\NodesController::class, 'createAllocation']);
-    Route::post('/view/{node}/allocation/remove', [Admin\NodesController::class, 'allocationRemoveBlock'])->name('admin.nodes.view.allocation.removeBlock');
-    Route::post('/view/{node}/allocation/alias', [Admin\NodesController::class, 'allocationSetAlias'])->name('admin.nodes.view.allocation.setAlias');
-    Route::post('/view/{node}/settings/token', Admin\NodeAutoDeployController::class)->name('admin.nodes.view.configuration.token');
+    Route::post('/view/{node:id}/allocation', [Admin\NodesController::class, 'createAllocation']);
+    Route::post('/view/{node:id}/allocation/remove', [Admin\NodesController::class, 'allocationRemoveBlock'])->name('admin.nodes.view.allocation.removeBlock');
+    Route::post('/view/{node:id}/allocation/alias', [Admin\NodesController::class, 'allocationSetAlias'])->name('admin.nodes.view.allocation.setAlias');
+    Route::post('/view/{node:id}/settings/token', Admin\NodeAutoDeployController::class)->name('admin.nodes.view.configuration.token');
 
-    Route::patch('/view/{node}/settings', [Admin\NodesController::class, 'updateSettings']);
+    Route::patch('/view/{node:id}/settings', [Admin\NodesController::class, 'updateSettings']);
 
-    Route::delete('/view/{node}/delete', [Admin\NodesController::class, 'delete'])->name('admin.nodes.view.delete');
-    Route::delete('/view/{node}/allocation/remove/{allocation}', [Admin\NodesController::class, 'allocationRemoveSingle'])->name('admin.nodes.view.allocation.removeSingle');
-    Route::delete('/view/{node}/allocations', [Admin\NodesController::class, 'allocationRemoveMultiple'])->name('admin.nodes.view.allocation.removeMultiple');
+    Route::delete('/view/{node:id}/delete', [Admin\NodesController::class, 'delete'])->name('admin.nodes.view.delete');
+    Route::delete('/view/{node:id}/allocation/remove/{allocation:id}', [Admin\NodesController::class, 'allocationRemoveSingle'])->name('admin.nodes.view.allocation.removeSingle');
+    Route::delete('/view/{node:id}/allocations', [Admin\NodesController::class, 'allocationRemoveMultiple'])->name('admin.nodes.view.allocation.removeMultiple');
 });
 
 /*
@@ -193,16 +193,16 @@ Route::group(['prefix' => 'nodes'], function () {
 */
 Route::group(['prefix' => 'mounts'], function () {
     Route::get('/', [Admin\MountController::class, 'index'])->name('admin.mounts');
-    Route::get('/view/{mount}', [Admin\MountController::class, 'view'])->name('admin.mounts.view');
+    Route::get('/view/{mount:id}', [Admin\MountController::class, 'view'])->name('admin.mounts.view');
 
     Route::post('/', [Admin\MountController::class, 'create']);
-    Route::post('/{mount}/eggs', [Admin\MountController::class, 'addEggs'])->name('admin.mounts.eggs');
-    Route::post('/{mount}/nodes', [Admin\MountController::class, 'addNodes'])->name('admin.mounts.nodes');
+    Route::post('/{mount:id}/eggs', [Admin\MountController::class, 'addEggs'])->name('admin.mounts.eggs');
+    Route::post('/{mount:id}/nodes', [Admin\MountController::class, 'addNodes'])->name('admin.mounts.nodes');
 
-    Route::patch('/view/{mount}', [Admin\MountController::class, 'update']);
+    Route::patch('/view/{mount:id}', [Admin\MountController::class, 'update']);
 
-    Route::delete('/{mount}/eggs/{egg_id}', [Admin\MountController::class, 'deleteEgg']);
-    Route::delete('/{mount}/nodes/{node_id}', [Admin\MountController::class, 'deleteNode']);
+    Route::delete('/{mount:id}/eggs/{egg_id}', [Admin\MountController::class, 'deleteEgg']);
+    Route::delete('/{mount:id}/nodes/{node_id}', [Admin\MountController::class, 'deleteNode']);
 });
 
 /*
@@ -216,26 +216,26 @@ Route::group(['prefix' => 'mounts'], function () {
 Route::group(['prefix' => 'nests'], function () {
     Route::get('/', [Admin\Nests\NestController::class, 'index'])->name('admin.nests');
     Route::get('/new', [Admin\Nests\NestController::class, 'create'])->name('admin.nests.new');
-    Route::get('/view/{nest}', [Admin\Nests\NestController::class, 'view'])->name('admin.nests.view');
+    Route::get('/view/{nest:id}', [Admin\Nests\NestController::class, 'view'])->name('admin.nests.view');
     Route::get('/egg/new', [Admin\Nests\EggController::class, 'create'])->name('admin.nests.egg.new');
-    Route::get('/egg/{egg}', [Admin\Nests\EggController::class, 'view'])->name('admin.nests.egg.view');
-    Route::get('/egg/{egg}/export', [Admin\Nests\EggShareController::class, 'export'])->name('admin.nests.egg.export');
-    Route::get('/egg/{egg}/variables', [Admin\Nests\EggVariableController::class, 'view'])->name('admin.nests.egg.variables');
-    Route::get('/egg/{egg}/scripts', [Admin\Nests\EggScriptController::class, 'index'])->name('admin.nests.egg.scripts');
+    Route::get('/egg/{egg:id}', [Admin\Nests\EggController::class, 'view'])->name('admin.nests.egg.view');
+    Route::get('/egg/{egg:id}/export', [Admin\Nests\EggShareController::class, 'export'])->name('admin.nests.egg.export');
+    Route::get('/egg/{egg:id}/variables', [Admin\Nests\EggVariableController::class, 'view'])->name('admin.nests.egg.variables');
+    Route::get('/egg/{egg:id}/scripts', [Admin\Nests\EggScriptController::class, 'index'])->name('admin.nests.egg.scripts');
 
     Route::post('/new', [Admin\Nests\NestController::class, 'store']);
     Route::post('/import', [Admin\Nests\EggShareController::class, 'import'])->name('admin.nests.egg.import');
     Route::post('/egg/new', [Admin\Nests\EggController::class, 'store']);
-    Route::post('/egg/{egg}/variables', [Admin\Nests\EggVariableController::class, 'store']);
+    Route::post('/egg/{egg:id}/variables', [Admin\Nests\EggVariableController::class, 'store']);
 
-    Route::put('/egg/{egg}', [Admin\Nests\EggShareController::class, 'update']);
+    Route::put('/egg/{egg:id}', [Admin\Nests\EggShareController::class, 'update']);
 
-    Route::patch('/view/{nest}', [Admin\Nests\NestController::class, 'update']);
-    Route::patch('/egg/{egg}', [Admin\Nests\EggController::class, 'update']);
-    Route::patch('/egg/{egg}/scripts', [Admin\Nests\EggScriptController::class, 'update']);
-    Route::patch('/egg/{egg}/variables/{variable}', [Admin\Nests\EggVariableController::class, 'update'])->name('admin.nests.egg.variables.edit');
+    Route::patch('/view/{nest:id}', [Admin\Nests\NestController::class, 'update']);
+    Route::patch('/egg/{egg:id}', [Admin\Nests\EggController::class, 'update']);
+    Route::patch('/egg/{egg:id}/scripts', [Admin\Nests\EggScriptController::class, 'update']);
+    Route::patch('/egg/{egg:id}/variables/{variable:id}', [Admin\Nests\EggVariableController::class, 'update'])->name('admin.nests.egg.variables.edit');
 
-    Route::delete('/view/{nest}', [Admin\Nests\NestController::class, 'destroy']);
-    Route::delete('/egg/{egg}', [Admin\Nests\EggController::class, 'destroy']);
-    Route::delete('/egg/{egg}/variables/{variable}', [Admin\Nests\EggVariableController::class, 'destroy']);
+    Route::delete('/view/{nest:id}', [Admin\Nests\NestController::class, 'destroy']);
+    Route::delete('/egg/{egg:id}', [Admin\Nests\EggController::class, 'destroy']);
+    Route::delete('/egg/{egg:id}/variables/{variable:id}', [Admin\Nests\EggVariableController::class, 'destroy']);
 });

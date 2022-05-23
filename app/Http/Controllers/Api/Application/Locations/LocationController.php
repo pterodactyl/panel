@@ -75,9 +75,9 @@ class LocationController extends ApplicationApiController
     /**
      * Return a single location.
      */
-    public function view(GetLocationRequest $request): array
+    public function view(GetLocationRequest $request, Location $location): array
     {
-        return $this->fractal->item($request->getModel(Location::class))
+        return $this->fractal->item($location)
             ->transformWith($this->getTransformer(LocationTransformer::class))
             ->toArray();
     }
@@ -108,9 +108,9 @@ class LocationController extends ApplicationApiController
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateLocationRequest $request): array
+    public function update(UpdateLocationRequest $request, Location $location): array
     {
-        $location = $this->updateService->handle($request->getModel(Location::class), $request->validated());
+        $location = $this->updateService->handle($location, $request->validated());
 
         return $this->fractal->item($location)
             ->transformWith($this->getTransformer(LocationTransformer::class))
@@ -122,9 +122,9 @@ class LocationController extends ApplicationApiController
      *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
-    public function delete(DeleteLocationRequest $request): Response
+    public function delete(DeleteLocationRequest $request, Location $location): Response
     {
-        $this->deletionService->handle($request->getModel(Location::class));
+        $this->deletionService->handle($location);
 
         return response('', 204);
     }

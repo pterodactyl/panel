@@ -71,7 +71,6 @@ class ApiKeyController extends ClientApiController
      * @return array
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function store(StoreApiKeyRequest $request)
     {
@@ -79,11 +78,10 @@ class ApiKeyController extends ClientApiController
             throw new DisplayException('You have reached the account limit for number of API keys.');
         }
 
-        $key = $this->keyCreationService->setKeyType(ApiKey::TYPE_ACCOUNT)->handle([
-            'user_id' => $request->user()->id,
-            'memo' => $request->input('description'),
-            'allowed_ips' => $request->input('allowed_ips') ?? [],
-        ]);
+        $token = $request->user()->createToken(
+            $request->input('description'),
+            $request->input('allowed_ips')
+        );
 
         $this->log->create([
             'user_id' => $request->user()->id,
@@ -91,11 +89,9 @@ class ApiKeyController extends ClientApiController
             'ip_address' => $request->getClientIp(),
         ]);
 
-        return $this->fractal->item($key)
+        return $this->fractal->item($token->accessToken)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
-            ->addMeta([
-                'secret_token' => $this->encrypter->decrypt($key->token),
-            ])
+            ->addMeta(['secret_token' => $token->plainTextToken])
             ->toArray();
     }
 
@@ -114,7 +110,7 @@ class ApiKeyController extends ClientApiController
 
         $this->log->create([
             'user_id' => $request->user()->id,
-            'action' => 'API key ('.$key->identifier.') was deleted.',
+            'action' => 'API key ('.$identifier.') was deleted.',
             'ip_address' => $request->getClientIp(),
         ]);
 

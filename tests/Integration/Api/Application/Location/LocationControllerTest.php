@@ -265,16 +265,4 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $response = $this->getJson('/api/application/locations/' . $location->id);
         $this->assertAccessDeniedJson($response);
     }
-
-    /**
-     * Test that a location's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
-
-        $response = $this->getJson('/api/application/locations/nil');
-        $this->assertAccessDeniedJson($response);
-    }
 }

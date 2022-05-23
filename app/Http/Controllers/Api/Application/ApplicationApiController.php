@@ -55,17 +55,20 @@ abstract class ApplicationApiController extends Controller
     /**
      * Return an instance of an application transformer.
      *
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     * @template T of \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     *
+     * @param class-string<T> $abstract
+     *
+     * @return T
+     *
+     * @noinspection PhpDocSignatureInspection
+     * @noinspection PhpUndefinedClassInspection
      */
     public function getTransformer(string $abstract)
     {
-        /** @var \Pterodactyl\Transformers\Api\Application\BaseTransformer $transformer */
-        $transformer = Container::getInstance()->make($abstract);
-        $transformer->setKey($this->request->attributes->get('api_key'));
+        Assert::subclassOf($abstract, BaseTransformer::class);
 
-        Assert::isInstanceOf($transformer, BaseTransformer::class);
-
-        return $transformer;
+        return $abstract::fromRequest($this->request);
     }
 
     /**

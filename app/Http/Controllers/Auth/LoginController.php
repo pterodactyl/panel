@@ -67,25 +67,21 @@ class LoginController extends AbstractLoginController
             $this->sendFailedLoginResponse($request, $user);
         }
 
-        if ($user->use_totp) {
-            $token = Str::random(64);
-
-            $request->session()->put('auth_confirmation_token', [
-                'user_id' => $user->id,
-                'token_value' => $token,
-                'expires_at' => CarbonImmutable::now()->addMinutes(5),
-            ]);
-
-            return new JsonResponse([
-                'data' => [
-                    'complete' => false,
-                    'confirmation_token' => $token,
-                ],
-            ]);
+        if (!$user->use_totp) {
+            return $this->sendLoginResponse($user, $request);
         }
 
-        $this->auth->guard()->login($user, true);
+        $request->session()->put('auth_confirmation_token', [
+            'user_id' => $user->id,
+            'token_value' => $token = Str::random(64),
+            'expires_at' => CarbonImmutable::now()->addMinutes(5),
+        ]);
 
-        return $this->sendLoginResponse($user, $request);
+        return new JsonResponse([
+            'data' => [
+                'complete' => false,
+                'confirmation_token' => $token,
+            ],
+        ]);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Http;
 
-use Pterodactyl\Models\ApiKey;
+use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\Authorize;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Http\Middleware\TrustProxies;
@@ -12,27 +12,25 @@ use Pterodactyl\Http\Middleware\EncryptCookies;
 use Pterodactyl\Http\Middleware\Api\IsValidJson;
 use Pterodactyl\Http\Middleware\VerifyCsrfToken;
 use Pterodactyl\Http\Middleware\VerifyReCaptcha;
-use Pterodactyl\Http\Middleware\AdminAuthenticate;
 use Illuminate\Routing\Middleware\ThrottleRequests;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
-use Pterodactyl\Http\Middleware\Api\AuthenticateKey;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
+use Pterodactyl\Http\Middleware\EnsureStatefulRequests;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 use Illuminate\Auth\Middleware\AuthenticateWithBasicAuth;
 use Pterodactyl\Http\Middleware\Api\AuthenticateIPAccess;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
 use Illuminate\Foundation\Http\Middleware\ValidatePostSize;
-use Pterodactyl\Http\Middleware\Api\HandleStatelessRequest;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 use Pterodactyl\Http\Middleware\Api\Daemon\DaemonAuthenticate;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
-use Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode;
+use Pterodactyl\Http\Middleware\Api\Client\RequireClientApiKey;
 use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
-use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientApiBindings;
+use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientBindings;
+use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
 
 class Kernel extends HttpKernel
@@ -43,12 +41,12 @@ class Kernel extends HttpKernel
      * @var array
      */
     protected $middleware = [
-        CheckForMaintenanceMode::class,
-        EncryptCookies::class,
+        TrustProxies::class,
+        HandleCors::class,
+        PreventRequestsDuringMaintenance::class,
         ValidatePostSize::class,
         TrimStrings::class,
         ConvertEmptyStringsToNull::class,
-        TrustProxies::class,
     ];
 
     /**
@@ -58,38 +56,28 @@ class Kernel extends HttpKernel
      */
     protected $middlewareGroups = [
         'web' => [
+            EncryptCookies::class,
             AddQueuedCookiesToResponse::class,
             StartSession::class,
-            AuthenticateSession::class,
             ShareErrorsFromSession::class,
             VerifyCsrfToken::class,
             SubstituteBindings::class,
             LanguageMiddleware::class,
-            RequireTwoFactorAuthentication::class,
         ],
         'api' => [
-            HandleStatelessRequest::class,
+            EnsureStatefulRequests::class,
+            'auth:sanctum',
             IsValidJson::class,
-            StartSession::class,
-            AuthenticateSession::class,
-            VerifyCsrfToken::class,
+            RequireTwoFactorAuthentication::class,
+            AuthenticateIPAccess::class,
         ],
         'application-api' => [
-            ApiSubstituteBindings::class,
-            'api..key:' . ApiKey::TYPE_APPLICATION,
+            SubstituteBindings::class,
             AuthenticateApplicationUser::class,
-            AuthenticateIPAccess::class,
         ],
         'client-api' => [
-            SubstituteClientApiBindings::class,
-            'api..key:' . ApiKey::TYPE_ACCOUNT,
-            AuthenticateIPAccess::class,
-            // This is perhaps a little backwards with the Client API, but logically you'd be unable
-            // to create/get an API key without first enabling 2FA on the account, so I suppose in the
-            // end it makes sense.
-            //
-            // You just wouldn't be authenticating with the API by providing a 2FA token.
-            RequireTwoFactorAuthentication::class,
+            SubstituteClientBindings::class,
+            RequireClientApiKey::class,
         ],
         'daemon' => [
             SubstituteBindings::class,
@@ -105,15 +93,13 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
+        'auth.session' => AuthenticateSession::class,
         'guest' => RedirectIfAuthenticated::class,
-        'admin' => AdminAuthenticate::class,
         'csrf' => VerifyCsrfToken::class,
         'throttle' => ThrottleRequests::class,
         'can' => Authorize::class,
         'bindings' => SubstituteBindings::class,
         'recaptcha' => VerifyReCaptcha::class,
         'node.maintenance' => MaintenanceMiddleware::class,
-        // API Specific Middleware
-        'api..key' => AuthenticateKey::class,
     ];
 }

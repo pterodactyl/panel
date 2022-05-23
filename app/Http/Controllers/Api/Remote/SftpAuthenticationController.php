@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
-use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Permission;
