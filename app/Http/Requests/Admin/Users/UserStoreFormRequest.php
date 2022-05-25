@@ -6,7 +6,7 @@ use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class UserResourceFormRequest extends AdminFormRequest
+class UserStoreFormRequest extends AdminFormRequest
 {
     public function rules(): array
     {

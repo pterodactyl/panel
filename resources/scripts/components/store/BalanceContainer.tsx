@@ -33,7 +33,11 @@ const BalanceContainer = () => {
                 <TitledGreyBox title={'Overall balance'}>
                     ${user.storeBalance} available
                 </TitledGreyBox>
-                <ContentBox title={'Purchase credits'} showFlashes={'account:balance'}>
+                <ContentBox
+                    title={'Purchase credits'}
+                    showFlashes={'account:balance'}
+                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
+                >
                     <UpdateUsernameForm />
                 </ContentBox>
             </Container>

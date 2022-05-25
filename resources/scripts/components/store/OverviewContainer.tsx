@@ -32,13 +32,13 @@ const OverviewContainer = () => {
                 <TitledGreyBox title={'Total Slots Available'}>
                     Unavailable
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total CPU Available'}>
+                <TitledGreyBox title={'Total CPU Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     {user.storeCpu}%
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total RAM Available'}>
+                <TitledGreyBox title={'Total RAM Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     {megabytesToHuman(user.storeMemory)}
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total Disk Available'}>
+                <TitledGreyBox title={'Total Disk Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     {megabytesToHuman(user.storeDisk)}
                 </TitledGreyBox>
             </Container>
