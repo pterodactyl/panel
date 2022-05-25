@@ -85,7 +85,7 @@ class ApiKeyController extends ClientApiController
 
         $this->log->create([
             'user_id' => $request->user()->id,
-            'action' => 'API key ('.$key->identifier.') was created.',
+            'action' => 'API key \''.$request->input('description').'\' was created.',
             'ip_address' => $request->getClientIp(),
         ]);
 

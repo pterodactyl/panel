@@ -1,12 +1,48 @@
 import React from 'react';
 import tw from 'twin.macro';
-import { useStoreState } from '@/state/hooks';
+import { breakpoint } from '@/theme';
+import { useStoreState } from 'easy-peasy';
+import styled from 'styled-components/macro';
+import { megabytesToHuman } from '@/helpers';
+import TitledGreyBox from '../elements/TitledGreyBox';
+import PageContentBlock from '@/components/elements/PageContentBlock';
+
+const Container = styled.div`
+  ${tw`flex flex-wrap`};
+
+  & > div {
+    ${tw`w-full`};
+
+    ${breakpoint('sm')`
+      width: calc(50% - 1rem);
+    `}
+
+    ${breakpoint('md')`
+      ${tw`w-auto flex-1`};
+    `}
+  }
+`;
 
 const OverviewContainer = () => {
-    const enabled = useStoreState(state => state.storefront.data!.enabled);
+    const user = useStoreState(state => state.user.data!);
 
     return (
-        <p css={tw`text-green-500`}>Storefront is detected as being {enabled === '1' ? 'enabled' : 'disabled'}.</p>
+        <PageContentBlock title={'Storefront Overview'}>
+            <Container css={tw`lg:grid lg:grid-cols-5 my-10`}>
+                <TitledGreyBox title={'Total Slots Available'}>
+                    Unavailable
+                </TitledGreyBox>
+                <TitledGreyBox title={'Total CPU Available'}>
+                    {user.storeCpu}%
+                </TitledGreyBox>
+                <TitledGreyBox title={'Total RAM Available'}>
+                    {megabytesToHuman(user.storeMemory)}
+                </TitledGreyBox>
+                <TitledGreyBox title={'Total Disk Available'}>
+                    {megabytesToHuman(user.storeDisk)}
+                </TitledGreyBox>
+            </Container>
+        </PageContentBlock>
     );
 };
 

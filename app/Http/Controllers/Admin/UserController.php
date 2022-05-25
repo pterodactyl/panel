@@ -13,8 +13,9 @@ use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Http\Requests\Admin\UserFormRequest;
+use Pterodactyl\Http\Requests\Admin\Users\UserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Users\UserStoreFormRequest;
 
 class UserController extends Controller
 {
@@ -117,6 +118,18 @@ class UserController extends Controller
     }
 
     /**
+     * Display user resource page.
+     * 
+     * @return \Illuminate\View\View
+     */
+    public function viewStore(User $user)
+    {
+        return view('admin.users.store', [
+            'user' => $user,
+        ]);
+    }
+
+    /**
      * Delete a user from the system.
      *
      * @return \Illuminate\Http\RedirectResponse
@@ -160,6 +173,26 @@ class UserController extends Controller
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UserFormRequest $request, User $user)
+    {
+        $this->updateService
+            ->setUserLevel(User::USER_LEVEL_ADMIN)
+            ->handle($user, $request->normalize());
+
+        $this->alert->success(trans('admin/user.notices.account_updated'))->flash();
+
+        return redirect()->route('admin.users.view', $user->id);
+    }
+
+    
+    /**
+     * Update a user's storefront balances.
+     *
+     * @return \Illuminate\Http\RedirectResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function updateStore(UserStoreFormRequest $request, User $user)
     {
         $this->updateService
             ->setUserLevel(User::USER_LEVEL_ADMIN)

@@ -103,10 +103,12 @@ Route::group(['prefix' => 'users'], function () {
     Route::get('/accounts.json', [Admin\UserController::class, 'json'])->name('admin.users.json');
     Route::get('/new', [Admin\UserController::class, 'create'])->name('admin.users.new');
     Route::get('/view/{user:id}', [Admin\UserController::class, 'view'])->name('admin.users.view');
+    Route::get('/view/{user:id}/store', [Admin\UserController::class, 'viewStore'])->name('admin.users.store');
 
     Route::post('/new', [Admin\UserController::class, 'store']);
 
     Route::patch('/view/{user:id}', [Admin\UserController::class, 'update']);
+    Route::patch('/view/{user:id}/store', [Admin\UserController::class, 'updateStore']);
     Route::delete('/view/{user:id}', [Admin\UserController::class, 'delete']);
 });
 
