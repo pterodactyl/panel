@@ -8,6 +8,10 @@ export interface UserData {
     language: string;
     rootAdmin: boolean;
     useTotp: boolean;
+    storeBalance: number;
+    storeCpu: number;
+    storeMemory: number;
+    storeDisk: number;
     createdAt: Date;
     updatedAt: Date;
 }

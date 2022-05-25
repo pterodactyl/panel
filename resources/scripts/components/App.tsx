@@ -3,6 +3,7 @@ import { store } from '@/state';
 import { StoreProvider } from 'easy-peasy';
 import { hot } from 'react-hot-loader/root';
 import { history } from '@/components/history';
+import StoreRouter from '@/routers/StoreRouter';
 import { SiteSettings } from '@/state/settings';
 import ServerRouter from '@/routers/ServerRouter';
 import { setupInterceptors } from '@/api/interceptors';
@@ -73,6 +74,7 @@ const App = () => {
                         <Switch>
                             <Route path="/server/:id" component={ServerRouter}/>
                             <Route path="/auth" component={AuthenticationRouter}/>
+                            <Route path="/store" component={StoreRouter} />
                             <Route path="/" component={DashboardRouter}/>
                             <Route path={'*'} component={NotFound}/>
                         </Switch>

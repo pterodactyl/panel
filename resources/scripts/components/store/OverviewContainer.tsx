@@ -2,7 +2,7 @@ import React from 'react';
 import tw from 'twin.macro';
 import { useStoreState } from '@/state/hooks';
 
-const StoreOverviewContainer = () => {
+const OverviewContainer = () => {
     const enabled = useStoreState(state => state.storefront.data!.enabled);
 
     return (
@@ -10,4 +10,4 @@ const StoreOverviewContainer = () => {
     );
 };
 
-export default StoreOverviewContainer;
+export default OverviewContainer;

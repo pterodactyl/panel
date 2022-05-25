@@ -52,6 +52,11 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property int|null $ssh_keys_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $tokens
  * @property int|null $tokens_count
+ * @property int $store_balance
+ * @property int $store_slot
+ * @property int $store_cpu
+ * @property int $store_memory
+ * @property int $store_disk
  *
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
@@ -129,6 +134,11 @@ class User extends Model implements
         'totp_authenticated_at',
         'gravatar',
         'root_admin',
+        'store_balance',
+        'store_slot',
+        'store_cpu',
+        'store_memory',
+        'store_disk',
     ];
 
     /**
