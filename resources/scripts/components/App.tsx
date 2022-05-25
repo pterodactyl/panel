@@ -27,6 +27,10 @@ interface ExtendedWindow extends Window {
         root_admin: boolean;
         use_totp: boolean;
         language: string;
+        store_balance: number;
+        store_cpu: number;
+        store_memory: number;
+        store_disk: number;
         updated_at: string;
         created_at: string;
         /* eslint-enable camelcase */
@@ -50,6 +54,10 @@ const App = () => {
             language: PterodactylUser.language,
             rootAdmin: PterodactylUser.root_admin,
             useTotp: PterodactylUser.use_totp,
+            storeBalance: PterodactylUser.store_balance,
+            storeCpu: PterodactylUser.store_cpu,
+            storeMemory: PterodactylUser.store_memory,
+            storeDisk: PterodactylUser.store_disk,
             createdAt: new Date(PterodactylUser.created_at),
             updatedAt: new Date(PterodactylUser.updated_at),
         });
