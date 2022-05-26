@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
+import * as Icon from 'react-feather';
 import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
@@ -28,18 +29,26 @@ const OverviewContainer = () => {
 
     return (
         <PageContentBlock title={'Storefront Overview'}>
-            <Container css={tw`lg:grid lg:grid-cols-5 my-10`}>
+            <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
                 <TitledGreyBox title={'Total Slots Available'}>
-                    Unavailable
+                    <div css={tw`flex flex-row`}>
+                        <Icon.Server css={tw`mr-1`} size={20} /> Unavailable
+                    </div>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total CPU Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    {user.storeCpu}%
+                    <div css={tw`flex flex-row`}>
+                        <Icon.Cpu css={tw`mr-1`} size={20} /> {user.storeCpu}%
+                    </div>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total RAM Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    {megabytesToHuman(user.storeMemory)}
+                    <div css={tw`flex flex-row`}>
+                        <Icon.PieChart css={tw`mr-1`} size={20} /> {megabytesToHuman(user.storeMemory)}
+                    </div>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total Disk Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    {megabytesToHuman(user.storeDisk)}
+                    <div css={tw`flex flex-row`}>
+                        <Icon.HardDrive css={tw`mr-1`} size={20} /> {megabytesToHuman(user.storeDisk)}
+                    </div>
                 </TitledGreyBox>
             </Container>
         </PageContentBlock>
