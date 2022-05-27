@@ -6202,6 +6202,13 @@ react-feather@^2.0.9:
   dependencies:
     prop-types "^15.7.2"
 
+react-git-info@^2.0.1:
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/react-git-info/-/react-git-info-2.0.1.tgz#ae0393b0677b5ba48cab9f19f2bb3805cc44fab4"
+  integrity sha512-4g7aksr+Q1+X8BNO4cr/JPRrUwEh54AHdLYJ91And+rI+mXHKRhmZpbV/BTECjxKGzleq/joogVejyviJawa2A==
+  dependencies:
+    babel-plugin-macros "^2.8.0"
+
 react-google-recaptcha@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/react-google-recaptcha/-/react-google-recaptcha-2.0.1.tgz#3276b29659493f7ca2a5b7739f6c239293cdf1d8"

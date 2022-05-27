@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import React, { useEffect } from 'react';
+import GitInfo from 'react-git-info/macro';
 import { CSSTransition } from 'react-transition-group';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ContentContainer from '@/components/elements/ContentContainer';
@@ -26,19 +27,17 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                     }
                     {children}
                 </ContentContainer>
-                <ContentContainer css={tw`mb-4`}>
-                    <p css={tw`text-center text-neutral-500 text-xs`}>
-                        <a
-                            rel={'noopener nofollow noreferrer'}
-                            href={'https://pterodactyl.io'}
-                            target={'_blank'}
-                            css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
-                        >
-                            Pterodactyl&reg;
-                        </a>
-                        &nbsp;&copy; 2015 - {(new Date()).getFullYear()}
-                    </p>
-                </ContentContainer>
+                <div css={tw`absolute inset-x-0 bottom-0`}>
+                    <ContentContainer css={tw`mb-4 text-xs text-center`}>
+                        <p css={tw`text-neutral-500 sm:float-left`}>
+                            &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
+                        </p>
+                        <p css={tw`text-neutral-500 mt-2 sm:mt-0 sm:float-right`}>
+                            <a href={'https://github.com/jexactyl/jexactyl'}>{GitInfo().commit.shortHash}</a>
+                            <p css={tw`ml-2`}>Made with {'<3'} by Jex.</p>
+                        </p>
+                    </ContentContainer>
+                </div>
             </>
         </CSSTransition>
     );
