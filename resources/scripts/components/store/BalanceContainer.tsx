@@ -3,10 +3,11 @@ import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
-import TitledGreyBox from '../elements/TitledGreyBox';
 import ContentBox from '@/components/elements/ContentBox';
+import GreyRowBox from '@/components/elements/GreyRowBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import UpdateUsernameForm from '@/components/dashboard/forms/UpdateUsernameForm';
+import StripePurchaseForm from '@/components/store/forms/StripePurchaseForm';
+import PaypalPurchaseForm from '@/components/store/forms/PaypalPurchaseForm';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -30,15 +31,44 @@ const BalanceContainer = () => {
     return (
         <PageContentBlock title={'Storefront Balance'}>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
-                <TitledGreyBox title={'Overall balance'}>
-                    ${user.storeBalance} available
-                </TitledGreyBox>
+                <div>
+                    <ContentBox
+                        title={'Account Balance'}
+                        showFlashes={'account:balance'}
+                        css={tw`py-4 sm:mt-0`}
+                    >
+                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>£{user.storeBalance} GBP</h1>
+                    </ContentBox>
+                    <ContentBox
+                        title={'Transaction History'}
+                        showFlashes={'account:balance'}
+                        css={tw`mt-8 sm:mt-0`}
+                    >
+                        <GreyRowBox>
+                            <p css={tw`flex-initial text-lg ml-2`}>
+                              #OQ73
+                            </p>
+                            <p css={tw`flex-1 text-xs ml-4 inline-block`}>
+                                <code css={tw`font-mono py-1 px-2 md:bg-neutral-900 rounded mr-2`}>
+                                    1000 credits purchased.
+                                </code>
+                            </p>
+                            <div css={tw`flex-initial text-xs ml-4 hidden md:block overflow-hidden`}>
+                                <p css={tw`text-sm break-words`}>PayPal</p>
+                                <p css={tw`text-2xs text-neutral-300 uppercase`}>
+                                    MAY 25TH, 2022 23:30
+                                </p>
+                            </div>
+                        </GreyRowBox>
+                    </ContentBox>
+                </div>
                 <ContentBox
                     title={'Purchase credits'}
                     showFlashes={'account:balance'}
                     css={tw`mt-8 sm:mt-0 sm:ml-8`}
                 >
-                    <UpdateUsernameForm />
+                    <PaypalPurchaseForm />
+                    <StripePurchaseForm />
                 </ContentBox>
             </Container>
         </PageContentBlock>

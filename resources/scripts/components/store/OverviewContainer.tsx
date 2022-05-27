@@ -24,31 +24,37 @@ const Container = styled.div`
   }
 `;
 
+const Wrapper = styled.div`
+  ${tw`text-2xl flex flex-row justify-center items-center`};
+`;
+
 const OverviewContainer = () => {
     const user = useStoreState(state => state.user.data!);
 
     return (
         <PageContentBlock title={'Storefront Overview'}>
+            <h1 css={tw`text-5xl`}>👋 Hey, {user.username}!</h1>
+            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
             <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
-                <TitledGreyBox title={'Total Slots Available'}>
-                    <div css={tw`flex flex-row`}>
-                        <Icon.Server css={tw`mr-1`} size={20} /> Unavailable
-                    </div>
+                <TitledGreyBox title={'Total Slots'}>
+                    <Wrapper>
+                        <Icon.Server css={tw`mr-2`} /> N/A
+                    </Wrapper>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total CPU Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <div css={tw`flex flex-row`}>
-                        <Icon.Cpu css={tw`mr-1`} size={20} /> {user.storeCpu}%
-                    </div>
+                <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
+                    <Wrapper>
+                        <Icon.Cpu css={tw`mr-2`} /> {user.storeCpu}%
+                    </Wrapper>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total RAM Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <div css={tw`flex flex-row`}>
-                        <Icon.PieChart css={tw`mr-1`} size={20} /> {megabytesToHuman(user.storeMemory)}
-                    </div>
+                <TitledGreyBox title={'Total RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
+                    <Wrapper>
+                        <Icon.PieChart css={tw`mr-2`} /> {megabytesToHuman(user.storeMemory)}
+                    </Wrapper>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total Disk Available'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <div css={tw`flex flex-row`}>
-                        <Icon.HardDrive css={tw`mr-1`} size={20} /> {megabytesToHuman(user.storeDisk)}
-                    </div>
+                <TitledGreyBox title={'Total Disk'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
+                    <Wrapper>
+                        <Icon.HardDrive css={tw`mr-2`} /> {megabytesToHuman(user.storeDisk)}
+                    </Wrapper>
                 </TitledGreyBox>
             </Container>
         </PageContentBlock>

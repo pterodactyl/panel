@@ -30,7 +30,7 @@ export default () => {
                 <ContentBox title={'Update Password'} css={tw`flex-none w-full md:w-1/3`} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox title={'Account Logs'} css={tw`ml-8 col-span-2`} showFlashes={'account:logs'}>
+                <ContentBox title={'Account Logs'} css={tw`md:ml-8 mt-8 md:mt-0 col-span-2`} showFlashes={'account:logs'}>
                     <AccountLogContainer />
                 </ContentBox>
             </Container>

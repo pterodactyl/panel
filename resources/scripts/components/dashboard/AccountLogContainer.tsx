@@ -44,23 +44,16 @@ const AccountLogContainer = () => {
                                 #{log.id}
                             </p>
                             <p css={tw`flex-1 text-xs ml-4 inline-block`}>
-                                <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
+                                <code css={tw`font-mono py-1 px-2 md:bg-neutral-900 rounded mr-2`}>
                                     {log.action}
                                 </code>
                             </p>
-                            {log.createdAt &&
-                                <p css={tw`flex-initial text-xs ml-4 hidden inline-block`}>
-                                    <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
-                                        {format(log.createdAt, 'MMM do, yyyy HH:mm')}
-                                    </code>
+                            <div css={tw`flex-initial text-xs ml-4 hidden md:block overflow-hidden`}>
+                                <p css={tw`text-sm break-words`}>{log.ipAddress}</p>
+                                <p css={tw`text-2xs text-neutral-300 uppercase`}>
+                                    {log.createdAt ? format(log.createdAt, 'MMM do, yyyy HH:mm') : ''}
                                 </p>
-                            }
-                            <p css={tw`flex-initial text-xs ml-4 hidden inline-block`}>
-                                IP address:&nbsp;
-                                <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
-                                    {log.ipAddress}
-                                </code>
-                            </p>
+                            </div>
                         </GreyRowBox>
                     ))
             }

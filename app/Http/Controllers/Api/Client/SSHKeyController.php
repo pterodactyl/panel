@@ -66,13 +66,13 @@ class SSHKeyController extends ClientApiController
     {
         $key = $request->user()->sshKeys()->where('fingerprint', $identifier)->get();
 
+        $key->delete();
+
         $this->log->create([
             'user_id' => $request->user()->id,
             'action' => 'SSH key ('.$key->name.') was deleted.',
             'ip_address' => $request->getClientIp(),
         ]);
-
-        $key->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
