@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $user_id
  * @property string $action
  * @property string $ip_address
- * @property \Carbon\CarbonImmutable $created_at
+ * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Pterodactyl\Models\User|null $user
  */
 class AccountLog extends Model

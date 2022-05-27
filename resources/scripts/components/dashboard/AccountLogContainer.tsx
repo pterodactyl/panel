@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import { format } from 'date-fns';
 import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
 import React, { useEffect, useState } from 'react';
@@ -47,6 +48,13 @@ const AccountLogContainer = () => {
                                     {log.action}
                                 </code>
                             </p>
+                            {log.createdAt &&
+                                <p css={tw`flex-initial text-xs ml-4 hidden inline-block`}>
+                                    <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>
+                                        {format(log.createdAt, 'MMM do, yyyy HH:mm')}
+                                    </code>
+                                </p>
+                            }
                             <p css={tw`flex-initial text-xs ml-4 hidden inline-block`}>
                                 IP address:&nbsp;
                                 <code css={tw`font-mono py-1 px-2 bg-neutral-900 rounded mr-2`}>

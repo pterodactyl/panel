@@ -26,6 +26,7 @@ class AccountLogTransformer extends BaseClientTransformer
             'user_id' => $model->user_id,
             'action' => $model->action,
             'ip_address' => $model->ip_address,
+            'created_at' => $model->created_at->toIso8601String(),
         ];
     }
 }
