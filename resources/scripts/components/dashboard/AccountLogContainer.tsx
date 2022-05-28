@@ -1,19 +1,24 @@
 import tw from 'twin.macro';
 import { format } from 'date-fns';
+import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
+import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import ContentBox from '@/components/elements/ContentBox';
+import deleteAccountLogs from '@/api/account/deleteAccountLogs';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getAccountLogs, { AccountLog } from '@/api/account/getAccountLogs';
 
 const AccountLogContainer = () => {
     const [ loading, setLoading ] = useState(false);
+    const [ isSubmitting, setIsSubmitting ] = useState(false);
     const [ logs, setLogs ] = useState<AccountLog[]>([]);
 
-    const { addError, clearFlashes } = useFlash();
+    const { addError, clearFlashes, addFlash } = useFlash();
 
     useEffect(() => {
         clearFlashes('account:logs');
@@ -26,9 +31,31 @@ const AccountLogContainer = () => {
             });
     }, []);
 
+    const submit = () => {
+        setIsSubmitting(true);
+
+        deleteAccountLogs()
+            .then(() => {
+                setIsSubmitting(false);
+
+                addFlash({
+                    type: 'success',
+                    key: 'account:logs',
+                    message: 'Account logs have been deleted.',
+                });
+            })
+            .catch(error => {
+                addError({
+                    key: 'account:logs',
+                    message: httpErrorToHuman(error),
+                });
+            });
+    };
+
     return (
         <ContentBox css={tw`flex-1 overflow-hidden mt-8 md:mt-0`}>
             <FlashMessageRender byKey={'account:logs'} css={tw`mb-2`} />
+            <SpinnerOverlay visible={isSubmitting}/>
             {
                 logs.length === 0 ?
                     <p css={tw`text-center text-sm`}>
@@ -57,6 +84,14 @@ const AccountLogContainer = () => {
                         </GreyRowBox>
                     ))
             }
+            <Button
+                css={tw`mt-6`}
+                size={'xlarge'}
+                onSubmit={submit}
+                color={'red'}
+            >
+                <Icon.AlertTriangle /> Delete Logs
+            </Button>
         </ContentBox>
     );
 };

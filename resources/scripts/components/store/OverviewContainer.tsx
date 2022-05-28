@@ -7,6 +7,8 @@ import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
 import Button from '@/components/elements/Button';
 import TitledGreyBox from '../elements/TitledGreyBox';
+import PlusSquareSvg from '@/assets/images/plus_square.svg';
+import DivideSquareSvg from '@/assets/images/divide_square.svg';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
@@ -66,8 +68,8 @@ const OverviewContainer = () => {
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
                 <TitledGreyBox title={'Create a Server'}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
-                        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                            <img src={'/assets/svgs/square_plus.svg'} css={tw`block w-32 md:w-48 mx-auto`}/>
+                        <div css={tw`flex-none hidden select-none mb-6 md:mb-0 self-center`}>
+                            <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-2`}/>
                         </div>
                         <div css={tw`flex-1`}>
                             <h2 css={tw`text-xl mb-2`}>Create a server</h2>
@@ -86,10 +88,10 @@ const OverviewContainer = () => {
                         </div>
                     </div>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Edit your servers'}>
+                <TitledGreyBox title={'Edit your servers'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
-                        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                            <img src={'/assets/svgs/square_divide.svg'} css={tw`block w-32 md:w-48 mx-auto`}/>
+                        <div css={tw`flex-none hidden select-none mb-6 md:mb-0 self-center`}>
+                            <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-2`}/>
                         </div>
                         <div css={tw`flex-1`}>
                             <h2 css={tw`text-xl mb-2`}>Edit your servers</h2>
