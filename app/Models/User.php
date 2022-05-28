@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Pterodactyl\Rules\Username;
+use Pterodactyl\Facades\Activity;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\AccountLog;
 use Illuminate\Validation\Rules\In;
@@ -235,6 +236,11 @@ class User extends Model implements
      */
     public function sendPasswordResetNotification($token)
     {
+        Activity::event('login.reset-password')
+            ->withRequestMetadata()
+            ->subject($this)
+            ->log('sending password reset email');
+
         $this->notify(new ResetPasswordNotification($token));
     }
 

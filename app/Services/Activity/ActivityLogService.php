@@ -6,6 +6,7 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Models\ActivityLog;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Request;
 use Illuminate\Database\ConnectionInterface;
 
 class ActivityLogService
@@ -55,7 +56,7 @@ class ActivityLogService
     /**
      * Set the description for this activity.
      */
-    public function withDescription(?string $description): self
+    public function description(?string $description): self
     {
         $this->getActivity()->description = $description;
 
@@ -65,7 +66,7 @@ class ActivityLogService
     /**
      * Sets the subject model instance.
      */
-    public function withSubject(Model $subject): self
+    public function subject(Model $subject): self
     {
         $this->getActivity()->subject()->associate($subject);
 
@@ -75,7 +76,7 @@ class ActivityLogService
     /**
      * Sets the actor model instance.
      */
-    public function withActor(Model $actor): self
+    public function actor(Model $actor): self
     {
         $this->getActivity()->actor()->associate($actor);
 
@@ -99,9 +100,20 @@ class ActivityLogService
      *
      * @param mixed $value
      */
-    public function withProperty(string $key, $value): self
+    public function property(string $key, $value): self
     {
         $this->getActivity()->properties = $this->getActivity()->properties->put($key, $value);
+
+        return $this;
+    }
+
+    /**
+     * Attachs the instance request metadata to the activity log event.
+     */
+    public function withRequestMetadata(): self
+    {
+        $this->property('ip', Request::getClientIp());
+        $this->property('useragent', Request::userAgent());
 
         return $this;
     }
@@ -110,15 +122,28 @@ class ActivityLogService
      * Logs an activity log entry with the set values and then returns the
      * model instance to the caller.
      */
-    public function log(string $description): ActivityLog
+    public function log(string $description = null): ActivityLog
     {
-        $this->withDescription($description);
+        $activity = $this->getActivity();
 
-        $activity = $this->activity;
+        if (!is_null($description)) {
+            $activity->description = $description;
+        }
+
         $activity->save();
+
         $this->activity = null;
 
         return $activity;
+    }
+
+    /**
+     * Returns a cloned instance of the service allowing for the creation of a base
+     * activity log with the ability to change values on the fly without impact.
+     */
+    public function clone(): self
+    {
+        return clone $this;
     }
 
     /**
@@ -133,7 +158,7 @@ class ActivityLogService
     public function transaction(\Closure $callback, string $description = null)
     {
         if (!is_null($description)) {
-            $this->withDescription($description);
+            $this->description($description);
         }
 
         return $this->connection->transaction(function () use ($callback) {
@@ -161,14 +186,14 @@ class ActivityLogService
         ]);
 
         if ($subject = $this->targetable->subject()) {
-            $this->withSubject($subject);
+            $this->subject($subject);
         }
 
         if ($actor = $this->targetable->actor()) {
-            $this->withActor($actor);
+            $this->actor($actor);
         } elseif ($user = $this->manager->guard()->user()) {
             if ($user instanceof Model) {
-                $this->withActor($user);
+                $this->actor($user);
             }
         }
 
