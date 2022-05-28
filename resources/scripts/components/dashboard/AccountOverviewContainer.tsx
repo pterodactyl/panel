@@ -8,7 +8,6 @@ import ContentBox from '@/components/elements/ContentBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import UpdateUsernameForm from '@/components/dashboard/forms/UpdateUsernameForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
-import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -36,8 +35,7 @@ export default () => {
                 Your account must have two-factor authentication enabled in order to continue.
             </MessageBox>
             }
-
-            <Container css={[ tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
+            <Container css={[ tw`lg:grid lg:grid-cols-2 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
                 <ContentBox title={'Update Username'} showFlashes={'account:username'}>
                     <UpdateUsernameForm/>
                 </ContentBox>
@@ -48,11 +46,7 @@ export default () => {
                 >
                     <UpdateEmailAddressForm/>
                 </ContentBox>
-                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={'Configure Two Factor'}>
-                    <ConfigureTwoFactorForm/>
-                </ContentBox>
             </Container>
-
         </PageContentBlock>
     );
 };
