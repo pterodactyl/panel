@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import * as Icon from 'react-feather';
+import { useLocation } from 'react-router';
 import { useStoreState } from 'easy-peasy';
 import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
@@ -24,7 +25,7 @@ import BackupContainer from '@/components/server/backups/BackupContainer';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import StartupContainer from '@/components/server/startup/StartupContainer';
-import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
@@ -59,7 +60,10 @@ const ConflictStateRenderer = () => {
     );
 };
 
-const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
+export default () => {
+    const match = useRouteMatch<{ id: string }>();
+    const location = useLocation();
+
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ error, setError ] = useState('');
 
@@ -212,9 +216,3 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
         </React.Fragment>
     );
 };
-
-export default (props: RouteComponentProps<any>) => (
-    <ServerContext.Provider>
-        <ServerRouter {...props}/>
-    </ServerContext.Provider>
-);

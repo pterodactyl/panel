@@ -1,16 +1,20 @@
 import React from 'react';
 import tw from 'twin.macro';
 import * as Icon from 'react-feather';
+import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
 import NavigationBar from '@/components/NavigationBar';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import BalanceContainer from '@/components/store/BalanceContainer';
 import OverviewContainer from '@/components/store/OverviewContainer';
+import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import ProductsContainer from '@/components/store/order/ProductsContainer';
-import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
 
-const StoreRouter = ({ location, match }: RouteComponentProps) => {
+const StoreRouter = () => {
+    const match = useRouteMatch<{ id: string }>();
+    const location = useLocation();
+
     return (
         <>
             <NavigationBar />
