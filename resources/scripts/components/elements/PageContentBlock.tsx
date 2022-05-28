@@ -27,17 +27,14 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                     }
                     {children}
                 </ContentContainer>
-                <div css={tw`absolute inset-x-0 bottom-0`}>
-                    <ContentContainer css={tw`mb-4 text-xs text-center`}>
-                        <p css={tw`text-neutral-500 sm:float-left`}>
+                <ContentContainer css={tw`mb-4 text-xs text-center`}>
+                    <p css={tw`text-neutral-500 sm:float-left`}>
                             &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
-                        </p>
-                        <p css={tw`text-neutral-500 mt-2 sm:mt-0 sm:float-right`}>
-                            <a href={'https://github.com/jexactyl/jexactyl'}>{GitInfo().commit.shortHash}</a>
-                            <p css={tw`ml-2`}>Made with {'<3'} by Jex.</p>
-                        </p>
-                    </ContentContainer>
-                </div>
+                    </p>
+                    <p css={tw`text-neutral-500 mt-2 sm:mt-0 sm:float-right`}>
+                        <a href={'https://github.com/jexactyl/jexactyl'}>{GitInfo().commit.shortHash}</a>
+                    </p>
+                </ContentContainer>
             </>
         </CSSTransition>
     );

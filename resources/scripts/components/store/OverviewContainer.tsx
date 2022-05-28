@@ -5,6 +5,7 @@ import * as Icon from 'react-feather';
 import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
+import Button from '@/components/elements/Button';
 import TitledGreyBox from '../elements/TitledGreyBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
@@ -31,6 +32,11 @@ const Wrapper = styled.div`
 const OverviewContainer = () => {
     const user = useStoreState(state => state.user.data!);
 
+    const redirect = (url: string) => {
+        // @ts-ignore
+        window.location = `/store/${url}`;
+    };
+
     return (
         <PageContentBlock title={'Storefront Overview'}>
             <h1 css={tw`text-5xl`}>👋 Hey, {user.username}!</h1>
@@ -55,6 +61,52 @@ const OverviewContainer = () => {
                     <Wrapper>
                         <Icon.HardDrive css={tw`mr-2`} /> {megabytesToHuman(user.storeDisk)}
                     </Wrapper>
+                </TitledGreyBox>
+            </Container>
+            <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
+                <TitledGreyBox title={'Create a Server'}>
+                    <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
+                        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
+                            <img src={'/assets/svgs/square_plus.svg'} css={tw`block w-32 md:w-48 mx-auto`}/>
+                        </div>
+                        <div css={tw`flex-1`}>
+                            <h2 css={tw`text-xl mb-2`}>Create a server</h2>
+                            <p>
+                                Configure and create your next server with your choice of
+                                resource limits, server type and more. Delete or edit your
+                                server at any time to take full advantage of your resources.
+                            </p>
+                            <Button
+                                css={tw`mt-6`}
+                                size={'xlarge'}
+                                onClick={() => redirect('order')}
+                            >
+                                Create
+                            </Button>
+                        </div>
+                    </div>
+                </TitledGreyBox>
+                <TitledGreyBox title={'Edit your servers'}>
+                    <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
+                        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
+                            <img src={'/assets/svgs/square_divide.svg'} css={tw`block w-32 md:w-48 mx-auto`}/>
+                        </div>
+                        <div css={tw`flex-1`}>
+                            <h2 css={tw`text-xl mb-2`}>Edit your servers</h2>
+                            <p>
+                                Want to add or remove resources from your server,
+                                or delete it entirely? Use the editing feature to
+                                make changes to your server instantly.
+                            </p>
+                            <Button
+                                css={tw`mt-6`}
+                                size={'xlarge'}
+                                onClick={() => redirect('edit')}
+                            >
+                                Create
+                            </Button>
+                        </div>
+                    </div>
                 </TitledGreyBox>
             </Container>
         </PageContentBlock>
