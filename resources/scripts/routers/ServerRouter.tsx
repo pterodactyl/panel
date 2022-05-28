@@ -1,6 +1,6 @@
 import TransferListener from '@/components/server/TransferListener';
 import React, { useEffect, useState } from 'react';
-import { NavLink, Route, RouteComponentProps, Switch } from 'react-router-dom';
+import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import ServerConsole from '@/components/server/ServerConsole';
 import TransitionRouter from '@/TransitionRouter';
@@ -31,6 +31,7 @@ import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
+import { useLocation } from 'react-router';
 
 const ConflictStateRenderer = () => {
     const status = ServerContext.useStoreState(state => state.server.data?.status || null);
@@ -59,7 +60,10 @@ const ConflictStateRenderer = () => {
     );
 };
 
-const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) => {
+export default () => {
+    const match = useRouteMatch<{ id: string }>();
+    const location = useLocation();
+
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ error, setError ] = useState('');
 
@@ -194,9 +198,3 @@ const ServerRouter = ({ match, location }: RouteComponentProps<{ id: string }>) 
         </React.Fragment>
     );
 };
-
-export default (props: RouteComponentProps<any>) => (
-    <ServerContext.Provider>
-        <ServerRouter {...props}/>
-    </ServerContext.Provider>
-);
