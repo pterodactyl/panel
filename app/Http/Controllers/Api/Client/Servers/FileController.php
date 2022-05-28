@@ -97,17 +97,20 @@ class FileController extends ClientApiController
      */
     public function download(GetFileContentsRequest $request, Server $server)
     {
-        $token = $server->audit(AuditLog::SERVER__FILESYSTEM_DOWNLOAD, function (AuditLog $audit, Server $server) use ($request) {
-            $audit->metadata = ['file' => $request->get('file')];
+        $token = $server->audit(
+            AuditLog::SERVER__FILESYSTEM_DOWNLOAD,
+            function (AuditLog $audit, Server $server) use ($request) {
+                $audit->metadata = ['file' => $request->get('file')];
 
-            return $this->jwtService
-                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-                ->setClaims([
-                    'file_path' => rawurldecode($request->get('file')),
-                    'server_uuid' => $server->uuid,
-                ])
-                ->handle($server->node, $request->user()->id . $server->uuid);
-        });
+                return $this->jwtService
+                    ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+                    ->setClaims([
+                        'file_path' => rawurldecode($request->get('file')),
+                        'server_uuid' => $server->uuid,
+                    ])
+                    ->handle($server->node, $request->user()->id . $server->uuid);
+            }
+        );
 
         return [
             'object' => 'signed_url',
@@ -201,18 +204,21 @@ class FileController extends ClientApiController
      */
     public function compress(CompressFilesRequest $request, Server $server): array
     {
-        $file = $server->audit(AuditLog::SERVER__FILESYSTEM_COMPRESS, function (AuditLog $audit, Server $server) use ($request) {
-            // Allow up to five minutes for this request to process before timing out.
-            set_time_limit(300);
+        $file = $server->audit(
+            AuditLog::SERVER__FILESYSTEM_COMPRESS,
+            function (AuditLog $audit, Server $server) use ($request) {
+                // Allow up to five minutes for this request to process before timing out.
+                set_time_limit(300);
 
-            $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
+                $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('files')];
 
-            return $this->fileRepository->setServer($server)
-                ->compressFiles(
-                    $request->input('root'),
-                    $request->input('files')
-                );
-        });
+                return $this->fileRepository->setServer($server)
+                    ->compressFiles(
+                        $request->input('root'),
+                        $request->input('files')
+                    );
+            }
+        );
 
         return $this->fractal->item($file)
             ->transformWith($this->getTransformer(FileObjectTransformer::class))
@@ -224,15 +230,18 @@ class FileController extends ClientApiController
      */
     public function decompress(DecompressFilesRequest $request, Server $server): JsonResponse
     {
-        $file = $server->audit(AuditLog::SERVER__FILESYSTEM_DECOMPRESS, function (AuditLog $audit, Server $server) use ($request) {
-            // Allow up to five minutes for this request to process before timing out.
-            set_time_limit(300);
+        $file = $server->audit(
+            AuditLog::SERVER__FILESYSTEM_DECOMPRESS,
+            function (AuditLog $audit, Server $server) use ($request) {
+                // Allow up to five minutes for this request to process before timing out.
+                set_time_limit(300);
 
-            $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('file')];
+                $audit->metadata = ['root' => $request->input('root'), 'files' => $request->input('file')];
 
-            $this->fileRepository->setServer($server)
-                ->decompressFile($request->input('root'), $request->input('file'));
-        });
+                $this->fileRepository->setServer($server)
+                    ->decompressFile($request->input('root'), $request->input('file'));
+            }
+        );
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
@@ -276,8 +285,6 @@ class FileController extends ClientApiController
     /**
      * Requests that a file be downloaded from a remote location by Wings.
      *
-     * @param $request
-     *
      * @throws \Throwable
      */
     public function pull(PullFileRequest $request, Server $server): JsonResponse
@@ -285,7 +292,13 @@ class FileController extends ClientApiController
         $server->audit(AuditLog::SERVER__FILESYSTEM_PULL, function (AuditLog $audit, Server $server) use ($request) {
             $audit->metadata = ['directory' => $request->input('directory'), 'url' => $request->input('url')];
 
-            $this->fileRepository->setServer($server)->pull($request->input('url'), $request->input('directory'));
+            $this->fileRepository
+                ->setServer($server)
+                ->pull(
+                    $request->input('url'),
+                    $request->input('directory'),
+                    $request->safe(['filename', 'use_header', 'foreground'])
+                );
         });
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
