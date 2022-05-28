@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Illuminate\Contracts\View\View;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -70,6 +71,8 @@ class LoginController extends AbstractLoginController
         if (!$user->use_totp) {
             return $this->sendLoginResponse($user, $request);
         }
+
+        Activity::event('login.checkpoint')->withRequestMetadata()->subject($user)->log();
 
         $request->session()->put('auth_confirmation_token', [
             'user_id' => $user->id,
