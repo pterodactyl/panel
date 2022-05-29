@@ -7,40 +7,11 @@ use Illuminate\Http\Request;
 use Illuminate\Container\Container;
 
 /**
- * @property int $id
- * @property string $uuid
- * @property bool $is_system
- * @property int|null $user_id
- * @property int|null $server_id
- * @property string $action
- * @property string|null $subaction
- * @property array $device
- * @property array $metadata
- * @property \Carbon\CarbonImmutable $created_at
- * @property \Pterodactyl\Models\User|null $user
- * @property \Pterodactyl\Models\Server|null $server
+ * @deprecated — this class will be dropped in a future version, use the activity log
  */
 class AuditLog extends Model
 {
     public const UPDATED_AT = null;
-
-    public const SERVER__FILESYSTEM_DOWNLOAD = 'server:filesystem.download';
-    public const SERVER__FILESYSTEM_WRITE = 'server:filesystem.write';
-    public const SERVER__FILESYSTEM_DELETE = 'server:filesystem.delete';
-    public const SERVER__FILESYSTEM_RENAME = 'server:filesystem.rename';
-    public const SERVER__FILESYSTEM_COMPRESS = 'server:filesystem.compress';
-    public const SERVER__FILESYSTEM_DECOMPRESS = 'server:filesystem.decompress';
-    public const SERVER__FILESYSTEM_PULL = 'server:filesystem.pull';
-    public const SERVER__BACKUP_STARTED = 'server:backup.started';
-    public const SERVER__BACKUP_FAILED = 'server:backup.failed';
-    public const SERVER__BACKUP_COMPELTED = 'server:backup.completed';
-    public const SERVER__BACKUP_DELETED = 'server:backup.deleted';
-    public const SERVER__BACKUP_DOWNLOADED = 'server:backup.downloaded';
-    public const SERVER__BACKUP_LOCKED = 'server:backup.locked';
-    public const SERVER__BACKUP_UNLOCKED = 'server:backup.unlocked';
-    public const SERVER__BACKUP_RESTORE_STARTED = 'server:backup.restore.started';
-    public const SERVER__BACKUP_RESTORE_COMPLETED = 'server:backup.restore.completed';
-    public const SERVER__BACKUP_RESTORE_FAILED = 'server:backup.restore.failed';
 
     /**
      * @var string[]
@@ -104,6 +75,8 @@ class AuditLog extends Model
      * you can always make modifications to it as needed before saving.
      *
      * @return $this
+     *
+     * @deprecated
      */
     public static function instance(string $action, array $metadata, bool $isSystem = false)
     {

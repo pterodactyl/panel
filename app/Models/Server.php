@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 /**
- * Pterodactyl\Models\Server.
+ * \Pterodactyl\Models\Server.
  *
  * @property int $id
  * @property string|null $external_id
@@ -38,6 +38,8 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $backup_limit
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLog[] $activity
+ * @property int|null $activity_count
  * @property \Pterodactyl\Models\Allocation|null $allocation
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Allocation[] $allocations
  * @property int|null $allocations_count
