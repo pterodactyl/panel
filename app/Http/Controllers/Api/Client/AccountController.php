@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -43,13 +44,15 @@ class AccountController extends ClientApiController
 
     /**
      * Update the authenticated user's email address.
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function updateEmail(UpdateEmailRequest $request): JsonResponse
     {
+        $original = $request->user()->email;
         $this->updateService->handle($request->user(), $request->validated());
+
+        Activity::event('user:account.email-changed')
+            ->property(['old' => $original, 'new' => $request->input('email')])
+            ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -75,6 +78,8 @@ class AccountController extends ClientApiController
         if (method_exists($guard, 'logoutOtherDevices')) {
             $guard->logoutOtherDevices($request->input('password'));
         }
+
+        Activity::event('user:account.password-changed')->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

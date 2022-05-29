@@ -72,7 +72,7 @@ class LoginController extends AbstractLoginController
             return $this->sendLoginResponse($user, $request);
         }
 
-        Activity::event('login.checkpoint')->withRequestMetadata()->subject($user)->log();
+        Activity::event('auth:checkpoint')->withRequestMetadata()->subject($user)->log();
 
         $request->session()->put('auth_confirmation_token', [
             'user_id' => $user->id,

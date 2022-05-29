@@ -29,7 +29,7 @@ class AuthenticationListener implements SubscribesToEvents
             }
         }
 
-        $activity->event($event instanceof Failed ? 'login.failed' : 'login.success')->log();
+        $activity->event($event instanceof Failed ? 'auth:fail' : 'auth:success')->log();
     }
 
     public function subscribe(Dispatcher $events): void

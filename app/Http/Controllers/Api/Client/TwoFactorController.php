@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
@@ -89,6 +90,8 @@ class TwoFactorController extends ClientApiController
 
         $tokens = $this->toggleTwoFactorService->handle($request->user(), $request->input('code'), true);
 
+        Activity::event('user:two-factor.create')->log();
+
         return new JsonResponse([
             'object' => 'recovery_tokens',
             'attributes' => [
@@ -116,6 +119,8 @@ class TwoFactorController extends ClientApiController
             'totp_authenticated_at' => Carbon::now(),
             'use_totp' => false,
         ]);
+
+        Activity::event('user:two-factor.delete')->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

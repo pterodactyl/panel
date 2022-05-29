@@ -5,8 +5,8 @@ namespace Pterodactyl\Services\Activity;
 use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\ActivityLog;
 use Illuminate\Support\Facades\Log;
+use Pterodactyl\Models\ActivityLog;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
@@ -148,6 +148,11 @@ class ActivityLogService
         try {
             return $this->save();
         } catch (\Throwable|\Exception $exception) {
+            if (config('app.env') !== 'production') {
+                /* @noinspection PhpUnhandledExceptionInspection */
+                throw $exception;
+            }
+
             Log::error($exception);
         }
 

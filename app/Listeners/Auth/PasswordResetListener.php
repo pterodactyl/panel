@@ -17,7 +17,7 @@ class PasswordResetListener
 
     public function handle(PasswordReset $event)
     {
-        Activity::event('login.password-reset')
+        Activity::event('event:password-reset')
             ->withRequestMetadata()
             ->subject($event->user)
             ->log();

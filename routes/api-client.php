@@ -2,7 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Api\Client;
-use Pterodactyl\Http\Middleware\ServerActivityLogs;
+use Pterodactyl\Http\Middleware\ServerActivitySubject;
+use Pterodactyl\Http\Middleware\AccountActivitySubject;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
@@ -18,7 +19,7 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.index');
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 
-Route::group(['prefix' => '/account'], function () {
+Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
         Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
@@ -51,7 +52,7 @@ Route::group(['prefix' => '/account'], function () {
 Route::group([
     'prefix' => '/servers/{server}',
     'middleware' => [
-        ServerActivityLogs::class,
+        ServerActivitySubject::class,
         AuthenticateServerAccess::class,
         ResourceBelongsToServer::class,
     ],

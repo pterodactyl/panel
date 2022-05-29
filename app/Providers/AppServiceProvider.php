@@ -8,6 +8,8 @@ use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Models\UserSSHKey;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
@@ -39,8 +41,10 @@ class AppServiceProvider extends ServiceProvider
         }
 
         Relation::enforceMorphMap([
+            'api_key' => ApiKey::class,
             'backup' => Backup::class,
             'server' => Server::class,
+            'ssh_key' => UserSSHKey::class,
             'user' => User::class,
         ]);
     }
