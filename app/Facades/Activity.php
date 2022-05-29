@@ -16,6 +16,7 @@ use Pterodactyl\Services\Activity\ActivityLogService;
  * @method static ActivityLogService property(string|array $key, mixed $value = null)
  * @method static \Pterodactyl\Models\ActivityLog log(string $description = null)
  * @method static ActivityLogService clone()
+ * @method static void reset()
  * @method static mixed transaction(\Closure $callback)
  */
 class Activity extends Facade

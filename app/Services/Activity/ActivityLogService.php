@@ -189,6 +189,15 @@ class ActivityLogService
     }
 
     /**
+     * Resets the instance and clears out the log.
+     */
+    public function reset(): void
+    {
+        $this->activity = null;
+        $this->subjects = [];
+    }
+
+    /**
      * Returns the current activity log instance.
      */
     protected function getActivity(): ActivityLog

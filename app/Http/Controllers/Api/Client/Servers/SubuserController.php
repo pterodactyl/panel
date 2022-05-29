@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Log;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
@@ -94,6 +95,11 @@ class SubuserController extends ClientApiController
             $this->getDefaultPermissions($request)
         );
 
+        Activity::event('server:subuser.create')
+            ->subject($response->user)
+            ->property(['email' => $request->input('email'), 'permissions' => $this->getDefaultPermissions($request)])
+            ->log();
+
         return $this->fractal->item($response)
             ->transformWith($this->getTransformer(SubuserTransformer::class))
             ->toArray();
@@ -116,21 +122,36 @@ class SubuserController extends ClientApiController
         sort($permissions);
         sort($current);
 
+        $log = Activity::event('server:subuser.update')
+            ->subject($subuser->user)
+            ->property([
+                'email' => $subuser->user->email,
+                'old' => $current,
+                'new' => $permissions,
+                'revoked' => true,
+            ]);
+
         // Only update the database and hit up the Wings instance to invalidate JTI's if the permissions
         // have actually changed for the user.
         if ($permissions !== $current) {
-            $this->repository->update($subuser->id, [
-                'permissions' => $this->getDefaultPermissions($request),
-            ]);
+            $log->transaction(function ($instance) use ($request, $subuser, $server) {
+                $this->repository->update($subuser->id, [
+                    'permissions' => $this->getDefaultPermissions($request),
+                ]);
 
-            try {
-                $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
-            } catch (DaemonConnectionException $exception) {
-                // Don't block this request if we can't connect to the Wings instance. Chances are it is
-                // offline in this event and the token will be invalid anyways once Wings boots back.
-                Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
-            }
+                try {
+                    $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
+                } catch (DaemonConnectionException $exception) {
+                    // Don't block this request if we can't connect to the Wings instance. Chances are it is
+                    // offline in this event and the token will be invalid anyways once Wings boots back.
+                    Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
+
+                    $instance->property('revoked', false);
+                }
+            });
         }
+
+        $log->reset();
 
         return $this->fractal->item($subuser->refresh())
             ->transformWith($this->getTransformer(SubuserTransformer::class))
@@ -147,14 +168,23 @@ class SubuserController extends ClientApiController
         /** @var \Pterodactyl\Models\Subuser $subuser */
         $subuser = $request->attributes->get('subuser');
 
-        $this->repository->delete($subuser->id);
+        $log = Activity::event('server:subuser.delete')
+            ->subject($subuser->user)
+            ->property('email', $subuser->user->email)
+            ->property('revoked', true);
 
-        try {
-            $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
-        } catch (DaemonConnectionException $exception) {
-            // Don't block this request if we can't connect to the Wings instance.
-            Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
-        }
+        $log->transaction(function ($instance) use ($server, $subuser) {
+            $subuser->delete();
+
+            try {
+                $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
+            } catch (DaemonConnectionException $exception) {
+                // Don't block this request if we can't connect to the Wings instance.
+                Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
+
+                $instance->property('revoked', false);
+            }
+        });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

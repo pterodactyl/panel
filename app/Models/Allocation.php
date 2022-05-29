@@ -122,6 +122,11 @@ class Allocation extends Model
         return !is_null($this->ip_alias);
     }
 
+    public function toString(): string
+    {
+        return sprintf('%s:%s', $this->ip, $this->port);
+    }
+
     /**
      * Gets information for the server associated with this allocation.
      *
