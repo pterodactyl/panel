@@ -20,7 +20,6 @@ class CreateActivityLogsTable extends Migration
             $table->string('ip');
             $table->text('description')->nullable();
             $table->nullableNumericMorphs('actor');
-            $table->nullableNumericMorphs('subject');
             $table->json('properties');
             $table->timestamp('timestamp')->useCurrent()->onUpdate(null);
         });

@@ -16,16 +16,13 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property string|null $description
  * @property string|null $actor_type
  * @property int|null $actor_id
- * @property string|null $subject_type
- * @property int|null $subject_id
  * @property \Illuminate\Support\Collection $properties
  * @property string $timestamp
  * @property IlluminateModel|\Eloquent $actor
  * @property IlluminateModel|\Eloquent $subject
  *
- * @method static Builder|ActivityLog forAction(string $action)
+ * @method static Builder|ActivityLog forEvent(string $event)
  * @method static Builder|ActivityLog forActor(\Illuminate\Database\Eloquent\Model $actor)
- * @method static Builder|ActivityLog forSubject(\Illuminate\Database\Eloquent\Model $subject)
  * @method static Builder|ActivityLog newModelQuery()
  * @method static Builder|ActivityLog newQuery()
  * @method static Builder|ActivityLog query()
@@ -37,8 +34,6 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @method static Builder|ActivityLog whereId($value)
  * @method static Builder|ActivityLog whereIp($value)
  * @method static Builder|ActivityLog whereProperties($value)
- * @method static Builder|ActivityLog whereSubjectId($value)
- * @method static Builder|ActivityLog whereSubjectType($value)
  * @method static Builder|ActivityLog whereTimestamp($value)
  * @mixin \Eloquent
  */
@@ -68,14 +63,9 @@ class ActivityLog extends Model
         return $this->morphTo();
     }
 
-    public function subject(): MorphTo
+    public function scopeForEvent(Builder $builder, string $action): Builder
     {
-        return $this->morphTo();
-    }
-
-    public function scopeForAction(Builder $builder, string $action): Builder
-    {
-        return $builder->where('action', $action);
+        return $builder->where('event', $action);
     }
 
     /**
@@ -84,13 +74,5 @@ class ActivityLog extends Model
     public function scopeForActor(Builder $builder, IlluminateModel $actor): Builder
     {
         return $builder->whereMorphedTo('actor', $actor);
-    }
-
-    /**
-     * Scopes a query to only return results where the subject is the given model.
-     */
-    public function scopeForSubject(Builder $builder, IlluminateModel $subject): Builder
-    {
-        return $builder->whereMorphedTo('subject', $subject);
     }
 }

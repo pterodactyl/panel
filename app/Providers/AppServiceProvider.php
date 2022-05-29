@@ -5,11 +5,15 @@ namespace Pterodactyl\Providers;
 use View;
 use Cache;
 use Illuminate\Support\Str;
+use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Backup;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Extensions\Themes\Theme;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -33,6 +37,12 @@ class AppServiceProvider extends ServiceProvider
         if (Str::startsWith(config('app.url') ?? '', 'https://')) {
             URL::forceScheme('https');
         }
+
+        Relation::enforceMorphMap([
+            'backup' => Backup::class,
+            'server' => Server::class,
+            'user' => User::class,
+        ]);
     }
 
     /**

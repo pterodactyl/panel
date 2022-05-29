@@ -2,10 +2,10 @@
 
 namespace Pterodactyl\Models;
 
-use Closure;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 /**
@@ -41,8 +41,6 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property \Pterodactyl\Models\Allocation|null $allocation
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Allocation[] $allocations
  * @property int|null $allocations_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\AuditLog[] $audits
- * @property int|null $audits_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Backup[] $backups
  * @property int|null $backups_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Database[] $databases
@@ -373,48 +371,11 @@ class Server extends Model
     }
 
     /**
-     * Returns a fresh AuditLog model for the server. This model is not saved to the
-     * database when created, so it is up to the caller to correctly store it as needed.
-     *
-     * @return \Pterodactyl\Models\AuditLog
+     * Returns all of the activity log entries where the server is the subject.
      */
-    public function newAuditEvent(string $action, array $metadata = []): AuditLog
+    public function activity(): MorphToMany
     {
-        return AuditLog::instance($action, $metadata)->fill([
-            'server_id' => $this->id,
-        ]);
-    }
-
-    /**
-     * Stores a new audit event for a server by using a transaction. If the transaction
-     * fails for any reason everything executed within will be rolled back. The callback
-     * passed in will receive the AuditLog model before it is saved and the second argument
-     * will be the current server instance. The callback should modify the audit entry as
-     * needed before finishing, any changes will be persisted.
-     *
-     * The response from the callback is returned to the caller.
-     *
-     * @return mixed
-     *
-     * @throws \Throwable
-     */
-    public function audit(string $action, Closure $callback)
-    {
-        return $this->getConnection()->transaction(function () use ($action, $callback) {
-            $model = $this->newAuditEvent($action);
-            $response = $callback($model, $this);
-            $model->save();
-
-            return $response;
-        });
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function audits()
-    {
-        return $this->hasMany(AuditLog::class);
+        return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
     }
 
     /**

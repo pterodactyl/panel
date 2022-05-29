@@ -4,8 +4,10 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Illuminate\Database\Query\Builder;
 use Illuminate\Database\Query\JoinClause;
 use Pterodactyl\Http\Controllers\Controller;
@@ -107,7 +109,6 @@ class ServerDetailsController extends Controller
         //
         // For each of those servers we'll track a new audit log entry to mark them as
         // failed and then update them all to be in a valid state.
-        /** @var \Pterodactyl\Models\Server[] $servers */
         $servers = Server::query()
             ->select('servers.*')
             ->selectRaw('JSON_UNQUOTE(JSON_EXTRACT(started.metadata, "$.backup_uuid")) as backup_uuid')
@@ -130,14 +131,17 @@ class ServerDetailsController extends Controller
             ->where('servers.status', Server::STATUS_RESTORING_BACKUP)
             ->get();
 
+        $backups = Backup::query()->whereIn('uuid', $servers->pluck('backup_uuid'))->get();
+
+        /** @var \Pterodactyl\Models\Server $server */
         foreach ($servers as $server) {
-            // Just create a new audit entry for this event and update the server state
-            // so that power actions, file management, and backups can resume as normal.
-            $server->audit(AuditLog::SERVER__BACKUP_RESTORE_FAILED, function (AuditLog $audit, Server $server) {
-                $audit->is_system = true;
-                $audit->metadata = ['backup_uuid' => $server->getAttribute('backup_uuid')];
-                $server->update(['status' => null]);
-            });
+            $server->update(['status' => null]);
+
+            if ($backup = $backups->where('uuid', $server->getAttribute('backup_uuid'))->first()) {
+                // Just create a new audit entry for this event and update the server state
+                // so that power actions, file management, and backups can resume as normal.
+                Activity::event('server:backup.restore-failed')->subject($server, $backup)->log();
+            }
         }
 
         // Update any server marked as installing or restoring as being in a normal state
