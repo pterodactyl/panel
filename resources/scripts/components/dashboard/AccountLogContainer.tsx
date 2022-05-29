@@ -1,6 +1,5 @@
 import tw from 'twin.macro';
 import { format } from 'date-fns';
-import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import { httpErrorToHuman } from '@/api/http';
 import Button from '@/components/elements/Button';
@@ -90,7 +89,7 @@ const AccountLogContainer = () => {
                 onSubmit={submit}
                 color={'red'}
             >
-                <Icon.AlertTriangle /> Delete Logs
+                Delete Logs
             </Button>
         </ContentBox>
     );

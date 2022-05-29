@@ -32,7 +32,7 @@ export default () => {
                     <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                         <UpdatePasswordForm />
                     </ContentBox>
-                    <ContentBox title={'Setup 2FA'} css={tw`sm:mt-0 sm:ml-8`} showFlashes={'account:password'}>
+                    <ContentBox title={'Setup 2FA'} css={tw`mt-8 sm:mt-0`} showFlashes={'account:password'}>
                         <ConfigureTwoFactorForm />
                     </ContentBox>
                 </div>

@@ -68,7 +68,7 @@ const OverviewContainer = () => {
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
                 <TitledGreyBox title={'Create a Server'}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
-                        <div css={tw`flex-none sm:hidden select-none mb-6 md:mb-0 self-center`}>
+                        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
                             <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-2`}/>
                         </div>
                         <div css={tw`flex-1`}>
@@ -90,7 +90,7 @@ const OverviewContainer = () => {
                 </TitledGreyBox>
                 <TitledGreyBox title={'Edit your servers'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
-                        <div css={tw`flex-none sm:hidden select-none mb-6 md:mb-0 self-center`}>
+                        <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
                             <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-2`}/>
                         </div>
                         <div css={tw`flex-1`}>
@@ -105,7 +105,7 @@ const OverviewContainer = () => {
                                 size={'xlarge'}
                                 onClick={() => redirect('edit')}
                             >
-                                Create
+                                Edit
                             </Button>
                         </div>
                     </div>
