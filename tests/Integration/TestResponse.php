@@ -28,7 +28,11 @@ class TestResponse extends IlluminateTestResponse
         if ($actual !== $status && $status !== 500) {
             $this->dump();
             if (!is_null($this->exception) && !$this->exception instanceof DisplayException && !$this->exception instanceof ValidationException) {
-                dump($this->exception);
+                dump([
+                    'exception_class' => get_class($this->exception),
+                    'message' => $this->exception->getMessage(),
+                    'trace' => $this->exception->getTrace(),
+                ]);
             }
         }
 

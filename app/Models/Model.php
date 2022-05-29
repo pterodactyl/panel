@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;
 use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
@@ -31,13 +32,6 @@ abstract class Model extends IlluminateModel
     protected $skipValidation = false;
 
     /**
-     * The validator instance used by this model.
-     *
-     * @var \Illuminate\Validation\Validator
-     */
-    protected $validator;
-
-    /**
      * @var \Illuminate\Contracts\Validation\Factory
      */
     protected static $validatorFactory;
@@ -60,8 +54,10 @@ abstract class Model extends IlluminateModel
         static::$validatorFactory = Container::getInstance()->make(Factory::class);
 
         static::saving(function (Model $model) {
-            if (!$model->validate()) {
-                throw new DataValidationException($model->getValidator());
+            try {
+                $model->validate();
+            } catch (ValidationException $exception) {
+                throw new DataValidationException($exception->validator);
             }
 
             return true;
@@ -101,14 +97,9 @@ abstract class Model extends IlluminateModel
      */
     public function getValidator()
     {
-        $rules = $this->getKey() ? static::getRulesForUpdate($this) : static::getRules();
+        $rules = $this->exists ? static::getRulesForUpdate($this) : static::getRules();
 
-        return $this->validator ?: $this->validator = static::$validatorFactory->make(
-            [],
-            $rules,
-            [],
-            []
-        );
+        return static::$validatorFactory->make([], $rules, [], []);
     }
 
     /**
@@ -139,14 +130,14 @@ abstract class Model extends IlluminateModel
      * Returns the rules associated with the model, specifically for updating the given model
      * rather than just creating it.
      *
-     * @param \Illuminate\Database\Eloquent\Model|int|string $id
+     * @param \Illuminate\Database\Eloquent\Model|int|string $model
      *
      * @return array
      */
-    public static function getRulesForUpdate($id, string $primaryKey = 'id')
+    public static function getRulesForUpdate($model, string $column = 'id')
     {
-        if ($id instanceof Model) {
-            [$primaryKey, $id] = [$id->getKeyName(), $id->getKey()];
+        if ($model instanceof Model) {
+            [$id, $column] = [$model->getKey(), $model->getKeyName()];
         }
 
         $rules = static::getRules();
@@ -163,7 +154,7 @@ abstract class Model extends IlluminateModel
                 [, $args] = explode(':', $datum);
                 $args = explode(',', $args);
 
-                $datum = Rule::unique($args[0], $args[1] ?? $key)->ignore($id, $primaryKey)->__toString();
+                $datum = Rule::unique($args[0], $args[1] ?? $key)->ignore($id ?? $model, $column);
             }
         }
 
@@ -172,16 +163,15 @@ abstract class Model extends IlluminateModel
 
     /**
      * Determines if the model is in a valid state or not.
-     *
-     * @return bool
      */
-    public function validate()
+    public function validate(): void
     {
         if ($this->skipValidation) {
-            return true;
+            return;
         }
 
-        return $this->getValidator()->setData(
+        $validator = $this->getValidator();
+        $validator->setData(
         // Trying to do self::toArray() here will leave out keys based on the whitelist/blacklist
         // for that model. Doing this will return all of the attributes in a format that can
         // properly be validated.
@@ -189,7 +179,11 @@ abstract class Model extends IlluminateModel
                 $this->getAttributes(),
                 $this->getMutatedAttributes()
             )
-        )->passes();
+        );
+
+        if (!$validator->passes()) {
+            throw new ValidationException($validator);
+        }
     }
 
     /**
