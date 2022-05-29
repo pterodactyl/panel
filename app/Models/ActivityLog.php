@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Support\Facades\Event;
+use Pterodactyl\Events\ActivityLogged;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
@@ -16,13 +18,14 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property string|null $description
  * @property string|null $actor_type
  * @property int|null $actor_id
- * @property \Illuminate\Support\Collection $properties
+ * @property \Illuminate\Support\Collection|null $properties
  * @property string $timestamp
  * @property IlluminateModel|\Eloquent $actor
- * @property IlluminateModel|\Eloquent $subject
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLogSubject[] $subjects
+ * @property int|null $subjects_count
  *
- * @method static Builder|ActivityLog forEvent(string $event)
  * @method static Builder|ActivityLog forActor(\Illuminate\Database\Eloquent\Model $actor)
+ * @method static Builder|ActivityLog forEvent(string $action)
  * @method static Builder|ActivityLog newModelQuery()
  * @method static Builder|ActivityLog newQuery()
  * @method static Builder|ActivityLog query()
@@ -50,6 +53,8 @@ class ActivityLog extends Model
         'properties' => 'collection',
     ];
 
+    protected $with = ['subjects'];
+
     public static $validationRules = [
         'event' => ['required', 'string'],
         'batch' => ['nullable', 'uuid'],
@@ -60,7 +65,12 @@ class ActivityLog extends Model
 
     public function actor(): MorphTo
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
+    }
+
+    public function subjects()
+    {
+        return $this->hasMany(ActivityLogSubject::class);
     }
 
     public function scopeForEvent(Builder $builder, string $action): Builder
@@ -74,5 +84,18 @@ class ActivityLog extends Model
     public function scopeForActor(Builder $builder, IlluminateModel $actor): Builder
     {
         return $builder->whereMorphedTo('actor', $actor);
+    }
+
+    /**
+     * Boots the model event listeners. This will trigger an activity log event every
+     * time a new model is inserted which can then be captured and worked with as needed.
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::created(function (self $model) {
+            Event::dispatch(new ActivityLogged($model));
+        });
     }
 }

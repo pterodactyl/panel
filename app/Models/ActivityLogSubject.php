@@ -35,6 +35,6 @@ class ActivityLogSubject extends Pivot
 
     public function subject()
     {
-        return $this->morphTo();
+        return $this->morphTo()->withTrashed();
     }
 }

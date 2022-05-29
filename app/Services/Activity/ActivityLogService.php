@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\ActivityLog;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
@@ -132,7 +133,9 @@ class ActivityLogService
 
     /**
      * Logs an activity log entry with the set values and then returns the
-     * model instance to the caller.
+     * model instance to the caller. If there is an exception encountered while
+     * performing this action it will be logged to the disk but will not interrupt
+     * the code flow.
      */
     public function log(string $description = null): ActivityLog
     {
@@ -142,7 +145,13 @@ class ActivityLogService
             $activity->description = $description;
         }
 
-        return $this->save();
+        try {
+            return $this->save();
+        } catch (\Throwable|\Exception $exception) {
+            Log::error($exception);
+        }
+
+        return $activity;
     }
 
     /**
@@ -166,9 +175,9 @@ class ActivityLogService
     public function transaction(\Closure $callback)
     {
         return $this->connection->transaction(function () use ($callback) {
-            $response = $callback($activity = $this->getActivity());
+            $response = $callback($this);
 
-            $this->save($activity);
+            $this->save();
 
             return $response;
         });
@@ -209,14 +218,12 @@ class ActivityLogService
      *
      * @throws \Throwable
      */
-    protected function save(ActivityLog $activity = null): ActivityLog
+    protected function save(): ActivityLog
     {
-        $activity = $activity ?? $this->activity;
+        Assert::notNull($this->activity);
 
-        Assert::notNull($activity);
-
-        $response = $this->connection->transaction(function () use ($activity) {
-            $activity->save();
+        $response = $this->connection->transaction(function () {
+            $this->activity->save();
 
             $subjects = Collection::make($this->subjects)
                 ->map(fn (Model $subject) => [
@@ -229,7 +236,7 @@ class ActivityLogService
 
             ActivityLogSubject::insert($subjects);
 
-            return $activity;
+            return $this->activity;
         });
 
         $this->activity = null;
