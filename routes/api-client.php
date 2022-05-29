@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Api\Client;
+use Pterodactyl\Http\Middleware\ServerActivityLogs;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
@@ -18,10 +19,12 @@ Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.ind
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 
 Route::group(['prefix' => '/account'], function () {
-    Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::get('/two-factor', [Client\TwoFactorController::class, 'index'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::post('/two-factor', [Client\TwoFactorController::class, 'store'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::delete('/two-factor', [Client\TwoFactorController::class, 'delete'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
+        Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
+        Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
+        Route::post('/two-factor', [Client\TwoFactorController::class, 'store']);
+        Route::delete('/two-factor', [Client\TwoFactorController::class, 'delete']);
+    });
 
     Route::put('/email', [Client\AccountController::class, 'updateEmail'])->name('api:client.account.update-email');
     Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
@@ -45,7 +48,14 @@ Route::group(['prefix' => '/account'], function () {
 | Endpoint: /api/client/servers/{server}
 |
 */
-Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class]], function () {
+Route::group([
+    'prefix' => '/servers/{server}',
+    'middleware' => [
+        ServerActivityLogs::class,
+        AuthenticateServerAccess::class,
+        ResourceBelongsToServer::class,
+    ],
+], function () {
     Route::get('/', [Client\Servers\ServerController::class, 'index'])->name('api:client:server.view');
     Route::get('/websocket', Client\Servers\WebsocketController::class)->name('api:client:server.ws');
     Route::get('/resources', Client\Servers\ResourceUtilizationController::class)->name('api:client:server.resources');

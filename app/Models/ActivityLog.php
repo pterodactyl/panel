@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property int $id
  * @property string|null $batch
  * @property string $event
+ * @property string $ip
  * @property string|null $description
  * @property string|null $actor_type
  * @property int|null $actor_id
@@ -19,8 +20,8 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property int|null $subject_id
  * @property \Illuminate\Support\Collection $properties
  * @property string $timestamp
- * @property \Illuminate\Database\Eloquent\Model|\Eloquent $actor
- * @property \Illuminate\Database\Eloquent\Model|\Eloquent $subject
+ * @property IlluminateModel|\Eloquent $actor
+ * @property IlluminateModel|\Eloquent $subject
  *
  * @method static Builder|ActivityLog forAction(string $action)
  * @method static Builder|ActivityLog forActor(\Illuminate\Database\Eloquent\Model $actor)
@@ -28,11 +29,11 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @method static Builder|ActivityLog newModelQuery()
  * @method static Builder|ActivityLog newQuery()
  * @method static Builder|ActivityLog query()
- * @method static Builder|ActivityLog whereAction($value)
  * @method static Builder|ActivityLog whereActorId($value)
  * @method static Builder|ActivityLog whereActorType($value)
  * @method static Builder|ActivityLog whereBatch($value)
  * @method static Builder|ActivityLog whereDescription($value)
+ * @method static Builder|ActivityLog whereEvent($value)
  * @method static Builder|ActivityLog whereId($value)
  * @method static Builder|ActivityLog whereIp($value)
  * @method static Builder|ActivityLog whereProperties($value)
@@ -57,8 +58,9 @@ class ActivityLog extends Model
     public static $validationRules = [
         'event' => ['required', 'string'],
         'batch' => ['nullable', 'uuid'],
+        'ip' => ['required', 'string'],
         'description' => ['nullable', 'string'],
-        'properties' => ['nullable', 'array'],
+        'properties' => ['array'],
     ];
 
     public function actor(): MorphTo

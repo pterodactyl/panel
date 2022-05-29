@@ -6,6 +6,7 @@ use Carbon\CarbonImmutable;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Files\UploadFileRequest;
@@ -35,6 +36,8 @@ class FileUploadController extends ClientApiController
      */
     public function __invoke(UploadFileRequest $request, Server $server)
     {
+        Activity::event('server:file.upload')->log();
+
         return new JsonResponse([
             'object' => 'signed_url',
             'attributes' => [

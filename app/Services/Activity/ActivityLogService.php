@@ -181,6 +181,7 @@ class ActivityLogService
         }
 
         $this->activity = new ActivityLog([
+            'ip' => Request::ip(),
             'batch_uuid' => $this->batch->uuid(),
             'properties' => Collection::make([]),
         ]);
