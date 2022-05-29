@@ -38,8 +38,11 @@ class ServerFactory extends Factory
             'cpu' => 0,
             'threads' => null,
             'oom_disabled' => 0,
-            'allocation_limit' => null,
-            'database_limit' => null,
+            'startup' => '/bin/bash echo "hello world"',
+            'image' => 'foo/bar:latest',
+            'allocation_limit' => 0,
+            'database_limit' => 0,
+            'backup_limit' => 0,
             'created_at' => Carbon::now(),
             'updated_at' => Carbon::now(),
         ];
