@@ -8,7 +8,11 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class UserStoreFormRequest extends AdminFormRequest
 {
-    public function rules(): array
+    /**
+     * Rules to apply to requests for updating a users
+     * storefront balances via the admin panel.
+     */
+    public function rules()
     {
         return Collection::make(
             User::getRulesForUpdate($this->route()->parameter('user'))

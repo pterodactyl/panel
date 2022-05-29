@@ -182,8 +182,7 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.view', $user->id);
     }
-
-    
+ 
     /**
      * Update a user's storefront balances.
      *

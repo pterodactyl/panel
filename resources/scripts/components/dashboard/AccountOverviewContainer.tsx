@@ -10,19 +10,19 @@ import UpdateUsernameForm from '@/components/dashboard/forms/UpdateUsernameForm'
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 
 const Container = styled.div`
-  ${tw`flex flex-wrap`};
+    ${tw`flex flex-wrap`};
 
-  & > div {
-    ${tw`w-full`};
+    & > div {
+      ${tw`w-full`};
 
-    ${breakpoint('sm')`
-      width: calc(50% - 1rem);
-    `}
+      ${breakpoint('sm')`
+        width: calc(50% - 1rem);
+      `}
 
-    ${breakpoint('md')`
-      ${tw`w-auto flex-1`};
-    `}
-  }
+      ${breakpoint('md')`
+        ${tw`w-auto flex-1`};
+      `}
+    }
 `;
 
 export default () => {
@@ -31,9 +31,9 @@ export default () => {
     return (
         <PageContentBlock title={'Account Overview'}>
             {state?.twoFactorRedirect &&
-            <MessageBox title={'2-Factor Required'} type={'error'}>
-                Your account must have two-factor authentication enabled in order to continue.
-            </MessageBox>
+                <MessageBox title={'2-Factor Required'} type={'error'}>
+                    Your account must have two-factor authentication enabled in order to continue.
+                </MessageBox>
             }
             <Container css={[ tw`lg:grid lg:grid-cols-2 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
                 <ContentBox title={'Update Username'} showFlashes={'account:username'}>

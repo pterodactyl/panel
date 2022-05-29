@@ -66,10 +66,10 @@ const OverviewContainer = () => {
                 </TitledGreyBox>
             </Container>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
-                <TitledGreyBox title={'Create a Server'}>
+                <TitledGreyBox title={''}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                            <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-2`}/>
+                            <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`}/>
                         </div>
                         <div css={tw`flex-1`}>
                             <h2 css={tw`text-xl mb-2`}>Create a server</h2>
@@ -88,10 +88,10 @@ const OverviewContainer = () => {
                         </div>
                     </div>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Edit your servers'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
+                <TitledGreyBox title={''} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                            <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-2`}/>
+                            <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`}/>
                         </div>
                         <div css={tw`flex-1`}>
                             <h2 css={tw`text-xl mb-2`}>Edit your servers</h2>

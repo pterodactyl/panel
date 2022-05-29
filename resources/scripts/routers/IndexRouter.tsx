@@ -9,28 +9,26 @@ import { NotFound } from '@/components/elements/ScreenBlock';
 import AuthenticationRouter from '@/routers/AuthenticationRouter';
 import AuthenticatedRoute from '@/components/elements/AuthenticatedRoute';
 
-const IndexRouter = () => {
-    return (
-        <Router history={history}>
-            <Switch>
-                <Route path={'/auth'}>
-                    <AuthenticationRouter/>
-                </Route>
-                <AuthenticatedRoute path={'/server/:id'}>
-                    <ServerContext.Provider>
-                        <ServerRouter/>
-                    </ServerContext.Provider>
-                </AuthenticatedRoute>
-                <AuthenticatedRoute path={'/store'}>
-                    <StoreRouter/>
-                </AuthenticatedRoute>
-                <AuthenticatedRoute path={'/'}>
-                    <DashboardRouter/>
-                </AuthenticatedRoute>
-                <Route path={'*'} component={NotFound} />
-            </Switch>
-        </Router>
-    );
-};
+const IndexRouter = () => (
+    <Router history={history}>
+        <Switch>
+            <Route path={'/auth'}>
+                <AuthenticationRouter/>
+            </Route>
+            <AuthenticatedRoute path={'/server/:id'}>
+                <ServerContext.Provider>
+                    <ServerRouter/>
+                </ServerContext.Provider>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path={'/store'}>
+                <StoreRouter/>
+            </AuthenticatedRoute>
+            <AuthenticatedRoute path={'/'}>
+                <DashboardRouter/>
+            </AuthenticatedRoute>
+            <Route path={'*'} component={NotFound} />
+        </Switch>
+    </Router>
+);
 
 export default IndexRouter;

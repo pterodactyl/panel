@@ -29,7 +29,9 @@ const BalanceContainer = () => {
     const user = useStoreState(state => state.user.data!);
 
     return (
-        <PageContentBlock title={'Storefront Balance'}>
+        <PageContentBlock title={'Account Balance'}>
+            <h1 css={tw`text-5xl`}>Account Balance</h1>
+            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Purchase credits easily via Stripe or PayPal.</h3>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
                 <div>
                     <ContentBox
