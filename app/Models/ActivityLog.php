@@ -2,9 +2,12 @@
 
 namespace Pterodactyl\Models;
 
+use Carbon\Carbon;
+use LogicException;
 use Illuminate\Support\Facades\Event;
 use Pterodactyl\Events\ActivityLogged;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
@@ -42,6 +45,8 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  */
 class ActivityLog extends Model
 {
+    use MassPrunable;
+
     public $timestamps = false;
 
     protected $guarded = [
@@ -84,6 +89,20 @@ class ActivityLog extends Model
     public function scopeForActor(Builder $builder, IlluminateModel $actor): Builder
     {
         return $builder->whereMorphedTo('actor', $actor);
+    }
+
+    /**
+     * Returns models to be pruned.
+     *
+     * @see https://laravel.com/docs/9.x/eloquent#pruning-models
+     */
+    public function prunable()
+    {
+        if (is_null(config('activity.prune_days'))) {
+            throw new LogicException('Cannot prune activity logs: no "prune_days" configuration value is set.');
+        }
+
+        return static::where('timestamp', '<=', Carbon::now()->subDays(config('activity.prune_days')));
     }
 
     /**
