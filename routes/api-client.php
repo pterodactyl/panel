@@ -30,6 +30,8 @@ Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(func
     Route::put('/email', [Client\AccountController::class, 'updateEmail'])->name('api:client.account.update-email');
     Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
 
+    Route::get('/activity', Client\ActivityLogController::class)->name('api:client.account.activity');
+
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);

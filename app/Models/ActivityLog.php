@@ -22,7 +22,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property string|null $actor_type
  * @property int|null $actor_id
  * @property \Illuminate\Support\Collection|null $properties
- * @property string $timestamp
+ * @property \Carbon\Carbon $timestamp
  * @property IlluminateModel|\Eloquent $actor
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLogSubject[] $subjects
  * @property int|null $subjects_count
@@ -47,6 +47,8 @@ class ActivityLog extends Model
 {
     use MassPrunable;
 
+    public const RESOURCE_NAME = 'activity_log';
+
     public $timestamps = false;
 
     protected $guarded = [
@@ -56,6 +58,7 @@ class ActivityLog extends Model
 
     protected $casts = [
         'properties' => 'collection',
+        'timestamp' => 'datetime',
     ];
 
     protected $with = ['subjects'];

@@ -1,4 +1,5 @@
 import { MarkRequired } from 'ts-essentials';
+import { FractalResponseData, FractalResponseList } from '../http';
 
 export type UUID = string;
 
@@ -6,7 +7,7 @@ export type UUID = string;
 export interface Model {}
 
 interface ModelWithRelationships extends Model {
-    relationships: Record<string, unknown>;
+    relationships: Record<string, FractalResponseData | FractalResponseList | undefined>;
 }
 
 /**
