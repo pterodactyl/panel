@@ -45,6 +45,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**VibeGAMES**](https://vibegames.net/) | VibeGAMES is a game server provider that specializes in DDOS protection for the games we offer. We have multiple locations in the US, Brazil, France, Germany, Singapore, Australia and South Africa.|
 | [**RocketNode**](https://rocketnode.net) | RocketNode is a VPS and Game Server provider that offers the best performing VPS and Game hosting Solutions at affordable prices! |
 | [**HostEZ**](https://hostez.io) | Providing North America Valheim, Minecraft and other popular games with low latency, high uptime and maximum availability. EZ! |
+| [**Gamenodes**](https://gamenodes.nl) | Gamenodes love quality. For Minecraft, Discord Bots and other services, among others. With our own programmers, we provide just that little bit of extra service! |
 
 ### Supported Games
 Pterodactyl supports a wide variety of games by utilizing Docker containers to isolate each instance. This gives
