@@ -4,8 +4,8 @@ namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Illuminate\Contracts\Validation\Validator;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
@@ -108,9 +108,9 @@ class StoreServerRequest extends ApplicationApiRequest
     /*
      * Run validation after the rules above have been applied.
      *
-     * @param \Illuminate\Contracts\Validation\Validator $validator
+     * @param \Illuminate\Validation\Validator $validator
      */
-    public function withValidator(Validator $validator)
+    public function withValidator(Validator $validator): void
     {
         $validator->sometimes('allocation.default', [
             'required', 'integer', 'bail',
