@@ -3,6 +3,12 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.8.1
+### Fixed
+* Fixes a bug causing mounts to return a 404 error when adding them to a server.
+* Fixes a bug causing the Egg Image dropdown to not display properly when creating a new server.
+* Fixes a bug causing an error when attemping to create a new server via the API.
+
 ## v1.8.0
 **Important:** this version updates the `version` field on generated Eggs to be `PTDL_v2` due to formatting changes. This
 should be completely seamless for most installations as the Panel is able to convert between the two. Custom solutions
