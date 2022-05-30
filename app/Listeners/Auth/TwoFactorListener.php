@@ -9,7 +9,7 @@ class TwoFactorListener
 {
     public function handle(ProvidedAuthenticationToken $event)
     {
-        Activity::event($event->recovery ? 'login.recovery-token' : 'login.token')
+        Activity::event($event->recovery ? 'auth:recovery-token' : 'auth:token')
             ->withRequestMetadata()
             ->subject($event->user)
             ->log();

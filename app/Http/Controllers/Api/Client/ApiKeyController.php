@@ -4,14 +4,11 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Exceptions\DisplayException;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 
 class ApiKeyController extends ClientApiController
@@ -85,9 +82,14 @@ class ApiKeyController extends ClientApiController
 
         $this->log->create([
             'user_id' => $request->user()->id,
-            'action' => 'API key \''.$request->input('description').'\' was created.',
+            'action' => 'API key \''.$token->accessToken->identifier.'\' was created.',
             'ip_address' => $request->getClientIp(),
         ]);
+
+        Activity::event('user:api-key.create')
+            ->subject($token->accessToken)
+            ->property('identifier', $token->accessToken->identifier)
+            ->log();
 
         return $this->fractal->item($token->accessToken)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
@@ -102,21 +104,23 @@ class ApiKeyController extends ClientApiController
      */
     public function delete(ClientApiRequest $request, string $identifier)
     {
-        $response = $this->repository->deleteWhere([
-            'key_type' => ApiKey::TYPE_ACCOUNT,
-            'user_id' => $request->user()->id,
-            'identifier' => $identifier,
-        ]);
+        /** @var \Pterodactyl\Models\ApiKey $key */
+        $key = $request->user()->apiKeys()
+            ->where('key_type', ApiKey::TYPE_ACCOUNT)
+            ->where('identifier', $identifier)
+            ->firstOrFail();
 
         $this->log->create([
             'user_id' => $request->user()->id,
-            'action' => 'API key ('.$identifier.') was deleted.',
+            'action' => 'API key \''.$identifier.'\' was deleted.',
             'ip_address' => $request->getClientIp(),
         ]);
 
-        if (!$response) {
-            throw new NotFoundHttpException();
-        }
+        Activity::event('user:api-key.delete')
+            ->property('identifer', $key->identifier)
+            ->log();
+
+        $key->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

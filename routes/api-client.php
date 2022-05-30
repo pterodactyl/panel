@@ -2,6 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Api\Client;
+use Pterodactyl\Http\Middleware\ServerActivitySubject;
+use Pterodactyl\Http\Middleware\AccountActivitySubject;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
@@ -17,11 +19,13 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.index');
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 
-Route::group(['prefix' => '/account'], function () {
-    Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account')->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::get('/two-factor', [Client\TwoFactorController::class, 'index'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::post('/two-factor', [Client\TwoFactorController::class, 'store'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
-    Route::delete('/two-factor', [Client\TwoFactorController::class, 'delete'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(function () {
+    Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
+        Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
+        Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
+        Route::post('/two-factor', [Client\TwoFactorController::class, 'store']);
+        Route::delete('/two-factor', [Client\TwoFactorController::class, 'delete']);
+    });
 
     Route::get('/logs', [Client\AccountLogController::class, 'index'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
     Route::delete('/logs', [Client\AccountLogController::class, 'delete'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
@@ -29,6 +33,8 @@ Route::group(['prefix' => '/account'], function () {
     Route::put('/email', [Client\AccountController::class, 'updateEmail'])->name('api:client.account.update-email');
     Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
     Route::put('/username', [Client\AccountController::class, 'updateUsername'])->name('api:client.account.update-username');
+
+    Route::get('/activity', Client\ActivityLogController::class)->name('api:client.account.activity');
 
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
@@ -49,7 +55,14 @@ Route::group(['prefix' => '/account'], function () {
 | Endpoint: /api/client/servers/{server}
 |
 */
-Route::group(['prefix' => '/servers/{server}', 'middleware' => [AuthenticateServerAccess::class, ResourceBelongsToServer::class]], function () {
+Route::group([
+    'prefix' => '/servers/{server}',
+    'middleware' => [
+        ServerActivitySubject::class,
+        AuthenticateServerAccess::class,
+        ResourceBelongsToServer::class,
+    ],
+], function () {
     Route::get('/', [Client\Servers\ServerController::class, 'index'])->name('api:client:server.view');
     Route::get('/websocket', Client\Servers\WebsocketController::class)->name('api:client:server.ws');
     Route::get('/resources', Client\Servers\ResourceUtilizationController::class)->name('api:client:server.resources');

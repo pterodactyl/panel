@@ -15,6 +15,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
 use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
@@ -236,7 +237,7 @@ class User extends Model implements
      */
     public function sendPasswordResetNotification($token)
     {
-        Activity::event('login.reset-password')
+        Activity::event('auth:reset-password')
             ->withRequestMetadata()
             ->subject($this)
             ->log('sending password reset email');
@@ -292,6 +293,15 @@ class User extends Model implements
     public function sshKeys(): HasMany
     {
         return $this->hasMany(UserSSHKey::class);
+    }
+
+    /**
+     * Returns all of the activity logs where this user is the subject — not to
+     * be confused by activity logs where this user is the _actor_.
+     */
+    public function activity(): MorphToMany
+    {
+        return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
     }
 
     /**

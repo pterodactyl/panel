@@ -17,10 +17,10 @@ class CreateActivityLogsTable extends Migration
             $table->id();
             $table->uuid('batch')->nullable();
             $table->string('event')->index();
+            $table->string('ip');
             $table->text('description')->nullable();
             $table->nullableNumericMorphs('actor');
-            $table->nullableNumericMorphs('subject');
-            $table->json('properties')->nullable();
+            $table->json('properties');
             $table->timestamp('timestamp')->useCurrent()->onUpdate(null);
         });
     }

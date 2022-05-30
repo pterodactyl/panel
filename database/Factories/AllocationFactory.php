@@ -22,7 +22,7 @@ class AllocationFactory extends Factory
     {
         return [
             'ip' => $this->faker->unique()->ipv4,
-            'port' => $this->faker->unique()->randomNumber(5),
+            'port' => $this->faker->unique()->numberBetween(10000, 20000),
         ];
     }
 

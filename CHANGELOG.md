@@ -40,10 +40,12 @@ be considered deprecated, but will continue to work. Application keys _will not_
 * Adds command to return a list of all nodes available on the Panel in both table and JSON format (`php artisan p:node:list`).
 * Adds server network (inbound/outbound) usage graphs to the console screen.
 * Adds support for configuring CORS on the API by setting the `APP_CORS_ALLOWED_ORIGINS=example.com,dashboard.example.com` environment variable. By default all instances are configured with this set to `*` which allows any origin.
+* Adds proper activity logging for the following areas of the Panel: authentication, user account modifications, server modification. This is an initial test implementation before further roll-out in the software. Events are logged into the database but are not currently exposed in the UI — they will be displayed in a future update.
 
 ### Removed
 * Removes Google Analytics from the front end code.
 * Removes multiple middleware that were previously used for configuring API access and controlling model fetching. This has all been replaced with Laravel Sanctum and standard Laravel API tooling. This should make codebase discovery significantly more simple.
+* **DEPRECATED**: The use of `Pterodactyl\Models\AuditLog` is deprecated and all references to this model have been removed from the codebase. In the next major release this model and table will be fully dropped.
 
 ## v1.7.0
 ### Fixed

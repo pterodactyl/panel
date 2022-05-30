@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
@@ -67,6 +68,11 @@ class ScheduleTaskController extends ClientApiController
             'continue_on_failure' => (bool) $request->input('continue_on_failure'),
         ]);
 
+        Activity::event('server:task.create')
+            ->subject($schedule, $task)
+            ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
+            ->log();
+
         return $this->fractal->item($task)
             ->transformWith($this->getTransformer(TaskTransformer::class))
             ->toArray();
@@ -98,6 +104,11 @@ class ScheduleTaskController extends ClientApiController
             'continue_on_failure' => (bool) $request->input('continue_on_failure'),
         ]);
 
+        Activity::event('server:task.update')
+            ->subject($schedule, $task)
+            ->property(['name' => $schedule->name, 'action' => $task->action, 'payload' => $task->payload])
+            ->log();
+
         return $this->fractal->item($task->refresh())
             ->transformWith($this->getTransformer(TaskTransformer::class))
             ->toArray();
@@ -126,6 +137,8 @@ class ScheduleTaskController extends ClientApiController
         ]);
 
         $task->delete();
+
+        Activity::event('server:task.delete')->subject($schedule, $task)->property('name', $schedule->name)->log();
 
         return new JsonResponse(null, Response::HTTP_NO_CONTENT);
     }

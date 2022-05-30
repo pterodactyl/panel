@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\UserSSHKeyTransformer;
@@ -54,6 +55,11 @@ class SSHKeyController extends ClientApiController
             'ip_address' => $request->getClientIp(),
         ]);
 
+        Activity::event('user:ssh-key.create')
+            ->subject($model)
+            ->property('fingerprint', $request->getKeyFingerprint())
+            ->log();
+
         return $this->fractal->item($model)
             ->transformWith($this->getTransformer(UserSSHKeyTransformer::class))
             ->toArray();
@@ -64,7 +70,7 @@ class SSHKeyController extends ClientApiController
      */
     public function delete(ClientApiRequest $request, string $identifier): JsonResponse
     {
-        $key = $request->user()->sshKeys()->where('fingerprint', $identifier)->get();
+        $key = $request->user()->sshKeys()->where('fingerprint', $identifier)->firstOrFail();
 
         $key->delete();
 
@@ -73,6 +79,11 @@ class SSHKeyController extends ClientApiController
             'action' => 'SSH key ('.$key->name.') was deleted.',
             'ip_address' => $request->getClientIp(),
         ]);
+
+        Activity::event('user:ssh-key.delete')
+            ->subject($key)
+            ->property('fingerprint', $key->fingerprint)
+            ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

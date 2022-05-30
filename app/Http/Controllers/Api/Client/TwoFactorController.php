@@ -6,6 +6,7 @@ use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\AccountLog;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Validation\ValidationException;
@@ -103,6 +104,8 @@ class TwoFactorController extends ClientApiController
             'ip_address' => $request->getClientIp(),
         ]);
 
+        Activity::event('user:two-factor.create')->log();
+
         return new JsonResponse([
             'object' => 'recovery_tokens',
             'attributes' => [
@@ -136,6 +139,8 @@ class TwoFactorController extends ClientApiController
             'action' => '2FA has been disabled.',
             'ip_address' => $request->getClientIp(),
         ]);
+
+        Activity::event('user:two-factor.delete')->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Facades\LogTarget;
 
-class ServerActivityLogs
+class ServerActivitySubject
 {
     /**
      * Attempts to automatically scope all of the activity log events registered

@@ -2,20 +2,29 @@
 
 namespace Pterodactyl\Services\Activity;
 
+use Illuminate\Support\Arr;
+use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\ActivityLog;
 use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
+use Pterodactyl\Models\ActivityLogSubject;
 use Illuminate\Database\ConnectionInterface;
 
 class ActivityLogService
 {
     protected ?ActivityLog $activity = null;
 
+    protected array $subjects = [];
+
     protected Factory $manager;
+
     protected ConnectionInterface $connection;
+
     protected AcitvityLogBatchService $batch;
+
     protected ActivityLogTargetableService $targetable;
 
     public function __construct(
@@ -65,10 +74,22 @@ class ActivityLogService
 
     /**
      * Sets the subject model instance.
+     *
+     * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Model[] $subjects
      */
-    public function subject(Model $subject): self
+    public function subject(...$subjects): self
     {
-        $this->getActivity()->subject()->associate($subject);
+        foreach (Arr::wrap($subjects) as $subject) {
+            foreach ($this->subjects as $entry) {
+                // If this subject is already tracked in our array of subjects just skip over
+                // it and move on to the next one in the list.
+                if ($entry->is($subject)) {
+                    continue 2;
+                }
+            }
+
+            $this->subjects[] = $subject;
+        }
 
         return $this;
     }
@@ -84,25 +105,17 @@ class ActivityLogService
     }
 
     /**
-     * Sets the custom properties for the activity log instance.
-     *
-     * @param \Illuminate\Support\Collection|array $properties
-     */
-    public function withProperties($properties): self
-    {
-        $this->getActivity()->properties = Collection::make($properties);
-
-        return $this;
-    }
-
-    /**
      * Sets a custom property on the activty log instance.
      *
+     * @param string|array $key
      * @param mixed $value
      */
-    public function property(string $key, $value): self
+    public function property($key, $value = null): self
     {
-        $this->getActivity()->properties = $this->getActivity()->properties->put($key, $value);
+        $properties = $this->getActivity()->properties;
+        $this->activity->properties = is_array($key)
+            ? $properties->merge($key)
+            : $properties->put($key, $value);
 
         return $this;
     }
@@ -112,15 +125,17 @@ class ActivityLogService
      */
     public function withRequestMetadata(): self
     {
-        $this->property('ip', Request::getClientIp());
-        $this->property('useragent', Request::userAgent());
-
-        return $this;
+        return $this->property([
+            'ip' => Request::getClientIp(),
+            'useragent' => Request::userAgent(),
+        ]);
     }
 
     /**
      * Logs an activity log entry with the set values and then returns the
-     * model instance to the caller.
+     * model instance to the caller. If there is an exception encountered while
+     * performing this action it will be logged to the disk but will not interrupt
+     * the code flow.
      */
     public function log(string $description = null): ActivityLog
     {
@@ -130,9 +145,16 @@ class ActivityLogService
             $activity->description = $description;
         }
 
-        $activity->save();
+        try {
+            return $this->save();
+        } catch (\Throwable|\Exception $exception) {
+            if (config('app.env') !== 'production') {
+                /* @noinspection PhpUnhandledExceptionInspection */
+                throw $exception;
+            }
 
-        $this->activity = null;
+            Log::error($exception);
+        }
 
         return $activity;
     }
@@ -155,20 +177,24 @@ class ActivityLogService
      *
      * @throws \Throwable
      */
-    public function transaction(\Closure $callback, string $description = null)
+    public function transaction(\Closure $callback)
     {
-        if (!is_null($description)) {
-            $this->description($description);
-        }
-
         return $this->connection->transaction(function () use ($callback) {
-            $response = $callback($activity = $this->getActivity());
+            $response = $callback($this);
 
-            $activity->save();
-            $this->activity = null;
+            $this->save();
 
             return $response;
         });
+    }
+
+    /**
+     * Resets the instance and clears out the log.
+     */
+    public function reset(): void
+    {
+        $this->activity = null;
+        $this->subjects = [];
     }
 
     /**
@@ -181,6 +207,7 @@ class ActivityLogService
         }
 
         $this->activity = new ActivityLog([
+            'ip' => Request::ip(),
             'batch_uuid' => $this->batch->uuid(),
             'properties' => Collection::make([]),
         ]);
@@ -198,5 +225,37 @@ class ActivityLogService
         }
 
         return $this->activity;
+    }
+
+    /**
+     * Saves the activity log instance and attaches all of the subject models.
+     *
+     * @throws \Throwable
+     */
+    protected function save(): ActivityLog
+    {
+        Assert::notNull($this->activity);
+
+        $response = $this->connection->transaction(function () {
+            $this->activity->save();
+
+            $subjects = Collection::make($this->subjects)
+                ->map(fn (Model $subject) => [
+                    'activity_log_id' => $this->activity->id,
+                    'subject_id' => $subject->getKey(),
+                    'subject_type' => $subject->getMorphClass(),
+                ])
+                ->values()
+                ->toArray();
+
+            ActivityLogSubject::insert($subjects);
+
+            return $this->activity;
+        });
+
+        $this->activity = null;
+        $this->subjects = [];
+
+        return $response;
     }
 }

@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
@@ -51,22 +52,21 @@ class AccountController extends ClientApiController
 
     /**
      * Update the authenticated user's email address.
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function updateEmail(UpdateEmailRequest $request): JsonResponse
     {
+        $original = $request->user()->email;
         $this->updateService->handle($request->user(), $request->validated());
 
         $this->log->create([
             'user_id' => $request->user()->id,
-            'action' => 'Email has been updated successfully.',
             'ip_address' => $request->getClientIp(),
         ]);
 
+        Activity::event('user:account.email-changed')
+            ->property(['old' => $original, 'new' => $request->input('email')])
+
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
-    }
 
     /**
      * Update the authenticated user's password. All existing sessions will be logged
@@ -96,6 +96,8 @@ class AccountController extends ClientApiController
             'ip_address' => $request->getClientIp(),
         ]);
 
+        Activity::event('user:account.password-changed')->log();
+
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
@@ -114,6 +116,8 @@ class AccountController extends ClientApiController
             'action' => 'Username has been updated successfully.',
             'ip_address' => $request->getClientIp(),
         ]);
+    
+        Activity::event('user:account.username-changed')->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -94,7 +94,6 @@ trait CreatesTestModels
             return [$user, $this->createServerModel(['user_id' => $user->id])];
         }
 
-        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->createServerModel();
 
         Subuser::query()->create([

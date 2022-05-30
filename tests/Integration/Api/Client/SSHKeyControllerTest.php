@@ -46,8 +46,8 @@ class SSHKeyControllerTest extends ClientApiIntegrationTestCase
         $this->assertSoftDeleted($key);
         $this->assertNotSoftDeleted($key2);
 
-        $this->deleteJson($this->link($key))->assertNoContent();
-        $this->deleteJson($this->link($key2))->assertNoContent();
+        $this->deleteJson($this->link($key))->assertNotFound();
+        $this->deleteJson($this->link($key2))->assertNotFound();
 
         $this->assertNotSoftDeleted($key2);
     }

@@ -50,7 +50,7 @@ class DeleteServerScheduleTest extends ClientApiIntegrationTestCase
     public function testNotFoundErrorIsReturnedIfScheduleDoesNotBelongToServer()
     {
         [$user, $server] = $this->generateTestAccount();
-        [, $server2] = $this->generateTestAccount(['user_id' => $user->id]);
+        $server2 = $this->createServerModel(['owner_id' => $user->id]);
 
         $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
 

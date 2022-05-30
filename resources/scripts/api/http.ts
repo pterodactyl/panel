@@ -68,7 +68,7 @@ export interface FractalResponseData {
     object: string;
     attributes: {
         [k: string]: any;
-        relationships?: Record<string, FractalResponseData | FractalResponseList>;
+        relationships?: Record<string, FractalResponseData | FractalResponseList | null | undefined>;
     };
 }
 
