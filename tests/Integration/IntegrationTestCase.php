@@ -13,6 +13,10 @@ abstract class IntegrationTestCase extends TestCase
 
     protected array $connectionsToTransact = ['mysql'];
 
+    protected $defaultHeaders = [
+        'Accept' => 'application/json',
+    ];
+
     /**
      * Return an ISO-8601 formatted timestamp to use in the API response.
      */

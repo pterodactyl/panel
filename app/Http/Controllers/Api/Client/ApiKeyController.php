@@ -60,13 +60,14 @@ class ApiKeyController extends ClientApiController
      */
     public function delete(ClientApiRequest $request, string $identifier)
     {
+        /** @var \Pterodactyl\Models\ApiKey $key */
         $key = $request->user()->apiKeys()
             ->where('key_type', ApiKey::TYPE_ACCOUNT)
             ->where('identifier', $identifier)
-            ->first();
+            ->firstOrFail();
 
         Activity::event('user:api-key.delete')
-            ->property('identifer', $key->identifer)
+            ->property('identifer', $key->identifier)
             ->log();
 
         $key->delete();
