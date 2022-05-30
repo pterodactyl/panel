@@ -124,7 +124,7 @@ Route::group(['prefix' => 'servers'], function () {
     Route::post('/view/{server:id}/build', [Admin\ServersController::class, 'updateBuild']);
     Route::post('/view/{server:id}/startup', [Admin\ServersController::class, 'saveStartup']);
     Route::post('/view/{server:id}/database', [Admin\ServersController::class, 'newDatabase']);
-    Route::post('/view/{server:id}/mounts/{mount:id}', [Admin\ServersController::class, 'addMount'])->name('admin.servers.view.mounts.toggle');
+    Route::post('/view/{server:id}/mounts', [Admin\ServersController::class, 'addMount'])->name('admin.servers.view.mounts.store');
     Route::post('/view/{server:id}/manage/toggle', [Admin\ServersController::class, 'toggleInstall'])->name('admin.servers.view.manage.toggle');
     Route::post('/view/{server:id}/manage/suspension', [Admin\ServersController::class, 'manageSuspension'])->name('admin.servers.view.manage.suspension');
     Route::post('/view/{server:id}/manage/reinstall', [Admin\ServersController::class, 'reinstallServer'])->name('admin.servers.view.manage.reinstall');
@@ -135,7 +135,8 @@ Route::group(['prefix' => 'servers'], function () {
     Route::patch('/view/{server:id}/database', [Admin\ServersController::class, 'resetDatabasePassword']);
 
     Route::delete('/view/{server:id}/database/{database:id}/delete', [Admin\ServersController::class, 'deleteDatabase'])->name('admin.servers.view.database.delete');
-    Route::delete('/view/{server:id}/mounts/{mount:id}', [Admin\ServersController::class, 'deleteMount']);
+    Route::delete('/view/{server:id}/mounts/{mount:id}', [Admin\ServersController::class, 'deleteMount'])
+        ->name('admin.servers.view.mounts.delete');
 });
 
 /*

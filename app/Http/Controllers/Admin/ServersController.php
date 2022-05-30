@@ -392,10 +392,10 @@ class ServersController extends Controller
      *
      * @throws \Throwable
      */
-    public function addMount(Server $server, Mount $mount)
+    public function addMount(Request $request, Server $server)
     {
         $mountServer = (new MountServer())->forceFill([
-            'mount_id' => $mount->id,
+            'mount_id' => $request->input('mount_id'),
             'server_id' => $server->id,
         ]);
 
