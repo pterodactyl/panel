@@ -14,7 +14,6 @@ use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\UserSSHKey;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
@@ -60,7 +59,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function link($model, $append = null): string
     {
-        $link = '';
         switch (get_class($model)) {
             case Server::class:
                 $link = "/api/client/servers/{$model->uuid}";
@@ -76,9 +74,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
                 break;
             case Backup::class:
                 $link = "/api/client/servers/{$model->server->uuid}/backups/{$model->uuid}";
-                break;
-            case UserSSHKey::class:
-                $link = "/api/client/account/ssh-keys/$model->fingerprint";
                 break;
             default:
                 throw new InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
