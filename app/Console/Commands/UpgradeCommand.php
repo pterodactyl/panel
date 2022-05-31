@@ -37,6 +37,11 @@ class UpgradeCommand extends Command
      */
     public function handle()
     {
+        if (version_compare(PHP_VERSION, '7.4.0') < 0) {
+            $this->error('Cannot execute self-upgrade process. The minimum required PHP version required is 7.4.0, you have [' . PHP_VERSION . '].');
+            return 0;
+        }
+        
         $this->info('Updating Pterodactyl to the latest version');
         if ($this->confirm('Do you wish to continue?', true)) {
 
