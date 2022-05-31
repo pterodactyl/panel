@@ -2,197 +2,100 @@
 
 namespace Pterodactyl\Console\Commands;
 
-use Closure;
 use Illuminate\Console\Command;
-use Pterodactyl\Console\Kernel;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Console\Helper\ProgressBar;
 
 class UpgradeCommand extends Command
 {
-    protected const DEFAULT_URL = 'https://github.com/pterodactyl/panel/releases/%s/panel.tar.gz';
-
-    /** @var string */
-    protected $signature = 'p:upgrade
-        {--user= : The user that PHP runs under. All files will be owned by this user.}
-        {--group= : The group that PHP runs under. All files will be owned by this group.}
-        {--url= : The specific archive to download.}
-        {--release= : A specific Pterodactyl version to download from GitHub. Leave blank to use latest.}
-        {--skip-download : If set no archive will be downloaded.}';
-
-    /** @var string */
-    protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'pterodactyl:update';
 
     /**
-     * Executes an upgrade command which will run through all of our standard
-     * commands for Pterodactyl and enable users to basically just download
-     * the archive and execute this and be done.
+     * The console command description.
      *
-     * This places the application in maintenance mode as well while the commands
-     * are being executed.
+     * @var string
+     */
+    protected $description = 'Update Pterodactyl to the latest version.';
+
+    /**
+     * Create a new command instance.
      *
-     * @throws \Exception
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return int
      */
     public function handle()
     {
-        $skipDownload = $this->option('skip-download');
-        if (!$skipDownload) {
-            $this->output->warning('This command does not verify the integrity of downloaded assets. Please ensure that you trust the download source before continuing. If you do not wish to download an archive, please indicate that using the --skip-download flag, or answering "no" to the question below.');
-            $this->output->comment('Download Source (set with --url=):');
-            $this->line($this->getUrl());
+        $this->info('Updating Pterodactyl to the latest version');
+        if ($this->confirm('Do you wish to continue?', true)) {
+
+
+        /**
+        * Commences update proccess and
+        * executes commands below into terminal.
+        */
+        $this->command('php artisan down');
+        $this->command('curl -L https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz | tar -xzv');
+        $this->command('chmod -R 755 storage/* bootstrap/cache');
+        $this->command('composer install --no-dev --optimize-autoloader');
+        $this->command('php artisan view:clear && php artisan config:clear');
+        $this->command('php artisan migrate --seed --force');
+        $this->MakeChoice();
+        $this->command('php artisan queue:restart');
+        $this->command('php artisan up');
+        $this->info('Update Complete - Successfully Installed the latest version of Pterodactyl Panel!');
+
+
         }
-
-        if (version_compare(PHP_VERSION, '7.4.0') < 0) {
-            $this->error('Cannot execute self-upgrade process. The minimum required PHP version required is 7.4.0, you have [' . PHP_VERSION . '].');
-        }
-
-        $user = 'www-data';
-        $group = 'www-data';
-        if ($this->input->isInteractive()) {
-            if (!$skipDownload) {
-                $skipDownload = !$this->confirm('Would you like to download and unpack the archive files for the latest version?', true);
-            }
-
-            if (is_null($this->option('user'))) {
-                $userDetails = posix_getpwuid(fileowner('public'));
-                $user = $userDetails['name'] ?? 'www-data';
-
-                if (!$this->confirm("Your webserver user has been detected as <fg=blue>[{$user}]:</> is this correct?", true)) {
-                    $user = $this->anticipate(
-                        'Please enter the name of the user running your webserver process. This varies from system to system, but is generally "www-data", "nginx", or "apache".',
-                        [
-                            'www-data',
-                            'nginx',
-                            'apache',
-                        ]
-                    );
-                }
-            }
-
-            if (is_null($this->option('group'))) {
-                $groupDetails = posix_getgrgid(filegroup('public'));
-                $group = $groupDetails['name'] ?? 'www-data';
-
-                if (!$this->confirm("Your webserver group has been detected as <fg=blue>[{$group}]:</> is this correct?", true)) {
-                    $group = $this->anticipate(
-                        'Please enter the name of the group running your webserver process. Normally this is the same as your user.',
-                        [
-                            'www-data',
-                            'nginx',
-                            'apache',
-                        ]
-                    );
-                }
-            }
-
-            if (!$this->confirm('Are you sure you want to run the upgrade process for your Panel?')) {
-                $this->warn('Upgrade process terminated by user.');
-
-                return;
-            }
-        }
-
-        ini_set('output_buffering', 0);
-        $bar = $this->output->createProgressBar($skipDownload ? 9 : 10);
-        $bar->start();
-
-        if (!$skipDownload) {
-            $this->withProgress($bar, function () {
-                $this->line("\$upgrader> curl -L \"{$this->getUrl()}\" | tar -xzv");
-                $process = Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" | tar -xzv");
-                $process->run(function ($type, $buffer) {
-                    $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
-                });
-            });
-        }
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan down');
-            $this->call('down');
-        });
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> chmod -R 755 storage bootstrap/cache');
-            $process = new Process(['chmod', '-R', '755', 'storage', 'bootstrap/cache']);
-            $process->run(function ($type, $buffer) {
-                $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
-            });
-        });
-
-        $this->withProgress($bar, function () {
-            $command = ['composer', 'install', '--no-ansi'];
-            if (config('app.env') === 'production' && !config('app.debug')) {
-                $command[] = '--optimize-autoloader';
-                $command[] = '--no-dev';
-            }
-
-            $this->line('$upgrader> ' . implode(' ', $command));
-            $process = new Process($command);
-            $process->setTimeout(10 * 60);
-            $process->run(function ($type, $buffer) {
-                $this->line($buffer);
-            });
-        });
-
-        /** @var \Illuminate\Foundation\Application $app */
-        $app = require __DIR__ . '/../../../bootstrap/app.php';
-        /** @var \Pterodactyl\Console\Kernel $kernel */
-        $kernel = $app->make(Kernel::class);
-        $kernel->bootstrap();
-        $this->setLaravel($app);
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan view:clear');
-            $this->call('view:clear');
-        });
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan config:clear');
-            $this->call('config:clear');
-        });
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan migrate --force --seed');
-            $this->call('migrate', ['--force' => true, '--seed' => true]);
-        });
-
-        $this->withProgress($bar, function () use ($user, $group) {
-            $this->line("\$upgrader> chown -R {$user}:{$group} *");
-            $process = Process::fromShellCommandline("chown -R {$user}:{$group} *", $this->getLaravel()->basePath());
-            $process->setTimeout(10 * 60);
-            $process->run(function ($type, $buffer) {
-                $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
-            });
-        });
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan queue:restart');
-            $this->call('queue:restart');
-        });
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan up');
-            $this->call('up');
-        });
-
-        $this->newLine(2);
-        $this->info('Panel has been successfully upgraded. Please ensure you also update any Wings instances: https://pterodactyl.io/wings/1.0/upgrading.html');
     }
 
-    protected function withProgress(ProgressBar $bar, Closure $callback)
+    /**
+     * Let user select for which OS to set permissions for.
+     */
+    private function MakeChoice()
     {
-        $bar->clear();
-        $callback();
-        $bar->advance();
-        $bar->display();
+        // Check if operating system is Linux based
+        $this->newLine(3);
+        $this->info('Please select the correct permissions configuration');
+        $this->line('1 => If using NGINX or Apache (not on CentOS)');
+        $this->line('2 => If using NGINX on CentOS');
+        $this->line('3 => If using Apache on CentOS');
+
+        $choice = $this->anticipate('Select between 1, 2 or 3', ['1', '2', '3']) ;
+
+        // Reflect choice to user
+        if($choice == 1) {
+            $this->info('Selected using NGINX or Apache (not on CentOS)');
+            $this->command('chown -R www-data:www-data '.base_path().'/*');
+        } elseif($choice == 2) {
+            $this->info('Selected using NGINX on CentOS');
+            $this->command('chown -R nginx:nginx '.base_path().'/*');
+        } elseif($choice == 3) {
+            $this->info('Selected using Apache on CentOS');
+            $this->command('chown -R apache:apache '.base_path().'/*');
+        } else {
+            $this->error('Invalid configuration choice, choose between 1, 2 or 3');
+            $this->MakeChoice();
+
+        }
     }
 
-    protected function getUrl(): string
+    /**
+     * executes commands into terminal
+     */
+    private function command($cmd)
     {
-        if ($this->option('url')) {
-            return $this->option('url');
-        }
-
-        return sprintf(self::DEFAULT_URL, $this->option('release') ? 'download/v' . $this->option('release') : 'latest/download');
+      return exec($cmd);
     }
 }
