@@ -5,13 +5,19 @@ export interface UserData {
     uuid: string;
     username: string;
     email: string;
+    store: {
+        balance: number;
+        cpu: number;
+        memory: number;
+        disk: number;
+        slots: number;
+        ports: number;
+        backups: number;
+        databases: number;
+    }
     language: string;
     rootAdmin: boolean;
     useTotp: boolean;
-    storeBalance: number;
-    storeCpu: number;
-    storeMemory: number;
-    storeDisk: number;
     createdAt: Date;
     updatedAt: Date;
 }

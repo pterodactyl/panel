@@ -58,6 +58,18 @@
                                     <label for="store_disk" class="control-label">Total Disk available</label>
                                     <input type="text" id="store_disk" value="{{ $user->store_disk }}" name="store_disk" class="form-control form-autocomplete-stop">
                                 </div>
+                                <div class="form-group col-md-4">
+                                    <label for="store_ports" class="control-label">Total Ports available</label>
+                                    <input type="text" id="store_ports" value="{{ $user->store_ports }}" name="store_ports" class="form-control form-autocomplete-stop">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="store_backups" class="control-label">Total Backups available</label>
+                                    <input type="text" id="store_backups" value="{{ $user->store_backups }}" name="store_backups" class="form-control form-autocomplete-stop">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="store_databases" class="control-label">Total Databases available</label>
+                                    <input type="text" id="store_databases" value="{{ $user->store_databases }}" name="store_databases" class="form-control form-autocomplete-stop">
+                                </div>
                             </div>
                         </div>
                         <div class="box-footer">

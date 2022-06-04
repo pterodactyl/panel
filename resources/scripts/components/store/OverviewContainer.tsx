@@ -43,25 +43,42 @@ const OverviewContainer = () => {
         <PageContentBlock title={'Storefront Overview'}>
             <h1 css={tw`text-5xl`}>👋 Hey, {user.username}!</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
-            <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
-                <TitledGreyBox title={'Total Slots'}>
-                    <Wrapper>
-                        <Icon.Server css={tw`mr-2`} /> N/A
-                    </Wrapper>
-                </TitledGreyBox>
+            <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
                 <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.Cpu css={tw`mr-2`} /> {user.storeCpu}%
+                        <Icon.Cpu css={tw`mr-2`} /> {user.store.cpu}%
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.PieChart css={tw`mr-2`} /> {megabytesToHuman(user.storeMemory)}
+                        <Icon.PieChart css={tw`mr-2`} /> {megabytesToHuman(user.store.memory)}
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total Disk'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.HardDrive css={tw`mr-2`} /> {megabytesToHuman(user.storeDisk)}
+                        <Icon.HardDrive css={tw`mr-2`} /> {megabytesToHuman(user.store.disk)}
+                    </Wrapper>
+                </TitledGreyBox>
+            </Container>
+            <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
+                <TitledGreyBox title={'Total Slots'}>
+                    <Wrapper>
+                        <Icon.Server css={tw`mr-2`} /> {user.store.slots}
+                    </Wrapper>
+                </TitledGreyBox>
+                <TitledGreyBox title={'Total Ports'}>
+                    <Wrapper>
+                        <Icon.Share2 css={tw`mr-2`} /> {user.store.ports}
+                    </Wrapper>
+                </TitledGreyBox>
+                <TitledGreyBox title={'Total Backups'}>
+                    <Wrapper>
+                        <Icon.Archive css={tw`mr-2`} /> {user.store.backups}
+                    </Wrapper>
+                </TitledGreyBox>
+                <TitledGreyBox title={'Total Databases'}>
+                    <Wrapper>
+                        <Icon.Database css={tw`mr-2`} /> {user.store.databases}
                     </Wrapper>
                 </TitledGreyBox>
             </Container>

@@ -32,15 +32,7 @@ const ProductsContainer = () => {
         <PageContentBlock title={'Store Products'}>
             <h1 css={tw`text-5xl`}>Order resources</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Buy more resources to add to your server.</h3>
-            <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
-                <TitledGreyBox title={'Purchase Server Slot'}>
-                    <Wrapper>
-                        <Icon.Server css={tw`mb-2`} size={40} />
-                    </Wrapper>
-                    <div css={tw`flex justify-center items-center`}>
-                        <Button>+1 Slot</Button>
-                    </div>
-                </TitledGreyBox>
+            <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
                 <TitledGreyBox title={'Purchase CPU'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Cpu css={tw`mb-2`} size={40} />
@@ -63,6 +55,40 @@ const ProductsContainer = () => {
                     </Wrapper>
                     <div css={tw`flex justify-center items-center`}>
                         <Button>+1GB DISK</Button>
+                    </div>
+                </TitledGreyBox>
+            </Container>
+            <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
+                <TitledGreyBox title={'Purchase Server Slot'}>
+                    <Wrapper>
+                        <Icon.Server css={tw`mb-2`} size={40} />
+                    </Wrapper>
+                    <div css={tw`flex justify-center items-center`}>
+                        <Button>+1 Slot</Button>
+                    </div>
+                </TitledGreyBox>
+                <TitledGreyBox title={'Purchase Server Ports'}>
+                    <Wrapper>
+                        <Icon.Share2 css={tw`mb-2`} size={40} />
+                    </Wrapper>
+                    <div css={tw`flex justify-center items-center`}>
+                        <Button>+1 Port</Button>
+                    </div>
+                </TitledGreyBox>
+                <TitledGreyBox title={'Purchase Server Backups'}>
+                    <Wrapper>
+                        <Icon.Archive css={tw`mb-2`} size={40} />
+                    </Wrapper>
+                    <div css={tw`flex justify-center items-center`}>
+                        <Button>+1 Backup</Button>
+                    </div>
+                </TitledGreyBox>
+                <TitledGreyBox title={'Purchase Server Databases'}>
+                    <Wrapper>
+                        <Icon.Database css={tw`mb-2`} size={40} />
+                    </Wrapper>
+                    <div css={tw`flex justify-center items-center`}>
+                        <Button>+1 Database</Button>
                     </div>
                 </TitledGreyBox>
             </Container>

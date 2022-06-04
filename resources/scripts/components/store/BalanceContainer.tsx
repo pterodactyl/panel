@@ -39,8 +39,8 @@ const BalanceContainer = () => {
                         showFlashes={'account:balance'}
                         css={tw`py-4 sm:mt-0`}
                     >
-                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>${user.storeBalance} JCR</h1>
-                        <h1 css={tw`text-smflex justify-center items-center`}>JCR = Jexactyl Credits</h1>
+                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>${user.store.balance} JCR</h1>
+                        <h1 css={tw`text-sm flex justify-center items-center`}>JCR = Jexactyl Credits</h1>
                     </ContentBox>
                     <ContentBox
                         title={'Transaction History'}

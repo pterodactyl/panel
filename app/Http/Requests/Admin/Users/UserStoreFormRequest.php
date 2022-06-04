@@ -18,10 +18,13 @@ class UserStoreFormRequest extends AdminFormRequest
             User::getRulesForUpdate($this->route()->parameter('user'))
         )->only([
             'store_balance',
-            'store_slot',
             'store_cpu',
             'store_memory',
             'store_disk',
+            'store_slots',
+            'store_ports',
+            'store_backups',
+            'store_databases',
         ])->toArray();
     }
 }

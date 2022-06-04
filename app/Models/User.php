@@ -55,10 +55,13 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $tokens
  * @property int|null $tokens_count
  * @property int $store_balance
- * @property int $store_slot
  * @property int $store_cpu
  * @property int $store_memory
  * @property int $store_disk
+ * @property int $store_slots
+ * @property int $store_ports
+ * @property int $store_backups
+ * @property int $store_databases
  *
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
