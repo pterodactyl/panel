@@ -6,8 +6,8 @@ import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
 import Button from '@/components/elements/Button';
-import TitledGreyBox from '../elements/TitledGreyBox';
 import PlusSquareSvg from '@/assets/images/plus_square.svg';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import DivideSquareSvg from '@/assets/images/divide_square.svg';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
@@ -44,7 +44,7 @@ const OverviewContainer = () => {
             <h1 css={tw`text-5xl`}>👋 Hey, {user.username}!</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
-                <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
+                <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Cpu css={tw`mr-2`} /> {user.store.cpu}%
                     </Wrapper>
@@ -61,29 +61,29 @@ const OverviewContainer = () => {
                 </TitledGreyBox>
             </Container>
             <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
-                <TitledGreyBox title={'Total Slots'}>
+                <TitledGreyBox title={'Total Slots'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Server css={tw`mr-2`} /> {user.store.slots}
                     </Wrapper>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total Ports'}>
+                <TitledGreyBox title={'Total Ports'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Share2 css={tw`mr-2`} /> {user.store.ports}
                     </Wrapper>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total Backups'}>
+                <TitledGreyBox title={'Total Backups'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Archive css={tw`mr-2`} /> {user.store.backups}
                     </Wrapper>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Total Databases'}>
+                <TitledGreyBox title={'Total Databases'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Database css={tw`mr-2`} /> {user.store.databases}
                     </Wrapper>
                 </TitledGreyBox>
             </Container>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
-                <TitledGreyBox title={''}>
+                <TitledGreyBox title={'Create server'}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
                             <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`}/>
@@ -105,7 +105,7 @@ const OverviewContainer = () => {
                         </div>
                     </div>
                 </TitledGreyBox>
-                <TitledGreyBox title={''} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
+                <TitledGreyBox title={'Edit server'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
                             <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`}/>
