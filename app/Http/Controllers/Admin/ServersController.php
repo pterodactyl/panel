@@ -377,7 +377,7 @@ class ServersController extends Controller
     {
         $database = $this->databaseRepository->findFirstWhere([
             ['server_id', '=', $server],
-            ['id', '=', $database],
+            ['id', '=', $database->id],
         ]);
 
         $this->databaseManagementService->delete($database);
