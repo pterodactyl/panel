@@ -49,7 +49,7 @@ export default () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock title={'store:edit'} showFlashKey={'store:edit'}>
+        <PageContentBlock title={'Edit a server'} showFlashKey={'store:edit'}>
             <h1 css={tw`text-5xl`}>Edit your servers</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Configure limits and options for your instances.</h3>
             {rootAdmin &&

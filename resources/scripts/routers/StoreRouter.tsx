@@ -9,8 +9,9 @@ import SubNavigation from '@/components/elements/SubNavigation';
 import EditContainer from '@/components/store/edit/EditContainer';
 import BalanceContainer from '@/components/store/BalanceContainer';
 import OverviewContainer from '@/components/store/OverviewContainer';
+import CreateContainer from '@/components/store/create/CreateContainer';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
-import ProductsContainer from '@/components/store/order/ProductsContainer';
+import ProductsContainer from '@/components/store/resources/ProductsContainer';
 
 const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();
@@ -27,11 +28,8 @@ const StoreRouter = () => {
                     <NavLink to={`${match.url}/balance`}>
                         <div css={tw`flex items-center justify-between`}>Balance <Icon.DollarSign css={tw`ml-1`} size={18} /></div>
                     </NavLink>
-                    <NavLink to={`${match.url}/order`}>
-                        <div css={tw`flex items-center justify-between`}>Order <Icon.ShoppingCart css={tw`ml-1`} size={18} /></div>
-                    </NavLink>
-                    <NavLink to={`${match.url}/edit`}>
-                        <div css={tw`flex items-center justify-between`}>Edit <Icon.Edit css={tw`ml-1`} size={18} /></div>
+                    <NavLink to={`${match.url}/resources`}>
+                        <div css={tw`flex items-center justify-between`}>Resources <Icon.ShoppingCart css={tw`ml-1`} size={18} /></div>
                     </NavLink>
                 </div>
             </SubNavigation>
@@ -43,8 +41,11 @@ const StoreRouter = () => {
                     <Route path={`${match.path}/balance`} exact>
                         <BalanceContainer />
                     </Route>
-                    <Route path={`${match.path}/order`} exact>
+                    <Route path={`${match.path}/resources`} exact>
                         <ProductsContainer />
+                    </Route>
+                    <Route path={`${match.path}/create`} exact>
+                        <CreateContainer />
                     </Route>
                     <Route path={`${match.path}/edit`} exact>
                         <EditContainer />

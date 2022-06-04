@@ -15,32 +15,28 @@ const StatusIndicatorBox = styled(GreyRowBox)`
     ${tw`grid grid-cols-12 gap-4 relative`};
 `;
 
-export default ({ server, className }: { server: Server; className?: string }) => {
-    return (
-        <StatusIndicatorBox as={Link} to={`/server/${server.id}/edit`} className={className}>
-            <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
-                <div className={'icon'} css={tw`mr-4`}>
-                    <Icon.Server />
-                </div>
-                <div>
-                    <p css={tw`text-lg break-words`}>{server.name}</p>
-                    {!!server.description &&
-                    <p css={tw`text-sm text-neutral-300 break-words`}>{server.description}</p>
-                    }
-                </div>
+export default ({ server, className }: { server: Server; className?: string }) => (
+    <StatusIndicatorBox as={Link} to={`/server/${server.id}/edit`} className={className}>
+        <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
+            <div className={'icon'} css={tw`mr-4`}>
+                <Icon.Server />
             </div>
-            <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
-                <React.Fragment>
-                    <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                        <div css={tw`flex justify-center`}>
-                            <Icon.ArrowRightCircle size={20} css={tw`text-neutral-600`} />
-                            <IconDescription>
+            <div>
+                <p css={tw`text-lg break-words`}>{server.name}</p>
+                <p css={tw`text-sm text-neutral-300 break-words`}>{server.id}</p>
+            </div>
+        </div>
+        <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
+            <React.Fragment>
+                <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                    <div css={tw`flex justify-center`}>
+                        <Icon.ArrowRightCircle size={20} css={tw`text-neutral-600`} />
+                        <IconDescription>
                                 Edit Server
-                            </IconDescription>
-                        </div>
+                        </IconDescription>
                     </div>
-                </React.Fragment>
-            </div>
-        </StatusIndicatorBox>
-    );
-};
+                </div>
+            </React.Fragment>
+        </div>
+    </StatusIndicatorBox>
+);
