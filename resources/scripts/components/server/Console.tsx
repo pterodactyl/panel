@@ -223,8 +223,8 @@ export default () => {
                             aria-label={'Console command input.'}
                             disabled={!instance || !connected}
                             onKeyDown={handleCommandKeyDown}
-                            autoCorrect="off"
-                            autoCapitalize="none"
+                            autoCorrect={'off'}
+                            autoCapitalize={'none'}
                         />
                     </div>
                 </div>
