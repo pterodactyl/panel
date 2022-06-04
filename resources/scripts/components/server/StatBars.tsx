@@ -60,7 +60,7 @@ const StatBars = () => {
     * PR's are welcome in order to clean up this logic.
     */
     return (
-        <TitledGreyBox title={'Server Statistics'} css={tw`text-xs uppercase`}>
+        <TitledGreyBox title={'Server Statistics'} css={tw`text-xs uppercase mt-4`}>
             {limits.cpu === 0 ?
                 <>
                     <p css={tw`mb-2`}>CPU used ({stats.cpu.toFixed(0)}% of Unlimited)</p>

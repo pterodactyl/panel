@@ -8,7 +8,6 @@ import Spinner from '@/components/elements/Spinner';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import ContentBox from '@/components/elements/ContentBox';
 import deleteAccountLogs from '@/api/account/deleteAccountLogs';
-import FlashMessageRender from '@/components/FlashMessageRender';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getAccountLogs, { AccountLog } from '@/api/account/getAccountLogs';
 
@@ -32,11 +31,9 @@ const AccountLogContainer = () => {
 
     const submit = () => {
         setIsSubmitting(true);
-
         deleteAccountLogs()
             .then(() => {
                 setIsSubmitting(false);
-
                 addFlash({
                     type: 'success',
                     key: 'account:logs',
@@ -53,7 +50,6 @@ const AccountLogContainer = () => {
 
     return (
         <ContentBox css={tw`flex-1 overflow-hidden mt-8 md:mt-0`}>
-            <FlashMessageRender byKey={'account:logs'} css={tw`mb-2`} />
             <SpinnerOverlay visible={isSubmitting}/>
             {
                 logs.length === 0 ?
@@ -86,7 +82,7 @@ const AccountLogContainer = () => {
             <Button
                 css={tw`mt-6`}
                 size={'xlarge'}
-                onSubmit={submit}
+                onClick={submit}
                 color={'red'}
             >
                 Delete Logs
