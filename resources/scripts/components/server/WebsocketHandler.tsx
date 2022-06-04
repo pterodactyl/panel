@@ -108,13 +108,13 @@ export default () => {
     return (
         error ?
             <CSSTransition timeout={150} in appear classNames={'fade'}>
-                <div css={tw`bg-red-500 py-2`}>
+                <div css={tw`bg-yellow-500 py-2`}>
                     <ContentContainer css={tw`flex items-center justify-center`}>
                         {error === 'connecting' ?
                             <>
                                 <Spinner size={'small'}/>
-                                <p css={tw`ml-2 text-sm text-red-100`}>
-                                    We&apos;re having some trouble connecting to your server, please wait...
+                                <p css={tw`ml-2 text-sm text-yellow-100`}>
+                                    Please wait while we connect to your instance.
                                 </p>
                             </>
                             :

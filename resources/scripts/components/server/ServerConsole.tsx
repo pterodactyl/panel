@@ -4,6 +4,7 @@ import React, { lazy, memo } from 'react';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
+import StatBars from '@/components/server/StatBars';
 import PowerControls from '@/components/server/PowerControls';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ServerConfigurationBlock from './ServerConfigurationBlock';
@@ -33,6 +34,7 @@ const ServerConsole = () => {
             <div css={tw`w-full lg:w-1/4`}>
                 <ServerDetailsBlock />
                 <ServerConfigurationBlock />
+                <StatBars />
                 {isInstalling ?
                     <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
                         <ContentContainer>

@@ -122,7 +122,7 @@ export default () => {
     });
 
     return (
-        <div css={tw`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4`}>
+        <div css={tw`mt-4 grid grid-cols-1 sm:grid-cols-4 gap-2`}>
             <TitledGreyBox title={'Memory usage'}>
                 {status !== 'offline' ?
                     <canvas

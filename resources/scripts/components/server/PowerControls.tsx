@@ -4,7 +4,6 @@ import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
 import Button from '@/components/elements/Button';
 import { PowerAction } from '@/components/server/ServerConsole';
-import StopOrKillButton from '@/components/server/StopOrKillButton';
 
 const PowerControls = () => {
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -15,7 +14,7 @@ const PowerControls = () => {
     };
 
     return (
-        <div css={tw`shadow-md bg-neutral-700 rounded p-3 flex text-xs mt-4 justify-center`}>
+        <div css={tw`shadow-md bg-neutral-900 rounded p-3 flex text-xs mt-4 justify-center`}>
             <Can action={'control.start'}>
                 <Button
                     size={'xsmall'}
@@ -46,7 +45,32 @@ const PowerControls = () => {
                 </Button>
             </Can>
             <Can action={'control.stop'}>
-                <StopOrKillButton onPress={action => sendPowerCommand(action)}/>
+                <Button
+                    size={'xsmall'}
+                    isSecondary
+                    css={tw`mr-2`}
+                    disabled={!status || status === 'offline'}
+                    onClick={e => {
+                        e.preventDefault();
+                        sendPowerCommand('stop');
+                    }}
+                >
+                    Stop
+                </Button>
+            </Can>
+            <Can action={'control.stop'}>
+                <Button
+                    size={'xsmall'}
+                    isSecondary
+                    css={tw`mr-2`}
+                    disabled={!status || status === 'offline'}
+                    onClick={e => {
+                        e.preventDefault();
+                        sendPowerCommand('kill');
+                    }}
+                >
+                    Kill
+                </Button>
             </Can>
         </div>
     );

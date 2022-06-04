@@ -1,6 +1,5 @@
 import tw from 'twin.macro';
 import { hashToPath } from '@/helpers';
-import React, { useEffect } from 'react';
 import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
@@ -11,6 +10,7 @@ import { CSSTransition } from 'react-transition-group';
 import { NavLink, useLocation } from 'react-router-dom';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { FileObject } from '@/api/server/files/loadDirectory';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import UploadButton from '@/components/server/files/UploadButton';
@@ -21,9 +21,9 @@ import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 
-const sortFiles = (files: FileObject[]): FileObject[] => {
+const sortFiles = (files: FileObject[], searchString: string): FileObject[] => {
     const sortedFiles: FileObject[] = files.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.isFile === b.isFile ? 0 : (a.isFile ? 1 : -1));
-    return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name);
+    return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name).filter((file) => file.name.toLowerCase().includes(searchString.toLowerCase()));
 };
 
 export default () => {
@@ -36,6 +36,8 @@ export default () => {
 
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState(state => state.files.selectedFiles.length);
+
+    const [ searchString, setSearchString ] = useState('');
 
     useEffect(() => {
         clearFlashes('files');
@@ -53,15 +55,30 @@ export default () => {
 
     if (error) {
         return (
-            <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()}/>
+            <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()} />
         );
     }
 
+    const searchFiles = (event: ChangeEvent<HTMLInputElement>) => {
+        if (files) {
+            setSearchString(event.target.value);
+            sortFiles(files, searchString);
+            mutate();
+        }
+    };
+
     return (
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
+            <input
+                onChange={searchFiles}
+                css={tw`rounded-lg bg-neutral-700 border-2 border-neutral-900 p-2 w-full mb-4`}
+                placeholder={'Search for files...'}
+            >
+            </input>
             <div css={tw`flex flex-wrap-reverse md:flex-nowrap justify-center mb-4`}>
                 <ErrorBoundary>
                     <FileManagerBreadcrumbs
+                        css={tw`w-full`}
                         renderLeft={
                             <FileActionCheckbox
                                 type={'checkbox'}
@@ -75,8 +92,8 @@ export default () => {
                 <Can action={'file.create'}>
                     <ErrorBoundary>
                         <div css={tw`flex flex-shrink-0 flex-wrap-reverse md:flex-nowrap justify-end mb-4 md:mb-0 ml-0 md:ml-auto`}>
-                            <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`}/>
-                            <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`}/>
+                            <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`} />
+                            <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`} />
                             <NavLink
                                 to={`/server/${id}/files/new${window.location.hash}`}
                                 css={tw`flex-1 sm:flex-none sm:mt-0`}
@@ -91,7 +108,7 @@ export default () => {
             </div>
             {
                 !files ?
-                    <Spinner size={'large'} centered/>
+                    <Spinner size={'large'} centered />
                     :
                     <>
                         {!files.length ?
@@ -102,19 +119,19 @@ export default () => {
                             <CSSTransition classNames={'fade'} timeout={150} appear in>
                                 <div>
                                     {files.length > 250 &&
-                                    <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                        <p css={tw`text-yellow-900 text-sm text-center`}>
-                                            This directory is too large to display in the browser,
-                                            limiting the output to the first 250 files.
-                                        </p>
-                                    </div>
+                                        <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
+                                            <p css={tw`text-yellow-900 text-sm text-center`}>
+                                                This directory is too large to display in the browser,
+                                                limiting the output to the first 250 files.
+                                            </p>
+                                        </div>
                                     }
                                     {
-                                        sortFiles(files.slice(0, 250)).map(file => (
-                                            <FileObjectRow key={file.key} file={file}/>
+                                        sortFiles(files.slice(0, 250), searchString).map(file => (
+                                            <FileObjectRow key={file.key} file={file} />
                                         ))
                                     }
-                                    <MassActionsBar/>
+                                    <MassActionsBar />
                                 </div>
                             </CSSTransition>
                         }

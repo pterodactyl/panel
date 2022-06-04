@@ -13,7 +13,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
-import ScheduleCheatsheetCards from '@/components/server/schedules/ScheduleCheatsheetCards';
+import ScheduleHelpCards from '@/components/server/schedules/ScheduleHelpCards';
 
 interface Props {
     schedule?: Schedule;
@@ -36,7 +36,7 @@ const EditScheduleModal = ({ schedule }: Props) => {
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
-    const [ showCheatsheet, setShowCheetsheet ] = useState(false);
+    const [ showCards, setShowCards ] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -89,18 +89,18 @@ const EditScheduleModal = ({ schedule }: Props) => {
             {({ isSubmitting }) => (
                 <Form>
                     <h3 css={tw`text-2xl mb-6`}>{schedule ? 'Edit schedule' : 'Create new schedule'}</h3>
-                    <FlashMessageRender byKey={'schedule:edit'} css={tw`mb-6`}/>
+                    <FlashMessageRender byKey={'schedule:edit'} css={tw`mb-6`} />
                     <Field
                         name={'name'}
                         label={'Schedule name'}
                         description={'A human readable identifer for this schedule.'}
                     />
                     <div css={tw`grid grid-cols-2 sm:grid-cols-5 gap-4 mt-6`}>
-                        <Field name={'minute'} label={'Minute'}/>
-                        <Field name={'hour'} label={'Hour'}/>
-                        <Field name={'dayOfMonth'} label={'Day of month'}/>
-                        <Field name={'month'} label={'Month'}/>
-                        <Field name={'dayOfWeek'} label={'Day of week'}/>
+                        <Field name={'minute'} label={'Minute'} />
+                        <Field name={'hour'} label={'Hour'} />
+                        <Field name={'dayOfMonth'} label={'Day of month'} />
+                        <Field name={'month'} label={'Month'} />
+                        <Field name={'dayOfWeek'} label={'Day of week'} />
                     </div>
                     <p css={tw`text-neutral-400 text-xs mt-2`}>
                         The schedule system supports the use of Cronjob syntax when defining when tasks should begin
@@ -111,12 +111,12 @@ const EditScheduleModal = ({ schedule }: Props) => {
                             name={'show_cheatsheet'}
                             description={'Show the cron cheatsheet for some examples.'}
                             label={'Show Cheatsheet'}
-                            defaultChecked={showCheatsheet}
-                            onChange={() => setShowCheetsheet(s => !s)}
+                            defaultChecked={showCards}
+                            onChange={() => setShowCards(s => !s)}
                         />
-                        {showCheatsheet &&
+                        {showCards &&
                             <div css={tw`block md:flex w-full`}>
-                                <ScheduleCheatsheetCards/>
+                                <ScheduleHelpCards />
                             </div>
                         }
                     </div>
