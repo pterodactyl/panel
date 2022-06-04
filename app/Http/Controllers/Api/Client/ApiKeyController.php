@@ -9,6 +9,7 @@ use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
+use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;

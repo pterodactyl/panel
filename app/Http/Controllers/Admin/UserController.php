@@ -199,7 +199,7 @@ class UserController extends Controller
 
         $this->alert->success(trans('admin/user.notices.account_updated'))->flash();
 
-        return redirect()->route('admin.users.view', $user->id);
+        return redirect()->route('admin.users.store', $user->id);
     }
 
     /**

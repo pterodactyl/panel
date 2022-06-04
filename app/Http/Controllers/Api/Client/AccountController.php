@@ -64,9 +64,10 @@ class AccountController extends ClientApiController
         ]);
 
         Activity::event('user:account.email-changed')
-            ->property(['old' => $original, 'new' => $request->input('email')])
+            ->property(['old' => $original, 'new' => $request->input('email')]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
 
     /**
      * Update the authenticated user's password. All existing sessions will be logged

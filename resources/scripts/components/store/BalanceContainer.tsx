@@ -39,7 +39,8 @@ const BalanceContainer = () => {
                         showFlashes={'account:balance'}
                         css={tw`py-4 sm:mt-0`}
                     >
-                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>£{user.storeBalance} GBP</h1>
+                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>${user.storeBalance} JCR</h1>
+                        <h1 css={tw`text-smflex justify-center items-center`}>JCR = Jexactyl Credits</h1>
                     </ContentBox>
                     <ContentBox
                         title={'Transaction History'}
@@ -50,7 +51,7 @@ const BalanceContainer = () => {
                             <p css={tw`flex-initial text-lg ml-2`}>
                               #OQ73
                             </p>
-                            <p css={tw`flex-1 text-xs ml-4 inline-block`}>
+                            <p css={tw`flex-1 text-sm ml-4 inline-block`}>
                                 <code css={tw`font-mono py-1 px-2 md:bg-neutral-900 rounded mr-2`}>
                                     1000 credits purchased.
                                 </code>
@@ -67,7 +68,7 @@ const BalanceContainer = () => {
                 <ContentBox
                     title={'Purchase credits'}
                     showFlashes={'account:balance'}
-                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
+                    css={tw`mt-8 sm:mt-0 sm:ml-8 bg-neutral-850`}
                 >
                     <PaypalPurchaseForm />
                     <StripePurchaseForm />

@@ -17,7 +17,7 @@ export default () => {
     };
 
     return (
-        <TitledGreyBox title={'Purchase via Stripe'} css={tw`mt-8 sm:mt-0`}>
+        <TitledGreyBox title={'Purchase via Stripe'} css={tw`mt-8`}>
             <SpinnerOverlay size={'large'} visible={submitting} />
             <Select
                 name={'amount'}
