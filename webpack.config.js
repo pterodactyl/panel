@@ -26,12 +26,30 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                exclude: /node_modules/,
+                exclude: /node_modules|\.spec\.tsx?$/,
                 loader: 'babel-loader',
             },
             {
                 test: /\.css$/,
-                use: [ 'style-loader', 'css-loader' ],
+                use: [
+                    { loader: 'style-loader' },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: {
+                                auto: true,
+                                localIdentName: isProduction ? '[name]_[hash:base64:8]' : '[path][name]__[local]',
+                                localIdentContext: path.join(__dirname, 'resources/scripts/components'),
+                            },
+                            sourceMap: !isProduction,
+                            importLoaders: 1,
+                        },
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: { sourceMap: !isProduction },
+                    },
+                ],
             },
             {
                 test: /\.(png|jp(e?)g|gif)$/,
