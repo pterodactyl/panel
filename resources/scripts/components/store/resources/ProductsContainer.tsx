@@ -30,23 +30,23 @@ const Wrapper = styled.div`
 export default () => (
     <PageContentBlock title={'Store Products'}>
         <h1 css={tw`text-5xl`}>Order resources</h1>
-        <h3 css={tw`text-2xl ml-2 text-neutral-500`}>Buy more resources to add to your server.</h3>
+        <h3 css={tw`text-2xl ml-4 text-neutral-500`}>Buy more resources to add to your server.</h3>
         <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
             <TitledGreyBox title={'Purchase CPU'} css={tw`mt-8 sm:mt-0`}>
                 <Wrapper>
-                    <Icon.Cpu css={tw`ml-2`} size={40} />
+                    <Icon.Cpu css={tw`ml-4`} size={40} />
                     <Button isSecondary>+50% CPU</Button>
                 </Wrapper>
             </TitledGreyBox>
             <TitledGreyBox title={'Purchase RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                 <Wrapper>
-                    <Icon.PieChart css={tw`ml-2`} size={40} />
+                    <Icon.PieChart css={tw`ml-4`} size={40} />
                     <Button isSecondary>+1GB RAM</Button>
                 </Wrapper>
             </TitledGreyBox>
             <TitledGreyBox title={'Purchase Disk'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                 <Wrapper>
-                    <Icon.HardDrive css={tw`ml-2`} size={40} />
+                    <Icon.HardDrive css={tw`ml-4`} size={40} />
                     <Button isSecondary>+1GB DISK</Button>
                 </Wrapper>
             </TitledGreyBox>
@@ -54,26 +54,26 @@ export default () => (
         <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
             <TitledGreyBox title={'Purchase Server Slot'} css={tw`mt-8 sm:mt-0`}>
                 <Wrapper>
-                    <Icon.Server css={tw`ml-2`} size={40} />
+                    <Icon.Server css={tw`ml-4`} size={40} />
                     <Button isSecondary>+1 Slot</Button>
                 </Wrapper>
 
             </TitledGreyBox>
             <TitledGreyBox title={'Purchase Server Ports'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                 <Wrapper>
-                    <Icon.Share2 css={tw`ml-2`} size={40} />
+                    <Icon.Share2 css={tw`ml-4`} size={40} />
                     <Button isSecondary>+1 Port</Button>
                 </Wrapper>
             </TitledGreyBox>
             <TitledGreyBox title={'Purchase Server Backups'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                 <Wrapper>
-                    <Icon.Archive css={tw`ml-2`} size={40} />
+                    <Icon.Archive css={tw`ml-4`} size={40} />
                     <Button isSecondary>+1 Backup</Button>
                 </Wrapper>
             </TitledGreyBox>
             <TitledGreyBox title={'Purchase Server Databases'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                 <Wrapper>
-                    <Icon.Database css={tw`ml-2`} size={40} />
+                    <Icon.Database css={tw`ml-4`} size={40} />
                     <Button isSecondary>+1 Database</Button>
                 </Wrapper>
             </TitledGreyBox>

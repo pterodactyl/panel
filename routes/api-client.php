@@ -52,6 +52,20 @@ Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(func
 | Client Control API
 |--------------------------------------------------------------------------
 |
+| Endpoint: /api/client/store
+|
+*/
+Route::group([
+    'prefix' => '/store',
+], function () {
+    Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Client Control API
+|--------------------------------------------------------------------------
+|
 | Endpoint: /api/client/servers/{server}
 |
 */

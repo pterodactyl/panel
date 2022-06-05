@@ -1,7 +1,7 @@
-import React from 'react';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
-import { Form, Formik } from 'formik';
+import React, { useState } from 'react';
+import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { number, object, string } from 'yup';
 import { megabytesToHuman } from '@/helpers';
@@ -9,6 +9,9 @@ import styled from 'styled-components/macro';
 import Field from '@/components/elements/Field';
 import Select from '@/components/elements/Select';
 import Button from '@/components/elements/Button';
+import createServer from '@/api/store/createServer';
+import { Form, Formik } from 'formik';
+import InputSpinner from '@/components/elements/InputSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
@@ -28,13 +31,49 @@ const Container = styled.div`
   }
 `;
 
+interface CreateValues {
+    name: string;
+    description: string | null;
+    cpu: number;
+    memory: number;
+    disk: number;
+    ports: number;
+    backups: number | null;
+    databases: number | null;
+}
+
 export default () => {
     const user = useStoreState(state => state.user.data!);
+    const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
+    const [ isSubmit, setSubmit ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
 
-    const submit = () => { /* TODO: Post server creation request */ };
+    const submit = (values: CreateValues) => {
+        setLoading(true);
+        clearFlashes('store:create');
+        setSubmit(true);
+
+        createServer(values)
+            .catch(error => {
+                setSubmit(false);
+                clearAndAddHttpError({ key: 'store:create', error });
+            })
+            .then(() => {
+                setSubmit(false);
+                setLoading(false);
+                clearFlashes('store:create');
+                // @ts-ignore
+                window.location = '/';
+            })
+            .then(() => addFlash({
+                type: 'success',
+                key: 'store:create',
+                message: 'Your server has been deployed and is now installing.',
+            }));
+    };
 
     return (
-        <PageContentBlock title={'Create a server'}>
+        <PageContentBlock title={'Create a server'} showFlashKey={'store:create'}>
             <Formik
                 onSubmit={submit}
                 initialValues={{
@@ -49,13 +88,13 @@ export default () => {
                 }}
                 validationSchema={object().shape({
                     name: string().required().min(3),
-                    description: string().optional().max(191),
+                    description: string().optional().min(3).max(191),
                     cpu: number().required().min(50).max(user.store.cpu),
                     memory: number().required().min(1).max(user.store.memory / 1024),
                     disk: number().required().min(1).max(user.store.disk / 1024),
                     ports: number().required().min(1).max(user.store.ports),
-                    backups: number().required().min(1).max(user.store.backups),
-                    databases: number().required().min(1).max(user.store.databases),
+                    backups: number().optional().max(user.store.backups),
+                    databases: number().optional().max(user.store.databases),
                 })}
             >
                 <Form>
@@ -127,11 +166,15 @@ export default () => {
                             <p css={tw`mt-1 text-xs`}>Choose what Docker image you&apos;d like to use.</p>
                         </TitledGreyBox>
                     </Container>
-                    <TitledGreyBox title={'Create server instance'} css={tw`mt-8 sm:mt-0 `}>
-                        <div css={tw`flex justify-end text-right`}>
-                            <Button>Create</Button>
-                        </div>
-                    </TitledGreyBox>
+                    <InputSpinner visible={loading}>
+                        <TitledGreyBox title={'Create server instance'} css={tw`mt-8 sm:mt-0 `}>
+                            <div css={tw`flex justify-end text-right`}>
+                                <Button type={'submit'} disabled={isSubmit}>
+                                    Create
+                                </Button>
+                            </div>
+                        </TitledGreyBox>
+                    </InputSpinner>
                 </Form>
             </Formik>
         </PageContentBlock>
