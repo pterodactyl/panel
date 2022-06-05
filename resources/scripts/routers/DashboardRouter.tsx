@@ -9,6 +9,7 @@ import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import { useLocation } from 'react-router';
+import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
 
 export default () => {
     const location = useLocation();
@@ -22,6 +23,7 @@ export default () => {
                         <NavLink to={'/account'} exact>Settings</NavLink>
                         <NavLink to={'/account/api'}>API Credentials</NavLink>
                         <NavLink to={'/account/ssh'}>SSH Keys</NavLink>
+                        <NavLink to={'/account/activity'}>Activity</NavLink>
                     </div>
                 </SubNavigation>
             }
@@ -38,6 +40,9 @@ export default () => {
                     </Route>
                     <Route path={'/account/ssh'} exact>
                         <AccountSSHContainer/>
+                    </Route>
+                    <Route path={'/account/activity'} exact>
+                        <ActivityLogContainer />
                     </Route>
                     <Route path={'*'}>
                         <NotFound/>

@@ -3,7 +3,7 @@ import { FractalResponseData } from '@/api/http';
 import { transform } from '@definitions/helpers';
 
 export default class Transformers {
-    static toSSHKey (data: Record<any, any>): Models.SSHKey {
+    static toSSHKey = (data: Record<any, any>): Models.SSHKey => {
         return {
             name: data.name,
             publicKey: data.public_key,
@@ -12,7 +12,7 @@ export default class Transformers {
         };
     }
 
-    static toUser ({ attributes }: FractalResponseData): Models.User {
+    static toUser = ({ attributes }: FractalResponseData): Models.User => {
         return {
             uuid: attributes.uuid,
             username: attributes.username,
@@ -27,7 +27,7 @@ export default class Transformers {
         };
     }
 
-    static toActivityLog ({ attributes }: FractalResponseData): Models.ActivityLog {
+    static toActivityLog = ({ attributes }: FractalResponseData): Models.ActivityLog => {
         const { actor } = attributes.relationships || {};
 
         return {

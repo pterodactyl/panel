@@ -19,6 +19,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 
 interface Props {
     content: string | React.ReactChild;
+    disabled?: boolean;
     arrow?: boolean;
     placement?: Placement;
     strategy?: Strategy;
@@ -33,8 +34,8 @@ const arrowSides: Record<Side, Side> = {
     right: 'left',
 };
 
-export default ({ content, children, ...props }: Props) => {
-    const arrowEl = useRef<HTMLSpanElement>(null);
+export default ({ content, children, disabled = false, ...props }: Props) => {
+    const arrowEl = useRef<HTMLDivElement>(null);
     const [ open, setOpen ] = useState(false);
 
     const { x, y, reference, floating, middlewareData, strategy, context } = useFloating({
@@ -56,12 +57,16 @@ export default ({ content, children, ...props }: Props) => {
     const side = arrowSides[(props.placement || 'top').split('-')[0] as Side];
     const { x: ax, y: ay } = middlewareData.arrow || {};
 
+    if (disabled) {
+        return children;
+    }
+
     return (
         <>
             {cloneElement(children, getReferenceProps({ ref: reference, ...children.props }))}
             <AnimatePresence>
                 {open &&
-                    <motion.span
+                    <motion.div
                         initial={{ opacity: 0, scale: 0.85 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
@@ -78,7 +83,7 @@ export default ({ content, children, ...props }: Props) => {
                     >
                         {content}
                         {props.arrow &&
-                            <span
+                            <div
                                 ref={arrowEl}
                                 style={{
                                     transform: `translate(${Math.round(ax || 0)}px, ${Math.round(ay || 0)}px)`,
@@ -87,7 +92,7 @@ export default ({ content, children, ...props }: Props) => {
                                 className={'absolute top-0 left-0 bg-gray-900 w-3 h-3 rotate-45'}
                             />
                         }
-                    </motion.span>
+                    </motion.div>
                 }
             </AnimatePresence>
         </>
