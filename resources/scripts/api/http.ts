@@ -117,6 +117,7 @@ export function getPaginationSet (data: any): PaginationDataSet {
 type QueryBuilderFilterValue = string | number | boolean | null;
 
 export interface QueryBuilderParams<FilterKeys extends string = string, SortKeys extends string = string> {
+    page?: number;
     filters?: {
         [K in FilterKeys]?: QueryBuilderFilterValue | Readonly<QueryBuilderFilterValue[]>;
     };
@@ -150,6 +151,7 @@ export const withQueryBuilderParams = (data?: QueryBuilderParams): Record<string
 
     return {
         ...filters,
-        sorts: !sorts.length ? undefined : sorts.join(','),
+        sort: !sorts.length ? undefined : sorts.join(','),
+        page: data.page,
     };
 };
