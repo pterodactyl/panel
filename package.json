@@ -1,6 +1,7 @@
 {
     "name": "pterodactyl-panel",
     "dependencies": {
+        "@floating-ui/react-dom-interactions": "^0.6.3",
         "@fortawesome/fontawesome-svg-core": "^1.2.32",
         "@fortawesome/free-solid-svg-icons": "^5.15.1",
         "@fortawesome/react-fontawesome": "^0.1.11",
@@ -18,6 +19,7 @@
         "easy-peasy": "^4.0.1",
         "events": "^3.0.0",
         "formik": "^2.2.6",
+        "framer-motion": "^6.3.10",
         "i18next": "^19.0.0",
         "i18next-chained-backend": "^2.0.0",
         "i18next-localstorage-backend": "^3.0.0",

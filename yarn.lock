@@ -1204,7 +1204,7 @@
   resolved "https://registry.yarnpkg.com/@csstools/selector-specificity/-/selector-specificity-2.0.0.tgz#65b12f12db55188422070e34687bf3af09870922"
   integrity sha512-rZ6vufeY/UjAgtyiJ4WvfF6XP6HizIyOfbZOg0RnecIwjrvH8Am3nN1BpKnnPZunYAkUcPPXDhwbxOtGop8cfQ==
 
-"@emotion/is-prop-valid@^0.8.8":
+"@emotion/is-prop-valid@^0.8.2", "@emotion/is-prop-valid@^0.8.8":
   version "0.8.8"
   resolved "https://registry.yarnpkg.com/@emotion/is-prop-valid/-/is-prop-valid-0.8.8.tgz#db28b1c4368a259b60a97311d6a952d4fd01ac1a"
   integrity sha512-u5WtneEAr5IDG2Wv65yhunPSMLIpuKsbuOktRojfrEiEvRyC85LgPMZI63cr7NUqT8ZIGdSVg8ZKGxIug4lXcA==
@@ -1240,6 +1240,35 @@
     js-yaml "^3.13.1"
     minimatch "^3.0.4"
     strip-json-comments "^3.1.1"
+
+"@floating-ui/core@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@floating-ui/core/-/core-0.7.2.tgz#f7af9613d080dc29360e77c970965b79b524d45a"
+  integrity sha512-FRVAkSNU/vGXLIsgbggcs70GkXKEOXgBBbNpYPNHSaKsCAMMd00NrjbtKTesxkdv9xm9N3+XiDlcFGY6WnatBg==
+
+"@floating-ui/dom@^0.5.1":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@floating-ui/dom/-/dom-0.5.2.tgz#908f3febbfc0d6696d70921616ec194fe07af183"
+  integrity sha512-z1DnEa7F3d8Fm/eXSbii8UEGpcjZGkQaYYUI0WpEVgD3vBfebDW8j/3ysusxonuMexoigA+A3b/fYH7sEqiwyg==
+  dependencies:
+    "@floating-ui/core" "^0.7.2"
+
+"@floating-ui/react-dom-interactions@^0.6.3":
+  version "0.6.3"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom-interactions/-/react-dom-interactions-0.6.3.tgz#895c52cb06bf5ea73c00f1074c75b0535e0046bc"
+  integrity sha512-xvbGEtBtA7JaEngnHQjROArv2onRp3oJIpb4+bEN5EGJf0hBYDY0vD8vFGPz/5TQwN++hb6icOB1QwdOnffMzw==
+  dependencies:
+    "@floating-ui/react-dom" "^0.7.1"
+    aria-hidden "^1.1.3"
+    use-isomorphic-layout-effect "^1.1.1"
+
+"@floating-ui/react-dom@^0.7.1":
+  version "0.7.1"
+  resolved "https://registry.yarnpkg.com/@floating-ui/react-dom/-/react-dom-0.7.1.tgz#e0eb57cb05c7762d4c904bfbae73148684578d66"
+  integrity sha512-Dd7e8AupUjzcjeGf1g3EItf/QRtEWKF5GGyEs5WA5n3zlHvEgZ4XrZM6ANhUnzgE3pUQAaXkcXLnibgFp1YBRw==
+  dependencies:
+    "@floating-ui/dom" "^0.5.1"
+    use-isomorphic-layout-effect "^1.1.1"
 
 "@fortawesome/fontawesome-common-types@^0.2.32":
   version "0.2.32"
@@ -2026,6 +2055,13 @@ argparse@^1.0.7:
   resolved "https://registry.yarnpkg.com/argparse/-/argparse-1.0.10.tgz#bcd6791ea5ae09725e17e5ad988134cd40b3d911"
   dependencies:
     sprintf-js "~1.0.2"
+
+aria-hidden@^1.1.3:
+  version "1.1.3"
+  resolved "https://registry.yarnpkg.com/aria-hidden/-/aria-hidden-1.1.3.tgz#bb48de18dc84787a3c6eee113709c473c64ec254"
+  integrity sha512-RhVWFtKH5BiGMycI72q2RAFMLQi8JP9bLuQXgR5a8Znp7P5KOIADSJeyfI8PCVxLEp067B2HbP5JIiI/PXIZeA==
+  dependencies:
+    tslib "^1.0.0"
 
 arr-diff@^4.0.0:
   version "4.0.0"
@@ -4120,6 +4156,26 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
+framer-motion@^6.3.10:
+  version "6.3.10"
+  resolved "https://registry.yarnpkg.com/framer-motion/-/framer-motion-6.3.10.tgz#e71f8c4ee09612de8328725c4fb1a1c204ae451f"
+  integrity sha512-modFplFb1Fznsm0MrmRAJUC32UDA5jbGU9rDvkGzhAHksru2tnoKbU/Pa3orzdsJI0CJviG4NGBrmwGveU98Cg==
+  dependencies:
+    framesync "6.0.1"
+    hey-listen "^1.0.8"
+    popmotion "11.0.3"
+    style-value-types "5.0.0"
+    tslib "^2.1.0"
+  optionalDependencies:
+    "@emotion/is-prop-valid" "^0.8.2"
+
+framesync@6.0.1:
+  version "6.0.1"
+  resolved "https://registry.yarnpkg.com/framesync/-/framesync-6.0.1.tgz#5e32fc01f1c42b39c654c35b16440e07a25d6f20"
+  integrity sha512-fUY88kXvGiIItgNC7wcTOl0SNRCVXMKSWW2Yzfmn7EKNc+MpCzcz9DhdHcdjbrtN3c6R4H5dTY2jiCpPdysEjA==
+  dependencies:
+    tslib "^2.1.0"
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
@@ -4498,6 +4554,11 @@ hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
+
+hey-listen@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
+  integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
 
 history@^4.9.0:
   version "4.9.0"
@@ -6334,6 +6395,16 @@ pkg-up@^2.0.0:
   dependencies:
     find-up "^2.1.0"
 
+popmotion@11.0.3:
+  version "11.0.3"
+  resolved "https://registry.yarnpkg.com/popmotion/-/popmotion-11.0.3.tgz#565c5f6590bbcddab7a33a074bb2ba97e24b0cc9"
+  integrity sha512-Y55FLdj3UxkR7Vl3s7Qr4e9m0onSnP8W7d/xQLsoJM40vs6UKHFdygs6SWryasTZYqugMjm3BepCF4CWXDiHgA==
+  dependencies:
+    framesync "6.0.1"
+    hey-listen "^1.0.8"
+    style-value-types "5.0.0"
+    tslib "^2.1.0"
+
 portfinder@^1.0.26:
   version "1.0.26"
   resolved "https://registry.yarnpkg.com/portfinder/-/portfinder-1.0.26.tgz#475658d56ca30bed72ac7f1378ed350bd1b64e70"
@@ -7993,6 +8064,14 @@ style-loader@^2.0.0:
     loader-utils "^2.0.0"
     schema-utils "^3.0.0"
 
+style-value-types@5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/style-value-types/-/style-value-types-5.0.0.tgz#76c35f0e579843d523187989da866729411fc8ad"
+  integrity sha512-08yq36Ikn4kx4YU6RD7jWEv27v4V+PUsOGa4n/as8Et3CuODMJQ00ENeAVXAeydX4Z2j1XHZF1K2sX4mGl18fA==
+  dependencies:
+    hey-listen "^1.0.8"
+    tslib "^2.1.0"
+
 styled-components-breakpoint@^3.0.0-preview.20:
   version "3.0.0-preview.20"
   resolved "https://registry.yarnpkg.com/styled-components-breakpoint/-/styled-components-breakpoint-3.0.0-preview.20.tgz#877e88a00c0cf66976f610a1d347839a1a0b6d70"
@@ -8340,6 +8419,11 @@ tsconfig-paths@^3.9.0:
     minimist "^1.2.0"
     strip-bom "^3.0.0"
 
+tslib@^1.0.0:
+  version "1.14.1"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.14.1.tgz#cf2d38bdc34a134bcaf1091c41f6619e2f672d00"
+  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
+
 tslib@^1.10.0:
   version "1.11.1"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.11.1.tgz#eb15d128827fbee2841549e171f45ed338ac7e35"
@@ -8348,6 +8432,11 @@ tslib@^1.10.0:
 tslib@^1.8.1, tslib@^1.9.0:
   version "1.10.0"
   resolved "https://registry.yarnpkg.com/tslib/-/tslib-1.10.0.tgz#c3c19f95973fb0a62973fb09d90d961ee43e5c8a"
+
+tslib@^2.1.0:
+  version "2.4.0"
+  resolved "https://registry.yarnpkg.com/tslib/-/tslib-2.4.0.tgz#7cecaa7f073ce680a05847aa77be941098f36dc3"
+  integrity sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ==
 
 tsutils@^3.17.1:
   version "3.17.1"
@@ -8516,6 +8605,11 @@ url@^0.11.0:
   dependencies:
     punycode "1.3.2"
     querystring "0.2.0"
+
+use-isomorphic-layout-effect@^1.1.1:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/use-isomorphic-layout-effect/-/use-isomorphic-layout-effect-1.1.2.tgz#497cefb13d863d687b08477d9e5a164ad8c1a6fb"
+  integrity sha512-49L8yCO3iGT/ZF9QttjwLF/ZD9Iwto5LnH5LmEdk/6cFmXddqi2ulF0edxTwjj+7mqvpVVGQWvbXZdn32wRSHA==
 
 use-memo-one@^1.1.1:
   version "1.1.1"

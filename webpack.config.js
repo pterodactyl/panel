@@ -30,6 +30,11 @@ module.exports = {
                 loader: 'babel-loader',
             },
             {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: 'javascript/auto',
+            },
+            {
                 test: /\.css$/,
                 use: [
                     { loader: 'style-loader' },
