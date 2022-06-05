@@ -3,6 +3,11 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.8.2
+### Fixed
+* Fixes a bug causing a 404 error when attempting to delete a database from a server in the admin control panel.
+* Fixes console input auto-capitalizing and auto-correcting when entering text on some mobile devices.
+
 ## v1.8.1
 ### Fixed
 * Fixes a bug causing mounts to return a 404 error when adding them to a server.
