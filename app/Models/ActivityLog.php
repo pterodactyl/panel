@@ -73,7 +73,12 @@ class ActivityLog extends Model
 
     public function actor(): MorphTo
     {
-        return $this->morphTo()->withTrashed();
+        $morph = $this->morphTo();
+        if (method_exists($morph, 'withTrashed')) {
+            return $morph->withTrashed();
+        }
+
+        return $morph;
     }
 
     public function subjects()
