@@ -7,6 +7,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Fixed
 * Fixes a bug causing a 404 error when attempting to delete a database from a server in the admin control panel.
 * Fixes console input auto-capitalizing and auto-correcting when entering text on some mobile devices.
+* Fixes SES service configuration using a hard-coded `us-east-1` region.
 
 ## v1.8.1
 ### Fixed
