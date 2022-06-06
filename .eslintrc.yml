@@ -44,6 +44,10 @@ rules:
   array-bracket-spacing:
     - warn
     - always
+  "@typescript-eslint/no-unused-vars":
+    - warn
+    - argsIgnorePattern: '^_'
+      varsIgnorePattern: '^_'
   # Remove errors for not having newlines between operands of ternary expressions https://eslint.org/docs/rules/multiline-ternary
   multiline-ternary: 0
   "react-hooks/rules-of-hooks":

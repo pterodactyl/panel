@@ -20,6 +20,7 @@ class ActivityLogController extends ClientApiController
                 AllowedFilter::exact('ip'),
                 AllowedFilter::partial('event'),
             ])
+            ->allowedSorts(['timestamp'])
             ->paginate(min($request->query('per_page', 50), 100))
             ->appends($request->query());
 

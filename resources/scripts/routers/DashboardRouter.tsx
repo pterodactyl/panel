@@ -12,6 +12,7 @@ import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountSecurityContainer from '@/components/dashboard/AccountSecurityContainer';
+import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
 
 export default () => {
     const location = useLocation();
@@ -27,6 +28,9 @@ export default () => {
                     </NavLink>
                     <NavLink to={'/account/security'}>
                         <div css={tw`flex items-center justify-between`}>Security <Icon.Key css={tw`ml-1`} size={18} /></div>
+                    </NavLink>
+                    <NavLink to={'/account/activity'}>
+                        <div css={tw`flex items-center justify-between`}>Activity <Icon.Eye css={tw`ml-1`} size={18} /></div>
                     </NavLink>
                     <NavLink to={'/account/api'}>
                         <div css={tw`flex items-center justify-between`}>API <Icon.Code css={tw`ml-1`} size={18} /></div>
@@ -53,6 +57,9 @@ export default () => {
                     </Route>
                     <Route path={'/account/ssh'} exact>
                         <AccountSSHContainer/>
+                    </Route>
+                    <Route path={'/account/activity'} exact>
+                        <ActivityLogContainer />
                     </Route>
                     <Route path={'*'}>
                         <NotFound/>

@@ -1,15 +1,16 @@
 import React from 'react';
+import tw from 'twin.macro';
+import '@/assets/tailwind.css';
 import { store } from '@/state';
 import { StoreProvider } from 'easy-peasy';
 import { hot } from 'react-hot-loader/root';
 import { history } from '@/components/history';
-import IndexRouter from '@/routers/IndexRouter';
 import { SiteSettings } from '@/state/settings';
+import IndexRouter from '@/routers/IndexRouter';
 import { setupInterceptors } from '@/api/interceptors';
 import { StorefrontSettings } from '@/state/storefront';
 import ProgressBar from '@/components/elements/ProgressBar';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import tw, { GlobalStyles as TailwindGlobalStyles } from 'twin.macro';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -79,7 +80,6 @@ const App = () => {
     return (
         <>
             <GlobalStylesheet/>
-            <TailwindGlobalStyles/>
             <StoreProvider store={store}>
                 <ProgressBar/>
                 <div css={tw`mx-auto w-auto`}>

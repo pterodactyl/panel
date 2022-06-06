@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Database;
 use Pterodactyl\Models\MountServer;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
@@ -344,18 +345,13 @@ class ServersController extends Controller
     /**
      * Resets the database password for a specific database on this server.
      *
-     * @param int $server
-     *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
      *
      * @throws \Throwable
      */
-    public function resetDatabasePassword(Request $request, $server)
+    public function resetDatabasePassword(Request $request, Server $server)
     {
-        $database = $this->databaseRepository->findFirstWhere([
-            ['server_id', '=', $server],
-            ['id', '=', $request->input('database')],
-        ]);
+        $database = $server->databases()->where('id', $request->input('database'))->findOrFail();
 
         $this->databasePasswordService->handle($database);
 
@@ -365,21 +361,12 @@ class ServersController extends Controller
     /**
      * Deletes a database from a server.
      *
-     * @param int $server
-     * @param int $database
-     *
-     * @return \Illuminate\Http\RedirectResponse
+     * @return \Illuminate\Http\Response
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function deleteDatabase($server, $database)
+    public function deleteDatabase(Server $server, Database $database)
     {
-        $database = $this->databaseRepository->findFirstWhere([
-            ['server_id', '=', $server],
-            ['id', '=', $database],
-        ]);
-
         $this->databaseManagementService->delete($database);
 
         return response('', 204);
