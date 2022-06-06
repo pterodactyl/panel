@@ -59,6 +59,7 @@ Route::group([
     'prefix' => '/store',
 ], function () {
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
+    Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
 });
 
 /*

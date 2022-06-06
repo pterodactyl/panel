@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
+use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 
 class ServerController extends ClientApiController
