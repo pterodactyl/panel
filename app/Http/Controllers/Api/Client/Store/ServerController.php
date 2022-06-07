@@ -2,9 +2,13 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
+use Pterodactyl\Models\User;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
@@ -38,20 +42,20 @@ class ServerController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      */
-    public function store(CreateServerRequest $request): JsonResponse
+    public function store(CreateServerRequest $request, User $user)
     {
-        $user = $request->user();
-        $egg = DB::table('eggs')->where('id', $request->input('egg'))->first();
+        $this->verifyResources($request);
 
+        $egg = DB::table('eggs')->where('id', 1)->first();
         $memory = $request->input('memory') * 1024;
         $disk = $request->input('disk') * 1024;
 
         $data = [
             'name' => $request->input('name'),
-            'owner_id' => $request->user()->id,
+            'owner_id' => $user->id,
             'egg_id' => $egg->id,
             'nest_id' => 1,
-            'allocation_id' => $this->getAllocation(),
+            'allocation_id' => $this->getAllocation($request),
             'environment' => [],
             'memory' => $memory,
             'disk' => $disk,
@@ -63,7 +67,10 @@ class ServerController extends ClientApiController
             'start_on_completion' => true,
         ];
 
-        $this->verifyResources($user);
+        foreach (DB::table('egg_variables')->where('egg_id', $egg->id)->get() as $var) {
+            $key = "v1-{$egg->id}-{$var->env_variable}";
+            $data['environment'][$var->env_variable] = $request->get($key, $var->default_value);
+        }
 
         try {
             $server = $this->creationService->handle($data);
@@ -78,9 +85,7 @@ class ServerController extends ClientApiController
             'store_disk' => $user->store_disk - $disk,
         ]);
 
-        return $this->fractal->item($server)
-            ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->respond(201);
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -88,7 +93,7 @@ class ServerController extends ClientApiController
      * 
      * @throws \Pterodactyl\Exceptions\DisplayException
     */
-    private function getAllocation(): int
+    protected function getAllocation(CreateServerRequest $request): int
     {
         $nodes = $this->nodeRepository->getNodesForServerCreation();
         $available_nodes = [];
@@ -123,14 +128,16 @@ class ServerController extends ClientApiController
      * 
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    private function verifyResources(array $user)
+    protected function verifyResources(CreateServerRequest $request)
     {
+        $user = $request->user();
+
         if (
             $user->store_slots < 1 |
             $user->store_ports < 1 |
             $user->store_cpu < $request->input('cpu') |
-            $user->store_disk < ($request->input('disk') * 1024) |
-            $user->store_memory < ($request->input('memory') * 1024)
+            $user->store_disk < $request->input('disk') * 1024 |
+            $user->store_memory < $request->input('memory') * 1024
         ) {
             throw new DisplayException('Unable to deploy instance: You do not have sufficient resources.');
         };

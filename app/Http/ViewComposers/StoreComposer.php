@@ -22,8 +22,25 @@ class StoreComposer
      */
     public function compose(View $view)
     {
+        $prefix = 'jexactyl::store:';
+
         $view->with('storeConfiguration', [
-            'enabled' => $this->settings->get('jexactyl::store:enabled') ?? false,
+            'enabled' => $this->settings->get($prefix.'enabled') ?? false,
+            'paypal' => [
+                'enabled' => $this->settings->get($prefix.'paypal:enabled') ?? false,
+            ],
+            'stripe' => [
+                'enabled' => $this->settings->get($prefix.'stripe:enabled') ?? false,
+            ],
+            'cost' => [
+                'cpu' => $this->settings->get($prefix.'cost:cpu'),
+                'memory' => $this->settings->get($prefix.'cost:memory'),
+                'disk' => $this->settings->get($prefix.'cost:disk'),
+                'slot' => $this->settings->get($prefix.'cost:slot'),
+                'port' => $this->settings->get($prefix.'cost:port'),
+                'backup' => $this->settings->get($prefix.'cost:backup'),
+                'database' => $this->settings->get($prefix.'cost:database'),
+            ],
         ]);
     }
 }

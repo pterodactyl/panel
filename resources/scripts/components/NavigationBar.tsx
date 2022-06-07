@@ -43,6 +43,7 @@ const RightNavigation = styled.div`
 `;
 
 export default () => {
+    const enabled = useStoreState(state => state.storefront.data?.enabled);
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
     const [ isLoggingOut, setIsLoggingOut ] = useState(false);
@@ -72,9 +73,11 @@ export default () => {
                     <NavLink to={'/account'}>
                         <Icon.User />
                     </NavLink>
-                    <NavLink to={'/store'}>
-                        <Icon.ShoppingCart />
-                    </NavLink>
+                    {enabled === 'true' &&
+                        <NavLink to={'/store'}>
+                            <Icon.ShoppingCart />
+                        </NavLink>
+                    }
                     {rootAdmin &&
                     <a href={'/admin'} rel={'noreferrer'}>
                         <Icon.Settings />

@@ -40,6 +40,7 @@ interface CreateValues {
     ports: number;
     backups: number | null;
     databases: number | null;
+    image: string;
 }
 
 export default () => {
@@ -54,10 +55,6 @@ export default () => {
         setSubmit(true);
 
         createServer(values)
-            .catch(error => {
-                setSubmit(false);
-                clearAndAddHttpError({ key: 'store:create', error });
-            })
             .then(() => {
                 setSubmit(false);
                 setLoading(false);
@@ -69,7 +66,11 @@ export default () => {
                 type: 'success',
                 key: 'store:create',
                 message: 'Your server has been deployed and is now installing.',
-            }));
+            }))
+            .catch(error => {
+                setSubmit(false);
+                clearAndAddHttpError({ key: 'store:create', error });
+            });
     };
 
     return (
@@ -85,6 +86,7 @@ export default () => {
                     ports: user.store.ports,
                     backups: user.store.backups,
                     databases: user.store.databases,
+                    image: 'java:17',
                 }}
                 validationSchema={object().shape({
                     name: string().required().min(3),
@@ -95,6 +97,8 @@ export default () => {
                     ports: number().required().min(1).max(user.store.ports),
                     backups: number().optional().max(user.store.backups),
                     databases: number().optional().max(user.store.databases),
+                    /* egg: number().required().min(1), */
+                    image: string().required(),
                 })}
             >
                 <Form>
@@ -155,13 +159,14 @@ export default () => {
                     <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'egg'}>
-                                <option key={'egg:paper'}>Minecraft Paper</option>
+                                <option key={'egg:bungeecord'}>Minecraft Bungeecord</option>
                             </Select>
                             <p css={tw`mt-1 text-xs`}>Choose what game you want to run on your server.</p>
+                            <p css={tw`mt-1 text-xs text-red-400`}>* NOT FUNCTIONAL. DEFAULTS TO BUNGEECORD</p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Docker Image'} css={tw`mt-8 sm:mt-0 `}>
                             <Select name={'image'}>
-                                <option key={'image:java_17'}>Java 17</option>
+                                <option key={'image:java_17'} value={'ghcr.io/pterodactyl/yolks:java_17'}>Java 17</option>
                             </Select>
                             <p css={tw`mt-1 text-xs`}>Choose what Docker image you&apos;d like to use.</p>
                         </TitledGreyBox>

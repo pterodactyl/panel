@@ -45,7 +45,7 @@ const BalanceContainer = () => {
                     <ContentBox
                         title={'Transaction History'}
                         showFlashes={'account:balance'}
-                        css={tw`mt-8 sm:mt-0`}
+                        css={tw`mt-8`}
                     >
                         <GreyRowBox>
                             <p css={tw`flex-initial text-lg ml-2`}>

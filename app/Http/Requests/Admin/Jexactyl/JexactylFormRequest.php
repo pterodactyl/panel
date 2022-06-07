@@ -16,7 +16,14 @@ class JexactylFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'store:enabled' => 'required|bool',
+            'store:enabled' => 'required|in:true,false',
+            'store:cost:cpu' => 'required|int|min:1',
+            'store:cost:memory' => 'required|int|min:1',
+            'store:cost:disk' => 'required|int|min:1',
+            'store:cost:slot' => 'required|int|min:1',
+            'store:cost:port' => 'required|int|min:1',
+            'store:cost:backup' => 'required|int|min:1',
+            'store:cost:database' => 'required|int|min:1',
         ];
     }
 }

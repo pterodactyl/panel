@@ -56,9 +56,18 @@ class IndexController extends Controller
      */
     public function index(): View
     {
+        $prefix = 'jexactyl::store:';
+
         return view('admin.jexactyl.index', [
             'version' => $this->versionService,
-            'enabled' => $this->settings->get('jexactyl::store:enabled', true),
+            'enabled' => $this->settings->get($prefix.'enabled', true),
+            'cpu' => $this->settings->get($prefix.'cost:cpu'),
+            'memory' => $this->settings->get($prefix.'cost:memory'),
+            'disk' => $this->settings->get($prefix.'cost:disk'),
+            'slot' => $this->settings->get($prefix.'cost:slot'),
+            'port' => $this->settings->get($prefix.'cost:port'),
+            'backup' => $this->settings->get($prefix.'cost:backup'),
+            'database' => $this->settings->get($prefix.'cost:database'),
         ]);
     }
 

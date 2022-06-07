@@ -140,10 +140,13 @@ class User extends Model implements
         'gravatar',
         'root_admin',
         'store_balance',
-        'store_slot',
         'store_cpu',
         'store_memory',
         'store_disk',
+        'store_slots',
+        'store_ports',
+        'store_backups',
+        'store_databases',
     ];
 
     /**

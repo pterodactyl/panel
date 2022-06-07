@@ -19,7 +19,7 @@
     @yield('users::nav')
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-info">
+            <div class="box box-success">
                 <div class="box-header with-border">
                     <h3 class="box-title">User Transaction History</h3>
                 </div>
@@ -31,9 +31,9 @@
     </div>
     <div class="row">
             <div class="col-xs-12">
-                <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title">User storefront details</h3>
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">User Resources</h3>
                     </div>
                     <form action="{{ route('admin.users.store', $user->id) }}" method="POST">
                         <div class="box-body">
@@ -41,10 +41,6 @@
                                 <div class="form-group col-md-4">
                                     <label for="store_balance" class="control-label">Total balance</label>
                                     <input type="text" id="store_balance" value="{{ $user->store_balance }}" name="store_balance" class="form-control form-autocomplete-stop">
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label for="store_slot" class="control-label">Server slots available</label>
-                                    <input type="text" id="store_slot" value="{{ $user->store_slot }}" name="store_slot" class="form-control form-autocomplete-stop">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="store_cpu" class="control-label">Total CPU available</label>
@@ -57,6 +53,10 @@
                                 <div class="form-group col-md-4">
                                     <label for="store_disk" class="control-label">Total Disk available</label>
                                     <input type="text" id="store_disk" value="{{ $user->store_disk }}" name="store_disk" class="form-control form-autocomplete-stop">
+                                </div>
+                                <div class="form-group col-md-4">
+                                    <label for="store_slots" class="control-label">Server slots available</label>
+                                    <input type="text" id="store_slots" value="{{ $user->store_slots }}" name="store_slots" class="form-control form-autocomplete-stop">
                                 </div>
                                 <div class="form-group col-md-4">
                                     <label for="store_ports" class="control-label">Total Ports available</label>

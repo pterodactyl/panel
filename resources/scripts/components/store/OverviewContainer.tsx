@@ -98,7 +98,7 @@ const OverviewContainer = () => {
                             <Button
                                 css={tw`mt-6`}
                                 size={'xlarge'}
-                                onClick={() => redirect('order')}
+                                onClick={() => redirect('create')}
                             >
                                 Create
                             </Button>

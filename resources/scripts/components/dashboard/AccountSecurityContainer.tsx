@@ -27,13 +27,13 @@ const Container = styled.div`
 export default () => (
     <PageContentBlock title={'Account Security'}>
         <h1 css={tw`text-5xl`}>Account Security</h1>
-        <h3 css={tw`text-2xl ml-4 text-neutral-500`}>Manage account logs and authentication.</h3>
+        <h3 css={tw`text-2xl text-neutral-500`}>Manage account logs and authentication.</h3>
         <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
             <div css={tw`flex-none w-full md:w-1/3`}>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox title={'Setup 2FA'} css={tw`mt-8 sm:mt-0`} showFlashes={'account:2fa'}>
+                <ContentBox title={'Setup 2FA'} css={tw`mt-8`} showFlashes={'account:2fa'}>
                     <ConfigureTwoFactorForm />
                 </ContentBox>
             </div>

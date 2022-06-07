@@ -14,17 +14,14 @@ class UserStoreFormRequest extends AdminFormRequest
      */
     public function rules()
     {
-        return Collection::make(
-            User::getRulesForUpdate($this->route()->parameter('user'))
-        )->only([
-            'store_balance',
-            'store_cpu',
-            'store_memory',
-            'store_disk',
-            'store_slots',
-            'store_ports',
-            'store_backups',
-            'store_databases',
-        ])->toArray();
+        return [
+            'store_cpu' => 'required|int',
+            'store_memory' => 'required|int',
+            'store_disk' => 'required|int',
+            'store_slots' => 'required|int',
+            'store_ports' => 'required|int',
+            'store_backups' => 'required|int',
+            'store_databases' => 'required|int',
+        ];
     }
 }
