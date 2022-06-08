@@ -14,12 +14,14 @@ import ServerConsole from '@/components/server/ServerConsole';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import SubNavigation from '@/components/elements/SubNavigation';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import useWindowDimensions from '@/plugins/useWindowDimensions';
 import InstallListener from '@/components/server/InstallListener';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
+import MobileNavigation from '@/components/elements/MobileNavigation';
 import UsersContainer from '@/components/server/users/UsersContainer';
 import BackupContainer from '@/components/server/backups/BackupContainer';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
@@ -63,6 +65,7 @@ const ConflictStateRenderer = () => {
 export default () => {
     const match = useRouteMatch<{ id: string }>();
     const location = useLocation();
+    const { width } = useWindowDimensions();
 
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [ error, setError ] = useState('');
@@ -94,7 +97,7 @@ export default () => {
 
     return (
         <React.Fragment key={'server-router'}>
-            <SidePanel />
+            {width > 768 ? <SidePanel /> : <MobileNavigation />}
             {(!uuid || !id) ?
                 error ?
                     <ServerError message={error}/>

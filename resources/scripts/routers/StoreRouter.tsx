@@ -6,9 +6,11 @@ import TransitionRouter from '@/TransitionRouter';
 import SidePanel from '@/components/elements/SidePanel';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
+import useWindowDimensions from '@/plugins/useWindowDimensions';
 import EditContainer from '@/components/store/edit/EditContainer';
 import BalanceContainer from '@/components/store/BalanceContainer';
 import OverviewContainer from '@/components/store/OverviewContainer';
+import MobileNavigation from '@/components/elements/MobileNavigation';
 import CreateContainer from '@/components/store/create/CreateContainer';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import ProductsContainer from '@/components/store/resources/ProductsContainer';
@@ -16,10 +18,11 @@ import ProductsContainer from '@/components/store/resources/ProductsContainer';
 const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();
     const location = useLocation();
+    const { width } = useWindowDimensions();
 
     return (
         <>
-            <SidePanel />
+            {width > 768 ? <SidePanel /> : <MobileNavigation />}
             <SubNavigation>
                 <div>
                     <NavLink to={`${match.url}`} exact>
