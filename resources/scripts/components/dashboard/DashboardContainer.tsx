@@ -76,7 +76,7 @@ export default () => {
                                 />
                             ))
                             :
-                            <p css={tw`text-center text-sm text-neutral-400`}>
+                            <p css={tw`text-center text-sm text-neutral-400 my-4`}>
                                 {showOnlyAdmin ?
                                     'There are no other servers to display.'
                                     :

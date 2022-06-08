@@ -3,23 +3,26 @@ import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
+import SidePanel from '@/components/elements/SidePanel';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
+import useWindowDimensions from '@/plugins/useWindowDimensions';
+import MobileNavigation from '@/components/elements/MobileNavigation';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountSecurityContainer from '@/components/dashboard/AccountSecurityContainer';
 import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
-import SidePanel from '@/components/elements/SidePanel';
 
 export default () => {
     const location = useLocation();
+    const { width } = useWindowDimensions();
 
     return (
         <>
-            <SidePanel />
+            {width > 768 ? <SidePanel /> : <MobileNavigation />}
             {location.pathname.startsWith('/account') &&
                 <SubNavigation>
                     <div>
