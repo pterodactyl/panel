@@ -3,7 +3,7 @@ import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
-import NavigationBar from '@/components/NavigationBar';
+import SidePanel from '@/components/elements/SidePanel';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import EditContainer from '@/components/store/edit/EditContainer';
@@ -19,7 +19,7 @@ const StoreRouter = () => {
 
     return (
         <>
-            <NavigationBar />
+            <SidePanel />
             <SubNavigation>
                 <div>
                     <NavLink to={`${match.url}`} exact>

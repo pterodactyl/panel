@@ -14,7 +14,7 @@ const PowerControls = () => {
     };
 
     return (
-        <div css={tw`shadow-md bg-neutral-900 rounded p-3 flex text-xs mt-4 justify-center`}>
+        <div css={tw`shadow-md bg-neutral-900 rounded-t p-3 flex text-xs justify-center`}>
             <Can action={'control.start'}>
                 <Button
                     size={'xsmall'}
@@ -33,6 +33,7 @@ const PowerControls = () => {
             <Can action={'control.restart'}>
                 <Button
                     size={'xsmall'}
+                    color={'yellow'}
                     isSecondary
                     css={tw`mr-2`}
                     disabled={!status}
@@ -47,6 +48,7 @@ const PowerControls = () => {
             <Can action={'control.stop'}>
                 <Button
                     size={'xsmall'}
+                    color={'red'}
                     isSecondary
                     css={tw`mr-2`}
                     disabled={!status || status === 'offline'}
@@ -61,6 +63,7 @@ const PowerControls = () => {
             <Can action={'control.stop'}>
                 <Button
                     size={'xsmall'}
+                    color={'red'}
                     isSecondary
                     css={tw`mr-2`}
                     disabled={!status || status === 'offline'}

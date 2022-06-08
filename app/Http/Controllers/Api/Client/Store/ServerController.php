@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
-use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
@@ -42,11 +41,14 @@ class ServerController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      */
-    public function store(CreateServerRequest $request, User $user)
+    public function store(CreateServerRequest $request)
     {
+        return dd($request);
+
+        $user = $request->user();
         $this->verifyResources($request);
 
-        $egg = DB::table('eggs')->where('id', 1)->first();
+        $egg = DB::table('eggs')->where('id', $request->input('egg'))->get();
         $memory = $request->input('memory') * 1024;
         $disk = $request->input('disk') * 1024;
 
@@ -62,7 +64,7 @@ class ServerController extends ClientApiController
             'cpu' => $request->input('cpu'),
             'swap' => 0,
             'io' => 500,
-            'image' => $request->input('image'),
+            'image' => 'ghcr.io/pterodactyl/yolks:java_17',
             'startup' => $egg->startup,
             'start_on_completion' => true,
         ];
@@ -133,10 +135,10 @@ class ServerController extends ClientApiController
         $user = $request->user();
 
         if (
-            $user->store_slots < 1 |
-            $user->store_ports < 1 |
-            $user->store_cpu < $request->input('cpu') |
-            $user->store_disk < $request->input('disk') * 1024 |
+            $user->store_slots < 1 ||
+            $user->store_ports < 1 ||
+            $user->store_cpu < $request->input('cpu') ||
+            $user->store_disk < $request->input('disk') * 1024 ||
             $user->store_memory < $request->input('memory') * 1024
         ) {
             throw new DisplayException('Unable to deploy instance: You do not have sufficient resources.');

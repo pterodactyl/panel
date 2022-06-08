@@ -17,7 +17,7 @@ const chartDefaults = (ticks?: Chart.TickOptions): ChartConfiguration => ({
             enabled: false,
         },
         animation: {
-            duration: 0,
+            duration: 1000,
         },
         elements: {
             point: {
@@ -96,7 +96,6 @@ const updateChartDataset = (chart: Chart | null | undefined, value: Chart.ChartP
 };
 
 export default () => {
-    const status = ServerContext.useStoreState(state => state.status.value);
     const limits = ServerContext.useStoreState(state => state.server.data!.limits);
 
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
@@ -124,45 +123,16 @@ export default () => {
     return (
         <div css={tw`mt-4 grid grid-cols-1 sm:grid-cols-4 gap-2`}>
             <TitledGreyBox title={'Memory usage'}>
-                {status !== 'offline' ?
-                    <canvas
-                        id={'memory_chart'}
-                        ref={memoryRef}
-                        aria-label={'Server Memory Usage Graph'}
-                        role={'img'}
-                    />
-                    :
-                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
-                    </p>
-                }
+                <canvas id={'memory_chart'} ref={memoryRef} aria-label={'Server Memory Usage Graph'} role={'img'}/>
             </TitledGreyBox>
             <TitledGreyBox title={'CPU usage'}>
-                {status !== 'offline' ?
-                    <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
-                    :
-                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
-                    </p>
-                }
+                <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
             </TitledGreyBox>
             <TitledGreyBox title={'Inbound Data'}>
-                {status !== 'offline' ?
-                    <canvas id={'rx_chart'} ref={rxRef} aria-label={'Server Inbound Data'} role={'img'}/>
-                    :
-                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
-                    </p>
-                }
+                <canvas id={'rx_chart'} ref={rxRef} aria-label={'Server Inbound Data'} role={'img'}/>
             </TitledGreyBox>
             <TitledGreyBox title={'Outbound Data'}>
-                {status !== 'offline' ?
-                    <canvas id={'tx_chart'} ref={txRef} aria-label={'Server Outbound Data'} role={'img'}/>
-                    :
-                    <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
-                    </p>
-                }
+                <canvas id={'tx_chart'} ref={txRef} aria-label={'Server Outbound Data'} role={'img'}/>
             </TitledGreyBox>
         </div>
     );

@@ -1,3 +1,12 @@
+/**
+ * TODO - Jexactyl Store | Server Creation
+ * ---------------------------------------
+ * 1) Nest selection
+ * 2) Egg selection
+ * 3) Image selection
+ * 4) Multiple ports
+ */
+
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import { Form, Formik } from 'formik';
@@ -40,7 +49,7 @@ interface CreateValues {
     ports: number;
     backups: number | null;
     databases: number | null;
-    image: string;
+    egg: number;
 }
 
 export default () => {
@@ -86,7 +95,7 @@ export default () => {
                     ports: user.store.ports,
                     backups: user.store.backups,
                     databases: user.store.databases,
-                    image: 'java:17',
+                    egg: 1,
                 }}
                 validationSchema={object().shape({
                     name: string().required().min(3),
@@ -97,13 +106,12 @@ export default () => {
                     ports: number().required().min(1).max(user.store.ports),
                     backups: number().optional().max(user.store.backups),
                     databases: number().optional().max(user.store.databases),
-                    /* egg: number().required().min(1), */
-                    image: string().required(),
+                    egg: number().required(),
                 })}
             >
                 <Form>
                     <h1 css={tw`text-5xl`}>Basic Details</h1>
-                    <h3 css={tw`text-2xl ml-2 text-neutral-500`}>Set the basic fields for your new server.</h3>
+                    <h3 css={tw`text-2xl text-neutral-500`}>Set the basic fields for your new server.</h3>
                     <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
                         <TitledGreyBox title={'Server name'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'name'} />
@@ -117,7 +125,7 @@ export default () => {
                         </TitledGreyBox>
                     </Container>
                     <h1 css={tw`text-5xl`}>Resource Limits</h1>
-                    <h3 css={tw`text-2xl ml-2 text-neutral-500`}>Set specific limits for CPU, RAM and more.</h3>
+                    <h3 css={tw`text-2xl text-neutral-500`}>Set specific limits for CPU, RAM and more.</h3>
                     <Container css={tw`lg:grid lg:grid-cols-3 my-10 gap-4`}>
                         <TitledGreyBox title={'Server CPU limit'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'cpu'} />
@@ -136,7 +144,7 @@ export default () => {
                         </TitledGreyBox>
                     </Container>
                     <h1 css={tw`text-5xl`}>Feature Limits</h1>
-                    <h3 css={tw`text-2xl ml-2 text-neutral-500`}>Add databases, allocations and ports to your server.</h3>
+                    <h3 css={tw`text-2xl text-neutral-500`}>Add databases, allocations and ports to your server.</h3>
                     <Container css={tw`lg:grid lg:grid-cols-3 my-10 gap-4`}>
                         <TitledGreyBox title={'Server allocations'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'ports'} />
@@ -155,24 +163,30 @@ export default () => {
                         </TitledGreyBox>
                     </Container>
                     <h1 css={tw`text-5xl`}>Server Type</h1>
-                    <h3 css={tw`text-2xl ml-2 text-neutral-500`}>Choose a server distribution to use.</h3>
+                    <h3 css={tw`text-2xl text-neutral-500`}>Choose a server distribution to use.</h3>
                     <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'egg'}>
-                                <option key={'egg:bungeecord'}>Minecraft Bungeecord</option>
+                                <option key={'egg:bungeecord'} value={1}>Minecraft Bungeecord</option>
+                                <option key={'egg:paper'} value={3}>Minecraft Paper</option>
+                                <option key={'egg:forge'} value={4}>Minecraft Forge</option>
                             </Select>
                             <p css={tw`mt-1 text-xs`}>Choose what game you want to run on your server.</p>
-                            <p css={tw`mt-1 text-xs text-red-400`}>* NOT FUNCTIONAL. DEFAULTS TO BUNGEECORD</p>
+                            <p css={tw`mt-1 text-xs text-red-400`}>NON-FUNCTIONAL - DEFAULTS TO BUNGEECORD</p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Docker Image'} css={tw`mt-8 sm:mt-0 `}>
+                        <TitledGreyBox title={'Server Docker Image'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'image'}>
-                                <option key={'image:java_17'} value={'ghcr.io/pterodactyl/yolks:java_17'}>Java 17</option>
+                                <option key={'image:java_17'} value={'ghcr.io/pterodactyl/java_17'}>Java 17</option>
+                                <option key={'image:java_16'} value={'ghcr.io/pterodactyl/java_16'}>Java 16</option>
+                                <option key={'image:java_11'} value={'ghcr.io/pterodactyl/java_11'}>Java 11</option>
+                                <option key={'image:java_8'} value={'ghcr.io/pterodactyl/java_8'}>Java 8</option>
                             </Select>
-                            <p css={tw`mt-1 text-xs`}>Choose what Docker image you&apos;d like to use.</p>
+                            <p css={tw`mt-1 text-xs`}>Choose what game you want to run on your server.</p>
+                            <p css={tw`mt-1 text-xs text-red-400`}>NON-FUNCTIONAL - DEFAULTS TO JAVA 17</p>
                         </TitledGreyBox>
                     </Container>
                     <InputSpinner visible={loading}>
-                        <TitledGreyBox title={'Create server instance'} css={tw`mt-8 sm:mt-0 `}>
+                        <TitledGreyBox title={'Create server instance'} css={tw`mt-8 sm:mt-0 mb-4`}>
                             <div css={tw`flex justify-end text-right`}>
                                 <Button type={'submit'} disabled={isSubmit}>
                                     Create

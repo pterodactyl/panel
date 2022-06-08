@@ -8,8 +8,8 @@ import { ServerContext } from '@/state/server';
 import TransitionRouter from '@/TransitionRouter';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import NavigationBar from '@/components/NavigationBar';
 import { CSSTransition } from 'react-transition-group';
+import SidePanel from '@/components/elements/SidePanel';
 import ServerConsole from '@/components/server/ServerConsole';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import SubNavigation from '@/components/elements/SubNavigation';
@@ -94,7 +94,7 @@ export default () => {
 
     return (
         <React.Fragment key={'server-router'}>
-            <NavigationBar/>
+            <SidePanel />
             {(!uuid || !id) ?
                 error ?
                     <ServerError message={error}/>

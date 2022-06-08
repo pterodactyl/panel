@@ -5,28 +5,26 @@ import { ServerContext } from '@/state/server';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 const ServerConfigurationBlock = () => {
-    const id = ServerContext.useStoreState(state => state.server.data!.id);
-    const node = ServerContext.useStoreState(state => state.server.data!.node);
-    const image = ServerContext.useStoreState(state => state.server.data!.dockerImage);
+    const server = ServerContext.useStoreState(state => state.server.data!);
 
     return (
         <TitledGreyBox css={tw`break-words mt-4`} title={'Server Information'}>
             <p css={tw`text-xs mt-2`}>
                 <div css={tw`flex flex-row`}>
                     <Icon.List css={tw`mr-1`} size={16} />
-                    {id}
+                    {server.id}
                 </div>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <div css={tw`flex flex-row truncate`}>
                     <Icon.Layers css={tw`mr-1`} size={16} />
-                    {node}
+                    {server.node}
                 </div>
             </p>
             <p css={tw`text-xs mt-2`}>
                 <div css={tw`flex flex-row truncate`}>
                     <Icon.Disc css={tw`mr-1`} size={16} />
-                    {image}
+                    {server.dockerImage}
                 </div>
             </p>
         </TitledGreyBox>

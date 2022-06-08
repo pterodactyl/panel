@@ -20,22 +20,22 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
 
     return (
         <CSSTransition timeout={150} classNames={'fade'} appear in>
-            <>
-                <ContentContainer css={tw`my-4 sm:my-10`} className={className}>
+            <div css={tw`my-4`}>
+                <ContentContainer className={className}>
                     {showFlashKey &&
                     <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`}/>
                     }
                     {children}
                 </ContentContainer>
-                <ContentContainer css={tw`mb-8 text-xs text-center`}>
+                <ContentContainer css={tw`text-xs text-center my-4`}>
                     <p css={tw`text-neutral-500 sm:float-left`}>
                             &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
                     </p>
-                    <p css={tw`text-neutral-500 mt-2 sm:mt-0 sm:float-right`}>
+                    <p css={tw`text-neutral-500 sm:float-right`}>
                         <a href={'https://github.com/jexactyl/jexactyl'}>{GitInfo().commit.shortHash}</a>
                     </p>
                 </ContentContainer>
-            </>
+            </div>
         </CSSTransition>
     );
 };

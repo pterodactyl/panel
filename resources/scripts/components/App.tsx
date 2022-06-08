@@ -9,7 +9,6 @@ import { SiteSettings } from '@/state/settings';
 import IndexRouter from '@/routers/IndexRouter';
 import { setupInterceptors } from '@/api/interceptors';
 import { StorefrontSettings } from '@/state/storefront';
-import ProgressBar from '@/components/elements/ProgressBar';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 
 interface ExtendedWindow extends Window {
@@ -81,7 +80,6 @@ const App = () => {
         <>
             <GlobalStylesheet/>
             <StoreProvider store={store}>
-                <ProgressBar/>
                 <div css={tw`mx-auto w-auto`}>
                     <IndexRouter />
                 </div>

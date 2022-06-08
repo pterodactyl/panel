@@ -10,6 +10,7 @@ import PlusSquareSvg from '@/assets/images/plus_square.svg';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import DivideSquareSvg from '@/assets/images/divide_square.svg';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -95,13 +96,14 @@ const OverviewContainer = () => {
                                 resource limits, server type and more. Delete or edit your
                                 server at any time to take full advantage of your resources.
                             </p>
-                            <Button
-                                css={tw`mt-6`}
-                                size={'xlarge'}
-                                onClick={() => redirect('create')}
-                            >
-                                Create
-                            </Button>
+                            <Link to={'/store/create'}>
+                                <Button
+                                    css={tw`mt-6`}
+                                    size={'xlarge'}
+                                >
+                                    Create
+                                </Button>
+                            </Link>
                         </div>
                     </div>
                 </TitledGreyBox>

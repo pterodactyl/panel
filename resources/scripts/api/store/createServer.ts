@@ -9,6 +9,7 @@ interface Params {
     ports: number;
     backups: number | null;
     databases: number | null;
+    egg: number;
 }
 
 export default (params: Params): Promise<void> => {

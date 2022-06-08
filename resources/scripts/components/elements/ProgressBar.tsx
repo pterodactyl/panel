@@ -6,9 +6,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import { useStoreActions, useStoreState } from 'easy-peasy';
 
 const BarFill = styled.div`
-    ${tw`h-full bg-cyan-400`};
+    ${tw`h-full bg-green-400 animate-pulse`};
     transition: 250ms ease-in-out;
-    box-shadow: 0 -2px 10px 2px hsl(178, 78%, 57%);
 `;
 
 export default () => {
@@ -59,7 +58,7 @@ export default () => {
     }, [ progress, continuous ]);
 
     return (
-        <div css={tw`w-full fixed`} style={{ height: '2px' }}>
+        <div css={tw`w-28 fixed`} style={{ height: '2px' }}>
             <CSSTransition
                 timeout={150}
                 appear

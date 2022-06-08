@@ -3,7 +3,6 @@ import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
-import NavigationBar from '@/components/NavigationBar';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
@@ -13,33 +12,34 @@ import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer'
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountSecurityContainer from '@/components/dashboard/AccountSecurityContainer';
 import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
+import SidePanel from '@/components/elements/SidePanel';
 
 export default () => {
     const location = useLocation();
 
     return (
         <>
-            <NavigationBar/>
+            <SidePanel />
             {location.pathname.startsWith('/account') &&
-            <SubNavigation>
-                <div>
-                    <NavLink to={'/account'} exact>
-                        <div css={tw`flex items-center justify-between`}>Account <Icon.User css={tw`ml-1`} size={18} /></div>
-                    </NavLink>
-                    <NavLink to={'/account/security'}>
-                        <div css={tw`flex items-center justify-between`}>Security <Icon.Key css={tw`ml-1`} size={18} /></div>
-                    </NavLink>
-                    <NavLink to={'/account/activity'}>
-                        <div css={tw`flex items-center justify-between`}>Activity <Icon.Eye css={tw`ml-1`} size={18} /></div>
-                    </NavLink>
-                    <NavLink to={'/account/api'}>
-                        <div css={tw`flex items-center justify-between`}>API <Icon.Code css={tw`ml-1`} size={18} /></div>
-                    </NavLink>
-                    <NavLink to={'/account/ssh'}>
-                        <div css={tw`flex items-center justify-between`}>SSH Keys <Icon.Terminal css={tw`ml-1`} size={18} /></div>
-                    </NavLink>
-                </div>
-            </SubNavigation>
+                <SubNavigation>
+                    <div>
+                        <NavLink to={'/account'} exact>
+                            <div css={tw`flex items-center justify-between`}>Account <Icon.User css={tw`ml-1`} size={18} /></div>
+                        </NavLink>
+                        <NavLink to={'/account/security'}>
+                            <div css={tw`flex items-center justify-between`}>Security <Icon.Key css={tw`ml-1`} size={18} /></div>
+                        </NavLink>
+                        <NavLink to={'/account/activity'}>
+                            <div css={tw`flex items-center justify-between`}>Activity <Icon.Eye css={tw`ml-1`} size={18} /></div>
+                        </NavLink>
+                        <NavLink to={'/account/api'}>
+                            <div css={tw`flex items-center justify-between`}>API <Icon.Code css={tw`ml-1`} size={18} /></div>
+                        </NavLink>
+                        <NavLink to={'/account/ssh'}>
+                            <div css={tw`flex items-center justify-between`}>SSH Keys <Icon.Terminal css={tw`ml-1`} size={18} /></div>
+                        </NavLink>
+                    </div>
+                </SubNavigation>
             }
             <TransitionRouter>
                 <Switch location={location}>

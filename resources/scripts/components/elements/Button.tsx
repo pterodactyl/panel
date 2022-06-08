@@ -6,7 +6,7 @@ import styled, { css } from 'styled-components/macro';
 interface Props {
     isLoading?: boolean;
     size?: 'xsmall' | 'small' | 'large' | 'xlarge';
-    color?: 'green' | 'red' | 'primary' | 'grey';
+    color?: 'green' | 'yellow' | 'red' | 'primary' | 'grey';
     isSecondary?: boolean;
 }
 
@@ -39,6 +39,20 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
         ${props => props.isSecondary && css`
             &:active:not(:disabled) {
                 ${tw`bg-green-600 border-green-700`};
+            }
+        `};
+    `};
+
+    ${props => props.color === 'yellow' && css<Props>`
+        ${tw`border-yellow-600 bg-yellow-500 text-yellow-50`};
+        
+        &:hover:not(:disabled) {
+            ${tw`bg-yellow-600 border-yellow-700`};
+        }
+        
+        ${props => props.isSecondary && css`
+            &:active:not(:disabled) {
+                ${tw`bg-yellow-600 border-yellow-700`};
             }
         `};
     `};

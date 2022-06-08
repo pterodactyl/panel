@@ -44,7 +44,7 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: 'Menlo, Monaco, Consolas, monospace',
-    rows: 32,
+    rows: 29,
     theme: theme,
 };
 
@@ -206,7 +206,7 @@ export default () => {
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
                 css={[
-                    tw`rounded-t p-2 bg-black w-full`,
+                    tw`p-2 bg-black w-full`,
                     !canSendCommands && tw`rounded-b`,
                 ]}
                 style={{ minHeight: '16rem' }}

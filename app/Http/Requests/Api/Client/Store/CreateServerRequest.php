@@ -22,6 +22,8 @@ class CreateServerRequest extends ClientApiRequest
             'ports' => 'required|int|min:1',
             'backups' => 'nullable|int',
             'databases' => 'nullable|int',
+
+            'egg' => 'required|int|min:1',
         ];
     }
 }
