@@ -2,14 +2,16 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
+use Pterodactyl\Models\Nest;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Transformers\Api\Application\ServerTransformer;
+use Pterodactyl\Transformers\Api\Client\Store\EggTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreEggsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 
 class ServerController extends ClientApiController
@@ -31,6 +33,18 @@ class ServerController extends ClientApiController
     }
 
     /**
+     * Get all available eggs for server deployment.
+     * 
+     * @throws DisplayException
+     */
+    public function eggs(GetStoreEggsRequest $request, Nest $nest)
+    {
+        return $this->fractal->collection($nest->eggs)
+            ->transformWith($this->getTransformer(EggTransformer::class))
+            ->toArray();
+    }
+
+    /**
      * Stores a new server on the Panel.
      * 
      * @throws \Throwable
@@ -43,8 +57,6 @@ class ServerController extends ClientApiController
      */
     public function store(CreateServerRequest $request)
     {
-        return dd($request);
-
         $user = $request->user();
         $this->verifyResources($request);
 

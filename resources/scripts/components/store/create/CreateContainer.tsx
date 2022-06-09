@@ -10,7 +10,8 @@
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import { Form, Formik } from 'formik';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Egg, getEggs } from '@/api/store/getEggs';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { number, object, string } from 'yup';
@@ -57,6 +58,12 @@ export default () => {
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
     const [ isSubmit, setSubmit ] = useState(false);
     const [ loading, setLoading ] = useState(false);
+    const [ eggs, setEggs ] = useState<Egg[]>([]);
+
+    useEffect(() => {
+        getEggs()
+            .then(eggs => setEggs(eggs));
+    }, []);
 
     const submit = (values: CreateValues) => {
         setLoading(true);
@@ -167,9 +174,11 @@ export default () => {
                     <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'egg'}>
-                                <option key={'egg:bungeecord'} value={1}>Minecraft Bungeecord</option>
-                                <option key={'egg:paper'} value={3}>Minecraft Paper</option>
-                                <option key={'egg:forge'} value={4}>Minecraft Forge</option>
+                                {eggs.map((egg) =>
+                                    <option key={egg.name} value={egg.id}>
+                                        {egg.name}
+                                    </option>
+                                )}
                             </Select>
                             <p css={tw`mt-1 text-xs`}>Choose what game you want to run on your server.</p>
                             <p css={tw`mt-1 text-xs text-red-400`}>NON-FUNCTIONAL - DEFAULTS TO BUNGEECORD</p>

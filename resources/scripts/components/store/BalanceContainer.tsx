@@ -3,6 +3,7 @@ import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
+import Button from '@/components/elements/Button';
 import ContentBox from '@/components/elements/ContentBox';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
@@ -28,10 +29,24 @@ const Container = styled.div`
 const BalanceContainer = () => {
     const user = useStoreState(state => state.user.data!);
 
+    const reload = () => {
+        // @ts-ignore
+        window.location.reload(false);
+    };
+
     return (
         <PageContentBlock title={'Account Balance'}>
-            <h1 css={tw`text-5xl`}>Account Balance</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Purchase credits easily via Stripe or PayPal.</h3>
+            <div css={tw`lg:grid lg:grid-cols-2`}>
+                <div css={tw`text-left`}>
+                    <h1 css={tw`text-5xl`}>Account Balance</h1>
+                    <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Purchase credits easily via Stripe or PayPal.</h3>
+                </div>
+                <div css={tw`text-right lg:mt-4`}>
+                    <Button onClick={() => reload()}>
+                        <span>Refresh Balance</span>
+                    </Button>
+                </div>
+            </div>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
                 <div>
                     <ContentBox

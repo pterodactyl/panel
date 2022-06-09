@@ -2,6 +2,7 @@ import React from 'react';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
+import { Link } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
@@ -10,7 +11,6 @@ import PlusSquareSvg from '@/assets/images/plus_square.svg';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import DivideSquareSvg from '@/assets/images/divide_square.svg';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import { Link } from 'react-router-dom';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -40,10 +40,24 @@ const OverviewContainer = () => {
         window.location = `/store/${url}`;
     };
 
+    const reload = () => {
+        // @ts-ignore
+        window.location.reload(false);
+    };
+
     return (
         <PageContentBlock title={'Storefront Overview'}>
-            <h1 css={tw`text-5xl`}>👋 Hey, {user.username}!</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
+            <div css={tw`lg:grid lg:grid-cols-2`}>
+                <div css={tw`text-left`}>
+                    <h1 css={tw`text-5xl`}>👋 Hey, {user.username}!</h1>
+                    <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
+                </div>
+                <div css={tw`text-right lg:mt-4`}>
+                    <Button onClick={() => reload()}>
+                        <span>Refresh Resources</span>
+                    </Button>
+                </div>
+            </div>
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
                 <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>

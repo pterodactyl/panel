@@ -58,6 +58,7 @@ Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(func
 Route::group([
     'prefix' => '/store',
 ], function () {
+    Route::get('/eggs/{nest:id}', [Client\Store\ServerController::class, 'eggs'])->name('api:client:store.eggs');
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
 });
