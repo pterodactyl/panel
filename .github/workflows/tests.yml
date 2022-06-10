@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - 'develop'
-      - 'v2'
   pull_request:
 jobs:
   tests:
@@ -12,8 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php: [ 7.4, 8.0, 8.1 ]
-        database: [ 'mariadb:10.2', 'mysql:8' ]
+        php: [ 8.0, 8.1 ]
+        database: [ 'mariadb:10.2' ]
     services:
       database:
         image: ${{ matrix.database }}
