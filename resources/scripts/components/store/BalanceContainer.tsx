@@ -47,7 +47,7 @@ const BalanceContainer = () => {
                         showFlashes={'account:balance'}
                         css={tw`sm:mt-0`}
                     >
-                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>${resources.balance} JCR</h1>
+                        <h1 css={tw`text-7xl flex justify-center items-center`}>${resources.balance} JCR</h1>
                         <h1 css={tw`text-sm flex justify-center items-center`}>JCR = Jexactyl Credits</h1>
                     </ContentBox>
                     <ContentBox

@@ -48,26 +48,12 @@ const OverviewContainer = () => {
         window.location = `/store/${url}`;
     };
 
-    const reload = () => {
-        // @ts-ignore
-        window.location.reload(false);
-    };
-
     if (!resources) return <StoreError />;
 
     return (
         <PageContentBlock title={'Storefront Overview'}>
-            <div css={tw`lg:grid lg:grid-cols-2`}>
-                <div css={tw`text-left`}>
-                    <h1 css={tw`text-5xl`}>👋 Hey, {username}!</h1>
-                    <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
-                </div>
-                <div css={tw`text-right lg:mt-4`}>
-                    <Button onClick={() => reload()}>
-                        <span>Refresh Resources</span>
-                    </Button>
-                </div>
-            </div>
+            <h1 css={tw`text-5xl`}>👋 Hey, {username}!</h1>
+            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
                 <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>

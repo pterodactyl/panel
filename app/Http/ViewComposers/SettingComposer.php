@@ -4,20 +4,23 @@ namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\View\View;
 use Pterodactyl\Services\Helpers\AssetHashService;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class SettingComposer
 {
-    /**
-     * @var \Pterodactyl\Services\Helpers\AssetHashService
-     */
-    private $assetHashService;
+    private AssetHashService $assetHashService;
+    private SettingsRepositoryInterface $settings;
 
     /**
      * AssetComposer constructor.
      */
-    public function __construct(AssetHashService $assetHashService)
+    public function __construct(
+        AssetHashService $assetHashService,
+        SettingsRepositoryInterface $settings,
+    )
     {
         $this->assetHashService = $assetHashService;
+        $this->settings = $settings;
     }
 
     /**
@@ -29,6 +32,7 @@ class SettingComposer
         $view->with('siteConfiguration', [
             'name' => config('app.name') ?? 'Pterodactyl',
             'locale' => config('app.locale') ?? 'en',
+            'logo' => $this->settings->get('settings::app:logo') ?? 'https://www.jexactyl.com/assets/images/logo.png',
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',

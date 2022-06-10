@@ -3,7 +3,11 @@ import React, { useState } from 'react';
 import useEventListener from '@/plugins/useEventListener';
 import SearchModal from '@/components/dashboard/search/SearchModal';
 
-export default () => {
+interface Props {
+    size: number;
+}
+
+export default ({ size }: Props) => {
     const [ visible, setVisible ] = useState(false);
 
     useEventListener('keydown', (e: KeyboardEvent) => {
@@ -24,7 +28,7 @@ export default () => {
             />
             }
             <div className={'navigation-link'} onClick={() => setVisible(true)}>
-                <Icon.Search />
+                <Icon.Search size={size} />
             </div>
         </>
     );

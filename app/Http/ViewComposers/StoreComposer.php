@@ -18,28 +18,30 @@ class StoreComposer
     }
 
     /**
+     * Retrieve the requested setting from the database.
+     */
+    protected function getSetting(string $data)
+    {
+        return $this->settings->get('jexactyl::store:'.$data);
+    }
+
+    /**
      * Provide access to the asset service in the views.
      */
     public function compose(View $view)
     {
-        $prefix = 'jexactyl::store:';
-
         $view->with('storeConfiguration', [
-            'enabled' => $this->settings->get($prefix.'enabled') ?? false,
-            'paypal' => [
-                'enabled' => $this->settings->get($prefix.'paypal:enabled') ?? false,
-            ],
-            'stripe' => [
-                'enabled' => $this->settings->get($prefix.'stripe:enabled') ?? false,
-            ],
+            'enabled' => $this->getSetting('enabled'),
+            'enabledPayPal' => $this->getSetting('paypal:enabled'),
+            'enabledStripe' => $this->getSetting('stripe:enabled'),
             'cost' => [
-                'cpu' => $this->settings->get($prefix.'cost:cpu'),
-                'memory' => $this->settings->get($prefix.'cost:memory'),
-                'disk' => $this->settings->get($prefix.'cost:disk'),
-                'slot' => $this->settings->get($prefix.'cost:slot'),
-                'port' => $this->settings->get($prefix.'cost:port'),
-                'backup' => $this->settings->get($prefix.'cost:backup'),
-                'database' => $this->settings->get($prefix.'cost:database'),
+                'cpu' => $this->getSetting('cost:cpu'),
+                'memory' => $this->getSetting('cost:memory'),
+                'disk' => $this->getSetting('cost:disk'),
+                'slot' => $this->getSetting('cost:slot'),
+                'port' => $this->getSetting('cost:port'),
+                'backup' => $this->getSetting('cost:backup'),
+                'database' => $this->getSetting('cost:database'),
             ],
         ]);
     }

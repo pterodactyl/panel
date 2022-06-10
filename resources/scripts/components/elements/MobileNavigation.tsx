@@ -28,7 +28,7 @@ const RightNavigation = styled.div`
     ${tw`flex h-full items-center justify-center`};
     
     & > a, & > button, & > .navigation-link {
-        ${tw`flex items-center h-full no-underline text-neutral-300 px-6 cursor-pointer transition-all duration-150`};
+        ${tw`flex items-center h-full no-underline text-neutral-300 px-4 cursor-pointer transition-all duration-150`};
         &:active, &:hover {
             ${tw`text-neutral-100 bg-black`};
         }
@@ -53,25 +53,25 @@ export default () => {
     return (
         <Navigation>
             <SpinnerOverlay visible={isLoggingOut} />
-            <div css={tw`mx-auto w-full flex items-center`} style={{ maxWidth: '1200px', height: '3.5rem' }}>
+            <div css={tw`mx-auto w-full flex justify-center items-center`} style={{ maxWidth: '1200px', height: '3rem' }}>
                 <RightNavigation>
-                    <SearchContainer />
+                    <SearchContainer size={20} />
                     <NavLink to={'/'} exact>
-                        <Icon.Server />
+                        <Icon.Server size={20} />
                     </NavLink>
                     <NavLink to={'/account'}>
-                        <Icon.User />
+                        <Icon.User size={20} />
                     </NavLink>
                     <NavLink to={'/store'}>
-                        <Icon.ShoppingCart />
+                        <Icon.ShoppingCart size={20} />
                     </NavLink>
                     {rootAdmin &&
                     <a href={'/admin'} rel={'noreferrer'}>
-                        <Icon.Settings />
+                        <Icon.Settings size={20} />
                     </a>
                     }
                     <button onClick={onTriggerLogout}>
-                        <Icon.LogOut />
+                        <Icon.LogOut size={20} />
                     </button>
                 </RightNavigation>
             </div>
