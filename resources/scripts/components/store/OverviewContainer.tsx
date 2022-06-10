@@ -8,10 +8,11 @@ import { megabytesToHuman } from '@/helpers';
 import Button from '@/components/elements/Button';
 import React, { useState, useEffect } from 'react';
 import PlusSquareSvg from '@/assets/images/plus_square.svg';
+import StoreError from '@/components/store/error/StoreError';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import DivideSquareSvg from '@/assets/images/divide_square.svg';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import { getResources, Resources } from '@/api/store/getResources';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -35,11 +36,11 @@ const Wrapper = styled.div`
 
 const OverviewContainer = () => {
     const [ resources, setResources ] = useState<Resources>();
-    const user = useStoreState(state => state.user.data!);
+    const username = useStoreState(state => state.user.data!.username);
 
     useEffect(() => {
         getResources()
-            .then(resources => console.log(resources));
+            .then(resources => setResources(resources));
     }, []);
 
     const redirect = (url: string) => {
@@ -52,11 +53,13 @@ const OverviewContainer = () => {
         window.location.reload(false);
     };
 
+    if (!resources) return <StoreError />;
+
     return (
         <PageContentBlock title={'Storefront Overview'}>
             <div css={tw`lg:grid lg:grid-cols-2`}>
                 <div css={tw`text-left`}>
-                    <h1 css={tw`text-5xl`}>👋 Hey, {user.username}!</h1>
+                    <h1 css={tw`text-5xl`}>👋 Hey, {username}!</h1>
                     <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
                 </div>
                 <div css={tw`text-right lg:mt-4`}>
@@ -68,39 +71,39 @@ const OverviewContainer = () => {
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
                 <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
-                        <Icon.Cpu css={tw`mr-2`} /> {resources?.balance}%
+                        <Icon.Cpu css={tw`mr-2`} /> {resources.cpu}%
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.PieChart css={tw`mr-2`} /> {megabytesToHuman(user.store.memory)}
+                        <Icon.PieChart css={tw`mr-2`} /> {megabytesToHuman(resources.memory)}
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total Disk'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.HardDrive css={tw`mr-2`} /> {megabytesToHuman(user.store.disk)}
+                        <Icon.HardDrive css={tw`mr-2`} /> {megabytesToHuman(resources.disk)}
                     </Wrapper>
                 </TitledGreyBox>
             </Container>
             <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
                 <TitledGreyBox title={'Total Slots'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
-                        <Icon.Server css={tw`mr-2`} /> {user.store.slots}
+                        <Icon.Server css={tw`mr-2`} /> {resources.slots}
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total Ports'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.Share2 css={tw`mr-2`} /> {user.store.ports}
+                        <Icon.Share2 css={tw`mr-2`} /> {resources.ports}
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total Backups'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.Archive css={tw`mr-2`} /> {user.store.backups}
+                        <Icon.Archive css={tw`mr-2`} /> {resources.backups}
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total Databases'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
-                        <Icon.Database css={tw`mr-2`} /> {user.store.databases}
+                        <Icon.Database css={tw`mr-2`} /> {resources.databases}
                     </Wrapper>
                 </TitledGreyBox>
             </Container>

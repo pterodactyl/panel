@@ -22,14 +22,6 @@ interface ExtendedWindow extends Window {
         root_admin: boolean;
         use_totp: boolean;
         language: string;
-        store_balance: number;
-        store_cpu: number;
-        store_memory: number;
-        store_disk: number;
-        store_slots: number;
-        store_ports: number;
-        store_backups: number;
-        store_databases: number;
         updated_at: string;
         created_at: string;
         /* eslint-enable camelcase */
@@ -53,16 +45,6 @@ const App = () => {
             language: PterodactylUser.language,
             rootAdmin: PterodactylUser.root_admin,
             useTotp: PterodactylUser.use_totp,
-            store: {
-                balance: PterodactylUser.store_balance,
-                cpu: PterodactylUser.store_cpu,
-                memory: PterodactylUser.store_memory,
-                disk: PterodactylUser.store_disk,
-                slots: PterodactylUser.store_slots,
-                ports: PterodactylUser.store_ports,
-                backups: PterodactylUser.store_backups,
-                databases: PterodactylUser.store_databases,
-            },
             createdAt: new Date(PterodactylUser.created_at),
             updatedAt: new Date(PterodactylUser.updated_at),
         });

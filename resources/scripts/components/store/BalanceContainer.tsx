@@ -1,11 +1,11 @@
-import React from 'react';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
-import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
-import Button from '@/components/elements/Button';
+import React, { useEffect, useState } from 'react';
 import ContentBox from '@/components/elements/ContentBox';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+import StoreError from '@/components/store/error/StoreError';
+import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import StripePurchaseForm from '@/components/store/forms/StripePurchaseForm';
 import PaypalPurchaseForm from '@/components/store/forms/PaypalPurchaseForm';
@@ -27,26 +27,19 @@ const Container = styled.div`
 `;
 
 const BalanceContainer = () => {
-    const user = useStoreState(state => state.user.data!);
+    const [ resources, setResources ] = useState<Resources>();
 
-    const reload = () => {
-        // @ts-ignore
-        window.location.reload(false);
-    };
+    useEffect(() => {
+        getResources()
+            .then(resources => setResources(resources));
+    }, []);
+
+    if (!resources) return <StoreError />;
 
     return (
         <PageContentBlock title={'Account Balance'}>
-            <div css={tw`lg:grid lg:grid-cols-2`}>
-                <div css={tw`text-left`}>
-                    <h1 css={tw`text-5xl`}>Account Balance</h1>
-                    <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Purchase credits easily via Stripe or PayPal.</h3>
-                </div>
-                <div css={tw`text-right lg:mt-4`}>
-                    <Button onClick={() => reload()}>
-                        <span>Refresh Balance</span>
-                    </Button>
-                </div>
-            </div>
+            <h1 css={tw`text-5xl`}>Account Balance</h1>
+            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Purchase credits easily via Stripe or PayPal.</h3>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
                 <div>
                     <ContentBox
@@ -54,7 +47,7 @@ const BalanceContainer = () => {
                         showFlashes={'account:balance'}
                         css={tw`sm:mt-0`}
                     >
-                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>${user.store.balance} JCR</h1>
+                        <h1 css={tw`text-7xl md:text-5xl flex justify-center items-center`}>${resources.balance} JCR</h1>
                         <h1 css={tw`text-sm flex justify-center items-center`}>JCR = Jexactyl Credits</h1>
                     </ContentBox>
                     <ContentBox

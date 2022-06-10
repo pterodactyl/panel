@@ -1,8 +1,9 @@
-import http from '@/api/http';
+import http, { FractalResponseData } from '@/api/http';
 
 export interface Resources {
     balance: number;
     cpu: number;
+    memory: number;
     disk: number;
     slots: number;
     ports: number;
@@ -10,9 +11,10 @@ export interface Resources {
     databases: number;
 }
 
-export const rawDataToResources = (data: any): Resources => ({
+export const rawDataToResources = ({ attributes: data }: FractalResponseData): Resources => ({
     balance: data.balance,
     cpu: data.cpu,
+    memory: data.memory,
     disk: data.disk,
     slots: data.slots,
     ports: data.ports,
@@ -23,7 +25,7 @@ export const rawDataToResources = (data: any): Resources => ({
 export const getResources = async (): Promise<Resources> => {
     return new Promise((resolve, reject) => {
         http.get('/api/client/store')
-            .then(({ data }) => resolve((data.data || []).map((d: any) => rawDataToResources(d.attributes))))
+            .then(({ data }) => resolve(rawDataToResources(data)))
             .catch(reject);
     });
 };
