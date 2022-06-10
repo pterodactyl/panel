@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
+use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
@@ -60,7 +61,7 @@ class ServerController extends ClientApiController
         $user = $request->user();
         $this->verifyResources($request);
 
-        $egg = DB::table('eggs')->where('id', $request->input('egg'))->get();
+        $egg = Egg::find($request->input('egg'));
         $memory = $request->input('memory') * 1024;
         $disk = $request->input('disk') * 1024;
 

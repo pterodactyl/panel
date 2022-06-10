@@ -20,7 +20,6 @@ class EggTransformer extends BaseClientTransformer
     public function transform(Egg $egg)
     {
         return [
-            'uuid' => $egg->uuid,
             'name' => $egg->name,
         ];
     }

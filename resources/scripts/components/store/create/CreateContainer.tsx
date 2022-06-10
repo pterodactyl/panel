@@ -18,7 +18,6 @@ import { number, object, string } from 'yup';
 import { megabytesToHuman } from '@/helpers';
 import styled from 'styled-components/macro';
 import Field from '@/components/elements/Field';
-import Select from '@/components/elements/Select';
 import Button from '@/components/elements/Button';
 import createServer from '@/api/store/createServer';
 import InputSpinner from '@/components/elements/InputSpinner';
@@ -50,7 +49,6 @@ interface CreateValues {
     ports: number;
     backups: number | null;
     databases: number | null;
-    egg: number;
 }
 
 export default () => {
@@ -59,6 +57,7 @@ export default () => {
     const [ isSubmit, setSubmit ] = useState(false);
     const [ loading, setLoading ] = useState(false);
     const [ eggs, setEggs ] = useState<Egg[]>([]);
+    const [ egg, setEgg ] = useState(0);
 
     useEffect(() => {
         getEggs()
@@ -70,7 +69,7 @@ export default () => {
         clearFlashes('store:create');
         setSubmit(true);
 
-        createServer(values)
+        createServer(values, egg)
             .then(() => {
                 setSubmit(false);
                 setLoading(false);
@@ -118,7 +117,7 @@ export default () => {
             >
                 <Form>
                     <h1 css={tw`text-5xl`}>Basic Details</h1>
-                    <h3 css={tw`text-2xl text-neutral-500`}>Set the basic fields for your new server.</h3>
+                    <h3 css={tw`text-2xl text-neutral-500`}>Set the basic fields for your new server. Selected egg: {egg}</h3>
                     <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
                         <TitledGreyBox title={'Server name'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'name'} />
@@ -171,27 +170,24 @@ export default () => {
                     </Container>
                     <h1 css={tw`text-5xl`}>Server Type</h1>
                     <h3 css={tw`text-2xl text-neutral-500`}>Choose a server distribution to use.</h3>
-                    <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
+                    <Container css={tw`my-10 gap-4`}>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
-                            <Select name={'egg'}>
+                            <div css={tw`flex justify-center items-center`}>
                                 {eggs.map((egg) =>
-                                    <option key={egg.name} value={egg.id}>
-                                        {egg.name}
-                                    </option>
+                                    <Button
+                                        type={'button'}
+                                        color={'green'}
+                                        isSecondary
+                                        key={egg.name}
+                                        css={tw`ml-2`}
+                                        onClick={() => setEgg(egg.id)}
+                                    >
+                                        {egg.id} | {egg.name}
+                                    </Button>
                                 )}
-                            </Select>
-                            <p css={tw`mt-1 text-xs`}>Choose what game you want to run on your server.</p>
-                            <p css={tw`mt-1 text-xs text-red-400`}>NON-FUNCTIONAL - DEFAULTS TO BUNGEECORD</p>
-                        </TitledGreyBox>
-                        <TitledGreyBox title={'Server Docker Image'} css={tw`mt-8 sm:mt-0`}>
-                            <Select name={'image'}>
-                                <option key={'image:java_17'} value={'ghcr.io/pterodactyl/java_17'}>Java 17</option>
-                                <option key={'image:java_16'} value={'ghcr.io/pterodactyl/java_16'}>Java 16</option>
-                                <option key={'image:java_11'} value={'ghcr.io/pterodactyl/java_11'}>Java 11</option>
-                                <option key={'image:java_8'} value={'ghcr.io/pterodactyl/java_8'}>Java 8</option>
-                            </Select>
-                            <p css={tw`mt-1 text-xs`}>Choose what game you want to run on your server.</p>
-                            <p css={tw`mt-1 text-xs text-red-400`}>NON-FUNCTIONAL - DEFAULTS TO JAVA 17</p>
+                            </div>
+                            <p css={tw`mt-2 text-sm`}>Choose what game you want to run on your server.</p>
+                            <p css={tw`mt-1 text-xs text-neutral-400`}>Currently selected egg: {egg}</p>
                         </TitledGreyBox>
                     </Container>
                     <InputSpinner visible={loading}>

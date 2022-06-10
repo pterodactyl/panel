@@ -1,4 +1,3 @@
-import React from 'react';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
@@ -7,10 +6,12 @@ import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
 import Button from '@/components/elements/Button';
+import React, { useState, useEffect } from 'react';
 import PlusSquareSvg from '@/assets/images/plus_square.svg';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import DivideSquareSvg from '@/assets/images/divide_square.svg';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import { getResources, Resources } from '@/api/store/getResources';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -33,7 +34,13 @@ const Wrapper = styled.div`
 `;
 
 const OverviewContainer = () => {
+    const [ resources, setResources ] = useState<Resources>();
     const user = useStoreState(state => state.user.data!);
+
+    useEffect(() => {
+        getResources()
+            .then(resources => console.log(resources));
+    }, []);
 
     const redirect = (url: string) => {
         // @ts-ignore
@@ -61,7 +68,7 @@ const OverviewContainer = () => {
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
                 <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
-                        <Icon.Cpu css={tw`mr-2`} /> {user.store.cpu}%
+                        <Icon.Cpu css={tw`mr-2`} /> {resources?.balance}%
                     </Wrapper>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Total RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>

@@ -7,7 +7,7 @@ export interface Egg {
 }
 
 export const rawDataToEgg = (data: any): Egg => ({
-    id: data.identifier,
+    id: data.id,
     name: data.name,
     dockerImages: data.docker_images,
 });
