@@ -30,7 +30,7 @@ export default ({ databaseId, onUpdate }: {
                 console.error(error);
                 addFlash({
                     type: 'error',
-                    title: 'Error',
+                    title: '错误',
                     message: httpErrorToHuman(error),
                     key: 'database-connection-modal',
                 });
@@ -40,7 +40,7 @@ export default ({ databaseId, onUpdate }: {
 
     return (
         <Button isSecondary color={'primary'} css={tw`mr-2`} onClick={rotate} isLoading={loading}>
-            Rotate Password
+            重新生成密码
         </Button>
     );
 };
