@@ -28,12 +28,12 @@ export default ({ fingerprint }: { fingerprint: string }) => {
         <>
             <ConfirmationModal
                 visible={visible}
-                title={'Confirm Key Deletion'}
-                buttonText={'Yes, Delete SSH Key'}
+                title={'SSH 密钥删除确定'}
+                buttonText={'确定删除'}
                 onConfirmed={onClick}
                 onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you wish to delete this SSH key?
+                你真的确定删除这个 SSH 密钥?
             </ConfirmationModal>
             <button css={tw`ml-4 p-2 text-sm`} onClick={() => setVisible(true)}>
                 <FontAwesomeIcon

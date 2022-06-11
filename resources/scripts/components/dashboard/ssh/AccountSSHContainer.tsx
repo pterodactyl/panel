@@ -28,15 +28,15 @@ export default () => {
         <PageContentBlock title={'Account API'}>
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={'Add SSH Key'} css={tw`flex-none w-full md:w-1/2`}>
+                <ContentBox title={'添加 SSH 密钥'} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateSSHKeyForm/>
                 </ContentBox>
-                <ContentBox title={'SSH Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
+                <ContentBox title={'SSH 密钥'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={!data && isValidating}/>
                     {
                         !data || !data.length ?
                             <p css={tw`text-center text-sm`}>
-                                {!data ? 'Loading...' : 'No SSH Keys exist for this account.'}
+                                {!data ? '加载中...' : '此账户下无可用 SSH 密钥.'}
                             </p>
                             :
                             data.map((key, index) => (
