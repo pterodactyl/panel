@@ -89,12 +89,12 @@ export default () => {
         switch (status) {
             // Sent by either the source or target node if a failure occurs.
             case 'failure':
-                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
+                terminal.writeln(TERMINAL_PRELUDE + '迁移失败.\u001b[0m');
                 return;
 
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
-                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
+                terminal.writeln(TERMINAL_PRELUDE + '服务器文件已成功压缩打包，正在尝试连接到目标节点服务器....\u001b[0m');
         }
     };
 
@@ -103,7 +103,7 @@ export default () => {
     );
 
     const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
+        TERMINAL_PRELUDE + '服务器运行状态更新为: ' + state + '...\u001b[0m',
     );
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -219,8 +219,8 @@ export default () => {
                     <div css={tw`w-full`}>
                         <CommandInput
                             type={'text'}
-                            placeholder={'Type a command...'}
-                            aria-label={'Console command input.'}
+                            placeholder={'在此输入指令...'}
+                            aria-label={'控制台指令输入.'}
                             disabled={!instance || !connected}
                             onKeyDown={handleCommandKeyDown}
                             autoCorrect={'off'}
