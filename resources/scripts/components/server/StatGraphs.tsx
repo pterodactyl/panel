@@ -124,44 +124,44 @@ export default () => {
 
     return (
         <div css={tw`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4`}>
-            <TitledGreyBox title={'Memory usage'} icon={faMemory}>
+            <TitledGreyBox title={'内存使用率'} icon={faMemory}>
                 {status !== 'offline' ?
                     <canvas
                         id={'memory_chart'}
                         ref={memoryRef}
-                        aria-label={'Server Memory Usage Graph'}
+                        aria-label={'服务器内存使用率'}
                         role={'img'}
                     />
                     :
                     <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
+                        服务器未运行.
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'CPU usage'} icon={faMicrochip}>
+            <TitledGreyBox title={'CPU 处理器使用率'} icon={faMicrochip}>
                 {status !== 'offline' ?
-                    <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'Server CPU Usage Graph'} role={'img'}/>
+                    <canvas id={'cpu_chart'} ref={cpuRef} aria-label={'服务器 CPU 处理器使用率'} role={'img'}/>
                     :
                     <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
+                        服务器未运行.
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'Inbound Data'} icon={faEthernet}>
+            <TitledGreyBox title={'入站数据'} icon={faEthernet}>
                 {status !== 'offline' ?
-                    <canvas id={'rx_chart'} ref={rxRef} aria-label={'Server Inbound Data'} role={'img'}/>
+                    <canvas id={'rx_chart'} ref={rxRef} aria-label={'服务器入站数据'} role={'img'}/>
                     :
                     <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
+                        服务器未运行.
                     </p>
                 }
             </TitledGreyBox>
-            <TitledGreyBox title={'Outbound Data'} icon={faEthernet}>
+            <TitledGreyBox title={'出站数据'} icon={faEthernet}>
                 {status !== 'offline' ?
-                    <canvas id={'tx_chart'} ref={txRef} aria-label={'Server Outbound Data'} role={'img'}/>
+                    <canvas id={'tx_chart'} ref={txRef} aria-label={'服务器出站数据'} role={'img'}/>
                     :
                     <p css={tw`text-xs text-neutral-400 text-center p-3`}>
-                        Server is offline.
+                        服务器未运行.
                     </p>
                 }
             </TitledGreyBox>

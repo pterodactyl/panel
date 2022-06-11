@@ -28,7 +28,7 @@ const PowerControls = () => {
                         sendPowerCommand('start');
                     }}
                 >
-                    Start
+                    开机
                 </Button>
             </Can>
             <Can action={'control.restart'}>
@@ -42,7 +42,7 @@ const PowerControls = () => {
                         sendPowerCommand('restart');
                     }}
                 >
-                    Restart
+                    重启
                 </Button>
             </Can>
             <Can action={'control.stop'}>

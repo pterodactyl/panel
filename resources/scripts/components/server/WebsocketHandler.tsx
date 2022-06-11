@@ -44,19 +44,19 @@ export default () => {
         socket.on('status', (status) => setServerStatus(status));
 
         socket.on('daemon error', message => {
-            console.warn('Got error message from daemon socket:', message);
+            console.warn('节点服务器传出错误信息:', message);
         });
 
         socket.on('token expiring', () => updateToken(uuid, socket));
         socket.on('token expired', () => updateToken(uuid, socket));
         socket.on('jwt error', (error: string) => {
             setConnectionState(false);
-            console.warn('JWT validation error from wings:', error);
+            console.warn('JWT 与 WINGS 验证出现问题:', error);
 
             if (reconnectErrors.find(v => error.toLowerCase().indexOf(v) >= 0)) {
                 updateToken(uuid, socket);
             } else {
-                setError('There was an error validating the credentials provided for the websocket. Please refresh the page.');
+                setError('验证为 WEBSOCKET 提供的凭据时出错。 请刷新页面。');
             }
         });
 
@@ -114,7 +114,7 @@ export default () => {
                             <>
                                 <Spinner size={'small'}/>
                                 <p css={tw`ml-2 text-sm text-red-100`}>
-                                    We&apos;re having some trouble connecting to your server, please wait...
+                                    连接到你的服务器实例时出现错误，请等待...
                                 </p>
                             </>
                             :

@@ -81,9 +81,9 @@ const ServerDetailsBlock = () => {
         allocation => (allocation.alias || formatIp(allocation.ip)) + ':' + allocation.port,
     )).toString();
 
-    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
-    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
-    const cpuLimit = limits.cpu ? limits.cpu + '%' : 'Unlimited';
+    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : '无限制';
+    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : '无限制';
+    const cpuLimit = limits.cpu ? limits.cpu + '%' : '无限制';
 
     return (
         <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
@@ -96,7 +96,7 @@ const ServerDetailsBlock = () => {
                         statusToColor(status, isInstalling || isTransferring),
                     ]}
                 />
-                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
+                &nbsp;{!status ? '正在连接...' : (isInstalling ? '安装中' : (isTransferring) ? '转移中' : status)}
                 {stats.uptime > 0 &&
                 <span css={tw`ml-2 lowercase`}>
                     (<UptimeDuration uptime={stats.uptime / 1000}/>)

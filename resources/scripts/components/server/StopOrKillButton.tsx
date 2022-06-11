@@ -23,7 +23,7 @@ const StopOrKillButton = ({ onPress }: { onPress: (action: PowerAction) => void 
                 setClicked(true);
             }}
         >
-            {clicked ? 'Kill' : 'Stop'}
+            {clicked ? '强制停止' : '停止'}
         </Button>
     );
 };
