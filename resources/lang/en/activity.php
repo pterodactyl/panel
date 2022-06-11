@@ -26,8 +26,8 @@ return [
             'delete' => 'Deleted API key <strong>:identifier</strong>',
         ],
         'ssh-key' => [
-            'create' => 'Added SSH key (<strong>:fingerprint</strong>) to account',
-            'delete' => 'Removed SSH key (<strong>:fingerprint</strong>) from account',
+            'create' => 'Added SSH key <strong>:fingerprint</strong> to account',
+            'delete' => 'Removed SSH key <strong>:fingerprint</strong> from account',
         ],
         'two-factor' => [
             'create' => 'Enabled two-factor authentication for account',

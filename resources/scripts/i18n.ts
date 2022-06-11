@@ -19,7 +19,8 @@ i18n
         backend: {
             backend: I18NextHttpBackend,
             backendOption: {
-                loadPath: `/locales/locale.json?locale={{lng}}&namespace={{ns}}&hash=${hash}`,
+                loadPath: '/locales/locale.json?locale={{lng}}&namespace={{ns}}',
+                queryStringParams: { hash },
                 allowMultiLoading: true,
             } as BackendOptions,
         } as Record<string, any>,
@@ -29,7 +30,5 @@ i18n
             escapeValue: false,
         },
     });
-
-i18n.loadNamespaces([ 'validation' ]).catch(console.error);
 
 export default i18n;
