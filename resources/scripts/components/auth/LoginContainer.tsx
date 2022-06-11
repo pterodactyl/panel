@@ -69,16 +69,16 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             onSubmit={onSubmit}
             initialValues={{ username: '', password: '' }}
             validationSchema={object().shape({
-                username: string().required('A username or email must be provided.'),
-                password: string().required('Please enter your account password.'),
+                username: string().required('必须提供用户名或电子邮件。'),
+                password: string().required('请输入您的帐户密码。'),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
+                <LoginFormContainer title={'登入系统'} css={tw`w-full flex`}>
                     <Field
                         light
                         type={'text'}
-                        label={'Username or Email'}
+                        label={'用户名或邮箱地址'}
                         name={'username'}
                         disabled={isSubmitting}
                     />
@@ -86,14 +86,14 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         <Field
                             light
                             type={'password'}
-                            label={'Password'}
+                            label={'密码'}
                             name={'password'}
                             disabled={isSubmitting}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
-                            Login
+                            登入系统
                         </Button>
                     </div>
                     {recaptchaEnabled &&
@@ -116,7 +116,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             to={'/auth/password'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            Forgot password?
+                            忘记密码?
                         </Link>
                     </div>
                 </LoginFormContainer>

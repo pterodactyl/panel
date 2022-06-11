@@ -38,7 +38,7 @@ export default () => {
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: '错误', message: httpErrorToHuman(error) });
             });
 
             return;
@@ -47,11 +47,11 @@ export default () => {
         requestPasswordResetEmail(email, token)
             .then(response => {
                 resetForm();
-                addFlash({ type: 'success', title: 'Success', message: response });
+                addFlash({ type: 'success', title: '成功', message: response });
             })
             .catch(error => {
                 console.error(error);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: '错误', message: httpErrorToHuman(error) });
             })
             .then(() => {
                 setToken('');
@@ -66,19 +66,19 @@ export default () => {
             onSubmit={handleSubmission}
             initialValues={{ email: '' }}
             validationSchema={object().shape({
-                email: string().email('A valid email address must be provided to continue.')
-                    .required('A valid email address must be provided to continue.'),
+                email: string().email('必须提供有效的电子邮件地址才能继续。')
+                    .required('必须提供有效的电子邮件地址才能继续。'),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer
-                    title={'Request Password Reset'}
+                    title={'请求重置密码'}
                     css={tw`w-full flex`}
                 >
                     <Field
                         light
-                        label={'Email'}
-                        description={'Enter your account email address to receive instructions on resetting your password.'}
+                        label={'邮箱地址'}
+                        description={'输入您的帐户电子邮件地址以接收有关重置密码的说明。'}
                         name={'email'}
                         type={'email'}
                     />
@@ -89,7 +89,7 @@ export default () => {
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Send Email
+                            发送邮件
                         </Button>
                     </div>
                     {recaptchaEnabled &&
@@ -112,7 +112,7 @@ export default () => {
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                         >
-                            Return to Login
+                            返回登录
                         </Link>
                     </div>
                 </LoginFormContainer>

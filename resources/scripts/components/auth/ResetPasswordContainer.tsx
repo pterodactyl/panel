@@ -40,7 +40,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 console.error(error);
 
                 setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
+                addFlash({ type: 'error', title: '错误', message: httpErrorToHuman(error) });
             });
     };
 
@@ -52,36 +52,36 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 passwordConfirmation: '',
             }}
             validationSchema={object().shape({
-                password: string().required('A new password is required.')
-                    .min(8, 'Your new password should be at least 8 characters in length.'),
+                password: string().required('需要新密码。')
+                    .min(8, '您的新密码长度应至少为 8 个字符。'),
                 passwordConfirmation: string()
-                    .required('Your new password does not match.')
+                    .required('您的新密码不匹配。')
                     // @ts-ignore
-                    .oneOf([ ref('password'), null ], 'Your new password does not match.'),
+                    .oneOf([ ref('password'), null ], '您的新密码不匹配。'),
             })}
         >
             {({ isSubmitting }) => (
                 <LoginFormContainer
-                    title={'Reset Password'}
+                    title={'重置密码'}
                     css={tw`w-full flex`}
                 >
                     <div>
-                        <label>Email</label>
+                        <label>邮箱</label>
                         <Input value={email} isLight disabled/>
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={'New Password'}
+                            label={'新密码'}
                             name={'password'}
                             type={'password'}
-                            description={'Passwords must be at least 8 characters in length.'}
+                            description={'密码长度必须至少为 8 个字符。'}
                         />
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
                             light
-                            label={'Confirm New Password'}
+                            label={'确认新密码'}
                             name={'passwordConfirmation'}
                             type={'password'}
                         />
@@ -93,7 +93,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             disabled={isSubmitting}
                             isLoading={isSubmitting}
                         >
-                            Reset Password
+                            重置密码
                         </Button>
                     </div>
                     <div css={tw`mt-6 text-center`}>
@@ -101,7 +101,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            Return to Login
+                            返回登录
                         </Link>
                     </div>
                 </LoginFormContainer>
