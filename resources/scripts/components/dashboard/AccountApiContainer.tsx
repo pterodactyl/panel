@@ -48,31 +48,30 @@ export default () => {
     };
 
     return (
-        <PageContentBlock title={'Account API'}>
+        <PageContentBlock title={'账户 API'}>
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
-                <ContentBox title={'Create API Key'} css={tw`flex-none w-full md:w-1/2`}>
+                <ContentBox title={'创建 API 密钥'} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
                 </ContentBox>
-                <ContentBox title={'API Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
+                <ContentBox title={'API 密钥'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={loading}/>
                     <ConfirmationModal
                         visible={!!deleteIdentifier}
-                        title={'Confirm key deletion'}
-                        buttonText={'Yes, delete key'}
+                        title={'确认删除秘钥'}
+                        buttonText={'确认'}
                         onConfirmed={() => {
                             doDeletion(deleteIdentifier);
                             setDeleteIdentifier('');
                         }}
                         onModalDismissed={() => setDeleteIdentifier('')}
                     >
-                        Are you sure you wish to delete this API key? All requests using it will immediately be
-                        invalidated and will fail.
+                        您确定要删除此 API 密钥吗？ 所有使用它的请求将立即失效！
                     </ConfirmationModal>
                     {
                         keys.length === 0 ?
                             <p css={tw`text-center text-sm`}>
-                                {loading ? 'Loading...' : 'No API keys exist for this account.'}
+                                {loading ? '载入中.....' : '此账户无 API 密钥'}
                             </p>
                             :
                             keys.map((key, index) => (
@@ -84,8 +83,8 @@ export default () => {
                                     <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                         <p css={tw`text-sm break-words`}>{key.description}</p>
                                         <p css={tw`text-2xs text-neutral-300 uppercase`}>
-                                            Last used:&nbsp;
-                                            {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : 'Never'}
+                                            上次使用于:&nbsp;
+                                            {key.lastUsedAt ? format(key.lastUsedAt, 'MMM do, yyyy HH:mm') : '从未'}
                                         </p>
                                     </div>
                                     <p css={tw`text-sm ml-4 hidden md:block`}>
