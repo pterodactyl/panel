@@ -47,13 +47,11 @@ class ServerEditService
                 return $request->user()->store_memory;
             case 'disk':
                 return $request->user()->store_disk;
-            case 'slots':
-                return $request->user()->store_slots;
-            case 'ports':
+            case 'allocation_limit':
                 return $request->user()->store_ports;
-            case 'backups':
+            case 'backup_limit':
                 return $request->user()->store_backups;
-            case 'databases':
+            case 'database_limit':
                 return $request->user()->store_databases;
             default:
                 throw new DisplayException('Unable to parse resource type.');
@@ -101,7 +99,7 @@ class ServerEditService
         if ($resource == 'memory' && $server->memory <= 1024 && $amount < 0) throw new DisplayException('Cannot have less than 1GB RAM assigned to server.');
         if ($resource == 'disk' && $server->disk <= 1024 && $amount < 0) throw new DisplayException('Cannot have less than 1GB RAM assigned to server.');
         if ($resource == 'allocation_limit' && $server->allocation_limit <= 1 && $amount < 0) throw new DisplayException('Cannot have less than 1 network allocation assigned to server.');
-        if ($resource == 'backup_limit' && $server->backup_limit <= 0 && $amount < 0) throw new DisplayException('Cannot have less than 1 backup slot assigned to server.');
-        if ($resource == 'database_limit' && $server->database_limit <= 0 && $amount < 0) throw new DisplayException('Cannot have less than 1 database slot assigned to server.');
+        if ($resource == 'backup_limit' && $server->backup_limit <= 0 && $amount < 0) throw new DisplayException('Cannot have less than 0 backup slots assigned to server.');
+        if ($resource == 'database_limit' && $server->database_limit <= 0 && $amount < 0) throw new DisplayException('Cannot have less than 0 database slots assigned to server.');
     }
 }

@@ -145,7 +145,7 @@ return [
         ],
 
         'allocations' => [
-            'enabled' => env('PTERODACTYL_CLIENT_ALLOCATIONS_ENABLED', false),
+            'enabled' => env('PTERODACTYL_CLIENT_ALLOCATIONS_ENABLED', true),
             'range_start' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_START'),
             'range_end' => env('PTERODACTYL_CLIENT_ALLOCATIONS_RANGE_END'),
         ],
