@@ -17,9 +17,9 @@ interface Values {
 }
 
 const schema = Yup.object().shape({
-    current: Yup.string().min(1).required('You must provide your current password.'),
+    current: Yup.string().min(1).required('您必须提供当前密码。'),
     password: Yup.string().min(8).required(),
-    confirmPassword: Yup.string().test('password', 'Password confirmation does not match the password you entered.', function (value) {
+    confirmPassword: Yup.string().test('password', '密码确认与您输入的密码不匹配。', function (value) {
         return value === this.parent.password;
     }),
 });
@@ -42,7 +42,7 @@ export default () => {
             .catch(error => addFlash({
                 key: 'account:password',
                 type: 'error',
-                title: 'Error',
+                title: '错误',
                 message: httpErrorToHuman(error),
             }))
             .then(() => setSubmitting(false));
@@ -64,15 +64,15 @@ export default () => {
                                     id={'current_password'}
                                     type={'password'}
                                     name={'current'}
-                                    label={'Current Password'}
+                                    label={'当前密码'}
                                 />
                                 <div css={tw`mt-6`}>
                                     <Field
                                         id={'new_password'}
                                         type={'password'}
                                         name={'password'}
-                                        label={'New Password'}
-                                        description={'Your new password should be at least 8 characters in length and unique to this website.'}
+                                        label={'新密码'}
+                                        description={'您的新密码长度应至少为 8 个字符。'}
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
@@ -80,12 +80,12 @@ export default () => {
                                         id={'confirm_new_password'}
                                         type={'password'}
                                         name={'confirmPassword'}
-                                        label={'Confirm New Password'}
+                                        label={'确认新密码'}
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
                                     <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                        Update Password
+                                        更新密码
                                     </Button>
                                 </div>
                             </Form>

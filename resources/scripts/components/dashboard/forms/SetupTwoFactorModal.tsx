@@ -72,28 +72,28 @@ const SetupTwoFactorModal = () => {
             initialValues={{ code: '' }}
             validationSchema={object().shape({
                 code: string()
-                    .required('You must provide an authentication code to continue.')
-                    .matches(/^(\d){6}$/, 'Authenticator code must be 6 digits.'),
+                    .required('您必须提供身份验证代码才能继续。')
+                    .matches(/^(\d){6}$/, '验证码必须是 6 位数字。'),
             })}
         >
             {recoveryTokens.length > 0 ?
                 <>
-                    <h2 css={tw`text-2xl mb-4`}>Two-factor authentication enabled</h2>
+                    <h2 css={tw`text-2xl mb-4`}>已启用双重身份验证</h2>
                     <p css={tw`text-neutral-300`}>
-                        Two-factor authentication has been enabled on your account. Should you lose access to
-                        your authenticator device, you&apos;ll need to use one of the codes displayed below in order to access your
-                        account.
+                        您的帐户已启用双重身份验证。 如果您日后无法使用
+                        您的账户绑定的验证设备，您需要使用下面显示的代码之一才能访问您的
+                        帐户。
                     </p>
                     <p css={tw`text-neutral-300 mt-4`}>
-                        <strong>These codes will not be displayed again.</strong> Please take note of them now
-                        by storing them in a secure repository such as a password manager.
+                        <strong>这些代码将不会再次显示。</strong> 现在请注意
+                        将它们记下来妥善保管，例如使用密码管理器等。
                     </p>
                     <pre css={tw`text-sm mt-4 rounded font-mono bg-neutral-900 p-4`}>
                         {recoveryTokens.map(token => <code key={token} css={tw`block mb-1`}>{token}</code>)}
                     </pre>
                     <div css={tw`text-right`}>
                         <Button css={tw`mt-6`} onClick={dismiss}>
-                            Close
+                            关闭
                         </Button>
                     </div>
                 </>
@@ -123,8 +123,8 @@ const SetupTwoFactorModal = () => {
                                     id={'code'}
                                     name={'code'}
                                     type={'text'}
-                                    title={'Code From Authenticator'}
-                                    description={'Enter the code from your authenticator device after scanning the QR image.'}
+                                    title={'来自身份验证器的代码'}
+                                    description={'扫描二维码图像后，输入验证器设备中的代码。'}
                                 />
                                 {token &&
                                 <div css={tw`mt-4 pt-4 border-t border-neutral-500 text-neutral-200`}>
@@ -140,7 +140,7 @@ const SetupTwoFactorModal = () => {
                                 }
                             </div>
                             <div css={tw`mt-6 md:mt-0 text-right`}>
-                                <Button>Setup</Button>
+                                <Button>设置</Button>
                             </div>
                         </div>
                     </div>
