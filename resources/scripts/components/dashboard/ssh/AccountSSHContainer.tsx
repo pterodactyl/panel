@@ -25,7 +25,7 @@ export default () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock title={'Account API'}>
+        <PageContentBlock title={'账户 API'}>
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
                 <ContentBox title={'添加 SSH 密钥'} css={tw`flex-none w-full md:w-1/2`}>
