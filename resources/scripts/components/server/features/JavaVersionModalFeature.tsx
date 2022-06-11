@@ -76,11 +76,11 @@ const JavaVersionModalFeature = () => {
             showSpinnerOverlay={loading}
         >
             <FlashMessageRender key={'feature:javaVersion'} css={tw`mb-4`}/>
-            <h2 css={tw`text-2xl mb-4 text-neutral-100`}>Unsupported Java Version</h2>
+            <h2 css={tw`text-2xl mb-4 text-neutral-100`}>此服务端程序不兼容该 Java 版本，更换 Docker 镜像吗?</h2>
             <p css={tw`mt-4`}>
-                This server is currently running an unsupported version of Java and cannot be started.
+                由于未满足所需的 Java 版本，此服务器无法启动.
                 <Can action={'startup.docker-image'}>
-                    &nbsp;Please select a supported version from the list below to continue starting the server.
+                    &nbsp;请在下方选择合适的 JDK 版本 Docker 镜像以启动服务端程序.
                 </Can>
             </p>
             <Can action={'startup.docker-image'}>
@@ -99,11 +99,11 @@ const JavaVersionModalFeature = () => {
             </Can>
             <div css={tw`mt-8 flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-4 sm:space-y-0`}>
                 <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto`}>
-                    Cancel
+                    取消
                 </Button>
                 <Can action={'startup.docker-image'}>
                     <Button onClick={updateJava} css={tw`w-full sm:w-auto`}>
-                        Update Docker Image
+                        更新 Docker 镜像
                     </Button>
                 </Can>
             </div>
