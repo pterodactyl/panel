@@ -23,14 +23,14 @@ export default () => {
     const sftp = ServerContext.useStoreState(state => state.server.data!.sftpDetails, isEqual);
 
     return (
-        <ServerContentBlock title={'Settings'}>
+        <ServerContentBlock title={'设置'}>
             <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
             <div css={tw`md:flex`}>
                 <div css={tw`w-full md:flex-1 md:mr-10`}>
                     <Can action={'file.sftp'}>
-                        <TitledGreyBox title={'SFTP Details'} css={tw`mb-6 md:mb-10`}>
+                        <TitledGreyBox title={'SFTP 连接信息'} css={tw`mb-6 md:mb-10`}>
                             <div>
-                                <Label>Server Address</Label>
+                                <Label>服务器地址</Label>
                                 <CopyOnClick text={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}>
                                     <Input
                                         type={'text'}
@@ -40,7 +40,7 @@ export default () => {
                                 </CopyOnClick>
                             </div>
                             <div css={tw`mt-6`}>
-                                <Label>Username</Label>
+                                <Label>用户名</Label>
                                 <CopyOnClick text={`${username}.${id}`}>
                                     <Input
                                         type={'text'}
@@ -53,7 +53,7 @@ export default () => {
                                 <div css={tw`flex-1`}>
                                     <div css={tw`border-l-4 border-cyan-500 p-3`}>
                                         <p css={tw`text-xs text-neutral-200`}>
-                                            Your SFTP password is the same as the password you use to access this panel.
+                                            您的 SFTP 密码与您目前使用的账户密码相同。
                                         </p>
                                     </div>
                                 </div>
@@ -62,20 +62,20 @@ export default () => {
                                         isSecondary
                                         href={`sftp://${username}.${id}@${formatIp(sftp.ip)}:${sftp.port}`}
                                     >
-                                        Launch SFTP
+                                        启动 SFTP
                                     </LinkButton>
                                 </div>
                             </div>
                         </TitledGreyBox>
                     </Can>
-                    <TitledGreyBox title={'Debug Information'} css={tw`mb-6 md:mb-10`}>
+                    <TitledGreyBox title={'Debug 调试信息'} css={tw`mb-6 md:mb-10`}>
                         <div css={tw`flex items-center justify-between text-sm`}>
-                            <p>Node</p>
+                            <p>节点服务器</p>
                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node}</code>
                         </div>
                         <CopyOnClick text={uuid}>
                             <div css={tw`flex items-center justify-between mt-2 text-sm`}>
-                                <p>Server ID</p>
+                                <p>服务器 ID</p>
                                 <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{uuid}</code>
                             </div>
                         </CopyOnClick>
