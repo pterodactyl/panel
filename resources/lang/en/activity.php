@@ -8,6 +8,8 @@
  */
 return [
     'auth' => [
+        'fail' => 'Failed login attempt',
+        'success' => 'Successfully logged in',
         'password-reset' => 'Reset account password',
         'reset-password' => 'Sending password reset email',
         'checkpoint' => 'Prompting for second factor authentication',
