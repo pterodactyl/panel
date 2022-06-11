@@ -105,28 +105,27 @@ export default ({ backup }: Props) => {
         <>
             <ConfirmationModal
                 visible={modal === 'unlock'}
-                title={'Unlock this backup?'}
+                title={'解锁此备份？'}
                 onConfirmed={onLockToggle}
                 onModalDismissed={() => setModal('')}
-                buttonText={'Yes, unlock'}
+                buttonText={'是'}
             >
-                Are you sure you want to unlock this backup? It will no longer be protected from automated or
-                accidental deletions.
+                您确定要解锁此备份吗？ 它将不再受到意外删除保护。
             </ConfirmationModal>
             <ConfirmationModal
                 visible={modal === 'restore'}
-                title={'Restore this backup?'}
-                buttonText={'Restore backup'}
+                title={'从备份恢复？'}
+                buttonText={'回档'}
                 onConfirmed={() => doRestorationAction()}
                 onModalDismissed={() => setModal('')}
             >
                 <p css={tw`text-neutral-300`}>
-                    This server will be stopped in order to restore the backup. Once the backup has started you will
-                    not be able to control the server power state, access the file manager, or create additional backups
-                    until it has completed.
+                    该服务器将停止以恢复备份。 备份开始后，您将
+                    无法控制服务器电源状态、访问文件管理器或创建其他备份
+                    直到它完成。
                 </p>
                 <p css={tw`text-neutral-300 mt-4`}>
-                    Are you sure you want to continue?
+                    确定继续?
                 </p>
                 <p css={tw`mt-4 -mb-2 bg-neutral-900 p-3 rounded`}>
                     <label
@@ -141,19 +140,18 @@ export default ({ backup }: Props) => {
                             checked={truncate}
                             onChange={() => setTruncate(s => !s)}
                         />
-                        Remove all files and folders before restoring this backup.
+                        在恢复此备份之前删除所有文件和文件夹。
                     </label>
                 </p>
             </ConfirmationModal>
             <ConfirmationModal
                 visible={modal === 'delete'}
-                title={'Delete this backup?'}
-                buttonText={'Yes, delete backup'}
+                title={'删除此备份?'}
+                buttonText={'是'}
                 onConfirmed={() => doDeletion()}
                 onModalDismissed={() => setModal('')}
             >
-                Are you sure you wish to delete this backup? This is a permanent operation and the backup cannot
-                be recovered once deleted.
+                您确定要删除此备份吗？ 这是一个永久性操作。
             </ConfirmationModal>
             <SpinnerOverlay visible={loading} fixed/>
             {backup.isSuccessful ?
@@ -171,13 +169,13 @@ export default ({ backup }: Props) => {
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
                                 <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
-                                <span css={tw`ml-2`}>Download</span>
+                                <span css={tw`ml-2`}>下载</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
                                 <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`}/>
-                                <span css={tw`ml-2`}>Restore</span>
+                                <span css={tw`ml-2`}>恢复</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.delete'}>
@@ -188,12 +186,12 @@ export default ({ backup }: Props) => {
                                         icon={backup.isLocked ? faUnlock : faLock}
                                         css={tw`text-xs mr-2`}
                                     />
-                                    {backup.isLocked ? 'Unlock' : 'Lock'}
+                                    {backup.isLocked ? '解锁' : '锁定'}
                                 </DropdownButtonRow>
                                 {!backup.isLocked &&
                                 <DropdownButtonRow danger onClick={() => setModal('delete')}>
                                     <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
-                                    <span css={tw`ml-2`}>Delete</span>
+                                    <span css={tw`ml-2`}>删除</span>
                                 </DropdownButtonRow>
                                 }
                             </>
