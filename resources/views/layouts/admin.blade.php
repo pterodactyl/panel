@@ -85,8 +85,8 @@
                                 <i class="fa fa-wrench"></i> <span>Settings</span>
                             </a>
                         </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.jexactyl') ?: 'active' }}">
-                            <a href="{{ route('admin.jexactyl')}}">
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.jexactyl.index') ?: 'active' }}">
+                            <a href="{{ route('admin.jexactyl.index')}}">
                                 <i class="fa fa-code"></i> <span>Jexactyl</span>
                             </a>
                         </li>

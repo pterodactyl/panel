@@ -8,6 +8,7 @@ export interface SiteSettings {
         siteKey: string;
     };
     logo: string;
+    registration: string;
 }
 
 export interface SettingsStore {

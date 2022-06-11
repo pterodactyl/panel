@@ -127,7 +127,7 @@ export default () => {
             >
                 <Form>
                     <h1 css={tw`text-5xl`}>Basic Details</h1>
-                    <h3 css={tw`text-2xl text-neutral-500`}>Set the basic fields for your new server. Selected egg: {egg}</h3>
+                    <h3 css={tw`text-2xl text-neutral-500`}>Set the basic fields for your new server.</h3>
                     <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
                         <TitledGreyBox title={'Server name'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'name'} />
@@ -137,7 +137,7 @@ export default () => {
                         <TitledGreyBox title={'Server description'} css={tw`mt-8 sm:mt-0 `}>
                             <Field name={'description'} />
                             <p css={tw`mt-1 text-xs`}>Set a description for your server.</p>
-                            <p css={tw`mt-1 text-xs text-red-400`}>* Optional</p>
+                            <p css={tw`mt-1 text-xs text-yellow-400`}>* Optional</p>
                         </TitledGreyBox>
                     </Container>
                     <h1 css={tw`text-5xl`}>Resource Limits</h1>

@@ -1,27 +1,28 @@
 import tw from 'twin.macro';
 import Reaptcha from 'reaptcha';
-import login from '@/api/auth/login';
 import { object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
+import register from '@/api/auth/register';
 import { useStoreState } from 'easy-peasy';
 import { Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import Button from '@/components/elements/Button';
 import React, { useEffect, useRef, useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
 interface Values {
     username: string;
+    email: string;
     password: string;
 }
 
-const LoginContainer = ({ history }: RouteComponentProps) => {
+const RegisterContainer = ({ history }: RouteComponentProps) => {
     const ref = useRef<Reaptcha>(null);
     const [ token, setToken ] = useState('');
-    const registration = useStoreState(state => state.settings.data?.registration);
 
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError, addFlash } = useFlash();
     const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
 
     useEffect(() => {
@@ -44,15 +45,19 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             return;
         }
 
-        login({ ...values, recaptchaData: token })
+        register({ ...values, recaptchaData: token })
             .then(response => {
                 if (response.complete) {
-                    // @ts-ignore
-                    window.location = response.intended || '/';
+                    history.replace('/auth/login');
+                    addFlash({
+                        key: 'auth:register',
+                        type: 'error',
+                        message: 'Unable to create account.',
+                    });
                     return;
                 }
 
-                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                history.replace('/auth/register');
             })
             .catch(error => {
                 console.error(error);
@@ -68,35 +73,46 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
     return (
         <Formik
             onSubmit={onSubmit}
-            initialValues={{ username: '', password: '' }}
+            initialValues={{ username: '', email: '', password: '' }}
             validationSchema={object().shape({
-                username: string().required('A username or email must be provided.'),
-                password: string().required('Please enter your account password.'),
+                username: string().min(3).required(),
+                email: string().email().required(),
+                password: string().min(8).required(),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
+                <LoginFormContainer title={'Create an Account'} css={tw`w-full flex`}>
+                    <FlashMessageRender byKey={'auth:register'} css={tw`my-3`} />
                     <Field
-                        light
                         type={'text'}
-                        label={'Username or Email'}
+                        label={'Username'}
                         name={'username'}
+                        css={tw`my-3`}
                         disabled={isSubmitting}
                     />
-                    <div css={tw`mt-6`}>
-                        <Field
-                            light
-                            type={'password'}
-                            label={'Password'}
-                            name={'password'}
-                            disabled={isSubmitting}
-                        />
-                    </div>
-                    <div css={tw`mt-6`}>
-                        <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
-                            Login
-                        </Button>
-                    </div>
+                    <Field
+                        type={'email'}
+                        label={'Email Address'}
+                        name={'email'}
+                        css={tw`my-3`}
+                        disabled={isSubmitting}
+                    />
+                    <Field
+                        type={'text'}
+                        label={'Password'}
+                        name={'password'}
+                        css={tw`my-3`}
+                        disabled={isSubmitting}
+                    />
+                    <Button
+                        type={'submit'}
+                        css={tw`my-6`}
+                        size={'xlarge'}
+                        isLoading={isSubmitting}
+                        disabled={isSubmitting}
+                    >
+                        Register
+                    </Button>
                     {recaptchaEnabled &&
                     <Reaptcha
                         ref={ref}
@@ -114,26 +130,16 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                     }
                     <div css={tw`mt-6 text-center`}>
                         <Link
-                            to={'/auth/password'}
+                            to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            Forgot password?
+                            Return to login
                         </Link>
                     </div>
-                    {registration === 'true' &&
-                    <div css={tw`mt-6 text-center`}>
-                        <Link
-                            to={'/auth/register'}
-                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
-                        >
-                            Create an Account
-                        </Link>
-                    </div>
-                    }
                 </LoginFormContainer>
             )}
         </Formik>
     );
 };
 
-export default LoginContainer;
+export default RegisterContainer;

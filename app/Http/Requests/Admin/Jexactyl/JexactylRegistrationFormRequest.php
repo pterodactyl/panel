@@ -1,0 +1,25 @@
+<?php
+
+namespace Pterodactyl\Http\Requests\Admin\Jexactyl;
+
+use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
+
+class JexactylRegistrationFormRequest extends AdminFormRequest
+{
+    /**
+     * @return array
+     */
+    public function rules()
+    {
+        return [
+            'registration:enabled' => 'required|in:true,false',
+            'registration:cpu' => 'required|int',
+            'registration:memory' => 'required|int',
+            'registration:disk' => 'required|int',
+            'registration:slot' => 'required|int',
+            'registration:port' => 'required|int',
+            'registration:backup' => 'required|int',
+            'registration:database' => 'required|int',
+        ];
+    }
+}
