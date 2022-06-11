@@ -12,7 +12,7 @@ export default () => {
         <>
             <EditSubuserModal visible={visible} onModalDismissed={() => setVisible(false)}/>
             <Button onClick={() => setVisible(true)}>
-                <FontAwesomeIcon icon={faUserPlus} css={tw`mr-1`}/> New User
+                <FontAwesomeIcon icon={faUserPlus} css={tw`mr-1`}/> 新用户
             </Button>
         </>
     );
