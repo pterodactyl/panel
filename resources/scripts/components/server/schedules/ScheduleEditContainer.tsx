@@ -36,7 +36,7 @@ const ActivePill = ({ active }: { active: boolean }) => (
             active ? tw`bg-green-600 text-green-100` : tw`bg-red-600 text-red-100`,
         ]}
     >
-        {active ? 'Active' : 'Inactive'}
+        {active ? '已激活' : '未激活'}
     </span>
 );
 
@@ -92,21 +92,21 @@ export default () => {
                                             css={tw`flex items-center rounded-full px-2 py-px text-xs ml-4 uppercase bg-neutral-600 text-white`}
                                         >
                                             <Spinner css={tw`w-3! h-3! mr-2`}/>
-                                            Processing
+                                            正在运行
                                         </span>
                                         :
                                         <ActivePill active={schedule.isActive}/>
                                     }
                                 </h3>
                                 <p css={tw`mt-1 text-sm text-neutral-200`}>
-                                    Last run at:&nbsp;
+                                    上次运行于:&nbsp;
                                     {schedule.lastRunAt ?
                                         format(schedule.lastRunAt, 'MMM do \'at\' h:mma')
                                         :
                                         <span css={tw`text-neutral-300`}>n/a</span>
                                     }
                                     <span css={tw`ml-4 pl-4 border-l-4 border-neutral-600 py-px`}>
-                                        Next run at:&nbsp;
+                                        下次运行于:&nbsp;
                                         {schedule.nextRunAt ?
                                             format(schedule.nextRunAt, 'MMM do \'at\' h:mma')
                                             :
@@ -124,18 +124,18 @@ export default () => {
                                         css={tw`flex-1 mr-4 border-transparent`}
                                         onClick={toggleEditModal}
                                     >
-                                        Edit
+                                        编辑
                                     </Button>
                                     <NewTaskButton schedule={schedule}/>
                                 </Can>
                             </div>
                         </div>
                         <div css={tw`hidden sm:grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 mt-4`}>
-                            <CronBox title={'Minute'} value={schedule.cron.minute}/>
-                            <CronBox title={'Hour'} value={schedule.cron.hour}/>
-                            <CronBox title={'Day (Month)'} value={schedule.cron.dayOfMonth}/>
-                            <CronBox title={'Month'} value={schedule.cron.month}/>
-                            <CronBox title={'Day (Week)'} value={schedule.cron.dayOfWeek}/>
+                            <CronBox title={'分钟'} value={schedule.cron.minute} />
+                            <CronBox title={'小时'} value={schedule.cron.hour} />
+                            <CronBox title={'天（每个月）'} value={schedule.cron.dayOfMonth} />
+                            <CronBox title={'月'} value={schedule.cron.month} />
+                            <CronBox title={'天（每周）'} value={schedule.cron.dayOfWeek} />
                         </div>
                         <div css={tw`bg-neutral-700 rounded-b`}>
                             {schedule.tasks.length > 0 ?

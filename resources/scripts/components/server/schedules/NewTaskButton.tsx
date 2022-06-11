@@ -15,7 +15,7 @@ export default ({ schedule }: Props) => {
         <>
             <TaskDetailsModal schedule={schedule} visible={visible} onModalDismissed={() => setVisible(false)}/>
             <Button onClick={() => setVisible(true)} css={tw`flex-1`}>
-                New Task
+                新任务
             </Button>
         </>
     );

@@ -88,29 +88,28 @@ const EditScheduleModal = ({ schedule }: Props) => {
         >
             {({ isSubmitting }) => (
                 <Form>
-                    <h3 css={tw`text-2xl mb-6`}>{schedule ? 'Edit schedule' : 'Create new schedule'}</h3>
-                    <FlashMessageRender byKey={'schedule:edit'} css={tw`mb-6`}/>
+                    <h3 css={tw`text-2xl mb-6`}>{schedule ? '编辑计划' : '创建新计划'}</h3>
+                    <FlashMessageRender byKey={'schedule:edit'} css={tw`mb-6`} />
                     <Field
                         name={'name'}
-                        label={'Schedule name'}
-                        description={'A human readable identifer for this schedule.'}
+                        label={'计划名'}
+                        description={'此计划的名字'}
                     />
                     <div css={tw`grid grid-cols-2 sm:grid-cols-5 gap-4 mt-6`}>
-                        <Field name={'minute'} label={'Minute'}/>
-                        <Field name={'hour'} label={'Hour'}/>
-                        <Field name={'dayOfMonth'} label={'Day of month'}/>
-                        <Field name={'month'} label={'Month'}/>
-                        <Field name={'dayOfWeek'} label={'Day of week'}/>
+                        <Field name={'minute'} label={'分钟'} />
+                        <Field name={'hour'} label={'小时'} />
+                        <Field name={'dayOfMonth'} label={'每月的某一天'} />
+                        <Field name={'month'} label={'月'} />
+                        <Field name={'dayOfWeek'} label={'每周的某一天'} />
                     </div>
                     <p css={tw`text-neutral-400 text-xs mt-2`}>
-                        The schedule system supports the use of Cronjob syntax when defining when tasks should begin
-                        running. Use the fields above to specify when these tasks should begin running.
+                        计划系统支持在定义任务何时开始运行时使用 Cronjob 语法。 使用上面的字段来指定这些计划任务应该何时开始运行。
                     </p>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <Switch
                             name={'show_cheatsheet'}
-                            description={'Show the cron cheatsheet for some examples.'}
-                            label={'Show Cheatsheet'}
+                            description={'显示 cronjob 的一些例子'}
+                            label={'显示例子'}
                             defaultChecked={showCheatsheet}
                             onChange={() => setShowCheetsheet(s => !s)}
                         />
@@ -123,20 +122,20 @@ const EditScheduleModal = ({ schedule }: Props) => {
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'onlyWhenOnline'}
-                            description={'Only execute this schedule when the server is in a running state.'}
-                            label={'Only When Server Is Online'}
+                            description={'仅在服务器处于运行状态时执行此计划。'}
+                            label={'仅当服务器在线运行时'}
                         />
                     </div>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'enabled'}
-                            description={'This schedule will be executed automatically if enabled.'}
-                            label={'Schedule Enabled'}
+                            description={'如果启用，此计划将自动执行。'}
+                            label={'计划已启用'}
                         />
                     </div>
                     <div css={tw`mt-6 text-right`}>
                         <Button css={tw`w-full sm:w-auto`} type={'submit'} disabled={isSubmitting}>
-                            {schedule ? 'Save changes' : 'Create schedule'}
+                            {schedule ? '保存更改' : '创建计划'}
                         </Button>
                     </div>
                 </Form>

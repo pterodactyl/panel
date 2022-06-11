@@ -36,14 +36,14 @@ const schema = object().shape({
     action: string().required().oneOf([ 'command', 'power', 'backup' ]),
     payload: string().when('action', {
         is: v => v !== 'backup',
-        then: string().required('A task payload must be provided.'),
+        then: string().required('必须提供有效的任务操作。'),
         otherwise: string(),
     }),
     continueOnFailure: boolean(),
-    timeOffset: number().typeError('The time offset must be a valid number between 0 and 900.')
-        .required('A time offset value must be provided.')
-        .min(0, 'The time offset must be at least 0 seconds.')
-        .max(900, 'The time offset must be less than 900 seconds.'),
+    timeOffset: number().typeError('时间偏移必须是 0 到 900 之间的有效数字。')
+        .required('必须提供时间偏移值。')
+        .min(0, '时间偏移至少为 0 秒。')
+        .max(900, '时间偏移必须小于 900 秒。'),
 });
 
 const ActionListener = () => {
@@ -81,7 +81,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
         clearFlashes('schedule:task');
         if (backupLimit === 0 && values.action === 'backup') {
             setSubmitting(false);
-            addError({ message: 'A backup task cannot be created when the server\'s backup limit is set to 0.', key: 'schedule:task' });
+            addError({ message: '当服务器的备份限制设置为 0 时，无法创建备份任务。', key: 'schedule:task' });
         } else {
             createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
                 .then(task => {
@@ -115,31 +115,31 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
             {({ isSubmitting, values }) => (
                 <Form css={tw`m-0`}>
                     <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`}/>
-                    <h2 css={tw`text-2xl mb-6`}>{task ? 'Edit Task' : 'Create Task'}</h2>
+                    <h2 css={tw`text-2xl mb-6`}>{task ? '编辑任务' : '创建任务'}</h2>
                     <div css={tw`flex`}>
                         <div css={tw`mr-2 w-1/3`}>
                             <Label>Action</Label>
                             <ActionListener/>
                             <FormikFieldWrapper name={'action'}>
                                 <FormikField as={Select} name={'action'}>
-                                    <option value={'command'}>Send command</option>
-                                    <option value={'power'}>Send power action</option>
-                                    <option value={'backup'}>Create backup</option>
+                                    <option value={'command'}>发送指令</option>
+                                    <option value={'power'}>发送电源操作</option>
+                                    <option value={'backup'}>创建备份</option>
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>
                         <div css={tw`flex-1 ml-6`}>
                             <Field
                                 name={'timeOffset'}
-                                label={'Time offset (in seconds)'}
-                                description={'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'}
+                                label={'时间偏移（以秒为单位）'}
+                                description={'上一个任务执行后在运行此任务之前等待的时间。 如果这是计划中的第一个任务，则不会应用该任务。'}
                             />
                         </div>
                     </div>
                     <div css={tw`mt-6`}>
                         {values.action === 'command' ?
                             <div>
-                                <Label>Payload</Label>
+                                <Label>任务操作</Label>
                                 <FormikFieldWrapper name={'payload'}>
                                     <FormikField as={Textarea} name={'payload'} rows={6}/>
                                 </FormikFieldWrapper>
@@ -147,13 +147,13 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                             :
                             values.action === 'power' ?
                                 <div>
-                                    <Label>Payload</Label>
+                                    <Label>任务操作</Label>
                                     <FormikFieldWrapper name={'payload'}>
                                         <FormikField as={Select} name={'payload'}>
-                                            <option value={'start'}>Start the server</option>
-                                            <option value={'restart'}>Restart the server</option>
-                                            <option value={'stop'}>Stop the server</option>
-                                            <option value={'kill'}>Terminate the server</option>
+                                            <option value={'start'}>启动服务器实例</option>
+                                            <option value={'restart'}>重启服务器实例</option>
+                                            <option value={'stop'}>关闭服务器实例</option>
+                                            <option value={'kill'}>停止服务器实例</option>
                                         </FormikField>
                                     </FormikFieldWrapper>
                                 </div>
@@ -162,7 +162,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                     <Label>Ignored Files</Label>
                                     <FormikFieldWrapper
                                         name={'payload'}
-                                        description={'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used. If you have reached your backup limit, the oldest backup will be rotated.'}
+                                        description={'可选的。 包括要在此备份中排除的文件和文件夹。 默认情况下，将使用 .pteroignore 文件的内容。 如果您已达到备份限制，则将轮换最早的备份。'}
                                     >
                                         <FormikField as={Textarea} name={'payload'} rows={6}/>
                                     </FormikFieldWrapper>
@@ -172,13 +172,13 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'continueOnFailure'}
-                            description={'Future tasks will be run when this task fails.'}
-                            label={'Continue on Failure'}
+                            description={'当此任务失败时，将运行未来的任务。'}
+                            label={'即使失败也继续执行'}
                         />
                     </div>
                     <div css={tw`flex justify-end mt-6`}>
                         <Button type={'submit'} disabled={isSubmitting}>
-                            {task ? 'Save Changes' : 'Create Task'}
+                            {task ? '保存更改' : '创建任务'}
                         </Button>
                     </div>
                 </Form>

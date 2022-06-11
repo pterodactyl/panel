@@ -40,17 +40,16 @@ export default ({ scheduleId, onDeleted }: Props) => {
         <>
             <ConfirmationModal
                 visible={visible}
-                title={'Delete schedule?'}
-                buttonText={'Yes, delete schedule'}
+                title={'删除计划?'}
+                buttonText={'是'}
                 onConfirmed={onDelete}
                 showSpinnerOverlay={isLoading}
                 onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you want to delete this schedule? All tasks will be removed and any running processes
-                will be terminated.
+                确定要删除此计划吗？ 将删除所有计划下的任务和任何正在运行的进程将被终止。
             </ConfirmationModal>
             <Button css={tw`flex-1 sm:flex-none mr-4 border-transparent`} color={'red'} isSecondary onClick={() => setVisible(true)}>
-                Delete
+                删除
             </Button>
         </>
     );
