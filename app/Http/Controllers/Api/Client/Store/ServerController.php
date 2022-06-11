@@ -148,10 +148,10 @@ class ServerController extends ClientApiController
         $user = $request->user();
 
         if (
-            $user->store_slots < 1 ||
-            $user->store_ports < 1 ||
-            $user->store_cpu < $request->input('cpu') ||
-            $user->store_disk < $request->input('disk') * 1024 ||
+            $user->store_slots < 1 |
+            $user->store_ports < 1 |
+            $user->store_cpu < $request->input('cpu') |
+            $user->store_disk < $request->input('disk') * 1024 |
             $user->store_memory < $request->input('memory') * 1024
         ) {
             throw new DisplayException('Unable to deploy instance: You do not have sufficient resources.');

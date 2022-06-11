@@ -4,11 +4,11 @@ import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import styled from 'styled-components/macro';
+import { useStoreState } from '@/state/hooks';
 import Button from '@/components/elements/Button';
+import purchaseResource from '@/api/store/purchaseResource';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import purchaseResource from '@/api/store/purchaseResource';
-import { useStoreState } from '@/state/hooks';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};

@@ -129,7 +129,7 @@ class ResourceController extends ClientApiController
      * 
      * @throws DisplayException
      */
-    protected function getResource(PurchaseResourceRequest $request): int
+    protected function getResource(PurchaseResourceRequest $request)
     {
         switch ($request->input('resource')) {
             case 'cpu':

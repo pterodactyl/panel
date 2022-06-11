@@ -65,7 +65,7 @@
                             <div class="form-group col-md-12">
                                 <label class="control-label">Panel Logo</label>
                                 <div>
-                                    <input type="text" class="form-control" name="app:logo" value="{{ old('app:logo', config('app.logo')) }}" />
+                                    <input type="text" class="form-control" name="app:logo" value="{{ $logo }}" />
                                     <p class="text-muted"><small>The logo which is used for the Panel&apos;s frontend.</small></p>
                                 </div>
                             </div>

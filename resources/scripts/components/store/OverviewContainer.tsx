@@ -31,7 +31,7 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  ${tw`text-2xl flex flex-row justify-center items-center`};
+    ${tw`text-2xl flex flex-row justify-center items-center`};
 `;
 
 const OverviewContainer = () => {

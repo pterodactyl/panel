@@ -1,18 +1,22 @@
 import tw from 'twin.macro';
-import { hashToPath } from '@/helpers';
 import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
-import { useStoreActions } from '@/state/hooks';
+import Input from '@/components/elements/Input';
+import Label from '@/components/elements/Label';
+import { hashToPath, formatIp } from '@/helpers';
 import Button from '@/components/elements/Button';
 import Spinner from '@/components/elements/Spinner';
 import { CSSTransition } from 'react-transition-group';
 import { NavLink, useLocation } from 'react-router-dom';
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { FileObject } from '@/api/server/files/loadDirectory';
+import { useStoreActions, useStoreState } from '@/state/hooks';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import UploadButton from '@/components/server/files/UploadButton';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
@@ -28,6 +32,8 @@ const sortFiles = (files: FileObject[], searchString: string): FileObject[] => {
 
 export default () => {
     const id = ServerContext.useStoreState(state => state.server.data!.id);
+    const username = useStoreState(state => state.user.data!.username);
+    const sftp = ServerContext.useStoreState(state => state.server.data!.sftpDetails);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState(state => state.files.directory);
@@ -69,12 +75,11 @@ export default () => {
 
     return (
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
-            <input
+            <Input
                 onChange={searchFiles}
-                css={tw`rounded-lg bg-neutral-700 border-2 border-neutral-900 p-2 w-full mb-4`}
-                placeholder={'Search for files...'}
-            >
-            </input>
+                css={tw`mb-4`}
+                placeholder={'Search for files and folders...'}
+            />
             <div css={tw`flex flex-wrap-reverse md:flex-nowrap justify-center mb-4`}>
                 <ErrorBoundary>
                     <FileManagerBreadcrumbs
@@ -137,6 +142,30 @@ export default () => {
                         }
                     </>
             }
+            <Can action={'file.sftp'}>
+                <TitledGreyBox title={'SFTP Details'} css={tw`mt-8 md:mt-6`}>
+                    <div>
+                        <Label>Server Address</Label>
+                        <CopyOnClick text={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}>
+                            <Input
+                                type={'text'}
+                                value={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}
+                                readOnly
+                            />
+                        </CopyOnClick>
+                    </div>
+                    <div css={tw`mt-6`}>
+                        <Label>Username</Label>
+                        <CopyOnClick text={`${username}.${id}`}>
+                            <Input
+                                type={'text'}
+                                value={`${username}.${id}`}
+                                readOnly
+                            />
+                        </CopyOnClick>
+                    </div>
+                </TitledGreyBox>
+            </Can>
         </ServerContentBlock>
     );
 };

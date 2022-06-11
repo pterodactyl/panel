@@ -17,6 +17,7 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import InstallListener from '@/components/server/InstallListener';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+import EditContainer from '@/components/server/edit/EditContainer';
 import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import RequireServerPermission from '@/hoc/RequireServerPermission';
@@ -151,6 +152,11 @@ export default () => {
                                         <div css={tw`flex items-center justify-between`}>Settings <Icon.Settings css={tw`ml-1`} size={18} /> </div>
                                     </NavLink>
                                 </Can>
+                                <Can action={[ 'settings.*' ]} matchAny>
+                                    <NavLink to={`${match.url}/edit`}>
+                                        <div css={tw`flex items-center justify-between`}>Edit <Icon.Edit css={tw`ml-1`} size={18} /> </div>
+                                    </NavLink>
+                                </Can>
                                 {rootAdmin &&
                                 <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
                                     <div css={tw`flex items-center justify-between`}>Admin <Icon.ExternalLink css={tw`ml-1`} size={18} /> </div>
@@ -209,6 +215,7 @@ export default () => {
                                     </Route>
                                     <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
+                                    <Route path={`${match.path}/edit`} component={EditContainer} exact/>
                                     <Route path={'*'} component={NotFound}/>
                                 </Switch>
                             </TransitionRouter>

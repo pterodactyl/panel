@@ -21,7 +21,7 @@ export default () => {
                     <div css={tw`flex items-center bg-neutral-900 rounded p-3 text-yellow-500`}>
                         <Icon.HelpCircle css={tw`h-4 w-auto mr-2`} />
                         <p css={tw`text-sm text-neutral-100`}>
-                            Are your admin settings for the storefront are correct?
+                            Are your admin settings for the storefront correct?
                             <a href={'/admin/jexactyl'} css={tw`text-blue-500 ml-1`}>Check</a>
                         </p>
                     </div>
