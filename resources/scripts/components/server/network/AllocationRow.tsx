@@ -68,18 +68,18 @@ const AllocationRow = ({ allocation }: Props) => {
                     {allocation.alias ?
                         <CopyOnClick text={allocation.alias}><Code css={tw`w-40 truncate`}>{allocation.alias}</Code></CopyOnClick> :
                         <CopyOnClick text={formatIp(allocation.ip)}><Code>{formatIp(allocation.ip)}</Code></CopyOnClick>}
-                    <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
+                    <Label>{allocation.alias ? '域名' : 'IP 地址'}</Label>
                 </div>
                 <div css={tw`w-16 md:w-24 overflow-hidden`}>
                     <Code>{allocation.port}</Code>
-                    <Label>Port</Label>
+                    <Label>端口</Label>
                 </div>
             </div>
             <div css={tw`mt-4 w-full md:mt-0 md:flex-1 md:w-auto`}>
                 <InputSpinner visible={loading}>
                     <Textarea
                         css={tw`bg-neutral-800 hover:border-neutral-600 border-transparent`}
-                        placeholder={'Notes'}
+                        placeholder={'备注'}
                         defaultValue={allocation.notes || undefined}
                         onChange={e => setAllocationNotes(e.currentTarget.value)}
                     />
@@ -100,7 +100,7 @@ const AllocationRow = ({ allocation }: Props) => {
                                 color={'primary'}
                                 onClick={setPrimaryAllocation}
                             >
-                                Make Primary
+                                设为首选
                             </Button>
                         </Can>
                     </>
