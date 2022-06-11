@@ -87,10 +87,10 @@ export default ({ className }: WithClassname) => {
                                 autoFocus
                                 id={'directoryName'}
                                 name={'directoryName'}
-                                label={'Directory Name'}
+                                label={'目录名'}
                             />
                             <p css={tw`text-xs mt-2 text-neutral-400 break-all`}>
-                                <span css={tw`text-neutral-200`}>This directory will be created as</span>
+                                <span css={tw`text-neutral-200`}>此目录将被创建于</span>
                                 &nbsp;/home/container/
                                 <span css={tw`text-cyan-200`}>
                                     {join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
@@ -98,7 +98,7 @@ export default ({ className }: WithClassname) => {
                             </p>
                             <div css={tw`flex justify-end`}>
                                 <Button css={tw`mt-8`}>
-                                    Create Directory
+                                    创建目录
                                 </Button>
                             </div>
                         </Form>
@@ -106,7 +106,7 @@ export default ({ className }: WithClassname) => {
                 )}
             </Formik>
             <Button isSecondary onClick={() => setVisible(true)} className={className}>
-                Create Directory
+                创建目录
             </Button>
         </>
     );

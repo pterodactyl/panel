@@ -34,7 +34,7 @@ const MassActionsBar = () => {
     const onClickCompress = () => {
         setLoading(true);
         clearFlashes('files');
-        setLoadingMessage('Archiving files...');
+        setLoadingMessage('正在压缩文件...');
 
         compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
@@ -47,7 +47,7 @@ const MassActionsBar = () => {
         setLoading(true);
         setShowConfirm(false);
         clearFlashes('files');
-        setLoadingMessage('Deleting files...');
+        setLoadingMessage('正在删除文件...');
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
@@ -69,14 +69,14 @@ const MassActionsBar = () => {
                 </SpinnerOverlay>
                 <ConfirmationModal
                     visible={showConfirm}
-                    title={'Delete these files?'}
-                    buttonText={'Yes, Delete Files'}
+                    title={'删除这些文件?'}
+                    buttonText={'是'}
                     onConfirmed={onClickConfirmDeletion}
                     onModalDismissed={() => setShowConfirm(false)}
                 >
-                    Are you sure you want to delete {selectedFiles.length} file(s)?
+                    你确定删除这些共计 {selectedFiles.length} 个文件?
                     <br/>
-                    Deleting the file(s) listed below is a permanent operation, you cannot undo this action.
+                    删除文件是一项永久性操作，无法撤销！
                     <br/>
                     <code>
                         { selectedFiles.slice(0, 15).map(file => (
@@ -98,13 +98,13 @@ const MassActionsBar = () => {
                 }
                 <div css={tw`pointer-events-auto rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={() => setShowMove(true)}>
-                        <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> Move
+                        <FontAwesomeIcon icon={faLevelUpAlt} css={tw`mr-2`}/> 移动
                     </Button>
                     <Button size={'xsmall'} css={tw`mr-4`} onClick={onClickCompress}>
-                        <FontAwesomeIcon icon={faFileArchive} css={tw`mr-2`}/> Archive
+                        <FontAwesomeIcon icon={faFileArchive} css={tw`mr-2`}/> 压缩
                     </Button>
                     <Button size={'xsmall'} color={'red'} isSecondary onClick={() => setShowConfirm(true)}>
-                        <FontAwesomeIcon icon={faTrashAlt} css={tw`mr-2`}/> Delete
+                        <FontAwesomeIcon icon={faTrashAlt} css={tw`mr-2`}/> 删除
                     </Button>
                 </div>
             </div>

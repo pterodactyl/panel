@@ -130,12 +130,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         <>
             <ConfirmationModal
                 visible={showConfirmation}
-                title={`Delete this ${file.isFile ? 'File' : 'Directory'}?`}
-                buttonText={`Yes, Delete ${file.isFile ? 'File' : 'Directory'}`}
+                title={`删除文件 ${file.isFile ? '文件' : '目录'}?`}
+                buttonText={`是,删除 ${file.isFile ? '文件' : '目录'}`}
                 onConfirmed={doDeletion}
                 onModalDismissed={() => setShowConfirmation(false)}
             >
-                Deleting files is a permanent operation, you cannot undo this action.
+                删除文件是永久性操作，您无法撤消此操作。
             </ConfirmationModal>
             <DropdownMenu
                 ref={onClickRef}
@@ -165,29 +165,29 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 )}
             >
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
-                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
-                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'}/>
+                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'重命名'}/>
+                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'移动'}/>
+                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'权限'}/>
                 </Can>
                 {file.isFile &&
                 <Can action={'file.create'}>
-                    <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
+                    <Row onClick={doCopy} icon={faCopy} title={'复制'}/>
                 </Can>
                 }
                 {file.isArchiveType() ?
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'解压'}/>
                     </Can>
                     :
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                        <Row onClick={doArchive} icon={faFileArchive} title={'压缩'}/>
                     </Can>
                 }
                 {file.isFile &&
-                    <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
+                    <Row onClick={doDownload} icon={faFileDownload} title={'下载'}/>
                 }
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger/>
+                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'删除'} $danger/>
                 </Can>
             </DropdownMenu>
         </>
