@@ -52,7 +52,7 @@ export default () => {
                         className={classNames(btnStyles.button, btnStyles.text)}
                         onClick={() => setFilters(value => ({ ...value, filters: {} }))}
                     >
-                        Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'}/>
+                        重设过滤器 <XCircleIcon className={'w-4 h-4 ml-2'}/>
                     </Link>
                 </div>
             }
