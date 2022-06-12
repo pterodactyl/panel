@@ -1,19 +1,20 @@
-{{-- Pterodactyl - Panel --}}
+{{-- Pterodactyl - Panel which Sinicizated by iLwork.CN STUDIO --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Simplified Chinese Translation Copyright (c) 2021 - 2022 Ice Ling <iceling@ilwork.cn> --}}
 
 {{-- This software is licensed under the terms of the MIT license. --}}
 {{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
-    List Users
+    用户列表
 @endsection
 
 @section('content-header')
-    <h1>Users<small>All registered users on the system.</small></h1>
+    <h1>用户<small>此系统上所有注册用户.</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li class="active">Users</li>
+        <li><a href="{{ route('admin.index') }}">管理</a></li>
+        <li class="active">用户</li>
     </ol>
 @endsection
 
@@ -22,14 +23,14 @@
     <div class="col-xs-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">User List</h3>
+                <h3 class="box-title">用户列表</h3>
                 <div class="box-tools search01">
                     <form action="{{ route('admin.users') }}" method="GET">
                         <div class="input-group input-group-sm">
                             <input type="text" name="filter[email]" class="form-control pull-right" value="{{ request()->input('filter.email') }}" placeholder="Search">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
-                                <a href="{{ route('admin.users.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">Create New</button></a>
+                                <a href="{{ route('admin.users.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">新建</button></a>
                             </div>
                         </div>
                     </form>
@@ -40,12 +41,12 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Email</th>
-                            <th>Client Name</th>
-                            <th>Username</th>
-                            <th class="text-center">2FA</th>
-                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</span></th>
-                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</span></th>
+                            <th>电子邮箱地址</th>
+                            <th>姓名</th>
+                            <th>用户名</th>
+                            <th class="text-center">双重验证</th>
+                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">拥有的服务器实例</span></th>
+                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">作为子用户拥有的服务器实例</span></th>
                             <th></th>
                         </tr>
                     </thead>
