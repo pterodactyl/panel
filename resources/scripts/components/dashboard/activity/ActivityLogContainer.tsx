@@ -51,7 +51,7 @@ export default () => {
                 <div className={'flex justify-end mb-2'}>
                     <Link
                         to={'#'}
-                        className={classNames(btnStyles.button, btnStyles.text)}
+                        className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
                         onClick={() => setFilters(value => ({ ...value, filters: {} }))}
                     >
                         Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'}/>
@@ -67,7 +67,7 @@ export default () => {
                             key={`${activity.event}|${activity.timestamp.toString()}`}
                             className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0'}
                         >
-                            <div className={'col-span-1 flex items-center justify-center select-none'}>
+                            <div className={'col-span-2 sm:col-span-1 flex items-center justify-center select-none'}>
                                 <div className={'flex items-center w-8 h-8 rounded-full bg-gray-600 overflow-hidden'}>
                                     {activity.relationships.actor ?
                                         <img src={activity.relationships.actor.image} alt={'User avatar'}/>
@@ -76,13 +76,13 @@ export default () => {
                                     }
                                 </div>
                             </div>
-                            <div className={'col-span-9'}>
+                            <div className={'col-span-8 sm:col-span-9'}>
                                 <div className={'flex items-center text-gray-50'}>
                                     {activity.relationships.actor?.username || 'system'}
                                     <span className={'text-gray-400'}>&nbsp;&mdash;&nbsp;</span>
                                     <Link
                                         to={`?${queryTo({ event: activity.event })}`}
-                                        className={'transition-colors duration-75 hover:text-cyan-400'}
+                                        className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                                     >
                                         {activity.event}
                                     </Link>
@@ -92,7 +92,7 @@ export default () => {
                                         </Tooltip>
                                     }
                                 </div>
-                                <p className={'mt-1 text-sm'}>
+                                <p className={'mt-1 text-sm break-words line-clamp-2 pr-4'}>
                                     <Translate ns={'activity'} values={activity.properties}>
                                         {activity.event.replace(':', '.')}
                                     </Translate>
@@ -100,7 +100,7 @@ export default () => {
                                 <div className={'mt-1 flex items-center text-sm'}>
                                     <Link
                                         to={`?${queryTo({ ip: activity.ip })}`}
-                                        className={'transition-colors duration-75 hover:text-cyan-400'}
+                                        className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                                     >
                                         {activity.ip}
                                     </Link>
