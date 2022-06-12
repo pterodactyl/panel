@@ -94,7 +94,7 @@
                                 <p class="text-muted small">应该发送到服务器进程以正常停止它们的命令。 如果你需要输出 <code>SIGINT</code> 你应该填入 <code>^C</code> 于此。</p>
                             </div>
                             <div class="form-group">
-                                <label for="pConfigLogs" class="form-label">日志选项</label>
+                                <label for="pConfigLogs" class="form-label">日志设置</label>
                                 <textarea data-action="handle-tabs" id="pConfigLogs" name="config_logs" class="form-control" rows="6">{{ old('config_logs') }}</textarea>
                                 <p class="text-muted small">这里应该用 JSON 格式语法来让系统判断是否进行日志记录并指定日志存储的位置。</p>
                             </div>
