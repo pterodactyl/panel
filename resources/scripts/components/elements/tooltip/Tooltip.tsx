@@ -42,7 +42,7 @@ export default ({
     children,
     disabled = false,
     alwaysOpen = false,
-    delay = { open: 500 },
+    delay = 0,
     rest = 30,
     ...props
 }: Props) => {
