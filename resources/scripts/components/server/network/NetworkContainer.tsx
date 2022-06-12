@@ -53,7 +53,7 @@ const NetworkContainer = () => {
     };
 
     return (
-        <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
+        <ServerContentBlock showFlashKey={'server:network'} title={'网络'}>
             {!data ?
                 <Spinner size={'large'} centered/>
                 :
