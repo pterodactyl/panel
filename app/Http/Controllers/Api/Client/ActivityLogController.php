@@ -21,7 +21,7 @@ class ActivityLogController extends ClientApiController
                 AllowedFilter::partial('event'),
             ])
             ->allowedSorts(['timestamp'])
-            ->paginate(min($request->query('per_page', 50), 100))
+            ->paginate(min($request->query('per_page', 25), 100))
             ->appends($request->query());
 
         return $this->fractal->collection($activity)
