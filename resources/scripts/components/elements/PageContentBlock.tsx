@@ -34,7 +34,7 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                             target={'_blank'}
                             css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
                         >
-                            Pterodactyl&reg;
+                            Pterodactyl which Sinicizated by iLwork.CN STUDIO&reg;
                         </a>
                         &nbsp;&copy; 2015 - {(new Date()).getFullYear()}
                     </p>
