@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
+import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import React, { useEffect, useState } from 'react';
 import ContentBox from '@/components/elements/ContentBox';
@@ -28,6 +29,7 @@ const Container = styled.div`
 
 const BalanceContainer = () => {
     const [ resources, setResources ] = useState<Resources>();
+    const gateways = useStoreState(state => state.settings.data!.gateways);
 
     useEffect(() => {
         getResources()
@@ -78,8 +80,8 @@ const BalanceContainer = () => {
                     showFlashes={'account:balance'}
                     css={tw`mt-8 sm:mt-0 sm:ml-8`}
                 >
-                    <PaypalPurchaseForm />
-                    <StripePurchaseForm />
+                    {gateways.paypal === 'true' && <PaypalPurchaseForm />}
+                    {gateways.stripe === 'true' && <StripePurchaseForm />}
                 </ContentBox>
             </Container>
         </PageContentBlock>

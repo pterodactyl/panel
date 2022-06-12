@@ -3,6 +3,7 @@ import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
+import Spinner from '@/components/elements/Spinner';
 import SidePanel from '@/components/elements/SidePanel';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import { NotFound } from '@/components/elements/ScreenBlock';
@@ -45,29 +46,31 @@ export default () => {
                 </SubNavigation>
             }
             <TransitionRouter>
-                <Switch location={location}>
-                    <Route path={'/'} exact>
-                        <DashboardContainer/>
-                    </Route>
-                    <Route path={'/account'} exact>
-                        <AccountOverviewContainer/>
-                    </Route>
-                    <Route path={'/account/security'} exact>
-                        <AccountSecurityContainer />
-                    </Route>
-                    <Route path={'/account/api'} exact>
-                        <AccountApiContainer/>
-                    </Route>
-                    <Route path={'/account/ssh'} exact>
-                        <AccountSSHContainer/>
-                    </Route>
-                    <Route path={'/account/activity'} exact>
-                        <ActivityLogContainer />
-                    </Route>
-                    <Route path={'*'}>
-                        <NotFound/>
-                    </Route>
-                </Switch>
+                <React.Suspense fallback={<Spinner centered/>}>
+                    <Switch location={location}>
+                        <Route path={'/'} exact>
+                            <DashboardContainer/>
+                        </Route>
+                        <Route path={'/account'} exact>
+                            <AccountOverviewContainer/>
+                        </Route>
+                        <Route path={'/account/security'} exact>
+                            <AccountSecurityContainer />
+                        </Route>
+                        <Route path={'/account/api'} exact>
+                            <AccountApiContainer/>
+                        </Route>
+                        <Route path={'/account/ssh'} exact>
+                            <AccountSSHContainer/>
+                        </Route>
+                        <Route path={'/account/activity'} exact>
+                            <ActivityLogContainer />
+                        </Route>
+                        <Route path={'*'}>
+                            <NotFound/>
+                        </Route>
+                    </Switch>
+                </React.Suspense>
             </TransitionRouter>
         </>
     );

@@ -7,6 +7,10 @@ export interface SiteSettings {
         enabled: boolean;
         siteKey: string;
     };
+    gateways: {
+        paypal: string;
+        stripe: string;
+    };
     logo: string;
     registration: string;
 }
