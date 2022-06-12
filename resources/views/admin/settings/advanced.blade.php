@@ -1,6 +1,5 @@
-{{-- Pterodactyl - Panel which Sinicizated by iLwork.CN STUDIO --}}
-{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
-{{-- Simplified Chinese Translation Copyright (c) 2021 - 2022 Ice Ling <iceling@ilwork.cn> --}}
+@extends('layouts.admin')
+@include('partials/admin.settings.nav', ['activeTab' => 'advanced'])
 
 @section('title')
     高级设置
