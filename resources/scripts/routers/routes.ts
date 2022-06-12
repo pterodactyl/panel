@@ -6,11 +6,11 @@ import UsersContainer from '@/components/server/users/UsersContainer';
 import BackupContainer from '@/components/server/backups/BackupContainer';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import StartupContainer from '@/components/server/startup/StartupContainer';
+import FileManagerContainer from '@/components/server/files/FileManagerContainer';
+import SettingsContainer from '@/components/server/settings/SettingsContainer';
 
-const FileManagerContainer = lazy(() => import('@/components/server/files/FileManagerContainer'));
 const FileEditContainer = lazy(() => import('@/components/server/files/FileEditContainer'));
 const ScheduleEditContainer = lazy(() => import('@/components/server/schedules/ScheduleEditContainer'));
-const SettingsContainer = lazy(() => import('@/components/server/settings/SettingsContainer'));
 
 interface ServerRouteDefinition {
     path: string;

@@ -1,4 +1,4 @@
-import React, { lazy, memo } from 'react';
+import React, { memo } from 'react';
 import { ServerContext } from '@/state/server';
 import Can from '@/components/elements/Can';
 import ContentContainer from '@/components/elements/ContentContainer';
@@ -7,14 +7,13 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import isEqual from 'react-fast-compare';
 import PowerControls from '@/components/server/PowerControls';
-import { EulaModalFeature, JavaVersionModalFeature, GSLTokenModalFeature, PIDLimitModalFeature, SteamDiskSpaceFeature } from '@feature/index';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import Spinner from '@/components/elements/Spinner';
+import Features from '@feature/Features';
+import Console from '@/components/server/Console';
+import StatGraphs from '@/components/server/StatGraphs';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
-
-const ChunkedConsole = lazy(() => import(/* webpackChunkName: "console" */'@/components/server/Console'));
-const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/components/server/StatGraphs'));
 
 const ServerConsole = () => {
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
@@ -53,17 +52,11 @@ const ServerConsole = () => {
             <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
                 <Spinner.Suspense>
                     <ErrorBoundary>
-                        <ChunkedConsole/>
+                        <Console/>
                     </ErrorBoundary>
-                    <ChunkedStatGraphs/>
+                    <StatGraphs/>
                 </Spinner.Suspense>
-                <React.Suspense fallback={null}>
-                    {eggFeatures.includes('eula') && <EulaModalFeature/>}
-                    {eggFeatures.includes('java_version') && <JavaVersionModalFeature/>}
-                    {eggFeatures.includes('gsl_token') && <GSLTokenModalFeature/>}
-                    {eggFeatures.includes('pid_limit') && <PIDLimitModalFeature/>}
-                    {eggFeatures.includes('steam_disk_space') && <SteamDiskSpaceFeature/>}
-                </React.Suspense>
+                <Features enabled={eggFeatures} />
             </div>
         </ServerContentBlock>
     );
