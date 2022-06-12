@@ -16,6 +16,7 @@ import {
     useRole,
 } from '@floating-ui/react-dom-interactions';
 import { AnimatePresence, motion } from 'framer-motion';
+import classNames from 'classnames';
 
 interface Props {
     rest?: number;
@@ -30,11 +31,11 @@ interface Props {
     children: React.ReactElement;
 }
 
-const arrowSides: Record<Side, Side> = {
-    top: 'bottom',
-    bottom: 'top',
-    left: 'right',
-    right: 'left',
+const arrowSides: Record<Side, string> = {
+    top: 'bottom-[-6px] left-0',
+    bottom: 'top-[-6px] left-0',
+    right: 'top-0 left-[-6px]',
+    left: 'top-0 right-[-6px]',
 };
 
 export default ({
@@ -103,9 +104,8 @@ export default ({
                                 ref={arrowEl}
                                 style={{
                                     transform: `translate(${Math.round(ax || 0)}px, ${Math.round(ay || 0)}px) rotate(45deg)`,
-                                    [side]: '-6px',
                                 }}
-                                className={'absolute top-0 left-0 bg-gray-900 w-3 h-3'}
+                                className={classNames('absolute bg-gray-900 w-3 h-3', side)}
                             />
                         }
                     </motion.div>
