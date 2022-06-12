@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCogs, faLayerGroup, faSignOutAlt, faUserCircle } from '@fortawesome/free-solid-svg-icons';
@@ -9,36 +10,18 @@ import tw, { theme } from 'twin.macro';
 import styled from 'styled-components/macro';
 import http from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { useState } from 'react';
-
-const Navigation = styled.div`
-    ${tw`w-full bg-neutral-900 shadow-md overflow-x-auto`};
-    
-    & > div {
-        ${tw`mx-auto w-full flex items-center`};
-    }
-    
-    & #logo {
-        ${tw`flex-1`};
-        
-        & > a {
-            ${tw`text-2xl font-header px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150`};
-        }
-    }
-`;
+import Tooltip from '@/components/elements/tooltip/Tooltip';
 
 const RightNavigation = styled.div`
-    ${tw`flex h-full items-center justify-center`};
-    
     & > a, & > button, & > .navigation-link {
         ${tw`flex items-center h-full no-underline text-neutral-300 px-6 cursor-pointer transition-all duration-150`};
-        
+
         &:active, &:hover {
             ${tw`text-neutral-100 bg-black`};
         }
-        
+
         &:active, &:hover, &.active {
-            box-shadow: inset 0 -2px ${theme`colors.cyan.700`.toString()};
+            box-shadow: inset 0 -2px ${theme`colors.cyan.600`.toString()};
         }
     }
 `;
@@ -57,32 +40,43 @@ export default () => {
     };
 
     return (
-        <Navigation>
-            <SpinnerOverlay visible={isLoggingOut} />
-            <div css={tw`mx-auto w-full flex items-center`} style={{ maxWidth: '1200px', height: '3.5rem' }}>
-                <div id={'logo'}>
-                    <Link to={'/'}>
+        <div className={'w-full bg-neutral-900 shadow-md overflow-x-auto'}>
+            <SpinnerOverlay visible={isLoggingOut}/>
+            <div className={'mx-auto w-full flex items-center h-[3.5rem] max-w-[1200px]'}>
+                <div id={'logo'} className={'flex-1'}>
+                    <Link
+                        to={'/'}
+                        className={'text-2xl font-header px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'}
+                    >
                         {name}
                     </Link>
                 </div>
-                <RightNavigation>
+                <RightNavigation className={'flex h-full items-center justify-center'}>
                     <SearchContainer/>
-                    <NavLink to={'/'} exact>
-                        <FontAwesomeIcon icon={faLayerGroup}/>
-                    </NavLink>
-                    <NavLink to={'/account'}>
-                        <FontAwesomeIcon icon={faUserCircle}/>
-                    </NavLink>
+                    <Tooltip placement={'bottom'} content={'Dashboard'}>
+                        <NavLink to={'/'} exact>
+                            <FontAwesomeIcon icon={faLayerGroup}/>
+                        </NavLink>
+                    </Tooltip>
+                    <Tooltip placement={'bottom'} content={'Account Settings'}>
+                        <NavLink to={'/account'}>
+                            <FontAwesomeIcon icon={faUserCircle}/>
+                        </NavLink>
+                    </Tooltip>
                     {rootAdmin &&
-                    <a href={'/admin'} rel={'noreferrer'}>
-                        <FontAwesomeIcon icon={faCogs}/>
-                    </a>
+                        <Tooltip placement={'bottom'} content={'Admin'}>
+                            <a href={'/admin'} rel={'noreferrer'}>
+                                <FontAwesomeIcon icon={faCogs}/>
+                            </a>
+                        </Tooltip>
                     }
-                    <button onClick={onTriggerLogout}>
-                        <FontAwesomeIcon icon={faSignOutAlt}/>
-                    </button>
+                    <Tooltip placement={'bottom'} content={'Sign Out'}>
+                        <button onClick={onTriggerLogout}>
+                            <FontAwesomeIcon icon={faSignOutAlt}/>
+                        </button>
+                    </Tooltip>
                 </RightNavigation>
             </div>
-        </Navigation>
+        </div>
     );
 };
