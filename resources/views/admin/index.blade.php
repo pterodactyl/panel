@@ -33,9 +33,9 @@
             </div>
             <div class="box-body">
                 @if ($version->isLatestPanel())
-                    您正运行 Pterodactyl 最新翼龙面板版本 <code>{{ config('app.version') }}</code>.
+                    您正运行 Pterodactyl 最新翼龙面板版本 <code>{{ config('app.version') }}</code>. 冰凌家汉化版本 <code>v1.8.1_003</code>.
                 @else
-                    您目前使用的面板 <strong>并非最新版!</strong> 目前最新版本为 <a href="https://github.com/Pterodactyl/Panel/releases/v{{ $version->getPanel() }}" target="_blank"><code>{{ $version->getPanel() }}</code></a> 您正运行的版本为 <code>{{ config('app.version') }}</code>.
+                    您目前使用的面板 <strong>并非最新版!</strong> 目前最新版本为 <a href="https://github.com/Pterodactyl/Panel/releases/v{{ $version->getPanel() }}" target="_blank"><code>{{ $version->getPanel() }}</code></a> 您正运行的版本为 <code>{{ config('app.version') }}</code>. 冰凌家汉化版本 v1.8.1_003.
                 @endif
             </div>
         </div>
