@@ -45,7 +45,7 @@ const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
                     {copied ?
                         <Toast>
                             <div>
-                                <p>Copied &quot;{text}&quot; to clipboard.</p>
+                                <p>已复制 &quot;{text}&quot; 到剪切板.</p>
                             </div>
                         </Toast>
                         :

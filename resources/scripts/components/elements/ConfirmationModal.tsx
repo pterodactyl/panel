@@ -22,7 +22,7 @@ const ConfirmationModal: React.FC<Props> = ({ title, children, buttonText, onCon
             </div>
             <div css={tw`flex flex-wrap items-center justify-end mt-8`}>
                 <Button isSecondary onClick={() => dismiss()} css={tw`w-full sm:w-auto border-transparent`}>
-                    Cancel
+                    取消
                 </Button>
                 <Button color={'red'} css={tw`w-full sm:w-auto mt-4 sm:mt-0 sm:ml-4`} onClick={() => onConfirmed()}>
                     {buttonText}
