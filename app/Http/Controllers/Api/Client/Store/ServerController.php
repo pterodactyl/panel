@@ -12,12 +12,14 @@ use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Transformers\Api\Client\Store\EggTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreEggsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 
 class ServerController extends ClientApiController
 {
     private NodeRepository $nodeRepository;
+    private SettingsRepositoryInterface $settings;
     private ServerCreationService $creationService;
 
     /**
@@ -25,10 +27,12 @@ class ServerController extends ClientApiController
      */
     public function __construct(
         NodeRepository $nodeRepository,
+        SettingsRepositoryInterface $settings,
         ServerCreationService $creationService,
     )
     {
         parent::__construct();
+        $this->settings = $settings;
         $this->nodeRepository = $nodeRepository;
         $this->creationService = $creationService;
     }
@@ -83,6 +87,11 @@ class ServerController extends ClientApiController
             'image' => 'ghcr.io/pterodactyl/yolks:java_17',
             'startup' => $egg->startup,
             'start_on_completion' => true,
+            // Settings for the renewal system. Even if the renewal system is disabled,
+            // mark this server as enabled - so that if the renewal system is enabled again,
+            // it'll be part of the renewable servers.
+            'renewable' => true,
+            'renewal' => $this->settings->get('jexactyl::renewal:default'),
         ];
 
         foreach (DB::table('egg_variables')->where('egg_id', $egg->id)->get() as $var) {

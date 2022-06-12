@@ -38,6 +38,7 @@ class SettingComposer
                 'siteKey' => config('recaptcha.website_key') ?? '',
             ],
             'registration' => $this->settings->get('jexactyl::registration:enabled', false),
+            'renewal' => $this->settings->get('jexactyl::renewal:enabled', false),
         ]);
     }
 }

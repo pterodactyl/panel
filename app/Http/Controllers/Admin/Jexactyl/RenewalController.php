@@ -7,10 +7,10 @@ use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\Jexactyl\StoreFormRequest;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\RenewalFormRequest;
 
-class StoreController extends Controller
+class RenewalController extends Controller
 {
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -41,23 +41,16 @@ class StoreController extends Controller
     }
 
     /**
-     * Render the Jexactyl store settings interface.
+     * Render the Jexactyl settings interface.
      */
     public function index(): View
     {
-        $prefix = 'jexactyl::store:';
-
-        return view('admin.jexactyl.store', [
+        $prefix = 'jexactyl::renewal:';
+    
+        return view('admin.jexactyl.renewal', [
             'enabled' => $this->settings->get($prefix.'enabled', false),
-            'paypal_enabled' => $this->settings->get($prefix.'paypal:enabled', false),
-            'stripe_enabled' => $this->settings->get($prefix.'stripe:enabled', false),
-            'cpu' => $this->settings->get($prefix.'cost:cpu', 100),
-            'memory' => $this->settings->get($prefix.'cost:memory', 50),
-            'disk' => $this->settings->get($prefix.'cost:disk', 25),
-            'slot' => $this->settings->get($prefix.'cost:slot', 250),
-            'port' => $this->settings->get($prefix.'cost:port', 20),
-            'backup' => $this->settings->get($prefix.'cost:backup', 20),
-            'database' => $this->settings->get($prefix.'cost:database', 20),
+            'default' => $this->settings->get($prefix.'default', 7),
+            'cost' => $this->settings->get($prefix.'cost', 20),
         ]);
     }
 
@@ -67,16 +60,15 @@ class StoreController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(StoreFormRequest $request): RedirectResponse
+    public function update(RenewalFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
-            $this->settings->set('jexactyl::' . $key, $value);
+            $this->settings->set('jexactyl::renewal:' . $key, $value);
         }
 
         $this->kernel->call('queue:restart');
-        $this->alert->warning('If you have enabled a payment gateway, please remember to configure them. <a href="https://documentation.jexactyl.com">Documentation</a>')->flash();
-        $this->alert->success('Jexactyl Storefront has been updated.')->flash();
+        $this->alert->success('Jexactyl Renewal System has been updated.')->flash();
 
-        return redirect()->route('admin.jexactyl.store');
+        return redirect()->route('admin.jexactyl.renewal');
     }
 }

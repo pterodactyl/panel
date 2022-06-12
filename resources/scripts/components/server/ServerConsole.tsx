@@ -2,16 +2,18 @@ import tw from 'twin.macro';
 import isEqual from 'react-fast-compare';
 import React, { lazy, memo } from 'react';
 import Can from '@/components/elements/Can';
+import { useStoreState } from '@/state/hooks';
 import Fade from '@/components/elements/Fade';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
 import StatBars from '@/components/server/StatBars';
 import PowerControls from '@/components/server/PowerControls';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
-import ServerConfigurationBlock from './ServerConfigurationBlock';
 import ContentContainer from '@/components/elements/ContentContainer';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
+import ServerRenewalBlock from '@/components/server/ServerRenewalBlock';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ServerConfigurationBlock from '@/components/server/ServerConfigurationBlock';
 import {
     EulaModalFeature,
     JavaVersionModalFeature,
@@ -27,6 +29,7 @@ const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/c
 
 const ServerConsole = () => {
     const status = ServerContext.useStoreState(state => state.status.value);
+    const renewal = useStoreState(state => state.settings.data?.renewal);
     const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
@@ -36,7 +39,11 @@ const ServerConsole = () => {
             <div css={tw`flex flex-wrap`}>
                 <div css={tw` w-full lg:w-1/4`}>
                     <ServerDetailsBlock />
-                    <ServerConfigurationBlock />
+                    {renewal === 'true' ?
+                        <ServerRenewalBlock />
+                        :
+                        <ServerConfigurationBlock />
+                    }
                     <StatBars />
                     {isInstalling ?
                         <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>

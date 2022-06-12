@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 
 use Illuminate\View\View;
-use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 

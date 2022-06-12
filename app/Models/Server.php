@@ -16,6 +16,8 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property string $uuid
  * @property string $uuidShort
  * @property int $node_id
+ * @property boolean $renewable
+ * @property int $renewal
  * @property string $name
  * @property string $description
  * @property string|null $status

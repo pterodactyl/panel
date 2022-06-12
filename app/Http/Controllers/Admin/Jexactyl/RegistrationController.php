@@ -8,7 +8,7 @@ use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Jexactyl\JexactylRegistrationFormRequest;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\RegistrationFormRequest;
 
 class RegistrationController extends Controller
 {
@@ -65,7 +65,7 @@ class RegistrationController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(JexactylRegistrationFormRequest $request): RedirectResponse
+    public function update(RegistrationFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
             $this->settings->set('jexactyl::' . $key, $value);

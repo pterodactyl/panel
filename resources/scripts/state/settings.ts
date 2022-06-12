@@ -13,6 +13,7 @@ export interface SiteSettings {
     };
     logo: string;
     registration: string;
+    renewal: string;
 }
 
 export interface SettingsStore {

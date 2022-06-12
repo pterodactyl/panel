@@ -87,9 +87,11 @@ Route::group(['prefix' => 'settings'], function () {
 Route::group(['prefix' => 'jexactyl'], function () {
     Route::get('/', [Admin\Jexactyl\IndexController::class, 'index'])->name('admin.jexactyl.index');
     Route::get('/store', [Admin\Jexactyl\StoreController::class, 'index'])->name('admin.jexactyl.store');
+    Route::get('/renewal', [Admin\Jexactyl\RenewalController::class, 'index'])->name('admin.jexactyl.renewal');
     Route::get('/registration', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.registration');
 
     Route::patch('/store', [Admin\Jexactyl\StoreController::class, 'update'])->name('admin.jexactyl.store');
+    Route::patch('/renewal', [Admin\Jexactyl\RenewalController::class, 'update'])->name('admin.jexactyl.renewal');
     Route::patch('/registration', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.registration');
 });
 

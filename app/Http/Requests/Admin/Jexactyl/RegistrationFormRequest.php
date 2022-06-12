@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Requests\Admin\Jexactyl;
 
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class JexactylRegistrationFormRequest extends AdminFormRequest
+class RegistrationFormRequest extends AdminFormRequest
 {
     /**
      * @return array
