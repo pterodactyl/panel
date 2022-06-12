@@ -1,15 +1,10 @@
 import React, { useState } from 'react';
-import { isEmptyObject } from '@/helpers';
 import { ClipboardListIcon } from '@heroicons/react/outline';
 import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 
 export default ({ meta }: { meta: Record<string, unknown> }) => {
     const [ open, setOpen ] = useState(false);
-
-    if (isEmptyObject(meta)) {
-        return null;
-    }
 
     return (
         <div className={'self-center mx-4'}>

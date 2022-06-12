@@ -73,7 +73,7 @@ export default ({ activity, children }: Props) => {
                         </Tooltip>
                     </div>
                 </div>
-                <ActivityLogMetaButton meta={activity.properties}/>
+                {activity.hasAdditionalMetadata && <ActivityLogMetaButton meta={activity.properties}/>}
             </div>
         </div>
     );

@@ -25,6 +25,7 @@ interface ActivityLog extends Model<'actor'> {
     ip: string;
     description: string | null;
     properties: Record<string, string | unknown>;
+    hasAdditionalMetadata: boolean;
     timestamp: Date;
     relationships: {
         actor: User | null;
