@@ -9,7 +9,7 @@ import PaginationFooter from '@/components/elements/table/PaginationFooter';
 import { ActivityLogFilters } from '@/api/account/activity';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
-import { styles as btnStyles } from '@/components/elements/button';
+import { styles as btnStyles } from '@/components/elements/button/index';
 import { XCircleIcon } from '@heroicons/react/solid';
 
 export default () => {
