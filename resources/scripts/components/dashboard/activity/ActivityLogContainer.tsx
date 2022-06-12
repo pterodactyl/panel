@@ -13,9 +13,11 @@ import { useLocation } from 'react-router';
 import Spinner from '@/components/elements/Spinner';
 import { styles as btnStyles } from '@/components/elements/button/index';
 import classNames from 'classnames';
+import Translate from '@/components/elements/Translate';
 
 export default () => {
     const location = useLocation();
+
     const { clearAndAddHttpError } = useFlashKey('account');
     const [ filters, setFilters ] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
     const { data, isValidating, error } = useActivityLogs(filters, {
@@ -90,6 +92,11 @@ export default () => {
                                         </Tooltip>
                                     }
                                 </div>
+                                <p className={'mt-1 text-sm'}>
+                                    <Translate ns={'activity'} values={activity.properties}>
+                                        {activity.event.replace(':', '.')}
+                                    </Translate>
+                                </p>
                                 <div className={'mt-1 flex items-center text-sm'}>
                                     <Link
                                         to={`?${queryTo({ ip: activity.ip })}`}

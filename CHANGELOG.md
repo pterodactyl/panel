@@ -3,7 +3,17 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v1.8.2
+## v1.9.0
+### Added
+* Added support for using Tailwind classes inside components using `className={}` rather than having to use `twin.macro` with the `css={}` prop.
+* Added HeadlessUI and Heroicons packages.
+* Added new `Tooltip.tsx` component to support displaying tooltips within the Panel.
+
+### Changed
+* Upgraded From TailwindCSS 2 to 3 — for most people this should have minimal if any impact.
+* Reduced the number of custom colors in use — by default we now use Tailwind's default color pallet, with the exception of a custom gray scheme.
+* **[deprecated]** The use of `neutral` and `primary` have been deprecated in class names, prefer `gray` and `blue` respectively.
+
 ### Fixed
 * Fixes a bug causing a 404 error when attempting to delete a database from a server in the admin control panel.
 * Fixes console input auto-capitalizing and auto-correcting when entering text on some mobile devices.

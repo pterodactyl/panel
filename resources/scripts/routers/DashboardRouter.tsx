@@ -10,6 +10,7 @@ import SubNavigation from '@/components/elements/SubNavigation';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import { useLocation } from 'react-router';
 import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
+import Spinner from '@/components/elements/Spinner';
 
 export default () => {
     const location = useLocation();
@@ -28,26 +29,28 @@ export default () => {
                 </SubNavigation>
             }
             <TransitionRouter>
-                <Switch location={location}>
-                    <Route path={'/'} exact>
-                        <DashboardContainer/>
-                    </Route>
-                    <Route path={'/account'} exact>
-                        <AccountOverviewContainer/>
-                    </Route>
-                    <Route path={'/account/api'} exact>
-                        <AccountApiContainer/>
-                    </Route>
-                    <Route path={'/account/ssh'} exact>
-                        <AccountSSHContainer/>
-                    </Route>
-                    <Route path={'/account/activity'} exact>
-                        <ActivityLogContainer />
-                    </Route>
-                    <Route path={'*'}>
-                        <NotFound/>
-                    </Route>
-                </Switch>
+                <React.Suspense fallback={<Spinner centered/>}>
+                    <Switch location={location}>
+                        <Route path={'/'} exact>
+                            <DashboardContainer/>
+                        </Route>
+                        <Route path={'/account'} exact>
+                            <AccountOverviewContainer/>
+                        </Route>
+                        <Route path={'/account/api'} exact>
+                            <AccountApiContainer/>
+                        </Route>
+                        <Route path={'/account/ssh'} exact>
+                            <AccountSSHContainer/>
+                        </Route>
+                        <Route path={'/account/activity'} exact>
+                            <ActivityLogContainer/>
+                        </Route>
+                        <Route path={'*'}>
+                            <NotFound/>
+                        </Route>
+                    </Switch>
+                </React.Suspense>
             </TransitionRouter>
         </>
     );

@@ -88,7 +88,7 @@ export interface FractalPaginatedResponse extends FractalResponseList {
             total_pages: number;
             /* eslint-enable camelcase */
         };
-    }
+    };
 }
 
 export interface PaginatedResult<T> {
