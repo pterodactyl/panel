@@ -62,6 +62,7 @@ Route::group([
     Route::get('/', [Client\Servers\ServerController::class, 'index'])->name('api:client:server.view');
     Route::get('/websocket', Client\Servers\WebsocketController::class)->name('api:client:server.ws');
     Route::get('/resources', Client\Servers\ResourceUtilizationController::class)->name('api:client:server.resources');
+    Route::get('/activity', Client\Servers\ActivityLogController::class)->name('api:client:server.activity');
 
     Route::post('/command', [Client\Servers\CommandController::class, 'index']);
     Route::post('/power', [Client\Servers\PowerController::class, 'index']);
