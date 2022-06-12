@@ -15,9 +15,9 @@ import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/components/elements/Spinner';
 
-const DashboardRouter = lazy(() => import(/* webpackChunkName: "dash" */'@/routers/DashboardRouter'));
-const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
-const AuthenticationRouter = lazy(() => import('@/routers/AuthenticationRouter'));
+const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */'@/routers/DashboardRouter'));
+const ServerRouter = lazy(() => import(/* webpackChunkName: "server" */'@/routers/ServerRouter'));
+const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */'@/routers/AuthenticationRouter'));
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
