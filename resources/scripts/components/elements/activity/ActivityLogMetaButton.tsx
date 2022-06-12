@@ -7,7 +7,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
     const [ open, setOpen ] = useState(false);
 
     return (
-        <div className={'self-center mx-4'}>
+        <div className={'self-center md:px-4'}>
             <Dialog
                 open={open}
                 onClose={() => setOpen(false)}

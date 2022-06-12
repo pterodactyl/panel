@@ -26,7 +26,7 @@ export default ({ activity, children }: Props) => {
 
     return (
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
-            <div className={'col-span-2 sm:col-span-1 flex items-center justify-center select-none'}>
+            <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
                 <div className={'flex items-center w-8 h-8 rounded-full bg-gray-600 overflow-hidden'}>
                     {actor ?
                         <img src={actor.image} alt={'User avatar'}/>
@@ -35,8 +35,8 @@ export default ({ activity, children }: Props) => {
                     }
                 </div>
             </div>
-            <div className={'col-span-8 sm:col-span-9 flex'}>
-                <div className={'flex-1'}>
+            <div className={'col-span-10 sm:col-span-9 flex'}>
+                <div className={'flex-1 px-4 sm:px-0'}>
                     <div className={'flex items-center text-gray-50'}>
                         <Tooltip placement={'top'} content={actor?.email || 'System User'}>
                             <span>{actor?.username || 'System'}</span>
