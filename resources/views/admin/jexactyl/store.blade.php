@@ -31,13 +31,33 @@
                     <div class="box-body">
                         <div class="row">
                             <div class="form-group col-md-4">
-                                <label class="control-label">Enabled</label>
+                                <label class="control-label">Storefront Enabled</label>
                                 <div>
                                     <select name="store:enabled" class="form-control">
                                         <option @if ($enabled == 'false') selected @endif value="false">Disabled</option>
                                         <option @if ($enabled == 'true') selected @endif value="true">Enabled</option>
                                     </select>
                                     <p class="text-muted"><small>Determines whether users can access the store UI.</small></p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">PayPal Enabled</label>
+                                <div>
+                                    <select name="store:paypal:enabled" class="form-control">
+                                        <option @if ($paypal_enabled == 'false') selected @endif value="false">Disabled</option>
+                                        <option @if ($paypal_enabled == 'true') selected @endif value="true">Enabled</option>
+                                    </select>
+                                    <p class="text-muted"><small>Determines whether users can buy credits with PayPal.</small></p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Stripe Enabled</label>
+                                <div>
+                                    <select name="store:stripe:enabled" class="form-control">
+                                        <option @if ($stripe_enabled == 'false') selected @endif value="false">Disabled</option>
+                                        <option @if ($stripe_enabled == 'true') selected @endif value="true">Enabled</option>
+                                    </select>
+                                    <p class="text-muted"><small>Determines whether users can buy credits with Stripe.</small></p>
                                 </div>
                             </div>
                         </div>

@@ -33,8 +33,8 @@ class StoreComposer
         $view->with('storeConfiguration', [
             'enabled' => $this->getSetting('enabled'),
             'gateways' => [
-                'paypal' => $this->getSetting('paypal:enabled'),
-                'stripe' => $this->getSetting('stripe:enabled'),
+                'paypal' => $this->getSetting('paypal:enabled') ?? false,
+                'stripe' => $this->getSetting('stripe:enabled') ?? false,
             ],
             'cost' => [
                 'cpu' => $this->getSetting('cost:cpu'),

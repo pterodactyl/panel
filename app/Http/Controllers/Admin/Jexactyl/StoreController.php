@@ -49,6 +49,8 @@ class StoreController extends Controller
 
         return view('admin.jexactyl.store', [
             'enabled' => $this->settings->get($prefix.'enabled', false),
+            'paypal_enabled' => $this->settings->get($prefix.'paypal:enabled', false),
+            'stripe_enabled' => $this->settings->get($prefix.'stripe:enabled', false),
             'cpu' => $this->settings->get($prefix.'cost:cpu', 100),
             'memory' => $this->settings->get($prefix.'cost:memory', 50),
             'disk' => $this->settings->get($prefix.'cost:disk', 25),
@@ -72,6 +74,7 @@ class StoreController extends Controller
         }
 
         $this->kernel->call('queue:restart');
+        $this->alert->warning('If you have enabled a payment gateway, please remember to configure them. <a href="https://documentation.jexactyl.com">Documentation</a>')->flash();
         $this->alert->success('Jexactyl Storefront has been updated.')->flash();
 
         return redirect()->route('admin.jexactyl.store');
