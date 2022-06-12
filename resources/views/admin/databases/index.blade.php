@@ -1,5 +1,6 @@
-{{-- Pterodactyl - Panel --}}
+{{-- Pterodactyl - Panel which Sinicizated by iLwork.CN STUDIO --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Simplified Chinese Translation Copyright (c) 2021 - 2022 Ice Ling <iceling@ilwork.cn> --}}
 
 {{-- This software is licensed under the terms of the MIT license. --}}
 {{-- https://opensource.org/licenses/MIT --}}
@@ -101,7 +102,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pNodeId" class="form-label">关联的节点</label>
+                        <label for="pNodeId" class="form-label">关联的节点服务器</label>
                         <select name="node_id" id="pNodeId" class="form-control">
                             <option value="">无</option>
                             @foreach($locations as $location)
@@ -112,7 +113,7 @@
                                 </optgroup>
                             @endforeach
                         </select>
-                        <p class="text-muted small">，此设置除了将数据库默认添加到所选节点上的服务器以外没有任何作用.</p>
+                        <p class="text-muted small">此设置除了将数据库默认添加到所选节点上的服务器以外没有任何作用.</p>
                     </div>
                 </div>
                 <div class="modal-footer">

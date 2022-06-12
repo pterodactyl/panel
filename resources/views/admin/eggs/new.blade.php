@@ -1,20 +1,21 @@
-{{-- Pterodactyl - Panel --}}
+{{-- Pterodactyl - Panel which Sinicizated by iLwork.CN STUDIO --}}
 {{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
+{{-- Simplified Chinese Translation Copyright (c) 2021 - 2022 Ice Ling <iceling@ilwork.cn> --}}
 
 {{-- This software is licensed under the terms of the MIT license. --}}
 {{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
-    Nests &rarr; New Egg
+    预设配置
 @endsection
 
 @section('content-header')
-    <h1>New Egg<small>Create a new Egg to assign to servers.</small></h1>
+    <h1>新预设<small>为服务器实例创建新预设.</small></h1>
     <ol class="breadcrumb">
-        <li><a href="{{ route('admin.index') }}">Admin</a></li>
-        <li><a href="{{ route('admin.nests') }}">Nests</a></li>
-        <li class="active">New Egg</li>
+        <li><a href="{{ route('admin.index') }}">管理</a></li>
+        <li><a href="{{ route('admin.nests') }}">预设组</a></li>
+        <li class="active">新预设</li>
     </ol>
 @endsection
 
@@ -24,43 +25,43 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Configuration</h3>
+                    <h3 class="box-title">配置</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pNestId" class="form-label">Associated Nest</label>
+                                <label for="pNestId" class="form-label">所属预设组</label>
                                 <div>
                                     <select name="nest_id" id="pNestId">
                                         @foreach($nests as $nest)
                                             <option value="{{ $nest->id }}" {{ old('nest_id') != $nest->id ?: 'selected' }}>{{ $nest->name }} &lt;{{ $nest->author }}&gt;</option>
                                         @endforeach
                                     </select>
-                                    <p class="text-muted small">Think of a Nest as a category. You can put multiple Eggs in a nest, but consider putting only Eggs that are related to each other in each Nest.</p>
+                                    <p class="text-muted small">官方将此功能定义为 Nest 和 Egg，为了中文语境下更方便理解，将其翻译为预设组和预设。</p>
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="pName" class="form-label">Name</label>
+                                <label for="pName" class="form-label">预设名</label>
                                 <input type="text" id="pName" name="name" value="{{ old('name') }}" class="form-control" />
-                                <p class="text-muted small">A simple, human-readable name to use as an identifier for this Egg. This is what users will see as their game server type.</p>
+                                <p class="text-muted small">一个简单的、易读的，用作此预设的标识符。 这是用户将看到的游戏服务器类型.</p>
                             </div>
                             <div class="form-group">
-                                <label for="pDescription" class="form-label">Description</label>
+                                <label for="pDescription" class="form-label">描述</label>
                                 <textarea id="pDescription" name="description" class="form-control" rows="8">{{ old('description') }}</textarea>
-                                <p class="text-muted small">A description of this Egg.</p>
+                                <p class="text-muted small">预设的描述.</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pDockerImage" class="control-label">Docker Images</label>
+                                <label for="pDockerImage" class="control-label">Docker 镜像</label>
                                 <textarea id="pDockerImages" name="docker_images" rows="4" placeholder="quay.io/pterodactyl/service" class="form-control">{{ old('docker_images') }}</textarea>
-                                <p class="text-muted small">The docker images available to servers using this egg. Enter one per line. Users will be able to select from this list of images if more than one value is provided.</p>
+                                <p class="text-muted small">使用这个预设的服务器可用的 Docker 镜像。 每行输入一个。 如果提供了多个值，用户将能够从此图像列表中自行选择。</p>
                             </div>
                             <div class="form-group">
-                                <label for="pStartup" class="control-label">Startup Command</label>
+                                <label for="pStartup" class="control-label">启动命令</label>
                                 <textarea id="pStartup" name="startup" class="form-control" rows="10">{{ old('startup') }}</textarea>
-                                <p class="text-muted small">The default startup command that should be used for new servers created with this Egg. You can change this per-server as needed.</p>
+                                <p class="text-muted small">用于此预设创建的新服务器的默认启动命令。 您可以根据需要更改每个服务器。</p>
                             </div>
                         </div>
                     </div>
@@ -70,51 +71,51 @@
         <div class="col-xs-12">
             <div class="box">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Process Management</h3>
+                    <h3 class="box-title">进程管理识别</h3>
                 </div>
                 <div class="box-body">
                     <div class="row">
                         <div class="col-xs-12">
                             <div class="alert alert-warning">
-                                <p>All fields are required unless you select a separate option from the 'Copy Settings From' dropdown, in which case fields may be left blank to use the values from that option.</p>
+                                <p>除非您从“复制设置自”下拉菜单中选择单独的选项，否则下方所有框框都是必填的，在使用复制设置情况下，框框可以留空以使用原预设中的值。</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pConfigFrom" class="form-label">Copy Settings From</label>
+                                <label for="pConfigFrom" class="form-label">复制设置自</label>
                                 <select name="config_from" id="pConfigFrom" class="form-control">
-                                    <option value="">None</option>
+                                    <option value="">无</option>
                                 </select>
-                                <p class="text-muted small">If you would like to default to settings from another Egg select it from the dropdown above.</p>
+                                <p class="text-muted small">如果您想默认使用另一个预设的设置，请从上面的下拉列表中选择它。</p>
                             </div>
                             <div class="form-group">
-                                <label for="pConfigStop" class="form-label">Stop Command</label>
+                                <label for="pConfigStop" class="form-label">关机命令</label>
                                 <input type="text" id="pConfigStop" name="config_stop" class="form-control" value="{{ old('config_stop') }}" />
-                                <p class="text-muted small">The command that should be sent to server processes to stop them gracefully. If you need to send a <code>SIGINT</code> you should enter <code>^C</code> here.</p>
+                                <p class="text-muted small">应该发送到服务器进程以正常停止它们的命令。 如果你需要输出 <code>SIGINT</code> 你应该填入 <code>^C</code> 于此。</p>
                             </div>
                             <div class="form-group">
-                                <label for="pConfigLogs" class="form-label">Log Configuration</label>
+                                <label for="pConfigLogs" class="form-label">日志选项</label>
                                 <textarea data-action="handle-tabs" id="pConfigLogs" name="config_logs" class="form-control" rows="6">{{ old('config_logs') }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of where log files are stored, and whether or not the daemon should be creating custom logs.</p>
+                                <p class="text-muted small">这里应该用 JSON 格式语法来让系统判断是否进行日志记录并指定日志存储的位置。</p>
                             </div>
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
-                                <label for="pConfigFiles" class="form-label">Configuration Files</label>
+                                <label for="pConfigFiles" class="form-label">配置文件</label>
                                 <textarea data-action="handle-tabs" id="pConfigFiles" name="config_files" class="form-control" rows="6">{{ old('config_files') }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of configuration files to modify and what parts should be changed.</p>
+                                <p class="text-muted small">这里应该使用 JSON 格式语法来让系统判断更改那些配置文件以及更改何处。</p>
                             </div>
                             <div class="form-group">
-                                <label for="pConfigStartup" class="form-label">Start Configuration</label>
+                                <label for="pConfigStartup" class="form-label">启动识别</label>
                                 <textarea data-action="handle-tabs" id="pConfigStartup" name="config_startup" class="form-control" rows="6">{{ old('config_startup') }}</textarea>
-                                <p class="text-muted small">This should be a JSON representation of what values the daemon should be looking for when booting a server to determine completion.</p>
+                                <p class="text-muted small">这里应该使用 JSON 格式语法来让系统判断服务端程序是否已正常启动完成。</p>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-success btn-sm pull-right">Create</button>
+                    <button type="submit" class="btn btn-success btn-sm pull-right">创建</button>
                 </div>
             </div>
         </div>
