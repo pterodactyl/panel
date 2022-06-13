@@ -58,17 +58,19 @@ class AuthenticateServerAccess
             }
         }
 
-        try {
-            $server->validateCurrentState();
-        } catch (ServerStateConflictException $exception) {
-            // Still allow users to get information about their server if it is installing or
-            // being transferred.
-            if (!$request->routeIs('api:client:server.view')) {
-                if ($server->isSuspended() && !$request->routeIs('api:client:server.resources')) {
-                    throw $exception;
-                }
-                if (!$user->root_admin || !$request->routeIs($this->except)) {
-                    throw $exception;
+        if (!$request->routeIs('api:client:server.delete')) {
+            try {
+                $server->validateCurrentState();
+            } catch (ServerStateConflictException $exception) {
+                // Still allow users to get information about their server if it is installing or
+                // being transferred.
+                if (!$request->routeIs('api:client:server.view')) {
+                    if ($server->isSuspended() && !$request->routeIs('api:client:server.resources')) {
+                        throw $exception;
+                    }
+                    if (!$user->root_admin || !$request->routeIs($this->except)) {
+                        throw $exception;
+                    }
                 }
             }
         }
