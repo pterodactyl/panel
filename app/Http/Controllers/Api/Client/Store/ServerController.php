@@ -106,10 +106,13 @@ class ServerController extends ClientApiController
         };
 
         $user->update([
-            'store_slots' => $user->store_slots - 1,
             'store_cpu' => $user->store_cpu - $request->input('cpu'),
             'store_memory' => $user->store_memory - $memory,
             'store_disk' => $user->store_disk - $disk,
+            'store_slots' => $user->store_slots - 1,
+            'store_ports' => $user->store_ports - $request->input('ports'),
+            'store_backups' => $user->store_backups - $request->input('backups'),
+            'store_databases' => $user->store_databases - $request->input('databases'),
         ]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
