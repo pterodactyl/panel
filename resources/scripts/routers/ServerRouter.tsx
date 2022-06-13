@@ -12,9 +12,9 @@ import { CSSTransition } from 'react-transition-group';
 import SidePanel from '@/components/elements/SidePanel';
 import ServerConsole from '@/components/server/ServerConsole';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
+import useWindowDimensions from '@/plugins/useWindowDimensions';
 import SubNavigation from '@/components/elements/SubNavigation';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
-import useWindowDimensions from '@/plugins/useWindowDimensions';
 import InstallListener from '@/components/server/InstallListener';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import EditContainer from '@/components/server/edit/EditContainer';
@@ -24,11 +24,11 @@ import RequireServerPermission from '@/hoc/RequireServerPermission';
 import ServerInstallSvg from '@/assets/images/server_installing.svg';
 import MobileNavigation from '@/components/elements/MobileNavigation';
 import UsersContainer from '@/components/server/users/UsersContainer';
+import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import BackupContainer from '@/components/server/backups/BackupContainer';
 import FileEditContainer from '@/components/server/files/FileEditContainer';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import StartupContainer from '@/components/server/startup/StartupContainer';
-import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
@@ -98,7 +98,7 @@ export default () => {
 
     return (
         <React.Fragment key={'server-router'}>
-            {width > 768 ? <SidePanel /> : <MobileNavigation />}
+            {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
             {(!uuid || !id) ?
                 error ?
                     <ServerError message={error}/>

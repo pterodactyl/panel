@@ -23,7 +23,7 @@ export default () => {
 
     return (
         <>
-            {width > 768 ? <SidePanel /> : <MobileNavigation />}
+            {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
             {location.pathname.startsWith('/account') &&
                 <SubNavigation>
                     <div>

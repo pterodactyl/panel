@@ -25,20 +25,22 @@ const Navigation = styled.div`
 `;
 
 const RightNavigation = styled.div`
+    ${tw`flex h-full items-center justify-center`};
+    
     & > a, & > button, & > .navigation-link {
         ${tw`flex items-center h-full no-underline text-neutral-300 px-4 cursor-pointer transition-all duration-150`};
-
         &:active, &:hover {
             ${tw`text-neutral-100 bg-black`};
         }
         &:active, &:hover, &.active {
-            box-shadow: inset 0 -2px ${theme`colors.cyan.600`.toString()};
+            box-shadow: inset 0 -2px ${theme`colors.cyan.700`.toString()};
         }
     }
 `;
 
 export default () => {
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
+    const enabled = useStoreState(state => state.storefront.data!.enabled);
     const [ isLoggingOut, setIsLoggingOut ] = useState(false);
 
     const onTriggerLogout = () => {
@@ -61,13 +63,15 @@ export default () => {
                     <NavLink to={'/account'}>
                         <Icon.User size={20} />
                     </NavLink>
-                    <NavLink to={'/store'}>
-                        <Icon.ShoppingCart size={20} />
-                    </NavLink>
+                    {enabled === 'true' &&
+                        <NavLink to={'/store'}>
+                            <Icon.ShoppingCart size={20} />
+                        </NavLink>
+                    }
                     {rootAdmin &&
-                    <a href={'/admin'} rel={'noreferrer'}>
-                        <Icon.Settings size={20} />
-                    </a>
+                        <a href={'/admin'} rel={'noreferrer'}>
+                            <Icon.Settings size={20} />
+                        </a>
                     }
                     <button onClick={onTriggerLogout}>
                         <Icon.LogOut size={20} />

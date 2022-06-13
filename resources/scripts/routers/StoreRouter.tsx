@@ -14,7 +14,6 @@ import MobileNavigation from '@/components/elements/MobileNavigation';
 import CreateContainer from '@/components/store/create/CreateContainer';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import ProductsContainer from '@/components/store/resources/ProductsContainer';
-import StoreError from '@/components/store/error/StoreError';
 
 const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();
@@ -23,7 +22,7 @@ const StoreRouter = () => {
 
     return (
         <>
-            {width > 768 ? <SidePanel /> : <MobileNavigation />}
+            {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
             <SubNavigation>
                 <div>
                     <NavLink to={`${match.url}`} exact>
@@ -53,9 +52,6 @@ const StoreRouter = () => {
                     </Route>
                     <Route path={`${match.path}/edit`} exact>
                         <EditContainer />
-                    </Route>
-                    <Route path={`${match.path}/error`} exact>
-                        <StoreError />
                     </Route>
                     <Route path={'*'}>
                         <NotFound />
