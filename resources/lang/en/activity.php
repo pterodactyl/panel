@@ -8,18 +8,18 @@
  */
 return [
     'auth' => [
-        'fail' => 'Failed login attempt',
-        'success' => 'Successfully logged in',
-        'password-reset' => 'Reset account password',
-        'reset-password' => 'Sending password reset email',
-        'checkpoint' => 'Prompting for second factor authentication',
-        'recovery-token' => 'Used recovery token as second factory for login',
-        'token' => 'Provided valid second factor authentication token for login',
+        'fail' => 'Failed log in',
+        'success' => 'Logged in',
+        'password-reset' => 'Password reset',
+        'reset-password' => 'Requested password reset',
+        'checkpoint' => 'Two-factor authentication requested',
+        'recovery-token' => 'Used two-factor recovery token',
+        'token' => 'Solved two-factor challenge',
     ],
     'user' => [
         'account' => [
-            'email-changed' => 'Updated account email from <strong>:old</strong> to <strong>:new</strong>',
-            'password-changed' => 'Updated account password',
+            'email-changed' => 'Changed email from <strong>:old</strong> to <strong>:new</strong>',
+            'password-changed' => 'Changed password',
         ],
         'api-key' => [
             'create' => 'Created new API key <strong>:identifier</strong>',
@@ -30,8 +30,8 @@ return [
             'delete' => 'Removed SSH key <strong>:fingerprint</strong> from account',
         ],
         'two-factor' => [
-            'create' => 'Enabled two-factor authentication for account',
-            'delete' => 'Disabled two-factor authentication for account',
+            'create' => 'Enabled two-factor auth',
+            'delete' => 'Disabled two-factor auth',
         ],
     ],
     'server' => [

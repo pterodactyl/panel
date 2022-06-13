@@ -1,11 +1,8 @@
-import React from 'react';
+import React, { lazy } from 'react';
 import { hot } from 'react-hot-loader/root';
 import { Route, Router, Switch } from 'react-router-dom';
 import { StoreProvider } from 'easy-peasy';
 import { store } from '@/state';
-import DashboardRouter from '@/routers/DashboardRouter';
-import ServerRouter from '@/routers/ServerRouter';
-import AuthenticationRouter from '@/routers/AuthenticationRouter';
 import { SiteSettings } from '@/state/settings';
 import ProgressBar from '@/components/elements/ProgressBar';
 import { NotFound } from '@/components/elements/ScreenBlock';
@@ -16,6 +13,11 @@ import { setupInterceptors } from '@/api/interceptors';
 import AuthenticatedRoute from '@/components/elements/AuthenticatedRoute';
 import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
+import Spinner from '@/components/elements/Spinner';
+
+const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */'@/routers/DashboardRouter'));
+const ServerRouter = lazy(() => import(/* webpackChunkName: "server" */'@/routers/ServerRouter'));
+const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */'@/routers/AuthenticationRouter'));
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -63,15 +65,21 @@ const App = () => {
                     <Router history={history}>
                         <Switch>
                             <Route path={'/auth'}>
-                                <AuthenticationRouter/>
+                                <Spinner.Suspense>
+                                    <AuthenticationRouter/>
+                                </Spinner.Suspense>
                             </Route>
                             <AuthenticatedRoute path={'/server/:id'}>
-                                <ServerContext.Provider>
-                                    <ServerRouter/>
-                                </ServerContext.Provider>
+                                <Spinner.Suspense>
+                                    <ServerContext.Provider>
+                                        <ServerRouter/>
+                                    </ServerContext.Provider>
+                                </Spinner.Suspense>
                             </AuthenticatedRoute>
                             <AuthenticatedRoute path={'/'}>
-                                <DashboardRouter/>
+                                <Spinner.Suspense>
+                                    <DashboardRouter/>
+                                </Spinner.Suspense>
                             </AuthenticatedRoute>
                             <Route path={'*'}>
                                 <NotFound/>

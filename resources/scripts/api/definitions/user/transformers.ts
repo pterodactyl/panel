@@ -36,6 +36,7 @@ export default class Transformers {
             ip: attributes.ip,
             description: attributes.description,
             properties: attributes.properties,
+            hasAdditionalMetadata: attributes.has_additional_metadata ?? false,
             timestamp: new Date(attributes.timestamp),
             relationships: {
                 actor: transform(actor as FractalResponseData, this.toUser, null),

@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faSearch } from '@fortawesome/free-solid-svg-icons';
 import useEventListener from '@/plugins/useEventListener';
 import SearchModal from '@/components/dashboard/search/SearchModal';
+import Tooltip from '@/components/elements/tooltip/Tooltip';
 
 export default () => {
     const [ visible, setVisible ] = useState(false);
@@ -24,9 +25,11 @@ export default () => {
                 onDismissed={() => setVisible(false)}
             />
             }
-            <div className={'navigation-link'} onClick={() => setVisible(true)}>
-                <FontAwesomeIcon icon={faSearch}/>
-            </div>
+            <Tooltip placement={'bottom'} content={'Search'}>
+                <div className={'navigation-link'} onClick={() => setVisible(true)}>
+                    <FontAwesomeIcon icon={faSearch}/>
+                </div>
+            </Tooltip>
         </>
     );
 };

@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -19,8 +19,7 @@ import { ServerContext } from '@/state/server';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
 import { dirname } from 'path';
-
-const LazyCodemirrorEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/CodemirrorEditor'));
+import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
 
 export default () => {
     const [ error, setError ] = useState('');
@@ -116,7 +115,7 @@ export default () => {
             />
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading}/>
-                <LazyCodemirrorEditor
+                <CodemirrorEditor
                     mode={mode}
                     filename={hash.replace(/^#/, '')}
                     onModeChanged={setMode}

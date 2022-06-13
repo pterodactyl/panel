@@ -1,23 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { ActivityLogFilters, useActivityLogs } from '@/api/account/activity';
+import { useActivityLogs } from '@/api/server/activity';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { useFlashKey } from '@/plugins/useFlash';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Link } from 'react-router-dom';
-import PaginationFooter from '@/components/elements/table/PaginationFooter';
-import { DesktopComputerIcon, XCircleIcon } from '@heroicons/react/solid';
-import { useLocation } from 'react-router';
 import Spinner from '@/components/elements/Spinner';
-import { styles as btnStyles } from '@/components/elements/button/index';
-import classNames from 'classnames';
 import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import PaginationFooter from '@/components/elements/table/PaginationFooter';
+import { ActivityLogFilters } from '@/api/account/activity';
+import { Link } from 'react-router-dom';
+import classNames from 'classnames';
+import { styles as btnStyles } from '@/components/elements/button/index';
+import { XCircleIcon } from '@heroicons/react/solid';
 
 export default () => {
-    const location = useLocation();
-
-    const { clearAndAddHttpError } = useFlashKey('account');
+    const { clearAndAddHttpError } = useFlashKey('server:activity');
     const [ filters, setFilters ] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
+
     const { data, isValidating, error } = useActivityLogs(filters, {
         revalidateOnMount: true,
         revalidateOnFocus: false,
@@ -34,8 +32,8 @@ export default () => {
     }, [ error ]);
 
     return (
-        <PageContentBlock title={'Account Activity Log'}>
-            <FlashMessageRender byKey={'account'}/>
+        <ServerContentBlock title={'Activity Log'}>
+            <FlashMessageRender byKey={'server:activity'}/>
             {(filters.filters?.event || filters.filters?.ip) &&
                 <div className={'flex justify-end mb-2'}>
                     <Link
@@ -43,7 +41,7 @@ export default () => {
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
                         onClick={() => setFilters(value => ({ ...value, filters: {} }))}
                     >
-                        重设过滤器 <XCircleIcon className={'w-4 h-4 ml-2'}/>
+                        Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'}/>
                     </Link>
                 </div>
             }
@@ -53,11 +51,7 @@ export default () => {
                 <div className={'bg-gray-700'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
-                            {typeof activity.properties.useragent === 'string' &&
-                                <Tooltip content={activity.properties.useragent} placement={'top'}>
-                                    <DesktopComputerIcon className={'ml-2 w-4 h-4 cursor-pointer'}/>
-                                </Tooltip>
-                            }
+                            <span/>
                         </ActivityLogEntry>
                     ))}
                 </div>
@@ -66,6 +60,6 @@ export default () => {
                 pagination={data.pagination}
                 onPageSelect={page => setFilters(value => ({ ...value, page }))}
             />}
-        </PageContentBlock>
+        </ServerContentBlock>
     );
 };
