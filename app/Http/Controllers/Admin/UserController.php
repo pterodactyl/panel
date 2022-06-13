@@ -193,9 +193,16 @@ class UserController extends Controller
      */
     public function updateStore(UserStoreFormRequest $request, User $user)
     {
-        $this->updateService
-            ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle($user, $request->normalize());
+        // Very inefficient, use userUpdateService in future.
+        $user->update([
+            'store_balance' => $request->input('store_balance'),
+            'store_cpu' => $request->input('store_cpu'),
+            'store_disk' => $request->input('store_disk'),
+            'store_slots' => $request->input('store_slots'),
+            'store_ports' => $request->input('store_ports'),
+            'store_backups' => $request->input('store_backups'),
+            'store_databases' => $request->input('store_databases'),
+        ]);
 
         $this->alert->success(trans('admin/user.notices.account_updated'))->flash();
 
