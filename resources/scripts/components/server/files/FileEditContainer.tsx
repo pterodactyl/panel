@@ -1,3 +1,4 @@
+
 import tw from 'twin.macro';
 import modes from '@/modes';
 import { dirname } from 'path';
@@ -7,7 +8,7 @@ import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import Button from '@/components/elements/Button';
 import Select from '@/components/elements/Select';
-import React, { lazy, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { encodePathSegments, hashToPath } from '@/helpers';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
@@ -18,9 +19,8 @@ import { useHistory, useLocation, useParams } from 'react-router';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import FileNameModal from '@/components/server/files/FileNameModal';
 import PageContentBlock from '@/components/elements/PageContentBlock';
+import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-
-const LazyCodemirrorEditor = lazy(() => import(/* webpackChunkName: "editor" */'@/components/elements/CodemirrorEditor'));
 
 export default () => {
     const [ error, setError ] = useState('');
@@ -116,7 +116,7 @@ export default () => {
             />
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading}/>
-                <LazyCodemirrorEditor
+                <CodemirrorEditor
                     mode={mode}
                     filename={hash.replace(/^#/, '')}
                     onModeChanged={setMode}

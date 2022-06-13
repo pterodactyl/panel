@@ -2,6 +2,7 @@ import * as Icon from 'react-feather';
 import React, { useState } from 'react';
 import useEventListener from '@/plugins/useEventListener';
 import SearchModal from '@/components/dashboard/search/SearchModal';
+import Tooltip from '@/components/elements/tooltip/Tooltip';
 
 interface Props {
     size: number;
@@ -27,9 +28,11 @@ export default ({ size }: Props) => {
                 onDismissed={() => setVisible(false)}
             />
             }
-            <div className={'navigation-link'} onClick={() => setVisible(true)}>
-                <Icon.Search size={size} />
-            </div>
+            <Tooltip placement={'bottom'} content={'Search'}>
+                <div className={'navigation-link'} onClick={() => setVisible(true)}>
+                    <Icon.Search size={size} />
+                </div>
+            </Tooltip>
         </>
     );
 };

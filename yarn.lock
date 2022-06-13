@@ -1412,6 +1412,11 @@
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
+"@tailwindcss/line-clamp@^0.4.0":
+  version "0.4.0"
+  resolved "https://registry.yarnpkg.com/@tailwindcss/line-clamp/-/line-clamp-0.4.0.tgz#03353e31e77636b785f2336e8c978502cec1de81"
+  integrity sha512-HQZo6gfx1D0+DU3nWlNLD5iA6Ef4JAXh0LeD8lOGrJwEDBwwJNKQza6WoXhhY1uQrxOuU8ROxV7CqiQV4CoiLw==
+
 "@types/chart.js@^2.8.5":
   version "2.8.5"
   resolved "https://registry.yarnpkg.com/@types/chart.js/-/chart.js-2.8.5.tgz#7d47cfd36f0a1c2c4ad6a585749bc68e8659492a"

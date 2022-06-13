@@ -16,8 +16,12 @@ import {
     useRole,
 } from '@floating-ui/react-dom-interactions';
 import { AnimatePresence, motion } from 'framer-motion';
+import classNames from 'classnames';
 
 interface Props {
+    rest?: number;
+    delay?: number | Partial<{ open: number; close: number }>;
+    alwaysOpen?: boolean;
     content: string | React.ReactChild;
     disabled?: boolean;
     arrow?: boolean;
@@ -27,29 +31,42 @@ interface Props {
     children: React.ReactElement;
 }
 
-const arrowSides: Record<Side, Side> = {
-    top: 'bottom',
-    bottom: 'top',
-    left: 'right',
-    right: 'left',
+const arrowSides: Record<Side, string> = {
+    top: 'bottom-[-6px] left-0',
+    bottom: 'top-[-6px] left-0',
+    right: 'top-0 left-[-6px]',
+    left: 'top-0 right-[-6px]',
 };
 
-export default ({ content, children, disabled = false, ...props }: Props) => {
+export default ({
+    content,
+    children,
+    disabled = false,
+    alwaysOpen = false,
+    delay = 0,
+    rest = 30,
+    ...props
+}: Props) => {
     const arrowEl = useRef<HTMLDivElement>(null);
-    const [ open, setOpen ] = useState(false);
+    const [ open, setOpen ] = useState(alwaysOpen || false);
 
     const { x, y, reference, floating, middlewareData, strategy, context } = useFloating({
         open,
         placement: props.placement || 'top',
         strategy: props.strategy || 'absolute',
-        middleware: [ offset(6), flip(), shift({ padding: 6 }), arrow({ element: arrowEl, padding: 6 }) ],
-        onOpenChange: setOpen,
+        middleware: [
+            offset(props.arrow ? 10 : 6),
+            flip(),
+            shift({ padding: 6 }),
+            arrow({ element: arrowEl, padding: 6 }),
+        ],
+        onOpenChange: (o) => setOpen(o || alwaysOpen || false),
         whileElementsMounted: autoUpdate,
     });
 
     const { getReferenceProps, getFloatingProps } = useInteractions([
         useFocus(context),
-        useHover(context, { restMs: 30 }),
+        useHover(context, { restMs: rest, delay }),
         useRole(context, { role: 'tooltip' }),
         useDismiss(context),
     ]);
@@ -70,10 +87,10 @@ export default ({ content, children, disabled = false, ...props }: Props) => {
                         initial={{ opacity: 0, scale: 0.85 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0 }}
-                        transition={{ type: 'easeIn', damping: 20, stiffness: 300, duration: 0.1 }}
+                        transition={{ type: 'spring', damping: 20, stiffness: 300, duration: 0.075 }}
                         {...getFloatingProps({
                             ref: floating,
-                            className: 'absolute top-0 left-0 bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none',
+                            className: 'absolute top-0 left-0 bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[90vw]',
                             style: {
                                 position: strategy,
                                 top: `${y || 0}px`,
@@ -86,10 +103,9 @@ export default ({ content, children, disabled = false, ...props }: Props) => {
                             <div
                                 ref={arrowEl}
                                 style={{
-                                    transform: `translate(${Math.round(ax || 0)}px, ${Math.round(ay || 0)}px)`,
-                                    [side]: '-6px',
+                                    transform: `translate(${Math.round(ax || 0)}px, ${Math.round(ay || 0)}px) rotate(45deg)`,
                                 }}
-                                className={'absolute top-0 left-0 bg-gray-900 w-3 h-3 rotate-45'}
+                                className={classNames('absolute bg-gray-900 w-3 h-3', side)}
                             />
                         }
                     </motion.div>

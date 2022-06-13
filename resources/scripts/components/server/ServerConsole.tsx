@@ -1,12 +1,15 @@
 import tw from 'twin.macro';
+import React, { memo } from 'react';
+import Features from '@feature/Features';
 import isEqual from 'react-fast-compare';
-import React, { lazy, memo } from 'react';
 import Can from '@/components/elements/Can';
 import { useStoreState } from '@/state/hooks';
 import Fade from '@/components/elements/Fade';
 import { ServerContext } from '@/state/server';
+import Console from '@/components/server/Console';
 import Spinner from '@/components/elements/Spinner';
 import StatBars from '@/components/server/StatBars';
+import StatGraphs from '@/components/server/StatGraphs';
 import PowerControls from '@/components/server/PowerControls';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ContentContainer from '@/components/elements/ContentContainer';
@@ -14,18 +17,8 @@ import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import ServerRenewalBlock from '@/components/server/ServerRenewalBlock';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerConfigurationBlock from '@/components/server/ServerConfigurationBlock';
-import {
-    EulaModalFeature,
-    JavaVersionModalFeature,
-    GSLTokenModalFeature,
-    PIDLimitModalFeature,
-    SteamDiskSpaceFeature,
-} from '@feature/index';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
-
-const ChunkedConsole = lazy(() => import(/* webpackChunkName: "console" */'@/components/server/Console'));
-const ChunkedStatGraphs = lazy(() => import(/* webpackChunkName: "graphs" */'@/components/server/StatGraphs'));
 
 const ServerConsole = () => {
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -72,23 +65,17 @@ const ServerConsole = () => {
                     </Can>
                     <Spinner.Suspense>
                         <ErrorBoundary>
-                            <ChunkedConsole/>
+                            <Console />
                         </ErrorBoundary>
                     </Spinner.Suspense>
-                    <React.Suspense fallback={null}>
-                        {eggFeatures.includes('eula') && <EulaModalFeature/>}
-                        {eggFeatures.includes('java_version') && <JavaVersionModalFeature/>}
-                        {eggFeatures.includes('gsl_token') && <GSLTokenModalFeature/>}
-                        {eggFeatures.includes('pid_limit') && <PIDLimitModalFeature/>}
-                        {eggFeatures.includes('steam_disk_space') && <SteamDiskSpaceFeature/>}
-                    </React.Suspense>
+                    <Features enabled={eggFeatures} />
                 </div>
             </div>
             {status !== 'offline' &&
                 <Fade timeout={500} in appear unmountOnExit>
                     <Spinner.Suspense>
                         <ErrorBoundary>
-                            <ChunkedStatGraphs />
+                            <StatGraphs />
                         </ErrorBoundary>
                     </Spinner.Suspense>
                 </Fade>
