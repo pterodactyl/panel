@@ -1,4 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
+import { useLocation } from 'react-router';
 import { Terminal, ITerminalOptions } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
@@ -15,6 +16,7 @@ import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import { ExternalLinkIcon } from '@heroicons/react/outline';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -65,6 +67,10 @@ const CommandInput = styled.input`
     }
 `;
 
+const DetachButton = styled.button`
+        ${tw`absolute right-7 top-3 z-10 p-2`};
+`;
+
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
@@ -74,10 +80,12 @@ export default () => {
     const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
+    const location = useLocation();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
+    const isConsoleDetached = location.pathname.endsWith('/console');
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [ historyIndex, setHistoryIndex ] = useState(-1);
 
@@ -133,6 +141,10 @@ export default () => {
             instance && instance.send('send command', command);
             e.currentTarget.value = '';
         }
+    };
+
+    const openConsole = () => {
+        window.open(window.location.href + '/console', 'Server Console', 'height=400,width=800');
     };
 
     useEffect(() => {
@@ -202,16 +214,23 @@ export default () => {
     }, [ connected, instance ]);
 
     return (
-        <div css={tw`text-xs font-mono relative`}>
+        <div css={[ tw`text-xs font-mono relative`, isConsoleDetached && tw`h-full flex flex-col overflow-hidden` ]}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
                 css={[
                     tw`rounded-t p-2 bg-black w-full`,
                     !canSendCommands && tw`rounded-b`,
+                    isConsoleDetached && tw`rounded-none h-full overflow-hidden`,
                 ]}
-                style={{ minHeight: '16rem' }}
+                style={{ minHeight: isConsoleDetached ? 'auto' : '16rem' }}
             >
-                <TerminalDiv id={'terminal'} ref={ref} />
+                <TerminalDiv css={[ isConsoleDetached && tw`h-full` ]} id={'terminal'} ref={ref}>
+                    {!isConsoleDetached &&
+                        <DetachButton onClick={openConsole}>
+                            <ExternalLinkIcon css={tw`w-6 h-6`} />
+                        </DetachButton>
+                    }
+                </TerminalDiv>
             </div>
             {canSendCommands &&
                 <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
