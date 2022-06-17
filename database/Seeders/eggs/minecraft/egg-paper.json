@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-05-21T10:26:00-04:00",
+    "exported_at": "2022-06-17T08:11:30+03:00",
     "name": "Paper",
     "author": "parker@pterodactyl.io",
     "description": "High performance Spigot fork that aims to fix gameplay and mechanics inconsistencies.",
@@ -20,7 +20,7 @@
         "Java 8": "ghcr.io\/pterodactyl\/yolks:java_8"
     },
     "file_denylist": [],
-    "startup": "java -Xms128M -Xmx{{SERVER_MEMORY}}M -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}",
+    "startup": "java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true -jar {{SERVER_JARFILE}}",
     "config": {
         "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
