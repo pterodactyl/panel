@@ -26,6 +26,7 @@ export default () => {
     const location = useLocation();
 
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
+    const isConsoleDetached = location.pathname.endsWith('/console');
     const [ error, setError ] = useState('');
 
     const id = ServerContext.useStoreState(state => state.server.data?.id);
@@ -59,7 +60,7 @@ export default () => {
 
     return (
         <React.Fragment key={'server-router'}>
-            <NavigationBar/>
+            { !isConsoleDetached && <NavigationBar/> }
             {(!uuid || !id) ?
                 error ?
                     <ServerError message={error}/>
@@ -67,30 +68,32 @@ export default () => {
                     <Spinner size={'large'} centered/>
                 :
                 <>
-                    <CSSTransition timeout={150} classNames={'fade'} appear in>
-                        <SubNavigation>
-                            <div>
-                                {routes.server.filter(route => !!route.name).map((route) => (
-                                    route.permission ?
-                                        <Can key={route.path} action={route.permission} matchAny>
-                                            <NavLink to={to(route.path, true)} exact={route.exact}>
+                    {!isConsoleDetached &&
+                        <CSSTransition timeout={150} classNames={'fade'} appear in>
+                            <SubNavigation>
+                                <div>
+                                    {routes.server.filter(route => !!route.name).map((route) => (
+                                        route.permission ?
+                                            <Can key={route.path} action={route.permission} matchAny>
+                                                <NavLink to={to(route.path, true)} exact={route.exact}>
+                                                    {route.name}
+                                                </NavLink>
+                                            </Can>
+                                            :
+                                            <NavLink key={route.path} to={to(route.path, true)} exact={route.exact}>
                                                 {route.name}
                                             </NavLink>
-                                        </Can>
-                                        :
-                                        <NavLink key={route.path} to={to(route.path, true)} exact={route.exact}>
-                                            {route.name}
-                                        </NavLink>
-                                ))}
-                                {rootAdmin &&
-                                    // eslint-disable-next-line react/jsx-no-target-blank
-                                    <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
-                                        <FontAwesomeIcon icon={faExternalLinkAlt}/>
-                                    </a>
-                                }
-                            </div>
-                        </SubNavigation>
-                    </CSSTransition>
+                                    ))}
+                                    {rootAdmin &&
+                                        // eslint-disable-next-line react/jsx-no-target-blank
+                                        <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
+                                            <FontAwesomeIcon icon={faExternalLinkAlt}/>
+                                        </a>
+                                    }
+                                </div>
+                            </SubNavigation>
+                        </CSSTransition>
+                    }
                     <InstallListener/>
                     <TransferListener/>
                     <WebsocketHandler/>

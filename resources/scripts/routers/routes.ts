@@ -1,5 +1,6 @@
 import React, { lazy } from 'react';
 import ServerConsole from '@/components/server/ServerConsole';
+import PopoutConsole from '@/components/server/PopoutConsole';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import UsersContainer from '@/components/server/users/UsersContainer';
@@ -72,6 +73,13 @@ export default {
             permission: null,
             name: 'Console',
             component: ServerConsole,
+            exact: true,
+        },
+        {
+            path: '/console',
+            permission: null,
+            name: null,
+            component: PopoutConsole,
             exact: true,
         },
         {
