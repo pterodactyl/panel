@@ -51,8 +51,8 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                     history.replace('/auth/login');
                     addFlash({
                         key: 'auth:register',
-                        type: 'error',
-                        message: 'Unable to create account.',
+                        type: 'success',
+                        message: 'Account has been successfully created.',
                     });
                     return;
                 }
