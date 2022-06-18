@@ -10,11 +10,27 @@ import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMet
 import { TerminalIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import style from './style.module.css';
+import { isObject } from '@/helpers';
 
 interface Props {
     activity: ActivityLog;
     children?: React.ReactNode;
 }
+
+const formatProperties = (properties: Record<string, unknown>): Record<string, unknown> => {
+    return Object.keys(properties).reduce((obj, key) => {
+        const value = properties[key];
+        // noinspection SuspiciousTypeOfGuard
+        const isCount = key === 'count' || (typeof key === 'string' && key.endsWith('_count'));
+
+        return {
+            ...obj,
+            [key]: isCount || typeof value !== 'string'
+                ? (isObject(value) ? formatProperties(value) : value)
+                : `<strong>${value}</strong>`,
+        };
+    }, {});
+};
 
 export default ({ activity, children }: Props) => {
     const location = useLocation();
@@ -27,12 +43,7 @@ export default ({ activity, children }: Props) => {
         return current.toString();
     };
 
-    const properties = Object.keys(activity.properties).reduce((obj, key) => ({
-        ...obj,
-        [key]: key === 'count' || key.endsWith('_count')
-            ? activity.properties[key]
-            : `<strong>${activity.properties[key]}</strong>`,
-    }), {});
+    const properties = formatProperties(activity.properties);
 
     return (
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
