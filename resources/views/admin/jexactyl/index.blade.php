@@ -25,7 +25,7 @@
                 @endif
             ">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Software Release</h3>
+                    <h3 class="box-title">Software Release <small>Verify Jexactyl is up-to-date.</small></h3>
                 </div>
                 <div class="box-body">
                     @if ($version->isLatestPanel())

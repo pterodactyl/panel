@@ -2,6 +2,7 @@ import tw from 'twin.macro';
 import { Form } from 'formik';
 import { breakpoint } from '@/theme';
 import React, { forwardRef } from 'react';
+import GitInfo from 'react-git-info/macro';
 import styled from 'styled-components/macro';
 import FlashMessageRender from '@/components/FlashMessageRender';
 
@@ -46,16 +47,15 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
                 </div>
             </div>
         </Form>
-        <p css={tw`text-center text-neutral-500 text-xs mt-4`}>
-            &copy; 2015 - {(new Date()).getFullYear()}&nbsp;
-            <a
-                rel={'noopener nofollow noreferrer'}
-                href={'https://pterodactyl.io'}
-                target={'_blank'}
-                css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
-            >
-                Pterodactyl Software
-            </a>
+        <p css={tw`text-neutral-500 text-xs mt-6 sm:float-left`}>
+            &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
+        </p>
+        <p css={tw`text-neutral-500 text-xs mt-6 sm:float-right`}>
+            <a href={'https://github.com/jexactyl/jexactyl'}> {GitInfo().commit.shortHash} </a>
+            &bull;
+            <a href={'https://jexactyl.com'}> Site </a>
+            &bull;
+            <a href={'https://github.com/jexactyl/jexactyl'}> GitHub </a>
         </p>
     </Container>
 ));

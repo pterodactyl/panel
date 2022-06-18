@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Admin\Jexactyl\StoreFormRequest;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
@@ -18,11 +17,6 @@ class StoreController extends Controller
     private $alert;
 
     /**
-     * @var \Illuminate\Contracts\Console\Kernel
-     */
-    private $kernel;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
      */
     private $settings;
@@ -32,11 +26,9 @@ class StoreController extends Controller
      */
     public function __construct(
         AlertsMessageBag $alert,
-        Kernel $kernel,
         SettingsRepositoryInterface $settings,
     ) {
         $this->alert = $alert;
-        $this->kernel = $kernel;
         $this->settings = $settings;
     }
 
@@ -73,7 +65,6 @@ class StoreController extends Controller
             $this->settings->set('jexactyl::' . $key, $value);
         }
 
-        $this->kernel->call('queue:restart');
         $this->alert->warning('If you have enabled a payment gateway, please remember to configure them. <a href="https://documentation.jexactyl.com">Documentation</a>')->flash();
         $this->alert->success('Jexactyl Storefront has been updated.')->flash();
 

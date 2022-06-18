@@ -19,7 +19,9 @@ interface Values {
 const LoginContainer = ({ history }: RouteComponentProps) => {
     const ref = useRef<Reaptcha>(null);
     const [ token, setToken ] = useState('');
-    const registration = useStoreState(state => state.settings.data?.registration);
+    const name = useStoreState(state => state.settings.data?.name);
+    const email = useStoreState(state => state.settings.data?.registration.email);
+    const discord = useStoreState(state => state.settings.data?.registration.discord);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
@@ -75,7 +77,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
+                <LoginFormContainer title={'Login to ' + name} css={tw`w-full flex`}>
                     <Field
                         light
                         type={'text'}
@@ -120,16 +122,24 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             Forgot password?
                         </Link>
                     </div>
-                    {registration === 'true' &&
                     <div css={tw`mt-6 text-center`}>
-                        <Link
-                            to={'/auth/register'}
-                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
-                        >
-                            Create an Account
-                        </Link>
+                        {email === 'true' &&
+                            <Link
+                                to={'/auth/register'}
+                                css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
+                            >
+                                Signup with Email
+                            </Link>
+                        }
+                        {discord === 'true' &&
+                            <Link
+                                to={'/auth/discord'}
+                                css={tw`text-xs ml-6 text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
+                            >
+                                Authenticate with Discord
+                            </Link>
+                        }
                     </div>
-                    }
                 </LoginFormContainer>
             )}
         </Formik>

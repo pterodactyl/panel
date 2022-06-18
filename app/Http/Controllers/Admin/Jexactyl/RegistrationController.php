@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Jexactyl\RegistrationFormRequest;
@@ -18,11 +17,6 @@ class RegistrationController extends Controller
     private $alert;
 
     /**
-     * @var \Illuminate\Contracts\Console\Kernel
-     */
-    private $kernel;
-
-    /**
      * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
      */
     private $settings;
@@ -32,11 +26,9 @@ class RegistrationController extends Controller
      */
     public function __construct(
         AlertsMessageBag $alert,
-        Kernel $kernel,
         SettingsRepositoryInterface $settings,
     ) {
         $this->alert = $alert;
-        $this->kernel = $kernel;
         $this->settings = $settings;
     }
 
@@ -45,17 +37,19 @@ class RegistrationController extends Controller
      */
     public function index(): View
     {
-        $prefix = 'jexactyl::registration:';
-
         return view('admin.jexactyl.registration', [
             'enabled' => $this->settings->get('jexactyl::registration:enabled', false),
-            'cpu' => $this->settings->get($prefix.'cpu', 100),
-            'memory' => $this->settings->get($prefix.'memory', 1024),
-            'disk' => $this->settings->get($prefix.'disk', 5120),
-            'slot' => $this->settings->get($prefix.'slot', 1),
-            'port' => $this->settings->get($prefix.'port', 1),
-            'backup' => $this->settings->get($prefix.'backup', 1),
-            'database' => $this->settings->get($prefix.'database', 0),
+            'cpu' => $this->settings->get('jexactyl::registration:cpu', 100),
+            'memory' => $this->settings->get('jexactyl::registration:memory', 1024),
+            'disk' => $this->settings->get('jexactyl::registration:disk', 5120),
+            'slot' => $this->settings->get('jexactyl::registration:slot', 1),
+            'port' => $this->settings->get('jexactyl::registration:port', 1),
+            'backup' => $this->settings->get('jexactyl::registration:backup', 1),
+            'database' => $this->settings->get('jexactyl::registration:database', 0),
+            'discord_enabled' => $this->settings->get('jexactyl::discord:enabled', false),
+            'discord_id' => $this->settings->get('jexactyl::discord:id', 0),
+            'discord_secret' => $this->settings->get('jexactyl::discord:secret', 0),
+            'discord_redirect' => $this->settings->get('jexactyl::discord:redirect', 'https://example.com/auth/discord/callback'),
         ]);
     }
 
@@ -71,7 +65,6 @@ class RegistrationController extends Controller
             $this->settings->set('jexactyl::' . $key, $value);
         }
 
-        $this->kernel->call('queue:restart');
         $this->alert->success('Jexactyl Registration has been updated.')->flash();
 
         return redirect()->route('admin.jexactyl.registration');

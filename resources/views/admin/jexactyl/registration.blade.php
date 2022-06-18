@@ -26,17 +26,68 @@
                 @endif
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">User Registration</h3>
+                        <h3 class="box-title">Registration via Email <small>The settings for Email registration and logins.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
                             <div class="form-group col-md-4">
+                                <label class="control-label">Enabled</label>
                                 <div>
                                     <select name="registration:enabled" class="form-control">
                                         <option @if ($enabled == 'false') selected @endif value="false">Disabled</option>
                                         <option @if ($enabled == 'true') selected @endif value="true">Enabled</option>
                                     </select>
-                                    <p class="text-muted"><small>Determines whether people can register an account.</small></p>
+                                    <p class="text-muted"><small>Determines whether people can register an account using email.</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box
+                @if($discord_enabled == 'true')
+                    box-success
+                @else
+                    box-danger
+                @endif
+                ">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Registration via Discord <small>The settings for Discord registration and logins.</small></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Enabled</label>
+                                <div>
+                                    <select name="discord:enabled" class="form-control">
+                                        <option @if ($discord_enabled == 'false') selected @endif value="false">Disabled</option>
+                                        <option @if ($discord_enabled == 'true') selected @endif value="true">Enabled</option>
+                                    </select>
+                                    @if($discord_enabled != 'true')
+                                        <p class="text-danger">People will not be able to sign up OR login with Discord if this is disabled!</p>
+                                    @else
+                                        <p class="text-muted"><small>Determines whether people can register an account using Discord.</small></p>
+                                    @endif
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Discord Client ID</label>
+                                <div>
+                                    <input type="text" class="form-control" name="discord:id" value="{{ $discord_id }}" />
+                                    <p class="text-muted"><small>The client ID for your OAuth application. Typically 18-19 numbers long.</small></p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Discord Client Secret</label>
+                                <div>
+                                    <input type="text" class="form-control" name="discord:secret" value="{{ $discord_secret }}" />
+                                    <p class="text-muted"><small>The client secret for your OAuth application. Treat this like a password.</small></p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Discord Redirect URL</label>
+                                <div>
+                                    <input type="text" class="form-control" name="discord:redirect" value="{{ $discord_redirect }}" />
+                                    <p class="text-muted"><small>The URL that Discord redirects to after successful login. Change <code>example.com</code> to your TLD.</small></p>
                                 </div>
                             </div>
                         </div>
@@ -44,7 +95,7 @@
                 </div>
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Default Resources</h3>
+                        <h3 class="box-title">Default Resources <small>The default resources assigned to a user on registration.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">

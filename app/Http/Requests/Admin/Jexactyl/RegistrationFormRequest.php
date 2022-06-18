@@ -20,6 +20,9 @@ class RegistrationFormRequest extends AdminFormRequest
             'registration:port' => 'required|int',
             'registration:backup' => 'required|int',
             'registration:database' => 'required|int',
+            'discord:enabled' => 'required|in:true,false',
+            'discord:id' => 'required|int',
+            'discord:secret' => 'required|string',
         ];
     }
 }

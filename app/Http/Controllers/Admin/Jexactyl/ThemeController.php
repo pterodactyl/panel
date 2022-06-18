@@ -6,10 +6,10 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\ThemeFormRequest;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Jexactyl\RenewalFormRequest;
 
-class RenewalController extends Controller
+class ThemeController extends Controller
 {
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -22,12 +22,13 @@ class RenewalController extends Controller
     private $settings;
 
     /**
-     * StoreController constructor.
+     * ThemeController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
         SettingsRepositoryInterface $settings,
-    ) {
+        AlertsMessageBag $alert,
+    ) 
+    {
         $this->alert = $alert;
         $this->settings = $settings;
     }
@@ -37,12 +38,8 @@ class RenewalController extends Controller
      */
     public function index(): View
     {
-        $prefix = 'jexactyl::renewal:';
-    
-        return view('admin.jexactyl.renewal', [
-            'enabled' => $this->settings->get($prefix.'enabled', false),
-            'default' => $this->settings->get($prefix.'default', 7),
-            'cost' => $this->settings->get($prefix.'cost', 20),
+        return view('admin.jexactyl.theme', [
+            'current' => $this->settings->get('jexactyl::theme:current', 'default'),
         ]);
     }
 
@@ -52,14 +49,14 @@ class RenewalController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(RenewalFormRequest $request): RedirectResponse
+    public function update(ThemeFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
-            $this->settings->set('jexactyl::renewal:' . $key, $value);
+            $this->settings->set('jexactyl::' . $key, $value);
         }
 
-        $this->alert->success('Jexactyl Renewal System has been updated.')->flash();
+        $this->alert->success('Jexactyl Theme has been updated. Please run <code>yarn build</code> on your machine to update.')->flash();
 
-        return redirect()->route('admin.jexactyl.renewal');
+        return redirect()->route('admin.jexactyl.theme');
     }
 }

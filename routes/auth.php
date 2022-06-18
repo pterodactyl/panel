@@ -18,6 +18,9 @@ Route::get('/register', [Auth\LoginController::class, 'index'])->name('auth.regi
 Route::get('/password', [Auth\LoginController::class, 'index'])->name('auth.forgot-password');
 Route::get('/password/reset/{token}', [Auth\LoginController::class, 'index'])->name('auth.reset');
 
+Route::post('/discord/login', [Auth\DiscordController::class, 'index'])->name('auth.discord.login');
+Route::get('/discord/callback', [Auth\DiscordController::class, 'callback'])->name('auth.discord.callback');
+
 // Apply a throttle to authentication action endpoints, in addition to the
 // recaptcha endpoints to slow down manual attack spammers even more. 🤷‍
 //

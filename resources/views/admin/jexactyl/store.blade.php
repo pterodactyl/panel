@@ -26,7 +26,7 @@
                     @endif
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Jexactyl Storefront</h3>
+                        <h3 class="box-title">Jexactyl Storefront <small>Configure whether certain options for the store are enabled.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -65,7 +65,7 @@
                 </div>
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Resource Pricing</h3>
+                        <h3 class="box-title">Resource Pricing <small>Set specific pricing for resources.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">

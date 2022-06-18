@@ -12,7 +12,10 @@ export interface SiteSettings {
         stripe: string;
     };
     logo: string;
-    registration: string;
+    registration: {
+        email: string;
+        discord: string;
+    }
     renewal: string;
 }
 
