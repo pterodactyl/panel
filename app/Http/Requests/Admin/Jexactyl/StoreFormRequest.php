@@ -15,6 +15,7 @@ class StoreFormRequest extends AdminFormRequest
             'store:enabled' => 'required|in:true,false',
             'store:paypal:enabled' => 'required|in:true,false',
             'store:stripe:enabled' => 'required|in:true,false',
+            'store:currency' => 'required|min:1|max:10',
             'store:cost:cpu' => 'required|int|min:1',
             'store:cost:memory' => 'required|int|min:1',
             'store:cost:disk' => 'required|int|min:1',

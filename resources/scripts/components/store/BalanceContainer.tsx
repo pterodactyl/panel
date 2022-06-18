@@ -29,7 +29,7 @@ const Container = styled.div`
 
 const BalanceContainer = () => {
     const [ resources, setResources ] = useState<Resources>();
-    const gateways = useStoreState(state => state.settings.data?.gateways);
+    const settings = useStoreState(state => state.settings.data!);
 
     useEffect(() => {
         getResources()
@@ -49,8 +49,7 @@ const BalanceContainer = () => {
                         showFlashes={'account:balance'}
                         css={tw`sm:mt-0`}
                     >
-                        <h1 css={tw`text-7xl flex justify-center items-center`}>${resources.balance} JCR</h1>
-                        <h1 css={tw`text-sm flex justify-center items-center`}>JCR = Jexactyl Credits</h1>
+                        <h1 css={tw`text-7xl flex justify-center items-center`}>${resources.balance} {settings.currencyName}</h1>
                     </ContentBox>
                     <ContentBox
                         title={'Transaction History'}
@@ -80,12 +79,12 @@ const BalanceContainer = () => {
                     showFlashes={'account:balance'}
                     css={tw`mt-8 sm:mt-0 sm:ml-8`}
                 >
-                    {!gateways ?
+                    {!settings.gateways ?
                         <>No gateways available for credit purchase.</>
                         :
                         <>
-                            {gateways?.paypal === 'true' && <PaypalPurchaseForm />}
-                            {gateways?.stripe === 'true' && <StripePurchaseForm />}
+                            {settings.gateways.paypal === 'true' && <PaypalPurchaseForm />}
+                            {settings.gateways.stripe === 'true' && <StripePurchaseForm />}
                         </>
                     }
                 </ContentBox>

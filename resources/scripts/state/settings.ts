@@ -11,6 +11,7 @@ export interface SiteSettings {
         paypal: string;
         stripe: string;
     };
+    currencyName: string;
     logo: string;
     registration: {
         email: string;

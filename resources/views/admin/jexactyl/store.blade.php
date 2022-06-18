@@ -60,6 +60,13 @@
                                     <p class="text-muted"><small>Determines whether users can buy credits with Stripe.</small></p>
                                 </div>
                             </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Name of currency</label>
+                                <div>
+                                    <input type="text" class="form-control" name="store:currency" value="{{ $currency }}" />
+                                    <p class="text-muted"><small>The name of the currency used for Jexactyl. (Default: JCR)</small></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

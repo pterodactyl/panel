@@ -37,6 +37,7 @@ class SettingComposer
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',
             ],
+            'currencyName' => $this->settings->get('jexactyl::store:currency', 'JCR'),
             'registration' => [
                 'email' => $this->settings->get('jexactyl::registration:enabled', false),
                 'discord' => $this->settings->get('jexactyl::discord:enabled', false),

@@ -43,6 +43,7 @@ class StoreController extends Controller
             'enabled' => $this->settings->get($prefix.'enabled', false),
             'paypal_enabled' => $this->settings->get($prefix.'paypal:enabled', false),
             'stripe_enabled' => $this->settings->get($prefix.'stripe:enabled', false),
+            'currency' => $this->settings->get($prefix.'currency', 'JCR'),
             'cpu' => $this->settings->get($prefix.'cost:cpu', 100),
             'memory' => $this->settings->get($prefix.'cost:memory', 50),
             'disk' => $this->settings->get($prefix.'cost:disk', 25),
