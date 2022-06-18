@@ -19,6 +19,7 @@ class ActivityLogTransformer extends BaseClientTransformer
         return [
             'batch' => $model->batch,
             'event' => $model->event,
+            'is_api' => !is_null($model->api_key_id),
             'ip' => $model->ip,
             'description' => $model->description,
             'properties' => $model->properties ? $model->properties->toArray() : [],
