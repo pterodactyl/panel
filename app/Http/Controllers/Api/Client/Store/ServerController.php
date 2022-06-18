@@ -84,7 +84,7 @@ class ServerController extends ClientApiController
             'cpu' => $request->input('cpu'),
             'swap' => 0,
             'io' => 500,
-            'image' => 'ghcr.io/pterodactyl/yolks:java_17',
+            'image' => array_values($egg->docker_images)[0],
             'startup' => $egg->startup,
             'start_on_completion' => true,
             // Settings for the renewal system. Even if the renewal system is disabled,
