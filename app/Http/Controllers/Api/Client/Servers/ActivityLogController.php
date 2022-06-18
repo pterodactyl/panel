@@ -2,10 +2,13 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Query\JoinClause;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\ActivityLogTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -26,6 +29,22 @@ class ActivityLogController extends ClientApiController
                 AllowedFilter::exact('ip'),
                 AllowedFilter::partial('event'),
             ])
+            ->when(config('activity.hide_admin_activity'), function (Builder $builder) use ($server) {
+                // We could do this with a query and a lot of joins, but that gets pretty
+                // painful so for now we'll execute a simpler query.
+                $subusers = $server->subusers()->pluck('user_id')->merge($server->owner_id);
+
+                $builder->select('activity_logs.*')
+                    ->leftJoin('users', function (JoinClause $join) {
+                        $join->on('users.id', 'activity_logs.actor_id')
+                            ->where('activity_logs.actor_type', (new User())->getMorphClass());
+                    })
+                    ->where(function (Builder $builder) use ($subusers) {
+                        $builder->whereNull('users.id')
+                            ->orWhere('users.root_admin', 0)
+                            ->orWhereIn('users.id', $subusers);
+                    });
+            })
             ->paginate(min($request->query('per_page', 25), 100))
             ->appends($request->query());
 

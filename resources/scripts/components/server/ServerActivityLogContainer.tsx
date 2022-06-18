@@ -48,13 +48,16 @@ export default () => {
             {!data && isValidating ?
                 <Spinner centered/>
                 :
-                <div className={'bg-gray-700'}>
-                    {data?.items.map((activity) => (
-                        <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
-                            <span/>
-                        </ActivityLogEntry>
-                    ))}
-                </div>
+                !data?.items.length ?
+                    <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
+                    :
+                    <div className={'bg-gray-700'}>
+                        {data?.items.map((activity) => (
+                            <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
+                                <span/>
+                            </ActivityLogEntry>
+                        ))}
+                    </div>
             }
             {data && <PaginationFooter
                 pagination={data.pagination}

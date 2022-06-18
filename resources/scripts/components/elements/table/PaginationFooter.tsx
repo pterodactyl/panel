@@ -26,6 +26,10 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
         }
     }
 
+    if (pagination.total === 0) {
+        return null;
+    }
+
     return (
         <div className={classNames('flex items-center justify-between my-2', className)}>
             <p className={'text-sm text-neutral-500'}>
