@@ -61,6 +61,7 @@ Route::group([
     Route::get('/', [Client\Store\ResourceController::class, 'user'])->name('api:client:store.user');
     Route::get('/eggs/{nest:id}', [Client\Store\ServerController::class, 'eggs'])->name('api:client:store.eggs');
 
+    Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->middleware('auth', 'throttle:1,1');
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
 

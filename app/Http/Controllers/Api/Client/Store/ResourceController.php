@@ -41,6 +41,26 @@ class ResourceController extends ClientApiController
     }
 
     /**
+     * Allows a user to earn credits via passive earning.
+     * 
+     * @throws DisplayException
+     */
+    public function earn(StoreEarnRequest $request)
+    {
+        if ($this->settings->get('jexactyl::earn:enabled') != true) return;
+
+        try {
+            $request->user()->update([
+                'store_balance' => $request->user()->store_balance + $this->settings->get('jexactyl::earn:amount', 0),
+            ]);
+        } catch (DisplayException $ex) {
+            throw new DisplayException('Unable to passively earn coins.');
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Allows users to purchase resources via the store.
      * 
      * @throws DisplayException

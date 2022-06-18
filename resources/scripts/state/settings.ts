@@ -12,6 +12,10 @@ export interface SiteSettings {
         stripe: string;
     };
     currencyName: string;
+    earn: {
+        enabled: string;
+        amount: number;
+    }
     logo: string;
     registration: {
         email: string;
