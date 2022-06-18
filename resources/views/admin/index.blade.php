@@ -41,8 +41,7 @@
     </div>
 </div>
 <div class="row">
-    <div class="col-xs-6 col-sm-3 text-center">
-        <a href=""><button class="btn btn-warning" style="width:100%;"><i class="fa fa-fw fa-support"></i> Discord </button></a>
+    <div class="col-xs-6 col-sm-3 text-center"><a href="https://discord.gg/ECYh2DFNkF"><button class="btn btn-warning" style="width:100%;"><i class="fa fa-fw fa-support"></i> Discord </button></a>
     </div>
     <div class="col-xs-6 col-sm-3 text-center">
         <a href="https://docs.jexactyl.com"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-link"></i> Documentation</button></a>
