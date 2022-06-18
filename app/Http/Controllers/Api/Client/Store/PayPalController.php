@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Exceptions\DisplayException;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
@@ -43,6 +44,15 @@ class PayPalController extends ClientApiController
         $cost = config('gateways.paypal.cost', 1) / 100 * $amount; // Calculate the cost of credits.
         $currency = config('gateways.currency', 'USD');
 
+        // This isn't the best way of doing things,
+        // but we'll store a temporary database entry
+        // whenever a purchase request is made so we
+        // can use the information later on.
+        DB::table('paypal')->insert([
+            'user_id' => $request->user()->id,
+            'amount' => $amount,
+        ]);
+    
         $order = new OrdersCreateRequest();
         $order->prefer('return=representation');
 
@@ -85,19 +95,26 @@ class PayPalController extends ClientApiController
     public function success(Request $request): RedirectResponse
     {
         $client = $this->getClient();
+        $id = $request->user()->id;
 
         try {
             $order = new OrdersCaptureRequest($request->input('token'));
             $order->prefer('return=representation');
+
+            $temp = DB::table('paypal')
+                ->where('user_id', $id)
+                ->get();
 
             $res = $client->execute($order);
     
             if ($res->statusCode == 200 | 201) {
                 $request->user()->update([
                     // TODO: custom amounts, not just 100
-                    'store_balance' => $request->user()->store_balance + 100,
+                    'store_balance' => $request->user()->store_balance + $temp[0]->amount,
                 ]);
             };
+
+            DB::table('paypal')->where('user_id', $id)->delete();
 
             return redirect('/store');
 
