@@ -27,6 +27,13 @@ export default ({ activity, children }: Props) => {
         return current.toString();
     };
 
+    const properties = Object.keys(activity.properties).reduce((obj, key) => ({
+        ...obj,
+        [key]: key === 'count' || key.endsWith('_count')
+            ? activity.properties[key]
+            : `<strong>${activity.properties[key]}</strong>`,
+    }), {});
+
     return (
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
             <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
@@ -60,10 +67,8 @@ export default ({ activity, children }: Props) => {
                             {children}
                         </div>
                     </div>
-                    <p className={'mt-1 text-sm break-words line-clamp-2 pr-4'}>
-                        <Translate ns={'activity'} values={activity.properties}>
-                            {activity.event.replace(':', '.')}
-                        </Translate>
+                    <p className={style.description}>
+                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')}/>
                     </p>
                     <div className={'mt-1 flex items-center text-sm'}>
                         <Link

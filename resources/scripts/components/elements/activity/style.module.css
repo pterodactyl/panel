@@ -9,3 +9,11 @@
         @apply w-4 h-4;
     }
 }
+
+.description {
+    @apply mt-1 text-sm break-words line-clamp-2 pr-4;
+
+    & strong {
+        @apply text-gray-50 font-semibold;
+    }
+}
