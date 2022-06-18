@@ -98,7 +98,7 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                         disabled={isSubmitting}
                     />
                     <Field
-                        type={'text'}
+                        type={'password'}
                         label={'Password'}
                         name={'password'}
                         css={tw`my-3`}
