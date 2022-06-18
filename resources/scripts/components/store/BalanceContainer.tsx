@@ -29,7 +29,7 @@ const Container = styled.div`
 
 const BalanceContainer = () => {
     const [ resources, setResources ] = useState<Resources>();
-    const settings = useStoreState(state => state.settings.data!);
+    const store = useStoreState(state => state.storefront.data!);
 
     useEffect(() => {
         getResources()
@@ -49,7 +49,7 @@ const BalanceContainer = () => {
                         showFlashes={'account:balance'}
                         css={tw`sm:mt-0`}
                     >
-                        <h1 css={tw`text-7xl flex justify-center items-center`}>${resources.balance} {settings.currencyName}</h1>
+                        <h1 css={tw`text-7xl flex justify-center items-center`}>${resources.balance} {store.currency}</h1>
                     </ContentBox>
                     <ContentBox
                         title={'Transaction History'}
@@ -79,14 +79,8 @@ const BalanceContainer = () => {
                     showFlashes={'account:balance'}
                     css={tw`mt-8 sm:mt-0 sm:ml-8`}
                 >
-                    {!settings.gateways ?
-                        <>No gateways available for credit purchase.</>
-                        :
-                        <>
-                            {settings.gateways.paypal === 'true' && <PaypalPurchaseForm />}
-                            {settings.gateways.stripe === 'true' && <StripePurchaseForm />}
-                        </>
-                    }
+                    {store.gateways?.paypal === 'true' && <PaypalPurchaseForm />}
+                    {store.gateways?.stripe === 'true' && <StripePurchaseForm />}
                 </ContentBox>
             </Container>
         </PageContentBlock>

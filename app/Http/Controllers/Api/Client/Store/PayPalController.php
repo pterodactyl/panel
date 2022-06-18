@@ -6,6 +6,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Exceptions\DisplayException;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
+use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
@@ -36,7 +37,7 @@ class PayPalController extends ClientApiController
             throw new DisplayException('Unable to purchase via PayPal: module not enabled');
         };
 
-        $client = $this->createClient();
+        $client = $this->getClient();
         $amount = $request->input('amount');
         $cost = config('gateways.paypal.cost', 1) / 100 * $amount; // Calculate the cost of credits.
         $currency = config('gateways.currency', 'USD');
@@ -120,10 +121,17 @@ class PayPalController extends ClientApiController
      */
     protected function getClient(): PayPalHttpClient
     {
-        $environment = new ProductionEnvironment(
-            config('gateways.paypal.client_id'),
-            config('gateways.paypal.client_secret')
-        );
+        if (env('APP_ENV') == 'production') {
+            $environment = new ProductionEnvironment(
+                config('gateways.paypal.client_id'),
+                config('gateways.paypal.client_secret')
+            );
+        } else {
+            $environment = new SandboxEnvironment(
+                config('gateways.paypal.client_id'),
+                config('gateways.paypal.client_secret')
+            );
+        }
 
         return new PayPalHttpClient($environment);
     }

@@ -2,6 +2,7 @@ import { action, Action } from 'easy-peasy';
 
 export interface StorefrontSettings {
     enabled: string;
+    currency: string;
     cost: {
         cpu: number;
         memory: number;
@@ -10,13 +11,15 @@ export interface StorefrontSettings {
         port: number;
         backup: number;
         database: number;
-    }
-    paypal: {
+    };
+    gateways: {
+        paypal: string;
+        stripe: string;
+    };
+    earn: {
         enabled: string;
-    }
-    stripe: {
-        enabled: string;
-    }
+        amount: number;
+    };
 }
 
 export interface StorefrontStore {

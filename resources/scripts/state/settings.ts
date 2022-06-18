@@ -7,15 +7,6 @@ export interface SiteSettings {
         enabled: boolean;
         siteKey: string;
     };
-    gateways: {
-        paypal: string;
-        stripe: string;
-    };
-    currencyName: string;
-    earn: {
-        enabled: string;
-        amount: number;
-    }
     logo: string;
     registration: {
         email: string;

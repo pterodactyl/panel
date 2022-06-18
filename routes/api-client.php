@@ -66,10 +66,10 @@ Route::group([
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
 
     Route::group(['prefix' => '/paypal'], function () {
-        Route::post('/', [Client\Store\PaypalController::class, 'purchase'])->name('api:client:store.paypal');
+        Route::post('/', [Client\Store\PayPalController::class, 'purchase'])->name('api:client:store.paypal');
 
-        Route::get('/success', [Client\Store\PaypalController::class, 'success'])->name('api.client.store.paypal.success');
-        Route::get('/cancel', [Client\Store\PaypalController::class, 'cancel'])->name('api.client.store.paypal.cancel');
+        Route::get('/success', [Client\Store\PayPalController::class, 'success'])->name('api.client.store.paypal.success');
+        Route::get('/cancel', [Client\Store\PayPalController::class, 'cancel'])->name('api.client.store.paypal.cancel');
     });
 });
 

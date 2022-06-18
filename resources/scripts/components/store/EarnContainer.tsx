@@ -7,7 +7,7 @@ import { useStoreState } from '@/state/hooks';
 
 const BalanceContainer = () => {
     const [ resources, setResources ] = useState<Resources>();
-    const earn = useStoreState(state => state.settings.data!.earn);
+    const earn = useStoreState(state => state.storefront.data!.earn);
 
     useEffect(() => {
         getResources()

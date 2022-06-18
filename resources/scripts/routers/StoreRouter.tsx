@@ -21,7 +21,7 @@ const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();
     const location = useLocation();
     const { width } = useWindowDimensions();
-    const earn = useStoreState(state => state.settings.data!.earn.enabled);
+    const earn = useStoreState(state => state.storefront.data!.earn);
 
     return (
         <>
@@ -37,7 +37,7 @@ const StoreRouter = () => {
                     <NavLink to={`${match.url}/resources`}>
                         <div css={tw`flex items-center justify-between`}>Resources <Icon.ShoppingCart css={tw`ml-1`} size={18} /></div>
                     </NavLink>
-                    {earn === 'true' &&
+                    {earn.enabled === 'true' &&
                         <NavLink to={`${match.url}/earn`}>
                             <div css={tw`flex items-center justify-between`}>Earn Credits <Icon.DollarSign css={tw`ml-1`} size={18} /></div>
                         </NavLink>
@@ -61,7 +61,7 @@ const StoreRouter = () => {
                     <Route path={`${match.path}/edit`} exact>
                         <EditContainer />
                     </Route>
-                    {earn === 'true' &&
+                    {earn.enabled === 'true' &&
                         <Route path={`${match.path}/earn`} exact>
                             <EarnContainer />
                         </Route>
