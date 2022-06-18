@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int $user_id
  * @property int $key_type
- * @property string|null $identifier
+ * @property string $identifier
  * @property string $token
  * @property array|null $allowed_ips
  * @property string|null $memo
