@@ -15,6 +15,7 @@ return [
         'checkpoint' => 'Two-factor authentication requested',
         'recovery-token' => 'Used two-factor recovery token',
         'token' => 'Solved two-factor challenge',
+        'ip-blocked' => 'Blocked request from unlisted IP address for <strong>:identifier</strong>',
     ],
     'user' => [
         'account' => [
