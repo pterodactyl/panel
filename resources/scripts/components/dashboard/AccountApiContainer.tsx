@@ -79,7 +79,7 @@ export default () => {
                             keys.map((key, index) => (
                                 <GreyRowBox
                                     key={key.identifier}
-                                    css={[ tw`bg-neutral-600 flex items-center`, index > 0 && tw`mt-2` ]}
+                                    css={[ tw`bg-neutral-700 flex items-center`, index > 0 && tw`mt-2` ]}
                                 >
                                     <Icon.Key css={tw`text-neutral-300`} />
                                     <div css={tw`ml-4 flex-1 overflow-hidden`}>
