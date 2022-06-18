@@ -25,7 +25,7 @@ return [
     | This value determines how much 100 credits costs. Defaults to $1 USD.
     |
     */
-    'currency' => env('STORE_COST', 1.00),
+    'cost' => env('STORE_COST', 1.00),
 
     /*
     |--------------------------------------------------------------------------

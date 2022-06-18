@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Exceptions\DisplayException;
@@ -65,7 +66,7 @@ class PayPalController extends ClientApiController
                 "return_url" => route('api.client.store.paypal.success'),
                 'brand_name' => $this->settings->get('settings::app:name'),
                 'shipping_preference'  => 'NO_SHIPPING'
-            ]
+            ],
         ];
 
         try {
@@ -75,30 +76,30 @@ class PayPalController extends ClientApiController
             throw new DisplayException('Unable to process order.');
         }
     }
-    
+
     /**
      * Add balance to a user when the purchase is successful.
      * 
      * @throws DisplayException
      */
-    public function success(PayPalRequest $request): RedirectResponse
+    public function success(Request $request): RedirectResponse
     {
         $client = $this->getClient();
-        $amount = $request->input('amount');
 
         try {
             $order = new OrdersCaptureRequest($request->input('token'));
             $order->prefer('return=representation');
 
-            $res = $client->execute($req);
+            $res = $client->execute($order);
     
             if ($res->statusCode == 200 | 201) {
                 $request->user()->update([
-                    'store_balance' => $request->user()->store_balance + $amount,
+                    // TODO: custom amounts, not just 100
+                    'store_balance' => $request->user()->store_balance + 100,
                 ]);
             };
 
-            return redirect()->route('api.client.store.paypal.success');
+            return redirect('/store');
 
         } catch (DisplayException $ex) {
             throw new DisplayException('Unable to process order.');

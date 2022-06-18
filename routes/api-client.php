@@ -63,11 +63,22 @@ Route::group([
 
     Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->middleware('auth', 'throttle:1,1');
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
+    Route::post('/paypal', [Client\Store\PayPalController::class, 'purchase'])->name('api:client:store.paypal');
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
+});
 
+/*
+|--------------------------------------------------------------------------
+| Client Control API
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/client/callback
+|
+*/
+Route::group([
+    'prefix' => '/callback',
+], function () {
     Route::group(['prefix' => '/paypal'], function () {
-        Route::post('/', [Client\Store\PayPalController::class, 'purchase'])->name('api:client:store.paypal');
-
         Route::get('/success', [Client\Store\PayPalController::class, 'success'])->name('api.client.store.paypal.success');
         Route::get('/cancel', [Client\Store\PayPalController::class, 'cancel'])->name('api.client.store.paypal.cancel');
     });

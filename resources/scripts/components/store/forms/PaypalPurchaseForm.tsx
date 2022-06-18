@@ -15,8 +15,6 @@ export default () => {
     const [ submitting, setSubmitting ] = useState(false);
 
     const submit = () => {
-        console.log('triggered');
-
         setSubmitting(true);
 
         paypal(amount).then(url => {
