@@ -197,6 +197,7 @@ class UserController extends Controller
         $user->update([
             'store_balance' => $request->input('store_balance'),
             'store_cpu' => $request->input('store_cpu'),
+            'store_memory' => $request->input('store_memory'),
             'store_disk' => $request->input('store_disk'),
             'store_slots' => $request->input('store_slots'),
             'store_ports' => $request->input('store_ports'),
