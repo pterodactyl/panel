@@ -75,12 +75,13 @@ Route::group([
 | Endpoint: /api/client/callback
 |
 */
-Route::group([
-    'prefix' => '/callback',
-], function () {
+Route::group(['prefix' => '/callback'], function () {
     Route::group(['prefix' => '/paypal'], function () {
         Route::get('/success', [Client\Store\PayPalController::class, 'success'])->name('api.client.store.paypal.success');
         Route::get('/cancel', [Client\Store\PayPalController::class, 'cancel'])->name('api.client.store.paypal.cancel');
+    });
+    Route::group(['prefix' => '/stripe'], function () {
+        Route::get('/cancel', [Client\Store\StripeController::class, 'cancel'])->name('api.client.store.stripe.cancel');
     });
 });
 

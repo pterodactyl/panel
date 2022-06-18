@@ -2,12 +2,15 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
+use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
-use Pterodactyl\Exceptions\DisplayException;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
+use PayPalHttp\HttpException;
+use PayPalHttp\IOException;
+use Pterodactyl\Exceptions\DisplayException;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
@@ -30,14 +33,14 @@ class PayPalController extends ClientApiController
     /**
      * Constructs the PayPal order request and redirects
      * the user over to PayPal for credits purchase.
-     * 
+     *
      * @throws DisplayException
      */
     public function purchase(PayPalRequest $request): JsonResponse
     {
         if ($this->settings->get('jexactyl::store:paypal:enabled') != 'true') {
             throw new DisplayException('Unable to purchase via PayPal: module not enabled');
-        };
+        }
 
         $client = $this->getClient();
         $amount = $request->input('amount');
@@ -52,44 +55,45 @@ class PayPalController extends ClientApiController
             'user_id' => $request->user()->id,
             'amount' => $amount,
         ]);
-    
+
         $order = new OrdersCreateRequest();
         $order->prefer('return=representation');
 
         $order->body = [
-            "intent" => "CAPTURE",
-            "purchase_units" => [
+            'intent' => 'CAPTURE',
+            'purchase_units' => [
                 [
-                    "reference_id" => uniqid(),
-                    "description" => $amount.' Credits | '.$this->settings->get('settings::app:name'),
-                    "amount" => [
-                        "value" => $cost,
+                    'reference_id' => uniqid(),
+                    'description' => $amount . ' Credits | ' . $this->settings->get('settings::app:name'),
+                    'amount' => [
+                        'value' => $cost,
                         'currency_code' => strtoupper($currency),
                         'breakdown' => [
-                            'item_total' => ['currency_code' => strtoupper($currency), 'value' => $cost]
-                        ]
-                    ]
-                ]
+                            'item_total' => ['currency_code' => strtoupper($currency), 'value' => $cost],
+                        ],
+                    ],
+                ],
             ],
-            "application_context" => [
-                "cancel_url" => route('api.client.store.paypal.cancel'),
-                "return_url" => route('api.client.store.paypal.success'),
+            'application_context' => [
+                'cancel_url' => route('api.client.store.paypal.cancel'),
+                'return_url' => route('api.client.store.paypal.success'),
                 'brand_name' => $this->settings->get('settings::app:name'),
-                'shipping_preference'  => 'NO_SHIPPING'
+                'shipping_preference' => 'NO_SHIPPING',
             ],
         ];
 
         try {
             $response = $client->execute($order);
+
             return new JsonResponse($response->result->links[1]->href, 200, [], null, true);
-        } catch (DisplayException $ex) {
+        } catch (Exception $ex) {
             throw new DisplayException('Unable to process order.');
         }
     }
 
     /**
      * Add balance to a user when the purchase is successful.
-     * 
+     *
      * @throws DisplayException
      */
     public function success(Request $request): RedirectResponse
@@ -106,21 +110,19 @@ class PayPalController extends ClientApiController
                 ->get();
 
             $res = $client->execute($order);
-    
+
             if ($res->statusCode == 200 | 201) {
                 $request->user()->update([
-                    // TODO: custom amounts, not just 100
                     'store_balance' => $request->user()->store_balance + $temp[0]->amount,
                 ]);
-            };
+            }
 
             DB::table('paypal')->where('user_id', $id)->delete();
 
             return redirect('/store');
-
         } catch (DisplayException $ex) {
             throw new DisplayException('Unable to process order.');
-        };
+        }
     }
 
     /**
@@ -134,7 +136,7 @@ class PayPalController extends ClientApiController
     /**
      * Returns a PayPal client which can be used
      * for processing orders via the API.
-     * 
+     *
      * @throws DisplayException
      */
     protected function getClient(): PayPalHttpClient
