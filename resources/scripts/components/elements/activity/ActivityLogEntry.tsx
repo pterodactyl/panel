@@ -7,6 +7,9 @@ import { format, formatDistanceToNowStrict } from 'date-fns';
 import { ActivityLog } from '@definitions/user';
 import { useLocation } from 'react-router';
 import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMetaButton';
+import { TerminalIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import style from './style.module.css';
 
 interface Props {
     activity: ActivityLog;
@@ -48,7 +51,14 @@ export default ({ activity, children }: Props) => {
                         >
                             {activity.event}
                         </Link>
-                        {children}
+                        <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
+                            {activity.isApi &&
+                                <Tooltip placement={'top'} content={'Performed using API Key'}>
+                                    <span><TerminalIcon/></span>
+                                </Tooltip>
+                            }
+                            {children}
+                        </div>
                     </div>
                     <p className={'mt-1 text-sm break-words line-clamp-2 pr-4'}>
                         <Translate ns={'activity'} values={activity.properties}>

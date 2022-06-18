@@ -57,18 +57,7 @@ class DeleteBackupTest extends ClientApiIntegrationTestCase
         $backup->refresh();
         $this->assertSoftDeleted($backup);
 
-        Event::assertDispatched(ActivityLogged::class, function (ActivityLogged $event) use ($backup, $user) {
-            $this->assertTrue($event->isServerEvent());
-            $this->assertTrue($event->is('server:backup.delete'));
-            $this->assertTrue($user->is($event->actor()));
-            $this->assertCount(2, $event->model->subjects);
-
-            $subjects = $event->model->subjects;
-            $this->assertCount(1, $subjects->filter(fn ($model) => $model->subject->is($backup)));
-            $this->assertCount(1, $subjects->filter(fn ($model) => $model->subject->is($backup->server)));
-
-            return true;
-        });
+        $this->assertActivityFor('server:backup.delete', $user, [$backup, $backup->server]);
 
         $this->actingAs($user)->deleteJson($this->link($backup))->assertStatus(Response::HTTP_NOT_FOUND);
     }

@@ -23,6 +23,7 @@ interface ActivityLog extends Model<'actor'> {
     batch: UUID | null;
     event: string;
     ip: string;
+    isApi: boolean;
     description: string | null;
     properties: Record<string, string | unknown>;
     hasAdditionalMetadata: boolean;

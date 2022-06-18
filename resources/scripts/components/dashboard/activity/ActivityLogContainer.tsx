@@ -55,7 +55,7 @@ export default () => {
                         <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
                             {typeof activity.properties.useragent === 'string' &&
                                 <Tooltip content={activity.properties.useragent} placement={'top'}>
-                                    <DesktopComputerIcon className={'ml-2 w-4 h-4 cursor-pointer'}/>
+                                    <span><DesktopComputerIcon/></span>
                                 </Tooltip>
                             }
                         </ActivityLogEntry>
