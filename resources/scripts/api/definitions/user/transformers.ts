@@ -34,6 +34,7 @@ export default class Transformers {
             batch: attributes.batch,
             event: attributes.event,
             ip: attributes.ip,
+            isApi: attributes.is_api,
             description: attributes.description,
             properties: attributes.properties,
             hasAdditionalMetadata: attributes.has_additional_metadata ?? false,
