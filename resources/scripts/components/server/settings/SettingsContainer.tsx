@@ -17,6 +17,8 @@ export default () => {
     return (
         <ServerContentBlock title={'Settings'}>
             <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
+            <h1 css={tw`text-5xl`}>Settings</h1>
+            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Control important settings for your server.</h3>
             <div css={tw`md:flex`}>
                 <div css={tw`w-full md:flex-1 md:mr-10`}>
                     <TitledGreyBox title={'Debug Information'} css={tw`mb-6 md:mb-10`}>

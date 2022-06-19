@@ -35,6 +35,7 @@ import DatabasesContainer from '@/components/server/databases/DatabasesContainer
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import ScreenBlock, { NotFound, ServerError } from '@/components/elements/ScreenBlock';
 import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditContainer';
+import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
 
 const ConflictStateRenderer = () => {
     const status = ServerContext.useStoreState(state => state.server.data?.status || null);
@@ -112,6 +113,11 @@ export default () => {
                                 <NavLink to={`${match.url}`} exact>
                                     <div css={tw`flex items-center justify-between`}>Console <Icon.Terminal css={tw`ml-1`} size={18} /> </div>
                                 </NavLink>
+                                <Can action={'activity.*'}>
+                                    <NavLink to={`${match.url}/activity`}>
+                                        <div css={tw`flex items-center justify-between`}>Activity <Icon.Eye css={tw`ml-1`} size={18} /> </div>
+                                    </NavLink>
+                                </Can>
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>
                                         <div css={tw`flex items-center justify-between`}>Files <Icon.Folder css={tw`ml-1`} size={18} /> </div>
@@ -178,6 +184,11 @@ export default () => {
                                     <Route path={`${match.path}/files`} exact>
                                         <RequireServerPermission permissions={'file.*'}>
                                             <FileManagerContainer/>
+                                        </RequireServerPermission>
+                                    </Route>
+                                    <Route path={`${match.path}/activity`} exact>
+                                        <RequireServerPermission permissions={'activity.*'}>
+                                            <ServerActivityLogContainer/>
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/files/:action(edit|new)`} exact>

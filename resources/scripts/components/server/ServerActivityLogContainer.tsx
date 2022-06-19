@@ -1,16 +1,17 @@
-import React, { useEffect, useState } from 'react';
-import { useActivityLogs } from '@/api/server/activity';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import { useFlashKey } from '@/plugins/useFlash';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import Spinner from '@/components/elements/Spinner';
-import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
-import PaginationFooter from '@/components/elements/table/PaginationFooter';
-import { ActivityLogFilters } from '@/api/account/activity';
-import { Link } from 'react-router-dom';
+import tw from 'twin.macro';
 import classNames from 'classnames';
+import * as Icon from 'react-feather';
+import { Link } from 'react-router-dom';
+import { useFlashKey } from '@/plugins/useFlash';
+import React, { useEffect, useState } from 'react';
+import Spinner from '@/components/elements/Spinner';
+import { useActivityLogs } from '@/api/server/activity';
+import { ActivityLogFilters } from '@/api/account/activity';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import { styles as btnStyles } from '@/components/elements/button/index';
-import { XCircleIcon } from '@heroicons/react/solid';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import PaginationFooter from '@/components/elements/table/PaginationFooter';
+import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
 
 export default () => {
     const { clearAndAddHttpError } = useFlashKey('server:activity');
@@ -34,6 +35,8 @@ export default () => {
     return (
         <ServerContentBlock title={'Activity Log'}>
             <FlashMessageRender byKey={'server:activity'}/>
+            <h1 css={tw`text-5xl`}>Server Activity</h1>
+            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>View activity on this server.</h3>
             {(filters.filters?.event || filters.filters?.ip) &&
                 <div className={'flex justify-end mb-2'}>
                     <Link
@@ -41,7 +44,7 @@ export default () => {
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
                         onClick={() => setFilters(value => ({ ...value, filters: {} }))}
                     >
-                        Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'}/>
+                        Clear Filters <Icon.XCircle className={'w-4 h-4 ml-2'}/>
                     </Link>
                 </div>
             }
@@ -51,7 +54,7 @@ export default () => {
                 !data?.items.length ?
                     <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
                     :
-                    <div className={'bg-gray-700'}>
+                    <div className={'bg-neutral-900'}>
                         {data?.items.map((activity) => (
                             <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
                                 <span/>

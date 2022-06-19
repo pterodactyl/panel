@@ -39,6 +39,8 @@ export default () => {
     return (
         <ServerContentBlock title={'Databases'}>
             <FlashMessageRender byKey={'databases'} css={tw`mb-4`}/>
+            <h1 css={tw`text-5xl`}>Databases</h1>
+            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Create databases for your application.</h3>
             {(!databases.length && loading) ?
                 <Spinner size={'large'} centered/>
                 :
