@@ -22,6 +22,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
                 </Dialog.Buttons>
             </Dialog>
             <button
+                aria-describedby={'View additional event metadata'}
                 className={'p-2 transition-colors duration-100 text-gray-400 group-hover:text-gray-300 group-hover:hover:text-gray-50'}
                 onClick={() => setOpen(true)}
             >

@@ -122,7 +122,7 @@ class ApiKeyController extends ClientApiController
         ]);
 
         Activity::event('user:api-key.delete')
-            ->property('identifer', $key->identifier)
+            ->property('identifier', $key->identifier)
             ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);

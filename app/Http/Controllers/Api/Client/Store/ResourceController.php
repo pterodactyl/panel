@@ -7,6 +7,7 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Transformers\Api\Client\Store\UserTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Http\Requests\Api\Client\Store\StoreEarnRequest;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\PurchaseResourceRequest;
@@ -41,6 +42,26 @@ class ResourceController extends ClientApiController
     }
 
     /**
+     * Allows a user to earn credits via passive earning.
+     * 
+     * @throws DisplayException
+     */
+    public function earn(StoreEarnRequest $request)
+    {
+        if ($this->settings->get('jexactyl::earn:enabled') != true) return;
+
+        try {
+            $request->user()->update([
+                'store_balance' => $request->user()->store_balance + $this->settings->get('jexactyl::earn:amount', 0),
+            ]);
+        } catch (DisplayException $ex) {
+            throw new DisplayException('Unable to passively earn coins.');
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
      * Allows users to purchase resources via the store.
      * 
      * @throws DisplayException
@@ -57,8 +78,6 @@ class ResourceController extends ClientApiController
         if ($balance < $cost) {
             throw new DisplayException('Unable to purchase resource: You do not have enough credits.');
         };
-
-        // throw new DisplayException('Resource: '.$resource.', Type: '.$type.', Amount: '.$amount);
 
         $request->user()->update([
             'store_balance' => $balance - $cost,

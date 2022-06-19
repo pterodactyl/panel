@@ -1,12 +1,12 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace Pterodactyl\Http\Middleware\Activity;
 
 use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Facades\LogTarget;
 
-class AccountActivitySubject
+class AccountSubject
 {
     /**
      * Sets the actor and default subject for all requests passing through this

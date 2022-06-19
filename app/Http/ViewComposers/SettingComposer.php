@@ -32,17 +32,18 @@ class SettingComposer
         $view->with('siteConfiguration', [
             'name' => config('app.name') ?? 'Pterodactyl',
             'locale' => config('app.locale') ?? 'en',
-            'logo' => $this->settings->get('settings::app:logo') ?? 'https://www.jexactyl.com/assets/images/logo.png',
+            'logo' => $this->settings->get('settings::app:logo', 'https://www.jexactyl.com/assets/images/logo.png'),
+            'renewal' => $this->settings->get('jexactyl::renewal:enabled', false),
+    
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',
             ],
-            'currencyName' => $this->settings->get('jexactyl::store:currency', 'JCR'),
+
             'registration' => [
                 'email' => $this->settings->get('jexactyl::registration:enabled', false),
                 'discord' => $this->settings->get('jexactyl::discord:enabled', false),
             ],
-            'renewal' => $this->settings->get('jexactyl::renewal:enabled', false),
         ]);
     }
 }

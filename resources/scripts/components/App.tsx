@@ -1,7 +1,7 @@
-import React from 'react';
 import tw from 'twin.macro';
 import '@/assets/tailwind.css';
 import { store } from '@/state';
+import React, { useEffect } from 'react';
 import { StoreProvider } from 'easy-peasy';
 import { hot } from 'react-hot-loader/root';
 import { history } from '@/components/history';
@@ -10,6 +10,7 @@ import IndexRouter from '@/routers/IndexRouter';
 import { setupInterceptors } from '@/api/interceptors';
 import { StorefrontSettings } from '@/state/storefront';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
+import earnCredits from '@/api/account/earnCredits';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -57,6 +58,22 @@ const App = () => {
     if (!store.getState().storefront.data) {
         store.getActions().storefront.setStorefront(StoreConfiguration!);
     }
+
+    function wait (ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
+    async function earn () {
+        await wait(60000);
+        earnCredits()
+            .catch(() => console.error('Failed to add credits'));
+    }
+
+    useEffect(() => {
+        earn();
+    }, []);
+
+    setInterval(earn, 60000);
 
     return (
         <>

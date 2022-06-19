@@ -32,10 +32,18 @@ class StoreComposer
     {
         $view->with('storeConfiguration', [
             'enabled' => $this->getSetting('enabled'),
-            'gateways' => [
-                'paypal' => $this->getSetting('paypal:enabled') ?? false,
-                'stripe' => $this->getSetting('stripe:enabled') ?? false,
+            'currency' => $this->settings->get('jexactyl::store:currency', 'JCR'),
+
+            'earn' => [
+                'enabled' => $this->settings->get('jexactyl::earn:enabled', false),
+                'amount' => $this->settings->get('jexactyl::earn:amount', 1),
             ],
+
+            'gateways' => [
+                'paypal' => $this->getSetting('paypal:enabled', false),
+                'stripe' => $this->getSetting('stripe:enabled', false),
+            ],
+
             'cost' => [
                 'cpu' => $this->getSetting('cost:cpu'),
                 'memory' => $this->getSetting('cost:memory'),

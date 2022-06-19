@@ -74,4 +74,4 @@ export const isEmptyObject = (o: {}): boolean =>
     Object.keys(o).length === 0 && Object.getPrototypeOf(o) === Object.prototype;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-export const getObjectKeys = <T extends {}> (o: T): Array<keyof T> => Object.keys(o) as Array<keyof T>;
+export const getObjectKeys = <T extends {}> (o: T): (keyof T)[] => Object.keys(o) as (keyof typeof o)[];

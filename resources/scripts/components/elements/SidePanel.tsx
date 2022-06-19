@@ -6,6 +6,7 @@ import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { NavLink, Link } from 'react-router-dom';
 import ProgressBar from '@/components/elements/ProgressBar';
+import Tooltip from '@/components/elements/tooltip/Tooltip';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 export default () => {
@@ -38,31 +39,40 @@ export default () => {
             <div css={tw`mx-auto mb-6`} className={'navigation-link'}>
                 <SearchContainer size={32} />
             </div>
-            <NavLink to={'/'} css={tw`mx-auto my-6`} className={'navigation-link'}>
-                <Icon.Server size={32} />
-            </NavLink>
-            <NavLink to={'/account'} css={tw`mx-auto my-6`} className={'navigation-link'}>
-                <Icon.User size={32} />
-            </NavLink>
-            {store === 'true' &&
-                <NavLink to={'/store'} css={tw`mx-auto my-6`} className={'navigation-link'}>
-                    <Icon.ShoppingCart size={32} />
+            <Tooltip placement={'bottom'} content={'Servers'}>
+                <NavLink to={'/'} css={tw`mx-auto my-6`} className={'navigation-link'}>
+                    <Icon.Server size={32} />
                 </NavLink>
+            </Tooltip>
+            <Tooltip placement={'bottom'} content={'Account'}>
+                <NavLink to={'/account'} css={tw`mx-auto my-6`} className={'navigation-link'}>
+                    <Icon.User size={32} />
+                </NavLink>
+            </Tooltip>
+            {store === 'true' &&
+                <Tooltip placement={'bottom'} content={'Store'}>
+                    <NavLink to={'/store'} css={tw`mx-auto my-6`} className={'navigation-link'}>
+                        <Icon.ShoppingCart size={32} />
+                    </NavLink>
+                </Tooltip>
             }
             {rootAdmin &&
-                <a href={'/admin'} css={tw`mx-auto my-6`} className={'navigation-link'}>
-                    <Icon.Settings size={32} />
-                </a>
+                <Tooltip placement={'bottom'} content={'Admin'}>
+                    <a href={'/admin'} css={tw`mx-auto my-6`} className={'navigation-link'}>
+                        <Icon.Settings size={32} />
+                    </a>
+                </Tooltip>
             }
             <div id={'logo'}>
-                <button
-                    title={'Logout'}
-                    onClick={onTriggerLogout}
-                    css={tw`flex flex-row mx-auto my-6`}
-                    className={'navigation-link'}
-                >
-                    <Icon.LogOut size={32} />
-                </button>
+                <Tooltip placement={'bottom'} content={'Logout'}>
+                    <button
+                        onClick={onTriggerLogout}
+                        css={tw`flex flex-row mx-auto my-6`}
+                        className={'navigation-link'}
+                    >
+                        <Icon.LogOut size={32} />
+                    </button>
+                </Tooltip>
             </div>
         </PanelDiv>
     );

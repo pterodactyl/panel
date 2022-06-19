@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Api\Client;
-use Pterodactyl\Http\Middleware\ServerActivitySubject;
-use Pterodactyl\Http\Middleware\AccountActivitySubject;
+use Pterodactyl\Http\Middleware\Activity\ServerSubject;
+use Pterodactyl\Http\Middleware\Activity\AccountSubject;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
@@ -19,7 +19,7 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.index');
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 
-Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(function () {
+Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
         Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
@@ -61,14 +61,27 @@ Route::group([
     Route::get('/', [Client\Store\ResourceController::class, 'user'])->name('api:client:store.user');
     Route::get('/eggs/{nest:id}', [Client\Store\ServerController::class, 'eggs'])->name('api:client:store.eggs');
 
+    Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->middleware('auth', 'throttle:1,1');
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
+    Route::post('/paypal', [Client\Store\PayPalController::class, 'purchase'])->name('api:client:store.paypal');
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
+});
 
+/*
+|--------------------------------------------------------------------------
+| Client Control API
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/client/callback
+|
+*/
+Route::group(['prefix' => '/callback'], function () {
     Route::group(['prefix' => '/paypal'], function () {
-        Route::post('/', [Client\Store\PaypalController::class, 'purchase'])->name('api:client:store.paypal');
-
-        Route::get('/success', [Client\Store\PaypalController::class, 'success'])->name('api.client.store.paypal.success');
-        Route::get('/cancel', [Client\Store\PaypalController::class, 'cancel'])->name('api.client.store.paypal.cancel');
+        Route::get('/success', [Client\Store\PayPalController::class, 'success'])->name('api.client.store.paypal.success');
+        Route::get('/cancel', [Client\Store\PayPalController::class, 'cancel'])->name('api.client.store.paypal.cancel');
+    });
+    Route::group(['prefix' => '/stripe'], function () {
+        Route::get('/cancel', [Client\Store\StripeController::class, 'cancel'])->name('api.client.store.stripe.cancel');
     });
 });
 
@@ -83,7 +96,7 @@ Route::group([
 Route::group([
     'prefix' => '/servers/{server}',
     'middleware' => [
-        ServerActivitySubject::class,
+        ServerSubject::class,
         AuthenticateServerAccess::class,
         ResourceBelongsToServer::class,
     ],

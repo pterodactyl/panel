@@ -7,11 +7,30 @@ import { format, formatDistanceToNowStrict } from 'date-fns';
 import { ActivityLog } from '@definitions/user';
 import { useLocation } from 'react-router';
 import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMetaButton';
+import { TerminalIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import style from './style.module.css';
+import { isObject } from '@/helpers';
 
 interface Props {
     activity: ActivityLog;
     children?: React.ReactNode;
 }
+
+const formatProperties = (properties: Record<string, unknown>): Record<string, unknown> => {
+    return Object.keys(properties).reduce((obj, key) => {
+        const value = properties[key];
+        // noinspection SuspiciousTypeOfGuard
+        const isCount = key === 'count' || (typeof key === 'string' && key.endsWith('_count'));
+
+        return {
+            ...obj,
+            [key]: isCount || typeof value !== 'string'
+                ? (isObject(value) ? formatProperties(value) : value)
+                : `<strong>${value}</strong>`,
+        };
+    }, {});
+};
 
 export default ({ activity, children }: Props) => {
     const location = useLocation();
@@ -23,6 +42,8 @@ export default ({ activity, children }: Props) => {
 
         return current.toString();
     };
+
+    const properties = formatProperties(activity.properties);
 
     return (
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
@@ -48,12 +69,17 @@ export default ({ activity, children }: Props) => {
                         >
                             {activity.event}
                         </Link>
-                        {children}
+                        <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
+                            {activity.isApi &&
+                                <Tooltip placement={'top'} content={'Performed using API Key'}>
+                                    <span><TerminalIcon/></span>
+                                </Tooltip>
+                            }
+                            {children}
+                        </div>
                     </div>
-                    <p className={'mt-1 text-sm break-words line-clamp-2 pr-4'}>
-                        <Translate ns={'activity'} values={activity.properties}>
-                            {activity.event.replace(':', '.')}
-                        </Translate>
+                    <p className={style.description}>
+                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')}/>
                     </p>
                     <div className={'mt-1 flex items-center text-sm'}>
                         <Link

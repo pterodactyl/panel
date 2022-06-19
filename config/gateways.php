@@ -22,10 +22,10 @@ return [
     |--------------------------------------------------------------------------
     | Cost per 100 credits
     |--------------------------------------------------------------------------
-    | This value determines how much 100 credits cost. Defaults to $1 USD.
+    | This value determines how much 100 credits costs. Defaults to $1 USD.
     |
     */
-    'currency' => env('STORE_COST', 1.00),
+    'cost' => env('STORE_COST', 1.00),
 
     /*
     |--------------------------------------------------------------------------
@@ -37,5 +37,9 @@ return [
     'paypal' => [
         'client_id' => env('PAYPAL_CLIENT_ID', ''),
         'client_secret' => env('PAYPAL_CLIENT_SECRET', ''),
+    ],
+
+    'stripe' => [
+        'secret' => env('STRIPE_CLIENT_SECRET'),
     ],
 ];

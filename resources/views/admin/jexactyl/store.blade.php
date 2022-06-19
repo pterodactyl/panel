@@ -72,6 +72,32 @@
                 </div>
                 <div class="box box-info">
                     <div class="box-header with-border">
+                        <h3 class="box-title">Idle Earning <small>Configure settings for passive credit earning.</small></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Enabled</label>
+                                <div>
+                                    <select name="earn:enabled" class="form-control">
+                                        <option @if ($earn_enabled == 'false') selected @endif value="false">Disabled</option>
+                                        <option @if ($earn_enabled == 'true') selected @endif value="true">Enabled</option>
+                                    </select>
+                                    <p class="text-muted"><small>Determines whether users can earn credits passively.</small></p>
+                                </div>
+                            </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Amount of credits per minute</label>
+                                <div>
+                                    <input type="text" class="form-control" name="earn:amount" value="{{ $earn_amount }}" />
+                                    <p class="text-muted"><small>The amount of credits a user should be given per minute of AFK.</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-info">
+                    <div class="box-header with-border">
                         <h3 class="box-title">Resource Pricing <small>Set specific pricing for resources.</small></h3>
                     </div>
                     <div class="box-body">

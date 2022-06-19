@@ -16,6 +16,7 @@ use Illuminate\Routing\Middleware\ThrottleRequests;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
 use Illuminate\Routing\Middleware\SubstituteBindings;
+use Pterodactyl\Http\Middleware\Activity\TrackAPIKey;
 use Illuminate\Session\Middleware\AuthenticateSession;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
@@ -68,6 +69,7 @@ class Kernel extends HttpKernel
             EnsureStatefulRequests::class,
             'auth:sanctum',
             IsValidJson::class,
+            TrackAPIKey::class,
             RequireTwoFactorAuthentication::class,
             AuthenticateIPAccess::class,
         ],

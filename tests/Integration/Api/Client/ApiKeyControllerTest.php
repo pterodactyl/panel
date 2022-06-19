@@ -5,6 +5,8 @@ namespace Pterodactyl\Tests\Integration\Api\Client;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\ApiKey;
+use Illuminate\Support\Facades\Event;
+use Pterodactyl\Events\ActivityLogged;
 
 class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 {
@@ -26,37 +28,26 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = ApiKey::factory()->create([
-            'user_id' => $user->id,
+        $key = ApiKey::factory()->for($user)->create([
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
 
-        $response = $this->actingAs($user)->get('/api/client/account/api-keys');
+        $response = $this->actingAs($user)->get('/api/client/account/api-keys')
+            ->assertOk()
+            ->assertJsonPath('object', 'list')
+            ->assertJsonPath('data.0.object', ApiKey::RESOURCE_NAME);
 
-        $response->assertOk();
-        $response->assertJson([
-            'object' => 'list',
-            'data' => [
-                [
-                    'object' => 'api_key',
-                    'attributes' => [
-                        'identifier' => $key->identifier,
-                        'description' => $key->memo,
-                        'allowed_ips' => $key->allowed_ips,
-                        'last_used_at' => null,
-                        'created_at' => $key->created_at->toIso8601String(),
-                    ],
-                ],
-            ],
-        ]);
+        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $key);
     }
 
     /**
      * Test that an API key can be created for the client account. This also checks that the
      * API key secret is returned as metadata in the response since it will not be returned
      * after that point.
+     *
+     * @dataProvider validIPAddressDataProvider
      */
-    public function testApiKeyCanBeCreatedForAccount()
+    public function testApiKeyCanBeCreatedForAccount(array $data)
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
@@ -71,27 +62,37 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
 
         $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
             'description' => 'Test Description',
-            'allowed_ips' => ['127.0.0.1'],
-        ]);
-
-        $response->assertOk();
+            'allowed_ips' => $data,
+        ])
+            ->assertOk()
+            ->assertJsonPath('object', ApiKey::RESOURCE_NAME);
 
         /** @var \Pterodactyl\Models\ApiKey $key */
         $key = ApiKey::query()->where('identifier', $response->json('attributes.identifier'))->firstOrFail();
 
-        $response->assertJson([
-            'object' => 'api_key',
-            'attributes' => [
-                'identifier' => $key->identifier,
-                'description' => 'Test Description',
-                'allowed_ips' => ['127.0.0.1'],
-                'last_used_at' => null,
-                'created_at' => $key->created_at->toIso8601String(),
-            ],
-            'meta' => [
-                'secret_token' => decrypt($key->token),
-            ],
-        ]);
+        $this->assertJsonTransformedWith($response->json('attributes'), $key);
+        $response->assertJsonPath('meta.secret_token', decrypt($key->token));
+
+        $this->assertActivityFor('user:api-key.create', $user, [$key, $user]);
+    }
+
+    /**
+     * Block requests to create an API key specifying more than 50 IP addresses.
+     */
+    public function testApiKeyCannotSpecifyMoreThanFiftyIps()
+    {
+        $ips = [];
+        for ($i = 0; $i < 100; ++$i) {
+            $ips[] = '127.0.0.' . $i;
+        }
+
+        $this->actingAs(User::factory()->create())
+            ->postJson('/api/client/account/api-keys', [
+                'description' => 'Test Data',
+                'allowed_ips' => $ips,
+            ])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.0.detail', 'The allowed ips may not have more than 50 items.');
     }
 
     /**
@@ -104,19 +105,17 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
-        ApiKey::factory()->times(5)->create([
-            'user_id' => $user->id,
+        ApiKey::factory()->times(5)->for($user)->create([
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
 
-        $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
+        $this->actingAs($user)->postJson('/api/client/account/api-keys', [
             'description' => 'Test Description',
             'allowed_ips' => ['127.0.0.1'],
-        ]);
-
-        $response->assertStatus(Response::HTTP_BAD_REQUEST);
-        $response->assertJsonPath('errors.0.code', 'DisplayException');
-        $response->assertJsonPath('errors.0.detail', 'You have reached the account limit for number of API keys.');
+        ])
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonPath('errors.0.code', 'DisplayException')
+            ->assertJsonPath('errors.0.detail', 'You have reached the account limit for number of API keys.');
     }
 
     /**
@@ -126,26 +125,33 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
      */
     public function testValidationErrorIsReturnedForBadRequests()
     {
-        /** @var \Pterodactyl\Models\User $user */
-        $user = User::factory()->create();
+        $this->actingAs(User::factory()->create());
 
-        $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
+        $this->postJson('/api/client/account/api-keys', [
             'description' => '',
             'allowed_ips' => ['127.0.0.1'],
-        ]);
+        ])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.0.meta.rule', 'required')
+            ->assertJsonPath('errors.0.detail', 'The description field is required.');
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.meta.rule', 'required');
-        $response->assertJsonPath('errors.0.detail', 'The description field is required.');
-
-        $response = $this->actingAs($user)->postJson('/api/client/account/api-keys', [
+        $this->postJson('/api/client/account/api-keys', [
             'description' => str_repeat('a', 501),
             'allowed_ips' => ['127.0.0.1'],
-        ]);
+        ])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.0.meta.rule', 'max')
+            ->assertJsonPath('errors.0.detail', 'The description may not be greater than 500 characters.');
 
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.meta.rule', 'max');
-        $response->assertJsonPath('errors.0.detail', 'The description may not be greater than 500 characters.');
+        $this->postJson('/api/client/account/api-keys', [
+                'description' => 'Foobar',
+                'allowed_ips' => ['hodor', '127.0.0.1', 'hodor/24'],
+            ])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.0.detail', '"hodor" is not a valid IP address or CIDR range.')
+            ->assertJsonPath('errors.0.meta.source_field', 'allowed_ips.0')
+            ->assertJsonPath('errors.1.detail', '"hodor/24" is not a valid IP address or CIDR range.')
+            ->assertJsonPath('errors.1.meta.source_field', 'allowed_ips.2');
     }
 
     /**
@@ -156,8 +162,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = ApiKey::factory()->create([
-            'user_id' => $user->id,
+        $key = ApiKey::factory()->for($user)->create([
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
 
@@ -165,6 +170,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         $response->assertStatus(Response::HTTP_NO_CONTENT);
 
         $this->assertDatabaseMissing('api_keys', ['id' => $key->id]);
+        $this->assertActivityFor('user:api-key.delete', $user, $user);
     }
 
     /**
@@ -184,6 +190,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         $response->assertNotFound();
 
         $this->assertDatabaseHas('api_keys', ['id' => $key->id]);
+        Event::assertNotDispatched(ActivityLogged::class);
     }
 
     /**
@@ -197,15 +204,16 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user2 */
         $user2 = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = ApiKey::factory()->create([
-            'user_id' => $user2->id,
+        $key = ApiKey::factory()->for($user2)->create([
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
 
-        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/' . $key->identifier);
-        $response->assertNotFound();
+        $this->actingAs($user)
+            ->deleteJson('/api/client/account/api-keys/' . $key->identifier)
+            ->assertNotFound();
 
         $this->assertDatabaseHas('api_keys', ['id' => $key->id]);
+        Event::assertNotDispatched(ActivityLogged::class);
     }
 
     /**
@@ -217,14 +225,30 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
         /** @var \Pterodactyl\Models\ApiKey $key */
-        $key = ApiKey::factory()->create([
-            'user_id' => $user->id,
+        $key = ApiKey::factory()->for($user)->create([
             'key_type' => ApiKey::TYPE_APPLICATION,
         ]);
 
-        $response = $this->actingAs($user)->delete('/api/client/account/api-keys/' . $key->identifier);
-        $response->assertNotFound();
+        $this->actingAs($user)
+            ->deleteJson('/api/client/account/api-keys/' . $key->identifier)
+            ->assertNotFound();
 
         $this->assertDatabaseHas('api_keys', ['id' => $key->id]);
+    }
+
+    /**
+     * Provides some different IP address combinations that can be used when
+     * testing that we accept the expected IP values.
+     */
+    public function validIPAddressDataProvider(): array
+    {
+        return [
+            [[]],
+            [['127.0.0.1']],
+            [['127.0.0.1', '::1']],
+            [['::ffff:7f00:1']],
+            [['127.0.0.1', '192.168.1.100', '192.168.10.10/28']],
+            [['127.0.0.1/32', '192.168.100.100/27', '::1', '::1/128']],
+        ];
     }
 }
