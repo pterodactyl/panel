@@ -45,14 +45,23 @@ class StoreComposer
             ],
 
             'cost' => [
-                'cpu' => $this->getSetting('cost:cpu'),
-                'memory' => $this->getSetting('cost:memory'),
-                'disk' => $this->getSetting('cost:disk'),
-                'slot' => $this->getSetting('cost:slot'),
-                'port' => $this->getSetting('cost:port'),
-                'backup' => $this->getSetting('cost:backup'),
-                'database' => $this->getSetting('cost:database'),
+                'cpu' => $this->getSetting('cost:cpu', 100),
+                'memory' => $this->getSetting('cost:memory', 50),
+                'disk' => $this->getSetting('cost:disk', 25),
+                'slot' => $this->getSetting('cost:slot', 250),
+                'port' => $this->getSetting('cost:port', 20),
+                'backup' => $this->getSetting('cost:backup', 20),
+                'database' => $this->getSetting('cost:database', 20),
             ],
+
+            'limit' => [
+                'cpu' => $this->getSetting('limit:cpu', 100),
+                'memory' => $this->getSetting('limit:memory', 4096),
+                'disk' => $this->getSetting('limit:disk', 10240),
+                'port' => $this->getSetting('limit:port', 1),
+                'backup' => $this->getSetting('limit:backup', 1),
+                'database' => $this->getSetting('limit:database', 1),
+            ]
         ]);
     }
 }

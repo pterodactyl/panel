@@ -17,6 +17,7 @@ class StripeController extends ClientApiController
     public function __construct(SettingsRepositoryInterface $settings)
     {
         parent::__construct();
+
         $this->settings = $settings;
     }
 
@@ -26,16 +27,17 @@ class StripeController extends ClientApiController
     public function purchase(StripeRequest $request): JsonResponse
     {
         if (!$this->settings->get('jexactyl::store:stripe:enabled')) {
-            throw new DisplayException('Unable to purchase via PayPal: module not enabled');
+            throw new DisplayException('Unable to purchase via Stripe: module not enabled');
         }
 
         $client = new StripeClient(config('gateways.stripe.secret'));
         $amount = $request->input('amount');
         $cost = config('gateways.stripe.cost', 1.00) / 100 * $amount;
         $currency = config('gateways.currency', 'USD');
+
         $checkout = $client->checkout->sessions->create([
-            'success_url' => route('api.client.store.stripe.success'),
-            'cancel_url' => config('app.url') . '/store',
+            'success_url' => config('app.url').'/store/balance',
+            'cancel_url' => config('app.url').'/store/error',
             'mode' => 'payment',
             'customer_email' => $request->user()->email,
             'metadata' => ['credit_amount' => $amount],

@@ -61,8 +61,9 @@ Route::group([
     Route::get('/', [Client\Store\ResourceController::class, 'user'])->name('api:client:store.user');
     Route::get('/eggs/{nest:id}', [Client\Store\ServerController::class, 'eggs'])->name('api:client:store.eggs');
 
-    Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->middleware('auth', 'throttle:1,1');
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
+    Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->middleware('auth', 'throttle:1,1');
+    Route::post('/stripe', [Client\Store\StripeController::class, 'purchase'])->name('api:client:store.stripe');
     Route::post('/paypal', [Client\Store\PayPalController::class, 'purchase'])->name('api:client:store.paypal');
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
 });
@@ -80,6 +81,7 @@ Route::group(['prefix' => '/callback'], function () {
         Route::get('/success', [Client\Store\PayPalController::class, 'success'])->name('api.client.store.paypal.success');
         Route::get('/cancel', [Client\Store\PayPalController::class, 'cancel'])->name('api.client.store.paypal.cancel');
     });
+
     Route::group(['prefix' => '/stripe'], function () {
         Route::get('/cancel', [Client\Store\StripeController::class, 'cancel'])->name('api.client.store.stripe.cancel');
     });

@@ -1,12 +1,3 @@
-/**
- * TODO - Jexactyl Store | Server Creation
- * ---------------------------------------
- * 1) Nest selection
- * 2) Egg selection
- * 3) Image selection
- * 4) Multiple ports
- */
-
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import { Form, Formik } from 'formik';
@@ -55,6 +46,7 @@ interface CreateValues {
 
 export default () => {
     const user = useStoreState(state => state.user.data!);
+    const limit = useStoreState(state => state.storefront.data!.limit);
     const [ resources, setResources ] = useState<Resources>();
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
     const [ isSubmit, setSubmit ] = useState(false);
@@ -116,12 +108,12 @@ export default () => {
                 validationSchema={object().shape({
                     name: string().required().min(3),
                     description: string().optional().min(3).max(191),
-                    cpu: number().required().min(50).max(resources.cpu),
-                    memory: number().required().min(1).max(resources.memory / 1024),
-                    disk: number().required().min(1).max(resources.disk / 1024),
-                    ports: number().required().min(1).max(resources.ports),
-                    backups: number().optional().max(resources.backups),
-                    databases: number().optional().max(resources.databases),
+                    cpu: number().required().min(50).max(resources.cpu).max(limit.cpu),
+                    memory: number().required().min(1).max(resources.memory / 1024).max(limit.memory / 1024),
+                    disk: number().required().min(1).max(resources.disk / 1024).max(limit.disk / 1024),
+                    ports: number().required().min(1).max(resources.ports).max(limit.port),
+                    backups: number().optional().max(resources.backups).max(limit.backup),
+                    databases: number().optional().max(resources.databases).max(limit.database),
                     egg: number().required(),
                 })}
             >

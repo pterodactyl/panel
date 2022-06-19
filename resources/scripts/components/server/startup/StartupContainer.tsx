@@ -78,6 +78,8 @@ const StartupContainer = () => {
                 />
             :
             <ServerContentBlock title={'Startup Settings'} showFlashKey={'startup:image'}>
+                <h1 css={tw`text-5xl`}>Startup</h1>
+                <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Fine-tune variables for your server during startup.</h3>
                 <div css={tw`md:flex`}>
                     <TitledGreyBox title={'Startup Command'} css={tw`flex-1`}>
                         <div css={tw`px-1 py-2`}>

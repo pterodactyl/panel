@@ -1,36 +1,64 @@
 import tw from 'twin.macro';
+import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
+import useFlash from '@/plugins/useFlash';
+import stripe from '@/api/store/gateways/stripe';
 import Button from '@/components/elements/Button';
 import Select from '@/components/elements/Select';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import FlashMessageRender from '@/components/FlashMessageRender';
 
 export default () => {
+    const { clearAndAddHttpError } = useFlash();
+    const [ amount, setAmount ] = useState(0);
     const [ submitting, setSubmitting ] = useState(false);
 
     const submit = () => {
         setSubmitting(true);
 
-        console.log('Works');
+        stripe(amount).then(url => {
+            setSubmitting(false);
 
-        setSubmitting(false);
+            // @ts-ignore
+            window.location.href = url;
+        }).catch(error => {
+            console.error(error);
+            clearAndAddHttpError({ key: 'store:stripe', error });
+            setSubmitting(false);
+        });
     };
 
     return (
-        <TitledGreyBox title={'Purchase via Stripe'} css={tw`mt-8`}>
-            <SpinnerOverlay size={'large'} visible={submitting} />
-            <Select
-                name={'amount'}
-                disabled={submitting}
+        <TitledGreyBox title={'Purchase via Stripe'}>
+            <FlashMessageRender byKey={'store:stripe'} css={tw`mb-2`} />
+            <Formik
+                onSubmit={submit}
+                initialValues={{
+                    amount: 100,
+                }}
             >
-                <option key={'credits:placeholder'}>Choose an amount...</option>
-                <option key={'credits:buy:100'} value={100}>Purchase 100 credits</option>
-            </Select>
-            <div css={tw`mt-6`}>
-                <Button size={'small'} onSubmit={submit} disabled={submitting}>
-                    Purchase via Stripe
-                </Button>
-            </div>
+                <Form>
+                    <SpinnerOverlay size={'large'} visible={submitting} />
+                    <Select
+                        name={'amount'}
+                        disabled={submitting}
+                        // @ts-ignore
+                        onChange={e => setAmount(e.target.value)}
+                    >
+                        <option key={'stripe:placeholder'} hidden>Choose an amount...</option>
+                        <option key={'stripe:buy:100'} value={100}>Purchase 100 credits</option>
+                        <option key={'stripe:buy:200'} value={200}>Purchase 200 credits</option>
+                        <option key={'stripe:buy:500'} value={500}>Purchase 500 credits</option>
+                        <option key={'stripe:buy:1000'} value={1000}>Purchase 1000 credits</option>
+                    </Select>
+                    <div css={tw`mt-6`}>
+                        <Button size={'small'} type={'submit'} disabled={submitting}>
+                            Purchase via Stripe
+                        </Button>
+                    </div>
+                </Form>
+            </Formik>
         </TitledGreyBox>
     );
 };
