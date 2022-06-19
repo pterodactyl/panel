@@ -1,5 +1,4 @@
 import React from 'react';
-import { UserIcon } from '@heroicons/react/outline';
 import { Link } from 'react-router-dom';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import Translate from '@/components/elements/Translate';
@@ -11,6 +10,7 @@ import { TerminalIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import style from './style.module.css';
 import { isObject } from '@/helpers';
+import Avatar from '@/components/Avatar';
 
 interface Props {
     activity: ActivityLog;
@@ -48,12 +48,8 @@ export default ({ activity, children }: Props) => {
     return (
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
             <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
-                <div className={'flex items-center w-8 h-8 rounded-full bg-gray-600 overflow-hidden'}>
-                    {actor ?
-                        <img src={actor.image} alt={'User avatar'}/>
-                        :
-                        <UserIcon className={'w-5 h-5 mx-auto'}/>
-                    }
+                <div className={'flex items-center w-10 h-10 rounded-full bg-gray-600 overflow-hidden'}>
+                    <Avatar name={actor?.uuid || 'system'} />
                 </div>
             </div>
             <div className={'col-span-10 sm:col-span-9 flex'}>
