@@ -12,6 +12,7 @@ import { styles as btnStyles } from '@/components/elements/button/index';
 import classNames from 'classnames';
 import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
+import tw from 'twin.macro'
 
 export default () => {
     const location = useLocation();
