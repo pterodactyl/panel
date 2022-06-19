@@ -35,7 +35,7 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account Activity Log'}>
-            <h1 css={tw`text-5xl`}>Account activity log</h1>
+            <h1 css={tw`text-5xl`}>Account Activity</h1>
             <h3 css={tw`text-2xl text-neutral-500`}>View your recent Activity</h3>
             <FlashMessageRender byKey={'account'}/>
             {(filters.filters?.event || filters.filters?.ip) &&
