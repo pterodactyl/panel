@@ -46,11 +46,11 @@ export default () => {
                         // @ts-ignore
                         onChange={e => setAmount(e.target.value)}
                     >
-                        <option key={'credits:placeholder'} hidden>Choose an amount...</option>
-                        <option key={'credits:buy:100'} value={100}>Purchase 100 credits</option>
-                        <option key={'credits:buy:200'} value={200}>Purchase 200 credits</option>
-                        <option key={'credits:buy:500'} value={500}>Purchase 500 credits</option>
-                        <option key={'credits:buy:1000'} value={1000}>Purchase 1000 credits</option>
+                        <option key={'paypal:placeholder'} hidden>Choose an amount...</option>
+                        <option key={'paypal:buy:100'} value={100}>Purchase 100 credits</option>
+                        <option key={'paypal:buy:200'} value={200}>Purchase 200 credits</option>
+                        <option key={'paypal:buy:500'} value={500}>Purchase 500 credits</option>
+                        <option key={'paypal:buy:1000'} value={1000}>Purchase 1000 credits</option>
                     </Select>
                     <div css={tw`mt-6`}>
                         <Button size={'small'} type={'submit'} disabled={submitting}>
