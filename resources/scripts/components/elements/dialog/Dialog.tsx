@@ -78,7 +78,12 @@ const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: 
                                 {/* Keep this below the other buttons so that it isn't the default focus if they're present. */}
                                 {!hideCloseIcon &&
                                     <div className={'absolute right-0 top-0 m-4'}>
-                                        <Button.Text square small onClick={onClose} className={'hover:rotate-90'}>
+                                        <Button.Text
+                                            size={Button.Sizes.Small}
+                                            shape={Button.Shapes.IconSquare}
+                                            onClick={onClose}
+                                            className={'hover:rotate-90'}
+                                        >
                                             <XIcon className={'w-5 h-5'}/>
                                         </Button.Text>
                                     </div>

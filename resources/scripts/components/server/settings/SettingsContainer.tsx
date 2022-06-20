@@ -9,11 +9,11 @@ import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox'
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
-import { LinkButton } from '@/components/elements/Button';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { formatIp } from '@/helpers';
+import { Button } from '@/components/elements/button/index';
 
 export default () => {
     const username = useStoreState(state => state.user.data!.username);
@@ -58,12 +58,9 @@ export default () => {
                                     </div>
                                 </div>
                                 <div css={tw`ml-4`}>
-                                    <LinkButton
-                                        isSecondary
-                                        href={`sftp://${username}.${id}@${formatIp(sftp.ip)}:${sftp.port}`}
-                                    >
-                                        Launch SFTP
-                                    </LinkButton>
+                                    <a href={`sftp://${username}.${id}@${formatIp(sftp.ip)}:${sftp.port}`}>
+                                        <Button.Text variant={Button.Variants.Secondary}>Launch SFTP</Button.Text>
+                                    </a>
                                 </div>
                             </div>
                         </TitledGreyBox>
