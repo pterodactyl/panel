@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import style from './style.module.css';
 import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
@@ -95,10 +96,8 @@ export default () => {
                             />
                         }
                     />
-                </ErrorBoundary>
-                <Can action={'file.create'}>
-                    <ErrorBoundary>
-                        <div css={tw`flex flex-shrink-0 flex-wrap-reverse md:flex-nowrap justify-end mb-4 md:mb-0 ml-0 md:ml-auto`}>
+                    <Can action={'file.create'}>
+                        <div className={style.manager_actions}>
                             <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`} />
                             <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`} />
                             <NavLink
@@ -110,8 +109,8 @@ export default () => {
                                 </Button>
                             </NavLink>
                         </div>
-                    </ErrorBoundary>
-                </Can>
+                    </Can>
+                </ErrorBoundary>
             </div>
             {
                 !files ?

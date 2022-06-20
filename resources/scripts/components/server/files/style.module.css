@@ -1,0 +1,15 @@
+.manager_actions {
+    @apply grid grid-cols-2 sm:grid-cols-3 w-full gap-4 mb-4;
+
+    & button {
+        @apply w-full first:col-span-2 sm:first:col-span-1;
+    }
+
+    @screen md {
+        @apply flex flex-1 justify-end mb-0;
+
+        & button {
+            @apply w-auto;
+        }
+    }
+}

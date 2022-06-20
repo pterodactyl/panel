@@ -1,15 +1,15 @@
 import tw from 'twin.macro';
-import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import Fade from '@/components/elements/Fade';
 import { ServerContext } from '@/state/server';
+import Portal from '@/components/elements/Portal';
 import React, { useEffect, useState } from 'react';
+import { Dialog } from '@/components/elements/dialog';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import { Button } from '@/components/elements/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import compressFiles from '@/api/server/files/compressFiles';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 
 const MassActionsBar = () => {
@@ -61,56 +61,54 @@ const MassActionsBar = () => {
     };
 
     return (
-        <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
+        <>
             <div css={tw`pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center`}>
                 <SpinnerOverlay visible={loading} size={'large'} fixed>
                     {loadingMessage}
                 </SpinnerOverlay>
-                <ConfirmationModal
-                    visible={showConfirm}
-                    title={'Delete these files?'}
-                    buttonText={'Yes, Delete Files'}
+                <Dialog.Confirm
+                    title={'Delete Files'}
+                    open={showConfirm}
+                    confirm={'Delete'}
+                    onClose={() => setShowConfirm(false)}
                     onConfirmed={onClickConfirmDeletion}
-                    onModalDismissed={() => setShowConfirm(false)}
                 >
-                    Are you sure you want to delete {selectedFiles.length} file(s)?
-                    <br/>
-                    Deleting the file(s) listed below is a permanent operation, you cannot undo this action.
-                    <br/>
-                    <code>
-                        { selectedFiles.slice(0, 15).map(file => (
-                            <li key={file}>{file}<br/></li>))
-                        }
-                        { selectedFiles.length > 15 &&
-                                    <li> + {selectedFiles.length - 15} other(s) </li>
-                        }
-                    </code>
-                </ConfirmationModal>
+                    <p className={'mb-2'}>
+                        Are you sure you want to delete&nbsp;
+                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is
+                        a permanent action and the files cannot be recovered.
+                    </p>
+                    {selectedFiles.slice(0, 15).map(file => (
+                        <li key={file}>{file}</li>))
+                    }
+                    {selectedFiles.length > 15 &&
+                        <li>and {selectedFiles.length - 15} others</li>
+                    }
+                </Dialog.Confirm>
                 {showMove &&
-                <RenameFileModal
-                    files={selectedFiles}
-                    visible
-                    appear
-                    useMoveTerminology
-                    onDismissed={() => setShowMove(false)}
-                />
+                    <RenameFileModal
+                        files={selectedFiles}
+                        visible
+                        appear
+                        useMoveTerminology
+                        onDismissed={() => setShowMove(false)}
+                    />
                 }
-                <div css={tw`pointer-events-auto rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
-                    <Button css={tw`mr-4`} onClick={() => setShowMove(true)}>
-                        <Icon.ArrowUp css={tw`mr-2`} /> Move
-                    </Button>
-                    <Button css={tw`mr-4`} onClick={onClickCompress}>
-                        <Icon.Archive css={tw`mr-2`} /> Archive
-                    </Button>
-                    <Button.Danger
-                        variant={Button.Variants.Secondary}
-                        onClick={() => setShowConfirm(true)}
-                    >
-                        <Icon.Trash css={tw`mr-2`} /> Delete
-                    </Button.Danger>
-                </div>
+                <Portal>
+                    <div className={'fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
+                        <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
+                            <div css={tw`flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50`}>
+                                <Button onClick={() => setShowMove(true)}>Move</Button>
+                                <Button onClick={onClickCompress}>Archive</Button>
+                                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
+                                    Delete
+                                </Button.Danger>
+                            </div>
+                        </Fade>
+                    </div>
+                </Portal>
             </div>
-        </Fade>
+        </>
     );
 };
 
