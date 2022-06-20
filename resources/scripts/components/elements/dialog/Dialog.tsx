@@ -5,13 +5,14 @@ import { XIcon } from '@heroicons/react/solid';
 import DialogIcon from '@/components/elements/dialog/DialogIcon';
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
+import ConfirmationDialog from '@/components/elements/dialog/ConfirmationDialog';
 
-interface Props {
+export interface DialogProps {
     open: boolean;
     onClose: () => void;
     hideCloseIcon?: boolean;
     title?: string;
-    description?: string;
+    description?: string | undefined;
     children?: React.ReactNode;
 }
 
@@ -19,7 +20,7 @@ const DialogButtons = ({ children }: { children: React.ReactNode }) => (
     <>{children}</>
 );
 
-const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: Props) => {
+const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: DialogProps) => {
     const items = React.Children.toArray(children || []);
     const [ buttons, icon, content ] = [
         // @ts-expect-error
@@ -59,9 +60,9 @@ const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: 
                             >
                                 <div className={'flex p-6'}>
                                     {icon && <div className={'mr-4'}>{icon}</div>}
-                                    <div className={'flex-1 max-h-[70vh] overflow-y-scroll overflow-x-hidden'}>
+                                    <div className={'flex-1 max-h-[70vh]'}>
                                         {title &&
-                                            <HDialog.Title className={'font-header text-xl font-medium mb-2 text-white pr-4'}>
+                                            <HDialog.Title className={'font-header text-xl font-medium mb-2 text-gray-50 pr-4'}>
                                                 {title}
                                             </HDialog.Title>
                                         }
@@ -91,6 +92,10 @@ const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: 
     );
 };
 
-const _Dialog = Object.assign(Dialog, { Buttons: DialogButtons, Icon: DialogIcon });
+const _Dialog = Object.assign(Dialog, {
+    Confirm: ConfirmationDialog,
+    Buttons: DialogButtons,
+    Icon: DialogIcon,
+});
 
 export default _Dialog;
