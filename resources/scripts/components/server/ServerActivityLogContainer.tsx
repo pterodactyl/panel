@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import { useFlashKey } from '@/plugins/useFlash';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
+import useLocationHash from '@/plugins/useLocationHash';
 import { useActivityLogs } from '@/api/server/activity';
 import { ActivityLogFilters } from '@/api/account/activity';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -14,6 +15,7 @@ import PaginationFooter from '@/components/elements/table/PaginationFooter';
 import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
 
 export default () => {
+    const { hash } = useLocationHash();
     const { clearAndAddHttpError } = useFlashKey('server:activity');
     const [ filters, setFilters ] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
 
@@ -23,10 +25,8 @@ export default () => {
     });
 
     useEffect(() => {
-        const parsed = new URLSearchParams(location.search);
-
-        setFilters(value => ({ ...value, filters: { ip: parsed.get('ip'), event: parsed.get('event') } }));
-    }, [ location.search ]);
+        setFilters(value => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+    }, [ hash ]);
 
     useEffect(() => {
         clearAndAddHttpError(error);

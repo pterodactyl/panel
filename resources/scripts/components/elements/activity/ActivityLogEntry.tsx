@@ -1,12 +1,12 @@
 import React from 'react';
 import classNames from 'classnames';
 import { isObject } from '@/helpers';
+import * as Icon from 'react-feather';
 import style from './style.module.css';
 import { Link } from 'react-router-dom';
 import Avatar from '@/components/Avatar';
-import { useLocation } from 'react-router';
 import { ActivityLog } from '@definitions/user';
-import { TerminalIcon } from '@heroicons/react/solid';
+import useLocationHash from '@/plugins/useLocationHash';
 import Translate from '@/components/elements/Translate';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import { format, formatDistanceToNowStrict } from 'date-fns';
@@ -33,16 +33,8 @@ const formatProperties = (properties: Record<string, unknown>): Record<string, u
 };
 
 export default ({ activity, children }: Props) => {
-    const location = useLocation();
+    const { pathTo } = useLocationHash();
     const actor = activity.relationships.actor;
-
-    const queryTo = (params: Record<string, string>): string => {
-        const current = new URLSearchParams(location.search);
-        Object.keys(params).forEach(key => current.set(key, params[key]));
-
-        return current.toString();
-    };
-
     const properties = formatProperties(activity.properties);
 
     return (
@@ -56,7 +48,7 @@ export default ({ activity, children }: Props) => {
                 <div className={'flex-1 px-4 sm:px-0'}>
                     <div className={'flex items-center text-gray-50'}>
                         <Link
-                            to={`?${queryTo({ event: activity.event })}`}
+                            to={`#${pathTo({ event: activity.event })}`}
                             className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                         >
                             <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')}/>
@@ -64,7 +56,7 @@ export default ({ activity, children }: Props) => {
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi &&
                                 <Tooltip placement={'top'} content={'Performed using API Key'}>
-                                    <span><TerminalIcon/></span>
+                                    <span><Icon.Terminal/></span>
                                 </Tooltip>
                             }
                             {children}
@@ -75,7 +67,7 @@ export default ({ activity, children }: Props) => {
                     </p>
                     <div className={'mt-1 flex items-center text-sm'}>
                         <Link
-                            to={`?${queryTo({ ip: activity.ip })}`}
+                            to={`#${pathTo({ ip: activity.ip })}`}
                             className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                         >
                             {activity.ip}

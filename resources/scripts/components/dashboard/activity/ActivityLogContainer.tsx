@@ -1,10 +1,10 @@
 import classNames from 'classnames';
 import * as Icon from 'react-feather';
 import { Link } from 'react-router-dom';
-import { useLocation } from 'react-router';
 import { useFlashKey } from '@/plugins/useFlash';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
+import useLocationHash from '@/plugins/useLocationHash';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { styles as btnStyles } from '@/components/elements/button/index';
@@ -13,8 +13,7 @@ import { ActivityLogFilters, useActivityLogs } from '@/api/account/activity';
 import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
 
 export default () => {
-    const location = useLocation();
-
+    const { hash } = useLocationHash();
     const { clearAndAddHttpError } = useFlashKey('account');
     const [ filters, setFilters ] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
     const { data, isValidating, error } = useActivityLogs(filters, {
@@ -23,10 +22,8 @@ export default () => {
     });
 
     useEffect(() => {
-        const parsed = new URLSearchParams(location.search);
-
-        setFilters(value => ({ ...value, filters: { ip: parsed.get('ip'), event: parsed.get('event') } }));
-    }, [ location.search ]);
+        setFilters(value => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+    }, [ hash ]);
 
     useEffect(() => {
         clearAndAddHttpError(error);

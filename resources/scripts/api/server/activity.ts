@@ -11,7 +11,7 @@ export type ActivityLogFilters = QueryBuilderParams<'ip' | 'event', 'timestamp'>
 
 const useActivityLogs = (filters?: ActivityLogFilters, config?: ConfigInterface<PaginatedResult<ActivityLog>, AxiosError>): responseInterface<PaginatedResult<ActivityLog>, AxiosError> => {
     const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
-    const key = useUserSWRContentKey([ 'server', 'activity', JSON.stringify(useFilteredObject(filters || {})) ]);
+    const key = useUserSWRContentKey([ 'server', 'activity', useFilteredObject(filters || {}) ]);
 
     return useSWR<PaginatedResult<ActivityLog>>(key, async () => {
         const { data } = await http.get(`/api/client/servers/${uuid}/activity`, {
