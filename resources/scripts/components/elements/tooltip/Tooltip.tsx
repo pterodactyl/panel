@@ -90,7 +90,7 @@ export default ({
                         transition={{ type: 'spring', damping: 20, stiffness: 300, duration: 0.075 }}
                         {...getFloatingProps({
                             ref: floating,
-                            className: 'absolute top-0 left-0 bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[90vw]',
+                            className: 'absolute top-0 left-0 bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[20rem] z-[9999]',
                             style: {
                                 position: strategy,
                                 top: `${y || 0}px`,

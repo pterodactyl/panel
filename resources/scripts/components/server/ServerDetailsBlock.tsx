@@ -1,48 +1,61 @@
 import React, { useEffect, useState } from 'react';
-import tw, { TwStyle } from 'twin.macro';
 import {
-    faArrowCircleDown,
-    faArrowCircleUp,
-    faCircle,
-    faEthernet,
+    faClock,
+    faCloudDownloadAlt,
+    faCloudUploadAlt,
     faHdd,
     faMemory,
     faMicrochip,
-    faServer,
+    faWifi,
 } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { ServerContext } from '@/state/server';
-import CopyOnClick from '@/components/elements/CopyOnClick';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
+import StatBlock from '@/components/server/console/StatBlock';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
-function statusToColor (status: string | null, installing: boolean): TwStyle {
-    if (installing) {
-        status = '';
-    }
-
-    switch (status) {
-        case 'offline':
-            return tw`text-red-500`;
-        case 'running':
-            return tw`text-green-500`;
-        default:
-            return tw`text-yellow-500`;
-    }
+interface DetailBlockProps {
+    className?: string;
 }
 
-const ServerDetailsBlock = () => {
+const getBackgroundColor = (value: number, max: number | null): string | undefined => {
+    const delta = !max ? 0 : (value / max);
+
+    if (delta > 0.8) {
+        if (delta > 0.9) {
+            return 'bg-red-500';
+        }
+        return 'bg-yellow-500';
+    }
+
+    return undefined;
+};
+
+const ServerDetailsBlock = ({ className }: DetailBlockProps) => {
     const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
     const connected = ServerContext.useStoreState(state => state.socket.connected);
     const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
+    const allocation = ServerContext.useStoreState(state => {
+        const match = state.server.data!.allocations.find(allocation => allocation.isDefault);
 
-    const statsListener = (data: string) => {
+        return !match ? 'n/a' : `${match.alias || formatIp(match.ip)}:${match.port}`;
+    });
+
+    useEffect(() => {
+        if (!connected || !instance) {
+            return;
+        }
+
+        instance.send(SocketRequest.SEND_STATS);
+    }, [ instance, connected ]);
+
+    useWebsocketEvent(SocketEvent.STATS, (data) => {
         let stats: any = {};
         try {
             stats = JSON.parse(data);
@@ -58,75 +71,92 @@ const ServerDetailsBlock = () => {
             rx: stats.network.rx_bytes,
             uptime: stats.uptime || 0,
         });
-    };
-
-    useEffect(() => {
-        if (!connected || !instance) {
-            return;
-        }
-
-        instance.addListener(SocketEvent.STATS, statsListener);
-        instance.send(SocketRequest.SEND_STATS);
-
-        return () => {
-            instance.removeListener(SocketEvent.STATS, statsListener);
-        };
-    }, [ instance, connected ]);
-
-    const name = ServerContext.useStoreState(state => state.server.data!.name);
-    const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
-    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
-    const primaryAllocation = ServerContext.useStoreState(state => state.server.data!.allocations.filter(alloc => alloc.isDefault).map(
-        allocation => (allocation.alias || formatIp(allocation.ip)) + ':' + allocation.port,
-    )).toString();
-
-    const diskLimit = limits.disk ? megabytesToHuman(limits.disk) : 'Unlimited';
-    const memoryLimit = limits.memory ? megabytesToHuman(limits.memory) : 'Unlimited';
-    const cpuLimit = limits.cpu ? limits.cpu + '%' : 'Unlimited';
+    });
 
     return (
-        <TitledGreyBox css={tw`break-words`} title={name} icon={faServer}>
-            <p css={tw`text-xs uppercase`}>
-                <FontAwesomeIcon
-                    icon={faCircle}
-                    fixedWidth
-                    css={[
-                        tw`mr-1`,
-                        statusToColor(status, isInstalling || isTransferring),
-                    ]}
-                />
-                &nbsp;{!status ? 'Connecting...' : (isInstalling ? 'Installing' : (isTransferring) ? 'Transferring' : status)}
-                {stats.uptime > 0 &&
-                <span css={tw`ml-2 lowercase`}>
-                    (<UptimeDuration uptime={stats.uptime / 1000}/>)
-                </span>
+        <div className={className}>
+            <StatBlock
+                icon={faClock}
+                title={'Uptime'}
+                color={getBackgroundColor(status === 'running' ? 0 : (status !== 'offline' ? 9 : 10), 10)}
+            >
+                {stats.uptime > 0 ?
+                    <UptimeDuration uptime={stats.uptime / 1000}/>
+                    :
+                    'Offline'
                 }
-            </p>
-            <CopyOnClick text={primaryAllocation}>
-                <p css={tw`text-xs mt-2`}>
-                    <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
-                    <code css={tw`ml-1`}>{primaryAllocation}</code>
-                </p>
-            </CopyOnClick>
-            <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faMicrochip} fixedWidth css={tw`mr-1`}/> {stats.cpu.toFixed(2)}%
-                <span css={tw`text-neutral-500`}> / {cpuLimit}</span>
-            </p>
-            <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faMemory} fixedWidth css={tw`mr-1`}/> {bytesToHuman(stats.memory)}
-                <span css={tw`text-neutral-500`}> / {memoryLimit}</span>
-            </p>
-            <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faHdd} fixedWidth css={tw`mr-1`}/>&nbsp;{bytesToHuman(stats.disk)}
-                <span css={tw`text-neutral-500`}> / {diskLimit}</span>
-            </p>
-            <p css={tw`text-xs mt-2`}>
-                <FontAwesomeIcon icon={faEthernet} fixedWidth css={tw`mr-1`}/>
-                <FontAwesomeIcon icon={faArrowCircleUp} fixedWidth css={tw`mr-1`}/>{bytesToHuman(stats.tx)}
-                <FontAwesomeIcon icon={faArrowCircleDown} fixedWidth css={tw`mx-1`}/>{bytesToHuman(stats.rx)}
-            </p>
-        </TitledGreyBox>
+            </StatBlock>
+            <StatBlock
+                icon={faMicrochip}
+                title={'CPU'}
+                color={getBackgroundColor(stats.cpu, limits.cpu)}
+                description={limits.memory
+                    ? `This server is allowed to use up to ${limits.cpu}% of the host's available CPU resources.`
+                    : 'No CPU limit has been configured for this server.'
+                }
+            >
+                {status === 'offline' ?
+                    <span className={'text-gray-400'}>Offline</span>
+                    :
+                    `${stats.cpu.toFixed(2)}%`
+                }
+            </StatBlock>
+            <StatBlock
+                icon={faMemory}
+                title={'Memory'}
+                color={getBackgroundColor(stats.memory / 1024, limits.memory * 1024)}
+                description={limits.memory
+                    ? `This server is allowed to use up to ${megabytesToHuman(limits.memory)} of memory.`
+                    : 'No memory limit has been configured for this server.'
+                }
+            >
+                {status === 'offline' ?
+                    <span className={'text-gray-400'}>Offline</span>
+                    :
+                    bytesToHuman(stats.memory)
+                }
+            </StatBlock>
+            <StatBlock
+                icon={faHdd}
+                title={'Disk'}
+                color={getBackgroundColor(stats.disk / 1024, limits.disk * 1024)}
+                description={limits.disk
+                    ? `This server is allowed to use up to ${megabytesToHuman(limits.disk)} of disk space.`
+                    : 'No disk space limit has been configured for this server.'
+                }
+            >
+                {bytesToHuman(stats.disk)}
+            </StatBlock>
+            <StatBlock
+                icon={faCloudDownloadAlt}
+                title={'Network (Inbound)'}
+                description={'The total amount of network traffic that your server has recieved since it was started.'}
+            >
+                {status === 'offline' ?
+                    <span className={'text-gray-400'}>Offline</span>
+                    :
+                    bytesToHuman(stats.tx)
+                }
+            </StatBlock>
+            <StatBlock
+                icon={faCloudUploadAlt}
+                title={'Network (Outbound)'}
+                description={'The total amount of traffic your server has sent across the internet since it was started.'}
+            >
+                {status === 'offline' ?
+                    <span className={'text-gray-400'}>Offline</span>
+                    :
+                    bytesToHuman(stats.rx)
+                }
+            </StatBlock>
+            <StatBlock
+                icon={faWifi}
+                title={'Address'}
+                description={`You can connect to your server at: ${allocation}`}
+            >
+                {allocation}
+            </StatBlock>
+        </div>
     );
 };
 

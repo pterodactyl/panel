@@ -6,7 +6,7 @@ import { Button } from '@/components/elements/button/index';
 type ConfirmationProps = Omit<DialogProps, 'description' | 'children'> & {
     children: React.ReactNode;
     confirm?: string | undefined;
-    onConfirmed: () => void;
+    onConfirmed: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
 }
 
 export default ({ confirm = 'Okay', children, onConfirmed, ...props }: ConfirmationProps) => {
