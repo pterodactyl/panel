@@ -8,21 +8,17 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Transformers\Api\Client\Store\UserTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Store\StoreEarnRequest;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\PurchaseResourceRequest;
 
 class ResourceController extends ClientApiController
 {
-    private SettingsRepositoryInterface $settings;
-
     /**
      * ResourceController constructor.
      */
-    public function __construct(SettingsRepositoryInterface $settings)
+    public function __construct()
     {
         parent::__construct();
-        $this->settings = $settings;
     }
 
     /**

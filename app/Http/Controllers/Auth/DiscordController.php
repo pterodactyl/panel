@@ -54,8 +54,6 @@ class DiscordController extends Controller
      */
     public function authenticate(Request $request)
     {
-        if ($this->settings->get('jexactyl::registration:enabled') != true) return;
-
         $code = Http::asForm()->post('https://discord.com/api/oauth2/token', [
             'client_id' => $this->settings->get('jexactyl::discord:id'),
             'client_secret' => $this->settings->get('jexactyl::discord:secret'),
@@ -77,21 +75,23 @@ class DiscordController extends Controller
 
             return redirect('/');
         } else {
-            $username = $this->genString();
+            if ($this->settings->get('jexactyl::registration:enabled') != true) return;
 
+            $username = $this->genString();
             $data = [
                 'email' => $discord->email,
                 'username' => $username,
                 'name_first' => $discord->username,
                 'name_last' => $discord->discriminator,
                 'password' => $this->genString(),
-                'store_cpu' => $this->settings->get('jexactyl::registration:cpu'),
-                'store_memory' => $this->settings->get('jexactyl::registration:memory'),
-                'store_disk' => $this->settings->get('jexactyl::registration:disk'),
-                'store_slots' => $this->settings->get('jexactyl::registration:slot'),
-                'store_ports' => $this->settings->get('jexactyl::registration:port'),
-                'store_backups' => $this->settings->get('jexactyl::registration:backup'),
-                'store_databases' => $this->settings->get('jexactyl::registration:database'),
+                'ip' => $request->getClientIp(),
+                'store_cpu' => $this->settings->get('jexactyl::registration:cpu', 0),
+                'store_memory' => $this->settings->get('jexactyl::registration:memory', 0),
+                'store_disk' => $this->settings->get('jexactyl::registration:disk', 0),
+                'store_slots' => $this->settings->get('jexactyl::registration:slot', 0),
+                'store_ports' => $this->settings->get('jexactyl::registration:port', 0),
+                'store_backups' => $this->settings->get('jexactyl::registration:backup', 0),
+                'store_databases' => $this->settings->get('jexactyl::registration:database', 0),
             ];
 
             try {

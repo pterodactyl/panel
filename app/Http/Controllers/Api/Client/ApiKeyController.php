@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Exceptions\DisplayException;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Services\Api\KeyCreationService;
@@ -32,11 +31,6 @@ class ApiKeyController extends ClientApiController
     private $repository;
 
     /**
-     * @var \Pterodactyl\Models\AccountLog
-     */
-    private $log;
-
-    /**
      * ApiKeyController constructor.
      */
     public function __construct(
@@ -48,9 +42,8 @@ class ApiKeyController extends ClientApiController
         parent::__construct();
 
         $this->encrypter = $encrypter;
-        $this->keyCreationService = $keyCreationService;
         $this->repository = $repository;
-        $this->log = $log;
+        $this->keyCreationService = $keyCreationService;
     }
 
     /**

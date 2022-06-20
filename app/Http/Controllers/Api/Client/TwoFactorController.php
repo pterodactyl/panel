@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Models\AccountLog;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
@@ -32,25 +31,18 @@ class TwoFactorController extends ClientApiController
     private $toggleTwoFactorService;
 
     /**
-     * @var \Pterodactyl\Models\AccountLog
-     */
-    private $log;
-
-    /**
      * TwoFactorController constructor.
      */
     public function __construct(
-        ToggleTwoFactorService $toggleTwoFactorService,
-        TwoFactorSetupService $setupService,
         Factory $validation,
-        AccountLog $log,
+        TwoFactorSetupService $setupService,
+        ToggleTwoFactorService $toggleTwoFactorService,
     ) {
         parent::__construct();
 
-        $this->setupService = $setupService;
         $this->validation = $validation;
+        $this->setupService = $setupService;
         $this->toggleTwoFactorService = $toggleTwoFactorService;
-        $this->log = $log;
     }
 
     /**

@@ -78,6 +78,8 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Send the response after the user was authenticated.
+     * 
+     * @throws DisplayException
      */
     protected function sendLoginResponse(User $user, Request $request): JsonResponse
     {
@@ -85,6 +87,16 @@ abstract class AbstractLoginController extends Controller
         $request->session()->regenerate();
 
         $this->clearLoginAttempts($request);
+
+        $ip = User::where('ip', $request->getClientIp())->count();
+
+        if ($ip > 1) {
+            try {
+                // Attempt to delete the user when alting detected.
+                $user->delete();
+            } catch (Exception $ex) { /* do nothing */ }
+            throw new DisplayException('You have been detected using an alt account. Your IP address ('.$request->getClientIp().') has been logged.');
+        }
 
         $this->auth->guard()->login($user, true);
 

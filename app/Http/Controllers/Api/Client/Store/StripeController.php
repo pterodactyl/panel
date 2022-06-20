@@ -7,18 +7,13 @@ use Illuminate\Http\JsonResponse;
 use Stripe\Exception\ApiErrorException;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\Gateways\StripeRequest;
 
 class StripeController extends ClientApiController
 {
-    private SettingsRepositoryInterface $settings;
-
-    public function __construct(SettingsRepositoryInterface $settings)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->settings = $settings;
     }
 
     /**

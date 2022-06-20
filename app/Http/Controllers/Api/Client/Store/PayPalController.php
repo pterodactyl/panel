@@ -3,31 +3,26 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Exception;
+use PayPalHttp\IOException;
 use Illuminate\Http\Request;
+use PayPalHttp\HttpException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use PayPalCheckoutSdk\Core\PayPalHttpClient;
-use PayPalHttp\HttpException;
-use PayPalHttp\IOException;
 use Pterodactyl\Exceptions\DisplayException;
 use PayPalCheckoutSdk\Core\SandboxEnvironment;
 use PayPalCheckoutSdk\Core\ProductionEnvironment;
 use PayPalCheckoutSdk\Orders\OrdersCreateRequest;
 use PayPalCheckoutSdk\Orders\OrdersCaptureRequest;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\Gateways\PayPalRequest;
 
 class PayPalController extends ClientApiController
 {
-    private SettingsRepositoryInterface $settings;
-
-    public function __construct(SettingsRepositoryInterface $settings)
+    public function __construct()
     {
         parent::__construct();
-
-        $this->settings = $settings;
     }
 
     /**

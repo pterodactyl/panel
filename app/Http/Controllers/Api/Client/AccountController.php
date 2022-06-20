@@ -7,7 +7,6 @@ use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Models\AccountLog;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -27,20 +26,14 @@ class AccountController extends ClientApiController
     private $manager;
 
     /**
-     * @var \Pterodactyl\Models\AccountLog
-     */
-    private $log;
-
-    /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $manager, UserUpdateService $updateService, AccountLog $log)
+    public function __construct(AuthManager $manager, UserUpdateService $updateService)
     {
         parent::__construct();
 
-        $this->updateService = $updateService;
         $this->manager = $manager;
-        $this->log = $log;
+        $this->updateService = $updateService;
     }
 
     public function index(Request $request): array
