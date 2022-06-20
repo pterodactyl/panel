@@ -1,7 +1,7 @@
 import axios from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import { ModalMask } from '@/components/elements/Modal';
@@ -12,6 +12,7 @@ import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
+import Portal from '@/components/elements/Portal';
 
 const InnerContainer = styled.div`
   max-width: 600px;
@@ -71,36 +72,38 @@ export default ({ className }: WithClassname) => {
 
     return (
         <>
-            <Fade
-                appear
-                in={visible}
-                timeout={75}
-                key={'upload_modal_mask'}
-                unmountOnExit
-            >
-                <ModalMask
-                    onClick={() => setVisible(false)}
-                    onDragOver={e => e.preventDefault()}
-                    onDrop={e => {
-                        e.preventDefault();
-                        e.stopPropagation();
-
-                        setVisible(false);
-                        if (!e.dataTransfer?.files.length) return;
-
-                        onFileSubmission(e.dataTransfer.files);
-                    }}
+            <Portal>
+                <Fade
+                    appear
+                    in={visible}
+                    timeout={75}
+                    key={'upload_modal_mask'}
+                    unmountOnExit
                 >
-                    <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
-                        <InnerContainer>
-                            <p css={tw`text-lg text-neutral-200 text-center`}>
-                                Drag and drop files to upload.
-                            </p>
-                        </InnerContainer>
-                    </div>
-                </ModalMask>
-            </Fade>
-            <SpinnerOverlay visible={loading} size={'large'} fixed/>
+                    <ModalMask
+                        onClick={() => setVisible(false)}
+                        onDragOver={e => e.preventDefault()}
+                        onDrop={e => {
+                            e.preventDefault();
+                            e.stopPropagation();
+
+                            setVisible(false);
+                            if (!e.dataTransfer?.files.length) return;
+
+                            onFileSubmission(e.dataTransfer.files);
+                        }}
+                    >
+                        <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
+                            <InnerContainer>
+                                <p css={tw`text-lg text-neutral-200 text-center`}>
+                                    Drag and drop files to upload.
+                                </p>
+                            </InnerContainer>
+                        </div>
+                    </ModalMask>
+                </Fade>
+                <SpinnerOverlay visible={loading} size={'large'} fixed/>
+            </Portal>
             <input
                 type={'file'}
                 ref={fileUploadInput}

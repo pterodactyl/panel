@@ -61,7 +61,7 @@ return [
             'copy' => 'Created a copy of :file',
             'create-directory' => 'Created a new directory :name in :directory',
             'decompress' => 'Decompressed :files in :directory',
-            'delete_one' => 'Deleted :directory:files',
+            'delete_one' => 'Deleted :directory:files.0',
             'delete_other' => 'Deleted :count files in :directory',
             'download' => 'Downloaded :file',
             'pull' => 'Downloaded a remote file from :url to :directory',

@@ -10,7 +10,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
@@ -20,6 +20,7 @@ import { useStoreActions } from '@/state/hooks';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath } from '@/helpers';
+import style from './style.module.css';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.isFile === b.isFile ? 0 : (a.isFile ? 1 : -1));
@@ -59,8 +60,8 @@ export default () => {
 
     return (
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
-            <div css={tw`flex flex-wrap-reverse md:flex-nowrap justify-center mb-4`}>
-                <ErrorBoundary>
+            <ErrorBoundary>
+                <div className={'flex flex-wrap-reverse md:flex-nowrap mb-4'}>
                     <FileManagerBreadcrumbs
                         renderLeft={
                             <FileActionCheckbox
@@ -71,24 +72,17 @@ export default () => {
                             />
                         }
                     />
-                </ErrorBoundary>
-                <Can action={'file.create'}>
-                    <ErrorBoundary>
-                        <div css={tw`flex flex-shrink-0 flex-wrap-reverse md:flex-nowrap justify-end mb-4 md:mb-0 ml-0 md:ml-auto`}>
-                            <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`}/>
-                            <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`}/>
-                            <NavLink
-                                to={`/server/${id}/files/new${window.location.hash}`}
-                                css={tw`flex-1 sm:flex-none sm:mt-0`}
-                            >
-                                <Button css={tw`w-full`}>
-                                    New File
-                                </Button>
+                    <Can action={'file.create'}>
+                        <div className={style.manager_actions}>
+                            <NewDirectoryButton/>
+                            <UploadButton/>
+                            <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
+                                <Button>New File</Button>
                             </NavLink>
                         </div>
-                    </ErrorBoundary>
-                </Can>
-            </div>
+                    </Can>
+                </div>
+            </ErrorBoundary>
             {
                 !files ?
                     <Spinner size={'large'} centered/>
@@ -102,12 +96,12 @@ export default () => {
                             <CSSTransition classNames={'fade'} timeout={150} appear in>
                                 <div>
                                     {files.length > 250 &&
-                                    <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                        <p css={tw`text-yellow-900 text-sm text-center`}>
-                                            This directory is too large to display in the browser,
-                                            limiting the output to the first 250 files.
-                                        </p>
-                                    </div>
+                                        <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
+                                            <p css={tw`text-yellow-900 text-sm text-center`}>
+                                                This directory is too large to display in the browser,
+                                                limiting the output to the first 250 files.
+                                            </p>
+                                        </div>
                                     }
                                     {
                                         sortFiles(files.slice(0, 250)).map(file => (

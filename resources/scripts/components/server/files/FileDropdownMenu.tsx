@@ -30,8 +30,8 @@ import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';
 import isEqual from 'react-fast-compare';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import ChmodFileModal from '@/components/server/files/ChmodFileModal';
+import { Dialog } from '@/components/elements/dialog';
 
 type ModalType = 'rename' | 'move' | 'chmod';
 
@@ -128,15 +128,16 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
     return (
         <>
-            <ConfirmationModal
-                visible={showConfirmation}
-                title={`Delete this ${file.isFile ? 'File' : 'Directory'}?`}
-                buttonText={`Yes, Delete ${file.isFile ? 'File' : 'Directory'}`}
+            <Dialog.Confirm
+                open={showConfirmation}
+                onClose={() => setShowConfirmation(false)}
+                title={`Delete ${file.isFile ? 'File' : 'Directory'}`}
+                confirm={'Delete'}
                 onConfirmed={doDeletion}
-                onModalDismissed={() => setShowConfirmation(false)}
             >
-                Deleting files is a permanent operation, you cannot undo this action.
-            </ConfirmationModal>
+                You will not be able to recover the contents of&nbsp;
+                <span className={'font-semibold text-gray-50'}>{file.name}</span> once deleted.
+            </Dialog.Confirm>
             <DropdownMenu
                 ref={onClickRef}
                 renderToggle={onClick => (

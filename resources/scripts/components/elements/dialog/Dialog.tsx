@@ -44,8 +44,8 @@ const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: 
                     open={open}
                     onClose={onClose}
                 >
-                    <div className={'fixed inset-0 bg-gray-900/50'}/>
-                    <div className={'fixed inset-0 overflow-y-auto'}>
+                    <div className={'fixed inset-0 bg-gray-900/50 z-40'}/>
+                    <div className={'fixed inset-0 overflow-y-auto z-50'}>
                         <div className={'flex min-h-full items-center justify-center p-4 text-center'}>
                             <HDialog.Panel
                                 as={motion.div}
@@ -58,7 +58,7 @@ const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: 
                                     'ring-4 ring-gray-800 ring-opacity-80',
                                 ])}
                             >
-                                <div className={'flex p-6'}>
+                                <div className={'flex p-6 overflow-y-auto'}>
                                     {icon && <div className={'mr-4'}>{icon}</div>}
                                     <div className={'flex-1 max-h-[70vh]'}>
                                         {title &&
