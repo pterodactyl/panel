@@ -5,8 +5,8 @@ import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
+import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
 import deleteScheduleTask from '@/api/server/schedules/deleteScheduleTask';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
@@ -63,15 +63,15 @@ export default ({ schedule, task }: Props) => {
                 visible={isEditing}
                 onModalDismissed={() => setIsEditing(false)}
             />
-            <ConfirmationModal
+            <Dialog.Confirm
+                open={visible}
                 title={'Confirm task deletion'}
-                buttonText={'Delete Task'}
+                confirm={'Yes, delete task'}
+                onClose={() => setVisible(false)}
                 onConfirmed={onConfirmDeletion}
-                visible={visible}
-                onModalDismissed={() => setVisible(false)}
             >
                 Are you sure you want to delete this task? This action cannot be undone.
-            </ConfirmationModal>
+            </Dialog.Confirm>
             <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
                 <p css={tw`md:ml-6 text-neutral-200 uppercase text-sm`}>
                     {title}

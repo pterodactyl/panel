@@ -6,11 +6,10 @@ import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import { Subuser } from '@/state/server/subusers';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Dialog } from '@/components/elements/dialog';
 import deleteSubuser from '@/api/server/users/deleteSubuser';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 export default ({ subuser }: { subuser: Subuser }) => {
-    const [ loading, setLoading ] = useState(false);
     const [ showConfirmation, setShowConfirmation ] = useState(false);
 
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -18,11 +17,9 @@ export default ({ subuser }: { subuser: Subuser }) => {
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const doDeletion = () => {
-        setLoading(true);
         clearFlashes('users');
         deleteSubuser(uuid, subuser.uuid)
             .then(() => {
-                setLoading(false);
                 removeSubuser(subuser.uuid);
             })
             .catch(error => {
@@ -34,17 +31,16 @@ export default ({ subuser }: { subuser: Subuser }) => {
 
     return (
         <>
-            <ConfirmationModal
-                title={'Delete this subuser?'}
-                buttonText={'Yes, remove subuser'}
-                visible={showConfirmation}
-                showSpinnerOverlay={loading}
-                onConfirmed={() => doDeletion()}
-                onModalDismissed={() => setShowConfirmation(false)}
+            <Dialog.Confirm
+                open={showConfirmation}
+                onClose={() => setShowConfirmation(false)}
+                title={'Confirm task deletion'}
+                confirm={'Yes, delete subuser'}
+                onConfirmed={doDeletion}
             >
                 Are you sure you wish to remove this subuser? They will have all access to this server revoked
                 immediately.
-            </ConfirmationModal>
+            </Dialog.Confirm>
             <button
                 type={'button'}
                 aria-label={'Delete subuser'}
