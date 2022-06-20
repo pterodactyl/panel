@@ -14,7 +14,6 @@ import { usePersistedState } from '@/plugins/usePersistedState';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -73,7 +72,6 @@ export default () => {
     const searchAddon = new SearchAddon();
     const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
-    const scrollDownHelperAddon = new ScrollDownHelperAddon();
     const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
@@ -141,7 +139,6 @@ export default () => {
             terminal.loadAddon(searchAddon);
             terminal.loadAddon(searchBar);
             terminal.loadAddon(webLinksAddon);
-            terminal.loadAddon(scrollDownHelperAddon);
 
             terminal.open(ref.current);
             fitAddon.fit();
