@@ -13,5 +13,5 @@ class VerifyCsrfToken extends BaseVerifier
      *
      * @var string[]
      */
-    protected $except = ['remote/*', 'daemon/*'];
+    protected $except = ['remote/*', 'daemon/*', 'stripe/*'];
 }

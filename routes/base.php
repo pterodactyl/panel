@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Base;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 
@@ -14,3 +15,5 @@ Route::get('/locales/locale.json', Base\LocaleController::class)
 
 Route::get('/{react}', [Base\IndexController::class, 'index'])
     ->where('react', '^(?!(\/)?(api|auth|admin|daemon)).+');
+
+Route::post('/stripe/listen', [Base\StripeController::class, 'index']);
