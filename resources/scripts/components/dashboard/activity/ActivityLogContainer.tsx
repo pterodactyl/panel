@@ -12,6 +12,7 @@ import { styles as btnStyles } from '@/components/elements/button/index';
 import classNames from 'classnames';
 import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
+import tw from 'twin.macro'
 
 export default () => {
     const location = useLocation();
@@ -35,6 +36,8 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account Activity Log'}>
+            <h1 css={tw`text-5xl`}>Account Activity</h1>
+            <h3 css={tw`text-2xl text-neutral-500`}>View your recent Activity</h3>
             <FlashMessageRender byKey={'account'}/>
             {(filters.filters?.event || filters.filters?.ip) &&
                 <div className={'flex justify-end mb-2'}>
