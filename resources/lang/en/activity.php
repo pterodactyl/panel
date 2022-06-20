@@ -41,6 +41,7 @@ return [
     ],
 
     'server' => [
+        'reinstall' => 'Reinstalled server',
         'backup' => [
             'download' => 'Downloaded the :name backup',
             'delete' => 'Deleted the :name backup',
@@ -93,7 +94,6 @@ return [
         ],
         'settings' => [
             'rename' => 'Renamed the server from :old to :new',
-            'reinstall' => 'Triggered a server reinstall',
         ],
         'startup' => [
             'edit' => 'Changed the :variable variable from ":old" to ":new"',

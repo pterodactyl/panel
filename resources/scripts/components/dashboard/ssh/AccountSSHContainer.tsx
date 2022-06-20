@@ -57,7 +57,7 @@ export default () => {
                                             {format(key.createdAt, 'MMM do, yyyy HH:mm')}
                                         </p>
                                     </div>
-                                    <DeleteSSHKeyButton fingerprint={key.fingerprint} />
+                                    <DeleteSSHKeyButton name={key.name} fingerprint={key.fingerprint} />
                                 </GreyRowBox>
                             ))
                     }

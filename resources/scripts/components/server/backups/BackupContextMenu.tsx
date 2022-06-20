@@ -7,11 +7,11 @@ import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
 import { ServerBackup } from '@/api/server/types';
 import http, { httpErrorToHuman } from '@/api/http';
+import { Dialog } from '@/components/elements/dialog';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { restoreServerBackup } from '@/api/server/backups';
 import deleteBackup from '@/api/server/backups/deleteBackup';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import getBackupDownloadUrl from '@/api/server/backups/getBackupDownloadUrl';
 import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
 
@@ -95,35 +95,29 @@ export default ({ backup }: Props) => {
 
     return (
         <>
-            <ConfirmationModal
-                visible={modal === 'unlock'}
-                title={'Unlock this backup?'}
+            <Dialog.Confirm
+                open={modal === 'unlock'}
+                onClose={() => setModal('')}
+                title={`Unlock "${backup.name}"`}
                 onConfirmed={onLockToggle}
-                onModalDismissed={() => setModal('')}
-                buttonText={'Yes, unlock'}
             >
-                Are you sure you want to unlock this backup? It will no longer be protected from automated or
-                accidental deletions.
-            </ConfirmationModal>
-            <ConfirmationModal
-                visible={modal === 'restore'}
-                title={'Restore this backup?'}
-                buttonText={'Restore backup'}
+                This backup will no longer be protected from automated or accidental deletions.
+            </Dialog.Confirm>
+            <Dialog.Confirm
+                open={modal === 'restore'}
+                onClose={() => setModal('')}
+                confirm={'Restore'}
+                title={`Restore "${backup.name}"`}
                 onConfirmed={() => doRestorationAction()}
-                onModalDismissed={() => setModal('')}
             >
-                <p css={tw`text-neutral-300`}>
-                    This server will be stopped in order to restore the backup. Once the backup has started you will
-                    not be able to control the server power state, access the file manager, or create additional backups
-                    until it has completed.
+                <p>
+                    Your server will be stopped. You will not be able to control the power state, access the file
+                    manager, or create additional backups until completed.
                 </p>
-                <p css={tw`text-neutral-300 mt-4`}>
-                    Are you sure you want to continue?
-                </p>
-                <p css={tw`mt-4 -mb-2 bg-neutral-900 p-3 rounded`}>
+                <p css={tw`mt-4 -mb-2 bg-gray-700 p-3 rounded`}>
                     <label
                         htmlFor={'restore_truncate'}
-                        css={tw`text-base text-neutral-200 flex items-center cursor-pointer`}
+                        css={tw`text-base flex items-center cursor-pointer`}
                     >
                         <Input
                             type={'checkbox'}
@@ -133,27 +127,26 @@ export default ({ backup }: Props) => {
                             checked={truncate}
                             onChange={() => setTruncate(s => !s)}
                         />
-                        Remove all files and folders before restoring this backup.
+                        Delete all files before restoring backup.
                     </label>
                 </p>
-            </ConfirmationModal>
-            <ConfirmationModal
-                visible={modal === 'delete'}
-                title={'Delete this backup?'}
-                buttonText={'Yes, delete backup'}
-                onConfirmed={() => doDeletion()}
-                onModalDismissed={() => setModal('')}
+            </Dialog.Confirm>
+            <Dialog.Confirm
+                title={`Delete "${backup.name}"`}
+                confirm={'Continue'}
+                open={modal === 'delete'}
+                onClose={() => setModal('')}
+                onConfirmed={doDeletion}
             >
-                Are you sure you wish to delete this backup? This is a permanent operation and the backup cannot
-                be recovered once deleted.
-            </ConfirmationModal>
+                This is a permanent operation. The backup cannot be recovered once deleted.
+            </Dialog.Confirm>
             <SpinnerOverlay visible={loading} fixed/>
             {backup.isSuccessful ?
                 <DropdownMenu
                     renderToggle={onClick => (
                         <button
                             onClick={onClick}
-                            css={tw`text-neutral-200 transition-colors duration-150 hover:text-neutral-100 p-2`}
+                            css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
                         >
                             <Icon.MoreHorizontal />
                         </button>
@@ -194,7 +187,7 @@ export default ({ backup }: Props) => {
                 :
                 <button
                     onClick={() => setModal('delete')}
-                    css={tw`text-neutral-200 transition-colors duration-150 hover:text-neutral-100 p-2`}
+                    css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
                 >
                     <Icon.Trash />
                 </button>

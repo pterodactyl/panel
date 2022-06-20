@@ -6,8 +6,8 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import DeleteServerBox from '@/components/server/settings/DeleteServerBox';
 import RenameServerBox from '@/components/server/settings/RenameServerBox';
+import DeleteServerBox from '@/components/server/settings/DeleteServerBox';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 
 export default () => {

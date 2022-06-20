@@ -2,22 +2,20 @@ import tw from 'twin.macro';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Dialog } from '@/components/elements/dialog';
 import reinstallServer from '@/api/server/reinstallServer';
+import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
     const [ modalVisible, setModalVisible ] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const reinstall = () => {
         clearFlashes('settings');
-        setIsSubmitting(true);
         reinstallServer(uuid)
             .then(() => {
                 addFlash({
@@ -31,10 +29,7 @@ export default () => {
 
                 addFlash({ key: 'settings', type: 'error', message: httpErrorToHuman(error) });
             })
-            .then(() => {
-                setIsSubmitting(false);
-                setModalVisible(false);
-            });
+            .then(() => setModalVisible(false));
     };
 
     useEffect(() => {
@@ -43,17 +38,16 @@ export default () => {
 
     return (
         <TitledGreyBox title={'Reinstall Server'} css={tw`relative`}>
-            <ConfirmationModal
+            <Dialog.Confirm
+                open={modalVisible}
                 title={'Confirm server reinstallation'}
-                buttonText={'Yes, reinstall server'}
+                confirm={'Yes, reinstall server'}
+                onClose={() => setModalVisible(false)}
                 onConfirmed={reinstall}
-                showSpinnerOverlay={isSubmitting}
-                visible={modalVisible}
-                onModalDismissed={() => setModalVisible(false)}
             >
                 Your server will be stopped and some files may be deleted or modified during this process, are you sure
                 you wish to continue?
-            </ConfirmationModal>
+            </Dialog.Confirm>
             <p css={tw`text-sm`}>
                 Reinstalling your server will stop it, and then re-run the installation script that initially
                 set it up.&nbsp;
@@ -63,14 +57,9 @@ export default () => {
                 </strong>
             </p>
             <div css={tw`mt-6 text-right`}>
-                <Button
-                    type={'button'}
-                    color={'red'}
-                    isSecondary
-                    onClick={() => setModalVisible(true)}
-                >
+                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setModalVisible(true)}>
                     Reinstall Server
-                </Button>
+                </Button.Danger>
             </div>
         </TitledGreyBox>
     );

@@ -1,49 +1,45 @@
 import tw from 'twin.macro';
 import { format } from 'date-fns';
 import * as Icon from 'react-feather';
-import { ApplicationStore } from '@/state';
-import { httpErrorToHuman } from '@/api/http';
 import React, { useEffect, useState } from 'react';
-import deleteApiKey from '@/api/account/deleteApiKey';
-import { Actions, useStoreActions } from 'easy-peasy';
 import ContentBox from '@/components/elements/ContentBox';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import getApiKeys, { ApiKey } from '@/api/account/getApiKeys';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import PageContentBlock from '@/components/elements/PageContentBlock';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import CreateApiKeyForm from '@/components/dashboard/forms/CreateApiKeyForm';
+import getApiKeys, { ApiKey } from '@/api/account/getApiKeys';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import deleteApiKey from '@/api/account/deleteApiKey';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import PageContentBlock from '@/components/elements/PageContentBlock';
+import GreyRowBox from '@/components/elements/GreyRowBox';
+import { Dialog } from '@/components/elements/dialog';
+import { useFlashKey } from '@/plugins/useFlash';
+import Code from '@/components/elements/Code';
 
 export default () => {
     const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
     const [ keys, setKeys ] = useState<ApiKey[]>([]);
     const [ loading, setLoading ] = useState(true);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const { clearAndAddHttpError } = useFlashKey('account');
 
     useEffect(() => {
-        clearFlashes('account');
         getApiKeys()
             .then(keys => setKeys(keys))
             .then(() => setLoading(false))
-            .catch(error => {
-                console.error(error);
-                addError({ key: 'account', message: httpErrorToHuman(error) });
-            });
+            .catch(error => clearAndAddHttpError(error));
     }, []);
 
     const doDeletion = (identifier: string) => {
         setLoading(true);
-        clearFlashes('account');
+
+        clearAndAddHttpError();
         deleteApiKey(identifier)
             .then(() => setKeys(s => ([
                 ...(s || []).filter(key => key.identifier !== identifier),
             ])))
-            .catch(error => {
-                console.error(error);
-                addError({ key: 'account', message: httpErrorToHuman(error) });
-            })
-            .then(() => setLoading(false));
+            .catch(error => clearAndAddHttpError(error))
+            .then(() => {
+                setLoading(false);
+                setDeleteIdentifier('');
+            });
     };
 
     return (
@@ -57,19 +53,15 @@ export default () => {
                 </ContentBox>
                 <ContentBox title={'API Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
                     <SpinnerOverlay visible={loading}/>
-                    <ConfirmationModal
-                        visible={!!deleteIdentifier}
-                        title={'Confirm key deletion'}
-                        buttonText={'Yes, delete key'}
-                        onConfirmed={() => {
-                            doDeletion(deleteIdentifier);
-                            setDeleteIdentifier('');
-                        }}
-                        onModalDismissed={() => setDeleteIdentifier('')}
+                    <Dialog.Confirm
+                        title={'Delete API Key'}
+                        confirm={'Delete Key'}
+                        open={!!deleteIdentifier}
+                        onClose={() => setDeleteIdentifier('')}
+                        onConfirmed={() => doDeletion(deleteIdentifier)}
                     >
-                        Are you sure you wish to delete this API key? All requests using it will immediately be
-                        invalidated and will fail.
-                    </ConfirmationModal>
+                        All requests using the <Code>{deleteIdentifier}</Code> key will be invalidated.
+                    </Dialog.Confirm>
                     {
                         keys.length === 0 ?
                             <p css={tw`text-center text-sm`}>

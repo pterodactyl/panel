@@ -1,18 +1,24 @@
 import React, { forwardRef } from 'react';
 import classNames from 'classnames';
+import { ButtonProps, Options } from '@/components/elements/button/types';
 import styles from './style.module.css';
 
-export type ButtonProps = JSX.IntrinsicElements['button'] & {
-    square?: boolean;
-    small?: boolean;
-}
-
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-    ({ children, square, small, className, ...rest }, ref) => {
+    ({ children, shape, size, variant, className, ...rest }, ref) => {
         return (
             <button
                 ref={ref}
-                className={classNames(styles.button, { [styles.square]: square, [styles.small]: small }, className)}
+                className={classNames(
+                    styles.button,
+                    styles.primary,
+                    {
+                        [styles.secondary]: variant === Options.Variant.Secondary,
+                        [styles.square]: shape === Options.Shape.IconSquare,
+                        [styles.small]: size === Options.Size.Small,
+                        [styles.large]: size === Options.Size.Large,
+                    },
+                    className,
+                )}
                 {...rest}
             >
                 {children}
@@ -31,6 +37,12 @@ const DangerButton = forwardRef<HTMLButtonElement, ButtonProps>(({ className, ..
     <Button ref={ref} className={classNames(styles.danger, className)} {...props} />
 ));
 
-const _Button = Object.assign(Button, { Text: TextButton, Danger: DangerButton });
+const _Button = Object.assign(Button, {
+    Sizes: Options.Size,
+    Shapes: Options.Shape,
+    Variants: Options.Variant,
+    Text: TextButton,
+    Danger: DangerButton,
+});
 
 export default _Button;
