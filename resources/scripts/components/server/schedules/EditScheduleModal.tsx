@@ -9,7 +9,7 @@ import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
 import Switch from '@/components/elements/Switch';
@@ -135,7 +135,7 @@ const EditScheduleModal = ({ schedule }: Props) => {
                         />
                     </div>
                     <div css={tw`mt-6 text-right`}>
-                        <Button css={tw`w-full sm:w-auto`} type={'submit'} disabled={isSubmitting}>
+                        <Button className={'w-full sm:w-auto'} type={'submit'} disabled={isSubmitting}>
                             {schedule ? 'Save changes' : 'Create schedule'}
                         </Button>
                     </div>

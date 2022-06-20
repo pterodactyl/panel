@@ -11,7 +11,7 @@ import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
 import isEqual from 'react-fast-compare';
 import { format } from 'date-fns';
@@ -117,15 +117,9 @@ export default () => {
                             </div>
                             <div css={tw`flex sm:block mt-3 sm:mt-0`}>
                                 <Can action={'schedule.update'}>
-                                    <Button
-                                        isSecondary
-                                        color={'grey'}
-                                        size={'small'}
-                                        css={tw`flex-1 mr-4 border-transparent`}
-                                        onClick={toggleEditModal}
-                                    >
+                                    <Button.Text className={'flex-1 mr-4'} onClick={toggleEditModal}>
                                         Edit
-                                    </Button>
+                                    </Button.Text>
                                     <NewTaskButton schedule={schedule}/>
                                 </Can>
                             </div>

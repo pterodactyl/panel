@@ -12,7 +12,7 @@ import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import tw from 'twin.macro';
 import Label from '@/components/elements/Label';
 import { Textarea } from '@/components/elements/Input';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import Select from '@/components/elements/Select';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import useFlash from '@/plugins/useFlash';
+import { useFlashKey } from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
 import AllocationRow from '@/components/server/network/AllocationRow';
@@ -20,7 +20,7 @@ const NetworkContainer = () => {
     const allocations = ServerContext.useStoreState(state => state.server.data!.allocations, isEqual);
     const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
 
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
     const { data, error, mutate } = getServerAllocations();
 
     useEffect(() => {
@@ -28,9 +28,7 @@ const NetworkContainer = () => {
     }, []);
 
     useEffect(() => {
-        if (error) {
-            clearAndAddHttpError({ key: 'server:network', error });
-        }
+        clearAndAddHttpError(error);
     }, [ error ]);
 
     useDeepCompareEffect(() => {
@@ -40,7 +38,7 @@ const NetworkContainer = () => {
     }, [ data ]);
 
     const onCreateAllocation = () => {
-        clearFlashes('server:network');
+        clearFlashes();
 
         setLoading(true);
         createServerAllocation(uuid)
@@ -48,7 +46,7 @@ const NetworkContainer = () => {
                 setServerFromState(s => ({ ...s, allocations: s.allocations.concat(allocation) }));
                 return mutate(data?.concat(allocation), false);
             })
-            .catch(error => clearAndAddHttpError({ key: 'server:network', error }))
+            .catch(error => clearAndAddHttpError(error))
             .then(() => setLoading(false));
     };
 

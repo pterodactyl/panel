@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
-import Button from '@/components/elements/Button';
-import tw from 'twin.macro';
+import { Button } from '@/components/elements/button/index';
 
 interface Props {
     schedule: Schedule;
@@ -14,7 +13,7 @@ export default ({ schedule }: Props) => {
     return (
         <>
             <TaskDetailsModal schedule={schedule} visible={visible} onModalDismissed={() => setVisible(false)}/>
-            <Button onClick={() => setVisible(true)} css={tw`flex-1`}>
+            <Button onClick={() => setVisible(true)} className={'flex-1'}>
                 New Task
             </Button>
         </>

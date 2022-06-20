@@ -11,7 +11,7 @@ import Can from '@/components/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export default () => {
