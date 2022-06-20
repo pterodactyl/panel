@@ -4,9 +4,10 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import deleteSchedule from '@/api/server/schedules/deleteSchedule';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 interface Props {
     scheduleId: number;
@@ -38,17 +39,17 @@ export default ({ scheduleId, onDeleted }: Props) => {
 
     return (
         <>
-            <ConfirmationModal
-                visible={visible}
-                title={'Delete schedule?'}
-                buttonText={'Yes, delete schedule'}
+            <Dialog.Confirm
+                open={visible}
+                onClose={() => setVisible(false)}
+                title={'Delete Schedule'}
+                confirm={'Delete'}
                 onConfirmed={onDelete}
-                showSpinnerOverlay={isLoading}
-                onModalDismissed={() => setVisible(false)}
             >
-                Are you sure you want to delete this schedule? All tasks will be removed and any running processes
+                <SpinnerOverlay visible={isLoading} />
+                All tasks will be removed and any running processes
                 will be terminated.
-            </ConfirmationModal>
+            </Dialog.Confirm>
             <Button.Danger css={tw`flex-1 sm:flex-none mr-4 border-transparent`} onClick={() => setVisible(true)}>
                 Delete
             </Button.Danger>

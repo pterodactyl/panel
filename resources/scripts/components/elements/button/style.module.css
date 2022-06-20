@@ -5,7 +5,7 @@
 
     /* Sizing Controls */
     &.small {
-        @apply px-4 py-1 font-normal text-sm focus:ring-2;
+        @apply px-4 py-0 h-8 font-normal text-sm focus:ring-2;
     }
 
     &.large {

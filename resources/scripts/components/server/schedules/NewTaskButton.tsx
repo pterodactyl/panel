@@ -1,4 +1,3 @@
-import tw from 'twin.macro';
 import React, { useState } from 'react';
 import { Button } from '@/components/elements/button/index';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
@@ -14,7 +13,7 @@ export default ({ schedule }: Props) => {
     return (
         <>
             <TaskDetailsModal schedule={schedule} visible={visible} onModalDismissed={() => setVisible(false)}/>
-            <Button onClick={() => setVisible(true)} css={tw`flex-1`}>
+            <Button onClick={() => setVisible(true)} className={'flex-1'}>
                 New Task
             </Button>
         </>

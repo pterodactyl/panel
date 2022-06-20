@@ -1,4 +1,3 @@
-import tw from 'twin.macro';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import React, { useCallback, useState } from 'react';
@@ -34,7 +33,7 @@ const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
             <SpinnerOverlay visible={loading} size={'large'}/>
             <Button
                 variant={Button.Variants.Secondary}
-                css={tw`flex-1 sm:flex-none border-transparent`}
+                className={'flex-1 sm:flex-none'}
                 disabled={schedule.isProcessing}
                 onClick={onTriggerExecute}
             >
