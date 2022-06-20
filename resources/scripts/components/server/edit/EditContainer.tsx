@@ -6,10 +6,10 @@ import useFlash from '@/plugins/useFlash';
 import styled from 'styled-components/macro';
 import { ServerContext } from '@/state/server';
 import editServer from '@/api/server/editServer';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 const Container = styled.div`
   ${tw`flex flex-wrap`};
@@ -56,26 +56,22 @@ export default () => {
                 <TitledGreyBox title={'Edit server CPU limit'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Cpu size={40} />
-                        <Button
-                            isSecondary
-                            color={'green'}
+                        <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('cpu', 50);
                             }}
                         >
                             <Icon.Plus />
-                        </Button>
-                        <Button
-                            isSecondary
-                            color={'red'}
+                        </Button.Success>
+                        <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('cpu', -50);
                             }}
                         >
                             <Icon.Minus />
-                        </Button>
+                        </Button.Danger>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the amount of CPU assigned to the server.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 50%.</p>
@@ -83,26 +79,22 @@ export default () => {
                 <TitledGreyBox title={'Edit server RAM limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.PieChart size={40} />
-                        <Button
-                            isSecondary
-                            color={'green'}
+                        <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('memory', 1024);
                             }}
                         >
                             <Icon.Plus />
-                        </Button>
-                        <Button
-                            isSecondary
-                            color={'red'}
+                        </Button.Success>
+                        <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('memory', -1024);
                             }}
                         >
                             <Icon.Minus />
-                        </Button>
+                        </Button.Danger>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the amount of RAM assigned to the server.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 1GB.</p>
@@ -110,26 +102,22 @@ export default () => {
                 <TitledGreyBox title={'Edit server storage limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.HardDrive size={40} />
-                        <Button
-                            isSecondary
-                            color={'green'}
+                        <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('disk', 1024);
                             }}
                         >
                             <Icon.Plus />
-                        </Button>
-                        <Button
-                            isSecondary
-                            color={'red'}
+                        </Button.Success>
+                        <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('disk', -1024);
                             }}
                         >
                             <Icon.Minus />
-                        </Button>
+                        </Button.Danger>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the amount of storage assigned to the server.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 1GB.</p>
@@ -137,26 +125,22 @@ export default () => {
                 <TitledGreyBox title={'Edit server port quantity'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Share2 size={40} />
-                        <Button
-                            isSecondary
-                            color={'green'}
+                        <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('allocation_limit', 1);
                             }}
                         >
                             <Icon.Plus />
-                        </Button>
-                        <Button
-                            isSecondary
-                            color={'red'}
+                        </Button.Success>
+                        <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('allocation_limit', -1);
                             }}
                         >
                             <Icon.Minus />
-                        </Button>
+                        </Button.Danger>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the limit of ports assigned to the server.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 1.</p>
@@ -164,52 +148,44 @@ export default () => {
                 <TitledGreyBox title={'Edit server backup limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Archive size={40} />
-                        <Button
-                            isSecondary
-                            color={'green'}
+                        <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('backup_limit', 1);
                             }}
                         >
                             <Icon.Plus />
-                        </Button>
-                        <Button
-                            isSecondary
-                            color={'red'}
+                        </Button.Success>
+                        <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('backup_limit', -1);
                             }}
                         >
                             <Icon.Minus />
-                        </Button>
+                        </Button.Danger>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the limit of backups assigned to the server.</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Edit server database limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Database size={40} />
-                        <Button
-                            isSecondary
-                            color={'green'}
+                        <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('database_limit', 1);
                             }}
                         >
                             <Icon.Plus />
-                        </Button>
-                        <Button
-                            isSecondary
-                            color={'red'}
+                        </Button.Success>
+                        <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
                                 edit('database_limit', -1);
                             }}
                         >
                             <Icon.Minus />
-                        </Button>
+                        </Button.Danger>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the limit of backups assigned to the server.</p>
                 </TitledGreyBox>

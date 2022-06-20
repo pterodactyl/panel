@@ -3,10 +3,10 @@ import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
-import Button from '@/components/elements/Button';
 import Select from '@/components/elements/Select';
 import React, { useEffect, useState } from 'react';
 import getServerStartup from '@/api/swr/getServerStartup';
+import { Button } from '@/components/elements/button/index';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import InputSpinner from '@/components/elements/InputSpinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -98,7 +98,7 @@ const JavaVersionModalFeature = () => {
                 </div>
             </Can>
             <div css={tw`mt-8 flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-4 sm:space-y-0`}>
-                <Button isSecondary onClick={() => setVisible(false)} css={tw`w-full sm:w-auto`}>
+                <Button variant={Button.Variants.Secondary} onClick={() => setVisible(false)} css={tw`w-full sm:w-auto`}>
                     Cancel
                 </Button>
                 <Can action={'startup.docker-image'}>

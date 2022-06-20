@@ -2,22 +2,20 @@ import tw from 'twin.macro';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import deleteServer from '@/api/server/deleteServer';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Dialog } from '@/components/elements/dialog';
+import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
 export default () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const [ isSubmitting, setIsSubmitting ] = useState(false);
     const [ modalVisible, setModalVisible ] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const reinstall = () => {
+    const delServer = () => {
         clearFlashes('settings');
-        setIsSubmitting(true);
         deleteServer(uuid)
             .then(() => {
                 addFlash({
@@ -28,12 +26,10 @@ export default () => {
             })
             .catch(error => {
                 console.error(error);
+
                 addFlash({ key: 'settings', type: 'error', message: httpErrorToHuman(error) });
             })
-            .then(() => {
-                setIsSubmitting(false);
-                setModalVisible(false);
-            });
+            .then(() => setModalVisible(false));
     };
 
     useEffect(() => {
@@ -41,31 +37,28 @@ export default () => {
     }, []);
 
     return (
-        <TitledGreyBox title={'Delete Server'} css={tw`relative mt-4`}>
-            <ConfirmationModal
+        <TitledGreyBox title={'Delete Server'} css={tw`relative`}>
+            <Dialog.Confirm
+                open={modalVisible}
                 title={'Confirm server deletion'}
-                buttonText={'Yes, delete server'}
-                onConfirmed={reinstall}
-                showSpinnerOverlay={isSubmitting}
-                visible={modalVisible}
-                onModalDismissed={() => setModalVisible(false)}
+                confirm={'Yes, delete server'}
+                onClose={() => setModalVisible(false)}
+                onConfirmed={delServer}
             >
-                Your server will be stopped and then purged from our systems, with data being irrecoverable.
-            </ConfirmationModal>
-            <p>This process will add the resources on your server back to your account, so you can re-deploy at any time.</p>
-            <strong css={tw`font-medium mt-1`}>
-                ALL FILES WILL BE DELETED. Please ensure you&apos;ve saved any progress or data before continuing.
-                We are not responsible for your data loss if you perform this action.
-            </strong>
+                Your server will be deleted, with all files being purged and the server&apos;s resources
+                being returned to your account. Are you sure you wish to continue?
+            </Dialog.Confirm>
+            <p css={tw`text-sm`}>
+                Deleting your server will shut down any processes, return the resources to your account
+                and delete all files associated with the instance - as well as backups, databases and settings.
+                <strong css={tw`font-medium`}>
+                    All data will be permenantly lost if you continue with this action.
+                </strong>
+            </p>
             <div css={tw`mt-6 text-right`}>
-                <Button
-                    type={'button'}
-                    color={'red'}
-                    isSecondary
-                    onClick={() => setModalVisible(true)}
-                >
+                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setModalVisible(true)}>
                     Delete Server
-                </Button>
+                </Button.Danger>
             </div>
         </TitledGreyBox>
     );

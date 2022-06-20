@@ -8,9 +8,9 @@ import { httpErrorToHuman } from '@/api/http';
 import { Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import Input from '@/components/elements/Input';
-import Button from '@/components/elements/Button';
 import { RouteComponentProps } from 'react-router';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Button } from '@/components/elements/button/index';
 import performPasswordReset from '@/api/auth/performPasswordReset';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
@@ -88,10 +88,10 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                     </div>
                     <div css={tw`mt-6`}>
                         <Button
-                            size={'xlarge'}
+                            size={Button.Sizes.Large}
+                            css={tw`w-full`}
                             type={'submit'}
                             disabled={isSubmitting}
-                            isLoading={isSubmitting}
                         >
                             Reset Password
                         </Button>

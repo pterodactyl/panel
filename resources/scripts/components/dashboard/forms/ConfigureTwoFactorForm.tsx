@@ -2,7 +2,7 @@ import tw from 'twin.macro';
 import React, { useState } from 'react';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import SetupTwoFactorModal from '@/components/dashboard/forms/SetupTwoFactorModal';
 import DisableTwoFactorModal from '@/components/dashboard/forms/DisableTwoFactorModal';
 
@@ -26,8 +26,8 @@ export default () => {
                 }
             </p>
             <div css={tw`mt-6`}>
-                <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
-                    {isEnabled ? 'Disable' : 'Enable'}
+                <Button onClick={() => setVisible(true)}>
+                    {isEnabled ? 'Disable 2FA' : 'Enable 2FA'}
                 </Button>
             </div>
         </div>

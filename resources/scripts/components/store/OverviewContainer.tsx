@@ -5,8 +5,8 @@ import { Link } from 'react-router-dom';
 import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
-import Button from '@/components/elements/Button';
 import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/elements/button/index';
 import PlusSquareSvg from '@/assets/images/plus_square.svg';
 import StoreError from '@/components/store/error/StoreError';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -102,14 +102,14 @@ const OverviewContainer = () => {
                         <div css={tw`flex-1`}>
                             <h2 css={tw`text-xl mb-2`}>Create a server</h2>
                             <p>
-                                Configure and create your next server with your choice of
+                                Create your next server with your choice of
                                 resource limits, server type and more. Delete or edit your
                                 server at any time to take full advantage of your resources.
                             </p>
                             <Link to={'/store/create'}>
                                 <Button
-                                    css={tw`mt-6`}
-                                    size={'xlarge'}
+                                    css={tw`mt-6 w-full`}
+                                    size={Button.Sizes.Large}
                                 >
                                     Create
                                 </Button>
@@ -130,8 +130,8 @@ const OverviewContainer = () => {
                                 make changes to your server instantly.
                             </p>
                             <Button
-                                css={tw`mt-6`}
-                                size={'xlarge'}
+                                css={tw`mt-6 w-full`}
+                                size={Button.Sizes.Large}
                                 onClick={() => redirect('edit')}
                             >
                                 Edit

@@ -7,11 +7,11 @@ import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
 import styled from 'styled-components/macro';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
 import { Allocation } from '@/api/server/getServer';
 import { Textarea } from '@/components/elements/Input';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import React, { memo, useCallback, useState } from 'react';
+import { Button } from '@/components/elements/button/index';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import InputSpinner from '@/components/elements/InputSpinner';
 import getServerAllocations from '@/api/swr/getServerAllocations';
@@ -94,8 +94,7 @@ const AllocationRow = ({ allocation }: Props) => {
                         </Can>
                         <Can action={'allocation.update'}>
                             <Button
-                                isSecondary
-                                size={'xsmall'}
+                                variant={Button.Variants.Secondary}
                                 color={'primary'}
                                 onClick={setPrimaryAllocation}
                             >

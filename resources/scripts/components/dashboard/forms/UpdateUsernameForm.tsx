@@ -4,9 +4,9 @@ import tw from 'twin.macro';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Button } from '@/components/elements/button/index';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import updateAccountUsername from '@/api/account/updateAccountUsername';
 
@@ -70,7 +70,7 @@ export default () => {
                                 />
                             </div>
                             <div css={tw`mt-6`}>
-                                <Button size={'small'} disabled={isSubmitting || !isValid}>
+                                <Button disabled={isSubmitting || !isValid}>
                                     Update Username
                                 </Button>
                             </div>

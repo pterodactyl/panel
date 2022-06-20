@@ -10,9 +10,9 @@ import Modal from '@/components/elements/Modal';
 import Field from '@/components/elements/Field';
 import Label from '@/components/elements/Label';
 import Input from '@/components/elements/Input';
-import Button from '@/components/elements/Button';
 import { Form, Formik, FormikHelpers } from 'formik';
 import GreyRowBox from '@/components/elements/GreyRowBox';
+import { Button } from '@/components/elements/button/index';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
@@ -89,7 +89,7 @@ export default ({ database, className }: Props) => {
                                 <div css={tw`mt-6 text-right`}>
                                     <Button
                                         type={'button'}
-                                        isSecondary
+                                        variant={Button.Variants.Secondary}
                                         css={tw`mr-2`}
                                         onClick={() => setVisible(false)}
                                     >
@@ -143,7 +143,7 @@ export default ({ database, className }: Props) => {
                     <Can action={'database.update'}>
                         <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase}/>
                     </Can>
-                    <Button isSecondary onClick={() => setConnectionVisible(false)}>
+                    <Button variant={Button.Variants.Secondary} onClick={() => setConnectionVisible(false)}>
                         Close
                     </Button>
                 </div>
@@ -168,13 +168,13 @@ export default ({ database, className }: Props) => {
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Username</p>
                 </div>
                 <div css={tw`ml-8`}>
-                    <Button isSecondary css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>
+                    <Button variant={Button.Variants.Secondary} css={tw`mr-2`} onClick={() => setConnectionVisible(true)}>
                         <Icon.Eye />
                     </Button>
                     <Can action={'database.delete'}>
-                        <Button color={'red'} isSecondary onClick={() => setVisible(true)}>
+                        <Button.Danger variant={Button.Variants.Secondary} onClick={() => setVisible(true)}>
                             <Icon.Trash />
-                        </Button>
+                        </Button.Danger>
                     </Can>
                 </div>
             </GreyRowBox>

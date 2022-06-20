@@ -3,9 +3,9 @@ import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import Fade from '@/components/elements/Fade';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import deleteFiles from '@/api/server/files/deleteFiles';
+import { Button } from '@/components/elements/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import compressFiles from '@/api/server/files/compressFiles';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -96,15 +96,18 @@ const MassActionsBar = () => {
                 />
                 }
                 <div css={tw`pointer-events-auto rounded p-4 mb-6`} style={{ background: 'rgba(0, 0, 0, 0.35)' }}>
-                    <Button size={'xsmall'} css={tw`mr-4`} onClick={() => setShowMove(true)}>
+                    <Button css={tw`mr-4`} onClick={() => setShowMove(true)}>
                         <Icon.ArrowUp css={tw`mr-2`} /> Move
                     </Button>
-                    <Button size={'xsmall'} css={tw`mr-4`} onClick={onClickCompress}>
+                    <Button css={tw`mr-4`} onClick={onClickCompress}>
                         <Icon.Archive css={tw`mr-2`} /> Archive
                     </Button>
-                    <Button size={'xsmall'} color={'red'} isSecondary onClick={() => setShowConfirm(true)}>
+                    <Button.Danger
+                        variant={Button.Variants.Secondary}
+                        onClick={() => setShowConfirm(true)}
+                    >
                         <Icon.Trash css={tw`mr-2`} /> Delete
-                    </Button>
+                    </Button.Danger>
                 </div>
             </div>
         </Fade>

@@ -7,10 +7,10 @@ import { number, object, string } from 'yup';
 import { megabytesToHuman } from '@/helpers';
 import styled from 'styled-components/macro';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import { Egg, getEggs } from '@/api/store/getEggs';
 import createServer from '@/api/store/createServer';
+import { Button } from '@/components/elements/button/index';
 import StoreError from '@/components/store/error/StoreError';
 import InputSpinner from '@/components/elements/InputSpinner';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -176,16 +176,15 @@ export default () => {
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
                             <div css={tw`flex justify-center items-center`}>
                                 {eggs.map((egg) =>
-                                    <Button
+                                    <Button.Success
                                         type={'button'}
-                                        color={'green'}
-                                        isSecondary
+                                        variant={Button.Variants.Secondary}
                                         key={egg.name}
                                         css={tw`ml-2`}
                                         onClick={() => setEgg(egg.id)}
                                     >
                                         {egg.id} | {egg.name}
-                                    </Button>
+                                    </Button.Success>
                                 )}
                             </div>
                             <p css={tw`mt-2 text-sm`}>Choose what game you want to run on your server.</p>

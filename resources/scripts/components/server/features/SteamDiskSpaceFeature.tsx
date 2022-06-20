@@ -3,9 +3,9 @@ import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import { SocketEvent } from '@/components/server/events';
+import { Button } from '@/components/elements/button/index';
 import FlashMessageRender from '@/components/FlashMessageRender';
 
 const SteamDiskSpaceFeature = () => {

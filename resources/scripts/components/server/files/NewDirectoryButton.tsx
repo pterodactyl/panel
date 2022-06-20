@@ -5,10 +5,10 @@ import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import { WithClassname } from '@/components/types';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { Button } from '@/components/elements/button/index';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import createDirectory from '@/api/server/files/createDirectory';
@@ -105,7 +105,7 @@ export default ({ className }: WithClassname) => {
                     </Modal>
                 )}
             </Formik>
-            <Button isSecondary onClick={() => setVisible(true)} className={className}>
+            <Button variant={Button.Variants.Secondary} onClick={() => setVisible(true)} className={className}>
                 Create Directory
             </Button>
         </>

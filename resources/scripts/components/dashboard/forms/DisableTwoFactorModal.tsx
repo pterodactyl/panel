@@ -4,10 +4,10 @@ import { object, string } from 'yup';
 import React, { useContext } from 'react';
 import { ApplicationStore } from '@/state';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import ModalContext from '@/context/ModalContext';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Button } from '@/components/elements/button/index';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
 
@@ -58,9 +58,9 @@ const DisableTwoFactorModal = () => {
                         autoFocus
                     />
                     <div css={tw`mt-6 text-right`}>
-                        <Button color={'red'} disabled={!isValid}>
-                            Disable Two-Factor
-                        </Button>
+                        <Button.Danger disabled={!isValid}>
+                            Disable 2FA
+                        </Button.Danger>
                     </div>
                 </Form>
             )}

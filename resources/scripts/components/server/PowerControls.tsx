@@ -2,7 +2,7 @@ import React from 'react';
 import tw from 'twin.macro';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import { PowerAction } from '@/components/server/ServerConsole';
 
 const PowerControls = () => {
@@ -16,10 +16,8 @@ const PowerControls = () => {
     return (
         <div css={tw`shadow-md bg-neutral-900 rounded-t p-3 flex text-xs justify-center`}>
             <Can action={'control.start'}>
-                <Button
-                    size={'xsmall'}
-                    color={'green'}
-                    isSecondary
+                <Button.Success
+                    size={Button.Sizes.Small}
                     css={tw`mr-2`}
                     disabled={status !== 'offline'}
                     onClick={e => {
@@ -28,13 +26,11 @@ const PowerControls = () => {
                     }}
                 >
                     Start
-                </Button>
+                </Button.Success>
             </Can>
             <Can action={'control.restart'}>
-                <Button
-                    size={'xsmall'}
-                    color={'yellow'}
-                    isSecondary
+                <Button.Warn
+                    size={Button.Sizes.Small}
                     css={tw`mr-2`}
                     disabled={!status}
                     onClick={e => {
@@ -43,13 +39,11 @@ const PowerControls = () => {
                     }}
                 >
                     Restart
-                </Button>
+                </Button.Warn>
             </Can>
             <Can action={'control.stop'}>
-                <Button
-                    size={'xsmall'}
-                    color={'red'}
-                    isSecondary
+                <Button.Danger
+                    size={Button.Sizes.Small}
                     css={tw`mr-2`}
                     disabled={!status || status === 'offline'}
                     onClick={e => {
@@ -58,13 +52,11 @@ const PowerControls = () => {
                     }}
                 >
                     Stop
-                </Button>
+                </Button.Danger>
             </Can>
             <Can action={'control.stop'}>
-                <Button
-                    size={'xsmall'}
-                    color={'red'}
-                    isSecondary
+                <Button.Danger
+                    size={Button.Sizes.Small}
                     css={tw`mr-2`}
                     disabled={!status || status === 'offline'}
                     onClick={e => {
@@ -73,7 +65,7 @@ const PowerControls = () => {
                     }}
                 >
                     Kill
-                </Button>
+                </Button.Danger>
             </Can>
         </div>
     );

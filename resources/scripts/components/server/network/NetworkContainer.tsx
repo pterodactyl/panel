@@ -3,9 +3,9 @@ import isEqual from 'react-fast-compare';
 import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
+import { Button } from '@/components/elements/button/index';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import AllocationRow from '@/components/server/network/AllocationRow';
@@ -77,7 +77,7 @@ const NetworkContainer = () => {
                                     this server.
                                 </p>
                                 {allocationLimit > data.length &&
-                                    <Button css={tw`w-full sm:w-auto`} color={'primary'} onClick={onCreateAllocation}>
+                                    <Button css={tw`w-full sm:w-auto`} onClick={onCreateAllocation}>
                                         Create Allocation
                                     </Button>
                                 }

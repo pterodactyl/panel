@@ -6,8 +6,8 @@ import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/elements/button/index';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
@@ -95,7 +95,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         />
                     </div>
                     <div css={tw`mt-6`}>
-                        <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
+                        <Button type={'submit'} size={Button.Sizes.Large} css={tw`w-full`} disabled={isSubmitting}>
                             Login
                         </Button>
                     </div>

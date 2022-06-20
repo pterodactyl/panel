@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import useFlash from '@/plugins/useFlash';
 import discordLogin from '@/api/auth/discord';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import DiscordFormContainer from '@/components/auth/DiscordFormContainer';
 
 const DiscordContainer = () => {
@@ -30,7 +30,7 @@ const DiscordContainer = () => {
         <DiscordFormContainer css={tw`w-full flex`}>
             <div css={tw`flex flex-col md:h-full`}>
                 <div css={tw`mt-6`}>
-                    <Button type={'button'} size={'xlarge'} onClick={() => login()} disabled={loading}>
+                    <Button type={'button'} css={tw`w-full`} onClick={() => login()} disabled={loading}>
                         Connect with Discord
                     </Button>
                 </div>

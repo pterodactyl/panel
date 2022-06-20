@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
 import { Actions, useStoreActions } from 'easy-peasy';
+import { Button } from '@/components/elements/button/index';
 import deleteSchedule from '@/api/server/schedules/deleteSchedule';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 
@@ -49,9 +49,9 @@ export default ({ scheduleId, onDeleted }: Props) => {
                 Are you sure you want to delete this schedule? All tasks will be removed and any running processes
                 will be terminated.
             </ConfirmationModal>
-            <Button css={tw`flex-1 sm:flex-none mr-4 border-transparent`} color={'red'} isSecondary onClick={() => setVisible(true)}>
+            <Button.Danger css={tw`flex-1 sm:flex-none mr-4 border-transparent`} onClick={() => setVisible(true)}>
                 Delete
-            </Button>
+            </Button.Danger>
         </>
     );
 };

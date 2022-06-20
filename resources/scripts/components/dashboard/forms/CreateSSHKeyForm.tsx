@@ -3,7 +3,7 @@ import tw from 'twin.macro';
 import { object, string } from 'yup';
 import styled from 'styled-components/macro';
 import { useFlashKey } from '@/plugins/useFlash';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import Input, { Textarea } from '@/components/elements/Input';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';

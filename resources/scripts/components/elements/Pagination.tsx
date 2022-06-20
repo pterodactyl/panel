@@ -3,7 +3,7 @@ import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { PaginatedResult } from '@/api/http';
 import styled from 'styled-components/macro';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 
 interface RenderFuncProps<T> {
     items: T[];
@@ -49,7 +49,7 @@ function Pagination<T> ({ data: { items, pagination }, onPageSelect, children }:
             <div css={tw`mt-4 flex justify-center`}>
                 {(pages[0] > 1 && !isFirstPage) &&
                 <Block
-                    isSecondary
+                    variant={Button.Variants.Secondary}
                     color={'primary'}
                     onClick={() => onPageSelect(1)}
                 >
@@ -59,8 +59,6 @@ function Pagination<T> ({ data: { items, pagination }, onPageSelect, children }:
                 {
                     pages.map(i => (
                         <Block
-                            isSecondary={pagination.currentPage !== i}
-                            color={'primary'}
                             key={`block_page_${i}`}
                             onClick={() => onPageSelect(i)}
                         >
@@ -70,7 +68,7 @@ function Pagination<T> ({ data: { items, pagination }, onPageSelect, children }:
                 }
                 {(pages[4] < pagination.totalPages && !isLastPage) &&
                 <Block
-                    isSecondary
+                    variant={Button.Variants.Secondary}
                     color={'primary'}
                     onClick={() => onPageSelect(pagination.totalPages)}
                 >

@@ -6,8 +6,8 @@ import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { Button } from '@/components/elements/button/index';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import createServerDatabase from '@/api/server/databases/createServerDatabase';
 
@@ -88,7 +88,7 @@ export default () => {
                                 <div css={tw`flex flex-wrap justify-end mt-6`}>
                                     <Button
                                         type={'button'}
-                                        isSecondary
+                                        variant={Button.Variants.Secondary}
                                         css={tw`w-full sm:w-auto sm:mr-2`}
                                         onClick={() => setVisible(false)}
                                     >

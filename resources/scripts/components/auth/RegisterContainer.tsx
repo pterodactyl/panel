@@ -6,8 +6,8 @@ import register from '@/api/auth/register';
 import { useStoreState } from 'easy-peasy';
 import { Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import React, { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/elements/button/index';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
@@ -106,9 +106,8 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                     />
                     <Button
                         type={'submit'}
-                        css={tw`my-6`}
-                        size={'xlarge'}
-                        isLoading={isSubmitting}
+                        css={tw`my-6 w-full`}
+                        size={Button.Sizes.Large}
                         disabled={isSubmitting}
                     >
                         Register
@@ -128,7 +127,7 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                         }}
                     />
                     }
-                    <div css={tw`mt-6 text-center`}>
+                    <div css={tw`text-center`}>
                         <Link
                             to={'/auth/login'}
                             css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}

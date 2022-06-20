@@ -4,9 +4,9 @@ import isEqual from 'react-fast-compare';
 import useFlash from '@/plugins/useFlash';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
-import Button from '@/components/elements/Button';
 import Spinner from '@/components/elements/Spinner';
 import { useHistory, useParams } from 'react-router-dom';
+import { Button } from '@/components/elements/button/index';
 import React, { useCallback, useEffect, useState } from 'react';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import PageContentBlock from '@/components/elements/PageContentBlock';
@@ -118,9 +118,7 @@ export default () => {
                             <div css={tw`flex sm:block mt-3 sm:mt-0`}>
                                 <Can action={'schedule.update'}>
                                     <Button
-                                        isSecondary
-                                        color={'grey'}
-                                        size={'small'}
+                                        variant={Button.Variants.Secondary}
                                         css={tw`flex-1 mr-4 border-transparent`}
                                         onClick={toggleEditModal}
                                     >

@@ -5,9 +5,9 @@ import { ActionCreator } from 'easy-peasy';
 import { StaticContext } from 'react-router';
 import { FlashStore } from '@/state/flashes';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import { useFormikContext, withFormik } from 'formik';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
+import { Button } from '@/components/elements/button/index';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
@@ -45,10 +45,10 @@ const LoginCheckpointContainer = () => {
             </div>
             <div css={tw`mt-6`}>
                 <Button
-                    size={'xlarge'}
+                    size={Button.Sizes.Large}
+                    css={tw`w-full`}
                     type={'submit'}
                     disabled={isSubmitting}
-                    isLoading={isSubmitting}
                 >
                     Continue
                 </Button>

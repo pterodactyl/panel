@@ -4,8 +4,8 @@ import tw from 'twin.macro';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { Button } from '@/components/elements/button/index';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import updateAccountPassword from '@/api/account/updateAccountPassword';
 import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
@@ -84,7 +84,7 @@ export default () => {
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
-                                    <Button size={'small'} disabled={isSubmitting || !isValid}>
+                                    <Button disabled={isSubmitting || !isValid}>
                                         Update Password
                                     </Button>
                                 </div>

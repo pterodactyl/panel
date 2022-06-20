@@ -3,11 +3,11 @@ import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
 import stripe from '@/api/store/gateways/stripe';
-import Button from '@/components/elements/Button';
 import Select from '@/components/elements/Select';
+import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
 export default () => {
     const { clearAndAddHttpError } = useFlash();
@@ -53,7 +53,7 @@ export default () => {
                         <option key={'stripe:buy:1000'} value={1000}>Purchase 1000 credits</option>
                     </Select>
                     <div css={tw`mt-6`}>
-                        <Button size={'small'} type={'submit'} disabled={submitting}>
+                        <Button type={'submit'} disabled={submitting}>
                             Purchase via Stripe
                         </Button>
                     </div>

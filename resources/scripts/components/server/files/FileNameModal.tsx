@@ -4,8 +4,8 @@ import tw from 'twin.macro';
 import { object, string } from 'yup';
 import { ServerContext } from '@/state/server';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import { Form, Formik, FormikHelpers } from 'formik';
+import { Button } from '@/components/elements/button/index';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 
 type Props = RequiredModalProps & {

@@ -1,6 +1,6 @@
 import tw from 'twin.macro';
 import React, { useState } from 'react';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
 

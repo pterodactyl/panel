@@ -8,8 +8,8 @@ import { useStoreState } from 'easy-peasy';
 import { httpErrorToHuman } from '@/api/http';
 import { Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
-import Button from '@/components/elements/Button';
 import { useEffect, useRef, useState } from 'react';
+import { Button } from '@/components/elements/button/index';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
 
@@ -84,10 +84,10 @@ export default () => {
                     />
                     <div css={tw`mt-6`}>
                         <Button
+                            size={Button.Sizes.Large}
                             type={'submit'}
-                            size={'xlarge'}
+                            css={tw`w-full`}
                             disabled={isSubmitting}
-                            isLoading={isSubmitting}
                         >
                             Send Email
                         </Button>

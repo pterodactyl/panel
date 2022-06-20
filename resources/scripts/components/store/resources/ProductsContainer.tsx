@@ -5,7 +5,7 @@ import * as Icon from 'react-feather';
 import useFlash from '@/plugins/useFlash';
 import styled from 'styled-components/macro';
 import { useStoreState } from '@/state/hooks';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import purchaseResource from '@/api/store/purchaseResource';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
@@ -56,13 +56,13 @@ export default () => {
                 <TitledGreyBox title={'Purchase CPU'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Cpu size={40} />
-                        <Button
-                            isSecondary
+                        <Button.Success
+                            variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
                             onClick={() => purchase('cpu')}
                         >
                             +50% CPU
-                        </Button>
+                        </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase CPU to improve server performance.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per 50% CPU: {cost.cpu} JCR</p>
@@ -70,13 +70,13 @@ export default () => {
                 <TitledGreyBox title={'Purchase RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.PieChart size={40} />
-                        <Button
-                            isSecondary
+                        <Button.Success
+                            variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
                             onClick={() => purchase('memory')}
                         >
                             +1GB RAM
-                        </Button>
+                        </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase RAM to improve server performance.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per 1GB RAM: {cost.memory} JCR</p>
@@ -84,13 +84,13 @@ export default () => {
                 <TitledGreyBox title={'Purchase Disk'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.HardDrive size={40} />
-                        <Button
-                            isSecondary
+                        <Button.Success
+                            variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
                             onClick={() => purchase('disk')}
                         >
                             +1GB DISK
-                        </Button>
+                        </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase disk space to improve server capacity.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per 1GB disk: {cost.disk} JCR</p>
@@ -100,13 +100,13 @@ export default () => {
                 <TitledGreyBox title={'Purchase Server Slot'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Server size={40} />
-                        <Button
-                            isSecondary
+                        <Button.Success
+                            variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
                             onClick={() => purchase('slots')}
                         >
                             +1 slot
-                        </Button>
+                        </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a server slot to deploy a server.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per slot: {cost.slot} JCR</p>
@@ -114,13 +114,13 @@ export default () => {
                 <TitledGreyBox title={'Purchase Server Ports'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Share2 size={40} />
-                        <Button
-                            isSecondary
+                        <Button.Success
+                            variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
                             onClick={() => purchase('ports')}
                         >
                             +1 port
-                        </Button>
+                        </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a port to connect to your server.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per port: {cost.port} JCR</p>
@@ -128,13 +128,13 @@ export default () => {
                 <TitledGreyBox title={'Purchase Server Backups'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Archive size={40} />
-                        <Button
-                            isSecondary
+                        <Button.Success
+                            variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
                             onClick={() => purchase('backups')}
                         >
                             +1 backup
-                        </Button>
+                        </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a backup to protect your data.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per backup slot: {cost.backup} JCR</p>
@@ -142,13 +142,13 @@ export default () => {
                 <TitledGreyBox title={'Purchase Server Databases'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
                         <Icon.Database size={40} />
-                        <Button
-                            isSecondary
+                        <Button.Success
+                            variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
                             onClick={() => purchase('databases')}
                         >
                             +1 database
-                        </Button>
+                        </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a database to store data.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per database: {cost.database} JCR</p>

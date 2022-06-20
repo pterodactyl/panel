@@ -9,7 +9,7 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import CreateSSHKeyForm from '@/components/dashboard/ssh/CreateSSHKeyForm';
+import CreateSSHKeyForm from '@/components/dashboard/forms/CreateSSHKeyForm';
 import DeleteSSHKeyButton from '@/components/dashboard/ssh/DeleteSSHKeyButton';
 
 export default () => {
