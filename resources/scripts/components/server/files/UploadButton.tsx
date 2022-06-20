@@ -39,6 +39,7 @@ export default ({ className }: WithClassname) => {
 
     const [ timeouts, setTimeouts ] = useState<NodeJS.Timeout[]>([]);
     const [ visible, setVisible ] = useState(false);
+    const [ loading, setLoading ] = useState(false);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
@@ -79,6 +80,8 @@ export default ({ className }: WithClassname) => {
     }, []);
 
     const onFileSubmission = (files: FileList) => {
+        setLoading(true);
+
         const formData: FormData[] = [];
         Array.from(files).forEach(file => {
             const form = new FormData();
@@ -111,6 +114,7 @@ export default ({ className }: WithClassname) => {
             )
         )
             .then(() => mutate())
+            .then(() => setLoading(false))
             .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'files', error });
