@@ -39,12 +39,6 @@ class SSHKeyController extends ClientApiController
             'fingerprint' => $request->getKeyFingerprint(),
         ]);
 
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'action' => 'SSH key ('.$request->input('name').') was created.',
-            'ip_address' => $request->getClientIp(),
-        ]);
-
         Activity::event('user:ssh-key.create')
             ->subject($model)
             ->property('fingerprint', $request->getKeyFingerprint())
@@ -68,12 +62,6 @@ class SSHKeyController extends ClientApiController
 
         if (!is_null($key)) {
             $key->delete();
-
-            $this->log->create([
-                'user_id' => $request->user()->id,
-                'action' => 'SSH key ('.$key->name.') was deleted.',
-                'ip_address' => $request->getClientIp(),
-            ]);
 
             Activity::event('user:ssh-key.delete')
                 ->subject($key)

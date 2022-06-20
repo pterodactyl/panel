@@ -90,12 +90,6 @@ class TwoFactorController extends ClientApiController
 
         $tokens = $this->toggleTwoFactorService->handle($request->user(), $request->input('code'), true);
 
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'action' => '2FA has been enabled.',
-            'ip_address' => $request->getClientIp(),
-        ]);
-
         Activity::event('user:two-factor.create')->log();
 
         return new JsonResponse([
@@ -124,12 +118,6 @@ class TwoFactorController extends ClientApiController
         $user->update([
             'totp_authenticated_at' => Carbon::now(),
             'use_totp' => false,
-        ]);
-
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'action' => '2FA has been disabled.',
-            'ip_address' => $request->getClientIp(),
         ]);
 
         Activity::event('user:two-factor.delete')->log();
