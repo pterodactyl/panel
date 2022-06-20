@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Api\Application;
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\AccountLog;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
 use Pterodactyl\Http\Controllers\Controller;
@@ -31,11 +30,6 @@ abstract class ApplicationApiController extends Controller
     protected $settings;
 
     /**
-     * @var \Pterodactyl\Models\AccountLog
-     */
-    protected $log;
-
-    /**
      * ApplicationApiController constructor.
      */
     public function __construct()
@@ -59,13 +53,11 @@ abstract class ApplicationApiController extends Controller
      * without littering the constructors of classes that extend this abstract.
      */
     public function loadDependencies(
-        AccountLog $log,
         Fractal $fractal,
         Request $request,
         SettingsRepositoryInterface $settings,
     )
     {
-        $this->log = $log;
         $this->fractal = $fractal;
         $this->request = $request;
         $this->settings = $settings;

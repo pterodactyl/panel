@@ -1,16 +1,16 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
-import Translate from '@/components/elements/Translate';
-import { format, formatDistanceToNowStrict } from 'date-fns';
-import { ActivityLog } from '@definitions/user';
-import { useLocation } from 'react-router';
-import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMetaButton';
-import { TerminalIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
-import style from './style.module.css';
 import { isObject } from '@/helpers';
+import style from './style.module.css';
+import { Link } from 'react-router-dom';
 import Avatar from '@/components/Avatar';
+import { useLocation } from 'react-router';
+import { ActivityLog } from '@definitions/user';
+import { TerminalIcon } from '@heroicons/react/solid';
+import Translate from '@/components/elements/Translate';
+import Tooltip from '@/components/elements/tooltip/Tooltip';
+import { format, formatDistanceToNowStrict } from 'date-fns';
+import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMetaButton';
 
 interface Props {
     activity: ActivityLog;
@@ -55,15 +55,11 @@ export default ({ activity, children }: Props) => {
             <div className={'col-span-10 sm:col-span-9 flex'}>
                 <div className={'flex-1 px-4 sm:px-0'}>
                     <div className={'flex items-center text-gray-50'}>
-                        <Tooltip placement={'top'} content={actor?.email || 'System User'}>
-                            <span>{actor?.username || 'System'}</span>
-                        </Tooltip>
-                        <span className={'text-gray-400'}>&nbsp;&mdash;&nbsp;</span>
                         <Link
                             to={`?${queryTo({ event: activity.event })}`}
                             className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                         >
-                            {activity.event}
+                            <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')}/>
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi &&
@@ -75,7 +71,7 @@ export default ({ activity, children }: Props) => {
                         </div>
                     </div>
                     <p className={style.description}>
-                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')}/>
+                        {activity.event}
                     </p>
                     <div className={'mt-1 flex items-center text-sm'}>
                         <Link

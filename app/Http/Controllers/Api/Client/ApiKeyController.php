@@ -37,7 +37,6 @@ class ApiKeyController extends ClientApiController
         Encrypter $encrypter,
         KeyCreationService $keyCreationService,
         ApiKeyRepository $repository,
-        AccountLog $log,
     ) {
         parent::__construct();
 
@@ -76,12 +75,6 @@ class ApiKeyController extends ClientApiController
             $request->input('allowed_ips')
         );
 
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'action' => 'API key \''.$token->accessToken->identifier.'\' was created.',
-            'ip_address' => $request->getClientIp(),
-        ]);
-
         Activity::event('user:api-key.create')
             ->subject($token->accessToken)
             ->property('identifier', $token->accessToken->identifier)
@@ -107,12 +100,6 @@ class ApiKeyController extends ClientApiController
             ->firstOrFail();
         
         $key->delete();
-
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'action' => 'API key \''.$identifier.'\' was deleted.',
-            'ip_address' => $request->getClientIp(),
-        ]);
 
         Activity::event('user:api-key.delete')
             ->property('identifier', $key->identifier)

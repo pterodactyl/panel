@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from 'twin.macro';
 import * as Icon from 'react-feather';
+import { useStoreState } from 'easy-peasy';
 import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
 import SidePanel from '@/components/elements/SidePanel';
@@ -15,7 +16,6 @@ import MobileNavigation from '@/components/elements/MobileNavigation';
 import CreateContainer from '@/components/store/create/CreateContainer';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import ProductsContainer from '@/components/store/resources/ProductsContainer';
-import { useStoreState } from 'easy-peasy';
 
 const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();

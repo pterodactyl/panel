@@ -51,13 +51,9 @@ class AccountController extends ClientApiController
         $original = $request->user()->email;
         $this->updateService->handle($request->user(), $request->validated());
 
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'ip_address' => $request->getClientIp(),
-        ]);
-
         Activity::event('user:account.email-changed')
-            ->property(['old' => $original, 'new' => $request->input('email')]);
+            ->property(['old' => $original, 'new' => $request->input('email')])
+            ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -84,12 +80,6 @@ class AccountController extends ClientApiController
             $guard->logoutOtherDevices($request->input('password'));
         }
 
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'action' => 'Password has been updated successfully.',
-            'ip_address' => $request->getClientIp(),
-        ]);
-
         Activity::event('user:account.password-changed')->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
@@ -103,15 +93,13 @@ class AccountController extends ClientApiController
      */
     public function updateUsername(UpdateUsernameRequest $request): JsonResponse
     {
-        $this->updateService->handle($request->user(), $request->validated());
+        $original = $request->user()->username;
 
-        $this->log->create([
-            'user_id' => $request->user()->id,
-            'action' => 'Username has been updated successfully.',
-            'ip_address' => $request->getClientIp(),
-        ]);
+        $this->updateService->handle($request->user(), $request->validated());
     
-        Activity::event('user:account.username-changed')->log();
+        Activity::event('user:account.username-changed')
+            ->property(['old' => $original, 'new' => $request->input('username')])
+            ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

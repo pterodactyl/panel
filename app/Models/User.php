@@ -5,7 +5,6 @@ namespace Pterodactyl\Models;
 use Pterodactyl\Rules\Username;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Support\Collection;
-use Pterodactyl\Models\AccountLog;
 use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -216,16 +215,6 @@ class User extends Model implements
         $rules['username'][] = new Username();
 
         return $rules;
-    }
-
-    /**
-     * Returns all account logs belonging to a user.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function account_logs()
-    {
-        return $this->hasMany(AccountLog::class, 'user_id');
     }
 
     /**

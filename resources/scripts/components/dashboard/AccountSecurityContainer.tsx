@@ -3,8 +3,8 @@ import * as React from 'react';
 import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import ContentBox from '@/components/elements/ContentBox';
+import ActivityLogContainer from './activity/ActivityLogContainer';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import AccountLogContainer from '@/components/dashboard/AccountLogContainer';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 
@@ -29,7 +29,7 @@ export default () => (
         <h1 css={tw`text-5xl`}>Account Security</h1>
         <h3 css={tw`text-2xl text-neutral-500`}>Manage account logs and authentication.</h3>
         <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
-            <div css={tw`flex-none w-full md:w-1/3`}>
+            <div css={tw`flex-none w-full col-span-1`}>
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
@@ -38,7 +38,7 @@ export default () => (
                 </ContentBox>
             </div>
             <ContentBox title={'Account Logs'} css={tw`md:ml-8 mt-8 md:mt-0 col-span-2`} showFlashes={'account:logs'}>
-                <AccountLogContainer />
+                <ActivityLogContainer />
             </ContentBox>
         </Container>
     </PageContentBlock>

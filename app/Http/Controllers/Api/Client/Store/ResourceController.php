@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Illuminate\Http\Response;
+use Pterodactyl\Facades\Activity;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Transformers\Api\Client\Store\UserTransformer;
@@ -79,6 +80,10 @@ class ResourceController extends ClientApiController
             'store_balance' => $balance - $cost,
             'store_'.$resource => $type + $amount,
         ]);
+
+        Activity::event('user:store.resource-purchase')
+            ->property(['resource' => $resource, 'amount' => $amount])
+            ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
