@@ -35,8 +35,8 @@ class StoreComposer
             'currency' => $this->getSetting('jexactyl::store:currency', 'JCR'),
 
             'earn' => [
-                'enabled' => $this->getSetting('jexactyl::earn:enabled', false),
-                'amount' => $this->getSetting('jexactyl::earn:amount', 1),
+                'enabled' => $this->settings->get('jexactyl::earn:enabled', false),
+                'amount' => $this->settings->get('jexactyl::earn:amount', 1),
             ],
 
             'gateways' => [
