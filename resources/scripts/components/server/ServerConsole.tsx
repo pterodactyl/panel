@@ -16,6 +16,7 @@ import ContentContainer from '@/components/elements/ContentContainer';
 import ServerDetailsBlock from '@/components/server/ServerDetailsBlock';
 import ServerRenewalBlock from '@/components/server/ServerRenewalBlock';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import ConsoleShareContainer from '@/components/server/ConsoleShareContainer';
 import ServerConfigurationBlock from '@/components/server/ServerConfigurationBlock';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
@@ -58,6 +59,9 @@ const ServerConsole = () => {
                                 </ContentContainer>
                             </div>
                     }
+                    <Can action={'console.share'}>
+                        <ConsoleShareContainer />
+                    </Can>
                 </div>
                 <div css={tw`w-full lg:w-3/4 mt-4 lg:mt-0 lg:pl-4`}>
                     <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
