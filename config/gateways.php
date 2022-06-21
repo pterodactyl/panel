@@ -39,6 +39,13 @@ return [
         'client_secret' => env('PAYPAL_CLIENT_SECRET', ''),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Stripe Configuration
+    |--------------------------------------------------------------------------
+    | These values determine the configuration for the Stripe purchase system.
+    |
+    */
     'stripe' => [
         'secret' => env('STRIPE_CLIENT_SECRET', ''),
         'webhook_secret' => env('STRIPE_WEBHOOK_SECRET', ''),
