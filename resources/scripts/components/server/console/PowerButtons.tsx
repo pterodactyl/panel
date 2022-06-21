@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Button } from '@/components/elements/button/index';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
-import { PowerAction } from '@/components/server/ServerConsole';
+import { PowerAction } from '@/components/server/console/ServerConsoleContainer';
 import { Dialog } from '@/components/elements/dialog';
 
 interface PowerButtonProps {
@@ -41,7 +41,7 @@ export default ({ className }: PowerButtonProps) => {
             </Dialog.Confirm>
             <Can action={'control.start'}>
                 <Button
-                    className={'w-24'}
+                    className={'w-full sm:w-24'}
                     disabled={status !== 'offline'}
                     onClick={onButtonClick.bind(this, 'start')}
                 >
@@ -50,7 +50,7 @@ export default ({ className }: PowerButtonProps) => {
             </Can>
             <Can action={'control.restart'}>
                 <Button.Text
-                    className={'w-24'}
+                    className={'w-full sm:w-24'}
                     variant={Button.Variants.Secondary}
                     disabled={!status}
                     onClick={onButtonClick.bind(this, 'restart')}
@@ -60,7 +60,7 @@ export default ({ className }: PowerButtonProps) => {
             </Can>
             <Can action={'control.stop'}>
                 <Button.Danger
-                    className={'w-24'}
+                    className={'w-full sm:w-24'}
                     variant={killable ? undefined : Button.Variants.Secondary}
                     disabled={status === 'offline'}
                     onClick={onButtonClick.bind(this, killable ? 'kill' : 'stop')}

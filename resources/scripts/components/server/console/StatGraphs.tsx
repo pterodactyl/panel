@@ -123,7 +123,7 @@ export default () => {
     });
 
     return (
-        <div css={tw`mt-4 grid grid-cols-1 sm:grid-cols-2 gap-4`}>
+        <>
             <TitledGreyBox title={'Memory usage'} icon={faMemory}>
                 {status !== 'offline' ?
                     <canvas
@@ -165,6 +165,6 @@ export default () => {
                     </p>
                 }
             </TitledGreyBox>
-        </div>
+        </>
     );
 };

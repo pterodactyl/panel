@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Terminal, ITerminalOptions } from 'xterm';
+import { ITerminalOptions, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
@@ -7,14 +7,16 @@ import { WebLinksAddon } from 'xterm-addon-web-links';
 import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
-import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
-import tw, { theme as th } from 'twin.macro';
+import { theme as th } from 'twin.macro';
 import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import classNames from 'classnames';
+import styles from './style.module.css';
+import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -47,23 +49,6 @@ const terminalProps: ITerminalOptions = {
     rows: 30,
     theme: theme,
 };
-
-const TerminalDiv = styled.div`
-    &::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        ${tw`bg-neutral-900`};
-    }
-`;
-
-const CommandInput = styled.input`
-    ${tw`text-sm transition-colors duration-150 px-2 bg-transparent border-0 border-b-2 border-transparent text-neutral-100 p-2 pl-0 w-full focus:ring-0`}
-    &:focus {
-        ${tw`border-cyan-700`};
-    }
-`;
 
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
@@ -202,30 +187,25 @@ export default () => {
     }, [ connected, instance ]);
 
     return (
-        <div css={tw`text-xs font-mono relative`}>
-            <SpinnerOverlay visible={!connected} size={'large'} />
-            <div
-                css={[
-                    tw`rounded-t p-2 bg-black w-full`,
-                    !canSendCommands && tw`rounded-b`,
-                ]}
-                style={{ minHeight: '16rem' }}
-            >
-                <TerminalDiv id={'terminal'} ref={ref} />
+        <div className={styles.terminal}>
+            <SpinnerOverlay visible={!connected} size={'large'}/>
+            <div className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}>
+                <div id={styles.terminal} ref={ref}/>
             </div>
             {canSendCommands &&
-                <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
-                    <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
-                    <div css={tw`w-full`}>
-                        <CommandInput
-                            type={'text'}
-                            placeholder={'Type a command...'}
-                            aria-label={'Console command input.'}
-                            disabled={!instance || !connected}
-                            onKeyDown={handleCommandKeyDown}
-                            autoCorrect={'off'}
-                            autoCapitalize={'none'}
-                        />
+                <div className={classNames('relative', styles.overflows_container)}>
+                    <input
+                        className={classNames('peer', styles.command_input)}
+                        type={'text'}
+                        placeholder={'Type a command...'}
+                        aria-label={'Console command input.'}
+                        disabled={!instance || !connected}
+                        onKeyDown={handleCommandKeyDown}
+                        autoCorrect={'off'}
+                        autoCapitalize={'none'}
+                    />
+                    <div className={classNames('text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse', styles.command_icon)}>
+                        <ChevronDoubleRightIcon className={'w-4 h-4'}/>
                     </div>
                 </div>
             }

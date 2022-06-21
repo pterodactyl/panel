@@ -14,12 +14,9 @@ import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
 import StatBlock from '@/components/server/console/StatBlock';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import classNames from 'classnames';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
-
-interface DetailBlockProps {
-    className?: string;
-}
 
 const getBackgroundColor = (value: number, max: number | null): string | undefined => {
     const delta = !max ? 0 : (value / max);
@@ -34,7 +31,7 @@ const getBackgroundColor = (value: number, max: number | null): string | undefin
     return undefined;
 };
 
-const ServerDetailsBlock = ({ className }: DetailBlockProps) => {
+const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -74,7 +71,7 @@ const ServerDetailsBlock = ({ className }: DetailBlockProps) => {
     });
 
     return (
-        <div className={className}>
+        <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
             <StatBlock
                 icon={faClock}
                 title={'Uptime'}
