@@ -26,7 +26,7 @@ class ThemeController extends Controller
      */
     public function __construct(
         SettingsRepositoryInterface $settings,
-        AlertsMessageBag $alert,
+        AlertsMessageBag $alert
     ) 
     {
         $this->alert = $alert;
