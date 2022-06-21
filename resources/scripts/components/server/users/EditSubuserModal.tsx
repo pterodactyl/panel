@@ -17,6 +17,7 @@ import PermissionRow from '@/components/server/users/PermissionRow';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
 import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
+import SelectAllPermissions from '@/components/server/users/SelectAllPermissions';
 
 type Props = {
     subuser?: Subuser;
@@ -124,6 +125,10 @@ const EditSubuserModal = ({ subuser }: Props) => {
                     </div>
                 }
                 <div css={tw`my-6`}>
+                    <div css={tw`flex items-center mb-4 bg-neutral-600 p-2 rounded shadow-sm`}>
+                        <p css={tw`text-sm flex-1 ml-1 text-neutral-200`}>Select all permissions</p>
+                        {canEditUser && <SelectAllPermissions isEditable={canEditUser} permissions={editablePermissions}/>}
+                    </div>
                     {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => (
                         <PermissionTitleBox
                             key={`permission_${key}`}
