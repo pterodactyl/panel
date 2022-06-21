@@ -15,6 +15,7 @@ import ServerErrorSvg from '@/assets/images/server_error.svg';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import SubNavigation from '@/components/elements/SubNavigation';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import ExternalConsole from '@/components/server/ExternalConsole';
 import InstallListener from '@/components/server/InstallListener';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 import EditContainer from '@/components/server/edit/EditContainer';
@@ -181,6 +182,7 @@ export default () => {
                             <TransitionRouter>
                                 <Switch location={location}>
                                     <Route path={`${match.path}`} component={ServerConsole} exact/>
+                                    <Route path={`${match.path}/console`} component={ExternalConsole} exact/>
                                     <Route path={`${match.path}/files`} exact>
                                         <RequireServerPermission permissions={'file.*'}>
                                             <FileManagerContainer/>

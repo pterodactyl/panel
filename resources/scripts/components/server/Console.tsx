@@ -8,6 +8,7 @@ import { SearchAddon } from 'xterm-addon-search';
 import { Terminal, ITerminalOptions } from 'xterm';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
+import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { usePermissions } from '@/plugins/usePermissions';
 import useEventListener from '@/plugins/useEventListener';
 import { usePersistedState } from '@/plugins/usePersistedState';
@@ -64,20 +65,25 @@ const CommandInput = styled.input`
     }
 `;
 
+const ExternalButton = styled.button`
+        ${tw`absolute right-7 top-3 z-10 p-2`};
+`;
+
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const fitAddon = new FitAddon();
     const searchAddon = new SearchAddon();
-    const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
-    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
+    const searchBar = new SearchBarAddon({ searchAddon });
+    const [ historyIndex, setHistoryIndex ] = useState(-1);
+    const isConsoleDetached = location.pathname.endsWith('/console');
     const [ canSendCommands ] = usePermissions([ 'control.console' ]);
     const serverId = ServerContext.useStoreState(state => state.server.data!.id);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
-    const [ historyIndex, setHistoryIndex ] = useState(-1);
 
     const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
         (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
@@ -94,6 +100,10 @@ export default () => {
             case 'archive':
                 terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
         }
+    };
+
+    const popout = () => {
+        window.open(window.location.href + '/console', 'Server Console', 'height=400,width=800');
     };
 
     const handleDaemonErrorOutput = (line: string) => terminal.writeln(
@@ -199,7 +209,7 @@ export default () => {
     }, [ connected, instance ]);
 
     return (
-        <div css={tw`text-xs font-mono relative`}>
+        <div css={[ tw`text-xs font-mono relative`, isConsoleDetached && tw`h-full flex flex-col overflow-hidden` ]}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
                 css={[
@@ -208,7 +218,13 @@ export default () => {
                 ]}
                 style={{ minHeight: '16rem' }}
             >
-                <TerminalDiv id={'terminal'} ref={ref} />
+                <TerminalDiv css={[ isConsoleDetached && tw`h-full` ]} id={'terminal'} ref={ref}>
+                    {!isConsoleDetached &&
+                        <ExternalButton onClick={popout}>
+                            <ExternalLinkIcon css={tw`w-6 h-6`} />
+                        </ExternalButton>
+                    }
+                </TerminalDiv>
             </div>
             {canSendCommands &&
                 <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
