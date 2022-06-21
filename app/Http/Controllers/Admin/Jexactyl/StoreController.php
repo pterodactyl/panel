@@ -26,7 +26,7 @@ class StoreController extends Controller
      */
     public function __construct(
         AlertsMessageBag $alert,
-        SettingsRepositoryInterface $settings,
+        SettingsRepositoryInterface $settings
     ) {
         $this->alert = $alert;
         $this->settings = $settings;
