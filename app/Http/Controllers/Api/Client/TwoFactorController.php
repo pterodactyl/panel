@@ -36,7 +36,7 @@ class TwoFactorController extends ClientApiController
     public function __construct(
         Factory $validation,
         TwoFactorSetupService $setupService,
-        ToggleTwoFactorService $toggleTwoFactorService,
+        ToggleTwoFactorService $toggleTwoFactorService
     ) {
         parent::__construct();
 

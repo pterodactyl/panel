@@ -36,7 +36,7 @@ class ApiKeyController extends ClientApiController
     public function __construct(
         Encrypter $encrypter,
         KeyCreationService $keyCreationService,
-        ApiKeyRepository $repository,
+        ApiKeyRepository $repository
     ) {
         parent::__construct();
 

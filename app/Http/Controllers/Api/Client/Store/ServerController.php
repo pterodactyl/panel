@@ -25,7 +25,7 @@ class ServerController extends ClientApiController
      */
     public function __construct(
         NodeRepository $nodeRepository,
-        ServerCreationService $creationService,
+        ServerCreationService $creationService
     )
     {
         parent::__construct();
