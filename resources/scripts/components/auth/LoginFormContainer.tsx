@@ -2,7 +2,6 @@ import tw from 'twin.macro';
 import { Form } from 'formik';
 import { breakpoint } from '@/theme';
 import React, { forwardRef } from 'react';
-import GitInfo from 'react-git-info/macro';
 import styled from 'styled-components/macro';
 import FlashMessageRender from '@/components/FlashMessageRender';
 
@@ -51,8 +50,6 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
             &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
         </p>
         <p css={tw`text-neutral-500 text-xs mt-6 sm:float-right`}>
-            <a href={'https://github.com/jexactyl/jexactyl'}> {GitInfo().commit.shortHash} </a>
-            &bull;
             <a href={'https://jexactyl.com'}> Site </a>
             &bull;
             <a href={'https://github.com/jexactyl/jexactyl'}> GitHub </a>

@@ -1,6 +1,5 @@
 import tw from 'twin.macro';
 import React, { useEffect } from 'react';
-import GitInfo from 'react-git-info/macro';
 import { CSSTransition } from 'react-transition-group';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import ContentContainer from '@/components/elements/ContentContainer';
@@ -32,8 +31,6 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                             &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
                     </p>
                     <p css={tw`text-neutral-500 sm:float-right`}>
-                        <a href={'https://github.com/jexactyl/jexactyl'}> {GitInfo().commit.shortHash} </a>
-                        &bull;
                         <a href={'https://jexactyl.com'}> Site </a>
                         &bull;
                         <a href={'https://github.com/jexactyl/jexactyl'}> GitHub </a>
