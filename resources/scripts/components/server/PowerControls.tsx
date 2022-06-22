@@ -14,7 +14,7 @@ const PowerControls = () => {
     };
 
     return (
-        <div css={tw`shadow-md bg-neutral-900 rounded-t p-3 flex text-xs justify-center`}>
+        <div css={tw`shadow-md bg-neutral-900 rounded-t p-2 flex text-xs justify-center`}>
             <Can action={'control.start'}>
                 <Button.Success
                     size={Button.Sizes.Small}
