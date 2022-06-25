@@ -23,7 +23,7 @@ class RegistrationFormRequest extends AdminFormRequest
             'discord:enabled' => 'required|in:true,false',
             'discord:id' => 'required|int',
             'discord:secret' => 'required|string',
-            'discord:callback' => 'required|string|max:191',
+            'discord:redirect' => 'required|string|max:191',
         ];
     }
 }
