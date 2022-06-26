@@ -100,7 +100,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         getFileDownloadUrl(uuid, join(directory, file.name))
             .then((url) => {
-                // @ts-ignore
+                // @ts-expect-error this is valid
                 window.location = url;
             })
             .catch((error) => clearAndAddHttpError({ key: 'files', error }))

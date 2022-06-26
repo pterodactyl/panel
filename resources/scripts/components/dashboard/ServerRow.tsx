@@ -47,8 +47,10 @@ const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | unde
     }
 `;
 
+type Timer = ReturnType<typeof setInterval>;
+
 export default ({ server, className }: { server: Server; className?: string }) => {
-    const interval = useRef<number>(null);
+    const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
     const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
     const [stats, setStats] = useState<ServerStats | null>(null);
 
@@ -67,7 +69,6 @@ export default ({ server, className }: { server: Server; className?: string }) =
         if (isSuspended) return;
 
         getStats().then(() => {
-            // @ts-ignore
             interval.current = setInterval(() => getStats(), 30000);
         });
 

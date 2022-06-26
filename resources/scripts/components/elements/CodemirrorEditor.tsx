@@ -169,8 +169,7 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
             autocorrect: false,
             autocapitalize: false,
             lint: false,
-            // This property is actually used, the d.ts file for CodeMirror is incorrect.
-            // @ts-ignore
+            // @ts-expect-error this property is actually used, the d.ts file for CodeMirror is incorrect.
             autoCloseBrackets: true,
             matchBrackets: true,
             gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],

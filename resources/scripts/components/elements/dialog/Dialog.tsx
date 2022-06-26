@@ -21,11 +21,11 @@ const DialogButtons = ({ children }: { children: React.ReactNode }) => <>{childr
 const Dialog = ({ open, title, description, onClose, hideCloseIcon, children }: DialogProps) => {
     const items = React.Children.toArray(children || []);
     const [buttons, icon, content] = [
-        // @ts-expect-error
+        // @ts-expect-error not sure how to get this correct
         items.find((child) => child.type === DialogButtons),
-        // @ts-expect-error
+        // @ts-expect-error not sure how to get this correct
         items.find((child) => child.type === DialogIcon),
-        // @ts-expect-error
+        // @ts-expect-error not sure how to get this correct
         items.filter((child) => ![DialogIcon, DialogButtons].includes(child.type)),
     ];
 
