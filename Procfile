@@ -1,1 +1,1 @@
-web: vendor/bin/heroku-php-apache2 public/ && chmod 777
+web: vendor/bin/heroku-php-nginx public/ && chmod 777
