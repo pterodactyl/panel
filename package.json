@@ -43,6 +43,7 @@
         "styled-components-breakpoint": "^3.0.0-preview.20",
         "swr": "^0.2.3",
         "tailwindcss": "^3.0.24",
+        "use-fit-text": "^2.4.0",
         "uuid": "^3.3.2",
         "xterm": "^4.15.0",
         "xterm-addon-attach": "^0.6.0",

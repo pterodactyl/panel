@@ -146,11 +146,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                     bytesToHuman(stats.rx)
                 }
             </StatBlock>
-            <StatBlock
-                icon={faWifi}
-                title={'Address'}
-                description={`You can connect to your server at: ${allocation}`}
-            >
+            <StatBlock icon={faWifi} title={'Address'}>
                 {allocation}
             </StatBlock>
         </div>

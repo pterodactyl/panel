@@ -4,6 +4,7 @@ import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import styles from './style.module.css';
+import useFitText from 'use-fit-text';
 
 interface StatBlockProps {
     title: string;
@@ -15,6 +16,8 @@ interface StatBlockProps {
 }
 
 export default ({ title, icon, color, description, className, children }: StatBlockProps) => {
+    const { fontSize, ref } = useFitText({ minFontSize: 8, maxFontSize: 500 });
+
     return (
         <Tooltip arrow placement={'top'} disabled={!description} content={description || ''}>
             <div className={classNames(styles.stat_block, 'bg-gray-600', className)}>
@@ -28,11 +31,15 @@ export default ({ title, icon, color, description, className, children }: StatBl
                         })}
                     />
                 </div>
-                <div className={'flex flex-col justify-center overflow-hidden'}>
+                <div className={'flex flex-col justify-center overflow-hidden w-full'}>
                     <p className={'font-header leading-tight text-xs md:text-sm text-gray-200'}>{title}</p>
-                    <p className={'text-base md:text-xl font-semibold text-gray-50 truncate'}>
+                    <div
+                        ref={ref}
+                        className={'h-[1.75rem] w-full font-semibold text-gray-50 truncate'}
+                        style={{ fontSize }}
+                    >
                         {children}
-                    </p>
+                    </div>
                 </div>
             </div>
         </Tooltip>

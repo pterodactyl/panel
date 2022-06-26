@@ -51,7 +51,6 @@ export default ({ className }: PowerButtonProps) => {
             <Can action={'control.restart'}>
                 <Button.Text
                     className={'w-full sm:w-24'}
-                    variant={Button.Variants.Secondary}
                     disabled={!status}
                     onClick={onButtonClick.bind(this, 'restart')}
                 >
@@ -61,7 +60,6 @@ export default ({ className }: PowerButtonProps) => {
             <Can action={'control.stop'}>
                 <Button.Danger
                     className={'w-full sm:w-24'}
-                    variant={killable ? undefined : Button.Variants.Secondary}
                     disabled={status === 'offline'}
                     onClick={onButtonClick.bind(this, killable ? 'kill' : 'stop')}
                 >
