@@ -1,16 +1,16 @@
+import React from 'react';
 import tw from 'twin.macro';
 import '@/assets/tailwind.css';
 import { store } from '@/state';
-import React, { useEffect } from 'react';
 import { StoreProvider } from 'easy-peasy';
 import { hot } from 'react-hot-loader/root';
 import { history } from '@/components/history';
 import { SiteSettings } from '@/state/settings';
 import IndexRouter from '@/routers/IndexRouter';
+import earnCredits from '@/api/account/earnCredits';
 import { setupInterceptors } from '@/api/interceptors';
 import { StorefrontSettings } from '@/state/storefront';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
-import earnCredits from '@/api/account/earnCredits';
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -59,21 +59,18 @@ const App = () => {
         store.getActions().storefront.setStorefront(StoreConfiguration!);
     }
 
-    function wait (ms: number) {
-        return new Promise(resolve => setTimeout(resolve, ms));
-    }
+    function earn () {
+        console.log('Waiting to add credits');
+        setTimeout(earn, 61000); // Allow 1 second for time inconsistencies.
 
-    async function earn () {
-        await wait(60000);
         earnCredits()
+            .then(() => {
+                console.log('Added credits');
+            })
             .catch(() => console.error('Failed to add credits'));
     }
 
-    useEffect(() => {
-        earn();
-    }, []);
-
-    setInterval(earn, 60000);
+    earn();
 
     return (
         <>

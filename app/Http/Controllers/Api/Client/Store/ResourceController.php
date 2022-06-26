@@ -45,11 +45,17 @@ class ResourceController extends ClientApiController
      */
     public function earn(StoreEarnRequest $request)
     {
-        if ($this->settings->get('jexactyl::earn:enabled') != true) return;
+        $user = $request->user();
+        $amount = $this->settings->get('jexactyl::earn:amount', 0);
+
+        if ($this->settings->get('jexactyl::earn:enabled') == 'false') {
+            throw new DisplayException('Credit earning is currently disabled');
+            return;
+        };
 
         try {
-            $request->user()->update([
-                'store_balance' => $request->user()->store_balance + $this->settings->get('jexactyl::earn:amount', 0),
+            $user->update([
+                'store_balance' => $user->store_balance + $amount,
             ]);
         } catch (DisplayException $ex) {
             throw new DisplayException('Unable to passively earn coins.');
