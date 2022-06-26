@@ -9,9 +9,9 @@ interface Props {
 }
 
 const Icon = ({ icon, className, style }: Props) => {
-    let [ width, height, , , paths ] = icon.icon;
+    let [width, height, , , paths] = icon.icon;
 
-    paths = Array.isArray(paths) ? paths : [ paths ];
+    paths = Array.isArray(paths) ? paths : [paths];
 
     return (
         <svg
@@ -22,7 +22,7 @@ const Icon = ({ icon, className, style }: Props) => {
             style={style}
         >
             {paths.map((path, index) => (
-                <path key={`svg_path_${index}`} d={path}/>
+                <path key={`svg_path_${index}`} d={path} />
             ))}
         </svg>
     );

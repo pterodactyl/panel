@@ -19,10 +19,10 @@ interface Values {
 
 export default () => {
     const ref = useRef<Reaptcha>(null);
-    const [ token, setToken ] = useState('');
+    const [token, setToken] = useState('');
 
     const { clearFlashes, addFlash } = useFlash();
-    const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
+    const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
 
     useEffect(() => {
         clearFlashes();
@@ -34,7 +34,7 @@ export default () => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch(error => {
+            ref.current!.execute().catch((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -45,11 +45,11 @@ export default () => {
         }
 
         requestPasswordResetEmail(email, token)
-            .then(response => {
+            .then((response) => {
                 resetForm();
                 addFlash({ type: 'success', title: 'Success', message: response });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
             })
@@ -66,47 +66,42 @@ export default () => {
             onSubmit={handleSubmission}
             initialValues={{ email: '' }}
             validationSchema={object().shape({
-                email: string().email('A valid email address must be provided to continue.')
+                email: string()
+                    .email('A valid email address must be provided to continue.')
                     .required('A valid email address must be provided to continue.'),
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer
-                    title={'Request Password Reset'}
-                    css={tw`w-full flex`}
-                >
+                <LoginFormContainer title={'Request Password Reset'} css={tw`w-full flex`}>
                     <Field
                         light
                         label={'Email'}
-                        description={'Enter your account email address to receive instructions on resetting your password.'}
+                        description={
+                            'Enter your account email address to receive instructions on resetting your password.'
+                        }
                         name={'email'}
                         type={'email'}
                     />
                     <div css={tw`mt-6`}>
-                        <Button
-                            type={'submit'}
-                            size={'xlarge'}
-                            disabled={isSubmitting}
-                            isLoading={isSubmitting}
-                        >
+                        <Button type={'submit'} size={'xlarge'} disabled={isSubmitting} isLoading={isSubmitting}>
                             Send Email
                         </Button>
                     </div>
-                    {recaptchaEnabled &&
-                    <Reaptcha
-                        ref={ref}
-                        size={'invisible'}
-                        sitekey={siteKey || '_invalid_key'}
-                        onVerify={response => {
-                            setToken(response);
-                            submitForm();
-                        }}
-                        onExpire={() => {
-                            setSubmitting(false);
-                            setToken('');
-                        }}
-                    />
-                    }
+                    {recaptchaEnabled && (
+                        <Reaptcha
+                            ref={ref}
+                            size={'invisible'}
+                            sitekey={siteKey || '_invalid_key'}
+                            onVerify={(response) => {
+                                setToken(response);
+                                submitForm();
+                            }}
+                            onExpire={() => {
+                                setSubmitting(false);
+                                setToken('');
+                            }}
+                        />
+                    )}
                     <div css={tw`mt-6 text-center`}>
                         <Link
                             to={'/auth/login'}

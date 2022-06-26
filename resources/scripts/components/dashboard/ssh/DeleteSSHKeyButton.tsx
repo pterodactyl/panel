@@ -9,7 +9,7 @@ import Code from '@/components/elements/Code';
 
 export default ({ name, fingerprint }: { name: string; fingerprint: string }) => {
     const { clearAndAddHttpError } = useFlashKey('account');
-    const [ visible, setVisible ] = useState(false);
+    const [visible, setVisible] = useState(false);
     const { mutate } = useSSHKeys();
 
     const onClick = () => {
@@ -18,11 +18,10 @@ export default ({ name, fingerprint }: { name: string; fingerprint: string }) =>
         Promise.all([
             mutate((data) => data?.filter((value) => value.fingerprint !== fingerprint), false),
             deleteSSHKey(fingerprint),
-        ])
-            .catch((error) => {
-                mutate(undefined, true).catch(console.error);
-                clearAndAddHttpError(error);
-            });
+        ]).catch((error) => {
+            mutate(undefined, true).catch(console.error);
+            clearAndAddHttpError(error);
+        });
     };
 
     return (

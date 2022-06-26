@@ -130,7 +130,7 @@ export default {
         },
         {
             path: '/settings',
-            permission: [ 'settings.*', 'file.sftp' ],
+            permission: ['settings.*', 'file.sftp'],
             name: 'Settings',
             component: SettingsContainer,
         },

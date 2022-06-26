@@ -7,23 +7,21 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 
 export default () => {
-    const [ visible, setVisible ] = useState(false);
+    const [visible, setVisible] = useState(false);
     const isEnabled = useStoreState((state: ApplicationStore) => state.user.data!.useTotp);
 
     return (
         <div>
-            {visible && (
-                isEnabled ?
-                    <DisableTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)}/>
-                    :
-                    <SetupTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)}/>
-            )}
+            {visible &&
+                (isEnabled ? (
+                    <DisableTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)} />
+                ) : (
+                    <SetupTwoFactorModal visible={visible} onModalDismissed={() => setVisible(false)} />
+                ))}
             <p css={tw`text-sm`}>
-                {isEnabled ?
-                    'Two-factor authentication is currently enabled on your account.'
-                    :
-                    'You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.'
-                }
+                {isEnabled
+                    ? 'Two-factor authentication is currently enabled on your account.'
+                    : 'You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.'}
             </p>
             <div css={tw`mt-6`}>
                 <Button color={'red'} isSecondary onClick={() => setVisible(true)}>

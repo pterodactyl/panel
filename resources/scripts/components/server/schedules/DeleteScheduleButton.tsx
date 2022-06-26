@@ -14,9 +14,9 @@ interface Props {
 }
 
 export default ({ scheduleId, onDeleted }: Props) => {
-    const [ visible, setVisible ] = useState(false);
-    const [ isLoading, setIsLoading ] = useState(false);
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const [visible, setVisible] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const onDelete = () => {
@@ -27,7 +27,7 @@ export default ({ scheduleId, onDeleted }: Props) => {
                 setIsLoading(false);
                 onDeleted();
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 addError({ key: 'schedules', message: httpErrorToHuman(error) });

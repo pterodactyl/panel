@@ -25,9 +25,12 @@ const formatProperties = (properties: Record<string, unknown>): Record<string, u
 
         return {
             ...obj,
-            [key]: isCount || typeof value !== 'string'
-                ? (isObject(value) ? formatProperties(value) : value)
-                : `<strong>${value}</strong>`,
+            [key]:
+                isCount || typeof value !== 'string'
+                    ? isObject(value)
+                        ? formatProperties(value)
+                        : value
+                    : `<strong>${value}</strong>`,
         };
     }, {});
 };
@@ -58,16 +61,18 @@ export default ({ activity, children }: Props) => {
                             {activity.event}
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
-                            {activity.isApi &&
+                            {activity.isApi && (
                                 <Tooltip placement={'top'} content={'Performed using API Key'}>
-                                    <span><TerminalIcon/></span>
+                                    <span>
+                                        <TerminalIcon />
+                                    </span>
                                 </Tooltip>
-                            }
+                            )}
                             {children}
                         </div>
                     </div>
                     <p className={style.description}>
-                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')}/>
+                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
                     </p>
                     <div className={'mt-1 flex items-center text-sm'}>
                         <Link
@@ -77,17 +82,12 @@ export default ({ activity, children }: Props) => {
                             {activity.ip}
                         </Link>
                         <span className={'text-gray-400'}>&nbsp;|&nbsp;</span>
-                        <Tooltip
-                            placement={'right'}
-                            content={format(activity.timestamp, 'MMM do, yyyy H:mm:ss')}
-                        >
-                            <span>
-                                {formatDistanceToNowStrict(activity.timestamp, { addSuffix: true })}
-                            </span>
+                        <Tooltip placement={'right'} content={format(activity.timestamp, 'MMM do, yyyy H:mm:ss')}>
+                            <span>{formatDistanceToNowStrict(activity.timestamp, { addSuffix: true })}</span>
                         </Tooltip>
                     </div>
                 </div>
-                {activity.hasAdditionalMetadata && <ActivityLogMetaButton meta={activity.properties}/>}
+                {activity.hasAdditionalMetadata && <ActivityLogMetaButton meta={activity.properties} />}
             </div>
         </div>
     );

@@ -98,7 +98,7 @@ const EditorContainer = styled.div`
     }
 
     .CodeMirror-foldmarker {
-        color: #CBCCC6;
+        color: #cbccc6;
         text-shadow: none;
         margin-left: 0.25rem;
         margin-right: 0.25rem;
@@ -144,7 +144,7 @@ const findModeByFilename = (filename: string) => {
 };
 
 export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
-    const [ editor, setEditor ] = useState<CodeMirror.Editor>();
+    const [editor, setEditor] = useState<CodeMirror.Editor>();
 
     const ref = useCallback((node) => {
         if (!node) return;
@@ -173,7 +173,7 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
             // @ts-ignore
             autoCloseBrackets: true,
             matchBrackets: true,
-            gutters: [ 'CodeMirror-linenumbers', 'CodeMirror-foldgutter' ],
+            gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
         });
 
         setEditor(e);
@@ -185,15 +185,15 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
         }
 
         onModeChanged(findModeByFilename(filename)?.mime || 'text/plain');
-    }, [ filename ]);
+    }, [filename]);
 
     useEffect(() => {
         editor && editor.setOption('mode', mode);
-    }, [ editor, mode ]);
+    }, [editor, mode]);
 
     useEffect(() => {
         editor && editor.setValue(initialContent || '');
-    }, [ editor, initialContent ]);
+    }, [editor, initialContent]);
 
     useEffect(() => {
         if (!editor) {
@@ -207,11 +207,11 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
         });
 
         fetchContent(() => Promise.resolve(editor.getValue()));
-    }, [ editor, fetchContent, onContentSaved ]);
+    }, [editor, fetchContent, onContentSaved]);
 
     return (
         <EditorContainer style={style}>
-            <textarea ref={ref}/>
+            <textarea ref={ref} />
         </EditorContainer>
     );
 };

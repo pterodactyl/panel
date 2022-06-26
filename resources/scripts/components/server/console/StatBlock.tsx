@@ -21,7 +21,7 @@ export default ({ title, icon, color, description, className, children }: StatBl
     return (
         <Tooltip arrow placement={'top'} disabled={!description} content={description || ''}>
             <div className={classNames(styles.stat_block, 'bg-gray-600', className)}>
-                <div className={classNames(styles.status_bar, color || 'bg-gray-700')}/>
+                <div className={classNames(styles.status_bar, color || 'bg-gray-700')} />
                 <div className={classNames(styles.icon, color || 'bg-gray-700')}>
                     <Icon
                         icon={icon}

@@ -13,7 +13,7 @@ const progress: ProgressStore = {
     continuous: false,
     progress: undefined,
 
-    startContinuous: action(state => {
+    startContinuous: action((state) => {
         state.continuous = true;
     }),
 
@@ -21,7 +21,7 @@ const progress: ProgressStore = {
         state.progress = payload;
     }),
 
-    setComplete: action(state => {
+    setComplete: action((state) => {
         if (state.progress) {
             state.progress = 100;
         }

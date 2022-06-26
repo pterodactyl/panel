@@ -14,10 +14,10 @@ const BarFill = styled.div`
 export default () => {
     const interval = useRef<number>(null);
     const timeout = useRef<number>(null);
-    const [ visible, setVisible ] = useState(false);
-    const progress = useStoreState(state => state.progress.progress);
-    const continuous = useStoreState(state => state.progress.continuous);
-    const setProgress = useStoreActions(actions => actions.progress.setProgress);
+    const [visible, setVisible] = useState(false);
+    const progress = useStoreState((state) => state.progress.progress);
+    const continuous = useStoreState((state) => state.progress.continuous);
+    const setProgress = useStoreActions((actions) => actions.progress.setProgress);
 
     useEffect(() => {
         return () => {
@@ -33,7 +33,7 @@ export default () => {
             // @ts-ignore
             timeout.current = setTimeout(() => setProgress(undefined), 500);
         }
-    }, [ progress ]);
+    }, [progress]);
 
     useEffect(() => {
         if (!continuous) {
@@ -44,7 +44,7 @@ export default () => {
         if (!progress || progress === 0) {
             setProgress(randomInt(20, 30));
         }
-    }, [ continuous ]);
+    }, [continuous]);
 
     useEffect(() => {
         if (continuous) {
@@ -56,18 +56,12 @@ export default () => {
                 interval.current = setTimeout(() => setProgress(progress + randomInt(1, 5)), 500);
             }
         }
-    }, [ progress, continuous ]);
+    }, [progress, continuous]);
 
     return (
         <div css={tw`w-full fixed`} style={{ height: '2px' }}>
-            <CSSTransition
-                timeout={150}
-                appear
-                in={visible}
-                unmountOnExit
-                classNames={'fade'}
-            >
-                <BarFill style={{ width: progress === undefined ? '100%' : `${progress}%` }}/>
+            <CSSTransition timeout={150} appear in={visible} unmountOnExit classNames={'fade'}>
+                <BarFill style={{ width: progress === undefined ? '100%' : `${progress}%` }} />
             </CSSTransition>
         </div>
     );

@@ -12,13 +12,13 @@ interface Props {
 
 export default ({ className, animate = true, children }: Props) => (
     <Menu.Button className={classNames(styles.button, className || 'px-4')}>
-        {typeof children === 'string' ?
+        {typeof children === 'string' ? (
             <>
                 <span className={'mr-2'}>{children}</span>
-                <ChevronDownIcon aria-hidden={'true'} data-animated={animate.toString()}/>
+                <ChevronDownIcon aria-hidden={'true'} data-animated={animate.toString()} />
             </>
-            :
+        ) : (
             children
-        }
+        )}
     </Menu.Button>
 );

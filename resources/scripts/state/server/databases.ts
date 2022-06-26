@@ -16,15 +16,15 @@ const databases: ServerDatabaseStore = {
     }),
 
     appendDatabase: action((state, payload) => {
-        if (state.data.find(database => database.id === payload.id)) {
-            state.data = state.data.map(database => database.id === payload.id ? payload : database);
+        if (state.data.find((database) => database.id === payload.id)) {
+            state.data = state.data.map((database) => (database.id === payload.id ? payload : database));
         } else {
-            state.data = [ ...state.data, payload ];
+            state.data = [...state.data, payload];
         }
     }),
 
     removeDatabase: action((state, payload) => {
-        state.data = [ ...state.data.filter(database => database.id !== payload) ];
+        state.data = [...state.data.filter((database) => database.id !== payload)];
     }),
 };
 

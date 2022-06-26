@@ -10,12 +10,15 @@ interface PowerButtonProps {
 }
 
 export default ({ className }: PowerButtonProps) => {
-    const [ open, setOpen ] = useState(false);
-    const status = ServerContext.useStoreState(state => state.status.value);
-    const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const [open, setOpen] = useState(false);
+    const status = ServerContext.useStoreState((state) => state.status.value);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
 
     const killable = status === 'stopping';
-    const onButtonClick = (action: PowerAction | 'kill-confirmed', e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    const onButtonClick = (
+        action: PowerAction | 'kill-confirmed',
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ): void => {
         e.preventDefault();
         if (action === 'kill') {
             return setOpen(true);
@@ -31,7 +34,7 @@ export default ({ className }: PowerButtonProps) => {
         if (status === 'offline') {
             setOpen(false);
         }
-    }, [ status ]);
+    }, [status]);
 
     return (
         <div className={className}>

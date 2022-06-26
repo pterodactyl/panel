@@ -59,16 +59,15 @@ export default () => {
     const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
-    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
-    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
-    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
-    const [ historyIndex, setHistoryIndex ] = useState(-1);
+    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const [canSendCommands] = usePermissions(['control.console']);
+    const serverId = ServerContext.useStoreState((state) => state.server.data!.id);
+    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
+    const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [historyIndex, setHistoryIndex] = useState(-1);
 
-    const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
-        (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
-    );
+    const handleConsoleOutput = (line: string, prelude = false) =>
+        terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
 
     const handleTransferStatus = (status: string) => {
         switch (status) {
@@ -79,17 +78,20 @@ export default () => {
 
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
-                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
+                terminal.writeln(
+                    TERMINAL_PRELUDE +
+                        'Server has been archived successfully, attempting connection to target node..\u001b[0m'
+                );
         }
     };
 
-    const handleDaemonErrorOutput = (line: string) => terminal.writeln(
-        TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
-    );
+    const handleDaemonErrorOutput = (line: string) =>
+        terminal.writeln(
+            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+        );
 
-    const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
-    );
+    const handlePowerChangeEvent = (state: string) =>
+        terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
@@ -112,7 +114,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
+            setHistory((prevHistory) => [command, ...prevHistory!].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -146,13 +148,16 @@ export default () => {
                 return true;
             });
         }
-    }, [ terminal, connected ]);
+    }, [terminal, connected]);
 
-    useEventListener('resize', debounce(() => {
-        if (terminal.element) {
-            fitAddon.fit();
-        }
-    }, 100));
+    useEventListener(
+        'resize',
+        debounce(() => {
+            if (terminal.element) {
+                fitAddon.fit();
+            }
+        }, 100)
+    );
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {
@@ -161,7 +166,7 @@ export default () => {
             [SocketEvent.INSTALL_OUTPUT]: handleConsoleOutput,
             [SocketEvent.TRANSFER_LOGS]: handleConsoleOutput,
             [SocketEvent.TRANSFER_STATUS]: handleTransferStatus,
-            [SocketEvent.DAEMON_MESSAGE]: line => handleConsoleOutput(line, true),
+            [SocketEvent.DAEMON_MESSAGE]: (line) => handleConsoleOutput(line, true),
             [SocketEvent.DAEMON_ERROR]: handleDaemonErrorOutput,
         };
 
@@ -184,15 +189,17 @@ export default () => {
                 });
             }
         };
-    }, [ connected, instance ]);
+    }, [connected, instance]);
 
     return (
         <div className={styles.terminal}>
-            <SpinnerOverlay visible={!connected} size={'large'}/>
-            <div className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}>
-                <div id={styles.terminal} ref={ref}/>
+            <SpinnerOverlay visible={!connected} size={'large'} />
+            <div
+                className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
+            >
+                <div id={styles.terminal} ref={ref} />
             </div>
-            {canSendCommands &&
+            {canSendCommands && (
                 <div className={classNames('relative', styles.overflows_container)}>
                     <input
                         className={classNames('peer', styles.command_input)}
@@ -204,11 +211,16 @@ export default () => {
                         autoCorrect={'off'}
                         autoCapitalize={'none'}
                     />
-                    <div className={classNames('text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse', styles.command_icon)}>
-                        <ChevronDoubleRightIcon className={'w-4 h-4'}/>
+                    <div
+                        className={classNames(
+                            'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
+                            styles.command_icon
+                        )}
+                    >
+                        <ChevronDoubleRightIcon className={'w-4 h-4'} />
                     </div>
                 </div>
-            }
+            )}
         </div>
     );
 };

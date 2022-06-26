@@ -19,10 +19,12 @@ export default (email: string, data: Data): Promise<PasswordResetResponse> => {
             password: data.password,
             password_confirmation: data.passwordConfirmation,
         })
-            .then(response => resolve({
-                redirectTo: response.data.redirect_to,
-                sendToLogin: response.data.send_to_login,
-            }))
+            .then((response) =>
+                resolve({
+                    redirectTo: response.data.redirect_to,
+                    sendToLogin: response.data.send_to_login,
+                })
+            )
             .catch(reject);
     });
 };

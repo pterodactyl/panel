@@ -3,7 +3,7 @@
  * is not null.
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-function isObject (val: unknown): val is {} {
+function isObject(val: unknown): val is {} {
     return typeof val === 'object' && val !== null && !Array.isArray(val);
 }
 
@@ -12,7 +12,7 @@ function isObject (val: unknown): val is {} {
  * and the prototype value.
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-function isEmptyObject (val: {}): boolean {
+function isEmptyObject(val: {}): boolean {
     return Object.keys(val).length === 0 && Object.getPrototypeOf(val) === Object.prototype;
 }
 
@@ -22,7 +22,7 @@ function isEmptyObject (val: {}): boolean {
  * easier.
  */
 // eslint-disable-next-line @typescript-eslint/ban-types
-function getObjectKeys<T extends {}> (o: T): (keyof T)[] {
+function getObjectKeys<T extends {}>(o: T): (keyof T)[] {
     return Object.keys(o) as (keyof typeof o)[];
 }
 

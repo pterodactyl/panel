@@ -28,11 +28,11 @@ interface Props {
 }
 
 export default ({ backup }: Props) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
-    const [ modal, setModal ] = useState('');
-    const [ loading, setLoading ] = useState(false);
-    const [ truncate, setTruncate ] = useState(false);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const [modal, setModal] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [truncate, setTruncate] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { mutate } = getServerBackups();
 
@@ -40,11 +40,11 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         getBackupDownloadUrl(uuid, backup.uuid)
-            .then(url => {
+            .then((url) => {
                 // @ts-ignore
                 window.location = url;
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
             })
@@ -55,12 +55,17 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         deleteBackup(uuid, backup.uuid)
-            .then(() => mutate(data => ({
-                ...data,
-                items: data.items.filter(b => b.uuid !== backup.uuid),
-                backupCount: data.backupCount - 1,
-            }), false))
-            .catch(error => {
+            .then(() =>
+                mutate(
+                    (data) => ({
+                        ...data,
+                        items: data.items.filter((b) => b.uuid !== backup.uuid),
+                        backupCount: data.backupCount - 1,
+                    }),
+                    false
+                )
+            )
+            .catch((error) => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
                 setLoading(false);
@@ -72,11 +77,13 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         restoreServerBackup(uuid, backup.uuid, truncate)
-            .then(() => setServerFromState(s => ({
-                ...s,
-                status: 'restoring_backup',
-            })))
-            .catch(error => {
+            .then(() =>
+                setServerFromState((s) => ({
+                    ...s,
+                    status: 'restoring_backup',
+                }))
+            )
+            .catch((error) => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
             })
@@ -90,14 +97,23 @@ export default ({ backup }: Props) => {
         }
 
         http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
-            .then(() => mutate(data => ({
-                ...data,
-                items: data.items.map(b => b.uuid !== backup.uuid ? b : {
-                    ...b,
-                    isLocked: !b.isLocked,
-                }),
-            }), false))
-            .catch(error => alert(httpErrorToHuman(error)))
+            .then(() =>
+                mutate(
+                    (data) => ({
+                        ...data,
+                        items: data.items.map((b) =>
+                            b.uuid !== backup.uuid
+                                ? b
+                                : {
+                                      ...b,
+                                      isLocked: !b.isLocked,
+                                  }
+                        ),
+                    }),
+                    false
+                )
+            )
+            .catch((error) => alert(httpErrorToHuman(error)))
             .then(() => setModal(''));
     };
 
@@ -123,17 +139,14 @@ export default ({ backup }: Props) => {
                     manager, or create additional backups until completed.
                 </p>
                 <p css={tw`mt-4 -mb-2 bg-gray-700 p-3 rounded`}>
-                    <label
-                        htmlFor={'restore_truncate'}
-                        css={tw`text-base flex items-center cursor-pointer`}
-                    >
+                    <label htmlFor={'restore_truncate'} css={tw`text-base flex items-center cursor-pointer`}>
                         <Input
                             type={'checkbox'}
                             css={tw`text-red-500! w-5! h-5! mr-2`}
                             id={'restore_truncate'}
                             value={'true'}
                             checked={truncate}
-                            onChange={() => setTruncate(s => !s)}
+                            onChange={() => setTruncate((s) => !s)}
                         />
                         Delete all files before restoring backup.
                     </label>
@@ -148,28 +161,28 @@ export default ({ backup }: Props) => {
             >
                 This is a permanent operation. The backup cannot be recovered once deleted.
             </Dialog.Confirm>
-            <SpinnerOverlay visible={loading} fixed/>
-            {backup.isSuccessful ?
+            <SpinnerOverlay visible={loading} fixed />
+            {backup.isSuccessful ? (
                 <DropdownMenu
-                    renderToggle={onClick => (
+                    renderToggle={(onClick) => (
                         <button
                             onClick={onClick}
                             css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
                         >
-                            <FontAwesomeIcon icon={faEllipsisH}/>
+                            <FontAwesomeIcon icon={faEllipsisH} />
                         </button>
                     )}
                 >
                     <div css={tw`text-sm`}>
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
-                                <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`}/>
+                                <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} css={tw`text-xs`} />
                                 <span css={tw`ml-2`}>Download</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
-                                <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`}/>
+                                <FontAwesomeIcon fixedWidth icon={faBoxOpen} css={tw`text-xs`} />
                                 <span css={tw`ml-2`}>Restore</span>
                             </DropdownButtonRow>
                         </Can>
@@ -183,24 +196,24 @@ export default ({ backup }: Props) => {
                                     />
                                     {backup.isLocked ? 'Unlock' : 'Lock'}
                                 </DropdownButtonRow>
-                                {!backup.isLocked &&
-                                <DropdownButtonRow danger onClick={() => setModal('delete')}>
-                                    <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`}/>
-                                    <span css={tw`ml-2`}>Delete</span>
-                                </DropdownButtonRow>
-                                }
+                                {!backup.isLocked && (
+                                    <DropdownButtonRow danger onClick={() => setModal('delete')}>
+                                        <FontAwesomeIcon fixedWidth icon={faTrashAlt} css={tw`text-xs`} />
+                                        <span css={tw`ml-2`}>Delete</span>
+                                    </DropdownButtonRow>
+                                )}
                             </>
                         </Can>
                     </div>
                 </DropdownMenu>
-                :
+            ) : (
                 <button
                     onClick={() => setModal('delete')}
                     css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
                 >
-                    <FontAwesomeIcon icon={faTrashAlt}/>
+                    <FontAwesomeIcon icon={faTrashAlt} />
                 </button>
-            }
+            )}
         </>
     );
 };

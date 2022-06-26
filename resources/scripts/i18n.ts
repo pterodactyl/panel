@@ -8,8 +8,7 @@ import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 // the URL to allow cache busting to occur whenever the front-end is rebuilt.
 const hash = module.hot ? Date.now().toString(16) : process.env.WEBPACK_BUILD_HASH;
 
-i18n
-    .use(I18NextMultiloadBackendAdapter)
+i18n.use(I18NextMultiloadBackendAdapter)
     .use(initReactI18next)
     .init({
         debug: process.env.DEBUG === 'true',

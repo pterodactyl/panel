@@ -37,7 +37,8 @@ type ModalType = 'rename' | 'move' | 'chmod';
 
 const StyledRow = styled.div<{ $danger?: boolean }>`
     ${tw`p-2 flex items-center rounded`};
-    ${props => props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
+    ${(props) =>
+        props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
 `;
 
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -48,21 +49,21 @@ interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
 
 const Row = ({ icon, title, ...props }: RowProps) => (
     <StyledRow {...props}>
-        <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth/>
+        <FontAwesomeIcon icon={icon} css={tw`text-xs`} fixedWidth />
         <span css={tw`ml-2`}>{title}</span>
     </StyledRow>
 );
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);
-    const [ showSpinner, setShowSpinner ] = useState(false);
-    const [ modal, setModal ] = useState<ModalType | null>(null);
-    const [ showConfirmation, setShowConfirmation ] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(false);
+    const [modal, setModal] = useState<ModalType | null>(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
-    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     useEventListener(`pterodactyl:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
@@ -75,9 +76,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate(files => files.filter(f => f.key !== file.key), false);
+        mutate((files) => files.filter((f) => f.key !== file.key), false);
 
-        deleteFiles(uuid, directory, [ file.name ]).catch(error => {
+        deleteFiles(uuid, directory, [file.name]).catch((error) => {
             mutate();
             clearAndAddHttpError({ key: 'files', error });
         });
@@ -89,7 +90,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         copyFile(uuid, join(directory, file.name))
             .then(() => mutate())
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -98,11 +99,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         getFileDownloadUrl(uuid, join(directory, file.name))
-            .then(url => {
+            .then((url) => {
                 // @ts-ignore
                 window.location = url;
             })
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -110,9 +111,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         setShowSpinner(true);
         clearFlashes('files');
 
-        compressFiles(uuid, directory, [ file.name ])
+        compressFiles(uuid, directory, [file.name])
             .then(() => mutate())
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -122,7 +123,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         decompressFiles(uuid, directory, file.name)
             .then(() => mutate())
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -140,55 +141,53 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             </Dialog.Confirm>
             <DropdownMenu
                 ref={onClickRef}
-                renderToggle={onClick => (
+                renderToggle={(onClick) => (
                     <div css={tw`p-3 hover:text-white`} onClick={onClick}>
-                        <FontAwesomeIcon icon={faEllipsisH}/>
-                        {modal ?
-                            modal === 'chmod' ?
+                        <FontAwesomeIcon icon={faEllipsisH} />
+                        {modal ? (
+                            modal === 'chmod' ? (
                                 <ChmodFileModal
                                     visible
                                     appear
-                                    files={[ { file: file.name, mode: file.modeBits } ]}
+                                    files={[{ file: file.name, mode: file.modeBits }]}
                                     onDismissed={() => setModal(null)}
                                 />
-                                :
+                            ) : (
                                 <RenameFileModal
                                     visible
                                     appear
-                                    files={[ file.name ]}
+                                    files={[file.name]}
                                     useMoveTerminology={modal === 'move'}
                                     onDismissed={() => setModal(null)}
                                 />
-                            : null
-                        }
-                        <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
+                            )
+                        ) : null}
+                        <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
                     </div>
                 )}
             >
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'}/>
-                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'}/>
-                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'}/>
+                    <Row onClick={() => setModal('rename')} icon={faPencilAlt} title={'Rename'} />
+                    <Row onClick={() => setModal('move')} icon={faLevelUpAlt} title={'Move'} />
+                    <Row onClick={() => setModal('chmod')} icon={faFileCode} title={'Permissions'} />
                 </Can>
-                {file.isFile &&
-                <Can action={'file.create'}>
-                    <Row onClick={doCopy} icon={faCopy} title={'Copy'}/>
-                </Can>
-                }
-                {file.isArchiveType() ?
+                {file.isFile && (
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'}/>
+                        <Row onClick={doCopy} icon={faCopy} title={'Copy'} />
                     </Can>
-                    :
+                )}
+                {file.isArchiveType() ? (
+                    <Can action={'file.create'}>
+                        <Row onClick={doUnarchive} icon={faBoxOpen} title={'Unarchive'} />
+                    </Can>
+                ) : (
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'}/>
+                        <Row onClick={doArchive} icon={faFileArchive} title={'Archive'} />
                     </Can>
-                }
-                {file.isFile &&
-                    <Row onClick={doDownload} icon={faFileDownload} title={'Download'}/>
-                }
+                )}
+                {file.isFile && <Row onClick={doDownload} icon={faFileDownload} title={'Download'} />}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger/>
+                    <Row onClick={() => setShowConfirmation(true)} icon={faTrashAlt} title={'Delete'} $danger />
                 </Can>
             </DropdownMenu>
         </>

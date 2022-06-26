@@ -13,14 +13,16 @@ interface OwnProps {
 
 type Props = OwnProps & Omit<React.InputHTMLAttributes<HTMLInputElement>, 'name'>;
 
-const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, label, description, validate, ...props }, ref) => (
-    <FormikField innerRef={ref} name={name} validate={validate}>
-        {
-            ({ field, form: { errors, touched } }: FieldProps) => (
+const Field = forwardRef<HTMLInputElement, Props>(
+    ({ id, name, light = false, label, description, validate, ...props }, ref) => (
+        <FormikField innerRef={ref} name={name} validate={validate}>
+            {({ field, form: { errors, touched } }: FieldProps) => (
                 <div>
-                    {label &&
-                    <Label htmlFor={id} isLight={light}>{label}</Label>
-                    }
+                    {label && (
+                        <Label htmlFor={id} isLight={light}>
+                            {label}
+                        </Label>
+                    )}
                     <Input
                         id={id}
                         {...field}
@@ -28,18 +30,19 @@ const Field = forwardRef<HTMLInputElement, Props>(({ id, name, light = false, la
                         isLight={light}
                         hasError={!!(touched[field.name] && errors[field.name])}
                     />
-                    {touched[field.name] && errors[field.name] ?
+                    {touched[field.name] && errors[field.name] ? (
                         <p className={'input-help error'}>
-                            {(errors[field.name] as string).charAt(0).toUpperCase() + (errors[field.name] as string).slice(1)}
+                            {(errors[field.name] as string).charAt(0).toUpperCase() +
+                                (errors[field.name] as string).slice(1)}
                         </p>
-                        :
-                        description ? <p className={'input-help'}>{description}</p> : null
-                    }
+                    ) : description ? (
+                        <p className={'input-help'}>{description}</p>
+                    ) : null}
                 </div>
-            )
-        }
-    </FormikField>
-));
+            )}
+        </FormikField>
+    )
+);
 Field.displayName = 'Field';
 
 export default Field;

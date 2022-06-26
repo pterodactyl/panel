@@ -53,8 +53,6 @@ rules:
   multiline-ternary: 0
   "react-hooks/rules-of-hooks":
     - error
-  "react-hooks/exhaustive-deps": 0
-  "@typescript-eslint/explicit-function-return-type": 0
   "@typescript-eslint/explicit-member-accessibility": 0
   "@typescript-eslint/ban-ts-ignore": 0
   "@typescript-eslint/no-explicit-any": 0

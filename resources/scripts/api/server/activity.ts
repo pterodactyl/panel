@@ -9,20 +9,27 @@ import { ServerContext } from '@/state/server';
 
 export type ActivityLogFilters = QueryBuilderParams<'ip' | 'event', 'timestamp'>;
 
-const useActivityLogs = (filters?: ActivityLogFilters, config?: ConfigInterface<PaginatedResult<ActivityLog>, AxiosError>): responseInterface<PaginatedResult<ActivityLog>, AxiosError> => {
-    const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
-    const key = useUserSWRContentKey([ 'server', 'activity', useFilteredObject(filters || {}) ]);
+const useActivityLogs = (
+    filters?: ActivityLogFilters,
+    config?: ConfigInterface<PaginatedResult<ActivityLog>, AxiosError>
+): responseInterface<PaginatedResult<ActivityLog>, AxiosError> => {
+    const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const key = useUserSWRContentKey(['server', 'activity', useFilteredObject(filters || {})]);
 
-    return useSWR<PaginatedResult<ActivityLog>>(key, async () => {
-        const { data } = await http.get(`/api/client/servers/${uuid}/activity`, {
-            params: {
-                ...withQueryBuilderParams(filters),
-                include: [ 'actor' ],
-            },
-        });
+    return useSWR<PaginatedResult<ActivityLog>>(
+        key,
+        async () => {
+            const { data } = await http.get(`/api/client/servers/${uuid}/activity`, {
+                params: {
+                    ...withQueryBuilderParams(filters),
+                    include: ['actor'],
+                },
+            });
 
-        return toPaginatedSet(data, Transformers.toActivityLog);
-    }, { revalidateOnMount: false, ...(config || {}) });
+            return toPaginatedSet(data, Transformers.toActivityLog);
+        },
+        { revalidateOnMount: false, ...(config || {}) }
+    );
 };
 
 export { useActivityLogs };

@@ -11,7 +11,7 @@ const http: AxiosInstance = axios.create({
     },
 });
 
-http.interceptors.request.use(req => {
+http.interceptors.request.use((req) => {
     if (!req.url?.endsWith('/resources')) {
         store.getActions().progress.startContinuous();
     }
@@ -19,17 +19,20 @@ http.interceptors.request.use(req => {
     return req;
 });
 
-http.interceptors.response.use(resp => {
-    if (!resp.request?.url?.endsWith('/resources')) {
+http.interceptors.response.use(
+    (resp) => {
+        if (!resp.request?.url?.endsWith('/resources')) {
+            store.getActions().progress.setComplete();
+        }
+
+        return resp;
+    },
+    (error) => {
         store.getActions().progress.setComplete();
+
+        throw error;
     }
-
-    return resp;
-}, error => {
-    store.getActions().progress.setComplete();
-
-    throw error;
-});
+);
 
 export default http;
 
@@ -37,7 +40,7 @@ export default http;
  * Converts an error into a human readable response. Mostly just a generic helper to
  * make sure we display the message from the server back to the user if we can.
  */
-export function httpErrorToHuman (error: any): string {
+export function httpErrorToHuman(error: any): string {
     if (error.response && error.response.data) {
         let { data } = error.response;
 
@@ -104,7 +107,7 @@ export interface PaginationDataSet {
     totalPages: number;
 }
 
-export function getPaginationSet (data: any): PaginationDataSet {
+export function getPaginationSet(data: any): PaginationDataSet {
     return {
         total: data.total,
         count: data.count,
@@ -142,11 +145,11 @@ export const withQueryBuilderParams = (data?: QueryBuilderParams): Record<string
 
     const sorts = Object.keys(data.sorts || {}).reduce((arr, key) => {
         const value = data.sorts?.[key];
-        if (!value || ![ 'asc', 'desc', 1, -1 ].includes(value)) {
+        if (!value || !['asc', 'desc', 1, -1].includes(value)) {
             return arr;
         }
 
-        return [ ...arr, (value === -1 || value === 'desc' ? '-' : '') + key ];
+        return [...arr, (value === -1 || value === 'desc' ? '-' : '') + key];
     }, [] as string[]);
 
     return {

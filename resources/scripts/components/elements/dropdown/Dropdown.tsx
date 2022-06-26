@@ -11,22 +11,22 @@ interface Props {
 }
 
 const DropdownGap = ({ invisible }: { invisible?: boolean }) => (
-    <div className={classNames('border m-2', { 'border-neutral-700': !invisible, 'border-transparent': invisible })}/>
+    <div className={classNames('border m-2', { 'border-neutral-700': !invisible, 'border-transparent': invisible })} />
 );
 
 type TypedChild = (React.ReactChild | React.ReactFragment | React.ReactPortal) & {
     type?: JSX.Element;
-}
+};
 
 const Dropdown = forwardRef<typeof Menu, Props>(({ as, children }, ref) => {
-    const [ Button, items ] = useMemo(() => {
+    const [Button, items] = useMemo(() => {
         const list = React.Children.toArray(children) as unknown as TypedChild[];
 
         return [
-            list.filter(child => child.type === DropdownButton),
-            list.filter(child => child.type !== DropdownButton),
+            list.filter((child) => child.type === DropdownButton),
+            list.filter((child) => child.type !== DropdownButton),
         ];
-    }, [ children ]);
+    }, [children]);
 
     if (!Button) {
         throw new Error('Cannot mount <Dropdown /> component without a child <Dropdown.Button />.');
@@ -44,9 +44,7 @@ const Dropdown = forwardRef<typeof Menu, Props>(({ as, children }, ref) => {
                 leaveTo={'transform scale-95 opacity-0'}
             >
                 <Menu.Items className={classNames(styles.items_container, 'w-56')}>
-                    <div className={'px-1 py-1'}>
-                        {items}
-                    </div>
+                    <div className={'px-1 py-1'}>{items}</div>
                 </Menu.Items>
             </Transition>
         </Menu>

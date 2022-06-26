@@ -15,9 +15,9 @@ import { ServerContext } from '@/state/server';
 import '@/assets/tailwind.css';
 import Spinner from '@/components/elements/Spinner';
 
-const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */'@/routers/DashboardRouter'));
-const ServerRouter = lazy(() => import(/* webpackChunkName: "server" */'@/routers/ServerRouter'));
-const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */'@/routers/AuthenticationRouter'));
+const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */ '@/routers/DashboardRouter'));
+const ServerRouter = lazy(() => import(/* webpackChunkName: "server" */ '@/routers/ServerRouter'));
+const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */ '@/routers/AuthenticationRouter'));
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -38,7 +38,7 @@ interface ExtendedWindow extends Window {
 setupInterceptors(history);
 
 const App = () => {
-    const { PterodactylUser, SiteConfiguration } = (window as ExtendedWindow);
+    const { PterodactylUser, SiteConfiguration } = window as ExtendedWindow;
     if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
             uuid: PterodactylUser.uuid,
@@ -58,31 +58,31 @@ const App = () => {
 
     return (
         <>
-            <GlobalStylesheet/>
+            <GlobalStylesheet />
             <StoreProvider store={store}>
-                <ProgressBar/>
+                <ProgressBar />
                 <div css={tw`mx-auto w-auto`}>
                     <Router history={history}>
                         <Switch>
                             <Route path={'/auth'}>
                                 <Spinner.Suspense>
-                                    <AuthenticationRouter/>
+                                    <AuthenticationRouter />
                                 </Spinner.Suspense>
                             </Route>
                             <AuthenticatedRoute path={'/server/:id'}>
                                 <Spinner.Suspense>
                                     <ServerContext.Provider>
-                                        <ServerRouter/>
+                                        <ServerRouter />
                                     </ServerContext.Provider>
                                 </Spinner.Suspense>
                             </AuthenticatedRoute>
                             <AuthenticatedRoute path={'/'}>
                                 <Spinner.Suspense>
-                                    <DashboardRouter/>
+                                    <DashboardRouter />
                                 </Spinner.Suspense>
                             </AuthenticatedRoute>
                             <Route path={'*'}>
-                                <NotFound/>
+                                <NotFound />
                             </Route>
                         </Switch>
                     </Router>

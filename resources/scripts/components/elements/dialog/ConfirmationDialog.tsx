@@ -7,7 +7,7 @@ type ConfirmationProps = Omit<DialogProps, 'description' | 'children'> & {
     children: React.ReactNode;
     confirm?: string | undefined;
     onConfirmed: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;
-}
+};
 
 export default ({ confirm = 'Okay', children, onConfirmed, ...props }: ConfirmationProps) => {
     return (
