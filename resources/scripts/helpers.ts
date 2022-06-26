@@ -1,8 +1,8 @@
 export const megabytesToBytes = (mb: number) => Math.floor(mb * 1024 * 1024);
 
 export function bytesToHuman (bytes: number): string {
-    if (bytes === 0) {
-        return '0 kB';
+    if (bytes < 1) {
+        return '0 Bytes';
     }
 
     const i = Math.floor(Math.log(bytes) / Math.log(1024));
@@ -75,3 +75,9 @@ export const isEmptyObject = (o: {}): boolean =>
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export const getObjectKeys = <T extends {}> (o: T): (keyof T)[] => Object.keys(o) as (keyof typeof o)[];
+
+export const toRGBA = (hex: string, alpha = 1): string => {
+    const [ r, g, b ] = hex.match(/\w\w/g)!.map(v => parseInt(v, 16));
+
+    return `rgba(${r}, ${g}, ${b}, ${alpha})`;
+};

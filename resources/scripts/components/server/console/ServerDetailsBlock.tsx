@@ -85,9 +85,9 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             </StatBlock>
             <StatBlock
                 icon={faMicrochip}
-                title={'CPU'}
+                title={'CPU Load'}
                 color={getBackgroundColor(stats.cpu, limits.cpu)}
-                description={limits.memory
+                description={limits.cpu
                     ? `This server is allowed to use up to ${limits.cpu}% of the host's available CPU resources.`
                     : 'No CPU limit has been configured for this server.'
                 }
