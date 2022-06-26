@@ -16,6 +16,7 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Illuminate\Contracts\Container\BindingResolutionException;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class DiscordController extends Controller
 {
@@ -25,10 +26,12 @@ class DiscordController extends Controller
 
     public function __construct(
         UserCreationService $creationService,
+        SettingsRepositoryInterface $settings,
     )
     {
         $this->auth = Container::getInstance()->make(AuthManager::class);
         $this->creationService = $creationService;
+        $this->settings = $settings;
     }
 
     /**
