@@ -2,6 +2,7 @@ import classNames from 'classnames';
 import { ServerContext } from '@/state/server';
 import React, { useEffect, useState } from 'react';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import ConsoleShareContainer from '../ConsoleShareContainer';
 import StatBlock from '@/components/server/console/StatBlock';
 import UptimeDuration from '@/components/server/UptimeDuration';
 import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
@@ -11,6 +12,7 @@ import {
     faHdd,
     faMemory,
     faMicrochip,
+    faScroll,
     faWifi,
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -105,6 +107,13 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 }
             >
                 {bytesToHuman(stats.disk)}
+            </StatBlock>
+            <StatBlock
+                icon={faScroll}
+                title={'Save Console Logs'}
+                description={'Saves the console logs to a file.'}
+            >
+                <ConsoleShareContainer />
             </StatBlock>
         </div>
     );

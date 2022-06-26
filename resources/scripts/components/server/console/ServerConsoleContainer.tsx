@@ -1,15 +1,16 @@
-import React, { memo } from 'react';
-import { ServerContext } from '@/state/server';
-import Can from '@/components/elements/Can';
-import ContentContainer from '@/components/elements/ContentContainer';
 import tw from 'twin.macro';
-import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import React, { memo } from 'react';
 import isEqual from 'react-fast-compare';
-import Spinner from '@/components/elements/Spinner';
 import Features from '@feature/Features';
+import Can from '@/components/elements/Can';
+import { ServerContext } from '@/state/server';
+import Spinner from '@/components/elements/Spinner';
 import Console from '@/components/server/console/Console';
 import StatGraphs from '@/components/server/console/StatGraphs';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import PowerButtons from '@/components/server/console/PowerButtons';
+import ContentContainer from '@/components/elements/ContentContainer';
+import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
@@ -28,6 +29,7 @@ const ServerConsoleContainer = () => {
                     <h1 className={'font-header text-2xl text-gray-50 leading-relaxed line-clamp-1'}>{name}</h1>
                     <p className={'text-sm line-clamp-2'}>{description}</p>
                 </div>
+                <FlashMessageRender byKey={'console:share'} className={'mb-2'} />
                 <div className={'flex-1'}>
                     <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
                         <PowerButtons className={'flex sm:justify-end space-x-2'}/>

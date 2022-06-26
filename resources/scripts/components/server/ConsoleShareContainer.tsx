@@ -1,13 +1,10 @@
 import stripAnsi from 'strip-ansi';
 import useFlash from '@/plugins/useFlash';
-import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import React, { useEffect, useState } from 'react';
-import consoleShare from '@/api/server/consoleShare';
 import { SocketEvent } from '@/components/server/events';
-import { Button } from '@/components/elements/button/index';
-import FlashMessageRender from '../FlashMessageRender';
+import saveFileContents from '@/api/server/files/saveFileContents';
 
 export default () => {
     const [ log, setLog ] = useState<string[]>([]);
@@ -26,12 +23,12 @@ export default () => {
 
         const data = stripAnsi(log.map(it => it.replace('\r', '')).join('\n')) || '';
 
-        consoleShare(uuid, data)
-            .then(response => {
+        saveFileContents(uuid, '/share/console-' + new Date().toLocaleTimeString() + '.txt', data)
+            .then(() => {
                 addFlash({
                     key: 'console:share',
                     type: 'success',
-                    message: 'Your server logs have been posted to: ' + response,
+                    message: 'Your server logs have been saved to the /share folder.',
                 });
             })
             .catch(error => {
@@ -51,22 +48,13 @@ export default () => {
 
     return (
         <>
-            <FlashMessageRender byKey={'console:share'} className={'mb-2'} />
-            <div className={'shadow-md bg-neutral-900 rounded-t p-3 mt-4 flex text-xs justify-center'}>
-                <Can action={'console.share'}>
-                    <Button
-                        size={Button.Sizes.Small}
-                        variant={Button.Variants.Secondary}
-                        disabled={status !== 'running'}
-                        onClick={e => {
-                            e.preventDefault();
-                            submit();
-                        }}
-                    >
-                        Share console logs
-                    </Button>
-                </Can>
-            </div>
+            {status === 'offline' ?
+                <span className={'text-gray-400'}>Offline</span>
+                :
+                <div className={'cursor-pointer'} onClick={submit}>
+                    Save
+                </div>
+            }
         </>
     );
 };
