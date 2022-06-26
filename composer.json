@@ -20,7 +20,7 @@
         "aws/aws-sdk-php": "^3.171",
         "doctrine/dbal": "~2.13.9",
         "fruitcake/laravel-cors": "~3.0.0",
-        "guzzlehttp/guzzle": "~7.4.2",
+        "guzzlehttp/guzzle": "~7.4.4",
         "hashids/hashids": "~4.1.0",
         "laracasts/utilities": "~3.2.1",
         "laravel/framework": "^8.83",
