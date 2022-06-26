@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Button } from '@/components/elements/button/index';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
@@ -26,6 +26,12 @@ export default ({ className }: PowerButtonProps) => {
             instance.send('set state', action === 'kill-confirmed' ? 'kill' : action);
         }
     };
+
+    useEffect(() => {
+        if (status === 'offline') {
+            setOpen(false);
+        }
+    }, [ status ]);
 
     return (
         <div className={className}>
