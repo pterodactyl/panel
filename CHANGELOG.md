@@ -8,16 +8,34 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Added support for using Tailwind classes inside components using `className={}` rather than having to use `twin.macro` with the `css={}` prop.
 * Added HeadlessUI and Heroicons packages.
 * Added new `Tooltip.tsx` component to support displaying tooltips within the Panel.
+* Adds a new activity log view for both user accounts and individual servers. This builds upon data collected in previous releases.
+* Added a new column `api_key_id` to the `activity_logs` table to indicate if the user performed the action while using an API key.
+* Adds initial support for language translations on the front-end. The underlying implementation details are working, however work has not yet begun on actually translating all of the strings yet. Expect this to continue in future releases.
+* Improved accessibility for navigation icons by adding a tooltip on hover to indicate what each one does.
+* Adds logging for API keys that are blocked from performing an API action due to IP address limiting.
+* Adds support for `?filter[description]=foo` when querying servers on both the client and application API.
 
 ### Changed
+* Updated how release assets are generated to perform more logical bundle splitting. This should help reduce the amount of data users have to download at once in order to render the UI.
 * Upgraded From TailwindCSS 2 to 3 — for most people this should have minimal if any impact.
+* Chart.js updated from v2 to v3.
 * Reduced the number of custom colors in use — by default we now use Tailwind's default color pallet, with the exception of a custom gray scheme.
 * **[deprecated]** The use of `neutral` and `primary` have been deprecated in class names, prefer `gray` and `blue` respectively.
+* Begins the process of dropping the use of Gravatars for user avatars and replaces them with dynamically generated SVG images.
+* Improved front-end route definitions to make it easier for external modifications to inject their routes and components into the codebase without having to modify as many core files.
+* Redesigned the server console screen to better display data users might be looking for, and increase the height of the console itself.
+* Merged the two network data graphs into a single dual-line graph to better display incoming and outgoing data volumes.
+* Updated all byte formatting logic to use `1000` as the divisor rather than `1024` to be more consistent with what users most likely expect.
+* Changed the underlying `eslint` rules applied to the front-end codebase to simplify them dramatically. We now utilize `prettier` in combination with some basic default rulesets to make it easier to understand the expected formatting.
 
 ### Fixed
 * Fixes a bug causing a 404 error when attempting to delete a database from a server in the admin control panel.
 * Fixes console input auto-capitalizing and auto-correcting when entering text on some mobile devices.
 * Fixes SES service configuration using a hard-coded `us-east-1` region.
+* Fixes a bug causing a 404 error when attempting to delete an SSH key from your account when the SHA256 hash includes a slash.
+* Fixes mobile keyboards automatically attempting to capitalize and spellcheck typing on the server console.
+* Fixes improper support for IP address CIDR ranges when creating API keys for the client area.
+* Fixes a bug preventing additional included details from being returned from the application API when utilizing a client API key as an administrator.
 
 ## v1.8.1
 ### Fixed
