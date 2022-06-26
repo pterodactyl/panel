@@ -268,7 +268,6 @@ class Handler extends ExceptionHandler
      * Extracts all of the previous exceptions that lead to the one passed into this
      * function being thrown.
      *
-     * @param  \Throwable  $e
      * @return \Throwable[]
      */
     protected function extractPrevious(Throwable $e): array

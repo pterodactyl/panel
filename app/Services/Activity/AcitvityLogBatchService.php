@@ -48,7 +48,6 @@ class AcitvityLogBatchService
      * Executes the logic provided within the callback in the scope of an activity
      * log batch transaction.
      *
-     * @param \Closure $callback
      * @return mixed
      */
     public function transaction(\Closure $callback)

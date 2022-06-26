@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Listeners\Auth;
 
-use Pterodactyl\Facades\Activity;
 use Illuminate\Auth\Events\Login;
+use Pterodactyl\Facades\Activity;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Contracts\Events\Dispatcher;
 use Pterodactyl\Extensions\Illuminate\Events\Contracts\SubscribesToEvents;
