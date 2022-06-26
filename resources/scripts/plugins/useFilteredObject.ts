@@ -3,7 +3,7 @@
  * undefined, or empty string key values. This allows the parameters to be used for
  * caching without having to account for all of the different data combinations.
  */
-import { isEmptyObject, isObject } from '@/helpers';
+import { isEmptyObject, isObject } from '@/lib/objects';
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 export default <T extends {}>(data: T): T => {

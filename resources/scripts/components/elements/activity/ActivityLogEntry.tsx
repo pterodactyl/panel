@@ -1,9 +1,9 @@
 import React from 'react';
 import classNames from 'classnames';
-import { isObject } from '@/helpers';
 import * as Icon from 'react-feather';
 import style from './style.module.css';
 import { Link } from 'react-router-dom';
+import { isObject } from '@/lib/objects';
 import Avatar from '@/components/Avatar';
 import { ActivityLog } from '@definitions/user';
 import useLocationHash from '@/plugins/useLocationHash';

@@ -25,6 +25,7 @@ extends:
   - "standard"
   - "plugin:react/recommended"
   - "plugin:@typescript-eslint/recommended"
+  - "plugin:jest-dom/recommended"
 rules:
   quotes:
     - warn

@@ -1,8 +1,8 @@
 import React from 'react';
 import tw from 'twin.macro';
 import * as Icon from 'react-feather';
-import { bytesToHuman } from '@/helpers';
 import Can from '@/components/elements/Can';
+import { bytesToString } from '@/lib/formatters';
 import { ServerBackup } from '@/api/server/types';
 import Spinner from '@/components/elements/Spinner';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -63,7 +63,7 @@ export default ({ backup, className }: Props) => {
                             {backup.name}
                         </p>
                         {(backup.completedAt !== null && backup.isSuccessful) &&
-                        <span css={tw`ml-3 text-neutral-300 text-xs font-extralight hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
+                        <span css={tw`ml-3 text-neutral-300 text-xs font-extralight hidden sm:inline`}>{bytesToString(backup.bytes)}</span>
                         }
                     </div>
                     <p css={tw`mt-1 md:mt-0 text-xs text-neutral-400 font-mono truncate`}>

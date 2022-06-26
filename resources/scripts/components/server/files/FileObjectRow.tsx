@@ -1,16 +1,17 @@
+import { encodePathSegments } from '@/helpers';
+import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
+import { FileObject } from '@/api/server/files/loadDirectory';
+import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
+import { ServerContext } from '@/state/server';
+import { NavLink, useRouteMatch } from 'react-router-dom';
 import tw from 'twin.macro';
-import { join } from 'path';
 import * as Icon from 'react-feather';
 import React, { memo } from 'react';
 import isEqual from 'react-fast-compare';
 import styled from 'styled-components/macro';
-import { ServerContext } from '@/state/server';
-import { NavLink, useRouteMatch } from 'react-router-dom';
 import { usePermissions } from '@/plugins/usePermissions';
-import { bytesToHuman, encodePathSegments } from '@/helpers';
-import { FileObject } from '@/api/server/files/loadDirectory';
-import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
-import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
+import { join } from 'path';
+import { bytesToString } from '@/lib/formatters';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
 
 const Row = styled.div`
@@ -68,7 +69,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
             </div>
             {file.isFile &&
             <div css={tw`w-1/6 text-right mr-4 hidden sm:block`}>
-                {bytesToHuman(file.size)}
+                {bytesToString(file.size)}
             </div>
             }
             <div

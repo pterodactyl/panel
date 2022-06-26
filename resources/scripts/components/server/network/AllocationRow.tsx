@@ -1,6 +1,6 @@
 import tw from 'twin.macro';
 import { debounce } from 'debounce';
-import { formatIp } from '@/helpers';
+import { ip } from '@/lib/formatters';
 import * as Icon from 'react-feather';
 import isEqual from 'react-fast-compare';
 import Can from '@/components/elements/Can';
@@ -66,7 +66,7 @@ const AllocationRow = ({ allocation }: Props) => {
                 <div className={'mr-4 flex-1 md:w-40'}>
                     {allocation.alias ?
                         <CopyOnClick text={allocation.alias}><Code dark className={'w-40 truncate'}>{allocation.alias}</Code></CopyOnClick> :
-                        <CopyOnClick text={formatIp(allocation.ip)}><Code dark>{formatIp(allocation.ip)}</Code></CopyOnClick>}
+                        <CopyOnClick text={ip(allocation.ip)}><Code dark>{ip(allocation.ip)}</Code></CopyOnClick>}
                     <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
                 </div>
                 <div className={'w-16 md:w-24 overflow-hidden'}>

@@ -1,11 +1,12 @@
 import tw from 'twin.macro';
+import { ip } from '@/lib/formatters';
+import { hashToPath } from '@/helpers';
 import style from './style.module.css';
 import Can from '@/components/elements/Can';
 import { httpErrorToHuman } from '@/api/http';
 import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
-import { hashToPath, formatIp } from '@/helpers';
 import Spinner from '@/components/elements/Spinner';
 import { CSSTransition } from 'react-transition-group';
 import { NavLink, useLocation } from 'react-router-dom';
@@ -147,10 +148,10 @@ export default () => {
                 <TitledGreyBox title={'SFTP Details'} css={tw`mt-8 md:mt-6`}>
                     <div>
                         <Label>Server Address</Label>
-                        <CopyOnClick text={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}>
+                        <CopyOnClick text={`sftp://${ip(sftp.ip)}:${sftp.port}`}>
                             <Input
                                 type={'text'}
-                                value={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}
+                                value={`sftp://${ip(sftp.ip)}:${sftp.port}`}
                                 readOnly
                             />
                         </CopyOnClick>

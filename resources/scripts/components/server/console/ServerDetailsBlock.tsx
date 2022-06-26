@@ -5,7 +5,7 @@ import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import ConsoleShareContainer from '../ConsoleShareContainer';
 import StatBlock from '@/components/server/console/StatBlock';
 import UptimeDuration from '@/components/server/UptimeDuration';
-import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
+import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import {
     faClock,
@@ -28,7 +28,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const allocation = ServerContext.useStoreState(state => {
         const match = state.server.data!.allocations.find(allocation => allocation.isDefault);
 
-        return !match ? 'n/a' : `${match.alias || formatIp(match.ip)}:${match.port}`;
+        return !match ? 'n/a' : `${match.alias || ip(match.ip)}:${match.port}`;
     });
 
     useEffect(() => {
@@ -88,25 +88,25 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 icon={faMemory}
                 title={'Memory'}
                 description={limits.memory
-                    ? `This server is allowed to use up to ${megabytesToHuman(limits.memory)} of memory.`
+                    ? `This server is allowed to use up to ${bytesToString(mbToBytes(limits.memory))} of memory.`
                     : 'No memory limit has been configured for this server.'
                 }
             >
                 {status === 'offline' ?
                     <span className={'text-gray-400'}>Offline</span>
                     :
-                    bytesToHuman(stats.memory)
+                    bytesToString(stats.memory)
                 }
             </StatBlock>
             <StatBlock
                 icon={faHdd}
                 title={'Disk'}
                 description={limits.disk
-                    ? `This server is allowed to use up to ${megabytesToHuman(limits.disk)} of disk space.`
+                    ? `This server is allowed to use up to ${bytesToString(mbToBytes(limits.disk))} of disk space.`
                     : 'No disk space limit has been configured for this server.'
                 }
             >
-                {bytesToHuman(stats.disk)}
+                {bytesToString(stats.disk)}
             </StatBlock>
             <StatBlock
                 icon={faScroll}

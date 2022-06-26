@@ -1,13 +1,13 @@
 import tw from 'twin.macro';
 import debounce from 'debounce';
 import { object, string } from 'yup';
-import { formatIp } from '@/helpers';
+import { ip } from '@/lib/formatters';
 import { Link } from 'react-router-dom';
 import getServers from '@/api/getServers';
 import { ApplicationStore } from '@/state';
 import styled from 'styled-components/macro';
-import { Server } from '@/api/server/getServer';
 import Input from '@/components/elements/Input';
+import { Server } from '@/api/server/getServer';
 import React, { useEffect, useRef, useState } from 'react';
 import InputSpinner from '@/components/elements/InputSpinner';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
@@ -110,7 +110,7 @@ export default ({ ...props }: Props) => {
                                         <p css={tw`mt-1 text-xs text-neutral-400`}>
                                             {
                                                 server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
-                                                    <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || formatIp(allocation.ip)}:{allocation.port}</span>
+                                                    <span key={allocation.ip + allocation.port.toString()}>{allocation.alias || ip(allocation.ip)}:{allocation.port}</span>
                                                 ))
                                             }
                                         </p>

@@ -1,12 +1,12 @@
 import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { Link } from 'react-router-dom';
-import { bytesToHuman } from '@/helpers';
 import styled from 'styled-components/macro';
 import { Server } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import React, { useEffect, useRef, useState } from 'react';
+import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
@@ -81,6 +81,20 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     }
                 </div>
             </div>
+            <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
+                <div css={tw`flex justify-center`}>
+                    <Icon.Share2 css={tw`text-neutral-500`}/>
+                    <p css={tw`text-sm text-neutral-400 ml-2`}>
+                        {
+                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
+                                <React.Fragment key={allocation.ip + allocation.port.toString()}>
+                                    {allocation.alias || ip(allocation.ip)}:{allocation.port}
+                                </React.Fragment>
+                            ))
+                        }
+                    </p>
+                </div>
+            </div>
             <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
                 {(!stats || isSuspended) ?
                     isSuspended ?
@@ -121,7 +135,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             <div css={tw`flex justify-center`}>
                                 <Icon.PieChart size={20} css={tw`text-neutral-600`} />
                                 <IconDescription $alarm={alarms.memory}>
-                                    {bytesToHuman(stats.memoryUsageInBytes)}
+                                    {bytesToString(stats.memoryUsageInBytes)}
                                 </IconDescription>
                             </div>
                         </div>
@@ -129,7 +143,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             <div css={tw`flex justify-center`}>
                                 <Icon.HardDrive size={20} css={tw`text-neutral-600`} />
                                 <IconDescription $alarm={alarms.disk}>
-                                    {bytesToHuman(stats.diskUsageInBytes)}
+                                    {bytesToString(stats.diskUsageInBytes)}
                                 </IconDescription>
                             </div>
                         </div>

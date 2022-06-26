@@ -1,8 +1,9 @@
 import { theme } from 'twin.macro';
 import * as Icon from 'react-feather';
 import { Line } from 'react-chartjs-2';
+import { hexToRgba } from '@/lib/helpers';
 import { ServerContext } from '@/state/server';
-import { bytesToHuman, toRGBA } from '@/helpers';
+import { bytesToString } from '@/lib/formatters';
 import React, { useEffect, useRef } from 'react';
 import { SocketEvent } from '@/components/server/events';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
@@ -24,7 +25,7 @@ export default () => {
                 y: {
                     ticks: {
                         callback (value) {
-                            return bytesToHuman(typeof value === 'string' ? parseInt(value, 10) : value);
+                            return bytesToString(typeof value === 'string' ? parseInt(value, 10) : value);
                         },
                     },
                 },
@@ -35,7 +36,7 @@ export default () => {
                 ...opts,
                 label: !index ? 'Network In' : 'Network Out',
                 borderColor: !index ? theme('colors.cyan.400') : theme('colors.green.400'),
-                backgroundColor: toRGBA(!index ? theme('colors.cyan.700') : theme('colors.green.700'), 0.5),
+                backgroundColor: hexToRgba(!index ? theme('colors.cyan.700') : theme('colors.green.700'), 0.5),
             };
         },
     });
