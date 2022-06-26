@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
-import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
 import performPasswordReset from '@/api/auth/performPasswordReset';
 import { httpErrorToHuman } from '@/api/http';
@@ -24,9 +23,9 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const parsed = parse(location.search);
-    if (email.length === 0 && parsed.email) {
-        setEmail(parsed.email as string);
+    const parsed = new URLSearchParams(location.search);
+    if (email.length === 0 && parsed.get('email')) {
+        setEmail(parsed.get('email') || '');
     }
 
     const submit = ({ password, passwordConfirmation }: Values, { setSubmitting }: FormikHelpers<Values>) => {
