@@ -8,7 +8,7 @@ import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMet
 import { TerminalIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import style from './style.module.css';
-import { isObject } from '@/helpers';
+import { isObject } from '@/lib/objects';
 import Avatar from '@/components/Avatar';
 import useLocationHash from '@/plugins/useLocationHash';
 

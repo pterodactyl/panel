@@ -12,7 +12,7 @@ import Label from '@/components/elements/Label';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/components/elements/CopyOnClick';
-import { formatIp } from '@/helpers';
+import { ip } from '@/lib/formatters';
 import { Button } from '@/components/elements/button/index';
 
 export default () => {
@@ -31,10 +31,10 @@ export default () => {
                         <TitledGreyBox title={'SFTP Details'} css={tw`mb-6 md:mb-10`}>
                             <div>
                                 <Label>Server Address</Label>
-                                <CopyOnClick text={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}>
+                                <CopyOnClick text={`sftp://${ip(sftp.ip)}:${sftp.port}`}>
                                     <Input
                                         type={'text'}
-                                        value={`sftp://${formatIp(sftp.ip)}:${sftp.port}`}
+                                        value={`sftp://${ip(sftp.ip)}:${sftp.port}`}
                                         readOnly
                                     />
                                 </CopyOnClick>
@@ -58,7 +58,7 @@ export default () => {
                                     </div>
                                 </div>
                                 <div css={tw`ml-4`}>
-                                    <a href={`sftp://${username}.${id}@${formatIp(sftp.ip)}:${sftp.port}`}>
+                                    <a href={`sftp://${username}.${id}@${ip(sftp.ip)}:${sftp.port}`}>
                                         <Button.Text variant={Button.Variants.Secondary}>Launch SFTP</Button.Text>
                                     </a>
                                 </div>

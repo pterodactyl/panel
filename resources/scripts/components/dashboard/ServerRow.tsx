@@ -4,7 +4,7 @@ import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
+import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
@@ -74,8 +74,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
-    const diskLimit = server.limits.disk !== 0 ? megabytesToHuman(server.limits.disk) : 'Unlimited';
-    const memoryLimit = server.limits.memory !== 0 ? megabytesToHuman(server.limits.memory) : 'Unlimited';
+    const diskLimit = server.limits.disk !== 0 ? bytesToString(mbToBytes(server.limits.disk)) : 'Unlimited';
+    const memoryLimit = server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : 'Unlimited';
     const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : 'Unlimited';
 
     return (
@@ -98,7 +98,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                         {
                             server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
                                 <React.Fragment key={allocation.ip + allocation.port.toString()}>
-                                    {allocation.alias || formatIp(allocation.ip)}:{allocation.port}
+                                    {allocation.alias || ip(allocation.ip)}:{allocation.port}
                                 </React.Fragment>
                             ))
                         }
@@ -146,7 +146,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             <div css={tw`flex justify-center`}>
                                 <Icon icon={faMemory} $alarm={alarms.memory}/>
                                 <IconDescription $alarm={alarms.memory}>
-                                    {bytesToHuman(stats.memoryUsageInBytes)}
+                                    {bytesToString(stats.memoryUsageInBytes)}
                                 </IconDescription>
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memoryLimit}</p>
@@ -155,7 +155,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             <div css={tw`flex justify-center`}>
                                 <Icon icon={faHdd} $alarm={alarms.disk}/>
                                 <IconDescription $alarm={alarms.disk}>
-                                    {bytesToHuman(stats.diskUsageInBytes)}
+                                    {bytesToString(stats.diskUsageInBytes)}
                                 </IconDescription>
                             </div>
                             <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {diskLimit}</p>

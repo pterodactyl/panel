@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import features from './index';
-import { getObjectKeys } from '@/helpers';
+import { getObjectKeys } from '@/lib/objects';
 
 type ListItems = [ string, React.ComponentType ][];
 

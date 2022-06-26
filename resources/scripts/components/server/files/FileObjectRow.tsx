@@ -1,6 +1,6 @@
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
-import { bytesToHuman, encodePathSegments } from '@/helpers';
+import { encodePathSegments } from '@/helpers';
 import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
 import React, { memo } from 'react';
 import { FileObject } from '@/api/server/files/loadDirectory';
@@ -13,6 +13,7 @@ import styled from 'styled-components/macro';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
 import { usePermissions } from '@/plugins/usePermissions';
 import { join } from 'path';
+import { bytesToString } from '@/lib/formatters';
 
 const Row = styled.div`
     ${tw`flex bg-neutral-700 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-600`};
@@ -61,7 +62,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
             </div>
             {file.isFile &&
             <div css={tw`w-1/6 text-right mr-4 hidden sm:block`}>
-                {bytesToHuman(file.size)}
+                {bytesToString(file.size)}
             </div>
             }
             <div

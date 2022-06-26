@@ -12,7 +12,7 @@ import { DeepPartial } from 'ts-essentials';
 import { useState } from 'react';
 import { deepmerge, deepmergeCustom } from 'deepmerge-ts';
 import { theme } from 'twin.macro';
-import { toRGBA } from '@/helpers';
+import { hexToRgba } from '@/lib/helpers';
 
 ChartJS.register(LineElement, PointElement, Filler, LinearScale);
 
@@ -86,7 +86,7 @@ function getEmptyData (label: string, sets = 1, callback?: ChartDatasetCallback 
             label,
             data: Array(20).fill(0),
             borderColor: theme('colors.cyan.400'),
-            backgroundColor: toRGBA(theme('colors.cyan.700'), 0.5),
+            backgroundColor: hexToRgba(theme('colors.cyan.700'), 0.5),
         }, index)),
     };
 }

@@ -8,7 +8,7 @@ import {
     faMicrochip,
     faWifi,
 } from '@fortawesome/free-solid-svg-icons';
-import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
+import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import { ServerContext } from '@/state/server';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
@@ -41,7 +41,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const allocation = ServerContext.useStoreState(state => {
         const match = state.server.data!.allocations.find(allocation => allocation.isDefault);
 
-        return !match ? 'n/a' : `${match.alias || formatIp(match.ip)}:${match.port}`;
+        return !match ? 'n/a' : `${match.alias || ip(match.ip)}:${match.port}`;
     });
 
     useEffect(() => {
@@ -106,14 +106,14 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 title={'Memory'}
                 color={getBackgroundColor(stats.memory / 1024, limits.memory * 1024)}
                 description={limits.memory
-                    ? `This server is allowed to use up to ${megabytesToHuman(limits.memory)} of memory.`
+                    ? `This server is allowed to use up to ${bytesToString(mbToBytes(limits.memory))} of memory.`
                     : 'No memory limit has been configured for this server.'
                 }
             >
                 {status === 'offline' ?
                     <span className={'text-gray-400'}>Offline</span>
                     :
-                    bytesToHuman(stats.memory)
+                    bytesToString(stats.memory)
                 }
             </StatBlock>
             <StatBlock
@@ -121,11 +121,11 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 title={'Disk'}
                 color={getBackgroundColor(stats.disk / 1024, limits.disk * 1024)}
                 description={limits.disk
-                    ? `This server is allowed to use up to ${megabytesToHuman(limits.disk)} of disk space.`
+                    ? `This server is allowed to use up to ${bytesToString(mbToBytes(limits.disk))} of disk space.`
                     : 'No disk space limit has been configured for this server.'
                 }
             >
-                {bytesToHuman(stats.disk)}
+                {bytesToString(stats.disk)}
             </StatBlock>
             <StatBlock
                 icon={faCloudDownloadAlt}
@@ -135,7 +135,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 {status === 'offline' ?
                     <span className={'text-gray-400'}>Offline</span>
                     :
-                    bytesToHuman(stats.tx)
+                    bytesToString(stats.tx)
                 }
             </StatBlock>
             <StatBlock
@@ -146,7 +146,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 {status === 'offline' ?
                     <span className={'text-gray-400'}>Offline</span>
                     :
-                    bytesToHuman(stats.rx)
+                    bytesToString(stats.rx)
                 }
             </StatBlock>
         </div>

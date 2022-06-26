@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArchive, faEllipsisH, faLock } from '@fortawesome/free-solid-svg-icons';
 import { format, formatDistanceToNow } from 'date-fns';
 import Spinner from '@/components/elements/Spinner';
-import { bytesToHuman } from '@/helpers';
+import { bytesToString } from '@/lib/formatters';
 import Can from '@/components/elements/Can';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import BackupContextMenu from '@/components/server/backups/BackupContextMenu';
@@ -64,7 +64,7 @@ export default ({ backup, className }: Props) => {
                             {backup.name}
                         </p>
                         {(backup.completedAt !== null && backup.isSuccessful) &&
-                        <span css={tw`ml-3 text-neutral-300 text-xs font-extralight hidden sm:inline`}>{bytesToHuman(backup.bytes)}</span>
+                        <span css={tw`ml-3 text-neutral-300 text-xs font-extralight hidden sm:inline`}>{bytesToString(backup.bytes)}</span>
                         }
                     </div>
                     <p css={tw`mt-1 md:mt-0 text-xs text-neutral-400 font-mono truncate`}>

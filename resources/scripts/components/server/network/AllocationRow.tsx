@@ -18,7 +18,7 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import DeleteAllocationButton from '@/components/server/network/DeleteAllocationButton';
 import setPrimaryServerAllocation from '@/api/server/network/setPrimaryServerAllocation';
 import getServerAllocations from '@/api/swr/getServerAllocations';
-import { formatIp } from '@/helpers';
+import { ip } from '@/lib/formatters';
 import Code from '@/components/elements/Code';
 
 const Label = styled.label`${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}`;
@@ -67,7 +67,7 @@ const AllocationRow = ({ allocation }: Props) => {
                 <div className={'mr-4 flex-1 md:w-40'}>
                     {allocation.alias ?
                         <CopyOnClick text={allocation.alias}><Code dark className={'w-40 truncate'}>{allocation.alias}</Code></CopyOnClick> :
-                        <CopyOnClick text={formatIp(allocation.ip)}><Code dark>{formatIp(allocation.ip)}</Code></CopyOnClick>}
+                        <CopyOnClick text={ip(allocation.ip)}><Code dark>{ip(allocation.ip)}</Code></CopyOnClick>}
                     <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
                 </div>
                 <div className={'w-16 md:w-24 overflow-hidden'}>
