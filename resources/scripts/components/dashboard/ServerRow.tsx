@@ -4,7 +4,7 @@ import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome
 import { Link } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToHuman, megabytesToHuman, formatIp } from '@/helpers';
+import { bytesToHuman, formatIp, megabytesToHuman } from '@/helpers';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
@@ -87,21 +87,23 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <div>
                     <p css={tw`text-lg break-words`}>{server.name}</p>
                     {!!server.description &&
-                    <p css={tw`text-sm text-neutral-300 break-words`}>{server.description}</p>
+                    <p css={tw`text-sm text-neutral-300 break-words line-clamp-2`}>{server.description}</p>
                     }
                 </div>
             </div>
-            <div css={tw`hidden lg:col-span-2 lg:flex ml-4 justify-end h-full`}>
-                <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
-                <p css={tw`text-sm text-neutral-400 ml-2`}>
-                    {
-                        server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
-                            <React.Fragment key={allocation.ip + allocation.port.toString()}>
-                                {allocation.alias || formatIp(allocation.ip)}:{allocation.port}
-                            </React.Fragment>
-                        ))
-                    }
-                </p>
+            <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
+                <div css={tw`flex justify-center`}>
+                    <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`}/>
+                    <p css={tw`text-sm text-neutral-400 ml-2`}>
+                        {
+                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
+                                <React.Fragment key={allocation.ip + allocation.port.toString()}>
+                                    {allocation.alias || formatIp(allocation.ip)}:{allocation.port}
+                                </React.Fragment>
+                            ))
+                        }
+                    </p>
+                </div>
             </div>
             <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
                 {(!stats || isSuspended) ?
