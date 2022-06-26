@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import React, { Suspense } from 'react';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import styled, { css, keyframes } from 'styled-components/macro';
 
 export type SpinnerSize = 'small' | 'base' | 'large';
@@ -25,12 +26,12 @@ const SpinnerComponent = styled.div<Props>`
     border-width: 3px;
     border-radius: 50%;
     animation: ${spin} 1s cubic-bezier(0.55, 0.25, 0.25, 0.70) infinite;
-    
+
     ${props => props.size === 'small' ? tw`w-4 h-4 border-2` : (props.size === 'large' ? css`
         ${tw`w-16 h-16`};
         border-width: 6px;
     ` : null)};
-    
+
     border-color: ${props => !props.isBlue ? 'rgba(255, 255, 255, 0.2)' : 'hsla(212, 92%, 43%, 0.2)'};
     border-top-color: ${props => !props.isBlue ? 'rgb(255, 255, 255)' : 'hsl(212, 92%, 43%)'};
 `;
@@ -58,7 +59,9 @@ Spinner.Size = {
 
 Spinner.Suspense = ({ children, centered = true, size = Spinner.Size.LARGE, ...props }) => (
     <Suspense fallback={<Spinner centered={centered} size={size} {...props}/>}>
-        {children}
+        <ErrorBoundary>
+            {children}
+        </ErrorBoundary>
     </Suspense>
 );
 Spinner.Suspense.displayName = 'Spinner.Suspense';

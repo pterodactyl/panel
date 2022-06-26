@@ -1,5 +1,8 @@
 import 'xterm/css/xterm.css';
+import classNames from 'classnames';
 import { debounce } from 'debounce';
+import * as Icon from 'react-feather';
+import styles from './style.module.css';
 import { FitAddon } from 'xterm-addon-fit';
 import styled from 'styled-components/macro';
 import tw, { theme as th } from 'twin.macro';
@@ -8,7 +11,6 @@ import { SearchAddon } from 'xterm-addon-search';
 import { Terminal, ITerminalOptions } from 'xterm';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
-import { ExternalLinkIcon } from '@heroicons/react/solid';
 import { usePermissions } from '@/plugins/usePermissions';
 import useEventListener from '@/plugins/useEventListener';
 import { usePersistedState } from '@/plugins/usePersistedState';
@@ -44,29 +46,12 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: 'Menlo, Monaco, Consolas, monospace',
-    rows: 34,
+    rows: 30,
     theme: theme,
 };
 
-const TerminalDiv = styled.div`
-    &::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        ${tw`bg-neutral-900`};
-    }
-`;
-
-const CommandInput = styled.input`
-    ${tw`text-sm transition-colors duration-150 px-2 bg-transparent border-0 border-b-2 border-transparent text-neutral-100 p-2 pl-0 w-full focus:ring-0`}
-    &:focus {
-        ${tw`border-cyan-700`};
-    }
-`;
-
 const ExternalButton = styled.button`
-        ${tw`absolute right-7 top-3 z-10 p-2`};
+    ${tw`absolute right-7 top-3 z-10 p-2`};
 `;
 
 export default () => {
@@ -104,6 +89,10 @@ export default () => {
 
     const popout = () => {
         window.open(window.location.href + '/console', 'Server Console', 'height=400,width=800');
+    };
+
+    const popin = () => {
+        window.close();
     };
 
     const handleDaemonErrorOutput = (line: string) => terminal.writeln(
@@ -209,36 +198,35 @@ export default () => {
     }, [ connected, instance ]);
 
     return (
-        <div css={[ tw`text-xs font-mono relative`, isConsoleDetached && tw`h-full flex flex-col overflow-hidden` ]}>
-            <SpinnerOverlay visible={!connected} size={'large'} />
-            <div
-                css={[
-                    tw`p-2 bg-black w-full`,
-                    !canSendCommands && tw`rounded-b`,
-                ]}
-                style={{ minHeight: '16rem' }}
-            >
-                <TerminalDiv css={[ isConsoleDetached && tw`h-full` ]} id={'terminal'} ref={ref}>
-                    {!isConsoleDetached &&
-                        <ExternalButton onClick={popout}>
-                            <ExternalLinkIcon css={tw`w-6 h-6`} />
+        <div className={styles.terminal}>
+            <SpinnerOverlay visible={!connected} size={'large'}/>
+            <div className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}>
+                <div id={styles.terminal} ref={ref}>
+                    {isConsoleDetached ?
+                        <ExternalButton>
+                            <Icon.XCircle css={tw`w-6 h-6`} onClick={() => popin()} />
+                        </ExternalButton>
+                        :
+                        <ExternalButton>
+                            <Icon.ExternalLink css={tw`w-6 h-6`} onClick={() => popout()} />
                         </ExternalButton>
                     }
-                </TerminalDiv>
+                </div>
             </div>
             {canSendCommands &&
-                <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
-                    <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
-                    <div css={tw`w-full`}>
-                        <CommandInput
-                            type={'text'}
-                            placeholder={'Type a command...'}
-                            aria-label={'Console command input.'}
-                            disabled={!instance || !connected}
-                            onKeyDown={handleCommandKeyDown}
-                            autoCorrect={'off'}
-                            autoCapitalize={'none'}
-                        />
+                <div className={classNames('relative', styles.overflows_container)}>
+                    <input
+                        className={classNames('peer', styles.command_input)}
+                        type={'text'}
+                        placeholder={'Type a command...'}
+                        aria-label={'Console command input.'}
+                        disabled={!instance || !connected}
+                        onKeyDown={handleCommandKeyDown}
+                        autoCorrect={'off'}
+                        autoCapitalize={'none'}
+                    />
+                    <div className={classNames('text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse', styles.command_icon)}>
+                        <Icon.ChevronsRight className={'w-4 h-4'}/>
                     </div>
                 </div>
             }

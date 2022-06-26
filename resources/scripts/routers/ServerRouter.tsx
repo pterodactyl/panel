@@ -10,7 +10,6 @@ import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import { CSSTransition } from 'react-transition-group';
 import SidePanel from '@/components/elements/SidePanel';
-import ServerConsole from '@/components/server/ServerConsole';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import SubNavigation from '@/components/elements/SubNavigation';
@@ -35,6 +34,7 @@ import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
 import ScreenBlock, { NotFound, ServerError } from '@/components/elements/ScreenBlock';
+import ServerConsoleContainer from '@/components/server/console/ServerConsoleContainer';
 import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditContainer';
 import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
 
@@ -181,7 +181,7 @@ export default () => {
                         <ErrorBoundary>
                             <TransitionRouter>
                                 <Switch location={location}>
-                                    <Route path={`${match.path}`} component={ServerConsole} exact/>
+                                    <Route path={`${match.path}`} component={ServerConsoleContainer} exact/>
                                     <Route path={`${match.path}/console`} component={ExternalConsole} exact/>
                                     <Route path={`${match.path}/files`} exact>
                                         <RequireServerPermission permissions={'file.*'}>

@@ -1,12 +1,12 @@
 import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import { Link } from 'react-router-dom';
+import { bytesToHuman } from '@/helpers';
 import styled from 'styled-components/macro';
 import { Server } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import React, { useEffect, useRef, useState } from 'react';
-import { bytesToHuman } from '@/helpers';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
@@ -77,7 +77,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <div>
                     <p css={tw`text-lg break-words`}>{server.name}</p>
                     {!!server.description &&
-                    <p css={tw`text-sm text-neutral-300 break-words`}>{server.description}</p>
+                    <p css={tw`text-sm text-neutral-300 break-words line-clamp-2`}>{server.description}</p>
                     }
                 </div>
             </div>

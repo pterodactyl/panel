@@ -3,8 +3,8 @@ import React, { memo } from 'react';
 import isEqual from 'react-fast-compare';
 import Features from '@feature/Features';
 import { ServerContext } from '@/state/server';
-import Console from '@/components/server/Console';
 import Spinner from '@/components/elements/Spinner';
+import Console from '@/components/server/console/Console';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
