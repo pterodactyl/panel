@@ -53,7 +53,7 @@ class DiscordController extends Controller
      * @throws DisplayException
      * @throws DataValidationException
      */
-    public function authenticate(Request $request)
+    public function callback(Request $request)
     {
         $code = Http::asForm()->post('https://discord.com/api/oauth2/token', [
             'client_id' => $this->settings->get('jexactyl::discord:id'),
