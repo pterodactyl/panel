@@ -72,6 +72,9 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
 
     return (
         <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
+            <StatBlock icon={faWifi} title={'Address'}>
+                {allocation}
+            </StatBlock>
             <StatBlock
                 icon={faClock}
                 title={'Uptime'}
@@ -145,9 +148,6 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                     :
                     bytesToHuman(stats.rx)
                 }
-            </StatBlock>
-            <StatBlock icon={faWifi} title={'Address'}>
-                {allocation}
             </StatBlock>
         </div>
     );
