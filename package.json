@@ -1,5 +1,8 @@
 {
     "name": "pterodactyl-panel",
+    "engines": {
+        "node": ">=14"
+    },
     "dependencies": {
         "@floating-ui/react-dom-interactions": "^0.6.3",
         "@fortawesome/fontawesome-svg-core": "^1.2.32",
