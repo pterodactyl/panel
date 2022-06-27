@@ -10,6 +10,8 @@ class ActivityLogTargetableService
 
     protected ?Model $subject = null;
 
+    protected ?int $apiKeyId = null;
+
     public function setActor(Model $actor): void
     {
         $this->actor = $actor;
@@ -18,6 +20,11 @@ class ActivityLogTargetableService
     public function setSubject(Model $subject): void
     {
         $this->subject = $subject;
+    }
+
+    public function setApiKeyId(?int $apiKeyId): void
+    {
+        $this->apiKeyId = $apiKeyId;
     }
 
     public function actor(): ?Model
@@ -30,9 +37,15 @@ class ActivityLogTargetableService
         return $this->subject;
     }
 
+    public function apiKeyId(): ?int
+    {
+        return $this->apiKeyId;
+    }
+
     public function reset(): void
     {
         $this->actor = null;
         $this->subject = null;
+        $this->apiKeyId = null;
     }
 }

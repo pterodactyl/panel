@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Event;
 use Pterodactyl\Events\ActivityLogged;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
@@ -21,11 +22,13 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property string|null $description
  * @property string|null $actor_type
  * @property int|null $actor_id
+ * @property int|null $api_key_id
  * @property \Illuminate\Support\Collection|null $properties
  * @property \Carbon\Carbon $timestamp
  * @property IlluminateModel|\Eloquent $actor
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLogSubject[] $subjects
  * @property int|null $subjects_count
+ * @property \Pterodactyl\Models\ApiKey|null $apiKey
  *
  * @method static Builder|ActivityLog forActor(\Illuminate\Database\Eloquent\Model $actor)
  * @method static Builder|ActivityLog forEvent(string $action)
@@ -34,6 +37,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @method static Builder|ActivityLog query()
  * @method static Builder|ActivityLog whereActorId($value)
  * @method static Builder|ActivityLog whereActorType($value)
+ * @method static Builder|ActivityLog whereApiKeyId($value)
  * @method static Builder|ActivityLog whereBatch($value)
  * @method static Builder|ActivityLog whereDescription($value)
  * @method static Builder|ActivityLog whereEvent($value)
@@ -84,6 +88,11 @@ class ActivityLog extends Model
     public function subjects()
     {
         return $this->hasMany(ActivityLogSubject::class);
+    }
+
+    public function apiKey(): HasOne
+    {
+        return $this->hasOne(ApiKey::class, 'id', 'api_key_id');
     }
 
     public function scopeForEvent(Builder $builder, string $action): Builder

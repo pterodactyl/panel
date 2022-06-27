@@ -15,13 +15,13 @@ export default () => {
     return (
         <div className={'pt-8 xl:pt-32'}>
             <Switch location={location}>
-                <Route path={`${path}/login`} component={LoginContainer} exact/>
-                <Route path={`${path}/login/checkpoint`} component={LoginCheckpointContainer}/>
-                <Route path={`${path}/password`} component={ForgotPasswordContainer} exact/>
-                <Route path={`${path}/password/reset/:token`} component={ResetPasswordContainer}/>
-                <Route path={`${path}/checkpoint`}/>
+                <Route path={`${path}/login`} component={LoginContainer} exact />
+                <Route path={`${path}/login/checkpoint`} component={LoginCheckpointContainer} />
+                <Route path={`${path}/password`} component={ForgotPasswordContainer} exact />
+                <Route path={`${path}/password/reset/:token`} component={ResetPasswordContainer} />
+                <Route path={`${path}/checkpoint`} />
                 <Route path={'*'}>
-                    <NotFound onBack={() => history.push('/auth/login')}/>
+                    <NotFound onBack={() => history.push('/auth/login')} />
                 </Route>
             </Switch>
         </div>

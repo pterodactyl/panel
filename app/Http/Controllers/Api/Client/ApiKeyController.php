@@ -67,7 +67,7 @@ class ApiKeyController extends ClientApiController
             ->firstOrFail();
 
         Activity::event('user:api-key.delete')
-            ->property('identifer', $key->identifier)
+            ->property('identifier', $key->identifier)
             ->log();
 
         $key->delete();

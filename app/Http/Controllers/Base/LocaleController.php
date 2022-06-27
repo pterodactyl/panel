@@ -5,8 +5,8 @@ namespace Pterodactyl\Http\Controllers\Base;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Translation\Translator;
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Translation\Loader;
+use Pterodactyl\Http\Controllers\Controller;
 
 class LocaleController extends Controller
 {
@@ -57,7 +57,16 @@ class LocaleController extends Controller
             if (is_array($value)) {
                 $data[$key] = $this->i18n($value);
             } else {
-                $data[$key] = preg_replace('/:([\w-]+)(\W?|$)/m', '{{$1}}$2', $value);
+                // Find a Laravel style translation replacement in the string and replace it with
+                // one that the front-end is able to use. This won't always be present, especially
+                // for complex strings or things where we'd never have a backend component anyways.
+                //
+                // For example:
+                // "Hello :name, the :notifications.0.title notification needs :count actions :foo.0.bar."
+                //
+                // Becomes:
+                // "Hello {{name}}, the {{notifications.0.title}} notification needs {{count}} actions {{foo.0.bar}}."
+                $data[$key] = preg_replace('/:([\w.-]+\w)([^\w:]?|$)/m', '{{$1}}$2', $value);
             }
         }
 

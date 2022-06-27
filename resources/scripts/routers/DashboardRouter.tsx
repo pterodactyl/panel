@@ -14,35 +14,33 @@ export default () => {
 
     return (
         <>
-            <NavigationBar/>
-            {location.pathname.startsWith('/account') &&
+            <NavigationBar />
+            {location.pathname.startsWith('/account') && (
                 <SubNavigation>
                     <div>
-                        {routes.account.filter((route) => !!route.name).map(({ path, name, exact = false }) => (
-                            <NavLink
-                                key={path}
-                                to={`/account/${path}`.replace('//', '/')}
-                                exact={exact}
-                            >
-                                {name}
-                            </NavLink>
-                        ))}
+                        {routes.account
+                            .filter((route) => !!route.name)
+                            .map(({ path, name, exact = false }) => (
+                                <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
+                                    {name}
+                                </NavLink>
+                            ))}
                     </div>
                 </SubNavigation>
-            }
+            )}
             <TransitionRouter>
-                <React.Suspense fallback={<Spinner centered/>}>
+                <React.Suspense fallback={<Spinner centered />}>
                     <Switch location={location}>
                         <Route path={'/'} exact>
-                            <DashboardContainer/>
+                            <DashboardContainer />
                         </Route>
                         {routes.account.map(({ path, component: Component }) => (
                             <Route key={path} path={`/account/${path}`.replace('//', '/')} exact>
-                                <Component/>
+                                <Component />
                             </Route>
                         ))}
                         <Route path={'*'}>
-                            <NotFound/>
+                            <NotFound />
                         </Route>
                     </Switch>
                 </React.Suspense>

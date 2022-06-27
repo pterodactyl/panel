@@ -27,7 +27,7 @@ class UserFactory extends Factory
         return [
             'external_id' => null,
             'uuid' => Uuid::uuid4()->toString(),
-            'username' => $this->faker->unique()->userName,
+            'username' => $this->faker->userName . '_' . Str::random(10),
             'email' => Str::random(32) . '@example.com',
             'name_first' => $this->faker->firstName,
             'name_last' => $this->faker->lastName,
@@ -45,10 +45,6 @@ class UserFactory extends Factory
      */
     public function admin(): Factory
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'root_admin' => true,
-            ];
-        });
+        return $this->state(['root_admin' => true]);
     }
 }

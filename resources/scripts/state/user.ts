@@ -26,8 +26,7 @@ const user: UserStore = {
     }),
 
     updateUserData: action((state, payload) => {
-        // Limitation of Typescript, can't do much about that currently unfortunately.
-        // @ts-ignore
+        // @ts-expect-error limitation of Typescript, can't do much about that currently unfortunately.
         state.data = { ...state.data, ...payload };
     }),
 

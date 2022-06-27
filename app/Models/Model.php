@@ -57,7 +57,7 @@ abstract class Model extends IlluminateModel
             try {
                 $model->validate();
             } catch (ValidationException $exception) {
-                throw new DataValidationException($exception->validator);
+                throw new DataValidationException($exception->validator, $model);
             }
 
             return true;

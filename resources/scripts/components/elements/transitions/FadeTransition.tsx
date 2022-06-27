@@ -5,15 +5,17 @@ type Duration = `duration-${number}`;
 
 interface Props {
     as?: React.ElementType;
-    duration?: Duration | [ Duration, Duration ];
+    duration?: Duration | [Duration, Duration];
     show: boolean;
     children: React.ReactNode;
 }
 
 export default ({ children, duration, ...props }: Props) => {
-    const [ enterDuration, exitDuration ] = Array.isArray(duration)
+    const [enterDuration, exitDuration] = Array.isArray(duration)
         ? duration
-        : (!duration ? [ 'duration-200', 'duration-100' ] : [ duration, duration ]);
+        : !duration
+        ? ['duration-200', 'duration-100']
+        : [duration, duration];
 
     return (
         <Transition

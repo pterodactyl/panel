@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { Terminal, ITerminalOptions } from 'xterm';
+import { ITerminalOptions, Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
@@ -7,14 +7,16 @@ import { WebLinksAddon } from 'xterm-addon-web-links';
 import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
-import styled from 'styled-components/macro';
 import { usePermissions } from '@/plugins/usePermissions';
-import tw, { theme as th } from 'twin.macro';
+import { theme as th } from 'twin.macro';
 import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import classNames from 'classnames';
+import styles from './style.module.css';
+import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -48,23 +50,6 @@ const terminalProps: ITerminalOptions = {
     theme: theme,
 };
 
-const TerminalDiv = styled.div`
-    &::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    &::-webkit-scrollbar-thumb {
-        ${tw`bg-neutral-900`};
-    }
-`;
-
-const CommandInput = styled.input`
-    ${tw`text-sm transition-colors duration-150 px-2 bg-transparent border-0 border-b-2 border-transparent text-neutral-100 p-2 pl-0 w-full focus:ring-0`}
-    &:focus {
-        ${tw`border-cyan-700`};
-    }
-`;
-
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
@@ -74,16 +59,15 @@ export default () => {
     const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
-    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
-    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
-    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
-    const [ historyIndex, setHistoryIndex ] = useState(-1);
+    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const [canSendCommands] = usePermissions(['control.console']);
+    const serverId = ServerContext.useStoreState((state) => state.server.data!.id);
+    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
+    const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [historyIndex, setHistoryIndex] = useState(-1);
 
-    const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
-        (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
-    );
+    const handleConsoleOutput = (line: string, prelude = false) =>
+        terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
 
     const handleTransferStatus = (status: string) => {
         switch (status) {
@@ -94,17 +78,20 @@ export default () => {
 
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
-                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
+                terminal.writeln(
+                    TERMINAL_PRELUDE +
+                        'Server has been archived successfully, attempting connection to target node..\u001b[0m'
+                );
         }
     };
 
-    const handleDaemonErrorOutput = (line: string) => terminal.writeln(
-        TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
-    );
+    const handleDaemonErrorOutput = (line: string) =>
+        terminal.writeln(
+            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+        );
 
-    const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
-    );
+    const handlePowerChangeEvent = (state: string) =>
+        terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
@@ -127,7 +114,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
+            setHistory((prevHistory) => [command, ...prevHistory!].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -161,13 +148,16 @@ export default () => {
                 return true;
             });
         }
-    }, [ terminal, connected ]);
+    }, [terminal, connected]);
 
-    useEventListener('resize', debounce(() => {
-        if (terminal.element) {
-            fitAddon.fit();
-        }
-    }, 100));
+    useEventListener(
+        'resize',
+        debounce(() => {
+            if (terminal.element) {
+                fitAddon.fit();
+            }
+        }, 100)
+    );
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {
@@ -176,7 +166,7 @@ export default () => {
             [SocketEvent.INSTALL_OUTPUT]: handleConsoleOutput,
             [SocketEvent.TRANSFER_LOGS]: handleConsoleOutput,
             [SocketEvent.TRANSFER_STATUS]: handleTransferStatus,
-            [SocketEvent.DAEMON_MESSAGE]: line => handleConsoleOutput(line, true),
+            [SocketEvent.DAEMON_MESSAGE]: (line) => handleConsoleOutput(line, true),
             [SocketEvent.DAEMON_ERROR]: handleDaemonErrorOutput,
         };
 
@@ -199,36 +189,38 @@ export default () => {
                 });
             }
         };
-    }, [ connected, instance ]);
+    }, [connected, instance]);
 
     return (
-        <div css={tw`text-xs font-mono relative`}>
+        <div className={styles.terminal}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
-                css={[
-                    tw`rounded-t p-2 bg-black w-full`,
-                    !canSendCommands && tw`rounded-b`,
-                ]}
-                style={{ minHeight: '16rem' }}
+                className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
             >
-                <TerminalDiv id={'terminal'} ref={ref} />
+                <div id={styles.terminal} ref={ref} />
             </div>
-            {canSendCommands &&
-                <div css={tw`rounded-b bg-neutral-900 text-neutral-100 flex items-baseline`}>
-                    <div css={tw`flex-shrink-0 p-2 font-bold`}>$</div>
-                    <div css={tw`w-full`}>
-                        <CommandInput
-                            type={'text'}
-                            placeholder={'Type a command...'}
-                            aria-label={'Console command input.'}
-                            disabled={!instance || !connected}
-                            onKeyDown={handleCommandKeyDown}
-                            autoCorrect={'off'}
-                            autoCapitalize={'none'}
-                        />
+            {canSendCommands && (
+                <div className={classNames('relative', styles.overflows_container)}>
+                    <input
+                        className={classNames('peer', styles.command_input)}
+                        type={'text'}
+                        placeholder={'Type a command...'}
+                        aria-label={'Console command input.'}
+                        disabled={!instance || !connected}
+                        onKeyDown={handleCommandKeyDown}
+                        autoCorrect={'off'}
+                        autoCapitalize={'none'}
+                    />
+                    <div
+                        className={classNames(
+                            'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
+                            styles.command_icon
+                        )}
+                    >
+                        <ChevronDoubleRightIcon className={'w-4 h-4'} />
                     </div>
                 </div>
-            }
+            )}
         </div>
     );
 };

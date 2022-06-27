@@ -11,10 +11,12 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { styles as btnStyles } from '@/components/elements/button/index';
 import { XCircleIcon } from '@heroicons/react/solid';
+import useLocationHash from '@/plugins/useLocationHash';
 
 export default () => {
+    const { hash } = useLocationHash();
     const { clearAndAddHttpError } = useFlashKey('server:activity');
-    const [ filters, setFilters ] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
+    const [filters, setFilters] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
 
     const { data, isValidating, error } = useActivityLogs(filters, {
         revalidateOnMount: true,
@@ -22,44 +24,46 @@ export default () => {
     });
 
     useEffect(() => {
-        const parsed = new URLSearchParams(location.search);
-
-        setFilters(value => ({ ...value, filters: { ip: parsed.get('ip'), event: parsed.get('event') } }));
-    }, [ location.search ]);
+        setFilters((value) => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+    }, [hash]);
 
     useEffect(() => {
         clearAndAddHttpError(error);
-    }, [ error ]);
+    }, [error]);
 
     return (
         <ServerContentBlock title={'Activity Log'}>
-            <FlashMessageRender byKey={'server:activity'}/>
-            {(filters.filters?.event || filters.filters?.ip) &&
+            <FlashMessageRender byKey={'server:activity'} />
+            {(filters.filters?.event || filters.filters?.ip) && (
                 <div className={'flex justify-end mb-2'}>
                     <Link
                         to={'#'}
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
-                        onClick={() => setFilters(value => ({ ...value, filters: {} }))}
+                        onClick={() => setFilters((value) => ({ ...value, filters: {} }))}
                     >
-                        Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'}/>
+                        Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'} />
                     </Link>
                 </div>
-            }
-            {!data && isValidating ?
-                <Spinner centered/>
-                :
+            )}
+            {!data && isValidating ? (
+                <Spinner centered />
+            ) : !data?.items.length ? (
+                <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
+            ) : (
                 <div className={'bg-gray-700'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
-                            <span/>
+                            <span />
                         </ActivityLogEntry>
                     ))}
                 </div>
-            }
-            {data && <PaginationFooter
-                pagination={data.pagination}
-                onPageSelect={page => setFilters(value => ({ ...value, page }))}
-            />}
+            )}
+            {data && (
+                <PaginationFooter
+                    pagination={data.pagination}
+                    onPageSelect={(page) => setFilters((value) => ({ ...value, page }))}
+                />
+            )}
         </ServerContentBlock>
     );
 };

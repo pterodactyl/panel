@@ -1,0 +1,19 @@
+.icons {
+    @apply flex space-x-1 mx-2 transition-colors duration-100 text-gray-400;
+
+    & > span {
+        @apply px-1 py-px cursor-pointer hover:text-gray-50;
+    }
+
+    & svg {
+        @apply w-4 h-4;
+    }
+}
+
+.description {
+    @apply mt-1 text-sm break-words line-clamp-2 pr-4;
+
+    & strong {
+        @apply text-gray-50 font-semibold;
+    }
+}

@@ -20,7 +20,7 @@ const Toast = styled.div`
 `;
 
 const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
-    const [ copied, setCopied ] = useState(false);
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (!copied) return;
@@ -32,7 +32,7 @@ const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
         return () => {
             clearTimeout(timeout);
         };
-    }, [ copied ]);
+    }, [copied]);
 
     const onCopy = useCallback(() => {
         setCopied(true);
@@ -42,15 +42,15 @@ const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
         <>
             <SwitchTransition>
                 <Fade timeout={250} key={copied ? 'visible' : 'invisible'}>
-                    {copied ?
+                    {copied ? (
                         <Toast>
                             <div>
                                 <p>Copied &quot;{text}&quot; to clipboard.</p>
                             </div>
                         </Toast>
-                        :
+                    ) : (
                         <></>
-                    }
+                    )}
                 </Fade>
             </SwitchTransition>
             <CopyToClipboard onCopy={onCopy} text={text} options={{ debug: true }} css={tw`cursor-pointer`}>

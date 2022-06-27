@@ -1,13 +1,13 @@
 <?php
 
-namespace Pterodactyl\Http\Middleware;
+namespace Pterodactyl\Http\Middleware\Activity;
 
 use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Facades\LogTarget;
 
-class ServerActivitySubject
+class ServerSubject
 {
     /**
      * Attempts to automatically scope all of the activity log events registered

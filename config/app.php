@@ -239,5 +239,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        // Custom Facades
+        'Activity' => Pterodactyl\Facades\Activity::class,
+        'LogBatch' => Pterodactyl\Facades\LogBatch::class,
+        'LogTarget' => Pterodactyl\Facades\LogTarget::class,
     ],
 ];
