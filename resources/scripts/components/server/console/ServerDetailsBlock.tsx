@@ -121,7 +121,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             <StatBlock
                 icon={faCloudDownloadAlt}
                 title={'Network (Inbound)'}
-                description={'The total amount of network traffic that your server has recieved since it was started.'}
+                description={'The total amount of network traffic that your server has received since it was started.'}
             >
                 {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.rx)}
             </StatBlock>
