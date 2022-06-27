@@ -1,4 +1,4 @@
-const _CONVERSION_UNIT = 1000;
+const _CONVERSION_UNIT = 1024;
 
 /**
  * Given a value in megabytes converts it back down into bytes.
@@ -9,13 +9,16 @@ function mbToBytes(megabytes: number): number {
 
 /**
  * Given an amount of bytes, converts them into a human readable string format
- * using "1000" as the divisor.
+ * using "1024" as the divisor.
  */
-function bytesToString(bytes: number): string {
+function bytesToString(bytes: number, decimals = 2): string {
+    const k = _CONVERSION_UNIT;
+
     if (bytes < 1) return '0 Bytes';
 
-    const i = Math.floor(Math.log(bytes) / Math.log(_CONVERSION_UNIT));
-    const value = Number((bytes / Math.pow(_CONVERSION_UNIT, i)).toFixed(2));
+    decimals = Math.floor(Math.max(0, decimals));
+    const i = Math.floor(Math.log(bytes) / Math.log(k));
+    const value = Number((bytes / Math.pow(k, i)).toFixed(decimals));
 
     return `${value} ${['Bytes', 'KB', 'MB', 'GB', 'TB'][i]}`;
 }
