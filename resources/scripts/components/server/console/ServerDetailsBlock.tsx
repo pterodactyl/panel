@@ -123,7 +123,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 title={'Network (Inbound)'}
                 description={'The total amount of network traffic that your server has recieved since it was started.'}
             >
-                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.tx)}
+                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.rx)}
             </StatBlock>
             <StatBlock
                 icon={faCloudUploadAlt}
@@ -132,7 +132,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                     'The total amount of traffic your server has sent across the internet since it was started.'
                 }
             >
-                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.rx)}
+                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.tx)}
             </StatBlock>
         </div>
     );
