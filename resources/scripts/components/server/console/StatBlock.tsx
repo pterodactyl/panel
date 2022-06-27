@@ -22,20 +22,20 @@ export default ({ title, copyOnClick, icon, color, description, className, child
 
     return (
         <Tooltip arrow placement={'top'} disabled={!description} content={description || ''}>
-            <CopyOnClick text={copyOnClick} disabled={!copyOnClick}>
-                <div className={classNames(styles.stat_block, 'bg-gray-600', className)}>
-                    <div className={classNames(styles.status_bar, color || 'bg-gray-700')} />
-                    <div className={classNames(styles.icon, color || 'bg-gray-700')}>
-                        <Icon
-                            icon={icon}
-                            className={classNames({
-                                'text-gray-100': !color || color === 'bg-gray-700',
-                                'text-gray-50': color && color !== 'bg-gray-700',
-                            })}
-                        />
-                    </div>
-                    <div className={'flex flex-col justify-center overflow-hidden w-full'}>
-                        <p className={'font-header leading-tight text-xs md:text-sm text-gray-200'}>{title}</p>
+            <div className={classNames(styles.stat_block, 'bg-gray-600', className)}>
+                <div className={classNames(styles.status_bar, color || 'bg-gray-700')} />
+                <div className={classNames(styles.icon, color || 'bg-gray-700')}>
+                    <Icon
+                        icon={icon}
+                        className={classNames({
+                            'text-gray-100': !color || color === 'bg-gray-700',
+                            'text-gray-50': color && color !== 'bg-gray-700',
+                        })}
+                    />
+                </div>
+                <div className={'flex flex-col justify-center overflow-hidden w-full'}>
+                    <p className={'font-header leading-tight text-xs md:text-sm text-gray-200'}>{title}</p>
+                    <CopyOnClick text={copyOnClick}>
                         <div
                             ref={ref}
                             className={'h-[1.75rem] w-full font-semibold text-gray-50 truncate'}
@@ -43,9 +43,9 @@ export default ({ title, copyOnClick, icon, color, description, className, child
                         >
                             {children}
                         </div>
-                    </div>
+                    </CopyOnClick>
                 </div>
-            </CopyOnClick>
+            </div>
         </Tooltip>
     );
 };

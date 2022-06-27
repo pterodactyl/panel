@@ -4,7 +4,7 @@ import Portal from '@/components/elements/Portal';
 import copy from 'copy-to-clipboard';
 import classNames from 'classnames';
 
-const CopyOnClick: React.FC<{ text: any; disabled?: boolean }> = ({ text, disabled, children }) => {
+const CopyOnClick: React.FC<{ text: string | number | null | undefined }> = ({ text, children }) => {
     const [copied, setCopied] = useState(false);
 
     useEffect(() => {
@@ -23,12 +23,12 @@ const CopyOnClick: React.FC<{ text: any; disabled?: boolean }> = ({ text, disabl
         throw new Error('Component passed to <CopyOnClick/> must be a valid React element.');
     }
 
-    const child = disabled
+    const child = !text
         ? React.Children.only(children)
         : React.cloneElement(React.Children.only(children), {
               className: classNames(children.props.className || '', 'cursor-pointer'),
               onClick: (e: React.MouseEvent<HTMLElement>) => {
-                  copy(text);
+                  copy(String(text));
                   setCopied(true);
                   if (typeof children.props.onClick === 'function') {
                       children.props.onClick(e);
