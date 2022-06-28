@@ -13,6 +13,8 @@ export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | nul
 interface ServerDataStore {
     data?: Server;
     inConflictState: Computed<ServerDataStore, boolean>;
+    isInstalling: Computed<ServerDataStore, boolean>;
+    isTransferring: Computed<ServerDataStore, boolean>;
     permissions: string[];
 
     getServer: Thunk<ServerDataStore, string, Record<string, unknown>, ServerStore, Promise<void>>;
@@ -30,6 +32,10 @@ const server: ServerDataStore = {
         }
 
         return state.data.status !== null || state.data.isTransferring;
+    }),
+
+    isInstalling: computed((state) => {
+        return state.data?.status === 'installing' || state.data?.status === 'install_failed';
     }),
 
     getServer: thunk(async (actions, payload) => {
