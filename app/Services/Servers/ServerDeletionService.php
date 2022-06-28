@@ -117,7 +117,7 @@ class ServerDeletionService
                 $backup->update(['is_locked' => false]);
                 try {
                     $job = new DeleteBackupJob($backup);
-                    $this->dispatcher->dispatchNow($job);
+                    $this->dispatcher->dispatch($job);
                 } catch (Exception $exception) {
                     if (!$this->force) {
                         throw $exception;
