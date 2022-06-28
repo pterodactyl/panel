@@ -6,7 +6,9 @@ use Exception;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Jobs\Backup\DeleteBackupJob;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -17,6 +19,11 @@ class ServerDeletionService
      * @var bool
      */
     protected $force = false;
+
+    /**
+     * @var \Illuminate\Contracts\Bus\Dispatcher
+     */
+    private $dispatcher;
 
     /**
      * @var \Illuminate\Database\ConnectionInterface
@@ -37,10 +44,12 @@ class ServerDeletionService
      * DeletionService constructor.
      */
     public function __construct(
+        Dispatcher $dispatcher,
         ConnectionInterface $connection,
         DaemonServerRepository $daemonServerRepository,
         DatabaseManagementService $databaseManagementService
     ) {
+        $this->dispatcher = $dispatcher;
         $this->connection = $connection;
         $this->daemonServerRepository = $daemonServerRepository;
         $this->databaseManagementService = $databaseManagementService;
@@ -98,6 +107,27 @@ class ServerDeletionService
                     //
                     // @see https://github.com/pterodactyl/panel/issues/2085
                     $database->delete();
+
+                    Log::warning($exception);
+                }
+            }
+
+            foreach ($server->backups as $backup) {
+                // Unlock backup to prevent BackupLockedException
+                $backup->update(['is_locked' => false]);
+                try {
+                    $job = new DeleteBackupJob($backup);
+                    $this->dispatcher->dispatchNow($job);
+                } catch (Exception $exception) {
+                    if (!$this->force) {
+                        throw $exception;
+                    }
+
+                    // Oh well, just try to delete the backup entry we have from the database
+                    // so that the server itself can be deleted. This will leave it dangling on
+                    // the host instance, but we couldn't delete it anyways so not sure how we would
+                    // handle this better anyways.
+                    $backup->delete();
 
                     Log::warning($exception);
                 }
