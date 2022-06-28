@@ -3,6 +3,23 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.9.1
+### Fixed
+* Fixes missing "Click to Copy" for server address on the console data blocks.
+* Fixes data points on the graphs not being properly rounded to two decimal places.
+* Returns byte formatting logic to use `1024` as the base value, rather than `1000`.
+* Fixes permission error occurring when a server is marked as installing and an admin navigates to the console screen.
+* Fixes improper display of install/transfer warning on the server console page.
+* Fixes permission matching for the server settings page to correctly allow access when a user has _any_ of the needed permissions.
+
+### Changed
+* Moves the server data blocks to the right-hand side of the console, rather than the left.
+* Rather than defaulting graph values at `0` when resetting or refreshing the page, their values are now hidden entirely.
+* **[security]** Hides IP addresses from all activity log entries that are not directly associated with the currently signed in user.
+
+### Added
+* Adds the current resource limits for a server next to each data block on the console screen.
+
 ## v1.9.0
 ### Added
 * Added support for using Tailwind classes inside components using `className={}` rather than having to use `twin.macro` with the `css={}` prop.
