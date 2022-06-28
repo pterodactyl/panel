@@ -14,7 +14,6 @@ interface ServerDataStore {
     data?: Server;
     inConflictState: Computed<ServerDataStore, boolean>;
     isInstalling: Computed<ServerDataStore, boolean>;
-    isTransferring: Computed<ServerDataStore, boolean>;
     permissions: string[];
 
     getServer: Thunk<ServerDataStore, string, Record<string, unknown>, ServerStore, Promise<void>>;
