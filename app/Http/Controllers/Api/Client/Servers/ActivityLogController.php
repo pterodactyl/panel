@@ -25,10 +25,7 @@ class ActivityLogController extends ClientApiController
         $activity = QueryBuilder::for($server->activity())
             ->with('actor')
             ->allowedSorts(['timestamp'])
-            ->allowedFilters([
-                AllowedFilter::exact('ip'),
-                AllowedFilter::partial('event'),
-            ])
+            ->allowedFilters([AllowedFilter::partial('event')])
             ->when(config('activity.hide_admin_activity'), function (Builder $builder) use ($server) {
                 // We could do this with a query and a lot of joins, but that gets pretty
                 // painful so for now we'll execute a simpler query.
