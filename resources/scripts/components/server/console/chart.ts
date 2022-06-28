@@ -148,7 +148,7 @@ function useChartTickLabel(label: string, max: number, tickLabel: string) {
                     suggestedMax: max,
                     ticks: {
                         callback(value) {
-                            return `${value}${tickLabel}`;
+                            return `${typeof value === 'number' ? Number(value).toFixed(2) : value}${tickLabel}`;
                         },
                     },
                 },
