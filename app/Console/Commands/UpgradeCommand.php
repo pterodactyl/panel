@@ -110,8 +110,8 @@ class UpgradeCommand extends Command
             });
             
             $this->withProgress($bar, function () {
-                $this->line('\$upgrader> mv /var/www/pterodactyl/.env /tmp/pterodactyl/.env');
-                $process = Process::fromShellCommandline('mv /var/www/pterodactyl/.env /tmp/pterodactyl/.env');
+                $this->line('\$upgrader> mv /var/www/pterodactyl/.env /tmp');
+                $process = Process::fromShellCommandline('mv /var/www/pterodactyl/.env /tmp');
                 $process->run(function ($type, $buffer) {
                     if ($type === Process::ERR) {
                         return $this->processError($buffer);
@@ -151,8 +151,8 @@ class UpgradeCommand extends Command
             });
             
             $this->withProgress($bar, function () {
-                $this->('\$upgrader> mv /tmp/pterodactyl/.env /var/www/pterodacty/.env');
-                $process = Process::fromShellCommandline('mv /tmp/pterodactyl/.env /var/www/pterodacty/.env');
+                $this->('\$upgrader> mv /tmp/.env /var/www/pterodacty/.env');
+                $process = Process::fromShellCommandline('mv /tmp/.env /var/www/pterodacty/.env');
                 $process->run(function ($type, $buffer) {
                     if ($type === Process::ERR) {
                         $this->error($buffer);
