@@ -94,7 +94,7 @@ class UpgradeCommand extends Command
         }
 
         ini_set('output_buffering', 0);
-        $bar = $this->output->createProgressBar($skipDownload ? 9 : 14);
+        $bar = $this->output->createProgressBar($skipDownload ? 8 : 13);
         $bar->start();
         $dir = sprintf('/var/www/backup_%s', preg_replace('/:|\+/', '_', CarbonImmutable::now()->toIso8601String());
 
@@ -189,13 +189,8 @@ class UpgradeCommand extends Command
         $this->setLaravel($app);
 
         $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan view:clear');
-            $this->call('view:clear');
-        });
-
-        $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan config:clear');
-            $this->call('config:clear');
+            $this->line('$upgrader> php artisan optimize:clear');
+            $this->call('optimize:clear');
         });
 
         $this->withProgress($bar, function () {
