@@ -103,27 +103,25 @@ class UpgradeCommand extends Command
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                     if ($type === Process:ERR) {
-                        $this->error('Rolling back to current version.');
-                        return $this->processError();
+                        return $this->processError(false);
                     }
                 });
             });
             
             $this->withProgress($bar, function () {
-                $this->line('\$upgrader> mv /var/www/pterodactyl/.env /tmp');
-                $process = Process::fromShellCommandline('mv /var/www/pterodactyl/.env /tmp');
-                $process->run(function ($type, $buffer) {
+                $this->line('\$upgrader> mkdir /var/www/backup');
+                Process::fromShellCommandline('mkdir /var/www/backup')->run(function ($type, $buffer) {
                     if ($type === Process::ERR) {
-                        return $this->processError($buffer);
+                        $this->warn('Failed to create /var/www/backup; assuming it already exists.');
                     }
                 });
             });
             
             $this->withProgress($bar, function () {
-                $this->line('\$upgrader> rm -rf /var/www/pterodactyl/*');
-                Process::fromShellCommandline('rm -rf /var/www/pterodactyl')->run(function ($type, $buffer) {
+                $this->line('\$upgrader> mv /var/www/pterodactyl/* /var/www/backup');
+                Process::fromShellCommandline('mv /var/www/pterodactyl/* /var/www/backup')->run(function ($type, $buffer) {
                     if ($type === Process:ERR) {
-                        return $this->processError($buffer);
+                        return $this->processError(false, $buffer);
                     }
                 });
             });
@@ -134,7 +132,7 @@ class UpgradeCommand extends Command
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                     if ($type === Process::ERR) {
-                        return $this->processError();
+                        return $this->processError(true);
                     }
                 });
             });
@@ -145,20 +143,16 @@ class UpgradeCommand extends Command
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                     if ($type === Process::ERR) {
-                        return $this->processError();
+                        return $this->processError(true);
                     }
                 });
             });
             
             $this->withProgress($bar, function () {
-                $this->('\$upgrader> mv /tmp/.env /var/www/pterodacty/.env');
-                $process = Process::fromShellCommandline('mv /tmp/.env /var/www/pterodacty/.env');
-                $process->run(function ($type, $buffer) {
+                $this->line('\$upgrader> rm -rf /var/www/backup');
+                Process::fromShellCommandline('rm -rf /var/www/backup')->run(function ($type, $buffer) {
                     if ($type === Process::ERR) {
-                        $this->error($buffer);
-                        $this->error('Cannot continue process without the env file.');
-                        $this->error("Please move it then re-run this command with the '--skip-download' flag to continue as normal.");
-                        return;
+                        $this->warn('Failed to remove backup directory. Make sure to do this to avoid upgrade conflicts.');
                     }
                 });
             });
@@ -254,10 +248,30 @@ class UpgradeCommand extends Command
         return sprintf(self::DEFAULT_URL, $this->option('release') ? 'download/v' . $this->option('release') : 'latest/download');
     }
     
-    protected function processError($data = null)
+    protected function processError($restore, $data = null)
     {
         if (!!$data) {
             $this->error($data);
+        }
+        
+        if ($restore) {
+            $this->info('Attempting to restore latest backup.');
+            $process = Process::fromShellCommandline('mv /var/www/backup /var/www/pterodactyl');
+            $process->run(function ($type, $buffer) {
+                if ($type === Process::ERR) {
+                    $this->error($buffer);
+                    $this->error('Failed to rollback to previous panel version.');
+                    $this->error('You can do this manually by moving the files from /var/www/backup to the default path.');
+                } else {
+                    $this->info('Rolled back to previous panel version.');
+                    
+                    Process::fromShellCommandline('rm -rf /var/www/backup')->run(function ($type, $buffer) {
+                        if ($type === Process::ERR) {
+                            $this->warn('Failed to remove backup directory. Make sure to do this to avoid upgrade conflicts.');
+                        }
+                    });
+                }
+            });
         }
         
         Process::fromShellCommandline('rm -f /tmp/panel.tar.gz')->run(function ($type, $buffer) {
