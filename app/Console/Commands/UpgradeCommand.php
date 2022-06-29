@@ -96,7 +96,7 @@ class UpgradeCommand extends Command
         ini_set('output_buffering', 0);
         $bar = $this->output->createProgressBar($skipDownload ? 8 : 13);
         $bar->start();
-        $dir = sprintf('/var/www/backup_%s', preg_replace('/:|\+/', '_', CarbonImmutable::now()->toIso8601String());
+        $dir = sprintf('/var/www/backup_%s', preg_replace('/:|\+/', '_', CarbonImmutable::now()->toIso8601String()));
 
         if (!$skipDownload) {
             $this->withProgress($bar, function () {
