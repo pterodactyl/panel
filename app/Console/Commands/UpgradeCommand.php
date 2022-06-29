@@ -93,15 +93,73 @@ class UpgradeCommand extends Command
         }
 
         ini_set('output_buffering', 0);
-        $bar = $this->output->createProgressBar($skipDownload ? 9 : 10);
+        $bar = $this->output->createProgressBar($skipDownload ? 9 : 15);
         $bar->start();
 
         if (!$skipDownload) {
             $this->withProgress($bar, function () {
-                $this->line("\$upgrader> curl -L \"{$this->getUrl()}\" | tar -xzv");
-                $process = Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" | tar -xzv");
+                $this->line("\$upgrader> curl -L \"{$this->getUrl()}\" -o /tmp/panel.tar.gz");
+                $process = Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" -o /tmp/panel.tar.gz");
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
+                    if ($type === Process:ERR) {
+                        $this->error('Rolling back to current version.');
+                        return $this->processError();
+                    }
+                });
+            });
+            
+            $this->withProgress($bar, function () {
+                $this->line('\$upgrader> mv /var/www/pterodactyl/.env /tmp/pterodactyl/.env');
+                $process = Process::fromShellCommandline('mv /var/www/pterodactyl/.env /tmp/pterodactyl/.env');
+                $process->run(function ($type, $buffer) {
+                    if ($type === Process::ERR) {
+                        return $this->processError($buffer);
+                    }
+                });
+            });
+            
+            $this->withProgress($bar, function () {
+                $this->line('\$upgrader> rm -rf /var/www/pterodactyl/*');
+                Process::fromShellCommandline('rm -rf /var/www/pterodactyl')->run(function ($type, $buffer) {
+                    if ($type === Process:ERR) {
+                        return $this->processError($buffer);
+                    }
+                });
+            });
+            
+            $this->withProgress($bar, function () {
+                $this->line('\$upgrader> mv /tmp/panel.tar.gz /var/www/pterodactyl');
+                $process = Process::fromShellCommandline('mv /tmp/panel.tar.gz /var/www/pterodactyl');
+                $process->run(function ($type, $buffer) {
+                    $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
+                    if ($type === Process::ERR) {
+                        return $this->processError();
+                    }
+                });
+            });
+            
+            $this->withProgress($bar, function () {
+                $this->line('\$upgrader> cd /var/www/pterodactyl && tar -xzvf panel.tar.gz');
+                $process = Process::fromShellCommandline('cd /var/www/pterodactyl && tar -xzvf panel.tar.gz');
+                $process->run(function ($type, $buffer) {
+                    $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
+                    if ($type === Process::ERR) {
+                        return $this->processError();
+                    }
+                });
+            });
+            
+            $this->withProgress($bar, function () {
+                $this->('\$upgrader> mv /tmp/pterodactyl/.env /var/www/pterodacty/.env');
+                $process = Process::fromShellCommandline('mv /tmp/pterodactyl/.env /var/www/pterodacty/.env');
+                $process->run(function ($type, $buffer) {
+                    if ($type === Process::ERR) {
+                        $this->error($buffer);
+                        $this->error('Cannot continue process without the env file.');
+                        $this->error("Please move it then re-run this command with the '--skip-download' flag to continue as normal.");
+                        return;
+                    }
                 });
             });
         }
@@ -194,5 +252,18 @@ class UpgradeCommand extends Command
         }
 
         return sprintf(self::DEFAULT_URL, $this->option('release') ? 'download/v' . $this->option('release') : 'latest/download');
+    }
+    
+    protected function processError($data = null)
+    {
+        if (!!$data) {
+            $this->error($data);
+        }
+        
+        Process::fromShellCommandline('rm -f /tmp/panel.tar.gz')->run(function ($type, $buffer) {
+            if ($type === Process::ERR) {
+                $this->error('Failed to remove archive from tmp folder.');
+            }
+        });
     }
 }
