@@ -21,7 +21,7 @@ export default () => {
                 addFlash({
                     key: 'settings',
                     type: 'success',
-                    message: 'Your server has begun the reinstallation process.',
+                    message: 'Your server has begin the reinstallation process.',
                 });
             })
             .catch((error) => {
