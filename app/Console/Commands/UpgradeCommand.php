@@ -3,6 +3,7 @@
 namespace Pterodactyl\Console\Commands;
 
 use Closure;
+use Carbon\CarbonImmutable;
 use Illuminate\Console\Command;
 use Pterodactyl\Console\Kernel;
 use Symfony\Component\Process\Process;
@@ -93,8 +94,9 @@ class UpgradeCommand extends Command
         }
 
         ini_set('output_buffering', 0);
-        $bar = $this->output->createProgressBar($skipDownload ? 9 : 15);
+        $bar = $this->output->createProgressBar($skipDownload ? 9 : 14);
         $bar->start();
+        $dir = sprintf('/var/www/backup_%s', preg_replace('/:|\+/', '_', CarbonImmutable::now()->toIso8601String());
 
         if (!$skipDownload) {
             $this->withProgress($bar, function () {
@@ -109,17 +111,19 @@ class UpgradeCommand extends Command
             });
             
             $this->withProgress($bar, function () {
-                $this->line('\$upgrader> mkdir /var/www/backup');
-                Process::fromShellCommandline('mkdir /var/www/backup')->run(function ($type, $buffer) {
+                $this->line("\$upgrader> mkdir ${$dir}");
+                Process::fromShellCommandline("mkdir ${$dir}")->run(function ($type, $buffer) {
                     if ($type === Process::ERR) {
-                        $this->warn('Failed to create /var/www/backup; assuming it already exists.');
+                        return $this->processError(false, $buffer);
                     }
+                    
+                    $this->info("Current panel has been backed up. If the upgrade fails, you can restore your files at ${$dir}");
                 });
             });
             
             $this->withProgress($bar, function () {
-                $this->line('\$upgrader> mv /var/www/pterodactyl/* /var/www/backup');
-                Process::fromShellCommandline('mv /var/www/pterodactyl/* /var/www/backup')->run(function ($type, $buffer) {
+                $this->line("\$upgrader> mv /var/www/pterodactyl/* ${$dir}");
+                Process::fromShellCommandline("mv /var/www/pterodactyl/* ${$dir}")->run(function ($type, $buffer) {
                     if ($type === Process:ERR) {
                         return $this->processError(false, $buffer);
                     }
@@ -144,15 +148,6 @@ class UpgradeCommand extends Command
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                     if ($type === Process::ERR) {
                         return $this->processError(true);
-                    }
-                });
-            });
-            
-            $this->withProgress($bar, function () {
-                $this->line('\$upgrader> rm -rf /var/www/backup');
-                Process::fromShellCommandline('rm -rf /var/www/backup')->run(function ($type, $buffer) {
-                    if ($type === Process::ERR) {
-                        $this->warn('Failed to remove backup directory. Make sure to do this to avoid upgrade conflicts.');
                     }
                 });
             });
@@ -256,20 +251,14 @@ class UpgradeCommand extends Command
         
         if ($restore) {
             $this->info('Attempting to restore latest backup.');
-            $process = Process::fromShellCommandline('mv /var/www/backup /var/www/pterodactyl');
+            $process = Process::fromShellCommandline("mv ${$dir} /var/www/pterodactyl");
             $process->run(function ($type, $buffer) {
                 if ($type === Process::ERR) {
                     $this->error($buffer);
                     $this->error('Failed to rollback to previous panel version.');
-                    $this->error('You can do this manually by moving the files from /var/www/backup to the default path.');
+                    $this->error("You can do this manually by moving the files from ${$dir} to the default path.");
                 } else {
                     $this->info('Rolled back to previous panel version.');
-                    
-                    Process::fromShellCommandline('rm -rf /var/www/backup')->run(function ($type, $buffer) {
-                        if ($type === Process::ERR) {
-                            $this->warn('Failed to remove backup directory. Make sure to do this to avoid upgrade conflicts.');
-                        }
-                    });
                 }
             });
         }
