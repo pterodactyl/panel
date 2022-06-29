@@ -116,8 +116,6 @@ class UpgradeCommand extends Command
                     if ($type === Process::ERR) {
                         return $this->processError(false, $buffer);
                     }
-                    
-                    $this->info("Current panel has been backed up. If the upgrade fails, you can restore your files at ${$dir}");
                 });
             });
             
@@ -127,6 +125,8 @@ class UpgradeCommand extends Command
                     if ($type === Process:ERR) {
                         return $this->processError(false, $buffer);
                     }
+                    
+                    $this->info("Current panel has been backed up. If the upgrade fails, you can restore your files at ${$dir}");
                 });
             });
             
