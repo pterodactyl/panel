@@ -98,7 +98,7 @@ export default () => {
                                 >
                                     Cancel
                                 </Button>
-                                <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
+                                <Button css={tw`w-full sm:w-auto`} type={'submit'}>
                                     Create Database
                                 </Button>
                             </div>
@@ -106,7 +106,7 @@ export default () => {
                     </Modal>
                 )}
             </Formik>
-            <Button onClick={() => setVisible(true)}>New Database</Button>
+            <Button css={tw`w-full sm:w-auto`} onClick={() => setVisible(true)}>New Database</Button>
         </>
     );
 };

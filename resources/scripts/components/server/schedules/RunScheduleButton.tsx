@@ -1,6 +1,6 @@
 import React, { useCallback, useState } from 'react';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 import triggerScheduleExecution from '@/api/server/schedules/triggerScheduleExecution';
 import { ServerContext } from '@/state/server';
 import useFlash from '@/plugins/useFlash';
@@ -32,7 +32,7 @@ const RunScheduleButton = ({ schedule }: { schedule: Schedule }) => {
         <>
             <SpinnerOverlay visible={loading} size={'large'} />
             <Button
-                variant={Button.Variants.Secondary}
+				color={'primary'}
                 className={'flex-1 sm:flex-none'}
                 disabled={schedule.isProcessing}
                 onClick={onTriggerExecute}

@@ -9,7 +9,7 @@ import { object, string } from 'yup';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 import tw from 'twin.macro';
 
 interface Values {

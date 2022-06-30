@@ -4,7 +4,7 @@ import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 import { Dialog } from '@/components/elements/dialog';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
@@ -48,13 +48,13 @@ export default ({ scheduleId, onDeleted }: Props) => {
                 <SpinnerOverlay visible={isLoading} />
                 All tasks will be removed and any running processes will be terminated.
             </Dialog.Confirm>
-            <Button.Danger
-                variant={Button.Variants.Secondary}
+            <Button
+				color={"red"}
                 className={'flex-1 sm:flex-none mr-4 border-transparent'}
                 onClick={() => setVisible(true)}
             >
                 Delete
-            </Button.Danger>
+            </Button>
         </>
     );
 };

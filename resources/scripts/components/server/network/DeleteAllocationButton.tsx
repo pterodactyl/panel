@@ -7,7 +7,7 @@ import deleteServerAllocation from '@/api/server/network/deleteServerAllocation'
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { useFlashKey } from '@/plugins/useFlash';
 import { Dialog } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 
 interface Props {
     allocation: number;
@@ -45,15 +45,12 @@ const DeleteAllocationButton = ({ allocation }: Props) => {
             >
                 This allocation will be immediately removed from your server.
             </Dialog.Confirm>
-            <Button.Danger
-                variant={Button.Variants.Secondary}
-                size={Button.Sizes.Small}
-                shape={Button.Shapes.IconSquare}
-                type={'button'}
+            <Button
+                color={"red"}
                 onClick={() => setConfirm(true)}
             >
                 <Icon icon={faTrashAlt} css={tw`w-3 h-auto`} />
-            </Button.Danger>
+            </Button>
         </>
     );
 };

@@ -1,7 +1,7 @@
 import axios from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import { ModalMask } from '@/components/elements/Modal';
@@ -13,6 +13,8 @@ import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
 import Portal from '@/components/elements/Portal';
+import { bytesToString } from '@/lib/formatters';
+
 
 const InnerContainer = styled.div`
     max-width: 600px;
@@ -27,6 +29,7 @@ export default ({ className }: WithClassname) => {
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const [upload, setUpload] = useState({ size: 0, totalSize: 0, progress: 0 });
 
     useEventListener(
         'dragenter',
@@ -69,6 +72,12 @@ export default ({ className }: WithClassname) => {
                     headers: {
                         'Content-Type': 'multipart/form-data',
                     },
+                    onUploadProgress: (progressEvent: ProgressEvent) => {
+                        const size = progressEvent.loaded;
+                        const totalSize = progressEvent.total;
+                        const progress = Math.round((progressEvent.loaded / progressEvent.total) * 100);
+                        setUpload({ size, totalSize, progress });
+                    },
                 })
             )
             .then(() => mutate())
@@ -104,7 +113,9 @@ export default ({ className }: WithClassname) => {
                         </div>
                     </ModalMask>
                 </Fade>
-                <SpinnerOverlay visible={loading} size={'large'} fixed />
+                <SpinnerOverlay visible={loading} size={'large'} fixed>
+                    <span css={tw`mt-4`}>Uploaded {bytesToString(upload.size)} of {bytesToString(upload.totalSize)} ({upload.progress}%)</span>
+                </SpinnerOverlay>
             </Portal>
             <input
                 type={'file'}
@@ -120,6 +131,7 @@ export default ({ className }: WithClassname) => {
                 }}
             />
             <Button
+				css={tw`w-full sm:w-auto`}
                 className={className}
                 onClick={() => {
                     fileUploadInput.current ? fileUploadInput.current.click() : setVisible(true);

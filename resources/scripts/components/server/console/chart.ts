@@ -45,7 +45,7 @@ const options: ChartOptions<'line'> = {
             type: 'linear',
             grid: {
                 display: true,
-                color: theme('colors.gray.700'),
+                color: theme('colors.gray.400'),
                 drawBorder: false,
             },
             ticks: {
@@ -91,8 +91,8 @@ function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback |
                         fill: true,
                         label,
                         data: Array(20).fill(-5),
-                        borderColor: theme('colors.cyan.400'),
-                        backgroundColor: hexToRgba(theme('colors.cyan.700'), 0.5),
+                        borderColor: '#32D0D9',
+                        backgroundColor: 'rgba(15, 178, 184, 0.45)',
                     },
                     index
                 )
@@ -119,9 +119,7 @@ function useChart(label: string, opts?: UseChartOptions) {
             merge(state, {
                 datasets: (Array.isArray(items) ? items : [items]).map((item, index) => ({
                     ...state.datasets[index],
-                    data: state.datasets[index].data
-                        .slice(1)
-                        .concat(typeof item === 'number' ? Number(item.toFixed(2)) : item),
+                    data: state.datasets[index].data.slice(1).concat(item),
                 })),
             })
         );

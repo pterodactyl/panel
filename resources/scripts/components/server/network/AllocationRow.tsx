@@ -6,7 +6,7 @@ import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import InputSpinner from '@/components/elements/InputSpinner';
 import { Textarea } from '@/components/elements/Input';
 import Can from '@/components/elements/Can';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import styled from 'styled-components/macro';
@@ -96,7 +96,7 @@ const AllocationRow = ({ allocation }: Props) => {
             </div>
             <div className={'flex justify-end space-x-4 mt-4 w-full md:mt-0 md:w-48'}>
                 {allocation.isDefault ? (
-                    <Button size={Button.Sizes.Small} className={'!text-gray-50 !bg-blue-600'} disabled>
+                    <Button color={"green"} disabled>
                         Primary
                     </Button>
                 ) : (
@@ -105,9 +105,9 @@ const AllocationRow = ({ allocation }: Props) => {
                             <DeleteAllocationButton allocation={allocation.id} />
                         </Can>
                         <Can action={'allocation.update'}>
-                            <Button.Text size={Button.Sizes.Small} onClick={setPrimaryAllocation}>
+                            <Button color={"grey"} onClick={setPrimaryAllocation}>
                                 Make Primary
-                            </Button.Text>
+                            </Button>
                         </Can>
                     </>
                 )}

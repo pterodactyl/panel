@@ -6,7 +6,7 @@ import { join } from 'path';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import useFlash from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
@@ -93,7 +93,8 @@ export default ({ className }: WithClassname) => {
                                 </p>
                             </Form>
                             <Dialog.Buttons>
-                                <Button.Text
+                                <Button
+									color={"grey"}
                                     className={'w-full sm:w-auto'}
                                     onClick={() => {
                                         setVisible(false);
@@ -101,7 +102,7 @@ export default ({ className }: WithClassname) => {
                                     }}
                                 >
                                     Cancel
-                                </Button.Text>
+                                </Button>
                                 <Button className={'w-full sm:w-auto'} onClick={submitForm}>
                                     Create
                                 </Button>
@@ -110,9 +111,7 @@ export default ({ className }: WithClassname) => {
                     )}
                 </Formik>
             </Portal>
-            <Button.Text onClick={() => setVisible(true)} className={className}>
-                Create Directory
-            </Button.Text>
+            <Button isSecondary onClick={() => setVisible(true)} className={className}>Create Directory</Button>
         </>
     );
 };

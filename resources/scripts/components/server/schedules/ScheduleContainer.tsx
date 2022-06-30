@@ -11,7 +11,7 @@ import Can from '@/components/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export default () => {
@@ -67,7 +67,7 @@ export default () => {
                     <Can action={'schedule.create'}>
                         <div css={tw`mt-8 flex justify-end`}>
                             <EditScheduleModal visible={visible} onModalDismissed={() => setVisible(false)} />
-                            <Button type={'button'} onClick={() => setVisible(true)}>
+                            <Button onClick={() => setVisible(true)}>
                                 Create schedule
                             </Button>
                         </div>

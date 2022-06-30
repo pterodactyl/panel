@@ -10,6 +10,9 @@ import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
 import { theme } from 'twin.macro';
 import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import { faEthernet, faMemory, faMicrochip } from '@fortawesome/free-solid-svg-icons';
+import tw from 'twin.macro'
 
 export default () => {
     const status = ServerContext.useStoreState((state) => state.status.value);
@@ -35,8 +38,8 @@ export default () => {
             return {
                 ...opts,
                 label: !index ? 'Network In' : 'Network Out',
-                borderColor: !index ? theme('colors.cyan.400') : theme('colors.yellow.400'),
-                backgroundColor: hexToRgba(!index ? theme('colors.cyan.700') : theme('colors.yellow.700'), 0.5),
+                borderColor: !index ? '#32D0D9' : theme('colors.yellow.400'),
+                backgroundColor: !index ? 'rgba(15, 178, 184, 0.45)' : hexToRgba(theme('colors.yellow.700'), 0.5),
             };
         },
     });
@@ -69,27 +72,33 @@ export default () => {
 
     return (
         <>
-            <ChartBlock title={'CPU Load'}>
+            <TitledGreyBox title={'CPU Usage'} icon={faMicrochip} css={tw`relative`}>
+			{status !== 'offline' ?
                 <Line {...cpu.props} />
-            </ChartBlock>
-            <ChartBlock title={'Memory'}>
+				:
+				<p css={tw`text-xl text-neutral-200 text-center p-3`}>
+                        Server is offline.
+                    </p>
+			}
+            </TitledGreyBox>
+            <TitledGreyBox title={'Memory Usage'} icon={faMemory} css={tw`relative`}>
+               {status !== 'offline' ?
                 <Line {...memory.props} />
-            </ChartBlock>
-            <ChartBlock
-                title={'Network'}
-                legend={
-                    <>
-                        <Tooltip arrow content={'Inbound'}>
-                            <CloudDownloadIcon className={'mr-2 w-4 h-4 text-yellow-400'} />
-                        </Tooltip>
-                        <Tooltip arrow content={'Outbound'}>
-                            <CloudUploadIcon className={'w-4 h-4 text-cyan-400'} />
-                        </Tooltip>
-                    </>
-                }
-            >
+				:
+				<p css={tw`text-xl text-neutral-200 text-center p-3`}>
+                        Server is offline.
+                    </p>
+			}
+            </TitledGreyBox>
+            <TitledGreyBox title={'Network Usage'} icon={faEthernet} css={tw`relative`}>
+               {status !== 'offline' ?
                 <Line {...network.props} />
-            </ChartBlock>
+				:
+				<p css={tw`text-xl text-neutral-200 text-center p-3`}>
+                        Server is offline.
+                    </p>
+			}
+            </TitledGreyBox>
         </>
     );
 };
