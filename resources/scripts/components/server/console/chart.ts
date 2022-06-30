@@ -65,7 +65,7 @@ const options: ChartOptions<'line'> = {
             radius: 0,
         },
         line: {
-            tension: 0.3,
+            tension: 0.15,
         },
     },
 };
@@ -90,7 +90,7 @@ function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback |
                     {
                         fill: true,
                         label,
-                        data: Array(20).fill(0),
+                        data: Array(20).fill(-5),
                         borderColor: theme('colors.cyan.400'),
                         backgroundColor: hexToRgba(theme('colors.cyan.700'), 0.5),
                     },
@@ -119,7 +119,9 @@ function useChart(label: string, opts?: UseChartOptions) {
             merge(state, {
                 datasets: (Array.isArray(items) ? items : [items]).map((item, index) => ({
                     ...state.datasets[index],
-                    data: state.datasets[index].data.slice(1).concat(item),
+                    data: state.datasets[index].data
+                        .slice(1)
+                        .concat(typeof item === 'number' ? Number(item.toFixed(2)) : item),
                 })),
             })
         );
@@ -129,7 +131,7 @@ function useChart(label: string, opts?: UseChartOptions) {
             merge(state, {
                 datasets: state.datasets.map((value) => ({
                     ...value,
-                    data: Array(20).fill(0),
+                    data: Array(20).fill(-5),
                 })),
             })
         );

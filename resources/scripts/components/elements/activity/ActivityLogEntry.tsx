@@ -75,13 +75,12 @@ export default ({ activity, children }: Props) => {
                         <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
                     </p>
                     <div className={'mt-1 flex items-center text-sm'}>
-                        <Link
-                            to={`#${pathTo({ ip: activity.ip })}`}
-                            className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
-                        >
-                            {activity.ip}
-                        </Link>
-                        <span className={'text-gray-400'}>&nbsp;|&nbsp;</span>
+                        {activity.ip && (
+                            <span>
+                                {activity.ip}
+                                <span className={'text-gray-400'}>&nbsp;|&nbsp;</span>
+                            </span>
+                        )}
                         <Tooltip placement={'right'} content={format(activity.timestamp, 'MMM do, yyyy H:mm:ss')}>
                             <span>{formatDistanceToNowStrict(activity.timestamp, { addSuffix: true })}</span>
                         </Tooltip>

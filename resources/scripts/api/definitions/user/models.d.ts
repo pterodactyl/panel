@@ -22,7 +22,7 @@ interface SSHKey extends Model {
 interface ActivityLog extends Model<'actor'> {
     batch: UUID | null;
     event: string;
-    ip: string;
+    ip: string | null;
     isApi: boolean;
     description: string | null;
     properties: Record<string, string | unknown>;

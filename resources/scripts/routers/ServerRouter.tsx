@@ -36,6 +36,9 @@ export default () => {
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
 
     const to = (value: string, url = false) => {
+        if (value === '/') {
+            return url ? match.url : match.path;
+        }
         return `${(url ? match.url : match.path).replace(/\/*$/, '')}/${value.replace(/^\/+/, '')}`;
     };
 

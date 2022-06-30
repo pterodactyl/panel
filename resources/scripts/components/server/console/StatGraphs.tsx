@@ -57,7 +57,7 @@ export default () => {
             return;
         }
 
-        cpu.push(values.cpu_absolute);
+        cpu.push(values.cpu_absolute.toFixed(2));
         memory.push(Math.floor(values.memory_bytes / 1024 / 1024));
         network.push([
             previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),

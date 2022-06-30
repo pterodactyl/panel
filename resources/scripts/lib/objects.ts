@@ -2,8 +2,7 @@
  * Determines if the value provided to the function is an object type that
  * is not null.
  */
-// eslint-disable-next-line @typescript-eslint/ban-types
-function isObject(val: unknown): val is {} {
+function isObject(val: unknown): val is Record<string, unknown> {
     return typeof val === 'object' && val !== null && !Array.isArray(val);
 }
 
