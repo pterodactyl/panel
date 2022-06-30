@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { ClipboardListIcon } from '@heroicons/react/outline';
 import { Dialog } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 
 export default ({ meta }: { meta: Record<string, unknown> }) => {
     const [open, setOpen] = useState(false);
@@ -13,7 +13,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
                     {JSON.stringify(meta, null, 2)}
                 </pre>
                 <Dialog.Buttons>
-                    <Button.Text onClick={() => setOpen(false)}>Close</Button.Text>
+                    <Button color={"grey"} onClick={() => setOpen(false)}>Close</Button>
                 </Dialog.Buttons>
             </Dialog>
             <button

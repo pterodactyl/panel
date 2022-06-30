@@ -1,7 +1,7 @@
 import React from 'react';
 import { Dialog } from '@/components/elements/dialog/index';
 import { DialogProps } from '@/components/elements/dialog/Dialog';
-import { Button } from '@/components/elements/button/index';
+import Button from '@/components/elements/Button';
 
 type ConfirmationProps = Omit<DialogProps, 'description' | 'children'> & {
     children: React.ReactNode;
@@ -14,8 +14,8 @@ export default ({ confirm = 'Okay', children, onConfirmed, ...props }: Confirmat
         <Dialog {...props} description={typeof children === 'string' ? children : undefined}>
             {typeof children !== 'string' && children}
             <Dialog.Buttons>
-                <Button.Text onClick={props.onClose}>Cancel</Button.Text>
-                <Button.Danger onClick={onConfirmed}>{confirm}</Button.Danger>
+                <Button color={"grey"} onClick={props.onClose}>Cancel</Button>
+                <Button color={"red"} onClick={onConfirmed}>{confirm}</Button>
             </Dialog.Buttons>
         </Dialog>
     );
