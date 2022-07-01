@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
     <head>
         <title>{{ config('app.name', 'Pterodactyl') }}</title>

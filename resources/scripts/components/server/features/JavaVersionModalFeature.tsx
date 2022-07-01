@@ -37,7 +37,7 @@ const JavaVersionModalFeature = () => {
         if (!visible) return;
 
         mutate().then((value) => {
-            setSelectedVersion(Object.keys(value?.dockerImages || [])[0] || '');
+            setSelectedVersion(Object.values(value?.dockerImages || [])[0] || '');
         });
     }, [visible]);
 

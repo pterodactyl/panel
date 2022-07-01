@@ -60,12 +60,6 @@ export default createGlobalStyle`
         -webkit-border-radius: 4px 9px;
     }
 
-    ::-webkit-scrollbar-thumb:hover {
-        -webkit-box-shadow:
-        inset 0 0 0 1px hsl(212, 92%, 43%),
-        inset 0 0 0 4px hsl(212, 92%, 43%);
-    }
-
     ::-webkit-scrollbar-corner {
         background: transparent;
     }
