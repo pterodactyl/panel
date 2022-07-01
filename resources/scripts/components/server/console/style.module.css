@@ -19,7 +19,7 @@
 }
 
 .terminal {
-    @apply relative h-full flex flex-col;
+    @apply flex flex-col w-full;
 
     & .overflows_container {
         @apply -ml-4 sm:ml-0;
