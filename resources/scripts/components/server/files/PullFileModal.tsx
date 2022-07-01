@@ -6,7 +6,6 @@ import pullFile from '@/api/server/files/pullFile';
 import { WithClassname } from '@/components/types';
 import { Button } from '@/components/elements/button/index';
 import Field from '@/components/elements/Field';
-import Modal from '@/components/elements/Modal';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
@@ -15,6 +14,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { join } from 'path';
 import Portal from '@/components/elements/Portal';
 import { Dialog } from '@/components/elements/dialog';
+import Code from '@/components/elements/Code';
 
 interface Values {
     url: string;
@@ -99,13 +99,15 @@ export default ({ className }: WithClassname) => {
                                 <Field type={'text'} id={'url'} name={'url'} label={'URL'} autoFocus />
                                 <p css={tw`mt-2 text-sm md:text-base break-all`}>
                                     <span css={tw`text-neutral-200`}>This file will be downloaded to&nbsp;</span>
-                                    /home/container/
-                                    <span css={tw`text-cyan-200`}>
-                                        {join(
-                                            directory,
-                                            values.url.split('/')[values.url.split('/').length - 1]
-                                        ).replace(/^(\.\.\/|\/)+/, '')}
-                                    </span>
+                                    <Code>
+                                        /home/container/
+                                        <span css={tw`text-cyan-200`}>
+                                            {join(
+                                                directory,
+                                                values.url.split('/')[values.url.split('/').length - 1]
+                                            ).replace(/^(\.\.\/|\/)+/, '')}
+                                        </span>
+                                    </Code>
                                 </p>
                             </Form>
                             <Dialog.Buttons>
