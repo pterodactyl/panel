@@ -55,6 +55,11 @@ class ActivityLogTransformer extends BaseClientTransformer
                 }
 
                 if (!is_array($value)) {
+                    // Perform some directory normalization at this point.
+                    if ($key === 'directory') {
+                        $value = str_replace('//', '/', '/' . trim($value, '/') . '/');
+                    }
+
                     return [$key => $value];
                 }
 

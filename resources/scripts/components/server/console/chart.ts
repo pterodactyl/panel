@@ -139,7 +139,7 @@ function useChart(label: string, opts?: UseChartOptions) {
     return { props: { data, options }, push, clear };
 }
 
-function useChartTickLabel(label: string, max: number, tickLabel: string) {
+function useChartTickLabel(label: string, max: number, tickLabel: string, roundTo?: number) {
     return useChart(label, {
         sets: 1,
         options: {
@@ -148,7 +148,7 @@ function useChartTickLabel(label: string, max: number, tickLabel: string) {
                     suggestedMax: max,
                     ticks: {
                         callback(value) {
-                            return `${value}${tickLabel}`;
+                            return `${roundTo ? Number(value).toFixed(roundTo) : value}${tickLabel}`;
                         },
                     },
                 },
