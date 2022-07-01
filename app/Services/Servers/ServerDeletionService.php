@@ -9,7 +9,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Bus\Dispatcher;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Jobs\Backup\DeleteBackupJob;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Pterodactyl\Jobs\Server\DeleteServerJob;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
@@ -31,9 +32,9 @@ class ServerDeletionService
     private $connection;
 
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
+     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
      */
-    private $daemonServerRepository;
+    private $repository;
 
     /**
      * @var \Pterodactyl\Services\Databases\DatabaseManagementService
@@ -46,12 +47,12 @@ class ServerDeletionService
     public function __construct(
         Dispatcher $dispatcher,
         ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
+        ServerRepository $repository,
         DatabaseManagementService $databaseManagementService
     ) {
         $this->dispatcher = $dispatcher;
         $this->connection = $connection;
-        $this->daemonServerRepository = $daemonServerRepository;
+        $this->repository = $repository;
         $this->databaseManagementService = $databaseManagementService;
     }
 
@@ -77,19 +78,7 @@ class ServerDeletionService
      */
     public function handle(Server $server)
     {
-        try {
-            $this->daemonServerRepository->setServer($server)->delete();
-        } catch (DaemonConnectionException $exception) {
-            // If there is an error not caused a 404 error and this isn't a forced delete,
-            // go ahead and bail out. We specifically ignore a 404 since that can be assumed
-            // to be a safe error, meaning the server doesn't exist at all on Wings so there
-            // is no reason we need to bail out from that.
-            if (!$this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
-                throw $exception;
-            }
-
-            Log::warning($exception);
-        }
+        $this->repository->update($server->id, ['status' => 'deleting'], true, true);
 
         $this->connection->transaction(function () use ($server) {
             foreach ($server->databases as $database) {
@@ -133,7 +122,25 @@ class ServerDeletionService
                 }
             }
 
-            $server->delete();
+            try {
+                $job = new DeleteServerJob($server);
+                $this->dispatcher->dispatch($job);
+            } catch (DaemonConnectionException $exception) {
+                // If there is an error not caused a 404 error and this isn't a forced delete,
+                // go ahead and bail out. We specifically ignore a 404 since that can be assumed
+                // to be a safe error, meaning the server doesn't exist at all on Wings so there
+                // is no reason we need to bail out from that.
+                if (!$this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+                    throw $exception;
+                }
+
+                // Delete the server from the database if the job failed on a forced delete.
+                if ($this->force) {
+                    $server->delete();
+                }
+
+                Log::warning($exception);
+            }
         });
     }
 }

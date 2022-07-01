@@ -61,6 +61,8 @@
                                         <span class="label bg-maroon">Suspended</span>
                                     @elseif(! $server->isInstalled())
                                         <span class="label label-warning">Installing</span>
+                                    @elseif($server->isDeleting())
+                                        <span class="label label-danger">Deleting</span>
                                     @else
                                         <span class="label label-success">Active</span>
                                     @endif

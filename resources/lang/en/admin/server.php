@@ -17,7 +17,7 @@ return [
     ],
     'alerts' => [
         'startup_changed' => 'The startup configuration for this server has been updated. If this server\'s nest or egg was changed a reinstall will be occurring now.',
-        'server_deleted' => 'Server has successfully been deleted from the system.',
+        'server_deleted' => 'This server has been queued for deletion beginning now.',
         'server_created' => 'Server was successfully created on the panel. Please allow the daemon a few minutes to completely install this server.',
         'build_updated' => 'The build details for this server have been updated. Some changes may require a restart to take effect.',
         'suspension_toggled' => 'Server suspension status has been changed to :status.',

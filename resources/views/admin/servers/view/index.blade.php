@@ -142,6 +142,15 @@
                             </div>
                         </div>
                     @endif
+                        @if($server->isDeleting())
+                            <div class="col-sm-12">
+                                <div class="small-box bg-yellow">
+                                    <div class="inner">
+                                        <h3 class="no-margin">Deleting</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        @endif
                     @if(!$server->isInstalled())
                         <div class="col-sm-12">
                             <div class="small-box {{ (! $server->isInstalled()) ? 'bg-blue' : 'bg-maroon' }}">

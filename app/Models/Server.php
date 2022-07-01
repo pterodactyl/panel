@@ -111,6 +111,7 @@ class Server extends Model
     public const STATUS_INSTALL_FAILED = 'install_failed';
     public const STATUS_SUSPENDED = 'suspended';
     public const STATUS_RESTORING_BACKUP = 'restoring_backup';
+    public const STATUS_DELETING = 'deleting';
 
     /**
      * The table associated with the model.
@@ -220,6 +221,11 @@ class Server extends Model
     public function isSuspended(): bool
     {
         return $this->status === self::STATUS_SUSPENDED;
+    }
+
+    public function isDeleting(): bool
+    {
+        return $this->status === self::STATUS_DELETING;
     }
 
     /**
