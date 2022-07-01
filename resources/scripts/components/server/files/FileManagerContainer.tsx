@@ -21,6 +21,7 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
+import PullFileModal from '@/components/server/files/PullFileModal';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
@@ -74,6 +75,7 @@ export default () => {
                     />
                     <Can action={'file.create'}>
                         <div className={style.manager_actions}>
+                            <PullFileModal />
                             <NewDirectoryButton />
                             <UploadButton />
                             <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
