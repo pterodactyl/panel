@@ -121,7 +121,6 @@ class ServerDeletionServiceTest extends IntegrationTestCase
 
         $server->refresh();
 
-        $this->daemonServerRepository->expects('setServer->delete')->withNoArgs()->andReturnUndefined();
         $this->databaseManagementService->expects('delete')->with(Mockery::on(function ($value) use ($db) {
             return $value instanceof Database && $value->id === $db->id;
         }))->andThrows(new Exception());

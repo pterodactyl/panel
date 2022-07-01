@@ -12,7 +12,6 @@ use Pterodactyl\Jobs\Backup\DeleteBackupJob;
 use Pterodactyl\Jobs\Server\DeleteServerJob;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerDeletionService
 {
@@ -125,17 +124,18 @@ class ServerDeletionService
             try {
                 $job = new DeleteServerJob($server);
                 $this->dispatcher->dispatch($job);
-            } catch (DaemonConnectionException $exception) {
+            } catch (Exception $exception) {
                 // If there is an error not caused a 404 error and this isn't a forced delete,
                 // go ahead and bail out. We specifically ignore a 404 since that can be assumed
                 // to be a safe error, meaning the server doesn't exist at all on Wings so there
                 // is no reason we need to bail out from that.
-                if (!$this->force && $exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
-                    throw $exception;
-                }
-
-                // Delete the server from the database if the job failed on a forced delete.
-                if ($this->force) {
+                if ($exception->getStatusCode() !== Response::HTTP_NOT_FOUND) {
+                    if (!$this->force) {
+                        throw $exception;
+                    } else {
+                        $server->delete();
+                    }
+                } else {
                     $server->delete();
                 }
 
