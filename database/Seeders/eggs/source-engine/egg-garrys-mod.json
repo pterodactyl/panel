@@ -87,7 +87,7 @@
         },
         {
             "name": "Tickrate",
-            "description": "The tickrate defines how fast the server will update each entities location.",
+            "description": "The tickrate defines how fast the server will update each entity's location.",
             "env_variable": "TICKRATE",
             "default_value": "22",
             "user_viewable": true,

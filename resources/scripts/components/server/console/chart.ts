@@ -60,29 +60,38 @@ const options: ChartOptions<'line'> = {
             radius: 0,
         },
         line: {
-            tension: 0.3,
+            tension: 0.15,
         },
     },
 };
 
-function getOptions (opts?: DeepPartial<ChartOptions<'line'>> | undefined): ChartOptions<'line'> {
+function getOptions(opts?: DeepPartial<ChartOptions<'line'>> | undefined): ChartOptions<'line'> {
     return deepmerge(options, opts || {});
 }
 
 type ChartDatasetCallback = (value: ChartDataset<'line'>, index: number) => ChartDataset<'line'>;
 
-function getEmptyData (label: string, sets = 1, callback?: ChartDatasetCallback | undefined): ChartData<'line'> {
-    const next = callback || (value => value);
+function getEmptyData(label: string, sets = 1, callback?: ChartDatasetCallback | undefined): ChartData<'line'> {
+    const next = callback || ((value) => value);
 
     return {
-        labels: Array(20).fill(0).map((_, index) => index),
-        datasets: Array(sets).fill(0).map((_, index) => next({
-            fill: true,
-            label,
-            data: Array(20).fill(0),
-            borderColor: theme('colors.cyan.400'),
-            backgroundColor: hexToRgba(theme('colors.cyan.700'), 0.5),
-        }, index)),
+        labels: Array(20)
+            .fill(0)
+            .map((_, index) => index),
+        datasets: Array(sets)
+            .fill(0)
+            .map((_, index) =>
+                next(
+                    {
+                        fill: true,
+                        label,
+                        data: Array(20).fill(-5),
+                        borderColor: theme('colors.cyan.400'),
+                        backgroundColor: hexToRgba(theme('colors.cyan.700'), 0.5),
+                    },
+                    index
+                )
+            ),
     };
 }
 
@@ -94,28 +103,38 @@ interface UseChartOptions {
     callback?: ChartDatasetCallback | undefined;
 }
 
-function useChart (label: string, opts?: UseChartOptions) {
-    const options = getOptions(typeof opts?.options === 'number' ? { scales: { y: { min: 0, suggestedMax: opts.options } } } : opts?.options);
-    const [ data, setData ] = useState(getEmptyData(label, opts?.sets || 1, opts?.callback));
+function useChart(label: string, opts?: UseChartOptions) {
+    const options = getOptions(
+        typeof opts?.options === 'number' ? { scales: { y: { min: 0, suggestedMax: opts.options } } } : opts?.options
+    );
+    const [data, setData] = useState(getEmptyData(label, opts?.sets || 1, opts?.callback));
 
-    const push = (items: number | null | ((number | null)[])) => setData(state => merge(state, {
-        datasets: (Array.isArray(items) ? items : [ items ]).map((item, index) => ({
-            ...state.datasets[index],
-            data: state.datasets[index].data.slice(1).concat(item),
-        })),
-    }));
+    const push = (items: number | null | (number | null)[]) =>
+        setData((state) =>
+            merge(state, {
+                datasets: (Array.isArray(items) ? items : [items]).map((item, index) => ({
+                    ...state.datasets[index],
+                    data: state.datasets[index].data
+                        .slice(1)
+                        .concat(typeof item === 'number' ? Number(item.toFixed(2)) : item),
+                })),
+            })
+        );
 
-    const clear = () => setData(state => merge(state, {
-        datasets: state.datasets.map(value => ({
-            ...value,
-            data: Array(20).fill(0),
-        })),
-    }));
+    const clear = () =>
+        setData((state) =>
+            merge(state, {
+                datasets: state.datasets.map((value) => ({
+                    ...value,
+                    data: Array(20).fill(-5),
+                })),
+            })
+        );
 
     return { props: { data, options }, push, clear };
 }
 
-function useChartTickLabel (label: string, max: number, tickLabel: string) {
+function useChartTickLabel(label: string, max: number, tickLabel: string, roundTo?: number) {
     return useChart(label, {
         sets: 1,
         options: {
@@ -123,8 +142,8 @@ function useChartTickLabel (label: string, max: number, tickLabel: string) {
                 y: {
                     suggestedMax: max,
                     ticks: {
-                        callback (value) {
-                            return `${value}${tickLabel}`;
+                        callback(value) {
+                            return `${roundTo ? Number(value).toFixed(roundTo) : value}${tickLabel}`;
                         },
                     },
                 },

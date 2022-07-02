@@ -41,12 +41,8 @@ export default () => {
                 <ContentBox title={'Update Username'} showFlashes={'account:username'}>
                     <UpdateUsernameForm/>
                 </ContentBox>
-                <ContentBox
-                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
-                    title={'Update Email Address'}
-                    showFlashes={'account:email'}
-                >
-                    <UpdateEmailAddressForm/>
+                <ContentBox css={tw`mt-8 sm:mt-0 sm:ml-8`} title={'Update Email Address'} showFlashes={'account:email'}>
+                    <UpdateEmailAddressForm />
                 </ContentBox>
             </Container>
         </PageContentBlock>

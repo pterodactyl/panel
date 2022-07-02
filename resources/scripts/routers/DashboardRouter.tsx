@@ -42,10 +42,10 @@ export default () => {
                 </SubNavigation>
             }
             <TransitionRouter>
-                <React.Suspense fallback={<Spinner centered/>}>
+                <React.Suspense fallback={<Spinner centered />}>
                     <Switch location={location}>
                         <Route path={'/'} exact>
-                            <DashboardContainer/>
+                            <DashboardContainer />
                         </Route>
                         <Route path={'/account'} exact>
                             <AccountOverviewContainer/>
@@ -60,7 +60,7 @@ export default () => {
                             <AccountSSHContainer/>
                         </Route>
                         <Route path={'*'}>
-                            <NotFound/>
+                            <NotFound />
                         </Route>
                     </Switch>
                 </React.Suspense>

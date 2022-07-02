@@ -21,7 +21,7 @@ class ActivityLogTransformer extends BaseClientTransformer
             'batch' => $model->batch,
             'event' => $model->event,
             'is_api' => !is_null($model->api_key_id),
-            'ip' => $model->ip,
+            'ip' => optional($model->actor)->is($this->request->user()) ? $model->ip : null,
             'description' => $model->description,
             'properties' => $this->properties($model),
             'has_additional_metadata' => $this->hasAdditionalMetadata($model),
@@ -49,8 +49,17 @@ class ActivityLogTransformer extends BaseClientTransformer
         }
 
         $properties = $model->properties
-            ->mapWithKeys(function ($value, $key) {
+            ->mapWithKeys(function ($value, $key) use ($model) {
+                if ($key === 'ip' && !optional($model->actor)->is($this->request->user())) {
+                    return [$key => '[hidden]'];
+                }
+
                 if (!is_array($value)) {
+                    // Perform some directory normalization at this point.
+                    if ($key === 'directory') {
+                        $value = str_replace('//', '/', '/' . trim($value, '/') . '/');
+                    }
+
                     return [$key => $value];
                 }
 

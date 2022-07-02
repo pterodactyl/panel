@@ -11,4 +11,4 @@ import { setConfig } from 'react-hot-loader';
 // @see https://github.com/gaearon/react-hot-loader#hook-support
 setConfig({ reloadHooks: false });
 
-ReactDOM.render(<App/>, document.getElementById('app'));
+ReactDOM.render(<App />, document.getElementById('app'));

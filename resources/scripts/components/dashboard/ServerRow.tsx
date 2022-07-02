@@ -11,11 +11,11 @@ import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/ser
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
-const isAlarmState = (current: number, limit: number): boolean => limit > 0 && (current / (limit * 1024 * 1024) >= 0.90);
+const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
 
 const IconDescription = styled.p<{ $alarm: boolean }>`
     ${tw`text-sm ml-2`};
-    ${props => props.$alarm ? tw`text-white` : tw`text-neutral-400`};
+    ${(props) => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
 `;
 
 const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
@@ -25,7 +25,12 @@ const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | unde
         ${tw`w-2 bg-red-500 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
         height: calc(100% - 0.5rem);
 
-        ${({ $status }) => (!$status || $status === 'offline') ? tw`bg-red-500` : ($status === 'running' ? tw`bg-green-500` : tw`bg-yellow-500`)};
+        ${({ $status }) =>
+            !$status || $status === 'offline'
+                ? tw`bg-red-500`
+                : $status === 'running'
+                ? tw`bg-green-500`
+                : tw`bg-yellow-500`};
     }
 
     &:hover .status-bar {
@@ -33,18 +38,21 @@ const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | unde
     }
 `;
 
-export default ({ server, className }: { server: Server; className?: string }) => {
-    const interval = useRef<number>(null);
-    const [ isSuspended, setIsSuspended ] = useState(server.status === 'suspended');
-    const [ stats, setStats ] = useState<ServerStats | null>(null);
+type Timer = ReturnType<typeof setInterval>;
 
-    const getStats = () => getServerResourceUsage(server.uuid)
-        .then(data => setStats(data))
-        .catch(error => console.error(error));
+export default ({ server, className }: { server: Server; className?: string }) => {
+    const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
+    const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
+    const [stats, setStats] = useState<ServerStats | null>(null);
+
+    const getStats = () =>
+        getServerResourceUsage(server.uuid)
+            .then((data) => setStats(data))
+            .catch((error) => console.error(error));
 
     useEffect(() => {
         setIsSuspended(stats?.isSuspended || server.status === 'suspended');
-    }, [ stats?.isSuspended, server.status ]);
+    }, [stats?.isSuspended, server.status]);
 
     useEffect(() => {
         // Don't waste a HTTP request if there is nothing important to show to the user because
@@ -52,18 +60,17 @@ export default ({ server, className }: { server: Server; className?: string }) =
         if (isSuspended) return;
 
         getStats().then(() => {
-            // @ts-ignore
             interval.current = setInterval(() => getStats(), 30000);
         });
 
         return () => {
             interval.current && clearInterval(interval.current);
         };
-    }, [ isSuspended ]);
+    }, [isSuspended]);
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
-        alarms.cpu = server.limits.cpu === 0 ? false : (stats.cpuUsagePercent >= (server.limits.cpu * 0.9));
+        alarms.cpu = server.limits.cpu === 0 ? false : stats.cpuUsagePercent >= server.limits.cpu * 0.9;
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
         alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
@@ -76,52 +83,49 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 </div>
                 <div>
                     <p css={tw`text-lg break-words`}>{server.name}</p>
-                    {!!server.description &&
-                    <p css={tw`text-sm text-neutral-300 break-words line-clamp-2`}>{server.description}</p>
-                    }
+                    {!!server.description && (
+                        <p css={tw`text-sm text-neutral-300 break-words line-clamp-2`}>{server.description}</p>
+                    )}
                 </div>
             </div>
             <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
                 <div css={tw`flex justify-center`}>
                     <Icon.Share2 css={tw`text-neutral-500`}/>
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
-                        {
-                            server.allocations.filter(alloc => alloc.isDefault).map(allocation => (
+                        {server.allocations
+                            .filter((alloc) => alloc.isDefault)
+                            .map((allocation) => (
                                 <React.Fragment key={allocation.ip + allocation.port.toString()}>
                                     {allocation.alias || ip(allocation.ip)}:{allocation.port}
                                 </React.Fragment>
-                            ))
-                        }
+                            ))}
                     </p>
                 </div>
             </div>
             <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
-                {(!stats || isSuspended) ?
-                    isSuspended ?
+                {!stats || isSuspended ? (
+                    isSuspended ? (
                         <div css={tw`flex-1 text-center`}>
                             <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
                                 {server.status === 'suspended' ? 'Suspended' : 'Connection Error'}
                             </span>
                         </div>
-                        :
-                        (server.isTransferring || server.status) ?
-                            <div css={tw`flex-1 text-center`}>
-                                <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
-                                    {server.isTransferring ?
-                                        'Transferring'
-                                        :
-                                        server.status === 'installing' ? 'Installing' : (
-                                            server.status === 'restoring_backup' ?
-                                                'Restoring Backup'
-                                                :
-                                                'Unavailable'
-                                        )
-                                    }
-                                </span>
-                            </div>
-                            :
-                            <Spinner size={'small'}/>
-                    :
+                    ) : server.isTransferring || server.status ? (
+                        <div css={tw`flex-1 text-center`}>
+                            <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
+                                {server.isTransferring
+                                    ? 'Transferring'
+                                    : server.status === 'installing'
+                                    ? 'Installing'
+                                    : server.status === 'restoring_backup'
+                                    ? 'Restoring Backup'
+                                    : 'Unavailable'}
+                            </span>
+                        </div>
+                    ) : (
+                        <Spinner size={'small'} />
+                    )
+                ) : (
                     <React.Fragment>
                         <div css={tw`flex-1 ml-4 sm:block hidden`}>
                             <div css={tw`flex justify-center`}>
@@ -148,9 +152,9 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             </div>
                         </div>
                     </React.Fragment>
-                }
+                )}
             </div>
-            <div className={'status-bar'}/>
+            <div className={'status-bar'} />
         </StatusIndicatorBox>
     );
 };

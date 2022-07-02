@@ -13,18 +13,18 @@ import LoginFormContainer from '@/components/auth/LoginFormContainer';
 
 interface Values {
     code: string;
-    recoveryCode: '',
+    recoveryCode: '';
 }
 
-type OwnProps = RouteComponentProps<Record<string, string | undefined>, StaticContext, { token?: string }>
+type OwnProps = RouteComponentProps<Record<string, string | undefined>, StaticContext, { token?: string }>;
 
 type Props = OwnProps & {
     clearAndAddHttpError: ActionCreator<FlashStore['clearAndAddHttpError']['payload']>;
-}
+};
 
 const LoginCheckpointContainer = () => {
     const { isSubmitting, setFieldValue } = useFormikContext<Values>();
-    const [ isMissingDevice, setIsMissingDevice ] = useState(false);
+    const [isMissingDevice, setIsMissingDevice] = useState(false);
 
     return (
         <LoginFormContainer title={'Device Checkpoint'} css={tw`w-full flex`}>
@@ -58,11 +58,11 @@ const LoginCheckpointContainer = () => {
                     onClick={() => {
                         setFieldValue('code', '');
                         setFieldValue('recoveryCode', '');
-                        setIsMissingDevice(s => !s);
+                        setIsMissingDevice((s) => !s);
                     }}
                     css={tw`cursor-pointer text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
                 >
-                    {!isMissingDevice ? 'I\'ve Lost My Device' : 'I Have My Device'}
+                    {!isMissingDevice ? "I've Lost My Device" : 'I Have My Device'}
                 </span>
             </div>
             <div css={tw`mt-6 text-center`}>
@@ -80,16 +80,16 @@ const LoginCheckpointContainer = () => {
 const EnhancedForm = withFormik<Props, Values>({
     handleSubmit: ({ code, recoveryCode }, { setSubmitting, props: { clearAndAddHttpError, location } }) => {
         loginCheckpoint(location.state?.token || '', code, recoveryCode)
-            .then(response => {
+            .then((response) => {
                 if (response.complete) {
-                    // @ts-ignore
+                    // @ts-expect-error this is valid
                     window.location = response.intended || '/';
                     return;
                 }
 
                 setSubmitting(false);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 setSubmitting(false);
                 clearAndAddHttpError({ error });
@@ -111,10 +111,7 @@ export default ({ history, location, ...props }: OwnProps) => {
         return null;
     }
 
-    return <EnhancedForm
-        clearAndAddHttpError={clearAndAddHttpError}
-        history={history}
-        location={location}
-        {...props}
-    />;
+    return (
+        <EnhancedForm clearAndAddHttpError={clearAndAddHttpError} history={history} location={location} {...props} />
+    );
 };

@@ -38,17 +38,9 @@ const arrowSides: Record<Side, string> = {
     left: 'top-0 right-[-6px]',
 };
 
-export default ({
-    content,
-    children,
-    disabled = false,
-    alwaysOpen = false,
-    delay = 0,
-    rest = 30,
-    ...props
-}: Props) => {
+export default ({ content, children, disabled = false, alwaysOpen = false, delay = 0, rest = 30, ...props }: Props) => {
     const arrowEl = useRef<HTMLDivElement>(null);
-    const [ open, setOpen ] = useState(alwaysOpen || false);
+    const [open, setOpen] = useState(alwaysOpen || false);
 
     const { x, y, reference, floating, middlewareData, strategy, context } = useFloating({
         open,
@@ -82,7 +74,7 @@ export default ({
         <>
             {cloneElement(children, getReferenceProps({ ref: reference, ...children.props }))}
             <AnimatePresence>
-                {open &&
+                {open && (
                     <motion.div
                         initial={{ opacity: 0, scale: 0.85 }}
                         animate={{ opacity: 1, scale: 1 }}
@@ -90,7 +82,8 @@ export default ({
                         transition={{ type: 'spring', damping: 20, stiffness: 300, duration: 0.075 }}
                         {...getFloatingProps({
                             ref: floating,
-                            className: 'absolute top-0 left-0 bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[20rem] z-[9999]',
+                            className:
+                                'absolute top-0 left-0 bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[20rem] z-[9999]',
                             style: {
                                 position: strategy,
                                 top: `${y || 0}px`,
@@ -99,17 +92,19 @@ export default ({
                         })}
                     >
                         {content}
-                        {props.arrow &&
+                        {props.arrow && (
                             <div
                                 ref={arrowEl}
                                 style={{
-                                    transform: `translate(${Math.round(ax || 0)}px, ${Math.round(ay || 0)}px) rotate(45deg)`,
+                                    transform: `translate(${Math.round(ax || 0)}px, ${Math.round(
+                                        ay || 0
+                                    )}px) rotate(45deg)`,
                                 }}
                                 className={classNames('absolute bg-gray-900 w-3 h-3', side)}
                             />
-                        }
+                        )}
                     </motion.div>
-                }
+                )}
             </AnimatePresence>
         </>
     );

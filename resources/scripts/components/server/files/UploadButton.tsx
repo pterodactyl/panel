@@ -73,7 +73,7 @@ export default ({ className }: WithClassname) => {
         return () => {
             window.removeEventListener('keydown', hide);
         };
-    }, [ visible ]);
+    }, [visible]);
 
     useEffect(() => {
         return () => timeouts.forEach(clearTimeout);
@@ -124,17 +124,11 @@ export default ({ className }: WithClassname) => {
     return (
         <>
             <Portal>
-                <Fade
-                    appear
-                    in={visible}
-                    timeout={75}
-                    key={'upload_modal_mask'}
-                    unmountOnExit
-                >
+                <Fade appear in={visible} timeout={75} key={'upload_modal_mask'} unmountOnExit>
                     <ModalMask
                         onClick={() => setVisible(false)}
-                        onDragOver={e => e.preventDefault()}
-                        onDrop={e => {
+                        onDragOver={(e) => e.preventDefault()}
+                        onDrop={(e) => {
                             e.preventDefault();
                             e.stopPropagation();
 
@@ -146,20 +140,18 @@ export default ({ className }: WithClassname) => {
                     >
                         <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
                             <InnerContainer>
-                                <p css={tw`text-lg text-neutral-200 text-center`}>
-                                    Drag and drop files to upload.
-                                </p>
+                                <p css={tw`text-lg text-neutral-200 text-center`}>Drag and drop files to upload.</p>
                             </InnerContainer>
                         </div>
                     </ModalMask>
                 </Fade>
-                <SpinnerOverlay visible={loading} size={'large'} fixed/>
+                <SpinnerOverlay visible={loading} size={'large'} fixed />
             </Portal>
             <input
                 type={'file'}
                 ref={fileUploadInput}
                 css={tw`hidden`}
-                onChange={e => {
+                onChange={(e) => {
                     if (!e.currentTarget.files) return;
                     onFileSubmission(e.currentTarget.files);
                     if (fileUploadInput.current) {

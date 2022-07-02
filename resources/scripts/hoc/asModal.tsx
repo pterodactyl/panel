@@ -19,12 +19,14 @@ interface State {
 type ExtendedComponentType<T> = (C: React.ComponentType<T>) => React.ComponentType<T & AsModalProps>;
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) => SettableModalProps)): ExtendedComponentType<P> {
+function asModal<P extends {}>(
+    modalProps?: SettableModalProps | ((props: P) => SettableModalProps)
+): ExtendedComponentType<P> {
     return function (Component) {
-        return class extends React.PureComponent <P & AsModalProps, State> {
+        return class extends React.PureComponent<P & AsModalProps, State> {
             static displayName = `asModal(${Component.displayName})`;
 
-            constructor (props: P & AsModalProps) {
+            constructor(props: P & AsModalProps) {
                 super(props);
 
                 this.state = {
@@ -34,7 +36,7 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
                 };
             }
 
-            get computedModalProps (): Readonly<SettableModalProps & { visible: boolean }> {
+            get computedModalProps(): Readonly<SettableModalProps & { visible: boolean }> {
                 return {
                     ...(typeof modalProps === 'function' ? modalProps(this.props) : modalProps),
                     ...this.state.propOverrides,
@@ -45,7 +47,7 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
             /**
              * @this {React.PureComponent<P & AsModalProps, State>}
              */
-            componentDidUpdate (prevProps: Readonly<P & AsModalProps>, prevState: Readonly<State>) {
+            componentDidUpdate(prevProps: Readonly<P & AsModalProps>, prevState: Readonly<State>) {
                 if (prevProps.visible && !this.props.visible) {
                     this.setState({ visible: false, propOverrides: {} });
                 } else if (!prevProps.visible && this.props.visible) {
@@ -58,24 +60,27 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
 
             dismiss = () => this.setState({ visible: false });
 
-            setPropOverrides: ModalContextValues['setPropOverrides'] = value => this.setState(state => ({
-                propOverrides: !value ? {} : (typeof value === 'function' ? value(state.propOverrides) : value),
-            }));
+            setPropOverrides: ModalContextValues['setPropOverrides'] = (value) =>
+                this.setState((state) => ({
+                    propOverrides: !value ? {} : typeof value === 'function' ? value(state.propOverrides) : value,
+                }));
 
             /**
              * @this {React.PureComponent<P & AsModalProps, State>}
              */
-            render () {
+            render() {
                 if (!this.state.render) return null;
 
                 return (
                     <PortaledModal
                         appear
-                        onDismissed={() => this.setState({ render: false }, () => {
-                            if (typeof this.props.onModalDismissed === 'function') {
-                                this.props.onModalDismissed();
-                            }
-                        })}
+                        onDismissed={() =>
+                            this.setState({ render: false }, () => {
+                                if (typeof this.props.onModalDismissed === 'function') {
+                                    this.props.onModalDismissed();
+                                }
+                            })
+                        }
                         {...this.computedModalProps}
                     >
                         <ModalContext.Provider
@@ -84,7 +89,7 @@ function asModal<P extends {}> (modalProps?: SettableModalProps | ((props: P) =>
                                 setPropOverrides: this.setPropOverrides.bind(this),
                             }}
                         >
-                            <Component {...this.props}/>
+                            <Component {...this.props} />
                         </ModalContext.Provider>
                     </PortaledModal>
                 );

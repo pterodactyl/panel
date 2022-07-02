@@ -15,16 +15,16 @@ import { useFlashKey } from '@/plugins/useFlash';
 import Code from '@/components/elements/Code';
 
 export default () => {
-    const [ deleteIdentifier, setDeleteIdentifier ] = useState('');
-    const [ keys, setKeys ] = useState<ApiKey[]>([]);
-    const [ loading, setLoading ] = useState(true);
+    const [deleteIdentifier, setDeleteIdentifier] = useState('');
+    const [keys, setKeys] = useState<ApiKey[]>([]);
+    const [loading, setLoading] = useState(true);
     const { clearAndAddHttpError } = useFlashKey('account');
 
     useEffect(() => {
         getApiKeys()
-            .then(keys => setKeys(keys))
+            .then((keys) => setKeys(keys))
             .then(() => setLoading(false))
-            .catch(error => clearAndAddHttpError(error));
+            .catch((error) => clearAndAddHttpError(error));
     }, []);
 
     const doDeletion = (identifier: string) => {
@@ -32,10 +32,8 @@ export default () => {
 
         clearAndAddHttpError();
         deleteApiKey(identifier)
-            .then(() => setKeys(s => ([
-                ...(s || []).filter(key => key.identifier !== identifier),
-            ])))
-            .catch(error => clearAndAddHttpError(error))
+            .then(() => setKeys((s) => [...(s || []).filter((key) => key.identifier !== identifier)]))
+            .catch((error) => clearAndAddHttpError(error))
             .then(() => {
                 setLoading(false);
                 setDeleteIdentifier('');
@@ -49,10 +47,10 @@ export default () => {
             <FlashMessageRender byKey={'account'}/>
             <div css={tw`md:flex flex-nowrap my-10`}>
                 <ContentBox title={'Create API Key'} css={tw`flex-none w-full md:w-1/2`}>
-                    <CreateApiKeyForm onKeyCreated={key => setKeys(s => ([ ...s!, key ]))}/>
+                    <CreateApiKeyForm onKeyCreated={(key) => setKeys((s) => [...s!, key])} />
                 </ContentBox>
                 <ContentBox title={'API Keys'} css={tw`flex-1 overflow-hidden mt-8 md:mt-0 md:ml-8`}>
-                    <SpinnerOverlay visible={loading}/>
+                    <SpinnerOverlay visible={loading} />
                     <Dialog.Confirm
                         title={'Delete API Key'}
                         confirm={'Delete Key'}

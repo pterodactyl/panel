@@ -15,7 +15,7 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
         if (title) {
             document.title = title;
         }
-    }, [ title ]);
+    }, [title]);
 
     return (
         <CSSTransition timeout={150} classNames={'fade'} appear in>

@@ -6,8 +6,8 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Database\ConnectionInterface;
+use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection;
@@ -15,9 +15,6 @@ use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerDetailsController extends Controller
 {
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
     protected ConnectionInterface $connection;
 
     /**

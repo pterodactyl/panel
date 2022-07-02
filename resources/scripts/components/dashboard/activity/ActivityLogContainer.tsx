@@ -15,19 +15,19 @@ import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
 export default () => {
     const { hash } = useLocationHash();
     const { clearAndAddHttpError } = useFlashKey('account');
-    const [ filters, setFilters ] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
+    const [filters, setFilters] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
     const { data, isValidating, error } = useActivityLogs(filters, {
         revalidateOnMount: true,
         revalidateOnFocus: false,
     });
 
     useEffect(() => {
-        setFilters(value => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
-    }, [ hash ]);
+        setFilters((value) => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+    }, [hash]);
 
     useEffect(() => {
         clearAndAddHttpError(error);
-    }, [ error ]);
+    }, [error]);
 
     return (
         <>
@@ -37,7 +37,7 @@ export default () => {
                     <Link
                         to={'#'}
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
-                        onClick={() => setFilters(value => ({ ...value, filters: {} }))}
+                        onClick={() => setFilters((value) => ({ ...value, filters: {} }))}
                     >
                         Clear Filters <Icon.XCircle className={'w-4 h-4 ml-2'}/>
                     </Link>
@@ -49,19 +49,21 @@ export default () => {
                 <div className={'bg-gray-850'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
-                            {typeof activity.properties.useragent === 'string' &&
+                            {typeof activity.properties.useragent === 'string' && (
                                 <Tooltip content={activity.properties.useragent} placement={'top'}>
                                     <span><Icon.Monitor/></span>
                                 </Tooltip>
-                            }
+                            )}
                         </ActivityLogEntry>
                     ))}
                 </div>
             }
-            {data && <PaginationFooter
-                pagination={data.pagination}
-                onPageSelect={page => setFilters(value => ({ ...value, page }))}
-            />}
+            {data && (
+                <PaginationFooter
+                    pagination={data.pagination}
+                    onPageSelect={(page) => setFilters((value) => ({ ...value, page }))}
+                />
+            )}
         </>
     );
 };

@@ -32,7 +32,7 @@ export default () => {
                 <Route path={`${path}/password/reset/:token`} component={ResetPasswordContainer}/>
                 <Route path={`${path}/checkpoint`}/>
                 <Route path={'*'}>
-                    <NotFound onBack={() => history.push('/auth/login')}/>
+                    <NotFound onBack={() => history.push('/auth/login')} />
                 </Route>
             </Switch>
         </div>

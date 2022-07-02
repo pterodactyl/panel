@@ -38,12 +38,12 @@ export default () => {
     const sftp = ServerContext.useStoreState(state => state.server.data!.sftpDetails);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
-    const directory = ServerContext.useStoreState(state => state.files.directory);
-    const clearFlashes = useStoreActions(actions => actions.flashes.clearFlashes);
-    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const clearFlashes = useStoreActions((actions) => actions.flashes.clearFlashes);
+    const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
 
-    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
-    const selectedFilesLength = ServerContext.useStoreState(state => state.files.selectedFiles.length);
+    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+    const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
 
     const [ searchString, setSearchString ] = useState('');
 
@@ -51,14 +51,14 @@ export default () => {
         clearFlashes('files');
         setSelectedFiles([]);
         setDirectory(hashToPath(hash));
-    }, [ hash ]);
+    }, [hash]);
 
     useEffect(() => {
         mutate();
-    }, [ directory ]);
+    }, [directory]);
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedFiles(e.currentTarget.checked ? (files?.map(file => file.name) || []) : []);
+        setSelectedFiles(e.currentTarget.checked ? files?.map((file) => file.name) || [] : []);
     };
 
     if (error) {

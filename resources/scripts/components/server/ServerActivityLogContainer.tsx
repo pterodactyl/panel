@@ -17,7 +17,7 @@ import ActivityLogEntry from '@/components/elements/activity/ActivityLogEntry';
 export default () => {
     const { hash } = useLocationHash();
     const { clearAndAddHttpError } = useFlashKey('server:activity');
-    const [ filters, setFilters ] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
+    const [filters, setFilters] = useState<ActivityLogFilters>({ page: 1, sorts: { timestamp: -1 } });
 
     const { data, isValidating, error } = useActivityLogs(filters, {
         revalidateOnMount: true,
@@ -25,12 +25,12 @@ export default () => {
     });
 
     useEffect(() => {
-        setFilters(value => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
-    }, [ hash ]);
+        setFilters((value) => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+    }, [hash]);
 
     useEffect(() => {
         clearAndAddHttpError(error);
-    }, [ error ]);
+    }, [error]);
 
     return (
         <ServerContentBlock title={'Activity Log'}>
@@ -42,30 +42,31 @@ export default () => {
                     <Link
                         to={'#'}
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
-                        onClick={() => setFilters(value => ({ ...value, filters: {} }))}
+                        onClick={() => setFilters((value) => ({ ...value, filters: {} }))}
                     >
-                        Clear Filters <Icon.XCircle className={'w-4 h-4 ml-2'}/>
+                        Clear Filters <Icon.XCircle className={'w-4 h-4 ml-2'} />
                     </Link>
                 </div>
             }
-            {!data && isValidating ?
-                <Spinner centered/>
-                :
-                !data?.items.length ?
-                    <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
-                    :
-                    <div className={'bg-neutral-900'}>
-                        {data?.items.map((activity) => (
-                            <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
-                                <span/>
-                            </ActivityLogEntry>
-                        ))}
-                    </div>
-            }
-            {data && <PaginationFooter
-                pagination={data.pagination}
-                onPageSelect={page => setFilters(value => ({ ...value, page }))}
-            />}
+            {!data && isValidating ? (
+                <Spinner centered />
+            ) : !data?.items.length ? (
+                <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
+            ) : (
+                <div className={'bg-neutral-900'}>
+                    {data?.items.map((activity) => (
+                        <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
+                            <span />
+                        </ActivityLogEntry>
+                    ))}
+                </div>
+            )}
+            {data && (
+                <PaginationFooter
+                    pagination={data.pagination}
+                    onPageSelect={(page) => setFilters((value) => ({ ...value, page }))}
+                />
+            )}
         </ServerContentBlock>
     );
 };

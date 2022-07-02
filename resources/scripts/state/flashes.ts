@@ -35,17 +35,19 @@ const flashes: FlashStore = {
         } else {
             console.error(payload.error);
 
-            state.items = [ {
-                type: 'error',
-                title: 'Error',
-                key: payload.key,
-                message: httpErrorToHuman(payload.error),
-            } ];
+            state.items = [
+                {
+                    type: 'error',
+                    title: 'Error',
+                    key: payload.key,
+                    message: httpErrorToHuman(payload.error),
+                },
+            ];
         }
     }),
 
     clearFlashes: action((state, payload) => {
-        state.items = payload ? state.items.filter(flashes => flashes.key !== payload) : [];
+        state.items = payload ? state.items.filter((flashes) => flashes.key !== payload) : [];
     }),
 };
 

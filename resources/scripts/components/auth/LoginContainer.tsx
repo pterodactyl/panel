@@ -24,7 +24,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
     const discord = useStoreState(state => state.settings.data?.registration.discord);
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
+    const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
 
     useEffect(() => {
         clearFlashes();
@@ -36,7 +36,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch(error => {
+            ref.current!.execute().catch((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -47,16 +47,16 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         }
 
         login({ ...values, recaptchaData: token })
-            .then(response => {
+            .then((response) => {
                 if (response.complete) {
-                    // @ts-ignore
+                    // @ts-expect-error this is valid
                     window.location = response.intended || '/';
                     return;
                 }
 
                 history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 setToken('');
@@ -86,34 +86,28 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         disabled={isSubmitting}
                     />
                     <div css={tw`mt-6`}>
-                        <Field
-                            light
-                            type={'password'}
-                            label={'Password'}
-                            name={'password'}
-                            disabled={isSubmitting}
-                        />
+                        <Field light type={'password'} label={'Password'} name={'password'} disabled={isSubmitting} />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={Button.Sizes.Large} css={tw`w-full`} disabled={isSubmitting}>
                             Login
                         </Button>
                     </div>
-                    {recaptchaEnabled &&
-                    <Reaptcha
-                        ref={ref}
-                        size={'invisible'}
-                        sitekey={siteKey || '_invalid_key'}
-                        onVerify={response => {
-                            setToken(response);
-                            submitForm();
-                        }}
-                        onExpire={() => {
-                            setSubmitting(false);
-                            setToken('');
-                        }}
-                    />
-                    }
+                    {recaptchaEnabled && (
+                        <Reaptcha
+                            ref={ref}
+                            size={'invisible'}
+                            sitekey={siteKey || '_invalid_key'}
+                            onVerify={(response) => {
+                                setToken(response);
+                                submitForm();
+                            }}
+                            onExpire={() => {
+                                setSubmitting(false);
+                                setToken('');
+                            }}
+                        />
+                    )}
                     <div css={tw`mt-6 text-center`}>
                         <Link
                             to={'/auth/password'}

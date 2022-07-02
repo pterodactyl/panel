@@ -3,25 +3,26 @@ import classNames from 'classnames';
 import useFitText from 'use-fit-text';
 import styles from './style.module.css';
 import Icon from '@/components/elements/Icon';
-import Tooltip from '@/components/elements/tooltip/Tooltip';
+import CopyOnClick from '@/components/elements/CopyOnClick';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 interface StatBlockProps {
     title: string;
-    description?: string;
+    copyOnClick?: string;
+    color?: string | undefined;
     icon: IconDefinition;
     children: React.ReactNode;
     className?: string;
 }
 
-export default ({ title, icon, description, className, children }: StatBlockProps) => {
+export default ({ title, copyOnClick, icon, color, className, children }: StatBlockProps) => {
     const { fontSize, ref } = useFitText({ minFontSize: 8, maxFontSize: 500 });
 
     return (
-        <Tooltip arrow placement={'top'} disabled={!description} content={description || ''}>
-            <div className={classNames(styles.stat_block, 'bg-gray-900', className)}>
-                <div className={classNames(styles.status_bar, 'bg-gray-700')}/>
-                <div className={classNames(styles.icon, 'bg-gray-700')}>
+        <CopyOnClick text={copyOnClick}>
+            <div className={classNames(styles.stat_block, 'bg-neutral-900', className)}>
+                <div className={classNames(styles.status_bar, color || 'bg-gray-700')} />
+                <div className={classNames(styles.icon, color || 'bg-gray-700')}>
                     <Icon
                         icon={icon}
                         className={classNames({
@@ -41,6 +42,6 @@ export default ({ title, icon, description, className, children }: StatBlockProp
                     </div>
                 </div>
             </div>
-        </Tooltip>
+        </CopyOnClick>
     );
 };

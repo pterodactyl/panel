@@ -15,7 +15,9 @@ interface Values {
     publicKey: string;
 }
 
-const CustomTextarea = styled(Textarea)`${tw`h-32`}`;
+const CustomTextarea = styled(Textarea)`
+    ${tw`h-32`}
+`;
 
 export default () => {
     const { clearAndAddHttpError } = useFlashKey('account');
@@ -45,16 +47,16 @@ export default () => {
             >
                 {({ isSubmitting }) => (
                     <Form>
-                        <SpinnerOverlay visible={isSubmitting}/>
+                        <SpinnerOverlay visible={isSubmitting} />
                         <FormikFieldWrapper label={'SSH Key Name'} name={'name'} css={tw`mb-6`}>
-                            <Field name={'name'} as={Input}/>
+                            <Field name={'name'} as={Input} />
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
                             label={'Public Key'}
                             name={'publicKey'}
                             description={'Enter your public SSH key.'}
                         >
-                            <Field name={'publicKey'} as={CustomTextarea}/>
+                            <Field name={'publicKey'} as={CustomTextarea} />
                         </FormikFieldWrapper>
                         <div css={tw`flex justify-end mt-6`}>
                             <Button>Save</Button>

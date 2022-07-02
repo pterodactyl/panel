@@ -14,12 +14,9 @@ const Can = ({ action, matchAny = false, renderOnError, children }: Props) => {
 
     return (
         <>
-            {
-                ((matchAny && can.filter(p => p).length > 0) || (!matchAny && can.every(p => p))) ?
-                    children
-                    :
-                    renderOnError
-            }
+            {(matchAny && can.filter((p) => p).length > 0) || (!matchAny && can.every((p) => p))
+                ? children
+                : renderOnError}
         </>
     );
 };

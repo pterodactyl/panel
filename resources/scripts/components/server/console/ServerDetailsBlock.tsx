@@ -1,6 +1,6 @@
 import classNames from 'classnames';
 import { ServerContext } from '@/state/server';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import ConsoleShareContainer from '../ConsoleShareContainer';
 import StatBlock from '@/components/server/console/StatBlock';
@@ -15,18 +15,36 @@ import {
     faScroll,
     faWifi,
 } from '@fortawesome/free-solid-svg-icons';
+import { capitalize } from '@/lib/strings';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime', number>;
+
+const Limit = ({ limit, children }: { limit: string | null; children: React.ReactNode }) => (
+    <>
+        {children}
+        <span className={'ml-1 text-gray-300 text-[70%] select-none'}>/ {limit || <>&infin;</>}</span>
+    </>
+);
 
 const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
 
-    const status = ServerContext.useStoreState(state => state.status.value);
-    const connected = ServerContext.useStoreState(state => state.socket.connected);
-    const instance = ServerContext.useStoreState(state => state.socket.instance);
-    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
-    const allocation = ServerContext.useStoreState(state => {
-        const match = state.server.data!.allocations.find(allocation => allocation.isDefault);
+    const status = ServerContext.useStoreState((state) => state.status.value);
+    const connected = ServerContext.useStoreState((state) => state.socket.connected);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
+    const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
+
+    const textLimits = useMemo(
+        () => ({
+            cpu: limits?.cpu ? `${limits.cpu}%` : null,
+            memory: limits?.memory ? bytesToString(mbToBytes(limits.memory)) : null,
+            disk: limits?.disk ? bytesToString(mbToBytes(limits.disk)) : null,
+        }),
+        [limits]
+    );
+
+    const allocation = ServerContext.useStoreState((state) => {
+        const match = state.server.data!.allocations.find((allocation) => allocation.isDefault);
 
         return !match ? 'n/a' : `${match.alias || ip(match.ip)}:${match.port}`;
     });
@@ -37,7 +55,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         }
 
         instance.send(SocketRequest.SEND_STATS);
-    }, [ instance, connected ]);
+    }, [instance, connected]);
 
     useWebsocketEvent(SocketEvent.STATS, (data) => {
         let stats: any = {};
@@ -61,11 +79,13 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 icon={faClock}
                 title={'Uptime'}
             >
-                {stats.uptime > 0 ?
-                    <UptimeDuration uptime={stats.uptime / 1000}/>
-                    :
+                {status === 'starting' || status === 'stopping' ? (
+                    capitalize(status)
+                ) : stats.uptime > 0 ? (
+                    <UptimeDuration uptime={stats.uptime / 1000} />
+                ) : (
                     'Offline'
-                }
+                )}
             </StatBlock>
             <StatBlock icon={faWifi} title={'Address'}>
                 {allocation}
@@ -80,8 +100,8 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             >
                 {status === 'offline' ?
                     <span className={'text-gray-400'}>Offline</span>
-                    :
-                    `${stats.cpu.toFixed(2)}%`
+                    : 
+                    <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(2)}%</Limit>
                 }
             </StatBlock>
             <StatBlock
@@ -92,11 +112,11 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                     : 'No memory limit has been configured for this server.'
                 }
             >
-                {status === 'offline' ?
+                {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
-                    :
-                    bytesToString(stats.memory)
-                }
+                ) : (
+                    <Limit limit={textLimits.memory}>{bytesToString(stats.memory)}</Limit>
+                )}
             </StatBlock>
             <StatBlock
                 icon={faHdd}

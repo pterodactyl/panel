@@ -22,41 +22,55 @@ export interface ModalProps extends RequiredModalProps {
 
 export const ModalMask = styled.div`
     ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
-    background: rgba(0, 0, 0, 0.70);
+    background: rgba(0, 0, 0, 0.7);
 `;
 
-const ModalContainer = styled.div<{ alignTop?: boolean }>`    
+const ModalContainer = styled.div<{ alignTop?: boolean }>`
     max-width: 95%;
     max-height: calc(100vh - 8rem);
     ${breakpoint('md')`max-width: 75%`};
     ${breakpoint('lg')`max-width: 50%`};
 
     ${tw`relative flex flex-col w-full m-auto`};
-    ${props => props.alignTop && css`
-        margin-top: 20%;
-        ${breakpoint('md')`margin-top: 10%`};
-    `};
+    ${(props) =>
+        props.alignTop &&
+        css`
+            margin-top: 20%;
+            ${breakpoint('md')`margin-top: 10%`};
+        `};
 
     margin-bottom: auto;
-    
+
     & > .close-icon {
         ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
         top: -2.5rem;
-        
-        &:hover {${tw`transform rotate-90`}}
-        
+
+        &:hover {
+            ${tw`transform rotate-90`}
+        }
+
         & > svg {
             ${tw`w-6 h-6`};
         }
     }
 `;
 
-const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinnerOverlay, top = true, closeOnBackground = true, closeOnEscape = true, onDismissed, children }) => {
-    const [ render, setRender ] = useState(visible);
+const Modal: React.FC<ModalProps> = ({
+    visible,
+    appear,
+    dismissable,
+    showSpinnerOverlay,
+    top = true,
+    closeOnBackground = true,
+    closeOnEscape = true,
+    onDismissed,
+    children,
+}) => {
+    const [render, setRender] = useState(visible);
 
     const isDismissable = useMemo(() => {
         return (dismissable || true) && !(showSpinnerOverlay || false);
-    }, [ dismissable, showSpinnerOverlay ]);
+    }, [dismissable, showSpinnerOverlay]);
 
     useEffect(() => {
         if (!isDismissable || !closeOnEscape) return;
@@ -69,22 +83,16 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
         return () => {
             window.removeEventListener('keydown', handler);
         };
-    }, [ isDismissable, closeOnEscape, render ]);
+    }, [isDismissable, closeOnEscape, render]);
 
-    useEffect(() => setRender(visible), [ visible ]);
+    useEffect(() => setRender(visible), [visible]);
 
     return (
-        <Fade
-            in={render}
-            timeout={150}
-            appear={appear || true}
-            unmountOnExit
-            onExited={() => onDismissed()}
-        >
+        <Fade in={render} timeout={150} appear={appear || true} unmountOnExit onExited={() => onDismissed()}>
             <ModalMask
-                onClick={e => e.stopPropagation()}
-                onContextMenu={e => e.stopPropagation()}
-                onMouseDown={e => {
+                onClick={(e) => e.stopPropagation()}
+                onContextMenu={(e) => e.stopPropagation()}
+                onMouseDown={(e) => {
                     if (isDismissable && closeOnBackground) {
                         e.stopPropagation();
                         if (e.target === e.currentTarget) {
@@ -94,29 +102,36 @@ const Modal: React.FC<ModalProps> = ({ visible, appear, dismissable, showSpinner
                 }}
             >
                 <ModalContainer alignTop={top}>
-                    {isDismissable &&
-                    <div className={'close-icon'} onClick={() => setRender(false)}>
-                        <svg xmlns={'http://www.w3.org/2000/svg'} fill={'none'} viewBox={'0 0 24 24'} stroke={'currentColor'}>
-                            <path
-                                strokeLinecap={'round'}
-                                strokeLinejoin={'round'}
-                                strokeWidth={'2'}
-                                d={'M6 18L18 6M6 6l12 12'}
-                            />
-                        </svg>
-                    </div>
-                    }
-                    {showSpinnerOverlay &&
-                    <Fade timeout={150} appear in>
-                        <div
-                            css={tw`absolute w-full h-full rounded flex items-center justify-center`}
-                            style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
-                        >
-                            <Spinner/>
+                    {isDismissable && (
+                        <div className={'close-icon'} onClick={() => setRender(false)}>
+                            <svg
+                                xmlns={'http://www.w3.org/2000/svg'}
+                                fill={'none'}
+                                viewBox={'0 0 24 24'}
+                                stroke={'currentColor'}
+                            >
+                                <path
+                                    strokeLinecap={'round'}
+                                    strokeLinejoin={'round'}
+                                    strokeWidth={'2'}
+                                    d={'M6 18L18 6M6 6l12 12'}
+                                />
+                            </svg>
                         </div>
-                    </Fade>
-                    }
-                    <div css={tw`bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}>
+                    )}
+                    {showSpinnerOverlay && (
+                        <Fade timeout={150} appear in>
+                            <div
+                                css={tw`absolute w-full h-full rounded flex items-center justify-center`}
+                                style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
+                            >
+                                <Spinner />
+                            </div>
+                        </Fade>
+                    )}
+                    <div
+                        css={tw`bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}
+                    >
                         {children}
                     </div>
                 </ModalContainer>

@@ -13,7 +13,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import createOrUpdateSchedule from '@/api/server/schedules/createOrUpdateSchedule';
-import ScheduleHelpCards from '@/components/server/schedules/ScheduleHelpCards';
+import ScheduleCheatsheetCards from '@/components/server/schedules/ScheduleCheatsheetCards';
 
 interface Props {
     schedule?: Schedule;
@@ -34,9 +34,9 @@ const EditScheduleModal = ({ schedule }: Props) => {
     const { addError, clearFlashes } = useFlash();
     const { dismiss } = useContext(ModalContext);
 
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
-    const [ showCards, setShowCards ] = useState(false);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
+    const [ showCheatsheet, setShowCheetsheet ] = useState(false);
 
     useEffect(() => {
         return () => {
@@ -59,12 +59,12 @@ const EditScheduleModal = ({ schedule }: Props) => {
             onlyWhenOnline: values.onlyWhenOnline,
             isActive: values.enabled,
         })
-            .then(schedule => {
+            .then((schedule) => {
                 setSubmitting(false);
                 appendSchedule(schedule);
                 dismiss();
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -75,16 +75,18 @@ const EditScheduleModal = ({ schedule }: Props) => {
     return (
         <Formik
             onSubmit={submit}
-            initialValues={{
-                name: schedule?.name || '',
-                minute: schedule?.cron.minute || '*/5',
-                hour: schedule?.cron.hour || '*',
-                dayOfMonth: schedule?.cron.dayOfMonth || '*',
-                month: schedule?.cron.month || '*',
-                dayOfWeek: schedule?.cron.dayOfWeek || '*',
-                enabled: schedule?.isActive ?? true,
-                onlyWhenOnline: schedule?.onlyWhenOnline ?? true,
-            } as Values}
+            initialValues={
+                {
+                    name: schedule?.name || '',
+                    minute: schedule?.cron.minute || '*/5',
+                    hour: schedule?.cron.hour || '*',
+                    dayOfMonth: schedule?.cron.dayOfMonth || '*',
+                    month: schedule?.cron.month || '*',
+                    dayOfWeek: schedule?.cron.dayOfWeek || '*',
+                    enabled: schedule?.isActive ?? true,
+                    onlyWhenOnline: schedule?.onlyWhenOnline ?? true,
+                } as Values
+            }
         >
             {({ isSubmitting }) => (
                 <Form>
@@ -111,14 +113,14 @@ const EditScheduleModal = ({ schedule }: Props) => {
                             name={'show_cheatsheet'}
                             description={'Show the cron cheatsheet for some examples.'}
                             label={'Show Cheatsheet'}
-                            defaultChecked={showCards}
-                            onChange={() => setShowCards(s => !s)}
+                            defaultChecked={showCheatsheet}
+                            onChange={() => setShowCheetsheet((s) => !s)}
                         />
-                        {showCards &&
+                        {showCheatsheet && (
                             <div css={tw`block md:flex w-full`}>
-                                <ScheduleHelpCards />
+                                <ScheduleCheatsheetCards />
                             </div>
-                        }
+                        )}
                     </div>
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch

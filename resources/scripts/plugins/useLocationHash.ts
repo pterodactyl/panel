@@ -9,7 +9,7 @@ export default () => {
             .substring(1)
             .split('&')
             .reduce((obj, str) => {
-                const [ key, value = '' ] = str.split('=');
+                const [key, value = ''] = str.split('=');
 
                 return !str.trim() ? obj : { ...obj, [key]: value };
             }, {});
@@ -21,10 +21,12 @@ export default () => {
             current[key] = params[key];
         }
 
-        return Object.keys(current).map(key => `${key}=${current[key]}`).join('&');
+        return Object.keys(current)
+            .map((key) => `${key}=${current[key]}`)
+            .join('&');
     };
 
-    const hash = useMemo((): Record<string, string> => getHashObject(location.hash), [ location.hash ]);
+    const hash = useMemo((): Record<string, string> => getHashObject(location.hash), [location.hash]);
 
     return { hash, pathTo };
 };

@@ -1,22 +1,23 @@
 import 'xterm/css/xterm.css';
 import classNames from 'classnames';
-import { debounce } from 'debounce';
 import * as Icon from 'react-feather';
 import styles from './style.module.css';
 import { FitAddon } from 'xterm-addon-fit';
 import styled from 'styled-components/macro';
 import tw, { theme as th } from 'twin.macro';
-import { ServerContext } from '@/state/server';
 import { SearchAddon } from 'xterm-addon-search';
 import { Terminal, ITerminalOptions } from 'xterm';
 import { WebLinksAddon } from 'xterm-addon-web-links';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
 import useEventListener from '@/plugins/useEventListener';
+import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
+import 'xterm/css/xterm.css';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -45,7 +46,7 @@ const terminalProps: ITerminalOptions = {
     cursorStyle: 'underline',
     allowTransparency: true,
     fontSize: 12,
-    fontFamily: 'Menlo, Monaco, Consolas, monospace',
+    fontFamily: th('fontFamily.mono'),
     rows: 30,
     theme: theme,
 };
@@ -70,9 +71,8 @@ export default () => {
     const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
 
-    const handleConsoleOutput = (line: string, prelude = false) => terminal.writeln(
-        (prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
-    );
+    const handleConsoleOutput = (line: string, prelude = false) =>
+        terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
 
     const handleTransferStatus = (status: string) => {
         switch (status) {
@@ -83,7 +83,10 @@ export default () => {
 
             // Sent by the source node whenever the server was archived successfully.
             case 'archive':
-                terminal.writeln(TERMINAL_PRELUDE + 'Server has been archived successfully, attempting connection to target node..\u001b[0m');
+                terminal.writeln(
+                    TERMINAL_PRELUDE +
+                        'Server has been archived successfully, attempting connection to target node..\u001b[0m'
+                );
         }
     };
 
@@ -99,9 +102,8 @@ export default () => {
         TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
     );
 
-    const handlePowerChangeEvent = (state: string) => terminal.writeln(
-        TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m',
-    );
+    const handlePowerChangeEvent = (state: string) =>
+        terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
@@ -124,7 +126,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory(prevHistory => [ command, ...prevHistory! ].slice(0, 32));
+            setHistory((prevHistory) => [command, ...prevHistory!].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -157,13 +159,16 @@ export default () => {
                 return true;
             });
         }
-    }, [ terminal, connected ]);
+    }, [terminal, connected]);
 
-    useEventListener('resize', debounce(() => {
-        if (terminal.element) {
-            fitAddon.fit();
-        }
-    }, 100));
+    useEventListener(
+        'resize',
+        debounce(() => {
+            if (terminal.element) {
+                fitAddon.fit();
+            }
+        }, 100)
+    );
 
     useEffect(() => {
         const listeners: Record<string, (s: string) => void> = {
@@ -172,7 +177,7 @@ export default () => {
             [SocketEvent.INSTALL_OUTPUT]: handleConsoleOutput,
             [SocketEvent.TRANSFER_LOGS]: handleConsoleOutput,
             [SocketEvent.TRANSFER_STATUS]: handleTransferStatus,
-            [SocketEvent.DAEMON_MESSAGE]: line => handleConsoleOutput(line, true),
+            [SocketEvent.DAEMON_MESSAGE]: (line) => handleConsoleOutput(line, true),
             [SocketEvent.DAEMON_ERROR]: handleDaemonErrorOutput,
         };
 
@@ -195,7 +200,7 @@ export default () => {
                 });
             }
         };
-    }, [ connected, instance ]);
+    }, [connected, instance]);
 
     return (
         <div className={styles.terminal}>
@@ -213,7 +218,7 @@ export default () => {
                     }
                 </div>
             </div>
-            {canSendCommands &&
+            {canSendCommands && (
                 <div className={classNames('relative', styles.overflows_container)}>
                     <input
                         className={classNames('peer', styles.command_input)}
@@ -229,7 +234,7 @@ export default () => {
                         <Icon.ChevronsRight className={'w-4 h-4'}/>
                     </div>
                 </div>
-            }
+            )}
         </div>
     );
 };

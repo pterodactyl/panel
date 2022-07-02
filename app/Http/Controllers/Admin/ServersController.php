@@ -271,7 +271,7 @@ class ServersController extends Controller
                 'database_limit', 'allocation_limit', 'backup_limit', 'oom_disabled',
             ]));
         } catch (DataValidationException $exception) {
-            throw new ValidationException($exception->validator);
+            throw new ValidationException($exception->getValidator());
         }
 
         $this->alert->success(trans('admin/server.alerts.build_updated'))->flash();
@@ -315,7 +315,7 @@ class ServersController extends Controller
                 ->setUserLevel(User::USER_LEVEL_ADMIN)
                 ->handle($server, $data);
         } catch (DataValidationException $exception) {
-            throw new ValidationException($exception->validator);
+            throw new ValidationException($exception->getValidator());
         }
 
         $this->alert->success(trans('admin/server.alerts.startup_changed'))->flash();

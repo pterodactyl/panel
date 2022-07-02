@@ -33,10 +33,10 @@ const files: ServerFileStore = {
         state.selectedFiles = payload;
     }),
     appendSelectedFile: action((state, payload) => {
-        state.selectedFiles = state.selectedFiles.filter(f => f !== payload).concat(payload);
+        state.selectedFiles = state.selectedFiles.filter((f) => f !== payload).concat(payload);
     }),
     removeSelectedFile: action((state, payload) => {
-        state.selectedFiles = state.selectedFiles.filter(f => f !== payload);
+        state.selectedFiles = state.selectedFiles.filter((f) => f !== payload);
     }),
 
     appendFileUpload: action((state, payload) => {

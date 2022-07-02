@@ -16,10 +16,7 @@ class ActivityLogController extends ClientApiController
     {
         $activity = QueryBuilder::for($request->user()->activity())
             ->with('actor')
-            ->allowedFilters([
-                AllowedFilter::exact('ip'),
-                AllowedFilter::partial('event'),
-            ])
+            ->allowedFilters([AllowedFilter::partial('event')])
             ->allowedSorts(['timestamp'])
             ->paginate(min($request->query('per_page', 5), 100))
             ->appends($request->query());

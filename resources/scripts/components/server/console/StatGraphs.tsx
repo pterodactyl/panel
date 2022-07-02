@@ -12,11 +12,11 @@ import ChartBlock from '@/components/server/console/ChartBlock';
 import { useChart, useChartTickLabel } from '@/components/server/console/chart';
 
 export default () => {
-    const status = ServerContext.useStoreState(state => state.status.value);
-    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
+    const status = ServerContext.useStoreState((state) => state.status.value);
+    const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
 
-    const cpu = useChartTickLabel('CPU', limits.cpu, '%');
+    const cpu = useChartTickLabel('CPU', limits.cpu, '%', 2);
     const memory = useChartTickLabel('Memory', limits.memory, 'MB');
     const network = useChart('Network', {
         sets: 2,
@@ -24,14 +24,14 @@ export default () => {
             scales: {
                 y: {
                     ticks: {
-                        callback (value) {
+                        callback(value) {
                             return bytesToString(typeof value === 'string' ? parseInt(value, 10) : value);
                         },
                     },
                 },
             },
         },
-        callback (opts, index) {
+        callback(opts, index) {
             return {
                 ...opts,
                 label: !index ? 'Network In' : 'Network Out',
@@ -47,7 +47,7 @@ export default () => {
             memory.clear();
             network.clear();
         }
-    }, [ status ]);
+    }, [status]);
 
     useWebsocketEvent(SocketEvent.STATS, (data: string) => {
         let values: any = {};
@@ -56,7 +56,6 @@ export default () => {
         } catch (e) {
             return;
         }
-
         cpu.push(values.cpu_absolute);
         memory.push(Math.floor(values.memory_bytes / 1024 / 1024));
         network.push([
@@ -70,10 +69,10 @@ export default () => {
     return (
         <>
             <ChartBlock title={'CPU Load'}>
-                <Line {...cpu.props}/>
+                <Line {...cpu.props} />
             </ChartBlock>
             <ChartBlock title={'Memory'}>
-                <Line {...memory.props}/>
+                <Line {...memory.props} />
             </ChartBlock>
             <ChartBlock
                 title={'Network'}
@@ -88,7 +87,7 @@ export default () => {
                     </>
                 }
             >
-                <Line {...network.props}/>
+                <Line {...network.props} />
             </ChartBlock>
         </>
     );

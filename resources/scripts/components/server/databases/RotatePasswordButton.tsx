@@ -13,7 +13,7 @@ export default ({ databaseId, onUpdate }: {
     onUpdate: (database: ServerDatabase) => void;
 }) => {
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const server = ServerContext.useStoreState(state => state.server.data!);
+    const server = ServerContext.useStoreState((state) => state.server.data!);
 
     if (!databaseId) {
         return null;
@@ -23,8 +23,8 @@ export default ({ databaseId, onUpdate }: {
         clearFlashes();
 
         rotateDatabasePassword(server.uuid, databaseId)
-            .then(database => onUpdate(database))
-            .catch(error => {
+            .then((database) => onUpdate(database))
+            .catch((error) => {
                 console.error(error);
                 addFlash({
                     type: 'error',

@@ -13,22 +13,22 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 
 const MassActionsBar = () => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
 
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [ loading, setLoading ] = useState(false);
-    const [ loadingMessage, setLoadingMessage ] = useState('');
-    const [ showConfirm, setShowConfirm ] = useState(false);
-    const [ showMove, setShowMove ] = useState(false);
-    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const [loading, setLoading] = useState(false);
+    const [loadingMessage, setLoadingMessage] = useState('');
+    const [showConfirm, setShowConfirm] = useState(false);
+    const [showMove, setShowMove] = useState(false);
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
 
-    const selectedFiles = ServerContext.useStoreState(state => state.files.selectedFiles);
-    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
+    const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
+    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
 
     useEffect(() => {
         if (!loading) setLoadingMessage('');
-    }, [ loading ]);
+    }, [loading]);
 
     const onClickCompress = () => {
         setLoading(true);
@@ -38,7 +38,7 @@ const MassActionsBar = () => {
         compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
             .then(() => setSelectedFiles([]))
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setLoading(false));
     };
 
@@ -50,10 +50,10 @@ const MassActionsBar = () => {
 
         deleteFiles(uuid, directory, selectedFiles)
             .then(() => {
-                mutate(files => files.filter(f => selectedFiles.indexOf(f.name) < 0), false);
+                mutate((files) => files.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
             })
-            .catch(error => {
+            .catch((error) => {
                 mutate();
                 clearAndAddHttpError({ key: 'files', error });
             })
@@ -75,17 +75,15 @@ const MassActionsBar = () => {
                 >
                     <p className={'mb-2'}>
                         Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is
-                        a permanent action and the files cannot be recovered.
+                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
+                        permanent action and the files cannot be recovered.
                     </p>
-                    {selectedFiles.slice(0, 15).map(file => (
-                        <li key={file}>{file}</li>))
-                    }
-                    {selectedFiles.length > 15 &&
-                        <li>and {selectedFiles.length - 15} others</li>
-                    }
+                    {selectedFiles.slice(0, 15).map((file) => (
+                        <li key={file}>{file}</li>
+                    ))}
+                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
                 </Dialog.Confirm>
-                {showMove &&
+                {showMove && (
                     <RenameFileModal
                         files={selectedFiles}
                         visible
@@ -93,7 +91,7 @@ const MassActionsBar = () => {
                         useMoveTerminology
                         onDismissed={() => setShowMove(false)}
                     />
-                }
+                )}
                 <Portal>
                     <div className={'fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
                         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>

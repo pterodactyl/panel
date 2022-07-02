@@ -25,18 +25,18 @@ interface Props {
 }
 
 export default ({ database, className }: Props) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
-    const [ visible, setVisible ] = useState(false);
-    const [ connectionVisible, setConnectionVisible ] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [connectionVisible, setConnectionVisible] = useState(false);
 
-    const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
-    const removeDatabase = ServerContext.useStoreActions(actions => actions.databases.removeDatabase);
+    const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
+    const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
 
     const schema = object().shape({
         confirm: string()
             .required('The database name must be provided.')
-            .oneOf([ database.name.split('_', 2)[1], database.name ], 'The database name must be provided.'),
+            .oneOf([database.name.split('_', 2)[1], database.name], 'The database name must be provided.'),
     });
 
     const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
@@ -46,7 +46,7 @@ export default ({ database, className }: Props) => {
                 setVisible(false);
                 setTimeout(() => removeDatabase(database.id), 150);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 setSubmitting(false);
                 addError({ key: 'database:delete', message: httpErrorToHuman(error) });
@@ -109,11 +109,13 @@ export default ({ database, className }: Props) => {
                 }
             </Formik>
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
-                <FlashMessageRender byKey={'database-connection-modal'} css={tw`mb-6`}/>
+                <FlashMessageRender byKey={'database-connection-modal'} css={tw`mb-6`} />
                 <h3 css={tw`mb-6 text-2xl`}>Database connection details</h3>
                 <div>
                     <Label>Endpoint</Label>
-                    <CopyOnClick text={database.connectionString}><Input type={'text'} readOnly value={database.connectionString} /></CopyOnClick>
+                    <CopyOnClick text={database.connectionString}>
+                        <Input type={'text'} readOnly value={database.connectionString} />
+                    </CopyOnClick>
                 </div>
                 <div css={tw`mt-6`}>
                     <Label>Connections from</Label>
@@ -121,17 +123,23 @@ export default ({ database, className }: Props) => {
                 </div>
                 <div css={tw`mt-6`}>
                     <Label>Username</Label>
-                    <CopyOnClick text={database.username}><Input type={'text'} readOnly value={database.username} /></CopyOnClick>
+                    <CopyOnClick text={database.username}>
+                        <Input type={'text'} readOnly value={database.username} />
+                    </CopyOnClick>
                 </div>
                 <Can action={'database.view_password'}>
                     <div css={tw`mt-6`}>
                         <Label>Password</Label>
-                        <CopyOnClick text={database.password}><Input type={'text'} readOnly value={database.password}/></CopyOnClick>
+                        <CopyOnClick text={database.password}>
+                            <Input type={'text'} readOnly value={database.password} />
+                        </CopyOnClick>
                     </div>
                 </Can>
                 <div css={tw`mt-6`}>
                     <Label>JDBC Connection String</Label>
-                    <CopyOnClick text={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}>
+                    <CopyOnClick
+                        text={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
+                    >
                         <Input
                             type={'text'}
                             readOnly
@@ -141,7 +149,7 @@ export default ({ database, className }: Props) => {
                 </div>
                 <div css={tw`mt-6 text-right`}>
                     <Can action={'database.update'}>
-                        <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase}/>
+                        <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase} />
                     </Can>
                     <Button variant={Button.Variants.Secondary} onClick={() => setConnectionVisible(false)}>
                         Close
@@ -153,10 +161,14 @@ export default ({ database, className }: Props) => {
                     <Icon.Database />
                 </div>
                 <div css={tw`flex-1 ml-4`}>
-                    <CopyOnClick text={database.name}><p css={tw`text-lg`}>{database.name}</p></CopyOnClick>
+                    <CopyOnClick text={database.name}>
+                        <p css={tw`text-lg`}>{database.name}</p>
+                    </CopyOnClick>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
-                    <CopyOnClick text={database.connectionString}><p css={tw`text-sm`}>{database.connectionString}</p></CopyOnClick>
+                    <CopyOnClick text={database.connectionString}>
+                        <p css={tw`text-sm`}>{database.connectionString}</p>
+                    </CopyOnClick>
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Endpoint</p>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
@@ -164,7 +176,9 @@ export default ({ database, className }: Props) => {
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Connections from</p>
                 </div>
                 <div css={tw`ml-8 text-center hidden md:block`}>
-                    <CopyOnClick text={database.username}><p css={tw`text-sm`}>{database.username}</p></CopyOnClick>
+                    <CopyOnClick text={database.username}>
+                        <p css={tw`text-sm`}>{database.username}</p>
+                    </CopyOnClick>
                     <p css={tw`mt-1 text-2xs text-neutral-500 uppercase select-none`}>Username</p>
                 </div>
                 <div css={tw`ml-8`}>

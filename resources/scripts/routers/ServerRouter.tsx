@@ -70,15 +70,15 @@ export default () => {
     const location = useLocation();
     const { width } = useWindowDimensions();
 
-    const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
-    const [ error, setError ] = useState('');
+    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const [error, setError] = useState('');
 
-    const id = ServerContext.useStoreState(state => state.server.data?.id);
-    const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
-    const inConflictState = ServerContext.useStoreState(state => state.server.inConflictState);
-    const serverId = ServerContext.useStoreState(state => state.server.data?.internalId);
-    const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
-    const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
+    const id = ServerContext.useStoreState((state) => state.server.data?.id);
+    const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const inConflictState = ServerContext.useStoreState((state) => state.server.inConflictState);
+    const serverId = ServerContext.useStoreState((state) => state.server.data?.internalId);
+    const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
+    const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
 
     useEffect(() => () => {
         clearServerState();
@@ -87,16 +87,15 @@ export default () => {
     useEffect(() => {
         setError('');
 
-        getServer(match.params.id)
-            .catch(error => {
-                console.error(error);
-                setError(httpErrorToHuman(error));
-            });
+        getServer(match.params.id).catch((error) => {
+            console.error(error);
+            setError(httpErrorToHuman(error));
+        });
 
         return () => {
             clearServerState();
         };
-    }, [ match.params.id ]);
+    }, [match.params.id]);
 
     return (
         <React.Fragment key={'server-router'}>
@@ -172,12 +171,12 @@ export default () => {
                             </div>
                         </SubNavigation>
                     </CSSTransition>
-                    <InstallListener/>
-                    <TransferListener/>
-                    <WebsocketHandler/>
-                    {(inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`)))) ?
-                        <ConflictStateRenderer/>
-                        :
+                    <InstallListener />
+                    <TransferListener />
+                    <WebsocketHandler />
+                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`))) ? (
+                        <ConflictStateRenderer />
+                    ) : (
                         <ErrorBoundary>
                             <TransitionRouter>
                                 <Switch location={location}>
@@ -233,7 +232,7 @@ export default () => {
                                 </Switch>
                             </TransitionRouter>
                         </ErrorBoundary>
-                    }
+                    )}
                 </>
             }
         </React.Fragment>

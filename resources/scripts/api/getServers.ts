@@ -15,10 +15,12 @@ export default ({ query, ...params }: QueryParams): Promise<PaginatedResult<Serv
                 ...params,
             },
         })
-            .then(({ data }) => resolve({
-                items: (data.data || []).map((datum: any) => rawDataToServerObject(datum)),
-                pagination: getPaginationSet(data.meta.pagination),
-            }))
+            .then(({ data }) =>
+                resolve({
+                    items: (data.data || []).map((datum: any) => rawDataToServerObject(datum)),
+                    pagination: getPaginationSet(data.meta.pagination),
+                })
+            )
             .catch(reject);
     });
 };

@@ -38,11 +38,11 @@ export default () => {
                 <div css={tw`w-full mt-6 md:flex-1 md:mt-0`}>
                     <Can action={'settings.rename'}>
                         <div css={tw`mb-6 md:mb-10`}>
-                            <RenameServerBox/>
+                            <RenameServerBox />
                         </div>
                     </Can>
                     <Can action={'settings.reinstall'}>
-                        <ReinstallServerBox/>
+                        <ReinstallServerBox />
                     </Can>
                 </div>
             </div>

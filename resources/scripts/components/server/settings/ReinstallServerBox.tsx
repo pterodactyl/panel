@@ -10,8 +10,8 @@ import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 export default () => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const [ modalVisible, setModalVisible ] = useState(false);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const [modalVisible, setModalVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const reinstall = () => {
@@ -24,7 +24,7 @@ export default () => {
                     message: 'Your server has begun the reinstallation process.',
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 addFlash({ key: 'settings', type: 'error', message: httpErrorToHuman(error) });
@@ -49,8 +49,8 @@ export default () => {
                 you wish to continue?
             </Dialog.Confirm>
             <p css={tw`text-sm`}>
-                Reinstalling your server will stop it, and then re-run the installation script that initially
-                set it up.&nbsp;
+                Reinstalling your server will stop it, and then re-run the installation script that initially set it
+                up.&nbsp;
                 <strong css={tw`font-medium`}>
                     Some files may be deleted or modified during this process, please back up your data before
                     continuing.

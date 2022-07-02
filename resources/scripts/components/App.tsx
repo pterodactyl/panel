@@ -36,7 +36,7 @@ const App = () => {
         PterodactylUser,
         SiteConfiguration,
         StoreConfiguration,
-    } = (window as ExtendedWindow);
+    } = window as ExtendedWindow;
 
     if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
@@ -74,7 +74,7 @@ const App = () => {
 
     return (
         <>
-            <GlobalStylesheet/>
+            <GlobalStylesheet />
             <StoreProvider store={store}>
                 <div css={tw`mx-auto w-auto`}>
                     <IndexRouter />

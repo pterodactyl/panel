@@ -40,12 +40,12 @@ const generateDirectoryData = (name: string): FileObject => ({
 });
 
 export default ({ className }: WithClassname) => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [ visible, setVisible ] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     const { mutate } = useFileManagerSwr();
-    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     useEffect(() => {
         if (!visible) return;
@@ -53,13 +53,13 @@ export default ({ className }: WithClassname) => {
         return () => {
             clearFlashes('files:directory-modal');
         };
-    }, [ visible ]);
+    }, [visible]);
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
-            .then(() => mutate(data => [ ...data, generateDirectoryData(directoryName) ], false))
+            .then(() => mutate((data) => [...data, generateDirectoryData(directoryName)], false))
             .then(() => setVisible(false))
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 setSubmitting(false);
                 clearAndAddHttpError({ key: 'files:directory-modal', error });
@@ -69,11 +69,7 @@ export default ({ className }: WithClassname) => {
     return (
         <>
             <Portal>
-                <Formik
-                    onSubmit={submit}
-                    validationSchema={schema}
-                    initialValues={{ directoryName: '' }}
-                >
+                <Formik onSubmit={submit} validationSchema={schema} initialValues={{ directoryName: '' }}>
                     {({ resetForm, submitForm, isSubmitting: _, values }) => (
                         <Dialog
                             title={'Create Directory'}
@@ -83,17 +79,13 @@ export default ({ className }: WithClassname) => {
                                 resetForm();
                             }}
                         >
-                            <FlashMessageRender key={'files:directory-modal'}/>
+                            <FlashMessageRender key={'files:directory-modal'} />
                             <Form css={tw`m-0`}>
-                                <Field
-                                    autoFocus
-                                    id={'directoryName'}
-                                    name={'directoryName'}
-                                    label={'Name'}
-                                />
+                                <Field autoFocus id={'directoryName'} name={'directoryName'} label={'Name'} />
                                 <p css={tw`mt-2 text-sm md:text-base break-all`}>
                                     <span css={tw`text-neutral-200`}>This directory will be created as&nbsp;</span>
-                                    <Code>/home/container/
+                                    <Code>
+                                        /home/container/
                                         <span css={tw`text-cyan-200`}>
                                             {join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
                                         </span>
@@ -110,7 +102,9 @@ export default ({ className }: WithClassname) => {
                                 >
                                     Cancel
                                 </Button.Text>
-                                <Button className={'w-full sm:w-auto'} onClick={submitForm}>Create</Button>
+                                <Button className={'w-full sm:w-auto'} onClick={submitForm}>
+                                    Create
+                                </Button>
                             </Dialog.Buttons>
                         </Dialog>
                     )}

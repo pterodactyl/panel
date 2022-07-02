@@ -10,12 +10,15 @@ interface PowerButtonProps {
 }
 
 export default ({ className }: PowerButtonProps) => {
-    const [ open, setOpen ] = useState(false);
-    const status = ServerContext.useStoreState(state => state.status.value);
-    const instance = ServerContext.useStoreState(state => state.socket.instance);
+    const [open, setOpen] = useState(false);
+    const status = ServerContext.useStoreState((state) => state.status.value);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
 
     const killable = status === 'stopping';
-    const onButtonClick = (action: PowerAction | 'kill-confirmed', e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
+    const onButtonClick = (
+        action: PowerAction | 'kill-confirmed',
+        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+    ): void => {
         e.preventDefault();
         if (action === 'kill') {
             return setOpen(true);
@@ -31,7 +34,7 @@ export default ({ className }: PowerButtonProps) => {
         if (status === 'offline') {
             setOpen(false);
         }
-    }, [ status ]);
+    }, [status]);
 
     return (
         <div className={className}>
@@ -47,7 +50,7 @@ export default ({ className }: PowerButtonProps) => {
             </Dialog.Confirm>
             <Can action={'control.start'}>
                 <Button
-                    className={'w-full sm:w-24'}
+                    className={'flex-1'}
                     disabled={status !== 'offline'}
                     onClick={onButtonClick.bind(this, 'start')}
                 >
@@ -55,17 +58,13 @@ export default ({ className }: PowerButtonProps) => {
                 </Button>
             </Can>
             <Can action={'control.restart'}>
-                <Button.Text
-                    className={'w-full sm:w-24'}
-                    disabled={!status}
-                    onClick={onButtonClick.bind(this, 'restart')}
-                >
+                <Button.Text className={'flex-1'} disabled={!status} onClick={onButtonClick.bind(this, 'restart')}>
                     Restart
                 </Button.Text>
             </Can>
             <Can action={'control.stop'}>
                 <Button.Danger
-                    className={'w-full sm:w-24'}
+                    className={'flex-1'}
                     disabled={status === 'offline'}
                     onClick={onButtonClick.bind(this, killable ? 'kill' : 'stop')}
                 >

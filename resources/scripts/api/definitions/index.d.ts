@@ -22,7 +22,7 @@ interface ModelWithRelationships extends Model {
  */
 type WithLoaded<M extends ModelWithRelationships, R extends keyof M['relationships']> = M & {
     relationships: MarkRequired<M['relationships'], R>;
-}
+};
 
 /**
  * Helper type that allows you to infer the type of an object by giving

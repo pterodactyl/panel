@@ -29,17 +29,21 @@ export default () => {
         clearFlashes('account:email');
 
         updateEmail({ ...values })
-            .then(() => addFlash({
-                type: 'success',
-                key: 'account:email',
-                message: 'Your primary email has been updated.',
-            }))
-            .catch(error => addFlash({
-                type: 'error',
-                key: 'account:email',
-                title: 'Error',
-                message: httpErrorToHuman(error),
-            }))
+            .then(() =>
+                addFlash({
+                    type: 'success',
+                    key: 'account:email',
+                    message: 'Your primary email has been updated.',
+                })
+            )
+            .catch((error) =>
+                addFlash({
+                    type: 'error',
+                    key: 'account:email',
+                    title: 'Error',
+                    message: httpErrorToHuman(error),
+                })
+            )
             .then(() => {
                 resetForm();
                 setSubmitting(false);
@@ -47,21 +51,18 @@ export default () => {
     };
 
     return (
-        <Formik
-            onSubmit={submit}
-            validationSchema={schema}
-            initialValues={{ email: user!.email, password: '' }}
-        >
-            {
-                ({ isSubmitting, isValid }) => (
-                    <React.Fragment>
-                        <SpinnerOverlay size={'large'} visible={isSubmitting}/>
-                        <Form css={tw`m-0`}>
+        <Formik onSubmit={submit} validationSchema={schema} initialValues={{ email: user!.email, password: '' }}>
+            {({ isSubmitting, isValid }) => (
+                <React.Fragment>
+                    <SpinnerOverlay size={'large'} visible={isSubmitting} />
+                    <Form css={tw`m-0`}>
+                        <Field id={'current_email'} type={'email'} name={'email'} label={'Email'} />
+                        <div css={tw`mt-6`}>
                             <Field
-                                id={'current_email'}
-                                type={'email'}
-                                name={'email'}
-                                label={'Email'}
+                                id={'confirm_password'}
+                                type={'password'}
+                                name={'password'}
+                                label={'Confirm Password'}
                             />
                             <div css={tw`mt-6`}>
                                 <Field
@@ -76,8 +77,9 @@ export default () => {
                                     Update Email
                                 </Button>
                             </div>
-                        </Form>
-                    </React.Fragment>
+                        </div>
+                    </Form>
+                </React.Fragment>
                 )
             }
         </Formik>

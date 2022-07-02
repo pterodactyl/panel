@@ -25,7 +25,8 @@ type ModalType = 'rename' | 'move' | 'chmod';
 
 const StyledRow = styled.div<{ $danger?: boolean }>`
     ${tw`p-2 flex items-center rounded`};
-    ${props => props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
+    ${(props) =>
+        props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
 `;
 
 interface RowProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -41,14 +42,14 @@ const Row = ({ title, ...props }: RowProps) => (
 
 const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const onClickRef = useRef<DropdownMenu>(null);
-    const [ showSpinner, setShowSpinner ] = useState(false);
-    const [ modal, setModal ] = useState<ModalType | null>(null);
-    const [ showConfirmation, setShowConfirmation ] = useState(false);
+    const [showSpinner, setShowSpinner] = useState(false);
+    const [modal, setModal] = useState<ModalType | null>(null);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
-    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     useEventListener(`pterodactyl:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
@@ -61,9 +62,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate(files => files.filter(f => f.key !== file.key), false);
+        mutate((files) => files.filter((f) => f.key !== file.key), false);
 
-        deleteFiles(uuid, directory, [ file.name ]).catch(error => {
+        deleteFiles(uuid, directory, [file.name]).catch((error) => {
             mutate();
             clearAndAddHttpError({ key: 'files', error });
         });
@@ -75,7 +76,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         copyFile(uuid, join(directory, file.name))
             .then(() => mutate())
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -84,11 +85,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         getFileDownloadUrl(uuid, join(directory, file.name))
-            .then(url => {
-                // @ts-ignore
+            .then((url) => {
+                // @ts-expect-error this is valid
                 window.location = url;
             })
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -96,9 +97,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         setShowSpinner(true);
         clearFlashes('files');
 
-        compressFiles(uuid, directory, [ file.name ])
+        compressFiles(uuid, directory, [file.name])
             .then(() => mutate())
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -108,7 +109,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         decompressFiles(uuid, directory, file.name)
             .then(() => mutate())
-            .catch(error => clearAndAddHttpError({ key: 'files', error }))
+            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -126,7 +127,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             </Dialog.Confirm>
             <DropdownMenu
                 ref={onClickRef}
-                renderToggle={onClick => (
+                renderToggle={(onClick) => (
                     <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                         <Icon.MoreHorizontal />
                         {modal ?
@@ -134,20 +135,20 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                 <ChmodFileModal
                                     visible
                                     appear
-                                    files={[ { file: file.name, mode: file.modeBits } ]}
+                                    files={[{ file: file.name, mode: file.modeBits }]}
                                     onDismissed={() => setModal(null)}
                                 />
-                                :
+                            :
                                 <RenameFileModal
                                     visible
                                     appear
-                                    files={[ file.name ]}
+                                    files={[file.name]}
                                     useMoveTerminology={modal === 'move'}
                                     onDismissed={() => setModal(null)}
                                 />
-                            : null
+                                : null
                         }
-                        <SpinnerOverlay visible={showSpinner} fixed size={'large'}/>
+                        <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
                     </div>
                 )}
             >
@@ -157,9 +158,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                     <Row onClick={() => setModal('chmod')} title={'Permissions'}/>
                 </Can>
                 {file.isFile &&
-                <Can action={'file.create'}>
-                    <Row onClick={doCopy} title={'Copy'}/>
-                </Can>
+                    <Can action={'file.create'}>
+                        <Row onClick={doCopy} title={'Copy'}/>
+                    </Can>
                 }
                 {file.isArchiveType() ?
                     <Can action={'file.create'}>

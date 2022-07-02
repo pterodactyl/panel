@@ -9,7 +9,7 @@ interface User extends Model {
     twoFactorEnabled: boolean;
     createdAt: Date;
     permissions: SubuserPermission[];
-    can (permission: SubuserPermission): boolean;
+    can(permission: SubuserPermission): boolean;
 }
 
 interface SSHKey extends Model {
@@ -22,7 +22,7 @@ interface SSHKey extends Model {
 interface ActivityLog extends Model<'actor'> {
     batch: UUID | null;
     event: string;
-    ip: string;
+    ip: string | null;
     isApi: boolean;
     description: string | null;
     properties: Record<string, string | unknown>;
@@ -30,5 +30,5 @@ interface ActivityLog extends Model<'actor'> {
     timestamp: Date;
     relationships: {
         actor: User | null;
-    }
+    };
 }

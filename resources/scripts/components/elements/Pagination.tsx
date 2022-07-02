@@ -21,13 +21,13 @@ interface Props<T> {
 
 const Block = styled(Button)`
     ${tw`p-0 w-10 h-10`}
-    
+
     &:not(:last-of-type) {
         ${tw`mr-2`};
     }
 `;
 
-function Pagination<T> ({ data: { items, pagination }, onPageSelect, children }: Props<T>) {
+function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: Props<T>) {
     const isFirstPage = pagination.currentPage === 1;
     const isLastPage = pagination.currentPage >= pagination.totalPages;
 
@@ -46,36 +46,36 @@ function Pagination<T> ({ data: { items, pagination }, onPageSelect, children }:
         <>
             {children({ items, isFirstPage, isLastPage })}
             {(pages.length > 1) &&
-            <div css={tw`mt-4 flex justify-center`}>
-                {(pages[0] > 1 && !isFirstPage) &&
-                <Block
-                    variant={Button.Variants.Secondary}
-                    color={'primary'}
-                    onClick={() => onPageSelect(1)}
-                >
-                    <Icon.ChevronLeft />
-                </Block>
-                }
-                {
-                    pages.map(i => (
-                        <Block
-                            key={`block_page_${i}`}
-                            onClick={() => onPageSelect(i)}
-                        >
-                            {i}
-                        </Block>
-                    ))
-                }
-                {(pages[4] < pagination.totalPages && !isLastPage) &&
-                <Block
-                    variant={Button.Variants.Secondary}
-                    color={'primary'}
-                    onClick={() => onPageSelect(pagination.totalPages)}
-                >
-                    <Icon.ChevronRight />
-                </Block>
-                }
-            </div>
+                <div css={tw`mt-4 flex justify-center`}>
+                    {(pages[0] > 1 && !isFirstPage) &&
+                    <Block
+                        variant={Button.Variants.Secondary}
+                        color={'primary'}
+                        onClick={() => onPageSelect(1)}
+                    >
+                        <Icon.ChevronLeft />
+                    </Block>
+                    }
+                    {
+                        pages.map(i => (
+                            <Block
+                                key={`block_page_${i}`}
+                                onClick={() => onPageSelect(i)}
+                            >
+                                {i}
+                            </Block>
+                        ))
+                    }
+                    {(pages[4] < pagination.totalPages && !isLastPage) &&
+                    <Block
+                        variant={Button.Variants.Secondary}
+                        color={'primary'}
+                        onClick={() => onPageSelect(pagination.totalPages)}
+                    >
+                        <Icon.ChevronRight />
+                    </Block>
+                    }
+                </div>
             }
         </>
     );

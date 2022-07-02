@@ -1,9 +1,9 @@
 import tw from 'twin.macro';
 import React, { memo } from 'react';
+import { ServerContext } from '@/state/server';
 import isEqual from 'react-fast-compare';
 import Features from '@feature/Features';
 import Can from '@/components/elements/Can';
-import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
 import Console from '@/components/server/console/Console';
 import StatGraphs from '@/components/server/console/StatGraphs';
@@ -12,20 +12,28 @@ import PowerButtons from '@/components/server/console/PowerButtons';
 import ContentContainer from '@/components/elements/ContentContainer';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
+import { Alert } from '@/components/elements/alert';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
 const ServerConsoleContainer = () => {
-    const name = ServerContext.useStoreState(state => state.server.data!.name);
-    const description = ServerContext.useStoreState(state => state.server.data!.description);
-    const isInstalling = ServerContext.useStoreState(state => state.server.data!.isInstalling);
-    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
+    const name = ServerContext.useStoreState((state) => state.server.data!.name);
+    const description = ServerContext.useStoreState((state) => state.server.data!.description);
+    const isInstalling = ServerContext.useStoreState((state) => state.server.isInstalling);
+    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
+    const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
 
     return (
-        <ServerContentBlock title={'Console'} className={'flex flex-col gap-2 sm:gap-4'}>
-            <div className={'flex gap-4 items-end'}>
-                <div className={'hidden sm:block flex-1'}>
+        <ServerContentBlock title={'Console'}>
+            {(isInstalling || isTransferring) && (
+                <Alert type={'warning'} className={'mb-4'}>
+                    {isInstalling
+                        ? 'This server is currently running its installation process and most actions are unavailable.'
+                        : 'This server is currently being transferred to another node and all actions are unavailable.'}
+                </Alert>
+            )}
+            <div className={'grid grid-cols-4 gap-4 mb-4'}>
+                <div className={'hidden sm:block sm:col-span-2 lg:col-span-3 pr-4'}>
                     <h1 className={'font-header text-2xl text-gray-50 leading-relaxed line-clamp-1'}>{name}</h1>
                     <p className={'text-sm line-clamp-2'}>{description}</p>
                 </div>
@@ -39,39 +47,17 @@ const ServerConsoleContainer = () => {
             <div className={'grid grid-cols-4 gap-2 sm:gap-4'}>
                 <div className={'col-span-4 lg:col-span-3'}>
                     <Spinner.Suspense>
-                        <Console/>
+                        <Console />
                     </Spinner.Suspense>
                 </div>
-                <ServerDetailsBlock className={'col-span-4 lg:col-span-1 order-last lg:order-none'}/>
-                {isInstalling ?
-                    <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
-                        <ContentContainer>
-                            <p css={tw`text-sm text-yellow-900`}>
-                                This server is currently running its installation process and most actions are
-                                unavailable.
-                            </p>
-                        </ContentContainer>
-                    </div>
-                    :
-                    isTransferring ?
-                        <div css={tw`mt-4 rounded bg-yellow-500 p-3`}>
-                            <ContentContainer>
-                                <p css={tw`text-sm text-yellow-900`}>
-                                    This server is currently being transferred to another node and all actions
-                                    are unavailable.
-                                </p>
-                            </ContentContainer>
-                        </div>
-                        :
-                        null
-                }
+                <ServerDetailsBlock className={'col-span-4 lg:col-span-1 order-last lg:order-none'} />
             </div>
             <div className={'grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4'}>
                 <Spinner.Suspense>
-                    <StatGraphs/>
+                    <StatGraphs />
                 </Spinner.Suspense>
             </div>
-            <Features enabled={eggFeatures}/>
+            <Features enabled={eggFeatures} />
         </ServerContentBlock>
     );
 };
