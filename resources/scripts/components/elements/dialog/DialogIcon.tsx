@@ -1,12 +1,14 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { CheckIcon, ExclamationIcon, InformationCircleIcon, ShieldExclamationIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import DialogContext from '@/components/elements/dialog/context';
-import { createPortal } from 'react-dom';
 import styles from './style.module.css';
+
+export type IconPosition = 'title' | 'container' | undefined;
 
 interface Props {
     type: 'danger' | 'info' | 'success' | 'warning';
+    position?: IconPosition;
     className?: string;
 }
 
@@ -17,18 +19,22 @@ const icons = {
     info: InformationCircleIcon,
 };
 
-export default ({ type, className }: Props) => {
-    const { icon } = useContext(DialogContext);
+export default ({ type, position, className }: Props) => {
+    const { setIcon, setIconPosition } = useContext(DialogContext);
 
-    if (!icon.current) {
-        return null;
-    }
+    useEffect(() => {
+        const Icon = icons[type];
 
-    const element = (
-        <div className={classNames(styles.dialog_icon, styles[type], className)}>
-            {React.createElement(icons[type], { className: 'w-6 h-6' })}
-        </div>
-    );
+        setIcon(
+            <div className={classNames(styles.dialog_icon, styles[type], className)}>
+                <Icon className={'w-6 h-6'} />
+            </div>
+        );
+    }, [type, className]);
 
-    return createPortal(element, icon.current);
+    useEffect(() => {
+        setIconPosition(position);
+    }, [position]);
+
+    return null;
 };

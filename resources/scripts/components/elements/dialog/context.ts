@@ -1,13 +1,18 @@
 import React from 'react';
+import { IconPosition } from './DialogIcon';
+
+type Callback<T> = ((value: T) => void) | React.Dispatch<React.SetStateAction<T>>;
 
 interface DialogContextType {
-    icon: React.RefObject<HTMLDivElement | undefined>;
-    buttons: React.RefObject<HTMLDivElement | undefined>;
+    setIcon: Callback<React.ReactNode>;
+    setFooter: Callback<React.ReactNode>;
+    setIconPosition: Callback<IconPosition>;
 }
 
 const DialogContext = React.createContext<DialogContextType>({
-    icon: React.createRef(),
-    buttons: React.createRef(),
+    setIcon: () => null,
+    setFooter: () => null,
+    setIconPosition: () => null,
 });
 
 export default DialogContext;
