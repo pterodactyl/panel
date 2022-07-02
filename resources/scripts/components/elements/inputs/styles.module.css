@@ -1,4 +1,4 @@
-.checkbox {
+.checkbox_input {
     @apply w-4 h-4 rounded-sm border-neutral-500 bg-neutral-600 text-primary-500;
 
     &:focus, &:active {
