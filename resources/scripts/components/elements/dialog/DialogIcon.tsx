@@ -1,29 +1,34 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { CheckIcon, ExclamationIcon, InformationCircleIcon, ShieldExclamationIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
+import DialogContext from '@/components/elements/dialog/context';
+import { createPortal } from 'react-dom';
+import styles from './style.module.css';
 
 interface Props {
     type: 'danger' | 'info' | 'success' | 'warning';
     className?: string;
 }
 
-export default ({ type, className }: Props) => {
-    const [Component, styles] = (function (): [(props: React.ComponentProps<'svg'>) => JSX.Element, string] {
-        switch (type) {
-            case 'danger':
-                return [ShieldExclamationIcon, 'bg-red-500 text-red-50'];
-            case 'warning':
-                return [ExclamationIcon, 'bg-yellow-600 text-yellow-50'];
-            case 'success':
-                return [CheckIcon, 'bg-green-600 text-green-50'];
-            case 'info':
-                return [InformationCircleIcon, 'bg-primary-500 text-primary-50'];
-        }
-    })();
+const icons = {
+    danger: ShieldExclamationIcon,
+    warning: ExclamationIcon,
+    success: CheckIcon,
+    info: InformationCircleIcon,
+};
 
-    return (
-        <div className={classNames('flex items-center justify-center w-10 h-10 rounded-full', styles, className)}>
-            <Component className={'w-6 h-6'} />
+export default ({ type, className }: Props) => {
+    const { icon } = useContext(DialogContext);
+
+    if (!icon.current) {
+        return null;
+    }
+
+    const element = (
+        <div className={classNames(styles.dialog_icon, styles[type], className)}>
+            {React.createElement(icons[type], { className: 'w-6 h-6' })}
         </div>
     );
+
+    return createPortal(element, icon.current);
 };
