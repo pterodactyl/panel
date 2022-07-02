@@ -4,11 +4,9 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
-use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
-use Pterodactyl\Models\Notification;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Pterodactyl\Http\Controllers\Controller;
@@ -20,7 +18,6 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class DiscordController extends Controller
 {
-    private AuthManager $auth;
     private SettingsRepositoryInterface $settings;
     private UserCreationService $creationService;
 
@@ -29,7 +26,6 @@ class DiscordController extends Controller
         SettingsRepositoryInterface $settings,
     )
     {
-        $this->auth = Container::getInstance()->make(AuthManager::class);
         $this->creationService = $creationService;
         $this->settings = $settings;
     }
@@ -71,8 +67,8 @@ class DiscordController extends Controller
         $discord = json_decode(Http::withHeaders(["Authorization" => "Bearer ".$req->access_token])->asForm()->get('https://discord.com/api/users/@me')->body());
 
         if (User::where('email', $discord->email)->exists()) {
-            $user = User::where('email', $discord->email)->get();
-            $this->auth->guard()->login($user, true);
+            $user = User::where('email', $discord->email)->first();
+            Auth::loginUsingId($user->id, true);
 
             return redirect('/');
         } else {
@@ -99,8 +95,8 @@ class DiscordController extends Controller
                 $this->creationService->handle($data);
             } catch (Exception $e) { return; }
 
-            $user = User::where('username', $username)->get();
-            $this->auth->guard()->login($user, true);
+            $user = User::where('username', $username)->first();
+            Auth::loginUsingId($user->id, true);
 
             return redirect('/');
         }
