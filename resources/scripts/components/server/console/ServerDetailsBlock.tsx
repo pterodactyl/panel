@@ -93,24 +93,16 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             <StatBlock
                 icon={faMicrochip}
                 title={'CPU Load'}
-                description={limits.cpu
-                    ? `This server is allowed to use up to ${limits.cpu}% of the host's available CPU resources.`
-                    : 'No CPU limit has been configured for this server.'
-                }
             >
                 {status === 'offline' ?
                     <span className={'text-gray-400'}>Offline</span>
                     : 
-                    <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(2)}%</Limit>
+                    <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(1)}%</Limit>
                 }
             </StatBlock>
             <StatBlock
                 icon={faMemory}
                 title={'Memory'}
-                description={limits.memory
-                    ? `This server is allowed to use up to ${bytesToString(mbToBytes(limits.memory))} of memory.`
-                    : 'No memory limit has been configured for this server.'
-                }
             >
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
@@ -121,17 +113,12 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             <StatBlock
                 icon={faHdd}
                 title={'Disk'}
-                description={limits.disk
-                    ? `This server is allowed to use up to ${bytesToString(mbToBytes(limits.disk))} of disk space.`
-                    : 'No disk space limit has been configured for this server.'
-                }
             >
-                {bytesToString(stats.disk)}
+                <Limit limit={textLimits.disk}>{bytesToString(stats.disk)}</Limit>
             </StatBlock>
             <StatBlock
                 icon={faScroll}
                 title={'Save Console Logs'}
-                description={'Saves the console logs to a file.'}
             >
                 <ConsoleShareContainer />
             </StatBlock>
