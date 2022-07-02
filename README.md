@@ -21,4 +21,4 @@ better security, advanced features and blazing fast performance.
 Some Javascript and CSS used within the panel are licensed under a `MIT` or `Apache 2.0` license. Please check their
 respective header files for more information.
 
-In no way, shape or form is Jexactyl affiliated with [Pterodactyl®](https://pterdoactyl.io).
+In no way, shape or form is Jexactyl affiliated with [Pterodactyl®](https://pterodactyl.io).
