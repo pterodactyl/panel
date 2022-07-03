@@ -7,7 +7,7 @@ import Field from '@/components/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 
 interface Values {
     email: string;
@@ -66,9 +66,7 @@ export default () => {
                             />
                         </div>
                         <div css={tw`mt-6`}>
-                            <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                Update Email
-                            </Button>
+                            <Button disabled={isSubmitting || !isValid}>Update Email</Button>
                         </div>
                     </Form>
                 </React.Fragment>
