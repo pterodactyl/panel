@@ -27,7 +27,7 @@ export interface RenderDialogProps extends DialogProps {
 export type WrapperProps = Omit<RenderDialogProps, 'children' | 'open' | 'onClose'>;
 export interface DialogWrapperContextType {
     props: Readonly<WrapperProps>;
-    setProps: Callback<Partial<WrapperProps>>;
+    setProps: React.Dispatch<React.SetStateAction<WrapperProps>>;
     close: () => void;
 }
 
