@@ -12,9 +12,9 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
                 <pre className={'bg-gray-900 rounded p-2 overflow-x-scroll font-mono text-sm leading-relaxed'}>
                     {JSON.stringify(meta, null, 2)}
                 </pre>
-                <Dialog.Buttons>
+                <Dialog.Footer>
                     <Button.Text onClick={() => setOpen(false)}>Close</Button.Text>
-                </Dialog.Buttons>
+                </Dialog.Footer>
             </Dialog>
             <button
                 aria-describedby={'View additional event metadata'}
