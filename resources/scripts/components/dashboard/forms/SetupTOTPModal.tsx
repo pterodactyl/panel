@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog } from '@/components/elements/dialog';
-import { DialogProps } from '@/components/elements/dialog/Dialog';
+import { Dialog, DialogProps } from '@/components/elements/dialog';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
 import { useFlashKey } from '@/plugins/useFlash';
 import tw from 'twin.macro';

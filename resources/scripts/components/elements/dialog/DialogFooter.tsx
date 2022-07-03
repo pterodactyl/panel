@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import DialogContext from '@/components/elements/dialog/context';
+import { DialogContext } from './';
 import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
 
 export default ({ children }: { children: React.ReactNode }) => {

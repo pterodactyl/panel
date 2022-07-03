@@ -1,6 +1,5 @@
 import React from 'react';
-import { DialogProps } from '@/components/elements/dialog/Dialog';
-import { Dialog } from '@/components/elements/dialog';
+import { Dialog, DialogProps } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { Alert } from '@/components/elements/alert';

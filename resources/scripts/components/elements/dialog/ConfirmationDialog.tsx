@@ -1,9 +1,8 @@
 import React from 'react';
-import { Dialog } from '@/components/elements/dialog/index';
-import { FullDialogProps } from '@/components/elements/dialog/Dialog';
+import { Dialog, RenderDialogProps } from './';
 import { Button } from '@/components/elements/button/index';
 
-type ConfirmationProps = Omit<FullDialogProps, 'description' | 'children'> & {
+type ConfirmationProps = Omit<RenderDialogProps, 'description' | 'children'> & {
     children: React.ReactNode;
     confirm?: string | undefined;
     onConfirmed: (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => void;

@@ -1,16 +1,7 @@
 import React, { useContext, useEffect } from 'react';
 import { CheckIcon, ExclamationIcon, InformationCircleIcon, ShieldExclamationIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
-import DialogContext from '@/components/elements/dialog/context';
-import styles from './style.module.css';
-
-export type IconPosition = 'title' | 'container' | undefined;
-
-interface Props {
-    type: 'danger' | 'info' | 'success' | 'warning';
-    position?: IconPosition;
-    className?: string;
-}
+import { DialogContext, DialogIconProps, styles } from './';
 
 const icons = {
     danger: ShieldExclamationIcon,
@@ -19,7 +10,7 @@ const icons = {
     info: InformationCircleIcon,
 };
 
-export default ({ type, position, className }: Props) => {
+export default ({ type, position, className }: DialogIconProps) => {
     const { setIcon, setIconPosition } = useContext(DialogContext);
 
     useEffect(() => {
