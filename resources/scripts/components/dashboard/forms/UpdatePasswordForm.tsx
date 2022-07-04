@@ -81,28 +81,17 @@ export default () => {
                                         'Your new password should be at least 8 characters in length and unique to this website.'
                                     }
                                 />
-                                <div css={tw`mt-6`}>
-                                    <Field
-                                        id={'new_password'}
-                                        type={'password'}
-                                        name={'password'}
-                                        label={'New Password'}
-                                        description={
-                                            'Your new password should be at least 8 characters in length and unique to this website.'
-                                        }
-                                    />
-                                </div>
-                                <div css={tw`mt-6`}>
-                                    <Field
-                                        id={'confirm_new_password'}
-                                        type={'password'}
-                                        name={'confirmPassword'}
-                                        label={'Confirm New Password'}
-                                    />
-                                </div>
-                                <div css={tw`mt-6`}>
-                                    <Button disabled={isSubmitting || !isValid}>Update Password</Button>
-                                </div>
+                            </div>
+                            <div css={tw`mt-6`}>
+                                <Field
+                                    id={'confirm_new_password'}
+                                    type={'password'}
+                                    name={'confirmPassword'}
+                                    label={'Confirm New Password'}
+                                />
+                            </div>
+                            <div css={tw`mt-6`}>
+                                <Button disabled={isSubmitting || !isValid}>Update Password</Button>
                             </div>
                         </Form>
                     </React.Fragment>

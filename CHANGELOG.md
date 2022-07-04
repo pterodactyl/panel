@@ -3,6 +3,21 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.9.2
+### Fixed
+* Fixes rouding in sidebar of CPU usage graph that was causing an excessive number of zeros to be rendered.
+* Fixes the Java Version selector modal having the wrong default value selected initially.
+* Fixes console rendering in Safari that was causing the console to resize excessively and graphs to overlay content.
+* Fixes missing "Starting"/"Stopping" status display in the server uptime block.
+* Fixes incorrect formatting of activity log when viewing certain file actions.
+
+### Changed
+* Updated the UI for the two-step authorization setup on accounts to use new Dialog UI and provide better clarity to new users.
+
+### Added
+* Added missing `<DOCTYPE html>` tag to template output to avoid entering quirks mode in browsers.
+* Added password requirement when enabling TOTP on an account.
+
 ## v1.9.1
 ### Fixed
 * Fixes missing "Click to Copy" for server address on the console data blocks.

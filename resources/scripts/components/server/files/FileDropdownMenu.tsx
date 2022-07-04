@@ -128,7 +128,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             <DropdownMenu
                 ref={onClickRef}
                 renderToggle={(onClick) => (
-                    <div css={tw`p-3 hover:text-white`} onClick={onClick}>
+                    <div css={tw`px-4 py-2 hover:text-white`} onClick={onClick}>
                         <Icon.MoreHorizontal />
                         {modal ? (
                             modal === 'chmod' ? (

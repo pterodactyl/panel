@@ -1,29 +1,31 @@
-import React from 'react';
+import React, { useContext, useEffect } from 'react';
 import { CheckIcon, ExclamationIcon, InformationCircleIcon, ShieldExclamationIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
+import { DialogContext, DialogIconProps, styles } from './';
 
-interface Props {
-    type: 'danger' | 'info' | 'success' | 'warning';
-    className?: string;
-}
+const icons = {
+    danger: ShieldExclamationIcon,
+    warning: ExclamationIcon,
+    success: CheckIcon,
+    info: InformationCircleIcon,
+};
 
-export default ({ type, className }: Props) => {
-    const [Component, styles] = (function (): [(props: React.ComponentProps<'svg'>) => JSX.Element, string] {
-        switch (type) {
-            case 'danger':
-                return [ShieldExclamationIcon, 'bg-red-500 text-red-50'];
-            case 'warning':
-                return [ExclamationIcon, 'bg-yellow-600 text-yellow-50'];
-            case 'success':
-                return [CheckIcon, 'bg-green-600 text-green-50'];
-            case 'info':
-                return [InformationCircleIcon, 'bg-primary-500 text-primary-50'];
-        }
-    })();
+export default ({ type, position, className }: DialogIconProps) => {
+    const { setIcon, setIconPosition } = useContext(DialogContext);
 
-    return (
-        <div className={classNames('flex items-center justify-center w-10 h-10 rounded-full', styles, className)}>
-            <Component className={'w-6 h-6'} />
-        </div>
-    );
+    useEffect(() => {
+        const Icon = icons[type];
+
+        setIcon(
+            <div className={classNames(styles.dialog_icon, styles[type], className)}>
+                <Icon className={'w-6 h-6'} />
+            </div>
+        );
+    }, [type, className]);
+
+    useEffect(() => {
+        setIconPosition(position);
+    }, [position]);
+
+    return null;
 };

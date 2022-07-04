@@ -92,7 +92,7 @@ export default ({ className }: WithClassname) => {
                                     </Code>
                                 </p>
                             </Form>
-                            <Dialog.Buttons>
+                            <Dialog.Footer>
                                 <Button.Text
                                     className={'w-full sm:w-auto'}
                                     onClick={() => {
@@ -105,7 +105,7 @@ export default ({ className }: WithClassname) => {
                                 <Button className={'w-full sm:w-auto'} onClick={submitForm}>
                                     Create
                                 </Button>
-                            </Dialog.Buttons>
+                            </Dialog.Footer>
                         </Dialog>
                     )}
                 </Formik>

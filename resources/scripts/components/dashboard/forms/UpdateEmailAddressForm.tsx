@@ -64,17 +64,9 @@ export default () => {
                                 name={'password'}
                                 label={'Confirm Password'}
                             />
-                            <div css={tw`mt-6`}>
-                                <Field
-                                    id={'confirm_password'}
-                                    type={'password'}
-                                    name={'password'}
-                                    label={'Confirm Password'}
-                                />
-                            </div>
-                            <div css={tw`mt-6`}>
-                                <Button disabled={isSubmitting || !isValid}>Update Email</Button>
-                            </div>
+                        </div>
+                        <div css={tw`mt-6`}>
+                            <Button disabled={isSubmitting || !isValid}>Update Email</Button>
                         </div>
                     </Form>
                 </React.Fragment>

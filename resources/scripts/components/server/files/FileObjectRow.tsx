@@ -8,15 +8,11 @@ import tw from 'twin.macro';
 import * as Icon from 'react-feather';
 import React, { memo } from 'react';
 import isEqual from 'react-fast-compare';
-import styled from 'styled-components/macro';
+import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
 import { usePermissions } from '@/plugins/usePermissions';
 import { join } from 'path';
 import { bytesToString } from '@/lib/formatters';
-import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
-
-const Row = styled.div`
-    ${tw`flex bg-neutral-900 rounded-sm mb-px text-sm hover:text-neutral-100 cursor-pointer items-center no-underline hover:bg-neutral-875`};
-`;
+import styles from './style.module.css';
 
 const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
     const [canReadContents] = usePermissions(['file.read-content']);
@@ -25,13 +21,11 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
     const match = useRouteMatch();
 
     return !canReadContents || (file.isFile && !file.isEditable()) ? (
-        <div css={tw`flex flex-1 text-neutral-300 no-underline p-3 cursor-default overflow-hidden truncate`}>
-            {children}
-        </div>
+        <div className={styles.details}>{children}</div>
     ) : (
         <NavLink
+            className={styles.details}
             to={`${match.url}${file.isFile ? '/edit' : ''}#${encodePathSegments(join(directory, file.name))}`}
-            css={tw`flex flex-1 text-neutral-300 no-underline p-3 overflow-hidden truncate`}
         >
             {children}
         </NavLink>
@@ -39,7 +33,8 @@ const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
 }, isEqual);
 
 const FileObjectRow = ({ file }: { file: FileObject }) => (
-    <Row
+    <div
+        className={styles.file_row}
         key={file.name}
         onContextMenu={(e) => {
             e.preventDefault();
@@ -48,7 +43,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
     >
         <SelectFileCheckbox name={file.name} />
         <Clickable file={file}>
-            <div css={tw`flex-none self-center text-neutral-400 ml-6 mr-4 text-lg pl-3`}>
+            <div css={tw`flex-none text-neutral-400 ml-6 mr-4 text-lg pl-3`}>
                 {file.isFile ? (
                     <>{file.isSymlink ? <Icon.Download /> : file.isArchiveType() ? <Icon.Archive /> : <Icon.File />}</>
                 ) : (
@@ -64,7 +59,7 @@ const FileObjectRow = ({ file }: { file: FileObject }) => (
             </div>
         </Clickable>
         <FileDropdownMenu file={file} />
-    </Row>
+    </div>
 );
 
 export default memo(FileObjectRow, (prevProps, nextProps) => {
