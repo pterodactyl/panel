@@ -6,6 +6,7 @@ use DateTimeImmutable;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\User;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -13,20 +14,16 @@ use Pterodactyl\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
 
 class NodeJWTService
 {
-    /**
-     * @var array
-     */
-    private $claims = [];
+    private array $claims = [];
+
+    private ?User $user = null;
 
     /**
      * @var \DateTimeImmutable|null
      */
     private $expiresAt;
 
-    /**
-     * @var string|null
-     */
-    private $subject;
+    private ?string $subject = null;
 
     /**
      * Set the claims to include in this JWT.
@@ -36,6 +33,17 @@ class NodeJWTService
     public function setClaims(array $claims)
     {
         $this->claims = $claims;
+
+        return $this;
+    }
+
+    /**
+     * Attaches a user to the JWT being created and will automatically inject the
+     * "user_uuid" key into the final claims array with the user's UUID.
+     */
+    public function setUser(User $user): self
+    {
+        $this->user = $user;
 
         return $this;
     }
@@ -90,6 +98,17 @@ class NodeJWTService
 
         foreach ($this->claims as $key => $value) {
             $builder = $builder->withClaim($key, $value);
+        }
+
+        if (!is_null($this->user)) {
+            $builder = $builder
+                ->withClaim('user_uuid', $this->user->uuid)
+                // The "user_id" claim is deprecated and should not be referenced — it remains
+                // here solely to ensure older versions of Wings are unaffected when the Panel
+                // is updated.
+                //
+                // This claim will be removed in Panel@1.11 or later.
+                ->withClaim('user_id', $this->user->id);
         }
 
         return $builder
