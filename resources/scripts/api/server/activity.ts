@@ -1,4 +1,3 @@
-import useUserSWRContentKey from '@/plugins/useUserSWRContentKey';
 import useSWR, { ConfigInterface, responseInterface } from 'swr';
 import { ActivityLog, Transformers } from '@definitions/user';
 import { AxiosError } from 'axios';
@@ -13,11 +12,10 @@ const useActivityLogs = (
     filters?: ActivityLogFilters,
     config?: ConfigInterface<PaginatedResult<ActivityLog>, AxiosError>
 ): responseInterface<PaginatedResult<ActivityLog>, AxiosError> => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
-    const key = useUserSWRContentKey(['server', 'activity', useFilteredObject(filters || {})]);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
 
     return useSWR<PaginatedResult<ActivityLog>>(
-        key,
+        ['server:activty', uuid, useFilteredObject(filters || {})],
         async () => {
             const { data } = await http.get(`/api/client/servers/${uuid}/activity`, {
                 params: {
