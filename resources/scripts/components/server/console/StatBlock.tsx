@@ -7,7 +7,7 @@ import CopyOnClick from '@/components/elements/CopyOnClick';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
 interface StatBlockProps {
-    title: string;
+    title?: string | undefined;
     copyOnClick?: string;
     color?: string | undefined;
     icon: IconDefinition;
@@ -32,10 +32,10 @@ export default ({ title, copyOnClick, icon, color, className, children }: StatBl
                     />
                 </div>
                 <div className={'flex flex-col justify-center overflow-hidden w-full'}>
-                    <p className={'font-header leading-tight text-xs md:text-sm text-gray-200'}>{title}</p>
+                    {title && <p className={'font-header leading-tight text-xs md:text-sm text-gray-200'}>{title}</p>}
                     <div
                         ref={ref}
-                        className={'h-[1.75rem] w-full font-semibold text-gray-50 truncate'}
+                        className={'h-[2rem] w-full font-semibold text-gray-50 truncate'}
                         style={{ fontSize }}
                     >
                         {children}

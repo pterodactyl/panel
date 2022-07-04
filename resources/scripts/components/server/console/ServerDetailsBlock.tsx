@@ -9,6 +9,8 @@ import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import { faClock, faHdd, faMemory, faMicrochip, faScroll, faWifi } from '@fortawesome/free-solid-svg-icons';
 import { capitalize } from '@/lib/strings';
+import styled from 'styled-components/macro';
+import tw from 'twin.macro';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime', number>;
 
@@ -18,6 +20,11 @@ const Limit = ({ limit, children }: { limit: string | null; children: React.Reac
         <span className={'ml-1 text-gray-300 text-[70%] select-none'}>/ {limit || <>&infin;</>}</span>
     </>
 );
+
+const Bar = styled.div`
+    ${tw`h-0.5 bg-cyan-400`};
+    transition: 500ms ease-in-out;
+`;
 
 export default ({ className }: { className?: string }) => {
     const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
@@ -66,6 +73,10 @@ export default ({ className }: { className?: string }) => {
         });
     });
 
+    const cpuUsed = stats.cpu / (limits.cpu / 100);
+    const diskUsed = (stats.disk / 1024 / 1024 / limits.disk) * 100;
+    const memoryUsed = (stats.memory / 1024 / 1024 / limits.memory) * 100;
+
     return (
         <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
             <StatBlock icon={faClock} title={'Uptime'}>
@@ -80,22 +91,37 @@ export default ({ className }: { className?: string }) => {
             <StatBlock icon={faWifi} title={'Address'}>
                 {allocation}
             </StatBlock>
-            <StatBlock icon={faMicrochip} title={'CPU Load'}>
+            <StatBlock icon={faMicrochip} title={'CPU'}>
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
                 ) : (
-                    <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(1)}%</Limit>
+                    <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(2)}%</Limit>
+                )}
+                {limits.cpu === 0 || cpuUsed > 100 ? (
+                    <Bar style={{ width: '100%' }} css={tw`bg-red-500`} />
+                ) : (
+                    <Bar style={{ width: cpuUsed === undefined ? '100%' : `${cpuUsed}%` }} />
                 )}
             </StatBlock>
-            <StatBlock icon={faMemory} title={'Memory'}>
+            <StatBlock icon={faMemory} css={'Memory'}>
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
                 ) : (
                     <Limit limit={textLimits.memory}>{bytesToString(stats.memory)}</Limit>
                 )}
+                {limits.memory === 0 || memoryUsed > 90 ? (
+                    <Bar style={{ width: '100%' }} css={tw`bg-red-500`} />
+                ) : (
+                    <Bar style={{ width: memoryUsed === undefined ? '100%' : `${memoryUsed}%` }} />
+                )}
             </StatBlock>
             <StatBlock icon={faHdd} title={'Disk'}>
                 <Limit limit={textLimits.disk}>{bytesToString(stats.disk)}</Limit>
+                {limits.disk === 0 || diskUsed > 90 ? (
+                    <Bar style={{ width: '100%' }} css={tw`bg-red-500`} />
+                ) : (
+                    <Bar style={{ width: diskUsed === undefined ? '100%' : `${diskUsed}%` }} />
+                )}
             </StatBlock>
             <StatBlock icon={faScroll} title={'Save Console Logs'}>
                 <ConsoleShareContainer />
