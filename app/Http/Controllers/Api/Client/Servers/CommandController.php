@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Facades\Activity;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -52,6 +53,8 @@ class CommandController extends ClientApiController
 
             throw $exception;
         }
+
+        Activity::event('server:console.command')->property('command', $request->input('command'))->log();
 
         return $this->returnNoContent();
     }
