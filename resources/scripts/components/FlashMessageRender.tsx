@@ -1,7 +1,7 @@
 import React from 'react';
 import tw from 'twin.macro';
 import { useStoreState } from 'easy-peasy';
-import MessageBox from '@/components/MessageBox';
+import Alert from '@/components/elements/alert/Alert';
 
 type Props = Readonly<{
     byKey?: string;
@@ -18,9 +18,7 @@ const FlashMessageRender = ({ byKey, className }: Props) => {
             {flashes.map((flash, index) => (
                 <React.Fragment key={flash.id || flash.type + flash.message}>
                     {index > 0 && <div css={tw`mt-2`}></div>}
-                    <MessageBox type={flash.type} title={flash.title}>
-                        {flash.message}
-                    </MessageBox>
+                    <Alert type={flash.type}>{flash.message}</Alert>
                 </React.Fragment>
             ))}
         </div>

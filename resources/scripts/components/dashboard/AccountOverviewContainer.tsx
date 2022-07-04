@@ -3,7 +3,7 @@ import * as React from 'react';
 import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import { useLocation } from 'react-router-dom';
-import MessageBox from '@/components/MessageBox';
+import Alert from '@/components/elements/alert/Alert';
 import ContentBox from '@/components/elements/ContentBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import UpdateUsernameForm from '@/components/dashboard/forms/UpdateUsernameForm';
@@ -33,9 +33,9 @@ export default () => {
             <h1 css={tw`text-5xl`}>Account Overview</h1>
             <h3 css={tw`text-2xl text-neutral-500`}>View and update account details.</h3>
             {state?.twoFactorRedirect && (
-                <MessageBox title={'2-Factor Required'} type={'error'}>
+                <Alert type={'error'}>
                     Your account must have two-factor authentication enabled in order to continue.
-                </MessageBox>
+                </Alert>
             )}
             <Container css={[tw`lg:grid lg:grid-cols-2 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
                 <ContentBox title={'Update Username'} showFlashes={'account:username'}>

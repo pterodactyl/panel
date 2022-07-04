@@ -88,7 +88,7 @@ export default ({ className }: { className?: string }) => {
                     'Offline'
                 )}
             </StatBlock>
-            <StatBlock icon={faWifi} title={'Address'}>
+            <StatBlock icon={faWifi} title={'Address'} copyOnClick={allocation}>
                 {allocation}
             </StatBlock>
             <StatBlock icon={faMicrochip} title={'CPU'}>
