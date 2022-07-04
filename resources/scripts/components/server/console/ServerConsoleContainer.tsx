@@ -42,7 +42,7 @@ const ServerConsoleContainer = () => {
                     </Can>
                 </div>
             </div>
-            <div className={'grid grid-cols-4 gap-2 sm:gap-4'}>
+            <div className={'grid grid-cols-4 gap-2 sm:gap-4 mb-8'}>
                 <div className={'col-span-4 lg:col-span-3'}>
                     <Spinner.Suspense>
                         <Console />
