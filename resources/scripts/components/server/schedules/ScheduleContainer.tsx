@@ -39,12 +39,12 @@ export default () => {
 
     return (
         <ServerContentBlock title={'Schedules'}>
-            <FlashMessageRender byKey={'schedules'} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={'schedules'} css={tw`mb-4`} />
             <h1 css={tw`text-5xl`}>Schedules</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Manage functions for your server.</h3>
-            {(!schedules.length && loading) ?
-                <Spinner size={'large'} centered/>
-                :
+            {!schedules.length && loading ? (
+                <Spinner size={'large'} centered />
+            ) : (
                 <>
                     {schedules.length === 0 ? (
                         <p css={tw`text-sm text-center text-neutral-300`}>
@@ -75,7 +75,7 @@ export default () => {
                         </div>
                     </Can>
                 </>
-            }
+            )}
         </ServerContentBlock>
     );
 };

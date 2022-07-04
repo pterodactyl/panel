@@ -63,13 +63,13 @@ export default () => {
     const searchAddon = new SearchAddon();
     const webLinksAddon = new WebLinksAddon();
     const searchBar = new SearchBarAddon({ searchAddon });
-    const [ historyIndex, setHistoryIndex ] = useState(-1);
+    const [historyIndex, setHistoryIndex] = useState(-1);
     const isConsoleDetached = location.pathname.endsWith('/console');
-    const [ canSendCommands ] = usePermissions([ 'control.console' ]);
-    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
-    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
-    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
-    const [ history, setHistory ] = usePersistedState<string[]>(`${serverId}:command_history`, []);
+    const [canSendCommands] = usePermissions(['control.console']);
+    const serverId = ServerContext.useStoreState((state) => state.server.data!.id);
+    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
+    const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
 
     const handleConsoleOutput = (line: string, prelude = false) =>
         terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
@@ -98,9 +98,10 @@ export default () => {
         window.close();
     };
 
-    const handleDaemonErrorOutput = (line: string) => terminal.writeln(
-        TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
-    );
+    const handleDaemonErrorOutput = (line: string) =>
+        terminal.writeln(
+            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+        );
 
     const handlePowerChangeEvent = (state: string) =>
         terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
@@ -204,18 +205,20 @@ export default () => {
 
     return (
         <div className={styles.terminal}>
-            <SpinnerOverlay visible={!connected} size={'large'}/>
-            <div className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}>
+            <SpinnerOverlay visible={!connected} size={'large'} />
+            <div
+                className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
+            >
                 <div id={styles.terminal} ref={ref}>
-                    {isConsoleDetached ?
+                    {isConsoleDetached ? (
                         <ExternalButton>
                             <Icon.XCircle css={tw`w-6 h-6`} onClick={() => popin()} />
                         </ExternalButton>
-                        :
+                    ) : (
                         <ExternalButton>
                             <Icon.ExternalLink css={tw`w-6 h-6`} onClick={() => popout()} />
                         </ExternalButton>
-                    }
+                    )}
                 </div>
             </div>
             {canSendCommands && (
@@ -230,8 +233,13 @@ export default () => {
                         autoCorrect={'off'}
                         autoCapitalize={'none'}
                     />
-                    <div className={classNames('text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse', styles.command_icon)}>
-                        <Icon.ChevronsRight className={'w-4 h-4'}/>
+                    <div
+                        className={classNames(
+                            'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
+                            styles.command_icon
+                        )}
+                    >
+                        <Icon.ChevronsRight className={'w-4 h-4'} />
                     </div>
                 </div>
             )}

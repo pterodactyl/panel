@@ -23,24 +23,32 @@ export default () => {
     return (
         <>
             {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
-            {location.pathname.startsWith('/account') &&
+            {location.pathname.startsWith('/account') && (
                 <SubNavigation>
                     <div>
                         <NavLink to={'/account'} exact>
-                            <div css={tw`flex items-center justify-between`}>Account <Icon.User css={tw`ml-1`} size={18} /></div>
+                            <div css={tw`flex items-center justify-between`}>
+                                Account <Icon.User css={tw`ml-1`} size={18} />
+                            </div>
                         </NavLink>
                         <NavLink to={'/account/security'}>
-                            <div css={tw`flex items-center justify-between`}>Security <Icon.Key css={tw`ml-1`} size={18} /></div>
+                            <div css={tw`flex items-center justify-between`}>
+                                Security <Icon.Key css={tw`ml-1`} size={18} />
+                            </div>
                         </NavLink>
                         <NavLink to={'/account/api'}>
-                            <div css={tw`flex items-center justify-between`}>API <Icon.Code css={tw`ml-1`} size={18} /></div>
+                            <div css={tw`flex items-center justify-between`}>
+                                API <Icon.Code css={tw`ml-1`} size={18} />
+                            </div>
                         </NavLink>
                         <NavLink to={'/account/ssh'}>
-                            <div css={tw`flex items-center justify-between`}>SSH Keys <Icon.Terminal css={tw`ml-1`} size={18} /></div>
+                            <div css={tw`flex items-center justify-between`}>
+                                SSH Keys <Icon.Terminal css={tw`ml-1`} size={18} />
+                            </div>
                         </NavLink>
                     </div>
                 </SubNavigation>
-            }
+            )}
             <TransitionRouter>
                 <React.Suspense fallback={<Spinner centered />}>
                     <Switch location={location}>
@@ -48,16 +56,16 @@ export default () => {
                             <DashboardContainer />
                         </Route>
                         <Route path={'/account'} exact>
-                            <AccountOverviewContainer/>
+                            <AccountOverviewContainer />
                         </Route>
                         <Route path={'/account/security'} exact>
                             <AccountSecurityContainer />
                         </Route>
                         <Route path={'/account/api'} exact>
-                            <AccountApiContainer/>
+                            <AccountApiContainer />
                         </Route>
                         <Route path={'/account/ssh'} exact>
-                            <AccountSSHContainer/>
+                            <AccountSSHContainer />
                         </Route>
                         <Route path={'*'}>
                             <NotFound />

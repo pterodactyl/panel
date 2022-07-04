@@ -32,11 +32,7 @@ interface ExtendedWindow extends Window {
 setupInterceptors(history);
 
 const App = () => {
-    const {
-        PterodactylUser,
-        SiteConfiguration,
-        StoreConfiguration,
-    } = window as ExtendedWindow;
+    const { PterodactylUser, SiteConfiguration, StoreConfiguration } = window as ExtendedWindow;
 
     if (PterodactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
@@ -59,7 +55,7 @@ const App = () => {
         store.getActions().storefront.setStorefront(StoreConfiguration!);
     }
 
-    function earn () {
+    function earn() {
         console.log('Waiting to add credits');
         setTimeout(earn, 61000); // Allow 1 second for time inconsistencies.
 

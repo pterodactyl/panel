@@ -5,6 +5,7 @@ export default (amount: number): Promise<void> => {
         http.post('/api/client/store/stripe', { amount })
             .then((data) => {
                 resolve(data.data || []);
-            }).catch(reject);
+            })
+            .catch(reject);
     });
 };

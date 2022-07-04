@@ -6,15 +6,7 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import subusers, { ServerSubuserStore } from '@/state/server/subusers';
 import schedules, { ServerScheduleStore } from '@/state/server/schedules';
 import databases, { ServerDatabaseStore } from '@/state/server/databases';
-import {
-    action,
-    Action,
-    computed,
-    Computed,
-    createContextStore,
-    thunk,
-    Thunk,
-} from 'easy-peasy';
+import { action, Action, computed, Computed, createContextStore, thunk, Thunk } from 'easy-peasy';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | null;
 

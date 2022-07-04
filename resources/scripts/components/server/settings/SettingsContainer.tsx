@@ -11,12 +11,12 @@ import DeleteServerBox from '@/components/server/settings/DeleteServerBox';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
 
 export default () => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const node = ServerContext.useStoreState(state => state.server.data!.node);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const node = ServerContext.useStoreState((state) => state.server.data!.node);
 
     return (
         <ServerContentBlock title={'Settings'}>
-            <FlashMessageRender byKey={'settings'} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={'settings'} css={tw`mb-4`} />
             <h1 css={tw`text-5xl`}>Settings</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Control important settings for your server.</h3>
             <div css={tw`md:flex`}>

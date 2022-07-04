@@ -42,7 +42,7 @@ const inputStyle = css<Props>`
     ${tw`appearance-none outline-none w-full min-w-0`};
     ${tw`p-3 border-2 rounded text-sm transition-all duration-150`};
     ${tw`bg-neutral-900 border-neutral-700 hover:border-neutral-600 text-neutral-200 shadow-none focus:ring-0`};
-    
+
     & + .input-help {
         ${tw`mt-1 text-xs`};
         ${(props) => (props.hasError ? tw`text-red-200` : tw`text-neutral-200`)};

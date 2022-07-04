@@ -51,11 +51,7 @@ const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProp
                             onClick={() => (onRetry ? onRetry() : onBack ? onBack() : null)}
                             className={onRetry ? 'hover:spin' : undefined}
                         >
-                        {onRetry ?
-                            <Icon.RefreshCw />
-                            :
-                            <Icon.ChevronLeft />
-                        }
+                            {onRetry ? <Icon.RefreshCw /> : <Icon.ChevronLeft />}
                         </ActionButton>
                     </div>
                 )}

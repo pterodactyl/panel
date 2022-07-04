@@ -8,7 +8,7 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 
 const IconDescription = styled.p<{ $alarm?: boolean }>`
     ${tw`text-sm ml-2`};
-    ${props => props.$alarm ? tw`text-white` : tw`text-neutral-400`};
+    ${(props) => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
 `;
 
 const StatusIndicatorBox = styled(GreyRowBox)`
@@ -31,9 +31,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 <div css={tw`flex-1 ml-4 sm:block hidden`}>
                     <div css={tw`flex justify-center`}>
                         <Icon.ArrowRightCircle size={20} css={tw`text-neutral-600`} />
-                        <IconDescription>
-                                Edit Server
-                        </IconDescription>
+                        <IconDescription>Edit Server</IconDescription>
                     </div>
                 </div>
             </React.Fragment>

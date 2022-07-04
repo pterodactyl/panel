@@ -12,13 +12,13 @@ const Container = styled.div`
     ${tw`flex flex-wrap`};
 
     & > div {
-      ${tw`w-full`};
+        ${tw`w-full`};
 
-      ${breakpoint('sm')`
+        ${breakpoint('sm')`
         width: calc(50% - 1rem);
       `}
 
-      ${breakpoint('md')`
+        ${breakpoint('md')`
         ${tw`w-auto flex-1`};
       `}
     }

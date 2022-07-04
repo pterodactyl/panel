@@ -18,19 +18,19 @@ import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
-  ${tw`flex flex-wrap`};
+    ${tw`flex flex-wrap`};
 
-  & > div {
-    ${tw`w-full`};
+    & > div {
+        ${tw`w-full`};
 
-    ${breakpoint('sm')`
+        ${breakpoint('sm')`
       width: calc(50% - 1rem);
     `}
 
-    ${breakpoint('md')`
+        ${breakpoint('md')`
       ${tw`w-auto flex-1`};
     `}
-  }
+    }
 `;
 
 interface CreateValues {
@@ -45,23 +45,21 @@ interface CreateValues {
 }
 
 export default () => {
-    const user = useStoreState(state => state.user.data!);
-    const limit = useStoreState(state => state.storefront.data!.limit);
-    const [ resources, setResources ] = useState<Resources>();
+    const user = useStoreState((state) => state.user.data!);
+    const limit = useStoreState((state) => state.storefront.data!.limit);
+    const [resources, setResources] = useState<Resources>();
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
-    const [ isSubmit, setSubmit ] = useState(false);
-    const [ loading, setLoading ] = useState(false);
-    const [ eggs, setEggs ] = useState<Egg[]>([]);
-    const [ egg, setEgg ] = useState(0);
+    const [isSubmit, setSubmit] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [eggs, setEggs] = useState<Egg[]>([]);
+    const [egg, setEgg] = useState(0);
 
     useEffect(() => {
-        getResources()
-            .then(resources => setResources(resources));
+        getResources().then((resources) => setResources(resources));
     }, []);
 
     useEffect(() => {
-        getEggs()
-            .then(eggs => setEggs(eggs));
+        getEggs().then((eggs) => setEggs(eggs));
     }, []);
 
     const submit = (values: CreateValues) => {
@@ -74,15 +72,17 @@ export default () => {
                 setSubmit(false);
                 setLoading(false);
                 clearFlashes('store:create');
-                // @ts-ignore
+                // @ts-expect-error this is valid
                 window.location = '/';
             })
-            .then(() => addFlash({
-                type: 'success',
-                key: 'store:create',
-                message: 'Your server has been deployed and is now installing.',
-            }))
-            .catch(error => {
+            .then(() =>
+                addFlash({
+                    type: 'success',
+                    key: 'store:create',
+                    message: 'Your server has been deployed and is now installing.',
+                })
+            )
+            .catch((error) => {
                 setSubmit(false);
                 clearAndAddHttpError({ key: 'store:create', error });
             });
@@ -109,8 +109,16 @@ export default () => {
                     name: string().required().min(3),
                     description: string().optional().min(3).max(191),
                     cpu: number().required().min(50).max(resources.cpu).max(limit.cpu),
-                    memory: number().required().min(1).max(resources.memory / 1024).max(limit.memory / 1024),
-                    disk: number().required().min(1).max(resources.disk / 1024).max(limit.disk / 1024),
+                    memory: number()
+                        .required()
+                        .min(1)
+                        .max(resources.memory / 1024)
+                        .max(limit.memory / 1024),
+                    disk: number()
+                        .required()
+                        .min(1)
+                        .max(resources.disk / 1024)
+                        .max(limit.disk / 1024),
                     ports: number().required().min(1).max(resources.ports).max(limit.port),
                     backups: number().optional().max(resources.backups).max(limit.backup),
                     databases: number().optional().max(resources.databases).max(limit.database),
@@ -124,7 +132,9 @@ export default () => {
                         <TitledGreyBox title={'Server name'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'name'} />
                             <p css={tw`mt-1 text-xs`}>Assign a name to your server for use in the Panel.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>Character limits: <code>a-z A-Z 0-9 _ - .</code> and <code>[Space]</code>.</p>
+                            <p css={tw`mt-1 text-xs text-neutral-400`}>
+                                Character limits: <code>a-z A-Z 0-9 _ - .</code> and <code>[Space]</code>.
+                            </p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server description'} css={tw`mt-8 sm:mt-0 `}>
                             <Field name={'description'} />
@@ -143,7 +153,9 @@ export default () => {
                         <TitledGreyBox title={'Server RAM limit'} css={tw`mt-8 sm:mt-0 `}>
                             <Field name={'memory'} />
                             <p css={tw`mt-1 text-xs`}>Assign a limit for usable RAM.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>{megabytesToHuman(resources.memory)} available</p>
+                            <p css={tw`mt-1 text-xs text-neutral-400`}>
+                                {megabytesToHuman(resources.memory)} available
+                            </p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server Storage limit'} css={tw`mt-8 sm:mt-0 `}>
                             <Field name={'disk'} />
@@ -175,7 +187,7 @@ export default () => {
                     <Container css={tw`my-10 gap-4`}>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
                             <div css={tw`flex justify-center items-center`}>
-                                {eggs.map((egg) =>
+                                {eggs.map((egg) => (
                                     <Button.Success
                                         type={'button'}
                                         variant={Button.Variants.Secondary}
@@ -185,7 +197,7 @@ export default () => {
                                     >
                                         {egg.id} | {egg.name}
                                     </Button.Success>
-                                )}
+                                ))}
                             </div>
                             <p css={tw`mt-2 text-sm`}>Choose what game you want to run on your server.</p>
                             <p css={tw`mt-1 text-xs text-neutral-400`}>Currently selected egg: {egg}</p>

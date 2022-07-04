@@ -28,14 +28,18 @@ import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 
 const sortFiles = (files: FileObject[], searchString: string): FileObject[] => {
-    const sortedFiles: FileObject[] = files.sort((a, b) => a.name.localeCompare(b.name)).sort((a, b) => a.isFile === b.isFile ? 0 : (a.isFile ? 1 : -1));
-    return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name).filter((file) => file.name.toLowerCase().includes(searchString.toLowerCase()));
+    const sortedFiles: FileObject[] = files
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
+    return sortedFiles
+        .filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name)
+        .filter((file) => file.name.toLowerCase().includes(searchString.toLowerCase()));
 };
 
 export default () => {
-    const id = ServerContext.useStoreState(state => state.server.data!.id);
-    const username = useStoreState(state => state.user.data!.username);
-    const sftp = ServerContext.useStoreState(state => state.server.data!.sftpDetails);
+    const id = ServerContext.useStoreState((state) => state.server.data!.id);
+    const username = useStoreState((state) => state.user.data!.username);
+    const sftp = ServerContext.useStoreState((state) => state.server.data!.sftpDetails);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -45,7 +49,7 @@ export default () => {
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
 
-    const [ searchString, setSearchString ] = useState('');
+    const [searchString, setSearchString] = useState('');
 
     useEffect(() => {
         clearFlashes('files');
@@ -62,9 +66,7 @@ export default () => {
     };
 
     if (error) {
-        return (
-            <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()} />
-        );
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => mutate()} />;
     }
 
     const searchFiles = (event: ChangeEvent<HTMLInputElement>) => {
@@ -79,11 +81,7 @@ export default () => {
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
             <h1 css={tw`text-5xl`}>File Manager</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Create, edit and view files.</h3>
-            <Input
-                onChange={searchFiles}
-                css={tw`mb-4`}
-                placeholder={'Search for files and folders...'}
-            />
+            <Input onChange={searchFiles} css={tw`mb-4`} placeholder={'Search for files and folders...'} />
             <div css={tw`flex flex-wrap-reverse md:flex-nowrap justify-center mb-4`}>
                 <ErrorBoundary>
                     <FileManagerBreadcrumbs
@@ -105,65 +103,50 @@ export default () => {
                                 to={`/server/${id}/files/new${window.location.hash}`}
                                 css={tw`flex-1 sm:flex-none sm:mt-0`}
                             >
-                                <Button css={tw`w-full`}>
-                                    New File
-                                </Button>
+                                <Button css={tw`w-full`}>New File</Button>
                             </NavLink>
                         </div>
                     </Can>
                 </ErrorBoundary>
             </div>
-            {
-                !files ?
-                    <Spinner size={'large'} centered />
-                    :
-                    <>
-                        {!files.length ?
-                            <p css={tw`text-sm text-neutral-400 text-center`}>
-                                This directory seems to be empty.
-                            </p>
-                            :
-                            <CSSTransition classNames={'fade'} timeout={150} appear in>
-                                <div>
-                                    {files.length > 250 &&
-                                        <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                            <p css={tw`text-yellow-900 text-sm text-center`}>
-                                                This directory is too large to display in the browser,
-                                                limiting the output to the first 250 files.
-                                            </p>
-                                        </div>
-                                    }
-                                    {
-                                        sortFiles(files.slice(0, 250), searchString).map(file => (
-                                            <FileObjectRow key={file.key} file={file} />
-                                        ))
-                                    }
-                                    <MassActionsBar />
-                                </div>
-                            </CSSTransition>
-                        }
-                    </>
-            }
+            {!files ? (
+                <Spinner size={'large'} centered />
+            ) : (
+                <>
+                    {!files.length ? (
+                        <p css={tw`text-sm text-neutral-400 text-center`}>This directory seems to be empty.</p>
+                    ) : (
+                        <CSSTransition classNames={'fade'} timeout={150} appear in>
+                            <div>
+                                {files.length > 250 && (
+                                    <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
+                                        <p css={tw`text-yellow-900 text-sm text-center`}>
+                                            This directory is too large to display in the browser, limiting the output
+                                            to the first 250 files.
+                                        </p>
+                                    </div>
+                                )}
+                                {sortFiles(files.slice(0, 250), searchString).map((file) => (
+                                    <FileObjectRow key={file.key} file={file} />
+                                ))}
+                                <MassActionsBar />
+                            </div>
+                        </CSSTransition>
+                    )}
+                </>
+            )}
             <Can action={'file.sftp'}>
                 <TitledGreyBox title={'SFTP Details'} css={tw`mt-8 md:mt-6`}>
                     <div>
                         <Label>Server Address</Label>
                         <CopyOnClick text={`sftp://${ip(sftp.ip)}:${sftp.port}`}>
-                            <Input
-                                type={'text'}
-                                value={`sftp://${ip(sftp.ip)}:${sftp.port}`}
-                                readOnly
-                            />
+                            <Input type={'text'} value={`sftp://${ip(sftp.ip)}:${sftp.port}`} readOnly />
                         </CopyOnClick>
                     </div>
                     <div css={tw`mt-6`}>
                         <Label>Username</Label>
                         <CopyOnClick text={`${username}.${id}`}>
-                            <Input
-                                type={'text'}
-                                value={`${username}.${id}`}
-                                readOnly
-                            />
+                            <Input type={'text'} value={`${username}.${id}`} readOnly />
                         </CopyOnClick>
                     </div>
                 </TitledGreyBox>

@@ -12,19 +12,19 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 const Container = styled.div`
-  ${tw`flex flex-wrap`};
+    ${tw`flex flex-wrap`};
 
-  & > div {
-    ${tw`w-full`};
+    & > div {
+        ${tw`w-full`};
 
-    ${breakpoint('sm')`
+        ${breakpoint('sm')`
       width: calc(50% - 1rem);
     `}
 
-    ${breakpoint('md')`
+        ${breakpoint('md')`
       ${tw`w-auto flex-1`};
     `}
-  }
+    }
 `;
 
 const Wrapper = styled.div`
@@ -32,24 +32,26 @@ const Wrapper = styled.div`
 `;
 
 export default () => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { clearFlashes, addFlash, clearAndAddHttpError } = useFlash();
 
     const edit = (resource: string, amount: number) => {
         clearFlashes('server:edit');
 
         editServer(uuid, resource, amount)
-            .then(() => addFlash({
-                key: 'server:edit',
-                type: 'success',
-                message: 'Server resources have been edited successfully.',
-            }))
-            .catch(error => clearAndAddHttpError({ key: 'server:edit', error }));
+            .then(() =>
+                addFlash({
+                    key: 'server:edit',
+                    type: 'success',
+                    message: 'Server resources have been edited successfully.',
+                })
+            )
+            .catch((error) => clearAndAddHttpError({ key: 'server:edit', error }));
     };
 
     return (
         <ServerContentBlock title={'Edit Server'}>
-            <FlashMessageRender byKey={'server:edit'} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={'server:edit'} css={tw`mb-4`} />
             <h1 css={tw`text-5xl`}>Edit Resources</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Add and remove resources from your server.</h3>
             <Container css={tw`lg:grid lg:grid-cols-3 gap-4 my-10`}>
@@ -73,7 +75,9 @@ export default () => {
                             <Icon.Minus />
                         </Button.Danger>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the amount of CPU assigned to the server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Change the amount of CPU assigned to the server.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 50%.</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Edit server RAM limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -96,7 +100,9 @@ export default () => {
                             <Icon.Minus />
                         </Button.Danger>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the amount of RAM assigned to the server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Change the amount of RAM assigned to the server.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 1GB.</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Edit server storage limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -119,7 +125,9 @@ export default () => {
                             <Icon.Minus />
                         </Button.Danger>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the amount of storage assigned to the server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Change the amount of storage assigned to the server.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 1GB.</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Edit server port quantity'} css={tw`mt-8 sm:mt-0`}>
@@ -142,7 +150,9 @@ export default () => {
                             <Icon.Minus />
                         </Button.Danger>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the limit of ports assigned to the server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Change the limit of ports assigned to the server.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Limit cannot be lower than 1.</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Edit server backup limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -165,7 +175,9 @@ export default () => {
                             <Icon.Minus />
                         </Button.Danger>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the limit of backups assigned to the server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Change the limit of backups assigned to the server.
+                    </p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Edit server database limit'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
@@ -187,7 +199,9 @@ export default () => {
                             <Icon.Minus />
                         </Button.Danger>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Change the limit of backups assigned to the server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Change the limit of backups assigned to the server.
+                    </p>
                 </TitledGreyBox>
             </Container>
         </ServerContentBlock>

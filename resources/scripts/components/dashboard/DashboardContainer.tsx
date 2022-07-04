@@ -50,18 +50,18 @@ export default () => {
 
     return (
         <PageContentBlock title={'Dashboard'} css={tw`mt-4 sm:mt-10`} showFlashKey={'dashboard' || 'store:create'}>
-            {rootAdmin &&
-            <div css={tw`mb-2 flex justify-end items-center`}>
-                <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                    {showOnlyAdmin ? 'Showing others\' servers' : 'Showing your servers'}
-                </p>
-                <Switch
-                    name={'show_all_servers'}
-                    defaultChecked={showOnlyAdmin}
-                    onChange={() => setShowOnlyAdmin(s => !s)}
-                />
-            </div>
-            }
+            {rootAdmin && (
+                <div css={tw`mb-2 flex justify-end items-center`}>
+                    <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
+                        {showOnlyAdmin ? "Showing others' servers" : 'Showing your servers'}
+                    </p>
+                    <Switch
+                        name={'show_all_servers'}
+                        defaultChecked={showOnlyAdmin}
+                        onChange={() => setShowOnlyAdmin((s) => !s)}
+                    />
+                </div>
+            )}
             {!servers ? (
                 <Spinner centered size={'large'} />
             ) : (

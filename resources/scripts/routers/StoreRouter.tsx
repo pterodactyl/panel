@@ -21,7 +21,7 @@ const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();
     const location = useLocation();
     const { width } = useWindowDimensions();
-    const earn = useStoreState(state => state.storefront.data!.earn);
+    const earn = useStoreState((state) => state.storefront.data!.earn);
 
     return (
         <>
@@ -29,19 +29,27 @@ const StoreRouter = () => {
             <SubNavigation>
                 <div>
                     <NavLink to={`${match.url}`} exact>
-                        <div css={tw`flex items-center justify-between`}>Overview <Icon.Home css={tw`ml-1`} size={18} /></div>
+                        <div css={tw`flex items-center justify-between`}>
+                            Overview <Icon.Home css={tw`ml-1`} size={18} />
+                        </div>
                     </NavLink>
                     <NavLink to={`${match.url}/balance`}>
-                        <div css={tw`flex items-center justify-between`}>Balance <Icon.DollarSign css={tw`ml-1`} size={18} /></div>
+                        <div css={tw`flex items-center justify-between`}>
+                            Balance <Icon.DollarSign css={tw`ml-1`} size={18} />
+                        </div>
                     </NavLink>
                     <NavLink to={`${match.url}/resources`}>
-                        <div css={tw`flex items-center justify-between`}>Resources <Icon.ShoppingCart css={tw`ml-1`} size={18} /></div>
+                        <div css={tw`flex items-center justify-between`}>
+                            Resources <Icon.ShoppingCart css={tw`ml-1`} size={18} />
+                        </div>
                     </NavLink>
-                    {earn.enabled === 'true' &&
+                    {earn.enabled === 'true' && (
                         <NavLink to={`${match.url}/earn`}>
-                            <div css={tw`flex items-center justify-between`}>Earn Credits <Icon.DollarSign css={tw`ml-1`} size={18} /></div>
+                            <div css={tw`flex items-center justify-between`}>
+                                Earn Credits <Icon.DollarSign css={tw`ml-1`} size={18} />
+                            </div>
                         </NavLink>
-                    }
+                    )}
                 </div>
             </SubNavigation>
             <TransitionRouter>
@@ -61,11 +69,11 @@ const StoreRouter = () => {
                     <Route path={`${match.path}/edit`} exact>
                         <EditContainer />
                     </Route>
-                    {earn.enabled === 'true' &&
+                    {earn.enabled === 'true' && (
                         <Route path={`${match.path}/earn`} exact>
                             <EarnContainer />
                         </Route>
-                    }
+                    )}
                     <Route path={'*'}>
                         <NotFound />
                     </Route>

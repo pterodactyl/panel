@@ -10,8 +10,8 @@ import { Button } from '@/components/elements/button/index';
 import FlashMessageRender from '@/components/FlashMessageRender';
 
 const PIDLimitModalFeature = () => {
-    const [ visible, setVisible ] = useState(false);
-    const [ loading ] = useState(false);
+    const [visible, setVisible] = useState(false);
+    const [loading] = useState(false);
 
     const status = ServerContext.useStoreState((state) => state.status.value);
     const { clearFlashes } = useFlash();

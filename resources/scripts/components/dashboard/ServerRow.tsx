@@ -6,7 +6,7 @@ import { Server } from '@/api/server/getServer';
 import Spinner from '@/components/elements/Spinner';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import React, { useEffect, useRef, useState } from 'react';
-import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
+import { bytesToString, ip } from '@/lib/formatters';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
@@ -90,7 +90,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
             </div>
             <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
                 <div css={tw`flex justify-center`}>
-                    <Icon.Share2 css={tw`text-neutral-500`}/>
+                    <Icon.Share2 css={tw`text-neutral-500`} />
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
                         {server.allocations
                             .filter((alloc) => alloc.isDefault)

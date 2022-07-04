@@ -54,9 +54,9 @@ const NetworkContainer = () => {
         <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
             <h1 css={tw`text-5xl`}>Network</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Configure this server&apos;s external networking.</h3>
-            {!data ?
-                <Spinner size={'large'} centered/>
-                :
+            {!data ? (
+                <Spinner size={'large'} centered />
+            ) : (
                 <>
                     {data.map((allocation) => (
                         <AllocationRow key={`${allocation.ip}:${allocation.port}`} allocation={allocation} />
@@ -69,16 +69,16 @@ const NetworkContainer = () => {
                                     You are currently using {data.length} of {allocationLimit} allowed allocations for
                                     this server.
                                 </p>
-                                {allocationLimit > data.length &&
+                                {allocationLimit > data.length && (
                                     <Button css={tw`w-full sm:w-auto`} onClick={onCreateAllocation}>
                                         Create Allocation
                                     </Button>
-                                }
+                                )}
                             </div>
                         </Can>
                     )}
                 </>
-            }
+            )}
         </ServerContentBlock>
     );
 };

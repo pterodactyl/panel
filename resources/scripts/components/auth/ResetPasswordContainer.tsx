@@ -1,5 +1,4 @@
 import tw from 'twin.macro';
-import { parse } from 'query-string';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { object, ref, string } from 'yup';
@@ -80,12 +79,7 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                         <Field light label={'Confirm New Password'} name={'passwordConfirmation'} type={'password'} />
                     </div>
                     <div css={tw`mt-6`}>
-                        <Button
-                            size={Button.Sizes.Large}
-                            css={tw`w-full`}
-                            type={'submit'}
-                            disabled={isSubmitting}
-                        >
+                        <Button size={Button.Sizes.Large} css={tw`w-full`} type={'submit'} disabled={isSubmitting}>
                             Reset Password
                         </Button>
                     </div>

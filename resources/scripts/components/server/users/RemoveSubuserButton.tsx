@@ -10,7 +10,7 @@ import { Dialog } from '@/components/elements/dialog';
 import deleteSubuser from '@/api/server/users/deleteSubuser';
 
 export default ({ subuser }: { subuser: Subuser }) => {
-    const [ showConfirmation, setShowConfirmation ] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const removeSubuser = ServerContext.useStoreActions((actions) => actions.subusers.removeSubuser);

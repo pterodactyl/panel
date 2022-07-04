@@ -11,7 +11,7 @@ export interface SiteSettings {
     registration: {
         email: string;
         discord: string;
-    }
+    };
     renewal: string;
 }
 

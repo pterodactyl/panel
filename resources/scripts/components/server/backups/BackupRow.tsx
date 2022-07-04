@@ -50,14 +50,15 @@ export default ({ backup, className }: Props) => {
         <GreyRowBox css={tw`flex-wrap md:flex-nowrap items-center`} className={className}>
             <div css={tw`flex items-center truncate w-full md:flex-1`}>
                 <div css={tw`mr-4`}>
-                    {backup.completedAt !== null ?
-                        backup.isLocked ?
+                    {backup.completedAt !== null ? (
+                        backup.isLocked ? (
                             <Icon.Lock css={tw`text-yellow-500`} />
-                            :
+                        ) : (
                             <Icon.Unlock css={tw`text-neutral-300`} />
-                        :
-                        <Spinner size={'small'}/>
-                    }
+                        )
+                    ) : (
+                        <Spinner size={'small'} />
+                    )}
                 </div>
                 <div css={tw`flex flex-col truncate`}>
                     <div css={tw`flex items-center text-sm mb-1`}>

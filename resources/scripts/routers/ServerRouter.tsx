@@ -39,29 +39,31 @@ import ScheduleEditContainer from '@/components/server/schedules/ScheduleEditCon
 import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
 
 const ConflictStateRenderer = () => {
-    const status = ServerContext.useStoreState(state => state.server.data?.status || null);
-    const isTransferring = ServerContext.useStoreState(state => state.server.data?.isTransferring || false);
+    const status = ServerContext.useStoreState((state) => state.server.data?.status || null);
+    const isTransferring = ServerContext.useStoreState((state) => state.server.data?.isTransferring || false);
 
-    return (
-        status === 'installing' || status === 'install_failed' ?
-            <ScreenBlock
-                title={'Running Installer'}
-                image={ServerInstallSvg}
-                message={'Your server should be ready soon, please try again in a few minutes.'}
-            />
-            :
-            status === 'suspended' ?
-                <ScreenBlock
-                    title={'Server Suspended'}
-                    image={ServerErrorSvg}
-                    message={'This server is suspended and cannot be accessed.'}
-                />
-                :
-                <ScreenBlock
-                    title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
-                    image={ServerRestoreSvg}
-                    message={isTransferring ? 'Your server is being transfered to a new node, please check back later.' : 'Your server is currently being restored from a backup, please check back in a few minutes.'}
-                />
+    return status === 'installing' || status === 'install_failed' ? (
+        <ScreenBlock
+            title={'Running Installer'}
+            image={ServerInstallSvg}
+            message={'Your server should be ready soon, please try again in a few minutes.'}
+        />
+    ) : status === 'suspended' ? (
+        <ScreenBlock
+            title={'Server Suspended'}
+            image={ServerErrorSvg}
+            message={'This server is suspended and cannot be accessed.'}
+        />
+    ) : (
+        <ScreenBlock
+            title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
+            image={ServerRestoreSvg}
+            message={
+                isTransferring
+                    ? 'Your server is being transfered to a new node, please check back later.'
+                    : 'Your server is currently being restored from a backup, please check back in a few minutes.'
+            }
+        />
     );
 };
 
@@ -80,9 +82,12 @@ export default () => {
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
 
-    useEffect(() => () => {
-        clearServerState();
-    }, []);
+    useEffect(
+        () => () => {
+            clearServerState();
+        },
+        []
+    );
 
     useEffect(() => {
         setError('');
@@ -100,74 +105,99 @@ export default () => {
     return (
         <React.Fragment key={'server-router'}>
             {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
-            {(!uuid || !id) ?
-                error ?
-                    <ServerError message={error}/>
-                    :
-                    <Spinner size={'large'} centered/>
-                :
+            {!uuid || !id ? (
+                error ? (
+                    <ServerError message={error} />
+                ) : (
+                    <Spinner size={'large'} centered />
+                )
+            ) : (
                 <>
                     <CSSTransition timeout={150} classNames={'fade'} appear in>
                         <SubNavigation>
                             <div>
                                 <NavLink to={`${match.url}`} exact>
-                                    <div css={tw`flex items-center justify-between`}>Console <Icon.Terminal css={tw`ml-1`} size={18} /> </div>
+                                    <div css={tw`flex items-center justify-between`}>
+                                        Console <Icon.Terminal css={tw`ml-1`} size={18} />{' '}
+                                    </div>
                                 </NavLink>
                                 <Can action={'activity.*'}>
                                     <NavLink to={`${match.url}/activity`}>
-                                        <div css={tw`flex items-center justify-between`}>Activity <Icon.Eye css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Activity <Icon.Eye css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>
-                                        <div css={tw`flex items-center justify-between`}>Files <Icon.Folder css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Files <Icon.Folder css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'database.*'}>
                                     <NavLink to={`${match.url}/databases`}>
-                                        <div css={tw`flex items-center justify-between`}>Databases <Icon.Database css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Databases <Icon.Database css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'schedule.*'}>
                                     <NavLink to={`${match.url}/schedules`}>
-                                        <div css={tw`flex items-center justify-between`}>Tasks <Icon.Clock css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Tasks <Icon.Clock css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'user.*'}>
                                     <NavLink to={`${match.url}/users`}>
-                                        <div css={tw`flex items-center justify-between`}>Users <Icon.Users css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Users <Icon.Users css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'backup.*'}>
                                     <NavLink to={`${match.url}/backups`}>
-                                        <div css={tw`flex items-center justify-between`}>Backups <Icon.Archive css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Backups <Icon.Archive css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'allocation.*'}>
                                     <NavLink to={`${match.url}/network`}>
-                                        <div css={tw`flex items-center justify-between`}>Network <Icon.Share2 css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Network <Icon.Share2 css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'startup.*'}>
                                     <NavLink to={`${match.url}/startup`}>
-                                        <div css={tw`flex items-center justify-between`}>Startup <Icon.Play css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Startup <Icon.Play css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
-                                <Can action={[ 'settings.*', 'file.sftp' ]} matchAny>
+                                <Can action={['settings.*', 'file.sftp']} matchAny>
                                     <NavLink to={`${match.url}/settings`}>
-                                        <div css={tw`flex items-center justify-between`}>Settings <Icon.Settings css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Settings <Icon.Settings css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
-                                <Can action={[ 'settings.*' ]} matchAny>
+                                <Can action={['settings.*']} matchAny>
                                     <NavLink to={`${match.url}/edit`}>
-                                        <div css={tw`flex items-center justify-between`}>Edit <Icon.Edit css={tw`ml-1`} size={18} /> </div>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Edit <Icon.Edit css={tw`ml-1`} size={18} />{' '}
+                                        </div>
                                     </NavLink>
                                 </Can>
-                                {rootAdmin &&
-                                <a href={'/admin/servers/view/' + serverId} rel="noreferrer" target={'_blank'}>
-                                    <div css={tw`flex items-center justify-between`}>Admin <Icon.ExternalLink css={tw`ml-1`} size={18} /> </div>
-                                </a>
-                                }
+                                {rootAdmin && (
+                                    <a href={'/admin/servers/view/' + serverId} rel='noreferrer' target={'_blank'}>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Admin <Icon.ExternalLink css={tw`ml-1`} size={18} />{' '}
+                                        </div>
+                                    </a>
+                                )}
                             </div>
                         </SubNavigation>
                     </CSSTransition>
@@ -180,61 +210,61 @@ export default () => {
                         <ErrorBoundary>
                             <TransitionRouter>
                                 <Switch location={location}>
-                                    <Route path={`${match.path}`} component={ServerConsoleContainer} exact/>
-                                    <Route path={`${match.path}/console`} component={ExternalConsole} exact/>
+                                    <Route path={`${match.path}`} component={ServerConsoleContainer} exact />
+                                    <Route path={`${match.path}/console`} component={ExternalConsole} exact />
                                     <Route path={`${match.path}/files`} exact>
                                         <RequireServerPermission permissions={'file.*'}>
-                                            <FileManagerContainer/>
+                                            <FileManagerContainer />
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/activity`} exact>
                                         <RequireServerPermission permissions={'activity.*'}>
-                                            <ServerActivityLogContainer/>
+                                            <ServerActivityLogContainer />
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/files/:action(edit|new)`} exact>
                                         <Spinner.Suspense>
-                                            <FileEditContainer/>
+                                            <FileEditContainer />
                                         </Spinner.Suspense>
                                     </Route>
                                     <Route path={`${match.path}/databases`} exact>
                                         <RequireServerPermission permissions={'database.*'}>
-                                            <DatabasesContainer/>
+                                            <DatabasesContainer />
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/schedules`} exact>
                                         <RequireServerPermission permissions={'schedule.*'}>
-                                            <ScheduleContainer/>
+                                            <ScheduleContainer />
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/schedules/:id`} exact>
-                                        <ScheduleEditContainer/>
+                                        <ScheduleEditContainer />
                                     </Route>
                                     <Route path={`${match.path}/users`} exact>
                                         <RequireServerPermission permissions={'user.*'}>
-                                            <UsersContainer/>
+                                            <UsersContainer />
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/backups`} exact>
                                         <RequireServerPermission permissions={'backup.*'}>
-                                            <BackupContainer/>
+                                            <BackupContainer />
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/network`} exact>
                                         <RequireServerPermission permissions={'allocation.*'}>
-                                            <NetworkContainer/>
+                                            <NetworkContainer />
                                         </RequireServerPermission>
                                     </Route>
-                                    <Route path={`${match.path}/startup`} component={StartupContainer} exact/>
-                                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact/>
-                                    <Route path={`${match.path}/edit`} component={EditContainer} exact/>
-                                    <Route path={'*'} component={NotFound}/>
+                                    <Route path={`${match.path}/startup`} component={StartupContainer} exact />
+                                    <Route path={`${match.path}/settings`} component={SettingsContainer} exact />
+                                    <Route path={`${match.path}/edit`} component={EditContainer} exact />
+                                    <Route path={'*'} component={NotFound} />
                                 </Switch>
                             </TransitionRouter>
                         </ErrorBoundary>
                     )}
                 </>
-            }
+            )}
         </React.Fragment>
     );
 };

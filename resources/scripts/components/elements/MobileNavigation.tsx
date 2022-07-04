@@ -17,7 +17,7 @@ const Navigation = styled.div`
     }
     & #logo {
         ${tw`flex-1`};
-        
+
         & > a {
             ${tw`text-2xl font-header px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150`};
         }
@@ -26,13 +26,18 @@ const Navigation = styled.div`
 
 const RightNavigation = styled.div`
     ${tw`flex h-full items-center justify-center`};
-    
-    & > a, & > button, & > .navigation-link {
+
+    & > a,
+    & > button,
+    & > .navigation-link {
         ${tw`flex items-center h-full no-underline text-neutral-300 px-4 cursor-pointer transition-all duration-150`};
-        &:active, &:hover {
+        &:active,
+        &:hover {
             ${tw`text-neutral-100 bg-black`};
         }
-        &:active, &:hover, &.active {
+        &:active,
+        &:hover,
+        &.active {
             box-shadow: inset 0 -2px ${theme`colors.cyan.700`.toString()};
         }
     }
@@ -40,13 +45,13 @@ const RightNavigation = styled.div`
 
 export default () => {
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
-    const enabled = useStoreState(state => state.storefront.data!.enabled);
-    const [ isLoggingOut, setIsLoggingOut ] = useState(false);
+    const enabled = useStoreState((state) => state.storefront.data!.enabled);
+    const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const onTriggerLogout = () => {
         setIsLoggingOut(true);
         http.post('/auth/logout').finally(() => {
-            // @ts-ignore
+            // @ts-expect-error this is valid
             window.location = '/';
         });
     };
@@ -54,7 +59,10 @@ export default () => {
     return (
         <Navigation>
             <SpinnerOverlay visible={isLoggingOut} />
-            <div css={tw`mx-auto w-full flex justify-center items-center`} style={{ maxWidth: '1200px', height: '3rem' }}>
+            <div
+                css={tw`mx-auto w-full flex justify-center items-center`}
+                style={{ maxWidth: '1200px', height: '3rem' }}
+            >
                 <RightNavigation>
                     <SearchContainer size={20} />
                     <NavLink to={'/'} exact>
@@ -63,16 +71,16 @@ export default () => {
                     <NavLink to={'/account'}>
                         <Icon.User size={20} />
                     </NavLink>
-                    {enabled === 'true' &&
+                    {enabled === 'true' && (
                         <NavLink to={'/store'}>
                             <Icon.ShoppingCart size={20} />
                         </NavLink>
-                    }
-                    {rootAdmin &&
+                    )}
+                    {rootAdmin && (
                         <a href={'/admin'} rel={'noreferrer'}>
                             <Icon.Settings size={20} />
                         </a>
-                    }
+                    )}
                     <button onClick={onTriggerLogout}>
                         <Icon.LogOut size={20} />
                     </button>

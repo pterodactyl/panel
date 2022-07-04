@@ -28,11 +28,11 @@ export default ({ subuser }: Props) => {
             <div css={tw`ml-4`}>
                 <p css={tw`font-medium text-center`}>
                     &nbsp;
-                    {subuser.twoFactorEnabled ?
+                    {subuser.twoFactorEnabled ? (
                         <Icon.Lock css={!subuser.twoFactorEnabled ? tw`text-red-400` : undefined} />
-                        :
+                    ) : (
                         <Icon.Unlock css={!subuser.twoFactorEnabled ? tw`text-red-400` : undefined} />
-                    }
+                    )}
                     &nbsp;
                 </p>
                 <p css={tw`text-2xs text-neutral-500 uppercase hidden md:block`}>2FA Enabled</p>

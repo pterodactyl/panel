@@ -11,39 +11,41 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
-  ${tw`flex flex-wrap`};
+    ${tw`flex flex-wrap`};
 
-  & > div {
-    ${tw`w-full`};
+    & > div {
+        ${tw`w-full`};
 
-    ${breakpoint('sm')`
+        ${breakpoint('sm')`
       width: calc(50% - 1rem);
     `}
 
-    ${breakpoint('md')`
+        ${breakpoint('md')`
       ${tw`w-auto flex-1`};
     `}
-  }
+    }
 `;
 
 const Wrapper = styled.div`
-  ${tw`flex flex-row justify-center items-center`};
+    ${tw`flex flex-row justify-center items-center`};
 `;
 
 export default () => {
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
-    const cost = useStoreState(state => state.storefront.data!.cost);
+    const cost = useStoreState((state) => state.storefront.data!.cost);
 
     const purchase = (resource: string) => {
         clearFlashes('store:resources');
 
         purchaseResource(resource)
-            .then(() => addFlash({
-                type: 'success',
-                key: 'store:resources',
-                message: 'Resource has been added to your account.',
-            }))
-            .catch(error => {
+            .then(() =>
+                addFlash({
+                    type: 'success',
+                    key: 'store:resources',
+                    message: 'Resource has been added to your account.',
+                })
+            )
+            .catch((error) => {
                 clearAndAddHttpError({ key: 'store:resources', error });
             });
     };
@@ -64,7 +66,9 @@ export default () => {
                             +50% CPU
                         </Button.Success>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase CPU to improve server performance.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Purchase CPU to improve server performance.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per 50% CPU: {cost.cpu} JCR</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -78,7 +82,9 @@ export default () => {
                             +1GB RAM
                         </Button.Success>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase RAM to improve server performance.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Purchase RAM to improve server performance.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per 1GB RAM: {cost.memory} JCR</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Disk'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -92,7 +98,9 @@ export default () => {
                             +1GB DISK
                         </Button.Success>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase disk space to improve server capacity.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Purchase disk space to improve server capacity.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per 1GB disk: {cost.disk} JCR</p>
                 </TitledGreyBox>
             </Container>
@@ -108,7 +116,9 @@ export default () => {
                             +1 slot
                         </Button.Success>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a server slot to deploy a server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Purchase a server slot to deploy a server.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per slot: {cost.slot} JCR</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Ports'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -122,7 +132,9 @@ export default () => {
                             +1 port
                         </Button.Success>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a port to connect to your server.</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Purchase a port to connect to your server.
+                    </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per port: {cost.port} JCR</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Backups'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -136,8 +148,12 @@ export default () => {
                             +1 backup
                         </Button.Success>
                     </Wrapper>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a backup to protect your data.</p>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per backup slot: {cost.backup} JCR</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Purchase a backup to protect your data.
+                    </p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Cost per backup slot: {cost.backup} JCR
+                    </p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Databases'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
@@ -151,7 +167,9 @@ export default () => {
                         </Button.Success>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a database to store data.</p>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per database: {cost.database} JCR</p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
+                        Cost per database: {cost.database} JCR
+                    </p>
                 </TitledGreyBox>
             </Container>
         </PageContentBlock>

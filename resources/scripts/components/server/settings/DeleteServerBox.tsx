@@ -10,8 +10,8 @@ import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 export default () => {
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const [ modalVisible, setModalVisible ] = useState(false);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const [modalVisible, setModalVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const delServer = () => {
@@ -24,7 +24,7 @@ export default () => {
                     message: 'Your server has been deleted.',
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 addFlash({ key: 'settings', type: 'error', message: httpErrorToHuman(error) });
@@ -45,12 +45,12 @@ export default () => {
                 onClose={() => setModalVisible(false)}
                 onConfirmed={delServer}
             >
-                Your server will be deleted, with all files being purged and the server&apos;s resources
-                being returned to your account. Are you sure you wish to continue?
+                Your server will be deleted, with all files being purged and the server&apos;s resources being returned
+                to your account. Are you sure you wish to continue?
             </Dialog.Confirm>
             <p css={tw`text-sm`}>
-                Deleting your server will shut down any processes, return the resources to your account
-                and delete all files associated with the instance - as well as backups, databases and settings.
+                Deleting your server will shut down any processes, return the resources to your account and delete all
+                files associated with the instance - as well as backups, databases and settings.
                 <strong css={tw`font-medium`}>
                     All data will be permenantly lost if you continue with this action.
                 </strong>

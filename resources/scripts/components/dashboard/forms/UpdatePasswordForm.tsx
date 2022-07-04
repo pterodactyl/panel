@@ -87,7 +87,9 @@ export default () => {
                                         type={'password'}
                                         name={'password'}
                                         label={'New Password'}
-                                        description={'Your new password should be at least 8 characters in length and unique to this website.'}
+                                        description={
+                                            'Your new password should be at least 8 characters in length and unique to this website.'
+                                        }
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
@@ -99,9 +101,7 @@ export default () => {
                                     />
                                 </div>
                                 <div css={tw`mt-6`}>
-                                    <Button disabled={isSubmitting || !isValid}>
-                                        Update Password
-                                    </Button>
+                                    <Button disabled={isSubmitting || !isValid}>Update Password</Button>
                                 </div>
                             </div>
                         </Form>

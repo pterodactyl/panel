@@ -27,17 +27,21 @@ export default () => {
         clearFlashes('account:email');
 
         updateAccountUsername({ ...values })
-            .then(() => addFlash({
-                type: 'success',
-                key: 'account:username',
-                message: 'Your username has been changed.',
-            }))
-            .catch(error => addFlash({
-                type: 'error',
-                key: 'account:username',
-                title: 'Error',
-                message: httpErrorToHuman(error),
-            }))
+            .then(() =>
+                addFlash({
+                    type: 'success',
+                    key: 'account:username',
+                    message: 'Your username has been changed.',
+                })
+            )
+            .catch((error) =>
+                addFlash({
+                    type: 'error',
+                    key: 'account:username',
+                    title: 'Error',
+                    message: httpErrorToHuman(error),
+                })
+            )
             .then(() => {
                 resetForm();
                 setSubmitting(false);
@@ -45,39 +49,26 @@ export default () => {
     };
 
     return (
-        <Formik
-            onSubmit={submit}
-            initialValues={{ username: '', password: '' }}
-            validationSchema={schema}
-        >
-            {
-                ({ isSubmitting, isValid }) => (
-                    <React.Fragment>
-                        <SpinnerOverlay size={'large'} visible={isSubmitting} />
-                        <Form css={tw`m-0`}>
+        <Formik onSubmit={submit} initialValues={{ username: '', password: '' }} validationSchema={schema}>
+            {({ isSubmitting, isValid }) => (
+                <React.Fragment>
+                    <SpinnerOverlay size={'large'} visible={isSubmitting} />
+                    <Form css={tw`m-0`}>
+                        <Field id={'new_username'} type={'username'} name={'username'} label={'New Username'} />
+                        <div css={tw`mt-6`}>
                             <Field
-                                id={'new_username'}
-                                type={'username'}
-                                name={'username'}
-                                label={'New Username'}
+                                id={'confirm_password'}
+                                type={'password'}
+                                name={'password'}
+                                label={'Confirm Password'}
                             />
-                            <div css={tw`mt-6`}>
-                                <Field
-                                    id={'confirm_password'}
-                                    type={'password'}
-                                    name={'password'}
-                                    label={'Confirm Password'}
-                                />
-                            </div>
-                            <div css={tw`mt-6`}>
-                                <Button disabled={isSubmitting || !isValid}>
-                                    Update Username
-                                </Button>
-                            </div>
-                        </Form>
-                    </React.Fragment>
-                )
-            }
+                        </div>
+                        <div css={tw`mt-6`}>
+                            <Button disabled={isSubmitting || !isValid}>Update Username</Button>
+                        </div>
+                    </Form>
+                </React.Fragment>
+            )}
         </Formik>
     );
 };

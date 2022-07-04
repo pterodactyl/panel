@@ -60,9 +60,7 @@ const DisableTwoFactorModal = () => {
                         autoFocus
                     />
                     <div css={tw`mt-6 text-right`}>
-                        <Button.Danger disabled={!isValid}>
-                            Disable 2FA
-                        </Button.Danger>
+                        <Button.Danger disabled={!isValid}>Disable 2FA</Button.Danger>
                     </div>
                 </Form>
             )}

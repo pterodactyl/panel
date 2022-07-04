@@ -7,14 +7,7 @@ import StatBlock from '@/components/server/console/StatBlock';
 import UptimeDuration from '@/components/server/UptimeDuration';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import {
-    faClock,
-    faHdd,
-    faMemory,
-    faMicrochip,
-    faScroll,
-    faWifi,
-} from '@fortawesome/free-solid-svg-icons';
+import { faClock, faHdd, faMemory, faMicrochip, faScroll, faWifi } from '@fortawesome/free-solid-svg-icons';
 import { capitalize } from '@/lib/strings';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime', number>;
@@ -27,7 +20,7 @@ const Limit = ({ limit, children }: { limit: string | null; children: React.Reac
 );
 
 const ServerDetailsBlock = ({ className }: { className?: string }) => {
-    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
+    const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
 
     const status = ServerContext.useStoreState((state) => state.status.value);
     const connected = ServerContext.useStoreState((state) => state.socket.connected);
@@ -75,10 +68,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
 
     return (
         <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
-            <StatBlock
-                icon={faClock}
-                title={'Uptime'}
-            >
+            <StatBlock icon={faClock} title={'Uptime'}>
                 {status === 'starting' || status === 'stopping' ? (
                     capitalize(status)
                 ) : stats.uptime > 0 ? (
@@ -90,36 +80,24 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             <StatBlock icon={faWifi} title={'Address'}>
                 {allocation}
             </StatBlock>
-            <StatBlock
-                icon={faMicrochip}
-                title={'CPU Load'}
-            >
-                {status === 'offline' ?
+            <StatBlock icon={faMicrochip} title={'CPU Load'}>
+                {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
-                    : 
+                ) : (
                     <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(1)}%</Limit>
-                }
+                )}
             </StatBlock>
-            <StatBlock
-                icon={faMemory}
-                title={'Memory'}
-            >
+            <StatBlock icon={faMemory} title={'Memory'}>
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
                 ) : (
                     <Limit limit={textLimits.memory}>{bytesToString(stats.memory)}</Limit>
                 )}
             </StatBlock>
-            <StatBlock
-                icon={faHdd}
-                title={'Disk'}
-            >
+            <StatBlock icon={faHdd} title={'Disk'}>
                 <Limit limit={textLimits.disk}>{bytesToString(stats.disk)}</Limit>
             </StatBlock>
-            <StatBlock
-                icon={faScroll}
-                title={'Save Console Logs'}
-            >
+            <StatBlock icon={faScroll} title={'Save Console Logs'}>
                 <ConsoleShareContainer />
             </StatBlock>
         </div>

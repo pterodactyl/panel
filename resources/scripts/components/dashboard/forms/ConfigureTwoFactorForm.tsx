@@ -24,9 +24,7 @@ export default () => {
                     : 'You do not currently have two-factor authentication enabled on your account. Click the button below to begin configuring it.'}
             </p>
             <div css={tw`mt-6`}>
-                <Button onClick={() => setVisible(true)}>
-                    {isEnabled ? 'Disable 2FA' : 'Enable 2FA'}
-                </Button>
+                <Button onClick={() => setVisible(true)}>{isEnabled ? 'Disable 2FA' : 'Enable 2FA'}</Button>
             </div>
         </div>
     );

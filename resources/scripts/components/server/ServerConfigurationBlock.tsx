@@ -5,7 +5,7 @@ import { ServerContext } from '@/state/server';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 const ServerConfigurationBlock = () => {
-    const server = ServerContext.useStoreState(state => state.server.data!);
+    const server = ServerContext.useStoreState((state) => state.server.data!);
 
     return (
         <TitledGreyBox css={tw`break-words mt-4`} title={'Server Information'}>

@@ -41,7 +41,8 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
             </div>
         </Form>
         <p css={tw`text-neutral-500 text-xs mt-6 sm:float-left`}>
-            &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
+            &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on{' '}
+            <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
         </p>
         <p css={tw`text-neutral-500 text-xs mt-6 sm:float-right`}>
             <a href={'https://jexactyl.com'}> Site </a>

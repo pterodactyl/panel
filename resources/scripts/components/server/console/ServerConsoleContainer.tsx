@@ -1,18 +1,16 @@
-import tw from 'twin.macro';
 import React, { memo } from 'react';
-import { ServerContext } from '@/state/server';
 import isEqual from 'react-fast-compare';
 import Features from '@feature/Features';
 import Can from '@/components/elements/Can';
+import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
+import { Alert } from '@/components/elements/alert';
 import Console from '@/components/server/console/Console';
 import StatGraphs from '@/components/server/console/StatGraphs';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import PowerButtons from '@/components/server/console/PowerButtons';
-import ContentContainer from '@/components/elements/ContentContainer';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
-import { Alert } from '@/components/elements/alert';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
@@ -39,8 +37,8 @@ const ServerConsoleContainer = () => {
                 </div>
                 <FlashMessageRender byKey={'console:share'} className={'mb-2'} />
                 <div className={'flex-1'}>
-                    <Can action={[ 'control.start', 'control.stop', 'control.restart' ]} matchAny>
-                        <PowerButtons className={'flex sm:justify-end space-x-2'}/>
+                    <Can action={['control.start', 'control.stop', 'control.restart']} matchAny>
+                        <PowerButtons className={'flex sm:justify-end space-x-2'} />
                     </Can>
                 </div>
             </div>

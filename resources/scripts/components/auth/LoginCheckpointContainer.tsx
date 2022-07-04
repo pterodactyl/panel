@@ -44,12 +44,7 @@ const LoginCheckpointContainer = () => {
                 />
             </div>
             <div css={tw`mt-6`}>
-                <Button
-                    size={Button.Sizes.Large}
-                    css={tw`w-full`}
-                    type={'submit'}
-                    disabled={isSubmitting}
-                >
+                <Button size={Button.Sizes.Large} css={tw`w-full`} type={'submit'} disabled={isSubmitting}>
                     Continue
                 </Button>
             </div>

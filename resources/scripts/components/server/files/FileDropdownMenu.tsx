@@ -130,15 +130,15 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                 renderToggle={(onClick) => (
                     <div css={tw`p-3 hover:text-white`} onClick={onClick}>
                         <Icon.MoreHorizontal />
-                        {modal ?
-                            modal === 'chmod' ?
+                        {modal ? (
+                            modal === 'chmod' ? (
                                 <ChmodFileModal
                                     visible
                                     appear
                                     files={[{ file: file.name, mode: file.modeBits }]}
                                     onDismissed={() => setModal(null)}
                                 />
-                            :
+                            ) : (
                                 <RenameFileModal
                                     visible
                                     appear
@@ -146,36 +146,34 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
                                     useMoveTerminology={modal === 'move'}
                                     onDismissed={() => setModal(null)}
                                 />
-                                : null
-                        }
+                            )
+                        ) : null}
                         <SpinnerOverlay visible={showSpinner} fixed size={'large'} />
                     </div>
                 )}
             >
                 <Can action={'file.update'}>
-                    <Row onClick={() => setModal('rename')} title={'Rename'}/>
-                    <Row onClick={() => setModal('move')} title={'Move'}/>
-                    <Row onClick={() => setModal('chmod')} title={'Permissions'}/>
+                    <Row onClick={() => setModal('rename')} title={'Rename'} />
+                    <Row onClick={() => setModal('move')} title={'Move'} />
+                    <Row onClick={() => setModal('chmod')} title={'Permissions'} />
                 </Can>
-                {file.isFile &&
+                {file.isFile && (
                     <Can action={'file.create'}>
-                        <Row onClick={doCopy} title={'Copy'}/>
+                        <Row onClick={doCopy} title={'Copy'} />
                     </Can>
-                }
-                {file.isArchiveType() ?
+                )}
+                {file.isArchiveType() ? (
                     <Can action={'file.create'}>
-                        <Row onClick={doUnarchive} title={'Unarchive'}/>
+                        <Row onClick={doUnarchive} title={'Unarchive'} />
                     </Can>
-                    :
+                ) : (
                     <Can action={'file.archive'}>
-                        <Row onClick={doArchive} title={'Archive'}/>
+                        <Row onClick={doArchive} title={'Archive'} />
                     </Can>
-                }
-                {file.isFile &&
-                    <Row onClick={doDownload} title={'Download'}/>
-                }
+                )}
+                {file.isFile && <Row onClick={doDownload} title={'Download'} />}
                 <Can action={'file.delete'}>
-                    <Row onClick={() => setShowConfirmation(true)} title={'Delete'} $danger/>
+                    <Row onClick={() => setShowConfirmation(true)} title={'Delete'} $danger />
                 </Can>
             </DropdownMenu>
         </>

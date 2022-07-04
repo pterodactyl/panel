@@ -139,28 +139,30 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 <div css={tw`my-6`}>
                     <div css={tw`flex items-center mb-4 bg-neutral-600 p-2 rounded shadow-sm`}>
                         <p css={tw`text-sm flex-1 ml-1 text-neutral-200`}>Select all permissions</p>
-                        {canEditUser && <SelectAllPermissions isEditable={canEditUser} permissions={editablePermissions}/>}
+                        {canEditUser && (
+                            <SelectAllPermissions isEditable={canEditUser} permissions={editablePermissions} />
+                        )}
                     </div>
-                    {Object.keys(permissions).filter(key => key !== 'websocket').map((key, index) => (
-                        <PermissionTitleBox
-                            key={`permission_${key}`}
-                            title={key}
-                            isEditable={canEditUser}
-                            permissions={Object.keys(permissions[key].keys).map(pkey => `${key}.${pkey}`)}
-                            css={index > 0 ? tw`mt-4` : undefined}
-                        >
-                            <p css={tw`text-sm text-neutral-400 mb-4`}>
-                                {permissions[key].description}
-                            </p>
-                            {Object.keys(permissions[key].keys).map(pkey => (
-                                <PermissionRow
-                                    key={`permission_${key}.${pkey}`}
-                                    permission={`${key}.${pkey}`}
-                                    disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
-                                />
-                            ))}
-                        </PermissionTitleBox>
-                    ))}
+                    {Object.keys(permissions)
+                        .filter((key) => key !== 'websocket')
+                        .map((key, index) => (
+                            <PermissionTitleBox
+                                key={`permission_${key}`}
+                                title={key}
+                                isEditable={canEditUser}
+                                permissions={Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)}
+                                css={index > 0 ? tw`mt-4` : undefined}
+                            >
+                                <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key].description}</p>
+                                {Object.keys(permissions[key].keys).map((pkey) => (
+                                    <PermissionRow
+                                        key={`permission_${key}.${pkey}`}
+                                        permission={`${key}.${pkey}`}
+                                        disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
+                                    />
+                                ))}
+                            </PermissionTitleBox>
+                        ))}
                 </div>
                 <Can action={subuser ? 'user.update' : 'user.create'}>
                     <div css={tw`pb-6 flex justify-end`}>

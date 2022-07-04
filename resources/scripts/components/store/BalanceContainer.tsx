@@ -11,28 +11,27 @@ import StripePurchaseForm from '@/components/store/forms/StripePurchaseForm';
 import PaypalPurchaseForm from '@/components/store/forms/PaypalPurchaseForm';
 
 const Container = styled.div`
-  ${tw`flex flex-wrap`};
+    ${tw`flex flex-wrap`};
 
-  & > div {
-    ${tw`w-full`};
+    & > div {
+        ${tw`w-full`};
 
-    ${breakpoint('sm')`
+        ${breakpoint('sm')`
       width: calc(50% - 1rem);
     `}
 
-    ${breakpoint('md')`
+        ${breakpoint('md')`
       ${tw`w-auto flex-1`};
     `}
-  }
+    }
 `;
 
 const BalanceContainer = () => {
-    const [ resources, setResources ] = useState<Resources>();
-    const store = useStoreState(state => state.storefront.data!);
+    const [resources, setResources] = useState<Resources>();
+    const store = useStoreState((state) => state.storefront.data!);
 
     useEffect(() => {
-        getResources()
-            .then(resources => setResources(resources));
+        getResources().then((resources) => setResources(resources));
     }, []);
 
     if (!resources) return <StoreError />;
@@ -43,12 +42,10 @@ const BalanceContainer = () => {
             <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Purchase credits easily via Stripe or PayPal.</h3>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
                 <div>
-                    <ContentBox
-                        title={'Account Balance'}
-                        showFlashes={'account:balance'}
-                        css={tw`sm:mt-0`}
-                    >
-                        <h1 css={tw`text-7xl flex justify-center items-center`}>${resources.balance} {store.currency}</h1>
+                    <ContentBox title={'Account Balance'} showFlashes={'account:balance'} css={tw`sm:mt-0`}>
+                        <h1 css={tw`text-7xl flex justify-center items-center`}>
+                            ${resources.balance} {store.currency}
+                        </h1>
                     </ContentBox>
                     {/*
                         <ContentBox
@@ -75,11 +72,7 @@ const BalanceContainer = () => {
                         </ContentBox>
                     */}
                 </div>
-                <ContentBox
-                    title={'Purchase credits'}
-                    showFlashes={'account:balance'}
-                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
-                >
+                <ContentBox title={'Purchase credits'} showFlashes={'account:balance'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     {store.gateways?.paypal === 'true' && <PaypalPurchaseForm />}
                     {store.gateways?.stripe === 'true' && <StripePurchaseForm />}
                 </ContentBox>

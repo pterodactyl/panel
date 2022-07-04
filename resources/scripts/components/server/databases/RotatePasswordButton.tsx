@@ -8,10 +8,7 @@ import { Button } from '@/components/elements/button/index';
 import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
 import rotateDatabasePassword from '@/api/server/databases/rotateDatabasePassword';
 
-export default ({ databaseId, onUpdate }: {
-    databaseId: string;
-    onUpdate: (database: ServerDatabase) => void;
-}) => {
+export default ({ databaseId, onUpdate }: { databaseId: string; onUpdate: (database: ServerDatabase) => void }) => {
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
     const server = ServerContext.useStoreState((state) => state.server.data!);
 

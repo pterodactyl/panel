@@ -34,7 +34,7 @@ const BackupContainer = () => {
 
     return (
         <ServerContentBlock title={'Backups'}>
-            <FlashMessageRender byKey={'backups'} css={tw`mb-4`}/>
+            <FlashMessageRender byKey={'backups'} css={tw`mb-4`} />
             <h1 css={tw`text-5xl`}>Backups</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Secure your data with backups.</h3>
             <Pagination data={backups} onPageSelect={setPage}>

@@ -19,7 +19,7 @@ interface Values {
 
 export default () => {
     const ref = useRef<Reaptcha>(null);
-    const [ token, setToken ] = useState('');
+    const [token, setToken] = useState('');
 
     const { clearFlashes, addFlash } = useFlash();
     const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
@@ -83,12 +83,7 @@ export default () => {
                         type={'email'}
                     />
                     <div css={tw`mt-6`}>
-                        <Button
-                            size={Button.Sizes.Large}
-                            css={tw`w-full`}
-                            type={'submit'}
-                            disabled={isSubmitting}
-                        >
+                        <Button size={Button.Sizes.Large} css={tw`w-full`} type={'submit'} disabled={isSubmitting}>
                             Send Email
                         </Button>
                     </div>

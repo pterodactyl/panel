@@ -31,33 +31,35 @@ export default () => {
 
     return (
         <>
-            <FlashMessageRender byKey={'account'}/>
-            {(filters.filters?.event || filters.filters?.ip) &&
+            <FlashMessageRender byKey={'account'} />
+            {(filters.filters?.event || filters.filters?.ip) && (
                 <div className={'flex justify-end mb-2'}>
                     <Link
                         to={'#'}
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
                         onClick={() => setFilters((value) => ({ ...value, filters: {} }))}
                     >
-                        Clear Filters <Icon.XCircle className={'w-4 h-4 ml-2'}/>
+                        Clear Filters <Icon.XCircle className={'w-4 h-4 ml-2'} />
                     </Link>
                 </div>
-            }
-            {!data && isValidating ?
-                <Spinner centered/>
-                :
+            )}
+            {!data && isValidating ? (
+                <Spinner centered />
+            ) : (
                 <div className={'bg-gray-850'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
                             {typeof activity.properties.useragent === 'string' && (
                                 <Tooltip content={activity.properties.useragent} placement={'top'}>
-                                    <span><Icon.Monitor/></span>
+                                    <span>
+                                        <Icon.Monitor />
+                                    </span>
                                 </Tooltip>
                             )}
                         </ActivityLogEntry>
                     ))}
                 </div>
-            }
+            )}
             {data && (
                 <PaginationFooter
                     pagination={data.pagination}

@@ -57,12 +57,14 @@ export default ({ activity, children }: Props) => {
                             to={`#${pathTo({ event: activity.event })}`}
                             className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
                         >
-                            <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')}/>
+                            <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi && (
                                 <Tooltip placement={'top'} content={'Performed using API Key'}>
-                                    <span><Icon.Terminal/></span>
+                                    <span>
+                                        <Icon.Terminal />
+                                    </span>
                                 </Tooltip>
                             )}
                             {children}

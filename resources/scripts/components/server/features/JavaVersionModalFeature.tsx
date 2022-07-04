@@ -101,7 +101,11 @@ const JavaVersionModalFeature = () => {
                 </div>
             </Can>
             <div css={tw`mt-8 flex flex-col sm:flex-row justify-end sm:space-x-4 space-y-4 sm:space-y-0`}>
-                <Button variant={Button.Variants.Secondary} onClick={() => setVisible(false)} css={tw`w-full sm:w-auto`}>
+                <Button
+                    variant={Button.Variants.Secondary}
+                    onClick={() => setVisible(false)}
+                    css={tw`w-full sm:w-auto`}
+                >
                     Cancel
                 </Button>
                 <Can action={'startup.docker-image'}>

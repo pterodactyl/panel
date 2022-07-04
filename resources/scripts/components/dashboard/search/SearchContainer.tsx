@@ -9,7 +9,7 @@ interface Props {
 }
 
 export default ({ size }: Props) => {
-    const [ visible, setVisible ] = useState(false);
+    const [visible, setVisible] = useState(false);
 
     useEventListener('keydown', (e: KeyboardEvent) => {
         if (['input', 'textarea'].indexOf(((e.target as HTMLElement).tagName || 'input').toLowerCase()) < 0) {

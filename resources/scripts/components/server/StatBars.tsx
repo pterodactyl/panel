@@ -17,15 +17,15 @@ const Bar = styled.div`
 `;
 
 const StatBars = () => {
-    const [ stats, setStats ] = useState<Stats>({ memory: 0, cpu: 0, disk: 0 });
+    const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0 });
 
-    const instance = ServerContext.useStoreState(state => state.socket.instance);
-    const connected = ServerContext.useStoreState(state => state.socket.connected);
-    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
+    const instance = ServerContext.useStoreState((state) => state.socket.instance);
+    const connected = ServerContext.useStoreState((state) => state.socket.connected);
+    const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
 
     const cpuUsed = stats.cpu / (limits.cpu / 100);
-    const diskUsed = (stats.disk / 1024 / 1024) / limits.disk * 100;
-    const ramUsed = (stats.memory / 1024 / 1024) / limits.memory * 100;
+    const diskUsed = (stats.disk / 1024 / 1024 / limits.disk) * 100;
+    const ramUsed = (stats.memory / 1024 / 1024 / limits.memory) * 100;
 
     const statsListener = (data: string) => {
         let stats: any = {};
@@ -53,49 +53,49 @@ const StatBars = () => {
         return () => {
             instance.removeListener(SocketEvent.STATS, statsListener);
         };
-    }, [ instance, connected ]);
+    }, [instance, connected]);
 
     return (
         <TitledGreyBox title={'Server Statistics'} css={tw`text-xs uppercase mt-4`}>
-            {limits.cpu === 0 ?
+            {limits.cpu === 0 ? (
                 <>
                     <p css={tw`mb-1`}>CPU used ({stats.cpu.toFixed(0)}% of Unlimited)</p>
                     <Bar style={{ width: '100%' }} css={tw`mb-2`} />
                 </>
-                :
+            ) : (
                 <>
                     <p css={tw`mb-1`}>CPU used ({stats.cpu.toFixed(0)}%)</p>
-                    {cpuUsed > 100 ?
+                    {cpuUsed > 100 ? (
                         <Bar style={{ width: '100%' }} css={tw`mb-2 bg-red-400`} />
-                        :
+                    ) : (
                         <Bar style={{ width: cpuUsed === undefined ? '100%' : `${cpuUsed}%` }} css={tw`mb-2`} />
-                    }
+                    )}
                 </>
-            }
-            {limits.memory === 0 ?
+            )}
+            {limits.memory === 0 ? (
                 <p css={tw`mb-1`}>RAM used ({ramUsed.toFixed(0)}% of Unlimited)</p>
-                :
+            ) : (
                 <>
                     <p css={tw`mb-1`}>RAM used ({ramUsed.toFixed(0)}%)</p>
-                    {ramUsed > 100 ?
+                    {ramUsed > 100 ? (
                         <Bar style={{ width: '100%' }} css={tw`mb-2 bg-red-400`} />
-                        :
+                    ) : (
                         <Bar style={{ width: ramUsed === undefined ? '100%' : `${ramUsed}%` }} css={tw`mb-2`} />
-                    }
+                    )}
                 </>
-            }
-            {limits.memory === 0 ?
+            )}
+            {limits.memory === 0 ? (
                 <p css={tw`mb-1`}>Disk used ({diskUsed.toFixed(0)}% of Unlimited)</p>
-                :
+            ) : (
                 <>
                     <p css={tw`mb-1`}>Disk used ({diskUsed.toFixed(0)}%)</p>
-                    {diskUsed > 100 ?
+                    {diskUsed > 100 ? (
                         <Bar style={{ width: '100%' }} css={tw`mb-2 bg-red-400`} />
-                        :
+                    ) : (
                         <Bar style={{ width: diskUsed === undefined ? '100%' : `${diskUsed}%` }} css={tw`mb-2`} />
-                    }
+                    )}
                 </>
-            }
+            )}
         </TitledGreyBox>
     );
 };

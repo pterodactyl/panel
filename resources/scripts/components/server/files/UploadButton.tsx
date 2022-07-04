@@ -19,7 +19,7 @@ const InnerContainer = styled.div`
     ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`};
 `;
 
-function isFileOrDirectory (event: DragEvent): boolean {
+function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
         return false;
     }
@@ -37,32 +37,40 @@ function isFileOrDirectory (event: DragEvent): boolean {
 export default ({ className }: WithClassname) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
 
-    const [ timeouts, setTimeouts ] = useState<NodeJS.Timeout[]>([]);
-    const [ visible, setVisible ] = useState(false);
-    const [ loading, setLoading ] = useState(false);
+    const [timeouts, setTimeouts] = useState<NodeJS.Timeout[]>([]);
+    const [visible, setVisible] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const directory = ServerContext.useStoreState(state => state.files.directory);
-    const appendFileUpload = ServerContext.useStoreActions(actions => actions.files.appendFileUpload);
-    const removeFileUpload = ServerContext.useStoreActions(actions => actions.files.removeFileUpload);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const appendFileUpload = ServerContext.useStoreActions((actions) => actions.files.appendFileUpload);
+    const removeFileUpload = ServerContext.useStoreActions((actions) => actions.files.removeFileUpload);
 
-    useEventListener('dragenter', e => {
-        if (!isFileOrDirectory(e)) {
-            return;
-        }
-        e.stopPropagation();
-        setVisible(true);
-    }, true);
+    useEventListener(
+        'dragenter',
+        (e) => {
+            if (!isFileOrDirectory(e)) {
+                return;
+            }
+            e.stopPropagation();
+            setVisible(true);
+        },
+        true
+    );
 
-    useEventListener('dragexit', e => {
-        if (!isFileOrDirectory(e)) {
-            return;
-        }
-        e.stopPropagation();
-        setVisible(false);
-    }, true);
+    useEventListener(
+        'dragexit',
+        (e) => {
+            if (!isFileOrDirectory(e)) {
+                return;
+            }
+            e.stopPropagation();
+            setVisible(false);
+        },
+        true
+    );
 
     useEffect(() => {
         if (!visible) return;
@@ -83,7 +91,7 @@ export default ({ className }: WithClassname) => {
         setLoading(true);
 
         const formData: FormData[] = [];
-        Array.from(files).forEach(file => {
+        Array.from(files).forEach((file) => {
             const form = new FormData();
             form.append('files', file);
             formData.push(form);
@@ -92,30 +100,32 @@ export default ({ className }: WithClassname) => {
         clearFlashes('files');
 
         Promise.all(
-            Array.from(formData).map(f => getFileUploadUrl(uuid)
-                .then(url => axios.post(`${url}&directory=${directory}`, f, {
-                    headers: { 'Content-Type': 'multipart/form-data' },
-                    onUploadProgress: (data: ProgressEvent) => {
-                        // @ts-ignore
-                        const name = f.getAll('files')[0].name;
+            Array.from(formData).map((f) =>
+                getFileUploadUrl(uuid).then((url) =>
+                    axios.post(`${url}&directory=${directory}`, f, {
+                        headers: { 'Content-Type': 'multipart/form-data' },
+                        onUploadProgress: (data: ProgressEvent) => {
+                            // @ts-expect-error this is expected
+                            const name = f.getAll('files')[0].name;
 
-                        appendFileUpload({
-                            name: name,
-                            loaded: data.loaded,
-                            total: data.total,
-                        });
+                            appendFileUpload({
+                                name: name,
+                                loaded: data.loaded,
+                                total: data.total,
+                            });
 
-                        if (data.loaded === data.total) {
-                            const timeout = setTimeout(() => removeFileUpload(name), 5000);
-                            setTimeouts(t => [ ...t, timeout ]);
-                        }
-                    },
-                }))
+                            if (data.loaded === data.total) {
+                                const timeout = setTimeout(() => removeFileUpload(name), 5000);
+                                setTimeouts((t) => [...t, timeout]);
+                            }
+                        },
+                    })
+                )
             )
         )
             .then(() => mutate())
             .then(() => setLoading(false))
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'files', error });
             });
@@ -159,10 +169,7 @@ export default ({ className }: WithClassname) => {
                     }
                 }}
             />
-            <Button
-                className={className}
-                onClick={() => fileUploadInput.current && fileUploadInput.current.click()}
-            >
+            <Button className={className} onClick={() => fileUploadInput.current && fileUploadInput.current.click()}>
                 Upload
             </Button>
         </>

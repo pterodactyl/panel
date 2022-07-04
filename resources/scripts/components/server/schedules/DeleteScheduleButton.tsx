@@ -47,8 +47,7 @@ export default ({ scheduleId, onDeleted }: Props) => {
                 onConfirmed={onDelete}
             >
                 <SpinnerOverlay visible={isLoading} />
-                All tasks will be removed and any running processes
-                will be terminated.
+                All tasks will be removed and any running processes will be terminated.
             </Dialog.Confirm>
             <Button.Danger css={tw`flex-1 sm:flex-none mr-4 border-transparent`} onClick={() => setVisible(true)}>
                 Delete

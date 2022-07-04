@@ -33,12 +33,12 @@ const TextButton = forwardRef<HTMLButtonElement, ButtonProps>(({ className, ...p
 ));
 
 const SuccessButton = forwardRef<HTMLButtonElement, ButtonProps>(({ className, ...props }, ref) => (
-    // @ts-expect-error
+    // @ts-expect-error not sure how to get this correct
     <Button ref={ref} className={classNames(styles.success, className)} {...props} />
 ));
 
 const WarnButton = forwardRef<HTMLButtonElement, ButtonProps>(({ className, ...props }, ref) => (
-    // @ts-expect-error
+    // @ts-expect-error not sure how to get this correct
     <Button ref={ref} className={classNames(styles.warn, className)} {...props} />
 ));
 

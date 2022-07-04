@@ -45,38 +45,29 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
     return (
         <>
             {children({ items, isFirstPage, isLastPage })}
-            {(pages.length > 1) &&
+            {pages.length > 1 && (
                 <div css={tw`mt-4 flex justify-center`}>
-                    {(pages[0] > 1 && !isFirstPage) &&
-                    <Block
-                        variant={Button.Variants.Secondary}
-                        color={'primary'}
-                        onClick={() => onPageSelect(1)}
-                    >
-                        <Icon.ChevronLeft />
-                    </Block>
-                    }
-                    {
-                        pages.map(i => (
-                            <Block
-                                key={`block_page_${i}`}
-                                onClick={() => onPageSelect(i)}
-                            >
-                                {i}
-                            </Block>
-                        ))
-                    }
-                    {(pages[4] < pagination.totalPages && !isLastPage) &&
-                    <Block
-                        variant={Button.Variants.Secondary}
-                        color={'primary'}
-                        onClick={() => onPageSelect(pagination.totalPages)}
-                    >
-                        <Icon.ChevronRight />
-                    </Block>
-                    }
+                    {pages[0] > 1 && !isFirstPage && (
+                        <Block variant={Button.Variants.Secondary} color={'primary'} onClick={() => onPageSelect(1)}>
+                            <Icon.ChevronLeft />
+                        </Block>
+                    )}
+                    {pages.map((i) => (
+                        <Block key={`block_page_${i}`} onClick={() => onPageSelect(i)}>
+                            {i}
+                        </Block>
+                    ))}
+                    {pages[4] < pagination.totalPages && !isLastPage && (
+                        <Block
+                            variant={Button.Variants.Secondary}
+                            color={'primary'}
+                            onClick={() => onPageSelect(pagination.totalPages)}
+                        >
+                            <Icon.ChevronRight />
+                        </Block>
+                    )}
                 </div>
-            }
+            )}
         </>
     );
 }

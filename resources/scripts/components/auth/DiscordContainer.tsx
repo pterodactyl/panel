@@ -8,7 +8,7 @@ import DiscordFormContainer from '@/components/auth/DiscordFormContainer';
 
 const DiscordContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [ loading, setLoading ] = useState(false);
+    const [loading, setLoading] = useState(false);
 
     const login = () => {
         clearFlashes();
@@ -20,7 +20,7 @@ const DiscordContainer = () => {
                 window.location.href = data;
             })
             .then(() => setLoading(false))
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 clearAndAddHttpError({ error });
             });

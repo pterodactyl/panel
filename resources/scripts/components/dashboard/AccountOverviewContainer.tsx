@@ -13,13 +13,13 @@ const Container = styled.div`
     ${tw`flex flex-wrap`};
 
     & > div {
-      ${tw`w-full`};
+        ${tw`w-full`};
 
-      ${breakpoint('sm')`
+        ${breakpoint('sm')`
         width: calc(50% - 1rem);
       `}
 
-      ${breakpoint('md')`
+        ${breakpoint('md')`
         ${tw`w-auto flex-1`};
       `}
     }
@@ -32,14 +32,14 @@ export default () => {
         <PageContentBlock title={'Account Overview'}>
             <h1 css={tw`text-5xl`}>Account Overview</h1>
             <h3 css={tw`text-2xl text-neutral-500`}>View and update account details.</h3>
-            {state?.twoFactorRedirect &&
+            {state?.twoFactorRedirect && (
                 <MessageBox title={'2-Factor Required'} type={'error'}>
                     Your account must have two-factor authentication enabled in order to continue.
                 </MessageBox>
-            }
-            <Container css={[ tw`lg:grid lg:grid-cols-2 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10` ]}>
+            )}
+            <Container css={[tw`lg:grid lg:grid-cols-2 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
                 <ContentBox title={'Update Username'} showFlashes={'account:username'}>
-                    <UpdateUsernameForm/>
+                    <UpdateUsernameForm />
                 </ContentBox>
                 <ContentBox css={tw`mt-8 sm:mt-0 sm:ml-8`} title={'Update Email Address'} showFlashes={'account:email'}>
                     <UpdateEmailAddressForm />

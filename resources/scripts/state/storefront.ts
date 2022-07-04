@@ -19,7 +19,7 @@ export interface StorefrontSettings {
         port: number;
         backup: number;
         database: number;
-    }
+    };
     gateways: {
         paypal: string;
         stripe: string;

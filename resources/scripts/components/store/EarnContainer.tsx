@@ -9,29 +9,28 @@ import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
-  ${tw`flex flex-wrap`};
+    ${tw`flex flex-wrap`};
 
-  & > div {
-    ${tw`w-full`};
+    & > div {
+        ${tw`w-full`};
 
-    ${breakpoint('sm')`
+        ${breakpoint('sm')`
       width: calc(50% - 1rem);
     `}
 
-    ${breakpoint('md')`
+        ${breakpoint('md')`
       ${tw`w-auto flex-1`};
     `}
-  }
+    }
 `;
 
 const BalanceContainer = () => {
-    const [ resources, setResources ] = useState<Resources>();
-    const earn = useStoreState(state => state.storefront.data!.earn);
-    const store = useStoreState(state => state.storefront.data!);
+    const [resources, setResources] = useState<Resources>();
+    const earn = useStoreState((state) => state.storefront.data!.earn);
+    const store = useStoreState((state) => state.storefront.data!);
 
     useEffect(() => {
-        getResources()
-            .then(resources => setResources(resources));
+        getResources().then((resources) => setResources(resources));
     }, []);
 
     if (!resources) return <StoreError />;
@@ -41,30 +40,20 @@ const BalanceContainer = () => {
             <h1 css={tw`text-5xl`}>Earn credits</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Passively earn credits by using the panel.</h3>
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
-                <ContentBox
-                    title={'Current Account Balance'}
-                    showFlashes={'earn:balance'}
-                    css={tw`sm:mt-0`}
-                >
-                    <h1 css={tw`text-7xl flex justify-center items-center`}>${resources.balance} {store.currency}</h1>
+                <ContentBox title={'Current Account Balance'} showFlashes={'earn:balance'} css={tw`sm:mt-0`}>
+                    <h1 css={tw`text-7xl flex justify-center items-center`}>
+                        ${resources.balance} {store.currency}
+                    </h1>
                 </ContentBox>
-                <ContentBox
-                    title={'Earn Rate'}
-                    showFlashes={'earn:rate'}
-                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
-                >
+                <ContentBox title={'Earn Rate'} showFlashes={'earn:rate'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <h1 css={tw`text-7xl flex justify-center items-center`}>${earn.amount} / min</h1>
                 </ContentBox>
-                <ContentBox
-                    title={'How to earn'}
-                    showFlashes={'earn:how'}
-                    css={tw`mt-8 sm:mt-0 sm:ml-8`}
-                >
+                <ContentBox title={'How to earn'} showFlashes={'earn:how'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <p>You can earn credits by having any page of this panel open.</p>
                     <p css={tw`mt-1`}>
                         <span css={tw`text-green-500`}>{earn.amount}&nbsp;</span>
-                        credit(s) per minute will automatically be added to your
-                        account, as long as this site is open in a browser tab.
+                        credit(s) per minute will automatically be added to your account, as long as this site is open
+                        in a browser tab.
                     </p>
                 </ContentBox>
             </Container>

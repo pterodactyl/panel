@@ -7,39 +7,39 @@ import { Router, Switch, Route } from 'react-router';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import AuthenticatedRoute from '@/components/elements/AuthenticatedRoute';
 
-const StoreRouter = lazy(() => import(/* webpackChunkName: "auth" */'@/routers/StoreRouter'));
-const ServerRouter = lazy(() => import(/* webpackChunkName: "server" */'@/routers/ServerRouter'));
-const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */'@/routers/DashboardRouter'));
-const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */'@/routers/AuthenticationRouter'));
+const StoreRouter = lazy(() => import(/* webpackChunkName: "auth" */ '@/routers/StoreRouter'));
+const ServerRouter = lazy(() => import(/* webpackChunkName: "server" */ '@/routers/ServerRouter'));
+const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */ '@/routers/DashboardRouter'));
+const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */ '@/routers/AuthenticationRouter'));
 
 const IndexRouter = () => {
-    const enabled = useStoreState(state => state.storefront.data?.enabled);
+    const enabled = useStoreState((state) => state.storefront.data?.enabled);
 
     return (
         <Router history={history}>
             <Switch>
                 <Route path={'/auth'}>
                     <Spinner.Suspense>
-                        <AuthenticationRouter/>
+                        <AuthenticationRouter />
                     </Spinner.Suspense>
                 </Route>
                 <AuthenticatedRoute path={'/server/:id'}>
                     <Spinner.Suspense>
                         <ServerContext.Provider>
-                            <ServerRouter/>
+                            <ServerRouter />
                         </ServerContext.Provider>
                     </Spinner.Suspense>
                 </AuthenticatedRoute>
-                {enabled === 'true' &&
+                {enabled === 'true' && (
                     <AuthenticatedRoute path={'/store'}>
                         <Spinner.Suspense>
-                            <StoreRouter/>
+                            <StoreRouter />
                         </Spinner.Suspense>
                     </AuthenticatedRoute>
-                }
+                )}
                 <AuthenticatedRoute path={'/'}>
                     <Spinner.Suspense>
-                        <DashboardRouter/>
+                        <DashboardRouter />
                     </Spinner.Suspense>
                 </AuthenticatedRoute>
                 <Route path={'*'} component={NotFound} />

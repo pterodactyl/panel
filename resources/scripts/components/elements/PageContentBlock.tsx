@@ -21,14 +21,13 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
         <CSSTransition timeout={150} classNames={'fade'} appear in>
             <div css={tw`my-4`}>
                 <ContentContainer className={className}>
-                    {showFlashKey &&
-                    <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`}/>
-                    }
+                    {showFlashKey && <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`} />}
                     {children}
                 </ContentContainer>
                 <ContentContainer css={tw`text-xs text-center my-4`}>
                     <p css={tw`text-neutral-500 sm:float-left`}>
-                            &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
+                        &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on{' '}
+                        <a href={'https://pterodactyl.io'}>Pterodactyl.</a>
                     </p>
                     <p css={tw`text-neutral-500 sm:float-right`}>
                         <a href={'https://jexactyl.com'}> Site </a>

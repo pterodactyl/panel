@@ -16,16 +16,16 @@ interface Props {
     task: Task;
 }
 
-const getActionDetails = (action: string): [ string ] => {
+const getActionDetails = (action: string): [string] => {
     switch (action) {
         case 'command':
-            return [ 'Send Command' ];
+            return ['Send Command'];
         case 'power':
-            return [ 'Send Power Action' ];
+            return ['Send Power Action'];
         case 'backup':
-            return [ 'Create Backup' ];
+            return ['Create Backup'];
         default:
-            return [ 'Unknown Action' ];
+            return ['Unknown Action'];
     }
 };
 
@@ -54,7 +54,7 @@ export default ({ schedule, task }: Props) => {
             });
     };
 
-    const [ title ] = getActionDetails(task.action);
+    const [title] = getActionDetails(task.action);
 
     return (
         <div css={tw`sm:flex items-center p-3 sm:p-6 border-b border-neutral-800`}>
@@ -76,7 +76,7 @@ export default ({ schedule, task }: Props) => {
             </Dialog.Confirm>
             <div css={tw`flex-none sm:flex-1 w-full sm:w-auto overflow-x-auto`}>
                 <p css={tw`md:ml-6 text-neutral-200 uppercase text-sm`}>{title}</p>
-                {task.payload &&
+                {task.payload && (
                     <div css={tw`md:ml-6 mt-2`}>
                         {task.action === 'backup' && (
                             <p css={tw`text-xs uppercase text-neutral-400 mb-1`}>Ignoring files & folders:</p>
@@ -87,25 +87,25 @@ export default ({ schedule, task }: Props) => {
                             {task.payload}
                         </div>
                     </div>
-                }
+                )}
             </div>
             <div css={tw`mt-3 sm:mt-0 flex items-center w-full sm:w-auto`}>
-                {task.continueOnFailure &&
-                <div css={tw`mr-6`}>
-                    <div css={tw`flex items-center px-2 py-1 bg-yellow-500 text-yellow-800 text-sm rounded-full`}>
-                        <Icon.ChevronDown css={tw`w-3 h-3 mr-2`} />
-                        Continues on Failure
+                {task.continueOnFailure && (
+                    <div css={tw`mr-6`}>
+                        <div css={tw`flex items-center px-2 py-1 bg-yellow-500 text-yellow-800 text-sm rounded-full`}>
+                            <Icon.ChevronDown css={tw`w-3 h-3 mr-2`} />
+                            Continues on Failure
+                        </div>
                     </div>
-                </div>
-                }
-                {task.sequenceId > 1 && task.timeOffset > 0 &&
+                )}
+                {task.sequenceId > 1 && task.timeOffset > 0 && (
                     <div css={tw`mr-6`}>
                         <div css={tw`flex items-center px-2 py-1 bg-neutral-500 text-sm rounded-full`}>
                             <Icon.Clock css={tw`w-3 h-3 mr-2`} />
                             {task.timeOffset}s later
                         </div>
                     </div>
-                }
+                )}
                 <Can action={'schedule.update'}>
                     <button
                         type={'button'}

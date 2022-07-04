@@ -73,15 +73,12 @@ export default () => {
                                 />
                             </div>
                             <div css={tw`mt-6`}>
-                                <Button disabled={isSubmitting || !isValid}>
-                                    Update Email
-                                </Button>
+                                <Button disabled={isSubmitting || !isValid}>Update Email</Button>
                             </div>
                         </div>
                     </Form>
                 </React.Fragment>
-                )
-            }
+            )}
         </Formik>
     );
 };

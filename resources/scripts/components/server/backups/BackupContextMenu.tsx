@@ -181,18 +181,24 @@ export default ({ backup }: Props) => {
                         <Can action={'backup.delete'}>
                             <>
                                 <DropdownButtonRow onClick={onLockToggle}>
-                                    {backup.isLocked ?
-                                        <><Icon.Unlock css={tw`text-xs mr-2`} />Unlock</>
-                                        :
-                                        <><Icon.Lock css={tw`text-xs mr-2`} />Lock</>
-                                    }
+                                    {backup.isLocked ? (
+                                        <>
+                                            <Icon.Unlock css={tw`text-xs mr-2`} />
+                                            Unlock
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Icon.Lock css={tw`text-xs mr-2`} />
+                                            Lock
+                                        </>
+                                    )}
                                 </DropdownButtonRow>
-                                {!backup.isLocked &&
+                                {!backup.isLocked && (
                                     <DropdownButtonRow danger onClick={() => setModal('delete')}>
                                         <Icon.Trash css={tw`text-xs`} />
                                         <span css={tw`ml-2`}>Delete</span>
                                     </DropdownButtonRow>
-                                }
+                                )}
                             </>
                         </Can>
                     </div>

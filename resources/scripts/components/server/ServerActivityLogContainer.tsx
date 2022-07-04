@@ -34,10 +34,10 @@ export default () => {
 
     return (
         <ServerContentBlock title={'Activity Log'}>
-            <FlashMessageRender byKey={'server:activity'}/>
+            <FlashMessageRender byKey={'server:activity'} />
             <h1 css={tw`text-5xl`}>Server Activity</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>View activity on this server.</h3>
-            {(filters.filters?.event || filters.filters?.ip) &&
+            {(filters.filters?.event || filters.filters?.ip) && (
                 <div className={'flex justify-end mb-2'}>
                     <Link
                         to={'#'}
@@ -47,7 +47,7 @@ export default () => {
                         Clear Filters <Icon.XCircle className={'w-4 h-4 ml-2'} />
                     </Link>
                 </div>
-            }
+            )}
             {!data && isValidating ? (
                 <Spinner centered />
             ) : !data?.items.length ? (

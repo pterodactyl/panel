@@ -15,19 +15,19 @@ import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
-  ${tw`flex flex-wrap`};
+    ${tw`flex flex-wrap`};
 
-  & > div {
-    ${tw`w-full`};
+    & > div {
+        ${tw`w-full`};
 
-    ${breakpoint('sm')`
+        ${breakpoint('sm')`
       width: calc(50% - 1rem);
     `}
 
-    ${breakpoint('md')`
+        ${breakpoint('md')`
       ${tw`w-auto flex-1`};
     `}
-  }
+    }
 `;
 
 const Wrapper = styled.div`
@@ -35,16 +35,15 @@ const Wrapper = styled.div`
 `;
 
 const OverviewContainer = () => {
-    const [ resources, setResources ] = useState<Resources>();
-    const username = useStoreState(state => state.user.data!.username);
+    const [resources, setResources] = useState<Resources>();
+    const username = useStoreState((state) => state.user.data!.username);
 
     useEffect(() => {
-        getResources()
-            .then(resources => setResources(resources));
+        getResources().then((resources) => setResources(resources));
     }, []);
 
     const redirect = (url: string) => {
-        // @ts-ignore
+        // @ts-expect-error this is valid
         window.location = `/store/${url}`;
     };
 
@@ -97,20 +96,16 @@ const OverviewContainer = () => {
                 <TitledGreyBox title={'Create server'}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                            <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`}/>
+                            <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`} />
                         </div>
                         <div css={tw`flex-1`}>
                             <h2 css={tw`text-xl mb-2`}>Create a server</h2>
                             <p>
-                                Create your next server with your choice of
-                                resource limits, server type and more. Delete or edit your
-                                server at any time to take full advantage of your resources.
+                                Create your next server with your choice of resource limits, server type and more.
+                                Delete or edit your server at any time to take full advantage of your resources.
                             </p>
                             <Link to={'/store/create'}>
-                                <Button
-                                    css={tw`mt-6 w-full`}
-                                    size={Button.Sizes.Large}
-                                >
+                                <Button css={tw`mt-6 w-full`} size={Button.Sizes.Large}>
                                     Create
                                 </Button>
                             </Link>
@@ -120,20 +115,15 @@ const OverviewContainer = () => {
                 <TitledGreyBox title={'Edit server'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
-                            <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`}/>
+                            <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`} />
                         </div>
                         <div css={tw`flex-1`}>
                             <h2 css={tw`text-xl mb-2`}>Edit your servers</h2>
                             <p>
-                                Want to add or remove resources from your server,
-                                or delete it entirely? Use the editing feature to
-                                make changes to your server instantly.
+                                Want to add or remove resources from your server, or delete it entirely? Use the editing
+                                feature to make changes to your server instantly.
                             </p>
-                            <Button
-                                css={tw`mt-6 w-full`}
-                                size={Button.Sizes.Large}
-                                onClick={() => redirect('edit')}
-                            >
+                            <Button css={tw`mt-6 w-full`} size={Button.Sizes.Large} onClick={() => redirect('edit')}>
                                 Edit
                             </Button>
                         </div>

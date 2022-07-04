@@ -94,7 +94,9 @@ export default () => {
                                         id={'connections_from'}
                                         name={'connectionsFrom'}
                                         label={'Connections From'}
-                                        description={'Where connections should be allowed from. Leave blank to allow connections from anywhere.'}
+                                        description={
+                                            'Where connections should be allowed from. Leave blank to allow connections from anywhere.'
+                                        }
                                     />
                                 </div>
                                 <div css={tw`flex flex-wrap justify-end mt-6`}>

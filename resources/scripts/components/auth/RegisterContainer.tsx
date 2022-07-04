@@ -20,10 +20,10 @@ interface Values {
 
 const RegisterContainer = ({ history }: RouteComponentProps) => {
     const ref = useRef<Reaptcha>(null);
-    const [ token, setToken ] = useState('');
+    const [token, setToken] = useState('');
 
     const { clearFlashes, clearAndAddHttpError, addFlash } = useFlash();
-    const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
+    const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
 
     useEffect(() => {
         clearFlashes();
@@ -35,7 +35,7 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch(error => {
+            ref.current!.execute().catch((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -46,7 +46,7 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
         }
 
         register({ ...values, recaptchaData: token })
-            .then(response => {
+            .then((response) => {
                 if (response.complete) {
                     history.replace('/auth/login');
                     addFlash({
@@ -59,7 +59,7 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
 
                 history.replace('/auth/register');
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 setToken('');
@@ -83,13 +83,7 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
             {({ isSubmitting, setSubmitting, submitForm }) => (
                 <LoginFormContainer title={'Create an Account'} css={tw`w-full flex`}>
                     <FlashMessageRender byKey={'auth:register'} css={tw`my-3`} />
-                    <Field
-                        type={'text'}
-                        label={'Username'}
-                        name={'username'}
-                        css={tw`my-3`}
-                        disabled={isSubmitting}
-                    />
+                    <Field type={'text'} label={'Username'} name={'username'} css={tw`my-3`} disabled={isSubmitting} />
                     <Field
                         type={'email'}
                         label={'Email Address'}
@@ -104,29 +98,24 @@ const RegisterContainer = ({ history }: RouteComponentProps) => {
                         css={tw`my-3`}
                         disabled={isSubmitting}
                     />
-                    <Button
-                        type={'submit'}
-                        css={tw`my-6 w-full`}
-                        size={Button.Sizes.Large}
-                        disabled={isSubmitting}
-                    >
+                    <Button type={'submit'} css={tw`my-6 w-full`} size={Button.Sizes.Large} disabled={isSubmitting}>
                         Register
                     </Button>
-                    {recaptchaEnabled &&
-                    <Reaptcha
-                        ref={ref}
-                        size={'invisible'}
-                        sitekey={siteKey || '_invalid_key'}
-                        onVerify={response => {
-                            setToken(response);
-                            submitForm();
-                        }}
-                        onExpire={() => {
-                            setSubmitting(false);
-                            setToken('');
-                        }}
-                    />
-                    }
+                    {recaptchaEnabled && (
+                        <Reaptcha
+                            ref={ref}
+                            size={'invisible'}
+                            sitekey={siteKey || '_invalid_key'}
+                            onVerify={(response) => {
+                                setToken(response);
+                                submitForm();
+                            }}
+                            onExpire={() => {
+                                setSubmitting(false);
+                                setToken('');
+                            }}
+                        />
+                    )}
                     <div css={tw`text-center`}>
                         <Link
                             to={'/auth/login'}
