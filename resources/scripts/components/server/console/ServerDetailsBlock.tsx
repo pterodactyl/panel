@@ -19,7 +19,7 @@ const Limit = ({ limit, children }: { limit: string | null; children: React.Reac
     </>
 );
 
-const ServerDetailsBlock = ({ className }: { className?: string }) => {
+export default ({ className }: { className?: string }) => {
     const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
 
     const status = ServerContext.useStoreState((state) => state.status.value);
@@ -103,5 +103,3 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
         </div>
     );
 };
-
-export default ServerDetailsBlock;

@@ -3,8 +3,7 @@ import classNames from 'classnames';
 import * as Icon from 'react-feather';
 import styles from './style.module.css';
 import { FitAddon } from 'xterm-addon-fit';
-import styled from 'styled-components/macro';
-import tw, { theme as th } from 'twin.macro';
+import { theme as th } from 'twin.macro';
 import { SearchAddon } from 'xterm-addon-search';
 import { Terminal, ITerminalOptions } from 'xterm';
 import { WebLinksAddon } from 'xterm-addon-web-links';
@@ -18,6 +17,7 @@ import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import 'xterm/css/xterm.css';
+import Tooltip from '@/components/elements/tooltip/Tooltip';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -50,10 +50,6 @@ const terminalProps: ITerminalOptions = {
     rows: 40,
     theme: theme,
 };
-
-const ExternalButton = styled.button`
-    ${tw`absolute right-7 top-3 z-10 p-2`};
-`;
 
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
@@ -92,10 +88,6 @@ export default () => {
 
     const popout = () => {
         window.open(window.location.href + '/console', 'Server Console', 'height=400,width=800');
-    };
-
-    const popin = () => {
-        window.close();
     };
 
     const handleDaemonErrorOutput = (line: string) =>
@@ -209,37 +201,35 @@ export default () => {
             <div
                 className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
             >
-                <div id={styles.terminal} ref={ref}>
-                    {isConsoleDetached ? (
-                        <ExternalButton>
-                            <Icon.XCircle css={tw`w-6 h-6`} onClick={() => popin()} />
-                        </ExternalButton>
-                    ) : (
-                        <ExternalButton>
-                            <Icon.ExternalLink css={tw`w-6 h-6`} onClick={() => popout()} />
-                        </ExternalButton>
-                    )}
-                </div>
+                <div id={styles.terminal} ref={ref} />
             </div>
             {canSendCommands && (
                 <div className={classNames('relative', styles.overflows_container)}>
                     <input
                         className={classNames('peer', styles.command_input)}
                         type={'text'}
-                        placeholder={'Type a command...'}
+                        id={'console_input'}
                         aria-label={'Console command input.'}
                         disabled={!instance || !connected}
                         onKeyDown={handleCommandKeyDown}
                         autoCorrect={'off'}
                         autoCapitalize={'none'}
                     />
-                    <div
-                        className={classNames(
-                            'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
-                            styles.command_icon
+                    <div className={classNames('text-gray-100', styles.command_icon)}>
+                        {!isConsoleDetached && (
+                            <Tooltip content={'Launch console in external window'}>
+                                <Icon.ExternalLink className={'w-4 h-4'} onClick={() => popout()} />
+                            </Tooltip>
                         )}
-                    >
-                        <Icon.ChevronsRight className={'w-4 h-4'} />
+                        <Tooltip content={'Type a command...'}>
+                            <Icon.ChevronsRight
+                                className={'w-4 h-4 ml-2 hover:animate-pulse'}
+                                onClick={() => {
+                                    // @ts-expect-error this is valid
+                                    document.getElementById('console_input').focus();
+                                }}
+                            />
+                        </Tooltip>
                     </div>
                 </div>
             )}
