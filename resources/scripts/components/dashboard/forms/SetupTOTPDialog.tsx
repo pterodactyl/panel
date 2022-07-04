@@ -96,7 +96,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
             </label>
             <Input.Text
                 variant={Input.Text.Variants.Loose}
-                className={'mt-1'}
+                className={'mt-1 mb-6'}
                 type={'password'}
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}

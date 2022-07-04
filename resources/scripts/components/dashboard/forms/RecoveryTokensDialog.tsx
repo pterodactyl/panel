@@ -40,7 +40,7 @@ export default ({ tokens, open, onClose }: RecoveryTokenDialogProps) => {
                     ))}
                 </pre>
             </CopyOnClick>
-            <Alert type={'danger'} className={'mt-3'}>
+            <Alert type={'danger'} className={'mt-3 mb-6'}>
                 These codes will not be shown again.
             </Alert>
             <Dialog.Footer>

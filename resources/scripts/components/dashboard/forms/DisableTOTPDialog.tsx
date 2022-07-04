@@ -47,6 +47,7 @@ const DisableTOTPDialog = () => {
                 id={'totp-password'}
                 type={'password'}
                 variant={Input.Text.Variants.Loose}
+                className={'mb-6'}
                 value={password}
                 onChange={(e) => setPassword(e.currentTarget.value)}
             />
