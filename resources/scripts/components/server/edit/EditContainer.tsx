@@ -1,14 +1,16 @@
-import React from 'react';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
+import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
 import styled from 'styled-components/macro';
 import { ServerContext } from '@/state/server';
 import editServer from '@/api/server/editServer';
+import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 const Container = styled.div`
@@ -32,25 +34,42 @@ const Wrapper = styled.div`
 `;
 
 export default () => {
+    const [submitting, setSubmitting] = useState(false);
+    const [resource, setResource] = useState('');
+    const [amount, setAmount] = useState(0);
+
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { clearFlashes, addFlash, clearAndAddHttpError } = useFlash();
 
     const edit = (resource: string, amount: number) => {
         clearFlashes('server:edit');
+        setSubmitting(true);
 
         editServer(uuid, resource, amount)
-            .then(() =>
+            .then(() => {
+                setSubmitting(false);
                 addFlash({
                     key: 'server:edit',
                     type: 'success',
                     message: 'Server resources have been edited successfully.',
-                })
-            )
+                });
+            })
             .catch((error) => clearAndAddHttpError({ key: 'server:edit', error }));
     };
 
     return (
         <ServerContentBlock title={'Edit Server'}>
+            <SpinnerOverlay size={'large'} visible={submitting} />
+            <Dialog.Confirm
+                open={submitting}
+                onClose={() => setSubmitting(false)}
+                title={'Confirm resource seletion'}
+                confirm={'Continue'}
+                onConfirmed={() => edit(resource, amount)}
+            >
+                Are you sure you want to add this resource to your server? This will remove resources from your account
+                and add them to your server. Are you sure you want to continue?
+            </Dialog.Confirm>
             <FlashMessageRender byKey={'server:edit'} css={tw`mb-4`} />
             <h1 css={tw`text-5xl`}>Edit Resources</h1>
             <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Add and remove resources from your server.</h3>
@@ -61,7 +80,9 @@ export default () => {
                         <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('cpu', 50);
+                                setSubmitting(true);
+                                setResource('cpu');
+                                setAmount(50);
                             }}
                         >
                             <Icon.Plus />
@@ -69,7 +90,9 @@ export default () => {
                         <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('cpu', -50);
+                                setSubmitting(true);
+                                setResource('cpu');
+                                setAmount(-50);
                             }}
                         >
                             <Icon.Minus />
@@ -86,7 +109,9 @@ export default () => {
                         <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('memory', 1024);
+                                setSubmitting(true);
+                                setResource('memory');
+                                setAmount(1024);
                             }}
                         >
                             <Icon.Plus />
@@ -94,7 +119,9 @@ export default () => {
                         <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('memory', -1024);
+                                setSubmitting(true);
+                                setResource('memory');
+                                setAmount(-1024);
                             }}
                         >
                             <Icon.Minus />
@@ -111,7 +138,9 @@ export default () => {
                         <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('disk', 1024);
+                                setSubmitting(true);
+                                setResource('disk');
+                                setAmount(1024);
                             }}
                         >
                             <Icon.Plus />
@@ -119,7 +148,9 @@ export default () => {
                         <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('disk', -1024);
+                                setSubmitting(true);
+                                setResource('disk');
+                                setAmount(-1024);
                             }}
                         >
                             <Icon.Minus />
@@ -136,7 +167,9 @@ export default () => {
                         <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('allocation_limit', 1);
+                                setSubmitting(true);
+                                setResource('allocation_limit');
+                                setAmount(1);
                             }}
                         >
                             <Icon.Plus />
@@ -144,7 +177,9 @@ export default () => {
                         <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('allocation_limit', -1);
+                                setSubmitting(true);
+                                setResource('allocation_limit');
+                                setAmount(-1);
                             }}
                         >
                             <Icon.Minus />
@@ -161,7 +196,9 @@ export default () => {
                         <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('backup_limit', 1);
+                                setSubmitting(true);
+                                setResource('backup_limit');
+                                setAmount(1);
                             }}
                         >
                             <Icon.Plus />
@@ -169,7 +206,9 @@ export default () => {
                         <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('backup_limit', -1);
+                                setSubmitting(true);
+                                setResource('backup_limit');
+                                setAmount(-1);
                             }}
                         >
                             <Icon.Minus />
@@ -185,7 +224,9 @@ export default () => {
                         <Button.Success
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('database_limit', 1);
+                                setSubmitting(true);
+                                setResource('database_limit');
+                                setAmount(1);
                             }}
                         >
                             <Icon.Plus />
@@ -193,14 +234,16 @@ export default () => {
                         <Button.Danger
                             css={tw`ml-4`}
                             onClick={() => {
-                                edit('database_limit', -1);
+                                setSubmitting(true);
+                                setResource('database_limit');
+                                setAmount(-1);
                             }}
                         >
                             <Icon.Minus />
                         </Button.Danger>
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Change the limit of backups assigned to the server.
+                        Change the limit of databases assigned to the server.
                     </p>
                 </TitledGreyBox>
             </Container>

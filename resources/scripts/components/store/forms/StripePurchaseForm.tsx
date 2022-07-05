@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
 import stripe from '@/api/store/gateways/stripe';
 import Select from '@/components/elements/Select';
+import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -25,14 +26,17 @@ export default () => {
                 window.location.href = url;
             })
             .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ key: 'store:stripe', error });
                 setSubmitting(false);
+
+                clearAndAddHttpError({ key: 'store:stripe', error });
             });
     };
 
     return (
         <TitledGreyBox title={'Purchase via Stripe'}>
+            <Dialog open={submitting} hideCloseIcon onClose={() => undefined}>
+                You are now being taken to the Stripe gateway to complete this transaction.
+            </Dialog>
             <FlashMessageRender byKey={'store:stripe'} css={tw`mb-2`} />
             <Formik
                 onSubmit={submit}

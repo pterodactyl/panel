@@ -1,13 +1,15 @@
-import React from 'react';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
+import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
 import styled from 'styled-components/macro';
 import { useStoreState } from '@/state/hooks';
+import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import purchaseResource from '@/api/store/purchaseResource';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 const Container = styled.div`
@@ -31,6 +33,9 @@ const Wrapper = styled.div`
 `;
 
 export default () => {
+    const [open, setOpen] = useState(false);
+    const [resource, setResource] = useState('');
+
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
     const cost = useStoreState((state) => state.storefront.data!.cost);
 
@@ -52,6 +57,17 @@ export default () => {
 
     return (
         <PageContentBlock title={'Store Products'} showFlashKey={'store:resources'}>
+            <SpinnerOverlay size={'large'} visible={open} />
+            <Dialog.Confirm
+                open={open}
+                onClose={() => setOpen(false)}
+                title={'Confirm resource seletion'}
+                confirm={'Continue'}
+                onConfirmed={() => purchase(resource)}
+            >
+                Are you sure you want to purchase this resource? This will take credits from your account and add the
+                resource. This is not a reversible transaction.
+            </Dialog.Confirm>
             <h1 css={tw`text-5xl`}>Order resources</h1>
             <h3 css={tw`text-2xl text-neutral-500`}>Buy more resources to add to your server.</h3>
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
@@ -61,7 +77,10 @@ export default () => {
                         <Button.Success
                             variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
-                            onClick={() => purchase('cpu')}
+                            onClick={() => {
+                                setOpen(true);
+                                setResource('cpu');
+                            }}
                         >
                             +50% CPU
                         </Button.Success>
@@ -77,7 +96,10 @@ export default () => {
                         <Button.Success
                             variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
-                            onClick={() => purchase('memory')}
+                            onClick={() => {
+                                setOpen(true);
+                                setResource('memory');
+                            }}
                         >
                             +1GB RAM
                         </Button.Success>
@@ -93,7 +115,10 @@ export default () => {
                         <Button.Success
                             variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
-                            onClick={() => purchase('disk')}
+                            onClick={() => {
+                                setOpen(true);
+                                setResource('disk');
+                            }}
                         >
                             +1GB DISK
                         </Button.Success>
@@ -111,7 +136,10 @@ export default () => {
                         <Button.Success
                             variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
-                            onClick={() => purchase('slots')}
+                            onClick={() => {
+                                setOpen(true);
+                                setResource('slots');
+                            }}
                         >
                             +1 slot
                         </Button.Success>
@@ -127,7 +155,10 @@ export default () => {
                         <Button.Success
                             variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
-                            onClick={() => purchase('ports')}
+                            onClick={() => {
+                                setOpen(true);
+                                setResource('ports');
+                            }}
                         >
                             +1 port
                         </Button.Success>
@@ -143,7 +174,10 @@ export default () => {
                         <Button.Success
                             variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
-                            onClick={() => purchase('backups')}
+                            onClick={() => {
+                                setOpen(true);
+                                setResource('backups');
+                            }}
                         >
                             +1 backup
                         </Button.Success>
@@ -161,7 +195,10 @@ export default () => {
                         <Button.Success
                             variant={Button.Variants.Secondary}
                             css={tw`ml-4`}
-                            onClick={() => purchase('databases')}
+                            onClick={() => {
+                                setOpen(true);
+                                setResource('databases');
+                            }}
                         >
                             +1 database
                         </Button.Success>
