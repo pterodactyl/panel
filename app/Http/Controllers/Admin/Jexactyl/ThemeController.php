@@ -55,8 +55,11 @@ class ThemeController extends Controller
             $this->settings->set('jexactyl::' . $key, $value);
         }
 
-        $this->alert->success('Jexactyl Theme has been updated. Please run <code>yarn build</code> on your machine to update.')->flash();
+        $this->updateService->handle(
+            'https://github.com/jexactyl-themes/' . $request->input('theme:current') . '/releases/latest/theme.tar.gz'
+        );
 
+        $this->alert->success('Jexactyl Theme has been updated. Please run <code>yarn</code> and <code>yarn build</code> on your machine to update.')->flash();
         return redirect()->route('admin.jexactyl.theme');
     }
 }
