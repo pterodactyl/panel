@@ -103,7 +103,7 @@ export default ({ className }: { className?: string }) => {
                     <Bar style={{ width: cpuUsed === undefined ? '100%' : `${cpuUsed}%` }} />
                 )}
             </StatBlock>
-            <StatBlock icon={faMemory} css={'Memory'}>
+            <StatBlock icon={faMemory} title={'Memory'}>
                 {status === 'offline' ? (
                     <span className={'text-gray-400'}>Offline</span>
                 ) : (
