@@ -20,6 +20,7 @@ import { ServerError } from '@/components/elements/ScreenBlock';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import UploadButton from '@/components/server/files/UploadButton';
+import PullFileModal from '@/components/server/files/PullFileModal';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
@@ -97,6 +98,7 @@ export default () => {
                     />
                     <Can action={'file.create'}>
                         <div className={style.manager_actions}>
+                            <PullFileModal />
                             <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`} />
                             <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`} />
                             <NavLink
