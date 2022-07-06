@@ -25,7 +25,8 @@ function isFileOrDirectory(event: DragEvent): boolean {
 
     for (let i = 0; i < event.dataTransfer.types.length; i++) {
         // Check if the item being dragged is not a file.
-        if (event.dataTransfer.types[i] !== 'Files') {
+        // On Firefox a file of type "application/x-moz-file" is also in the array.
+        if (event.dataTransfer.types[i] !== 'Files' && event.dataTransfer.types[i] !== 'application/x-moz-file') {
             return false;
         }
     }
