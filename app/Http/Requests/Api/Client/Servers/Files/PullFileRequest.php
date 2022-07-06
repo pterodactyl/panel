@@ -20,7 +20,7 @@ class PullFileRequest extends ClientApiRequest implements ClientPermissionsReque
     {
         return [
             'url' => 'required|string|url',
-            'directory' => 'nullable|string',
+            'root' => 'nullable|string',
             'filename' => 'nullable|string',
             'use_header' => 'boolean',
             'foreground' => 'boolean',

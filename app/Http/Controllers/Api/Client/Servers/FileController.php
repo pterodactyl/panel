@@ -265,12 +265,12 @@ class FileController extends ClientApiController
     {
         $this->fileRepository->setServer($server)->pull(
             $request->input('url'),
-            $request->input('directory'),
+            $request->input('root'),
             $request->safe(['filename', 'use_header', 'foreground'])
         );
 
         Activity::event('server:file.pull')
-            ->property('directory', $request->input('directory'))
+            ->property('directory', $request->input('root'))
             ->property('url', $request->input('url'))
             ->log();
 
