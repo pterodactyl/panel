@@ -36,14 +36,12 @@ const generateFileData = (name: string): FileObject => ({
 });
 
 export default ({ className }: WithClassname) => {
-    const [visible, setVisible] = useState(false);
-
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
-
+    const [visible, setVisible] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
     const { data, mutate } = useFileManagerSwr();
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     useEffect(() => {
         if (!visible) return;
@@ -56,7 +54,7 @@ export default ({ className }: WithClassname) => {
     const submit = ({ url }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         pullFile(uuid, directory, url)
             .then(() =>
-                mutate((data) => [...data!, generateFileData(new URL(url).pathname.split('/').pop() || '')], false)
+                mutate((data) => [...data!, generateFileData(url.split('/')[url.split('/').length - 1])], false)
             )
             .then(() => setVisible(false))
             .catch((error) => {
@@ -74,8 +72,8 @@ export default ({ className }: WithClassname) => {
                     initialValues={{ url: '' }}
                     validationSchema={object().shape({
                         url: string()
-                            .required()
-                            .url()
+                            .required('A valid url must be provided.')
+                            .url('A valid url must be provided.')
                             .test('unique', 'File or directory with that name already exists.', (v) => {
                                 return (
                                     v !== undefined &&
@@ -96,7 +94,7 @@ export default ({ className }: WithClassname) => {
                         >
                             <FlashMessageRender key={'files:pull-modal'} />
                             <Form css={tw`m-0`}>
-                                <Field type={'text'} id={'url'} name={'url'} label={'URL'} autoFocus />
+                                <Field autoFocus type={'text'} id={'url'} name={'url'} label={'URL'} />
                                 <p css={tw`mt-2 text-sm md:text-base break-all`}>
                                     <span css={tw`text-neutral-200`}>This file will be downloaded to&nbsp;</span>
                                     <Code>
