@@ -55,9 +55,8 @@ class FileUploadController extends ClientApiController
     {
         $token = $this->jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-            ->setClaims([
-                'server_uuid' => $server->uuid,
-            ])
+            ->setUser($user)
+            ->setClaims(['server_uuid' => $server->uuid])
             ->handle($server->node, $user->id . $server->uuid);
 
         return sprintf(
