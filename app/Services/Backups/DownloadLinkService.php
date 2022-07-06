@@ -41,6 +41,7 @@ class DownloadLinkService
 
         $token = $this->jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setUser($user)
             ->setClaims([
                 'backup_uuid' => $backup->uuid,
                 'server_uuid' => $backup->server->uuid,

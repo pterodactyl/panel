@@ -37,6 +37,15 @@ return [
     ],
     'server' => [
         'reinstall' => 'Reinstalled server',
+        'console' => [
+            'command' => 'Executed ":command" on the server',
+        ],
+        'power' => [
+            'start' => 'Started the server',
+            'stop' => 'Stopped the server',
+            'restart' => 'Restarted the server',
+            'kill' => 'Killed the server process',
+        ],
         'backup' => [
             'download' => 'Downloaded the :name backup',
             'delete' => 'Deleted the :name backup',
