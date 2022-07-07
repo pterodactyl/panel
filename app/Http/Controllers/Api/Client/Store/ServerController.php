@@ -2,18 +2,26 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
+use Throwable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Exceptions\DisplayException;
+use Illuminate\Validation\ValidationException;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Servers\ServerCreationService;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Transformers\Api\Client\Store\EggTransformer;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Transformers\Api\Client\Store\NestTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreEggsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
+use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreEggsRequest;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
+use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreNestsRequest;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 
 class ServerController extends ClientApiController
 {
@@ -26,8 +34,7 @@ class ServerController extends ClientApiController
     public function __construct(
         NodeRepository $nodeRepository,
         ServerCreationService $creationService
-    )
-    {
+    ) {
         parent::__construct();
         $this->nodeRepository = $nodeRepository;
         $this->creationService = $creationService;
@@ -35,10 +42,8 @@ class ServerController extends ClientApiController
 
     /**
      * Get all available eggs for server deployment.
-     * 
-     * @throws DisplayException
      */
-    public function eggs(GetStoreEggsRequest $request, Nest $nest)
+    public function eggs(GetStoreEggsRequest $request, Nest $nest): ?array
     {
         return $this->fractal->collection($nest->eggs)
             ->transformWith($this->getTransformer(EggTransformer::class))
@@ -46,17 +51,26 @@ class ServerController extends ClientApiController
     }
 
     /**
-     * Stores a new server on the Panel.
-     * 
-     * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
+     * Get all available nests for server deployment.
      */
-    public function store(CreateServerRequest $request)
+    public function nests(GetStoreNestsRequest $request): ?array
+    {
+        $nests = Nest::all();
+        return $this->fractal->collection($nests)->transformWith($this->getTransformer(NestTransformer::class))->toArray();
+    }
+
+    /**
+     * Stores a new server on the Panel.
+     *
+     * @throws Throwable
+     * @throws DisplayException
+     * @throws ValidationException
+     * @throws DataValidationException
+     * @throws RecordNotFoundException
+     * @throws NoViableNodeException
+     * @throws NoViableAllocationException
+     */
+    public function store(CreateServerRequest $request): JsonResponse
     {
         $user = $request->user();
         $this->verifyResources($request);
@@ -99,7 +113,7 @@ class ServerController extends ClientApiController
             $server = $this->creationService->handle($data);
         } catch (DisplayException $exception) {
             throw new DisplayException('Unable to deploy server. Please contact an administrator.');
-        };
+        }
 
         $user->update([
             'store_cpu' => $user->store_cpu - $request->input('cpu'),
@@ -116,9 +130,9 @@ class ServerController extends ClientApiController
 
     /**
      * Gets an allocation for server deployment.
-     * 
-     * @throws \Pterodactyl\Exceptions\DisplayException
-    */
+     *
+     * @throws DisplayException
+     */
     protected function getAllocation(CreateServerRequest $request): int
     {
         $nodes = $this->nodeRepository->getNodesForServerCreation();
@@ -135,7 +149,7 @@ class ServerController extends ClientApiController
             $node = $available_nodes[0];
         } else {
             throw new DisplayException('Unable to find a node to deploy the server.');
-        };
+        }
 
         try {
             $alloc = DB::table('allocations')
@@ -144,15 +158,15 @@ class ServerController extends ClientApiController
                 ->first();
         } catch (DisplayException $exception) {
             throw new DisplayException('Unable to find an allocation to deploy the server.');
-        };
+        }
 
         return $alloc->id;
     }
 
     /**
      * Checks that the user has sufficient resources for server creation.
-     * 
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     *
+     * @throws DisplayException
      */
     protected function verifyResources(CreateServerRequest $request)
     {
@@ -166,6 +180,6 @@ class ServerController extends ClientApiController
             $user->store_memory < $request->input('memory') * 1024
         ) {
             throw new DisplayException('Unable to deploy instance: You do not have sufficient resources.');
-        };
+        }
     }
 }
