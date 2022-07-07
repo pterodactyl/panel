@@ -46,7 +46,7 @@ const BalanceContainer = () => {
                     </h1>
                 </ContentBox>
                 <ContentBox title={'Earn Rate'} showFlashes={'earn:rate'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <h1 css={tw`text-7xl flex justify-center items-center`}>${earn.amount} / min</h1>
+                    <h1 css={tw`text-7xl flex justify-center items-center`}>{earn.amount} {store.currency} / min</h1>
                 </ContentBox>
                 <ContentBox title={'How to earn'} showFlashes={'earn:how'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <p>You can earn credits by having any page of this panel open.</p>
