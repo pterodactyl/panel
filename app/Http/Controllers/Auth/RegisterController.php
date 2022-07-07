@@ -36,7 +36,7 @@ class RegisterController extends AbstractLoginController
         };
 
         $prefix = 'jexactyl::registration:';
-    
+
         $data = [
             'email' => $request->input('email'),
             'username' => $request->input('user'),
@@ -50,7 +50,7 @@ class RegisterController extends AbstractLoginController
             'store_slots' => $this->settings->get($prefix.'slot', 0),
             'store_ports' => $this->settings->get($prefix.'port', 0),
             'store_backups' => $this->settings->get($prefix.'backup', 0),
-            'store_backups' => $this->settings->get($prefix.'database', 0),
+            'store_databases' => $this->settings->get($prefix.'database', 0),
         ];
 
         $this->creationService->handle($data);
