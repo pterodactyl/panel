@@ -16,6 +16,10 @@ return [
         'recovery-token' => 'Used two-factor recovery token',
         'token' => 'Solved two-factor challenge',
         'ip-blocked' => 'Blocked request from unlisted IP address for :identifier',
+        'sftp' => [
+            'success' => 'Logged in using SFTP',
+            'fail' => 'Failed SFTP log in',
+        ],
     ],
     'user' => [
         'account' => [
@@ -95,6 +99,9 @@ return [
             'create' => 'Created a new ":action" task for the :name schedule',
             'update' => 'Updated the ":action" task for the :name schedule',
             'delete' => 'Deleted a task for the :name schedule',
+        ],
+        'sftp' => [
+            'denied' => 'Blocked SFTP access due to permissions',
         ],
         'settings' => [
             'rename' => 'Renamed the server from :old to :new',
