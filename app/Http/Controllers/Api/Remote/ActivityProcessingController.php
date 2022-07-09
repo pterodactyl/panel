@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Exception;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
@@ -31,7 +32,7 @@ class ActivityProcessingController extends Controller
         foreach ($request->input('data') as $datum) {
             /** @var \Pterodactyl\Models\Server|null $server */
             $server = $servers->get($datum['server']);
-            if (is_null($server) || is_null($event = $this->event($datum['event']))) {
+            if (is_null($server) || !Str::startsWith($datum['event'], 'server:')) {
                 continue;
             }
 
@@ -53,7 +54,7 @@ class ActivityProcessingController extends Controller
 
             $log = [
                 'ip' => empty($datum['ip']) ? '127.0.0.1' : $datum['ip'],
-                'event' => $event,
+                'event' => $datum['event'],
                 'properties' => json_encode($datum['metadata'] ?? []),
                 // We have to change the time to the current timezone due to the way Laravel is handling
                 // the date casting internally. If we just leave it in UTC it ends up getting double-cast
@@ -87,29 +88,6 @@ class ActivityProcessingController extends Controller
             }
 
             ActivityLogSubject::insert($batch);
-        }
-    }
-
-    /**
-     * Takes an event from Wings and converts it into the expected event type on
-     * the Panel. If no matching event type can be deduced, null is returned and
-     * the event won't be logged.
-     */
-    protected function event(string $input): ?string
-    {
-        switch ($input) {
-            case 'console_command':
-                return 'server:console.command';
-            case 'power_start':
-                return 'server:power.start';
-            case 'power_stop':
-                return 'server:power.stop';
-            case 'power_restart':
-                return 'server:power.restart';
-            case 'power_kill':
-                return 'server:power.kill';
-            default:
-                return null;
         }
     }
 }
