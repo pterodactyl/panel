@@ -28,6 +28,7 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | ------- | ----- |
 | [**WISP**](https://wisp.gg) | Extra features. |
 | [**BisectHosting**](https://www.bisecthosting.com/) | BisectHosting provides Minecraft, Valheim and other server hosting services with the highest reliability and lightning fast support since 2012. |
+| [**Fragnet**](https://fragnet.net) | Providing low latency, high-end game hosting solutions to gamers, game studios and eSports platforms. |
 | [**Tempest**](https://tempest.net/) | Tempest Hosting is a subsidiary of Path Network, Inc. offering unmetered DDoS protected 10Gbps dedicated servers, starting at just $80/month. Full anycast, tons of filters. |
 | [**Bloom.host**](https://bloom.host) | Bloom.host offers dedicated core VPS and Minecraft hosting with Ryzen 9 processors. With owned-hardware, we offer truly unbeatable prices on high-performance hosting. |
 | [**MineStrator**](https://minestrator.com/) | Looking for the most highend French hosting company for your minecraft server? More than 24,000 members on our discord trust us. Give us a try! |
