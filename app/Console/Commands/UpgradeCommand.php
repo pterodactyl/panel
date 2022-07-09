@@ -19,7 +19,8 @@ class UpgradeCommand extends Command
         {--group= : The group that PHP runs under. All files will be owned by this group.}
         {--url= : The specific archive to download.}
         {--release= : A specific Pterodactyl version to download from GitHub. Leave blank to use latest.}
-        {--skip-download : If set no archive will be downloaded.}';
+        {--skip-download : If set no archive will be downloaded.}
+        {--directory= : The root directory of the panel. This defaults to "/var/www/pterodactyl".}';
 
     /** @var string */
     protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
@@ -97,6 +98,7 @@ class UpgradeCommand extends Command
         $bar = $this->output->createProgressBar($skipDownload ? 8 : 13);
         $bar->start();
         $dir = sprintf('/var/www/backup_%s', preg_replace('/:|\+/', '_', CarbonImmutable::now()->toIso8601String()));
+        $root = $this->option('directory') ?? '/var/www/pterodactyl';
 
         if (!$skipDownload) {
             $this->withProgress($bar, function () {
@@ -120,8 +122,8 @@ class UpgradeCommand extends Command
             });
             
             $this->withProgress($bar, function () {
-                $this->line("\$upgrader> mv /var/www/pterodactyl/* ${$dir}");
-                Process::fromShellCommandline("mv /var/www/pterodactyl/* ${$dir}")->run(function ($type, $buffer) {
+                $this->line("\$upgrader> mv ${$root}/* ${$dir}");
+                Process::fromShellCommandline("mv ${$root}/* ${$dir}")->run(function ($type, $buffer) {
                     if ($type === Process:ERR) {
                         return $this->processError(false, $buffer);
                     }
@@ -131,8 +133,8 @@ class UpgradeCommand extends Command
             });
             
             $this->withProgress($bar, function () {
-                $this->line('\$upgrader> mv /tmp/panel.tar.gz /var/www/pterodactyl');
-                $process = Process::fromShellCommandline('mv /tmp/panel.tar.gz /var/www/pterodactyl');
+                $this->line("\$upgrader> mv /tmp/panel.tar.gz ${$root}");
+                $process = Process::fromShellCommandline("mv /tmp/panel.tar.gz ${$root}");
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                     if ($type === Process::ERR) {
@@ -142,8 +144,8 @@ class UpgradeCommand extends Command
             });
             
             $this->withProgress($bar, function () {
-                $this->line('\$upgrader> cd /var/www/pterodactyl && tar -xzvf panel.tar.gz');
-                $process = Process::fromShellCommandline('cd /var/www/pterodactyl && tar -xzvf panel.tar.gz');
+                $this->line("\$upgrader> cd ${$root} && tar -xzvf panel.tar.gz");
+                $process = Process::fromShellCommandline("cd ${$root} && tar -xzvf panel.tar.gz");
                 $process->run(function ($type, $buffer) {
                     $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
                     if ($type === Process::ERR) {
@@ -189,7 +191,7 @@ class UpgradeCommand extends Command
         $this->setLaravel($app);
 
         $this->withProgress($bar, function () {
-            $this->line('$upgrader> php artisan optimize:clear');
+            $this->line('\$upgrader> php artisan optimize:clear');
             $this->call('optimize:clear');
         });
 
@@ -246,7 +248,7 @@ class UpgradeCommand extends Command
         
         if ($restore) {
             $this->info('Attempting to restore latest backup.');
-            $process = Process::fromShellCommandline("mv ${$dir} /var/www/pterodactyl");
+            $process = Process::fromShellCommandline("mv ${$dir}/* ${$root}");
             $process->run(function ($type, $buffer) {
                 if ($type === Process::ERR) {
                     $this->error($buffer);
