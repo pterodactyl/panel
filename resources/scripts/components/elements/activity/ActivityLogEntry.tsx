@@ -69,7 +69,7 @@ export default ({ activity, children }: Props) => {
                                     <TerminalIcon />
                                 </Tooltip>
                             )}
-                            {activity.properties.using_sftp && (
+                            {activity.event.startsWith('server:sftp.') && (
                                 <Tooltip placement={'top'} content={'Using SFTP'}>
                                     <FolderOpenIcon />
                                 </Tooltip>
