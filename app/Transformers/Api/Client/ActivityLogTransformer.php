@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\ActivityLog;
+use Illuminate\Database\Eloquent\Model;
 
 class ActivityLogTransformer extends BaseClientTransformer
 {
@@ -25,7 +26,7 @@ class ActivityLogTransformer extends BaseClientTransformer
             'batch' => $model->batch,
             'event' => $model->event,
             'is_api' => !is_null($model->api_key_id),
-            'ip' => optional($model->actor)->is($this->request->user()) ? $model->ip : null,
+            'ip' => $this->canViewIP($model->actor) ? $model->ip : null,
             'description' => $model->description,
             'properties' => $this->properties($model),
             'has_additional_metadata' => $this->hasAdditionalMetadata($model),
@@ -104,5 +105,14 @@ class ActivityLogTransformer extends BaseClientTransformer
         }
 
         return false;
+    }
+
+    /**
+     * Determines if the user can view the IP address in the output either because they are the
+     * actor that performed the action, or because they are an administrator on the Panel.
+     */
+    protected function canViewIP(Model $actor = null): bool
+    {
+        return optional($actor)->is($this->request->user()) || $this->request->user()->root_admin;
     }
 }
