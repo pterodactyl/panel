@@ -17,7 +17,6 @@ return [
         'token' => 'Solved two-factor challenge',
         'ip-blocked' => 'Blocked request from unlisted IP address for :identifier',
         'sftp' => [
-            'success' => 'Logged in using SFTP',
             'fail' => 'Failed SFTP log in',
         ],
     ],

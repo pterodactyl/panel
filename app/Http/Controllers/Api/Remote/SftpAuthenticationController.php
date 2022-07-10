@@ -78,14 +78,6 @@ class SftpAuthenticationController extends Controller
 
         $this->validateSftpAccess($user, $server);
 
-        Activity::event('auth:sftp.success')->actor($user)
-            ->subject($user)
-            ->property(array_filter([
-                'method' => isset($key) ? 'ssh_key' : 'password',
-                'fingerprint' => isset($key) ? 'SHA256:' . $key->getFingerprint('sha256') : null,
-            ]))
-            ->log();
-
         return new JsonResponse([
             'user' => $user->uuid,
             'server' => $server->uuid,
