@@ -18,6 +18,10 @@ class ActivityLogTransformer extends BaseClientTransformer
     public function transform(ActivityLog $model): array
     {
         return [
+            // This is not for security, it is only to provide a unique identifier to
+            // the front-end for each entry to improve rendering performance since there
+            // is nothing else sufficiently unique to key off at this point.
+            'id' => sha1($model->id),
             'batch' => $model->batch,
             'event' => $model->event,
             'is_api' => !is_null($model->api_key_id),
