@@ -46,13 +46,18 @@ class ServerConfigurationStructureService
     protected function returnCurrentFormat(Server $server): array
     {
         return [
+            'name' => $server->name,
+            'description' => $server->description,
+            'external_id' => $server->external_id,
+            'id' => $server->id,
             'uuid' => $server->uuid,
+            'uuidShort' => $server->uuidShort,
             'suspended' => $server->isSuspended(),
             'environment' => $this->environment->handle($server),
             'invocation' => $server->startup,
             'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
-                'memory_limit' => $server->memory,
+                'memory_limit' => $server->m emory,
                 'swap' => $server->swap,
                 'io_weight' => $server->io,
                 'cpu_limit' => $server->cpu,
