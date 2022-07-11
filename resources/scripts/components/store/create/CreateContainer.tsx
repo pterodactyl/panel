@@ -7,7 +7,7 @@ import { number, object, string } from 'yup';
 import { megabytesToHuman } from '@/helpers';
 import styled from 'styled-components/macro';
 import Field from '@/components/elements/Field';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import { Egg, getEggs } from '@/api/store/getEggs';
 import createServer from '@/api/store/createServer';
 import { Button } from '@/components/elements/button/index';
@@ -17,7 +17,7 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import Select from "@/components/elements/Select";
-import {getNests, Nest} from "@/api/store/getNests";
+import { getNests, Nest } from "@/api/store/getNests";
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -53,16 +53,19 @@ export default () => {
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
     const [isSubmit, setSubmit] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [nests, setNests] = useState<Nest[]>([]);
-    const [nest, setNest] = useState(1);
-    const [eggs, setEggs] = useState<Egg[]>([]);
+    const [nests, setNests] = useState<Nest[]>();
+    const [eggs, setEggs] = useState<Egg[]>();
     const [egg, setEgg] = useState(1);
 
     useEffect(() => {
         getResources().then((resources) => setResources(resources));
         getNests().then((nests) => setNests(nests));
-        getEggs(nest).then((eggs) => setEggs(eggs));
-    }, [resources, nests, eggs]);
+        getEggs(1).then((eggs) => setEggs(eggs));
+    }, []);
+
+    const changeNest = (x: ChangeEvent<HTMLSelectElement>) => {
+        getEggs(parseInt(x.target.value)).then((eggs) => setEggs(eggs));
+    };
 
     const submit = (values: CreateValues) => {
         setLoading(true);
@@ -90,8 +93,7 @@ export default () => {
             });
     };
 
-    if (!resources) return <StoreError />;
-
+    if (!resources || !eggs || !nests) return <StoreError/>;
     return (
         <PageContentBlock title={'Create a server'} showFlashKey={'store:create'}>
             <Formik
@@ -186,22 +188,21 @@ export default () => {
                     </Container>
                     <h1 css={tw`text-5xl`}>Server Type</h1>
                     <h3 css={tw`text-2xl text-neutral-500`}>Choose a server distribution to use.</h3>
-                    <Container css={tw`lg:grid lg:grid-cols-3 my-10 gap-4`}>
+                    <Container css={tw`my-10 gap-4`}>
                         <TitledGreyBox title={'Server Egg Nest'} css={tw`mt-8 sm:mt-0`}>
-                            <Select defaultValue={nests[0].id} name={'nest'} onChange={(n) => setNest(parseInt(n.target.value))}>
-                                {nests.map((nest) => (
-                                    <option value={nest.id}>{nest.name}</option>
+                            <Select name={'nest'} onChange={(n) => changeNest(n)}>
+                                {nests.map((n) => (
+                                    <option value={n.id}>{n.name}</option>
                                 ))}
                             </Select>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
-                            <Select defaultValue={eggs[0].id} name={'egg'} onChange={(e) => setEgg(parseInt(e.target.value))}>
-                                {eggs.map((egg) => (
-                                    <option value={egg.id}>{egg.name}</option>
+                            <Select name={'egg'} onChange={(e) => setEgg(parseInt(e.target.value))}>
+                                {eggs.map((e) => (
+                                    <option value={e.id}>{e.name}</option>
                                 ))}
                             </Select>
                             <p css={tw`mt-2 text-sm`}>Choose what game you want to run on your server.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>Currently selected egg: {egg}</p>
                         </TitledGreyBox>
                     </Container>
                     <InputSpinner visible={loading}>

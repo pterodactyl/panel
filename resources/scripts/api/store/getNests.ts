@@ -12,6 +12,6 @@ export const rawDataToNest = (data: any): Nest => ({
 
 export const getNests = async (): Promise<Nest[]> => {
     return new Promise((resolve, reject) => {
-        http.get('/api/client/store/nests').then(({ data }) => resolve((data.data || []).map((n: any) => rawDataToNest(n)))).catch(reject);
+        http.get('/api/client/store/nests').then(({ data }) => resolve((data.data || []).map((d: any) => rawDataToNest(d.attributes)))).catch(reject);
     });
 };
