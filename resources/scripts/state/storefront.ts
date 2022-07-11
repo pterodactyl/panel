@@ -3,6 +3,9 @@ import { action, Action } from 'easy-peasy';
 export interface StorefrontSettings {
     enabled: string;
     currency: string;
+    referrals: {
+        enabled: string;
+    };
     cost: {
         cpu: number;
         memory: number;

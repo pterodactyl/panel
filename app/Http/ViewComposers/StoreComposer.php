@@ -32,7 +32,11 @@ class StoreComposer
     {
         $view->with('storeConfiguration', [
             'enabled' => $this->getSetting('enabled'),
-            'currency' => $this->getSetting('jexactyl::store:currency', 'JCR'),
+            'currency' => $this->getSetting('currency', 'JCR'),
+
+            'referrals' => [
+                'enabled' => $this->settings->get('jexactyl::referrals:enabled', false),
+            ],
 
             'earn' => [
                 'enabled' => $this->settings->get('jexactyl::earn:enabled', false),

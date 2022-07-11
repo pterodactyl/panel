@@ -11,6 +11,7 @@ import SubNavigation from '@/components/elements/SubNavigation';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import EditContainer from '@/components/store/edit/EditContainer';
 import BalanceContainer from '@/components/store/BalanceContainer';
+import ReferralContainer from '@/components/store/ReferralContainer';
 import OverviewContainer from '@/components/store/OverviewContainer';
 import MobileNavigation from '@/components/elements/MobileNavigation';
 import CreateContainer from '@/components/store/create/CreateContainer';
@@ -22,6 +23,7 @@ const StoreRouter = () => {
     const location = useLocation();
     const { width } = useWindowDimensions();
     const earn = useStoreState((state) => state.storefront.data!.earn);
+    const referrals = useStoreState((state) => state.storefront.data!.referrals);
 
     return (
         <>
@@ -50,6 +52,13 @@ const StoreRouter = () => {
                             </div>
                         </NavLink>
                     )}
+                    {referrals.enabled === 'true' && (
+                        <NavLink to={`${match.url}/referrals`}>
+                            <div css={tw`flex items-center justify-between`}>
+                                Referrals <Icon.Users css={tw`ml-1`} size={18} />
+                            </div>
+                        </NavLink>
+                    )}
                 </div>
             </SubNavigation>
             <TransitionRouter>
@@ -72,6 +81,11 @@ const StoreRouter = () => {
                     {earn.enabled === 'true' && (
                         <Route path={`${match.path}/earn`} exact>
                             <EarnContainer />
+                        </Route>
+                    )}
+                    {referrals.enabled === 'true' && (
+                        <Route path={`${match.path}/referrals`} exact>
+                            <ReferralContainer />
                         </Route>
                     )}
                     <Route path={'*'}>

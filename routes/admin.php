@@ -90,12 +90,14 @@ Route::group(['prefix' => 'jexactyl'], function () {
     Route::get('/store', [Admin\Jexactyl\StoreController::class, 'index'])->name('admin.jexactyl.store');
     Route::get('/renewal', [Admin\Jexactyl\RenewalController::class, 'index'])->name('admin.jexactyl.renewal');
     Route::get('/discord', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.discord');
+    Route::get('/referrals', [Admin\Jexactyl\ReferralsController::class, 'index'])->name('admin.jexactyl.referrals');
     Route::get('/registration', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.registration');
 
     Route::patch('/store', [Admin\Jexactyl\StoreController::class, 'update'])->name('admin.jexactyl.store');
     Route::patch('/theme', [Admin\Jexactyl\ThemeController::class, 'update'])->name('admin.jexactyl.theme');
     Route::patch('/renewal', [Admin\Jexactyl\RenewalController::class, 'update'])->name('admin.jexactyl.renewal');
     Route::patch('/discord', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.discord');
+    Route::patch('/referrals', [Admin\Jexactyl\ReferralsController::class, 'update'])->name('admin.jexactyl.referrals');
     Route::patch('/registration', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.registration');
 });
 
