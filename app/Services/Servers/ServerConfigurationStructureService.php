@@ -57,7 +57,7 @@ class ServerConfigurationStructureService
             'invocation' => $server->startup,
             'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
-                'memory_limit' => $server->m emory,
+                'memory_limit' => $server->memory,
                 'swap' => $server->swap,
                 'io_weight' => $server->io,
                 'cpu_limit' => $server->cpu,
