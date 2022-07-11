@@ -280,6 +280,14 @@ class User extends Model implements
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
+    public function referralCodes()
+    {
+        return $this->hasMany(ReferralCode::class);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     */
     public function recoveryTokens()
     {
         return $this->hasMany(RecoveryToken::class);

@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class AddReferralCodeToUsers extends Migration
+class AddReferralCodesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,10 @@ class AddReferralCodeToUsers extends Migration
      */
     public function up()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->text('referral_code')->unique();
+        Schema::create('referral_codes', function (Blueprint $table) {
+            $table->unsignedInteger('user_id');
+            $table->text('code')->unique();
+            $table->timestamps();
         });
     }
 
@@ -25,8 +27,6 @@ class AddReferralCodeToUsers extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('referral_code');
-        });
+        Schema::dropIfExists('referral_codes');
     }
 }
