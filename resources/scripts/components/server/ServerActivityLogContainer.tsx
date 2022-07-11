@@ -55,7 +55,7 @@ export default () => {
             ) : (
                 <div className={'bg-neutral-900'}>
                     {data?.items.map((activity) => (
-                        <ActivityLogEntry key={activity.timestamp.toString() + activity.event} activity={activity}>
+                        <ActivityLogEntry key={activity.id} activity={activity}>
                             <span />
                         </ActivityLogEntry>
                     ))}
