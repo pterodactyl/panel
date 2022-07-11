@@ -34,15 +34,15 @@
 }
 
 .primary {
-    @apply bg-blue-600 text-blue-50;
-    @apply hover:bg-blue-500 active:bg-blue-500 focus:ring-blue-400 focus:ring-opacity-75;
+    @apply bg-green-600 text-green-50;
+    @apply hover:bg-green-500 active:bg-green-500 focus:ring-green-400 focus:ring-opacity-75;
 
     &.secondary {
-        @apply hover:bg-blue-600 active:bg-blue-600;
+        @apply hover:bg-green-600 active:bg-green-600;
     }
 
     &:disabled {
-        @apply bg-blue-500/75 text-blue-200/75;
+        @apply bg-green-500/75 text-green-200/75;
     }
 }
 

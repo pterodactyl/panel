@@ -24,7 +24,7 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                     {showFlashKey && <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`} />}
                     {children}
                 </ContentContainer>
-                <ContentContainer css={tw`text-xs text-center my-4`}>
+                <ContentContainer css={tw`text-sm text-center my-4`}>
                     <p css={tw`text-neutral-500 sm:float-left`}>
                         &copy; <a href={'https://jexactyl.com'}>Jexactyl,</a> built on{' '}
                         <a href={'https://pterodactyl.io'}>Pterodactyl.</a>

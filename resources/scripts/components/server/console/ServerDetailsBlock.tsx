@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import { ServerContext } from '@/state/server';
 import React, { useEffect, useMemo, useState } from 'react';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import ConsoleShareContainer from '../ConsoleShareContainer';
+import ConsoleShareContainer from './ConsoleShareContainer';
 import StatBlock from '@/components/server/console/StatBlock';
 import UptimeDuration from '@/components/server/UptimeDuration';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
@@ -11,6 +11,7 @@ import { faClock, faHdd, faMemory, faMicrochip, faScroll, faWifi } from '@fortaw
 import { capitalize } from '@/lib/strings';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
+import RenewalInfo from './RenewalInfo';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime', number>;
 
@@ -30,9 +31,10 @@ export default ({ className }: { className?: string }) => {
     const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0 });
 
     const status = ServerContext.useStoreState((state) => state.status.value);
-    const connected = ServerContext.useStoreState((state) => state.socket.connected);
     const instance = ServerContext.useStoreState((state) => state.socket.instance);
+    const connected = ServerContext.useStoreState((state) => state.socket.connected);
     const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
+    const renewable = ServerContext.useStoreState((state) => state.server.data!.renewable);
 
     const textLimits = useMemo(
         () => ({
@@ -126,6 +128,11 @@ export default ({ className }: { className?: string }) => {
             <StatBlock icon={faScroll} title={'Save Console Logs'}>
                 <ConsoleShareContainer />
             </StatBlock>
+            {renewable && (
+                <StatBlock icon={faClock} title={'Renewal Date'}>
+                    <RenewalInfo />
+                </StatBlock>
+            )}
         </div>
     );
 };

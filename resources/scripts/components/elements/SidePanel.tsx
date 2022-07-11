@@ -35,7 +35,7 @@ export default () => {
 
                 &:active,
                 &.active {
-                    ${tw`text-cyan-600`};
+                    ${tw`text-green-600`};
                 }
             }
         }
@@ -57,7 +57,7 @@ export default () => {
                 <div css={tw`mx-auto mb-8`} className={'navigation-link'}>
                     <SearchContainer size={32} />
                 </div>
-                <NavLink to={'/'} className={'navigation-link'}>
+                <NavLink to={'/'} className={'navigation-link'} exact>
                     <Tooltip placement={'bottom'} content={'Store'}>
                         <Icon.Server size={32} css={tw`my-8`} />
                     </Tooltip>

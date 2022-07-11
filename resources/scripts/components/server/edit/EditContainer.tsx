@@ -63,12 +63,11 @@ export default () => {
             <Dialog.Confirm
                 open={submitting}
                 onClose={() => setSubmitting(false)}
-                title={'Confirm resource seletion'}
-                confirm={'Continue'}
+                title={'Confirm resource edit'}
                 onConfirmed={() => edit(resource, amount)}
             >
-                Are you sure you want to add this resource to your server? This will remove resources from your account
-                and add them to your server. Are you sure you want to continue?
+                This will remove resources from your account and add them to your server. Are you sure you want to
+                continue?
             </Dialog.Confirm>
             <FlashMessageRender byKey={'server:edit'} css={tw`mb-4`} />
             <h1 css={tw`text-5xl`}>Edit Resources</h1>

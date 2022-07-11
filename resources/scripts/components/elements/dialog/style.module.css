@@ -3,7 +3,7 @@
 }
 
 .panel {
-    @apply relative bg-gray-600 rounded max-w-xl w-full mx-auto shadow-lg text-left;
+    @apply relative bg-gray-900 rounded max-w-xl w-full mx-auto shadow-lg text-left;
     @apply ring-4 ring-gray-800 ring-opacity-80;
 }
 

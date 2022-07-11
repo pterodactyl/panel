@@ -1,4 +1,3 @@
-import tw from 'twin.macro';
 import classNames from 'classnames';
 import * as Icon from 'react-feather';
 import { Link } from 'react-router-dom';
@@ -35,8 +34,8 @@ export default () => {
     return (
         <ServerContentBlock title={'Activity Log'}>
             <FlashMessageRender byKey={'server:activity'} />
-            <h1 css={tw`text-5xl`}>Server Activity</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>View activity on this server.</h3>
+            <h1 className={'j-left text-5xl'}>Server Activity</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500 mb-10'}>View activity on this server.</h3>
             {(filters.filters?.event || filters.filters?.ip) && (
                 <div className={'flex justify-end mb-2'}>
                     <Link
@@ -51,9 +50,9 @@ export default () => {
             {!data && isValidating ? (
                 <Spinner centered />
             ) : !data?.items.length ? (
-                <p className={'text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
+                <p className={'j-up text-sm text-center text-gray-400'}>No activity logs available for this server.</p>
             ) : (
-                <div className={'bg-neutral-900'}>
+                <div className={'bg-neutral-900 j-up'}>
                     {data?.items.map((activity) => (
                         <ActivityLogEntry key={activity.id} activity={activity}>
                             <span />

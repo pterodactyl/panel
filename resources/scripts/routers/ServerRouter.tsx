@@ -114,7 +114,7 @@ export default () => {
             ) : (
                 <>
                     <CSSTransition timeout={150} classNames={'fade'} appear in>
-                        <SubNavigation>
+                        <SubNavigation className={'j-down'}>
                             <div>
                                 <NavLink to={`${match.url}`} exact>
                                     <div css={tw`flex items-center justify-between`}>

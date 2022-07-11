@@ -1,4 +1,5 @@
 import tw from 'twin.macro';
+import classNames from 'classnames';
 import { ip } from '@/lib/formatters';
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
@@ -80,24 +81,26 @@ export default () => {
 
     return (
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
-            <h1 css={tw`text-5xl`}>File Manager</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Create, edit and view files.</h3>
-            <Input onChange={searchFiles} css={tw`mb-4`} placeholder={'Search for files and folders...'} />
+            <h1 className={'j-left text-5xl'}>File Manager</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500 mb-10'}>Create, edit and view files.</h3>
+            <Input onChange={searchFiles} className={'mb-4 j-up'} placeholder={'Search for files and folders...'} />
             <div css={tw`flex flex-wrap-reverse md:flex-nowrap justify-center mb-4`}>
                 <ErrorBoundary>
-                    <FileManagerBreadcrumbs
-                        css={tw`w-full`}
-                        renderLeft={
-                            <FileActionCheckbox
-                                type={'checkbox'}
-                                css={tw`mx-4`}
-                                checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
-                                onChange={onSelectAllClick}
-                            />
-                        }
-                    />
+                    <div className={'j-right'}>
+                        <FileManagerBreadcrumbs
+                            css={tw`w-full`}
+                            renderLeft={
+                                <FileActionCheckbox
+                                    type={'checkbox'}
+                                    css={tw`mx-4`}
+                                    checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
+                                    onChange={onSelectAllClick}
+                                />
+                            }
+                        />
+                    </div>
                     <Can action={'file.create'}>
-                        <div className={style.manager_actions}>
+                        <div className={classNames(style.manager_actions, 'j-left')}>
                             <PullFileModal />
                             <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`} />
                             <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`} />
@@ -119,12 +122,12 @@ export default () => {
                         <p css={tw`text-sm text-neutral-400 text-center`}>This directory seems to be empty.</p>
                     ) : (
                         <CSSTransition classNames={'fade'} timeout={150} appear in>
-                            <div>
+                            <>
                                 {files.length > 250 && (
                                     <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
                                         <p css={tw`text-yellow-900 text-sm text-center`}>
-                                            This directory is too large to display in the browser, limiting the output
-                                            to the first 250 files.
+                                            This directory is too large to display in the browser, limiting the output to
+                                            the first 250 files.
                                         </p>
                                     </div>
                                 )}
@@ -132,13 +135,13 @@ export default () => {
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />
-                            </div>
+                            </>
                         </CSSTransition>
                     )}
                 </>
             )}
             <Can action={'file.sftp'}>
-                <TitledGreyBox title={'SFTP Details'} css={tw`mt-8 md:mt-6`}>
+                <TitledGreyBox title={'SFTP Details'} className={'j-up mt-8 md:mt-6'}>
                     <div>
                         <Label>Server Address</Label>
                         <CopyOnClick text={`sftp://${ip(sftp.ip)}:${sftp.port}`}>
