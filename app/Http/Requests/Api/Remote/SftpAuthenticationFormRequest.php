@@ -24,8 +24,9 @@ class SftpAuthenticationFormRequest extends FormRequest
     public function rules()
     {
         return [
-            'username' => 'required|string',
-            'password' => 'required|string',
+            'type' => ['nullable', 'in:password,public_key'],
+            'username' => ['required', 'string'],
+            'password' => ['required', 'string'],
         ];
     }
 

@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\Environment;
 
@@ -14,16 +7,10 @@ use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Database\DatabaseManager;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class DatabaseSettingsCommand extends Command
 {
     use EnvironmentWriterTrait;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
 
     /**
      * @var \Illuminate\Contracts\Console\Kernel
@@ -58,11 +45,10 @@ class DatabaseSettingsCommand extends Command
     /**
      * DatabaseSettingsCommand constructor.
      */
-    public function __construct(ConfigRepository $config, DatabaseManager $database, Kernel $console)
+    public function __construct(DatabaseManager $database, Kernel $console)
     {
         parent::__construct();
 
-        $this->config = $config;
         $this->console = $console;
         $this->database = $database;
     }
@@ -76,45 +62,45 @@ class DatabaseSettingsCommand extends Command
      */
     public function handle()
     {
-        $this->output->note(trans('command/messages.environment.database.host_warning'));
+        $this->output->note('It is highly recommended to not use "localhost" as your database host as we have seen frequent socket connection issues. If you want to use a local connection you should be using "127.0.0.1".');
         $this->variables['DB_HOST'] = $this->option('host') ?? $this->ask(
-            trans('command/messages.environment.database.host'),
-            $this->config->get('database.connections.mysql.host', '127.0.0.1')
+            'Database Host',
+            config('database.connections.mysql.host', '127.0.0.1')
         );
 
         $this->variables['DB_PORT'] = $this->option('port') ?? $this->ask(
-            trans('command/messages.environment.database.port'),
-            $this->config->get('database.connections.mysql.port', 3306)
+            'Database Port',
+            config('database.connections.mysql.port', 3306)
         );
 
         $this->variables['DB_DATABASE'] = $this->option('database') ?? $this->ask(
-            trans('command/messages.environment.database.database'),
-            $this->config->get('database.connections.mysql.database', 'panel')
+            'Database Name',
+            config('database.connections.mysql.database', 'panel')
         );
 
-        $this->output->note(trans('command/messages.environment.database.username_warning'));
+        $this->output->note('Using the "root" account for MySQL connections is not only highly frowned upon, it is also not allowed by this application. You\'ll need to have created a MySQL user for this software.');
         $this->variables['DB_USERNAME'] = $this->option('username') ?? $this->ask(
-            trans('command/messages.environment.database.username'),
-            $this->config->get('database.connections.mysql.username', 'pterodactyl')
+            'Database Username',
+            config('database.connections.mysql.username', 'pterodactyl')
         );
 
         $askForMySQLPassword = true;
-        if (!empty($this->config->get('database.connections.mysql.password')) && $this->input->isInteractive()) {
-            $this->variables['DB_PASSWORD'] = $this->config->get('database.connections.mysql.password');
-            $askForMySQLPassword = $this->confirm(trans('command/messages.environment.database.password_defined'));
+        if (!empty(config('database.connections.mysql.password')) && $this->input->isInteractive()) {
+            $this->variables['DB_PASSWORD'] = config('database.connections.mysql.password');
+            $askForMySQLPassword = $this->confirm('It appears you already have a MySQL connection password defined, would you like to change it?');
         }
 
         if ($askForMySQLPassword) {
-            $this->variables['DB_PASSWORD'] = $this->option('password') ?? $this->secret(trans('command/messages.environment.database.password'));
+            $this->variables['DB_PASSWORD'] = $this->option('password') ?? $this->secret('Database Password');
         }
 
         try {
             $this->testMySQLConnection();
         } catch (PDOException $exception) {
-            $this->output->error(trans('command/messages.environment.database.connection_error', ['error' => $exception->getMessage()]));
-            $this->output->error(trans('command/messages.environment.database.creds_not_saved'));
+            $this->output->error(sprintf('Unable to connect to the MySQL server using the provided credentials. The error returned was "%s".', $exception->getMessage()));
+            $this->output->error('Your connection credentials have NOT been saved. You will need to provide valid connection information before proceeding.');
 
-            if ($this->confirm(trans('command/messages.environment.database.try_again'))) {
+            if ($this->confirm('Go back and try again?')) {
                 $this->database->disconnect('_pterodactyl_command_test');
 
                 return $this->handle();
@@ -135,7 +121,7 @@ class DatabaseSettingsCommand extends Command
      */
     private function testMySQLConnection()
     {
-        $this->config->set('database.connections._pterodactyl_command_test', [
+        config()->set('database.connections._pterodactyl_command_test', [
             'driver' => 'mysql',
             'host' => $this->variables['DB_HOST'],
             'port' => $this->variables['DB_PORT'],

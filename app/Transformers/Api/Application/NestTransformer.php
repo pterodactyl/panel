@@ -11,10 +11,8 @@ class NestTransformer extends BaseTransformer
 {
     /**
      * Relationships that can be loaded onto this transformation.
-     *
-     * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'eggs', 'servers',
     ];
 

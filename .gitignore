@@ -1,7 +1,6 @@
 /vendor
 *.DS_Store*
 !.env.ci
-!.env.dusk
 !.env.example
 .env*
 .vagrant/*
@@ -13,26 +12,19 @@ storage/framework/*
 node_modules
 *.log
 _ide_helper.php
+_ide_helper_models.php
 .phpstorm.meta.php
-.php_cs.cache
+.yarn
 public/assets/manifest.json
 
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo
 .dockerignore
-#Dockerfile
 docker-compose.yml
 
 # for image related files
 misc
-.phpstorm.meta.php
-.php_cs.cache
-
+.php-cs-fixer.cache
 coverage.xml
-
-# Vagrant
-*.log
 resources/lang/locales.js
-resources/assets/pterodactyl/scripts/helpers/ziggy.js
-resources/assets/scripts/helpers/ziggy.js
 .phpunit.result.cache

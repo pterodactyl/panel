@@ -1,82 +1,58 @@
-name: run tests
+name: Run Tests
 on:
   push:
-    branches-ignore:
-      - master
-      - "release/**"
+    branches:
+      - 'develop'
+      - 'v2'
   pull_request:
 jobs:
   tests:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
     if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
-    services:
-      mariadb:
-        image: mariadb:10.2
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: panel_test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-      mysql:
-        image: mysql:8
-        env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: panel_test
-        ports:
-          - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     strategy:
       fail-fast: false
       matrix:
-        php: [ 7.4, 8.0 ]
-        database: [ mysql, mariadb ]
-    name: "php-${{ matrix.php }} (engine: ${{ matrix.database }})"
+        php: [ 7.4, 8.0, 8.1 ]
+        database: [ 'mariadb:10.2', 'mysql:8' ]
+    services:
+      database:
+        image: ${{ matrix.database }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: panel_test
+        ports:
+          - 3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    name: "php-${{ matrix.php }} (${{ matrix.database }})"
     steps:
-      - name: checkout
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
       - name: get cache directory
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - name: cache dependencies
-        uses: actions/cache@v2
+      - uses: actions/cache@v2
         with:
           path: |
             ~/.php_cs.cache
             ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-cache-${{ matrix.php }}-
-      - name: setup
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
-          extensions: cli, openssl, gd, mysql, pdo, mbstring, tokenizer, bcmath, xml, curl, zip
+          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
-      - name: configure
-        run: cp .env.ci .env
-      - name: install dependencies
-        run: composer install --prefer-dist --no-interaction --no-progress
-      - name: run cs-fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php_cs.dist
+      - run: cp .env.ci .env
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: vendor/bin/php-cs-fixer fix --dry-run --diff
         continue-on-error: true
       - name: execute unit tests
-        run: vendor/bin/phpunit --bootstrap bootstrap/app.php tests/Unit
+        run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
         if: ${{ always() }}
         env:
-          DB_CONNECTION: testing
-          TESTING_DB_HOST: UNIT_NO_DB
-      - name: execute integration tests (mysql)
+          DB_HOST: UNIT_NO_DB
+      - name: execute integration tests
         run: vendor/bin/phpunit tests/Integration
-        if: "${{ matrix.database }} == 'mysql'"
         env:
-          TESTING_DB_PORT: ${{ job.services.mysql.ports[3306] }}
-          TESTING_DB_USERNAME: root
-      - name: execute integration tests (mariadb)
-        run: vendor/bin/phpunit tests/Integration
-        if: "${{ matrix.database }} == 'mariadb'"
-        env:
-          TESTING_DB_PORT: ${{ job.services.mariadb.ports[3306] }}
-          TESTING_DB_USERNAME: root
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_USERNAME: root

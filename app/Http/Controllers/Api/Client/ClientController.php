@@ -43,6 +43,7 @@ class ClientController extends ClientApiController
         )->allowedFilters([
             'uuid',
             'name',
+            'description',
             'external_id',
             AllowedFilter::custom('*', new MultiFieldServerFilter()),
         ]);

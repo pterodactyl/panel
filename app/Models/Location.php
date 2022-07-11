@@ -44,6 +44,14 @@ class Location extends Model
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function getRouteKeyName(): string
+    {
+        return $this->getKeyName();
+    }
+
+    /**
      * Gets the nodes in a specified location.
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany

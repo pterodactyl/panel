@@ -2,19 +2,60 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Support\Str;
+use Webmozart\Assert\Assert;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
+ * Pterodactyl\Models\ApiKey.
+ *
  * @property int $id
  * @property int $user_id
  * @property int $key_type
  * @property string $identifier
  * @property string $token
- * @property array $allowed_ips
- * @property string $memo
- * @property \Carbon\Carbon|null $last_used_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property array|null $allowed_ips
+ * @property string|null $memo
+ * @property \Illuminate\Support\Carbon|null $last_used_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property int $r_servers
+ * @property int $r_nodes
+ * @property int $r_allocations
+ * @property int $r_users
+ * @property int $r_locations
+ * @property int $r_nests
+ * @property int $r_eggs
+ * @property int $r_database_hosts
+ * @property int $r_server_databases
+ * @property \Pterodactyl\Models\User $tokenable
+ * @property \Pterodactyl\Models\User $user
+ *
+ * @method static \Database\Factories\ApiKeyFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey query()
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereAllowedIps($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereIdentifier($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereKeyType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereLastUsedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereMemo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRAllocations($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRDatabaseHosts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereREggs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRLocations($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRNests($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRNodes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRServerDatabases($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRServers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereRUsers($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereToken($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereUserId($value)
+ * @mixin \Eloquent
  */
 class ApiKey extends Model
 {
@@ -23,21 +64,21 @@ class ApiKey extends Model
      * API representation using fractal.
      */
     public const RESOURCE_NAME = 'api_key';
-
     /**
      * Different API keys that can exist on the system.
      */
     public const TYPE_NONE = 0;
     public const TYPE_ACCOUNT = 1;
+    /* @deprecated */
     public const TYPE_APPLICATION = 2;
+    /* @deprecated */
     public const TYPE_DAEMON_USER = 3;
+    /* @deprecated */
     public const TYPE_DAEMON_APPLICATION = 4;
-
     /**
      * The length of API key identifiers.
      */
     public const IDENTIFIER_LENGTH = 16;
-
     /**
      * The length of the actual API key that is encrypted and stored
      * in the database.
@@ -124,4 +165,63 @@ class ApiKey extends Model
         self::UPDATED_AT,
         'last_used_at',
     ];
+
+    /**
+     * Returns the user this token is assigned to.
+     */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Required for support with Laravel Sanctum.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     *
+     * @see \Laravel\Sanctum\Guard::supportsTokens()
+     */
+    public function tokenable()
+    {
+        return $this->user();
+    }
+
+    /**
+     * Finds the model matching the provided token.
+     *
+     * @param string $token
+     *
+     * @return self|null
+     */
+    public static function findToken($token)
+    {
+        $identifier = substr($token, 0, self::IDENTIFIER_LENGTH);
+
+        $model = static::where('identifier', $identifier)->first();
+        if (!is_null($model) && decrypt($model->token) === substr($token, strlen($identifier))) {
+            return $model;
+        }
+
+        return null;
+    }
+
+    /**
+     * Returns the standard prefix for API keys in the system.
+     */
+    public static function getPrefixForType(int $type): string
+    {
+        Assert::oneOf($type, [self::TYPE_ACCOUNT, self::TYPE_APPLICATION]);
+
+        return $type === self::TYPE_ACCOUNT ? 'ptlc_' : 'ptla_';
+    }
+
+    /**
+     * Generates a new identifier for an API key.
+     */
+    public static function generateTokenIdentifier(int $type): string
+    {
+        $prefix = self::getPrefixForType($type);
+
+        return $prefix . Str::random(self::IDENTIFIER_LENGTH - strlen($prefix));
+    }
 }

@@ -89,7 +89,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that backups can not be tasked when the backup limit is 0
+     * Test that backups can not be tasked when the backup limit is 0.
      */
     public function testBackupsCanNotBeTaskedIfLimit0()
     {
@@ -145,7 +145,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     public function testErrorIsReturnedIfScheduleDoesNotBelongToServer()
     {
         [$user, $server] = $this->generateTestAccount();
-        [, $server2] = $this->generateTestAccount(['user_id' => $user->id]);
+        $server2 = $this->createServerModel(['owner_id' => $user->id]);
 
         /** @var \Pterodactyl\Models\Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server2->id]);

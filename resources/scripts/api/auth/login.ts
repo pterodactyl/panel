@@ -14,12 +14,15 @@ export interface LoginData {
 
 export default ({ username, password, recaptchaData }: LoginData): Promise<LoginResponse> => {
     return new Promise((resolve, reject) => {
-        http.post('/auth/login', {
-            user: username,
-            password,
-            'g-recaptcha-response': recaptchaData,
-        })
-            .then(response => {
+        http.get('/sanctum/csrf-cookie')
+            .then(() =>
+                http.post('/auth/login', {
+                    user: username,
+                    password,
+                    'g-recaptcha-response': recaptchaData,
+                })
+            )
+            .then((response) => {
                 if (!(response.data instanceof Object)) {
                     return reject(new Error('An error occurred while processing the login request.'));
                 }

@@ -11,11 +11,11 @@ import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
 
 export default ({ subuser }: { subuser: Subuser }) => {
-    const [ loading, setLoading ] = useState(false);
-    const [ showConfirmation, setShowConfirmation ] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
-    const removeSubuser = ServerContext.useStoreActions(actions => actions.subusers.removeSubuser);
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const removeSubuser = ServerContext.useStoreActions((actions) => actions.subusers.removeSubuser);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const doDeletion = () => {
@@ -26,7 +26,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
                 setLoading(false);
                 removeSubuser(subuser.uuid);
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
                 addError({ key: 'users', message: httpErrorToHuman(error) });
                 setShowConfirmation(false);
@@ -52,7 +52,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
                 css={tw`block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150`}
                 onClick={() => setShowConfirmation(true)}
             >
-                <FontAwesomeIcon icon={faTrashAlt}/>
+                <FontAwesomeIcon icon={faTrashAlt} />
             </button>
         </>
     );

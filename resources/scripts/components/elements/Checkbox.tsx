@@ -29,7 +29,7 @@ const Checkbox = ({ name, value, className, ...props }: Props & InputProps) => (
                     type={'checkbox'}
                     checked={(field.value || []).includes(value)}
                     onClick={() => form.setFieldTouched(field.name, true)}
-                    onChange={e => {
+                    onChange={(e) => {
                         const set = new Set(field.value);
                         set.has(value) ? set.delete(value) : set.add(value);
 

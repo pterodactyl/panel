@@ -25,7 +25,7 @@ class NodeFactory extends Factory
         return [
             'uuid' => Uuid::uuid4()->toString(),
             'public' => true,
-            'name' => $this->faker->unique()->firstName,
+            'name' => 'FactoryNode_' . Str::random(10),
             'fqdn' => $this->faker->unique()->ipv4,
             'scheme' => 'http',
             'behind_proxy' => false,

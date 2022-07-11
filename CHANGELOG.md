@@ -3,6 +3,232 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.9.2
+### Fixed
+* Fixes rouding in sidebar of CPU usage graph that was causing an excessive number of zeros to be rendered.
+* Fixes the Java Version selector modal having the wrong default value selected initially.
+* Fixes console rendering in Safari that was causing the console to resize excessively and graphs to overlay content.
+* Fixes missing "Starting"/"Stopping" status display in the server uptime block.
+* Fixes incorrect formatting of activity log when viewing certain file actions.
+
+### Changed
+* Updated the UI for the two-step authorization setup on accounts to use new Dialog UI and provide better clarity to new users.
+
+### Added
+* Added missing `<DOCTYPE html>` tag to template output to avoid entering quirks mode in browsers.
+* Added password requirement when enabling TOTP on an account.
+
+## v1.9.1
+### Fixed
+* Fixes missing "Click to Copy" for server address on the console data blocks.
+* Fixes data points on the graphs not being properly rounded to two decimal places.
+* Returns byte formatting logic to use `1024` as the base value, rather than `1000`.
+* Fixes permission error occurring when a server is marked as installing and an admin navigates to the console screen.
+* Fixes improper display of install/transfer warning on the server console page.
+* Fixes permission matching for the server settings page to correctly allow access when a user has _any_ of the needed permissions.
+
+### Changed
+* Moves the server data blocks to the right-hand side of the console, rather than the left.
+* Rather than defaulting graph values at `0` when resetting or refreshing the page, their values are now hidden entirely.
+* **[security]** Hides IP addresses from all activity log entries that are not directly associated with the currently signed in user.
+
+### Added
+* Adds the current resource limits for a server next to each data block on the console screen.
+
+## v1.9.0
+### Added
+* Added support for using Tailwind classes inside components using `className={}` rather than having to use `twin.macro` with the `css={}` prop.
+* Added HeadlessUI and Heroicons packages.
+* Added new `Tooltip.tsx` component to support displaying tooltips within the Panel.
+* Adds a new activity log view for both user accounts and individual servers. This builds upon data collected in previous releases.
+* Added a new column `api_key_id` to the `activity_logs` table to indicate if the user performed the action while using an API key.
+* Adds initial support for language translations on the front-end. The underlying implementation details are working, however work has not yet begun on actually translating all of the strings yet. Expect this to continue in future releases.
+* Improved accessibility for navigation icons by adding a tooltip on hover to indicate what each one does.
+* Adds logging for API keys that are blocked from performing an API action due to IP address limiting.
+* Adds support for `?filter[description]=foo` when querying servers on both the client and application API.
+
+### Changed
+* Updated how release assets are generated to perform more logical bundle splitting. This should help reduce the amount of data users have to download at once in order to render the UI.
+* Upgraded From TailwindCSS 2 to 3 — for most people this should have minimal if any impact.
+* Chart.js updated from v2 to v3.
+* Reduced the number of custom colors in use — by default we now use Tailwind's default color pallet, with the exception of a custom gray scheme.
+* **[deprecated]** The use of `neutral` and `primary` have been deprecated in class names, prefer `gray` and `blue` respectively.
+* Begins the process of dropping the use of Gravatars for user avatars and replaces them with dynamically generated SVG images.
+* Improved front-end route definitions to make it easier for external modifications to inject their routes and components into the codebase without having to modify as many core files.
+* Redesigned the server console screen to better display data users might be looking for, and increase the height of the console itself.
+* Merged the two network data graphs into a single dual-line graph to better display incoming and outgoing data volumes.
+* Updated all byte formatting logic to use `1000` as the divisor rather than `1024` to be more consistent with what users most likely expect.
+* Changed the underlying `eslint` rules applied to the front-end codebase to simplify them dramatically. We now utilize `prettier` in combination with some basic default rulesets to make it easier to understand the expected formatting.
+
+### Fixed
+* Fixes a bug causing a 404 error when attempting to delete a database from a server in the admin control panel.
+* Fixes console input auto-capitalizing and auto-correcting when entering text on some mobile devices.
+* Fixes SES service configuration using a hard-coded `us-east-1` region.
+* Fixes a bug causing a 404 error when attempting to delete an SSH key from your account when the SHA256 hash includes a slash.
+* Fixes mobile keyboards automatically attempting to capitalize and spellcheck typing on the server console.
+* Fixes improper support for IP address CIDR ranges when creating API keys for the client area.
+* Fixes a bug preventing additional included details from being returned from the application API when utilizing a client API key as an administrator.
+
+## v1.8.1
+### Fixed
+* Fixes a bug causing mounts to return a 404 error when adding them to a server.
+* Fixes a bug causing the Egg Image dropdown to not display properly when creating a new server.
+* Fixes a bug causing an error when attemping to create a new server via the API.
+
+## v1.8.0
+**Important:** this version updates the `version` field on generated Eggs to be `PTDL_v2` due to formatting changes. This
+should be completely seamless for most installations as the Panel is able to convert between the two. Custom solutions
+using these eggs should be updated to account for the new format.
+
+This release also changes API key behavior — "client" keys belonging to admin users can now be used to access
+the `/api/application` endpoints in their entirety. Existing "application" keys generated in the admin area should
+be considered deprecated, but will continue to work. Application keys _will not_ work with the client API.
+
+### Fixed
+* Schedules are no longer run when a server is suspended or marked as installing.
+* The remote field when creating a database is no longer limited to an IP address and `%` wildcard — all expected MySQL remote host values are allowed.
+* Allocations cannot be deleted from a server by a user if the server is configured with an `allocation_limit` set to `0`.
+* The Java Version modal no longer shows a dropdown and update option to users that do not have permission to make those changes.
+* The Java Version modal now correctly returns only the images available to the server's selected Egg.
+* Fixes leading and trailing spaces being removed from variable values on file manager endpoints, causing errors when trying to perform actions against certain files and folders.
+
+### Changed
+* Forces HTTPS on URLs when the `APP_URL` value is set and includes `https://` within the URL. This addresses proxy misconfiguration issues that would cause URLs to be generated incorrectly.
+* Lowers the default timeout values for requests to Wings instances from 10 seconds to 5 seconds.
+* Additional permissions (`CREATE TEMPORARY TABLES`, `CREATE VIEW`, `SHOW VIEW`, `EVENT`, and `TRIGGER`) are granted to users when creating new databases for servers.
+* development: removed Laravel Debugbar in favor of Clockwork for debugging.
+* The 2FA input field when logging in is now correctly identified as `one-time-password` to help browser autofill capabilities.
+* Changed API authentication mechanisms to make use of Laravel Sanctum to significantly clean up our internal handling of sessions.
+* API keys generated by the system now set a prefix to identify them as Pterodactyl API keys, and if they are client or application keys. This prefix looks like `ptlc_` for client keys, and `ptla_` for application keys. Existing API keys are unaffected by this change.
+
+### Added
+* Added support for PHP 8.1 in addition to PHP 8.0 and 7.4.
+* Adds more support for catching potential PID exhaustion errors in different games.
+* It is now possible to create a new node on the Panel using an artisan command.
+* A new cron cheatsheet has been added which appears when creating a schedule.
+* Adds support for filtering the `/api/application/nodes/:id/allocations` endpoint using `?filter[server_id]=0` to only return allocations that are not currently assigned to a server on that node.
+* Adds support for naming docker image values in an Egg to improve front-end display capabilities.
+* Adds command to return the configuration for a specific node in both YAML and JSON format (`php artisan p:node:configuration`).
+* Adds command to return a list of all nodes available on the Panel in both table and JSON format (`php artisan p:node:list`).
+* Adds server network (inbound/outbound) usage graphs to the console screen.
+* Adds support for configuring CORS on the API by setting the `APP_CORS_ALLOWED_ORIGINS=example.com,dashboard.example.com` environment variable. By default all instances are configured with this set to `*` which allows any origin.
+* Adds proper activity logging for the following areas of the Panel: authentication, user account modifications, server modification. This is an initial test implementation before further roll-out in the software. Events are logged into the database but are not currently exposed in the UI — they will be displayed in a future update.
+
+### Removed
+* Removes Google Analytics from the front end code.
+* Removes multiple middleware that were previously used for configuring API access and controlling model fetching. This has all been replaced with Laravel Sanctum and standard Laravel API tooling. This should make codebase discovery significantly more simple.
+* **DEPRECATED**: The use of `Pterodactyl\Models\AuditLog` is deprecated and all references to this model have been removed from the codebase. In the next major release this model and table will be fully dropped.
+
+## v1.7.0
+### Fixed
+* Fixes typo in message shown to user when deleting a database.
+* Fixes formatting of IPv6 addresses when displaying allocations to users.
+* Fixes an exception thrown while trying to return error messages from API endpoints that inproperly masked the true underlying error.
+* Fixes SSL certificate path generation for Let's Encrypt by ensuring they are always transformed to lowercase.
+* Removes duplicate entries when creating a nested folder in the file manager.
+* Fixes missing validation of Egg Author email addresses during the setup process that could cause unexpected failures later on.
+* Fixes font rendering issues of the console on Firefox due to an outdated version of xterm.js being used.
+* Fixes display overlap issues of the two-factor configuration form in a user's settings.
+* **[security]** When authenticating using an API key a user session is now only persisted for the duration of the request before being destroyed.
+
+### Changed
+* CPU graph changed to show the maximum amount of CPU available to a server to better match how the memory graph is displayed.
+
+### Added
+* Adds support for `DB_PORT` environment variable in the Docker enterpoint for the Panel image.
+* Adds suport for ARM environments in the Docker image.
+* Adds a new warning modal for Steam servers shown when an invalid Game Server Login Token (GSL Token) is detected.
+* Adds a new warning modal for Steam servers shown when the installation process runs out of available disk space.
+* Adds a new warning modal for Minecraft servers shown when a server exceeds the maximum number of child processes.
+* Adds support for displaying certain server variable fields as a checkbox when they're detected as using `boolean` or `in:0,1` validation rules.
+* Adds support for Pug and Jade in the file editor.
+* Adds an entry to the `robots.txt` file to correctly disallow all bot indexing.
+
+
+## v1.6.6
+### Fixed
+* **[security]** Fixes a CSRF vulnerability for both the administrative test email endpoint and node auto-deployment token generation endpoint. [GHSA-wwgq-9jhf-qgw6](https://github.com/pterodactyl/panel/security/advisories/GHSA-wwgq-9jhf-qgw6)
+
+### Changed
+* Updates Minecraft eggs to include latest Java 17 yolk by default.
+
+## v1.6.5
+### Fixed
+* Fixes broken application API endpoints due to changes introduced with session management in 1.6.4.
+
+## v1.6.4
+_This release should not be used, please use `1.6.5`. It has been pulled from our releases._
+
+### Fixed
+* Fixes a session management bug that would cause a user who signs out of one browser to be unintentionally logged out of other browser sessions when using the client API.
+
+## v1.6.3
+### Fixed
+* **[Security]** Changes logout endpoint to be a POST request with CSRF-token validation to prevent a malicious actor from triggering a user logout.
+* Fixes Wings receiving the wrong server suspension state when syncing servers.
+
+### Added
+* Adds additional throttling to login and password reset endpoints.
+* Adds server uptime display when viewing a server console.
+
+## v1.6.2
+### Fixed
+* **[Security]** Fixes an authentication bypass vulerability that could allow a malicious actor to login as another user in the Panel without knowing that user's email or password.
+
+## v1.6.1
+### Fixed
+* Fixes server build modifications not being properly persisted to the database when edited.
+* Correctly exposes the `oom_disabled` field in the `build` limits block for a server build so that Wings can pick it up.
+* 
+## v1.6.0
+### Fixed
+* Fixes array merging logic for server transfers that would cause a 500 error to occur in some scenarios.
+* Fixes user password updates not correctly logging the user out and returning a failure message even upon successful update.
+* Fixes the count of used backups when browsing a paginated backup list for a server.
+* Fixes an error being triggered when API endpoints are called with no `User-Agent` header and an audit log is generated for the action.
+* Fixes state management on the frontend not properly resetting the loading indicator when adding subusers to a server.
+* Fixes extraneous API calls being made to Wings for the server file listing when not on a file manager screen.
+
+### Added
+* Adds foreign key relationship on the `mount_node`, `mount_server` and `egg_mount` tables.
+* Adds environment variable `PER_SCHEDULE_TASK_LIMIT` to allow manual overrides for the number of tasks that can exist on a single schedule. This is currently defaulted to `10`.
+* OOM killer can now be configured at the time of server creation.
+
+### Changed
+* Server updates are not dependent on a successful call to Wings occurring — if the API call fails internally the error will be logged but the server update will still be persisted.
+
+### Removed
+* Removed `WingsServerRepository::update()` function — if you were previously using this to modify server elements on Wings please replace calls to it with `::sync()` after updating Wings.
+
+## v1.5.1
+### Fixed
+* Fixes Docker image 404ing instead of being able to access the Panel.
+* Fixes Java version feature being only loaded when the `eula` feature is specified.
+* Fixes `php artisan p:upgrade` not forcing and seeding while running migrations.
+* Fixes spinner overlays overlapping on the server console page.
+* Fixes Wings being unable to update backup statuses.
+
+## v1.5.0
+### Fixed
+* Fixes deleting a locked backup that has also been marked as failed to allow deletion rather than returning an error about being locked.
+* Fixes server creation process not correctly sending `start_on_completion` to Wings instance.
+* Fixes `z-index` on file mass delete modal so it is displayed on top of all elements, rather than hidden under some.
+* Supports re-sending requests to the Panel API for backups that are currently marked as failed, allowing a previously failed backup to be marked as successful.
+* Minor updates to multiple default eggs for improved error handling and more accurate field-level validation.
+
+### Updated
+* Updates help text for CPU limiting when creating a new server to properly indicate virtual threads are included, rather than only physical threads.
+* Updates all of the default eggs shipped with the Panel to reference new [`ghcr.io` yolks repository](https://github.com/pterodactyl/yolks).
+* When adding 2FA to an account the key used to generate the token is now displayed to the user allowing them to manually input into their app if necessary.
+
+### Added
+* Adds SSL/TLS options for MySQL and Redis in line with most recent Laravel updates.
+* New users created for server MySQL instances will now have the correct permissions for creating foreign keys on tables.
+* Adds new automatic popup feature to allow users to quickly update their Minecraft servers to the latest Java® eggs as necessary if unsupported versions are detected.
+
+### Removed
+* Removes legacy `userInteraction` key from eggs which was unused.
+
 ## v1.4.2
 ### Fixed
 * Fixes logic to disallow creating a backup schedule if the server's backup limit is set to 0.

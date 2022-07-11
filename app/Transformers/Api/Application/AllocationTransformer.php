@@ -11,10 +11,8 @@ class AllocationTransformer extends BaseTransformer
 {
     /**
      * Relationships that can be loaded onto allocation transformations.
-     *
-     * @var array
      */
-    protected $availableIncludes = ['node', 'server'];
+    protected array $availableIncludes = ['node', 'server'];
 
     /**
      * Return the resource name for the JSONAPI output.

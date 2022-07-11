@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { RouteComponentProps } from 'react-router';
-import { parse } from 'query-string';
 import { Link } from 'react-router-dom';
 import performPasswordReset from '@/api/auth/performPasswordReset';
 import { httpErrorToHuman } from '@/api/http';
@@ -20,23 +19,23 @@ interface Values {
 }
 
 export default ({ match, location }: RouteComponentProps<{ token: string }>) => {
-    const [ email, setEmail ] = useState('');
+    const [email, setEmail] = useState('');
 
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
-    const parsed = parse(location.search);
-    if (email.length === 0 && parsed.email) {
-        setEmail(parsed.email as string);
+    const parsed = new URLSearchParams(location.search);
+    if (email.length === 0 && parsed.get('email')) {
+        setEmail(parsed.get('email') || '');
     }
 
     const submit = ({ password, passwordConfirmation }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes();
         performPasswordReset(email, { token: match.params.token, password, passwordConfirmation })
             .then(() => {
-                // @ts-ignore
+                // @ts-expect-error this is valid
                 window.location = '/';
             })
-            .catch(error => {
+            .catch((error) => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -52,22 +51,20 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                 passwordConfirmation: '',
             }}
             validationSchema={object().shape({
-                password: string().required('A new password is required.')
+                password: string()
+                    .required('A new password is required.')
                     .min(8, 'Your new password should be at least 8 characters in length.'),
                 passwordConfirmation: string()
                     .required('Your new password does not match.')
-                    // @ts-ignore
-                    .oneOf([ ref('password'), null ], 'Your new password does not match.'),
+                    // @ts-expect-error this is valid
+                    .oneOf([ref('password'), null], 'Your new password does not match.'),
             })}
         >
             {({ isSubmitting }) => (
-                <LoginFormContainer
-                    title={'Reset Password'}
-                    css={tw`w-full flex`}
-                >
+                <LoginFormContainer title={'Reset Password'} css={tw`w-full flex`}>
                     <div>
                         <label>Email</label>
-                        <Input value={email} isLight disabled/>
+                        <Input value={email} isLight disabled />
                     </div>
                     <div css={tw`mt-6`}>
                         <Field
@@ -79,20 +76,10 @@ export default ({ match, location }: RouteComponentProps<{ token: string }>) => 
                         />
                     </div>
                     <div css={tw`mt-6`}>
-                        <Field
-                            light
-                            label={'Confirm New Password'}
-                            name={'passwordConfirmation'}
-                            type={'password'}
-                        />
+                        <Field light label={'Confirm New Password'} name={'passwordConfirmation'} type={'password'} />
                     </div>
                     <div css={tw`mt-6`}>
-                        <Button
-                            size={'xlarge'}
-                            type={'submit'}
-                            disabled={isSubmitting}
-                            isLoading={isSubmitting}
-                        >
+                        <Button size={'xlarge'} type={'submit'} disabled={isSubmitting} isLoading={isSubmitting}>
                             Reset Password
                         </Button>
                     </div>

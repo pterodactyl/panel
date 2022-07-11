@@ -54,11 +54,7 @@ class InitiateBackupService
     /**
      * InitiateBackupService constructor.
      *
-     * @param \Pterodactyl\Repositories\Eloquent\BackupRepository $repository
-     * @param \Illuminate\Database\ConnectionInterface $connection
-     * @param \Pterodactyl\Repositories\Wings\DaemonBackupRepository $daemonBackupRepository
      * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
-     * @param \Pterodactyl\Extensions\Backups\BackupManager $backupManager
      */
     public function __construct(
         BackupRepository $repository,
@@ -132,8 +128,9 @@ class InitiateBackupService
             }
         }
 
-        // Check if the server has reached or exceeded it's backup limit.
-        $successful = $server->backups()->where('is_successful', true);
+        // Check if the server has reached or exceeded its backup limit.
+        // completed_at == null will cover any ongoing backups, while is_successful == true will cover any completed backups.
+        $successful = $this->repository->getNonFailedBackups($server);
         if (!$server->backup_limit || $successful->count() >= $server->backup_limit) {
             // Do not allow the user to continue if this server is already at its limit and can't override.
             if (!$override || $server->backup_limit <= 0) {

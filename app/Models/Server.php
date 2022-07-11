@@ -2,13 +2,15 @@
 
 namespace Pterodactyl\Models;
 
-use Closure;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 /**
+ * \Pterodactyl\Models\Server.
+ *
  * @property int $id
  * @property string|null $external_id
  * @property string $uuid
@@ -24,33 +26,75 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $disk
  * @property int $io
  * @property int $cpu
- * @property string $threads
+ * @property string|null $threads
  * @property bool $oom_disabled
  * @property int $allocation_id
  * @property int $nest_id
  * @property int $egg_id
  * @property string $startup
  * @property string $image
- * @property int $allocation_limit
- * @property int $database_limit
+ * @property int|null $allocation_limit
+ * @property int|null $database_limit
  * @property int $backup_limit
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\Subuser[]|\Illuminate\Database\Eloquent\Collection $subusers
- * @property \Pterodactyl\Models\Allocation $allocation
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
- * @property \Pterodactyl\Models\Node $node
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLog[] $activity
+ * @property int|null $activity_count
+ * @property \Pterodactyl\Models\Allocation|null $allocation
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Allocation[] $allocations
+ * @property int|null $allocations_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Backup[] $backups
+ * @property int|null $backups_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Database[] $databases
+ * @property int|null $databases_count
+ * @property \Pterodactyl\Models\Egg|null $egg
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Mount[] $mounts
+ * @property int|null $mounts_count
  * @property \Pterodactyl\Models\Nest $nest
- * @property \Pterodactyl\Models\Egg $egg
- * @property \Pterodactyl\Models\EggVariable[]|\Illuminate\Database\Eloquent\Collection $variables
- * @property \Pterodactyl\Models\Schedule[]|\Illuminate\Database\Eloquent\Collection $schedule
- * @property \Pterodactyl\Models\Database[]|\Illuminate\Database\Eloquent\Collection $databases
- * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\ServerTransfer $transfer
- * @property \Pterodactyl\Models\Backup[]|\Illuminate\Database\Eloquent\Collection $backups
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
- * @property \Pterodactyl\Models\AuditLog[] $audits
+ * @property \Pterodactyl\Models\Node $node
+ * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property int|null $notifications_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Schedule[] $schedules
+ * @property int|null $schedules_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Subuser[] $subusers
+ * @property int|null $subusers_count
+ * @property \Pterodactyl\Models\ServerTransfer|null $transfer
+ * @property \Pterodactyl\Models\User $user
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
+ * @property int|null $variables_count
+ *
+ * @method static \Database\Factories\ServerFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Server newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Server query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereAllocationId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereAllocationLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereBackupLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereCpu($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereDatabaseLimit($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereDisk($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereEggId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereExternalId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereImage($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereIo($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereMemory($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereNestId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereNodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereOomDisabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereOwnerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereSkipScripts($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereStartup($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereStatus($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereSwap($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereThreads($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereUuid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereUuidShort($value)
+ * @mixin \Eloquent
  */
 class Server extends Model
 {
@@ -273,7 +317,7 @@ class Server extends Model
      *
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function schedule()
+    public function schedules()
     {
         return $this->hasMany(Schedule::class);
     }
@@ -329,48 +373,11 @@ class Server extends Model
     }
 
     /**
-     * Returns a fresh AuditLog model for the server. This model is not saved to the
-     * database when created, so it is up to the caller to correctly store it as needed.
-     *
-     * @return \Pterodactyl\Models\AuditLog
+     * Returns all of the activity log entries where the server is the subject.
      */
-    public function newAuditEvent(string $action, array $metadata = []): AuditLog
+    public function activity(): MorphToMany
     {
-        return AuditLog::instance($action, $metadata)->fill([
-            'server_id' => $this->id,
-        ]);
-    }
-
-    /**
-     * Stores a new audit event for a server by using a transaction. If the transaction
-     * fails for any reason everything executed within will be rolled back. The callback
-     * passed in will receive the AuditLog model before it is saved and the second argument
-     * will be the current server instance. The callback should modify the audit entry as
-     * needed before finishing, any changes will be persisted.
-     *
-     * The response from the callback is returned to the caller.
-     *
-     * @return mixed
-     *
-     * @throws \Throwable
-     */
-    public function audit(string $action, Closure $callback)
-    {
-        return $this->getConnection()->transaction(function () use ($action, $callback) {
-            $model = $this->newAuditEvent($action);
-            $response = $callback($model, $this);
-            $model->save();
-
-            return $response;
-        });
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     */
-    public function audits()
-    {
-        return $this->hasMany(AuditLog::class);
+        return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
     }
 
     /**

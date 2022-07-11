@@ -2,24 +2,17 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application;
 
+use Webmozart\Assert\Assert;
 use Pterodactyl\Models\ApiKey;
+use Laravel\Sanctum\TransientToken;
+use Illuminate\Validation\Validator;
+use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
-use Pterodactyl\Http\Middleware\Api\ApiSubstituteBindings;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Symfony\Component\Routing\Exception\InvalidParameterException;
 
 abstract class ApplicationApiRequest extends FormRequest
 {
-    /**
-     * Tracks if the request has been validated internally or not to avoid
-     * making duplicate validation calls.
-     *
-     * @var bool
-     */
-    private $hasValidated = false;
-
     /**
      * The resource that should be checked when performing the authorization
      * function for this request.
@@ -48,15 +41,16 @@ abstract class ApplicationApiRequest extends FormRequest
             throw new PterodactylException('An ACL resource must be defined on API requests.');
         }
 
-        return AdminAcl::check($this->key(), $this->resource, $this->permission);
-    }
+        $token = $this->user()->currentAccessToken();
+        if ($token instanceof TransientToken) {
+            return true;
+        }
 
-    /**
-     * Determine if the requested resource exists on the server.
-     */
-    public function resourceExists(): bool
-    {
-        return true;
+        if ($token->key_type === ApiKey::TYPE_ACCOUNT) {
+            return true;
+        }
+
+        return AdminAcl::check($token, $this->resource, $this->permission);
     }
 
     /**
@@ -68,79 +62,36 @@ abstract class ApplicationApiRequest extends FormRequest
     }
 
     /**
-     * Return the API key being used for the request.
+     * Helper method allowing a developer to easily hook into this logic without having
+     * to remember what the method name is called or where to use it. By default this is
+     * a no-op.
      */
-    public function key(): ApiKey
+    public function withValidator(Validator $validator): void
     {
-        return $this->attributes->get('api_key');
+        // do nothing
     }
 
     /**
-     * Grab a model from the route parameters. If no model is found in the
-     * binding mappings an exception will be thrown.
+     * Returns the named route parameter and asserts that it is a real model that
+     * exists in the database.
      *
-     * @return mixed
+     * @template T of \Illuminate\Database\Eloquent\Model
      *
-     * @deprecated
+     * @param class-string<T> $expect
      *
-     * @throws \Symfony\Component\Routing\Exception\InvalidParameterException
+     * @return T
+     * @noinspection PhpUndefinedClassInspection
+     * @noinspection PhpDocSignatureInspection
      */
-    public function getModel(string $model)
+    public function parameter(string $key, string $expect)
     {
-        $parameterKey = array_get(array_flip(ApiSubstituteBindings::getMappings()), $model);
+        $value = $this->route()->parameter($key);
 
-        if (is_null($parameterKey)) {
-            throw new InvalidParameterException();
-        }
+        Assert::isInstanceOf($value, $expect);
+        Assert::isInstanceOf($value, Model::class);
+        Assert::true($value->exists);
 
-        return $this->route()->parameter($parameterKey);
-    }
-
-    /**
-     * Validate that the resource exists and can be accessed prior to booting
-     * the validator and attempting to use the data.
-     *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
-     */
-    protected function prepareForValidation()
-    {
-        if (!$this->passesAuthorization()) {
-            $this->failedAuthorization();
-        }
-
-        $this->hasValidated = true;
-    }
-
-    /*
-     * Determine if the request passes the authorization check as well
-     * as the exists check.
-     *
-     * @return bool
-     *
-     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-     */
-    protected function passesAuthorization()
-    {
-        // If we have already validated we do not need to call this function
-        // again. This is needed to work around Laravel's normal auth validation
-        // that occurs after validating the request params since we are doing auth
-        // validation in the prepareForValidation() function.
-        if ($this->hasValidated) {
-            return true;
-        }
-
-        if (!parent::passesAuthorization()) {
-            return false;
-        }
-
-        // Only let the user know that a resource does not exist if they are
-        // authenticated to access the endpoint. This avoids exposing that
-        // an item exists (or does not exist) to the user until they can prove
-        // that they have permission to know about it.
-        if ($this->attributes->get('is_missing_model', false) || !$this->resourceExists()) {
-            throw new NotFoundHttpException(trans('exceptions.api.resource_not_found'));
-        }
-
-        return true;
+        /* @var T $value */
+        return $value;
     }
 }

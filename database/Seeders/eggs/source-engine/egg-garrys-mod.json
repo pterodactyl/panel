@@ -4,25 +4,28 @@
         "version": "PTDL_v1",
         "update_url": null
     },
-    "exported_at": "2021-06-05T16:28:06-04:00",
+    "exported_at": "2022-01-18T07:04:20-05:00",
     "name": "Garrys Mod",
     "author": "support@pterodactyl.io",
     "description": "Garrys Mod, is a sandbox physics game created by Garry Newman, and developed by his company, Facepunch Studios.",
-    "features": null,
+    "features": [
+        "gsl_token",
+        "steam_disk_space"
+    ],
     "images": [
         "ghcr.io\/pterodactyl\/games:source"
     ],
     "file_denylist": [],
-    "startup": ".\/srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}",
+    "startup": ".\/srcds_run -game garrysmod -console -port {{SERVER_PORT}} +ip 0.0.0.0 +host_workshop_collection {{WORKSHOP_ID}} +map {{SRCDS_MAP}} +gamemode {{GAMEMODE}} -strictportbind -norestart +sv_setsteamaccount {{STEAM_ACC}} +maxplayers {{MAX_PLAYERS}}  -tickrate {{TICKRATE}}  $( [ \"$LUA_REFRESH\" == \"1\" ] || printf %s '-disableluarefresh' )",
     "config": {
         "files": "{}",
-        "startup": "{\r\n    \"done\": \"gameserver Steam ID\",\r\n    \"userInteraction\": []\r\n}",
-        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"logs\/latest.log\"\r\n}",
+        "startup": "{\r\n    \"done\": \"gameserver Steam ID\"\r\n}",
+        "logs": "{}",
         "stop": "quit"
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/bash\r\n# steamcmd Base Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n# Image to install with is 'debian:buster-slim'\r\napt -y update\r\napt -y --no-install-recommends install curl lib32gcc1 ca-certificates\r\n\r\n## just in case someone removed the defaults.\r\nif [ \"${STEAM_USER}\" == \"\" ]; then\r\n    echo -e \"steam user is not set.\\n\"\r\n    echo -e \"Using anonymous user.\\n\"\r\n    STEAM_USER=anonymous\r\n    STEAM_PASS=\"\"\r\n    STEAM_AUTH=\"\"\r\nelse\r\n    echo -e \"user set to ${STEAM_USER}\"\r\nfi\r\n\r\n## download and install steamcmd\r\ncd \/tmp\r\nmkdir -p \/mnt\/server\/steamcmd\r\ncurl -sSL -o steamcmd.tar.gz https:\/\/steamcdn-a.akamaihd.net\/client\/installer\/steamcmd_linux.tar.gz\r\ntar -xzvf steamcmd.tar.gz -C \/mnt\/server\/steamcmd\r\nmkdir -p \/mnt\/server\/steamapps # Fix steamcmd disk write error when this folder is missing\r\ncd \/mnt\/server\/steamcmd\r\n\r\n# SteamCMD fails otherwise for some reason, even running as root.\r\n# This is changed at the end of the install process anyways.\r\nchown -R root:root \/mnt\r\nexport HOME=\/mnt\/server\r\n\r\n## install game using steamcmd\r\n.\/steamcmd.sh +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} $( [[ \"${WINDOWS_INSTALL}\" == \"1\" ]] && printf %s '+@sSteamCmdForcePlatformType windows' ) +force_install_dir \/mnt\/server +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} validate +quit ## other flags may be needed depending on install. looking at you cs 1.6\r\n\r\n## set up 32 bit libraries\r\nmkdir -p \/mnt\/server\/.steam\/sdk32\r\ncp -v linux32\/steamclient.so ..\/.steam\/sdk32\/steamclient.so\r\n\r\n## set up 64 bit libraries\r\nmkdir -p \/mnt\/server\/.steam\/sdk64\r\ncp -v linux64\/steamclient.so ..\/.steam\/sdk64\/steamclient.so\r\n\r\n# Creating needed default files for the game\r\ncd \/mnt\/server\/garrysmod\/lua\/autorun\/server\r\necho '\r\n-- Docs: https:\/\/wiki.garrysmod.com\/page\/resource\/AddWorkshop\r\n-- Place the ID of the workshop addon you want to be downloaded to people who join your server, not the collection ID\r\n-- Use https:\/\/beta.configcreator.com\/create\/gmod\/resources.lua to easily create a list based on your collection ID\r\n\r\nresource.AddWorkshop( \"\" )\r\n' > workshop.lua\r\n\r\ncd \/mnt\/server\/garrysmod\/cfg\r\necho '\r\n\/\/ Please do not set RCon in here, use the startup parameters.\r\n\r\nhostname\t\t\"New Gmod Server\"\r\nsv_password\t\t\"\"\r\nsv_loadingurl   \"\"\r\n\r\n\/\/ Steam Server List Settings\r\nsv_region \"255\"\r\nsv_lan \"0\"\r\nsv_max_queries_sec_global \"30000\"\r\nsv_max_queries_window \"45\"\r\nsv_max_queries_sec \"5\"\r\n\r\n\/\/ Server Limits\r\nsbox_maxprops\t\t100\r\nsbox_maxragdolls\t5\r\nsbox_maxnpcs\t\t10\r\nsbox_maxballoons\t10\r\nsbox_maxeffects\t\t10\r\nsbox_maxdynamite\t10\r\nsbox_maxlamps\t\t10\r\nsbox_maxthrusters\t10\r\nsbox_maxwheels\t\t10\r\nsbox_maxhoverballs\t10\r\nsbox_maxvehicles\t20\r\nsbox_maxbuttons\t\t10\r\nsbox_maxsents\t\t20\r\nsbox_maxemitters\t5\r\nsbox_godmode\t\t0\r\nsbox_noclip\t\t    0\r\n\r\n\/\/ Network Settings - Please keep these set to default.\r\n\r\nsv_minrate\t\t75000\r\nsv_maxrate\t\t0\r\ngmod_physiterations\t2\r\nnet_splitpacket_maxrate\t45000\r\ndecalfrequency\t\t12 \r\n\r\n\/\/ Execute Ban Files - Please do not edit\r\nexec banned_ip.cfg \r\nexec banned_user.cfg \r\n\r\n\/\/ Add custom lines under here\r\n' > server.cfg",
+            "script": "#!\/bin\/bash\r\n# steamcmd Base Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\n## just in case someone removed the defaults.\r\nif [ \"${STEAM_USER}\" == \"\" ]; then\r\n    echo -e \"steam user is not set.\\n\"\r\n    echo -e \"Using anonymous user.\\n\"\r\n    STEAM_USER=anonymous\r\n    STEAM_PASS=\"\"\r\n    STEAM_AUTH=\"\"\r\nelse\r\n    echo -e \"user set to ${STEAM_USER}\"\r\nfi\r\n\r\n## download and install steamcmd\r\ncd \/tmp\r\nmkdir -p \/mnt\/server\/steamcmd\r\ncurl -sSL -o steamcmd.tar.gz https:\/\/steamcdn-a.akamaihd.net\/client\/installer\/steamcmd_linux.tar.gz\r\ntar -xzvf steamcmd.tar.gz -C \/mnt\/server\/steamcmd\r\nmkdir -p \/mnt\/server\/steamapps # Fix steamcmd disk write error when this folder is missing\r\ncd \/mnt\/server\/steamcmd\r\n\r\n# SteamCMD fails otherwise for some reason, even running as root.\r\n# This is changed at the end of the install process anyways.\r\nchown -R root:root \/mnt\r\nexport HOME=\/mnt\/server\r\n\r\n## install game using steamcmd\r\n.\/steamcmd.sh +force_install_dir \/mnt\/server +login ${STEAM_USER} ${STEAM_PASS} ${STEAM_AUTH} $( [[ \"${WINDOWS_INSTALL}\" == \"1\" ]] && printf %s '+@sSteamCmdForcePlatformType windows' ) +app_update ${SRCDS_APPID} ${EXTRA_FLAGS} validate +quit ## other flags may be needed depending on install. looking at you cs 1.6\r\n\r\n## set up 32 bit libraries\r\nmkdir -p \/mnt\/server\/.steam\/sdk32\r\ncp -v linux32\/steamclient.so ..\/.steam\/sdk32\/steamclient.so\r\n\r\n## set up 64 bit libraries\r\nmkdir -p \/mnt\/server\/.steam\/sdk64\r\ncp -v linux64\/steamclient.so ..\/.steam\/sdk64\/steamclient.so\r\n\r\n# Creating needed default files for the game\r\ncd \/mnt\/server\/garrysmod\/lua\/autorun\/server\r\necho '\r\n-- Docs: https:\/\/wiki.garrysmod.com\/page\/resource\/AddWorkshop\r\n-- Place the ID of the workshop addon you want to be downloaded to people who join your server, not the collection ID\r\n-- Use https:\/\/beta.configcreator.com\/create\/gmod\/resources.lua to easily create a list based on your collection ID\r\n\r\nresource.AddWorkshop( \"\" )\r\n' > workshop.lua\r\n\r\ncd \/mnt\/server\/garrysmod\/cfg\r\necho '\r\n\/\/ Please do not set RCon in here, use the startup parameters.\r\n\r\nhostname\t\t\"New Gmod Server\"\r\nsv_password\t\t\"\"\r\nsv_loadingurl   \"\"\r\nsv_downloadurl  \"\"\r\n\r\n\/\/ Steam Server List Settings\r\n\/\/ sv_location \"eu\"\r\nsv_region \"255\"\r\nsv_lan \"0\"\r\nsv_max_queries_sec_global \"30000\"\r\nsv_max_queries_window \"45\"\r\nsv_max_queries_sec \"5\"\r\n\r\n\/\/ Server Limits\r\nsbox_maxprops\t\t100\r\nsbox_maxragdolls\t5\r\nsbox_maxnpcs\t\t10\r\nsbox_maxballoons\t10\r\nsbox_maxeffects\t\t10\r\nsbox_maxdynamite\t10\r\nsbox_maxlamps\t\t10\r\nsbox_maxthrusters\t10\r\nsbox_maxwheels\t\t10\r\nsbox_maxhoverballs\t10\r\nsbox_maxvehicles\t20\r\nsbox_maxbuttons\t\t10\r\nsbox_maxsents\t\t20\r\nsbox_maxemitters\t5\r\nsbox_godmode\t\t0\r\nsbox_noclip\t\t    0\r\n\r\n\/\/ Network Settings - Please keep these set to default.\r\n\r\nsv_minrate\t\t75000\r\nsv_maxrate\t\t0\r\ngmod_physiterations\t2\r\nnet_splitpacket_maxrate\t45000\r\ndecalfrequency\t\t12 \r\n\r\n\/\/ Execute Ban Files - Please do not edit\r\nexec banned_ip.cfg \r\nexec banned_user.cfg \r\n\r\n\/\/ Add custom lines under here\r\n' > server.cfg",
             "container": "ghcr.io\/pterodactyl\/installers:debian",
             "entrypoint": "bash"
         }
@@ -84,12 +87,21 @@
         },
         {
             "name": "Tickrate",
-            "description": "The tickrate defines how fast the server will update each entities location.",
+            "description": "The tickrate defines how fast the server will update each entity's location.",
             "env_variable": "TICKRATE",
             "default_value": "22",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|integer|max:100"
+        },
+        {
+            "name": "Lua Refresh",
+            "description": "0 = disable Lua refresh,\r\n1 = enable Lua refresh",
+            "env_variable": "LUA_REFRESH",
+            "default_value": "0",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|boolean"
         }
     ]
 }

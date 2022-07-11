@@ -39,7 +39,6 @@ export interface Server {
         allocations: number;
         backups: number;
     };
-    isInstalling: boolean;
     isTransferring: boolean;
     variables: ServerEggVariable[];
     allocations: Allocation[];
@@ -58,24 +57,29 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
         ip: data.sftp_details.ip,
         port: data.sftp_details.port,
     },
-    description: data.description ? ((data.description.length > 0) ? data.description : null) : null,
+    description: data.description ? (data.description.length > 0 ? data.description : null) : null,
     limits: { ...data.limits },
     eggFeatures: data.egg_features || [],
     featureLimits: { ...data.feature_limits },
-    isInstalling: data.status === 'installing' || data.status === 'install_failed',
     isTransferring: data.is_transferring,
-    variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(rawDataToServerEggVariable),
-    allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(rawDataToServerAllocation),
+    variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(
+        rawDataToServerEggVariable
+    ),
+    allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(
+        rawDataToServerAllocation
+    ),
 });
 
-export default (uuid: string): Promise<[ Server, string[] ]> => {
+export default (uuid: string): Promise<[Server, string[]]> => {
     return new Promise((resolve, reject) => {
         http.get(`/api/client/servers/${uuid}`)
-            .then(({ data }) => resolve([
-                rawDataToServerObject(data),
-                // eslint-disable-next-line camelcase
-                data.meta?.is_server_owner ? [ '*' ] : (data.meta?.user_permissions || []),
-            ]))
+            .then(({ data }) =>
+                resolve([
+                    rawDataToServerObject(data),
+                    // eslint-disable-next-line camelcase
+                    data.meta?.is_server_owner ? ['*'] : data.meta?.user_permissions || [],
+                ])
+            )
             .catch(reject);
     });
 };

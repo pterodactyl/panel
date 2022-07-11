@@ -9,10 +9,8 @@ class SubuserTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
-     *
-     * @var array
      */
-    protected $availableIncludes = ['user', 'server'];
+    protected array $availableIncludes = ['user', 'server'];
 
     /**
      * Return the resource name for the JSONAPI output.

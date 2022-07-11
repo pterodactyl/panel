@@ -106,6 +106,14 @@ class Task extends Model
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function getRouteKeyName(): string
+    {
+        return $this->getKeyName();
+    }
+
+    /**
      * Return a hashid encoded string to represent the ID of the task.
      *
      * @return string

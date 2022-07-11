@@ -8,7 +8,8 @@ const SubNavigation = styled.div`
         ${tw`flex items-center text-sm mx-auto px-2`};
         max-width: 1200px;
 
-        & > a, & > div {
+        & > a,
+        & > div {
             ${tw`inline-block py-3 px-4 text-neutral-300 no-underline whitespace-nowrap transition-all duration-150`};
 
             &:not(:first-of-type) {
@@ -19,9 +20,10 @@ const SubNavigation = styled.div`
                 ${tw`text-neutral-100`};
             }
 
-            &:active, &.active {
+            &:active,
+            &.active {
                 ${tw`text-neutral-100`};
-                box-shadow: inset 0 -2px ${theme`colors.cyan.700`.toString()};
+                box-shadow: inset 0 -2px ${theme`colors.cyan.600`.toString()};
             }
         }
     }

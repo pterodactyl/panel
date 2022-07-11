@@ -8,7 +8,7 @@ import updateAccountPassword from '@/api/account/updateAccountPassword';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 
 interface Values {
     current: string;
@@ -19,9 +19,13 @@ interface Values {
 const schema = Yup.object().shape({
     current: Yup.string().min(1).required('You must provide your current password.'),
     password: Yup.string().min(8).required(),
-    confirmPassword: Yup.string().test('password', 'Password confirmation does not match the password you entered.', function (value) {
-        return value === this.parent.password;
-    }),
+    confirmPassword: Yup.string().test(
+        'password',
+        'Password confirmation does not match the password you entered.',
+        function (value) {
+            return value === this.parent.password;
+        }
+    ),
 });
 
 export default () => {
@@ -36,15 +40,17 @@ export default () => {
         clearFlashes('account:password');
         updateAccountPassword({ ...values })
             .then(() => {
-                // @ts-ignore
+                // @ts-expect-error this is valid
                 window.location = '/auth/login';
             })
-            .catch(error => addFlash({
-                key: 'account:password',
-                type: 'error',
-                title: 'Error',
-                message: httpErrorToHuman(error),
-            }))
+            .catch((error) =>
+                addFlash({
+                    key: 'account:password',
+                    type: 'error',
+                    title: 'Error',
+                    message: httpErrorToHuman(error),
+                })
+            )
             .then(() => setSubmitting(false));
     };
 
@@ -55,43 +61,41 @@ export default () => {
                 validationSchema={schema}
                 initialValues={{ current: '', password: '', confirmPassword: '' }}
             >
-                {
-                    ({ isSubmitting, isValid }) => (
-                        <React.Fragment>
-                            <SpinnerOverlay size={'large'} visible={isSubmitting}/>
-                            <Form css={tw`m-0`}>
+                {({ isSubmitting, isValid }) => (
+                    <React.Fragment>
+                        <SpinnerOverlay size={'large'} visible={isSubmitting} />
+                        <Form css={tw`m-0`}>
+                            <Field
+                                id={'current_password'}
+                                type={'password'}
+                                name={'current'}
+                                label={'Current Password'}
+                            />
+                            <div css={tw`mt-6`}>
                                 <Field
-                                    id={'current_password'}
+                                    id={'new_password'}
                                     type={'password'}
-                                    name={'current'}
-                                    label={'Current Password'}
+                                    name={'password'}
+                                    label={'New Password'}
+                                    description={
+                                        'Your new password should be at least 8 characters in length and unique to this website.'
+                                    }
                                 />
-                                <div css={tw`mt-6`}>
-                                    <Field
-                                        id={'new_password'}
-                                        type={'password'}
-                                        name={'password'}
-                                        label={'New Password'}
-                                        description={'Your new password should be at least 8 characters in length and unique to this website.'}
-                                    />
-                                </div>
-                                <div css={tw`mt-6`}>
-                                    <Field
-                                        id={'confirm_new_password'}
-                                        type={'password'}
-                                        name={'confirmPassword'}
-                                        label={'Confirm New Password'}
-                                    />
-                                </div>
-                                <div css={tw`mt-6`}>
-                                    <Button size={'small'} disabled={isSubmitting || !isValid}>
-                                        Update Password
-                                    </Button>
-                                </div>
-                            </Form>
-                        </React.Fragment>
-                    )
-                }
+                            </div>
+                            <div css={tw`mt-6`}>
+                                <Field
+                                    id={'confirm_new_password'}
+                                    type={'password'}
+                                    name={'confirmPassword'}
+                                    label={'Confirm New Password'}
+                                />
+                            </div>
+                            <div css={tw`mt-6`}>
+                                <Button disabled={isSubmitting || !isValid}>Update Password</Button>
+                            </div>
+                        </Form>
+                    </React.Fragment>
+                )}
             </Formik>
         </React.Fragment>
     );

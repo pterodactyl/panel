@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -68,9 +69,16 @@ class NetworkAllocationController extends ClientApiController
      */
     public function update(UpdateAllocationRequest $request, Server $server, Allocation $allocation): array
     {
-        $allocation = $this->repository->update($allocation->id, [
-            'notes' => $request->input('notes'),
-        ]);
+        $original = $allocation->notes;
+
+        $allocation->forceFill(['notes' => $request->input('notes')])->save();
+
+        if ($original !== $allocation->notes) {
+            Activity::event('server:allocation.notes')
+                ->subject($allocation)
+                ->property(['allocation' => $allocation->toString(), 'old' => $original, 'new' => $allocation->notes])
+                ->log();
+        }
 
         return $this->fractal->item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -86,6 +94,11 @@ class NetworkAllocationController extends ClientApiController
     public function setPrimary(SetPrimaryAllocationRequest $request, Server $server, Allocation $allocation): array
     {
         $this->serverRepository->update($server->id, ['allocation_id' => $allocation->id]);
+
+        Activity::event('server:allocation.primary')
+            ->subject($allocation)
+            ->property('allocation', $allocation->toString())
+            ->log();
 
         return $this->fractal->item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
@@ -106,6 +119,11 @@ class NetworkAllocationController extends ClientApiController
 
         $allocation = $this->assignableAllocationService->handle($server);
 
+        Activity::event('server:allocation.create')
+            ->subject($allocation)
+            ->property('allocation', $allocation->toString())
+            ->log();
+
         return $this->fractal->item($allocation)
             ->transformWith($this->getTransformer(AllocationTransformer::class))
             ->toArray();
@@ -120,6 +138,12 @@ class NetworkAllocationController extends ClientApiController
      */
     public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation)
     {
+        // Don't allow the deletion of allocations if the server does not have an
+        // allocation limit set.
+        if (empty($server->allocation_limit)) {
+            throw new DisplayException('You cannot delete allocations for this server: no allocation limit is set.');
+        }
+
         if ($allocation->id === $server->allocation_id) {
             throw new DisplayException('You cannot delete the primary allocation for this server.');
         }
@@ -128,6 +152,11 @@ class NetworkAllocationController extends ClientApiController
             'notes' => null,
             'server_id' => null,
         ]);
+
+        Activity::event('server:allocation.delete')
+            ->subject($allocation)
+            ->property('allocation', $allocation->toString())
+            ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

@@ -54,7 +54,7 @@ class ServerController extends ApplicationApiController
     public function index(GetServersRequest $request): array
     {
         $servers = QueryBuilder::for(Server::query())
-            ->allowedFilters(['uuid', 'uuidShort', 'name', 'image', 'external_id'])
+            ->allowedFilters(['uuid', 'uuidShort', 'name', 'description', 'image', 'external_id'])
             ->allowedSorts(['id', 'uuid'])
             ->paginate($request->query('per_page') ?? 50);
 
@@ -86,9 +86,9 @@ class ServerController extends ApplicationApiController
     /**
      * Show a single server transformed for the application API.
      */
-    public function view(GetServerRequest $request): array
+    public function view(GetServerRequest $request, Server $server): array
     {
-        return $this->fractal->item($request->getModel(Server::class))
+        return $this->fractal->item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
             ->toArray();
     }

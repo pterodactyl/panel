@@ -42,26 +42,24 @@ const getBackground = (type?: FlashMessageType): TwStyle | string => {
 
 const Container = styled.div<{ $type?: FlashMessageType }>`
     ${tw`p-2 border items-center leading-normal rounded flex w-full text-sm text-white`};
-    ${props => styling(props.$type)};
+    ${(props) => styling(props.$type)};
 `;
 Container.displayName = 'MessageBox.Container';
 
 const MessageBox = ({ title, children, type }: Props) => (
     <Container css={tw`lg:inline-flex`} $type={type} role={'alert'}>
-        {title &&
-        <span
-            className={'title'}
-            css={[
-                tw`flex rounded-full uppercase px-2 py-1 text-xs font-bold mr-3 leading-none`,
-                getBackground(type),
-            ]}
-        >
-            {title}
-        </span>
-        }
-        <span css={tw`mr-2 text-left flex-auto`}>
-            {children}
-        </span>
+        {title && (
+            <span
+                className={'title'}
+                css={[
+                    tw`flex rounded-full uppercase px-2 py-1 text-xs font-bold mr-3 leading-none`,
+                    getBackground(type),
+                ]}
+            >
+                {title}
+            </span>
+        )}
+        <span css={tw`mr-2 text-left flex-auto`}>{children}</span>
     </Container>
 );
 MessageBox.displayName = 'MessageBox';

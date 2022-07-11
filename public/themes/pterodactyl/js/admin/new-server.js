@@ -82,12 +82,13 @@ $('#pEggId').on('change', function (event) {
     let parentChain = _.get(Pterodactyl.nests, $('#pNestId').val(), null);
     let objectChain = _.get(parentChain, 'eggs.' + $(this).val(), null);
 
-    const images = _.get(objectChain, 'docker_images', [])
+    const images = _.get(objectChain, 'docker_images', {})
     $('#pDefaultContainer').html('');
-    for (let i = 0; i < images.length; i++) {
+    const keys = Object.keys(images);
+    for (let i = 0; i < keys.length; i++) {
         let opt = document.createElement('option');
-        opt.value = images[i];
-        opt.innerHTML = images[i];
+        opt.value = images[keys[i]];
+        opt.innerHTML = keys[i] + " (" + images[keys[i]] + ")";
         $('#pDefaultContainer').append(opt);
     }
 

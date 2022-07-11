@@ -11,13 +11,25 @@ use Pterodactyl\Services\Servers\VariableValidatorService;
 
 class VariableValidatorServiceTest extends IntegrationTestCase
 {
+    protected Egg $egg;
+
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        /* @noinspection PhpFieldAssignmentTypeMismatchInspection */
+        $this->egg = Egg::query()
+            ->where('author', 'support@pterodactyl.io')
+            ->where('name', 'Bungeecord')
+            ->firstOrFail();
+    }
+
     /**
      * Test that enviornment variables for a server are validated as expected.
      */
     public function testEnvironmentVariablesCanBeValidated()
     {
-        /** @noinspection PhpParamsInspection */
-        $egg = $this->cloneEggAndVariables(Egg::query()->findOrFail(1));
+        $egg = $this->cloneEggAndVariables($this->egg);
 
         try {
             $this->getService()->handle($egg->id, [
@@ -54,8 +66,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
      */
     public function testNormalUserCannotValidateNonUserEditableVariables()
     {
-        /** @noinspection PhpParamsInspection */
-        $egg = $this->cloneEggAndVariables(Egg::query()->findOrFail(1));
+        $egg = $this->cloneEggAndVariables($this->egg);
         $egg->variables()->first()->update([
             'user_editable' => false,
         ]);
@@ -74,8 +85,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
 
     public function testEnvironmentVariablesCanBeUpdatedAsAdmin()
     {
-        /** @noinspection PhpParamsInspection */
-        $egg = $this->cloneEggAndVariables(Egg::query()->findOrFail(1));
+        $egg = $this->cloneEggAndVariables($this->egg);
         $egg->variables()->first()->update([
             'user_editable' => false,
         ]);
@@ -107,8 +117,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
 
     public function testNullableEnvironmentVariablesCanBeUsedCorrectly()
     {
-        /** @noinspection PhpParamsInspection */
-        $egg = $this->cloneEggAndVariables(Egg::query()->findOrFail(1));
+        $egg = $this->cloneEggAndVariables($this->egg);
         $egg->variables()->where('env_variable', '!=', 'BUNGEE_VERSION')->delete();
 
         $egg->variables()->update(['rules' => 'nullable|string']);

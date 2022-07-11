@@ -78,7 +78,7 @@ class DatabaseController extends ApplicationApiController
     {
         $this->databasePasswordService->handle($database);
 
-        return JsonResponse::create([], JsonResponse::HTTP_NO_CONTENT);
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
@@ -105,12 +105,10 @@ class DatabaseController extends ApplicationApiController
 
     /**
      * Handle a request to delete a specific server database from the Panel.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function delete(ServerDatabaseWriteRequest $request): Response
+    public function delete(ServerDatabaseWriteRequest $request, Server $server, Database $database): Response
     {
-        $this->databaseManagementService->delete($request->getModel(Database::class));
+        $this->databaseManagementService->delete($database);
 
         return response('', 204);
     }

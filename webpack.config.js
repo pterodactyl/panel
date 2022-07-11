@@ -1,4 +1,5 @@
 const path = require('path');
+const webpack = require('webpack');
 const AssetsManifestPlugin = require('webpack-assets-manifest');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
@@ -19,19 +20,42 @@ module.exports = {
         path: path.join(__dirname, '/public/assets'),
         filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
         chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[hash:8].js',
-        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
+        publicPath: (process.env.WEBPACK_PUBLIC_PATH || '/assets/'),
         crossOriginLoading: 'anonymous',
     },
     module: {
         rules: [
             {
                 test: /\.tsx?$/,
-                exclude: /node_modules/,
+                exclude: /node_modules|\.spec\.tsx?$/,
                 loader: 'babel-loader',
             },
             {
+                test: /\.mjs$/,
+                include: /node_modules/,
+                type: 'javascript/auto',
+            },
+            {
                 test: /\.css$/,
-                use: [ 'style-loader', 'css-loader' ],
+                use: [
+                    { loader: 'style-loader' },
+                    {
+                        loader: 'css-loader',
+                        options: {
+                            modules: {
+                                auto: true,
+                                localIdentName: isProduction ? '[name]_[hash:base64:8]' : '[path][name]__[local]',
+                                localIdentContext: path.join(__dirname, 'resources/scripts/components'),
+                            },
+                            sourceMap: !isProduction,
+                            importLoaders: 1,
+                        },
+                    },
+                    {
+                        loader: 'postcss-loader',
+                        options: { sourceMap: !isProduction },
+                    },
+                ],
             },
             {
                 test: /\.(png|jp(e?)g|gif)$/,
@@ -60,6 +84,7 @@ module.exports = {
         extensions: ['.ts', '.tsx', '.js', '.json'],
         alias: {
             '@': path.join(__dirname, '/resources/scripts'),
+            '@definitions': path.join(__dirname, '/resources/scripts/api/definitions'),
             '@feature': path.join(__dirname, '/resources/scripts/components/server/features'),
         },
         symlinks: false,
@@ -70,6 +95,11 @@ module.exports = {
         moment: 'moment',
     },
     plugins: [
+        new webpack.EnvironmentPlugin({
+            NODE_ENV: 'development',
+            DEBUG: process.env.NODE_ENV !== 'production',
+            WEBPACK_BUILD_HASH: Date.now().toString(16),
+        }),
         new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
         new ForkTsCheckerWebpackPlugin({
             typescript: {
@@ -115,7 +145,7 @@ module.exports = {
     devServer: {
         compress: true,
         contentBase: path.join(__dirname, '/public'),
-        publicPath: (process.env.PUBLIC_PATH || '') + '/assets/',
+        publicPath: process.env.WEBPACK_PUBLIC_PATH || '/assets/',
         allowedHosts: [
             '.pterodactyl.test',
         ],
