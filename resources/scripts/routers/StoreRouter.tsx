@@ -16,7 +16,7 @@ import OverviewContainer from '@/components/store/OverviewContainer';
 import MobileNavigation from '@/components/elements/MobileNavigation';
 import CreateContainer from '@/components/store/create/CreateContainer';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
-import ProductsContainer from '@/components/store/resources/ProductsContainer';
+import ResourcesContainer from '@/components/store/ResourcesContainer';
 
 const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();
@@ -28,7 +28,7 @@ const StoreRouter = () => {
     return (
         <>
             {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
-            <SubNavigation>
+            <SubNavigation className={'j-down'}>
                 <div>
                     <NavLink to={`${match.url}`} exact>
                         <div css={tw`flex items-center justify-between`}>
@@ -70,7 +70,7 @@ const StoreRouter = () => {
                         <BalanceContainer />
                     </Route>
                     <Route path={`${match.path}/resources`} exact>
-                        <ProductsContainer />
+                        <ResourcesContainer />
                     </Route>
                     <Route path={`${match.path}/create`} exact>
                         <CreateContainer />

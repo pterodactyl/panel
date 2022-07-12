@@ -51,9 +51,9 @@ const OverviewContainer = () => {
 
     return (
         <PageContentBlock title={'Storefront Overview'}>
-            <h1 css={tw`text-5xl`}>👋 Hey, {username}!</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Welcome to the Jexactyl storefront.</h3>
-            <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
+            <h1 className={'j-left text-5xl'}>👋 Hey, {username}!</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500'}>Welcome to the Jexactyl storefront.</h3>
+            <Container className={'j-right lg:grid lg:grid-cols-3 my-10'}>
                 <TitledGreyBox title={'Total CPU'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Cpu css={tw`mr-2`} /> {resources.cpu}%
@@ -70,7 +70,7 @@ const OverviewContainer = () => {
                     </Wrapper>
                 </TitledGreyBox>
             </Container>
-            <Container css={tw`lg:grid lg:grid-cols-4 my-10`}>
+            <Container className={'j-left lg:grid lg:grid-cols-4 my-10'}>
                 <TitledGreyBox title={'Total Slots'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>
                         <Icon.Server css={tw`mr-2`} /> {resources.slots}
@@ -93,7 +93,7 @@ const OverviewContainer = () => {
                 </TitledGreyBox>
             </Container>
             <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
-                <TitledGreyBox title={'Create server'}>
+                <TitledGreyBox title={'Create server'} className={'j-right'}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
                             <img src={PlusSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`} />
@@ -112,7 +112,7 @@ const OverviewContainer = () => {
                         </div>
                     </div>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Edit server'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
+                <TitledGreyBox title={'Edit server'} className={'j-left mt-8 sm:mt-0 sm:ml-8'}>
                     <div css={tw`md:flex w-full p-6 md:pl-0 mx-1`}>
                         <div css={tw`flex-none select-none mb-6 md:mb-0 self-center`}>
                             <img src={DivideSquareSvg} css={tw`block w-32 md:w-48 mx-auto p-8`} />

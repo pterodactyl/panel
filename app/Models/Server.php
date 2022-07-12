@@ -161,6 +161,8 @@ class Server extends Model
         'owner_id' => 'required|integer|exists:users,id',
         'name' => 'required|string|min:1|max:191',
         'node_id' => 'required|exists:nodes,id',
+        'renewable' => 'required|boolean',
+        'renewal' => 'required|integer|min:0',
         'description' => 'string',
         'status' => 'nullable|string',
         'memory' => 'required|numeric|min:0',
@@ -188,6 +190,8 @@ class Server extends Model
      */
     protected $casts = [
         'node_id' => 'integer',
+        'renewable' => 'boolean',
+        'renewal' => 'integer',
         'skip_scripts' => 'boolean',
         'owner_id' => 'integer',
         'memory' => 'integer',

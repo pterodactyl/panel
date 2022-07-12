@@ -26,10 +26,10 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account SSH'}>
-            <h1 css={tw`text-5xl`}>SSH Keys</h1>
-            <h3 css={tw`text-2xl text-neutral-500`}>Create SSH keys to connect to your servers.</h3>
+            <h1 className={'j-left text-5xl'}>SSH Keys</h1>
+            <h3 className={'j-left text-2xl text-neutral-500'}>Create SSH keys to connect to your servers.</h3>
             <FlashMessageRender byKey={'account'} />
-            <div css={tw`md:flex flex-nowrap my-10`}>
+            <div className={'j-up md:flex flex-nowrap my-10'}>
                 <ContentBox title={'Add SSH Key'} css={tw`flex-none w-full md:w-1/2`}>
                     <CreateSSHKeyForm />
                 </ContentBox>

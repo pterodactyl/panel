@@ -1,5 +1,6 @@
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
+import * as Icon from 'react-feather';
 import { Form, Formik } from 'formik';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
@@ -7,17 +8,17 @@ import { number, object, string } from 'yup';
 import { megabytesToHuman } from '@/helpers';
 import styled from 'styled-components/macro';
 import Field from '@/components/elements/Field';
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import Select from '@/components/elements/Select';
 import { Egg, getEggs } from '@/api/store/getEggs';
 import createServer from '@/api/store/createServer';
+import { getNests, Nest } from '@/api/store/getNests';
 import { Button } from '@/components/elements/button/index';
 import StoreError from '@/components/store/error/StoreError';
 import InputSpinner from '@/components/elements/InputSpinner';
+import React, { ChangeEvent, useEffect, useState } from 'react';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import Select from "@/components/elements/Select";
-import { getNests, Nest } from "@/api/store/getNests";
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -93,7 +94,7 @@ export default () => {
             });
     };
 
-    if (!resources || !eggs || !nests) return <StoreError/>;
+    if (!resources || !eggs || !nests) return <StoreError />;
     return (
         <PageContentBlock title={'Create a server'} showFlashKey={'store:create'}>
             <Formik
@@ -130,8 +131,8 @@ export default () => {
                 })}
             >
                 <Form>
-                    <h1 css={tw`text-5xl`}>Basic Details</h1>
-                    <h3 css={tw`text-2xl text-neutral-500`}>Set the basic fields for your new server.</h3>
+                    <h1 className={'j-left text-5xl'}>Basic Details</h1>
+                    <h3 className={'j-left text-2xl text-neutral-500'}>Set the basic fields for your new server.</h3>
                     <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
                         <TitledGreyBox title={'Server name'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'name'} />
@@ -146,8 +147,8 @@ export default () => {
                             <p css={tw`mt-1 text-xs text-yellow-400`}>* Optional</p>
                         </TitledGreyBox>
                     </Container>
-                    <h1 css={tw`text-5xl`}>Resource Limits</h1>
-                    <h3 css={tw`text-2xl text-neutral-500`}>Set specific limits for CPU, RAM and more.</h3>
+                    <h1 className={'j-left text-5xl'}>Resource Limits</h1>
+                    <h3 className={'j-left text-2xl text-neutral-500'}>Set specific limits for CPU, RAM and more.</h3>
                     <Container css={tw`lg:grid lg:grid-cols-3 my-10 gap-4`}>
                         <TitledGreyBox title={'Server CPU limit'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'cpu'} />
@@ -167,8 +168,10 @@ export default () => {
                             <p css={tw`mt-1 text-xs text-neutral-400`}>{megabytesToHuman(resources.disk)} available</p>
                         </TitledGreyBox>
                     </Container>
-                    <h1 css={tw`text-5xl`}>Feature Limits</h1>
-                    <h3 css={tw`text-2xl text-neutral-500`}>Add databases, allocations and ports to your server.</h3>
+                    <h1 className={'j-left text-5xl'}>Feature Limits</h1>
+                    <h3 className={'j-left text-2xl text-neutral-500'}>
+                        Add databases, allocations and ports to your server.
+                    </h3>
                     <Container css={tw`lg:grid lg:grid-cols-3 my-10 gap-4`}>
                         <TitledGreyBox title={'Server allocations'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'ports'} />
@@ -186,33 +189,41 @@ export default () => {
                             <p css={tw`mt-1 text-xs text-neutral-400`}>{resources.databases} available</p>
                         </TitledGreyBox>
                     </Container>
-                    <h1 css={tw`text-5xl`}>Server Type</h1>
-                    <h3 css={tw`text-2xl text-neutral-500`}>Choose a server distribution to use.</h3>
+                    <h1 className={'j-left text-5xl'}>Server Type</h1>
+                    <h3 className={'j-left text-2xl text-neutral-500'}>Choose a server distribution to use.</h3>
                     <Container css={tw`my-10 gap-4`}>
-                        <TitledGreyBox title={'Server Egg Nest'} css={tw`mt-8 sm:mt-0`}>
+                        <TitledGreyBox title={'Server Nest'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'nest'} onChange={(n) => changeNest(n)}>
                                 {nests.map((n) => (
-                                    <option value={n.id}>{n.name}</option>
+                                    <option key={n.id} value={n.id}>
+                                        {n.name}
+                                    </option>
                                 ))}
                             </Select>
+                            <p css={tw`mt-2 text-sm`}>Select a nest to use for your server.</p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'egg'} onChange={(e) => setEgg(parseInt(e.target.value))}>
                                 {eggs.map((e) => (
-                                    <option value={e.id}>{e.name}</option>
+                                    <option key={e.id} value={e.id}>
+                                        {e.name}
+                                    </option>
                                 ))}
                             </Select>
                             <p css={tw`mt-2 text-sm`}>Choose what game you want to run on your server.</p>
                         </TitledGreyBox>
                     </Container>
                     <InputSpinner visible={loading}>
-                        <TitledGreyBox title={'Create server instance'} css={tw`mt-8 sm:mt-0 mb-4`}>
-                            <div css={tw`flex justify-end text-right`}>
-                                <Button type={'submit'} disabled={isSubmit}>
-                                    Create
-                                </Button>
-                            </div>
-                        </TitledGreyBox>
+                        <div css={tw`text-right`}>
+                            <Button
+                                type={'submit'}
+                                className={'w-1/6 mb-4'}
+                                size={Button.Sizes.Large}
+                                disabled={isSubmit}
+                            >
+                                Create Your Server! <Icon.ArrowRightCircle className={'ml-2'} />
+                            </Button>
+                        </div>
                     </InputSpinner>
                 </Form>
             </Formik>

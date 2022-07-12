@@ -30,14 +30,17 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account Overview'}>
-            <h1 css={tw`text-5xl`}>Account Overview</h1>
-            <h3 css={tw`text-2xl text-neutral-500`}>View and update account details.</h3>
+            <h1 className={'j-left text-5xl'}>Account Overview</h1>
+            <h3 className={'j-left text-2xl text-neutral-500'}>View and update account details.</h3>
             {state?.twoFactorRedirect && (
                 <Alert type={'error'}>
                     Your account must have two-factor authentication enabled in order to continue.
                 </Alert>
             )}
-            <Container css={[tw`lg:grid lg:grid-cols-2 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
+            <Container
+                className={'j-up'}
+                css={[tw`lg:grid lg:grid-cols-2 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}
+            >
                 <ContentBox title={'Update Username'} showFlashes={'account:username'}>
                     <UpdateUsernameForm />
                 </ContentBox>

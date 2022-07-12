@@ -50,8 +50,10 @@ export default () => {
 
     return (
         <PageContentBlock title={'Edit a server'} showFlashKey={'store:edit'}>
-            <h1 css={tw`text-5xl`}>Edit your servers</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Configure limits and options for your instances.</h3>
+            <h1 className={'j-left text-5xl'}>Edit your servers</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500'}>
+                Configure limits and options for your instances.
+            </h3>
             {rootAdmin && (
                 <div css={tw`mb-2 flex justify-end items-center`}>
                     <Switch

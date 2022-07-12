@@ -24,7 +24,7 @@ export default () => {
         <>
             {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
             {location.pathname.startsWith('/account') && (
-                <SubNavigation>
+                <SubNavigation className={'j-down'}>
                     <div>
                         <NavLink to={'/account'} exact>
                             <div css={tw`flex items-center justify-between`}>

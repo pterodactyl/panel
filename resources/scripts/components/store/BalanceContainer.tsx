@@ -26,7 +26,7 @@ const Container = styled.div`
     }
 `;
 
-const BalanceContainer = () => {
+export default () => {
     const [resources, setResources] = useState<Resources>();
     const store = useStoreState((state) => state.storefront.data!);
 
@@ -38,40 +38,14 @@ const BalanceContainer = () => {
 
     return (
         <PageContentBlock title={'Account Balance'}>
-            <h1 css={tw`text-5xl`}>Account Balance</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Purchase credits easily via Stripe or PayPal.</h3>
-            <Container css={tw`lg:grid lg:grid-cols-2 my-10`}>
-                <div>
-                    <ContentBox title={'Account Balance'} showFlashes={'account:balance'} css={tw`sm:mt-0`}>
-                        <h1 css={tw`text-7xl flex justify-center items-center`}>
-                            ${resources.balance} {store.currency}
-                        </h1>
-                    </ContentBox>
-                    {/*
-                        <ContentBox
-                            title={'Transaction History'}
-                            showFlashes={'account:balance'}
-                            css={tw`mt-8`}
-                        >
-                            <GreyRowBox>
-                                <p css={tw`flex-initial text-lg ml-2`}>
-                                    #OQ73
-                                </p>
-                                <p css={tw`flex-1 text-sm ml-4 inline-block`}>
-                                    <code css={tw`font-mono py-1 px-2 md:bg-neutral-900 rounded mr-2`}>
-                                        1000 credits purchased.
-                                    </code>
-                                </p>
-                                <div css={tw`flex-initial text-xs ml-4 hidden md:block overflow-hidden`}>
-                                    <p css={tw`text-sm break-words`}>PayPal</p>
-                                    <p css={tw`text-2xs text-neutral-300 uppercase`}>
-                                        MAY 25TH, 2022 23:30
-                                    </p>
-                                </div>
-                            </GreyRowBox>
-                        </ContentBox>
-                    */}
-                </div>
+            <h1 className={'j-left text-5xl'}>Account Balance</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500'}>Purchase credits easily via Stripe or PayPal.</h3>
+            <Container className={'j-up lg:grid lg:grid-cols-2 my-10'}>
+                <ContentBox title={'Account Balance'} showFlashes={'account:balance'} css={tw`sm:mt-0`}>
+                    <h1 css={tw`text-7xl flex justify-center items-center`}>
+                        {resources.balance} {store.currency}
+                    </h1>
+                </ContentBox>
                 <ContentBox title={'Purchase credits'} showFlashes={'account:balance'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     {store.gateways?.paypal === 'true' && <PaypalPurchaseForm />}
                     {store.gateways?.stripe === 'true' && <StripePurchaseForm />}
@@ -80,5 +54,3 @@ const BalanceContainer = () => {
         </PageContentBlock>
     );
 };
-
-export default BalanceContainer;

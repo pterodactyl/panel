@@ -37,9 +37,9 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account Balance'}>
-            <h1 css={tw`text-5xl`}>Earn credits</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500`}>Passively earn credits by using the panel.</h3>
-            <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
+            <h1 className={'j-left text-5xl'}>Earn credits</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500'}>Passively earn credits by using the panel.</h3>
+            <Container className={'j-up lg:grid lg:grid-cols-3 my-10'}>
                 <ContentBox title={'Current Account Balance'} showFlashes={'earn:balance'} css={tw`sm:mt-0`}>
                     <h1 css={tw`text-7xl flex justify-center items-center`}>
                         ${resources.balance} {store.currency}

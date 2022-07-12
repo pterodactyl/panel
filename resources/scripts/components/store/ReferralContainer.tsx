@@ -88,10 +88,10 @@ export default () => {
 
     return (
         <PageContentBlock title={'Referrals'}>
-            <h1 className={'text-5xl'}>Referrals</h1>
-            <h3 className={'text-2xl mt-2 text-neutral-500'}>Create a code and share it with others.</h3>
+            <h1 className={'j-left text-5xl'}>Referrals</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500'}>Create a code and share it with others.</h3>
             <FlashMessageRender byKey={'referrals'} className={'mt-2'} />
-            <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
+            <Container className={'j-up lg:grid lg:grid-cols-3 my-10'}>
                 <ContentBox title={'Your Referral Codes'} css={tw`sm:mt-0`}>
                     <Dialog.Confirm
                         title={'Delete Referral Code'}
