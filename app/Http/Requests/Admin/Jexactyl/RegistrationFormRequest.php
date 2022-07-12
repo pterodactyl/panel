@@ -13,6 +13,12 @@ class RegistrationFormRequest extends AdminFormRequest
     {
         return [
             'registration:enabled' => 'required|in:true,false',
+
+            'discord:enabled' => 'required|in:true,false',
+            'discord:id' => 'required|int',
+            'discord:secret' => 'required|string',
+            'discord:redirect' => 'required|string|max:191',
+
             'registration:cpu' => 'required|int',
             'registration:memory' => 'required|int',
             'registration:disk' => 'required|int',
@@ -20,10 +26,8 @@ class RegistrationFormRequest extends AdminFormRequest
             'registration:port' => 'required|int',
             'registration:backup' => 'required|int',
             'registration:database' => 'required|int',
-            'discord:enabled' => 'required|in:true,false',
-            'discord:id' => 'required|int',
-            'discord:secret' => 'required|string',
-            'discord:redirect' => 'required|string|max:191',
+
+            'registration:ip_check' => 'required|in:true,false',
         ];
     }
 }

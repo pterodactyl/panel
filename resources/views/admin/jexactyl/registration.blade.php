@@ -151,6 +151,25 @@
                         </div>
                     </div>
                 </div>
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">IP verification <small>Determine whether IP checks will be carried out.</small></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Enabled</label>
+                                <div>
+                                    <select name="registration:ip_check" class="form-control">
+                                        <option @if ($ip_check == 'false') selected @endif value="false">Disabled</option>
+                                        <option @if ($ip_check == 'true') selected @endif value="true">Enabled</option>
+                                    </select>
+                                    <p class="text-muted"><small>Choose whether users are scanned for duplicate IP addresses to prevent alt accounts.</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
                     <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save Changes</button>

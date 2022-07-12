@@ -39,6 +39,12 @@ class RegistrationController extends Controller
     {
         return view('admin.jexactyl.registration', [
             'enabled' => $this->settings->get('jexactyl::registration:enabled', false),
+
+            'discord_enabled' => $this->settings->get('jexactyl::discord:enabled', false),
+            'discord_id' => $this->settings->get('jexactyl::discord:id', 0),
+            'discord_secret' => $this->settings->get('jexactyl::discord:secret', 0),
+            'discord_redirect' => $this->settings->get('jexactyl::discord:redirect', 'https://example.com/auth/discord/callback'),
+
             'cpu' => $this->settings->get('jexactyl::registration:cpu', 100),
             'memory' => $this->settings->get('jexactyl::registration:memory', 1024),
             'disk' => $this->settings->get('jexactyl::registration:disk', 5120),
@@ -46,10 +52,8 @@ class RegistrationController extends Controller
             'port' => $this->settings->get('jexactyl::registration:port', 1),
             'backup' => $this->settings->get('jexactyl::registration:backup', 1),
             'database' => $this->settings->get('jexactyl::registration:database', 0),
-            'discord_enabled' => $this->settings->get('jexactyl::discord:enabled', false),
-            'discord_id' => $this->settings->get('jexactyl::discord:id', 0),
-            'discord_secret' => $this->settings->get('jexactyl::discord:secret', 0),
-            'discord_redirect' => $this->settings->get('jexactyl::discord:redirect', 'https://example.com/auth/discord/callback'),
+
+            'ip_check' => $this->settings->get('jexactyl::registration:ip_check', true),
         ]);
     }
 

@@ -45,7 +45,7 @@ export default () => {
 
         deleteServer(uuid)
             .then(() => {
-                setSubmit(false)
+                setSubmit(false);
                 // @ts-expect-error this is valid
                 window.location = '/store';
             })
