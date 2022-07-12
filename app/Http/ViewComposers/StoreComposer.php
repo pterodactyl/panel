@@ -34,6 +34,10 @@ class StoreComposer
             'enabled' => $this->getSetting('enabled'),
             'currency' => $this->getSetting('currency', 'JCR'),
 
+            'renewals' => [
+                'cost' => $this->settings->get('jexactyl::renewal:cost', 150),
+            ],
+
             'referrals' => [
                 'enabled' => $this->settings->get('jexactyl::referrals:enabled', false),
             ],

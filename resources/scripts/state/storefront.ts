@@ -3,6 +3,9 @@ import { action, Action } from 'easy-peasy';
 export interface StorefrontSettings {
     enabled: string;
     currency: string;
+    renewals: {
+        cost: number;
+    };
     referrals: {
         enabled: string;
     };

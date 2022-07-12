@@ -116,7 +116,8 @@ Route::group([
     Route::post('/command', [Client\Servers\CommandController::class, 'index']);
     Route::post('/power', [Client\Servers\PowerController::class, 'index']);
 
-    // Routes for editing/deleting a server.
+    // Routes for editing, deleting and renewing a server.
+    Route::post('/renew', [Client\Servers\RenewalController::class, 'index'])->name('api:client:server.renew');
     Route::delete('/', [Client\Servers\ServerController::class, 'delete'])->name('api:client:server.delete');
     Route::post('/edit', [Client\Servers\EditController::class, 'index'])->name('api:client:server.edit');
 

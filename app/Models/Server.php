@@ -162,7 +162,7 @@ class Server extends Model
         'name' => 'required|string|min:1|max:191',
         'node_id' => 'required|exists:nodes,id',
         'renewable' => 'required|boolean',
-        'renewal' => 'required|integer|min:0',
+        'renewal' => 'required|integer',
         'description' => 'string',
         'status' => 'nullable|string',
         'memory' => 'required|numeric|min:0',

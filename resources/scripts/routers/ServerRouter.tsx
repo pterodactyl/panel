@@ -10,7 +10,7 @@ import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import { CSSTransition } from 'react-transition-group';
 import SidePanel from '@/components/elements/SidePanel';
-import ServerErrorSvg from '@/assets/images/server_error.svg';
+import Suspended from '@/components/elements/Suspended';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import SubNavigation from '@/components/elements/SubNavigation';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
@@ -49,11 +49,7 @@ const ConflictStateRenderer = () => {
             message={'Your server should be ready soon, please try again in a few minutes.'}
         />
     ) : status === 'suspended' ? (
-        <ScreenBlock
-            title={'Server Suspended'}
-            image={ServerErrorSvg}
-            message={'This server is suspended and cannot be accessed.'}
-        />
+        <Suspended />
     ) : (
         <ScreenBlock
             title={isTransferring ? 'Transferring' : 'Restoring from Backup'}
@@ -82,12 +78,9 @@ export default () => {
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
     const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
 
-    useEffect(
-        () => () => {
-            clearServerState();
-        },
-        []
-    );
+    useEffect(() => {
+        clearServerState();
+    }, []);
 
     useEffect(() => {
         setError('');
@@ -204,7 +197,7 @@ export default () => {
                     <InstallListener />
                     <TransferListener />
                     <WebsocketHandler />
-                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`))) ? (
+                    {inConflictState ? (
                         <ConflictStateRenderer />
                     ) : (
                         <ErrorBoundary>

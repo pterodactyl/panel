@@ -58,7 +58,7 @@ class AuthenticateServerAccess
             }
         }
 
-        if (!$request->routeIs('api:client:server.delete')) {
+        if (!$request->routeIs(['api:client:server.delete', 'api:client:server.renew'])) {
             try {
                 $server->validateCurrentState();
             } catch (ServerStateConflictException $exception) {
