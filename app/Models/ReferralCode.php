@@ -23,15 +23,11 @@ class ReferralCode extends Model
      * API representation using fractal.
      */
     public const RESOURCE_NAME = 'referral_code';
+
     /**
-     * The length of API key identifiers.
+     * The length of referral codes.
      */
-    public const IDENTIFIER_LENGTH = 16;
-    /**
-     * The length of the actual API key that is encrypted and stored
-     * in the database.
-     */
-    public const KEY_LENGTH = 32;
+    public const CODE_LENGTH = 8;
 
     /**
      * The table associated with the model.

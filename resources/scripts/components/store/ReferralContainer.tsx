@@ -3,15 +3,18 @@ import { format } from 'date-fns';
 import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
 import styled from 'styled-components/macro';
-import { useFlashKey } from '@/plugins/useFlash';
 import React, { useState, useEffect } from 'react';
+import { Button } from '@/components/elements/button';
 import { Dialog } from '@/components/elements/dialog';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import ContentBox from '@/components/elements/ContentBox';
+import useFlash, { useFlashKey } from '@/plugins/useFlash';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import deleteReferralCode from '@/api/account/deleteReferralCode';
+import createReferralCode from '@/api/account/createReferralCode';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import getReferralCodes, { ReferralCode } from '@/api/account/getReferralCodes';
-import deleteReferralCode from '@/api/account/deleteReferralCode';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -33,22 +36,48 @@ export default () => {
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);
     const [codes, setCodes] = useState<ReferralCode[]>([]);
-    const { clearAndAddHttpError } = useFlashKey('referrals');
+    const { addFlash } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlashKey('referrals');
 
     useEffect(() => {
+        clearFlashes();
         getReferralCodes()
             .then((codes) => setCodes(codes))
             .then(() => setLoading(false))
             .catch((error) => clearAndAddHttpError(error));
     }, []);
 
-    const doDeletion = (code: string) => {
+    const doCreation = () => {
+        clearFlashes();
         setLoading(true);
 
-        clearAndAddHttpError();
+        createReferralCode()
+            .then(() => {
+                getReferralCodes().then((codes) => setCodes(codes));
+                addFlash({
+                    type: 'success',
+                    key: 'referrals',
+                    message: 'Referral code has been created.',
+                });
+            })
+            .catch((error) => clearAndAddHttpError(error))
+            .then(() => {
+                setLoading(false);
+            });
+    };
+
+    const doDeletion = (code: string) => {
+        clearFlashes();
+        setLoading(true);
+
         deleteReferralCode(code)
             .then(() => {
                 getReferralCodes().then((codes) => setCodes(codes));
+                addFlash({
+                    type: 'success',
+                    key: 'referrals',
+                    message: 'Referral code has been deleted.',
+                });
             })
             .catch((error) => clearAndAddHttpError(error))
             .then(() => {
@@ -61,6 +90,7 @@ export default () => {
         <PageContentBlock title={'Referrals'}>
             <h1 className={'text-5xl'}>Referrals</h1>
             <h3 className={'text-2xl mt-2 text-neutral-500'}>Create a code and share it with others.</h3>
+            <FlashMessageRender byKey={'referrals'} className={'mt-2'} />
             <Container css={tw`lg:grid lg:grid-cols-3 my-10`}>
                 <ContentBox title={'Your Referral Codes'} css={tw`sm:mt-0`}>
                     <Dialog.Confirm
@@ -74,14 +104,14 @@ export default () => {
                     </Dialog.Confirm>
                     <SpinnerOverlay visible={loading} />
                     {codes.length === 0 ? (
-                        <p css={tw`text-center`}>{loading ? 'Loading...' : 'No referral exist for this account.'}</p>
+                        <p css={tw`text-center my-2`}>{!loading && 'No referral codes exist for this account.'}</p>
                     ) : (
                         codes.map((code, index) => (
                             <GreyRowBox
                                 key={code.code}
                                 css={[tw`bg-neutral-900 flex items-center`, index > 0 && tw`mt-2`]}
                             >
-                                <Icon.Key css={tw`text-neutral-300`} />
+                                <Icon.GitBranch css={tw`text-neutral-300`} />
                                 <div css={tw`ml-4 flex-1 overflow-hidden`}>
                                     <p css={tw`text-sm break-words`}>{code.code}</p>
                                     <p css={tw`text-2xs text-neutral-300 uppercase`}>
@@ -97,12 +127,15 @@ export default () => {
                             </GreyRowBox>
                         ))
                     )}
+                    <Button onClick={() => doCreation()} className={'mt-4'}>
+                        Create
+                    </Button>
                 </ContentBox>
                 <ContentBox title={'Available Perks'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <h1 css={tw`text-7xl flex justify-center items-center`}>hi</h1>
+                    <h1 css={tw`text-7xl flex justify-center items-center`}>indev</h1>
                 </ContentBox>
                 <ContentBox title={'Users Referred'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <h1 css={tw`text-7xl flex justify-center items-center`}>hi</h1>
+                    <h1 css={tw`text-7xl flex justify-center items-center`}>indev</h1>
                 </ContentBox>
             </Container>
         </PageContentBlock>
