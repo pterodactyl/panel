@@ -39,6 +39,7 @@ class ReferralsController extends Controller
     {
         return view('admin.jexactyl.referrals', [
             'enabled' => $this->settings->get('jexactyl::referrals:enabled', false),
+            'reward' => $this->settings->get('jexactyl::referrals:reward', 250),
         ]);
     }
 

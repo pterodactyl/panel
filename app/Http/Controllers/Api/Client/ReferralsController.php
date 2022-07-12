@@ -12,6 +12,13 @@ use Pterodacty\Http\Requests\Api\Client\Account\StoreReferralCodeRequest;
 
 class ReferralsController extends ClientApiController
 {
+    private SettingsRepositoryInterface $settings;
+
+    public function __construct(SettingsRepositoryInterface $settings)
+    {
+        $this->settings = $settings;
+    }
+
     /**
      * Returns all of the API keys that exist for the given client.
      *
@@ -31,8 +38,7 @@ class ReferralsController extends ClientApiController
      */
     public function use(ClientApiRequest $request): JsonResponse
     {
-        // INDEV
-        $reward = 10000000000;
+        $reward = $this->settings->get('jexactyl::referrals:reward', 0);
         $code = $request->input('code');
 
         // Get the user who owns the referral code.

@@ -13,6 +13,7 @@ class ReferralsFormRequest extends AdminFormRequest
     {
         return [
             'enabled' => 'required|in:true,false',
+            'reward' => 'required|min:0',
         ];
     }
 }

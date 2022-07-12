@@ -40,6 +40,16 @@
                                     <p class="text-muted"><small>Determines whether users can refer others.</small></p>
                                 </div>
                             </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Reward per referral</label>
+                                <div>
+                                    <div class="input-group">
+                                        <input type="text" id="reward" name="reward" class="form-control" value="{{ $reward }}" />
+                                        <span class="input-group-addon">credits</span>
+                                    </div>
+                                    <p class="text-muted"><small>The amount of credits to give users when they refer someone, and when someone uses a referral code.</small></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
