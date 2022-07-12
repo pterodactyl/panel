@@ -18,18 +18,6 @@
 @section('content')
     @yield('users::nav')
     <div class="row">
-        <div class="col-xs-12">
-            <div class="box box-success">
-                <div class="box-header with-border">
-                    <h3 class="box-title">User Transaction History</h3>
-                </div>
-                <div class="box-body">
-                    Soon&copy;
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
             <div class="col-xs-12">
                 <div class="box box-info">
                     <div class="box-header with-border">

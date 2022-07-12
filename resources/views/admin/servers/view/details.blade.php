@@ -51,6 +51,19 @@
                         <textarea name="description" rows="3" class="form-control">{{ old('description', $server->description) }}</textarea>
                         <p class="text-muted small">A brief description of this server.</p>
                     </div>
+                    <div class="form-group">
+                        <label for="renewable" class="control-label">Renewable <span class="field-required"></span></label>
+                        <select name="renewable" class="form-control">
+                            <option @if (!$server->renewable) selected @endif value="0">Disabled</option>
+                            <option @if ($server->renewable) selected @endif value="1">Enabled</option>
+                        </select>
+                        <p class="text-muted small">Determines whether this server is renewed by the renewal system or not.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="renewal" class="control-label">Days until renewal <span class="field-required"></span></label>
+                        <input type="text" name="renewal" value="{{ $server->renewal }}" class="form-control" />
+                        <p class="text-muted small">Set the amount of days until the server must be renewed.</p>
+                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}

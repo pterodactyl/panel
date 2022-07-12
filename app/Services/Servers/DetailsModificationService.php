@@ -47,6 +47,8 @@ class DetailsModificationService
                 'owner_id' => Arr::get($data, 'owner_id'),
                 'name' => Arr::get($data, 'name'),
                 'description' => Arr::get($data, 'description') ?? '',
+                'renewable' => Arr::get($data, 'renewable') ?? false,
+                'renewal' => Arr::get($data, 'renewal') ?? 0,
             ])->saveOrFail();
 
             // If the owner_id value is changed we need to revoke any tokens that exist for the server

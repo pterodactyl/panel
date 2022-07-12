@@ -191,6 +191,7 @@ class ServerViewController extends Controller
         // Check if the panel doesn't have at least 2 nodes configured.
         $nodes = $this->nodeRepository->all();
         $canTransfer = false;
+
         if (count($nodes) >= 2) {
             $canTransfer = true;
         }
