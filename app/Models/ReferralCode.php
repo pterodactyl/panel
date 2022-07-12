@@ -30,6 +30,11 @@ class ReferralCode extends Model
     public const CODE_LENGTH = 8;
 
     /**
+     * The length of the code to store in the database.
+     */
+    public const KEY_LENGTH = 16;
+
+    /**
      * The table associated with the model.
      *
      * @var string

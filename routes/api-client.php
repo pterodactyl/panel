@@ -38,6 +38,7 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
 
     Route::get('/referrals', [Client\ReferralsController::class, 'index']);
     Route::post('/referrals', [Client\ReferralsController::class, 'store']);
+    Route::put('/use-referral', [Client\ReferralsController::class, 'use']);
     Route::delete('/referrals/{code}', [Client\ReferralsController::class, 'delete']);
 
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);

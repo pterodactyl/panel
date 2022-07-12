@@ -61,6 +61,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property int $store_ports
  * @property int $store_backups
  * @property int $store_databases
+ * @property string $referral_code
  *
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
@@ -146,6 +147,7 @@ class User extends Model implements
         'store_ports',
         'store_backups',
         'store_databases',
+        'referral_code',
     ];
 
     /**

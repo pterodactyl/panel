@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
 use Pterodactyl\Exceptions\DisplayException;
@@ -86,7 +87,9 @@ abstract class AbstractLoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        if ($this->settings->get('jexactyl::registration:ip_check') == 'true') {
+        $ip_check = DB::table('settings')->where('key', 'jexactyl::registration:ip_check')->first();
+
+        if ($ip_check->value == 'true') {
             $ip = User::where('ip', $request->getClientIp())->count();
 
             if ($ip > 1) {
