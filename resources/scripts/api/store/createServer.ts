@@ -11,7 +11,7 @@ interface Params {
     databases: number | null;
 }
 
-export default (params: Params, egg: number): Promise<void> => {
+export default (params: Params, egg: number, nest: number): Promise<void> => {
     return new Promise((resolve, reject) => {
         http.post('/api/client/store/create', {
             ...params,

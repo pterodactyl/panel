@@ -14,16 +14,14 @@ class CreateServerRequest extends ClientApiRequest
         return [
             'name' => 'required|string|min:3|max:191',
             'description' => 'nullable|string|min:3|max:191',
-
             'cpu' => 'required|int|min:50',
             'memory' => 'required|numeric|min:1',
             'disk' => 'required|numeric|min:1',
-
             'ports' => 'required|int|min:1',
             'backups' => 'nullable|int',
             'databases' => 'nullable|int',
-
             'egg' => 'required|int|min:1',
+            'nest' => 'required|int|min:1',
         ];
     }
 }

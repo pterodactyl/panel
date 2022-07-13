@@ -55,6 +55,7 @@ export default () => {
     const [isSubmit, setSubmit] = useState(false);
     const [loading, setLoading] = useState(false);
     const [nests, setNests] = useState<Nest[]>();
+    const [nest, setNest] = useState(1);
     const [eggs, setEggs] = useState<Egg[]>();
     const [egg, setEgg] = useState(1);
 
@@ -65,6 +66,7 @@ export default () => {
     }, []);
 
     const changeNest = (x: ChangeEvent<HTMLSelectElement>) => {
+        setNest(parseInt(x.target.value));
         getEggs(parseInt(x.target.value)).then((eggs) => setEggs(eggs));
     };
 
@@ -73,7 +75,7 @@ export default () => {
         clearFlashes('store:create');
         setSubmit(true);
 
-        createServer(values, egg)
+        createServer(values, egg, nest)
             .then(() => {
                 setSubmit(false);
                 setLoading(false);

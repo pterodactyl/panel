@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 use Throwable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Exceptions\DisplayException;
@@ -16,6 +15,7 @@ use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Transformers\Api\Client\Store\EggTransformer;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Transformers\Api\Client\Store\NestTransformer;
+use Symfony\Component\HttpFoundation\Response as ResponseAlias;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreEggsRequest;
@@ -56,6 +56,7 @@ class ServerController extends ClientApiController
     public function nests(GetStoreNestsRequest $request): ?array
     {
         $nests = Nest::all();
+
         return $this->fractal->collection($nests)->transformWith($this->getTransformer(NestTransformer::class))->toArray();
     }
 
@@ -83,7 +84,7 @@ class ServerController extends ClientApiController
             'name' => $request->input('name'),
             'owner_id' => $user->id,
             'egg_id' => $egg->id,
-            'nest_id' => 1,
+            'nest_id' => $request->input('nest'),
             'allocation_id' => $this->getAllocation($request),
             'allocation_limit' => $request->input('ports'),
             'backup_limit' => $request->input('backups'),
@@ -125,7 +126,7 @@ class ServerController extends ClientApiController
             'store_databases' => $user->store_databases - $request->input('databases'),
         ]);
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse([], ResponseAlias::HTTP_NO_CONTENT);
     }
 
     /**
