@@ -26,8 +26,6 @@ class RegistrationFormRequest extends AdminFormRequest
             'registration:port' => 'required|int',
             'registration:backup' => 'required|int',
             'registration:database' => 'required|int',
-
-            'registration:ip_check' => 'required|in:true,false',
         ];
     }
 }

@@ -52,8 +52,6 @@ class RegistrationController extends Controller
             'port' => $this->settings->get('jexactyl::registration:port', 1),
             'backup' => $this->settings->get('jexactyl::registration:backup', 1),
             'database' => $this->settings->get('jexactyl::registration:database', 0),
-
-            'ip_check' => $this->settings->get('jexactyl::registration:ip_check', true),
         ]);
     }
 

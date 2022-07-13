@@ -87,20 +87,6 @@ abstract class AbstractLoginController extends Controller
 
         $this->clearLoginAttempts($request);
 
-        $ip_check = DB::table('settings')->where('key', 'jexactyl::registration:ip_check')->first();
-
-        if ($ip_check->value == 'true') {
-            $ip = User::where('ip', $request->getClientIp())->count();
-
-            if ($ip > 1) {
-                try {
-                    // Attempt to delete the user when alting detected.
-                    $user->delete();
-                } catch (Exception $ex) { /* do nothing */ }
-                throw new DisplayException('You have been detected using an alt account. Your IP address ('.$request->getClientIp().') has been logged.');
-            }
-        }
-
         $this->auth->guard()->login($user, true);
 
         return new JsonResponse([
