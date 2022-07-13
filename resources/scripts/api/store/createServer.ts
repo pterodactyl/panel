@@ -13,10 +13,7 @@ interface Params {
 
 export default (params: Params, egg: number, nest: number): Promise<void> => {
     return new Promise((resolve, reject) => {
-        http.post('/api/client/store/create', {
-            ...params,
-            egg,
-        })
+        http.post('/api/client/store/create', { ...params, egg, nest })
             .then(() => resolve())
             .catch(reject);
     });
