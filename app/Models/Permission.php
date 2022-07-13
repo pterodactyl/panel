@@ -152,6 +152,14 @@ class Permission extends Model
             ],
         ],
 
+        'plugin' => [
+            'description' => 'Permissions that control a user\'s ability to view and install Spigot plugins.',
+            'keys' => [
+                'read' => 'Allows a user to view Spigot plugins.',
+                'download' => 'Allows a user to download Spigot plugins.',
+            ],
+        ],
+
         'backup' => [
             'description' => 'Permissions that control a user\'s ability to generate and manage server backups.',
             'keys' => [

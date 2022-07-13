@@ -122,6 +122,9 @@ Route::group([
     Route::delete('/', [Client\Servers\ServerController::class, 'delete'])->name('api:client:server.delete');
     Route::post('/edit', [Client\Servers\EditController::class, 'index'])->name('api:client:server.edit');
 
+    Route::post('/plugins', [Client\Servers\PluginController::class, 'index'])->name('api:client:server.plugins');
+    Route::post('/plugins/install/{id}', [Client\Servers\PluginController::class, 'install'])->name('api:client:server.plugins');
+
     Route::group(['prefix' => '/databases'], function () {
         Route::get('/', [Client\Servers\DatabaseController::class, 'index']);
         Route::post('/', [Client\Servers\DatabaseController::class, 'store']);

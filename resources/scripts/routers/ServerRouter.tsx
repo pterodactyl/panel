@@ -17,6 +17,7 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import ExternalConsole from '@/components/server/ExternalConsole';
 import InstallListener from '@/components/server/InstallListener';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+import PluginContainer from '@/components/server/PluginContainer';
 import EditContainer from '@/components/server/edit/EditContainer';
 import TransferListener from '@/components/server/TransferListener';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
@@ -111,83 +112,90 @@ export default () => {
                             <div>
                                 <NavLink to={`${match.url}`} exact>
                                     <div css={tw`flex items-center justify-between`}>
-                                        Console <Icon.Terminal css={tw`ml-1`} size={18} />{' '}
+                                        Console <Icon.Terminal css={tw`ml-1`} size={18} />
                                     </div>
                                 </NavLink>
                                 <Can action={'activity.*'}>
                                     <NavLink to={`${match.url}/activity`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Activity <Icon.Eye css={tw`ml-1`} size={18} />{' '}
+                                            Activity <Icon.Eye css={tw`ml-1`} size={18} />
+                                        </div>
+                                    </NavLink>
+                                </Can>
+                                <Can action={'plugin.*'}>
+                                    <NavLink to={`${match.url}/plugins`}>
+                                        <div css={tw`flex items-center justify-between`}>
+                                            Plugins <Icon.Box css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Files <Icon.Folder css={tw`ml-1`} size={18} />{' '}
+                                            Files <Icon.Folder css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'database.*'}>
                                     <NavLink to={`${match.url}/databases`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Databases <Icon.Database css={tw`ml-1`} size={18} />{' '}
+                                            Databases <Icon.Database css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'schedule.*'}>
                                     <NavLink to={`${match.url}/schedules`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Tasks <Icon.Clock css={tw`ml-1`} size={18} />{' '}
+                                            Tasks <Icon.Clock css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'user.*'}>
                                     <NavLink to={`${match.url}/users`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Users <Icon.Users css={tw`ml-1`} size={18} />{' '}
+                                            Users <Icon.Users css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'backup.*'}>
                                     <NavLink to={`${match.url}/backups`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Backups <Icon.Archive css={tw`ml-1`} size={18} />{' '}
+                                            Backups <Icon.Archive css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'allocation.*'}>
                                     <NavLink to={`${match.url}/network`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Network <Icon.Share2 css={tw`ml-1`} size={18} />{' '}
+                                            Network <Icon.Share2 css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={'startup.*'}>
                                     <NavLink to={`${match.url}/startup`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Startup <Icon.Play css={tw`ml-1`} size={18} />{' '}
+                                            Startup <Icon.Play css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={['settings.*', 'file.sftp']} matchAny>
                                     <NavLink to={`${match.url}/settings`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Settings <Icon.Settings css={tw`ml-1`} size={18} />{' '}
+                                            Settings <Icon.Settings css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 <Can action={['settings.*']} matchAny>
                                     <NavLink to={`${match.url}/edit`}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Edit <Icon.Edit css={tw`ml-1`} size={18} />{' '}
+                                            Edit <Icon.Edit css={tw`ml-1`} size={18} />
                                         </div>
                                     </NavLink>
                                 </Can>
                                 {rootAdmin && (
                                     <a href={'/admin/servers/view/' + serverId} rel='noreferrer' target={'_blank'}>
                                         <div css={tw`flex items-center justify-between`}>
-                                            Admin <Icon.ExternalLink css={tw`ml-1`} size={18} />{' '}
+                                            Admin <Icon.ExternalLink css={tw`ml-1`} size={18} />
                                         </div>
                                     </a>
                                 )}
@@ -213,6 +221,11 @@ export default () => {
                                     <Route path={`${match.path}/activity`} exact>
                                         <RequireServerPermission permissions={'activity.*'}>
                                             <ServerActivityLogContainer />
+                                        </RequireServerPermission>
+                                    </Route>
+                                    <Route path={`${match.path}/plugins`} exact>
+                                        <RequireServerPermission permissions={'plugin.*'}>
+                                            <PluginContainer />
                                         </RequireServerPermission>
                                     </Route>
                                     <Route path={`${match.path}/files/:action(edit|new)`} exact>
