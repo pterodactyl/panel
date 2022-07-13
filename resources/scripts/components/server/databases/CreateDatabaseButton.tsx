@@ -88,30 +88,19 @@ export default () => {
                                         'Where connections should be allowed from. Leave blank to allow connections from anywhere.'
                                     }
                                 />
-                                <div css={tw`mt-6`}>
-                                    <Field
-                                        type={'string'}
-                                        id={'connections_from'}
-                                        name={'connectionsFrom'}
-                                        label={'Connections From'}
-                                        description={
-                                            'Where connections should be allowed from. Leave blank to allow connections from anywhere.'
-                                        }
-                                    />
-                                </div>
-                                <div css={tw`flex flex-wrap justify-end mt-6`}>
-                                    <Button
-                                        type={'button'}
-                                        variant={Button.Variants.Secondary}
-                                        css={tw`w-full sm:w-auto sm:mr-2`}
-                                        onClick={() => setVisible(false)}
-                                    >
-                                        Cancel
-                                    </Button>
-                                    <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
-                                        Create Database
-                                    </Button>
-                                </div>
+                            </div>
+                            <div css={tw`flex flex-wrap justify-end mt-6`}>
+                                <Button
+                                    type={'button'}
+                                    variant={Button.Variants.Secondary}
+                                    css={tw`w-full sm:w-auto sm:mr-2`}
+                                    onClick={() => setVisible(false)}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
+                                    Create Database
+                                </Button>
                             </div>
                         </Form>
                     </Modal>
