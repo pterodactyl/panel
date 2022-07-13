@@ -88,7 +88,7 @@ export default ({
                                     variants={variants}
                                     className={styles.panel}
                                 >
-                                    <div className={'flex p-6 overflow-y-auto'}>
+                                    <div className={'flex p-6 pb-0 overflow-y-auto'}>
                                         {iconPosition === 'container' && icon}
                                         <div className={'flex-1 max-h-[70vh]'}>
                                             <div className={'flex items-center'}>
@@ -103,6 +103,7 @@ export default ({
                                                 </div>
                                             </div>
                                             {children}
+                                            <div className={'invisible h-6'} />
                                         </div>
                                     </div>
                                     {footer}

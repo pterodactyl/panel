@@ -20,6 +20,7 @@ interface SSHKey extends Model {
 }
 
 interface ActivityLog extends Model<'actor'> {
+    id: string;
     batch: UUID | null;
     event: string;
     ip: string | null;
