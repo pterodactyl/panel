@@ -12,13 +12,6 @@ use Pterodacty\Http\Requests\Api\Client\Account\StoreReferralCodeRequest;
 
 class ReferralsController extends ClientApiController
 {
-    private SettingsRepositoryInterface $settings;
-
-    public function __construct(SettingsRepositoryInterface $settings)
-    {
-        $this->settings = $settings;
-    }
-
     /**
      * Returns all of the API keys that exist for the given client.
      *
