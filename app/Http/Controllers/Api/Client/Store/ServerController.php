@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
+use Exception;
 use Throwable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
@@ -137,31 +138,29 @@ class ServerController extends ClientApiController
     protected function getAllocation(CreateServerRequest $request): int
     {
         $nodes = $this->nodeRepository->getNodesForServerCreation();
-        $available_nodes = [];
+        $deployable_nodes = [];
 
         foreach ($nodes as $node) {
             $x = $this->nodeRepository->getNodeWithResourceUsage($node['id']);
             if ($x->getOriginal('sum_memory') <= $x->getOriginal('memory') - ($request->input('memory') * 1024)) {
-                $available_nodes[] = $x->id;
+                $deployable_nodes[$x->id] = $x->getOriginal('memory') - ($request->input('memory')) * 1024;
             }
         }
 
-        if ($available_nodes > 0) {
-            $node = $available_nodes[0];
-        } else {
+        if ($deployable_nodes < 1) {
             throw new DisplayException('Unable to find a node to deploy the server.');
         }
 
+        $best_node = max($deployable_nodes);
+        $node = array_search($best_node, $deployable_nodes);
+
         try {
-            $alloc = DB::table('allocations')
-                ->where('node_id', $node)
-                ->where('server_id', null)
-                ->first();
-        } catch (DisplayException $exception) {
+            $allocation = DB::table('allocations')->where('node_id', $node)->where('server_id', null)->first()->id;
+        } catch (Exception $e) {
             throw new DisplayException('Unable to find an allocation to deploy the server.');
         }
 
-        return $alloc->id;
+        return $allocation;
     }
 
     /**
