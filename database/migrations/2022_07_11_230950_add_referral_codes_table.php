@@ -16,7 +16,7 @@ class AddReferralCodesTable extends Migration
         Schema::create('referral_codes', function (Blueprint $table) {
             $table->id();
             $table->unsignedInteger('user_id');
-            $table->text('code')->unique();
+            $table->string('code')->unique();
             $table->timestamps();
         });
     }
