@@ -84,9 +84,11 @@ const StartupContainer = () => {
         )
     ) : (
         <ServerContentBlock title={'Startup Settings'} showFlashKey={'startup:image'}>
-            <h1 css={tw`text-5xl`}>Startup</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Fine-tune variables for your server during startup.</h3>
-            <div css={tw`md:flex`}>
+            <h1 className={'j-left text-5xl'}>Startup</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500 mb-10'}>
+                Fine-tune variables for your server during startup.
+            </h3>
+            <div className={'md:flex j-up'}>
                 <TitledGreyBox title={'Startup Command'} css={tw`flex-1`}>
                     <div css={tw`px-1 py-2`}>
                         <p css={tw`font-mono bg-neutral-900 rounded py-2 px-4`}>{data.invocation}</p>
@@ -127,7 +129,7 @@ const StartupContainer = () => {
                 </TitledGreyBox>
             </div>
             <h3 css={tw`mt-8 mb-2 text-2xl`}>Variables</h3>
-            <div css={tw`grid gap-8 md:grid-cols-2`}>
+            <div className={'j-up grid gap-8 md:grid-cols-2'}>
                 {data.variables.map((variable) => (
                     <VariableBox key={variable.envVariable} variable={variable} />
                 ))}

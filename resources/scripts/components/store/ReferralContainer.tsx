@@ -15,6 +15,7 @@ import createReferralCode from '@/api/account/createReferralCode';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import getReferralCodes, { ReferralCode } from '@/api/account/getReferralCodes';
+import { useStoreState } from '@/state/hooks';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -35,6 +36,7 @@ const Container = styled.div`
 export default () => {
     const [code, setCode] = useState('');
     const [loading, setLoading] = useState(true);
+    const reward = useStoreState((state) => state.storefront.data?.referrals.reward);
     const [codes, setCodes] = useState<ReferralCode[]>([]);
     const { addFlash } = useFlash();
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('referrals');
@@ -132,10 +134,13 @@ export default () => {
                     </Button>
                 </ContentBox>
                 <ContentBox title={'Available Perks'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <h1 css={tw`text-7xl flex justify-center items-center`}>indev</h1>
+                    <h1 css={tw`text-xl`}>
+                        You will recieve <span className={'text-green-500'}>{reward}</span> credits for every user you
+                        refer to this Panel.
+                    </h1>
                 </ContentBox>
                 <ContentBox title={'Users Referred'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <h1 css={tw`text-7xl flex justify-center items-center`}>indev</h1>
+                    <h1 css={tw`text-gray-400`}>Unable to view statistics at this time.</h1>
                 </ContentBox>
             </Container>
         </PageContentBlock>

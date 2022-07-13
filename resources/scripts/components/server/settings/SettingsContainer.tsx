@@ -17,10 +17,12 @@ export default () => {
     return (
         <ServerContentBlock title={'Settings'}>
             <FlashMessageRender byKey={'settings'} css={tw`mb-4`} />
-            <h1 css={tw`text-5xl`}>Settings</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Control important settings for your server.</h3>
-            <div css={tw`md:flex`}>
-                <div css={tw`w-full md:flex-1 md:mr-10`}>
+            <h1 className={'j-left text-5xl'}>Settings</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500 mb-10'}>
+                Control important settings for your server.
+            </h3>
+            <div className={'md:flex'}>
+                <div className={'j-right w-full md:flex-1 md:mr-10'}>
                     <TitledGreyBox title={'Debug Information'} css={tw`mb-6 md:mb-10`}>
                         <div css={tw`flex items-center justify-between text-sm`}>
                             <p>Node</p>
@@ -35,7 +37,7 @@ export default () => {
                     </TitledGreyBox>
                     <DeleteServerBox />
                 </div>
-                <div css={tw`w-full mt-6 md:flex-1 md:mt-0`}>
+                <div className={'j-left w-full mt-6 md:flex-1 md:mt-0'}>
                     <Can action={'settings.rename'}>
                         <div css={tw`mb-6 md:mb-10`}>
                             <RenameServerBox />

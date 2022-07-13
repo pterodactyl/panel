@@ -8,6 +8,7 @@ export interface StorefrontSettings {
     };
     referrals: {
         enabled: string;
+        reward: number;
     };
     cost: {
         cpu: number;

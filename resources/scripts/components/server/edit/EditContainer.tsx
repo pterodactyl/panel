@@ -70,8 +70,10 @@ export default () => {
                 continue?
             </Dialog.Confirm>
             <FlashMessageRender byKey={'server:edit'} css={tw`mb-4`} />
-            <h1 css={tw`text-5xl`}>Edit Resources</h1>
-            <h3 css={tw`text-2xl mt-2 text-neutral-500 mb-10`}>Add and remove resources from your server.</h3>
+            <h1 className={'j-left text-5xl'}>Edit Resources</h1>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500 mb-10'}>
+                Add and remove resources from your server.
+            </h3>
             <Container css={tw`lg:grid lg:grid-cols-3 gap-4 my-10`}>
                 <TitledGreyBox title={'Edit server CPU limit'} css={tw`mt-8 sm:mt-0`}>
                     <Wrapper>

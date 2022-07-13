@@ -40,6 +40,7 @@ class StoreComposer
 
             'referrals' => [
                 'enabled' => $this->settings->get('jexactyl::referrals:enabled', false),
+                'reward' => $this->settings->get('jexactyl::referrals:reward', 250),
             ],
 
             'earn' => [
