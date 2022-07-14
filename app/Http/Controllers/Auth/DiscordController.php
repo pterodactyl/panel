@@ -72,7 +72,7 @@ class DiscordController extends Controller
 
             return redirect('/');
         } else {
-            if ($this->settings->get('jexactyl::registration:enabled') == 'false') return;
+            if ($this->settings->get('jexactyl::discord:enabled') == 'false') return;
 
             $username = $this->genString();
             $data = [
