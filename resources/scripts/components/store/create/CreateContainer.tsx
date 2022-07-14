@@ -2,11 +2,11 @@ import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
 import { Form, Formik } from 'formik';
+import styled from 'styled-components';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { number, object, string } from 'yup';
 import { megabytesToHuman } from '@/helpers';
-import styled from 'styled-components/macro';
 import Field from '@/components/elements/Field';
 import Select from '@/components/elements/Select';
 import { Egg, getEggs } from '@/api/store/getEggs';
@@ -110,6 +110,7 @@ export default () => {
                     ports: resources.ports,
                     backups: resources.backups,
                     databases: resources.databases,
+                    nest: 1,
                     egg: 1,
                 }}
                 validationSchema={object().shape({
@@ -129,13 +130,14 @@ export default () => {
                     ports: number().required().min(1).max(resources.ports).max(limit.port),
                     backups: number().optional().max(resources.backups).max(limit.backup),
                     databases: number().optional().max(resources.databases).max(limit.database),
-                    egg: number().required(),
+                    nest: number().required().default(1),
+                    egg: number().required().default(1),
                 })}
             >
                 <Form>
                     <h1 className={'j-left text-5xl'}>Basic Details</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>Set the basic fields for your new server.</h3>
-                    <Container css={tw`lg:grid lg:grid-cols-2 my-10 gap-4`}>
+                    <Container className={'lg:grid lg:grid-cols-2 my-10 gap-4'}>
                         <TitledGreyBox title={'Server name'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'name'} />
                             <p css={tw`mt-1 text-xs`}>Assign a name to your server for use in the Panel.</p>
@@ -151,7 +153,7 @@ export default () => {
                     </Container>
                     <h1 className={'j-left text-5xl'}>Resource Limits</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>Set specific limits for CPU, RAM and more.</h3>
-                    <Container css={tw`lg:grid lg:grid-cols-3 my-10 gap-4`}>
+                    <Container className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
                         <TitledGreyBox title={'Server CPU limit'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'cpu'} />
                             <p css={tw`mt-1 text-xs`}>Assign a limit for usable CPU.</p>
@@ -174,7 +176,7 @@ export default () => {
                     <h3 className={'j-left text-2xl text-neutral-500'}>
                         Add databases, allocations and ports to your server.
                     </h3>
-                    <Container css={tw`lg:grid lg:grid-cols-3 my-10 gap-4`}>
+                    <Container className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
                         <TitledGreyBox title={'Server allocations'} css={tw`mt-8 sm:mt-0`}>
                             <Field name={'ports'} />
                             <p css={tw`mt-1 text-xs`}>Assign a number of ports to your server.</p>
@@ -193,7 +195,7 @@ export default () => {
                     </Container>
                     <h1 className={'j-left text-5xl'}>Server Type</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>Choose a server distribution to use.</h3>
-                    <Container css={tw`my-10 gap-4`}>
+                    <Container className={'lg:grid lg:grid-cols-2 my-10 gap-4'}>
                         <TitledGreyBox title={'Server Nest'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'nest'} onChange={(n) => changeNest(n)}>
                                 {nests.map((n) => (
