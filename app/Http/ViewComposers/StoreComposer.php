@@ -36,6 +36,7 @@ class StoreComposer
 
             'renewals' => [
                 'cost' => $this->settings->get('jexactyl::renewal:cost', 150),
+                'days' => $this->settings->get('jexactyl::renewal:default', 7),
             ],
 
             'referrals' => [

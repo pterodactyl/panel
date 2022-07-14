@@ -5,6 +5,7 @@ export interface StorefrontSettings {
     currency: string;
     renewals: {
         cost: number;
+        days: number;
     };
     referrals: {
         enabled: string;

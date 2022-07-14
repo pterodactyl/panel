@@ -44,7 +44,7 @@ class ServerRenewalService
             $server->update([
                 'renewal' => $server->renewal + 7,
             ]);
-            
+
             $user->update([
                 'store_balance' => $user->store_balance - $cost,
             ]);
