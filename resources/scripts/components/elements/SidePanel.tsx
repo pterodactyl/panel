@@ -58,7 +58,7 @@ export default () => {
                     <SearchContainer size={32} />
                 </div>
                 <NavLink to={'/'} className={'navigation-link'} exact>
-                    <Tooltip placement={'bottom'} content={'Store'}>
+                    <Tooltip placement={'bottom'} content={'Servers'}>
                         <Icon.Server size={32} css={tw`my-8`} />
                     </Tooltip>
                 </NavLink>
