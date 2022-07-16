@@ -16,6 +16,9 @@ return [
         'recovery-token' => 'Used two-factor recovery token',
         'token' => 'Solved two-factor challenge',
         'ip-blocked' => 'Blocked request from unlisted IP address for :identifier',
+        'sftp' => [
+            'fail' => 'Failed SFTP log in',
+        ],
     ],
     'user' => [
         'account' => [
@@ -78,6 +81,19 @@ return [
             'rename_other' => 'Renamed :count files in :directory',
             'write' => 'Wrote new content to :file',
             'upload' => 'Began a file upload',
+        ],
+        'sftp' => [
+            'denied' => 'Blocked SFTP access due to permissions',
+            'create_one' => 'Created :files.0',
+            'create_other' => 'Created :count new files',
+            'write_one' => 'Modified the contents of :files.0',
+            'write_other' => 'Modified the contents of :count files',
+            'delete_one' => 'Deleted :files.0',
+            'delete_other' => 'Deleted :count files',
+            'create-directory_one' => 'Created the :files.0 directory',
+            'create-directory_other' => 'Created :count directories',
+            'rename_one' => 'Renamed :files.0.from to :files.0.to',
+            'rename_other' => 'Renamed or moved :count files',
         ],
         'allocation' => [
             'create' => 'Added :allocation to the server',
