@@ -151,7 +151,7 @@ class ServerController extends ClientApiController
             }
         }
 
-        if ($deployable_nodes < 1) {
+        if (empty($deployable_nodes)) {
             throw new DisplayException('Unable to find a node to deploy the server.');
         }
 
