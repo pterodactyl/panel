@@ -56,7 +56,7 @@ export default () => {
         <ServerContentBlock title={'Plugins'}>
             <FlashMessageRender byKey={'server:plugins'} />
             <h1 className={'j-left text-5xl'}>Plugin Installer</h1>
-            <h3 className={'j-left text-2xl mt-2 text-neutral-500 mb-10'}>Search and download Spgiot plugins.</h3>
+            <h3 className={'j-left text-2xl mt-2 text-neutral-500 mb-10'}>Search and download Spigot plugins.</h3>
             <Formik
                 onSubmit={submit}
                 initialValues={{ query: '' }}
