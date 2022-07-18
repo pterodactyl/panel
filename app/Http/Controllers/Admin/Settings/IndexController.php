@@ -59,7 +59,7 @@ class IndexController extends Controller
         return view('admin.settings.index', [
             'version' => $this->versionService,
             'languages' => $this->getAvailableLanguages(true),
-            'logo' => $this->settings->get('settings::app:logo', 'https://www.jexactyl.com/assets/images/logo.png'),
+            'logo' => $this->settings->get('settings::app:logo', 'https://www.jexactyl.com/_nuxt/img/logo.79c0f3f.png'),
         ]);
     }
 
