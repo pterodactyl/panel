@@ -63,7 +63,14 @@
                             <div class="form-group col-md-4">
                                 <label class="control-label">Name of currency</label>
                                 <div>
-                                    <input type="text" class="form-control" name="store:currency" value="{{ $currency }}" />
+                                    <select name="store:currency" class="form-control">
+                                        <option @if ($currency == 'EUR') selected @endif value="EUR">EUR (Euro)</option>
+                                        <option @if ($currency == 'USD') selected @endif value="USD">USD (US dollar)</option>
+                                        <option @if ($currency == 'JPY') selected @endif value="JPY">JPY (Japanese yen)</option>
+                                        <option @if ($currency == 'GBP') selected @endif value="EUR">GBP (Pound sterling)</option>                                        <option @if ($currency == 'GBP') selected @endif value="EUR">GBP (Pound sterling)</option>
+                                        <option @if ($currency == 'CAD') selected @endif value="CAD">CAD (Canadian dollar)</option>
+                                        <option @if ($currency == 'AUD') selected @endif value="AUD">AUD (Australian dollar)</option>
+                                    </select>
                                     <p class="text-muted"><small>The name of the currency used for Jexactyl. (Default: JCR)</small></p>
                                 </div>
                             </div>
