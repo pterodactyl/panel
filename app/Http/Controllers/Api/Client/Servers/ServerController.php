@@ -65,7 +65,7 @@ class ServerController extends ClientApiController
         };
 
         try {
-            $this->deletionService->handle($server);
+            $this->deletionService->returnResources(true)->handle($server);
         } catch (DisplayException $ex) {
             throw new DisplayException('Unable to delete the server from the system.');
         }

@@ -125,7 +125,7 @@ class ServerDeletionService
 
         if ($this->return_resources) {
             try {
-                $user = User::where('id', $owner)->findOrFail();
+                $user = User::findOrFail($owner);
 
                 $user->update([
                     'store_cpu' => $user->store_cpu + $server->cpu,

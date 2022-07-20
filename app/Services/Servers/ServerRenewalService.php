@@ -40,13 +40,8 @@ class ServerRenewalService
         };
 
         try {
-            $user->update([
-                'store_balance' => $user->store_balance - $cost,
-            ]);
-
-            $server->update([
-                'renewal' => $server->renewal + $this->settings->get('jexactyl::renewal:days', 7),
-            ]);
+            $user->update(['store_balance' => $user->store_balance - $cost]);
+            $server->update(['renewal' => $server->renewal + $this->settings->get('jexactyl::renewal:default', 7)]);
         } catch (DisplayException $ex) {
             throw new DisplayException('An unexpected error occured while trying to renew your server.');
         };
