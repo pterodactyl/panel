@@ -25,6 +25,8 @@ export default () => {
 
     const { data, error } = useSWR<Plugin>([uuid, query, '/plugins'], (uuid, query) => getPlugins(uuid, query));
 
+    console.log(data);
+
     useEffect(() => {
         if (!error) {
             clearFlashes('server:plugins');
@@ -108,9 +110,15 @@ export default () => {
                                                         </p>
                                                     </div>
                                                     <div>
-                                                        <Button className={'m-1'} onClick={() => setOpen(true)}>
-                                                            <Icon.DownloadCloud size={18} />
-                                                        </Button>
+                                                        {plugin.premium ? (
+                                                            <Button.Text className={'m-1'} disabled>
+                                                                <Icon.DownloadCloud size={18} />
+                                                            </Button.Text>
+                                                        ) : (
+                                                            <Button className={'m-1'} onClick={() => setOpen(true)}>
+                                                                <Icon.DownloadCloud size={18} />
+                                                            </Button>
+                                                        )}
                                                         <a href={`https://api.spiget.org/v2/resources/${plugin.id}/go`}>
                                                             <Button className={'m-1'}>
                                                                 <Icon.ExternalLink size={18} />
