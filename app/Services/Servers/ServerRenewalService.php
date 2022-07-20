@@ -51,7 +51,7 @@ class ServerRenewalService
             throw new DisplayException('An unexpected error occured while trying to renew your server.');
         };
 
-        if ($server->status == 'suspended') {
+        if ($server->status == 'suspended' && $server->renewal >= 0) {
             $this->suspensionService->toggle($server, 'unsuspend');
         };
     
