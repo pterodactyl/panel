@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
+import { httpErrorToHuman } from '@/api/http';
 import { useStoreState } from '@/state/hooks';
 import { ServerContext } from '@/state/server';
 import renewServer from '@/api/server/renewServer';
@@ -8,7 +9,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
 export default () => {
     const [open, setOpen] = useState(false);
-    const { clearAndAddHttpError } = useFlash();
+    const { addFlash, clearFlashes } = useFlash();
     const [loading, setLoading] = useState(false);
     const store = useStoreState((state) => state.storefront.data!);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -16,10 +17,30 @@ export default () => {
 
     const doRenewal = () => {
         setLoading(true);
+        clearFlashes('console:share');
 
         renewServer(uuid)
-            .then(() => setOpen(false))
-            .catch((error) => clearAndAddHttpError(error));
+            .then(() => {
+                setOpen(false);
+                setLoading(false);
+
+                addFlash({
+                    key: 'console:share',
+                    type: 'success',
+                    message: 'Server has been renewed.',
+                });
+            })
+            .catch((error) => {
+                setOpen(false);
+                setLoading(false);
+
+                console.log(httpErrorToHuman(error));
+                addFlash({
+                    key: 'console:share',
+                    type: 'error',
+                    message: 'Unable to renew your server. Are you sure you have enough credits?',
+                });
+            });
     };
 
     return (

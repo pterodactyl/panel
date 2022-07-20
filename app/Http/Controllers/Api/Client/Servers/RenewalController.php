@@ -12,7 +12,7 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 
 class RenewalController extends ClientApiController
 {
-    public ServerRenewalService $renewalService;
+    private ServerRenewalService $renewalService;
 
     public function __construct(ServerRenewalService $renewalService)
     {
@@ -26,11 +26,7 @@ class RenewalController extends ClientApiController
      */
     public function index(ClientApiRequest $request, Server $server): JsonResponse
     {
-        try {
-            $this->renewalService->handle($request, $server);
-        } catch (DisplayException $ex) {
-            throw new DisplayException('Unable to renew server.');
-        }
+        $this->renewalService->handle($request, $server);
     
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
