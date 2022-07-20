@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Servers;
 
 use Exception;
+use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Facades\Log;
@@ -61,6 +62,20 @@ class ServerDeletionService
     }
 
     /**
+     * Set if the server's owner should recieve the resources upon server deletion.
+     *
+     * @param bool $bool
+     *
+     * @return $this
+     */
+    public function returnResources($bool = true)
+    {
+        $this->return_resources = $bool;
+
+        return $this;
+    }
+
+    /**
      * Delete a server from the panel and remove any associated databases from hosts.
      *
      * @throws \Throwable
@@ -68,6 +83,8 @@ class ServerDeletionService
      */
     public function handle(Server $server)
     {
+        $owner = $server->owner_id;
+
         try {
             $this->daemonServerRepository->setServer($server)->delete();
         } catch (DaemonConnectionException $exception) {
@@ -105,5 +122,25 @@ class ServerDeletionService
 
             $server->delete();
         });
+
+        if ($this->return_resources) {
+            try {
+                $user = User::where('id', $owner)->findOrFail();
+
+                $user->update([
+                    'store_cpu' => $user->store_cpu + $server->cpu,
+                    'store_memory' => $user->store_memory + $server->memory,
+                    'store_disk' => $user->store_disk + $server->disk,
+                    'store_ports' => $user->store_ports + 1, // Always one slot.
+                    'store_ports' => $user->store_ports + $server->allocation_limit,
+                    'store_backups' => $user->store_backups + $server->backup_limit,
+                    'store_databases' => $user->store_databases + $server->database_limit,
+                ]);
+    
+                $user->save();
+            } catch (Exception $ex) {
+                throw $ex;
+            };
+        }
     }
 }
