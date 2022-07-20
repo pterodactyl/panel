@@ -9,7 +9,7 @@ return [
     /*
      * API endpoint for recaptcha checks. You should not edit this.
      */
-    'domain' => 'https://www.google.com/recaptcha/api/siteverify',
+    'domain' => 'https://www.recaptcha.net/recaptcha/api/siteverify',
 
     /*
      * Use a custom secret key, we use our public one by default
