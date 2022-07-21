@@ -26,7 +26,7 @@
                     @endif
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Server Renewals <small>Configure settings for server renewals.</small></h3>
+                        <i class="fa fa-clock-o"></i> <h3 class="box-title">Server Renewals <small>Configure settings for server renewals.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -63,10 +63,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save Changes</button>
-                </div>
+                {!! csrf_field() !!}
+                <button type="submit" name="_method" value="PATCH" class="btn btn-default pull-right">Save Changes</button>
             </form>
         </div>
     </div>

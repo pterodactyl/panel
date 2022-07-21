@@ -26,7 +26,7 @@
                     @endif
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Jexactyl Storefront <small>Configure whether certain options for the store are enabled.</small></h3>
+                        <i class="fa fa-shopping-cart"></i> <h3 class="box-title">Jexactyl Storefront <small>Configure whether certain options for the store are enabled.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -71,7 +71,7 @@
                                         <option @if ($currency == 'CAD') selected @endif value="CAD">CAD (Canadian dollar)</option>
                                         <option @if ($currency == 'AUD') selected @endif value="AUD">AUD (Australian dollar)</option>
                                     </select>
-                                    <p class="text-muted"><small>The name of the currency used for Jexactyl. (Default: JCR)</small></p>
+                                    <p class="text-muted"><small>The name of the currency used for Jexactyl.</small></p>
                                 </div>
                             </div>
                         </div>
@@ -79,7 +79,7 @@
                 </div>
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Idle Earning <small>Configure settings for passive credit earning.</small></h3>
+                        <i class="fa fa-money"></i> <h3 class="box-title">Idle Earning <small>Configure settings for passive credit earning.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -105,7 +105,7 @@
                 </div>
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Resource Pricing <small>Set specific pricing for resources.</small></h3>
+                        <i class="fa fa-dollar"></i> <h3 class="box-title">Resource Pricing <small>Set specific pricing for resources.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -163,7 +163,7 @@
                 </div>
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Resource Limits <small>Set limits for how many of each resource a server can be deployed with.</small></h3>
+                        <i class="fa fa-area-chart"></i> <h3 class="box-title">Resource Limits <small>Set limits for how many of each resource a server can be deployed with.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -230,10 +230,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save Changes</button>
-                </div>
+                {!! csrf_field() !!}
+                <button type="submit" name="_method" value="PATCH" class="btn btn-default pull-right">Save Changes</button>
             </form>
         </div>
     </div>

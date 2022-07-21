@@ -14,7 +14,7 @@
 @endsection
 
 @section('content')
-    @yield('jexactyl::nav')
+@yield('jexactyl::nav')
     <div class="row">
         <div class="col-xs-12">
             <form action="{{ route('admin.jexactyl.registration') }}" method="POST">
@@ -26,7 +26,7 @@
                 @endif
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Registration via Email <small>The settings for Email registration and logins.</small></h3>
+                        <i class="fa fa-at"></i> <h3 class="box-title">Registration via Email <small>The settings for Email registration and logins.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -51,7 +51,7 @@
                 @endif
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Registration via Discord <small>The settings for Discord registration and logins.</small></h3>
+                        <i class="fa fa-comments-o"></i> <h3 class="box-title">Registration via Discord <small>The settings for Discord registration and logins.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -95,7 +95,7 @@
                 </div>
                 <div class="box box-info">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Default Resources <small>The default resources assigned to a user on registration.</small></h3>
+                        <i class="fa fa-microchip"></i> <h3 class="box-title">Default Resources <small>The default resources assigned to a user on registration.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -151,10 +151,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save Changes</button>
-                </div>
+                {!! csrf_field() !!}
+                <button type="submit" name="_method" value="PATCH" class="btn btn-default pull-right">Save Changes</button>
             </form>
         </div>
     </div>

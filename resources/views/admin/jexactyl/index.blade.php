@@ -25,7 +25,7 @@
                 @endif
             ">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Software Release <small>Verify Jexactyl is up-to-date.</small></h3>
+                    <i class="fa fa-code-fork"></i> <h3 class="box-title">Software Release <small>Verify Jexactyl is up-to-date.</small></h3>
                 </div>
                 <div class="box-body">
                     @if ($version->isLatestPanel())
@@ -37,4 +37,81 @@
             </div>
         </div>
     </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <i class="fa fa-bar-chart"></i> <h3 class="box-title">Resource Utilization <small>A glance of the total amount of resources used.</small></h3>
+                </div>
+                <div class="box-body">
+                    <div class="col-xs-12 col-md-3">
+                        <canvas id="servers_chart" width="100%" height="50">
+                            <p class="text-muted">No data is available for this chart.</p>
+                        </canvas>
+                    </div>
+                    <div class="col-xs-12 col-md-3" style="margin-bottom: 20px;">
+                        <canvas id="status_chart" width="100%" height="50">
+                            <p class="text-muted">No data is available for this chart.</p>
+                        </canvas>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <canvas id="ram_chart" width="100%" height="50">
+                            <p class="text-muted">No data is available for this chart.</p>
+                        </canvas>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <canvas id="disk_chart" width="100%" height="50">
+                            <p class="text-muted">No data is available for this chart.</p>
+                        </canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="col-xs-12 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon"><i class="fa fa-server"></i></span>
+                    <div class="info-box-content" style="padding: 23px 10px 0;">
+                        <span class="info-box-text">Total Servers</span>
+                        <span class="info-box-number">{{ count($servers) }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon"><i class="fa fa-wifi"></i></span>
+                    <div class="info-box-content" style="padding: 23px 10px 0;">
+                        <span class="info-box-text">Total Allocations</span>
+                        <span class="info-box-number">{{ $available['allocations'] }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon"><i class="fa fa-pie-chart"></i></span>
+                    <div class="info-box-content" style="padding: 23px 10px 0;">
+                        <span class="info-box-text">Total RAM use</span>
+                        <span class="info-box-number">{{ $used['ram'] / 1024 }} GB of {{ $available['ram'] / 1024 }} GB ({{ $used['ram'] / $available['ram'] * 100}}%)</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12 col-md-3">
+                <div class="info-box">
+                    <span class="info-box-icon"><i class="fa fa-hdd-o"></i></span>
+                    <div class="info-box-content" style="padding: 23px 10px 0;">
+                        <span class="info-box-text">Total disk use</span>
+                        <span class="info-box-number">{{ $used['disk'] / 1024 }} GB of {{ $available['disk'] / 1024 }} GB ({{ $used['disk'] / $available['disk'] * 100}}%)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+
+@section('footer-scripts')
+    @parent
+    {!! Theme::js('vendor/chartjs/chart.min.js') !!}
+    {!! Theme::js('js/admin/statistics.js') !!}
 @endsection

@@ -178,4 +178,12 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             ->where('node_id', '=', $node)
             ->paginate($limit);
     }
+
+    /**
+     * Returns all of the suspended servers on the Panel.
+     */
+    public function getSuspendedServersCount(): int
+    {
+        return $this->getBuilder()->where('status', 'suspended')->count();
+    }
 }

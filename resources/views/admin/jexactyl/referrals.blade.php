@@ -26,7 +26,7 @@
                     @endif
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Referrals <small>Allow users to refer others to the Panel.</small></h3>
+                        <i class="fa fa-user-plus"></i> <h3 class="box-title">Referrals <small>Allow users to refer others to the Panel.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
@@ -53,10 +53,8 @@
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save Changes</button>
-                </div>
+                {!! csrf_field() !!}
+                <button type="submit" name="_method" value="PATCH" class="btn btn-default pull-right">Save Changes</button>
             </form>
         </div>
     </div>
