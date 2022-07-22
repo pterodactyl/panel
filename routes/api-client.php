@@ -118,8 +118,8 @@ Route::group([
     Route::post('/power', [Client\Servers\PowerController::class, 'index']);
 
     // Routes for editing, deleting and renewing a server.
-    Route::post('/renew', [Client\Servers\RenewalController::class, 'index'])->name('api:client:server.renew');
-    Route::delete('/', [Client\Servers\ServerController::class, 'delete'])->name('api:client:server.delete');
+    Route::post('/renew', [Client\Servers\RenewalController::class, 'index'])->name('api:client:server.renew')->middleware('auth', 'throttle:1,1');
+    Route::delete('/', [Client\Servers\ServerController::class, 'delete'])->name('api:client:server.delete')->middleware('auth', 'throttle:1,1');
     Route::post('/edit', [Client\Servers\EditController::class, 'index'])->name('api:client:server.edit');
 
     Route::post('/plugins', [Client\Servers\PluginController::class, 'index'])->name('api:client:server.plugins');
