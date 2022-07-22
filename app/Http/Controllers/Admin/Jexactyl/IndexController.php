@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 use Carbon\Carbon;
 use Illuminate\View\View;
 use Illuminate\Cache\Repository;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
@@ -12,7 +13,7 @@ use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Traits\Controllers\PlainJavascriptInjection;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class IndexController extends Controller
 {
@@ -24,7 +25,6 @@ class IndexController extends Controller
     private SoftwareVersionService $versionService;
     private NodeRepositoryInterface $nodeRepository;
     private ServerRepositoryInterface $serverRepository;
-    private AllocationRepositoryInterface $allocationRepository;
 
     public function __construct(
         Fractal $fractal,
@@ -33,7 +33,6 @@ class IndexController extends Controller
         SoftwareVersionService $versionService,
         NodeRepositoryInterface $nodeRepository,
         ServerRepositoryInterface $serverRepository,
-        AllocationRepositoryInterface $allocationRepository
     ) {
         $this->cache = $cache;
         $this->fractal = $fractal;
@@ -41,63 +40,67 @@ class IndexController extends Controller
         $this->nodeRepository = $nodeRepository;
         $this->versionService = $versionService;
         $this->serverRepository = $serverRepository;
-        $this->allocationRepository = $allocationRepository;
     }
 
     public function index(): View
     {
-        $servers = $this->serverRepository->all();
         $nodes = $this->nodeRepository->all();
-        $totalAllocations = $this->allocationRepository->count();
-        $suspendedServersCount = $this->serverRepository->getSuspendedServersCount();
+        $servers = $this->serverRepository->all();
+        $allocations = DB::table('allocations')->count();
+        $suspended = DB::table('servers')->where('status', 'suspended')->count();
 
-        $totalServerRam = 0;
-        $totalNodeRam = 0;
-        $totalServerDisk = 0;
-        $totalNodeDisk = 0;
+        $memoryUsed = 0;
+        $memoryTotal = 0;
+        $diskUsed = 0;
+        $diskTotal = 0;
 
         foreach ($nodes as $node) {
             $stats = $this->nodeRepository->getUsageStatsRaw($node);
-            $totalServerRam += $stats['memory']['value'];
-            $totalNodeRam += $stats['memory']['max'];
-            $totalServerDisk += $stats['disk']['value'];
-            $totalNodeDisk += $stats['disk']['max'];
+
+            $memoryUsed += $stats['memory']['value'];
+            $memoryTotal += $stats['memory']['max'];
+            $diskUsed += $stats['disk']['value'];
+            $diskTotal += $stats['disk']['max'];
         }
 
-		$serverstatus = [];
-		foreach($servers as $server) {
-			$key = "resources:{$server->uuid}";
-			$stats = $this->cache->remember($key, Carbon::now()->addSeconds(20), function () use ($server) {
-				return $this->repository->setServer($server)->getDetails();
-			});
+		$status = [];
 
-			$serverstatus[$server->uuid] = $this->fractal->item($stats)
+		foreach($servers as $server) {
+			$key = 'resources:' . $server->uuid;
+            try {
+                $state = $this->cache->remember($key, Carbon::now()->addSeconds(60), function () use ($server) {
+                    return $this->repository->setServer($server)->getDetails();
+                });
+            } catch (DaemonConnectionException $ex) {
+                $state = ['state' => 'unavailable'];
+            }
+
+			$status[$server->uuid] = $this->fractal->item($state)
 				->transformWith(StatsTransformer::class)
 				->toArray();
 		}
 
         $this->injectJavascript([
             'servers' => $servers,
-            'suspendedServers' => $suspendedServersCount,
-            'totalServerRam' => $totalServerRam,
-            'totalNodeRam' => $totalNodeRam,
-            'totalServerDisk' => $totalServerDisk,
-            'totalNodeDisk' => $totalNodeDisk,
-            'nodes' => $nodes,
-            'serverstatus' => $serverstatus,
+            'diskUsed' => $diskUsed,
+            'diskTotal' => $diskTotal,
+            'serverstatus' => $status,
+            'suspended' => $suspended,
+            'memoryUsed' => $memoryUsed,
+            'memoryTotal' => $memoryTotal,
         ]);
 
         return view('admin.jexactyl.index', [
             'version' => $this->versionService,
             'servers' => $servers,
+            'allocations' => $allocations,
             'used' => [
-                'ram' => $totalServerRam,
-                'disk' => $totalServerDisk,
+                'memory' => $memoryUsed,
+                'disk' => $memoryTotal,
             ],
             'available' => [
-                'ram' => $totalNodeRam,
-                'disk' => $totalNodeDisk,
-                'allocations' => $totalAllocations,
+                'memory' => $memoryTotal,
+                'disk' => $diskTotal,
             ],
         ]);
     }

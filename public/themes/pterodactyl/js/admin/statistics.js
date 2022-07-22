@@ -2,10 +2,12 @@
 // Green: #189a1c
 // Gray: hsl(211, 22%, 21%)
 
-const suspended = Pterodactyl.suspendedServers;
-const freeRam = Pterodactyl.totalNodeRam - Pterodactyl.totalServerRam;
-const active = Pterodactyl.servers.length - Pterodactyl.suspendedServers;
-const freeDisk = Pterodactyl.totalNodeDisk - Pterodactyl.totalServerDisk;
+console.log(Pterodactyl);
+
+const suspended = Pterodactyl.suspended;
+const active = Pterodactyl.servers.length - Pterodactyl.suspended;
+const freeDisk = Pterodactyl.diskTotal - Pterodactyl.diskUsed;
+const freeMemory = Pterodactyl.memoryTotal - Pterodactyl.memoryUsed;
 
 const diskChart = new Chart($("#disk_chart"), {
     type: "pie",
@@ -13,7 +15,7 @@ const diskChart = new Chart($("#disk_chart"), {
         labels: ["Free Disk", "Used Disk"],
         datasets: [{
             backgroundColor: ["#189a1c", "hsl(211, 22%, 21%)"],
-            data: [freeDisk, Pterodactyl.totalServerDisk]
+            data: [freeDisk, Pterodactyl.diskUsed]
         }]
     }
 });
@@ -24,7 +26,7 @@ const ramChart = new Chart($("#ram_chart"), {
         labels: ["Free RAM", "Used RAM"],
         datasets: [{
             backgroundColor: ["#189a1c", "hsl(211, 22%, 21%)"],
-            data: [freeRam, Pterodactyl.totalServerRam]
+            data: [freeMemory, Pterodactyl.memoryUsed]
         }]
     }
 });
@@ -52,7 +54,9 @@ const statusChart = new Chart($("#status_chart"), {
 });
 
 const servers = Pterodactyl.servers;
-for (let t = 0; t < servers.length; t++) getStatus(servers[t]);
+for (let t = 0; t < servers.length; t++) {
+    getStatus(servers[t]);
+}
 
 function getStatus(t) {
     var a = Pterodactyl.serverstatus[t.uuid].attributes.current_state;

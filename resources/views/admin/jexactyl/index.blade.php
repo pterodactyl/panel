@@ -31,7 +31,7 @@
                     @if ($version->isLatestPanel())
                         You are running Jexactyl <code>{{ config('app.version') }}</code>. 
                     @else
-                        Jexactyl is not up-to-date. Latest release is <a href="https://github.com/jexactyl/jexactyl/releases/v{{ $version->getPanel() }}" target="_blank"><code>{{ $version->getPanel() }}</code></a>.
+                        Jexactyl is not up-to-date. Latest release is available <a href="https://github.com/jexactyl/jexactyl/releases/v{{ $version->getPanel() }}" target="_blank">here</a>.
                     @endif
                 </div>
             </div>
@@ -84,7 +84,7 @@
                     <span class="info-box-icon"><i class="fa fa-wifi"></i></span>
                     <div class="info-box-content" style="padding: 23px 10px 0;">
                         <span class="info-box-text">Total Allocations</span>
-                        <span class="info-box-number">{{ $available['allocations'] }}</span>
+                        <span class="info-box-number">{{ $allocations }}</span>
                     </div>
                 </div>
             </div>
@@ -93,7 +93,7 @@
                     <span class="info-box-icon"><i class="fa fa-pie-chart"></i></span>
                     <div class="info-box-content" style="padding: 23px 10px 0;">
                         <span class="info-box-text">Total RAM use</span>
-                        <span class="info-box-number">{{ $used['ram'] / 1024 }} GB of {{ $available['ram'] / 1024 }} GB ({{ $used['ram'] / $available['ram'] * 100}}%)</span>
+                        <span class="info-box-number">{{ $used['memory'] / 1024 }} GB of {{ $available['memory'] / 1024 }} GB ({{ $used['memory'] / $available['memory'] * 100}}%)</span>
                     </div>
                 </div>
             </div>
