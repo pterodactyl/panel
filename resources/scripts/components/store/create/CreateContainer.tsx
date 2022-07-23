@@ -11,7 +11,7 @@ import Field from '@/components/elements/Field';
 import Select from '@/components/elements/Select';
 import { Egg, getEggs } from '@/api/store/getEggs';
 import createServer from '@/api/store/createServer';
-import { getNests, Nest } from '@/api/store/getNests';
+import {getNests, Nest} from '@/api/store/getNests';
 import { Button } from '@/components/elements/button/index';
 import StoreError from '@/components/store/error/StoreError';
 import InputSpinner from '@/components/elements/InputSpinner';
@@ -27,12 +27,12 @@ const Container = styled.div`
         ${tw`w-full`};
 
         ${breakpoint('sm')`
-      width: calc(50% - 1rem);
-    `}
+            width: calc(50% - 1rem);
+        `}
 
         ${breakpoint('md')`
-      ${tw`w-auto flex-1`};
-    `}
+            ${tw`w-auto flex-1`};
+        `}
     }
 `;
 
@@ -48,21 +48,21 @@ interface CreateValues {
 }
 
 export default () => {
-    const user = useStoreState((state) => state.user.data!);
     const limit = useStoreState((state) => state.storefront.data!.limit);
-    const [resources, setResources] = useState<Resources>();
+    const user = useStoreState((state) => state.user.data!);
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
     const [isSubmit, setSubmit] = useState(false);
     const [loading, setLoading] = useState(false);
+    const [resources, setResources] = useState<Resources>();
     const [nests, setNests] = useState<Nest[]>();
-    const [nest, setNest] = useState(1);
+    const [nest, setNest] = useState<number>();
     const [eggs, setEggs] = useState<Egg[]>();
-    const [egg, setEgg] = useState(1);
+    const [egg, setEgg] = useState<number>();
 
     useEffect(() => {
         getResources().then((resources) => setResources(resources));
-        getNests().then((nests) => setNests(nests));
-        getEggs(1).then((eggs) => setEggs(eggs));
+        getNests().then((nests) => {setNest(nests[0].id); setNests(nests)});
+        getEggs(-1).then((eggs) => {setEgg(eggs[0].id); setEggs(eggs)});
     }, []);
 
     const changeNest = (x: ChangeEvent<HTMLSelectElement>) => {
@@ -75,28 +75,21 @@ export default () => {
         clearFlashes('store:create');
         setSubmit(true);
 
-        createServer(values, egg, nest)
-            .then(() => {
-                setSubmit(false);
-                setLoading(false);
-                clearFlashes('store:create');
-                // @ts-expect-error this is valid
-                window.location = '/';
-            })
-            .then(() =>
-                addFlash({
-                    type: 'success',
-                    key: 'store:create',
-                    message: 'Your server has been deployed and is now installing.',
-                })
-            )
-            .catch((error) => {
-                setSubmit(false);
-                clearAndAddHttpError({ key: 'store:create', error });
-            });
+        createServer(values, egg, nest).then(() => {
+            setSubmit(false);
+            setLoading(false);
+            clearFlashes('store:create');
+            // @ts-expect-error this is valid
+            window.location = '/';
+        }).then(() => {
+            addFlash({ type: 'success', key: 'store:create', message: 'Your server has been deployed and is now installing.'});
+        }).catch((error) => {
+            setSubmit(false);
+            clearAndAddHttpError({ key: 'store:create', error });
+        });
     };
 
-    if (!resources || !eggs || !nests) return <StoreError />;
+    if (!resources || !nests || !eggs) return <StoreError />;
     return (
         <PageContentBlock title={'Create a server'} showFlashKey={'store:create'}>
             <Formik
@@ -117,16 +110,8 @@ export default () => {
                     name: string().required().min(3),
                     description: string().optional().min(3).max(191),
                     cpu: number().required().min(50).max(resources.cpu).max(limit.cpu),
-                    memory: number()
-                        .required()
-                        .min(1)
-                        .max(resources.memory / 1024)
-                        .max(limit.memory / 1024),
-                    disk: number()
-                        .required()
-                        .min(1)
-                        .max(resources.disk / 1024)
-                        .max(limit.disk / 1024),
+                    memory: number().required().min(1).max(resources.memory / 1024).max(limit.memory / 1024),
+                    disk: number().required().min(1).max(resources.disk / 1024).max(limit.disk / 1024),
                     ports: number().required().min(1).max(resources.ports).max(limit.port),
                     backups: number().optional().max(resources.backups).max(limit.backup),
                     databases: number().optional().max(resources.databases).max(limit.database),

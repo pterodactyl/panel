@@ -44,11 +44,15 @@ class ServerController extends ClientApiController
     /**
      * Get all available eggs for server deployment.
      */
-    public function eggs(GetStoreEggsRequest $request, Nest $nest): ?array
+    public function eggs(GetStoreEggsRequest $request, int $nest): ?array
     {
-        return $this->fractal->collection($nest->eggs)
-            ->transformWith($this->getTransformer(EggTransformer::class))
-            ->toArray();
+        if ($nest === -1) {
+            $x = Nest::all()->first();
+            return $this->fractal->collection($x->eggs)->transformWith($this->getTransformer(EggTransformer::class))->toArray();
+        } else {
+            $x = Nest::query()->where('id', '=', $nest)->first();
+            return $this->fractal->collection($x->eggs)->transformWith($this->getTransformer(EggTransformer::class))->toArray();
+        }
     }
 
     /**
