@@ -41,6 +41,9 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
     Route::put('/use-referral', [Client\ReferralsController::class, 'use']);
     Route::delete('/referrals/{code}', [Client\ReferralsController::class, 'delete']);
 
+    Route::get('/discord', [Client\AccountController::class, 'discord'])->name('api:client.account.discord');
+    Route::get('/discord/callback', [Client\AccountController::class, 'discordCallback'])->name('api:client.account.discord.callback');
+
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);

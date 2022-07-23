@@ -9,6 +9,7 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import UpdateUsernameForm from '@/components/dashboard/forms/UpdateUsernameForm';
 import AddReferralCodeForm from '@/components/dashboard/forms/AddReferralCodeForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
+import DiscordAccountForm from "@/components/dashboard/forms/DiscordAccountForm";
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -50,6 +51,9 @@ export default () => {
                 </ContentBox>
                 <ContentBox css={tw`mt-8 sm:mt-0 sm:ml-8`} title={'Referral Codes'} showFlashes={'account:referral'}>
                     <AddReferralCodeForm />
+                </ContentBox>
+                <ContentBox title={'Discord Account'} showFlashes={'account:discord'} className={'mt-8'}>
+                    <DiscordAccountForm/>
                 </ContentBox>
             </Container>
         </PageContentBlock>
