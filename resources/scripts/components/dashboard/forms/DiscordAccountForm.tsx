@@ -1,11 +1,10 @@
-import React from "react";
-import {useStoreState} from "@/state/hooks";
-import {Button} from "@/components/elements/button";
-import getDiscord from "@/api/account/getDiscord";
+import React from 'react';
+import { useStoreState } from '@/state/hooks';
+import getDiscord from '@/api/account/getDiscord';
+import { Button } from '@/components/elements/button';
 
 export default () => {
     const discordId = useStoreState((state) => state.user.data!.discordId);
-    const enabled = useStoreState((state) => state.settings.data!.registration.discord);
 
     const link = () => {
         getDiscord().then((data) => {
@@ -14,23 +13,17 @@ export default () => {
     };
 
     return (
-        <div>
-            {enabled === 'true' ?
+        <>
+            {discordId ? (
+                <p className={'text-gray-400'}>Your account is currently linked to the Discord: {discordId}</p>
+            ) : (
                 <>
-                    {discordId ?
-                        <p>Your account is currently linked to the Discord: {discordId}</p>
-                        :
-                        <div>
-                            <p>You are not currently linked to Discord.</p>
-                            <Button.Success className={'mt-4'} onClick={() => link()}>
-                                Link
-                            </Button.Success>
-                        </div>
-                    }
+                    <p className={'text-gray-400'}>Your account is not linked to Discord.</p>
+                    <Button.Success className={'mt-4'} onClick={() => link()}>
+                        Connect with Discord
+                    </Button.Success>
                 </>
-                :
-                <p>Discord authentication is currently disabled.</p>
-            }
-        </div>
-    )
+            )}
+        </>
+    );
 };
