@@ -49,9 +49,7 @@ export default ({ className }: WithClassname) => {
     useEventListener(
         'dragenter',
         (e) => {
-            if (!isFileOrDirectory(e)) {
-                return;
-            }
+            e.preventDefault();
             e.stopPropagation();
             setVisible(true);
         },
