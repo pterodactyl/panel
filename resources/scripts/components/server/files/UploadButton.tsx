@@ -35,8 +35,9 @@ export default ({ className }: WithClassname) => {
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const appendFileUpload = ServerContext.useStoreActions((actions) => actions.files.appendFileUpload);
-    const removeFileUpload = ServerContext.useStoreActions((actions) => actions.files.removeFileUpload);
+    const { clearFileUploads, appendFileUpload, removeFileUpload } = ServerContext.useStoreActions(
+        (actions) => actions.files
+    );
 
     useEventListener(
         'dragenter',
@@ -52,62 +53,57 @@ export default ({ className }: WithClassname) => {
 
     useEventListener('dragexit', () => setVisible(false), { capture: true });
 
-    useEffect(() => {
-        if (!visible) return;
-
-        const hide = () => setVisible(false);
-
-        window.addEventListener('keydown', hide);
-        return () => {
-            window.removeEventListener('keydown', hide);
-        };
-    }, [visible]);
+    useEventListener('keydown', () => {
+        visible && setVisible(false);
+    });
 
     useEffect(() => {
         return () => timeouts.forEach(clearTimeout);
     }, []);
 
-    const onFileSubmission = (files: FileList) => {
-        const formData: FormData[] = [];
+    const onUploadProgress = (data: ProgressEvent, name: string) => {
+        appendFileUpload({ name, loaded: data.loaded, total: data.total });
+        if (data.loaded >= data.total) {
+            const timeout = setTimeout(() => removeFileUpload(name), 500);
+            setTimeouts((t) => [...t, timeout]);
+        }
+    };
 
+    const onFileSubmission = (files: FileList) => {
         clearAndAddHttpError();
         const list = Array.from(files);
         if (list.some((file) => !file.type && file.size % 4096 === 0)) {
             return addError('Folder uploads are not supported at this time.', 'Error');
         }
 
-        Array.from(files).forEach((file) => {
-            const form = new FormData();
-            form.append('files', file);
-            formData.push(form);
-        });
-
-        if (formData.length === 0) {
+        if (!list.length) {
             return;
         }
 
-        Promise.all(
-            Array.from(formData).map((f) =>
+        const uploads = list.map((file) => {
+            appendFileUpload({ name: file.name, loaded: 0, total: file.size });
+            return () =>
                 getFileUploadUrl(uuid).then((url) =>
-                    axios.post(`${url}&directory=${directory}`, f, {
-                        headers: { 'Content-Type': 'multipart/form-data' },
-                        onUploadProgress: (data: ProgressEvent) => {
-                            // @ts-expect-error this is valid
-                            const name = f.getAll('files')[0].name;
+                    axios.post(
+                        url,
+                        { files: file },
+                        {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                            params: { directory },
+                            onUploadProgress: (data) => {
+                                onUploadProgress(data, file.name);
+                            },
+                        }
+                    )
+                );
+        });
 
-                            appendFileUpload({ name: name, loaded: data.loaded, total: data.total });
-
-                            if (data.loaded === data.total) {
-                                const timeout = setTimeout(() => removeFileUpload(name), 500);
-                                setTimeouts((t) => [...t, timeout]);
-                            }
-                        },
-                    })
-                )
-            )
-        )
+        Promise.all(uploads.map((fn) => fn()))
             .then(() => mutate())
-            .catch(clearAndAddHttpError);
+            .catch((error) => {
+                clearFileUploads();
+                clearAndAddHttpError(error);
+            });
     };
 
     return (
