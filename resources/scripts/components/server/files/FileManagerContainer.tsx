@@ -75,6 +75,7 @@ export default () => {
                     />
                     <Can action={'file.create'}>
                         <div className={style.manager_actions}>
+                            <FileManagerStatus />
                             <NewDirectoryButton />
                             <UploadButton />
                             <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
@@ -105,7 +106,6 @@ export default () => {
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />
-                                <FileManagerStatus />
                             </div>
                         </CSSTransition>
                     )}
