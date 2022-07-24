@@ -7,7 +7,7 @@ import styled from 'styled-components/macro';
 import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
-import useFlash from '@/plugins/useFlash';
+import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
@@ -23,15 +23,7 @@ function isFileOrDirectory(event: DragEvent): boolean {
         return false;
     }
 
-    for (let i = 0; i < event.dataTransfer.types.length; i++) {
-        // Check if the item being dragged is not a file.
-        // On Firefox a file of type "application/x-moz-file" is also in the array.
-        if (event.dataTransfer.types[i] !== 'Files' && event.dataTransfer.types[i] !== 'application/x-moz-file') {
-            return false;
-        }
-    }
-
-    return true;
+    return event.dataTransfer.types.some((value) => value.toLowerCase() === 'files');
 }
 
 export default ({ className }: WithClassname) => {
@@ -39,7 +31,7 @@ export default ({ className }: WithClassname) => {
     const [timeouts, setTimeouts] = useState<NodeJS.Timeout[]>([]);
     const [visible, setVisible] = useState(false);
     const { mutate } = useFileManagerSwr();
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { addError, clearAndAddHttpError } = useFlashKey('files');
 
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
@@ -49,26 +41,16 @@ export default ({ className }: WithClassname) => {
     useEventListener(
         'dragenter',
         (e) => {
-            if (!isFileOrDirectory(e)) {
-                return;
-            }
+            e.preventDefault();
             e.stopPropagation();
-            setVisible(true);
+            if (isFileOrDirectory(e)) {
+                return setVisible(true);
+            }
         },
-        true
+        { capture: true }
     );
 
-    useEventListener(
-        'dragexit',
-        (e) => {
-            if (!isFileOrDirectory(e)) {
-                return;
-            }
-            e.stopPropagation();
-            setVisible(false);
-        },
-        true
-    );
+    useEventListener('dragexit', () => setVisible(false), { capture: true });
 
     useEffect(() => {
         if (!visible) return;
@@ -87,12 +69,23 @@ export default ({ className }: WithClassname) => {
 
     const onFileSubmission = (files: FileList) => {
         const formData: FormData[] = [];
+
+        clearAndAddHttpError();
+        const list = Array.from(files);
+        if (list.some((file) => !file.type && file.size % 4096 === 0)) {
+            return addError('Folder uploads are not supported at this time.', 'Error');
+        }
+
         Array.from(files).forEach((file) => {
             const form = new FormData();
             form.append('files', file);
             formData.push(form);
         });
-        clearFlashes('files');
+
+        if (formData.length === 0) {
+            return;
+        }
+
         Promise.all(
             Array.from(formData).map((f) =>
                 getFileUploadUrl(uuid).then((url) =>
@@ -102,14 +95,10 @@ export default ({ className }: WithClassname) => {
                             // @ts-expect-error this is valid
                             const name = f.getAll('files')[0].name;
 
-                            appendFileUpload({
-                                name: name,
-                                loaded: data.loaded,
-                                total: data.total,
-                            });
+                            appendFileUpload({ name: name, loaded: data.loaded, total: data.total });
 
                             if (data.loaded === data.total) {
-                                const timeout = setTimeout(() => removeFileUpload(name), 2000);
+                                const timeout = setTimeout(() => removeFileUpload(name), 500);
                                 setTimeouts((t) => [...t, timeout]);
                             }
                         },
@@ -118,10 +107,7 @@ export default ({ className }: WithClassname) => {
             )
         )
             .then(() => mutate())
-            .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ error, key: 'files' });
-            });
+            .catch(clearAndAddHttpError);
     };
 
     return (
