@@ -42,6 +42,7 @@ const files: ServerFileStore = {
     appendFileUpload: action((state, payload) => {
         state.uploads = state.uploads.filter((f) => f.name !== payload.name).concat(payload);
     }),
+
     removeFileUpload: action((state, payload) => {
         state.uploads = state.uploads.filter((f) => f.name !== payload);
     }),

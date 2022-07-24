@@ -25,6 +25,7 @@ import PullFileModal from '@/components/server/files/PullFileModal';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import MassActionsBar from '@/components/server/files/MassActionsBar';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import FileManagerStatus from '@/components/server/files/FileManagerStatus';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
@@ -135,6 +136,7 @@ export default () => {
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />
+                                <FileManagerStatus />
                             </>
                         </CSSTransition>
                     )}

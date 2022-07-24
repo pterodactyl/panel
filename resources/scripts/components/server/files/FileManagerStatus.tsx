@@ -1,6 +1,7 @@
 import React from 'react';
 import tw, { styled } from 'twin.macro';
 import { ServerContext } from '@/state/server';
+import { bytesToString } from '@/lib/formatters';
 
 const SpinnerCircle = styled.circle`
     transition: stroke-dashoffset 0.35s;
@@ -56,7 +57,9 @@ function FileManagerStatus() {
                                 </div>
 
                                 <div css={tw`block`}>
-                                    <span css={tw`text-base font-normal leading-none text-neutral-300`}>{f.name}</span>
+                                    <span css={tw`text-base font-normal leading-none text-neutral-300`}>
+                                        {f.name} ({bytesToString(f.loaded)}/{bytesToString(f.total)})
+                                    </span>
                                 </div>
                             </div>
                         ))}
