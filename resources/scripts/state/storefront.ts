@@ -1,15 +1,16 @@
 import { action, Action } from 'easy-peasy';
 
 export interface StorefrontSettings {
-    enabled: string;
+    enabled: boolean;
     currency: string;
     renewals: {
         cost: number;
         days: number;
     };
     referrals: {
-        enabled: string;
+        enabled: boolean;
         reward: number;
+        days: number;
     };
     cost: {
         cpu: number;
@@ -29,11 +30,11 @@ export interface StorefrontSettings {
         database: number;
     };
     gateways: {
-        paypal: string;
+        paypal: boolean;
         stripe: string;
     };
     earn: {
-        enabled: string;
+        enabled: boolean;
         amount: number;
     };
 }

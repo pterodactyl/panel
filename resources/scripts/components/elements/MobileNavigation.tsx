@@ -45,7 +45,7 @@ const RightNavigation = styled.div`
 
 export default () => {
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
-    const enabled = useStoreState((state) => state.storefront.data!.enabled);
+    const store = useStoreState((state) => state.storefront.data!);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
 
     const onTriggerLogout = () => {
@@ -71,7 +71,7 @@ export default () => {
                     <NavLink to={'/account'}>
                         <Icon.User size={20} />
                     </NavLink>
-                    {enabled === 'true' && (
+                    {store.enabled && (
                         <NavLink to={'/store'}>
                             <Icon.ShoppingCart size={20} />
                         </NavLink>

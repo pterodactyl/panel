@@ -11,7 +11,7 @@ import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 export default () => {
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
-    const store = useStoreState((state) => state.storefront.data!.enabled);
+    const store = useStoreState((state) => state.storefront.data!);
     const logo = useStoreState((state) => state.settings.data!.logo);
 
     const onTriggerLogout = () => {
@@ -67,7 +67,7 @@ export default () => {
                         <Icon.User size={32} css={tw`my-8`} />
                     </Tooltip>
                 </NavLink>
-                {store === 'true' && (
+                {store.enabled && (
                     <NavLink to={'/store'} className={'navigation-link'}>
                         <Tooltip placement={'bottom'} content={'Store'}>
                             <Icon.ShoppingCart size={32} css={tw`my-8`} />

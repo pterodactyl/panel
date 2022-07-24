@@ -9,10 +9,9 @@ export interface SiteSettings {
     };
     logo: string;
     registration: {
-        email: string;
-        discord: string;
+        email: boolean;
+        discord: boolean;
     };
-    renewal: string;
 }
 
 export interface SettingsStore {

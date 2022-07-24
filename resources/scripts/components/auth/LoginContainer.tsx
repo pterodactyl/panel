@@ -111,7 +111,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                         </Link>
                     </div>
                     <div css={tw`mt-6 text-center`}>
-                        {email === 'true' && (
+                        {email && (
                             <Link
                                 to={'/auth/register'}
                                 css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
@@ -119,7 +119,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                                 Signup with Email
                             </Link>
                         )}
-                        {discord === 'true' && (
+                        {discord && (
                             <Link
                                 to={'/auth/discord'}
                                 css={tw`text-xs ml-6 text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}

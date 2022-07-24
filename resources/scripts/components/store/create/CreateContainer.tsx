@@ -51,13 +51,15 @@ export default () => {
     const limit = useStoreState((state) => state.storefront.data!.limit);
     const user = useStoreState((state) => state.user.data!);
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
-    const [isSubmit, setSubmit] = useState(false);
+
     const [loading, setLoading] = useState(false);
     const [resources, setResources] = useState<Resources>();
-    const [nests, setNests] = useState<Nest[]>();
-    const [nest, setNest] = useState<number>();
-    const [eggs, setEggs] = useState<Egg[]>();
+
     const [egg, setEgg] = useState<number>();
+    const [eggs, setEggs] = useState<Egg[]>();
+
+    const [nest, setNest] = useState<number>();
+    const [nests, setNests] = useState<Nest[]>();
 
     useEffect(() => {
         getResources().then((resources) => setResources(resources));
@@ -79,11 +81,9 @@ export default () => {
     const submit = (values: CreateValues) => {
         setLoading(true);
         clearFlashes('store:create');
-        setSubmit(true);
 
         createServer(values, egg, nest)
             .then(() => {
-                setSubmit(false);
                 setLoading(false);
                 clearFlashes('store:create');
                 // @ts-expect-error this is valid
@@ -97,12 +97,13 @@ export default () => {
                 });
             })
             .catch((error) => {
-                setSubmit(false);
+                setLoading(false);
                 clearAndAddHttpError({ key: 'store:create', error });
             });
     };
 
     if (!resources || !nests || !eggs) return <StoreError />;
+
     return (
         <PageContentBlock title={'Create a server'} showFlashKey={'store:create'}>
             <Formik
@@ -229,7 +230,7 @@ export default () => {
                                 type={'submit'}
                                 className={'w-1/6 mb-4'}
                                 size={Button.Sizes.Large}
-                                disabled={isSubmit}
+                                disabled={loading}
                             >
                                 Create Your Server! <Icon.ArrowRightCircle className={'ml-2'} />
                             </Button>

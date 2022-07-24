@@ -30,7 +30,7 @@ const IndexRouter = () => {
                         </ServerContext.Provider>
                     </Spinner.Suspense>
                 </AuthenticatedRoute>
-                {enabled === 'true' && (
+                {enabled && (
                     <AuthenticatedRoute path={'/store'}>
                         <Spinner.Suspense>
                             <StoreRouter />

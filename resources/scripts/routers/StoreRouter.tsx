@@ -45,14 +45,14 @@ const StoreRouter = () => {
                             Resources <Icon.ShoppingCart css={tw`ml-1`} size={18} />
                         </div>
                     </NavLink>
-                    {earn.enabled === 'true' && (
+                    {earn.enabled && (
                         <NavLink to={`${match.url}/earn`}>
                             <div css={tw`flex items-center justify-between`}>
                                 Earn Credits <Icon.DollarSign css={tw`ml-1`} size={18} />
                             </div>
                         </NavLink>
                     )}
-                    {referrals.enabled === 'true' && (
+                    {referrals.enabled && (
                         <NavLink to={`${match.url}/referrals`}>
                             <div css={tw`flex items-center justify-between`}>
                                 Referrals <Icon.Users css={tw`ml-1`} size={18} />
@@ -78,12 +78,12 @@ const StoreRouter = () => {
                     <Route path={`${match.path}/edit`} exact>
                         <EditContainer />
                     </Route>
-                    {earn.enabled === 'true' && (
+                    {earn.enabled && (
                         <Route path={`${match.path}/earn`} exact>
                             <EarnContainer />
                         </Route>
                     )}
-                    {referrals.enabled === 'true' && (
+                    {referrals.enabled && (
                         <Route path={`${match.path}/referrals`} exact>
                             <ReferralContainer />
                         </Route>

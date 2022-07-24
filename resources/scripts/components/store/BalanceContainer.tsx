@@ -47,8 +47,8 @@ export default () => {
                     </h1>
                 </ContentBox>
                 <ContentBox title={'Purchase credits'} showFlashes={'account:balance'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    {store.gateways?.paypal === 'true' && <PaypalPurchaseForm />}
-                    {store.gateways?.stripe === 'true' && <StripePurchaseForm />}
+                    {store.gateways?.paypal && <PaypalPurchaseForm />}
+                    {store.gateways?.stripe && <StripePurchaseForm />}
                 </ContentBox>
             </Container>
         </PageContentBlock>

@@ -3,26 +3,16 @@
 namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\View\View;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use Pterodactyl\Http\ViewComposers\Composer;
 
-class StoreComposer
+class StoreComposer extends Composer
 {
-    private SettingsRepositoryInterface $settings;
-
     /**
      * StoreComposer constructor.
      */
-    public function __construct(SettingsRepositoryInterface $settings)
+    public function __construct()
     {
-        $this->settings = $settings;
-    }
-
-    /**
-     * Retrieve the requested setting from the database.
-     */
-    protected function getSetting(string $data)
-    {
-        return $this->settings->get('jexactyl::store:'.$data);
+        parent::__construct();
     }
 
     /**
@@ -31,46 +21,44 @@ class StoreComposer
     public function compose(View $view)
     {
         $view->with('storeConfiguration', [
-            'enabled' => $this->getSetting('enabled'),
-            'currency' => $this->getSetting('currency', 'JCR'),
+            'enabled' => $this->setting('store:enabled', Composer::TYPE_BOOL),
+            'paypal' => $this->setting('store:paypal:enabled', Composer::TYPE_BOOL),
+            'stripe' => $this->setting('store:stripe:enabled', Composer::TYPE_BOOL),
+            'currency' => $this->setting('store:currency', Composer::TYPE_STR),
 
             'renewals' => [
-                'cost' => $this->settings->get('jexactyl::renewal:cost', 150),
-                'days' => $this->settings->get('jexactyl::renewal:default', 7),
+                'enabled' => $this->setting('renewal:enabled', Composer::TYPE_BOOL),
+                'cost' => $this->setting('renewal:cost', Composer::TYPE_INT),
+                'days' => $this->setting('renewal:default', Composer::TYPE_INT),
             ],
 
             'referrals' => [
-                'enabled' => $this->settings->get('jexactyl::referrals:enabled', false),
-                'reward' => $this->settings->get('jexactyl::referrals:reward', 250),
+                'enabled' => $this->setting('referrals:enabled', Composer::TYPE_BOOL),
+                'reward' => $this->setting('referrals:reward', Composer::TYPE_INT),
             ],
 
             'earn' => [
-                'enabled' => $this->settings->get('jexactyl::earn:enabled', false),
-                'amount' => $this->settings->get('jexactyl::earn:amount', 1),
-            ],
-
-            'gateways' => [
-                'paypal' => $this->getSetting('paypal:enabled', false),
-                'stripe' => $this->getSetting('stripe:enabled', false),
+                'enabled' => $this->setting('earn:enabled', Composer::TYPE_BOOL),
+                'amount' => $this->setting('earn:amount', Composer::TYPE_INT),
             ],
 
             'cost' => [
-                'cpu' => $this->getSetting('cost:cpu', 100),
-                'memory' => $this->getSetting('cost:memory', 50),
-                'disk' => $this->getSetting('cost:disk', 25),
-                'slot' => $this->getSetting('cost:slot', 250),
-                'port' => $this->getSetting('cost:port', 20),
-                'backup' => $this->getSetting('cost:backup', 20),
-                'database' => $this->getSetting('cost:database', 20),
+                'cpu' => $this->setting('store:cost:cpu', Composer::TYPE_INT),
+                'memory' => $this->setting('store:cost:memory', Composer::TYPE_INT),
+                'disk' => $this->setting('store:cost:disk', Composer::TYPE_INT),
+                'slot' => $this->setting('store:cost:slot', Composer::TYPE_INT),
+                'port' => $this->setting('store:cost:port', Composer::TYPE_INT),
+                'backup' => $this->setting('store:cost:backup', Composer::TYPE_INT),
+                'database' => $this->setting('store:cost:database', Composer::TYPE_INT),
             ],
 
             'limit' => [
-                'cpu' => $this->getSetting('limit:cpu', 100),
-                'memory' => $this->getSetting('limit:memory', 4096),
-                'disk' => $this->getSetting('limit:disk', 10240),
-                'port' => $this->getSetting('limit:port', 1),
-                'backup' => $this->getSetting('limit:backup', 1),
-                'database' => $this->getSetting('limit:database', 1),
+                'cpu' => $this->setting('store:limit:cpu', Composer::TYPE_INT),
+                'memory' => $this->setting('store:limit:memory', Composer::TYPE_INT),
+                'disk' => $this->setting('store:limit:disk', Composer::TYPE_INT),
+                'port' => $this->setting('store:limit:port', Composer::TYPE_INT),
+                'backup' => $this->setting('store:limit:backup', Composer::TYPE_INT),
+                'database' => $this->setting('store:limit:database', Composer::TYPE_INT),
             ]
         ]);
     }

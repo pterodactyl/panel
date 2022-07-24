@@ -3,24 +3,20 @@
 namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\View\View;
+use Pterodactyl\Http\ViewComposers\Composer;
 use Pterodactyl\Services\Helpers\AssetHashService;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
-class SettingComposer
+class SettingComposer extends Composer
 {
     private AssetHashService $assetHashService;
-    private SettingsRepositoryInterface $settings;
 
     /**
      * AssetComposer constructor.
      */
-    public function __construct(
-        AssetHashService $assetHashService,
-        SettingsRepositoryInterface $settings,
-    )
+    public function __construct(AssetHashService $assetHashService)
     {
+        parent::__construct();
         $this->assetHashService = $assetHashService;
-        $this->settings = $settings;
     }
 
     /**
@@ -29,11 +25,11 @@ class SettingComposer
     public function compose(View $view)
     {
         $view->with('asset', $this->assetHashService);
+
         $view->with('siteConfiguration', [
             'name' => config('app.name') ?? 'Pterodactyl',
             'locale' => config('app.locale') ?? 'en',
-            'logo' => $this->settings->get('settings::app:logo', 'https://www.jexactyl.com/_nuxt/img/logo.79c0f3f.png'),
-            'renewal' => $this->settings->get('jexactyl::renewal:enabled', false),
+            'logo' => $this->setting('logo', Composer::TYPE_STR),
     
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
@@ -41,8 +37,8 @@ class SettingComposer
             ],
 
             'registration' => [
-                'email' => $this->settings->get('jexactyl::registration:enabled', false),
-                'discord' => $this->settings->get('jexactyl::discord:enabled', false),
+                'email' => $this->setting('discord:enabled', Composer::TYPE_BOOL),
+                'discord' => $this->setting('registration:enabled', Composer::TYPE_BOOL),
             ],
         ]);
     }
