@@ -20,6 +20,7 @@ interface ExtendedWindow extends Window {
         username: string;
         email: string;
         /* eslint-disable camelcase */
+        discord_id: string;
         root_admin: boolean;
         use_totp: boolean;
         referral_code: string;
@@ -40,6 +41,7 @@ const App = () => {
             uuid: PterodactylUser.uuid,
             username: PterodactylUser.username,
             email: PterodactylUser.email,
+            discordId: PterodactylUser.discord_id,
             language: PterodactylUser.language,
             rootAdmin: PterodactylUser.root_admin,
             useTotp: PterodactylUser.use_totp,
