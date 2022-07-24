@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
+use Pterodactyl\Models\ActivityLog;
 use Spatie\QueryBuilder\QueryBuilder;
 use Spatie\QueryBuilder\AllowedFilter;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
@@ -18,6 +19,7 @@ class ActivityLogController extends ClientApiController
             ->with('actor')
             ->allowedFilters([AllowedFilter::partial('event')])
             ->allowedSorts(['timestamp'])
+            ->whereNotIn('activity_logs.event', ActivityLog::DISABLED_EVENTS)
             ->paginate(min($request->query('per_page', 25), 100))
             ->appends($request->query());
 

@@ -81,6 +81,7 @@ return [
             'rename_other' => 'Renamed :count files in :directory',
             'write' => 'Wrote new content to :file',
             'upload' => 'Began a file upload',
+            'uploaded' => 'Uploaded :file in :directory',
         ],
         'sftp' => [
             'denied' => 'Blocked SFTP access due to permissions',
