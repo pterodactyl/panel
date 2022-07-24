@@ -9,9 +9,9 @@ interface Props {
 }
 
 const TitledGreyBox = ({ title, children, className }: Props) => (
-    <div css={tw`rounded shadow-md bg-neutral-900`} className={className}>
-        <div css={tw`bg-neutral-900 rounded-t p-3 border-b border-black`}>
-            {typeof title === 'string' ? <p css={tw`font-semibold font-sans line-clamp-1`}>{title}</p> : title}
+    <div css={tw`shadow-2xl bg-neutral-900`} className={className}>
+        <div css={tw`bg-neutral-900 p-3 border-b border-black`}>
+            {typeof title === 'string' ? <p css={tw`font-semibold font-sans line-clamp-1 text-lg`}>{title}</p> : title}
         </div>
         <div css={tw`p-3`}>{children}</div>
     </div>

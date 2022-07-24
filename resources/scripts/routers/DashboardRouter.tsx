@@ -9,12 +9,14 @@ import { NavLink, Route, Switch } from 'react-router-dom';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
+import InformationBox from '@/components/elements/InformationBox';
 import MobileNavigation from '@/components/elements/MobileNavigation';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountSecurityContainer from '@/components/dashboard/AccountSecurityContainer';
+import { faCircle, faCoins, faScroll, faUserLock } from '@fortawesome/free-solid-svg-icons';
 
 export default () => {
     const location = useLocation();
@@ -23,7 +25,7 @@ export default () => {
     return (
         <>
             {width >= 1280 ? <SidePanel /> : <MobileNavigation />}
-            {location.pathname.startsWith('/account') && (
+            {location.pathname.startsWith('/account') ? (
                 <SubNavigation className={'j-down'}>
                     <div>
                         <NavLink to={'/account'} exact>
@@ -46,6 +48,23 @@ export default () => {
                                 SSH Keys <Icon.Terminal css={tw`ml-1`} size={18} />
                             </div>
                         </NavLink>
+                    </div>
+                </SubNavigation>
+            ) : (
+                <SubNavigation className={'j-down'}>
+                    <div>
+                        <InformationBox icon={faCircle} iconCss={'animate-pulse text-green-500'}>
+                            Earning <span className={'text-green-600'}>3</span> credits / min.
+                        </InformationBox>
+                        <InformationBox icon={faCoins}>
+                            You have <span className={'text-green-600'}>234723</span> credits available.
+                        </InformationBox>
+                        <InformationBox icon={faUserLock}>
+                            <span className={'text-yellow-600'}>Enable 2FA</span> to secure your account.
+                        </InformationBox>
+                        <InformationBox icon={faScroll}>
+                            <span className={'text-neutral-400'}>Logged in</span> - 4 minutes ago
+                        </InformationBox>
                     </div>
                 </SubNavigation>
             )}

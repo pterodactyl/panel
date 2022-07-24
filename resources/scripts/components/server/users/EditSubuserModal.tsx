@@ -137,8 +137,8 @@ const EditSubuserModal = ({ subuser }: Props) => {
                     </div>
                 )}
                 <div css={tw`my-6`}>
-                    <div css={tw`flex items-center mb-4 bg-neutral-600 p-2 rounded shadow-sm`}>
-                        <p css={tw`text-sm flex-1 ml-1 text-neutral-200`}>Select all permissions</p>
+                    <div css={tw`flex items-center mb-4 bg-neutral-850 p-2 rounded shadow-sm`}>
+                        <p css={tw`flex-1 ml-1 text-neutral-200`}>Select all permissions?</p>
                         {canEditUser && (
                             <SelectAllPermissions isEditable={canEditUser} permissions={editablePermissions} />
                         )}

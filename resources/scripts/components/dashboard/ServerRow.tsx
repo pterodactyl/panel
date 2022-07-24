@@ -72,26 +72,14 @@ export default ({ server, className }: { server: Server; className?: string }) =
     if (stats) {
         alarms.cpu = server.limits.cpu === 0 ? false : stats.cpuUsagePercent >= server.limits.cpu * 0.9;
         alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
-        alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
     }
 
     return (
         <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
             <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
-                <div className={'icon mr-4'}>
-                    <Icon.Server />
-                </div>
                 <div>
                     <p css={tw`text-lg break-words`}>{server.name}</p>
-                    {!!server.description && (
-                        <p css={tw`text-sm text-neutral-300 break-words line-clamp-2`}>{server.description}</p>
-                    )}
-                </div>
-            </div>
-            <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
-                <div css={tw`flex justify-center`}>
-                    <Icon.Share2 css={tw`text-neutral-500`} />
-                    <p css={tw`text-sm text-neutral-400 ml-2`}>
+                    <p css={tw`text-sm text-neutral-300 break-words line-clamp-1`}>
                         {server.allocations
                             .filter((alloc) => alloc.isDefault)
                             .map((allocation) => (
@@ -102,7 +90,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     </p>
                 </div>
             </div>
-            <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
+            <div css={tw`hidden col-span-8 lg:col-span-6 sm:flex items-baseline justify-center`}>
                 {!stats || isSuspended ? (
                     isSuspended ? (
                         <div css={tw`flex-1 text-center`}>
@@ -131,7 +119,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                             <div css={tw`flex justify-center`}>
                                 <Icon.Cpu size={20} css={tw`text-neutral-600`} />
                                 <IconDescription $alarm={alarms.cpu}>
-                                    {stats.cpuUsagePercent.toFixed(2)} %
+                                    {stats.cpuUsagePercent.toFixed(0)} %
                                 </IconDescription>
                             </div>
                         </div>
@@ -140,14 +128,6 @@ export default ({ server, className }: { server: Server; className?: string }) =
                                 <Icon.PieChart size={20} css={tw`text-neutral-600`} />
                                 <IconDescription $alarm={alarms.memory}>
                                     {bytesToString(stats.memoryUsageInBytes)}
-                                </IconDescription>
-                            </div>
-                        </div>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon.HardDrive size={20} css={tw`text-neutral-600`} />
-                                <IconDescription $alarm={alarms.disk}>
-                                    {bytesToString(stats.diskUsageInBytes)}
                                 </IconDescription>
                             </div>
                         </div>
