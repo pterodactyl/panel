@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.10.1
+### Fixed
+* Fixes a surprise `clock()` function that was used for debugging and should not have made it into the release. This was causing activity events to not properly sync between the Panel and Wings.
+
 ## v1.10.0
 ### Fixed
 * Fixes improper cache key naming on the frontend causing server activity logs to be duplicated across server page views.

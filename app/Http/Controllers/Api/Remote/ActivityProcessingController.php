@@ -26,8 +26,6 @@ class ActivityProcessingController extends Controller
         $servers = $node->servers()->whereIn('uuid', $request->servers())->get()->keyBy('uuid');
         $users = User::query()->whereIn('uuid', $request->users())->get()->keyBy('uuid');
 
-        clock()->log($request->input('data'));
-
         $logs = [];
         foreach ($request->input('data') as $datum) {
             /** @var \Pterodactyl\Models\Server|null $server */
