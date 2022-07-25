@@ -8,12 +8,13 @@ import GreyRowBox from '@/components/elements/GreyRowBox';
 import React, { useEffect, useRef, useState } from 'react';
 import { bytesToString, ip } from '@/lib/formatters';
 import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
+import UptimeDuration from '@/components/server/UptimeDuration';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
 // than the more faded default style.
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
 
-const IconDescription = styled.p<{ $alarm: boolean }>`
+const IconDescription = styled.p<{ $alarm?: boolean }>`
     ${tw`text-sm ml-2`};
     ${(props) => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
 `;
@@ -90,7 +91,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     </p>
                 </div>
             </div>
-            <div css={tw`hidden col-span-8 lg:col-span-6 sm:flex items-baseline justify-center`}>
+            <div css={tw`hidden col-span-8 lg:col-span-6 sm:flex items-baseline justify-center items-center`}>
                 {!stats || isSuspended ? (
                     isSuspended ? (
                         <div css={tw`flex-1 text-center`}>
@@ -134,6 +135,38 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     </React.Fragment>
                 )}
             </div>
+            {stats && (
+                <div css={tw`hidden col-span-12 sm:flex items-baseline justify-center items-center`}>
+                    <React.Fragment>
+                        <div css={tw`flex-1 sm:block hidden`}>
+                            <div css={tw`flex justify-center`}>
+                                <Icon.HardDrive size={20} css={tw`text-neutral-600`} />
+                                <IconDescription>{bytesToString(stats?.diskUsageInBytes)}</IconDescription>
+                            </div>
+                        </div>
+                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                            <div css={tw`flex justify-center`}>
+                                <Icon.Clock size={20} css={tw`text-neutral-600`} />
+                                <IconDescription>
+                                    {stats.uptime > 0 ? <UptimeDuration uptime={stats.uptime / 1000} /> : 'Offline'}
+                                </IconDescription>
+                            </div>
+                        </div>
+                        <div css={tw`flex-1 ml-12 sm:block hidden`}>
+                            <div css={tw`flex justify-center`}>
+                                <Icon.DownloadCloud size={20} css={tw`text-neutral-600`} />
+                                <IconDescription>{bytesToString(stats?.networkRxInBytes)}</IconDescription>
+                            </div>
+                        </div>
+                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
+                            <div css={tw`flex justify-center`}>
+                                <Icon.UploadCloud size={20} css={tw`text-neutral-600`} />
+                                <IconDescription>{bytesToString(stats?.networkTxInBytes)}</IconDescription>
+                            </div>
+                        </div>
+                    </React.Fragment>
+                </div>
+            )}
             <div className={'status-bar'} />
         </StatusIndicatorBox>
     );

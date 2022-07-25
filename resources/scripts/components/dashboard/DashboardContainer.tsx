@@ -53,10 +53,13 @@ export default () => {
     return (
         <PageContentBlock title={'Dashboard'} css={tw`mt-4 sm:mt-10`} showFlashKey={'dashboard' || 'store:create'}>
             {rootAdmin && (
-                <div css={tw`mb-2 flex justify-end items-center`}>
-                    <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                        {showOnlyAdmin ? "Showing others' servers" : 'Showing your servers'}
-                    </p>
+                <div css={tw`mb-10 flex justify-between items-center`}>
+                    <div>
+                        <h1 className={'j-left text-5xl'}>Your Servers</h1>
+                        <h3 className={'j-left text-2xl mt-2 text-neutral-500'}>
+                            Select a server to view, update or modify.
+                        </h3>
+                    </div>
                     <Switch
                         name={'show_all_servers'}
                         defaultChecked={showOnlyAdmin}
@@ -73,7 +76,12 @@ export default () => {
                             <div className={'lg:grid lg:grid-cols-3 gap-4'}>
                                 <>
                                     {items.map((server) => (
-                                        <ServerRow key={server.uuid} server={server} className={'j-up'} />
+                                        <ServerRow
+                                            key={server.uuid}
+                                            server={server}
+                                            className={'j-up'}
+                                            css={tw`mt-2`}
+                                        />
                                     ))}
                                 </>
                             </div>
