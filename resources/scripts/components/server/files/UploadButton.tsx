@@ -3,81 +3,102 @@ import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
 import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components/macro';
 import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import useFlash from '@/plugins/useFlash';
+import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
 import { WithClassname } from '@/components/types';
 import Portal from '@/components/elements/Portal';
+import { CloudUploadIcon } from '@heroicons/react/outline';
 
-const InnerContainer = styled.div`
-    max-width: 600px;
-    ${tw`bg-black w-full border-4 border-primary-500 border-dashed rounded p-10 mx-10`}
-`;
+function isFileOrDirectory(event: DragEvent): boolean {
+    if (!event.dataTransfer?.types) {
+        return false;
+    }
+
+    return event.dataTransfer.types.some((value) => value.toLowerCase() === 'files');
+}
 
 export default ({ className }: WithClassname) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const [timeouts, setTimeouts] = useState<NodeJS.Timeout[]>([]);
     const [visible, setVisible] = useState(false);
-    const [loading, setLoading] = useState(false);
     const { mutate } = useFileManagerSwr();
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { addError, clearAndAddHttpError } = useFlashKey('files');
+
+    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const { clearFileUploads, appendFileUpload, removeFileUpload } = ServerContext.useStoreActions(
+        (actions) => actions.files
+    );
 
     useEventListener(
         'dragenter',
         (e) => {
+            e.preventDefault();
             e.stopPropagation();
-            setVisible(true);
+            if (isFileOrDirectory(e)) {
+                return setVisible(true);
+            }
         },
-        true
+        { capture: true }
     );
 
-    useEventListener(
-        'dragexit',
-        (e) => {
-            e.stopPropagation();
-            setVisible(false);
-        },
-        true
-    );
+    useEventListener('dragexit', () => setVisible(false), { capture: true });
+
+    useEventListener('keydown', () => {
+        visible && setVisible(false);
+    });
 
     useEffect(() => {
-        if (!visible) return;
+        return () => timeouts.forEach(clearTimeout);
+    }, []);
 
-        const hide = () => setVisible(false);
-
-        window.addEventListener('keydown', hide);
-        return () => {
-            window.removeEventListener('keydown', hide);
-        };
-    }, [visible]);
+    const onUploadProgress = (data: ProgressEvent, name: string) => {
+        appendFileUpload({ name, loaded: data.loaded, total: data.total });
+        if (data.loaded >= data.total) {
+            const timeout = setTimeout(() => removeFileUpload(name), 500);
+            setTimeouts((t) => [...t, timeout]);
+        }
+    };
 
     const onFileSubmission = (files: FileList) => {
-        const form = new FormData();
-        Array.from(files).forEach((file) => form.append('files', file));
+        clearAndAddHttpError();
+        const list = Array.from(files);
+        if (list.some((file) => !file.type && file.size % 4096 === 0)) {
+            return addError('Folder uploads are not supported at this time.', 'Error');
+        }
 
-        setLoading(true);
-        clearFlashes('files');
-        getFileUploadUrl(uuid)
-            .then((url) =>
-                axios.post(`${url}&directory=${directory}`, form, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data',
-                    },
-                })
-            )
+        if (!list.length) {
+            return;
+        }
+
+        const uploads = list.map((file) => {
+            appendFileUpload({ name: file.name, loaded: 0, total: file.size });
+            return () =>
+                getFileUploadUrl(uuid).then((url) =>
+                    axios.post(
+                        url,
+                        { files: file },
+                        {
+                            headers: { 'Content-Type': 'multipart/form-data' },
+                            params: { directory },
+                            onUploadProgress: (data) => {
+                                onUploadProgress(data, file.name);
+                            },
+                        }
+                    )
+                );
+        });
+
+        Promise.all(uploads.map((fn) => fn()))
             .then(() => mutate())
             .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ error, key: 'files' });
-            })
-            .then(() => setVisible(false))
-            .then(() => setLoading(false));
+                clearFileUploads();
+                clearAndAddHttpError(error);
+            });
     };
 
     return (
@@ -97,14 +118,20 @@ export default ({ className }: WithClassname) => {
                             onFileSubmission(e.dataTransfer.files);
                         }}
                     >
-                        <div css={tw`w-full flex items-center justify-center`} style={{ pointerEvents: 'none' }}>
-                            <InnerContainer>
-                                <p css={tw`text-lg text-neutral-200 text-center`}>Drag and drop files to upload.</p>
-                            </InnerContainer>
+                        <div className={'w-full flex items-center justify-center pointer-events-none'}>
+                            <div
+                                className={
+                                    'flex items-center space-x-4 bg-black w-full ring-4 ring-blue-200 ring-opacity-60 rounded p-6 mx-10 max-w-sm'
+                                }
+                            >
+                                <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
+                                <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>
+                                    Drag and drop files to upload.
+                                </p>
+                            </div>
                         </div>
                     </ModalMask>
                 </Fade>
-                <SpinnerOverlay visible={loading} size={'large'} fixed />
             </Portal>
             <input
                 type={'file'}
@@ -119,12 +146,7 @@ export default ({ className }: WithClassname) => {
                     }
                 }}
             />
-            <Button
-                className={className}
-                onClick={() => {
-                    fileUploadInput.current ? fileUploadInput.current.click() : setVisible(true);
-                }}
-            >
+            <Button className={className} onClick={() => fileUploadInput.current && fileUploadInput.current.click()}>
                 Upload
             </Button>
         </>

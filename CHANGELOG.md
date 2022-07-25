@@ -3,6 +3,33 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.10.1
+### Fixed
+* Fixes a surprise `clock()` function that was used for debugging and should not have made it into the release. This was causing activity events to not properly sync between the Panel and Wings.
+
+## v1.10.0
+### Fixed
+* Fixes improper cache key naming on the frontend causing server activity logs to be duplicated across server page views.
+* Fixes overflow issues on dialogs when the internal content is too long.
+* Fixes spinner overlay on console improperly taking up the entire page making it impossible to use navigation controls.
+* Fixes 2FA QR code background being too dark for some phones to properly scan.
+* File manager now properly displays an error message if a user attempts to upload a folder rather than files.
+* Fixes the "Create Directory" dialog persisting the previously entered value when it is re-opened.
+
+### Changed
+* IP addresses in activity logs are now always displayed to administrators, regardless of if they own the server or not.
+* Scroll down indicator on the console has been changed to a down arrow to be clearer.
+* Docker builds have been updated to use `PHP 8.1`.
+* Recaptcha validation domain is now configurable using the `RECAPTCHA_DOMAIN` environment variable.
+* Drag and drop overlay on the file manager has been tweaked to be slightly more consistent with the frontend style and be a little easier to read.
+
+### Added
+* Adds support for the `user_uuid` claim on all generated JWTs which allows Wings to properly identify the user performing each action.
+* Adds support for recieving external activity log events from Wings instances (power state, commands, SFTP, and uploads).
+* Adds support for tracking failed password-based SFTP logins.
+* Server name and description are now passed along to Wings making them available in egg variables for parsing and including.
+* Adds support for displaying all active file uploads in the file manager.
+
 ## v1.9.2
 ### Fixed
 * Fixes rouding in sidebar of CPU usage graph that was causing an excessive number of zeros to be rendered.
