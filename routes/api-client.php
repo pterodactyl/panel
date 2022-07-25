@@ -35,6 +35,7 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
     Route::put('/username', [Client\AccountController::class, 'updateUsername'])->name('api:client.account.update-username');
 
     Route::get('/activity', Client\ActivityLogController::class)->name('api:client.account.activity');
+    Route::get('/activity/latest', [Client\ActivityLogController::class, 'latest'])->name('api:client.account.activity');
 
     Route::get('/referrals', [Client\ReferralsController::class, 'index']);
     Route::post('/referrals', [Client\ReferralsController::class, 'store']);

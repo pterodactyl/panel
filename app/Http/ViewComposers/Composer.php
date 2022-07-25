@@ -41,7 +41,7 @@ class Composer
     {
         $setting = $this->settings->get('jexactyl::' . $data, false);
 
-        if ($data = 'logo') {
+        if ($data == 'logo') {
             return $this->settings->get('settings::app:logo', 'https://avatars.githubusercontent.com/u/91636558');
         }
 

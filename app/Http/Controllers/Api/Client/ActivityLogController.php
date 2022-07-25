@@ -27,4 +27,19 @@ class ActivityLogController extends ClientApiController
             ->transformWith($this->getTransformer(ActivityLogTransformer::class))
             ->toArray();
     }
+
+    /**
+     * Returns the latest activity log for a user.
+     */
+    public function latest(ClientApiRequest $request): array
+    {
+        $data = $request->user()
+            ->activity()
+            ->orderBy('timestamp', 'desc')
+            ->first();
+
+        return $this->fractal->item($data)
+            ->transformWith($this->getTransformer(ActivityLogTransformer::class))
+            ->toArray();
+    }
 }
