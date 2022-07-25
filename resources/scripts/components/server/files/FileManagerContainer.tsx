@@ -1,5 +1,4 @@
 import tw from 'twin.macro';
-import classNames from 'classnames';
 import { ip } from '@/lib/formatters';
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
@@ -101,15 +100,13 @@ export default () => {
                         />
                     </div>
                     <Can action={'file.create'}>
-                        <div className={classNames(style.manager_actions, 'j-left')}>
+                        <div className={style.manager_actions}>
+                            <FileManagerStatus />
+                            <NewDirectoryButton />
+                            <UploadButton />
                             <PullFileModal />
-                            <NewDirectoryButton css={tw`w-full flex-none mt-4 sm:mt-0 sm:w-auto sm:mr-4`} />
-                            <UploadButton css={tw`flex-1 mr-4 sm:flex-none sm:mt-0`} />
-                            <NavLink
-                                to={`/server/${id}/files/new${window.location.hash}`}
-                                css={tw`flex-1 sm:flex-none sm:mt-0`}
-                            >
-                                <Button css={tw`w-full`}>New File</Button>
+                            <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
+                                <Button>New File</Button>
                             </NavLink>
                         </div>
                     </Can>
@@ -136,7 +133,6 @@ export default () => {
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />
-                                <FileManagerStatus />
                             </>
                         </CSSTransition>
                     )}

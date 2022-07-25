@@ -76,7 +76,7 @@ return [
             'compress_other' => 'Compressed :count files in :directory',
             'read' => 'Viewed the contents of :file',
             'copy' => 'Created a copy of :file',
-            'create-directory' => 'Created a new directory :name in :directory',
+            'create-directory' => 'Created directory :directory:name',
             'decompress' => 'Decompressed :files in :directory',
             'delete_one' => 'Deleted :directory:files.0',
             'delete_other' => 'Deleted :count files in :directory',
@@ -86,7 +86,7 @@ return [
             'rename_other' => 'Renamed :count files in :directory',
             'write' => 'Wrote new content to :file',
             'upload' => 'Began a file upload',
-            'uploaded' => 'Uploaded :file in :directory',
+            'uploaded' => 'Uploaded :directory:file',
         ],
         'sftp' => [
             'denied' => 'Blocked SFTP access due to permissions',

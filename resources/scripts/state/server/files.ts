@@ -17,6 +17,7 @@ export interface ServerFileStore {
     appendSelectedFile: Action<ServerFileStore, string>;
     removeSelectedFile: Action<ServerFileStore, string>;
 
+    clearFileUploads: Action<ServerFileStore>;
     appendFileUpload: Action<ServerFileStore, FileUpload>;
     removeFileUpload: Action<ServerFileStore, string>;
 }
@@ -39,12 +40,20 @@ const files: ServerFileStore = {
         state.selectedFiles = state.selectedFiles.filter((f) => f !== payload);
     }),
 
+    clearFileUploads: action((state) => {
+        state.uploads = [];
+    }),
+
     appendFileUpload: action((state, payload) => {
-        state.uploads = state.uploads.filter((f) => f.name !== payload.name).concat(payload);
+        if (!state.uploads.some(({ name }) => name === payload.name)) {
+            state.uploads = [...state.uploads, payload];
+        } else {
+            state.uploads = state.uploads.map((file) => (file.name === payload.name ? payload : file));
+        }
     }),
 
     removeFileUpload: action((state, payload) => {
-        state.uploads = state.uploads.filter((f) => f.name !== payload);
+        state.uploads = state.uploads.filter(({ name }) => name !== payload);
     }),
 };
 
