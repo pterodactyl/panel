@@ -98,9 +98,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 title={'Uptime'}
                 color={getBackgroundColor(status === 'running' ? 0 : status !== 'offline' ? 9 : 10, 10)}
             >
-                {status === 'starting' || status === 'stopping' ? (
-                    capitalize(status)
-                ) : stats.uptime > 0 ? (
+                {stats.uptime > 0 ? (
                     <UptimeDuration uptime={stats.uptime / 1000} />
                 ) : (
                     'Offline'
