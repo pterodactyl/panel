@@ -101,7 +101,7 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                 {stats.uptime > 0 ? (
                     <UptimeDuration uptime={stats.uptime / 1000} />
                 ) : (
-                    'Offline'
+                    capitalize(status)
                 )}
             </StatBlock>
             <StatBlock icon={faMicrochip} title={'CPU Load'} color={getBackgroundColor(stats.cpu, limits.cpu)}>
