@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Settings;
+namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 
 use Exception;
 use Illuminate\View\View;
@@ -14,9 +14,9 @@ use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Providers\SettingsServiceProvider;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\MailFormRequest;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Settings\MailSettingsFormRequest;
 
 class MailController extends Controller
 {
@@ -68,7 +68,7 @@ class MailController extends Controller
      */
     public function index(): View
     {
-        return view('admin.settings.mail', [
+        return view('admin.jexactyl.mail', [
             'disabled' => $this->config->get('mail.driver') !== 'smtp',
         ]);
     }
@@ -80,7 +80,7 @@ class MailController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(MailSettingsFormRequest $request): Response
+    public function update(MailFormRequest $request): Response
     {
         if ($this->config->get('mail.driver') !== 'smtp') {
             throw new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');

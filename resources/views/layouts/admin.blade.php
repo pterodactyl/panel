@@ -20,6 +20,8 @@
         <meta name="msapplication-config" content="/favicons/browserconfig.xml">
         <meta name="theme-color" content="#0e4688">
 
+        <script src="https://unpkg.com/feather-icons"></script>
+
         @include('layouts.scripts')
 
         @section('scripts')
@@ -38,71 +40,55 @@
         <div class="wrapper">
             <header class="main-header">
                 <a href="{{ route('index') }}" class="logo">
-                    <span>
-                        <img
-                            src="https://avatars.githubusercontent.com/u/91636558"
-                            width="48"
-                            height="48"
-                        />
-                    </span>
+                    <img src="https://avatars.githubusercontent.com/u/91636558" width="48" height="48" />
                 </a>
             </header>
             <aside class="main-sidebar">
                 <section class="sidebar">
                     <ul class="sidebar-menu">
-                        <li class="{{ Route::currentRouteName() !== 'admin.index' ?: 'active' }}">
-                            <a href="{{ route('admin.index') }}">
-                                <i class="fa fa-home"></i> <label>Overview</label>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.settings') ?: 'active' }}">
-                            <a href="{{ route('admin.settings')}}">
-                                <i class="fa fa-wrench"></i> <label>Settings</label>
-                            </a>
-                        </li>
-                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.jexactyl') ?: 'active' }}">
-                            <a href="{{ route('admin.jexactyl.index')}}">
-                                <i class="fa fa-code"></i> <label>Jexactyl</label>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.index') ?: 'active' }}">
+                            <a href="{{ route('admin.index')}}">
+                                <i data-feather="tool" style="margin-left: 12px;"></i> 
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.api') ?: 'active' }}">
                             <a href="{{ route('admin.api.index')}}">
-                                <i class="fa fa-gamepad"></i> <label>API Keys</label>
+                                <i data-feather="git-branch" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.databases') ?: 'active' }}">
                             <a href="{{ route('admin.databases') }}">
-                                <i class="fa fa-database"></i> <label>Databases</label>
+                                <i data-feather="database" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.locations') ?: 'active' }}">
                             <a href="{{ route('admin.locations') }}">
-                                <i class="fa fa-globe"></i> <label>Locations</label>
+                                <i data-feather="navigation" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nodes') ?: 'active' }}">
                             <a href="{{ route('admin.nodes') }}">
-                                <i class="fa fa-sitemap"></i> <label>Nodes</label>
+                                <i data-feather="layers" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.servers') ?: 'active' }}">
                             <a href="{{ route('admin.servers') }}">
-                                <i class="fa fa-server"></i> <label>Servers</label>
+                                <i data-feather="server" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.users') ?: 'active' }}">
                             <a href="{{ route('admin.users') }}">
-                                <i class="fa fa-users"></i> <label>Users</label>
+                                <i data-feather="users" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.mounts') ?: 'active' }}">
                             <a href="{{ route('admin.mounts') }}">
-                                <i class="fa fa-magic"></i> <label>Mounts</label>
+                                <i data-feather="hard-drive" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.nests') ?: 'active' }}">
                             <a href="{{ route('admin.nests') }}">
-                                <i class="fa fa-th-large"></i> <label>Nests</label>
+                                <i data-feather="archive" style="margin-left: 12px;"></i>
                             </a>
                         </li>
                     </ul>
@@ -158,6 +144,10 @@
             {!! Theme::js('vendor/select2/select2.full.min.js?t={cache-version}') !!}
             {!! Theme::js('js/admin/functions.js?t={cache-version}') !!}
             <script src="/js/autocomplete.js" type="application/javascript"></script>
+
+            <script>
+                feather.replace()
+            </script>
 
             @if(Auth::user()->root_admin)
                 <script>

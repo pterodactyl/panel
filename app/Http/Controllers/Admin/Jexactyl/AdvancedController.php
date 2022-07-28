@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin\Settings;
+namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
@@ -9,7 +9,7 @@ use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\AdvancedFormRequest;
 
 class AdvancedController extends Controller
 {
@@ -53,16 +53,16 @@ class AdvancedController extends Controller
      */
     public function index(): View
     {
-        $showRecaptchaWarning = false;
+        $warning = false;
+    
         if (
-            $this->config->get('recaptcha._shipped_secret_key') === $this->config->get('recaptcha.secret_key')
-            || $this->config->get('recaptcha._shipped_website_key') === $this->config->get('recaptcha.website_key')
-        ) {
-            $showRecaptchaWarning = true;
-        }
+            $this->config->get('recaptcha._shipped_secret_key') == $this->config->get('recaptcha.secret_key')
+            || $this->config->get('recaptcha._shipped_website_key') == $this->config->get('recaptcha.website_key')
+        ) { $warning = true; }
 
-        return view('admin.settings.advanced', [
-            'showRecaptchaWarning' => $showRecaptchaWarning,
+        return view('admin.jexactyl.advanced', [
+            'warning' => $warning,
+            'logo' => $this->settings->get('settings::app:logo', 'https://avatars.githubusercontent.com/u/91636558'),
         ]);
     }
 
@@ -70,7 +70,7 @@ class AdvancedController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(AdvancedSettingsFormRequest $request): RedirectResponse
+    public function update(AdvancedFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
             $this->settings->set('settings::' . $key, $value);
@@ -79,6 +79,6 @@ class AdvancedController extends Controller
         $this->kernel->call('queue:restart');
         $this->alert->success('Advanced settings have been updated successfully and the queue worker was restarted to apply these changes.')->flash();
 
-        return redirect()->route('admin.settings.advanced');
+        return redirect()->route('admin.jexactyl.advanced');
     }
 }

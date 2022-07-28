@@ -5,6 +5,7 @@ use Carbon\Carbon;
 use Illuminate\View\View;
 use Illuminate\Cache\Repository;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
@@ -103,5 +104,22 @@ class IndexController extends Controller
                 'disk' => $diskTotal,
             ],
         ]);
+    }
+
+    /**
+     * Handle settings update.
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function update(BaseSettingsFormRequest $request): RedirectResponse
+    {
+        foreach ($request->normalize() as $key => $value) {
+            $this->settings->set('jexactyl::' . $key, $value);
+        }
+
+        $this->alert->success('Jexactyl Settings have been updated.')->flash();
+
+        return redirect()->route('admin.settings');
     }
 } 

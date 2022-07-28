@@ -4,7 +4,34 @@ use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Admin;
 use Pterodactyl\Http\Middleware\Admin\Servers\ServerInstalled;
 
-Route::get('/', [Admin\BaseController::class, 'index'])->name('admin.index');
+/*
+|--------------------------------------------------------------------------
+| Jexactyl Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /admin/jexactyl
+|
+*/
+Route::group(['prefix' => '/'], function () {
+    Route::get('/', [Admin\Jexactyl\IndexController::class, 'index'])->name('admin.index');
+    Route::get('/mail', [Admin\Jexactyl\MailController::class, 'index'])->name('admin.jexactyl.mail');
+    Route::get('/store', [Admin\Jexactyl\StoreController::class, 'index'])->name('admin.jexactyl.store');
+    Route::get('/renewal', [Admin\Jexactyl\RenewalController::class, 'index'])->name('admin.jexactyl.renewal');
+    Route::get('/advanced', [Admin\Jexactyl\AdvancedController::class, 'index'])->name('admin.jexactyl.advanced');
+    Route::get('/discord', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.discord');
+    Route::get('/referrals', [Admin\Jexactyl\ReferralsController::class, 'index'])->name('admin.jexactyl.referrals');
+    Route::get('/registration', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.registration');
+
+    Route::post('/mail/test', [Admin\Jexactyl\MailController::class, 'test'])->name('admin.jexactyl.mail.test');
+
+    Route::patch('/mail', [Admin\Jexactyl\MailController::class, 'update'])->name('admin.jexactyl.mail');
+    Route::patch('/store', [Admin\Jexactyl\StoreController::class, 'update'])->name('admin.jexactyl.store');
+    Route::patch('/renewal', [Admin\Jexactyl\RenewalController::class, 'update'])->name('admin.jexactyl.renewal');
+    Route::patch('/advanced', [Admin\Jexactyl\AdvancedController::class, 'update'])->name('admin.jexactyl.advanced');
+    Route::patch('/discord', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.discord');
+    Route::patch('/referrals', [Admin\Jexactyl\ReferralsController::class, 'update'])->name('admin.jexactyl.referrals');
+    Route::patch('/registration', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.registration');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -65,40 +92,9 @@ Route::group(['prefix' => 'databases'], function () {
 |
 */
 Route::group(['prefix' => 'settings'], function () {
-    Route::get('/', [Admin\Settings\IndexController::class, 'index'])->name('admin.settings');
-    Route::get('/mail', [Admin\Settings\MailController::class, 'index'])->name('admin.settings.mail');
     Route::get('/advanced', [Admin\Settings\AdvancedController::class, 'index'])->name('admin.settings.advanced');
 
-    Route::post('/mail/test', [Admin\Settings\MailController::class, 'test'])->name('admin.settings.mail.test');
-
-    Route::patch('/', [Admin\Settings\IndexController::class, 'update']);
-    Route::patch('/mail', [Admin\Settings\MailController::class, 'update']);
     Route::patch('/advanced', [Admin\Settings\AdvancedController::class, 'update']);
-});
-
-/*
-|--------------------------------------------------------------------------
-| Jexactyl Controller Routes
-|--------------------------------------------------------------------------
-|
-| Endpoint: /admin/jexactyl
-|
-*/
-Route::group(['prefix' => 'jexactyl'], function () {
-    Route::get('/', [Admin\Jexactyl\IndexController::class, 'index'])->name('admin.jexactyl.index');
-    Route::get('/theme', [Admin\Jexactyl\ThemeController::class, 'index'])->name('admin.jexactyl.theme');
-    Route::get('/store', [Admin\Jexactyl\StoreController::class, 'index'])->name('admin.jexactyl.store');
-    Route::get('/renewal', [Admin\Jexactyl\RenewalController::class, 'index'])->name('admin.jexactyl.renewal');
-    Route::get('/discord', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.discord');
-    Route::get('/referrals', [Admin\Jexactyl\ReferralsController::class, 'index'])->name('admin.jexactyl.referrals');
-    Route::get('/registration', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.registration');
-
-    Route::patch('/store', [Admin\Jexactyl\StoreController::class, 'update'])->name('admin.jexactyl.store');
-    Route::patch('/theme', [Admin\Jexactyl\ThemeController::class, 'update'])->name('admin.jexactyl.theme');
-    Route::patch('/renewal', [Admin\Jexactyl\RenewalController::class, 'update'])->name('admin.jexactyl.renewal');
-    Route::patch('/discord', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.discord');
-    Route::patch('/referrals', [Admin\Jexactyl\ReferralsController::class, 'update'])->name('admin.jexactyl.referrals');
-    Route::patch('/registration', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.registration');
 });
 
 /*

@@ -1,11 +1,11 @@
 <?php
 
-namespace Pterodactyl\Http\Requests\Admin\Settings;
+namespace Pterodactyl\Http\Requests\Admin\Jexactyl;
 
 use Illuminate\Validation\Rule;
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class MailSettingsFormRequest extends AdminFormRequest
+class MailFormRequest extends AdminFormRequest
 {
     /**
      * Return rules to validate mail settings POST data against.

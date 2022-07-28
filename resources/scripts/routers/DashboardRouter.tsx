@@ -50,7 +50,7 @@ export default () => {
                     </div>
                 </SubNavigation>
             ) : (
-                <SubNavigation className={'j-down'}>
+                <SubNavigation className={'j-down lg:visible invisible'}>
                     <div>
                         <InformationContainer />
                     </div>

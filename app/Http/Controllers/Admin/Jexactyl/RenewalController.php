@@ -6,8 +6,8 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Jexactyl\RenewalFormRequest;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class RenewalController extends Controller
 {
