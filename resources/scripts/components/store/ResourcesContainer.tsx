@@ -38,7 +38,6 @@ export default () => {
 
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
     const cost = useStoreState((state) => state.storefront.data!.cost);
-    const currency = useStoreState((state) => state.storefront.data!.currency);
 
     const purchase = (resource: string) => {
         clearFlashes('store:resources');
@@ -90,7 +89,7 @@ export default () => {
                         Purchase CPU to improve server performance.
                     </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per 50% CPU: {cost.cpu} {currency}
+                        Cost per 50% CPU: {cost.cpu} credits
                     </p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -111,7 +110,7 @@ export default () => {
                         Purchase RAM to improve server performance.
                     </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per 1GB RAM: {cost.memory} {currency}
+                        Cost per 1GB RAM: {cost.memory} credits
                     </p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Disk'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -132,7 +131,7 @@ export default () => {
                         Purchase disk space to improve server capacity.
                     </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per 1GB disk: {cost.disk} {currency}
+                        Cost per 1GB disk: {cost.disk} credits
                     </p>
                 </TitledGreyBox>
             </Container>
@@ -155,7 +154,7 @@ export default () => {
                         Purchase a server slot to deploy a server.
                     </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per slot: {cost.slot} {currency}
+                        Cost per slot: {cost.slot} credits
                     </p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Ports'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -176,7 +175,7 @@ export default () => {
                         Purchase a port to connect to your server.
                     </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per port: {cost.port} {currency}
+                        Cost per port: {cost.port} credits
                     </p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Backups'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -197,7 +196,7 @@ export default () => {
                         Purchase a backup to protect your data.
                     </p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per backup slot: {cost.backup} {currency}
+                        Cost per backup slot: {cost.backup} credits
                     </p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Databases'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
@@ -216,7 +215,7 @@ export default () => {
                     </Wrapper>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Purchase a database to store data.</p>
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per database: {cost.database} {currency}
+                        Cost per database: {cost.database} credits
                     </p>
                 </TitledGreyBox>
             </Container>

@@ -27,7 +27,6 @@ const Container = styled.div`
 export default () => {
     const [resources, setResources] = useState<Resources>();
     const earn = useStoreState((state) => state.storefront.data!.earn);
-    const store = useStoreState((state) => state.storefront.data!);
 
     useEffect(() => {
         getResources().then((resources) => setResources(resources));
@@ -42,12 +41,12 @@ export default () => {
             <Container className={'j-up lg:grid lg:grid-cols-3 my-10'}>
                 <ContentBox title={'Current Account Balance'} showFlashes={'earn:balance'} css={tw`sm:mt-0`}>
                     <h1 css={tw`text-7xl flex justify-center items-center`}>
-                        ${resources.balance} {store.currency}
+                        ${resources.balance} Credits
                     </h1>
                 </ContentBox>
                 <ContentBox title={'Earn Rate'} showFlashes={'earn:rate'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <h1 css={tw`text-7xl flex justify-center items-center`}>
-                        {earn.amount} {store.currency} / min
+                        {earn.amount} Credits / min
                     </h1>
                 </ContentBox>
                 <ContentBox title={'How to earn'} showFlashes={'earn:how'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>

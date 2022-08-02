@@ -43,7 +43,7 @@ export default () => {
             <Container className={'j-up lg:grid lg:grid-cols-2 my-10'}>
                 <ContentBox title={'Account Balance'} showFlashes={'account:balance'} css={tw`sm:mt-0`}>
                     <h1 css={tw`text-7xl flex justify-center items-center`}>
-                        {resources.balance} {store.currency}
+                        {resources.balance} Credits
                     </h1>
                 </ContentBox>
                 <ContentBox title={'Purchase credits'} showFlashes={'account:balance'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>

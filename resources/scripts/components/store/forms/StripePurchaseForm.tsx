@@ -2,7 +2,6 @@ import tw from 'twin.macro';
 import { Form, Formik } from 'formik';
 import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
-import { useStoreState } from '@/state/hooks';
 import stripe from '@/api/store/gateways/stripe';
 import Select from '@/components/elements/Select';
 import { Dialog } from '@/components/elements/dialog';
@@ -15,7 +14,6 @@ export default () => {
     const { clearAndAddHttpError } = useFlash();
     const [amount, setAmount] = useState(0);
     const [submitting, setSubmitting] = useState(false);
-    const currency = useStoreState((state) => state.storefront.data!.currency);
 
     const submit = () => {
         setSubmitting(true);
@@ -58,16 +56,16 @@ export default () => {
                             Choose an amount...
                         </option>
                         <option key={'stripe:buy:100'} value={100}>
-                            Purchase 100 {currency}
+                            Purchase 100 credits
                         </option>
                         <option key={'stripe:buy:200'} value={200}>
-                            Purchase 200 {currency}
+                            Purchase 200 credits
                         </option>
                         <option key={'stripe:buy:500'} value={500}>
-                            Purchase 500 {currency}
+                            Purchase 500 credits
                         </option>
                         <option key={'stripe:buy:1000'} value={1000}>
-                            Purchase 1000 {currency}
+                            Purchase 1000 credits
                         </option>
                     </Select>
                     <div css={tw`mt-6`}>
