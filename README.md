@@ -24,6 +24,11 @@ Built on [Pterodactyl](https://pterodactyl.io), this software is designed from t
 * [GitHub](https://github.com/jexactyl)
 * [Discord](https://discord.gg/qttGR4Z5Pk)
 
+## Sponsors
+| Company | About | Sponsor |
+| ------- | ----- | ------- |
+| [**Nero Nodes**](https://neronodes.net) | A Minecraft server provider that's completely free, 24/7. | [@lucatolton](https://github.com/lucatolton) |
+
 ## Licensing
 Some Javascript and CSS used within the panel are licensed under a `MIT` or `Apache 2.0` license. Please check their
 respective header files for more information.
