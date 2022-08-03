@@ -43,7 +43,6 @@ class RegistrationController extends Controller
             'discord_enabled' => $this->settings->get('jexactyl::discord:enabled', false),
             'discord_id' => $this->settings->get('jexactyl::discord:id', 0),
             'discord_secret' => $this->settings->get('jexactyl::discord:secret', 0),
-            'discord_redirect' => $this->settings->get('jexactyl::discord:redirect', 'https://example.com/auth/discord/callback'),
 
             'cpu' => $this->settings->get('jexactyl::registration:cpu', 100),
             'memory' => $this->settings->get('jexactyl::registration:memory', 1024),

@@ -35,7 +35,7 @@ class DiscordController extends Controller
         return new JsonResponse([
             'https://discord.com/api/oauth2/authorize?'
             . 'client_id=' . $this->settings->get('jexactyl::discord:id')
-            . '&redirect_uri=' . $this->settings->get('jexactyl::discord:redirect')
+            . '&redirect_uri=' . route('auth.discord.callback')
             . '&response_type=code&scope=identify%20email%20guilds%20guilds.join&prompt=none',
         ], 200, [], null, false);
     }
@@ -53,7 +53,7 @@ class DiscordController extends Controller
             'client_secret' => $this->settings->get('jexactyl::discord:secret'),
             'grant_type' => 'authorization_code',
             'code' => $request->input('code'),
-            'redirect_uri' => $this->settings->get('jexactyl::discord:redirect'),
+            'redirect_uri' => route('auth.discord.callback'),
         ]);
 
         if (!$code->ok()) {

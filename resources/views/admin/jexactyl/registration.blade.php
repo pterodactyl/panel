@@ -79,15 +79,8 @@
                             <div class="form-group col-md-4">
                                 <label class="control-label">Discord Client Secret</label>
                                 <div>
-                                    <input type="text" class="form-control" name="discord:secret" value="{{ $discord_secret }}" />
+                                    <input type="password" class="form-control" name="discord:secret" value="{{ $discord_secret }}" />
                                     <p class="text-muted"><small>The client secret for your OAuth application. Treat this like a password.</small></p>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-4">
-                                <label class="control-label">Discord Redirect URL</label>
-                                <div>
-                                    <input type="text" class="form-control" name="discord:redirect" value="{{ $discord_redirect }}" />
-                                    <p class="text-muted"><small>The URL that Discord redirects to after successful login. Change <code>example.com</code> to your TLD.</small></p>
                                 </div>
                             </div>
                         </div>
