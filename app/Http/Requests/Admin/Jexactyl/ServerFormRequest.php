@@ -14,7 +14,7 @@ class ServerFormRequest extends AdminFormRequest
         return [
             'enabled' => 'required|in:true,false',
             'default' => 'required|int|min:1',
-            'cost' => 'required|int|min:1',
+            'cost' => 'required|int|min:0',
             'editing' => 'required|in:true,false',
         ];
     }
