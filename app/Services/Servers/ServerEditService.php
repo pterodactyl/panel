@@ -26,7 +26,6 @@ class ServerEditService
         ]);
 
         $user->update([
-            // Won't currently work with ports, backups, databases.
             'store_'.$this->convertResource($request) => $this->getUserResource($request) - $amount,
         ]);
 
