@@ -20,6 +20,11 @@ class ServerDeletionService
     protected $force = false;
 
     /**
+     * @var bool
+     */
+    protected $return_resources = false;
+
+    /**
      * @var \Illuminate\Database\ConnectionInterface
      */
     private $connection;
