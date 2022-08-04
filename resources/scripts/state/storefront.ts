@@ -7,6 +7,9 @@ export interface StorefrontSettings {
         cost: number;
         days: number;
     };
+    editing: {
+        enabled: boolean;
+    };
     referrals: {
         enabled: boolean;
         reward: number;

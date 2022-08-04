@@ -69,8 +69,9 @@ export default () => {
     const location = useLocation();
     const { width } = useWindowDimensions();
 
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
     const [error, setError] = useState('');
+    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const editEnabled = useStoreState((state) => state.storefront.data!.editing.enabled);
 
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
@@ -188,13 +189,15 @@ export default () => {
                                         </div>
                                     </NavLink>
                                 </Can>
-                                <Can action={['settings.*']} matchAny>
-                                    <NavLink to={`${match.url}/edit`}>
-                                        <div css={tw`flex items-center justify-between`}>
-                                            Edit <Icon.Edit css={tw`ml-1`} size={18} />
-                                        </div>
-                                    </NavLink>
-                                </Can>
+                                {editEnabled &&
+                                    <Can action={['settings.*']} matchAny>
+                                        <NavLink to={`${match.url}/edit`}>
+                                            <div css={tw`flex items-center justify-between`}>
+                                                Edit <Icon.Edit css={tw`ml-1`} size={18} />
+                                            </div>
+                                        </NavLink>
+                                    </Can>
+                                }
                                 {rootAdmin && (
                                     <a href={'/admin/servers/view/' + serverId} rel='noreferrer' target={'_blank'}>
                                         <div css={tw`flex items-center justify-between`}>
@@ -268,7 +271,9 @@ export default () => {
                                     </Route>
                                     <Route path={`${match.path}/startup`} component={StartupContainer} exact />
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact />
-                                    <Route path={`${match.path}/edit`} component={EditContainer} exact />
+                                    {editEnabled &&
+                                        <Route path={`${match.path}/edit`} component={EditContainer} exact />
+                                    }
                                     <Route path={'*'} component={NotFound} />
                                 </Switch>
                             </TransitionRouter>
