@@ -1,12 +1,12 @@
 @extends('layouts.admin')
-@include('partials/admin.jexactyl.nav', ['activeTab' => 'renewal'])
+@include('partials/admin.jexactyl.nav', ['activeTab' => 'server'])
 
 @section('title')
-    Jexactyl Renewals
+    Jexactyl Servers
 @endsection
 
 @section('content-header')
-    <h1>Jexactyl Renewals<small>Configure Jexactyl's server renewal system.</small></h1>
+    <h1>Server Settings<small>Configure Jexactyl's server settings.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Jexactyl</li>
@@ -17,7 +17,7 @@
     @yield('jexactyl::nav')
     <div class="row">
         <div class="col-xs-12">
-            <form action="{{ route('admin.jexactyl.renewal') }}" method="POST">
+            <form action="{{ route('admin.jexactyl.server') }}" method="POST">
                 <div class="box
                     @if($enabled == 'true')
                         box-success
@@ -58,6 +58,31 @@
                                         <span class="input-group-addon">credits</span>
                                     </div>
                                     <p class="text-muted"><small>Determines the amount of credits that a renewal costs.</small></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box
+                    @if($enabled == 'true')
+                        box-success
+                    @else
+                        box-danger
+                    @endif
+                ">
+                    <div class="box-header with-border">
+                        <i class="fa fa-clock-o"></i> <h3 class="box-title">Server Renewals <small>Configure settings for server renewals.</small></h3>
+                    </div>
+                    <div class="box-body">
+                        <div class="row">
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Server Resource Editing</label>
+                                <div>
+                                    <select name="editing" class="form-control">
+                                        <option @if ($editing == 'false') selected @endif value="false">Disabled</option>
+                                        <option @if ($editing == 'true') selected @endif value="true">Enabled</option>
+                                    </select>
+                                    <p class="text-muted"><small>Determines whether users can edit the amount of resources assigned to their server.</small></p>
                                 </div>
                             </div>
                         </div>

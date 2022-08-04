@@ -6,10 +6,10 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\Jexactyl\RenewalFormRequest;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\ServerFormRequest;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
-class RenewalController extends Controller
+class ServerController extends Controller
 {
     /**
      * @var \Prologue\Alerts\AlertsMessageBag
@@ -39,10 +39,11 @@ class RenewalController extends Controller
     {
         $prefix = 'jexactyl::renewal:';
     
-        return view('admin.jexactyl.renewal', [
+        return view('admin.jexactyl.server', [
             'enabled' => $this->settings->get($prefix.'enabled', false),
             'default' => $this->settings->get($prefix.'default', 7),
             'cost' => $this->settings->get($prefix.'cost', 20),
+            'editing' => $this->settings->get($prefix.'editing', false),
         ]);
     }
 
@@ -52,14 +53,14 @@ class RenewalController extends Controller
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(RenewalFormRequest $request): RedirectResponse
+    public function update(ServerFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
             $this->settings->set('jexactyl::renewal:' . $key, $value);
         }
 
-        $this->alert->success('Jexactyl Renewal System has been updated.')->flash();
+        $this->alert->success('Jexactyl Server settings has been updated.')->flash();
 
-        return redirect()->route('admin.jexactyl.renewal');
+        return redirect()->route('admin.jexactyl.server');
     }
 }
