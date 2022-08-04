@@ -74,6 +74,7 @@ export default () => {
 
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
     const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const eggFeatures = ServerContext.useStoreState((state) => state.server.data?.eggFeatures);
     const inConflictState = ServerContext.useStoreState((state) => state.server.inConflictState);
     const serverId = ServerContext.useStoreState((state) => state.server.data?.internalId);
     const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
@@ -122,13 +123,15 @@ export default () => {
                                         </div>
                                     </NavLink>
                                 </Can>
-                                <Can action={'plugin.*'}>
-                                    <NavLink to={`${match.url}/plugins`}>
-                                        <div css={tw`flex items-center justify-between`}>
-                                            Plugins <Icon.Box css={tw`ml-1`} size={18} />
-                                        </div>
-                                    </NavLink>
-                                </Can>
+                                {eggFeatures?.includes('eula') &&
+                                    <Can action={'plugin.*'}>
+                                        <NavLink to={`${match.url}/plugins`}>
+                                            <div css={tw`flex items-center justify-between`}>
+                                                Plugins <Icon.Box css={tw`ml-1`} size={18} />
+                                            </div>
+                                        </NavLink>
+                                    </Can>
+                                }
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>
                                         <div css={tw`flex items-center justify-between`}>
@@ -223,11 +226,13 @@ export default () => {
                                             <ServerActivityLogContainer />
                                         </RequireServerPermission>
                                     </Route>
-                                    <Route path={`${match.path}/plugins`} exact>
-                                        <RequireServerPermission permissions={'plugin.*'}>
-                                            <PluginContainer />
-                                        </RequireServerPermission>
-                                    </Route>
+                                    {eggFeatures?.includes('eula') &&
+                                        <Route path={`${match.path}/plugins`} exact>
+                                            <RequireServerPermission permissions={'plugin.*'}>
+                                                <PluginContainer />
+                                            </RequireServerPermission>
+                                        </Route>
+                                    }
                                     <Route path={`${match.path}/files/:action(edit|new)`} exact>
                                         <Spinner.Suspense>
                                             <FileEditContainer />
