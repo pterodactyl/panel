@@ -33,7 +33,7 @@ Built on [Pterodactyl](https://pterodactyl.io), this software is designed from t
 | | | |
 | [**Nero Nodes**](https://neronodes.net) | A Minecraft server provider that's completely free, 24/7. | [@lucatolton](https://github.com/lucatolton) |
 | [**SneakyHub**](https://sneakyhub.com/discord) | A SneakyNodes LTD project, Free 24/7 hosting for games, websites, discord bots and more. | [@SneakyHub](https://github.com/sneakyhub) |
-| [**Wumpus Host**](https://wumpus.host) | A Discord bot host that offers free hosting, 24/7. | [@WumpusHost]([https://github.com/wumpushost](https://github.com/wumpushost) |
+| [**Wumpus Host**](https://wumpus.host) | A Discord bot host that offers free hosting, 24/7. | [@WumpusHost](https://github.com/wumpushost) |
 
 ## Licensing
 Some Javascript and CSS used within the panel are licensed under a `MIT` or `Apache 2.0` license. Please check their
