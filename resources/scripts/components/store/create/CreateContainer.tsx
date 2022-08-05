@@ -68,7 +68,10 @@ export default () => {
     useEffect(() => {
         getResources().then((resources) => setResources(resources));
 
-        getNodes().then((nodes) => setNodes(nodes));
+        getNodes().then((nodes) => {
+            setNode(nodes[0].id);
+            setNodes(nodes);
+        });
 
         getNests().then((nests) => {
             setNest(nests[0].id);
@@ -148,6 +151,7 @@ export default () => {
                     databases: number().optional().max(resources.databases).max(limit.database),
                     nest: number().required().default(1),
                     egg: number().required().default(1),
+                    node: number().required().min(1),
                 })}
             >
                 <Form>
@@ -212,16 +216,15 @@ export default () => {
                     <h1 className={'j-left text-5xl'}>Deployment</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>Choose a node and server type.</h3>
                     <Container className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
-                        <p className={'text-3xl'}>current node: {node}</p>
                         <TitledGreyBox title={'Available Nodes'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'node'} onChange={(e) => setNode(parseInt(e.target.value))}>
                                 {nodes.map((n) => (
                                     <option key={n.id} value={n.id}>
-                                        {n.name}
+                                        {n.name} - {n.fqdn} | {n.free} of {n.used} slots available
                                     </option>
                                 ))}
                             </Select>
-                            <p css={tw`mt-2 text-sm`}>Select a nest to use for your server.</p>
+                            <p css={tw`mt-2 text-sm`}>Select a node to deploy your server to.</p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server Nest'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'nest'} onChange={(nest) => changeNest(nest)}>

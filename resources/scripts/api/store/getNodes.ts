@@ -3,11 +3,17 @@ import http from '@/api/http';
 export interface Node {
     id: number;
     name: string;
+    fqdn: string;
+    free: number;
+    used: number;
 }
 
 export const rawDataToNode = (data: any): Node => ({
     id: data.id,
     name: data.name,
+    fqdn: data.fqdn,
+    free: data.free,
+    used: data.used,
 });
 
 export const getNodes = async (): Promise<Node[]> => {

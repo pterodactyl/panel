@@ -3,6 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Client\Store;
 
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
 class NodeTransformer extends BaseClientTransformer
@@ -21,9 +22,15 @@ class NodeTransformer extends BaseClientTransformer
      */
     public function transform(Node $model): array
     {
+        $free = Allocation::where('node_id', $model->id)->where('server_id', null)->count();
+        $used = Allocation::where('node_id', $model->id)->where('server_id', '!=', null)->count();
+
         return [
             'id' => $model->id,
             'name' => $model->name,
+            'fqdn' => $model->fqdn,
+            'free' => $free,
+            'used' => $used,
         ];
     }
 }
