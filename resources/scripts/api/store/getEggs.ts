@@ -12,9 +12,9 @@ export const rawDataToEgg = (data: any): Egg => ({
     dockerImages: data.docker_images,
 });
 
-export const getEggs = async (nest: number | undefined): Promise<Egg[]> => {
+export const getEggs = async (id?: number): Promise<Egg[]> => {
     return new Promise((resolve, reject) => {
-        http.get(`/api/client/store/eggs/${nest}`)
+        http.post('/api/client/store/eggs', { id })
             .then(({ data }) => resolve((data.data || []).map((d: any) => rawDataToEgg(d.attributes))))
             .catch(reject);
     });

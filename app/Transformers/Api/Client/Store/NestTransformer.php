@@ -16,12 +16,10 @@ class NestTransformer extends BaseClientTransformer
     }
 
     /**
-     * Transform an Egg model into a representation that can be consumed by
+     * Transforms the Nest model into a representation that can be consumed by
      * the application api.
-     *
-     * @return array
      */
-    public function transform(Nest $model)
+    public function transform(Nest $model): array
     {
         return [
             'id' => $model->id,

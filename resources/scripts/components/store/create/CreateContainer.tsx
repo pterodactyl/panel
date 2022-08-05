@@ -11,6 +11,7 @@ import Field from '@/components/elements/Field';
 import Select from '@/components/elements/Select';
 import { Egg, getEggs } from '@/api/store/getEggs';
 import createServer from '@/api/store/createServer';
+import { getNodes, Node } from '@/api/store/getNodes';
 import { getNests, Nest } from '@/api/store/getNests';
 import { Button } from '@/components/elements/button/index';
 import StoreError from '@/components/store/error/StoreError';
@@ -45,44 +46,51 @@ interface CreateValues {
     ports: number;
     backups: number | null;
     databases: number | null;
+
+    egg: number;
+    nest: number;
+    node: number;
 }
 
 export default () => {
     const limit = useStoreState((state) => state.storefront.data!.limit);
     const user = useStoreState((state) => state.user.data!);
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
-
     const [loading, setLoading] = useState(false);
     const [resources, setResources] = useState<Resources>();
-
-    const [egg, setEgg] = useState<number>();
+    const [egg, setEgg] = useState<number>(0);
     const [eggs, setEggs] = useState<Egg[]>();
-
-    const [nest, setNest] = useState<number>();
+    const [nest, setNest] = useState<number>(0);
     const [nests, setNests] = useState<Nest[]>();
+    const [node, setNode] = useState<number>(0);
+    const [nodes, setNodes] = useState<Node[]>();
 
     useEffect(() => {
         getResources().then((resources) => setResources(resources));
+
+        getNodes().then((nodes) => setNodes(nodes));
+
         getNests().then((nests) => {
             setNest(nests[0].id);
             setNests(nests);
         });
-        getEggs(-1).then((eggs) => {
+
+        getEggs().then((eggs) => {
             setEgg(eggs[0].id);
             setEggs(eggs);
         });
     }, []);
 
-    const changeNest = (x: ChangeEvent<HTMLSelectElement>) => {
-        setNest(parseInt(x.target.value));
-        getEggs(parseInt(x.target.value)).then((eggs) => setEggs(eggs));
+    const changeNest = (e: ChangeEvent<HTMLSelectElement>) => {
+        setNest(parseInt(e.target.value));
+        getEggs(parseInt(e.target.value)).then((eggs) => setEggs(eggs));
     };
 
     const submit = (values: CreateValues) => {
         setLoading(true);
         clearFlashes('store:create');
 
-        createServer(values, egg, nest)
+        createServer(values, egg, nest, node)
             .then(() => {
                 setLoading(false);
                 clearFlashes('store:create');
@@ -102,7 +110,7 @@ export default () => {
             });
     };
 
-    if (!resources || !nests || !eggs) return <StoreError />;
+    if (!resources || !nests || !eggs || !nodes) return <StoreError />;
 
     return (
         <PageContentBlock title={'Create a server'} showFlashKey={'store:create'}>
@@ -119,6 +127,7 @@ export default () => {
                     databases: resources.databases,
                     nest: 1,
                     egg: 1,
+                    node: 1,
                 }}
                 validationSchema={object().shape({
                     name: string().required().min(3),
@@ -200,11 +209,22 @@ export default () => {
                             <p css={tw`mt-1 text-xs text-neutral-400`}>{resources.databases} available</p>
                         </TitledGreyBox>
                     </Container>
-                    <h1 className={'j-left text-5xl'}>Server Type</h1>
-                    <h3 className={'j-left text-2xl text-neutral-500'}>Choose a server distribution to use.</h3>
-                    <Container className={'lg:grid lg:grid-cols-2 my-10 gap-4'}>
+                    <h1 className={'j-left text-5xl'}>Deployment</h1>
+                    <h3 className={'j-left text-2xl text-neutral-500'}>Choose a node and server type.</h3>
+                    <Container className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
+                        <p className={'text-3xl'}>current node: {node}</p>
+                        <TitledGreyBox title={'Available Nodes'} css={tw`mt-8 sm:mt-0`}>
+                            <Select name={'node'} onChange={(e) => setNode(parseInt(e.target.value))}>
+                                {nodes.map((n) => (
+                                    <option key={n.id} value={n.id}>
+                                        {n.name}
+                                    </option>
+                                ))}
+                            </Select>
+                            <p css={tw`mt-2 text-sm`}>Select a nest to use for your server.</p>
+                        </TitledGreyBox>
                         <TitledGreyBox title={'Server Nest'} css={tw`mt-8 sm:mt-0`}>
-                            <Select name={'nest'} onChange={(n) => changeNest(n)}>
+                            <Select name={'nest'} onChange={(nest) => changeNest(nest)}>
                                 {nests.map((n) => (
                                     <option key={n.id} value={n.id}>
                                         {n.name}
@@ -232,7 +252,7 @@ export default () => {
                                 size={Button.Sizes.Large}
                                 disabled={loading}
                             >
-                                Create Your Server! <Icon.ArrowRightCircle className={'ml-2'} />
+                                Create <Icon.ArrowRightCircle className={'ml-2'} />
                             </Button>
                         </div>
                     </InputSpinner>
