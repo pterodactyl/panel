@@ -16,6 +16,6 @@ class Theme
 
     protected function getUrl($path)
     {
-        return '/themes/pterodactyl/' . ltrim($path, '/');
+        return '/themes/' . config('theme.admin', 'jexactyl') . '/' . ltrim($path, '/');
     }
 }
