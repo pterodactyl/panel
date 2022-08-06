@@ -9,6 +9,7 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import RenameServerBox from '@/components/server/settings/RenameServerBox';
 import DeleteServerBox from '@/components/server/settings/DeleteServerBox';
 import ReinstallServerBox from '@/components/server/settings/ReinstallServerBox';
+import ChangeBackgroundBox from '@/components/server/settings/ChangeBackgroundBox';
 
 export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -36,6 +37,7 @@ export default () => {
                         </CopyOnClick>
                     </TitledGreyBox>
                     <DeleteServerBox />
+                    <ChangeBackgroundBox />
                 </div>
                 <div className={'j-left w-full mt-6 md:flex-1 md:mt-0'}>
                     <Can action={'settings.rename'}>
