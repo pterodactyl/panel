@@ -2,11 +2,11 @@
 @include('partials/admin.jexactyl.nav', ['activeTab' => 'theme'])
 
 @section('title')
-    Jexactyl Theme
+    Theme Settings
 @endsection
 
 @section('content-header')
-    <h1>Jexactyl Theme<small>Configure the theme for Jexactyl.</small></h1>
+    <h1>Jexactyl Appearance<small>Configure the theme for Jexactyl.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Jexactyl</li>
@@ -21,28 +21,26 @@
                 <div class="box box-info
                 ">
                     <div class="box-header with-border">
-                        <h3 class="box-title">Select system theme <small>The selection for Jexactyl's theme.</small></h3>
+                        <h3 class="box-title">Admin Themes <small>The selection for Jexactyl's theme.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">
                             <div class="form-group col-md-4">
-                                <label class="control-label">Enabled</label>
+                                <label class="control-label">Admin Theme</label>
                                 <div>
-                                    <select name="theme:current" class="form-control">
-                                        <option @if ($current == 'default') selected @endif value="default">Default Theme</option>
-                                        <option @if ($current == 'dark') selected @endif value="dark">Dark Theme</option>
-                                        <option @if ($current == 'light') selected @endif value="light">Light Theme</option>
+                                    <select name="theme:admin" class="form-control">
+                                        <option @if ($admin == 'jexactyl') selected @endif value="jexactyl">Default Theme</option>
+                                        <option @if ($admin == 'dark') selected @endif value="dark">Dark Theme</option>
+                                        <option @if ($admin == 'purple') selected @endif value="purple">Purple Theme</option>
                                     </select>
-                                    <p class="text-muted"><small>Determines the theme for Jexactyl's UI.</small></p>
+                                    <p class="text-muted"><small>Determines the theme for Jexactyl's Admin UI.</small></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="box-footer">
-                    {!! csrf_field() !!}
-                    <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save Changes</button>
-                </div>
+                {!! csrf_field() !!}
+                <button type="submit" name="_method" value="PATCH" class="btn btn-default pull-right">Save Changes</button>
             </form>
         </div>
     </div>

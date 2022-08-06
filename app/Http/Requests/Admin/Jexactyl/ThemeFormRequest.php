@@ -12,7 +12,7 @@ class ThemeFormRequest extends AdminFormRequest
     public function rules()
     {
         return [
-            'theme:current' => 'required|string',
+            'theme:admin' => 'required|string|in:jexactyl,dark,purple',
         ];
     }
 }

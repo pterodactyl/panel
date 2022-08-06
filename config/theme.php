@@ -11,5 +11,5 @@ return [
     |
     */
 
-    'admin' => 'jexactyl-dark', // Options: jexactyl, jexactyl-dark, ...
+    'admin' => 'jexactyl-dark', // Options: jexactyl, dark, purple ...
 ];

@@ -21,6 +21,7 @@ class SettingsServiceProvider extends ServiceProvider
     protected $keys = [
         'app:name',
         'app:locale',
+        'theme:admin',
         'recaptcha:enabled',
         'recaptcha:secret_key',
         'recaptcha:website_key',
@@ -77,7 +78,6 @@ class SettingsServiceProvider extends ServiceProvider
             })->toArray();
         } catch (QueryException $exception) {
             $log->notice('A query exception was encountered while trying to load settings from the database: ' . $exception->getMessage());
-
             return;
         }
 
