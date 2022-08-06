@@ -44,6 +44,7 @@ export interface Server {
     allocations: Allocation[];
     renewal: number;
     renewable: boolean;
+    bg: string;
 }
 
 export const rawDataToServerObject = ({ attributes: data }: FractalResponseData): Server => ({
@@ -72,6 +73,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     ),
     renewal: data.renewal,
     renewable: data.renewable,
+    bg: data.bg,
 });
 
 export default (uuid: string): Promise<[Server, string[]]> => {

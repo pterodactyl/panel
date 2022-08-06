@@ -13,6 +13,7 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\DeleteServerRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\UpdateBackgroundRequest;
 
 class ServerController extends ClientApiController
 {
@@ -49,6 +50,18 @@ class ServerController extends ClientApiController
                 'user_permissions' => $this->permissionsService->handle($server, $request->user()),
             ])
             ->toArray();
+    }
+
+    /**
+     * Updates the background image for a server.
+     */
+    public function updateBackground(UpdateBackgroundRequest $request, Server $server): JsonResponse
+    {
+        $server->update([
+            'bg' => $request->input('bg'),
+        ]);
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**

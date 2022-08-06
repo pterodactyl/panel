@@ -73,6 +73,7 @@ class ServerTransformer extends BaseClientTransformer
             'is_transferring' => !is_null($server->transfer),
             'renewable' => $server->renewable,
             'renewal' => $server->renewal,
+            'bg' => $server->bg,
         ];
     }
 
