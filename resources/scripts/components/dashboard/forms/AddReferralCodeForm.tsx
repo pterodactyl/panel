@@ -2,12 +2,12 @@ import React from 'react';
 import * as Yup from 'yup';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
+import { useStoreState } from '@/state/hooks';
 import Field from '@/components/elements/Field';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { Button } from '@/components/elements/button/index';
 import useReferralCode from '@/api/account/useReferralCode';
-import { useStoreState } from '@/state/hooks';
 
 interface Values {
     code: string;
@@ -20,17 +20,13 @@ const schema = Yup.object().shape({
 });
 
 export default () => {
+    const code = useStoreState((state) => state.user.data!.referralCode);
     const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const alreadyReferred = useStoreState((state) => state.user.data!.referralCode);
 
     const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('account:email');
+        clearFlashes('account:referral');
 
         useReferralCode({ ...values })
-            .then(() => {
-                // @ts-expect-error this is valid
-                window.location = '/account';
-            })
             .then(() =>
                 addFlash({
                     type: 'success',
@@ -54,17 +50,11 @@ export default () => {
 
     return (
         <>
-            {alreadyReferred ? (
-                <>
-                    <p className={'my-2 text-gray-400'}>
-                        You have already used a referral code.
-                        {' ('}
-                        <span className={'text-gray-200 text-white bg-gray-800 rounded-xl w-fit px-2 text-center'}>
-                            {alreadyReferred}
-                        </span>
-                        {') '}
-                    </p>
-                </>
+            {code ? (
+                <p className={'my-2 text-gray-400'}>
+                    You have already used a referral code.
+                    <span className={'bg-gray-800 rounded p-1 ml-2'}>{code}</span>
+                </p>
             ) : (
                 <Formik onSubmit={submit} initialValues={{ code: '', password: '' }} validationSchema={schema}>
                     {({ isSubmitting, isValid }) => (

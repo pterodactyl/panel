@@ -11,6 +11,7 @@ use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\DeleteServerRequest;
 
 class ServerController extends ClientApiController
@@ -63,6 +64,10 @@ class ServerController extends ClientApiController
         if ($user->id != $server->owner_id) {
             throw new DisplayException('You are not authorized to perform this action.');
         };
+
+        if (!password_verify($request['password'], $request->user()->password)) {
+            throw new BadRequestHttpException('The password provided was not valid.');
+        }
 
         try {
             $this->deletionService->returnResources(true)->handle($server);

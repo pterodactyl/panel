@@ -15,4 +15,14 @@ class DeleteServerRequest extends ClientApiRequest
     {
         return true;
     }
+
+    /**
+     * Rules to validate this request against.
+     */
+    public function rules(): array
+    {
+        return [
+            'password' => 'required|string',
+        ];
+    }
 }

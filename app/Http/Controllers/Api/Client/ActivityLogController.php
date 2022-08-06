@@ -20,7 +20,7 @@ class ActivityLogController extends ClientApiController
             ->allowedFilters([AllowedFilter::partial('event')])
             ->allowedSorts(['timestamp'])
             ->whereNotIn('activity_logs.event', ActivityLog::DISABLED_EVENTS)
-            ->paginate(min($request->query('per_page', 25), 100))
+            ->paginate(min($request->query('per_page', 5), 100))
             ->appends($request->query());
 
         return $this->fractal->collection($activity)

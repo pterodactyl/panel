@@ -64,14 +64,14 @@
                     </div>
                 </div>
                 <div class="box
-                    @if($enabled == 'true')
+                    @if($editing == 'true')
                         box-success
                     @else
                         box-danger
                     @endif
                 ">
                     <div class="box-header with-border">
-                        <i class="fa fa-clock-o"></i> <h3 class="box-title">Server Renewals <small>Configure settings for server renewals.</small></h3>
+                        <i class="fa fa-server"></i> <h3 class="box-title">Server Settings <small>Configure settings for servers.</small></h3>
                     </div>
                     <div class="box-body">
                         <div class="row">

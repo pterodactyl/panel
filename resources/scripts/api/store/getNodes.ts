@@ -4,7 +4,7 @@ export interface Node {
     id: number;
     name: string;
     fqdn: string;
-    free: number;
+    total: number;
     used: number;
 }
 
@@ -12,7 +12,7 @@ export const rawDataToNode = (data: any): Node => ({
     id: data.id,
     name: data.name,
     fqdn: data.fqdn,
-    free: data.free,
+    total: data.total,
     used: data.used,
 });
 

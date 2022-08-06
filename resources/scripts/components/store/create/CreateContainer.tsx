@@ -220,7 +220,8 @@ export default () => {
                             <Select name={'node'} onChange={(e) => setNode(parseInt(e.target.value))}>
                                 {nodes.map((n) => (
                                     <option key={n.id} value={n.id}>
-                                        {n.name} - {n.fqdn} | {n.used} of {n.free} slots available
+                                        {n.name} - {n.fqdn} | {100 - parseInt(((n?.used / n?.total) * 100).toFixed(0))}%
+                                        space remaining
                                     </option>
                                 ))}
                             </Select>
@@ -244,7 +245,9 @@ export default () => {
                                     </option>
                                 ))}
                             </Select>
-                            <p css={tw`mt-2 text-sm text-neutral-400`}>Choose what game you want to run on your server.</p>
+                            <p css={tw`mt-2 text-sm text-neutral-400`}>
+                                Choose what game you want to run on your server.
+                            </p>
                         </TitledGreyBox>
                     </Container>
                     <InputSpinner visible={loading}>

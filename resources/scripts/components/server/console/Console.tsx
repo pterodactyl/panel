@@ -47,12 +47,12 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: th('fontFamily.mono'),
-    rows: 50,
+    rows: 40,
     theme: theme,
 };
 
 export default () => {
-    const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
+    const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mJexactyl: \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const fitAddon = new FitAddon();
