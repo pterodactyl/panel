@@ -220,7 +220,7 @@ export default () => {
                             <Select name={'node'} onChange={(e) => setNode(parseInt(e.target.value))}>
                                 {nodes.map((n) => (
                                     <option key={n.id} value={n.id}>
-                                        {n.name} - {n.fqdn} | {n.free} of {n.used} slots available
+                                        {n.name} - {n.fqdn} | {n.used} of {n.free} slots available
                                     </option>
                                 ))}
                             </Select>
@@ -234,7 +234,7 @@ export default () => {
                                     </option>
                                 ))}
                             </Select>
-                            <p css={tw`mt-2 text-sm`}>Select a nest to use for your server.</p>
+                            <p css={tw`mt-2 text-sm text-neutral-400`}>Select a nest to use for your server.</p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
                             <Select name={'egg'} onChange={(e) => setEgg(parseInt(e.target.value))}>
@@ -244,7 +244,7 @@ export default () => {
                                     </option>
                                 ))}
                             </Select>
-                            <p css={tw`mt-2 text-sm`}>Choose what game you want to run on your server.</p>
+                            <p css={tw`mt-2 text-sm text-neutral-400`}>Choose what game you want to run on your server.</p>
                         </TitledGreyBox>
                     </Container>
                     <InputSpinner visible={loading}>
