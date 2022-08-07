@@ -70,6 +70,8 @@ class ServerController extends ClientApiController
     public function store(CreateServerRequest $request): JsonResponse
     {
         $user = $request->user();
+        $disk = $request->input('disk') * 1024;
+        $memory = $request->input('memory') * 1024;
 
         $this->creationService->handle($request);
 

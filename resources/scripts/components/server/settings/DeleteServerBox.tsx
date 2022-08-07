@@ -44,7 +44,7 @@ export default () => {
     }, []);
 
     return (
-        <TitledGreyBox title={'Delete Server'} css={tw`relative`}>
+        <TitledGreyBox title={'Delete Server'} css={tw`relative mb-12`}>
             <Dialog.Confirm
                 open={modalVisible}
                 title={'Confirm server deletion'}

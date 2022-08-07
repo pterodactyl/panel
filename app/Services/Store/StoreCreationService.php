@@ -6,24 +6,30 @@ use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
+use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Store\StoreVerificationService;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 
 class StoreCreationService {
 
     private ServerCreationService $creation;
+    private SettingsRepositoryInterface $settings;
     private StoreVerificationService $verification;
 
     public function __construct(
         ServerCreationService $creation,
+        SettingsRepositoryInterface $settings,
         StoreVerificationService $verification
     )
     {
         $this->creation = $creation;
+        $this->settings = $settings;
         $this->verification = $verification;
     }
 
@@ -35,7 +41,6 @@ class StoreCreationService {
         $user = User::find($request->user()->id);
         $egg = Egg::find($request->input('egg'));
 
-        return dd($node);
         $nest = Nest::find($request->input('nest'));
         $node = Node::find($request->input('node'));
 
@@ -78,6 +83,8 @@ class StoreCreationService {
         } catch (DisplayException $exception) {
             throw new DisplayException('Unable to deploy server - Please contact an administrator.');
         }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -87,8 +94,7 @@ class StoreCreationService {
      */
     protected function getAlloc(int $node): int
     {
-        $allocation = Allocation
-            ->where('node_id', $node)
+        $allocation = Allocation::where('node_id', $node)
             ->where('server_id', null)
             ->first();
 

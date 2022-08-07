@@ -10,6 +10,5 @@ return [
     | interface. 
     |
     */
-
-    'admin' => 'jexactyl-dark', // Options: jexactyl, dark, purple ...
+    'admin' => 'jexactyl', // Options: jexactyl, dark, purple ...
 ];

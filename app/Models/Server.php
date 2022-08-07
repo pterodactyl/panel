@@ -18,7 +18,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $node_id
  * @property boolean $renewable
  * @property int $renewal
- * @property int|null $bg
+ * @property string|null $bg
  * @property string $name
  * @property string $description
  * @property string|null $status
@@ -164,7 +164,7 @@ class Server extends Model
         'node_id' => 'required|exists:nodes,id',
         'renewable' => 'sometimes|boolean',
         'renewal' => 'sometimes|integer',
-        'bg' => 'sometimes|string|url',
+        'bg' => 'nullable|string',
         'description' => 'string',
         'status' => 'nullable|string',
         'memory' => 'required|numeric|min:0',
