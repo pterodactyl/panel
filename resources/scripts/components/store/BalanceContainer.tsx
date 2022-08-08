@@ -3,8 +3,8 @@ import { breakpoint } from '@/theme';
 import styled from 'styled-components/macro';
 import { useStoreState } from '@/state/hooks';
 import React, { useEffect, useState } from 'react';
+import Spinner from '@/components/elements/Spinner';
 import ContentBox from '@/components/elements/ContentBox';
-import StoreError from '@/components/store/error/StoreError';
 import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import StripePurchaseForm from '@/components/store/forms/StripePurchaseForm';
@@ -36,7 +36,7 @@ export default () => {
         getResources().then((resources) => setResources(resources));
     }, []);
 
-    if (!resources) return <StoreError />;
+    if (!resources) return <Spinner size={'large'} centered />;
 
     return (
         <PageContentBlock title={'Account Balance'}>

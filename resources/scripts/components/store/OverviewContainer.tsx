@@ -6,9 +6,9 @@ import { useStoreState } from 'easy-peasy';
 import styled from 'styled-components/macro';
 import { megabytesToHuman } from '@/helpers';
 import React, { useState, useEffect } from 'react';
+import Spinner from '@/components/elements/Spinner';
 import { Button } from '@/components/elements/button/index';
 import PlusSquareSvg from '@/assets/images/plus_square.svg';
-import StoreError from '@/components/store/error/StoreError';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import DivideSquareSvg from '@/assets/images/divide_square.svg';
 import { getResources, Resources } from '@/api/store/getResources';
@@ -47,7 +47,7 @@ const OverviewContainer = () => {
         window.location = `/store/${url}`;
     };
 
-    if (!resources) return <StoreError />;
+    if (!resources) return <Spinner size={'large'} centered />;
 
     return (
         <PageContentBlock title={'Storefront Overview'}>

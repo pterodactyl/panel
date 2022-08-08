@@ -11,10 +11,10 @@ import Field from '@/components/elements/Field';
 import Select from '@/components/elements/Select';
 import { Egg, getEggs } from '@/api/store/getEggs';
 import createServer from '@/api/store/createServer';
+import Spinner from '@/components/elements/Spinner';
 import { getNodes, Node } from '@/api/store/getNodes';
 import { getNests, Nest } from '@/api/store/getNests';
 import { Button } from '@/components/elements/button/index';
-import StoreError from '@/components/store/error/StoreError';
 import InputSpinner from '@/components/elements/InputSpinner';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
@@ -113,7 +113,7 @@ export default () => {
             });
     };
 
-    if (!resources || !nests || !eggs || !nodes) return <StoreError />;
+    if (!resources || !nests || !eggs || !nodes) return <Spinner size={'large'} centered />;
 
     return (
         <PageContentBlock title={'Create a server'} showFlashKey={'store:create'}>
