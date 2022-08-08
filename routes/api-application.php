@@ -16,9 +16,11 @@ Route::group(['prefix' => '/users'], function () {
     Route::get('/', [Application\Users\UserController::class, 'index'])->name('api.application.users');
     Route::get('/{user:id}', [Application\Users\UserController::class, 'view'])->name('api.application.users.view');
     Route::get('/external/{external_id}', [Application\Users\ExternalUserController::class, 'index'])->name('api.application.users.external');
+    Route::get('/{user:id}/resources', [Application\Users\UserResourcesController::class, 'view'])->name('api.application.users.view.resources');
 
     Route::post('/', [Application\Users\UserController::class, 'store']);
     Route::patch('/{user:id}', [Application\Users\UserController::class, 'update']);
+    Route::patch('/{user:id}/resources', [Application\Users\UserResourcesController::class, 'update']);
 
     Route::delete('/{user:id}', [Application\Users\UserController::class, 'delete']);
 });

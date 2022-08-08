@@ -193,7 +193,7 @@ class UserController extends Controller
      */
     public function updateStore(UserStoreFormRequest $request, User $user)
     {
-        // Very inefficient, use userUpdateService in future.
+        // TODO: use userUpdateService in future.
         $user->update([
             'store_balance' => $request->input('store_balance'),
             'store_cpu' => $request->input('store_cpu'),
