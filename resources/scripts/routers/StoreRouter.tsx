@@ -6,7 +6,6 @@ import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
 import SidePanel from '@/components/elements/SidePanel';
 import { NotFound } from '@/components/elements/ScreenBlock';
-import EarnContainer from '@/components/store/EarnContainer';
 import SubNavigation from '@/components/elements/SubNavigation';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import EditContainer from '@/components/store/edit/EditContainer';
@@ -14,15 +13,14 @@ import BalanceContainer from '@/components/store/BalanceContainer';
 import ReferralContainer from '@/components/store/ReferralContainer';
 import OverviewContainer from '@/components/store/OverviewContainer';
 import MobileNavigation from '@/components/elements/MobileNavigation';
+import ResourcesContainer from '@/components/store/ResourcesContainer';
 import CreateContainer from '@/components/store/create/CreateContainer';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
-import ResourcesContainer from '@/components/store/ResourcesContainer';
 
 const StoreRouter = () => {
     const match = useRouteMatch<{ id: string }>();
     const location = useLocation();
     const { width } = useWindowDimensions();
-    const earn = useStoreState((state) => state.storefront.data!.earn);
     const referrals = useStoreState((state) => state.storefront.data!.referrals);
 
     return (
@@ -45,13 +43,6 @@ const StoreRouter = () => {
                             Resources <Icon.ShoppingCart css={tw`ml-1`} size={18} />
                         </div>
                     </NavLink>
-                    {earn.enabled && (
-                        <NavLink to={`${match.url}/earn`}>
-                            <div css={tw`flex items-center justify-between`}>
-                                Earn Credits <Icon.DollarSign css={tw`ml-1`} size={18} />
-                            </div>
-                        </NavLink>
-                    )}
                     {referrals.enabled && (
                         <NavLink to={`${match.url}/referrals`}>
                             <div css={tw`flex items-center justify-between`}>
@@ -78,11 +69,6 @@ const StoreRouter = () => {
                     <Route path={`${match.path}/edit`} exact>
                         <EditContainer />
                     </Route>
-                    {earn.enabled && (
-                        <Route path={`${match.path}/earn`} exact>
-                            <EarnContainer />
-                        </Route>
-                    )}
                     {referrals.enabled && (
                         <Route path={`${match.path}/referrals`} exact>
                             <ReferralContainer />
