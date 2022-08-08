@@ -22,6 +22,7 @@ class DeleteServerRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
+            'name' => 'required|string',
             'password' => 'required|string',
         ];
     }

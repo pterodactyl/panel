@@ -1,58 +1,53 @@
-import tw from 'twin.macro';
-import { ApplicationStore } from '@/state';
-import { httpErrorToHuman } from '@/api/http';
+import React, { useState } from 'react';
+import useFlash from '@/plugins/useFlash';
+import Code from '@/components/elements/Code';
 import { ServerContext } from '@/state/server';
 import Input from '@/components/elements/Input';
-import React, { useEffect, useState } from 'react';
 import deleteServer from '@/api/server/deleteServer';
-import { Actions, useStoreActions } from 'easy-peasy';
 import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 export default () => {
+    const [name, setName] = useState('');
+    const [warn, setWarn] = useState(false);
     const [password, setPassword] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
-    const [passwordConfirm, setPasswordConfirm] = useState(false);
+    const [confirm, setConfirm] = useState(false);
+
+    const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
+
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+    const serverName = ServerContext.useStoreState((state) => state.server.data!.name);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         e.stopPropagation();
-
         clearFlashes('settings');
 
-        deleteServer(uuid, password)
+        deleteServer(uuid, name, password)
             .then(() => {
+                setConfirm(false);
                 addFlash({
                     key: 'settings',
                     type: 'success',
                     message: 'Your server has been deleted.',
                 });
+                // @ts-expect-error this is valid
+                window.location = '/';
             })
-            .catch((error) => {
-                console.error(error);
-
-                addFlash({ key: 'settings', type: 'error', message: httpErrorToHuman(error) });
-            })
-            .then(() => setModalVisible(false));
+            .catch((error) => clearAndAddHttpError({ key: 'settings', error }));
     };
 
-    useEffect(() => {
-        clearFlashes();
-    }, []);
-
     return (
-        <TitledGreyBox title={'Delete Server'} css={tw`relative mb-12`}>
+        <TitledGreyBox title={'Delete Server'} className={'relative mb-12'}>
             <Dialog.Confirm
-                open={modalVisible}
+                open={warn}
                 title={'Confirm server deletion'}
                 confirm={'Yes, delete server'}
-                onClose={() => setModalVisible(false)}
+                onClose={() => setWarn(false)}
                 onConfirmed={() => {
-                    setPasswordConfirm(true);
-                    setModalVisible(false);
+                    setConfirm(true);
+                    setWarn(false);
                 }}
             >
                 Your server will be deleted, with all files being purged and the server&apos;s resources being returned
@@ -60,31 +55,37 @@ export default () => {
             </Dialog.Confirm>
             <form id={'delete-server-form'} onSubmit={submit}>
                 <Dialog
-                    open={passwordConfirm}
-                    title={'Elevated request requires password confirmation'}
-                    onClose={() => setPasswordConfirm(false)}
+                    open={confirm}
+                    title={'Password confirmation required'}
+                    onClose={() => {
+                        setConfirm(false);
+                        setName('');
+                    }}
                 >
-                    <p className={'mt-2 mb-1 text-gray-400'}>Enter password to continue with server deletion.</p>
-                    <Input
-                        className={'mt-1'}
-                        type={'password'}
-                        value={password}
-                        onChange={(e) => setPassword(e.currentTarget.value)}
-                    />
+                    {name !== serverName && (
+                        <>
+                            <p className={'my-2 text-gray-400'}>
+                                Type <Code>{serverName}</Code> below.
+                            </p>
+                            <Input type={'text'} value={name} onChange={(n) => setName(n.target.value)} />
+                        </>
+                    )}
+                    <p className={'my-2 text-gray-400'}>Enter password to continue with server deletion.</p>
+                    <Input type={'password'} value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
                     <Button disabled={!password.length} type={'submit'} className={'mt-2'} form={'delete-server-form'}>
                         Confirm
                     </Button>
                 </Dialog>
             </form>
-            <p css={tw`text-sm`}>
+            <p className={'text-sm'}>
                 Deleting your server will shut down any processes, return the resources to your account and delete all
                 files associated with the instance - as well as backups, databases and settings.
-                <strong css={tw`font-medium`}>
+                <strong className={'font-medium'}>
                     All data will be permenantly lost if you continue with this action.
                 </strong>
             </p>
-            <div css={tw`mt-6 text-right`}>
-                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setModalVisible(true)}>
+            <div className={'mt-6 font-medium text-right'}>
+                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setWarn(true)}>
                     Delete Server
                 </Button.Danger>
             </div>

@@ -47,7 +47,7 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: th('fontFamily.mono'),
-    rows: 40,
+    rows: 50,
     theme: theme,
 };
 

@@ -43,6 +43,7 @@ export default () => {
         clearFlashes('store:resources');
 
         purchaseResource(resource)
+            .then(() => setOpen(false))
             .then(() =>
                 addFlash({
                     type: 'success',
@@ -88,9 +89,7 @@ export default () => {
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
                         Purchase CPU to improve server performance.
                     </p>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per 50% CPU: {cost.cpu} credits
-                    </p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per 50% CPU: {cost.cpu} credits</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase RAM'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
@@ -153,9 +152,7 @@ export default () => {
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
                         Purchase a server slot to deploy a server.
                     </p>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per slot: {cost.slot} credits
-                    </p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per slot: {cost.slot} credits</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Ports'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
@@ -174,9 +171,7 @@ export default () => {
                     <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
                         Purchase a port to connect to your server.
                     </p>
-                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>
-                        Cost per port: {cost.port} credits
-                    </p>
+                    <p css={tw`mt-1 text-gray-500 text-xs flex justify-center`}>Cost per port: {cost.port} credits</p>
                 </TitledGreyBox>
                 <TitledGreyBox title={'Purchase Server Backups'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     <Wrapper>
