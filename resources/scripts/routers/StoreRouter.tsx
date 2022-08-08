@@ -8,13 +8,12 @@ import SidePanel from '@/components/elements/SidePanel';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
-import EditContainer from '@/components/store/edit/EditContainer';
+import CreateContainer from '@/components/store/CreateContainer';
 import BalanceContainer from '@/components/store/BalanceContainer';
 import ReferralContainer from '@/components/store/ReferralContainer';
 import OverviewContainer from '@/components/store/OverviewContainer';
 import MobileNavigation from '@/components/elements/MobileNavigation';
 import ResourcesContainer from '@/components/store/ResourcesContainer';
-import CreateContainer from '@/components/store/create/CreateContainer';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 
 const StoreRouter = () => {
@@ -65,9 +64,6 @@ const StoreRouter = () => {
                     </Route>
                     <Route path={`${match.path}/create`} exact>
                         <CreateContainer />
-                    </Route>
-                    <Route path={`${match.path}/edit`} exact>
-                        <EditContainer />
                     </Route>
                     {referrals.enabled && (
                         <Route path={`${match.path}/referrals`} exact>
