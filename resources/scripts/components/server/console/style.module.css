@@ -2,6 +2,7 @@
     @apply flex items-center rounded shadow-lg relative;
     @apply col-span-3 md:col-span-2 lg:col-span-6;
     @apply px-3 py-2 md:p-3 lg:p-4;
+    @apply bg-neutral-900;
 
     & > .status_bar {
         @apply w-1 h-full absolute left-0 top-0 rounded-l sm:hidden;

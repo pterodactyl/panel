@@ -19,10 +19,10 @@ const IconDescription = styled.p<{ $alarm?: boolean }>`
     ${(props) => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
 `;
 
-const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined, $bg: string }>`
+const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined; $bg: string }>`
     ${tw`grid grid-cols-12 gap-4 relative`};
 
-    ${({ $bg }) => `background-image: ${$bg};`}
+    ${({ $bg }) => `background-image: url("${$bg}");`}
     background-position: center;
     background-repeat: no-repeat;
     background-size: cover;
@@ -81,7 +81,13 @@ export default ({ server, className }: { server: Server; className?: string }) =
     }
 
     return (
-        <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status} $bg={server.bg}>
+        <StatusIndicatorBox
+            as={Link}
+            to={`/server/${server.id}`}
+            className={className}
+            $status={stats?.status}
+            $bg={server.bg}
+        >
             <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
                 <div>
                     <p css={tw`text-lg break-words`}>{server.name}</p>
