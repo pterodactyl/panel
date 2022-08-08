@@ -15,7 +15,7 @@ import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
     StoreConfiguration?: StorefrontSettings;
-    PterodactylUser?: {
+    JexactylUser?: {
         uuid: string;
         username: string;
         email: string;
@@ -34,20 +34,20 @@ interface ExtendedWindow extends Window {
 setupInterceptors(history);
 
 const App = () => {
-    const { PterodactylUser, SiteConfiguration, StoreConfiguration } = window as ExtendedWindow;
+    const { JexactylUser, SiteConfiguration, StoreConfiguration } = window as ExtendedWindow;
 
-    if (PterodactylUser && !store.getState().user.data) {
+    if (JexactylUser && !store.getState().user.data) {
         store.getActions().user.setUserData({
-            uuid: PterodactylUser.uuid,
-            username: PterodactylUser.username,
-            email: PterodactylUser.email,
-            discordId: PterodactylUser.discord_id,
-            language: PterodactylUser.language,
-            rootAdmin: PterodactylUser.root_admin,
-            useTotp: PterodactylUser.use_totp,
-            referralCode: PterodactylUser.referral_code,
-            createdAt: new Date(PterodactylUser.created_at),
-            updatedAt: new Date(PterodactylUser.updated_at),
+            uuid: JexactylUser.uuid,
+            username: JexactylUser.username,
+            email: JexactylUser.email,
+            discordId: JexactylUser.discord_id,
+            language: JexactylUser.language,
+            rootAdmin: JexactylUser.root_admin,
+            useTotp: JexactylUser.use_totp,
+            referralCode: JexactylUser.referral_code,
+            createdAt: new Date(JexactylUser.created_at),
+            updatedAt: new Date(JexactylUser.updated_at),
         });
     }
 
@@ -60,14 +60,8 @@ const App = () => {
     }
 
     function earn() {
-        console.log('Waiting to add credits');
         setTimeout(earn, 61000); // Allow 1 second for time inconsistencies.
-
-        earnCredits()
-            .then(() => {
-                console.log('Added credits');
-            })
-            .catch(() => console.error('Failed to add credits'));
+        earnCredits().catch(() => console.error('Failed to add credits'));
     }
 
     earn();
