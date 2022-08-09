@@ -6,7 +6,7 @@ import Icon from '@/components/elements/Icon';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 
-interface StatBlockProps {
+interface Props {
     title?: string | undefined;
     copyOnClick?: string;
     color?: string | undefined;
@@ -15,7 +15,7 @@ interface StatBlockProps {
     className?: string;
 }
 
-export default ({ title, copyOnClick, icon, color, className, children }: StatBlockProps) => {
+export default ({ title, copyOnClick, icon, color, className, children }: Props) => {
     const { fontSize, ref } = useFitText({ minFontSize: 8, maxFontSize: 500 });
 
     return (

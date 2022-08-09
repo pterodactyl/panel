@@ -24,9 +24,8 @@ class ServerController extends ClientApiController
     /**
      * ServerController constructor.
      */
-    public function __construct(
-        StoreCreationService $creationService
-    ) {
+    public function __construct(StoreCreationService $creationService)
+    {
         parent::__construct();
 
         $this->creationService = $creationService;

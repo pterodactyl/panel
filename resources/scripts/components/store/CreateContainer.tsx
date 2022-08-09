@@ -1,8 +1,5 @@
-import tw from 'twin.macro';
-import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
 import { Form, Formik } from 'formik';
-import styled from 'styled-components';
 import { Link } from 'react-router-dom';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
@@ -19,24 +16,22 @@ import { Button } from '@/components/elements/button/index';
 import InputSpinner from '@/components/elements/InputSpinner';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import StoreContainer from '@/components/elements/StoreContainer';
 import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-
-const Container = styled.div`
-    ${tw`flex flex-wrap`};
-
-    & > div {
-        ${tw`w-full`};
-
-        ${breakpoint('sm')`
-            width: calc(50% - 1rem);
-        `}
-
-        ${breakpoint('md')`
-            ${tw`w-auto flex-1`};
-        `}
-    }
-`;
+import {
+    faArchive,
+    faCube,
+    faDatabase,
+    faEgg,
+    faHdd,
+    faLayerGroup,
+    faList,
+    faMemory,
+    faMicrochip,
+    faNetworkWired,
+    faStickyNote,
+} from '@fortawesome/free-solid-svg-icons';
 
 interface CreateValues {
     name: string;
@@ -101,16 +96,16 @@ export default () => {
                 // @ts-expect-error this is valid
                 window.location = '/';
             })
+            .catch((error) => {
+                setLoading(false);
+                clearAndAddHttpError({ key: 'store:create', error });
+            })
             .then(() => {
                 addFlash({
                     type: 'success',
                     key: 'store:create',
                     message: 'Your server has been deployed and is now installing.',
                 });
-            })
-            .catch((error) => {
-                setLoading(false);
-                clearAndAddHttpError({ key: 'store:create', error });
             });
     };
 
@@ -172,66 +167,66 @@ export default () => {
                     </div>
                     <h1 className={'j-left text-5xl'}>Basic Details</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>Set the basic fields for your new server.</h3>
-                    <Container className={'lg:grid lg:grid-cols-2 my-10 gap-4'}>
-                        <TitledGreyBox title={'Server name'} css={tw`mt-8 sm:mt-0`}>
+                    <StoreContainer className={'lg:grid lg:grid-cols-2 my-10 gap-4'}>
+                        <TitledGreyBox title={'Server name'} icon={faStickyNote} className={'mt-8 sm:mt-0'}>
                             <Field name={'name'} />
-                            <p css={tw`mt-1 text-xs`}>Assign a name to your server for use in the Panel.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>
+                            <p className={'mt-1 text-xs'}>Assign a name to your server for use in the Panel.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>
                                 Character limits: <code>a-z A-Z 0-9 _ - .</code> and <code>[Space]</code>.
                             </p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Server description'} css={tw`mt-8 sm:mt-0 `}>
+                        <TitledGreyBox title={'Server description'} icon={faList} className={'mt-8 sm:mt-0'}>
                             <Field name={'description'} />
-                            <p css={tw`mt-1 text-xs`}>Set a description for your server.</p>
-                            <p css={tw`mt-1 text-xs text-yellow-400`}>* Optional</p>
+                            <p className={'mt-1 text-xs'}>Set a description for your server.</p>
+                            <p className={'mt-1 text-xs text-yellow-400'}>* Optional</p>
                         </TitledGreyBox>
-                    </Container>
+                    </StoreContainer>
                     <h1 className={'j-left text-5xl'}>Resource Limits</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>Set specific limits for CPU, RAM and more.</h3>
-                    <Container className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
-                        <TitledGreyBox title={'Server CPU limit'} css={tw`mt-8 sm:mt-0`}>
+                    <StoreContainer className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
+                        <TitledGreyBox title={'Server CPU limit'} icon={faMicrochip} className={'mt-8 sm:mt-0'}>
                             <Field name={'cpu'} />
-                            <p css={tw`mt-1 text-xs`}>Assign a limit for usable CPU.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>{resources.cpu}% available</p>
+                            <p className={'mt-1 text-xs'}>Assign a limit for usable CPU.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>{resources.cpu}% available</p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Server RAM limit'} css={tw`mt-8 sm:mt-0 `}>
+                        <TitledGreyBox title={'Server RAM limit'} icon={faMemory} className={'mt-8 sm:mt-0'}>
                             <Field name={'memory'} />
-                            <p css={tw`mt-1 text-xs`}>Assign a limit for usable RAM.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>
+                            <p className={'mt-1 text-xs'}>Assign a limit for usable RAM.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>
                                 {megabytesToHuman(resources.memory)} available
                             </p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Server Storage limit'} css={tw`mt-8 sm:mt-0 `}>
+                        <TitledGreyBox title={'Server Storage limit'} icon={faHdd} className={'mt-8 sm:mt-0'}>
                             <Field name={'disk'} />
-                            <p css={tw`mt-1 text-xs`}>Assign a limit for usable storage.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>{megabytesToHuman(resources.disk)} available</p>
+                            <p className={'mt-1 text-xs'}>Assign a limit for usable storage.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>{megabytesToHuman(resources.disk)} available</p>
                         </TitledGreyBox>
-                    </Container>
+                    </StoreContainer>
                     <h1 className={'j-left text-5xl'}>Feature Limits</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>
                         Add databases, allocations and ports to your server.
                     </h3>
-                    <Container className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
-                        <TitledGreyBox title={'Server allocations'} css={tw`mt-8 sm:mt-0`}>
+                    <StoreContainer className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
+                        <TitledGreyBox title={'Server allocations'} icon={faNetworkWired} className={'mt-8 sm:mt-0'}>
                             <Field name={'ports'} />
-                            <p css={tw`mt-1 text-xs`}>Assign a number of ports to your server.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>{resources.ports} available</p>
+                            <p className={'mt-1 text-xs'}>Assign a number of ports to your server.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>{resources.ports} available</p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Server backups'} css={tw`mt-8 sm:mt-0 `}>
+                        <TitledGreyBox title={'Server backups'} icon={faArchive} className={'mt-8 sm:mt-0'}>
                             <Field name={'backups'} />
-                            <p css={tw`mt-1 text-xs`}>Assign a number of backups to your server.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>{resources.backups} available</p>
+                            <p className={'mt-1 text-xs'}>Assign a number of backups to your server.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>{resources.backups} available</p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Server databases'} css={tw`mt-8 sm:mt-0 `}>
+                        <TitledGreyBox title={'Server databases'} icon={faDatabase} className={'mt-8 sm:mt-0'}>
                             <Field name={'databases'} />
-                            <p css={tw`mt-1 text-xs`}>Assign a number of databases to your server.</p>
-                            <p css={tw`mt-1 text-xs text-neutral-400`}>{resources.databases} available</p>
+                            <p className={'mt-1 text-xs'}>Assign a number of databases to your server.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>{resources.databases} available</p>
                         </TitledGreyBox>
-                    </Container>
+                    </StoreContainer>
                     <h1 className={'j-left text-5xl'}>Deployment</h1>
                     <h3 className={'j-left text-2xl text-neutral-500'}>Choose a node and server type.</h3>
-                    <Container className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
-                        <TitledGreyBox title={'Available Nodes'} css={tw`mt-8 sm:mt-0`}>
+                    <StoreContainer className={'lg:grid lg:grid-cols-3 my-10 gap-4'}>
+                        <TitledGreyBox title={'Available Nodes'} icon={faLayerGroup} className={'mt-8 sm:mt-0'}>
                             <Select name={'node'} onChange={(e) => setNode(parseInt(e.target.value))}>
                                 {nodes.map((n) => (
                                     <option key={n.id} value={n.id}>
@@ -240,9 +235,9 @@ export default () => {
                                     </option>
                                 ))}
                             </Select>
-                            <p css={tw`mt-2 text-sm`}>Select a node to deploy your server to.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>Select a node to deploy your server to.</p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Server Nest'} css={tw`mt-8 sm:mt-0`}>
+                        <TitledGreyBox title={'Server Nest'} icon={faCube} className={'mt-8 sm:mt-0'}>
                             <Select name={'nest'} onChange={(nest) => changeNest(nest)}>
                                 {nests.map((n) => (
                                     <option key={n.id} value={n.id}>
@@ -250,9 +245,9 @@ export default () => {
                                     </option>
                                 ))}
                             </Select>
-                            <p css={tw`mt-2 text-sm text-neutral-400`}>Select a nest to use for your server.</p>
+                            <p className={'mt-1 text-xs text-gray-400'}>Select a nest to use for your server.</p>
                         </TitledGreyBox>
-                        <TitledGreyBox title={'Server Egg'} css={tw`mt-8 sm:mt-0`}>
+                        <TitledGreyBox title={'Server Egg'} icon={faEgg} className={'mt-8 sm:mt-0'}>
                             <Select name={'egg'} onChange={(e) => setEgg(parseInt(e.target.value))}>
                                 {eggs.map((e) => (
                                     <option key={e.id} value={e.id}>
@@ -260,13 +255,13 @@ export default () => {
                                     </option>
                                 ))}
                             </Select>
-                            <p css={tw`mt-2 text-sm text-neutral-400`}>
+                            <p className={'mt-1 text-xs text-gray-400'}>
                                 Choose what game you want to run on your server.
                             </p>
                         </TitledGreyBox>
-                    </Container>
+                    </StoreContainer>
                     <InputSpinner visible={loading}>
-                        <div css={tw`text-right`}>
+                        <div className={'text-right'}>
                             <Button
                                 type={'submit'}
                                 className={'w-1/6 mb-4'}

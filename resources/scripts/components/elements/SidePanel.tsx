@@ -10,8 +10,8 @@ import Tooltip from '@/components/elements/tooltip/Tooltip';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 export default () => {
+    const store = useStoreState((state) => state.storefront.data!.enabled);
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
-    const store = useStoreState((state) => state.storefront.data!);
     const logo = useStoreState((state) => state.settings.data!.logo);
 
     const onTriggerLogout = () => {
@@ -45,13 +45,7 @@ export default () => {
         <PanelDiv>
             <ProgressBar />
             <Link to={'/'}>
-                <img
-                    css={tw`p-4`}
-                    src={
-                        logo ??
-                        'https://camo.githubusercontent.com/a7f9ce191b39dbb9c33372a2df125c4171e2908420a6d6d8429d37af82804a37/68747470733a2f2f63646e2e707465726f64616374796c2e696f2f736974652d6173736574732f6c6f676f2d69636f6e2e706e67'
-                    }
-                />
+                <img css={tw`p-4`} src={logo ?? 'https://avatars.githubusercontent.com/u/91636558'} />
             </Link>
             <div>
                 <div css={tw`mx-auto mb-8`} className={'navigation-link'}>
@@ -67,7 +61,7 @@ export default () => {
                         <Icon.User size={32} css={tw`my-8`} />
                     </Tooltip>
                 </NavLink>
-                {store.enabled && (
+                {store && (
                     <NavLink to={'/store'} className={'navigation-link'}>
                         <Tooltip placement={'bottom'} content={'Store'}>
                             <Icon.ShoppingCart size={32} css={tw`my-8`} />

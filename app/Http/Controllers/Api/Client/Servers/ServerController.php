@@ -87,20 +87,6 @@ class ServerController extends ClientApiController
             throw new DisplayException('Unable to delete the server from the system.');
         }
 
-        try {
-            $user->update([
-                'store_cpu' => $user->store_cpu + $server->cpu,
-                'store_memory' => $user->store_memory + $server->memory,
-                'store_disk' => $user->store_disk + $server->disk,
-                'store_slots' => $user->store_slots + 1,
-                'store_ports' => $user->store_ports + $server->allocation_limit,
-                'store_backups' => $user->store_backups + $server->backup_limit,
-                'store_databases' => $user->store_databases + $server->database_limit,
-            ]);
-        } catch (DisplayException $ex) {
-            throw new DisplayException('Unable to add resources to user.');
-        };
-
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 }
