@@ -31,7 +31,9 @@
                                     <select name="theme:admin" class="form-control">
                                         <option @if ($admin == 'jexactyl') selected @endif value="jexactyl">Default Theme</option>
                                         <option @if ($admin == 'dark') selected @endif value="dark">Dark Theme</option>
-                                        <option @if ($admin == 'purple') selected @endif value="purple">Purple Theme</option>
+                                        <option @if ($admin == 'light') selected @endif value="light">Light Theme</option>
+                                        <option @if ($admin == 'blue') selected @endif value="blue">Blue Theme</option>
+                                        <option @if ($admin == 'minecraft') selected @endif value="minecraft">Minecraft&#8482; Theme</option>
                                     </select>
                                     <p class="text-muted"><small>Determines the theme for Jexactyl's Admin UI.</small></p>
                                 </div>
