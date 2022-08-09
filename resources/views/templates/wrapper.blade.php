@@ -22,7 +22,7 @@
         @section('user-data')
             @if(!is_null(Auth::user()))
                 <script>
-                    window.JexactylUser = {!! json_encode(Auth::user()->toReactObject()) !!};
+                    window.JexactylUser = {!! json_encode(Auth::user()->toVueObject()) !!};
                 </script>
             @endif
             @if(!empty($siteConfiguration))

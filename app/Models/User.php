@@ -224,7 +224,7 @@ class User extends Model implements
     /**
      * Return the user model in a format that can be passed over to React templates.
      */
-    public function toReactObject(): array
+    public function toVueObject(): array
     {
         return Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
     }
