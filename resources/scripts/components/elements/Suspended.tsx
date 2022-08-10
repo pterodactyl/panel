@@ -1,27 +1,33 @@
-import React, { useState } from 'react';
-import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
-import ServerErrorSvg from '@/assets/images/server_error.svg';
-import { Button } from '@/components/elements/button';
-import renewServer from '@/api/server/renewServer';
-import { ServerContext } from '@/state/server';
+import React, { useState } from 'react';
 import useFlash from '@/plugins/useFlash';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import deleteServer from '@/api/server/deleteServer';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { useStoreState } from '@/state/hooks';
+import Code from '@/components/elements/Code';
+import { ServerContext } from '@/state/server';
+import Input from '@/components/elements/Input';
+import renewServer from '@/api/server/renewServer';
+import deleteServer from '@/api/server/deleteServer';
+import { Button } from '@/components/elements/button';
 import { Dialog } from '@/components/elements/dialog';
-
-type ModalType = 'renew' | 'delete';
+import ServerErrorSvg from '@/assets/images/server_error.svg';
+import FlashMessageRender from '@/components/FlashMessageRender';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const renewable = ServerContext.useStoreState((state) => state.server.data?.renewable);
-    const store = useStoreState((state) => state.storefront.data!);
-    const [isSubmit, setSubmit] = useState(false);
-    const [open, setOpen] = useState<ModalType | null>(null);
+    const [name, setName] = useState('');
+    const [password, setPassword] = useState('');
 
+    const [isSubmit, setSubmit] = useState(false);
+    const [renewDialog, setRenewDialog] = useState(false);
+    const [deleteDialog, setDeleteDialog] = useState(false);
+    const [confirmDialog, setConfirmDialog] = useState(false);
+
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const store = useStoreState((state) => state.storefront.data!);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const serverName = ServerContext.useStoreState((state) => state.server.data!.name);
+    const renewable = ServerContext.useStoreState((state) => state.server.data?.renewable);
 
     const doRenewal = () => {
         clearFlashes('server:renewal');
@@ -39,11 +45,14 @@ export default () => {
             });
     };
 
-    const doDeletion = () => {
+    const doDeletion = (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        e.stopPropagation();
+
         clearFlashes('server:renewal');
         setSubmit(true);
 
-        deleteServer(uuid)
+        deleteServer(uuid, name, password)
             .then(() => {
                 setSubmit(false);
                 // @ts-expect-error this is valid
@@ -55,35 +64,54 @@ export default () => {
             });
     };
 
-    const RenewDialog = () => (
-        <Dialog.Confirm
-            open={open === 'renew'}
-            onClose={() => setOpen(null)}
-            title={'Confirm server renewal'}
-            confirm={'Continue'}
-            onConfirmed={() => doRenewal()}
-        >
-            <SpinnerOverlay visible={isSubmit} />
-            Are you sure you want to spend {store.renewals.cost} {store.currency} to renew your server?
-        </Dialog.Confirm>
-    );
-
-    const DeleteDialog = () => (
-        <Dialog.Confirm
-            open={open === 'delete'}
-            onClose={() => setOpen(null)}
-            title={'Confirm server deletion'}
-            confirm={'Continue'}
-            onConfirmed={() => doDeletion()}
-        >
-            <SpinnerOverlay visible={isSubmit} />
-            This action will remove your server from the system, along with all files and configurations.
-        </Dialog.Confirm>
-    );
-
     return (
         <>
-            {open && open === 'renew' ? <RenewDialog /> : <DeleteDialog />}
+            <Dialog.Confirm
+                open={renewDialog}
+                onClose={() => setRenewDialog(false)}
+                title={'Confirm server renewal'}
+                confirm={'Continue'}
+                onConfirmed={() => doRenewal()}
+            >
+                <SpinnerOverlay visible={isSubmit} />
+                Are you sure you want to spend {store.renewals.cost} {store.currency} to renew your server?
+            </Dialog.Confirm>
+            <Dialog.Confirm
+                open={deleteDialog}
+                onClose={() => setDeleteDialog(false)}
+                title={'Confirm server deletion'}
+                confirm={'Continue'}
+                onConfirmed={() => setConfirmDialog(true)}
+            >
+                <SpinnerOverlay visible={isSubmit} />
+                This action will remove your server from the system, along with all files and configurations.
+            </Dialog.Confirm>
+            <form id={'delete-suspended-server-form'} onSubmit={doDeletion}>
+                <Dialog
+                    open={confirmDialog}
+                    title={'Password confirmation required'}
+                    onClose={() => setConfirmDialog(false)}
+                >
+                    {name !== serverName && (
+                        <>
+                            <p className={'my-2 text-gray-400'}>
+                                Type <Code>{serverName}</Code> below.
+                            </p>
+                            <Input type={'text'} value={name} onChange={(n) => setName(n.target.value)} />
+                        </>
+                    )}
+                    <p className={'my-2 text-gray-400'}>Enter password to continue with server deletion.</p>
+                    <Input type={'password'} value={password} onChange={(e) => setPassword(e.target.value)} />
+                    <Button
+                        disabled={!password.length}
+                        type={'submit'}
+                        className={'mt-2'}
+                        form={'delete-suspended-server-form'}
+                    >
+                        Confirm
+                    </Button>
+                </Dialog>
+            </form>
             <PageContentBlock title={'Server Suspended'}>
                 <FlashMessageRender byKey={'server:renewal'} css={tw`mb-1`} />
                 <div css={tw`flex justify-center`}>
@@ -100,12 +128,16 @@ export default () => {
                                     your server, the resources will automatically be added back to your account so you
                                     can re-deploy a new server easily.
                                 </p>
-                                <Button className={'mx-2 my-1'} onClick={() => setOpen('renew')} disabled={isSubmit}>
+                                <Button
+                                    className={'mx-2 my-1'}
+                                    onClick={() => setRenewDialog(true)}
+                                    disabled={isSubmit}
+                                >
                                     Renew Now
                                 </Button>
                                 <Button.Danger
                                     className={'mx-2 my-1'}
-                                    onClick={() => setOpen('delete')}
+                                    onClick={() => setDeleteDialog(true)}
                                     disabled={isSubmit}
                                 >
                                     Delete Server
