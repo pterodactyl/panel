@@ -232,9 +232,6 @@
                             This option allows you to control whether this node is visible via the Server Creation page of the Jexactyl Storefront.
                             If it is set to disabled, users will not be able to deploy on this node.
                         </small></p>
-                        <p class="label label-danger">
-                            Make sure you have at least ONE node available for deployment, or else users will not be able to deploy servers via the Store. {{ $deployable }}
-                        </p>
                     </div>
                 </div>
             </div>
