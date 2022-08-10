@@ -210,6 +210,35 @@
                 </div>
             </div>
         </div>
+        <div class="col-sm-6">
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Deployment</h3>
+                </div>
+                <div class="box-body row">
+                    <div class="form-group col-xs-12">
+                        <label for="deployable" class="control-label">Suitable for Storefront deployment</label>
+                        <div>
+                            <div class="radio radio-success radio-inline">
+                                <input type="radio" id="pDeployableTrue" value="1" name="deployable" {{ (old('deployable', $node->deployable)) ? 'checked' : '' }}>
+                                <label for="pDeployableTrue"> Allow</label>
+                            </div>
+                            <div class="radio radio-danger radio-inline">
+                                <input type="radio" id="pDeployableFalse" value="0" name="deployable" {{ (old('deployable', $node->deployable)) ? '' : 'checked' }}>
+                                <label for="pDeployableFalse"> Deny</label>
+                            </div>
+                        </div>
+                        <p class="text-muted"><small>
+                            This option allows you to control whether this node is visible via the Server Creation page of the Jexactyl Storefront.
+                            If it is set to disabled, users will not be able to deploy on this node.
+                        </small></p>
+                        <p class="label label-danger">
+                            Make sure you have at least ONE node available for deployment, or else users will not be able to deploy servers via the Store. {{ $deployable }}
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">

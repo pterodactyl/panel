@@ -33,7 +33,9 @@ class ServerController extends ClientApiController
 
     public function nodes(GetStoreNodesRequest $request): array
     {
-        return $this->fractal->collection(Node::all())
+        $nodes = Node::where('deployable', true)->get();
+
+        return $this->fractal->collection($nodes)
             ->transformWith($this->getTransformer(NodeTransformer::class))
             ->toArray();
     }
