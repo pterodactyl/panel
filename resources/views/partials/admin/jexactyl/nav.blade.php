@@ -10,6 +10,7 @@
                     <li style="margin-left: 5px; margin-right: 5px;"><a>-</a></li>
                     <li @if($activeTab === 'store')class="active"@endif><a href="{{ route('admin.jexactyl.store') }}">Storefront</a></li>
                     <li @if($activeTab === 'registration')class="active"@endif><a href="{{ route('admin.jexactyl.registration') }}">Registration</a></li>
+                    <li @if($activeTab === 'approvals')class="active"@endif><a href="{{ route('admin.jexactyl.approvals') }}">Approvals</a></li>
                     <li @if($activeTab === 'server')class="active"@endif><a href="{{ route('admin.jexactyl.server') }}">Server Settings</a></li>
                     <li @if($activeTab === 'referrals')class="active"@endif><a href="{{ route('admin.jexactyl.referrals') }}">Referrals</a></li>
                     

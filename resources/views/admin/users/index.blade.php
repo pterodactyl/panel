@@ -44,6 +44,7 @@
                             <th>Client Name</th>
                             <th>Username</th>
                             <th class="text-center">2FA</th>
+                            <th class="text-center">Approved</th>
                             <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</span></th>
                             <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</span></th>
                             <th></th>
@@ -61,6 +62,13 @@
                                         <i class="fa fa-lock text-green"></i>
                                     @else
                                         <i class="fa fa-unlock text-red"></i>
+                                    @endif
+                                </td>
+                                <td class="text-center">
+                                    @if($user->approved)
+                                        <i class="fa fa-check text-green"></i>
+                                    @else
+                                        <i class="fa fa-times text-red"></i>
                                     @endif
                                 </td>
                                 <td class="text-center">

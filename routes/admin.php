@@ -22,6 +22,16 @@ Route::group(['prefix' => '/'], function () {
     Route::get('/discord', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.discord');
     Route::get('/referrals', [Admin\Jexactyl\ReferralsController::class, 'index'])->name('admin.jexactyl.referrals');
     Route::get('/registration', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.registration');
+    
+    Route::group(['prefix' => '/approvals'], function () {
+        Route::get('/', [Admin\Jexactyl\ApprovalsController::class, 'index'])->name('admin.jexactyl.approvals');
+
+        Route::patch('/', [Admin\Jexactyl\ApprovalsController::class, 'update'])->name('admin.jexactyl.approvals');
+
+        Route::post('/deny/{id}', [Admin\Jexactyl\ApprovalsController::class, 'deny'])->name('admin.jexactyl.approvals.deny');
+        Route::post('/approve/{id}', [Admin\Jexactyl\ApprovalsController::class, 'approve'])->name('admin.jexactyl.approvals.approve');
+    
+    });
 
     Route::post('/mail/test', [Admin\Jexactyl\MailController::class, 'test'])->name('admin.jexactyl.mail.test');
 
@@ -83,20 +93,6 @@ Route::group(['prefix' => 'databases'], function () {
     Route::post('/', [Admin\DatabaseController::class, 'create']);
     Route::patch('/view/{host:id}', [Admin\DatabaseController::class, 'update']);
     Route::delete('/view/{host:id}', [Admin\DatabaseController::class, 'delete']);
-});
-
-/*
-|--------------------------------------------------------------------------
-| Settings Controller Routes
-|--------------------------------------------------------------------------
-|
-| Endpoint: /admin/settings
-|
-*/
-Route::group(['prefix' => 'settings'], function () {
-    Route::get('/advanced', [Admin\Settings\AdvancedController::class, 'index'])->name('admin.settings.advanced');
-
-    Route::patch('/advanced', [Admin\Settings\AdvancedController::class, 'update']);
 });
 
 /*

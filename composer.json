@@ -1,17 +1,9 @@
 {
-    "name": "pterodactyl/panel",
-    "description": "The free, open-source game management panel. Supporting Minecraft, Spigot, BungeeCord, and SRCDS servers.",
+    "name": "jexactyl/jexactyl",
+    "description": "A fast, advanced and customisable game management panel and billing system in one. ",
     "license": "MIT",
-    "authors": [
-        {
-            "name": "Dane Everitt",
-            "email": "dane@daneeveritt.com",
-            "homepage": "https://github.com/DaneEveritt",
-            "role": "Lead Developer"
-        }
-    ],
     "require": {
-        "php": "^7.4 || ^8.0 || ^8.1",
+        "php": "^8.0 || ^8.1",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
@@ -79,7 +71,7 @@
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate"
+            "@php artisan key:generate --force"
         ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
@@ -89,7 +81,7 @@
     "prefer-stable": true,
     "config": {
         "platform": {
-            "php": "7.4.0"
+            "php": "8.0.0"
         },
         "preferred-install": "dist",
         "sort-packages": true,
