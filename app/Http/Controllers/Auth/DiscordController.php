@@ -61,9 +61,7 @@ class DiscordController extends Controller
         }
 
         $req = json_decode($code->body());
-        if (preg_match('(email|guilds|identify|guilds.join)', $req->scope) !== 1) {
-            return;
-        }
+        if (preg_match('(email|guilds|identify|guilds.join)', $req->scope) !== 1) return;
 
         $discord = json_decode(Http::withHeaders(['Authorization' => 'Bearer ' . $req->access_token])->asForm()->get('https://discord.com/api/users/@me')->body());
 
@@ -73,9 +71,12 @@ class DiscordController extends Controller
 
             return redirect('/');
         } else {
-            if ($this->settings->get('jexactyl::discord:enabled') == 'false') {
-                return;
-            }
+            $approval = false;
+
+            if ($this->settings->get('jexactyl::discord:enabled') != 'true') return;
+            if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
+                $approval = true;
+            };
 
             $username = $this->genString();
             $data = [
@@ -93,6 +94,7 @@ class DiscordController extends Controller
                 'store_ports' => $this->settings->get('jexactyl::registration:port', 0),
                 'store_backups' => $this->settings->get('jexactyl::registration:backup', 0),
                 'store_databases' => $this->settings->get('jexactyl::registration:database', 0),
+                'approval' => $approval,
             ];
 
             try {

@@ -31,11 +31,16 @@ class RegisterController extends AbstractLoginController
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        if ($this->settings->get('jexactyl::registration:enabled') != true) {
+        if ($this->settings->get('jexactyl::registration:enabled') != 'true') {
             throw new DisplayException('Unable to register: Registration is currently disabled.');
         };
 
         $prefix = 'jexactyl::registration:';
+        $approval = false;
+
+        if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
+            $approval = true;
+        };
 
         $data = [
             'email' => $request->input('email'),
@@ -51,6 +56,7 @@ class RegisterController extends AbstractLoginController
             'store_ports' => $this->settings->get($prefix.'port', 0),
             'store_backups' => $this->settings->get($prefix.'backup', 0),
             'store_databases' => $this->settings->get($prefix.'database', 0),
+            'approval' => $approval,
         ];
 
         $this->creationService->handle($data);
