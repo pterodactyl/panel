@@ -5,6 +5,7 @@ export interface UserData {
     uuid: string;
     username: string;
     email: string;
+    approved: boolean;
     discordId: string;
     language: string;
     rootAdmin: boolean;

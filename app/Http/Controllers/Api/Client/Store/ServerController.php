@@ -70,6 +70,10 @@ class ServerController extends ClientApiController
      */
     public function store(CreateServerRequest $request): JsonResponse
     {
+        if ($this->settings->get('jexactyl::approvals:enabled') != 'true') {
+            throw new DisplayException('Your account is awaiting approval.');
+        };
+
         $user = $request->user();
         $disk = $request->input('disk') * 1024;
         $memory = $request->input('memory') * 1024;

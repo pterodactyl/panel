@@ -40,6 +40,8 @@ class SettingComposer extends Composer
                 'email' => $this->setting('registration:enabled', Composer::TYPE_BOOL),
                 'discord' => $this->setting('discord:enabled', Composer::TYPE_BOOL),
             ],
+
+            'approvals' => $this->setting('approvals:enabled', Composer::TYPE_BOOL),
         ]);
     }
 }

@@ -4,7 +4,7 @@ import { ServerContext } from '@/state/server';
 import { history } from '@/components/history';
 import Spinner from '@/components/elements/Spinner';
 import { Router, Switch, Route } from 'react-router';
-import { NotFound } from '@/components/elements/ScreenBlock';
+import { NotApproved, NotFound } from '@/components/elements/ScreenBlock';
 import AuthenticatedRoute from '@/components/elements/AuthenticatedRoute';
 
 const StoreRouter = lazy(() => import(/* webpackChunkName: "auth" */ '@/routers/StoreRouter'));
@@ -13,7 +13,19 @@ const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */ '@
 const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */ '@/routers/AuthenticationRouter'));
 
 const IndexRouter = () => {
-    const enabled = useStoreState((state) => state.storefront.data?.enabled);
+    const authenticated = useStoreState((state) => state.user?.data);
+    const approved = useStoreState((state) => state.user.data?.approved);
+    const enabled = useStoreState((state) => state.storefront.data!.enabled);
+    const approvals = useStoreState((state) => state.settings.data!.approvals);
+
+    if (approvals && !approved && authenticated) {
+        return (
+            <NotApproved
+                title={'Awaiting Approval'}
+                message={'Your account is currently pending approval from an administator.'}
+            />
+        );
+    }
 
     return (
         <Router history={history}>

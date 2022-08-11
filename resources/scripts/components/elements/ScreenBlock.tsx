@@ -92,8 +92,17 @@ type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWith
     title?: string;
 };
 
+type NotApprovedProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWithRetry, 'image' | 'title'>) & {
+    title: string;
+    message: string;
+};
+
 const ServerError = ({ title, ...props }: ServerErrorProps) => (
     <ScreenBlock title={title || 'Something went wrong'} image={ServerErrorSvg} {...props} />
+);
+
+const NotApproved = ({ title, message }: NotApprovedProps) => (
+    <ScreenBlock title={title} image={NotFoundSvg} message={message} />
 );
 
 const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'title' | 'message' | 'onBack'>>) => (
@@ -105,5 +114,5 @@ const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'ti
     />
 );
 
-export { ServerError, NotFound };
+export { ServerError, NotFound, NotApproved };
 export default ScreenBlock;

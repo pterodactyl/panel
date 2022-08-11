@@ -12,6 +12,7 @@ export interface SiteSettings {
         email: boolean;
         discord: boolean;
     };
+    approvals: boolean;
 }
 
 export interface SettingsStore {

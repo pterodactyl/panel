@@ -124,7 +124,7 @@ export default () => {
                                         </div>
                                     </NavLink>
                                 </Can>
-                                {eggFeatures?.includes('eula') &&
+                                {eggFeatures?.includes('eula') && (
                                     <Can action={'plugin.*'}>
                                         <NavLink to={`${match.url}/plugins`}>
                                             <div css={tw`flex items-center justify-between`}>
@@ -132,7 +132,7 @@ export default () => {
                                             </div>
                                         </NavLink>
                                     </Can>
-                                }
+                                )}
                                 <Can action={'file.*'}>
                                     <NavLink to={`${match.url}/files`}>
                                         <div css={tw`flex items-center justify-between`}>
@@ -189,7 +189,7 @@ export default () => {
                                         </div>
                                     </NavLink>
                                 </Can>
-                                {editEnabled &&
+                                {editEnabled && (
                                     <Can action={['settings.*']} matchAny>
                                         <NavLink to={`${match.url}/edit`}>
                                             <div css={tw`flex items-center justify-between`}>
@@ -197,7 +197,7 @@ export default () => {
                                             </div>
                                         </NavLink>
                                     </Can>
-                                }
+                                )}
                                 {rootAdmin && (
                                     <a href={'/admin/servers/view/' + serverId} rel='noreferrer' target={'_blank'}>
                                         <div css={tw`flex items-center justify-between`}>
@@ -229,13 +229,13 @@ export default () => {
                                             <ServerActivityLogContainer />
                                         </RequireServerPermission>
                                     </Route>
-                                    {eggFeatures?.includes('eula') &&
+                                    {eggFeatures?.includes('eula') && (
                                         <Route path={`${match.path}/plugins`} exact>
                                             <RequireServerPermission permissions={'plugin.*'}>
                                                 <PluginContainer />
                                             </RequireServerPermission>
                                         </Route>
-                                    }
+                                    )}
                                     <Route path={`${match.path}/files/:action(edit|new)`} exact>
                                         <Spinner.Suspense>
                                             <FileEditContainer />
@@ -271,9 +271,9 @@ export default () => {
                                     </Route>
                                     <Route path={`${match.path}/startup`} component={StartupContainer} exact />
                                     <Route path={`${match.path}/settings`} component={SettingsContainer} exact />
-                                    {editEnabled &&
+                                    {editEnabled && (
                                         <Route path={`${match.path}/edit`} component={EditContainer} exact />
-                                    }
+                                    )}
                                     <Route path={'*'} component={NotFound} />
                                 </Switch>
                             </TransitionRouter>
