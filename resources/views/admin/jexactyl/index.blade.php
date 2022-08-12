@@ -84,17 +84,17 @@
                     <i class="fa fa-bar-chart"></i> <h3 class="box-title">Resource Utilization <small>A glance of the total amount of resources used.</small></h3>
                 </div>
                 <div class="box-body">
-                    <div class="col-xs-12 col-md-3">
+                    <div class="col-xs-12 col-md-4">
                         <canvas id="servers_chart" width="100%" height="50">
                             <p class="text-muted">No data is available for this chart.</p>
                         </canvas>
                     </div>
-                    <div class="col-xs-12 col-md-3">
+                    <div class="col-xs-12 col-md-4">
                         <canvas id="ram_chart" width="100%" height="50">
                             <p class="text-muted">No data is available for this chart.</p>
                         </canvas>
                     </div>
-                    <div class="col-xs-12 col-md-3">
+                    <div class="col-xs-12 col-md-4">
                         <canvas id="disk_chart" width="100%" height="50">
                             <p class="text-muted">No data is available for this chart.</p>
                         </canvas>
