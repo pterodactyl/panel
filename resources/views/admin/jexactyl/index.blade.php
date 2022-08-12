@@ -39,37 +39,6 @@
     </div>
     <div class="row">
         <div class="col-xs-12">
-            <div class="box box-primary">
-                <div class="box-header with-border">
-                    <i class="fa fa-bar-chart"></i> <h3 class="box-title">Resource Utilization <small>A glance of the total amount of resources used.</small></h3>
-                </div>
-                <div class="box-body">
-                    <div class="col-xs-12 col-md-3">
-                        <canvas id="servers_chart" width="100%" height="50">
-                            <p class="text-muted">No data is available for this chart.</p>
-                        </canvas>
-                    </div>
-                    <div class="col-xs-12 col-md-3" style="margin-bottom: 20px;">
-                        <canvas id="status_chart" width="100%" height="50">
-                            <p class="text-muted">No data is available for this chart.</p>
-                        </canvas>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <canvas id="ram_chart" width="100%" height="50">
-                            <p class="text-muted">No data is available for this chart.</p>
-                        </canvas>
-                    </div>
-                    <div class="col-xs-12 col-md-3">
-                        <canvas id="disk_chart" width="100%" height="50">
-                            <p class="text-muted">No data is available for this chart.</p>
-                        </canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="row">
-        <div class="col-xs-12">
             <div class="col-xs-12 col-md-3">
                 <div class="info-box">
                     <span class="info-box-icon"><i class="fa fa-server"></i></span>
@@ -103,6 +72,32 @@
                     <div class="info-box-content" style="padding: 23px 10px 0;">
                         <span class="info-box-text">Total disk use</span>
                         <span class="info-box-number">{{ $used['disk'] }} MB of {{ $available['disk'] }} MB </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-xs-12">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <i class="fa fa-bar-chart"></i> <h3 class="box-title">Resource Utilization <small>A glance of the total amount of resources used.</small></h3>
+                </div>
+                <div class="box-body">
+                    <div class="col-xs-12 col-md-3">
+                        <canvas id="servers_chart" width="100%" height="50">
+                            <p class="text-muted">No data is available for this chart.</p>
+                        </canvas>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <canvas id="ram_chart" width="100%" height="50">
+                            <p class="text-muted">No data is available for this chart.</p>
+                        </canvas>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <canvas id="disk_chart" width="100%" height="50">
+                            <p class="text-muted">No data is available for this chart.</p>
+                        </canvas>
                     </div>
                 </div>
             </div>

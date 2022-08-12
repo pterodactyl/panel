@@ -41,24 +41,3 @@ const serversChart = new Chart($("#servers_chart"), {
         }]
     }
 });
-
-const statusChart = new Chart($("#status_chart"), {
-    type: "pie",
-    data: {
-        labels: ["Running Servers", "Offline Servers"],
-        datasets: [{
-            backgroundColor: ["#189a1c", "hsl(211, 22%, 21%)"],
-            data: [0, 0]
-        }]
-    }
-});
-
-const servers = Pterodactyl.servers;
-for (let t = 0; t < servers.length; t++) {
-    getStatus(servers[t]);
-}
-
-function getStatus(t) {
-    var a = Pterodactyl.serverstatus[t.uuid].attributes.current_state;
-    "running" == a ? statusChart.data.datasets[0].data[0]++ : statusChart.data.datasets[0].data[1]++, statusChart.update();
-}

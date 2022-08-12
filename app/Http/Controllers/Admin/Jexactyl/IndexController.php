@@ -1,9 +1,7 @@
 <?php
 namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 
-use Carbon\Carbon;
 use Illuminate\View\View;
-use Illuminate\Cache\Repository;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
@@ -14,13 +12,11 @@ use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Traits\Controllers\PlainJavascriptInjection;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class IndexController extends Controller
 {
     use PlainJavascriptInjection;
 
-    private Repository $cache;
     private Fractal $fractal;
     private DaemonServerRepository $repository;
     private SoftwareVersionService $versionService;
@@ -29,13 +25,11 @@ class IndexController extends Controller
 
     public function __construct(
         Fractal $fractal,
-        Repository $cache,
         DaemonServerRepository $repository,
         SoftwareVersionService $versionService,
         NodeRepositoryInterface $nodeRepository,
         ServerRepositoryInterface $serverRepository,
     ) {
-        $this->cache = $cache;
         $this->fractal = $fractal;
         $this->repository = $repository;
         $this->nodeRepository = $nodeRepository;
@@ -64,28 +58,10 @@ class IndexController extends Controller
             $diskTotal += $stats['disk']['max'];
         }
 
-		$status = [];
-
-		foreach($servers as $server) {
-			$key = 'resources:' . $server->uuid;
-            try {
-                $state = $this->cache->remember($key, Carbon::now()->addSeconds(60), function () use ($server) {
-                    return $this->repository->setServer($server)->getDetails();
-                });
-            } catch (DaemonConnectionException $ex) {
-                $state = ['state' => 'unavailable'];
-            }
-
-			$status[$server->uuid] = $this->fractal->item($state)
-				->transformWith(StatsTransformer::class)
-				->toArray();
-		}
-
         $this->injectJavascript([
             'servers' => $servers,
             'diskUsed' => $diskUsed,
             'diskTotal' => $diskTotal,
-            'serverstatus' => $status,
             'suspended' => $suspended,
             'memoryUsed' => $memoryUsed,
             'memoryTotal' => $memoryTotal,
