@@ -71,11 +71,11 @@ class DiscordController extends Controller
 
             return redirect('/');
         } else {
-            $approval = false;
+            $approval = true;
 
             if ($this->settings->get('jexactyl::discord:enabled') == 'false') return;
             if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
-                $approval = true;
+                $approval = false;
             };
 
             $username = $this->genString();
