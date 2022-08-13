@@ -36,10 +36,10 @@ class RegisterController extends AbstractLoginController
         };
 
         $prefix = 'jexactyl::registration:';
-        $approval = false;
+        $approval = true;
 
         if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
-            $approval = true;
+            $approval = false;
         };
 
         $data = [
