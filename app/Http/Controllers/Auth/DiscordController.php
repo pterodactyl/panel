@@ -73,7 +73,7 @@ class DiscordController extends Controller
         } else {
             $approval = false;
 
-            if ($this->settings->get('jexactyl::discord:enabled') != 'true') return;
+            if ($this->settings->get('jexactyl::discord:enabled') == 'false') return;
             if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
                 $approval = true;
             };
@@ -94,7 +94,7 @@ class DiscordController extends Controller
                 'store_ports' => $this->settings->get('jexactyl::registration:port', 0),
                 'store_backups' => $this->settings->get('jexactyl::registration:backup', 0),
                 'store_databases' => $this->settings->get('jexactyl::registration:database', 0),
-                'approval' => $approval,
+                'approved' => $approval,
             ];
 
             try {

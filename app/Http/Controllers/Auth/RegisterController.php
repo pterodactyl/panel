@@ -56,7 +56,7 @@ class RegisterController extends AbstractLoginController
             'store_ports' => $this->settings->get($prefix.'port', 0),
             'store_backups' => $this->settings->get($prefix.'backup', 0),
             'store_databases' => $this->settings->get($prefix.'database', 0),
-            'approval' => $approval,
+            'approved' => $approval,
         ];
 
         $this->creationService->handle($data);
