@@ -38,6 +38,8 @@ class StoreCreationService {
      */
     public function handle(CreateServerRequest $request): JsonResponse
     {
+        $this->verification->handle($request);
+        
         $user = User::find($request->user()->id);
         $egg = Egg::find($request->input('egg'));
 
