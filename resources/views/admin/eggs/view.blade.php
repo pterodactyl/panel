@@ -91,6 +91,22 @@
                                     followed by a pipe character, and then the image URL. Example: <code>Display Name|ghcr.io/my/egg</code>
                                 </p>
                             </div>
+                            <div class="form-group">
+                                <div class="checkbox checkbox-primary no-margin-bottom">
+                                    <input id="pForceOutgoingIp" name="force_outgoing_ip" type="checkbox" value="1" @if($egg->force_outgoing_ip) checked @endif />
+                                    <label for="pForceOutgoingIp" class="strong">Force Outgoing IP</label>
+                                    <p class="text-muted small">
+                                        Forces all outgoing network traffic to have its Source IP NATed to the IP of the server's primary allocation IP.
+                                        Required for certain games to work properly when the Node has multiple public IP addresses.
+                                        <br>
+                                        <strong>
+                                            Enabling this option will disable internal networking for any servers using this egg,
+                                            causing them to be unable to internally access other servers on the same node.
+                                        </strong>
+                                    </p>
+                                </div>
+                            </div>
+
                         </div>
                         <div class="col-sm-6">
                             <div class="form-group">
