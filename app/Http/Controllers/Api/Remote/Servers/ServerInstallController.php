@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
@@ -69,10 +70,10 @@ class ServerInstallController extends Controller
             $status = Server::STATUS_SUSPENDED;
         }
 
-        $this->repository->update($server->id, ['status' => $status], true, true);
+        $this->repository->update($server->id, ['status' => $status, 'installed_at' => CarbonImmutable::now()], true, true);
 
         // If the server successfully installed, fire installed event.
-        if ($status === null) {
+        if (is_null($server->installed_at) && $status === null) {
             $this->eventDispatcher->dispatch(new ServerInstalled($server));
         }
 
