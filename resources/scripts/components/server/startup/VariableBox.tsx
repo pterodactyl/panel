@@ -52,7 +52,10 @@ const VariableBox = ({ variable }: Props) => {
             .then(() => setLoading(false));
     }, 500);
 
-    const useSwitch = variable.rules.some((v) => v === 'boolean' || v === 'in:0,1');
+    const useSwitch = variable.rules.some(
+        (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true'
+    );
+    const isStringSwitch = variable.rules.some((v) => v === 'string');
     const selectValues = variable.rules.find((v) => v.startsWith('in:'))?.split(',') || [];
 
     return (
@@ -73,10 +76,16 @@ const VariableBox = ({ variable }: Props) => {
                         <Switch
                             readOnly={!canEdit || !variable.isEditable}
                             name={variable.envVariable}
-                            defaultChecked={variable.serverValue === '1'}
+                            defaultChecked={
+                                isStringSwitch ? variable.serverValue === 'true' : variable.serverValue === '1'
+                            }
                             onChange={() => {
                                 if (canEdit && variable.isEditable) {
-                                    setVariableValue(variable.serverValue === '1' ? '0' : '1');
+                                    if (isStringSwitch) {
+                                        setVariableValue(variable.serverValue === 'true' ? 'false' : 'true');
+                                    } else {
+                                        setVariableValue(variable.serverValue === '1' ? '0' : '1');
+                                    }
                                 }
                             }}
                         />
