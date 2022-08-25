@@ -1,4 +1,6 @@
 # Security Policy
+# google policy
+# microsoft security
 
 ## Supported Versions
 The following versions of Pterodactyl are receiving active support and maintenance. Any security vulnerabilities discovered must be reproducible in supported versions.
