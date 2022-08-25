@@ -17,7 +17,7 @@ interface Props {
     children?: React.ReactNode;
 }
 
-function wrapProperties(value: unknown): any {
+export function wrapProperties(value: unknown): any {
     if (value === null || typeof value === 'string' || typeof value === 'number') {
         return `<strong>${String(value)}</strong>`;
     }
