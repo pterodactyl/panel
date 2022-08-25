@@ -98,7 +98,10 @@ class ServerController extends ApplicationApiController
      */
     public function delete(ServerWriteRequest $request, Server $server, string $force = ''): Response
     {
-        $this->deletionService->withForce($force === 'force')->handle($server);
+        $this->deletionService
+            ->withForce($force === 'force')
+            ->returnResources($request->filled('return_resources'))
+            ->handle($server);
 
         return $this->returnNoContent();
     }
