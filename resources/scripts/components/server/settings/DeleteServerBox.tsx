@@ -79,10 +79,7 @@ export default () => {
             </form>
             <p className={'text-sm'}>
                 Deleting your server will shut down any processes, return the resources to your account and delete all
-                files associated with the instance - as well as backups, databases and settings.
-                <strong className={'font-medium'}>
-                    All data will be permenantly lost if you continue with this action.
-                </strong>
+                files associated with the instance - as well as backups, databases and settings. <strong className={'font-medium'}>All data will be permenantly lost if you continue with this action.</strong>
             </p>
             <div className={'mt-6 font-medium text-right'}>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setWarn(true)}>
