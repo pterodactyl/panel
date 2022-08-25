@@ -1,4 +1,4 @@
-[![Logo Image](https://cdn.discordapp.com/attachments/696713493168259106/935167710399201320/Jexactyl_textured.png)](https://jexactyl.com)
+[![Logo Image](https://cdn.discordapp.com/attachments/1012411945141424218/1012430446556090468/JexactylBannerBasic.jpg)](https://jexactyl.com)
 
 ![Tests](https://img.shields.io/github/workflow/status/jexactyl/jexactyl/Build%20Panel?style=for-the-badge)
 ![Maintained](https://img.shields.io/maintenance/yes/2022?style=for-the-badge)
