@@ -33,7 +33,7 @@ body:
   attributes:
     label: Panel Version
     description: Version number of your Panel (latest is not a version)
-    placeholder: 1.4.0
+    placeholder: 3.0.0
   validations:
     required: true
 
