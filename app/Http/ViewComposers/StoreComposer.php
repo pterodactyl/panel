@@ -22,10 +22,11 @@ class StoreComposer extends Composer
     {
         $view->with('storeConfiguration', [
             'enabled' => $this->setting('store:enabled', Composer::TYPE_BOOL),
-            'paypal' => $this->setting('store:paypal:enabled', Composer::TYPE_BOOL),
-            'stripe' => $this->setting('store:stripe:enabled', Composer::TYPE_BOOL),
             'currency' => $this->setting('store:currency', Composer::TYPE_STR),
-
+            'gateways' => [
+                'paypal' => $this->setting('store:paypal:enabled', Composer::TYPE_BOOL),
+                'stripe' => $this->setting('store:stripe:enabled', Composer::TYPE_BOOL),
+            ],
             'renewals' => [
                 'enabled' => $this->setting('renewal:enabled', Composer::TYPE_BOOL),
                 'cost' => $this->setting('renewal:cost', Composer::TYPE_INT),

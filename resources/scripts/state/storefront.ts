@@ -34,7 +34,7 @@ export interface StorefrontSettings {
     };
     gateways: {
         paypal: boolean;
-        stripe: string;
+        stripe: boolean;
     };
     earn: {
         enabled: boolean;
