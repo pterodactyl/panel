@@ -33,7 +33,7 @@ Route::group(['prefix' => '/users'], function () {
 | Endpoint: /api/application/approvals
 |
 */
-Route::group(['prefix' => '/approvals']. function () {
+Route::group(['prefix' => '/approvals'], function () {
     Route::get('/', [Application\ApprovalsController::class, 'view'])->name('api.application.approvals.view');
 
     Route::post('/deny/{id}', [Applciation\ApprovalsController::class, 'deny']);
