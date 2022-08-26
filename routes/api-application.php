@@ -27,6 +27,21 @@ Route::group(['prefix' => '/users'], function () {
 
 /*
 |--------------------------------------------------------------------------
+| Approval Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/approvals
+|
+*/
+Route::group(['prefix' => '/approvals']. function () {
+    Route::get('/', [Application\ApprovalsController::class, 'view'])->name('api.application.approvals.view');
+
+    Route::post('/deny/{id}', [Applciation\ApprovalsController::class, 'deny']);
+    Route::post('/approve/{id}', [Application\ApprovalsController::class, 'approve']);
+});
+
+/*
+|--------------------------------------------------------------------------
 | Node Controller Routes
 |--------------------------------------------------------------------------
 |

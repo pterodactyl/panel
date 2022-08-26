@@ -27,10 +27,8 @@ Route::group(['prefix' => '/'], function () {
         Route::get('/', [Admin\Jexactyl\ApprovalsController::class, 'index'])->name('admin.jexactyl.approvals');
 
         Route::patch('/', [Admin\Jexactyl\ApprovalsController::class, 'update'])->name('admin.jexactyl.approvals');
-
         Route::post('/deny/{id}', [Admin\Jexactyl\ApprovalsController::class, 'deny'])->name('admin.jexactyl.approvals.deny');
         Route::post('/approve/{id}', [Admin\Jexactyl\ApprovalsController::class, 'approve'])->name('admin.jexactyl.approvals.approve');
-    
     });
 
     Route::post('/mail/test', [Admin\Jexactyl\MailController::class, 'test'])->name('admin.jexactyl.mail.test');
