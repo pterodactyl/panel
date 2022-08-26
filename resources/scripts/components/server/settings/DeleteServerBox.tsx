@@ -11,7 +11,6 @@ import TitledGreyBox from '@/components/elements/TitledGreyBox';
 export default () => {
     const [name, setName] = useState('');
     const [warn, setWarn] = useState(false);
-    const [password, setPassword] = useState('');
     const [confirm, setConfirm] = useState(false);
 
     const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
@@ -24,7 +23,7 @@ export default () => {
         e.stopPropagation();
         clearFlashes('settings');
 
-        deleteServer(uuid, name, password)
+        deleteServer(uuid, name)
             .then(() => {
                 setConfirm(false);
                 addFlash({
@@ -70,16 +69,22 @@ export default () => {
                             <Input type={'text'} value={name} onChange={(n) => setName(n.target.value)} />
                         </>
                     )}
-                    <p className={'my-2 text-gray-400'}>Enter password to continue with server deletion.</p>
-                    <Input type={'password'} value={password} onChange={(e) => setPassword(e.currentTarget.value)} />
-                    <Button disabled={!password.length} type={'submit'} className={'mt-2'} form={'delete-server-form'}>
-                        Confirm
+                    <Button
+                        disabled={name !== serverName}
+                        type={'submit'}
+                        className={'mt-2'}
+                        form={'delete-server-form'}
+                    >
+                        Yes, delete server
                     </Button>
                 </Dialog>
             </form>
             <p className={'text-sm'}>
                 Deleting your server will shut down any processes, return the resources to your account and delete all
-                files associated with the instance - as well as backups, databases and settings. <strong className={'font-medium'}>All data will be permenantly lost if you continue with this action.</strong>
+                files associated with the instance - as well as backups, databases and settings.{' '}
+                <strong className={'font-medium'}>
+                    All data will be permenantly lost if you continue with this action.
+                </strong>
             </p>
             <div className={'mt-6 font-medium text-right'}>
                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setWarn(true)}>

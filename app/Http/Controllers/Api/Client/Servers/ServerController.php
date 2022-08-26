@@ -57,9 +57,7 @@ class ServerController extends ClientApiController
      */
     public function updateBackground(UpdateBackgroundRequest $request, Server $server): JsonResponse
     {
-        $server->update([
-            'bg' => $request->input('bg'),
-        ]);
+        $server->update(['bg' => $request->input('bg')]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -74,10 +72,7 @@ class ServerController extends ClientApiController
     {
         $user = $request->user();
 
-        if ($user->id != $server->owner_id ||
-            $request['name'] != $server->name ||
-            !password_verify($request['password'], $request->user()->password)
-        ) {
+        if ($user->id != $server->owner_id ||$request['name'] != $server->name) {
             throw new DisplayException('You are not authorized to perform this action.');
         };
 
