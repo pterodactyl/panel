@@ -16,13 +16,12 @@ class RegisterController extends AbstractLoginController
     /**
      * RegisterController constructor.
      */
-    public function __construct(
-        UserCreationService $creationService,
-        SettingsRepositoryInterface $settings,
-    ) {
+    public function __construct(UserCreationService $creationService, SettingsRepositoryInterface $settings)
+    {
         $this->settings = $settings;
         $this->creationService = $creationService;
     }
+
     /**
      * Handle a register request to the application.
      *
@@ -31,18 +30,19 @@ class RegisterController extends AbstractLoginController
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        if ($this->settings->get('jexactyl::registration:enabled') != 'true') {
+        if ($this->settings->get('jexactyl::registration:enabled') == 'false') {
             throw new DisplayException('Unable to register: Registration is currently disabled.');
         };
 
         $prefix = 'jexactyl::registration:';
-        $approval = true;
+        $approved = true;
 
         if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
-            $approval = false;
+            $approved = false;
         };
 
         $data = [
+            'approved' => $approved,
             'email' => $request->input('email'),
             'username' => $request->input('user'),
             'name_first' => 'Jexactyl',
@@ -56,7 +56,6 @@ class RegisterController extends AbstractLoginController
             'store_ports' => $this->settings->get($prefix.'port', 0),
             'store_backups' => $this->settings->get($prefix.'backup', 0),
             'store_databases' => $this->settings->get($prefix.'database', 0),
-            'approved' => $approval,
         ];
 
         $this->creationService->handle($data);

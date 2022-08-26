@@ -16,28 +16,26 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class DiscordController extends Controller
 {
-    private SettingsRepositoryInterface $settings;
     private UserCreationService $creationService;
+    private SettingsRepositoryInterface $settings;
 
-    public function __construct(
-        UserCreationService $creationService,
-        SettingsRepositoryInterface $settings,
-    ) {
-        $this->creationService = $creationService;
+    public function __construct(UserCreationService $creationService, SettingsRepositoryInterface $settings)
+    {
         $this->settings = $settings;
+        $this->creationService = $creationService;
     }
 
     /**
      * Uses the Discord API to return a user objext.
      */
-    public function index(): JsonResponse
+    public function index()
     {
-        return new JsonResponse([
+        return redirect(
             'https://discord.com/api/oauth2/authorize?'
             . 'client_id=' . $this->settings->get('jexactyl::discord:id')
             . '&redirect_uri=' . route('auth.discord.callback')
             . '&response_type=code&scope=identify%20email%20guilds%20guilds.join&prompt=none',
-        ], 200, [], null, false);
+        );
     }
 
     /**
@@ -54,67 +52,60 @@ class DiscordController extends Controller
             'grant_type' => 'authorization_code',
             'code' => $request->input('code'),
             'redirect_uri' => route('auth.discord.callback'),
-        ]);
+        ])->body();
 
-        if (!$code->ok()) {
-            return;
-        }
+        $discord = json_decode(Http::withHeaders(['Authorization' => 'Bearer ' . $code->access_token])->asForm()->get('https://discord.com/api/users/@me')->body());
 
-        $req = json_decode($code->body());
-        if (preg_match('(email|guilds|identify|guilds.join)', $req->scope) !== 1) return;
-
-        $discord = json_decode(Http::withHeaders(['Authorization' => 'Bearer ' . $req->access_token])->asForm()->get('https://discord.com/api/users/@me')->body());
+        if (!$code->ok() || !$discord->ok()) return;
+        if (preg_match('(email|guilds|identify|guilds.join)', $code->scope) !== 1) return;
 
         if (User::where('discord_id', $discord->id)->exists()) {
             $user = User::where('discord_id', $discord->id)->first();
             Auth::loginUsingId($user->id, true);
 
-            return redirect('/');
+            return redirect()->route('index');
         } else {
-            $approval = true;
-
             if ($this->settings->get('jexactyl::discord:enabled') == 'false') return;
+
+            $approved = true;
             if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
-                $approval = false;
+                $approved = false;
             };
 
-            $username = $this->genString();
-            $data = [
-                'email' => $discord->email,
-                'username' => $username,
-                'discord_id' => $discord->id,
-                'name_first' => $discord->username,
-                'name_last' => $discord->discriminator,
-                'password' => $this->genString(),
-                'ip' => $request->getClientIp(),
-                'store_cpu' => $this->settings->get('jexactyl::registration:cpu', 0),
-                'store_memory' => $this->settings->get('jexactyl::registration:memory', 0),
-                'store_disk' => $this->settings->get('jexactyl::registration:disk', 0),
-                'store_slots' => $this->settings->get('jexactyl::registration:slot', 0),
-                'store_ports' => $this->settings->get('jexactyl::registration:port', 0),
-                'store_backups' => $this->settings->get('jexactyl::registration:backup', 0),
-                'store_databases' => $this->settings->get('jexactyl::registration:database', 0),
-                'approved' => $approval,
-            ];
-
-            try {
-                $this->creationService->handle($data);
-            } catch (Exception $e) {
-                return;
+            if (User::where('email', $discord->email)->exists()) {
+                redirect()->route('auth.login');
+                throw new DisplayException('An account with this email already exists.');
             }
 
-            $user = User::where('username', $username)->first();
-            Auth::loginUsingId($user->id, true);
+            $data = [
+                'approved' => $approved,
+                'email' => $discord->email,
+                'username' => $discord->id,
+                'discord_id' => $discord->id,
+                'name_first' => $discord->username,
+                'name_last' => '#' . $discord->discriminator,
+                'password' => $this->generatePassword(),
+                'ip' => $request->getClientIp(),
+                'store_cpu' => $this->settings->get('jexactyl::registration:cpu'),
+                'store_memory' => $this->settings->get('jexactyl::registration:memory'),
+                'store_disk' => $this->settings->get('jexactyl::registration:disk'),
+                'store_slots' => $this->settings->get('jexactyl::registration:slot'),
+                'store_ports' => $this->settings->get('jexactyl::registration:port'),
+                'store_backups' => $this->settings->get('jexactyl::registration:backup'),
+                'store_databases' => $this->settings->get('jexactyl::registration:database'),
+            ];
 
-            return redirect('/');
+            $this->creationService->handle($data);
+            Auth::loginUsingId(User::where('discord_id', $discord->id)->first()->discord_id, true);
+
+            return redirect()->route('index');
         }
     }
 
     /**
-     * Returns a string used for creating a users
-     * username and password on the Panel.
+     * Returns a string used for creating a user's password on the Panel.
      */
-    public function genString(): string
+    private function generatePassword(): string
     {
         $chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 
