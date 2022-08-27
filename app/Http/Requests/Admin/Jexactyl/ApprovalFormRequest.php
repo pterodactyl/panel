@@ -13,6 +13,7 @@ class ApprovalFormRequest extends AdminFormRequest
     {
         return [
             'enabled' => 'required|in:true,false',
+            'webhook' => 'nullable|active_url',
         ];
     }
 }

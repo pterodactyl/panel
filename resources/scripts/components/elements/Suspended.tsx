@@ -52,7 +52,7 @@ export default () => {
         clearFlashes('server:renewal');
         setSubmit(true);
 
-        deleteServer(uuid, name, password)
+        deleteServer(uuid, name)
             .then(() => {
                 setSubmit(false);
                 // @ts-expect-error this is valid

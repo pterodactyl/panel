@@ -41,6 +41,11 @@
                                     <p class="text-muted"><small>Determines whether users must be approved by an admin to use the Panel.</small></p>
                                 </div>
                             </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label" for="webhook">Webhook URL</label>
+                                <input name="webhook" id="webhook" class="form-control" value="{{ $webhook }}">
+                                <p class="text-muted"><small>Provide the Discord Webhook URL to use when a user needs to be approved.</small></p>
+                            </div>
                         </div>
                     </div>
                     <div class="box box-footer">
