@@ -1,0 +1,79 @@
+#!/bin/bash
+
+# Pterodactyl Update Script
+# Author: Ted Munsch
+
+GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
+RED='\033[0;31m'
+BLUE='\033[0;34m'
+NC='\033[0m'
+
+echo -e ${NC}
+
+echo -e ${GREEN}"*******************************************************"
+echo -e ${GREEN}"*              ${NC}"Ptero Panel Update Script"              ${GREEN}*"
+echo -e ${GREEN}"*******************************************************"
+sleep 3
+
+# Get Current PHP Version
+PHPVERSION=$(php -r "echo implode('.', array_slice(explode('.', PHP_VERSION),0,2));")
+
+# Get Current Composer Version
+COMPOSERVERSION=$(composer --version --no-interaction | grep -oP '(?<=version )[^ ]*')
+
+# PHP Version Logic
+if [ "$PHPVERSION" != "7.4" -a "$PHPVERSION" != "8.0" -a "$PHPVERSION" != "8.1" ]; then 
+echo -e ${RED}"Wrong PHP Version Detected"
+echo -e  ${YELLOW}"Requires PHP Version 7.4, 8.0, 8.1"; echo -e ${NC}"Exiting Script"; exit; else echo -e ${NC}"Detected PHP Version $PHPVERSION"; fi
+
+
+# Composer Version Logic
+echo "Composer version is: $COMPOSERVERSION"
+if  [[ "$COMPOSERVERSION" != 2* ]]; then echo -e ${RED}"Requires Composer version 2+"; echo -e ${NC}"Exiting Script"; exit; fi
+
+
+# Enter Maintenance Mode
+cd /var/www/pterodactyl
+php artisan down
+
+# Download the Update
+
+curl -L https://github.com/pterodactyl/panel/releases/latest/download/panel.tar.gz | tar -xzv
+chmod -R 755 storage/* bootstrap/cache
+
+#Update Dependencies
+
+composer install --no-dev --optimize-autoloader --no-interaction
+
+# Clear View Cache and Router Cache
+php artisan cache:clear
+php artisan view:clear
+php artisan config:clear
+php artisan route:clear
+
+# Perform Database Updates
+php artisan migrate --seed --force
+
+
+# Detect Linux Distro and Set File Permissions
+
+DISTRO=$( cat /etc/*-release | tr [:upper:] [:lower:] | grep -Poi '(debian|ubuntu|red hat|centos)' | uniq )
+
+
+if [ "$DISTRO" != "centos" ]
+then chown -R www-data:www-data /var/www/pterodactyl/*
+fi
+
+if [ "$DISTRO" == "centos" ]; then
+echo CentOS found
+if [[ `ps -acx|grep apache|wc -l` > 0 ]]; then
+chown -R apache:apache /var/www/pterodactyl/*
+fi
+if [[ `ps -acx|grep nginx|wc -l` > 0 ]]; then
+chown -R nginx:nginx /var/www/pterodactyl/*
+fi
+fi
+
+php artisan queue:restart
+php artisan up
