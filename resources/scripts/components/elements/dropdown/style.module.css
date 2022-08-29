@@ -1,0 +1,58 @@
+.menu {
+  @apply relative inline-block text-left;
+
+  & .button {
+    @apply inline-flex justify-center items-center w-full py-2 text-neutral-100 rounded-md;
+    @apply transition-all duration-100;
+
+    &:hover, &[aria-expanded="true"] {
+      @apply bg-neutral-600 text-white;
+    }
+
+    &:focus, &:focus-within, &:active {
+      @apply ring-2 ring-opacity-50 ring-neutral-300 text-white;
+    }
+
+    & svg {
+      @apply w-5 h-5 transition-transform duration-75;
+    }
+
+    &[aria-expanded="true"] svg[data-animated="true"] {
+      @apply rotate-180;
+    }
+  }
+
+  & .items_container {
+    @apply absolute right-0 mt-2 origin-top-right bg-neutral-900 rounded z-10;
+  }
+}
+
+.menu_item {
+  @apply flex items-center rounded w-full px-2 py-2;
+
+  & svg {
+    @apply w-4 h-4 mr-4 text-neutral-300;
+  }
+
+  &:hover, &:focus {
+    @apply bg-blue-500 text-blue-50;
+
+    & svg {
+      @apply text-blue-50;
+    }
+  }
+
+  &.danger {
+    &:hover, &:focus {
+      @apply bg-red-500 text-red-50;
+
+      & svg {
+        @apply text-red-50;
+      }
+    }
+  }
+
+  &.disabled {
+    @apply cursor-not-allowed hover:bg-neutral-800 opacity-30 focus:bg-transparent focus:hover:bg-neutral-800;
+  }
+}

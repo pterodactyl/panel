@@ -210,6 +210,7 @@ class ActivityLogService
             'ip' => Request::ip(),
             'batch_uuid' => $this->batch->uuid(),
             'properties' => Collection::make([]),
+            'api_key_id' => $this->targetable->apiKeyId(),
         ]);
 
         if ($subject = $this->targetable->subject()) {

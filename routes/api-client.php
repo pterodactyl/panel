@@ -2,8 +2,8 @@
 
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Api\Client;
-use Pterodactyl\Http\Middleware\ServerActivitySubject;
-use Pterodactyl\Http\Middleware\AccountActivitySubject;
+use Pterodactyl\Http\Middleware\Activity\ServerSubject;
+use Pterodactyl\Http\Middleware\Activity\AccountSubject;
 use Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication;
 use Pterodactyl\Http\Middleware\Api\Client\Server\ResourceBelongsToServer;
 use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
@@ -19,7 +19,7 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.index');
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 
-Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(function () {
+Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
         Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
@@ -54,7 +54,7 @@ Route::prefix('/account')->middleware(AccountActivitySubject::class)->group(func
 Route::group([
     'prefix' => '/servers/{server}',
     'middleware' => [
-        ServerActivitySubject::class,
+        ServerSubject::class,
         AuthenticateServerAccess::class,
         ResourceBelongsToServer::class,
     ],
@@ -62,6 +62,7 @@ Route::group([
     Route::get('/', [Client\Servers\ServerController::class, 'index'])->name('api:client:server.view');
     Route::get('/websocket', Client\Servers\WebsocketController::class)->name('api:client:server.ws');
     Route::get('/resources', Client\Servers\ResourceUtilizationController::class)->name('api:client:server.resources');
+    Route::get('/activity', Client\Servers\ActivityLogController::class)->name('api:client:server.activity');
 
     Route::post('/command', [Client\Servers\CommandController::class, 'index']);
     Route::post('/power', [Client\Servers\PowerController::class, 'index']);

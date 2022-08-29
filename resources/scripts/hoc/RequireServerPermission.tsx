@@ -3,7 +3,7 @@ import Can from '@/components/elements/Can';
 import { ServerError } from '@/components/elements/ScreenBlock';
 
 export interface RequireServerPermissionProps {
-    permissions: string | string[]
+    permissions: string | string[];
 }
 
 const RequireServerPermission: React.FC<RequireServerPermissionProps> = ({ children, permissions }) => {
@@ -11,10 +11,7 @@ const RequireServerPermission: React.FC<RequireServerPermissionProps> = ({ child
         <Can
             action={permissions}
             renderOnError={
-                <ServerError
-                    title={'Access Denied'}
-                    message={'You do not have permission to access this page.'}
-                />
+                <ServerError title={'Access Denied'} message={'You do not have permission to access this page.'} />
             }
         >
             {children}

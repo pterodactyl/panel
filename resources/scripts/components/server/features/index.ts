@@ -1,4 +1,4 @@
-import { lazy } from 'react';
+import { ComponentType, lazy } from 'react';
 
 /**
  * Custom features should be registered here as lazy components so that they do
@@ -6,10 +6,12 @@ import { lazy } from 'react';
  * whenever they are actually loaded for the client (which may be never, depending
  * on the feature and the egg).
  */
-const EulaModalFeature = lazy(() => import(/* webpackChunkName: "feature.eula" */'@feature/eula/EulaModalFeature'));
-const JavaVersionModalFeature = lazy(() => import(/* webpackChunkName: "feature.java_version" */'@feature/JavaVersionModalFeature'));
-const GSLTokenModalFeature = lazy(() => import(/* webpackChunkName: "feature.gsl_token" */'@feature/GSLTokenModalFeature'));
-const PIDLimitModalFeature = lazy(() => import(/* webpackChunkName: "feature.pid_limit" */'@feature/PIDLimitModalFeature'));
-const SteamDiskSpaceFeature = lazy(() => import(/* webpackChunkName: "feature.steam_disk_space" */'@feature/SteamDiskSpaceFeature'));
+const features: Record<string, ComponentType> = {
+    eula: lazy(() => import('@feature/eula/EulaModalFeature')),
+    java_version: lazy(() => import('@feature/JavaVersionModalFeature')),
+    gsl_token: lazy(() => import('@feature/GSLTokenModalFeature')),
+    pid_limit: lazy(() => import('@feature/PIDLimitModalFeature')),
+    steam_disk_space: lazy(() => import('@feature/SteamDiskSpaceFeature')),
+};
 
-export { EulaModalFeature, JavaVersionModalFeature, GSLTokenModalFeature, PIDLimitModalFeature, SteamDiskSpaceFeature };
+export default features;

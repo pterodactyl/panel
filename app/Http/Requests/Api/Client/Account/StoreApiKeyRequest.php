@@ -2,7 +2,9 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Account;
 
+use IPTools\Range;
 use Pterodactyl\Models\ApiKey;
+use Illuminate\Validation\Validator;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class StoreApiKeyRequest extends ClientApiRequest
@@ -13,18 +15,33 @@ class StoreApiKeyRequest extends ClientApiRequest
 
         return [
             'description' => $rules['memo'],
-            'allowed_ips' => $rules['allowed_ips'],
-            'allowed_ips.*' => 'ip',
+            'allowed_ips' => [...$rules['allowed_ips'], 'max:50'],
+            'allowed_ips.*' => 'string',
         ];
     }
 
     /**
-     * @return array|string[]
+     * Check that each of the values entered is actually valid.
      */
-    public function messages()
+    public function withValidator(Validator $validator): void
     {
-        return [
-            'allowed_ips.*' => 'All of the IP addresses entered must be valid IPv4 addresses.',
-        ];
+        $validator->after(function (Validator $validator) {
+            if (!is_array($ips = $this->input('allowed_ips'))) {
+                return;
+            }
+
+            foreach ($ips as $index => $ip) {
+                $valid = false;
+                try {
+                    $valid = Range::parse($ip)->valid();
+                } catch (\Exception $exception) {
+                    if ($exception->getMessage() !== 'Invalid IP address format') {
+                        throw $exception;
+                    }
+                } finally {
+                    $validator->errors()->addIf(!$valid, "allowed_ips.{$index}", '"' . $ip . '" is not a valid IP address or CIDR range.');
+                }
+            }
+        });
     }
 }

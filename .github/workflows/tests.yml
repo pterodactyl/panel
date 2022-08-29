@@ -44,7 +44,7 @@ jobs:
           coverage: none
       - run: cp .env.ci .env
       - run: composer install --prefer-dist --no-interaction --no-progress
-      - run: vendor/bin/php-cs-fixer fix --dry-run --diff --diff-format=udiff --config .php-cs-fixer.dist.php
+      - run: vendor/bin/php-cs-fixer fix --dry-run --diff
         continue-on-error: true
       - name: execute unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit

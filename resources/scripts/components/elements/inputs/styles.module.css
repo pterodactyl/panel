@@ -1,0 +1,25 @@
+.checkbox_input {
+    @apply w-4 h-4 rounded-sm border-neutral-500 bg-neutral-600 text-primary-500;
+
+    &:focus, &:active {
+        @apply ring-2 ring-primary-500 ring-offset-2 ring-offset-neutral-700;
+    }
+
+    &.indeterminate:checked {
+        @apply text-primary-500/50 border border-primary-500;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20' fill='white'%3E%3Cpath fill-rule='evenodd' d='M5 10a1 1 0 011-1h8a1 1 0 110 2H6a1 1 0 01-1-1z' clip-rule='evenodd' /%3E%3C/svg%3E");
+    }
+}
+
+.text_input {
+    @apply transition-shadow duration-75;
+    @apply w-full bg-neutral-800 rounded px-4 py-2 outline-none border-0;
+
+    &:focus, &:active {
+        @apply ring-4 ring-blue-300 ring-opacity-75;
+    }
+
+    &.loose {
+        @apply px-6 py-3;
+    }
+}

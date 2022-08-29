@@ -10,7 +10,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v1
         with:
-          node-version: '12'
+          node-version: '16.x'
 
       - name: Create release branch and bump version
         env:
@@ -34,7 +34,7 @@ jobs:
       - name: Create release archive
         run: |
           rm -rf node_modules/ test/ codecov.yml CODE_OF_CONDUCT.md CONTRIBUTING.md phpunit.xml Vagrantfile
-          tar -czf panel.tar.gz * .env.example .eslintignore .eslintrc.yml .babel-plugin-macrosrc.js
+          tar -czf panel.tar.gz * .env.example .eslintignore .eslintrc.js
 
       - name: Extract changelog
         id: extract_changelog

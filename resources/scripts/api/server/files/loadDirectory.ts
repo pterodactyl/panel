@@ -5,7 +5,7 @@ export interface FileObject {
     key: string;
     name: string;
     mode: string;
-    modeBits: string,
+    modeBits: string;
     size: number;
     isFile: boolean;
     isSymlink: boolean;

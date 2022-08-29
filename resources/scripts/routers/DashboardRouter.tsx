@@ -1,48 +1,49 @@
 import React from 'react';
 import { NavLink, Route, Switch } from 'react-router-dom';
-import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
-import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
-import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import { useLocation } from 'react-router';
+import Spinner from '@/components/elements/Spinner';
+import routes from '@/routers/routes';
 
 export default () => {
     const location = useLocation();
 
     return (
         <>
-            <NavigationBar/>
-            {location.pathname.startsWith('/account') &&
+            <NavigationBar />
+            {location.pathname.startsWith('/account') && (
                 <SubNavigation>
                     <div>
-                        <NavLink to={'/account'} exact>Settings</NavLink>
-                        <NavLink to={'/account/api'}>API Credentials</NavLink>
-                        <NavLink to={'/account/ssh'}>SSH Keys</NavLink>
+                        {routes.account
+                            .filter((route) => !!route.name)
+                            .map(({ path, name, exact = false }) => (
+                                <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
+                                    {name}
+                                </NavLink>
+                            ))}
                     </div>
                 </SubNavigation>
-            }
+            )}
             <TransitionRouter>
-                <Switch location={location}>
-                    <Route path={'/'} exact>
-                        <DashboardContainer/>
-                    </Route>
-                    <Route path={'/account'} exact>
-                        <AccountOverviewContainer/>
-                    </Route>
-                    <Route path={'/account/api'} exact>
-                        <AccountApiContainer/>
-                    </Route>
-                    <Route path={'/account/ssh'} exact>
-                        <AccountSSHContainer/>
-                    </Route>
-                    <Route path={'*'}>
-                        <NotFound/>
-                    </Route>
-                </Switch>
+                <React.Suspense fallback={<Spinner centered />}>
+                    <Switch location={location}>
+                        <Route path={'/'} exact>
+                            <DashboardContainer />
+                        </Route>
+                        {routes.account.map(({ path, component: Component }) => (
+                            <Route key={path} path={`/account/${path}`.replace('//', '/')} exact>
+                                <Component />
+                            </Route>
+                        ))}
+                        <Route path={'*'}>
+                            <NotFound />
+                        </Route>
+                    </Switch>
+                </React.Suspense>
             </TransitionRouter>
         </>
     );

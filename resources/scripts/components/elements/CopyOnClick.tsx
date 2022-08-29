@@ -1,26 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import CopyToClipboard from 'react-copy-to-clipboard';
-import tw from 'twin.macro';
-import styled, { keyframes } from 'styled-components/macro';
+import React, { useEffect, useState } from 'react';
 import Fade from '@/components/elements/Fade';
-import { SwitchTransition } from 'react-transition-group';
+import Portal from '@/components/elements/Portal';
+import copy from 'copy-to-clipboard';
+import classNames from 'classnames';
 
-const fade = keyframes`
-    from { opacity: 0 }
-    to { opacity: 1 }
-`;
+interface CopyOnClickProps {
+    text: string | number | null | undefined;
+    showInNotification?: boolean;
+    children: React.ReactNode;
+}
 
-const Toast = styled.div`
-    ${tw`fixed z-50 bottom-0 left-0 mb-4 w-full flex justify-end pr-4`};
-    animation: ${fade} 250ms linear;
-
-    & > div {
-        ${tw`rounded px-4 py-2 text-white bg-neutral-900 border border-black opacity-75`};
-    }
-`;
-
-const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
-    const [ copied, setCopied ] = useState(false);
+const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickProps) => {
+    const [copied, setCopied] = useState(false);
 
     useEffect(() => {
         if (!copied) return;
@@ -32,30 +23,43 @@ const CopyOnClick: React.FC<{ text: any }> = ({ text, children }) => {
         return () => {
             clearTimeout(timeout);
         };
-    }, [ copied ]);
+    }, [copied]);
 
-    const onCopy = useCallback(() => {
-        setCopied(true);
-    }, []);
+    if (!React.isValidElement(children)) {
+        throw new Error('Component passed to <CopyOnClick/> must be a valid React element.');
+    }
+
+    const child = !text
+        ? React.Children.only(children)
+        : React.cloneElement(React.Children.only(children), {
+              className: classNames(children.props.className || '', 'cursor-pointer'),
+              onClick: (e: React.MouseEvent<HTMLElement>) => {
+                  copy(String(text));
+                  setCopied(true);
+                  if (typeof children.props.onClick === 'function') {
+                      children.props.onClick(e);
+                  }
+              },
+          });
 
     return (
         <>
-            <SwitchTransition>
-                <Fade timeout={250} key={copied ? 'visible' : 'invisible'}>
-                    {copied ?
-                        <Toast>
-                            <div>
-                                <p>Copied &quot;{text}&quot; to clipboard.</p>
+            {copied && (
+                <Portal>
+                    <Fade in appear timeout={250} key={copied ? 'visible' : 'invisible'}>
+                        <div className={'fixed z-50 bottom-0 right-0 m-4'}>
+                            <div className={'rounded-md py-3 px-4 text-gray-200 bg-neutral-600/95 shadow'}>
+                                <p>
+                                    {showInNotification
+                                        ? `Copied "${String(text)}" to clipboard.`
+                                        : 'Copied text to clipboard.'}
+                                </p>
                             </div>
-                        </Toast>
-                        :
-                        <></>
-                    }
-                </Fade>
-            </SwitchTransition>
-            <CopyToClipboard onCopy={onCopy} text={text} options={{ debug: true }} css={tw`cursor-pointer`}>
-                {children}
-            </CopyToClipboard>
+                        </div>
+                    </Fade>
+                </Portal>
+            )}
+            {child}
         </>
     );
 };

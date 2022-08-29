@@ -1,13 +1,32 @@
-import { FractalResponseData, FractalResponseList } from '@/api/http';
+import {
+    FractalPaginatedResponse,
+    FractalResponseData,
+    FractalResponseList,
+    getPaginationSet,
+    PaginatedResult,
+} from '@/api/http';
+import { Model } from '@definitions/index';
 
-type Transformer<T> = (callback: FractalResponseData) => T;
+type TransformerFunc<T> = (callback: FractalResponseData) => T;
 
 const isList = (data: FractalResponseList | FractalResponseData): data is FractalResponseList => data.object === 'list';
 
-function transform<T, M>(data: null | undefined, transformer: Transformer<T>, missing?: M): M;
-function transform<T, M>(data: FractalResponseData | null | undefined, transformer: Transformer<T>, missing?: M): T | M;
-function transform<T, M>(data: FractalResponseList | null | undefined, transformer: Transformer<T>, missing?: M): T[] | M;
-function transform<T> (data: FractalResponseData | FractalResponseList | null | undefined, transformer: Transformer<T>, missing = undefined) {
+function transform<T, M>(data: null | undefined, transformer: TransformerFunc<T>, missing?: M): M;
+function transform<T, M>(
+    data: FractalResponseData | null | undefined,
+    transformer: TransformerFunc<T>,
+    missing?: M
+): T | M;
+function transform<T, M>(
+    data: FractalResponseList | FractalPaginatedResponse | null | undefined,
+    transformer: TransformerFunc<T>,
+    missing?: M
+): T[] | M;
+function transform<T>(
+    data: FractalResponseData | FractalResponseList | FractalPaginatedResponse | null | undefined,
+    transformer: TransformerFunc<T>,
+    missing = undefined
+) {
     if (data === undefined || data === null) {
         return missing;
     }
@@ -23,4 +42,14 @@ function transform<T> (data: FractalResponseData | FractalResponseList | null | 
     return transformer(data);
 }
 
-export { transform };
+function toPaginatedSet<T extends TransformerFunc<Model>>(
+    response: FractalPaginatedResponse,
+    transformer: T
+): PaginatedResult<ReturnType<T>> {
+    return {
+        items: transform(response, transformer) as ReturnType<T>[],
+        pagination: getPaginationSet(response.meta.pagination),
+    };
+}
+
+export { transform, toPaginatedSet };

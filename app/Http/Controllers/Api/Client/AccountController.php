@@ -50,9 +50,11 @@ class AccountController extends ClientApiController
         $original = $request->user()->email;
         $this->updateService->handle($request->user(), $request->validated());
 
-        Activity::event('user:account.email-changed')
-            ->property(['old' => $original, 'new' => $request->input('email')])
-            ->log();
+        if ($original !== $request->input('email')) {
+            Activity::event('user:account.email-changed')
+                ->property(['old' => $original, 'new' => $request->input('email')])
+                ->log();
+        }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -93,6 +93,7 @@ class FileController extends ClientApiController
     {
         $token = $this->jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+            ->setUser($request->user())
             ->setClaims([
                 'file_path' => rawurldecode($request->get('file')),
                 'server_uuid' => $server->uuid,

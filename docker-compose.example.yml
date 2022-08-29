@@ -8,7 +8,7 @@ x-common:
     MYSQL_ROOT_PASSWORD: "CHANGE_ME_TOO"
   panel:
     &panel-environment
-    APP_URL: "https://example.com"
+    APP_URL: "http://example.com"
     # A list of valid timezones can be found here: http://php.net/manual/en/timezones.php
     APP_TIMEZONE: "UTC"
     APP_SERVICE_AUTHOR: "noreply@example.com"

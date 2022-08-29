@@ -7,7 +7,7 @@ import tw from 'twin.macro';
 
 const StyledSwitchTransition = styled(SwitchTransition)`
     ${tw`relative`};
-    
+
     & section {
         ${tw`absolute w-full top-0 left-0`};
     }
@@ -19,9 +19,7 @@ const TransitionRouter: React.FC = ({ children }) => {
             render={({ location }) => (
                 <StyledSwitchTransition>
                     <Fade timeout={150} key={location.pathname + location.search} in appear unmountOnExit>
-                        <section>
-                            {children}
-                        </section>
+                        <section>{children}</section>
                     </Fade>
                 </StyledSwitchTransition>
             )}

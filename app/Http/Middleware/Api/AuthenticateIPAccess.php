@@ -6,6 +6,7 @@ use Closure;
 use IPTools\IP;
 use IPTools\Range;
 use Illuminate\Http\Request;
+use Pterodactyl\Facades\Activity;
 use Laravel\Sanctum\TransientToken;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
@@ -38,6 +39,12 @@ class AuthenticateIPAccess
                 return $next($request);
             }
         }
+
+        Activity::event('auth:ip-blocked')
+            ->actor($request->user())
+            ->subject($request->user(), $token)
+            ->property('identifier', $token->identifier)
+            ->log();
 
         throw new AccessDeniedHttpException('This IP address (' . $request->ip() . ') does not have permission to access the API using these credentials.');
     }

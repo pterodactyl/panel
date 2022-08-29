@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Exceptions\Model;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Validator;
 use Pterodactyl\Exceptions\PterodactylException;
 use Illuminate\Contracts\Support\MessageProvider;
@@ -11,21 +12,30 @@ class DataValidationException extends PterodactylException implements HttpExcept
 {
     /**
      * The validator instance.
-     *
-     * @var \Illuminate\Contracts\Validation\Validator
      */
-    public $validator;
+    protected Validator $validator;
+
+    /**
+     * The underlying model instance that triggered this exception.
+     */
+    protected Model $model;
 
     /**
      * DataValidationException constructor.
      */
-    public function __construct(Validator $validator)
+    public function __construct(Validator $validator, Model $model)
     {
-        parent::__construct(
-            'Data integrity exception encountered while performing database write operation. ' . $validator->errors()->toJson()
+        $message = sprintf(
+            'Could not save %s[%s]: failed to validate data: %s',
+            get_class($model),
+            $model->getKey(),
+            $validator->errors()->toJson()
         );
 
+        parent::__construct($message);
+
         $this->validator = $validator;
+        $this->model = $model;
     }
 
     /**
@@ -54,5 +64,15 @@ class DataValidationException extends PterodactylException implements HttpExcept
     public function getHeaders()
     {
         return [];
+    }
+
+    public function getValidator(): Validator
+    {
+        return $this->validator;
+    }
+
+    public function getModel(): Model
+    {
+        return $this->model;
     }
 }

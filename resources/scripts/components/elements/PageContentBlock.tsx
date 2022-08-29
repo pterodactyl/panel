@@ -15,15 +15,13 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
         if (title) {
             document.title = title;
         }
-    }, [ title ]);
+    }, [title]);
 
     return (
         <CSSTransition timeout={150} classNames={'fade'} appear in>
             <>
                 <ContentContainer css={tw`my-4 sm:my-10`} className={className}>
-                    {showFlashKey &&
-                    <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`}/>
-                    }
+                    {showFlashKey && <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`} />}
                     {children}
                 </ContentContainer>
                 <ContentContainer css={tw`mb-4`}>
@@ -36,7 +34,7 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                         >
                             Pterodactyl&reg;
                         </a>
-                        &nbsp;&copy; 2015 - {(new Date()).getFullYear()}
+                        &nbsp;&copy; 2015 - {new Date().getFullYear()}
                     </p>
                 </ContentContainer>
             </>
