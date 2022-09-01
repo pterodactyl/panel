@@ -76,7 +76,7 @@ export default () => {
                     <Tooltip placement={'bottom'} content={'Account Settings'}>
                         <NavLink to={'/account'}>
                             <span className={'flex items-center w-5 h-5'}>
-                                <Avatar.User />
+                                <Avatar.User size={22} />
                             </span>
                         </NavLink>
                     </Tooltip>
