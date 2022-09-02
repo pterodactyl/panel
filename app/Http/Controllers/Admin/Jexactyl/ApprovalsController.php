@@ -15,7 +15,7 @@ class ApprovalsController extends Controller
 {
     private AlertsMessageBag $alert;
     private SettingsRepositoryInterface $settings;
-    
+
     /**
      * ApprovalsController constructor.
      */
@@ -37,13 +37,14 @@ class ApprovalsController extends Controller
 
         return view('admin.jexactyl.approvals', [
             'enabled' => $this->settings->get('jexactyl::approvals:enabled', false),
+            'webhook' => $this->settings->get('jexactyl::approvals:webhook'),
             'users' => $users,
         ]);
     }
 
     /**
      * Updates the settings for approvals.
-     * 
+     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
