@@ -30,6 +30,9 @@ export default ({ database, className }: Props) => {
     const { addError, clearFlashes } = useFlash();
     const [visible, setVisible] = useState(false);
     const [connectionVisible, setConnectionVisible] = useState(false);
+    
+    const [databasePasswordVisable, setDatabasePasswordVisable] = useState(false);
+    const [jdbcConnectionStringVisable, setJdbcConnectionStringVisable] = useState(false);
 
     const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
     const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
@@ -96,6 +99,7 @@ export default ({ database, className }: Props) => {
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
                 <FlashMessageRender byKey={'database-connection-modal'} css={tw`mb-6`} />
                 <h3 css={tw`mb-6 text-2xl`}>Database connection details</h3>
+                
                 <div>
                     <Label>Endpoint</Label>
                     <CopyOnClick text={database.connectionString}>
@@ -116,8 +120,15 @@ export default ({ database, className }: Props) => {
                     <div css={tw`mt-6`}>
                         <Label>Password</Label>
                         <CopyOnClick text={database.password}>
-                            <Input type={'text'} readOnly value={database.password} />
+                            <Input
+                                type={databasePasswordVisable ? 'text' : 'password'}
+                                onMouseEnter={() => setDatabasePasswordVisable(true)}
+                                onMouseLeave={() => setDatabasePasswordVisable(false)}
+                                value={database.password}
+                                readOnly
+                            />
                         </CopyOnClick>
+                        <p><i>Hover over the field to show the password.</i></p>
                     </div>
                 </Can>
                 <div css={tw`mt-6`}>
@@ -126,11 +137,14 @@ export default ({ database, className }: Props) => {
                         text={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
                     >
                         <Input
-                            type={'text'}
-                            readOnly
+                            type={jdbcConnectionStringVisable ? 'text' : 'password'}
+                            onMouseEnter={() => setJdbcConnectionStringVisable(true)}
+                            onMouseLeave={() => setJdbcConnectionStringVisable(false)}
                             value={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
+                            readOnly
                         />
                     </CopyOnClick>
+                    <p><i>Hover over the field to show the JDBC Connection String.</i></p>
                 </div>
                 <div css={tw`mt-6 text-right`}>
                     <Can action={'database.update'}>
