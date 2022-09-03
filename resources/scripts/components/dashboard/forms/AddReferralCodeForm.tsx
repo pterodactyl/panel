@@ -45,6 +45,9 @@ export default () => {
             .then(() => {
                 resetForm();
                 setSubmitting(false);
+
+                // @ts-expect-error this is valid
+                window.location = '/account';
             });
     };
 

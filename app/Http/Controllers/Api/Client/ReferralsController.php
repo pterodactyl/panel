@@ -34,6 +34,10 @@ class ReferralsController extends ClientApiController
         $reward = $this->settings->get('jexactyl::referrals:reward', 0);
         $code = $request->input('code');
 
+        if ($request->user()->referral_code) {
+            throw new DisplayException('You have already used a referral code.');
+        };
+
         // Get the user who owns the referral code.
         $id = DB::table('referral_codes')
             ->where('code', $code)

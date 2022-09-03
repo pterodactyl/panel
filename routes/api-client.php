@@ -39,7 +39,7 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
 
     Route::get('/referrals', [Client\ReferralsController::class, 'index']);
     Route::post('/referrals', [Client\ReferralsController::class, 'store']);
-    Route::put('/use-referral', [Client\ReferralsController::class, 'use']);
+    Route::put('/use-referral', [Client\ReferralsController::class, 'use'])->middleware('auth', 'throttle:1,1');
     Route::delete('/referrals/{code}', [Client\ReferralsController::class, 'delete']);
 
     Route::get('/discord', [Client\AccountController::class, 'discord'])->name('api:client.account.discord');
@@ -73,7 +73,7 @@ Route::group([
 
     Route::post('/eggs', [Client\Store\ServerController::class, 'eggs'])->name('api:client:store.eggs');
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
-    Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->middleware('auth', 'throttle:1,1');
+    Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->name('api:client:store.earn');
     Route::post('/stripe', [Client\Store\StripeController::class, 'purchase'])->name('api:client:store.stripe');
     Route::post('/paypal', [Client\Store\PayPalController::class, 'purchase'])->name('api:client:store.paypal');
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
