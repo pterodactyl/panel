@@ -6,10 +6,18 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Servers\EditServerRequest;
 
 class ServerEditService
 {
+    private SettingsRepositoryInterface $settings;
+
+    public function __construct(SettingsRepositoryInterface $settings)
+    {
+        $this->settings = $settings;
+    }
+
     /**
      * Updates the requested instance with new limits.
      */
@@ -19,40 +27,23 @@ class ServerEditService
         $amount = $request->input('amount');
         $resource = $request->input('resource');
 
-        $this->verifyResources($request, $server);
+        $check = $this->verifyResources($request, $server);
+        if ($check == false) return;
 
         $server->update([
             $resource => $this->getServerResource($request, $server) + $amount,
         ]);
 
         $user->update([
-            'store_'.$this->convertResource($request) => $this->getUserResource($request) - $amount,
+            'store_' . $this->toStr($request->input('resource')) => $this->getUserResource($request) - $amount,
         ]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
-    /**
-     * @throws DisplayException
-     */
-    protected function convertResource(EditServerRequest $request)
+    protected function toStr(string $res): string
     {
-        switch ($request->input('resource')) {
-            case 'cpu':
-                return 'cpu';
-            case 'memory':
-                return 'memory';
-            case 'disk':
-                return 'disk';
-            case 'allocation_limit':
-                return 'ports';
-            case 'backup_limit':
-                return 'backups';
-            case 'database_limit':
-                return 'databases';
-            default:
-                throw new DisplayException('Unable to parse resource type.');
-        }
+        return (string) $res;
     }
 
     /**
@@ -113,29 +104,44 @@ class ServerEditService
      * 
      * @throws DisplayException
      */
-    protected function verifyResources(EditServerRequest $request, Server $server)
+    protected function verifyResources(EditServerRequest $request, Server $server): bool
     {
         $resource = $request->input('resource');
         $amount = $request->input('amount');
         $user = $request->user();
-    
-        // Check that the server's limits are acceptable.
-        if ($resource == 'cpu' && $server->cpu <= 50 && $amount < 0) throw new DisplayException('Cannot have less than 50% CPU assigned to server.');
-        if ($resource == 'memory' && $server->memory <= 1024 && $amount < 0) throw new DisplayException('Cannot have less than 1GB RAM assigned to server.');
-        if ($resource == 'disk' && $server->disk <= 1024 && $amount < 0) throw new DisplayException('Cannot have less than 1GB RAM assigned to server.');
 
-        if ($resource == 'allocation_limit' && $server->allocation_limit <= 1 && $amount < 0) throw new DisplayException('Cannot have less than 1 network allocation assigned to server.');
-        if ($resource == 'backup_limit' && $server->backup_limit <= 0 && $amount < 0) throw new DisplayException('Cannot have less than 0 backup slots assigned to server.');
-        if ($resource == 'database_limit' && $server->database_limit <= 0 && $amount < 0) throw new DisplayException('Cannot have less than 0 database slots assigned to server.');
+        $cpu_limit = $this->settings->get('jexactyl::store:limit:cpu');
+        $memory_limit = $this->settings->get('jexactyl::store:limit:memory');
+        $disk_limit = $this->settings->get('jexactyl::store:limit:disk');
+        $allocation_limit = $this->settings->get('jexactyl::store:limit:port');
+        $backup_limit = $this->settings->get('jexactyl::store:limit:backup');
+        $database_limit = $this->settings->get('jexactyl::store:limit:database');
+
+        if ($resource == 'cpu' && (($amount + $server->cpu) > $cpu_limit)) return false;
+        if ($resource == 'memory' && (($amount + $server->memory) > $memory_limit)) return false;
+        if ($resource == 'disk' && (($amount + $server->disk) > $disk_limit)) return false;
+        if ($resource == 'allocation_limit' && (($amount + $server->allocation_limit) > $allocation_limit)) return false;
+        if ($resource == 'backup_limit' && (($amount + $server->backup_limit) > $backup_limit)) return false;
+        if ($resource == 'database_limit' && (($amount + $server->database_limit) > $database_limit)) return false;
+
+        // Check that the server's limits are acceptable.
+        if ($resource == 'cpu' && $server->cpu <= 50 && $amount < 0) return false;
+        if ($resource == 'memory' && $server->memory <= 1024 && $amount < 0) return false;
+        if ($resource == 'disk' && $server->disk <= 1024 && $amount < 0) return false;
+        if ($resource == 'allocation_limit' && $server->allocation_limit <= 1 && $amount < 0) return false;
+        if ($resource == 'backup_limit' && $server->backup_limit <= 0 && $amount < 0) return false;
+        if ($resource == 'database_limit' && $server->database_limit <= 0 && $amount < 0) return false;
 
 
         // Check whether the user has enough resource in their account.
-        if ($resource == 'cpu' && $user->store_cpu < $amount) throw new DisplayException('You do not have enough CPU in order to add more to your server.');
-        if ($resource == 'memory' && $user->store_memory < $amount) throw new DisplayException('You do not have enough RAM in order to add more to your server.');
-        if ($resource == 'disk' && $user->store_disk < $amount) throw new DisplayException('You do not have enough disk in order to add more to your server.');
+        if ($resource == 'cpu' && $user->store_cpu < $amount) return false;
+        if ($resource == 'memory' && $user->store_memory < $amount) return false;
+        if ($resource == 'disk' && $user->store_disk < $amount) return false;
+        if ($resource == 'allocation_limit' && $user->store_ports < $amount) return false;
+        if ($resource == 'backup_limit' && $user->store_backups < $amount) return false;
+        if ($resource == 'database_limit' && $user->store_databases < $amount) return false;
 
-        if ($resource == 'allocation_limit' && $user->store_ports < $amount) throw new DisplayException('You do not have enough ports in order to add more to your server.');
-        if ($resource == 'backup_limit' && $user->store_backups < $amount) throw new DisplayException('You do not have enough backups in order to add more to your server.');
-        if ($resource == 'database_limit' && $user->store_databases < $amount) throw new DisplayException('You do not have enough databases in order to add more to your server.');
+        // Return true if all checked.
+        return true;
     }
 }
