@@ -19,12 +19,7 @@
         <div class="col-xs-12">
             <form action="{{ route('admin.jexactyl.registration') }}" method="POST">
                 <div class="box
-                @if($enabled == 'true')
-                    box-success
-                @else
-                    box-danger
-                @endif
-                ">
+                @if($enabled == 'true') box-success @else box-danger @endif">
                     <div class="box-header with-border">
                         <i class="fa fa-at"></i> <h3 class="box-title">Registration via Email <small>The settings for Email registration and logins.</small></h3>
                     </div>
@@ -43,13 +38,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="box
-                @if($discord_enabled == 'true')
-                    box-success
-                @else
-                    box-danger
-                @endif
-                ">
+                <div class="box @if($discord_enabled == 'true') box-success @else box-danger @endif">
                     <div class="box-header with-border">
                         <i class="fa fa-comments-o"></i> <h3 class="box-title">Registration via Discord <small>The settings for Discord registration and logins.</small></h3>
                     </div>
@@ -83,6 +72,20 @@
                                     <p class="text-muted"><small>The client secret for your OAuth application. Treat this like a password.</small></p>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-info">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"><i class="fa fa-envelope"></i> Email Verification <small>Turn this on to enable email verification.</small></h3>
+                    </div>
+                    <div class="box-body row">
+                        <div class="form-group col-md-4">
+                            <label for="verification" class="control-label">Status</label>
+                            <select name="registration:verification" id="verification" class="form-control">
+                                <option value="{{ true }}" @if ($verification) selected @endif>Enabled</option>
+                                <option value="{{ false }}" @if (!$verification) selected @endif>Disabled</option>
+                            </select>
                         </div>
                     </div>
                 </div>

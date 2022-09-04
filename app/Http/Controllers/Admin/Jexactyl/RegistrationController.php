@@ -39,6 +39,7 @@ class RegistrationController extends Controller
     {
         return view('admin.jexactyl.registration', [
             'enabled' => $this->settings->get('jexactyl::registration:enabled', false),
+            'verification' => $this->settings->get('jexactyl::registration:verification', false),
 
             'discord_enabled' => $this->settings->get('jexactyl::discord:enabled', false),
             'discord_id' => $this->settings->get('jexactyl::discord:id', 0),
