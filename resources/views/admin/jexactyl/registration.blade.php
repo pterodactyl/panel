@@ -83,8 +83,8 @@
                         <div class="form-group col-md-4">
                             <label for="verification" class="control-label">Status</label>
                             <select name="registration:verification" id="verification" class="form-control">
-                                <option value="{{ true }}" @if ($verification) selected @endif>Enabled</option>
-                                <option value="{{ false }}" @if (!$verification) selected @endif>Disabled</option>
+                                <option value="{{ 1 }}" @if ($verification) selected @endif>Enabled</option>
+                                <option value="{{ 0 }}" @if (!$verification) selected @endif>Disabled</option>
                             </select>
                         </div>
                     </div>
