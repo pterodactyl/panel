@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
@@ -72,26 +73,15 @@ class ServerEditService
      *
      * @throws DisplayException
      */
-     protected function toMin(EditServerRequest $request)
+     protected function toMin(EditServerRequest $request): int
      {
-       switch ($request->input('resource')) {
-         case 'cpu':
-           $obj = 50;
-         case 'memory':
-           $obj = 1024;
-         case 'disk':
-           $obj = 1024;
-         case 'allocation_limit':
-           $obj = 1;
-         case 'backup_limit':
-           $obj = 0;
-         case 'database_limit':
-           $obj = 0;
-         default:
-           throw new DisplayException('unable to parse resource type');
-
-         return $obj;
-       }
+         return match($request->input('resource')) {
+             'cpu' => 50,
+             'allocation_limit' => 1,
+             'disk', 'memory' => 1024,
+             'backup_limit', 'database_limit' => 0,
+             default => throw new DisplayException('Unable to parse resource type')
+         };
      }
 
     /**
@@ -100,26 +90,17 @@ class ServerEditService
      *
      * @throws DisplayException
      */
-     protected function toUser(EditServerRequest $request, User $user)
+     protected function toUser(EditServerRequest $request, User $user): int
      {
-       switch ($request->input('resource')) {
-         case 'cpu':
-           $obj = $user->store_cpu;
-         case 'memory':
-           $obj = $user->store_memory;
-         case 'disk':
-           $obj = $user->store_disk;
-         case 'allocation_limit':
-           $obj = $user->store_ports;
-         case 'backup_limit':
-           $obj = $user->store_backups;
-         case 'database_limit':
-           $obj = $user->store_databases;
-         default:
-           throw new DisplayException('unable to parse resource type');
-
-         return $obj;
-       }
+         return match ($request->input('resource')) {
+             'cpu' => $user->store_cpu,
+             'disk' => $user->store_disk,
+             'memory' => $user->store_memory,
+             'backup_limit' => $user->store_backups,
+             'allocation_limit' => $user->store_ports,
+             'database_limit' => $user->store_databases,
+             default => throw new DisplayException('Unable to parse resource type')
+         };
      }
 
     /**
@@ -128,25 +109,16 @@ class ServerEditService
      *
      * @throws DisplayException
      */
-    protected function toServer(EditServerRequest $request, Server $server)
+    protected function toServer(EditServerRequest $request, Server $server): ?int
     {
-        switch ($request->input('resource')) {
-            case 'cpu':
-                $obj = $server->cpu;
-            case 'memory':
-                $obj = $server->memory;
-            case 'disk':
-                $obj = $server->disk;
-            case 'allocation_limit':
-                $obj = $server->allocation_limit;
-            case 'backup_limit':
-                $obj = $server->backup_limit;
-            case 'database_limit':
-                $obj = $server->database_limit;
-            default:
-                throw new DisplayException('unable to parse resource type');
-
-            return $obj;
-        }
+        return match ($request->input('resource')) {
+            'cpu' => $server->cpu,
+            'disk' => $server->disk,
+            'memory' => $server->memory,
+            'backup_limit' => $server->backup_limit,
+            'database_limit' => $server->database_limit,
+            'allocation_limit' => $server->allocation_limit,
+            default => throw new DisplayException('Unable to parse resource type')
+        };
     }
 }
