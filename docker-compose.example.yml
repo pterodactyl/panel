@@ -71,14 +71,14 @@ services:
       REDIS_HOST: "cache"
       DB_HOST: "database"
       DB_PORT: "3306"
+networks:
+  default:
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16
 volumes:
   database:
   var:
   nginx:
   certs:
   logs:
-networks:
-  default:
-    ipam:
-      config:
-        - subnet: 172.20.0.0/16
