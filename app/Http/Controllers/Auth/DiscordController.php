@@ -34,7 +34,7 @@ class DiscordController extends Controller
             'https://discord.com/api/oauth2/authorize?'
             . 'client_id=' . $this->settings->get('jexactyl::discord:id')
             . '&redirect_uri=' . route('auth.discord.callback')
-            . '&response_type=code&scope=identify%20email%20guilds%20guilds.join&prompt=none',
+            . '&response_type=code&scope=identify%20email&prompt=none',
         );
     }
 
@@ -57,7 +57,7 @@ class DiscordController extends Controller
         $discord = json_decode(Http::withHeaders(['Authorization' => 'Bearer ' . $code->access_token])->asForm()->get('https://discord.com/api/users/@me')->body());
 
         if (!$code->ok() || !$discord->ok()) return;
-        if (preg_match('(email|guilds|identify|guilds.join)', $code->scope) !== 1) return;
+        if (preg_match('(email|guilds|identify)', $code->scope) !== 1) return;
 
         if (User::where('discord_id', $discord->id)->exists()) {
             $user = User::where('discord_id', $discord->id)->first();
