@@ -31,6 +31,8 @@ class ServerEditService
         $verify = $this->verify($request);
         if (!$verify) return;
 
+        if ($user->id != $server->owner_id) return;
+
         $server->update([
             $resource => $this->getServerResource($request, $server) + $amount,
         ]);
