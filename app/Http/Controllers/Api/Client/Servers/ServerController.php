@@ -57,7 +57,8 @@ class ServerController extends ClientApiController
      */
     public function updateBackground(UpdateBackgroundRequest $request, Server $server): JsonResponse
     {
-        $server->update(['bg' => $request->input('bg')]);
+        $url = $request->input('bg');
+        $server->update(['bg' => $url]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -22,7 +22,7 @@ class UpdateBackgroundRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'bg' => 'required|url',
+            'bg' => 'nullable|url',
         ];
     }
 }
