@@ -85,6 +85,16 @@
                                     <p class="text-muted"><small>Determines whether users can edit the amount of resources assigned to their server.</small></p>
                                 </div>
                             </div>
+                            <div class="form-group col-md-4">
+                                <label class="control-label">Allow Server Deletion</label>
+                                <div>
+                                    <select name="deletion" class="form-control">
+                                        <option @if ($deletion == 'false') selected @endif value="false">Disabled</option>
+                                        <option @if ($deletion == 'true') selected @endif value="true">Enabled</option>
+                                    </select>
+                                    <p class="text-muted"><small>Determines whether users are able to delete their own servers. (default: true)</small></p>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

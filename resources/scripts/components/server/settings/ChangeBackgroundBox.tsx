@@ -55,7 +55,7 @@ export default () => {
                 bg: server.bg,
             }}
             validationSchema={object().shape({
-                bg: string().required().url(),
+                bg: string().nullable().url(),
             })}
         >
             <ChangeBackgroundBox />

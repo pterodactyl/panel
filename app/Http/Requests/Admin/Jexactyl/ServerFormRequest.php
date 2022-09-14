@@ -16,6 +16,7 @@ class ServerFormRequest extends AdminFormRequest
             'default' => 'required|int|min:1',
             'cost' => 'required|int|min:0',
             'editing' => 'required|in:true,false',
+            'deletion' => 'required|in:true,false',
         ];
     }
 }

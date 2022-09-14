@@ -36,9 +36,13 @@ export default () => {
             </InformationBox>
             <InformationBox icon={faUserLock}>
                 {user.useTotp ? (
-                    <><span className={'text-green-600'}>2FA is enabled</span> on your account.</>
+                    <>
+                        <span className={'text-green-600'}>2FA is enabled</span> on your account.
+                    </>
                 ) : (
-                    <><span className={'text-yellow-600'}>Enable 2FA</span> to secure your account.</>
+                    <>
+                        <span className={'text-yellow-600'}>Enable 2FA</span> to secure your account.
+                    </>
                 )}
             </InformationBox>
             <InformationBox icon={faScroll}>

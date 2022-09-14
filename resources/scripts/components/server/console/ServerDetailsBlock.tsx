@@ -101,13 +101,11 @@ export default ({ className }: { className?: string }) => {
                 )}
                 {cpuUsed > 100 ? (
                     <Bar style={{ width: '100%' }} css={tw`bg-red-500`} />
-                ) :
-                    limits.cpu === 0 ? (
-                        <Bar style={{ width: '100%' }} css={tw`bg-neutral-900`} />
-                    ) : (
-                        <Bar style={{ width: cpuUsed === undefined ? '100%' : `${cpuUsed}%` }} />
-                    )
-                }
+                ) : limits.cpu === 0 ? (
+                    <Bar style={{ width: '100%' }} css={tw`bg-neutral-900`} />
+                ) : (
+                    <Bar style={{ width: cpuUsed === undefined ? '100%' : `${cpuUsed}%` }} />
+                )}
             </StatBlock>
             <StatBlock icon={faMemory} title={'Memory'}>
                 {status === 'offline' ? (
@@ -117,25 +115,21 @@ export default ({ className }: { className?: string }) => {
                 )}
                 {memoryUsed > 90 ? (
                     <Bar style={{ width: '100%' }} css={tw`bg-red-500`} />
-                ) :
-                    limits.memory === 0 ? (
-                        <Bar style={{ width: '100%' }} css={tw`bg-neutral-900`} />
-                    ) : (
-                        <Bar style={{ width: memoryUsed === undefined ? '100%' : `${memoryUsed}%` }} />
-                    )
-                }
+                ) : limits.memory === 0 ? (
+                    <Bar style={{ width: '100%' }} css={tw`bg-neutral-900`} />
+                ) : (
+                    <Bar style={{ width: memoryUsed === undefined ? '100%' : `${memoryUsed}%` }} />
+                )}
             </StatBlock>
             <StatBlock icon={faHdd} title={'Disk'}>
                 <Limit limit={textLimits.disk}>{bytesToString(stats.disk)}</Limit>
                 {diskUsed > 90 ? (
                     <Bar style={{ width: '100%' }} css={tw`bg-red-500`} />
-                ) :
-                    limits.disk === 0 ? (
-                        <Bar style={{ width: '100%' }} css={tw`bg-neutral-900`} />
-                    ) : (
-                        <Bar style={{ width: diskUsed === undefined ? '100%' : `${diskUsed}%` }} />
-                    )
-                }
+                ) : limits.disk === 0 ? (
+                    <Bar style={{ width: '100%' }} css={tw`bg-neutral-900`} />
+                ) : (
+                    <Bar style={{ width: diskUsed === undefined ? '100%' : `${diskUsed}%` }} />
+                )}
             </StatBlock>
             <StatBlock icon={faScroll} title={'Save Console Logs'}>
                 <ConsoleShareContainer />

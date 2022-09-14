@@ -28,6 +28,7 @@ class ServerEditService
         $amount = $request->input('amount');
         $resource = $request->input('resource');
 
+        if ($user->id != $server->owner_id) return;
         $verify = $this->verify($request);
         if (!$verify) return;
 

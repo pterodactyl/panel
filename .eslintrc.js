@@ -2,6 +2,7 @@ const prettier = {
     singleQuote: true,
     jsxSingleQuote: true,
     printWidth: 120,
+    endOfLine: 'auto',
 };
 
 /** @type {import('eslint').Linter.Config} */
@@ -58,5 +59,5 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': 'warn',
         '@typescript-eslint/no-unused-vars': ['warn', {argsIgnorePattern: '^_', varsIgnorePattern: '^_'}],
         '@typescript-eslint/ban-ts-comment': ['error', {'ts-expect-error': 'allow-with-description'}],
-    }
+    },
 };
