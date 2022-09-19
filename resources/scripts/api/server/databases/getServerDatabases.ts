@@ -15,8 +15,7 @@ export const rawDataToServerDatabase = (data: any): ServerDatabase => ({
     username: data.username,
     connectionString: `${data.host.address}:${data.host.port}`,
     allowConnectionsFrom: data.connections_from,
-    password:
-        data.relationships && data.relationships.password ? data.relationships.password.attributes.password : undefined,
+    password: data.relationships.password?.attributes?.password,
 });
 
 export default (uuid: string, includePassword = true): Promise<ServerDatabase[]> => {
