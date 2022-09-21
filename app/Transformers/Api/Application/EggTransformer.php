@@ -38,6 +38,11 @@ class EggTransformer extends BaseTransformer
      */
     public function transform(Egg $model)
     {
+        $files = json_decode($model->config_files, true, 512, JSON_THROW_ON_ERROR);
+        if (empty($files)) {
+            $files = new \stdClass();
+        }
+
         return [
             'id' => $model->id,
             'uuid' => $model->uuid,
@@ -51,7 +56,7 @@ class EggTransformer extends BaseTransformer
             'docker_image' => count($model->docker_images) > 0 ? Arr::first($model->docker_images) : '',
             'docker_images' => $model->docker_images,
             'config' => [
-                'files' => json_decode($model->config_files, true),
+                'files' => $files,
                 'startup' => json_decode($model->config_startup, true),
                 'stop' => $model->config_stop,
                 'logs' => json_decode($model->config_logs, true),
