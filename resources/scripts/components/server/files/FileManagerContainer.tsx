@@ -23,9 +23,31 @@ import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
 
-const sortFiles = (files: FileObject[]): FileObject[] => {
-    const sortedFiles: FileObject[] = files
-        .sort((a, b) => a.name.localeCompare(b.name))
+enum SortMethod {
+    NameDown,
+    NameUp,
+    SizeDown,
+    SizeUp,
+    DateDown,
+    DateUp
+}
+
+const sortFiles = (files: FileObject[], method: SortMethod): FileObject[] => {
+
+    let sortedFiles: FileObject[] = files;
+
+    switch(method) {
+        case SortMethod.NameDown: {
+            sortedFiles = sortedFiles.sort((a, b) => a.name.localeCompare(b.name))
+            break;
+        }
+        case SortMethod.NameUp: {
+            sortedFiles = sortedFiles.sort((a, b) => b.name.localeCompare(a.name))
+            break;
+        }
+    }
+
+    sortedFiles = sortedFiles
         .sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
     return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name);
 };
@@ -41,7 +63,7 @@ export default () => {
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
 
-    const sortMethod = useState("nameDown");
+    const [ sortMethod, setSortMethod ] = useState(SortMethod.NameDown);
 
     useEffect(() => {
         clearFlashes('files');
@@ -51,7 +73,7 @@ export default () => {
 
     useEffect(() => {
         mutate();
-    }, [directory]);
+    }, [directory, sortMethod]);
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedFiles(e.currentTarget.checked ? files?.map((file) => file.name) || [] : []);
@@ -104,7 +126,7 @@ export default () => {
                                         </p>
                                     </div>
                                 )}
-                                {sortFiles(files.slice(0, 250)).map((file) => (
+                                {sortFiles(files.slice(0, 250), sortMethod).map((file) => (
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />
