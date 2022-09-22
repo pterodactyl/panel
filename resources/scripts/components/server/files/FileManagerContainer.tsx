@@ -38,12 +38,27 @@ const sortFiles = (files: FileObject[], method: SortMethod): FileObject[] => {
 
     switch(method) {
         case SortMethod.NameDown: {
-            sortedFiles = sortedFiles.sort((a, b) => a.name.localeCompare(b.name))
+            sortedFiles = sortedFiles.sort((a, b) => a.name.localeCompare(b.name));
             break;
         }
         case SortMethod.NameUp: {
-            sortedFiles = sortedFiles.sort((a, b) => b.name.localeCompare(a.name))
+            sortedFiles = sortedFiles.sort((a, b) => b.name.localeCompare(a.name));
             break;
+        }
+        case SortMethod.DateDown: {
+            sortedFiles = sortedFiles.sort((a, b) => a.modifiedAt.valueOf()-b.modifiedAt.valueOf());
+            break;
+        }
+        case SortMethod.DateUp: { 
+            sortedFiles = sortedFiles.sort((a, b) => b.modifiedAt.valueOf()-a.modifiedAt.valueOf());
+            break;
+        }
+        case SortMethod.SizeDown: {
+            sortedFiles = sortedFiles.sort((a, b) => a.size-b.size);
+            break;
+        }
+        case SortMethod.SizeUp: {
+            sortedFiles = sortedFiles.sort((a, b) => b.size-b.size);
         }
     }
 
