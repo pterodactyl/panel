@@ -35,7 +35,10 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**Skynode**](https://www.skynode.pro/) | Skynode provides blazing fast game servers along with a top-notch user experience. Whatever our clients are looking for, we're able to provide it! |
 | [**DeinServerHost**](https://deinserverhost.de/) | DeinServerHost offers Dedicated, vps and Gameservers for many popular Games like Minecraft and Rust in Germany since 2013. |
 | [**Aussie Server Hosts**](https://aussieserverhosts.com/) | No frills Australian Owned and operated High Performance Server hosting for some of the most demanding games serving Australia and New Zealand. |
+<<<<<<< HEAD
 | [**HostEZ**](https://hostez.io) | Providing North America Valheim, Minecraft and other popular games with low latency, high uptime and maximum availability. EZ! |
+=======
+>>>>>>> e040fd1ebd5bce62ea28834cdbf9b5b9265dffd4
 | [**VibeGAMES**](https://vibegames.net/) | VibeGAMES is a game server provider that specializes in DDOS protection for the games we offer. We have multiple locations in the US, Brazil, France, Germany, Singapore, Australia and South Africa.|
 | [**Gamenodes**](https://gamenodes.nl) | Gamenodes love quality. For Minecraft, Discord Bots and other services, among others. With our own programmers, we provide just that little bit of extra service! |
 

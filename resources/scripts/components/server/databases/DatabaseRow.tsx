@@ -34,6 +34,10 @@ export default ({ database, className }: Props) => {
     const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
     const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
 
+    const jdbcConnectionString = `jdbc:mysql://${database.username}${
+        database.password ? `:${database.password}` : ''
+    }@${database.connectionString}/${database.name}`;
+
     const schema = object().shape({
         confirm: string()
             .required('The database name must be provided.')
@@ -122,6 +126,7 @@ export default ({ database, className }: Props) => {
                 </Can>
                 <div css={tw`mt-6`}>
                     <Label>JDBC Connection String</Label>
+<<<<<<< HEAD
                     <CopyOnClick
                         text={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
                     >
@@ -130,6 +135,10 @@ export default ({ database, className }: Props) => {
                             readOnly
                             value={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
                         />
+=======
+                    <CopyOnClick text={jdbcConnectionString}>
+                        <Input type={'text'} readOnly value={jdbcConnectionString} />
+>>>>>>> e040fd1ebd5bce62ea28834cdbf9b5b9265dffd4
                     </CopyOnClick>
                 </div>
                 <div css={tw`mt-6 text-right`}>
