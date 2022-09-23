@@ -29,14 +29,13 @@ enum SortMethod {
     SizeDown,
     SizeUp,
     DateDown,
-    DateUp
+    DateUp,
 }
 
 const sortFiles = (files: FileObject[], method: SortMethod): FileObject[] => {
-
     let sortedFiles: FileObject[] = files;
 
-    switch(method) {
+    switch (method) {
         case SortMethod.NameDown: {
             sortedFiles = sortedFiles.sort((a, b) => a.name.localeCompare(b.name));
             break;
@@ -46,24 +45,23 @@ const sortFiles = (files: FileObject[], method: SortMethod): FileObject[] => {
             break;
         }
         case SortMethod.DateDown: {
-            sortedFiles = sortedFiles.sort((a, b) => a.modifiedAt.valueOf()-b.modifiedAt.valueOf());
+            sortedFiles = sortedFiles.sort((a, b) => a.modifiedAt.valueOf() - b.modifiedAt.valueOf());
             break;
         }
-        case SortMethod.DateUp: { 
-            sortedFiles = sortedFiles.sort((a, b) => b.modifiedAt.valueOf()-a.modifiedAt.valueOf());
+        case SortMethod.DateUp: {
+            sortedFiles = sortedFiles.sort((a, b) => b.modifiedAt.valueOf() - a.modifiedAt.valueOf());
             break;
         }
         case SortMethod.SizeDown: {
-            sortedFiles = sortedFiles.sort((a, b) => a.size-b.size);
+            sortedFiles = sortedFiles.sort((a, b) => a.size - b.size);
             break;
         }
         case SortMethod.SizeUp: {
-            sortedFiles = sortedFiles.sort((a, b) => b.size-b.size);
+            sortedFiles = sortedFiles.sort((a, b) => b.size - a.size);
         }
     }
 
-    sortedFiles = sortedFiles
-        .sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
+    sortedFiles = sortedFiles.sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
     return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name);
 };
 
@@ -78,7 +76,7 @@ export default () => {
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
 
-    const [ sortMethod, setSortMethod ] = useState(SortMethod.NameDown);
+    const [sortMethod, setSortMethod] = useState(SortMethod.NameDown);
 
     useEffect(() => {
         clearFlashes('files');
@@ -124,6 +122,36 @@ export default () => {
                     </Can>
                 </div>
             </ErrorBoundary>
+            <div css={tw`w-full flex flex-nowrap`}>
+                <button
+                    css={tw`ml-20 mb-2 whitespace-nowrap`}
+                    onClick={() => {
+                        setSortMethod(sortMethod === SortMethod.NameDown ? SortMethod.NameUp : SortMethod.NameDown);
+                    }}
+                >
+                    Name {sortMethod === SortMethod.NameDown ? '↓' : '↑'}
+                </button>
+                <div css={tw`w-full flex justify-end`}>
+                    <button
+                        css={tw`mb-2`}
+                        style={{ marginRight: '11rem' }}
+                        onClick={() => {
+                            setSortMethod(sortMethod === SortMethod.SizeDown ? SortMethod.SizeUp : SortMethod.SizeDown);
+                        }}
+                    >
+                        Size {sortMethod === SortMethod.SizeDown ? '↓' : '↑'}
+                    </button>
+                    <button
+                        css={tw`mb-2`}
+                        style={{ marginRight: '6rem' }}
+                        onClick={() => {
+                            setSortMethod(sortMethod === SortMethod.DateDown ? SortMethod.DateUp : SortMethod.DateDown);
+                        }}
+                    >
+                        Date {sortMethod === SortMethod.DateDown ? '↓' : '↑'}
+                    </button>
+                </div>
+            </div>
             {!files ? (
                 <Spinner size={'large'} centered />
             ) : (
