@@ -45,19 +45,19 @@ const sortFiles = (files: FileObject[], method: SortMethod): FileObject[] => {
             break;
         }
         case SortMethod.DateDown: {
-            sortedFiles = sortedFiles.sort((a, b) => a.modifiedAt.valueOf() - b.modifiedAt.valueOf());
-            break;
-        }
-        case SortMethod.DateUp: {
             sortedFiles = sortedFiles.sort((a, b) => b.modifiedAt.valueOf() - a.modifiedAt.valueOf());
             break;
         }
+        case SortMethod.DateUp: {
+            sortedFiles = sortedFiles.sort((a, b) => a.modifiedAt.valueOf() - b.modifiedAt.valueOf());
+            break;
+        }
         case SortMethod.SizeDown: {
-            sortedFiles = sortedFiles.sort((a, b) => a.size - b.size);
+            sortedFiles = sortedFiles.sort((a, b) => b.size - a.size);
             break;
         }
         case SortMethod.SizeUp: {
-            sortedFiles = sortedFiles.sort((a, b) => b.size - a.size);
+            sortedFiles = sortedFiles.sort((a, b) => a.size - b.size);
         }
     }
 
@@ -126,29 +126,29 @@ export default () => {
                 <button
                     css={tw`ml-20 mb-2 whitespace-nowrap`}
                     onClick={() => {
-                        setSortMethod(sortMethod === SortMethod.NameDown ? SortMethod.NameUp : SortMethod.NameDown);
+                        setSortMethod(sortMethod === SortMethod.NameUp ? SortMethod.NameDown : SortMethod.NameUp);
                     }}
                 >
-                    Name {sortMethod === SortMethod.NameDown ? '↓' : '↑'}
+                    Name {sortMethod === SortMethod.NameUp ? '↑' : '↓'}
                 </button>
                 <div css={tw`w-full flex justify-end`}>
                     <button
                         css={tw`mb-2`}
                         style={{ marginRight: '11rem' }}
                         onClick={() => {
-                            setSortMethod(sortMethod === SortMethod.SizeDown ? SortMethod.SizeUp : SortMethod.SizeDown);
+                            setSortMethod(sortMethod === SortMethod.SizeUp ? SortMethod.SizeDown : SortMethod.SizeUp);
                         }}
                     >
-                        Size {sortMethod === SortMethod.SizeDown ? '↓' : '↑'}
+                        Size {sortMethod === SortMethod.SizeUp ? '↑' : '↓'}
                     </button>
                     <button
                         css={tw`mb-2`}
                         style={{ marginRight: '6rem' }}
                         onClick={() => {
-                            setSortMethod(sortMethod === SortMethod.DateDown ? SortMethod.DateUp : SortMethod.DateDown);
+                            setSortMethod(sortMethod === SortMethod.DateUp ? SortMethod.DateDown : SortMethod.DateUp);
                         }}
                     >
-                        Date {sortMethod === SortMethod.DateDown ? '↓' : '↑'}
+                        Date {sortMethod === SortMethod.DateUp ? '↑' : '↓'}
                     </button>
                 </div>
             </div>
