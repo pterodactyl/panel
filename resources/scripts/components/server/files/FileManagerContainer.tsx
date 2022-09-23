@@ -35,31 +35,28 @@ enum SortMethod {
 const sortFiles = (files: FileObject[], method: SortMethod): FileObject[] => {
     let sortedFiles: FileObject[] = files;
 
-    switch (method) {
-        case SortMethod.NameDown: {
-            sortedFiles = sortedFiles.sort((a, b) => a.name.localeCompare(b.name));
-            break;
+    sortedFiles = sortedFiles.sort((a, b) => {
+        switch (method) {
+            case SortMethod.NameDown: {
+                return a.name.localeCompare(b.name);
+            }
+            case SortMethod.NameUp: {
+                return b.name.localeCompare(a.name);
+            }
+            case SortMethod.DateDown: {
+                return b.modifiedAt.valueOf() - a.modifiedAt.valueOf();
+            }
+            case SortMethod.DateUp: {
+                return a.modifiedAt.valueOf() - b.modifiedAt.valueOf();
+            }
+            case SortMethod.SizeDown: {
+                return b.size - a.size;
+            }
+            case SortMethod.SizeUp: {
+                return a.size - b.size;
+            }
         }
-        case SortMethod.NameUp: {
-            sortedFiles = sortedFiles.sort((a, b) => b.name.localeCompare(a.name));
-            break;
-        }
-        case SortMethod.DateDown: {
-            sortedFiles = sortedFiles.sort((a, b) => b.modifiedAt.valueOf() - a.modifiedAt.valueOf());
-            break;
-        }
-        case SortMethod.DateUp: {
-            sortedFiles = sortedFiles.sort((a, b) => a.modifiedAt.valueOf() - b.modifiedAt.valueOf());
-            break;
-        }
-        case SortMethod.SizeDown: {
-            sortedFiles = sortedFiles.sort((a, b) => b.size - a.size);
-            break;
-        }
-        case SortMethod.SizeUp: {
-            sortedFiles = sortedFiles.sort((a, b) => a.size - b.size);
-        }
-    }
+    });
 
     sortedFiles = sortedFiles.sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
     return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name);
