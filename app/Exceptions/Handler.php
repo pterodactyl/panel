@@ -48,6 +48,18 @@ class Handler extends ExceptionHandler
     ];
 
     /**
+     * Maps exceptions to a specific response code. This handles special exception
+     * types that don't have a defined response code.
+     *
+     * @var array<string, int>
+     */
+    protected static array $exceptionResponseCodes = [
+        AuthenticationException::class => 401,
+        AuthorizationException::class => 403,
+        ValidationException::class => 422,
+    ];
+
+    /**
      * A list of the inputs that are never flashed for validation exceptions.
      *
      * @var array
@@ -167,9 +179,9 @@ class Handler extends ExceptionHandler
                     )),
                 ];
 
-                $converted = self::convertToArray($exception)['errors'][0];
+                $converted = $this->convertExceptionToArray($exception)['errors'][0];
                 $converted['detail'] = $error;
-                $converted['meta'] = is_array($converted['meta'] ?? null) ? array_merge($converted['meta'], $meta) : $meta;
+                $converted['meta'] = array_merge($converted['meta'] ?? [], $meta);
 
                 $response[] = $converted;
             }
@@ -185,14 +197,16 @@ class Handler extends ExceptionHandler
     /**
      * Return the exception as a JSONAPI representation for use on API requests.
      */
-    public static function convertToArray(Throwable $exception, array $override = []): array
+    protected function convertExceptionToArray(Throwable $exception, array $override = []): array
     {
+        $match = self::$exceptionResponseCodes[get_class($exception)] ?? null;
+
         $error = [
             'code' => class_basename($exception),
             'status' => method_exists($exception, 'getStatusCode')
                 ? strval($exception->getStatusCode())
-                : ($exception instanceof ValidationException ? '422' : '500'),
-            'detail' => $exception instanceof HttpExceptionInterface
+                : strval($match ?? '500'),
+            'detail' => $exception instanceof HttpExceptionInterface || !is_null($match)
                 ? $exception->getMessage()
                 : 'An unexpected error was encountered while processing this request, please try again.',
         ];
@@ -212,7 +226,13 @@ class Handler extends ExceptionHandler
                     'file' => str_replace(Application::getInstance()->basePath(), '', $exception->getFile()),
                 ],
                 'meta' => [
-                    'trace' => explode("\n", $exception->getTraceAsString()),
+                    'trace' => Collection::make($exception->getTrace())
+                        ->map(fn ($trace) => Arr::except($trace, ['args']))
+                        ->all(),
+                    'previous' => Collection::make($this->extractPrevious($exception))
+                        ->map(fn ($exception) => $exception->getTrace())
+                        ->map(fn ($trace) => Arr::except($trace, ['args']))
+                        ->all(),
                 ],
             ]);
         }
@@ -238,20 +258,38 @@ class Handler extends ExceptionHandler
     protected function unauthenticated($request, AuthenticationException $exception)
     {
         if ($request->expectsJson()) {
-            return new JsonResponse(self::convertToArray($exception), JsonResponse::HTTP_UNAUTHORIZED);
+            return new JsonResponse($this->convertExceptionToArray($exception), JsonResponse::HTTP_UNAUTHORIZED);
         }
 
-        return $this->container->make('redirect')->guest('/auth/login');
+        return redirect()->guest('/auth/login');
     }
 
     /**
-     * Converts an exception into an array to render in the response. Overrides
-     * Laravel's built-in converter to output as a JSONAPI spec compliant object.
+     * Extracts all of the previous exceptions that lead to the one passed into this
+     * function being thrown.
      *
-     * @return array
+     * @return \Throwable[]
      */
-    protected function convertExceptionToArray(Throwable $exception)
+    protected function extractPrevious(Throwable $e): array
     {
-        return self::convertToArray($exception);
+        $previous = [];
+        while ($value = $e->getPrevious()) {
+            if (!$value instanceof Throwable) {
+                break;
+            }
+            $previous[] = $value;
+            $e = $value;
+        }
+
+        return $previous;
+    }
+
+    /**
+     * Helper method to allow reaching into the handler to convert an exception
+     * into the expected array response type.
+     */
+    public static function toArray(Throwable $e): array
+    {
+        return (new self(app()))->convertExceptionToArray($e);
     }
 }

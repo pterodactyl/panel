@@ -7,11 +7,13 @@ export default (description: string, allowedIps: string): Promise<ApiKey & { sec
             description,
             allowed_ips: allowedIps.length > 0 ? allowedIps.split('\n') : [],
         })
-            .then(({ data }) => resolve({
-                ...rawDataToApiKey(data.attributes),
-                // eslint-disable-next-line camelcase
-                secretToken: data.meta?.secret_token ?? '',
-            }))
+            .then(({ data }) =>
+                resolve({
+                    ...rawDataToApiKey(data.attributes),
+                    // eslint-disable-next-line camelcase
+                    secretToken: data.meta?.secret_token ?? '',
+                })
+            )
             .catch(reject);
     });
 };

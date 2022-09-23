@@ -9,6 +9,7 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
@@ -52,8 +53,7 @@ class ScheduleController extends ClientApiController
      */
     public function index(ViewScheduleRequest $request, Server $server)
     {
-        $schedules = $server->schedule;
-        $schedules->loadMissing('tasks');
+        $schedules = $server->schedules->loadMissing('tasks');
 
         return $this->fractal->collection($schedules)
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
@@ -83,6 +83,11 @@ class ScheduleController extends ClientApiController
             'only_when_online' => (bool) $request->input('only_when_online'),
             'next_run_at' => $this->getNextRunAt($request),
         ]);
+
+        Activity::event('server:schedule.create')
+            ->subject($model)
+            ->property('name', $model->name)
+            ->log();
 
         return $this->fractal->item($model)
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
@@ -142,6 +147,11 @@ class ScheduleController extends ClientApiController
 
         $this->repository->update($schedule->id, $data);
 
+        Activity::event('server:schedule.update')
+            ->subject($schedule)
+            ->property(['name' => $schedule->name, 'active' => $active])
+            ->log();
+
         return $this->fractal->item($schedule->refresh())
             ->transformWith($this->getTransformer(ScheduleTransformer::class))
             ->toArray();
@@ -159,6 +169,8 @@ class ScheduleController extends ClientApiController
     {
         $this->service->handle($schedule, true);
 
+        Activity::event('server:schedule.execute')->subject($schedule)->property('name', $schedule->name)->log();
+
         return new JsonResponse([], JsonResponse::HTTP_ACCEPTED);
     }
 
@@ -170,6 +182,8 @@ class ScheduleController extends ClientApiController
     public function delete(DeleteScheduleRequest $request, Server $server, Schedule $schedule)
     {
         $this->repository->delete($schedule->id);
+
+        Activity::event('server:schedule.delete')->subject($schedule)->property('name', $schedule->name)->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

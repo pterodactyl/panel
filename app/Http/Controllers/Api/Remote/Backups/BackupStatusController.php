@@ -5,9 +5,8 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Backups;
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
@@ -46,15 +45,12 @@ class BackupStatusController extends Controller
             throw new BadRequestHttpException('Cannot update the status of a backup that is already marked as completed.');
         }
 
-        $action = $request->input('successful')
-            ? AuditLog::SERVER__BACKUP_COMPELTED
-            : AuditLog::SERVER__BACKUP_FAILED;
+        $action = $request->boolean('successful') ? 'server:backup.complete' : 'server:backup.fail';
+        $log = Activity::event($action)->subject($model, $model->server)->property('name', $model->name);
 
-        $model->server->audit($action, function (AuditLog $audit) use ($model, $request) {
-            $audit->is_system = true;
-            $audit->metadata = ['backup_uuid' => $model->uuid];
-
+        $log->transaction(function () use ($model, $request) {
             $successful = $request->boolean('successful');
+
             $model->fill([
                 'is_successful' => $successful,
                 // Change the lock state to unlocked if this was a failed backup so that it can be
@@ -93,17 +89,13 @@ class BackupStatusController extends Controller
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
-        $action = $request->get('successful')
-            ? AuditLog::SERVER__BACKUP_RESTORE_COMPLETED
-            : AuditLog::SERVER__BACKUP_RESTORE_FAILED;
 
-        // Just create a new audit entry for this event and update the server state
-        // so that power actions, file management, and backups can resume as normal.
-        $model->server->audit($action, function (AuditLog $audit, Server $server) use ($backup) {
-            $audit->is_system = true;
-            $audit->metadata = ['backup_uuid' => $backup];
-            $server->update(['status' => null]);
-        });
+        $model->server->update(['status' => null]);
+
+        Activity::event($request->boolean('successful') ? 'server:backup.restore-complete' : 'server.backup.restore-failed')
+            ->subject($model, $model->server)
+            ->property('name', $model->name)
+            ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

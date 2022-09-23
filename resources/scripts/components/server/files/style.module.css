@@ -1,0 +1,28 @@
+.manager_actions {
+    @apply grid grid-cols-2 sm:grid-cols-3 w-full gap-4 mb-4;
+
+    & button {
+        @apply w-full first:col-span-2 sm:first:col-span-1;
+    }
+
+    @screen md {
+        @apply flex flex-1 justify-end mb-0;
+
+        & button {
+            @apply w-auto;
+        }
+    }
+}
+
+.file_row {
+    @apply flex items-center cursor-pointer bg-neutral-700 rounded-sm mb-px text-sm no-underline;
+    @apply hover:text-neutral-100 hover:bg-neutral-600;
+
+    & > .details {
+        @apply flex flex-1 items-center text-neutral-300 no-underline px-4 py-2 overflow-hidden truncate;
+
+        &:not(a) {
+            @apply cursor-default;
+        }
+    }
+}

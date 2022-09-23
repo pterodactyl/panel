@@ -9,7 +9,7 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 class DatabaseTransformer extends BaseClientTransformer
 {
-    protected $availableIncludes = ['password'];
+    protected array $availableIncludes = ['password'];
 
     /**
      * @var \Illuminate\Contracts\Encryption\Encrypter
@@ -59,7 +59,7 @@ class DatabaseTransformer extends BaseClientTransformer
      */
     public function includePassword(Database $database)
     {
-        if (!$this->getUser()->can(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
+        if (!$this->request->user()->can(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
             return $this->null();
         }
 

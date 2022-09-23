@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Application\Users;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
@@ -13,7 +14,7 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetRemoteUser()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['external_id' => Str::random()]);
 
         $response = $this->getJson('/api/application/users/external/' . $user->external_id);
         $response->assertStatus(Response::HTTP_OK);
@@ -60,22 +61,10 @@ class ExternalUserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testErrorReturnedIfNoPermission()
     {
-        $user = User::factory()->create();
+        $user = User::factory()->create(['external_id' => Str::random()]);
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
 
         $response = $this->getJson('/api/application/users/external/' . $user->external_id);
-        $this->assertAccessDeniedJson($response);
-    }
-
-    /**
-     * Test that a users's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_users' => 0]);
-
-        $response = $this->getJson('/api/application/users/external/nil');
         $this->assertAccessDeniedJson($response);
     }
 }

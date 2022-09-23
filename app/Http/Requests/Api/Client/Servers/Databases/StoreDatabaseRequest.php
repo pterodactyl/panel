@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Requests\Api\Client\Servers\Databases;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
+use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Permission;
 use Illuminate\Database\Query\Builder;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
@@ -28,7 +29,7 @@ class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissions
             'database' => [
                 'required',
                 'alpha_dash',
-                'min:1',
+                'min:3',
                 'max:48',
                 // Yes, I am aware that you could have the same database name across two unique hosts. However,
                 // I don't really care about that for this validation. We just want to make sure it is unique to
@@ -38,7 +39,7 @@ class StoreDatabaseRequest extends ClientApiRequest implements ClientPermissions
                         ->where('database', DatabaseManagementService::generateUniqueDatabaseName($this->input('database'), $server->id));
                 }),
             ],
-            'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
+            'remote' => Database::getRulesForField('remote'),
         ];
     }
 

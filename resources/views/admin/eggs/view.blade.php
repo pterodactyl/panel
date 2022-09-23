@@ -83,8 +83,13 @@
                             </div>
                             <div class="form-group">
                                 <label for="pDockerImage" class="control-label">Docker Images <span class="field-required"></span></label>
-                                <textarea id="pDockerImages" name="docker_images" class="form-control" rows="4">{{ implode("\n", $egg->docker_images) }}</textarea>
-                                <p class="text-muted small">The docker images available to servers using this egg. Enter one per line. Users will be able to select from this list of images if more than one value is provided.</p>
+                                <textarea id="pDockerImages" name="docker_images" class="form-control" rows="4">{{ implode(PHP_EOL, $images) }}</textarea>
+                                <p class="text-muted small">
+                                    The docker images available to servers using this egg. Enter one per line. Users
+                                    will be able to select from this list of images if more than one value is provided.
+                                    Optionally, a display name may be provided by prefixing the image with the name
+                                    followed by a pipe character, and then the image URL. Example: <code>Display Name|ghcr.io/my/egg</code>
+                                </p>
                             </div>
                         </div>
                         <div class="col-sm-6">

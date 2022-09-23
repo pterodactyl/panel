@@ -9,7 +9,7 @@ return [
     | change this value if you are not maintaining your own internal versions.
     */
 
-    'version' => 'canary',
+    'version' => '1.10.1',
 
     /*
     |--------------------------------------------------------------------------
@@ -173,6 +173,7 @@ return [
         /*
          * Application Service Providers...
          */
+        Pterodactyl\Providers\ActivityLogServiceProvider::class,
         Pterodactyl\Providers\AppServiceProvider::class,
         Pterodactyl\Providers\AuthServiceProvider::class,
         Pterodactyl\Providers\BackupsServiceProvider::class,
@@ -238,5 +239,10 @@ return [
         'URL' => Illuminate\Support\Facades\URL::class,
         'Validator' => Illuminate\Support\Facades\Validator::class,
         'View' => Illuminate\Support\Facades\View::class,
+
+        // Custom Facades
+        'Activity' => Pterodactyl\Facades\Activity::class,
+        'LogBatch' => Pterodactyl\Facades\LogBatch::class,
+        'LogTarget' => Pterodactyl\Facades\LogTarget::class,
     ],
 ];

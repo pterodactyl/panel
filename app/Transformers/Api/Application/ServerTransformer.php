@@ -15,10 +15,8 @@ class ServerTransformer extends BaseTransformer
 
     /**
      * List of resources that can be included.
-     *
-     * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'allocations',
         'user',
         'subusers',

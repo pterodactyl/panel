@@ -19,6 +19,7 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permission);
+        $server->update(['allocation_limit' => 2]);
 
         /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = Allocation::factory()->create([
@@ -60,11 +61,28 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
+        $server->update(['allocation_limit' => 2]);
 
         $this->actingAs($user)->deleteJson($this->link($server->allocation))
             ->assertStatus(Response::HTTP_BAD_REQUEST)
             ->assertJsonPath('errors.0.code', 'DisplayException')
             ->assertJsonPath('errors.0.detail', 'You cannot delete the primary allocation for this server.');
+    }
+
+    public function testAllocationCannotBeDeletedIfServerLimitIsNotDefined()
+    {
+        [$user, $server] = $this->generateTestAccount();
+
+        /** @var \Pterodactyl\Models\Allocation $allocation */
+        $allocation = Allocation::factory()->forServer($server)->create(['notes' => 'Test notes']);
+
+        $this->actingAs($user)->deleteJson($this->link($allocation))
+            ->assertStatus(400)
+            ->assertJsonPath('errors.0.detail', 'You cannot delete allocations for this server: no allocation limit is set.');
+
+        $allocation->refresh();
+        $this->assertNotNull($allocation->notes);
+        $this->assertEquals($server->id, $allocation->server_id);
     }
 
     /**

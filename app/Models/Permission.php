@@ -63,6 +63,8 @@ class Permission extends Model
     public const ACTION_SETTINGS_RENAME = 'settings.rename';
     public const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
 
+    public const ACTION_ACTIVITY_READ = 'activity.read';
+
     /**
      * Should timestamps be used on this model.
      *
@@ -208,6 +210,13 @@ class Permission extends Model
             'keys' => [
                 'rename' => 'Allows a user to rename this server.',
                 'reinstall' => 'Allows a user to trigger a reinstall of this server.',
+            ],
+        ],
+
+        'activity' => [
+            'description' => 'Permissions that control a user\'s access to the server activity logs.',
+            'keys' => [
+                'read' => 'Allows a user to view the activity logs for the server.',
             ],
         ],
     ];

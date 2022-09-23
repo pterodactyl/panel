@@ -35,7 +35,7 @@ class SystemInformationController extends Controller
     {
         $data = $this->repository->setNode($node)->getSystemInformation();
 
-        return JsonResponse::create([
+        return new JsonResponse([
             'version' => $data['version'] ?? '',
             'system' => [
                 'type' => Str::title($data['os'] ?? 'Unknown'),

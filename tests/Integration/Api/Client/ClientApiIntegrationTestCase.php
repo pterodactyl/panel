@@ -9,7 +9,6 @@ use Pterodactyl\Models\User;
 use InvalidArgumentException;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Schedule;
@@ -60,7 +59,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function link($model, $append = null): string
     {
-        $link = '';
         switch (get_class($model)) {
             case Server::class:
                 $link = "/api/client/servers/{$model->uuid}";
@@ -82,33 +80,6 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
         }
 
         return $link . ($append ? '/' . ltrim($append, '/') : '');
-    }
-
-    /**
-     * Generates a user and a server for that user. If an array of permissions is passed it
-     * is assumed that the user is actually a subuser of the server.
-     *
-     * @param string[] $permissions
-     */
-    protected function generateTestAccount(array $permissions = []): array
-    {
-        /** @var \Pterodactyl\Models\User $user */
-        $user = User::factory()->create();
-
-        if (empty($permissions)) {
-            return [$user, $this->createServerModel(['user_id' => $user->id])];
-        }
-
-        /** @var \Pterodactyl\Models\Server $server */
-        $server = $this->createServerModel();
-
-        Subuser::query()->create([
-            'user_id' => $user->id,
-            'server_id' => $server->id,
-            'permissions' => $permissions,
-        ]);
-
-        return [$user, $server];
     }
 
     /**

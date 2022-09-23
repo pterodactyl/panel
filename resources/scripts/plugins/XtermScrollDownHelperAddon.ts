@@ -4,7 +4,7 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
     private terminal: Terminal = new Terminal();
     private element?: HTMLDivElement;
 
-    activate (terminal: Terminal): void {
+    activate(terminal: Terminal): void {
         this.terminal = terminal;
 
         this.terminal.onScroll(() => {
@@ -22,11 +22,11 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         this.show();
     }
 
-    dispose (): void {
+    dispose(): void {
         // ignore
     }
 
-    show (): void {
+    show(): void {
         if (!this.terminal || !this.terminal.element) {
             return;
         }
@@ -38,7 +38,8 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         this.terminal.element.style.position = 'relative';
 
         this.element = document.createElement('div');
-        this.element.innerHTML = '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="bell" class="svg-inline--fa fa-bell fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path fill="currentColor" d="M224 512c35.32 0 63.97-28.65 63.97-64H160.03c0 35.35 28.65 64 63.97 64zm215.39-149.71c-19.32-20.76-55.47-51.99-55.47-154.29 0-77.7-54.48-139.9-127.94-155.16V32c0-17.67-14.32-32-31.98-32s-31.98 14.33-31.98 32v20.84C118.56 68.1 64.08 130.3 64.08 208c0 102.3-36.15 133.53-55.47 154.29-6 6.45-8.66 14.16-8.61 21.71.11 16.4 12.98 32 32.1 32h383.8c19.12 0 32-15.6 32.1-32 .05-7.55-2.61-15.27-8.61-21.71z"></path></svg>';
+        this.element.innerHTML =
+            '<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="arrow-down" class="svg-inline--fa fa-bell fa-w-14" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 384 512"><path fill="currentColor" d="M374.6 310.6l-160 160C208.4 476.9 200.2 480 192 480s-16.38-3.125-22.62-9.375l-160-160c-12.5-12.5-12.5-32.75 0-45.25s32.75-12.5 45.25 0L160 370.8V64c0-17.69 14.33-31.1 31.1-31.1S224 46.31 224 64v306.8l105.4-105.4c12.5-12.5 32.75-12.5 45.25 0S387.1 298.1 374.6 310.6z"/></svg>';
         this.element.style.position = 'absolute';
         this.element.style.right = '1.5rem';
         this.element.style.bottom = '.5rem';
@@ -56,13 +57,13 @@ export class ScrollDownHelperAddon implements ITerminalAddon {
         this.terminal.element.appendChild(this.element);
     }
 
-    hide (): void {
+    hide(): void {
         if (this.element) {
             this.element.style.visibility = 'hidden';
         }
     }
 
-    isScrolledDown (): boolean {
+    isScrolledDown(): boolean {
         return this.terminal.buffer.active.viewportY === this.terminal.buffer.active.baseY;
     }
 }

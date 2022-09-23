@@ -48,9 +48,9 @@
                                     </td>
 
                                     <td class="col-sm-1 middle">
-                                        <form action="{{ route('admin.servers.view.mounts.toggle', [ 'server' => $server->id, 'mount' => $mount->id ]) }}" method="POST">
+                                        <form action="{{ route('admin.servers.view.mounts.store', [ 'server' => $server->id ]) }}" method="POST">
                                             {!! csrf_field() !!}
-
+                                            <input type="hidden" value="{{ $mount->id }}" name="mount_id" />
                                             <button type="submit" class="btn btn-xs btn-success"><i class="fa fa-plus"></i></button>
                                         </form>
                                     </td>
@@ -60,7 +60,7 @@
                                     </td>
 
                                     <td class="col-sm-1 middle">
-                                        <form action="{{ route('admin.servers.view.mounts.toggle', [ 'server' => $server->id, 'mount' => $mount->id ]) }}" method="POST">
+                                        <form action="{{ route('admin.servers.view.mounts.delete', [ 'server' => $server->id, 'mount' => $mount->id ]) }}" method="POST">
                                             @method('DELETE')
                                             {!! csrf_field() !!}
 

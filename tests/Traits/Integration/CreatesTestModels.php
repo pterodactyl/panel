@@ -4,10 +4,10 @@ namespace Pterodactyl\Tests\Traits\Integration;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
 
@@ -52,20 +52,17 @@ trait CreatesTestModels
             $attributes['allocation_id'] = $allocation->id;
         }
 
-        if (!isset($attributes['nest_id'])) {
-            /** @var \Pterodactyl\Models\Nest $nest */
-            $nest = Nest::with('eggs')->first();
-            $attributes['nest_id'] = $nest->id;
+        if (empty($attributes['egg_id'])) {
+            $egg = !empty($attributes['nest_id'])
+                ? Egg::query()->where('nest_id', $attributes['nest_id'])->firstOrFail()
+                : $this->getBungeecordEgg();
 
-            if (!isset($attributes['egg_id'])) {
-                $attributes['egg_id'] = $nest->getRelation('eggs')->first()->id;
-            }
+            $attributes['egg_id'] = $egg->id;
+            $attributes['nest_id'] = $egg->nest_id;
         }
 
-        if (!isset($attributes['egg_id'])) {
-            /** @var \Pterodactyl\Models\Egg $egg */
-            $egg = Egg::where('nest_id', $attributes['nest_id'])->first();
-            $attributes['egg_id'] = $egg->id;
+        if (empty($attributes['nest_id'])) {
+            $attributes['nest_id'] = Egg::query()->findOrFail($attributes['egg_id'])->nest_id;
         }
 
         unset($attributes['user_id'], $attributes['location_id']);
@@ -78,6 +75,34 @@ trait CreatesTestModels
         return $server->fresh([
             'location', 'user', 'node', 'allocation', 'nest', 'egg',
         ]);
+    }
+
+    /**
+     * Generates a user and a server for that user. If an array of permissions is passed it
+     * is assumed that the user is actually a subuser of the server.
+     *
+     * @param string[] $permissions
+     *
+     * @return array{\Pterodactyl\Models\User, \Pterodactyl\Models\Server}
+     */
+    public function generateTestAccount(array $permissions = []): array
+    {
+        /** @var \Pterodactyl\Models\User $user */
+        $user = User::factory()->create();
+
+        if (empty($permissions)) {
+            return [$user, $this->createServerModel(['user_id' => $user->id])];
+        }
+
+        $server = $this->createServerModel();
+
+        Subuser::query()->create([
+            'user_id' => $user->id,
+            'server_id' => $server->id,
+            'permissions' => $permissions,
+        ]);
+
+        return [$user, $server];
     }
 
     /**
@@ -98,5 +123,14 @@ trait CreatesTestModels
         }
 
         return $model->fresh();
+    }
+
+    /**
+     * Most every test just assumes it is using Bungeecord — this is the critical
+     * egg model for all tests unless specified otherwise.
+     */
+    private function getBungeecordEgg()
+    {
+        return Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail();
     }
 }

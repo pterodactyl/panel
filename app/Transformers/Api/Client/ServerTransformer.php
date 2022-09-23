@@ -16,12 +16,9 @@ class ServerTransformer extends BaseClientTransformer
     /**
      * @var string[]
      */
-    protected $defaultIncludes = ['allocations', 'variables'];
+    protected array $defaultIncludes = ['allocations', 'variables'];
 
-    /**
-     * @var array
-     */
-    protected $availableIncludes = ['egg', 'subusers'];
+    protected array $availableIncludes = ['egg', 'subusers'];
 
     public function getResourceName(): string
     {
@@ -37,8 +34,10 @@ class ServerTransformer extends BaseClientTransformer
         /** @var \Pterodactyl\Services\Servers\StartupCommandService $service */
         $service = Container::getInstance()->make(StartupCommandService::class);
 
+        $user = $this->request->user();
+
         return [
-            'server_owner' => $this->getKey()->user_id === $server->owner_id,
+            'server_owner' => $user->id === $server->owner_id,
             'identifier' => $server->uuidShort,
             'internal_id' => $server->id,
             'uuid' => $server->uuid,
@@ -58,7 +57,7 @@ class ServerTransformer extends BaseClientTransformer
                 'threads' => $server->threads,
                 'oom_disabled' => $server->oom_disabled,
             ],
-            'invocation' => $service->handle($server, !$this->getUser()->can(Permission::ACTION_STARTUP_READ, $server)),
+            'invocation' => $service->handle($server, !$user->can(Permission::ACTION_STARTUP_READ, $server)),
             'docker_image' => $server->image,
             'egg_features' => $server->egg->inherit_features,
             'feature_limits' => [
@@ -78,7 +77,7 @@ class ServerTransformer extends BaseClientTransformer
     /**
      * Returns the allocations associated with this server.
      *
-     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
+     * @return \League\Fractal\Resource\Collection
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
@@ -86,6 +85,7 @@ class ServerTransformer extends BaseClientTransformer
     {
         $transformer = $this->makeTransformer(AllocationTransformer::class);
 
+        $user = $this->request->user();
         // While we include this permission, we do need to actually handle it slightly different here
         // for the purpose of keeping things functionally working. If the user doesn't have read permissions
         // for the allocations we'll only return the primary server allocation, and any notes associated
@@ -93,7 +93,7 @@ class ServerTransformer extends BaseClientTransformer
         //
         // This allows us to avoid too much permission regression, without also hiding information that
         // is generally needed for the frontend to make sense when browsing or searching results.
-        if (!$this->getUser()->can(Permission::ACTION_ALLOCATION_READ, $server)) {
+        if (!$user->can(Permission::ACTION_ALLOCATION_READ, $server)) {
             $primary = clone $server->allocation;
             $primary->notes = null;
 
@@ -110,7 +110,7 @@ class ServerTransformer extends BaseClientTransformer
      */
     public function includeVariables(Server $server)
     {
-        if (!$this->getUser()->can(Permission::ACTION_STARTUP_READ, $server)) {
+        if (!$this->request->user()->can(Permission::ACTION_STARTUP_READ, $server)) {
             return $this->null();
         }
 
@@ -142,7 +142,7 @@ class ServerTransformer extends BaseClientTransformer
      */
     public function includeSubusers(Server $server)
     {
-        if (!$this->getUser()->can(Permission::ACTION_USER_READ, $server)) {
+        if (!$this->request->user()->can(Permission::ACTION_USER_READ, $server)) {
             return $this->null();
         }
 

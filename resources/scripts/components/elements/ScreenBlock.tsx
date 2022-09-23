@@ -43,22 +43,22 @@ const ActionButton = styled(Button)`
 const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
     <PageContentBlock>
         <div css={tw`flex justify-center`}>
-            <div css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-100 rounded-lg shadow-lg text-center relative`}>
-                {(typeof onBack === 'function' || typeof onRetry === 'function') &&
-                <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
-                    <ActionButton
-                        onClick={() => onRetry ? onRetry() : (onBack ? onBack() : null)}
-                        className={onRetry ? 'hover:spin' : undefined}
-                    >
-                        <FontAwesomeIcon icon={onRetry ? faSyncAlt : faArrowLeft}/>
-                    </ActionButton>
-                </div>
-                }
-                <img src={image} css={tw`w-2/3 h-auto select-none mx-auto`}/>
+            <div
+                css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-100 rounded-lg shadow-lg text-center relative`}
+            >
+                {(typeof onBack === 'function' || typeof onRetry === 'function') && (
+                    <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
+                        <ActionButton
+                            onClick={() => (onRetry ? onRetry() : onBack ? onBack() : null)}
+                            className={onRetry ? 'hover:spin' : undefined}
+                        >
+                            <FontAwesomeIcon icon={onRetry ? faSyncAlt : faArrowLeft} />
+                        </ActionButton>
+                    </div>
+                )}
+                <img src={image} css={tw`w-2/3 h-auto select-none mx-auto`} />
                 <h2 css={tw`mt-10 text-neutral-900 font-bold text-4xl`}>{title}</h2>
-                <p css={tw`text-sm text-neutral-700 mt-2`}>
-                    {message}
-                </p>
+                <p css={tw`text-sm text-neutral-700 mt-2`}>{message}</p>
             </div>
         </div>
     </PageContentBlock>
@@ -66,10 +66,10 @@ const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProp
 
 type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWithRetry, 'image' | 'title'>) & {
     title?: string;
-}
+};
 
 const ServerError = ({ title, ...props }: ServerErrorProps) => (
-    <ScreenBlock title={title || 'Something went wrong'} image={ServerErrorSvg} {...props}/>
+    <ScreenBlock title={title || 'Something went wrong'} image={ServerErrorSvg} {...props} />
 );
 
 const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'title' | 'message' | 'onBack'>>) => (

@@ -98,7 +98,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
             $saved = $instance->skipValidation()->save();
         } else {
             if (!$saved = $instance->save()) {
-                throw new DataValidationException($instance->getValidator());
+                throw new DataValidationException($instance->getValidator(), $instance);
             }
         }
 
@@ -195,7 +195,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
             $saved = $instance->skipValidation()->save();
         } else {
             if (!$saved = $instance->save()) {
-                throw new DataValidationException($instance->getValidator());
+                throw new DataValidationException($instance->getValidator(), $instance);
             }
         }
 

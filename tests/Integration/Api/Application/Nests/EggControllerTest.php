@@ -3,34 +3,19 @@
 namespace Pterodactyl\Tests\Integration\Api\Application\Nests;
 
 use Illuminate\Support\Arr;
+use Pterodactyl\Models\Egg;
 use Illuminate\Http\Response;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class EggControllerTest extends ApplicationApiIntegrationTestCase
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->repository = $this->app->make(EggRepositoryInterface::class);
-    }
-
-    /**
      * Test that all the eggs belonging to a given nest can be returned.
      */
     public function testListAllEggsInNest()
     {
-        $eggs = $this->repository->findWhere([['nest_id', '=', 1]]);
+        $eggs = Egg::query()->where('nest_id', 1)->get();
 
         $response = $this->getJson('/api/application/nests/' . $eggs->first()->nest_id . '/eggs');
         $response->assertStatus(Response::HTTP_OK);
@@ -74,7 +59,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testReturnSingleEgg()
     {
-        $egg = $this->repository->find(1);
+        $egg = Egg::query()->findOrFail(1);
 
         $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/' . $egg->id);
         $response->assertStatus(Response::HTTP_OK);
@@ -96,7 +81,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testReturnSingleEggWithRelationships()
     {
-        $egg = $this->repository->find(1);
+        $egg = Egg::query()->findOrFail(1);
 
         $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/' . $egg->id . '?include=servers,variables,nest');
         $response->assertStatus(Response::HTTP_OK);
@@ -117,7 +102,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingEgg()
     {
-        $egg = $this->repository->find(1);
+        $egg = Egg::query()->findOrFail(1);
 
         $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
         $this->assertNotFoundJson($response);
@@ -129,23 +114,10 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testErrorReturnedIfNoPermission()
     {
-        $egg = $this->repository->find(1);
+        $egg = Egg::query()->findOrFail(1);
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_eggs' => 0]);
 
         $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs');
-        $this->assertAccessDeniedJson($response);
-    }
-
-    /**
-     * Test that a nests's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $egg = $this->repository->find(1);
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_eggs' => 0]);
-
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
         $this->assertAccessDeniedJson($response);
     }
 }

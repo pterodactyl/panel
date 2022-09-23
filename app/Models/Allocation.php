@@ -3,6 +3,8 @@
 namespace Pterodactyl\Models;
 
 /**
+ * Pterodactyl\Models\Allocation.
+ *
  * @property int $id
  * @property int $node_id
  * @property string $ip
@@ -16,6 +18,22 @@ namespace Pterodactyl\Models;
  * @property bool $has_alias
  * @property \Pterodactyl\Models\Server|null $server
  * @property \Pterodactyl\Models\Node $node
+ * @property string $hashid
+ *
+ * @method static \Database\Factories\AllocationFactory factory(...$parameters)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation query()
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereIp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereIpAlias($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereNodeId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation wherePort($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereServerId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Allocation whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 class Allocation extends Model
 {
@@ -63,6 +81,14 @@ class Allocation extends Model
     ];
 
     /**
+     * {@inheritDoc}
+     */
+    public function getRouteKeyName(): string
+    {
+        return $this->getKeyName();
+    }
+
+    /**
      * Return a hashid encoded string to represent the ID of the allocation.
      *
      * @return string
@@ -94,6 +120,11 @@ class Allocation extends Model
     public function getHasAliasAttribute($value)
     {
         return !is_null($this->ip_alias);
+    }
+
+    public function toString(): string
+    {
+        return sprintf('%s:%s', $this->ip, $this->port);
     }
 
     /**

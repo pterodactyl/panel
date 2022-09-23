@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
@@ -12,10 +13,8 @@ class EggTransformer extends BaseTransformer
 {
     /**
      * Relationships that can be loaded onto this transformation.
-     *
-     * @var array
      */
-    protected $availableIncludes = [
+    protected array $availableIncludes = [
         'nest',
         'servers',
         'config',
@@ -49,7 +48,7 @@ class EggTransformer extends BaseTransformer
             // "docker_image" is deprecated, but left here to avoid breaking too many things at once
             // in external software. We'll remove it down the road once things have gotten the chance
             // to upgrade to using "docker_images".
-            'docker_image' => count($model->docker_images) > 0 ? $model->docker_images[0] : '',
+            'docker_image' => count($model->docker_images) > 0 ? Arr::first($model->docker_images) : '',
             'docker_images' => $model->docker_images,
             'config' => [
                 'files' => json_decode($model->config_files, true),

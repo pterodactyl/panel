@@ -5,9 +5,9 @@ namespace Pterodactyl\Tests\Integration\Api\Application\Location;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Location;
-use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
+use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class LocationControllerTest extends ApplicationApiIntegrationTestCase
@@ -128,13 +128,13 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
 
         $response = $this->patchJson('/api/application/locations/' . $location->id, [
             'short' => 'new inhouse',
-            'long' => 'This is my new inhouse location'
+            'long' => 'This is my new inhouse location',
         ]);
         $response->assertStatus(Response::HTTP_OK);
         $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
-            'attributes' => ['id', 'short', 'long', 'created_at', 'updated_at']
+            'attributes' => ['id', 'short', 'long', 'created_at', 'updated_at'],
         ]);
 
         $this->assertDatabaseHas('locations', ['short' => 'new inhouse', 'long' => 'This is my new inhouse location']);
@@ -263,18 +263,6 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
 
         $response = $this->getJson('/api/application/locations/' . $location->id);
-        $this->assertAccessDeniedJson($response);
-    }
-
-    /**
-     * Test that a location's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $this->createNewDefaultApiKey($this->getApiUser(), ['r_locations' => 0]);
-
-        $response = $this->getJson('/api/application/locations/nil');
         $this->assertAccessDeniedJson($response);
     }
 }

@@ -9,10 +9,8 @@ class UserTransformer extends BaseTransformer
 {
     /**
      * List of resources that can be included.
-     *
-     * @var array
      */
-    protected $availableIncludes = ['servers'];
+    protected array $availableIncludes = ['servers'];
 
     /**
      * Return the resource name for the JSONAPI output.

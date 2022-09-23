@@ -17,9 +17,7 @@ const ConfirmationModal: React.FC<Props> = ({ title, children, buttonText, onCon
     return (
         <>
             <h2 css={tw`text-2xl mb-6`}>{title}</h2>
-            <div css={tw`text-neutral-300`}>
-                {children}
-            </div>
+            <div css={tw`text-neutral-300`}>{children}</div>
             <div css={tw`flex flex-wrap items-center justify-end mt-8`}>
                 <Button isSecondary onClick={() => dismiss()} css={tw`w-full sm:w-auto border-transparent`}>
                     Cancel
@@ -34,6 +32,6 @@ const ConfirmationModal: React.FC<Props> = ({ title, children, buttonText, onCon
 
 ConfirmationModal.displayName = 'ConfirmationModal';
 
-export default asModal<Props>(props => ({
+export default asModal<Props>((props) => ({
     showSpinnerOverlay: props.showSpinnerOverlay,
 }))(ConfirmationModal);

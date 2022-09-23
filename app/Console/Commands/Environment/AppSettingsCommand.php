@@ -1,32 +1,23 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\Environment;
 
 use DateTimeZone;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Validation\Factory as ValidatorFactory;
 use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
-use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class AppSettingsCommand extends Command
 {
     use EnvironmentWriterTrait;
 
-    public const ALLOWED_CACHE_DRIVERS = [
+    public const CACHE_DRIVERS = [
         'redis' => 'Redis (recommended)',
         'memcached' => 'Memcached',
         'file' => 'Filesystem',
     ];
 
-    public const ALLOWED_SESSION_DRIVERS = [
+    public const SESSION_DRIVERS = [
         'redis' => 'Redis (recommended)',
         'memcached' => 'Memcached',
         'database' => 'MySQL Database',
@@ -34,7 +25,7 @@ class AppSettingsCommand extends Command
         'cookie' => 'Cookie',
     ];
 
-    public const ALLOWED_QUEUE_DRIVERS = [
+    public const QUEUE_DRIVERS = [
         'redis' => 'Redis (recommended)',
         'database' => 'MySQL Database',
         'sync' => 'Sync',
@@ -44,11 +35,6 @@ class AppSettingsCommand extends Command
      * @var \Illuminate\Contracts\Console\Kernel
      */
     protected $command;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
 
     /**
      * @var string
@@ -79,13 +65,11 @@ class AppSettingsCommand extends Command
     /**
      * AppSettingsCommand constructor.
      */
-    public function __construct(ConfigRepository $config, Kernel $command, ValidatorFactory $validator)
+    public function __construct(Kernel $command)
     {
         parent::__construct();
 
-        $this->config = $config;
         $this->command = $command;
-        $this->validator = $validator;
     }
 
     /**
@@ -95,66 +79,60 @@ class AppSettingsCommand extends Command
      */
     public function handle()
     {
-        if (empty($this->config->get('hashids.salt')) || $this->option('new-salt')) {
+        if (empty(config('hashids.salt')) || $this->option('new-salt')) {
             $this->variables['HASHIDS_SALT'] = str_random(20);
         }
 
-        $this->output->comment(trans('command/messages.environment.app.author_help'));
+        $this->output->comment('Provide the email address that eggs exported by this Panel should be from. This should be a valid email address.');
         $this->variables['APP_SERVICE_AUTHOR'] = $this->option('author') ?? $this->ask(
-            trans('command/messages.environment.app.author'),
-            $this->config->get('pterodactyl.service.author', 'unknown@unknown.com')
+            'Egg Author Email',
+            config('pterodactyl.service.author', 'unknown@unknown.com')
         );
 
-        $validator = $this->validator->make(
-            ['email' => $this->variables['APP_SERVICE_AUTHOR']],
-            ['email' => 'email']
-        );
+        if (!filter_var($this->variables['APP_SERVICE_AUTHOR'], FILTER_VALIDATE_EMAIL)) {
+            $this->output->error('The service author email provided is invalid.');
 
-        if ($validator->fails()) {
-            foreach ($validator->errors()->all() as $error) {
-                $this->output->error($error);
-            }
             return 1;
         }
 
-        $this->output->comment(trans('command/messages.environment.app.app_url_help'));
+        $this->output->comment('The application URL MUST begin with https:// or http:// depending on if you are using SSL or not. If you do not include the scheme your emails and other content will link to the wrong location.');
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(
-            trans('command/messages.environment.app.app_url'),
-            $this->config->get('app.url', 'http://example.org')
+            'Application URL',
+            config('app.url', 'http://example.org')
         );
 
-        $this->output->comment(trans('command/messages.environment.app.timezone_help'));
+        $this->output->comment('The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference http://php.net/manual/en/timezones.php.');
         $this->variables['APP_TIMEZONE'] = $this->option('timezone') ?? $this->anticipate(
-            trans('command/messages.environment.app.timezone'),
+            'Application Timezone',
             DateTimeZone::listIdentifiers(DateTimeZone::ALL),
-            $this->config->get('app.timezone')
+            config('app.timezone')
         );
 
-        $selected = $this->config->get('cache.default', 'redis');
+        $selected = config('cache.default', 'redis');
         $this->variables['CACHE_DRIVER'] = $this->option('cache') ?? $this->choice(
-            trans('command/messages.environment.app.cache_driver'),
-            self::ALLOWED_CACHE_DRIVERS,
-            array_key_exists($selected, self::ALLOWED_CACHE_DRIVERS) ? $selected : null
+            'Cache Driver',
+            self::CACHE_DRIVERS,
+            array_key_exists($selected, self::CACHE_DRIVERS) ? $selected : null
         );
 
-        $selected = $this->config->get('session.driver', 'redis');
+        $selected = config('session.driver', 'redis');
         $this->variables['SESSION_DRIVER'] = $this->option('session') ?? $this->choice(
-            trans('command/messages.environment.app.session_driver'),
-            self::ALLOWED_SESSION_DRIVERS,
-            array_key_exists($selected, self::ALLOWED_SESSION_DRIVERS) ? $selected : null
+            'Session Driver',
+            self::SESSION_DRIVERS,
+            array_key_exists($selected, self::SESSION_DRIVERS) ? $selected : null
         );
 
-        $selected = $this->config->get('queue.default', 'redis');
+        $selected = config('queue.default', 'redis');
         $this->variables['QUEUE_CONNECTION'] = $this->option('queue') ?? $this->choice(
-            trans('command/messages.environment.app.queue_driver'),
-            self::ALLOWED_QUEUE_DRIVERS,
-            array_key_exists($selected, self::ALLOWED_QUEUE_DRIVERS) ? $selected : null
+            'Queue Driver',
+            self::QUEUE_DRIVERS,
+            array_key_exists($selected, self::QUEUE_DRIVERS) ? $selected : null
         );
 
         if (!is_null($this->option('settings-ui'))) {
             $this->variables['APP_ENVIRONMENT_ONLY'] = $this->option('settings-ui') == 'true' ? 'false' : 'true';
         } else {
-            $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm(trans('command/messages.environment.app.settings'), true) ? 'false' : 'true';
+            $this->variables['APP_ENVIRONMENT_ONLY'] = $this->confirm('Enable UI based settings editor?', true) ? 'false' : 'true';
         }
 
         // Make sure session cookies are set as "secure" when using HTTPS
@@ -182,22 +160,22 @@ class AppSettingsCommand extends Command
             return;
         }
 
-        $this->output->note(trans('command/messages.environment.app.using_redis'));
+        $this->output->note('You\'ve selected the Redis driver for one or more options, please provide valid connection information below. In most cases you can use the defaults provided unless you have modified your setup.');
         $this->variables['REDIS_HOST'] = $this->option('redis-host') ?? $this->ask(
-            trans('command/messages.environment.app.redis_host'),
-            $this->config->get('database.redis.default.host')
+            'Redis Host',
+            config('database.redis.default.host')
         );
 
         $askForRedisPassword = true;
-        if (!empty($this->config->get('database.redis.default.password'))) {
-            $this->variables['REDIS_PASSWORD'] = $this->config->get('database.redis.default.password');
-            $askForRedisPassword = $this->confirm(trans('command/messages.environment.app.redis_pass_defined'));
+        if (!empty(config('database.redis.default.password'))) {
+            $this->variables['REDIS_PASSWORD'] = config('database.redis.default.password');
+            $askForRedisPassword = $this->confirm('It seems a password is already defined for Redis, would you like to change it?');
         }
 
         if ($askForRedisPassword) {
-            $this->output->comment(trans('command/messages.environment.app.redis_pass_help'));
+            $this->output->comment('By default a Redis server instance has no password as it is running locally and inaccessible to the outside world. If this is the case, simply hit enter without entering a value.');
             $this->variables['REDIS_PASSWORD'] = $this->option('redis-pass') ?? $this->output->askHidden(
-                trans('command/messages.environment.app.redis_password')
+                'Redis Password'
             );
         }
 
@@ -206,8 +184,8 @@ class AppSettingsCommand extends Command
         }
 
         $this->variables['REDIS_PORT'] = $this->option('redis-port') ?? $this->ask(
-            trans('command/messages.environment.app.redis_port'),
-            $this->config->get('database.redis.default.port')
+            'Redis Port',
+            config('database.redis.default.port')
         );
     }
 }

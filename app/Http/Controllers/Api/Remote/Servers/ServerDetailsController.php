@@ -4,12 +4,10 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\AuditLog;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Database\Query\Builder;
-use Illuminate\Database\Query\JoinClause;
+use Pterodactyl\Facades\Activity;
+use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection;
@@ -17,6 +15,8 @@ use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerDetailsController extends Controller
 {
+    protected ConnectionInterface $connection;
+
     /**
      * @var \Pterodactyl\Services\Eggs\EggConfigurationService
      */
@@ -36,14 +36,15 @@ class ServerDetailsController extends Controller
      * ServerConfigurationController constructor.
      */
     public function __construct(
+        ConnectionInterface $connection,
         ServerRepository $repository,
         ServerConfigurationStructureService $configurationStructureService,
-        EggConfigurationService $eggConfigurationService,
-        NodeRepository $nodeRepository
+        EggConfigurationService $eggConfigurationService
     ) {
         $this->eggConfigurationService = $eggConfigurationService;
         $this->repository = $repository;
         $this->configurationStructureService = $configurationStructureService;
+        $this->connection = $connection;
     }
 
     /**
@@ -107,44 +108,39 @@ class ServerDetailsController extends Controller
         //
         // For each of those servers we'll track a new audit log entry to mark them as
         // failed and then update them all to be in a valid state.
-        /** @var \Pterodactyl\Models\Server[] $servers */
         $servers = Server::query()
-            ->select('servers.*')
-            ->selectRaw('JSON_UNQUOTE(JSON_EXTRACT(started.metadata, "$.backup_uuid")) as backup_uuid')
-            ->leftJoinSub(function (Builder $builder) {
-                $builder->select('*')->from('audit_logs')
-                    ->where('action', AuditLog::SERVER__BACKUP_RESTORE_STARTED)
-                    ->orderByDesc('created_at')
-                    ->limit(1);
-            }, 'started', 'started.server_id', '=', 'servers.id')
-            ->leftJoin('audit_logs as completed', function (JoinClause $clause) {
-                $clause->whereColumn('completed.created_at', '>', 'started.created_at')
-                    ->whereIn('completed.action', [
-                        AuditLog::SERVER__BACKUP_RESTORE_COMPLETED,
-                        AuditLog::SERVER__BACKUP_RESTORE_FAILED,
-                    ]);
-            })
-            ->whereNotNull('started.id')
-            ->whereNull('completed.id')
-            ->where('servers.node_id', $node->id)
-            ->where('servers.status', Server::STATUS_RESTORING_BACKUP)
+            ->with([
+                'activity' => fn ($builder) => $builder
+                    ->where('activity_logs.event', 'server:backup.restore-started')
+                    ->latest('timestamp'),
+            ])
+            ->where('node_id', $node->id)
+            ->where('status', Server::STATUS_RESTORING_BACKUP)
             ->get();
 
-        foreach ($servers as $server) {
-            // Just create a new audit entry for this event and update the server state
-            // so that power actions, file management, and backups can resume as normal.
-            $server->audit(AuditLog::SERVER__BACKUP_RESTORE_FAILED, function (AuditLog $audit, Server $server) {
-                $audit->is_system = true;
-                $audit->metadata = ['backup_uuid' => $server->getAttribute('backup_uuid')];
-                $server->update(['status' => null]);
-            });
-        }
+        $this->connection->transaction(function () use ($node, $servers) {
+            /** @var \Pterodactyl\Models\Server $server */
+            foreach ($servers as $server) {
+                /** @var \Pterodactyl\Models\ActivityLog|null $activity */
+                $activity = $server->activity->first();
+                if (!is_null($activity)) {
+                    if ($subject = $activity->subjects->where('subject_type', 'backup')->first()) {
+                        // Just create a new audit entry for this event and update the server state
+                        // so that power actions, file management, and backups can resume as normal.
+                        Activity::event('server:backup.restore-failed')
+                            ->subject($server, $subject->subject)
+                            ->property('name', $subject->subject->name)
+                            ->log();
+                    }
+                }
+            }
 
-        // Update any server marked as installing or restoring as being in a normal state
-        // at this point in the process.
-        Server::query()->where('node_id', $node->id)
-            ->whereIn('status', [Server::STATUS_INSTALLING, Server::STATUS_RESTORING_BACKUP])
-            ->update(['status' => null]);
+            // Update any server marked as installing or restoring as being in a normal state
+            // at this point in the process.
+            Server::query()->where('node_id', $node->id)
+                ->whereIn('status', [Server::STATUS_INSTALLING, Server::STATUS_RESTORING_BACKUP])
+                ->update(['status' => null]);
+        });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

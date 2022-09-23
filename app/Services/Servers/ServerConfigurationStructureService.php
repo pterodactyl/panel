@@ -47,6 +47,10 @@ class ServerConfigurationStructureService
     {
         return [
             'uuid' => $server->uuid,
+            'meta' => [
+                'name' => $server->name,
+                'description' => $server->description,
+            ],
             'suspended' => $server->isSuspended(),
             'environment' => $this->environment->handle($server),
             'invocation' => $server->startup,

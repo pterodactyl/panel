@@ -4,18 +4,14 @@ namespace Pterodactyl\Providers;
 
 use View;
 use Cache;
+use Pterodactyl\Models;
 use Illuminate\Support\Str;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Observers\UserObserver;
 use Pterodactyl\Extensions\Themes\Theme;
-use Pterodactyl\Observers\ServerObserver;
-use Pterodactyl\Observers\SubuserObserver;
+use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -25,10 +21,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-
-        User::observe(UserObserver::class);
-        Server::observe(ServerObserver::class);
-        Subuser::observe(SubuserObserver::class);
 
         View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
         View::share('appIsGit', $this->versionData()['is_git'] ?? false);
@@ -43,6 +35,20 @@ class AppServiceProvider extends ServiceProvider
         if (Str::startsWith(config('app.url') ?? '', 'https://')) {
             URL::forceScheme('https');
         }
+
+        Relation::enforceMorphMap([
+            'allocation' => Models\Allocation::class,
+            'api_key' => Models\ApiKey::class,
+            'backup' => Models\Backup::class,
+            'database' => Models\Database::class,
+            'egg' => Models\Egg::class,
+            'egg_variable' => Models\EggVariable::class,
+            'schedule' => Models\Schedule::class,
+            'server' => Models\Server::class,
+            'ssh_key' => Models\UserSSHKey::class,
+            'task' => Models\Task::class,
+            'user' => Models\User::class,
+        ]);
     }
 
     /**

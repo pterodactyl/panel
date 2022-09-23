@@ -2,13 +2,15 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Carbon\CarbonInterface;
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Pterodactyl\Events\Auth\ProvidedAuthenticationToken;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
@@ -72,12 +74,16 @@ class LoginCheckpointController extends AbstractLoginController
         // Recovery tokens go through a slightly different pathway for usage.
         if (!is_null($recoveryToken = $request->input('recovery_token'))) {
             if ($this->isValidRecoveryToken($user, $recoveryToken)) {
+                Event::dispatch(new ProvidedAuthenticationToken($user, true));
+
                 return $this->sendLoginResponse($user, $request);
             }
         } else {
             $decrypted = $this->encrypter->decrypt($user->totp_secret);
 
             if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {
+                Event::dispatch(new ProvidedAuthenticationToken($user));
+
                 return $this->sendLoginResponse($user, $request);
             }
         }
@@ -110,9 +116,6 @@ class LoginCheckpointController extends AbstractLoginController
      * Determines if the data provided from the session is valid or not. This
      * will return false if the data is invalid, or if more time has passed than
      * was configured when the session was written.
-     *
-     * @param array $data
-     * @return bool
      */
     protected function hasValidSessionData(array $data): bool
     {

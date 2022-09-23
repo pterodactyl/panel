@@ -118,15 +118,15 @@
             var parentChain = _.get(Pterodactyl.nests, $("#pNestId").val());
             var objectChain = _.get(parentChain, 'eggs.' + selectedEgg);
 
-            $('#setDefaultImage').html(_.get(objectChain, 'docker_images.0', 'undefined'));
             const images = _.get(objectChain, 'docker_images', [])
             $('#pDockerImage').html('');
-            for (let i = 0; i < images.length; i++) {
+            const keys = Object.keys(images);
+            for (let i = 0; i < keys.length; i++) {
                 let opt = document.createElement('option');
-                opt.value = images[i];
-                opt.innerHTML = images[i];
+                opt.value = images[keys[i]];
+                opt.innerHTML = keys[i] + " (" + images[keys[i]] + ")";
                 if (objectChain.id === parseInt(Pterodactyl.server.egg_id) && Pterodactyl.server.image == opt.value) {
-                    opt.checked = true
+                    opt.selected = true
                 }
                 $('#pDockerImage').append(opt);
             }

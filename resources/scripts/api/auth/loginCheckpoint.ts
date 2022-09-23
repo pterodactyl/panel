@@ -6,12 +6,14 @@ export default (token: string, code: string, recoveryToken?: string): Promise<Lo
         http.post('/auth/login/checkpoint', {
             confirmation_token: token,
             authentication_code: code,
-            recovery_token: (recoveryToken && recoveryToken.length > 0) ? recoveryToken : undefined,
+            recovery_token: recoveryToken && recoveryToken.length > 0 ? recoveryToken : undefined,
         })
-            .then(response => resolve({
-                complete: response.data.data.complete,
-                intended: response.data.data.intended || undefined,
-            }))
+            .then((response) =>
+                resolve({
+                    complete: response.data.data.complete,
+                    intended: response.data.data.intended || undefined,
+                })
+            )
             .catch(reject);
     });
 };

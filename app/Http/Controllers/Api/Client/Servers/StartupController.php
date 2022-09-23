@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Services\Servers\StartupCommandService;
 use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
@@ -75,6 +76,7 @@ class StartupController extends ClientApiController
     {
         /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
+        $original = $variable->server_value;
 
         if (is_null($variable) || !$variable->user_viewable) {
             throw new BadRequestHttpException('The environment variable you are trying to edit does not exist.');
@@ -96,6 +98,17 @@ class StartupController extends ClientApiController
         $variable->server_value = $request->input('value');
 
         $startup = $this->startupCommandService->handle($server, false);
+
+        if ($variable->env_variable !== $request->input('value')) {
+            Activity::event('server:startup.edit')
+                ->subject($variable)
+                ->property([
+                    'variable' => $variable->env_variable,
+                    'old' => $original,
+                    'new' => $request->input('value'),
+                ])
+                ->log();
+        }
 
         return $this->fractal->item($variable)
             ->transformWith($this->getTransformer(EggVariableTransformer::class))

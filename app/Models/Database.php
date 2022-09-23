@@ -2,6 +2,9 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Container\Container;
+use Pterodactyl\Contracts\Extensions\HashidsInterface;
+
 /**
  * @property int $id
  * @property int $server_id
@@ -67,9 +70,39 @@ class Database extends Model
         'database' => 'required|string|alpha_dash|between:3,48',
         'username' => 'string|alpha_dash|between:3,100',
         'max_connections' => 'nullable|integer',
-        'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
+        'remote' => 'required|string|regex:/^[\w\-\/.%:]+$/',
         'password' => 'string',
     ];
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRouteKeyName(): string
+    {
+        return $this->getKeyName();
+    }
+
+    /**
+     * Resolves the database using the ID by checking if the value provided is a HashID
+     * string value, or just the ID to the database itself.
+     *
+     * @param mixed $value
+     * @param string|null $field
+     *
+     * @return \Illuminate\Database\Eloquent\Model|null
+     *
+     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     */
+    public function resolveRouteBinding($value, $field = null)
+    {
+        if (is_scalar($value) && ($field ?? $this->getRouteKeyName()) === 'id') {
+            $value = ctype_digit((string) $value)
+                ? $value
+                : Container::getInstance()->make(HashidsInterface::class)->decodeFirst($value);
+        }
+
+        return $this->where($field ?? $this->getRouteKeyName(), $value)->firstOrFail();
+    }
 
     /**
      * Gets the host database server associated with a database.

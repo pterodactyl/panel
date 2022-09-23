@@ -41,7 +41,8 @@ class TaskRepository extends EloquentRepository implements TaskRepositoryInterfa
     public function getNextTask(int $schedule, int $index)
     {
         return $this->getBuilder()->where('schedule_id', '=', $schedule)
-            ->where('sequence_id', '=', $index + 1)
+            ->orderBy('sequence_id', 'asc')
+            ->where('sequence_id', '>', $index)
             ->first($this->getColumns());
     }
 }

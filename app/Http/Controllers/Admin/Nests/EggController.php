@@ -74,11 +74,7 @@ class EggController extends Controller
     public function store(EggFormRequest $request): RedirectResponse
     {
         $data = $request->normalize();
-        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
-            $data['docker_images'] = array_map(function ($value) {
-                return trim($value);
-            }, explode("\n", $data['docker_images']));
-        }
+        $data['docker_images'] = $this->normalizeDockerImages($data['docker_images'] ?? null);
 
         $egg = $this->creationService->handle($data);
         $this->alert->success(trans('admin/nests.eggs.notices.egg_created'))->flash();
@@ -91,7 +87,14 @@ class EggController extends Controller
      */
     public function view(Egg $egg): View
     {
-        return view('admin.eggs.view', ['egg' => $egg]);
+        return view('admin.eggs.view', [
+            'egg' => $egg,
+            'images' => array_map(
+                fn ($key, $value) => $key === $value ? $value : "$key|$value",
+                array_keys($egg->docker_images),
+                $egg->docker_images,
+            ),
+        ]);
     }
 
     /**
@@ -104,11 +107,7 @@ class EggController extends Controller
     public function update(EggFormRequest $request, Egg $egg): RedirectResponse
     {
         $data = $request->normalize();
-        if (!empty($data['docker_images']) && !is_array($data['docker_images'])) {
-            $data['docker_images'] = array_map(function ($value) {
-                return trim($value);
-            }, explode("\n", $data['docker_images']));
-        }
+        $data['docker_images'] = $this->normalizeDockerImages($data['docker_images'] ?? null);
 
         $this->updateService->handle($egg, $data);
         $this->alert->success(trans('admin/nests.eggs.notices.updated'))->flash();
@@ -128,5 +127,23 @@ class EggController extends Controller
         $this->alert->success(trans('admin/nests.eggs.notices.deleted'))->flash();
 
         return redirect()->route('admin.nests.view', $egg->nest_id);
+    }
+
+    /**
+     * Normalizes a string of docker image data into the expected egg format.
+     */
+    protected function normalizeDockerImages(string $input = null): array
+    {
+        $data = array_map(fn ($value) => trim($value), explode("\n", $input ?? ''));
+
+        $images = [];
+        // Iterate over the image data provided and convert it into a name => image
+        // pairing that is used to improve the display on the front-end.
+        foreach ($data as $value) {
+            $parts = explode('|', $value, 2);
+            $images[$parts[0]] = empty($parts[1]) ? $parts[0] : $parts[1];
+        }
+
+        return $images;
     }
 }

@@ -267,15 +267,23 @@ class DaemonFileRepository extends DaemonRepository
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function pull(string $url, ?string $directory): ResponseInterface
+    public function pull(string $url, ?string $directory, array $params = []): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
+
+        $attributes = [
+            'url' => $url,
+            'root' => $directory ?? '/',
+            'file_name' => $params['filename'] ?? null,
+            'use_header' => $params['use_header'] ?? null,
+            'foreground' => $params['foreground'] ?? null,
+        ];
 
         try {
             return $this->getHttpClient()->post(
                 sprintf('/api/servers/%s/files/pull', $this->server->uuid),
                 [
-                    'json' => ['url' => $url, 'directory' => $directory ?? '/'],
+                    'json' => array_filter($attributes, fn ($value) => !is_null($value)),
                 ]
             );
         } catch (TransferException $exception) {
