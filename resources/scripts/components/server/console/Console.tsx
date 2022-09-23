@@ -8,7 +8,7 @@ import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
-import { theme as th } from 'twin.macro';
+import tw, { theme as th } from 'twin.macro';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
@@ -18,6 +18,8 @@ import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
 import 'xterm/css/xterm.css';
 import styles from './style.module.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faExternalLinkAlt } from '@fortawesome/free-solid-svg-icons';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -51,7 +53,11 @@ const terminalProps: ITerminalOptions = {
     theme: theme,
 };
 
-export default () => {
+interface Props {
+    popup: boolean
+}
+
+export default ({popup}: Props) => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
@@ -193,7 +199,7 @@ export default () => {
     }, [connected, instance]);
 
     return (
-        <div className={classNames(styles.terminal, 'relative')}>
+        <div className={classNames(styles.terminal, 'relative')} css={popup ? tw`w-screen h-screen absolute left-0 top-0` : tw``}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
                 className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
@@ -204,6 +210,11 @@ export default () => {
             </div>
             {canSendCommands && (
                 <div className={classNames('relative', styles.overflows_container)}>
+                    <button hidden={popup} onClick={() => {
+                        window.open(`${window.location.toString()}?popup=true`, '', 'menubar=no');
+                    }} css={tw`absolute right-0 top-0 z-10 mt-2 mr-2`}>
+                        <FontAwesomeIcon icon={faExternalLinkAlt} />
+                    </button>
                     <input
                         className={classNames('peer', styles.command_input)}
                         type={'text'}

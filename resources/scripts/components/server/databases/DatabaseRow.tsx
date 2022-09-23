@@ -126,19 +126,8 @@ export default ({ database, className }: Props) => {
                 </Can>
                 <div css={tw`mt-6`}>
                     <Label>JDBC Connection String</Label>
-<<<<<<< HEAD
-                    <CopyOnClick
-                        text={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
-                    >
-                        <Input
-                            type={'text'}
-                            readOnly
-                            value={`jdbc:mysql://${database.username}:${database.password}@${database.connectionString}/${database.name}`}
-                        />
-=======
                     <CopyOnClick text={jdbcConnectionString}>
                         <Input type={'text'} readOnly value={jdbcConnectionString} />
->>>>>>> e040fd1ebd5bce62ea28834cdbf9b5b9265dffd4
                     </CopyOnClick>
                 </div>
                 <div css={tw`mt-6 text-right`}>

@@ -20,6 +20,15 @@ const ServerConsoleContainer = () => {
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
 
+    
+
+    if(new URLSearchParams(window.location.search).get("popup"))
+    {
+        return (
+            <Console popup={true} />
+        )
+    }
+
     return (
         <ServerContentBlock title={'Console'}>
             {(isInstalling || isTransferring) && (
@@ -43,7 +52,7 @@ const ServerConsoleContainer = () => {
             <div className={'grid grid-cols-4 gap-2 sm:gap-4 mb-4'}>
                 <div className={'flex col-span-4 lg:col-span-3'}>
                     <Spinner.Suspense>
-                        <Console />
+                        <Console popup={false} />
                     </Spinner.Suspense>
                 </div>
                 <ServerDetailsBlock className={'col-span-4 lg:col-span-1 order-last lg:order-none'} />
