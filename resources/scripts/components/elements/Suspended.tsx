@@ -16,7 +16,6 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
     const [name, setName] = useState('');
-    const [password, setPassword] = useState('');
 
     const [isSubmit, setSubmit] = useState(false);
     const [renewDialog, setRenewDialog] = useState(false);
@@ -87,11 +86,7 @@ export default () => {
                 This action will remove your server from the system, along with all files and configurations.
             </Dialog.Confirm>
             <form id={'delete-suspended-server-form'} onSubmit={doDeletion}>
-                <Dialog
-                    open={confirmDialog}
-                    title={'Password confirmation required'}
-                    onClose={() => setConfirmDialog(false)}
-                >
+                <Dialog open={confirmDialog} title={'Confirm server deletion'} onClose={() => setConfirmDialog(false)}>
                     {name !== serverName && (
                         <>
                             <p className={'my-2 text-gray-400'}>
@@ -100,10 +95,8 @@ export default () => {
                             <Input type={'text'} value={name} onChange={(n) => setName(n.target.value)} />
                         </>
                     )}
-                    <p className={'my-2 text-gray-400'}>Enter password to continue with server deletion.</p>
-                    <Input type={'password'} value={password} onChange={(e) => setPassword(e.target.value)} />
                     <Button
-                        disabled={!password.length}
+                        disabled={name !== serverName}
                         type={'submit'}
                         className={'mt-2'}
                         form={'delete-suspended-server-form'}

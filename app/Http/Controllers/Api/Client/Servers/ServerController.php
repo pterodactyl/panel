@@ -73,7 +73,7 @@ class ServerController extends ClientApiController
     {
         $user = $request->user();
 
-        if ($user->id != $server->owner_id ||$request['name'] != $server->name) {
+        if ($user->id != $server->owner_id) {
             throw new DisplayException('You are not authorized to perform this action.');
         };
 
