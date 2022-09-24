@@ -73,10 +73,13 @@ Route::group([
 
     Route::post('/eggs', [Client\Store\ServerController::class, 'eggs'])->name('api:client:store.eggs');
     Route::post('/create', [Client\Store\ServerController::class, 'store'])->name('api:client:store.create');
-    Route::post('/earn', [Client\Store\ResourceController::class, 'earn'])->name('api:client:store.earn');
     Route::post('/stripe', [Client\Store\StripeController::class, 'purchase'])->name('api:client:store.stripe');
     Route::post('/paypal', [Client\Store\PayPalController::class, 'purchase'])->name('api:client:store.paypal');
     Route::post('/resources', [Client\Store\ResourceController::class, 'purchase'])->name('api:client:store.resources');
+
+    Route::group(['prefix' => '/earn', 'middleware' => 'throttle:1'], function () {
+        Route::post('/', [Client\Store\ResourceController::class, 'earn'])->name('api:client:store.earn');
+    });
 });
 
 /*

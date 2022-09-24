@@ -49,7 +49,7 @@ class ResourceController extends ClientApiController
         $amount = $this->settings->get('jexactyl::earn:amount', 0);
 
         if ($this->settings->get('jexactyl::earn:enabled') == 'false') {
-            throw new DisplayException('Credit earning is currently disabled');
+            throw new DisplayException('Credit earning is currently disabled.');
             return;
         };
 
