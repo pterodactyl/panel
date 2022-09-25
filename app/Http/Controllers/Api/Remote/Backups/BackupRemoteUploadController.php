@@ -15,7 +15,7 @@ use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class BackupRemoteUploadController extends Controller
 {
-    public const PART_SIZE = 5 * 1024 * 1024 * 1024;
+    public const DEFAULT_MAX_PART_SIZE = 5 * 1024 * 1024 * 1024;
 
     /**
      * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
@@ -89,9 +89,12 @@ class BackupRemoteUploadController extends Controller
         // the other presigned urls.
         $params['UploadId'] = $result->get('UploadId');
 
+        // Retrieve configured part size
+        $maxPartSize = $this->getConfiguredMaxPartSize();
+
         // Create as many UploadPart presigned urls as needed
         $parts = [];
-        for ($i = 0; $i < ($size / self::PART_SIZE); ++$i) {
+        for ($i = 0; $i < ($size / $maxPartSize); ++$i) {
             $parts[] = $client->createPresignedRequest(
                 $client->getCommand('UploadPart', array_merge($params, ['PartNumber' => $i + 1])),
                 $expires
@@ -103,7 +106,30 @@ class BackupRemoteUploadController extends Controller
 
         return new JsonResponse([
             'parts' => $parts,
-            'part_size' => self::PART_SIZE,
+            'part_size' => $maxPartSize,
         ]);
+    }
+
+    /**
+     * Get the configured maximum size of a single part in the multipart uplaod.
+     *
+     * The function tries to retrieve a configured value from the configuration.
+     * If no value is specified, a fallback value will be used.
+     *
+     * Note if the received config cannot be converted to int (0), is zero or is negative,
+     * the fallback value will be used too.
+     *
+     * The fallback value is {@see BackupRemoteUploadController::DEFAULT_MAX_PART_SIZE}.
+     *
+     * @return int
+     */
+    private function getConfiguredMaxPartSize()
+    {
+        $maxPartSize = (int) config('backups.max_part_size', self::DEFAULT_MAX_PART_SIZE);
+        if ($maxPartSize <= 0) {
+            $maxPartSize = self::DEFAULT_MAX_PART_SIZE;
+        }
+
+        return $maxPartSize;
     }
 }
