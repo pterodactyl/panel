@@ -11,8 +11,9 @@ namespace Pterodactyl\Models;
  * @property string|null $description
  * @property array|null $features
  * @property string $docker_image -- deprecated, use $docker_images
- * @property string $update_url
  * @property array<string, string> $docker_images
+ * @property string $update_url
+ * @property bool $force_outgoing_ip
  * @property array|null $file_denylist
  * @property string|null $config_files
  * @property string|null $config_startup
@@ -84,6 +85,7 @@ class Egg extends Model
         'description',
         'features',
         'docker_images',
+        'force_outgoing_ip',
         'file_denylist',
         'config_files',
         'config_startup',
@@ -107,6 +109,7 @@ class Egg extends Model
         'nest_id' => 'integer',
         'config_from' => 'integer',
         'script_is_privileged' => 'boolean',
+        'force_outgoing_ip' => 'boolean',
         'copy_script_from' => 'integer',
         'features' => 'array',
         'docker_images' => 'array',
@@ -134,6 +137,7 @@ class Egg extends Model
         'config_logs' => 'required_without:config_from|nullable|json',
         'config_files' => 'required_without:config_from|nullable|json',
         'update_url' => 'sometimes|nullable|string',
+        'force_outgoing_ip' => 'sometimes|boolean',
     ];
 
     /**
