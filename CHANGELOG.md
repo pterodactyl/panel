@@ -3,6 +3,20 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.10.2
+### Fixed
+* Fixes a rendering issue with egg descriptions in the admin area
+* Fixes the page title on the SSH Keys page
+
+### Changed
+* Additional validation rules will now show a toggle switch rather than an input when editing server variables
+* The eggs endpoint will now always return an empty JSON object for the `config_files` field, even if the field is completely empty
+
+### Added
+* Adds a `Force Outgoing IP` option for eggs that can be used to ensure servers making outgoing connections use their allocation IP rather than the node's primary ip
+* Adds options to configure sending of email (re)install notifications
+* Add an option to configure the part size for backups uploaded to S3
+
 ## v1.10.1
 ### Fixed
 * Fixes a surprise `clock()` function that was used for debugging and should not have made it into the release. This was causing activity events to not properly sync between the Panel and Wings.
