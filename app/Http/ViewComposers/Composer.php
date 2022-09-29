@@ -39,7 +39,7 @@ class Composer
     {
       $databases = DB::table('databases')->count();
 
-      if (databases <= 0) {
+      if ($databases <= 0) {
         return false;
       } else {
         return true;
