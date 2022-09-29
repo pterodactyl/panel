@@ -22,6 +22,7 @@ class EggFormRequest extends AdminFormRequest
             'name' => 'required|string|max:191',
             'description' => 'nullable|string',
             'docker_images' => 'required|string',
+            'force_outgoing_ip' => 'sometimes|boolean',
             'file_denylist' => 'array',
             'startup' => 'required|string',
             'config_from' => 'sometimes|bail|nullable|numeric',
@@ -46,5 +47,14 @@ class EggFormRequest extends AdminFormRequest
         $validator->sometimes('config_from', 'exists:eggs,id', function () {
             return (int) $this->input('config_from') !== 0;
         });
+    }
+
+    public function validated(): array
+    {
+        $data = parent::validated();
+
+        return array_merge($data, [
+            'force_outgoing_ip' => array_get($data, 'force_outgoing_ip', false),
+        ]);
     }
 }
