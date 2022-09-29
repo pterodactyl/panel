@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\ViewComposers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
