@@ -205,4 +205,18 @@ return [
     'assets' => [
         'use_hash' => env('PTERODACTYL_USE_ASSET_HASH', false),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Email Notification Settings
+    |--------------------------------------------------------------------------
+    |
+    | This section controls what notifications are sent to users.
+    */
+    'email' => [
+        // Should an email be sent to a server owner once their server has completed it's first install process?
+        'send_install_notification' => env('PTERODACTYL_SEND_INSTALL_NOTIFICATION', true),
+        // Should an email be sent to a server owner whenever their server is reinstalled?
+        'send_reinstall_notification' => env('PTERODACTYL_SEND_REINSTALL_NOTIFICATION', true),
+    ],
 ];

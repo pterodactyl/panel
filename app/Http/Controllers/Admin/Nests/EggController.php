@@ -73,7 +73,7 @@ class EggController extends Controller
      */
     public function store(EggFormRequest $request): RedirectResponse
     {
-        $data = $request->normalize();
+        $data = $request->validated();
         $data['docker_images'] = $this->normalizeDockerImages($data['docker_images'] ?? null);
 
         $egg = $this->creationService->handle($data);
@@ -106,7 +106,7 @@ class EggController extends Controller
      */
     public function update(EggFormRequest $request, Egg $egg): RedirectResponse
     {
-        $data = $request->normalize();
+        $data = $request->validated();
         $data['docker_images'] = $this->normalizeDockerImages($data['docker_images'] ?? null);
 
         $this->updateService->handle($egg, $data);

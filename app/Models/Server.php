@@ -41,6 +41,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $backup_limit
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property \Illuminate\Support\Carbon|null $installed_at
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLog[] $activity
  * @property int|null $activity_count
  * @property \Pterodactyl\Models\Allocation|null $allocation
@@ -131,6 +132,7 @@ class Server extends Model
     protected $attributes = [
         'status' => self::STATUS_INSTALLING,
         'oom_disabled' => true,
+        'installed_at' => null,
     ];
 
     /**
@@ -145,14 +147,14 @@ class Server extends Model
      *
      * @var array
      */
-    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
+    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at', 'installed_at'];
 
     /**
      * Fields that are not mass assignable.
      *
      * @var array
      */
-    protected $guarded = ['id', self::CREATED_AT, self::UPDATED_AT, 'deleted_at'];
+    protected $guarded = ['id', self::CREATED_AT, self::UPDATED_AT, 'deleted_at', 'installed_at'];
 
     /**
      * @var array
