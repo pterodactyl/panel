@@ -30,7 +30,7 @@ class SettingComposer extends Composer
             'name' => config('app.name') ?? 'Pterodactyl',
             'locale' => config('app.locale') ?? 'en',
             'logo' => $this->setting('logo', Composer::TYPE_STR),
-    
+
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',
@@ -42,6 +42,7 @@ class SettingComposer extends Composer
             ],
 
             'approvals' => $this->setting('approvals:enabled', Composer::TYPE_BOOL),
+            'databases' => $this->getDatabaseAvailability(),
         ]);
     }
 }

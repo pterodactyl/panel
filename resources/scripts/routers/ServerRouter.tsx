@@ -71,6 +71,7 @@ export default () => {
 
     const [error, setError] = useState('');
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const databasesEnabled = useStoreState((state) => state.settings.data!.databases);
     const editEnabled = useStoreState((state) => state.storefront.data!.editing.enabled);
 
     const id = ServerContext.useStoreState((state) => state.server.data?.id);
@@ -140,13 +141,15 @@ export default () => {
                                         </div>
                                     </NavLink>
                                 </Can>
-                                <Can action={'database.*'}>
-                                    <NavLink to={`${match.url}/databases`}>
-                                        <div css={tw`flex items-center justify-between`}>
-                                            Databases <Icon.Database css={tw`ml-1`} size={18} />
-                                        </div>
-                                    </NavLink>
-                                </Can>
+                                {databasesEnabled && (
+                                  <Can action={'database.*'}>
+                                      <NavLink to={`${match.url}/databases`}>
+                                          <div css={tw`flex items-center justify-between`}>
+                                              Databases <Icon.Database css={tw`ml-1`} size={18} />
+                                          </div>
+                                      </NavLink>
+                                  </Can>
+                                )}
                                 <Can action={'schedule.*'}>
                                     <NavLink to={`${match.url}/schedules`}>
                                         <div css={tw`flex items-center justify-between`}>
@@ -241,11 +244,13 @@ export default () => {
                                             <FileEditContainer />
                                         </Spinner.Suspense>
                                     </Route>
-                                    <Route path={`${match.path}/databases`} exact>
-                                        <RequireServerPermission permissions={'database.*'}>
-                                            <DatabasesContainer />
-                                        </RequireServerPermission>
-                                    </Route>
+                                    {databasesEnabled && (
+                                      <Route path={`${match.path}/databases`} exact>
+                                          <RequireServerPermission permissions={'database.*'}>
+                                              <DatabasesContainer />
+                                          </RequireServerPermission>
+                                      </Route>
+                                    )}
                                     <Route path={`${match.path}/schedules`} exact>
                                         <RequireServerPermission permissions={'schedule.*'}>
                                             <ScheduleContainer />

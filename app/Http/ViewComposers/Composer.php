@@ -34,6 +34,17 @@ class Composer
         $this->settings = $settings;
     }
 
+    protected function getDatabaseAvailability(): bool
+    {
+      $databases = DB::table('databases')->count();
+
+      if (databases <= 0) {
+        return false;
+      } else {
+        return true;
+      }
+    }
+
     /**
      * Get the setting from the database and cast it to the correct type.
      */
