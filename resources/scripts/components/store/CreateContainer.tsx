@@ -83,7 +83,11 @@ export default () => {
 
     const changeNest = (e: ChangeEvent<HTMLSelectElement>) => {
         setNest(parseInt(e.target.value));
-        getEggs(parseInt(e.target.value)).then((eggs) => setEggs(eggs));
+
+        getEggs(parseInt(e.target.value)).then((eggs) => {
+            setEggs(eggs);
+            setEgg(eggs[0].id);
+        });
     };
 
     const submit = (values: CreateValues) => {
