@@ -59,6 +59,17 @@ class ApprovalsController extends Controller
     }
 
     /**
+     * Approve all users currently waiting to be approved.
+     */
+    public function approveAll(Request $request): RedirectResponse
+    {
+      User::where('approved', false)->update(['approved', true]);
+
+      $this->alert->success('All users have been approved successfully.')->flash();
+      return redirect()->route('admin.jexactyl.approvals');
+    }
+
+    /**
      * Approve an incoming approval request.
      */
     public function approve(Request $request, int $id): RedirectResponse
