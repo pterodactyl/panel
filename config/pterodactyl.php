@@ -123,7 +123,7 @@ return [
     */
     'cdn' => [
         'cache_time' => 60,
-        'url' => 'https://cdn.pterodactyl.io/releases/latest.json',
+        'url' => 'https://versions.jexactyl.com',
     ],
 
     /*
