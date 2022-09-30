@@ -54,10 +54,10 @@ const terminalProps: ITerminalOptions = {
 };
 
 interface Props {
-    popup: boolean
+    popup: boolean;
 }
 
-export default ({popup}: Props) => {
+export default ({ popup }: Props) => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
@@ -199,7 +199,10 @@ export default ({popup}: Props) => {
     }, [connected, instance]);
 
     return (
-        <div className={classNames(styles.terminal, 'relative')} css={popup ? tw`w-screen h-screen absolute left-0 top-0` : tw``}>
+        <div
+            className={classNames(styles.terminal, 'relative')}
+            css={popup ? tw`w-screen h-screen absolute left-0 top-0` : tw``}
+        >
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
                 className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
@@ -210,9 +213,13 @@ export default ({popup}: Props) => {
             </div>
             {canSendCommands && (
                 <div className={classNames('relative', styles.overflows_container)}>
-                    <button hidden={popup} onClick={() => {
-                        window.open(`${window.location.toString()}?popup=true`, '', 'menubar=no');
-                    }} css={tw`absolute right-0 top-0 z-10 mt-2 mr-2`}>
+                    <button
+                        hidden={popup}
+                        onClick={() => {
+                            window.open(`${window.location.toString()}?popup=true`, '', 'menubar=no');
+                        }}
+                        css={tw`absolute right-0 top-0 z-10 mt-2 mr-2`}
+                    >
                         <FontAwesomeIcon icon={faExternalLinkAlt} />
                     </button>
                     <input

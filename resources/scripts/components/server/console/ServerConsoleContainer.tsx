@@ -20,13 +20,8 @@ const ServerConsoleContainer = () => {
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
 
-    
-
-    if(new URLSearchParams(window.location.search).get("popup"))
-    {
-        return (
-            <Console popup={true} />
-        )
+    if (new URLSearchParams(window.location.search).get('popup')) {
+        return <Console popup={true} />;
     }
 
     return (
