@@ -27,7 +27,7 @@ Built on [Pterodactyl](https://pterodactyl.io), this software is designed from t
 | [**SneakyHub**](https://sneakyhub.com/discord) | A SneakyNodes LTD project, Free 24/7 hosting for games, websites, discord bots and more. | [@SneakyHub](https://github.com/sneakyhub) |
 | [**Wumpus Host**](https://wumpus.host) | A Discord bot host that offers free hosting, 24/7. | [@WumpusHost](https://github.com/wumpushost) |
 | [**GigaNodes**](https://client.giganodes.net) | A cheap host, with many locations like Europe, United States, Asia, United Kingdom | [@GigaNodes](https://discord.gg/dSgpmZ2C) |
-| [**CryptoHosting**](https://crypto-hosting.eu) | Crypto-Hosting offer high performance servers with extreme DDoS protection! | [@Crypto-Hosting](https://github.com/crypto-hosting) |
+| [**ShieldCore**](https://crypto-hosting.eu) | ShieldCore offer high performance servers with extreme DDoS protection! | [@ShieldCore](https://crypto-hosting.eu) |
 
 ## Previews
 <p float="left">
