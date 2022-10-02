@@ -142,13 +142,13 @@ export default () => {
                                     </NavLink>
                                 </Can>
                                 {databasesEnabled && (
-                                  <Can action={'database.*'}>
-                                      <NavLink to={`${match.url}/databases`}>
-                                          <div css={tw`flex items-center justify-between`}>
-                                              Databases <Icon.Database css={tw`ml-1`} size={18} />
-                                          </div>
-                                      </NavLink>
-                                  </Can>
+                                    <Can action={'database.*'}>
+                                        <NavLink to={`${match.url}/databases`}>
+                                            <div css={tw`flex items-center justify-between`}>
+                                                Databases <Icon.Database css={tw`ml-1`} size={18} />
+                                            </div>
+                                        </NavLink>
+                                    </Can>
                                 )}
                                 <Can action={'schedule.*'}>
                                     <NavLink to={`${match.url}/schedules`}>
@@ -245,11 +245,11 @@ export default () => {
                                         </Spinner.Suspense>
                                     </Route>
                                     {databasesEnabled && (
-                                      <Route path={`${match.path}/databases`} exact>
-                                          <RequireServerPermission permissions={'database.*'}>
-                                              <DatabasesContainer />
-                                          </RequireServerPermission>
-                                      </Route>
+                                        <Route path={`${match.path}/databases`} exact>
+                                            <RequireServerPermission permissions={'database.*'}>
+                                                <DatabasesContainer />
+                                            </RequireServerPermission>
+                                        </Route>
                                     )}
                                     <Route path={`${match.path}/schedules`} exact>
                                         <RequireServerPermission permissions={'schedule.*'}>
