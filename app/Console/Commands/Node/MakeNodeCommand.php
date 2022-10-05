@@ -59,7 +59,13 @@ class MakeNodeCommand extends Command
         $data['description'] = $this->option('description') ?? $this->ask('Enter a description to identify the node');
         $data['location_id'] = $this->option('locationId') ?? $this->ask('Enter a valid location id');
         $data['fqdn'] = $this->option('fqdn') ?? $this->ask('Enter a domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node');
-        if (!filter_var(gethostbyname($data['fqdn']), FILTER_VALIDATE_IP)) {
+
+        // Note, this function will also resolve CNAMEs for us automatically,
+        // there is no need to manually resolve them here.
+        //
+        // Using @ as workaround to fix https://bugs.php.net/bug.php?id=73149
+        $records = @dns_get_record($data['fqdn'], DNS_A + DNS_AAAA);
+        if (empty($records)) {
             $this->error('The FQDN or IP address provided does not resolve to a valid IP address.');
 
             return;

@@ -409,4 +409,21 @@ class Server extends Model
             throw new ServerStateConflictException($this);
         }
     }
+
+    /**
+     * Checks if the server is currently in a transferable state. If not, an
+     * exception is raised. This should be called whenever something needs to make
+     * sure the server is able to be transferred and is not currently being transferred
+     * or installed.
+     */
+    public function validateTransferState()
+    {
+        if (
+            !$this->isInstalled() ||
+            $this->status === self::STATUS_RESTORING_BACKUP ||
+            !is_null($this->transfer)
+        ) {
+            throw new ServerStateConflictException($this);
+        }
+    }
 }

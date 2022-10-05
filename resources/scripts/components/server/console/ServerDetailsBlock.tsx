@@ -82,12 +82,12 @@ export default ({ className }: { className?: string }) => {
     return (
         <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
             <StatBlock icon={faClock} title={'Uptime'}>
-                {status === 'starting' || status === 'stopping' ? (
-                    capitalize(status)
+                {status === null ? (
+                    'Offline'
                 ) : stats.uptime > 0 ? (
                     <UptimeDuration uptime={stats.uptime / 1000} />
                 ) : (
-                    'Offline'
+                    capitalize(status)
                 )}
             </StatBlock>
             <StatBlock icon={faWifi} title={'Address'} copyOnClick={allocation}>

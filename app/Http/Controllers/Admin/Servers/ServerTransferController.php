@@ -97,6 +97,8 @@ class ServerTransferController extends Controller
             // Check if the selected daemon is online.
             $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
 
+            $server->validateTransferState();
+
             // Create a new ServerTransfer entry.
             $transfer = new ServerTransfer();
 

@@ -60,6 +60,10 @@ class AssignmentService
         }
 
         try {
+            // TODO: how should we approach supporting IPv6 with this?
+            // gethostbyname only supports IPv4, but the alternative (dns_get_record) returns
+            // an array of records, which is not ideal for this use case, we need a SINGLE
+            // IP to use, not multiple.
             $underlying = gethostbyname($data['allocation_ip']);
             $parsed = Network::parse($underlying);
         } catch (Exception $exception) {
