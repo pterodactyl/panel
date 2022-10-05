@@ -34,8 +34,12 @@ class NodeFormRequest extends AdminFormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            // Check that the FQDN is a valid IP address.
-            if (!filter_var(gethostbyname($this->input('fqdn')), FILTER_VALIDATE_IP)) {
+            // Note, this function will also resolve CNAMEs for us automatically,
+            // there is no need to manually resolve them here.
+            //
+            // Using @ as workaround to fix https://bugs.php.net/bug.php?id=73149
+            $records = @dns_get_record($this->input('fqdn'), DNS_A + DNS_AAAA);
+            if (empty($records)) {
                 $validator->errors()->add('fqdn', trans('admin/node.validation.fqdn_not_resolvable'));
             }
 
