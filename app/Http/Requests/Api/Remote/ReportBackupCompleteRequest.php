@@ -16,6 +16,9 @@ class ReportBackupCompleteRequest extends FormRequest
             'checksum' => 'nullable|string|required_if:successful,true',
             'checksum_type' => 'nullable|string|required_if:successful,true',
             'size' => 'nullable|numeric|required_if:successful,true',
+            'parts' => 'nullable|array',
+            'parts.*.etag' => 'required|string',
+            'parts.*.part_number' => 'required|numeric',
         ];
     }
 }

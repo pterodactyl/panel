@@ -145,6 +145,7 @@ export default ({ className }: WithClassname) => {
                         fileUploadInput.current.files = null;
                     }
                 }}
+                multiple
             />
             <Button className={className} onClick={() => fileUploadInput.current && fileUploadInput.current.click()}>
                 Upload
