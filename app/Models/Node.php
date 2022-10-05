@@ -250,4 +250,37 @@ class Node extends Model
 
         return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
+
+    public static function validateFQDN(string $scheme, string $fqdn): ?string
+    {
+        // Check if the FQDN is an IP address.
+        if (filter_var($fqdn, FILTER_VALIDATE_IP)) {
+            // Check that if we are using HTTPS.
+            if ($scheme === 'https') {
+                return trans('admin/node.validation.fqdn_required_for_ssl');
+            }
+
+            return null;
+        }
+
+        // Lookup A and AAAA DNS records for the FQDN.
+        //
+        // Note, this function will also resolve CNAMEs for us automatically,
+        // there is no need to manually resolve them here.
+        //
+        // Using @ as workaround to avoid https://bugs.php.net/bug.php?id=73149
+        $records = @dns_get_record($fqdn, DNS_A + DNS_AAAA);
+        if (!empty($records)) {
+            return null;
+        }
+
+        // If there are no DNS records, check if there is a /etc/hosts entry.
+        // NOTE: this function call only supports IPv4, that is why we are checking
+        // DNS records first.
+        if (filter_var(gethostbyname($fqdn), FILTER_VALIDATE_IP)) {
+            return null;
+        }
+
+        return trans('admin/node.validation.fqdn_not_resolvable');
+    }
 }

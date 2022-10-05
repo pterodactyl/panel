@@ -34,18 +34,12 @@ class NodeFormRequest extends AdminFormRequest
     public function withValidator($validator)
     {
         $validator->after(function ($validator) {
-            // Note, this function will also resolve CNAMEs for us automatically,
-            // there is no need to manually resolve them here.
-            //
-            // Using @ as workaround to fix https://bugs.php.net/bug.php?id=73149
-            $records = @dns_get_record($this->input('fqdn'), DNS_A + DNS_AAAA);
-            if (empty($records)) {
-                $validator->errors()->add('fqdn', trans('admin/node.validation.fqdn_not_resolvable'));
-            }
+            $scheme = $this->input('scheme');
+            $fqdn = $this->input('fqdn');
 
-            // Check that if using HTTPS the FQDN is not an IP address.
-            if (filter_var($this->input('fqdn'), FILTER_VALIDATE_IP) && $this->input('scheme') === 'https') {
-                $validator->errors()->add('fqdn', trans('admin/node.validation.fqdn_required_for_ssl'));
+            $error = Node::validateFQDN($scheme, $fqdn);
+            if (!is_null($error)) {
+                $validator->errors()->add('fqdn', $error);
             }
         });
     }
