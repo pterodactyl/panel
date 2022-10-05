@@ -243,7 +243,13 @@ class EggConfigurationService
         // Remember, in PHP objects are always passed by reference, so if we do not clone this object
         // instance we'll end up making modifications to the object outside the scope of this function
         // which leads to some fun behavior in the parser.
-        $clone = clone $data;
+        if (is_array($data)) {
+            // Copy the array.
+            // NOTE: if the array contains any objects, they will be passed by reference.
+            $clone = $data;
+        } else {
+            $clone = clone $data;
+        }
         foreach ($clone as $key => &$value) {
             if (is_iterable($value) || is_object($value)) {
                 $value = $this->iterate($value, $structure);
