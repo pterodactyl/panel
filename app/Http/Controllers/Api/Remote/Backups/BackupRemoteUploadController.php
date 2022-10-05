@@ -82,6 +82,11 @@ class BackupRemoteUploadController extends Controller
             'ContentType' => 'application/x-gzip',
         ];
 
+        $storageClass = config('backups.disks.s3.storage_class');
+        if (!is_null($storageClass)) {
+            $params['StorageClass'] = $storageClass;
+        }
+
         // Execute the CreateMultipartUpload request
         $result = $client->execute($client->getCommand('CreateMultipartUpload', $params));
 
