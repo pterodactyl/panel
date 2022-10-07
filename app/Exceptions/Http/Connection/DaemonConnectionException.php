@@ -72,10 +72,8 @@ class DaemonConnectionException extends DisplayException
     /**
      * Override the default reporting method for DisplayException by just logging immediately
      * here and including the specific X-Request-Id header that was returned by the call.
-     *
-     * @return void
      */
-    public function report()
+    public function report(): void
     {
         Log::{$this->getErrorLevel()}($this->getPrevious(), [
             'request_id' => $this->requestId,
@@ -84,18 +82,13 @@ class DaemonConnectionException extends DisplayException
 
     /**
      * Return the HTTP status code for this exception.
-     *
-     * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRequestId()
+    public function getRequestId(): ?string
     {
         return $this->requestId;
     }

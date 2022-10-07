@@ -44,18 +44,12 @@ class DisplayException extends PterodactylException implements HttpExceptionInte
         return $this->level;
     }
 
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return Response::HTTP_BAD_REQUEST;
     }
 
-    /**
-     * @return array
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return [];
     }
