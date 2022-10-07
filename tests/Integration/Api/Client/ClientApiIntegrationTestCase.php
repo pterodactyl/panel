@@ -6,7 +6,6 @@ use ReflectionClass;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
-use Illuminate\Http\Response;
 use InvalidArgumentException;
 use Pterodactyl\Models\Model;
 use Pterodactyl\Models\Backup;
@@ -44,8 +43,12 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * Override the default createTestResponse from Illuminate so that we can
      * just dump 500-level errors to the screen in the tests without having
      * to keep re-assigning variables.
+     *
+     * @param \Illuminate\Http\Response $response
+     *
+     * @return \Illuminate\Testing\TestResponse
      */
-    protected function createTestResponse(Response $response): \Illuminate\Testing\TestResponse
+    protected function createTestResponse($response)
     {
         return TestResponse::fromBaseResponse($response);
     }
