@@ -3,7 +3,7 @@
 namespace Pterodactyl\Services\Eggs\Variables;
 
 use Pterodactyl\Models\EggVariable;
-use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Pterodactyl\Traits\Services\ValidatesValidationRules;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
@@ -12,20 +12,14 @@ class VariableCreationService
 {
     use ValidatesValidationRules;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface
-     */
-    private $repository;
+    private EggVariableRepositoryInterface $repository;
 
-    /**
-     * @var \Illuminate\Contracts\Validation\Factory
-     */
-    private $validator;
+    private ValidationFactory $validator;
 
     /**
      * VariableCreationService constructor.
      */
-    public function __construct(EggVariableRepositoryInterface $repository, Factory $validator)
+    public function __construct(EggVariableRepositoryInterface $repository, ValidationFactory $validator)
     {
         $this->repository = $repository;
         $this->validator = $validator;
@@ -35,7 +29,7 @@ class VariableCreationService
      * Return the validation factory instance to be used by rule validation
      * checking in the trait.
      */
-    protected function getValidator(): Factory
+    protected function getValidator(): ValidationFactory
     {
         return $this->validator;
     }

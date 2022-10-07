@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs;
 
@@ -16,15 +9,9 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EggDeletionService
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    protected $repository;
+    protected EggRepositoryInterface $repository;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    protected $serverRepository;
+    protected ServerRepositoryInterface $serverRepository;
 
     /**
      * EggDeletionService constructor.

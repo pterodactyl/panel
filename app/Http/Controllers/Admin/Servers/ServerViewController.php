@@ -195,7 +195,7 @@ class ServerViewController extends Controller
             $canTransfer = true;
         }
 
-        Javascript::put([
+        JavaScript::put([
             'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
         ]);
 

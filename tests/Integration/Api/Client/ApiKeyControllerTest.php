@@ -52,7 +52,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
-        // Small sub-test to ensure we're always comparing the  number of keys to the
+        // Small subtest to ensure we're always comparing the  number of keys to the
         // specific logged in account, and not just the total number of keys stored in
         // the database.
         ApiKey::factory()->times(10)->create([
@@ -217,7 +217,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Tests that an application API key also belonging to the logged in user cannot be
+     * Tests that an application API key also belonging to the logged-in user cannot be
      * deleted through this endpoint if it exists.
      */
     public function testApplicationApiKeyCannotBeDeleted()

@@ -14,25 +14,13 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteBackupService
 {
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
-     */
-    private $repository;
+    private BackupRepository $repository;
 
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonBackupRepository
-     */
-    private $daemonBackupRepository;
+    private DaemonBackupRepository $daemonBackupRepository;
 
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
+    private ConnectionInterface $connection;
 
-    /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $manager;
+    private BackupManager $manager;
 
     /**
      * DeleteBackupService constructor.
@@ -55,7 +43,7 @@ class DeleteBackupService
      *
      * @throws \Throwable
      */
-    public function handle(Backup $backup)
+    public function handle(Backup $backup): void
     {
         // If the backup is marked as failed it can still be deleted, even if locked
         // since the UI doesn't allow you to unlock a failed backup in the first place.
@@ -79,7 +67,7 @@ class DeleteBackupService
             } catch (DaemonConnectionException $exception) {
                 $previous = $exception->getPrevious();
                 // Don't fail the request if the Daemon responds with a 404, just assume the backup
-                // doesn't actually exist and remove it's reference from the Panel as well.
+                // doesn't actually exist and remove its reference from the Panel as well.
                 if (!$previous instanceof ClientException || $previous->getResponse()->getStatusCode() !== Response::HTTP_NOT_FOUND) {
                     throw $exception;
                 }
@@ -94,12 +82,12 @@ class DeleteBackupService
      *
      * @throws \Throwable
      */
-    protected function deleteFromS3(Backup $backup)
+    protected function deleteFromS3(Backup $backup): void
     {
         $this->connection->transaction(function () use ($backup) {
             $this->repository->delete($backup->id);
 
-            /** @var \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter */
+            /** @var \Pterodactyl\Extensions\Filesystem\S3Filesystem $adapter */
             $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
 
             $adapter->getClient()->deleteObject([

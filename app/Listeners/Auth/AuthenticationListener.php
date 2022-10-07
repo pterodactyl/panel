@@ -16,7 +16,7 @@ class AuthenticationListener implements SubscribesToEvents
      *
      * @param \Illuminate\Auth\Events\Login|\Illuminate\Auth\Events\Failed $event
      */
-    public function handle($event): void
+    public function handle(Failed|Login $event): void
     {
         $activity = Activity::withRequestMetadata();
         if ($event->user) {

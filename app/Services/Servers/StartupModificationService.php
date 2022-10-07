@@ -14,20 +14,12 @@ class StartupModificationService
 {
     use HasUserLevels;
 
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
+    private ConnectionInterface $connection;
 
-    /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService
-     */
-    private $validatorService;
+    private VariableValidatorService $validatorService;
 
     /**
      * StartupModificationService constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\VariableValidatorService $validatorService
      */
     public function __construct(ConnectionInterface $connection, VariableValidatorService $validatorService)
     {
@@ -79,7 +71,7 @@ class StartupModificationService
     /**
      * Update certain administrative settings for a server in the DB.
      */
-    protected function updateAdministrativeSettings(array $data, Server &$server)
+    protected function updateAdministrativeSettings(array $data, Server &$server): void
     {
         $eggId = Arr::get($data, 'egg_id');
 

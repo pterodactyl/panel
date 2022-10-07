@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
-use Pterodactyl\Models\Database;
 use Illuminate\Support\Collection;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
@@ -39,10 +38,8 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
 
     /**
      * Create a new database user on a given connection.
-     *
-     * @param $max_connections
      */
-    public function createUser(string $username, string $remote, string $password, string $max_connections): bool;
+    public function createUser(string $username, string $remote, string $password, int $max_connections): bool;
 
     /**
      * Give a specific user access to a given database.
@@ -61,8 +58,6 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
 
     /**
      * Drop a given user on a specific connection.
-     *
-     * @return mixed
      */
     public function dropUser(string $username, string $remote): bool;
 }

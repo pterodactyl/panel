@@ -14,30 +14,15 @@ use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
 class ToggleTwoFactorService
 {
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
+    private ConnectionInterface $connection;
 
-    /**
-     * @var \PragmaRX\Google2FA\Google2FA
-     */
-    private $google2FA;
+    private Encrypter $encrypter;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
+    private Google2FA $google2FA;
 
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository
-     */
-    private $recoveryTokenRepository;
+    private RecoveryTokenRepository $recoveryTokenRepository;
 
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
+    private UserRepositoryInterface $repository;
 
     /**
      * ToggleTwoFactorService constructor.
@@ -49,11 +34,11 @@ class ToggleTwoFactorService
         RecoveryTokenRepository $recoveryTokenRepository,
         UserRepositoryInterface $repository
     ) {
+        $this->connection = $connection;
         $this->encrypter = $encrypter;
         $this->google2FA = $google2FA;
-        $this->repository = $repository;
         $this->recoveryTokenRepository = $recoveryTokenRepository;
-        $this->connection = $connection;
+        $this->repository = $repository;
     }
 
     /**

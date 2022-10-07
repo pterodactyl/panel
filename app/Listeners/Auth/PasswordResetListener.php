@@ -15,7 +15,7 @@ class PasswordResetListener
         $this->request = $request;
     }
 
-    public function handle(PasswordReset $event)
+    public function handle(PasswordReset $event): void
     {
         Activity::event('event:password-reset')
             ->withRequestMetadata()

@@ -13,25 +13,13 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerDeletionService
 {
-    /**
-     * @var bool
-     */
-    protected $force = false;
+    protected bool $force = false;
 
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
+    private ConnectionInterface $connection;
 
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $daemonServerRepository;
+    private DaemonServerRepository $daemonServerRepository;
 
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private $databaseManagementService;
+    private DatabaseManagementService $databaseManagementService;
 
     /**
      * DeletionService constructor.
@@ -53,7 +41,7 @@ class ServerDeletionService
      *
      * @return $this
      */
-    public function withForce($bool = true)
+    public function withForce($bool = true): self
     {
         $this->force = $bool;
 
@@ -66,7 +54,7 @@ class ServerDeletionService
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle(Server $server)
+    public function handle(Server $server): void
     {
         try {
             $this->daemonServerRepository->setServer($server)->delete();

@@ -5,14 +5,12 @@ namespace Pterodactyl\Repositories\Eloquent;
 use Carbon\Carbon;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class BackupRepository extends EloquentRepository
 {
-    /**
-     * @return string
-     */
-    public function model()
+    public function model(): string
     {
         return Backup::class;
     }
@@ -22,7 +20,7 @@ class BackupRepository extends EloquentRepository
      *
      * @return \Pterodactyl\Models\Backup[]|\Illuminate\Support\Collection
      */
-    public function getBackupsGeneratedDuringTimespan(int $server, int $seconds = 600)
+    public function getBackupsGeneratedDuringTimespan(int $server, int $seconds = 600): array|Collection
     {
         return $this->getBuilder()
             ->withTrashed()

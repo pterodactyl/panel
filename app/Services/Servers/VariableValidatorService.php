@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Servers;
 
@@ -20,10 +13,7 @@ class VariableValidatorService
 {
     use HasUserLevels;
 
-    /**
-     * @var \Illuminate\Contracts\Validation\Factory
-     */
-    private $validator;
+    private ValidationFactory $validator;
 
     /**
      * VariableValidatorService constructor.
@@ -42,7 +32,7 @@ class VariableValidatorService
     {
         $query = EggVariable::query()->where('egg_id', $egg);
         if (!$this->isUserLevel(User::USER_LEVEL_ADMIN)) {
-            // Don't attempt to validate variables if they aren't user editable
+            // Don't attempt to validate variables if they aren't user editable,
             // and we're not running this at an admin level.
             $query = $query->where('user_editable', true)->where('user_viewable', true);
         }

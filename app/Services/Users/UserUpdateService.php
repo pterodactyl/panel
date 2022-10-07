@@ -10,10 +10,7 @@ class UserUpdateService
 {
     use HasUserLevels;
 
-    /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
-     */
-    private $hasher;
+    private Hasher $hasher;
 
     /**
      * UpdateService constructor.

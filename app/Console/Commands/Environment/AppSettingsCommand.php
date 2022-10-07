@@ -32,11 +32,6 @@ class AppSettingsCommand extends Command
     ];
 
     /**
-     * @var \Illuminate\Contracts\Console\Kernel
-     */
-    protected $command;
-
-    /**
      * @var string
      */
     protected $description = 'Configure basic environment settings for the Panel.';
@@ -57,10 +52,9 @@ class AppSettingsCommand extends Command
                             {--redis-port= : Port to connect to redis over.}
                             {--settings-ui= : Enable or disable the settings UI.}';
 
-    /**
-     * @var array
-     */
-    protected $variables = [];
+    protected array $variables = [];
+
+    protected Kernel $console;
 
     /**
      * AppSettingsCommand constructor.
@@ -69,7 +63,7 @@ class AppSettingsCommand extends Command
     {
         parent::__construct();
 
-        $this->command = $command;
+        $this->console = $command;
     }
 
     /**
@@ -77,7 +71,7 @@ class AppSettingsCommand extends Command
      *
      * @throws \Pterodactyl\Exceptions\PterodactylException
      */
-    public function handle()
+    public function handle(): int
     {
         if (empty(config('hashids.salt')) || $this->option('new-salt')) {
             $this->variables['HASHIDS_SALT'] = str_random(20);
@@ -104,7 +98,7 @@ class AppSettingsCommand extends Command
         $this->output->comment('The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference http://php.net/manual/en/timezones.php.');
         $this->variables['APP_TIMEZONE'] = $this->option('timezone') ?? $this->anticipate(
             'Application Timezone',
-            DateTimeZone::listIdentifiers(DateTimeZone::ALL),
+            DateTimeZone::listIdentifiers(),
             config('app.timezone')
         );
 
@@ -136,14 +130,16 @@ class AppSettingsCommand extends Command
         }
 
         // Make sure session cookies are set as "secure" when using HTTPS
-        if (strpos($this->variables['APP_URL'], 'https://') === 0) {
+        if (str_starts_with($this->variables['APP_URL'], 'https://')) {
             $this->variables['SESSION_SECURE_COOKIE'] = 'true';
         }
 
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);
 
-        $this->info($this->command->output());
+        $this->info($this->console->output());
+
+        return 0;
     }
 
     /**

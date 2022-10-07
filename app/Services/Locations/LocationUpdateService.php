@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Locations;
 
@@ -14,10 +7,7 @@ use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationUpdateService
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
-     */
-    protected $repository;
+    protected LocationRepositoryInterface $repository;
 
     /**
      * LocationUpdateService constructor.
@@ -30,14 +20,10 @@ class LocationUpdateService
     /**
      * Update an existing location.
      *
-     * @param int|\Pterodactyl\Models\Location $location
-     *
-     * @return \Pterodactyl\Models\Location
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle($location, array $data)
+    public function handle(Location|int $location, array $data): Location
     {
         $location = ($location instanceof Location) ? $location->id : $location;
 

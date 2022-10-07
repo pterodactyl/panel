@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands;
 
@@ -21,19 +14,13 @@ class InfoCommand extends Command
     protected $description = 'Displays the application, database, and email configurations along with the panel version.';
 
     /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
-
-    /**
      * @var string
      */
     protected $signature = 'p:info';
 
-    /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
-     */
-    protected $versionService;
+    protected ConfigRepository $config;
+
+    protected SoftwareVersionService $versionService;
 
     /**
      * VersionCommand constructor.
@@ -78,10 +65,10 @@ class InfoCommand extends Command
         $driver = $this->config->get('database.default');
         $this->table([], [
             ['Driver', $driver],
-            ['Host', $this->config->get("database.connections.{$driver}.host")],
-            ['Port', $this->config->get("database.connections.{$driver}.port")],
-            ['Database', $this->config->get("database.connections.{$driver}.database")],
-            ['Username', $this->config->get("database.connections.{$driver}.username")],
+            ['Host', $this->config->get("database.connections.$driver.host")],
+            ['Port', $this->config->get("database.connections.$driver.port")],
+            ['Database', $this->config->get("database.connections.$driver.database")],
+            ['Username', $this->config->get("database.connections.$driver.username")],
         ], 'compact');
 
         $this->output->title('Email Configuration');
@@ -98,13 +85,8 @@ class InfoCommand extends Command
 
     /**
      * Format output in a Name: Value manner.
-     *
-     * @param string $value
-     * @param string $opts
-     *
-     * @return string
      */
-    private function formatText($value, $opts = '')
+    private function formatText(string $value, string $opts = ''): string
     {
         return sprintf('<%s>%s</>', $opts, $value);
     }

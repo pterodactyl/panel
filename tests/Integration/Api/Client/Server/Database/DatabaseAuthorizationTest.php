@@ -63,9 +63,6 @@ class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->json($method, $this->link($server3, '/databases/' . $hashids->encode($database3->id) . $endpoint))->assertNotFound();
     }
 
-    /**
-     * @return \string[][]
-     */
     public function methodDataProvider(): array
     {
         return [

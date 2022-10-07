@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\Location;
 
@@ -14,11 +7,6 @@ use Pterodactyl\Services\Locations\LocationCreationService;
 
 class MakeLocationCommand extends Command
 {
-    /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService
-     */
-    protected $creationService;
-
     /**
      * @var string
      */
@@ -30,6 +18,8 @@ class MakeLocationCommand extends Command
      * @var string
      */
     protected $description = 'Creates a new location on the system via the CLI.';
+
+    protected LocationCreationService $creationService;
 
     /**
      * Create a new command instance.

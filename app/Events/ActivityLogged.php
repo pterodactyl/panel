@@ -25,12 +25,12 @@ class ActivityLogged extends Event
         return $this->isSystem() ? null : $this->model->actor;
     }
 
-    public function isServerEvent()
+    public function isServerEvent(): bool
     {
         return Str::startsWith($this->model->event, 'server:');
     }
 
-    public function isSystem()
+    public function isSystem(): bool
     {
         return is_null($this->model->actor_id);
     }

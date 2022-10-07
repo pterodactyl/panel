@@ -2,9 +2,12 @@
 
 namespace Pterodactyl\Notifications;
 
+use Pterodactyl\Models\User;
 use Illuminate\Bus\Queueable;
 use Pterodactyl\Events\Event;
+use Pterodactyl\Models\Server;
 use Illuminate\Container\Container;
+use Pterodactyl\Events\Server\Installed;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Pterodactyl\Contracts\Core\ReceivesEvents;
@@ -15,23 +18,15 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
 {
     use Queueable;
 
-    /**
-     * @var \Pterodactyl\Models\Server
-     */
-    public $server;
+    public Server $server;
 
-    /**
-     * @var \Pterodactyl\Models\User
-     */
-    public $user;
+    public User $user;
 
     /**
      * Handle a direct call to this notification from the server installed event. This is configured
      * in the event service provider.
-     *
-     * @param \Pterodactyl\Events\Event|\Pterodactyl\Events\Server\Installed $event
      */
-    public function handle(Event $event): void
+    public function handle(Event|Installed $event): void
     {
         $event->server->loadMissing('user');
 
@@ -48,7 +43,7 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
      *
      * @return array
      */
-    public function via()
+    public function via(): array
     {
         return ['mail'];
     }
@@ -58,7 +53,7 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
      *
      * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail()
+    public function toMail(): MailMessage
     {
         return (new MailMessage())
             ->greeting('Hello ' . $this->user->username . '.')

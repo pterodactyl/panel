@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Extensions;
 
@@ -20,28 +13,19 @@ class DynamicDatabaseConnection
     public const DB_COLLATION = 'utf8_unicode_ci';
     public const DB_DRIVER = 'mysql';
 
-    /**
-     * @var \Illuminate\Config\Repository
-     */
-    protected $config;
+    protected ConfigRepository $config;
 
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    protected $encrypter;
+    protected Encrypter $encrypter;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
-     */
-    protected $repository;
+    protected DatabaseHostRepositoryInterface $repository;
 
     /**
      * DynamicDatabaseConnection constructor.
      */
     public function __construct(
         ConfigRepository $config,
-        DatabaseHostRepositoryInterface $repository,
-        Encrypter $encrypter
+        Encrypter $encrypter,
+        DatabaseHostRepositoryInterface $repository
     ) {
         $this->config = $config;
         $this->encrypter = $encrypter;
@@ -51,13 +35,9 @@ class DynamicDatabaseConnection
     /**
      * Adds a dynamic database connection entry to the runtime config.
      *
-     * @param string $connection
-     * @param \Pterodactyl\Models\DatabaseHost|int $host
-     * @param string $database
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function set($connection, $host, $database = 'mysql')
+    public function set(string $connection, DatabaseHost|int $host, string $database = 'mysql'): void
     {
         if (!$host instanceof DatabaseHost) {
             $host = $this->repository->find($host);

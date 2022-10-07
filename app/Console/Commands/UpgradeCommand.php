@@ -92,7 +92,7 @@ class UpgradeCommand extends Command
             }
         }
 
-        ini_set('output_buffering', 0);
+        ini_set('output_buffering', '0');
         $bar = $this->output->createProgressBar($skipDownload ? 9 : 10);
         $bar->start();
 

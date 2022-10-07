@@ -4,7 +4,7 @@ namespace Pterodactyl\Services\Activity;
 
 use Ramsey\Uuid\Uuid;
 
-class AcitvityLogBatchService
+class ActivityLogBatchService
 {
     protected int $transaction = 0;
     protected ?string $uuid = null;

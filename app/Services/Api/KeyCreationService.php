@@ -8,20 +8,11 @@ use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
+    private Encrypter $encrypter;
 
-    /**
-     * @var int
-     */
-    private $keyType = ApiKey::TYPE_NONE;
+    private int $keyType = ApiKey::TYPE_NONE;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
-     */
-    private $repository;
+    private ApiKeyRepositoryInterface $repository;
 
     /**
      * ApiKeyService constructor.
@@ -35,10 +26,8 @@ class KeyCreationService
     /**
      * Set the type of key that should be created. By default an orphaned key will be
      * created. These keys cannot be used for anything, and will not render in the UI.
-     *
-     * @return \Pterodactyl\Services\Api\KeyCreationService
      */
-    public function setKeyType(int $type)
+    public function setKeyType(int $type): self
     {
         $this->keyType = $type;
 

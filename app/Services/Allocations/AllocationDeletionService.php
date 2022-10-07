@@ -11,7 +11,7 @@ class AllocationDeletionService
     /**
      * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
      */
-    private $repository;
+    private AllocationRepositoryInterface $repository;
 
     /**
      * AllocationDeletionService constructor.
@@ -25,11 +25,9 @@ class AllocationDeletionService
      * Delete an allocation from the database only if it does not have a server
      * that is actively attached to it.
      *
-     * @return int
-     *
      * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
-    public function handle(Allocation $allocation)
+    public function handle(Allocation $allocation): int
     {
         if (!is_null($allocation->server_id)) {
             throw new ServerUsingAllocationException(trans('exceptions.allocations.server_using'));

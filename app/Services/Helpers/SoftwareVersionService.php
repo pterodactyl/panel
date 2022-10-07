@@ -13,20 +13,11 @@ class SoftwareVersionService
 {
     public const VERSION_CACHE_KEY = 'pterodactyl:versioning_data';
 
-    /**
-     * @var array
-     */
-    private static $result;
+    private static array $result;
 
-    /**
-     * @var \Illuminate\Contracts\Cache\Repository
-     */
-    protected $cache;
+    protected CacheRepository $cache;
 
-    /**
-     * @var \GuzzleHttp\Client
-     */
-    protected $client;
+    protected Client $client;
 
     /**
      * SoftwareVersionService constructor.
@@ -46,7 +37,7 @@ class SoftwareVersionService
      *
      * @return string
      */
-    public function getPanel()
+    public function getPanel(): string
     {
         return Arr::get(self::$result, 'panel') ?? 'error';
     }
@@ -56,7 +47,7 @@ class SoftwareVersionService
      *
      * @return string
      */
-    public function getDaemon()
+    public function getDaemon(): string
     {
         return Arr::get(self::$result, 'wings') ?? 'error';
     }
@@ -66,7 +57,7 @@ class SoftwareVersionService
      *
      * @return string
      */
-    public function getDiscord()
+    public function getDiscord(): string
     {
         return Arr::get(self::$result, 'discord') ?? 'https://pterodactyl.io/discord';
     }
@@ -76,35 +67,29 @@ class SoftwareVersionService
      *
      * @return string
      */
-    public function getDonations()
+    public function getDonations(): string
     {
-        return Arr::get(self::$result, 'donations') ?? 'https://paypal.me/PterodactylSoftware';
+        return Arr::get(self::$result, 'donations') ?? 'https://github.com/sponsors/matthewpi';
     }
 
     /**
      * Determine if the current version of the panel is the latest.
-     *
-     * @return bool
      */
-    public function isLatestPanel()
+    public function isLatestPanel(): bool
     {
-        if (config()->get('app.version') === 'canary') {
+        if (config('app.version') === 'canary') {
             return true;
         }
 
-        return version_compare(config()->get('app.version'), $this->getPanel()) >= 0;
+        return version_compare(config('app.version'), $this->getPanel()) >= 0;
     }
 
     /**
      * Determine if a passed daemon version string is the latest.
-     *
-     * @param string $version
-     *
-     * @return bool
      */
-    public function isLatestDaemon($version)
+    public function isLatestDaemon(string $version): bool
     {
-        if ($version === '0.0.0-canary') {
+        if ($version === 'develop') {
             return true;
         }
 
@@ -113,21 +98,19 @@ class SoftwareVersionService
 
     /**
      * Keeps the versioning cache up-to-date with the latest results from the CDN.
-     *
-     * @return array
      */
-    protected function cacheVersionData()
+    protected function cacheVersionData(): array
     {
-        return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config()->get('pterodactyl.cdn.cache_time', 60)), function () {
+        return $this->cache->remember(self::VERSION_CACHE_KEY, CarbonImmutable::now()->addMinutes(config('pterodactyl.cdn.cache_time', 60)), function () {
             try {
-                $response = $this->client->request('GET', config()->get('pterodactyl.cdn.url'));
+                $response = $this->client->request('GET', config('pterodactyl.cdn.url'));
 
                 if ($response->getStatusCode() === 200) {
                     return json_decode($response->getBody(), true);
                 }
 
                 throw new CdnVersionFetchingException();
-            } catch (Exception $exception) {
+            } catch (Exception) {
                 return [];
             }
         });

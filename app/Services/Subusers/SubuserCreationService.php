@@ -15,25 +15,13 @@ use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 
 class SubuserCreationService
 {
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
+    private ConnectionInterface $connection;
 
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\SubuserRepository
-     */
-    private $subuserRepository;
+    private SubuserRepository $subuserRepository;
 
-    /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
-     */
-    private $userCreationService;
+    private UserCreationService $userCreationService;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $userRepository;
+    private UserRepositoryInterface $userRepository;
 
     /**
      * SubuserCreationService constructor.
@@ -74,7 +62,7 @@ class SubuserCreationService
                 if ($subuserCount !== 0) {
                     throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
                 }
-            } catch (RecordNotFoundException $exception) {
+            } catch (RecordNotFoundException) {
                 // Just cap the username generated at 64 characters at most and then append a random string
                 // to the end to make it "unique"...
                 $username = substr(preg_replace('/([^\w\.-]+)/', '', strtok($email, '@')), 0, 64) . Str::random(3);

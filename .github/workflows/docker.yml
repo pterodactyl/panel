@@ -4,8 +4,7 @@ on:
   push:
     branches:
       - 'develop'
-    tags:
-      - 'v*'
+      - 'release/v*'
 
 jobs:
   push:
@@ -37,16 +36,9 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
-      - name: Bump version
-        if: "!contains(github.ref, 'develop')"
-        env:
-          REF: ${{ github.ref }}
-        run: |
-          sed -i "s/    'version' => 'canary',/    'version' => '${REF:11}',/" config/app.php
-
       - name: Release production build
         uses: docker/build-push-action@v2
-        if: "!contains(github.ref, 'develop')"
+        if: "contains(github.ref, 'release/v')"
         with:
           push: true
           platforms: linux/amd64,linux/arm64

@@ -113,6 +113,6 @@ abstract class BaseTransformer extends TransformerAbstract
     {
         return CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp)
             ->setTimezone(self::RESPONSE_TIMEZONE)
-            ->toIso8601String();
+            ->toAtomString();
     }
 }

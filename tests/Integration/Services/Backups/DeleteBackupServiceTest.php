@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Services\Backups;
 
 use Mockery;
+use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Backup;
@@ -16,7 +17,7 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteBackupServiceTest extends IntegrationTestCase
 {
-    private $repository;
+    private MockInterface $repository;
 
     public function setUp(): void
     {

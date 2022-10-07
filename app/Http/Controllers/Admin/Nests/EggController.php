@@ -1,15 +1,8 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Admin\Nests;
 
-use Javascript;
+use JavaScript;
 use Illuminate\View\View;
 use Pterodactyl\Models\Egg;
 use Illuminate\Http\RedirectResponse;
@@ -60,7 +53,7 @@ class EggController extends Controller
     public function create(): View
     {
         $nests = $this->nestRepository->getWithEggs();
-        Javascript::put(['nests' => $nests->keyBy('id')]);
+        JavaScript::put(['nests' => $nests->keyBy('id')]);
 
         return view('admin.eggs.new', ['nests' => $nests]);
     }

@@ -9,10 +9,8 @@ class UserRepository extends EloquentRepository implements UserRepositoryInterfa
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return User::class;
     }

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Exceptions\Model;
 
+use Illuminate\Support\MessageBag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Validator;
 use Pterodactyl\Exceptions\PterodactylException;
@@ -43,7 +44,7 @@ class DataValidationException extends PterodactylException implements HttpExcept
      *
      * @return \Illuminate\Support\MessageBag
      */
-    public function getMessageBag()
+    public function getMessageBag(): MessageBag
     {
         return $this->validator->errors();
     }

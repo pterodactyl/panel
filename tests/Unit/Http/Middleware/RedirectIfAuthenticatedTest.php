@@ -3,16 +3,14 @@
 namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
+use Mockery\MockInterface;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
 
 class RedirectIfAuthenticatedTest extends MiddlewareTestCase
 {
-    /**
-     * @var \Illuminate\Auth\AuthManager|\Mockery\Mock
-     */
-    private $authManager;
+    private MockInterface $authManager;
 
     /**
      * Setup tests.

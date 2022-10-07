@@ -13,7 +13,7 @@ class DatabaseHostRepository extends EloquentRepository implements DatabaseHostR
      *
      * @return string
      */
-    public function model()
+    public function model(): string
     {
         return DatabaseHost::class;
     }

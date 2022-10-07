@@ -22,15 +22,9 @@ class AssignmentService
     public const PORT_RANGE_LIMIT = 1000;
     public const PORT_RANGE_REGEX = '/^(\d{4,5})-(\d{4,5})$/';
 
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    protected $connection;
+    protected ConnectionInterface $connection;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
-     */
-    protected $repository;
+    protected AllocationRepositoryInterface $repository;
 
     /**
      * AssignmentService constructor.
@@ -50,7 +44,7 @@ class AssignmentService
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
-    public function handle(Node $node, array $data)
+    public function handle(Node $node, array $data): void
     {
         $explode = explode('/', $data['allocation_ip']);
         if (count($explode) !== 1) {

@@ -19,42 +19,22 @@ class InitiateBackupService
     /**
      * @var string[]|null
      */
-    private $ignoredFiles;
+    private array $ignoredFiles;
 
-    /**
-     * @var bool
-     */
-    private $isLocked = false;
+    private bool $isLocked = false;
 
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
-     */
-    private $repository;
+    private BackupRepository $repository;
 
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
+    private ConnectionInterface $connection;
 
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonBackupRepository
-     */
-    private $daemonBackupRepository;
+    private DaemonBackupRepository $daemonBackupRepository;
 
-    /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
+    private BackupManager $backupManager;
 
-    /**
-     * @var \Pterodactyl\Services\Backups\DeleteBackupService
-     */
-    private $deleteBackupService;
+    private DeleteBackupService $deleteBackupService;
 
     /**
      * InitiateBackupService constructor.
-     *
-     * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
      */
     public function __construct(
         BackupRepository $repository,
@@ -73,8 +53,6 @@ class InitiateBackupService
     /**
      * Set if the backup should be locked once it is created which will prevent
      * its deletion by users or automated system processes.
-     *
-     * @return $this
      */
     public function setIsLocked(bool $isLocked): self
     {
@@ -87,10 +65,8 @@ class InitiateBackupService
      * Sets the files to be ignored by this backup.
      *
      * @param string[]|null $ignored
-     *
-     * @return $this
      */
-    public function setIgnoredFiles(?array $ignored)
+    public function setIgnoredFiles(?array $ignored): self
     {
         if (is_array($ignored)) {
             foreach ($ignored as $value) {

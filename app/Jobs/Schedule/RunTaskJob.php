@@ -22,20 +22,14 @@ class RunTaskJob extends Job implements ShouldQueue
     use InteractsWithQueue;
     use SerializesModels;
 
-    /**
-     * @var \Pterodactyl\Models\Task
-     */
-    public $task;
+    public Task $task;
 
-    /**
-     * @var bool
-     */
-    public $manualRun;
+    public bool $manualRun;
 
     /**
      * RunTaskJob constructor.
      */
-    public function __construct(Task $task, $manualRun = false)
+    public function __construct(Task $task, bool $manualRun = false)
     {
         $this->queue = 'standard';
         $this->task = $task;

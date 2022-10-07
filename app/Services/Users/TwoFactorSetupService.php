@@ -13,20 +13,11 @@ class TwoFactorSetupService
 {
     public const VALID_BASE32_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
 
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
+    private ConfigRepository $config;
 
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
+    private Encrypter $encrypter;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
+    private UserRepositoryInterface $repository;
 
     /**
      * TwoFactorSetupService constructor.

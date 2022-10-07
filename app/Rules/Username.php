@@ -13,7 +13,7 @@ class Username implements Rule
 
     /**
      * Validate that a username contains only the allowed characters and starts/ends
-     * with alpha-numeric characters.
+     * with alphanumeric characters.
      *
      * Allowed characters: a-z0-9_-.
      *

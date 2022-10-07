@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
+use Mockery\MockInterface;
 use InvalidArgumentException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Servers\SuspensionService;
@@ -11,8 +12,7 @@ use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 
 class SuspensionServiceTest extends IntegrationTestCase
 {
-    /** @var \Mockery\MockInterface */
-    private $repository;
+    private MockInterface $repository;
 
     /**
      * Setup test instance.
@@ -31,7 +31,7 @@ class SuspensionServiceTest extends IntegrationTestCase
 
         $this->repository->expects('setServer->sync')->twice()->andReturnSelf();
 
-        $this->getService()->toggle($server, SuspensionService::ACTION_SUSPEND);
+        $this->getService()->toggle($server);
 
         $this->assertTrue($server->refresh()->isSuspended());
 
@@ -50,7 +50,7 @@ class SuspensionServiceTest extends IntegrationTestCase
         $this->assertFalse($server->isSuspended());
 
         $server->update(['status' => Server::STATUS_SUSPENDED]);
-        $this->getService()->toggle($server, SuspensionService::ACTION_SUSPEND);
+        $this->getService()->toggle($server);
 
         $server->refresh();
         $this->assertTrue($server->isSuspended());
@@ -66,10 +66,7 @@ class SuspensionServiceTest extends IntegrationTestCase
         $this->getService()->toggle($server, 'foo');
     }
 
-    /**
-     * @return \Pterodactyl\Services\Servers\SuspensionService
-     */
-    private function getService()
+    private function getService(): SuspensionService
     {
         return $this->app->make(SuspensionService::class);
     }

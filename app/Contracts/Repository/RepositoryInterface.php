@@ -3,69 +3,57 @@
 namespace Pterodactyl\Contracts\Repository;
 
 use Illuminate\Support\Collection;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 interface RepositoryInterface
 {
     /**
      * Return an identifier or Model object to be used by the repository.
-     *
-     * @return string|\Closure|object
      */
-    public function model();
+    public function model(): string;
 
     /**
      * Return the model being used for this repository instance.
-     *
-     * @return mixed
      */
-    public function getModel();
+    public function getModel(): Model;
 
     /**
      * Returns an instance of a query builder.
-     *
-     * @return mixed
      */
-    public function getBuilder();
+    public function getBuilder(): Builder;
 
     /**
      * Returns the columns to be selected or returned by the query.
      *
-     * @return mixed
+     * @return string[]
      */
-    public function getColumns();
+    public function getColumns(): array;
 
     /**
      * An array of columns to filter the response by.
-     *
-     * @param array|string $columns
-     *
-     * @return $this
      */
-    public function setColumns($columns = ['*']);
+    public function setColumns(array|string $columns = ['*']): self;
 
     /**
      * Stop repository update functions from returning a fresh
      * model when changes are committed.
-     *
-     * @return $this
      */
-    public function withoutFreshModel();
+    public function withoutFreshModel(): self;
 
     /**
      * Return a fresh model with a repository updates a model.
-     *
-     * @return $this
      */
-    public function withFreshModel();
+    public function withFreshModel(): self;
 
     /**
-     * Set whether or not the repository should return a fresh model
+     * Set whether the repository should return a fresh model
      * when changes are committed.
      *
      * @return $this
      */
-    public function setFreshModel(bool $fresh = true);
+    public function setFreshModel(bool $fresh = true): self;
 
     /**
      * Create a new model instance and persist it to the database.
@@ -117,14 +105,12 @@ interface RepositoryInterface
     /**
      * Update a given ID with the passed array of fields.
      *
-     * @param int $id
-     *
      * @return mixed
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update($id, array $fields, bool $validate = true, bool $force = false);
+    public function update(int $id, array $fields, bool $validate = true, bool $force = false);
 
     /**
      * Perform a mass update where matching records are updated using whereIn.

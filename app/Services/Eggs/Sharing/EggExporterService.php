@@ -10,10 +10,7 @@ use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 
 class EggExporterService
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    protected $repository;
+    protected EggRepositoryInterface $repository;
 
     /**
      * EggExporterService constructor.
@@ -38,7 +35,7 @@ class EggExporterService
                 'version' => Egg::EXPORT_VERSION,
                 'update_url' => $egg->update_url,
             ],
-            'exported_at' => Carbon::now()->toIso8601String(),
+            'exported_at' => Carbon::now()->toAtomString(),
             'name' => $egg->name,
             'author' => $egg->author,
             'description' => $egg->description,

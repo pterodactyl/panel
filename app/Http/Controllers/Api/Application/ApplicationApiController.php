@@ -13,15 +13,9 @@ use Pterodactyl\Transformers\Api\Application\BaseTransformer;
 
 abstract class ApplicationApiController extends Controller
 {
-    /**
-     * @var \Illuminate\Http\Request
-     */
-    protected $request;
+    protected Request $request;
 
-    /**
-     * @var \Pterodactyl\Extensions\Spatie\Fractalistic\Fractal
-     */
-    protected $fractal;
+    protected Fractal $fractal;
 
     /**
      * ApplicationApiController constructor.
@@ -62,7 +56,6 @@ abstract class ApplicationApiController extends Controller
      * @return T
      *
      * @noinspection PhpDocSignatureInspection
-     * @noinspection PhpUndefinedClassInspection
      */
     public function getTransformer(string $abstract)
     {

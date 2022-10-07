@@ -6,9 +6,9 @@ use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Backup;
 use Illuminate\Http\JsonResponse;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
+use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -64,7 +64,7 @@ class BackupRemoteUploadController extends Controller
 
         // Ensure we are using the S3 adapter.
         $adapter = $this->backupManager->adapter();
-        if (!$adapter instanceof AwsS3Adapter) {
+        if (!$adapter instanceof S3Filesystem) {
             throw new BadRequestHttpException('The configured backup adapter is not an S3 compatible adapter.');
         }
 

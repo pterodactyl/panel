@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
 use Mockery;
+use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Permission;
@@ -14,8 +15,7 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class CommandControllerTest extends ClientApiIntegrationTestCase
 {
-    /** @var \Mockery\MockInterface */
-    private $repository;
+    private MockInterface $repository;
 
     /**
      * Setup tests.
@@ -36,7 +36,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", [
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
             'command' => '',
         ]);
 
@@ -52,7 +52,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
 
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", [
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
             'command' => 'say Test',
         ]);
 
@@ -71,7 +71,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
         }))->andReturnSelf();
         $this->repository->expects('send')->with('say Test')->andReturn(new GuzzleResponse());
 
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", [
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
             'command' => 'say Test',
         ]);
 
@@ -92,7 +92,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
             )
         );
 
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", [
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
             'command' => 'say Test',
         ]);
 

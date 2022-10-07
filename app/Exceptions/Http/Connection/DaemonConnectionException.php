@@ -12,20 +12,15 @@ use Pterodactyl\Exceptions\DisplayException;
  */
 class DaemonConnectionException extends DisplayException
 {
-    /**
-     * @var int
-     */
-    private $statusCode = Response::HTTP_GATEWAY_TIMEOUT;
+    private int $statusCode = Response::HTTP_GATEWAY_TIMEOUT;
 
     /**
      * Every request to the Wings instance will return a unique X-Request-Id header
      * which allows for all errors to be efficiently tied to a specific request that
      * triggered them, and gives users a more direct method of informing hosts when
      * something goes wrong.
-     *
-     * @var string|null
      */
-    private $requestId;
+    private ?string $requestId;
 
     /**
      * Throw a displayable exception caused by a daemon connection error.

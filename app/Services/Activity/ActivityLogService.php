@@ -23,13 +23,13 @@ class ActivityLogService
 
     protected ConnectionInterface $connection;
 
-    protected AcitvityLogBatchService $batch;
+    protected ActivityLogBatchService $batch;
 
     protected ActivityLogTargetableService $targetable;
 
     public function __construct(
         Factory $manager,
-        AcitvityLogBatchService $batch,
+        ActivityLogBatchService $batch,
         ActivityLogTargetableService $targetable,
         ConnectionInterface $connection
     ) {

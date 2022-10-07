@@ -11,14 +11,12 @@ class Installed extends Event
     use SerializesModels;
 
     /**
-     * @var \Pterodactyl\Models\Server
+     * The Eloquent model of the server.
      */
-    public $server;
+    public Server $server;
 
     /**
      * Create a new event instance.
-     *
-     * @var \Pterodactyl\Models\Server
      */
     public function __construct(Server $server)
     {

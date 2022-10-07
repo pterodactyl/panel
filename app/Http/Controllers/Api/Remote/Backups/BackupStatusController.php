@@ -7,10 +7,10 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Backup;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
+use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 
@@ -65,7 +65,7 @@ class BackupStatusController extends Controller
             // Check if we are using the s3 backup adapter. If so, make sure we mark the backup as
             // being completed in S3 correctly.
             $adapter = $this->backupManager->adapter();
-            if ($adapter instanceof AwsS3Adapter) {
+            if ($adapter instanceof S3Filesystem) {
                 $this->completeMultipartUpload($model, $adapter, $successful, $request->input('parts'));
             }
         });
@@ -107,7 +107,7 @@ class BackupStatusController extends Controller
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    protected function completeMultipartUpload(Backup $backup, AwsS3Adapter $adapter, bool $successful, ?array $parts): void
+    protected function completeMultipartUpload(Backup $backup, S3Filesystem $adapter, bool $successful, ?array $parts): void
     {
         // This should never really happen, but if it does don't let us fall victim to Amazon's
         // wildly fun error messaging. Just stop the process right here.

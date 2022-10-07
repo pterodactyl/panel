@@ -12,10 +12,8 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Location::class;
     }
@@ -29,7 +27,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Return all of the available locations with the nodes as a relationship.
+     * Return all the available locations with the nodes as a relationship.
      */
     public function getAllWithNodes(): Collection
     {
@@ -47,7 +45,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     {
         try {
             return $this->getBuilder()->with('nodes.servers')->findOrFail($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }
@@ -63,7 +61,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     {
         try {
             return $this->getBuilder()->withCount('nodes')->findOrFail($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }

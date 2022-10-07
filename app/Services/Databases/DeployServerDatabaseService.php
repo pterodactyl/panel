@@ -10,15 +10,10 @@ use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 
 class DeployServerDatabaseService
 {
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private $managementService;
+    private DatabaseManagementService $managementService;
 
     /**
      * ServerDatabaseCreationService constructor.
-     *
-     * @param \Pterodactyl\Services\Databases\DatabaseManagementService $managementService
      */
     public function __construct(DatabaseManagementService $managementService)
     {

@@ -37,7 +37,7 @@ class PruneOrphanedBackupsCommand extends Command
             return;
         }
 
-        $this->warn("Marking {$count} backups that have not been marked as completed in the last {$since} minutes as failed.");
+        $this->warn("Marking $count backups that have not been marked as completed in the last $since minutes as failed.");
 
         $query->update([
             'is_successful' => false,

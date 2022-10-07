@@ -13,7 +13,7 @@ class FindAssignableAllocationService
     /**
      * @var \Pterodactyl\Services\Allocations\AssignmentService
      */
-    private $service;
+    private AssignmentService $service;
 
     /**
      * FindAssignableAllocationService constructor.
@@ -30,15 +30,13 @@ class FindAssignableAllocationService
      * no allocation can be found, a new one will be created with a random port between the defined
      * range from the configuration.
      *
-     * @return \Pterodactyl\Models\Allocation
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
-    public function handle(Server $server)
+    public function handle(Server $server): Allocation
     {
         if (!config('pterodactyl.client_features.allocations.enabled')) {
             throw new AutoAllocationNotEnabledException();

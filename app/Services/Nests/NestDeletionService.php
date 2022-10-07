@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Nests;
 
@@ -15,15 +8,9 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class NestDeletionService
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    protected $serverRepository;
+    protected ServerRepositoryInterface $serverRepository;
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    protected $repository;
+    protected NestRepositoryInterface $repository;
 
     /**
      * NestDeletionService constructor.

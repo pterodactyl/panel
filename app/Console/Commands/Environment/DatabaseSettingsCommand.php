@@ -13,16 +13,6 @@ class DatabaseSettingsCommand extends Command
     use EnvironmentWriterTrait;
 
     /**
-     * @var \Illuminate\Contracts\Console\Kernel
-     */
-    protected $console;
-
-    /**
-     * @var \Illuminate\Database\DatabaseManager
-     */
-    protected $database;
-
-    /**
      * @var string
      */
     protected $description = 'Configure database settings for the Panel.';
@@ -37,10 +27,11 @@ class DatabaseSettingsCommand extends Command
                             {--username= : Username to use when connecting.}
                             {--password= : Password to use for this database.}';
 
-    /**
-     * @var array
-     */
-    protected $variables = [];
+    protected array $variables = [];
+
+    protected Kernel $console;
+
+    protected DatabaseManager $database;
 
     /**
      * DatabaseSettingsCommand constructor.
@@ -56,11 +47,9 @@ class DatabaseSettingsCommand extends Command
     /**
      * Handle command execution.
      *
-     * @return int
-     *
      * @throws \Pterodactyl\Exceptions\PterodactylException
      */
-    public function handle()
+    public function handle(): int
     {
         $this->output->note('It is highly recommended to not use "localhost" as your database host as we have seen frequent socket connection issues. If you want to use a local connection you should be using "127.0.0.1".');
         $this->variables['DB_HOST'] = $this->option('host') ?? $this->ask(

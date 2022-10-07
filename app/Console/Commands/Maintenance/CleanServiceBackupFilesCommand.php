@@ -5,6 +5,7 @@ namespace Pterodactyl\Console\Commands\Maintenance;
 use SplFileInfo;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Filesystem\Filesystem;
 use Illuminate\Contracts\Filesystem\Factory as FilesystemFactory;
 
 class CleanServiceBackupFilesCommand extends Command
@@ -17,14 +18,11 @@ class CleanServiceBackupFilesCommand extends Command
     protected $description = 'Clean orphaned .bak files created when modifying services.';
 
     /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    protected $disk;
-
-    /**
      * @var string
      */
     protected $signature = 'p:maintenance:clean-service-backups';
+
+    protected Filesystem $disk;
 
     /**
      * CleanServiceBackupFilesCommand constructor.

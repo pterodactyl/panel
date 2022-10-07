@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\Environment;
 
@@ -16,11 +9,6 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 class EmailSettingsCommand extends Command
 {
     use EnvironmentWriterTrait;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
 
     /**
      * @var string
@@ -41,10 +29,9 @@ class EmailSettingsCommand extends Command
                             {--username=}
                             {--password=}';
 
-    /**
-     * @var array
-     */
-    protected $variables = [];
+    protected array $variables = [];
+
+    protected ConfigRepository $config;
 
     /**
      * EmailSettingsCommand constructor.
@@ -70,7 +57,7 @@ class EmailSettingsCommand extends Command
                 'mail' => 'PHP\'s Internal Mail Function',
                 'mailgun' => 'Mailgun Transactional Email',
                 'mandrill' => 'Mandrill Transactional Email',
-                'postmark' => 'Postmarkapp Transactional Email',
+                'postmark' => 'Postmark Transactional Email',
             ],
             $this->config->get('mail.driver', 'smtp')
         );

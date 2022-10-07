@@ -3,8 +3,9 @@
 namespace Pterodactyl\Events\Auth;
 
 use Pterodactyl\Models\User;
+use Pterodactyl\Events\Event;
 
-class ProvidedAuthenticationToken
+class ProvidedAuthenticationToken extends Event
 {
     public User $user;
 

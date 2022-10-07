@@ -10,15 +10,9 @@ use Pterodactyl\Extensions\Backups\BackupManager;
 
 class DownloadLinkService
 {
-    /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
+    private BackupManager $backupManager;
 
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeJWTService
-     */
-    private $jwtService;
+    private NodeJWTService $jwtService;
 
     /**
      * DownloadLinkService constructor.
@@ -54,12 +48,10 @@ class DownloadLinkService
     /**
      * Returns a signed URL that allows us to download a file directly out of a non-public
      * S3 bucket by using a signed URL.
-     *
-     * @return string
      */
-    protected function getS3BackupUrl(Backup $backup)
+    protected function getS3BackupUrl(Backup $backup): string
     {
-        /** @var \League\Flysystem\AwsS3v3\AwsS3Adapter $adapter */
+        /** @var \Pterodactyl\Extensions\Filesystem\S3Filesystem $adapter */
         $adapter = $this->backupManager->adapter(Backup::ADAPTER_AWS_S3);
 
         $request = $adapter->getClient()->createPresignedRequest(
