@@ -6,7 +6,6 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
@@ -19,39 +18,21 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest
 
 class DatabaseController extends ClientApiController
 {
-    /**
-     * @var \Pterodactyl\Services\Databases\DeployServerDatabaseService
-     */
-    private $deployDatabaseService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\DatabaseRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private $managementService;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
-     */
-    private $passwordService;
+    private DeployServerDatabaseService $deployDatabaseService;
+    private DatabaseManagementService $managementService;
+    private DatabasePasswordService $passwordService;
 
     /**
      * DatabaseController constructor.
      */
     public function __construct(
+        DeployServerDatabaseService $deployDatabaseService,
         DatabaseManagementService $managementService,
-        DatabasePasswordService $passwordService,
-        DatabaseRepository $repository,
-        DeployServerDatabaseService $deployDatabaseService
+        DatabasePasswordService $passwordService
     ) {
         parent::__construct();
 
         $this->deployDatabaseService = $deployDatabaseService;
-        $this->repository = $repository;
         $this->managementService = $managementService;
         $this->passwordService = $passwordService;
     }
@@ -126,6 +107,6 @@ class DatabaseController extends ClientApiController
             ->property('name', $database->database)
             ->log();
 
-        return Response::create('', Response::HTTP_NO_CONTENT);
+        return new Response('', Response::HTTP_NO_CONTENT);
     }
 }
