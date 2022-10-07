@@ -46,19 +46,22 @@
         "spatie/laravel-fractal": "~6.0.2",
         "spatie/laravel-query-builder": "~5.0.3",
         "staudenmeir/belongs-to-through": "~2.12.1",
+        "symfony/http-client": "~6.0",
+        "symfony/mailgun-mailer": "~6.0",
+        "symfony/postmark-mailer": "~6.0",
         "symfony/yaml": "~5.4",
-        "webmozart/assert": "~1.11.0"
+        "webmozart/assert": "~1.11"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "^2.12.3",
-        "fakerphp/faker": "^1.20",
-        "friendsofphp/php-cs-fixer": "^3.11",
-        "itsgoingd/clockwork": "^5.1",
-        "mockery/mockery": "^1.5",
-        "nunomaduro/collision": "^6.3",
-        "php-mock/php-mock-phpunit": "^2.6",
-        "phpunit/phpunit": "^9.5",
-        "spatie/laravel-ignition": "^1.5"
+        "barryvdh/laravel-ide-helper": "~2.12.3",
+        "fakerphp/faker": "~1.20",
+        "friendsofphp/php-cs-fixer": "~3.11",
+        "itsgoingd/clockwork": "~5.1",
+        "mockery/mockery": "~1.5",
+        "nunomaduro/collision": "~6.3",
+        "php-mock/php-mock-phpunit": "~2.6",
+        "phpunit/phpunit": "~9.5",
+        "spatie/laravel-ignition": "~1.5"
     },
     "autoload": {
         "files": [

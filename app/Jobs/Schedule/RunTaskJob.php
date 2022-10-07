@@ -37,7 +37,7 @@ class RunTaskJob extends Job implements ShouldQueue
      */
     public function __construct(Task $task, $manualRun = false)
     {
-        $this->queue = config('pterodactyl.queues.standard');
+        $this->queue = 'standard';
         $this->task = $task;
         $this->manualRun = $manualRun;
     }
