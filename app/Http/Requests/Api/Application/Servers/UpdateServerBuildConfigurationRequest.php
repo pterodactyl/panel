@@ -51,10 +51,8 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 
     /**
      * Convert the allocation field into the expected format for the service handler.
-     *
-     * @return array
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

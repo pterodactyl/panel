@@ -25,7 +25,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
      * Convert the posted data into the correct format that is expected
      * by the application.
      */
-    public function validated(): array
+    public function validated($key = null, $default = null): array
     {
         return [
             'external_id' => $this->input('external_id'),

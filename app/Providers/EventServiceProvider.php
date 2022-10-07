@@ -18,7 +18,7 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 class EventServiceProvider extends ServiceProvider
 {
     /**
-     * The event listener mappings for the application.
+     * The event to listener mappings for the application.
      *
      * @var array
      */
@@ -31,9 +31,9 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     /**
-     * Boots the service provider and registers model event listeners.
+     * Register any events for your application.
      */
-    public function boot()
+    public function boot(): void
     {
         parent::boot();
 
@@ -43,7 +43,10 @@ class EventServiceProvider extends ServiceProvider
         EggVariable::observe(EggVariableObserver::class);
     }
 
-    public function shouldDiscoverEvents()
+    /**
+     * Determine if events and listeners should be automatically discovered.
+     */
+    public function shouldDiscoverEvents(): bool
     {
         return true;
     }

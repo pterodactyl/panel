@@ -25,12 +25,12 @@ jobs:
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     name: "php-${{ matrix.php }} (${{ matrix.database }})"
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
       - name: get cache directory
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
+      - uses: actions/cache@v3
         with:
           path: |
             ~/.php_cs.cache

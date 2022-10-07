@@ -27,10 +27,7 @@ class StoreAllocationRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

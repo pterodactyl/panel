@@ -36,10 +36,8 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
 
     /**
      * Return the validated data in a format that is expected by the service.
-     *
-     * @return array
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http;
 
-use Fruitcake\Cors\HandleCors;
 use Illuminate\Auth\Middleware\Authorize;
+use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Http\Middleware\TrustProxies;
 use Pterodactyl\Http\Middleware\TrimStrings;

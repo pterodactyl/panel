@@ -40,10 +40,7 @@ class StoreUserRequest extends ApplicationApiRequest
         return $response;
     }
 
-    /**
-     * @return array
-     */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

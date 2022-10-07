@@ -7,7 +7,6 @@ use Throwable;
 use PDOException;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Swift_TransportException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Collection;
 use Illuminate\Container\Container;
@@ -18,6 +17,7 @@ use Illuminate\Session\TokenMismatchException;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Symfony\Component\Mailer\Exception\RuntimeException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
@@ -89,7 +89,7 @@ class Handler extends ExceptionHandler
             $ex = $this->generateCleanedExceptionStack($ex);
         });
 
-        $this->reportable(function (Swift_TransportException $ex) {
+        $this->reportable(function (RuntimeException $ex) {
             $ex = $this->generateCleanedExceptionStack($ex);
         });
     }

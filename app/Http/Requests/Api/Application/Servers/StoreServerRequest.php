@@ -73,10 +73,8 @@ class StoreServerRequest extends ApplicationApiRequest
 
     /**
      * Normalize the data into a format that can be consumed by the service.
-     *
-     * @return array
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

@@ -46,10 +46,8 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
 
     /**
      * Return data formatted in the correct format for the service to consume.
-     *
-     * @return array
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         return [
             'database' => $this->input('database'),

@@ -49,7 +49,7 @@ class EggFormRequest extends AdminFormRequest
         });
     }
 
-    public function validated(): array
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

@@ -63,10 +63,8 @@ class StoreNodeRequest extends ApplicationApiRequest
     /**
      * Change the formatting of some data keys in the validated response data
      * to match what the application expects in the services.
-     *
-     * @return array
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $response = parent::validated();
         $response['daemonListen'] = $response['daemon_listen'];
