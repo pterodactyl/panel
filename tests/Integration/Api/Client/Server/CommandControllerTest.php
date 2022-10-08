@@ -3,9 +3,9 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
 use Mockery;
-use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Response;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;
 use GuzzleHttp\Exception\BadResponseException;
 use GuzzleHttp\Psr7\Response as GuzzleResponse;
@@ -15,19 +15,6 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class CommandControllerTest extends ClientApiIntegrationTestCase
 {
-    private MockInterface $repository;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->repository = Mockery::mock(DaemonCommandRepository::class);
-        $this->app->instance(DaemonCommandRepository::class, $this->repository);
-    }
-
     /**
      * Test that a validation error is returned if there is no command present in the
      * request.
@@ -66,10 +53,12 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_CONTROL_CONSOLE]);
 
-        $this->repository->expects('setServer')->with(Mockery::on(function ($value) use ($server) {
-            return $value->uuid === $server->uuid;
-        }))->andReturnSelf();
-        $this->repository->expects('send')->with('say Test')->andReturn(new GuzzleResponse());
+        $mock = $this->mock(DaemonCommandRepository::class);
+        $mock->expects('setServer')
+            ->with(Mockery::on(fn (Server $value) => $value->is($server)))
+            ->andReturnSelf();
+
+        $mock->expects('send')->with('say Test')->andReturn(new GuzzleResponse());
 
         $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
             'command' => 'say Test',
@@ -86,7 +75,8 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        $this->repository->expects('setServer->send')->andThrows(
+        $mock = $this->mock(DaemonCommandRepository::class);
+        $mock->expects('setServer->send')->andThrows(
             new DaemonConnectionException(
                 new BadResponseException('', new Request('GET', 'test'), new GuzzleResponse(Response::HTTP_BAD_GATEWAY))
             )
