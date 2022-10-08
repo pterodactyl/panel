@@ -29,7 +29,7 @@ class ServerEditService
         $resource = $request->input('resource');
 
         if ($user->id != $server->owner_id) return;
-        $verify = $this->verify($request);
+        $verify = $this->verify($request, $server, $user);
         if (!$verify) return;
 
         $server->update([
