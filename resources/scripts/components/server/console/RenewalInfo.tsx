@@ -52,7 +52,7 @@ export default () => {
                 onConfirmed={() => doRenewal()}
             >
                 <SpinnerOverlay visible={loading} />
-                You will be charged {store.renewals.cost} {store.currency} to add {store.renewals.days} days until your
+                You will be charged {store.renewals.cost} credits to add {store.renewals.days} days until your
                 next renewal is due.
             </Dialog.Confirm>
             in {renewal} days{' '}
