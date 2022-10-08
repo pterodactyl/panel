@@ -7,34 +7,17 @@ use Pterodactyl\Models\Backup;
 use GuzzleHttp\Exception\ClientException;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Extensions\Backups\BackupManager;
-use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
 use Pterodactyl\Exceptions\Service\Backup\BackupLockedException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DeleteBackupService
 {
-    private BackupRepository $repository;
-
-    private DaemonBackupRepository $daemonBackupRepository;
-
-    private ConnectionInterface $connection;
-
-    private BackupManager $manager;
-
-    /**
-     * DeleteBackupService constructor.
-     */
     public function __construct(
-        ConnectionInterface $connection,
-        BackupRepository $repository,
-        BackupManager $manager,
-        DaemonBackupRepository $daemonBackupRepository
+        private ConnectionInterface $connection,
+        private BackupManager $manager,
+        private DaemonBackupRepository $daemonBackupRepository
     ) {
-        $this->repository = $repository;
-        $this->daemonBackupRepository = $daemonBackupRepository;
-        $this->connection = $connection;
-        $this->manager = $manager;
     }
 
     /**
@@ -73,7 +56,7 @@ class DeleteBackupService
                 }
             }
 
-            $this->repository->delete($backup->id);
+            $backup->delete();
         });
     }
 
@@ -85,7 +68,7 @@ class DeleteBackupService
     protected function deleteFromS3(Backup $backup): void
     {
         $this->connection->transaction(function () use ($backup) {
-            $this->repository->delete($backup->id);
+            $backup->delete();
 
             /** @var \Pterodactyl\Extensions\Filesystem\S3Filesystem $adapter */
             $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
