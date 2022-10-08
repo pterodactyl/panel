@@ -11,10 +11,8 @@ use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 class FindViableNodesService
 {
     protected array $locations = [];
-
-    protected int $disk;
-
-    protected int $memory;
+    protected ?int $disk = null;
+    protected ?int $memory = null;
 
     /**
      * Set the locations that should be searched through to locate available nodes.
