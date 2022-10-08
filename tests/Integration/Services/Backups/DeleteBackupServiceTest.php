@@ -109,6 +109,6 @@ class DeleteBackupServiceTest extends IntegrationTestCase
 
         $this->app->make(DeleteBackupService::class)->handle($backup);
 
-        $this->assertNotSoftDeleted($backup);
+        $this->assertSoftDeleted($backup);
     }
 }
