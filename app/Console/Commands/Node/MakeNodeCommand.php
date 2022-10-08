@@ -10,7 +10,6 @@
 
 namespace Pterodactyl\Console\Commands\Node;
 
-use Pterodactyl\Models\Node;
 use Illuminate\Console\Command;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 
@@ -65,12 +64,6 @@ class MakeNodeCommand extends Command
             'https'
         );
         $data['fqdn'] = $this->option('fqdn') ?? $this->ask('Enter a domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node');
-        $error = Node::validateFQDN($data['scheme'], $data['fqdn']);
-        if (!is_null($error)) {
-            $this->error($error);
-
-            return;
-        }
         $data['public'] = $this->option('public') ?? $this->confirm('Should this node be public? As a note, setting a node to private you will be denying the ability to auto-deploy to this node.', true);
         $data['behind_proxy'] = $this->option('proxy') ?? $this->confirm('Is your FQDN behind a proxy?');
         $data['maintenance_mode'] = $this->option('maintenance') ?? $this->confirm('Should maintenance mode be enabled?');

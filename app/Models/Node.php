@@ -250,41 +250,4 @@ class Node extends Model
 
         return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
-
-    public static function validateFQDN(string $scheme, string $fqdn): ?string
-    {
-        // Check if the FQDN is an IP address.
-        if (filter_var($fqdn, FILTER_VALIDATE_IP)) {
-            // Check if the scheme is set to HTTPS.
-            //
-            // Unless someone owns their IP blocks and decides to pay who knows how much for a
-            // custom SSL cert, IPs will not be able to use HTTPS.  This should prevent most
-            // home users from making this mistake and wondering why their node is not working.
-            if ($scheme === 'https') {
-                return trans('admin/node.validation.fqdn_required_for_ssl');
-            }
-
-            return null;
-        }
-
-        // Lookup A and AAAA DNS records for the FQDN.
-        //
-        // This function will also resolve CNAMEs for us automatically,
-        // there is no need to manually resolve them here.
-        //
-        // Using @ as workaround to avoid https://bugs.php.net/bug.php?id=73149
-        $records = @dns_get_record($fqdn, DNS_A + DNS_AAAA);
-        if (!empty($records)) {
-            return null;
-        }
-
-        // If there are no DNS records, check if there is a /etc/hosts entry.
-        //
-        // This function call only supports IPv4, which is why we check DNS records first.
-        if (filter_var(gethostbyname($fqdn), FILTER_VALIDATE_IP)) {
-            return null;
-        }
-
-        return trans('admin/node.validation.fqdn_not_resolvable');
-    }
 }
