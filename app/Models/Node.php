@@ -255,7 +255,11 @@ class Node extends Model
     {
         // Check if the FQDN is an IP address.
         if (filter_var($fqdn, FILTER_VALIDATE_IP)) {
-            // Check that if we are using HTTPS.
+            // Check if the scheme is set to HTTPS.
+            //
+            // Unless someone owns their IP blocks and decides to pay who knows how much for a
+            // custom SSL cert, IPs will not be able to use HTTPS.  This should prevent most
+            // home users from making this mistake and wondering why their node is not working.
             if ($scheme === 'https') {
                 return trans('admin/node.validation.fqdn_required_for_ssl');
             }
@@ -265,7 +269,7 @@ class Node extends Model
 
         // Lookup A and AAAA DNS records for the FQDN.
         //
-        // Note, this function will also resolve CNAMEs for us automatically,
+        // This function will also resolve CNAMEs for us automatically,
         // there is no need to manually resolve them here.
         //
         // Using @ as workaround to avoid https://bugs.php.net/bug.php?id=73149
@@ -275,8 +279,8 @@ class Node extends Model
         }
 
         // If there are no DNS records, check if there is a /etc/hosts entry.
-        // NOTE: this function call only supports IPv4, that is why we are checking
-        // DNS records first.
+        //
+        // This function call only supports IPv4, which is why we check DNS records first.
         if (filter_var(gethostbyname($fqdn), FILTER_VALIDATE_IP)) {
             return null;
         }
