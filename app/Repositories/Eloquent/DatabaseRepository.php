@@ -80,13 +80,17 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     /**
      * Create a new database user on a given connection.
      */
-    public function createUser(string $username, string $remote, string $password, int $max_connections): bool
+    public function createUser(string $username, string $remote, string $password, int $connections = null): bool
     {
-        if (!$max_connections) {
-            return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password));
-        } else {
-            return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\' WITH MAX_USER_CONNECTIONS %s', $username, $remote, $password, $max_connections));
+        $args = [$username, $remote, $password];
+        $command = 'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'';
+
+        if (!empty($max_connections)) {
+            $args[] = $connections;
+            $command .= ' WITH MAX_USER_CONNECTIONS %s';
         }
+
+        return $this->run(sprintf($command, ...$args));
     }
 
     /**

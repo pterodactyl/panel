@@ -28,8 +28,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
 
         config()->set('pterodactyl.client_features.databases.enabled', true);
 
-        $this->repository = Mockery::mock(DatabaseRepository::class);
-        $this->swap(DatabaseRepository::class, $this->repository);
+        $this->repository = $this->mock(DatabaseRepository::class);
     }
 
     /**

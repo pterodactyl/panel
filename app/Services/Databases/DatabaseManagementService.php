@@ -25,14 +25,6 @@ class DatabaseManagementService
      */
     private const MATCH_NAME_REGEX = '/^(s[\d]+_)(.*)$/';
 
-    private ConnectionInterface $connection;
-
-    private DynamicDatabaseConnection $dynamic;
-
-    private DatabaseRepository $repository;
-
-    private Encrypter $encrypter;
-
     /**
      * Determines if the service should validate the user's ability to create an additional
      * database for this server. In almost all cases this should be true, but to keep things
@@ -41,19 +33,12 @@ class DatabaseManagementService
      */
     protected bool $validateDatabaseLimit = true;
 
-    /**
-     * CreationService constructor.
-     */
     public function __construct(
-        ConnectionInterface $connection,
-        DynamicDatabaseConnection $dynamic,
-        Encrypter $encrypter,
-        DatabaseRepository $repository
+        protected ConnectionInterface $connection,
+        protected DynamicDatabaseConnection $dynamic,
+        protected Encrypter $encrypter,
+        protected DatabaseRepository $repository
     ) {
-        $this->connection = $connection;
-        $this->dynamic = $dynamic;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**
