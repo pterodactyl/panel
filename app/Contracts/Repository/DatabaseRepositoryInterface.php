@@ -39,7 +39,7 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     /**
      * Create a new database user on a given connection.
      */
-    public function createUser(string $username, string $remote, string $password, int $max_connections): bool;
+    public function createUser(string $username, string $remote, string $password, ?int $max_connections): bool;
 
     /**
      * Give a specific user access to a given database.
