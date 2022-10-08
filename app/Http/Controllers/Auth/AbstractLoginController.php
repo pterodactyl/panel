@@ -8,6 +8,8 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Event;
+use Pterodactyl\Events\Auth\DirectLogin;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -81,6 +83,8 @@ abstract class AbstractLoginController extends Controller
 
         $this->auth->guard()->login($user, true);
 
+        Event::dispatch(new DirectLogin($user, true));
+
         return new JsonResponse([
             'data' => [
                 'complete' => true,
@@ -103,6 +107,6 @@ abstract class AbstractLoginController extends Controller
      */
     protected function fireFailedLoginEvent(Authenticatable $user = null, array $credentials = [])
     {
-        event(new Failed('auth', $user, $credentials));
+        Event::dispatch(new Failed('auth', $user, $credentials));
     }
 }

@@ -40,12 +40,4 @@ class EventServiceProvider extends ServiceProvider
         Subuser::observe(SubuserObserver::class);
         EggVariable::observe(EggVariableObserver::class);
     }
-
-    /**
-     * Determine if events and listeners should be automatically discovered.
-     */
-    public function shouldDiscoverEvents(): bool
-    {
-        return true;
-    }
 }

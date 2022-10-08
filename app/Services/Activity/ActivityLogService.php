@@ -19,24 +19,12 @@ class ActivityLogService
 
     protected array $subjects = [];
 
-    protected Factory $manager;
-
-    protected ConnectionInterface $connection;
-
-    protected ActivityLogBatchService $batch;
-
-    protected ActivityLogTargetableService $targetable;
-
     public function __construct(
-        Factory $manager,
-        ActivityLogBatchService $batch,
-        ActivityLogTargetableService $targetable,
-        ConnectionInterface $connection
+        protected Factory $manager,
+        protected ActivityLogBatchService $batch,
+        protected ActivityLogTargetableService $targetable,
+        protected ConnectionInterface $connection
     ) {
-        $this->manager = $manager;
-        $this->batch = $batch;
-        $this->targetable = $targetable;
-        $this->connection = $connection;
     }
 
     /**
@@ -75,11 +63,17 @@ class ActivityLogService
     /**
      * Sets the subject model instance.
      *
-     * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Model[] $subjects
+     * @template T extends \Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Auth\Authenticatable
+     *
+     * @param T|T[]|null $subjects
      */
     public function subject(...$subjects): self
     {
         foreach (Arr::wrap($subjects) as $subject) {
+            if (is_null($subject)) {
+                continue;
+            }
+
             foreach ($this->subjects as $entry) {
                 // If this subject is already tracked in our array of subjects just skip over
                 // it and move on to the next one in the list.
