@@ -54,16 +54,14 @@ class ServerEditService
         $amount = $request->input('amount');
         $resource = $request->input('resource');
 
-        foreach ($resource as $r) {
-          $limit = $this->settings->get('jexactyl::store:limit:' . $r);
+        $limit = $this->settings->get('jexactyl::store:limit:' . $resource);
 
-          // Check if the amount requested goes over defined limits.
-          if (($amount + $this->toServer($r, $server)) > $limit) return false;
-          // Verify baseline limits. We don't want servers with -4% CPU.
-          if ($this->toServer($r, $server) <= $this->toMin($r) && $amount < 0) return false;
-          // Verify that the user has the resource in their account.
-          if ($this->toUser($r, $user) < $amount) return false;
-        }
+        // Check if the amount requested goes over defined limits.
+        if (($amount + $this->toServer($resource, $server)) > $limit) return false;
+        // Verify baseline limits. We don't want servers with -4% CPU.
+        if ($this->toServer($resource, $server) <= $this->toMin($resource) && $amount < 0) return false;
+        // Verify that the user has the resource in their account.
+        if ($this->toUser($resource, $user) < $amount) return false;
 
         // Return true if all checked.
         return true;
