@@ -96,16 +96,17 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that no more than 5 API keys can exist at any one time for an account. This prevents
+     * Test that no more than 25 API keys can exist at any one time for an account. This prevents
      * a DoS attack vector against the panel.
      *
      * @see https://github.com/pterodactyl/panel/security/advisories/GHSA-pjmh-7xfm-r4x9
+     * @see https://github.com/pterodactyl/panel/issues/4394
      */
-    public function testNoMoreThanFiveApiKeysCanBeCreatedForAnAccount()
+    public function testApiKeyLimitIsApplied()
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
-        ApiKey::factory()->times(5)->for($user)->create([
+        ApiKey::factory()->times(25)->for($user)->create([
             'key_type' => ApiKey::TYPE_ACCOUNT,
         ]);
 
