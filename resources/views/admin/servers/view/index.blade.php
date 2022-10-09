@@ -101,7 +101,7 @@
                                     @if($server->disk === 0)
                                         <code>Unlimited</code>
                                     @else
-                                        <code>{{ $server->disk }}MB</code>
+                                        <code>{{ $server->disk }}MiB</code>
                                     @endif
                                 </td>
                             </tr>
