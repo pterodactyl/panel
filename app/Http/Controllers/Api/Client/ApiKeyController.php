@@ -26,14 +26,10 @@ class ApiKeyController extends ClientApiController
 
     /**
      * Store a new API key for a user's account.
-     *
-     * @return array
-     *
-     * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function store(StoreApiKeyRequest $request)
+    public function store(StoreApiKeyRequest $request): array
     {
-        if ($request->user()->apiKeys->count() >= 5) {
+        if ($request->user()->apiKeys->count() >= 25) {
             throw new DisplayException('You have reached the account limit for number of API keys.');
         }
 

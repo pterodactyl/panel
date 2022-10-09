@@ -2,38 +2,22 @@
 
 namespace Pterodactyl\Policies;
 
-use Carbon\Carbon;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\Cache\Repository as CacheRepository;
 
 class ServerPolicy
 {
-    private CacheRepository $cache;
-
-    /**
-     * ServerPolicy constructor.
-     */
-    public function __construct(CacheRepository $cache)
-    {
-        $this->cache = $cache;
-    }
-
     /**
      * Checks if the user has the given permission on/for the server.
      */
     protected function checkPermission(User $user, Server $server, string $permission): bool
     {
-        $key = sprintf('ServerPolicy.%s.%s', $user->uuid, $server->uuid);
+        $subuser = $server->subusers->where('user_id', $user->id)->first();
+        if (!$subuser || empty($permission)) {
+            return false;
+        }
 
-        $permissions = $this->cache->remember($key, Carbon::now()->addSeconds(5), function () use ($user, $server) {
-            /** @var \Pterodactyl\Models\Subuser|null $subuser */
-            $subuser = $server->subusers()->where('user_id', $user->id)->first();
-
-            return $subuser ? $subuser->permissions : [];
-        });
-
-        return in_array($permission, $permissions);
+        return in_array($permission, $subuser->permissions);
     }
 
     /**
