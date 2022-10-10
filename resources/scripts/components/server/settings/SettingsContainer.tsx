@@ -77,7 +77,7 @@ export default () => {
                             <RenameServerBox />
                         </div>
                     </Can>
-                    <Can action={'settings.change-description'}>
+                    <Can action={'settings.description'}>
                         <div css={tw`mb-6 md:mb-10`}>
                             <ChangeServerDescriptionBox />
                         </div>
