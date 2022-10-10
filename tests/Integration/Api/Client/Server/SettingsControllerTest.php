@@ -53,17 +53,6 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
     {
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
-        $originalDescription = $server->description;
-
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/settings/change-description", [
-            'description' => '',
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.meta.rule', 'required');
-
-        $server = $server->refresh();
-        $this->assertSame($originalDescription, $server->description);
 
         $this->actingAs($user)
             ->postJson("/api/client/servers/{$server->uuid}/settings/change-description", [
