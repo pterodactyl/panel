@@ -55,7 +55,7 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permissions);
 
         $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/settings/change-description", [
+            ->postJson("/api/client/servers/{$server->uuid}/settings/description", [
                 'description' => 'Test Server Description',
             ])
             ->assertStatus(Response::HTTP_NO_CONTENT);
