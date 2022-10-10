@@ -55,7 +55,7 @@ export default () => {
                 description: server.description,
             }}
             validationSchema={object().shape({
-                description: string().required().min(1),
+                description: string(),
             })}
         >
             <ChangeServerDescriptionBox />
