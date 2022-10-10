@@ -44,6 +44,38 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
+     * Test that the server's description can be changed.
+     *
+     * @param array $permissions
+     * @dataProvider changeDescriptionPermissionsDataProvider
+     */
+    public function testServerDescriptionCanBeChanged($permissions)
+    {
+        /** @var \Pterodactyl\Models\Server $server */
+        [$user, $server] = $this->generateTestAccount($permissions);
+        $originalDescription = $server->description;
+
+        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/settings/change-description", [
+            'description' => '',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.meta.rule', 'required');
+
+        $server = $server->refresh();
+        $this->assertSame($originalDescription, $server->description);
+
+        $this->actingAs($user)
+            ->postJson("/api/client/servers/{$server->uuid}/settings/change-description", [
+                'description' => 'Test Server Description',
+            ])
+            ->assertStatus(Response::HTTP_NO_CONTENT);
+
+        $server = $server->refresh();
+        $this->assertSame('Test Server Description', $server->description);
+    }
+
+    /**
      * Test that a subuser receives a permissions error if they do not have the required permission
      * and attempt to change the name.
      */
@@ -113,6 +145,11 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
     public function renamePermissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SETTINGS_RENAME]]];
+    }
+
+    public function changeDescriptionPermissionsDataProvider(): array
+    {
+        return [[[]], [[Permission::ACTION_SETTINGS_CHANGE_DESCRIPTION]]];
     }
 
     public function reinstallPermissionsDataProvider(): array

@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Settings\ChangeServerDescriptionRequest;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
@@ -56,6 +57,29 @@ class SettingsController extends ClientApiController
         if ($server->name !== $request->input('name')) {
             Activity::event('server:settings.rename')
                 ->property(['old' => $server->name, 'new' => $request->input('name')])
+                ->log();
+        }
+
+        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Changes the description of a server.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     */
+    public function changeDescription(ChangeServerDescriptionRequest $request, Server $server)
+    {
+        $this->repository->update($server->id, [
+            'description' => $request->input('description'),
+        ]);
+
+        if ($server->description !== $request->input('description')) {
+            Activity::event('server:settings.change-description')
+                ->property(['old' => $server->description, 'new' => $request->input('description')])
                 ->log();
         }
 
