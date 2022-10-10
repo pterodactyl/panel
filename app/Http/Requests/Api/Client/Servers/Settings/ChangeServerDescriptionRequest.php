@@ -16,7 +16,7 @@ class ChangeServerDescriptionRequest extends ClientApiRequest implements ClientP
      */
     public function permission(): string
     {
-        return Permission::ACTION_SETTINGS_CHANGE_DESCRIPTION;
+        return Permission::ACTION_SETTINGS_DESCRIPTION;
     }
 
     /**

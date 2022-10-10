@@ -71,14 +71,14 @@ class SettingsController extends ClientApiController
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function changeDescription(ChangeServerDescriptionRequest $request, Server $server)
+    public function description(ChangeServerDescriptionRequest $request, Server $server)
     {
         $this->repository->update($server->id, [
             'description' => $request->input('description'),
         ]);
 
         if ($server->description !== $request->input('description')) {
-            Activity::event('server:settings.change-description')
+            Activity::event('server:settings.description')
                 ->property(['old' => $server->description, 'new' => $request->input('description')])
                 ->log();
         }

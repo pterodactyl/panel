@@ -61,7 +61,7 @@ class Permission extends Model
     public const ACTION_STARTUP_DOCKER_IMAGE = 'startup.docker-image';
 
     public const ACTION_SETTINGS_RENAME = 'settings.rename';
-    public const ACTION_SETTINGS_CHANGE_DESCRIPTION = 'settings.change-description';
+    public const ACTION_SETTINGS_DESCRIPTION = 'settings.description';
     public const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
 
     public const ACTION_ACTIVITY_READ = 'activity.read';
@@ -210,7 +210,7 @@ class Permission extends Model
             'description' => 'Permissions that control a user\'s access to the settings for this server.',
             'keys' => [
                 'rename' => 'Allows a user to rename this server.',
-                'change-description' => 'Allows a user to change the description of this server.',
+                'description' => 'Allows a user to change the description of this server.',
                 'reinstall' => 'Allows a user to trigger a reinstall of this server.',
             ],
         ],
