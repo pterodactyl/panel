@@ -44,7 +44,8 @@ class UserResourcesController extends ApplicationApiController
     {
         return $this->fractal->item($user)
             ->transformWith($this->getTransformer(UserResourcesTransformer::class))
-            ->toArray();
+            ->toArray()
+            ->respond(201);
     }
 
     /**
@@ -74,6 +75,7 @@ class UserResourcesController extends ApplicationApiController
 
         return $this->fractal->item($user)
             >transformWith($this->getTransformer(UserResourcesTransformer::class))
-            ->toArray();
+            ->toArray()
+            ->respond(201);
     }
 }
