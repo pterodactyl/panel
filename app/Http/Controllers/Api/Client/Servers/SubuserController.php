@@ -190,10 +190,23 @@ class SubuserController extends ClientApiController
     }
 
     /**
-     * Returns the default permissions for all subusers to ensure none are ever removed wrongly.
+     * Returns the default permissions for subusers and parses out any permissions
+     * that were passed that do not also exist in the internally tracked list of
+     * permissions.
      */
     protected function getDefaultPermissions(Request $request): array
     {
-        return array_unique(array_merge($request->input('permissions') ?? [], [Permission::ACTION_WEBSOCKET_CONNECT]));
+        $allowed = Permission::permissions()
+            ->map(function ($value, $prefix) {
+                return array_map(function ($value) use ($prefix) {
+                    return "$prefix.$value";
+                }, array_keys($value['keys']));
+            })
+            ->flatten()
+            ->all();
+
+        $cleaned = array_intersect($request->input('permissions') ?? [], $allowed);
+
+        return array_unique(array_merge($cleaned, [Permission::ACTION_WEBSOCKET_CONNECT]));
     }
 }

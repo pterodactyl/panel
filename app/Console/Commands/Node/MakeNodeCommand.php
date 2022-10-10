@@ -58,29 +58,13 @@ class MakeNodeCommand extends Command
         $data['name'] = $this->option('name') ?? $this->ask('Enter a short identifier used to distinguish this node from others');
         $data['description'] = $this->option('description') ?? $this->ask('Enter a description to identify the node');
         $data['location_id'] = $this->option('locationId') ?? $this->ask('Enter a valid location id');
-        $data['fqdn'] = $this->option('fqdn') ?? $this->ask('Enter a domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node');
-
-        // Note, this function will also resolve CNAMEs for us automatically,
-        // there is no need to manually resolve them here.
-        //
-        // Using @ as workaround to fix https://bugs.php.net/bug.php?id=73149
-        $records = @dns_get_record($data['fqdn'], DNS_A + DNS_AAAA);
-        if (empty($records)) {
-            $this->error('The FQDN or IP address provided does not resolve to a valid IP address.');
-
-            return;
-        }
-        $data['public'] = $this->option('public') ?? $this->confirm('Should this node be public? As a note, setting a node to private you will be denying the ability to auto-deploy to this node.', true);
         $data['scheme'] = $this->option('scheme') ?? $this->anticipate(
             'Please either enter https for SSL or http for a non-ssl connection',
             ['https', 'http'],
             'https'
         );
-        if (filter_var($data['fqdn'], FILTER_VALIDATE_IP) && $data['scheme'] === 'https') {
-            $this->error('A fully qualified domain name that resolves to a public IP address is required in order to use SSL for this node.');
-
-            return;
-        }
+        $data['fqdn'] = $this->option('fqdn') ?? $this->ask('Enter a domain name (e.g node.example.com) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node');
+        $data['public'] = $this->option('public') ?? $this->confirm('Should this node be public? As a note, setting a node to private you will be denying the ability to auto-deploy to this node.', true);
         $data['behind_proxy'] = $this->option('proxy') ?? $this->confirm('Is your FQDN behind a proxy?');
         $data['maintenance_mode'] = $this->option('maintenance') ?? $this->confirm('Should maintenance mode be enabled?');
         $data['memory'] = $this->option('maxMemory') ?? $this->ask('Enter the maximum amount of memory');
