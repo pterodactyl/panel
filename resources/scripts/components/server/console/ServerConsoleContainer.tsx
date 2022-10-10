@@ -19,12 +19,15 @@ const ServerConsoleContainer = () => {
     const isInstalling = ServerContext.useStoreState((state) => state.server.isInstalling);
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
+    const isMaintenanceMode = ServerContext.useStoreState((state) => state.server.data!.node.maintenanceMode);
 
     return (
         <ServerContentBlock title={'Console'}>
-            {(isInstalling || isTransferring) && (
+            {(isMaintenanceMode || isInstalling || isTransferring) && (
                 <Alert type={'warning'} className={'mb-4'}>
-                    {isInstalling
+                    {isMaintenanceMode
+                        ? 'The node of this server is currently under maintenance and all actions are unavailable.'
+                        : isInstalling
                         ? 'This server is currently running its installation process and most actions are unavailable.'
                         : 'This server is currently being transferred to another node and all actions are unavailable.'}
                 </Alert>
