@@ -138,7 +138,7 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
 
     public function changeDescriptionPermissionsDataProvider(): array
     {
-        return [[[]], [[Permission::ACTION_SETTINGS_CHANGE_DESCRIPTION]]];
+        return [[[]], [[Permission::ACTION_SETTINGS_DESCRIPTION]]];
     }
 
     public function reinstallPermissionsDataProvider(): array
