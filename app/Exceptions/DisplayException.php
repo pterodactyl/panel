@@ -65,7 +65,7 @@ class DisplayException extends PterodactylException implements HttpExceptionInte
      *
      * @throws \Throwable
      */
-    public function report(): mixed
+    public function report()
     {
         if (!$this->getPrevious() instanceof Exception || !Handler::isReportable($this->getPrevious())) {
             return null;
