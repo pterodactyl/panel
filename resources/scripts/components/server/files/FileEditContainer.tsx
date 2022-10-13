@@ -66,7 +66,7 @@ export default () => {
             .then((content) => saveFileContents(uuid, name || hashToPath(hash), content))
             .then(() => {
                 if (name) {
-                    history.push(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
+                    history.push(`/server/${id}/files/edit#${encodePathSegments(name)}`);
                     return;
                 }
 
