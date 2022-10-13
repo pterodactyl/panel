@@ -41,11 +41,9 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     /**
      * Return a nest or all nests and the count of eggs and servers for that nest.
      *
-     * @return \Pterodactyl\Models\Nest|\Illuminate\Database\Eloquent\Collection
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCounts(int $id = null)
+    public function getWithCounts(int $id = null): Collection|Nest
     {
         $instance = $this->getBuilder()->withCount(['eggs', 'servers']);
 
