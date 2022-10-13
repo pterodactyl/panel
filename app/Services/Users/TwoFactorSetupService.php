@@ -12,24 +12,14 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 class TwoFactorSetupService
 {
     public const VALID_BASE32_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
-
-    private ConfigRepository $config;
-
-    private Encrypter $encrypter;
-
-    private UserRepositoryInterface $repository;
-
     /**
      * TwoFactorSetupService constructor.
      */
     public function __construct(
-        ConfigRepository $config,
-        Encrypter $encrypter,
-        UserRepositoryInterface $repository
+        private ConfigRepository $config,
+        private Encrypter $encrypter,
+        private UserRepositoryInterface $repository
     ) {
-        $this->config = $config;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

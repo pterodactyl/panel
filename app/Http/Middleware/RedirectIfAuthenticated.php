@@ -9,16 +9,10 @@ use Illuminate\Auth\AuthManager;
 class RedirectIfAuthenticated
 {
     /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    private $authManager;
-
-    /**
      * RedirectIfAuthenticated constructor.
      */
-    public function __construct(AuthManager $authManager)
+    public function __construct(private AuthManager $authManager)
     {
-        $this->authManager = $authManager;
     }
 
     /**

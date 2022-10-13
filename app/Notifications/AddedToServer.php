@@ -11,9 +11,6 @@ class AddedToServer extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * @var object
-     */
     public object $server;
 
     /**

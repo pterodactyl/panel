@@ -15,23 +15,14 @@ class ServerDeletionService
 {
     protected bool $force = false;
 
-    private ConnectionInterface $connection;
-
-    private DaemonServerRepository $daemonServerRepository;
-
-    private DatabaseManagementService $databaseManagementService;
-
     /**
-     * DeletionService constructor.
+     * ServerDeletionService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
-        DatabaseManagementService $databaseManagementService
+        private ConnectionInterface $connection,
+        private DaemonServerRepository $daemonServerRepository,
+        private DatabaseManagementService $databaseManagementService
     ) {
-        $this->connection = $connection;
-        $this->daemonServerRepository = $daemonServerRepository;
-        $this->databaseManagementService = $databaseManagementService;
     }
 
     /**

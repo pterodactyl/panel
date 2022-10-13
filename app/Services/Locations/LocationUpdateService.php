@@ -7,14 +7,11 @@ use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationUpdateService
 {
-    protected LocationRepositoryInterface $repository;
-
     /**
      * LocationUpdateService constructor.
      */
-    public function __construct(LocationRepositoryInterface $repository)
+    public function __construct(protected LocationRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

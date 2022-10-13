@@ -6,14 +6,11 @@ use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class NestUpdateService
 {
-    protected NestRepositoryInterface $repository;
-
     /**
      * NestUpdateService constructor.
      */
-    public function __construct(NestRepositoryInterface $repository)
+    public function __construct(protected NestRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

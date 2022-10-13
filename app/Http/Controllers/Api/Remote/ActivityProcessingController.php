@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Exception;
 use Carbon\Carbon;
+use DateTimeInterface;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Webmozart\Assert\Assert;
@@ -36,7 +37,7 @@ class ActivityProcessingController extends Controller
 
             try {
                 $when = Carbon::createFromFormat(
-                    Carbon::RFC3339,
+                    DateTimeInterface::RFC3339,
                     preg_replace('/(\.\d+)Z$/', 'Z', $datum['timestamp']),
                     'UTC'
                 );

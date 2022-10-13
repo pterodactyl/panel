@@ -11,17 +11,11 @@ use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 // When a mommy and a daddy pterodactyl really like each other...
 class EggCreationService
 {
-    protected ConfigRepository $config;
-
-    protected EggRepositoryInterface $repository;
-
     /**
      * EggCreationService constructor.
      */
-    public function __construct(ConfigRepository $config, EggRepositoryInterface $repository)
+    public function __construct(private ConfigRepository $config, private EggRepositoryInterface $repository)
     {
-        $this->config = $config;
-        $this->repository = $repository;
     }
 
     /**

@@ -14,17 +14,11 @@ class StartupModificationService
 {
     use HasUserLevels;
 
-    private ConnectionInterface $connection;
-
-    private VariableValidatorService $validatorService;
-
     /**
      * StartupModificationService constructor.
      */
-    public function __construct(ConnectionInterface $connection, VariableValidatorService $validatorService)
+    public function __construct(private ConnectionInterface $connection, private VariableValidatorService $validatorService)
     {
-        $this->connection = $connection;
-        $this->validatorService = $validatorService;
     }
 
     /**

@@ -8,19 +8,13 @@ use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 
 class ReinstallServerService
 {
-    private ConnectionInterface $connection;
-
-    private DaemonServerRepository $daemonServerRepository;
-
     /**
      * ReinstallService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository
+        private ConnectionInterface $connection,
+        private DaemonServerRepository $daemonServerRepository
     ) {
-        $this->connection = $connection;
-        $this->daemonServerRepository = $daemonServerRepository;
     }
 
     /**

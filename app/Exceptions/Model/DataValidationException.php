@@ -12,19 +12,9 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 class DataValidationException extends PterodactylException implements HttpExceptionInterface, MessageProvider
 {
     /**
-     * The validator instance.
-     */
-    protected Validator $validator;
-
-    /**
-     * The underlying model instance that triggered this exception.
-     */
-    protected Model $model;
-
-    /**
      * DataValidationException constructor.
      */
-    public function __construct(Validator $validator, Model $model)
+    public function __construct(protected Validator $validator, protected Model $model)
     {
         $message = sprintf(
             'Could not save %s[%s]: failed to validate data: %s',
@@ -34,9 +24,6 @@ class DataValidationException extends PterodactylException implements HttpExcept
         );
 
         parent::__construct($message);
-
-        $this->validator = $validator;
-        $this->model = $model;
     }
 
     /**

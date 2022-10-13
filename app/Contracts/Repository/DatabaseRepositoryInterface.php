@@ -11,10 +11,8 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
 
     /**
      * Set the connection name to execute statements against.
-     *
-     * @return $this
      */
-    public function setConnection(string $connection);
+    public function setConnection(string $connection): self;
 
     /**
      * Return the connection to execute statements against.
@@ -22,12 +20,12 @@ interface DatabaseRepositoryInterface extends RepositoryInterface
     public function getConnection(): string;
 
     /**
-     * Return all of the databases belonging to a server.
+     * Return all the databases belonging to a server.
      */
     public function getDatabasesForServer(int $server): Collection;
 
     /**
-     * Return all of the databases for a given host with the server relationship loaded.
+     * Return all the databases for a given host with the server relationship loaded.
      */
     public function getDatabasesForHost(int $host, int $count = 25): LengthAwarePaginator;
 

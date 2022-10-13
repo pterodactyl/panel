@@ -21,13 +21,11 @@ interface EggRepositoryInterface extends RepositoryInterface
 
     /**
      * Return an egg with the scriptFrom and configFrom relations loaded onto the model.
-     *
-     * @param int|string $value
      */
-    public function getWithCopyAttributes($value, string $column = 'id'): Egg;
+    public function getWithCopyAttributes(int|string $value, string $column = 'id'): Egg;
 
     /**
-     * Return all of the data needed to export a service.
+     * Return all the data needed to export a service.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

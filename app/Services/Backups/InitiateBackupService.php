@@ -23,31 +23,16 @@ class InitiateBackupService
 
     private bool $isLocked = false;
 
-    private BackupRepository $repository;
-
-    private ConnectionInterface $connection;
-
-    private DaemonBackupRepository $daemonBackupRepository;
-
-    private BackupManager $backupManager;
-
-    private DeleteBackupService $deleteBackupService;
-
     /**
      * InitiateBackupService constructor.
      */
     public function __construct(
-        BackupRepository $repository,
-        ConnectionInterface $connection,
-        DaemonBackupRepository $daemonBackupRepository,
-        DeleteBackupService $deleteBackupService,
-        BackupManager $backupManager
+        private BackupRepository $repository,
+        private ConnectionInterface $connection,
+        private DaemonBackupRepository $daemonBackupRepository,
+        private DeleteBackupService $deleteBackupService,
+        private BackupManager $backupManager
     ) {
-        $this->repository = $repository;
-        $this->connection = $connection;
-        $this->daemonBackupRepository = $daemonBackupRepository;
-        $this->backupManager = $backupManager;
-        $this->deleteBackupService = $deleteBackupService;
     }
 
     /**

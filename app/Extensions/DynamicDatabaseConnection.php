@@ -13,23 +13,14 @@ class DynamicDatabaseConnection
     public const DB_COLLATION = 'utf8_unicode_ci';
     public const DB_DRIVER = 'mysql';
 
-    protected ConfigRepository $config;
-
-    protected Encrypter $encrypter;
-
-    protected DatabaseHostRepositoryInterface $repository;
-
     /**
      * DynamicDatabaseConnection constructor.
      */
     public function __construct(
-        ConfigRepository $config,
-        Encrypter $encrypter,
-        DatabaseHostRepositoryInterface $repository
+        protected ConfigRepository $config,
+        protected Encrypter $encrypter,
+        protected DatabaseHostRepositoryInterface $repository
     ) {
-        $this->config = $config;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

@@ -54,16 +54,12 @@ class AppSettingsCommand extends Command
 
     protected array $variables = [];
 
-    protected Kernel $console;
-
     /**
      * AppSettingsCommand constructor.
      */
-    public function __construct(Kernel $command)
+    public function __construct(private Kernel $console)
     {
         parent::__construct();
-
-        $this->console = $command;
     }
 
     /**
@@ -92,10 +88,10 @@ class AppSettingsCommand extends Command
         $this->output->comment('The application URL MUST begin with https:// or http:// depending on if you are using SSL or not. If you do not include the scheme your emails and other content will link to the wrong location.');
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(
             'Application URL',
-            config('app.url', 'http://example.org')
+            config('app.url', 'https://example.com')
         );
 
-        $this->output->comment('The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference http://php.net/manual/en/timezones.php.');
+        $this->output->comment('The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference https://php.net/manual/en/timezones.php.');
         $this->variables['APP_TIMEZONE'] = $this->option('timezone') ?? $this->anticipate(
             'Application Timezone',
             DateTimeZone::listIdentifiers(),

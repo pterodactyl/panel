@@ -19,23 +19,16 @@ class DeleteLocationCommand extends Command
      */
     protected $signature = 'p:location:delete {--short= : The short code of the location to delete.}';
 
-    protected LocationDeletionService $deletionService;
-
     protected Collection $locations;
-
-    protected LocationRepositoryInterface $repository;
 
     /**
      * DeleteLocationCommand constructor.
      */
     public function __construct(
-        LocationDeletionService $deletionService,
-        LocationRepositoryInterface $repository
+        private LocationDeletionService $deletionService,
+        private LocationRepositoryInterface $repository
     ) {
         parent::__construct();
-
-        $this->deletionService = $deletionService;
-        $this->repository = $repository;
     }
 
     /**

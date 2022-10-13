@@ -14,23 +14,14 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationService
 {
-    private ConnectionInterface $connection;
-
-    private DaemonServerRepository $daemonServerRepository;
-
-    private ServerConfigurationStructureService $structureService;
-
     /**
      * BuildModificationService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
-        ServerConfigurationStructureService $structureService
+        private ConnectionInterface $connection,
+        private DaemonServerRepository $daemonServerRepository,
+        private ServerConfigurationStructureService $structureService
     ) {
-        $this->daemonServerRepository = $daemonServerRepository;
-        $this->connection = $connection;
-        $this->structureService = $structureService;
     }
 
     /**

@@ -9,8 +9,6 @@ use Pterodactyl\Contracts\Repository\RepositoryInterface;
 
 abstract class Repository implements RepositoryInterface
 {
-    protected Application $app;
-
     protected array $columns = ['*'];
 
     protected Model $model;
@@ -20,10 +18,8 @@ abstract class Repository implements RepositoryInterface
     /**
      * Repository constructor.
      */
-    public function __construct(Application $application)
+    public function __construct(protected Application $app)
     {
-        $this->app = $application;
-
         $this->initializeModel($this->model());
     }
 

@@ -9,19 +9,13 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EggDeletionService
 {
-    protected EggRepositoryInterface $repository;
-
-    protected ServerRepositoryInterface $serverRepository;
-
     /**
      * EggDeletionService constructor.
      */
     public function __construct(
-        ServerRepositoryInterface $serverRepository,
-        EggRepositoryInterface $repository
+        protected ServerRepositoryInterface $serverRepository,
+        protected EggRepositoryInterface $repository
     ) {
-        $this->repository = $repository;
-        $this->serverRepository = $serverRepository;
     }
 
     /**

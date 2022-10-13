@@ -8,19 +8,13 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class NestDeletionService
 {
-    protected ServerRepositoryInterface $serverRepository;
-
-    protected NestRepositoryInterface $repository;
-
     /**
      * NestDeletionService constructor.
      */
     public function __construct(
-        ServerRepositoryInterface $serverRepository,
-        NestRepositoryInterface $repository
+        protected ServerRepositoryInterface $serverRepository,
+        protected NestRepositoryInterface $repository
     ) {
-        $this->serverRepository = $serverRepository;
-        $this->repository = $repository;
     }
 
     /**

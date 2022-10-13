@@ -9,14 +9,11 @@ use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class EggConfigurationService
 {
-    private ServerConfigurationStructureService $configurationStructureService;
-
     /**
      * EggConfigurationService constructor.
      */
-    public function __construct(ServerConfigurationStructureService $configurationStructureService)
+    public function __construct(private ServerConfigurationStructureService $configurationStructureService)
     {
-        $this->configurationStructureService = $configurationStructureService;
     }
 
     /**

@@ -13,12 +13,12 @@ interface LocationRepositoryInterface extends RepositoryInterface
     public function getAllWithDetails(): Collection;
 
     /**
-     * Return all of the available locations with the nodes as a relationship.
+     * Return all the available locations with the nodes as a relationship.
      */
     public function getAllWithNodes(): Collection;
 
     /**
-     * Return all of the nodes and their respective count of servers for a location.
+     * Return all the nodes and their respective count of servers for a location.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

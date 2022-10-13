@@ -22,17 +22,11 @@ class AssignmentService
     public const PORT_RANGE_LIMIT = 1000;
     public const PORT_RANGE_REGEX = '/^(\d{4,5})-(\d{4,5})$/';
 
-    protected ConnectionInterface $connection;
-
-    protected AllocationRepositoryInterface $repository;
-
     /**
      * AssignmentService constructor.
      */
-    public function __construct(AllocationRepositoryInterface $repository, ConnectionInterface $connection)
+    public function __construct(protected AllocationRepositoryInterface $repository, protected ConnectionInterface $connection)
     {
-        $this->connection = $connection;
-        $this->repository = $repository;
     }
 
     /**

@@ -15,7 +15,7 @@ class AssetHashService
 
     private Filesystem $filesystem;
 
-    protected static $manifest;
+    protected static mixed $manifest;
 
     /**
      * AssetHashService constructor.

@@ -10,8 +10,6 @@ use Illuminate\Contracts\Foundation\Application;
 
 abstract class DaemonRepository
 {
-    protected Application $app;
-
     protected ?Server $server;
 
     protected ?Node $node;
@@ -19,9 +17,8 @@ abstract class DaemonRepository
     /**
      * DaemonRepository constructor.
      */
-    public function __construct(Application $application)
+    public function __construct(protected Application $app)
     {
-        $this->app = $application;
     }
 
     /**

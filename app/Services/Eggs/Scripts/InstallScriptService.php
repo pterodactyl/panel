@@ -8,14 +8,11 @@ use Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException;
 
 class InstallScriptService
 {
-    protected EggRepositoryInterface $repository;
-
     /**
      * InstallScriptService constructor.
      */
-    public function __construct(EggRepositoryInterface $repository)
+    public function __construct(protected EggRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

@@ -9,7 +9,6 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
-use Pterodactyl\Repositories\Eloquent\BackupRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -18,34 +17,20 @@ class BackupRemoteUploadController extends Controller
     public const DEFAULT_MAX_PART_SIZE = 5 * 1024 * 1024 * 1024;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
-
-    /**
      * BackupRemoteUploadController constructor.
      */
-    public function __construct(BackupRepository $repository, BackupManager $backupManager)
+    public function __construct(private BackupManager $backupManager)
     {
-        $this->repository = $repository;
-        $this->backupManager = $backupManager;
     }
 
     /**
      * Returns the required presigned urls to upload a backup to S3 cloud storage.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Exception
      * @throws \Throwable
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
-    public function __invoke(Request $request, string $backup)
+    public function __invoke(Request $request, string $backup): JsonResponse
     {
         // Get the size query parameter.
         $size = (int) $request->query('size');
@@ -116,7 +101,7 @@ class BackupRemoteUploadController extends Controller
     }
 
     /**
-     * Get the configured maximum size of a single part in the multipart uplaod.
+     * Get the configured maximum size of a single part in the multipart upload.
      *
      * The function tries to retrieve a configured value from the configuration.
      * If no value is specified, a fallback value will be used.
@@ -125,10 +110,8 @@ class BackupRemoteUploadController extends Controller
      * the fallback value will be used too.
      *
      * The fallback value is {@see BackupRemoteUploadController::DEFAULT_MAX_PART_SIZE}.
-     *
-     * @return int
      */
-    private function getConfiguredMaxPartSize()
+    private function getConfiguredMaxPartSize(): int
     {
         $maxPartSize = (int) config('backups.max_part_size', self::DEFAULT_MAX_PART_SIZE);
         if ($maxPartSize <= 0) {

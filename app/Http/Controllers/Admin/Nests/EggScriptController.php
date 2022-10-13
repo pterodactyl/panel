@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use Pterodactyl\Models\Egg;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Eggs\Scripts\InstallScriptService;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
@@ -14,31 +15,14 @@ use Pterodactyl\Http\Requests\Admin\Egg\EggScriptFormRequest;
 class EggScriptController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    protected $alert;
-
-    /**
-     * @var \Pterodactyl\Services\Eggs\Scripts\InstallScriptService
-     */
-    protected $installScriptService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    protected $repository;
-
-    /**
      * EggScriptController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        EggRepositoryInterface $repository,
-        InstallScriptService $installScriptService
+        protected AlertsMessageBag $alert,
+        protected EggRepositoryInterface $repository,
+        protected InstallScriptService $installScriptService,
+        protected ViewFactory $view
     ) {
-        $this->alert = $alert;
-        $this->installScriptService = $installScriptService;
-        $this->repository = $repository;
     }
 
     /**
@@ -57,7 +41,7 @@ class EggScriptController extends Controller
             ['copy_script_from', '=', $egg->id],
         ]);
 
-        return view('admin.eggs.scripts', [
+        return $this->view->make('admin.eggs.scripts', [
             'copyFromOptions' => $copy,
             'relyOnScript' => $rely,
             'egg' => $egg,

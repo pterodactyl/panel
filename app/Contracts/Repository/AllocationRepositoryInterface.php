@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Contracts\Repository;
 
+use Pterodactyl\Models\Allocation;
+
 interface AllocationRepositoryInterface extends RepositoryInterface
 {
     /**
@@ -13,5 +15,5 @@ interface AllocationRepositoryInterface extends RepositoryInterface
     /**
      * Return a single allocation from those meeting the requirements.
      */
-    public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false): ?\Pterodactyl\Models\Allocation;
+    public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false): ?Allocation;
 }

@@ -22,6 +22,7 @@
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
+        "ext-posix": "*",
         "ext-zip": "*",
         "aws/aws-sdk-php": "~3.238.2",
         "doctrine/dbal": "~3.4.5",

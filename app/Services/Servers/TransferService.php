@@ -7,15 +7,12 @@ use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 
 class TransferService
 {
-    private DaemonServerRepository $daemonServerRepository;
-
     /**
      * TransferService constructor.
      */
     public function __construct(
-        DaemonServerRepository $daemonServerRepository
+        private DaemonServerRepository $daemonServerRepository
     ) {
-        $this->daemonServerRepository = $daemonServerRepository;
     }
 
     /**

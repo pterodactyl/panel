@@ -15,20 +15,13 @@ class SoftwareVersionService
 
     private static array $result;
 
-    protected CacheRepository $cache;
-
-    protected Client $client;
-
     /**
      * SoftwareVersionService constructor.
      */
     public function __construct(
-        CacheRepository $cache,
-        Client $client
+        protected CacheRepository $cache,
+        protected Client $client
     ) {
-        $this->cache = $cache;
-        $this->client = $client;
-
         self::$result = $this->cacheVersionData();
     }
 

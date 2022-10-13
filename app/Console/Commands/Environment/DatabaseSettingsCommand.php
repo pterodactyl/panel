@@ -29,19 +29,12 @@ class DatabaseSettingsCommand extends Command
 
     protected array $variables = [];
 
-    protected Kernel $console;
-
-    protected DatabaseManager $database;
-
     /**
      * DatabaseSettingsCommand constructor.
      */
-    public function __construct(DatabaseManager $database, Kernel $console)
+    public function __construct(private DatabaseManager $database, private Kernel $console)
     {
         parent::__construct();
-
-        $this->console = $console;
-        $this->database = $database;
     }
 
     /**

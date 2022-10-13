@@ -23,24 +23,18 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Lockout time for failed login requests.
-     *
-     * @var int
      */
-    protected $lockoutTime;
+    protected int $lockoutTime;
 
     /**
      * After how many attempts should logins be throttled and locked.
-     *
-     * @var int
      */
-    protected $maxLoginAttempts;
+    protected int $maxLoginAttempts;
 
     /**
      * Where to redirect users after login / registration.
-     *
-     * @var string
      */
-    protected $redirectTo = '/';
+    protected string $redirectTo = '/';
 
     /**
      * LoginController constructor.
@@ -95,7 +89,7 @@ abstract class AbstractLoginController extends Controller
     }
 
     /**
-     * Determine if the user is logging in using an email or username,.
+     * Determine if the user is logging in using an email or username.
      */
     protected function getField(string $input = null): string
     {

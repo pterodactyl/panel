@@ -19,14 +19,22 @@ class PruneOrphanedBackupsCommand extends Command
      */
     protected $description = 'Marks all backups that have not completed in the last "n" minutes as being failed.';
 
-    public function handle(BackupRepository $repository)
+    /**
+     * PruneOrphanedBackupsCommand constructor.
+     */
+    public function __construct(private BackupRepository $backupRepository)
+    {
+        parent::__construct();
+    }
+
+    public function handle()
     {
         $since = $this->option('prune-age') ?? config('backups.prune_age', 360);
         if (!$since || !is_digit($since)) {
             throw new InvalidArgumentException('The "--prune-age" argument must be a value greater than 0.');
         }
 
-        $query = $repository->getBuilder()
+        $query = $this->backupRepository->getBuilder()
             ->whereNull('completed_at')
             ->where('created_at', '<=', CarbonImmutable::now()->subMinutes($since)->toDateTimeString());
 

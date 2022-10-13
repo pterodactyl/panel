@@ -8,14 +8,11 @@ use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 
 class EggUpdateService
 {
-    protected EggRepositoryInterface $repository;
-
     /**
      * EggUpdateService constructor.
      */
-    public function __construct(EggRepositoryInterface $repository)
+    public function __construct(protected EggRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

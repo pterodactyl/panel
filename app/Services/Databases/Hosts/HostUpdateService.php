@@ -11,31 +11,16 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostUpdateService
 {
-    private ConnectionInterface $connection;
-
-    private DatabaseManager $databaseManager;
-
-    private DynamicDatabaseConnection $dynamic;
-
-    private Encrypter $encrypter;
-
-    private DatabaseHostRepositoryInterface $repository;
-
     /**
-     * DatabaseHostService constructor.
+     * HostUpdateService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DatabaseManager $databaseManager,
-        DynamicDatabaseConnection $dynamic,
-        Encrypter $encrypter,
-        DatabaseHostRepositoryInterface $repository
+        private ConnectionInterface $connection,
+        private DatabaseManager $databaseManager,
+        private DynamicDatabaseConnection $dynamic,
+        private Encrypter $encrypter,
+        private DatabaseHostRepositoryInterface $repository
     ) {
-        $this->connection = $connection;
-        $this->databaseManager = $databaseManager;
-        $this->dynamic = $dynamic;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

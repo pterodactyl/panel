@@ -12,7 +12,7 @@ class Utilities
 {
     /**
      * Generates a random string and injects special characters into it, in addition to
-     * the randomness of the alpha-numeric default response.
+     * the randomness of the alphanumeric default response.
      */
     public static function randomStringWithSpecialCharacters(int $length = 16): string
     {

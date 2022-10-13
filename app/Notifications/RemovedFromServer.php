@@ -11,9 +11,6 @@ class RemovedFromServer extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * @var object
-     */
     public object $server;
 
     /**

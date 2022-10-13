@@ -14,16 +14,6 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class DaemonAuthenticate
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
      * Daemon routes that this middleware should be skipped on.
      *
      * @var array
@@ -35,10 +25,8 @@ class DaemonAuthenticate
     /**
      * DaemonAuthenticate constructor.
      */
-    public function __construct(Encrypter $encrypter, NodeRepository $repository)
+    public function __construct(private Encrypter $encrypter, private NodeRepository $repository)
     {
-        $this->repository = $repository;
-        $this->encrypter = $encrypter;
     }
 
     /**

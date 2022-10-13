@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Pterodactyl\Models\Egg;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Eggs\EggUpdateService;
 use Pterodactyl\Services\Eggs\EggCreationService;
@@ -17,32 +18,18 @@ use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class EggController extends Controller
 {
-    protected $alert;
-
-    protected $creationService;
-
-    protected $deletionService;
-
-    protected $nestRepository;
-
-    protected $repository;
-
-    protected $updateService;
-
+    /**
+     * EggController constructor.
+     */
     public function __construct(
-        AlertsMessageBag $alert,
-        EggCreationService $creationService,
-        EggDeletionService $deletionService,
-        EggRepositoryInterface $repository,
-        EggUpdateService $updateService,
-        NestRepositoryInterface $nestRepository
+        protected AlertsMessageBag $alert,
+        protected EggCreationService $creationService,
+        protected EggDeletionService $deletionService,
+        protected EggRepositoryInterface $repository,
+        protected EggUpdateService $updateService,
+        protected NestRepositoryInterface $nestRepository,
+        protected ViewFactory $view
     ) {
-        $this->alert = $alert;
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->nestRepository = $nestRepository;
-        $this->repository = $repository;
-        $this->updateService = $updateService;
     }
 
     /**
@@ -55,7 +42,7 @@ class EggController extends Controller
         $nests = $this->nestRepository->getWithEggs();
         JavaScript::put(['nests' => $nests->keyBy('id')]);
 
-        return view('admin.eggs.new', ['nests' => $nests]);
+        return $this->view->make('admin.eggs.new', ['nests' => $nests]);
     }
 
     /**
@@ -80,7 +67,7 @@ class EggController extends Controller
      */
     public function view(Egg $egg): View
     {
-        return view('admin.eggs.view', [
+        return $this->view->make('admin.eggs.view', [
             'egg' => $egg,
             'images' => array_map(
                 fn ($key, $value) => $key === $value ? $value : "$key|$value",

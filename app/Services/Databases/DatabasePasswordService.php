@@ -11,27 +11,15 @@ use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabasePasswordService
 {
-    private ConnectionInterface $connection;
-
-    private DynamicDatabaseConnection $dynamic;
-
-    private Encrypter $encrypter;
-
-    private DatabaseRepositoryInterface $repository;
-
     /**
      * DatabasePasswordService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DynamicDatabaseConnection $dynamic,
-        Encrypter $encrypter,
-        DatabaseRepositoryInterface $repository
+        private ConnectionInterface $connection,
+        private DynamicDatabaseConnection $dynamic,
+        private Encrypter $encrypter,
+        private DatabaseRepositoryInterface $repository
     ) {
-        $this->connection = $connection;
-        $this->dynamic = $dynamic;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

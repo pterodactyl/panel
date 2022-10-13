@@ -2,11 +2,12 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Nodes;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
-use Illuminate\Contracts\View\Factory;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -20,60 +21,22 @@ class NodeViewController extends Controller
     use JavascriptInjection;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Contracts\View\Factory
-     */
-    private $view;
-
-    /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
-     */
-    private $versionService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\LocationRepository
-     */
-    private $locationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\AllocationRepository
-     */
-    private $allocationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $serverRepository;
-
-    /**
      * NodeViewController constructor.
      */
     public function __construct(
-        AllocationRepository $allocationRepository,
-        LocationRepository $locationRepository,
-        NodeRepository $repository,
-        ServerRepository $serverRepository,
-        SoftwareVersionService $versionService,
-        Factory $view
+        private AllocationRepository $allocationRepository,
+        private LocationRepository $locationRepository,
+        private NodeRepository $repository,
+        private ServerRepository $serverRepository,
+        private SoftwareVersionService $versionService,
+        private ViewFactory $view
     ) {
-        $this->repository = $repository;
-        $this->view = $view;
-        $this->versionService = $versionService;
-        $this->locationRepository = $locationRepository;
-        $this->allocationRepository = $allocationRepository;
-        $this->serverRepository = $serverRepository;
     }
 
     /**
      * Returns index view for a specific node on the system.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function index(Request $request, Node $node)
+    public function index(Request $request, Node $node): View
     {
         $node = $this->repository->loadLocationAndServerCount($node);
 

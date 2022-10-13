@@ -19,10 +19,8 @@ class LocaleController extends Controller
 
     /**
      * Returns translation data given a specific locale and namespace.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(Request $request)
+    public function __invoke(Request $request): JsonResponse
     {
         $locales = explode(' ', $request->input('locale') ?? '');
         $namespaces = explode(' ', $request->input('namespace') ?? '');

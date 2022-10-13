@@ -10,8 +10,6 @@ use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 
 class AllocationSelectionService
 {
-    private AllocationRepositoryInterface $repository;
-
     protected bool $dedicated = false;
 
     protected array $nodes = [];
@@ -21,9 +19,8 @@ class AllocationSelectionService
     /**
      * AllocationSelectionService constructor.
      */
-    public function __construct(AllocationRepositoryInterface $repository)
+    public function __construct(private AllocationRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

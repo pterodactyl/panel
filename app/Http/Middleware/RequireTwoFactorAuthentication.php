@@ -15,23 +15,15 @@ class RequireTwoFactorAuthentication
     public const LEVEL_ALL = 2;
 
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
+     * The route to redirect a user to enable 2FA.
      */
-    private $alert;
-
-    /**
-     * The route to redirect a user to to enable 2FA.
-     *
-     * @var string
-     */
-    protected $redirectRoute = '/account';
+    protected string $redirectRoute = '/account';
 
     /**
      * RequireTwoFactorAuthentication constructor.
      */
-    public function __construct(AlertsMessageBag $alert)
+    public function __construct(private AlertsMessageBag $alert)
     {
-        $this->alert = $alert;
     }
 
     /**

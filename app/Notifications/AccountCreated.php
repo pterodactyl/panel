@@ -13,23 +13,10 @@ class AccountCreated extends Notification implements ShouldQueue
     use Queueable;
 
     /**
-     * The authentication token to be used for the user to set their
-     * password for the first time.
-     */
-    public ?string $token;
-
-    /**
-     * The user model for the created user.
-     */
-    public User $user;
-
-    /**
      * Create a new notification instance.
      */
-    public function __construct(User $user, string $token = null)
+    public function __construct(public User $user, public ?string $token = null)
     {
-        $this->token = $token;
-        $this->user = $user;
     }
 
     /**

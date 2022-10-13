@@ -33,17 +33,21 @@ class MakeNodeCommand extends Command
      */
     protected $description = 'Creates a new node on the system via the CLI.';
 
-    protected NodeCreationService $creationService;
+    /**
+     * MakeNodeCommand constructor.
+     */
+    public function __construct(private NodeCreationService $creationService)
+    {
+        parent::__construct();
+    }
 
     /**
      * Handle the command execution process.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(NodeCreationService $creationService)
+    public function handle()
     {
-        $this->creationService = $creationService;
-
         $data['name'] = $this->option('name') ?? $this->ask('Enter a short identifier used to distinguish this node from others');
         $data['description'] = $this->option('description') ?? $this->ask('Enter a description to identify the node');
         $data['location_id'] = $this->option('locationId') ?? $this->ask('Enter a valid location id');

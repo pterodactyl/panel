@@ -13,14 +13,11 @@ class VariableValidatorService
 {
     use HasUserLevels;
 
-    private ValidationFactory $validator;
-
     /**
      * VariableValidatorService constructor.
      */
-    public function __construct(ValidationFactory $validator)
+    public function __construct(private ValidationFactory $validator)
     {
-        $this->validator = $validator;
     }
 
     /**

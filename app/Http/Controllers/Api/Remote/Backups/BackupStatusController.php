@@ -17,26 +17,18 @@ use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 class BackupStatusController extends Controller
 {
     /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
-
-    /**
      * BackupStatusController constructor.
      */
-    public function __construct(BackupManager $backupManager)
+    public function __construct(private BackupManager $backupManager)
     {
-        $this->backupManager = $backupManager;
     }
 
     /**
      * Handles updating the state of a backup.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function index(ReportBackupCompleteRequest $request, string $backup)
+    public function index(ReportBackupCompleteRequest $request, string $backup): JsonResponse
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -80,8 +72,6 @@ class BackupStatusController extends Controller
      *
      * The only thing the successful field does is update the entry value for the audit logs
      * table tracking for this restoration.
-     *
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      */

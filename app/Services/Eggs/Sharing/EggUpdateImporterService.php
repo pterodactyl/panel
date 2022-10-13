@@ -11,17 +11,11 @@ use Pterodactyl\Services\Eggs\EggParserService;
 
 class EggUpdateImporterService
 {
-    protected ConnectionInterface $connection;
-
-    protected EggParserService $parser;
-
     /**
      * EggUpdateImporterService constructor.
      */
-    public function __construct(ConnectionInterface $connection, EggParserService $parser)
+    public function __construct(protected ConnectionInterface $connection, protected EggParserService $parser)
     {
-        $this->connection = $connection;
-        $this->parser = $parser;
     }
 
     /**

@@ -31,16 +31,12 @@ class EmailSettingsCommand extends Command
 
     protected array $variables = [];
 
-    protected ConfigRepository $config;
-
     /**
      * EmailSettingsCommand constructor.
      */
-    public function __construct(ConfigRepository $config)
+    public function __construct(private ConfigRepository $config)
     {
         parent::__construct();
-
-        $this->config = $config;
     }
 
     /**

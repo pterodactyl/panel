@@ -12,17 +12,11 @@ class VariableCreationService
 {
     use ValidatesValidationRules;
 
-    private EggVariableRepositoryInterface $repository;
-
-    private ValidationFactory $validator;
-
     /**
      * VariableCreationService constructor.
      */
-    public function __construct(EggVariableRepositoryInterface $repository, ValidationFactory $validator)
+    public function __construct(private EggVariableRepositoryInterface $repository, private ValidationFactory $validator)
     {
-        $this->repository = $repository;
-        $this->validator = $validator;
     }
 
     /**

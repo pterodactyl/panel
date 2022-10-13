@@ -11,18 +11,10 @@ use Pterodactyl\Exceptions\Service\Allocation\NoAutoAllocationSpaceAvailableExce
 class FindAssignableAllocationService
 {
     /**
-     * @var \Pterodactyl\Services\Allocations\AssignmentService
-     */
-    private AssignmentService $service;
-
-    /**
      * FindAssignableAllocationService constructor.
-     *
-     * @param \Pterodactyl\Services\Allocations\AssignmentService $service
      */
-    public function __construct(AssignmentService $service)
+    public function __construct(private AssignmentService $service)
     {
-        $this->service = $service;
     }
 
     /**

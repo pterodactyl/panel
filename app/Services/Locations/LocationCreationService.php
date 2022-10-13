@@ -8,16 +8,10 @@ use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 class LocationCreationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
-     */
-    protected LocationRepositoryInterface $repository;
-
-    /**
      * LocationCreationService constructor.
      */
-    public function __construct(LocationRepositoryInterface $repository)
+    public function __construct(protected LocationRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

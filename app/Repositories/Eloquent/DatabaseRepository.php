@@ -13,16 +13,12 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
 {
     protected string $connection = self::DEFAULT_CONNECTION_NAME;
 
-    protected DatabaseManager $database;
-
     /**
      * DatabaseRepository constructor.
      */
-    public function __construct(Application $application, DatabaseManager $database)
+    public function __construct(Application $application, private DatabaseManager $database)
     {
         parent::__construct($application);
-
-        $this->database = $database;
     }
 
     /**

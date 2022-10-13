@@ -17,16 +17,12 @@ class MakeUserCommand extends Command
      */
     protected $signature = 'p:user:make {--email=} {--username=} {--name-first=} {--name-last=} {--password=} {--admin=} {--no-password}';
 
-    protected UserCreationService $creationService;
-
     /**
      * MakeUserCommand constructor.
      */
-    public function __construct(UserCreationService $creationService)
+    public function __construct(private UserCreationService $creationService)
     {
         parent::__construct();
-
-        $this->creationService = $creationService;
     }
 
     /**

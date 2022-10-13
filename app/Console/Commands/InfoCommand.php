@@ -18,19 +18,12 @@ class InfoCommand extends Command
      */
     protected $signature = 'p:info';
 
-    protected ConfigRepository $config;
-
-    protected SoftwareVersionService $versionService;
-
     /**
      * VersionCommand constructor.
      */
-    public function __construct(ConfigRepository $config, SoftwareVersionService $versionService)
+    public function __construct(private ConfigRepository $config, private SoftwareVersionService $versionService)
     {
         parent::__construct();
-
-        $this->config = $config;
-        $this->versionService = $versionService;
     }
 
     /**

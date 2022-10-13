@@ -12,16 +12,10 @@ class SendPasswordReset extends Notification implements ShouldQueue
     use Queueable;
 
     /**
-     * The password reset token.
-     */
-    public string $token;
-
-    /**
      * Create a new notification instance.
      */
-    public function __construct(string $token)
+    public function __construct(public string $token)
     {
-        $this->token = $token;
     }
 
     /**

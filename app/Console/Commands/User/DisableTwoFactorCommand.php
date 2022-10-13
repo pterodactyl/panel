@@ -17,16 +17,12 @@ class DisableTwoFactorCommand extends Command
      */
     protected $signature = 'p:user:disable2fa {--email= : The email of the user to disable 2-Factor for.}';
 
-    protected UserRepositoryInterface $repository;
-
     /**
      * DisableTwoFactorCommand constructor.
      */
-    public function __construct(UserRepositoryInterface $repository)
+    public function __construct(private UserRepositoryInterface $repository)
     {
         parent::__construct();
-
-        $this->repository = $repository;
     }
 
     /**

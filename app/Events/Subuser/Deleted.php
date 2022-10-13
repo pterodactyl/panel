@@ -11,15 +11,9 @@ class Deleted extends Event
     use SerializesModels;
 
     /**
-     * The Eloquent model of the server.
-     */
-    public Subuser $subuser;
-
-    /**
      * Create a new event instance.
      */
-    public function __construct(Subuser $subuser)
+    public function __construct(public Subuser $subuser)
     {
-        $this->subuser = $subuser;
     }
 }

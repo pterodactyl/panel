@@ -10,14 +10,11 @@ use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 
 class EggExporterService
 {
-    protected EggRepositoryInterface $repository;
-
     /**
      * EggExporterService constructor.
      */
-    public function __construct(EggRepositoryInterface $repository)
+    public function __construct(protected EggRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

@@ -18,27 +18,19 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest
 
 class DatabaseController extends ClientApiController
 {
-    private DeployServerDatabaseService $deployDatabaseService;
-    private DatabaseManagementService $managementService;
-    private DatabasePasswordService $passwordService;
-
     /**
      * DatabaseController constructor.
      */
     public function __construct(
-        DeployServerDatabaseService $deployDatabaseService,
-        DatabaseManagementService $managementService,
-        DatabasePasswordService $passwordService
+        private DeployServerDatabaseService $deployDatabaseService,
+        private DatabaseManagementService $managementService,
+        private DatabasePasswordService $passwordService
     ) {
         parent::__construct();
-
-        $this->deployDatabaseService = $deployDatabaseService;
-        $this->managementService = $managementService;
-        $this->passwordService = $passwordService;
     }
 
     /**
-     * Return all of the databases that belong to the given server.
+     * Return all the databases that belong to the given server.
      */
     public function index(GetDatabasesRequest $request, Server $server): array
     {
@@ -73,11 +65,9 @@ class DatabaseController extends ClientApiController
      * Rotates the password for the given server model and returns a fresh instance to
      * the caller.
      *
-     * @return array
-     *
      * @throws \Throwable
      */
-    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database)
+    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database): array
     {
         $this->passwordService->handle($database);
         $database->refresh();

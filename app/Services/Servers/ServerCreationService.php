@@ -21,43 +21,19 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerCreationService
 {
-    private AllocationSelectionService $allocationSelectionService;
-
-    private ConnectionInterface $connection;
-
-    private DaemonServerRepository $daemonServerRepository;
-
-    private FindViableNodesService $findViableNodesService;
-
-    private ServerRepository $repository;
-
-    private ServerDeletionService $serverDeletionService;
-
-    private ServerVariableRepository $serverVariableRepository;
-
-    private VariableValidatorService $validatorService;
-
     /**
      * ServerCreationService constructor.
      */
     public function __construct(
-        AllocationSelectionService $allocationSelectionService,
-        ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
-        FindViableNodesService $findViableNodesService,
-        ServerRepository $repository,
-        ServerDeletionService $serverDeletionService,
-        ServerVariableRepository $serverVariableRepository,
-        VariableValidatorService $validatorService
+        private AllocationSelectionService $allocationSelectionService,
+        private ConnectionInterface $connection,
+        private DaemonServerRepository $daemonServerRepository,
+        private FindViableNodesService $findViableNodesService,
+        private ServerRepository $repository,
+        private ServerDeletionService $serverDeletionService,
+        private ServerVariableRepository $serverVariableRepository,
+        private VariableValidatorService $validatorService
     ) {
-        $this->allocationSelectionService = $allocationSelectionService;
-        $this->connection = $connection;
-        $this->daemonServerRepository = $daemonServerRepository;
-        $this->findViableNodesService = $findViableNodesService;
-        $this->repository = $repository;
-        $this->serverDeletionService = $serverDeletionService;
-        $this->serverVariableRepository = $serverVariableRepository;
-        $this->validatorService = $validatorService;
     }
 
     /**

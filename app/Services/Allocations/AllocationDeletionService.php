@@ -9,16 +9,10 @@ use Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException;
 class AllocationDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
-     */
-    private AllocationRepositoryInterface $repository;
-
-    /**
      * AllocationDeletionService constructor.
      */
-    public function __construct(AllocationRepositoryInterface $repository)
+    public function __construct(private AllocationRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**

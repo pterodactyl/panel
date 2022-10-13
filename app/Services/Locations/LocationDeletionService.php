@@ -10,19 +10,13 @@ use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
 
 class LocationDeletionService
 {
-    protected NodeRepositoryInterface $nodeRepository;
-
-    protected LocationRepositoryInterface $repository;
-
     /**
      * LocationDeletionService constructor.
      */
     public function __construct(
-        LocationRepositoryInterface $repository,
-        NodeRepositoryInterface $nodeRepository
+        protected LocationRepositoryInterface $repository,
+        protected NodeRepositoryInterface $nodeRepository
     ) {
-        $this->nodeRepository = $nodeRepository;
-        $this->repository = $repository;
     }
 
     /**

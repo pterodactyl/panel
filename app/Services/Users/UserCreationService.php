@@ -12,27 +12,15 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserCreationService
 {
-    private ConnectionInterface $connection;
-
-    private Hasher $hasher;
-
-    private PasswordBroker $passwordBroker;
-
-    private UserRepositoryInterface $repository;
-
     /**
-     * CreationService constructor.
+     * UserCreationService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        Hasher $hasher,
-        PasswordBroker $passwordBroker,
-        UserRepositoryInterface $repository
+        private ConnectionInterface $connection,
+        private Hasher $hasher,
+        private PasswordBroker $passwordBroker,
+        private UserRepositoryInterface $repository
     ) {
-        $this->connection = $connection;
-        $this->hasher = $hasher;
-        $this->passwordBroker = $passwordBroker;
-        $this->repository = $repository;
     }
 
     /**

@@ -13,17 +13,11 @@ class DetailsModificationService
 {
     use ReturnsUpdatedModels;
 
-    private ConnectionInterface $connection;
-
-    private DaemonServerRepository $serverRepository;
-
     /**
      * DetailsModificationService constructor.
      */
-    public function __construct(ConnectionInterface $connection, DaemonServerRepository $serverRepository)
+    public function __construct(private ConnectionInterface $connection, private DaemonServerRepository $serverRepository)
     {
-        $this->connection = $connection;
-        $this->serverRepository = $serverRepository;
     }
 
     /**

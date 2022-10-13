@@ -16,8 +16,6 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class BackupManager
 {
-    protected Application $app;
-
     protected ConfigRepository $config;
 
     /**
@@ -35,9 +33,8 @@ class BackupManager
     /**
      * BackupManager constructor.
      */
-    public function __construct(Application $app)
+    public function __construct(protected Application $app)
     {
-        $this->app = $app;
         $this->config = $app->make(ConfigRepository::class);
     }
 

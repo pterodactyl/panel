@@ -13,20 +13,11 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ProcessScheduleService
 {
-    private ConnectionInterface $connection;
-
-    private Dispatcher $dispatcher;
-
-    private DaemonServerRepository $serverRepository;
-
     /**
      * ProcessScheduleService constructor.
      */
-    public function __construct(ConnectionInterface $connection, Dispatcher $dispatcher, DaemonServerRepository $serverRepository)
+    public function __construct(private ConnectionInterface $connection, private Dispatcher $dispatcher, private DaemonServerRepository $serverRepository)
     {
-        $this->connection = $connection;
-        $this->dispatcher = $dispatcher;
-        $this->serverRepository = $serverRepository;
     }
 
     /**

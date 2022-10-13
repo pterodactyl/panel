@@ -8,19 +8,13 @@ use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
-    private Encrypter $encrypter;
-
     private int $keyType = ApiKey::TYPE_NONE;
-
-    private ApiKeyRepositoryInterface $repository;
 
     /**
      * ApiKeyService constructor.
      */
-    public function __construct(ApiKeyRepositoryInterface $repository, Encrypter $encrypter)
+    public function __construct(private ApiKeyRepositoryInterface $repository, private Encrypter $encrypter)
     {
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

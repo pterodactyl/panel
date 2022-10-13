@@ -10,17 +10,11 @@ use Pterodactyl\Extensions\Backups\BackupManager;
 
 class DownloadLinkService
 {
-    private BackupManager $backupManager;
-
-    private NodeJWTService $jwtService;
-
     /**
      * DownloadLinkService constructor.
      */
-    public function __construct(BackupManager $backupManager, NodeJWTService $jwtService)
+    public function __construct(private BackupManager $backupManager, private NodeJWTService $jwtService)
     {
-        $this->backupManager = $backupManager;
-        $this->jwtService = $jwtService;
     }
 
     /**

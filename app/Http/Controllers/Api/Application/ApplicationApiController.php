@@ -24,7 +24,7 @@ abstract class ApplicationApiController extends Controller
     {
         Container::getInstance()->call([$this, 'loadDependencies']);
 
-        // Parse all of the includes to use on this request.
+        // Parse all the includes to use on this request.
         $input = $this->request->input('include', []);
         $input = is_array($input) ? $input : explode(',', $input);
 
@@ -65,7 +65,7 @@ abstract class ApplicationApiController extends Controller
     }
 
     /**
-     * Return a HTTP/204 response for the API.
+     * Return an HTTP/204 response for the API.
      */
     protected function returnNoContent(): Response
     {

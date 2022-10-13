@@ -22,18 +22,12 @@ class RunTaskJob extends Job implements ShouldQueue
     use InteractsWithQueue;
     use SerializesModels;
 
-    public Task $task;
-
-    public bool $manualRun;
-
     /**
      * RunTaskJob constructor.
      */
-    public function __construct(Task $task, bool $manualRun = false)
+    public function __construct(public Task $task, public bool $manualRun = false)
     {
         $this->queue = 'standard';
-        $this->task = $task;
-        $this->manualRun = $manualRun;
     }
 
     /**

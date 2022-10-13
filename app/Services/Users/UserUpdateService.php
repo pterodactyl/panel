@@ -10,14 +10,11 @@ class UserUpdateService
 {
     use HasUserLevels;
 
-    private Hasher $hasher;
-
     /**
-     * UpdateService constructor.
+     * UserUpdateService constructor.
      */
-    public function __construct(Hasher $hasher)
+    public function __construct(private Hasher $hasher)
     {
-        $this->hasher = $hasher;
     }
 
     /**

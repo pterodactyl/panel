@@ -15,27 +15,15 @@ use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 
 class SubuserCreationService
 {
-    private ConnectionInterface $connection;
-
-    private SubuserRepository $subuserRepository;
-
-    private UserCreationService $userCreationService;
-
-    private UserRepositoryInterface $userRepository;
-
     /**
      * SubuserCreationService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        SubuserRepository $subuserRepository,
-        UserCreationService $userCreationService,
-        UserRepositoryInterface $userRepository
+        private ConnectionInterface $connection,
+        private SubuserRepository $subuserRepository,
+        private UserCreationService $userCreationService,
+        private UserRepositoryInterface $userRepository
     ) {
-        $this->connection = $connection;
-        $this->subuserRepository = $subuserRepository;
-        $this->userRepository = $userRepository;
-        $this->userCreationService = $userCreationService;
     }
 
     /**

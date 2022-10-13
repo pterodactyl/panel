@@ -58,20 +58,16 @@ interface RepositoryInterface
     /**
      * Create a new model instance and persist it to the database.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function create(array $fields, bool $validate = true, bool $force = false);
+    public function create(array $fields, bool $validate = true, bool $force = false): mixed;
 
     /**
      * Find a model that has the specific ID passed.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function find(int $id);
+    public function find(int $id): mixed;
 
     /**
      * Find a model matching an array of where clauses.
@@ -81,11 +77,9 @@ interface RepositoryInterface
     /**
      * Find and return the first matching instance for the given fields.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function findFirstWhere(array $fields);
+    public function findFirstWhere(array $fields): mixed;
 
     /**
      * Return a count of records matching the passed arguments.
@@ -105,12 +99,10 @@ interface RepositoryInterface
     /**
      * Update a given ID with the passed array of fields.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(int $id, array $fields, bool $validate = true, bool $force = false);
+    public function update(int $id, array $fields, bool $validate = true, bool $force = false): mixed;
 
     /**
      * Perform a mass update where matching records are updated using whereIn.
@@ -121,11 +113,9 @@ interface RepositoryInterface
     /**
      * Update a record if it exists in the database, otherwise create it.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function updateOrCreate(array $where, array $fields, bool $validate = true, bool $force = false);
+    public function updateOrCreate(array $where, array $fields, bool $validate = true, bool $force = false): mixed;
 
     /**
      * Return all records associated with the given model.

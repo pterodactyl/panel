@@ -9,17 +9,10 @@ use Illuminate\Queue\SerializesModels;
 class Saving extends Event
 {
     use SerializesModels;
-
-    /**
-     * The Eloquent model of the server.
-     */
-    public Server $server;
-
     /**
      * Create a new event instance.
      */
-    public function __construct(Server $server)
+    public function __construct(public Server $server)
     {
-        $this->server = $server;
     }
 }

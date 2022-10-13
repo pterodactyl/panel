@@ -19,16 +19,12 @@ class DeleteUserCommand extends Command
      */
     protected $signature = 'p:user:delete {--user=}';
 
-    protected UserDeletionService $deletionService;
-
     /**
      * DeleteUserCommand constructor.
      */
-    public function __construct(UserDeletionService $deletionService)
+    public function __construct(private UserDeletionService $deletionService)
     {
         parent::__construct();
-
-        $this->deletionService = $deletionService;
     }
 
     public function handle(): int

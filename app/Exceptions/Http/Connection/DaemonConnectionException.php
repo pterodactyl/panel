@@ -29,7 +29,7 @@ class DaemonConnectionException extends DisplayException
     {
         /** @var \GuzzleHttp\Psr7\Response|null $response */
         $response = method_exists($previous, 'getResponse') ? $previous->getResponse() : null;
-        $this->requestId = $response ? $response->getHeaderLine('X-Request-Id') : null;
+        $this->requestId = $response?->getHeaderLine('X-Request-Id');
 
         if ($useStatusCode) {
             $this->statusCode = is_null($response) ? $this->statusCode : $response->getStatusCode();

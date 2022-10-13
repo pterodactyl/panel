@@ -14,27 +14,15 @@ use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
 
 class NodeUpdateService
 {
-    private ConnectionInterface $connection;
-
-    private DaemonConfigurationRepository $configurationRepository;
-
-    private Encrypter $encrypter;
-
-    private NodeRepository $repository;
-
     /**
-     * UpdateService constructor.
+     * NodeUpdateService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DaemonConfigurationRepository $configurationRepository,
-        Encrypter $encrypter,
-        NodeRepository $repository
+        private ConnectionInterface $connection,
+        private DaemonConfigurationRepository $configurationRepository,
+        private Encrypter $encrypter,
+        private NodeRepository $repository
     ) {
-        $this->connection = $connection;
-        $this->configurationRepository = $configurationRepository;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

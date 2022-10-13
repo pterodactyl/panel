@@ -10,17 +10,11 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 
 class NodeCreationService
 {
-    private Encrypter $encrypter;
-
-    protected NodeRepositoryInterface $repository;
-
     /**
      * NodeCreationService constructor.
      */
-    public function __construct(Encrypter $encrypter, NodeRepositoryInterface $repository)
+    public function __construct(private Encrypter $encrypter, protected NodeRepositoryInterface $repository)
     {
-        $this->repository = $repository;
-        $this->encrypter = $encrypter;
     }
 
     /**

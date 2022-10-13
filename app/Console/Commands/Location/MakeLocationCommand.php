@@ -19,16 +19,12 @@ class MakeLocationCommand extends Command
      */
     protected $description = 'Creates a new location on the system via the CLI.';
 
-    protected LocationCreationService $creationService;
-
     /**
      * Create a new command instance.
      */
-    public function __construct(LocationCreationService $creationService)
+    public function __construct(private LocationCreationService $creationService)
     {
         parent::__construct();
-
-        $this->creationService = $creationService;
     }
 
     /**

@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 /**
@@ -54,7 +55,7 @@ class ActivityLog extends Model
     public const RESOURCE_NAME = 'activity_log';
 
     /**
-     * Tracks all of the events we no longer wish to display to users. These are either legacy
+     * Tracks all the events we no longer wish to display to users. These are either legacy
      * events or just events where we never ended up using the associated data.
      */
     public const DISABLED_EVENTS = ['server:file.upload'];
@@ -91,7 +92,7 @@ class ActivityLog extends Model
         return $morph;
     }
 
-    public function subjects()
+    public function subjects(): HasMany
     {
         return $this->hasMany(ActivityLogSubject::class);
     }

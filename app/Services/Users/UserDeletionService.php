@@ -10,23 +10,14 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class UserDeletionService
 {
-    protected UserRepositoryInterface $repository;
-
-    protected ServerRepositoryInterface $serverRepository;
-
-    protected Translator $translator;
-
     /**
-     * DeletionService constructor.
+     * UserDeletionService constructor.
      */
     public function __construct(
-        UserRepositoryInterface $repository,
-        ServerRepositoryInterface $serverRepository,
-        Translator $translator
+        protected UserRepositoryInterface $repository,
+        protected ServerRepositoryInterface $serverRepository,
+        protected Translator $translator
     ) {
-        $this->repository = $repository;
-        $this->serverRepository = $serverRepository;
-        $this->translator = $translator;
     }
 
     /**
