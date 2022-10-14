@@ -12,24 +12,12 @@ use Pterodactyl\Http\Requests\Admin\Jexactyl\RegistrationFormRequest;
 class RegistrationController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alert;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
-     */
-    private $settings;
-
-    /**
      * RegistrationController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        SettingsRepositoryInterface $settings
+        private AlertsMessageBag $alert,
+        private SettingsRepositoryInterface $settings
     ) {
-        $this->alert = $alert;
-        $this->settings = $settings;
     }
 
     /**

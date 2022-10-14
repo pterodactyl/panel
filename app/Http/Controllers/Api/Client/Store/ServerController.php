@@ -19,16 +19,12 @@ use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreNodesRequest;
 
 class ServerController extends ClientApiController
 {
-    private StoreCreationService $creationService;
-
     /**
      * ServerController constructor.
      */
-    public function __construct(StoreCreationService $creationService)
+    public function __construct(private StoreCreationService $creationService)
     {
         parent::__construct();
-
-        $this->creationService = $creationService;
     }
 
     public function nodes(GetStoreNodesRequest $request): array

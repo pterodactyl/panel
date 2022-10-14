@@ -15,18 +15,11 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 class PluginController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonFileRepository
-     */
-    private $fileRepository;
-
-    /**
      * PluginController constructor.
      */
-    public function __construct(DaemonFileRepository $fileRepository)
+    public function __construct(private DaemonFileRepository $fileRepository)
     {
         parent::__construct();
-
-        $this->fileRepository = $fileRepository;
     }
 
     /**

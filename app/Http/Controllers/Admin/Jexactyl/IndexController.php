@@ -17,24 +17,13 @@ class IndexController extends Controller
 {
     use PlainJavascriptInjection;
 
-    private Fractal $fractal;
-    private DaemonServerRepository $repository;
-    private SoftwareVersionService $versionService;
-    private NodeRepositoryInterface $nodeRepository;
-    private ServerRepositoryInterface $serverRepository;
-
     public function __construct(
-        Fractal $fractal,
-        DaemonServerRepository $repository,
-        SoftwareVersionService $versionService,
-        NodeRepositoryInterface $nodeRepository,
-        ServerRepositoryInterface $serverRepository,
+        private Fractal $fractal,
+        private  DaemonServerRepository $repository,
+        private SoftwareVersionService $versionService,
+        private NodeRepositoryInterface $nodeRepository,
+        private ServerRepositoryInterface $serverRepository,
     ) {
-        $this->fractal = $fractal;
-        $this->repository = $repository;
-        $this->nodeRepository = $nodeRepository;
-        $this->versionService = $versionService;
-        $this->serverRepository = $serverRepository;
     }
 
     public function index(): View

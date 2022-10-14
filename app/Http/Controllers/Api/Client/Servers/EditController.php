@@ -12,16 +12,12 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\EditServerRequest;
 
 class EditController extends ClientApiController
 {
-    private ServerEditService $editService;
-
     /**
      * PowerController constructor.
      */
-    public function __construct(ServerEditService $editService)
+    public function __construct(private ServerEditService $editService)
     {
         parent::__construct();
-
-        $this->editService = $editService;
     }
 
     /**

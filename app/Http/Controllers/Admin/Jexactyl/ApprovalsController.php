@@ -13,19 +13,13 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class ApprovalsController extends Controller
 {
-    private AlertsMessageBag $alert;
-    private SettingsRepositoryInterface $settings;
-
     /**
      * ApprovalsController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        SettingsRepositoryInterface $settings,
-    )
-    {
-        $this->alert = $alert;
-        $this->settings = $settings;
+        private AlertsMessageBag $alert,
+        private SettingsRepositoryInterface $settings,
+    ) {
     }
 
     /**

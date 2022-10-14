@@ -12,13 +12,9 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 
 class RenewalController extends ClientApiController
 {
-    private ServerRenewalService $renewalService;
-
-    public function __construct(ServerRenewalService $renewalService)
+    public function __construct(private ServerRenewalService $renewalService)
     {
         parent::__construct();
-
-        $this->renewalService = $renewalService;
     }
 
     /**

@@ -12,22 +12,15 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class ThemeController extends Controller
 {
-    private Repository $config;
-    private AlertsMessageBag $alert;
-    private SettingsRepositoryInterface $settings;
-
     /**
      * ThemeController constructor.
      */
     public function __construct(
-        Repository $config,
-        AlertsMessageBag $alert,
-        SettingsRepositoryInterface $settings
+        private Repository $config,
+        private AlertsMessageBag $alert,
+        private SettingsRepositoryInterface $settings
     ) 
     {
-        $this->alert = $alert;
-        $this->config = $config;
-        $this->settings = $settings;
     }
 
     /**
