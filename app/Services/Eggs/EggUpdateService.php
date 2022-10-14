@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs;
 
@@ -16,16 +9,10 @@ use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 class EggUpdateService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    protected $repository;
-
-    /**
      * EggUpdateService constructor.
      */
-    public function __construct(EggRepositoryInterface $repository)
+    public function __construct(protected EggRepositoryInterface $repository)
     {
-        $this->repository = $repository;
     }
 
     /**
@@ -35,7 +22,7 @@ class EggUpdateService
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
-    public function handle(Egg $egg, array $data)
+    public function handle(Egg $egg, array $data): void
     {
         if (!is_null(array_get($data, 'config_from'))) {
             $results = $this->repository->findCountWhere([

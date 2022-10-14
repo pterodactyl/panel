@@ -7,11 +7,9 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 class AdvancedFormRequest extends AdminFormRequest
 {
     /**
-     * Return all of the rules to apply to this request's data.
-     *
-     * @return array
+     * Return all the rules to apply to this request's data.
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'app:name' => 'required|string|max:191',
@@ -38,6 +36,20 @@ class AdvancedFormRequest extends AdminFormRequest
                 'between:1024,65535',
                 'gt:pterodactyl:client_features:allocations:range_start',
             ],
+        ];
+    }
+
+    public function attributes(): array
+    {
+        return [
+            'recaptcha:enabled' => 'reCAPTCHA Enabled',
+            'recaptcha:secret_key' => 'reCAPTCHA Secret Key',
+            'recaptcha:website_key' => 'reCAPTCHA Website Key',
+            'pterodactyl:guzzle:timeout' => 'HTTP Request Timeout',
+            'pterodactyl:guzzle:connect_timeout' => 'HTTP Connection Timeout',
+            'pterodactyl:client_features:allocations:enabled' => 'Auto Create Allocations Enabled',
+            'pterodactyl:client_features:allocations:range_start' => 'Starting Port',
+            'pterodactyl:client_features:allocations:range_end' => 'Ending Port',
         ];
     }
 }

@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
+use Mockery\MockInterface;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
@@ -11,10 +12,7 @@ use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
 
 class MaintenanceMiddlewareTest extends MiddlewareTestCase
 {
-    /**
-     * @var \Illuminate\Contracts\Routing\ResponseFactory|\Mockery\Mock
-     */
-    private $response;
+    private MockInterface $response;
 
     /**
      * Setup tests.

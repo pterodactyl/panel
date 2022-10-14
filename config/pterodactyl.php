@@ -10,6 +10,7 @@ return [
     | setup on the panel. When set to true, configurations stored in the
     | database will not be applied.
     */
+
     'load_environment_only' => (bool) env('APP_ENVIRONMENT_ONLY', false),
 
     /*
@@ -21,6 +22,7 @@ return [
     | author of custom services, and make upgrades easier by identifying
     | standard Pterodactyl shipped services.
     */
+
     'service' => [
         'author' => env('APP_SERVICE_AUTHOR', 'unknown@unknown.com'),
     ],
@@ -32,6 +34,7 @@ return [
     |
     | Should login success and failure events trigger an email to the user?
     */
+
     'auth' => [
         '2fa_required' => env('APP_2FA_REQUIRED', 0),
         '2fa' => [
@@ -49,6 +52,7 @@ return [
     | Certain pagination result counts can be configured here and will take
     | effect globally.
     */
+
     'paginate' => [
         'frontend' => [
             'servers' => env('APP_PAGINATE_FRONT_SERVERS', 15),
@@ -66,51 +70,15 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | API Options
-    |--------------------------------------------------------------------------
-    |
-    | Configuration options for the API.
-    */
-    'api' => [
-        'include_on_list' => env('API_INCLUDE_ON_LIST', false),
-        'key_expire_time' => env('API_KEY_EXPIRE_TIME', 60 * 12),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
     | Guzzle Connections
     |--------------------------------------------------------------------------
     |
     | Configure the timeout to be used for Guzzle connections here.
     */
+
     'guzzle' => [
         'timeout' => env('GUZZLE_TIMEOUT', 15),
         'connect_timeout' => env('GUZZLE_CONNECT_TIMEOUT', 5),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Queue Names
-    |--------------------------------------------------------------------------
-    |
-    | Configure the names of queues to be used in the database.
-    */
-    'queues' => [
-        'low' => env('QUEUE_LOW', 'low'),
-        'standard' => env('QUEUE_STANDARD', 'standard'),
-        'high' => env('QUEUE_HIGH', 'high'),
-    ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Task Timers
-    |--------------------------------------------------------------------------
-    |
-    | The amount of time in minutes before performing certain actions on the system.
-    */
-    'tasks' => [
-        'clear_log' => env('PTERODACTYL_CLEAR_TASKLOG', 720),
-        'delete_server' => env('PTERODACTYL_DELETE_MINUTES', 10),
     ],
 
     /*
@@ -121,6 +89,7 @@ return [
     | Information for the panel to use when contacting the CDN to confirm
     | if panel is up to date.
     */
+
     'cdn' => [
         'cache_time' => 60,
         'url' => 'https://versions.jexactyl.com',
@@ -133,6 +102,7 @@ return [
     |
     | Allow clients to create their own databases.
     */
+
     'client_features' => [
         'databases' => [
             'enabled' => env('PTERODACTYL_CLIENT_DATABASES_ENABLED', true),
@@ -158,25 +128,10 @@ return [
     |
     | This array includes the MIME filetypes that can be edited via the web.
     */
+
     'files' => [
         'max_edit_size' => env('PTERODACTYL_FILES_MAX_EDIT_SIZE', 1024 * 1024 * 4),
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | JSON Response Routes
-    |--------------------------------------------------------------------------
-    |
-    | You should not edit this block. These routes are ajax based routes that
-    | expect content to be returned in JSON format.
-    */
-    'json_routes' => [
-        'api/*',
-        'daemon/*',
-        'remote/*',
-    ],
-
-    'default_api_version' => 'application/vnd.pterodactyl.v1+json',
 
     /*
     |--------------------------------------------------------------------------
@@ -191,6 +146,7 @@ return [
     |
     | 'P_SERVER_CREATED_AT' => 'created_at'
     */
+
     'environment_variables' => [
         'P_SERVER_ALLOCATION_LIMIT' => 'allocation_limit',
     ],
@@ -202,6 +158,7 @@ return [
     |
     | This section controls the output format for JS & CSS assets.
     */
+
     'assets' => [
         'use_hash' => env('PTERODACTYL_USE_ASSET_HASH', false),
     ],
@@ -213,6 +170,7 @@ return [
     |
     | This section controls what notifications are sent to users.
     */
+
     'email' => [
         // Should an email be sent to a server owner once their server has completed it's first install process?
         'send_install_notification' => env('PTERODACTYL_SEND_INSTALL_NOTIFICATION', true),

@@ -1,20 +1,15 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Illuminate\Http\Response;
 use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\MountServer;
+use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
@@ -42,147 +37,37 @@ use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest
 class ServersController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    protected $alert;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
-     */
-    protected $allocationRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\BuildModificationService
-     */
-    protected $buildModificationService;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $daemonServerRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    protected $databaseRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    protected $databaseManagementService;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
-     */
-    protected $databasePasswordService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
-     */
-    protected $databaseHostRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerDeletionService
-     */
-    protected $deletionService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\DetailsModificationService
-     */
-    protected $detailsModificationService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\MountRepository
-     */
-    protected $mountRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    protected $nestRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ReinstallServerService
-     */
-    protected $reinstallService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $serverConfigurationStructureService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\StartupModificationService
-     */
-    private $startupModificationService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\SuspensionService
-     */
-    protected $suspensionService;
-
-    /**
      * ServersController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        AllocationRepositoryInterface $allocationRepository,
-        BuildModificationService $buildModificationService,
-        ConfigRepository $config,
-        DaemonServerRepository $daemonServerRepository,
-        DatabaseManagementService $databaseManagementService,
-        DatabasePasswordService $databasePasswordService,
-        DatabaseRepositoryInterface $databaseRepository,
-        DatabaseHostRepository $databaseHostRepository,
-        ServerDeletionService $deletionService,
-        DetailsModificationService $detailsModificationService,
-        ReinstallServerService $reinstallService,
-        ServerRepositoryInterface $repository,
-        MountRepository $mountRepository,
-        NestRepositoryInterface $nestRepository,
-        ServerConfigurationStructureService $serverConfigurationStructureService,
-        StartupModificationService $startupModificationService,
-        SuspensionService $suspensionService
+        protected AlertsMessageBag $alert,
+        protected AllocationRepositoryInterface $allocationRepository,
+        protected BuildModificationService $buildModificationService,
+        protected ConfigRepository $config,
+        protected DaemonServerRepository $daemonServerRepository,
+        protected DatabaseManagementService $databaseManagementService,
+        protected DatabasePasswordService $databasePasswordService,
+        protected DatabaseRepositoryInterface $databaseRepository,
+        protected DatabaseHostRepository $databaseHostRepository,
+        protected ServerDeletionService $deletionService,
+        protected DetailsModificationService $detailsModificationService,
+        protected ReinstallServerService $reinstallService,
+        protected ServerRepositoryInterface $repository,
+        protected MountRepository $mountRepository,
+        protected NestRepositoryInterface $nestRepository,
+        protected ServerConfigurationStructureService $serverConfigurationStructureService,
+        protected StartupModificationService $startupModificationService,
+        protected SuspensionService $suspensionService
     ) {
-        $this->alert = $alert;
-        $this->allocationRepository = $allocationRepository;
-        $this->buildModificationService = $buildModificationService;
-        $this->config = $config;
-        $this->daemonServerRepository = $daemonServerRepository;
-        $this->databaseHostRepository = $databaseHostRepository;
-        $this->databaseManagementService = $databaseManagementService;
-        $this->databasePasswordService = $databasePasswordService;
-        $this->databaseRepository = $databaseRepository;
-        $this->detailsModificationService = $detailsModificationService;
-        $this->deletionService = $deletionService;
-        $this->nestRepository = $nestRepository;
-        $this->reinstallService = $reinstallService;
-        $this->repository = $repository;
-        $this->mountRepository = $mountRepository;
-        $this->serverConfigurationStructureService = $serverConfigurationStructureService;
-        $this->startupModificationService = $startupModificationService;
-        $this->suspensionService = $suspensionService;
     }
 
     /**
      * Update the details for a server.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function setDetails(Request $request, Server $server)
+    public function setDetails(Request $request, Server $server): RedirectResponse
     {
         $this->detailsModificationService->handle($server, $request->only([
             'owner_id', 'external_id', 'name', 'description', 'renewable', 'renewal',
@@ -194,15 +79,13 @@ class ServersController extends Controller
     }
 
     /**
-     * Toggles the install status for a server.
-     *
-     * @return \Illuminate\Http\RedirectResponse
+     * Toggles the installation status for a server.
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function toggleInstall(Server $server)
+    public function toggleInstall(Server $server): RedirectResponse
     {
         if ($server->status === Server::STATUS_INSTALL_FAILED) {
             throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
@@ -220,13 +103,11 @@ class ServersController extends Controller
     /**
      * Reinstalls the server with the currently assigned service.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function reinstallServer(Server $server)
+    public function reinstallServer(Server $server): RedirectResponse
     {
         $this->reinstallService->handle($server);
         $this->alert->success(trans('admin/server.alerts.server_reinstalled'))->flash();
@@ -237,13 +118,11 @@ class ServersController extends Controller
     /**
      * Manage the suspension status for a server.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function manageSuspension(Request $request, Server $server)
+    public function manageSuspension(Request $request, Server $server): RedirectResponse
     {
         $this->suspensionService->toggle($server, $request->input('action'));
         $this->alert->success(trans('admin/server.alerts.suspension_toggled', [
@@ -256,13 +135,11 @@ class ServersController extends Controller
     /**
      * Update the build configuration for a server.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function updateBuild(Request $request, Server $server)
+    public function updateBuild(Request $request, Server $server): RedirectResponse
     {
         try {
             $this->buildModificationService->handle($server, $request->only([
@@ -282,12 +159,10 @@ class ServersController extends Controller
     /**
      * Start the server deletion process.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Throwable
      */
-    public function delete(Request $request, Server $server)
+    public function delete(Request $request, Server $server): RedirectResponse
     {
         $this->deletionService
             ->withForce($request->filled('force_delete'))
@@ -302,11 +177,9 @@ class ServersController extends Controller
     /**
      * Update the startup command as well as variables.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function saveStartup(Request $request, Server $server)
+    public function saveStartup(Request $request, Server $server): RedirectResponse
     {
         $data = $request->except('_token');
         if (!empty($data['custom_docker_image'])) {
@@ -330,11 +203,9 @@ class ServersController extends Controller
     /**
      * Creates a new database assigned to a specific server.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Throwable
      */
-    public function newDatabase(StoreServerDatabaseRequest $request, Server $server)
+    public function newDatabase(StoreServerDatabaseRequest $request, Server $server): RedirectResponse
     {
         $this->databaseManagementService->create($server, [
             'database' => DatabaseManagementService::generateUniqueDatabaseName($request->input('database'), $server->id),
@@ -349,13 +220,12 @@ class ServersController extends Controller
     /**
      * Resets the database password for a specific database on this server.
      *
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Throwable
      */
-    public function resetDatabasePassword(Request $request, Server $server)
+    public function resetDatabasePassword(Request $request, Server $server): Response
     {
-        $database = $server->databases()->where('id', $request->input('database'))->findOrFail();
+        /** @var \Pterodactyl\Models\Database $database */
+        $database = $server->databases()->findOrFail($request->input('database'));
 
         $this->databasePasswordService->handle($database);
 
@@ -365,11 +235,9 @@ class ServersController extends Controller
     /**
      * Deletes a database from a server.
      *
-     * @return \Illuminate\Http\Response
-     *
      * @throws \Exception
      */
-    public function deleteDatabase(Server $server, Database $database)
+    public function deleteDatabase(Server $server, Database $database): Response
     {
         $this->databaseManagementService->delete($database);
 
@@ -379,11 +247,9 @@ class ServersController extends Controller
     /**
      * Add a mount to a server.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Throwable
      */
-    public function addMount(Request $request, Server $server)
+    public function addMount(Request $request, Server $server): RedirectResponse
     {
         $mountServer = (new MountServer())->forceFill([
             'mount_id' => $request->input('mount_id'),
@@ -399,10 +265,8 @@ class ServersController extends Controller
 
     /**
      * Remove a mount from a server.
-     *
-     * @return \Illuminate\Http\RedirectResponse
      */
-    public function deleteMount(Server $server, Mount $mount)
+    public function deleteMount(Server $server, Mount $mount): RedirectResponse
     {
         MountServer::where('mount_id', $mount->id)->where('server_id', $server->id)->delete();
 

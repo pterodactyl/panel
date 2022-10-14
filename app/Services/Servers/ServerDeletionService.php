@@ -14,52 +14,23 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerDeletionService
 {
-    /**
-     * @var bool
-     */
-    protected $force = false;
+    protected bool $force = false;
+    protected bool $return_resources = false;
 
     /**
-     * @var bool
-     */
-    protected $return_resources = false;
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $daemonServerRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private $databaseManagementService;
-
-    /**
-     * DeletionService constructor.
+     * ServerDeletionService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository,
-        DatabaseManagementService $databaseManagementService
+        private ConnectionInterface $connection,
+        private DaemonServerRepository $daemonServerRepository,
+        private DatabaseManagementService $databaseManagementService
     ) {
-        $this->connection = $connection;
-        $this->daemonServerRepository = $daemonServerRepository;
-        $this->databaseManagementService = $databaseManagementService;
     }
 
     /**
      * Set if the server should be forcibly deleted from the panel (ignoring daemon errors) or not.
-     *
-     * @param bool $bool
-     *
-     * @return $this
      */
-    public function withForce($bool = true)
+    public function withForce(bool $bool = true): self
     {
         $this->force = $bool;
 
@@ -73,7 +44,7 @@ class ServerDeletionService
      *
      * @return $this
      */
-    public function returnResources($bool = true)
+    public function returnResources(bool $bool = true): self
     {
         $this->return_resources = $bool;
 
@@ -86,7 +57,7 @@ class ServerDeletionService
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle(Server $server)
+    public function handle(Server $server): void
     {
         try {
             $this->daemonServerRepository->setServer($server)->delete();

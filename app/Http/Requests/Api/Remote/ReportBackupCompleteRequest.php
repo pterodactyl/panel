@@ -6,10 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class ReportBackupCompleteRequest extends FormRequest
 {
-    /**
-     * @return string[]
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             'successful' => 'required|boolean',

@@ -21,24 +21,11 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdateUsernameRequest;
 class AccountController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
-
-    /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    private $manager;
-
-    /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $manager, UserUpdateService $updateService)
+    public function __construct(private AuthManager $manager, private UserUpdateService $updateService)
     {
         parent::__construct();
-
-        $this->manager = $manager;
-        $this->updateService = $updateService;
     }
 
     public function index(Request $request): array

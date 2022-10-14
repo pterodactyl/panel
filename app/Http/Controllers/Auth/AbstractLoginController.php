@@ -9,6 +9,8 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
+use Illuminate\Support\Facades\Event;
+use Pterodactyl\Events\Auth\DirectLogin;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\Authenticatable;
@@ -22,24 +24,18 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Lockout time for failed login requests.
-     *
-     * @var int
      */
-    protected $lockoutTime;
+    protected int $lockoutTime;
 
     /**
      * After how many attempts should logins be throttled and locked.
-     *
-     * @var int
      */
-    protected $maxLoginAttempts;
+    protected int $maxLoginAttempts;
 
     /**
      * Where to redirect users after login / registration.
-     *
-     * @var string
      */
-    protected $redirectTo = '/';
+    protected string $redirectTo = '/';
 
     /**
      * @var \Pterodactyl\Models\AccountLog
@@ -89,6 +85,8 @@ abstract class AbstractLoginController extends Controller
 
         $this->auth->guard()->login($user, true);
 
+        Event::dispatch(new DirectLogin($user, true));
+
         return new JsonResponse([
             'data' => [
                 'complete' => true,
@@ -99,7 +97,7 @@ abstract class AbstractLoginController extends Controller
     }
 
     /**
-     * Determine if the user is logging in using an email or username,.
+     * Determine if the user is logging in using an email or username.
      */
     protected function getField(string $input = null): string
     {
@@ -111,6 +109,6 @@ abstract class AbstractLoginController extends Controller
      */
     protected function fireFailedLoginEvent(Authenticatable $user = null, array $credentials = [])
     {
-        event(new Failed('auth', $user, $credentials));
+        Event::dispatch(new Failed('auth', $user, $credentials));
     }
 }

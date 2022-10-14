@@ -4,9 +4,9 @@ namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
 use Exception;
+use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use GuzzleHttp\Exception\BadResponseException;
@@ -18,13 +18,11 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerDeletionServiceTest extends IntegrationTestCase
 {
-    /** @var \Mockery\MockInterface */
-    private $daemonServerRepository;
+    private MockInterface $daemonServerRepository;
 
-    /** @var \Mockery\MockInterface */
-    private $databaseManagementService;
+    private MockInterface $databaseManagementService;
 
-    private static $defaultLogger;
+    private static ?string $defaultLogger;
 
     /**
      * Stub out services that we don't want to test in here.
@@ -102,7 +100,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
             new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response(500)))
         );
 
-        $this->getService()->withForce(true)->handle($server);
+        $this->getService()->withForce()->handle($server);
 
         $this->assertDatabaseMissing('servers', ['id' => $server->id]);
     }
@@ -157,10 +155,7 @@ class ServerDeletionServiceTest extends IntegrationTestCase
         $this->assertDatabaseMissing('databases', ['id' => $db->id]);
     }
 
-    /**
-     * @return \Pterodactyl\Services\Servers\ServerDeletionService
-     */
-    private function getService()
+    private function getService(): ServerDeletionService
     {
         return $this->app->make(ServerDeletionService::class);
     }

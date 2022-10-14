@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Database;
 
-use Mockery;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
@@ -35,14 +34,10 @@ class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
         $database2 = Database::factory()->create(['server_id' => $server2->id, 'database_host_id' => $host->id]);
         $database3 = Database::factory()->create(['server_id' => $server3->id, 'database_host_id' => $host->id]);
 
-        $this->instance(DatabasePasswordService::class, $mock = Mockery::mock(DatabasePasswordService::class));
-        $this->instance(DatabaseManagementService::class, $mock2 = Mockery::mock(DatabaseManagementService::class));
-
-        if ($method === 'POST') {
-            $mock->expects('handle')->andReturnUndefined();
-        } else {
-            $mock2->expects('delete')->andReturnUndefined();
-        }
+        $this
+            ->mock($method === 'POST' ? DatabasePasswordService::class : DatabaseManagementService::class)
+            ->expects($method === 'POST' ? 'handle' : 'delete')
+            ->andReturn($method === 'POST' ? 'foo' : null);
 
         $hashids = $this->app->make(HashidsInterface::class);
         // This is the only valid call for this test, accessing the database for the same
@@ -63,9 +58,6 @@ class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->json($method, $this->link($server3, '/databases/' . $hashids->encode($database3->id) . $endpoint))->assertNotFound();
     }
 
-    /**
-     * @return \string[][]
-     */
     public function methodDataProvider(): array
     {
         return [

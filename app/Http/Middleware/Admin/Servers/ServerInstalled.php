@@ -13,10 +13,8 @@ class ServerInstalled
 {
     /**
      * Checks that the server is installed before allowing access through the route.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         /** @var \Pterodactyl\Models\Server|null $server */
         $server = $request->route()->parameter('server');

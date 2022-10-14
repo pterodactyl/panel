@@ -7,13 +7,7 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetLocationsRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_LOCATIONS;
+    protected ?string $resource = AdminAcl::RESOURCE_LOCATIONS;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::READ;
+    protected int $permission = AdminAcl::READ;
 }

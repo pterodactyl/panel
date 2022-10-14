@@ -15,10 +15,8 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * An array of configuration keys to override with database values
      * if they exist.
-     *
-     * @var array
      */
-    protected $keys = [
+    protected array $keys = [
         'app:name',
         'app:locale',
         'theme:admin',
@@ -38,10 +36,8 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Keys specific to the mail driver that are only grabbed from the database
      * when using the SMTP driver.
-     *
-     * @var array
      */
-    protected $emailKeys = [
+    protected array $emailKeys = [
         'mail:host',
         'mail:port',
         'mail:from:address',
@@ -54,10 +50,8 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Keys that are encrypted and should be decrypted when set in the
      * configuration array.
-     *
-     * @var array
      */
-    protected static $encrypted = [
+    protected static array $encrypted = [
         'mail:password',
     ];
 

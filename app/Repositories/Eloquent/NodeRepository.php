@@ -10,10 +10,8 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Node::class;
     }
@@ -105,7 +103,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
             $node->allocations()
                 ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
                 ->orderByRaw('INET_ATON(ip) ASC')
-                ->orderBy('port', 'asc')
+                ->orderBy('port')
                 ->with('server:id,name')
                 ->paginate(50)
         );

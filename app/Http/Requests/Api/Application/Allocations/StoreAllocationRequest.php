@@ -7,15 +7,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreAllocationRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_ALLOCATIONS;
+    protected ?string $resource = AdminAcl::RESOURCE_ALLOCATIONS;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
+    protected int $permission = AdminAcl::WRITE;
 
     public function rules(): array
     {
@@ -27,10 +21,7 @@ class StoreAllocationRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

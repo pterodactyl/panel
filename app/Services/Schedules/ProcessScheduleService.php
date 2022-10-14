@@ -14,28 +14,10 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 class ProcessScheduleService
 {
     /**
-     * @var \Illuminate\Contracts\Bus\Dispatcher
-     */
-    private $dispatcher;
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $serverRepository;
-
-    /**
      * ProcessScheduleService constructor.
      */
-    public function __construct(ConnectionInterface $connection, DaemonServerRepository $serverRepository, Dispatcher $dispatcher)
+    public function __construct(private ConnectionInterface $connection, private Dispatcher $dispatcher, private DaemonServerRepository $serverRepository)
     {
-        $this->dispatcher = $dispatcher;
-        $this->connection = $connection;
-        $this->serverRepository = $serverRepository;
     }
 
     /**
@@ -43,7 +25,7 @@ class ProcessScheduleService
      *
      * @throws \Throwable
      */
-    public function handle(Schedule $schedule, bool $now = false)
+    public function handle(Schedule $schedule, bool $now = false): void
     {
         /** @var \Pterodactyl\Models\Task $task */
         $task = $schedule->tasks()->orderBy('sequence_id')->first();

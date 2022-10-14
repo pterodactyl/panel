@@ -2,10 +2,15 @@
 
 namespace Pterodactyl\Http\Controllers\Admin;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Model;
+use Illuminate\Support\Collection;
+use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Spatie\QueryBuilder\QueryBuilder;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Translation\Translator;
@@ -22,60 +27,23 @@ class UserController extends Controller
     use AvailableLanguages;
 
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    protected $alert;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
-     */
-    protected $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService
-     */
-    protected $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * @var \Illuminate\Contracts\Translation\Translator
-     */
-    protected $translator;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    protected $updateService;
-
-    /**
      * UserController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        UserCreationService $creationService,
-        UserDeletionService $deletionService,
-        Translator $translator,
-        UserUpdateService $updateService,
-        UserRepositoryInterface $repository
+        protected AlertsMessageBag $alert,
+        protected UserCreationService $creationService,
+        protected UserDeletionService $deletionService,
+        protected Translator $translator,
+        protected UserUpdateService $updateService,
+        protected UserRepositoryInterface $repository,
+        protected ViewFactory $view
     ) {
-        $this->alert = $alert;
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->repository = $repository;
-        $this->translator = $translator;
-        $this->updateService = $updateService;
     }
 
     /**
      * Display user index page.
-     *
-     * @return \Illuminate\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $users = QueryBuilder::for(
             User::query()->select('users.*')
@@ -89,29 +57,25 @@ class UserController extends Controller
             ->allowedSorts(['id', 'uuid'])
             ->paginate(50);
 
-        return view('admin.users.index', ['users' => $users]);
+        return $this->view->make('admin.users.index', ['users' => $users]);
     }
 
     /**
      * Display new user page.
-     *
-     * @return \Illuminate\View\View
      */
-    public function create()
+    public function create(): View
     {
-        return view('admin.users.new', [
+        return $this->view->make('admin.users.new', [
             'languages' => $this->getAvailableLanguages(true),
         ]);
     }
 
     /**
      * Display user view page.
-     *
-     * @return \Illuminate\View\View
      */
-    public function view(User $user)
+    public function view(User $user): View
     {
-        return view('admin.users.view', [
+        return $this->view->make('admin.users.view', [
             'user' => $user,
             'languages' => $this->getAvailableLanguages(true),
         ]);
@@ -132,12 +96,10 @@ class UserController extends Controller
     /**
      * Delete a user from the system.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(Request $request, User $user)
+    public function delete(Request $request, User $user): RedirectResponse
     {
         if ($request->user()->id === $user->id) {
             throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
@@ -151,12 +113,10 @@ class UserController extends Controller
     /**
      * Create a user.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Exception
      * @throws \Throwable
      */
-    public function store(UserFormRequest $request)
+    public function store(UserFormRequest $request): RedirectResponse
     {
         $user = $this->creationService->handle($request->normalize());
         $this->alert->success($this->translator->get('admin/user.notices.account_created'))->flash();
@@ -167,12 +127,10 @@ class UserController extends Controller
     /**
      * Update a user on the system.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UserFormRequest $request, User $user)
+    public function update(UserFormRequest $request, User $user): RedirectResponse
     {
         $this->updateService
             ->setUserLevel(User::USER_LEVEL_ADMIN)
@@ -212,10 +170,8 @@ class UserController extends Controller
 
     /**
      * Get a JSON response of users on the system.
-     *
-     * @return \Illuminate\Support\Collection|\Pterodactyl\Models\Model
      */
-    public function json(Request $request)
+    public function json(Request $request): Model|Collection
     {
         $users = QueryBuilder::for(User::query())->allowedFilters(['email'])->paginate(25);
 

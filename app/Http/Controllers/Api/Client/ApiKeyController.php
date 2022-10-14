@@ -16,41 +16,9 @@ use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 class ApiKeyController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
+     * Returns all the API keys that exist for the given client.
      */
-    private $keyCreationService;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ApiKeyRepository
-     */
-    private $repository;
-
-    /**
-     * ApiKeyController constructor.
-     */
-    public function __construct(
-        Encrypter $encrypter,
-        KeyCreationService $keyCreationService,
-        ApiKeyRepository $repository
-    ) {
-        parent::__construct();
-
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
-        $this->keyCreationService = $keyCreationService;
-    }
-
-    /**
-     * Returns all of the API keys that exist for the given client.
-     *
-     * @return array
-     */
-    public function index(ClientApiRequest $request)
+    public function index(ClientApiRequest $request): array
     {
         return $this->fractal->collection($request->user()->apiKeys)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
@@ -59,6 +27,8 @@ class ApiKeyController extends ClientApiController
 
     /**
      * Store a new API key for a user's account.
+     *
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function store(StoreApiKeyRequest $request): array
     {
@@ -84,10 +54,8 @@ class ApiKeyController extends ClientApiController
 
     /**
      * Deletes a given API key.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(ClientApiRequest $request, string $identifier)
+    public function delete(ClientApiRequest $request, string $identifier): JsonResponse
     {
         /** @var \Pterodactyl\Models\ApiKey $key */
         $key = $request->user()->apiKeys()

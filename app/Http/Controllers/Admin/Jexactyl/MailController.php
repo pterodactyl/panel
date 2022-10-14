@@ -6,9 +6,9 @@ use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Notifications\MailTested;
+use Illuminate\View\Factory as ViewFactory;
 use Illuminate\Support\Facades\Notification;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
@@ -21,45 +21,15 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 class MailController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alert;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Illuminate\Contracts\Console\Kernel
-     */
-    private $kernel;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
-     */
-    private $settings;
-
-    /**
      * MailController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        ConfigRepository $config,
-        Encrypter $encrypter,
-        Kernel $kernel,
-        SettingsRepositoryInterface $settings
+        private ConfigRepository $config,
+        private Encrypter $encrypter,
+        private Kernel $kernel,
+        private SettingsRepositoryInterface $settings,
+        private ViewFactory $view
     ) {
-        $this->alert = $alert;
-        $this->config = $config;
-        $this->encrypter = $encrypter;
-        $this->kernel = $kernel;
-        $this->settings = $settings;
     }
 
     /**
@@ -68,7 +38,7 @@ class MailController extends Controller
      */
     public function index(): View
     {
-        return view('admin.jexactyl.mail', [
+        return $this->view->make('admin.jexactyl.mail', [
             'disabled' => $this->config->get('mail.driver') !== 'smtp',
         ]);
     }

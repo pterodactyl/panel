@@ -12,14 +12,13 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
     /**
      * Test that a schedule can be created for the server.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
-    public function testScheduleCanBeCreatedForServer($permissions)
+    public function testScheduleCanBeCreatedForServer(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules", [
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/schedules", [
             'name' => 'Test Schedule',
             'is_active' => false,
             'minute' => '0',
@@ -55,17 +54,17 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules", []);
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/schedules", []);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         foreach (['name', 'minute', 'hour', 'day_of_month', 'day_of_week'] as $i => $field) {
-            $response->assertJsonPath("errors.{$i}.code", 'ValidationException');
-            $response->assertJsonPath("errors.{$i}.meta.rule", 'required');
-            $response->assertJsonPath("errors.{$i}.meta.source_field", $field);
+            $response->assertJsonPath("errors.$i.code", 'ValidationException');
+            $response->assertJsonPath("errors.$i.meta.rule", 'required');
+            $response->assertJsonPath("errors.$i.meta.source_field", $field);
         }
 
         $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules", [
+            ->postJson("/api/client/servers/$server->uuid/schedules", [
                 'name' => 'Testing',
                 'is_active' => 'no',
                 'minute' => '*',
@@ -86,7 +85,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_UPDATE]);
 
         $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules", [])
+            ->postJson("/api/client/servers/$server->uuid/schedules", [])
             ->assertForbidden();
     }
 

@@ -8,21 +8,18 @@ use Pterodactyl\Services\Helpers\AssetHashService;
 
 class SettingComposer extends Composer
 {
-    private AssetHashService $assetHashService;
-
     /**
      * AssetComposer constructor.
      */
-    public function __construct(AssetHashService $assetHashService)
+    public function __construct(private AssetHashService $assetHashService)
     {
         parent::__construct();
-        $this->assetHashService = $assetHashService;
     }
 
     /**
      * Provide access to the asset service in the views.
      */
-    public function compose(View $view)
+    public function compose(View $view): void
     {
         $view->with('asset', $this->assetHashService);
 

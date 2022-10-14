@@ -7,14 +7,11 @@ use Pterodactyl\Models\Server;
 
 class ServerConfigurationStructureService
 {
-    private EnvironmentService $environment;
-
     /**
      * ServerConfigurationStructureService constructor.
      */
-    public function __construct(EnvironmentService $environment)
+    public function __construct(private EnvironmentService $environment)
     {
-        $this->environment = $environment;
     }
 
     /**

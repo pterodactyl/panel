@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
+use Mockery\MockInterface;
 use Pterodactyl\Models\Egg;
 use GuzzleHttp\Psr7\Request;
 use Pterodactyl\Models\Node;
@@ -24,8 +25,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
 {
     use WithFaker;
 
-    /** @var \Mockery\MockInterface */
-    protected $daemonServerRepository;
+    protected MockInterface $daemonServerRepository;
 
     protected Egg $bungeecord;
 
@@ -208,10 +208,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertDatabaseMissing('servers', ['owner_id' => $user->id]);
     }
 
-    /**
-     * @return \Pterodactyl\Services\Servers\ServerCreationService
-     */
-    private function getService()
+    private function getService(): ServerCreationService
     {
         return $this->app->make(ServerCreationService::class);
     }

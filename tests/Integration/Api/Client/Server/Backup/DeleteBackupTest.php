@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Backup;
 
 use Mockery;
+use Mockery\MockInterface;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Permission;
@@ -13,7 +14,7 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteBackupTest extends ClientApiIntegrationTestCase
 {
-    private $repository;
+    private MockInterface $repository;
 
     public function setUp(): void
     {

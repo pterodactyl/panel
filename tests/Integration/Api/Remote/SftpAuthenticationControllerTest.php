@@ -97,7 +97,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
      *
      * @dataProvider authorizationTypeDataProvider
      */
-    public function testUserIsThrottledIfInvalidCredentialsAreProvided(string $type)
+    public function testUserIsThrottledIfInvalidCredentialsAreProvided()
     {
         for ($i = 0; $i <= 10; ++$i) {
             $this->postJson('/api/remote/sftp/auth', [

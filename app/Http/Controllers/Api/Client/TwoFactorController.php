@@ -7,41 +7,22 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TwoFactorController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Users\TwoFactorSetupService
-     */
-    private $setupService;
-
-    /**
-     * @var \Illuminate\Contracts\Validation\Factory
-     */
-    private $validation;
-
-    /**
-     * @var \Pterodactyl\Services\Users\ToggleTwoFactorService
-     */
-    private $toggleTwoFactorService;
-
-    /**
      * TwoFactorController constructor.
      */
     public function __construct(
-        Factory $validation,
-        TwoFactorSetupService $setupService,
-        ToggleTwoFactorService $toggleTwoFactorService
+        private ToggleTwoFactorService $toggleTwoFactorService,
+        private TwoFactorSetupService $setupService,
+        private ValidationFactory $validation
     ) {
         parent::__construct();
-
-        $this->validation = $validation;
-        $this->setupService = $setupService;
-        $this->toggleTwoFactorService = $toggleTwoFactorService;
     }
 
     /**
@@ -49,12 +30,10 @@ class TwoFactorController extends ClientApiController
      * it on their account. If two-factor is already enabled this endpoint
      * will return a 400 error.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function index(Request $request)
+    public function index(Request $request): JsonResponse
     {
         if ($request->user()->use_totp) {
             throw new BadRequestHttpException('Two-factor authentication is already enabled on this account.');
@@ -68,12 +47,10 @@ class TwoFactorController extends ClientApiController
     /**
      * Updates a user's account to have two-factor enabled.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function store(Request $request)
+    public function store(Request $request): JsonResponse
     {
         $validator = $this->validation->make($request->all(), [
             'code' => ['required', 'string', 'size:6'],
@@ -101,10 +78,9 @@ class TwoFactorController extends ClientApiController
      * Disables two-factor authentication on an account if the password provided
      * is valid.
      *
-     * @return \Illuminate\Http\JsonResponse
      * @throws \Throwable
      */
-    public function delete(Request $request)
+    public function delete(Request $request): JsonResponse
     {
         if (!password_verify($request->input('password') ?? '', $request->user()->password)) {
             throw new BadRequestHttpException('The password provided was not valid.');

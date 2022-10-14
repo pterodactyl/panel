@@ -13,10 +13,9 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     /**
      * Test that a task can be created.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
-    public function testTaskCanBeCreated($permissions)
+    public function testTaskCanBeCreated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
@@ -56,8 +55,8 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         $response = $this->actingAs($user)->postJson($this->link($schedule, '/tasks'))->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
 
         foreach (['action', 'payload', 'time_offset'] as $i => $field) {
-            $response->assertJsonPath("errors.{$i}.meta.rule", $field === 'payload' ? 'required_unless' : 'required');
-            $response->assertJsonPath("errors.{$i}.meta.source_field", $field);
+            $response->assertJsonPath("errors.$i.meta.rule", $field === 'payload' ? 'required_unless' : 'required');
+            $response->assertJsonPath("errors.$i.meta.source_field", $field);
         }
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
@@ -151,7 +150,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
 
         $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}/tasks")
+            ->postJson("/api/client/servers/$server->uuid/schedules/$schedule->id/tasks")
             ->assertNotFound();
     }
 

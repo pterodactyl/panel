@@ -1,18 +1,21 @@
-name: Run Tests
+name: Tests
+
 on:
   push:
     branches:
       - 'develop'
   pull_request:
+
 jobs:
   tests:
+    name: Tests
     runs-on: ubuntu-20.04
     if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       fail-fast: false
       matrix:
-        php: [ 8.0, 8.1 ]
-        database: [ 'mariadb:10.2' ]
+        php: [8.0, 8.1]
+        database: ['mariadb:10.2', 'mysql:8']
     services:
       database:
         image: ${{ matrix.database }}
@@ -22,35 +25,48 @@ jobs:
         ports:
           - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
-    name: "php-${{ matrix.php }} (${{ matrix.database }})"
     steps:
-      - uses: actions/checkout@v2
-      - name: get cache directory
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Get cache directory
         id: composer-cache
         run: |
           echo "::set-output name=dir::$(composer config cache-files-dir)"
-      - uses: actions/cache@v2
+
+      - name: Cache
+        uses: actions/cache@v3
         with:
           path: |
             ~/.php_cs.cache
             ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
-      - uses: shivammathur/setup-php@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
-      - run: cp .env.ci .env
-      - run: composer install --prefer-dist --no-interaction --no-progress
-      - run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+      - name: Setup .env
+        run: cp .env.ci .env
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: PHP CS Fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
         continue-on-error: true
-      - name: execute unit tests
+
+      - name: Unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
         if: ${{ always() }}
         env:
           DB_HOST: UNIT_NO_DB
-      - name: execute integration tests
+
+      - name: Integration tests
         run: vendor/bin/phpunit tests/Integration
         env:
           DB_PORT: ${{ job.services.database.ports[3306] }}

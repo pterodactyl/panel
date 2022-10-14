@@ -1,15 +1,9 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Nest;
+use Illuminate\Database\Eloquent\Collection;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
@@ -17,10 +11,8 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Nest::class;
     }
@@ -28,13 +20,9 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     /**
      * Return a nest or all nests with their associated eggs and variables.
      *
-     * @param int $id
-     *
-     * @return \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Nest
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithEggs(int $id = null)
+    public function getWithEggs(int $id = null): Collection|Nest
     {
         $instance = $this->getBuilder()->with('eggs', 'eggs.variables');
 
@@ -53,11 +41,9 @@ class NestRepository extends EloquentRepository implements NestRepositoryInterfa
     /**
      * Return a nest or all nests and the count of eggs and servers for that nest.
      *
-     * @return \Pterodactyl\Models\Nest|\Illuminate\Database\Eloquent\Collection
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCounts(int $id = null)
+    public function getWithCounts(int $id = null): Collection|Nest
     {
         $instance = $this->getBuilder()->withCount(['eggs', 'servers']);
 

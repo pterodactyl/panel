@@ -3,77 +3,40 @@
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use JavaScript;
+use Illuminate\View\View;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Repositories\Eloquent\LocationRepository;
 
 class CreateServerController extends Controller
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $nodeRepository;
-
-    /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alert;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\NestRepository
-     */
-    private $nestRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\LocationRepository
-     */
-    private $locationRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerCreationService
-     */
-    private $creationService;
-
-    /**
      * CreateServerController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        NestRepository $nestRepository,
-        LocationRepository $locationRepository,
-        NodeRepository $nodeRepository,
-        ServerRepository $repository,
-        ServerCreationService $creationService
+        private AlertsMessageBag $alert,
+        private NestRepository $nestRepository,
+        private NodeRepository $nodeRepository,
+        private ServerCreationService $creationService,
+        private ViewFactory $view
     ) {
-        $this->repository = $repository;
-        $this->nodeRepository = $nodeRepository;
-        $this->alert = $alert;
-        $this->nestRepository = $nestRepository;
-        $this->locationRepository = $locationRepository;
-        $this->creationService = $creationService;
     }
 
     /**
      * Displays the create server page.
      *
-     * @return \Illuminate\Contracts\View\Factory
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function index()
+    public function index(): View|RedirectResponse
     {
-        $nodes = $this->nodeRepository->all();
+        $nodes = Node::all();
         if (count($nodes) < 1) {
             $this->alert->warning(trans('admin/server.alerts.node_required'))->flash();
 
@@ -82,7 +45,7 @@ class CreateServerController extends Controller
 
         $nests = $this->nestRepository->getWithEggs();
 
-        Javascript::put([
+        JavaScript::put([
             'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
             'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
@@ -91,8 +54,8 @@ class CreateServerController extends Controller
             })->keyBy('id'),
         ]);
 
-        return view('admin.servers.new', [
-            'locations' => $this->locationRepository->all(),
+        return $this->view->make('admin.servers.new', [
+            'locations' => Location::all(),
             'nests' => $nests,
         ]);
     }
@@ -100,15 +63,13 @@ class CreateServerController extends Controller
     /**
      * Create a new server on the remote system.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      * @throws \Throwable
      */
-    public function store(ServerFormRequest $request)
+    public function store(ServerFormRequest $request): RedirectResponse
     {
         $data = $request->except(['_token']);
         if (!empty($data['custom_image'])) {
@@ -118,10 +79,8 @@ class CreateServerController extends Controller
 
         $server = $this->creationService->handle($data);
 
-        $this->alert->success(
-            trans('admin/server.alerts.server_created')
-        )->flash();
+        $this->alert->success(trans('admin/server.alerts.server_created'))->flash();
 
-        return RedirectResponse::create('/admin/servers/view/' . $server->id);
+        return new RedirectResponse('/admin/servers/view/' . $server->id);
     }
 }

@@ -4,9 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
-use Illuminate\Http\JsonResponse;
-use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Repositories\Eloquent\SubuserRepository;
+use Pterodactyl\Services\Server\ServerDeletionService;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -17,24 +15,12 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\UpdateBackgroundRequest;
 
 class ServerController extends ClientApiController
 {
-    private SubuserRepository $repository;
-    private ServerDeletionService $deletionService;
-    private GetUserPermissionsService $permissionsService;
-
     /**
      * ServerController constructor.
      */
-    public function __construct(
-        GetUserPermissionsService $permissionsService,
-        ServerDeletionService $deletionService,
-        SubuserRepository $repository,
-    )
+    public function __construct(private GetUserPermissionsService $permissionsService, ServerDeletionService $deletionService)
     {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->deletionService = $deletionService;
-        $this->permissionsService = $permissionsService;
     }
 
     /**

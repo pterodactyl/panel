@@ -11,32 +11,18 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 class NodeCreationService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
+     * NodeCreationService constructor.
      */
-    protected $repository;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * CreationService constructor.
-     */
-    public function __construct(Encrypter $encrypter, NodeRepositoryInterface $repository)
+    public function __construct(private Encrypter $encrypter, protected NodeRepositoryInterface $repository)
     {
-        $this->repository = $repository;
-        $this->encrypter = $encrypter;
     }
 
     /**
      * Create a new node on the panel.
      *
-     * @return \Pterodactyl\Models\Node
-     *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data)
+    public function handle(array $data): Node
     {
         $data['uuid'] = Uuid::uuid4()->toString();
         $data['daemon_token'] = $this->encrypter->encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
