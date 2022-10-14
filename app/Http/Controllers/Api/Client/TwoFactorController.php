@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Illuminate\Contracts\Validation\Factory;
 use Pterodactyl\Services\Users\TwoFactorSetupService;
 use Pterodactyl\Services\Users\ToggleTwoFactorService;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class TwoFactorController extends ClientApiController
@@ -20,7 +20,7 @@ class TwoFactorController extends ClientApiController
     public function __construct(
         private ToggleTwoFactorService $toggleTwoFactorService,
         private TwoFactorSetupService $setupService,
-        private Factory $validation
+        private ValidationFactory $validation
     ) {
         parent::__construct();
     }

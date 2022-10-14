@@ -7,10 +7,10 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\EnvironmentService;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
@@ -27,14 +27,14 @@ class ServerViewController extends Controller
      * ServerViewController constructor.
      */
     public function __construct(
-        private Factory $view,
         private DatabaseHostRepository $databaseHostRepository,
         private LocationRepository $locationRepository,
         private MountRepository $mountRepository,
         private NestRepository $nestRepository,
         private NodeRepository $nodeRepository,
         private ServerRepository $repository,
-        private EnvironmentService $environmentService
+        private EnvironmentService $environmentService,
+        private ViewFactory $view
     ) {
     }
 

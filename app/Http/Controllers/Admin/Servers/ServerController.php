@@ -6,17 +6,17 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Contracts\View\Factory;
 use Spatie\QueryBuilder\AllowedFilter;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Filters\AdminServerFilter;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 
 class ServerController extends Controller
 {
     /**
      * ServerController constructor.
      */
-    public function __construct(private Factory $view)
+    public function __construct(private ViewFactory $view)
     {
     }
 

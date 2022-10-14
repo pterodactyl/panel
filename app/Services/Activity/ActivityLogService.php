@@ -7,11 +7,11 @@ use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\ActivityLog;
-use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
 use Pterodactyl\Models\ActivityLogSubject;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 
 class ActivityLogService
 {
@@ -20,7 +20,7 @@ class ActivityLogService
     protected array $subjects = [];
 
     public function __construct(
-        protected Factory $manager,
+        protected AuthFactory $manager,
         protected ActivityLogBatchService $batch,
         protected ActivityLogTargetableService $targetable,
         protected ConnectionInterface $connection

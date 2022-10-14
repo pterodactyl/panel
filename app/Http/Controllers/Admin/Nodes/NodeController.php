@@ -6,15 +6,15 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 
 class NodeController extends Controller
 {
     /**
      * NodeController constructor.
      */
-    public function __construct(private Factory $view)
+    public function __construct(private ViewFactory $view)
     {
     }
 

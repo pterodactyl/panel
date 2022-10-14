@@ -44,7 +44,7 @@ abstract class Model extends IlluminateModel
     {
         parent::boot();
 
-        static::$validatorFactory = Container::getInstance()->make(Factory::class);
+        static::$validatorFactory = Container::getInstance()->make(ValidationFactory::class);
 
         static::saving(function (Model $model) {
             try {
