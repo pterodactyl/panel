@@ -55,8 +55,6 @@ class DatabaseManagementService
     /**
      * Set whether this class should validate that the server has enough slots
      * left before creating the new database.
-     *
-     * @return $this
      */
     public function setValidateDatabaseLimit(bool $validate): self
     {

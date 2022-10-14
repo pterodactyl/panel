@@ -9,14 +9,8 @@ use Pterodactyl\Repositories\Eloquent\BackupRepository;
 
 class PruneOrphanedBackupsCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $signature = 'p:maintenance:prune-backups {--prune-age=}';
 
-    /**
-     * @var string
-     */
     protected $description = 'Marks all backups that have not completed in the last "n" minutes as being failed.';
 
     /**

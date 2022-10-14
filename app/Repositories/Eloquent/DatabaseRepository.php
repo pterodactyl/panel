@@ -120,8 +120,6 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
 
     /**
      * Drop a given user on a specific connection.
-     *
-     * @return mixed
      */
     public function dropUser(string $username, string $remote): bool
     {

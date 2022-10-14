@@ -7,7 +7,6 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class SettingsRepository extends EloquentRepository implements SettingsRepositoryInterface
 {
-
     private static array $cache = [];
 
     private static array $databaseMiss = [];

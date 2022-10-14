@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Validation\Rules\NotIn;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -27,22 +28,16 @@ class Mount extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'mounts';
 
     /**
      * Fields that are not mass assignable.
-     *
-     * @var array
      */
     protected $guarded = ['id', 'uuid'];
 
     /**
      * Default values for specific fields in the database.
-     *
-     * @var array
      */
     protected $casts = [
         'id' => 'int',
@@ -52,10 +47,8 @@ class Mount extends Model
 
     /**
      * Rules verifying that the data being stored matches the expectations of the database.
-     *
-     * @var string
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'name' => 'required|string|min:2|max:64|unique:mounts,name',
         'description' => 'nullable|string|max:191',
         'source' => 'required|string',
@@ -68,7 +61,7 @@ class Mount extends Model
      * Implement language verification by overriding Eloquence's gather
      * rules function.
      */
-    public static function getRules()
+    public static function getRules(): array
     {
         $rules = parent::getRules();
 
@@ -80,15 +73,11 @@ class Mount extends Model
 
     /**
      * Disable timestamps on this model.
-     *
-     * @var bool
      */
     public $timestamps = false;
 
     /**
      * Blacklisted source paths.
-     *
-     * @var string[]
      */
     public static $invalidSourcePaths = [
         '/etc/pterodactyl',
@@ -98,8 +87,6 @@ class Mount extends Model
 
     /**
      * Blacklisted target paths.
-     *
-     * @var string[]
      */
     public static $invalidTargetPaths = [
         '/home/container',
@@ -107,30 +94,24 @@ class Mount extends Model
 
     /**
      * Returns all eggs that have this mount assigned.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function eggs()
+    public function eggs(): BelongsToMany
     {
         return $this->belongsToMany(Egg::class);
     }
 
     /**
      * Returns all nodes that have this mount assigned.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function nodes()
+    public function nodes(): BelongsToMany
     {
         return $this->belongsToMany(Node::class);
     }
 
     /**
      * Returns all servers that have this mount assigned.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
      */
-    public function servers()
+    public function servers(): BelongsToMany
     {
         return $this->belongsToMany(Server::class);
     }

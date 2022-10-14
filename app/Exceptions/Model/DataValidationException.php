@@ -28,8 +28,6 @@ class DataValidationException extends PterodactylException implements HttpExcept
 
     /**
      * Return the validator message bag.
-     *
-     * @return \Illuminate\Support\MessageBag
      */
     public function getMessageBag(): MessageBag
     {

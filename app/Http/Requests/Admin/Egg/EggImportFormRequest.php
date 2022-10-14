@@ -6,10 +6,7 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class EggImportFormRequest extends AdminFormRequest
 {
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'import_file' => 'bail|required|file|max:1000|mimetypes:application/json,text/plain',

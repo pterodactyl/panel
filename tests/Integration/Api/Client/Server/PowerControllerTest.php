@@ -16,6 +16,7 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
      * the command to the server.
      *
      * @param string[] $permissions
+     *
      * @dataProvider invalidPermissionDataProvider
      */
     public function testSubuserWithoutPermissionsReceivesError(string $action, array $permissions)

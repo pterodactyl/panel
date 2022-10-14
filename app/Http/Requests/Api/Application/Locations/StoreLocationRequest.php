@@ -8,15 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreLocationRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_LOCATIONS;
+    protected ?string $resource = AdminAcl::RESOURCE_LOCATIONS;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
+    protected int $permission = AdminAcl::WRITE;
 
     /**
      * Rules to validate the request against.
@@ -31,10 +25,8 @@ class StoreLocationRequest extends ApplicationApiRequest
 
     /**
      * Rename fields to be more clear in error messages.
-     *
-     * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'long' => 'Location Description',

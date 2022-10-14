@@ -26,8 +26,6 @@ interface RepositoryInterface
 
     /**
      * Returns the columns to be selected or returned by the query.
-     *
-     * @return string[]
      */
     public function getColumns(): array;
 
@@ -50,8 +48,6 @@ interface RepositoryInterface
     /**
      * Set whether the repository should return a fresh model
      * when changes are committed.
-     *
-     * @return $this
      */
     public function setFreshModel(bool $fresh = true): self;
 

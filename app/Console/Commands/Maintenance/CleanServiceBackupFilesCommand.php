@@ -12,14 +12,8 @@ class CleanServiceBackupFilesCommand extends Command
 {
     public const BACKUP_THRESHOLD_MINUTES = 5;
 
-    /**
-     * @var string
-     */
     protected $description = 'Clean orphaned .bak files created when modifying services.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:maintenance:clean-service-backups';
 
     protected Filesystem $disk;

@@ -4,15 +4,14 @@ namespace Pterodactyl\Http\Requests\Admin;
 
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
+use Illuminate\Validation\Validator;
 
 class ServerFormRequest extends AdminFormRequest
 {
     /**
      * Rules to be applied to this request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         $rules = Server::getRules();
         $rules['description'][] = 'nullable';
@@ -23,14 +22,12 @@ class ServerFormRequest extends AdminFormRequest
 
     /**
      * Run validation after the rules above have been applied.
-     *
-     * @param \Illuminate\Validation\Validator $validator
      */
-    public function withValidator($validator)
+    public function withValidator(Validator $validator): void
     {
         $validator->after(function ($validator) {
             $validator->sometimes('node_id', 'required|numeric|bail|exists:nodes,id', function ($input) {
-                return !($input->auto_deploy);
+                return !$input->auto_deploy;
             });
 
             $validator->sometimes('allocation_id', [
@@ -42,7 +39,7 @@ class ServerFormRequest extends AdminFormRequest
                     $query->whereNull('server_id');
                 }),
             ], function ($input) {
-                return !($input->auto_deploy);
+                return !$input->auto_deploy;
             });
 
             $validator->sometimes('allocation_additional.*', [
@@ -54,7 +51,7 @@ class ServerFormRequest extends AdminFormRequest
                     $query->whereNull('server_id');
                 }),
             ], function ($input) {
-                return !($input->auto_deploy);
+                return !$input->auto_deploy;
             });
         });
     }

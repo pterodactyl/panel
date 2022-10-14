@@ -31,14 +31,8 @@ class AppSettingsCommand extends Command
         'sync' => 'Sync',
     ];
 
-    /**
-     * @var string
-     */
     protected $description = 'Configure basic environment settings for the Panel.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:environment:setup
                             {--new-salt : Whether or not to generate a new salt for Hashids.}
                             {--author= : The email that services created on this instance should be linked to.}

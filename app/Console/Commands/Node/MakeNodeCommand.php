@@ -7,9 +7,6 @@ use Pterodactyl\Services\Nodes\NodeCreationService;
 
 class MakeNodeCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $signature = 'p:node:make
                             {--name= : A name to identify the node.}
                             {--description= : A description to identify the node.}
@@ -28,9 +25,6 @@ class MakeNodeCommand extends Command
                             {--daemonSFTPPort= : Enter the wings SFTP listening port.}
                             {--daemonBase= : Enter the base folder.}';
 
-    /**
-     * @var string
-     */
     protected $description = 'Creates a new node on the system via the CLI.';
 
     /**

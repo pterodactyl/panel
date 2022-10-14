@@ -12,7 +12,6 @@ class UpgradeCommand extends Command
 {
     protected const DEFAULT_URL = 'https://github.com/pterodactyl/panel/releases/%s/panel.tar.gz';
 
-    /** @var string */
     protected $signature = 'p:upgrade
         {--user= : The user that PHP runs under. All files will be owned by this user.}
         {--group= : The group that PHP runs under. All files will be owned by this group.}
@@ -20,7 +19,6 @@ class UpgradeCommand extends Command
         {--release= : A specific Pterodactyl version to download from GitHub. Leave blank to use latest.}
         {--skip-download : If set no archive will be downloaded.}';
 
-    /** @var string */
     protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
 
     /**

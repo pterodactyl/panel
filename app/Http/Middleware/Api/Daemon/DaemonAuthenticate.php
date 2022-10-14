@@ -15,10 +15,8 @@ class DaemonAuthenticate
 {
     /**
      * Daemon routes that this middleware should be skipped on.
-     *
-     * @var array
      */
-    protected $except = [
+    protected array $except = [
         'daemon.configuration',
     ];
 
@@ -32,11 +30,9 @@ class DaemonAuthenticate
     /**
      * Check if a request from the daemon can be properly attributed back to a single node instance.
      *
-     * @return mixed
-     *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if (in_array($request->route()->getName(), $this->except)) {
             return $next($request);

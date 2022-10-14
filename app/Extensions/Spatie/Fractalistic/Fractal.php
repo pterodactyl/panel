@@ -14,8 +14,6 @@ class Fractal extends SpatieFractal
     /**
      * Create fractal data.
      *
-     * @return \League\Fractal\Scope
-     *
      * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
      * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      */

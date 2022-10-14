@@ -3,7 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Database;
+use League\Fractal\Resource\Item;
 use Pterodactyl\Models\DatabaseHost;
+use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Contracts\Encryption\Encrypter;
 
@@ -11,10 +13,7 @@ class ServerDatabaseTransformer extends BaseTransformer
 {
     protected array $availableIncludes = ['password', 'host'];
 
-    /**
-     * @var Encrypter
-     */
-    private $encrypter;
+    private Encrypter $encrypter;
 
     /**
      * Perform dependency injection.
@@ -52,10 +51,8 @@ class ServerDatabaseTransformer extends BaseTransformer
 
     /**
      * Include the database password in the request.
-     *
-     * @return \League\Fractal\Resource\Item
      */
-    public function includePassword(Database $model)
+    public function includePassword(Database $model): Item
     {
         return $this->item($model, function (Database $model) {
             return [
@@ -67,11 +64,9 @@ class ServerDatabaseTransformer extends BaseTransformer
     /**
      * Return the database host relationship for this server database.
      *
-     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeHost(Database $model)
+    public function includeHost(Database $model): Item|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_DATABASE_HOSTS)) {
             return $this->null();

@@ -10,14 +10,8 @@ class EmailSettingsCommand extends Command
 {
     use EnvironmentWriterTrait;
 
-    /**
-     * @var string
-     */
     protected $description = 'Set or update the email sending configuration for the Panel.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:environment:mail
                             {--driver= : The mail driver to use.}
                             {--email= : Email address that messages from the Panel will originate from.}

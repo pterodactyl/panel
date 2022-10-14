@@ -9,10 +9,8 @@ class FileObjectTransformer extends BaseClientTransformer
 {
     /**
      * Transform a file object response from the daemon into a standardized response.
-     *
-     * @return array
      */
-    public function transform(array $item)
+    public function transform(array $item): array
     {
         return [
             'name' => Arr::get($item, 'name'),

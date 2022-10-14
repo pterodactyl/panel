@@ -9,14 +9,8 @@ use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class DeleteLocationCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $description = 'Deletes a location from the Panel.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:location:delete {--short= : The short code of the location to delete.}';
 
     protected Collection $locations;

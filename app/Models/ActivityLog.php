@@ -9,8 +9,8 @@ use Pterodactyl\Events\ActivityLogged;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 /**
@@ -46,6 +46,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @method static Builder|ActivityLog whereIp($value)
  * @method static Builder|ActivityLog whereProperties($value)
  * @method static Builder|ActivityLog whereTimestamp($value)
+ *
  * @mixin \Eloquent
  */
 class ActivityLog extends Model
@@ -74,7 +75,7 @@ class ActivityLog extends Model
 
     protected $with = ['subjects'];
 
-    public static $validationRules = [
+    public static array $validationRules = [
         'event' => ['required', 'string'],
         'batch' => ['nullable', 'uuid'],
         'ip' => ['required', 'string'],

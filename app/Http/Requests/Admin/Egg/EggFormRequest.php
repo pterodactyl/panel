@@ -6,10 +6,7 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class EggFormRequest extends AdminFormRequest
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'name' => 'required|string|max:191',
@@ -32,9 +29,6 @@ class EggFormRequest extends AdminFormRequest
         return $rules;
     }
 
-    /**
-     * @param \Illuminate\Contracts\Validation\Validator $validator
-     */
     public function withValidator($validator)
     {
         $validator->sometimes('config_from', 'exists:eggs,id', function () {

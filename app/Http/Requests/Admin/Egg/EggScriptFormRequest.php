@@ -7,11 +7,9 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 class EggScriptFormRequest extends AdminFormRequest
 {
     /**
-     * Return the rules to be used when validating the sent data in the request.
-     *
-     * @return array
+     * Return the rules to be used when validating the data sent in the request.
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'script_install' => 'sometimes|nullable|string',

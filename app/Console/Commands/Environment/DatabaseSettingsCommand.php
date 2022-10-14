@@ -12,14 +12,8 @@ class DatabaseSettingsCommand extends Command
 {
     use EnvironmentWriterTrait;
 
-    /**
-     * @var string
-     */
     protected $description = 'Configure database settings for the Panel.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:environment:database
                             {--host= : The connection address for the MySQL server.}
                             {--port= : The connection port for the MySQL server.}

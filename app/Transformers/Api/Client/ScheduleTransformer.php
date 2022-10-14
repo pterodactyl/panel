@@ -4,6 +4,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\Schedule;
+use League\Fractal\Resource\Collection;
 
 class ScheduleTransformer extends BaseClientTransformer
 {
@@ -21,10 +22,8 @@ class ScheduleTransformer extends BaseClientTransformer
 
     /**
      * Returns a transformed schedule model such that a client can view the information.
-     *
-     * @return array
      */
-    public function transform(Schedule $model)
+    public function transform(Schedule $model): array
     {
         return [
             'id' => $model->id,
@@ -49,11 +48,9 @@ class ScheduleTransformer extends BaseClientTransformer
     /**
      * Allows attaching the tasks specific to the schedule in the response.
      *
-     * @return \League\Fractal\Resource\Collection
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeTasks(Schedule $model)
+    public function includeTasks(Schedule $model): Collection
     {
         return $this->collection(
             $model->tasks,

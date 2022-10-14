@@ -12,14 +12,8 @@ use Pterodactyl\Services\Schedules\ProcessScheduleService;
 
 class ProcessRunnableCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $signature = 'p:schedule:process';
 
-    /**
-     * @var string
-     */
     protected $description = 'Process schedules in the database and determine which are ready to run.';
 
     /**

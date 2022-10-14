@@ -36,8 +36,6 @@ class Handler extends ExceptionHandler
 
     /**
      * A list of the exception types that should not be reported.
-     *
-     * @var array
      */
     protected $dontReport = [
         AuthenticationException::class,
@@ -52,8 +50,6 @@ class Handler extends ExceptionHandler
     /**
      * Maps exceptions to a specific response code. This handles special exception
      * types that don't have a defined response code.
-     *
-     * @var array<string, int>
      */
     protected static array $exceptionResponseCodes = [
         AuthenticationException::class => 401,
@@ -63,8 +59,6 @@ class Handler extends ExceptionHandler
 
     /**
      * A list of the inputs that are never flashed for validation exceptions.
-     *
-     * @var string[]
      */
     protected $dontFlash = [
         'token',

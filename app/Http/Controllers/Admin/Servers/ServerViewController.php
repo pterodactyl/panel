@@ -48,20 +48,16 @@ class ServerViewController extends Controller
 
     /**
      * Returns the server details page.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function details(Request $request, Server $server)
+    public function details(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.details', compact('server'));
     }
 
     /**
      * Returns a view of server build settings.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function build(Request $request, Server $server)
+    public function build(Request $request, Server $server): View
     {
         $allocations = $server->node->allocations->toBase();
 
@@ -75,11 +71,9 @@ class ServerViewController extends Controller
     /**
      * Returns the server startup management page.
      *
-     * @return \Illuminate\Contracts\View\View
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function startup(Request $request, Server $server)
+    public function startup(Request $request, Server $server): View
     {
         $nests = $this->nestRepository->getWithEggs();
         $variables = $this->environmentService->handle($server);
@@ -98,11 +92,9 @@ class ServerViewController extends Controller
     }
 
     /**
-     * Returns all of the databases that exist for the server.
-     *
-     * @return \Illuminate\Contracts\View\View
+     * Returns all the databases that exist for the server.
      */
-    public function database(Request $request, Server $server)
+    public function database(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.database', [
             'hosts' => $this->databaseHostRepository->all(),
@@ -111,11 +103,9 @@ class ServerViewController extends Controller
     }
 
     /**
-     * Returns all of the mounts that exist for the server.
-     *
-     * @return \Illuminate\Contracts\View\View
+     * Returns all the mounts that exist for the server.
      */
-    public function mounts(Request $request, Server $server)
+    public function mounts(Request $request, Server $server): View
     {
         $server->load('mounts');
 
@@ -129,11 +119,9 @@ class ServerViewController extends Controller
      * Returns the base server management page, or an exception if the server
      * is in a state that cannot be recovered from.
      *
-     * @return \Illuminate\Contracts\View\View
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function manage(Request $request, Server $server)
+    public function manage(Request $request, Server $server): View
     {
         if ($server->status === Server::STATUS_INSTALL_FAILED) {
             throw new DisplayException('This server is in a failed install state and cannot be recovered. Please delete and re-create the server.');
@@ -159,10 +147,8 @@ class ServerViewController extends Controller
 
     /**
      * Returns the server deletion page.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function delete(Request $request, Server $server)
+    public function delete(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.delete', compact('server'));
     }

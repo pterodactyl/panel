@@ -27,8 +27,6 @@ class SoftwareVersionService
 
     /**
      * Get the latest version of the panel from the CDN servers.
-     *
-     * @return string
      */
     public function getPanel(): string
     {
@@ -37,8 +35,6 @@ class SoftwareVersionService
 
     /**
      * Get the latest version of the daemon from the CDN servers.
-     *
-     * @return string
      */
     public function getDaemon(): string
     {
@@ -47,8 +43,6 @@ class SoftwareVersionService
 
     /**
      * Get the URL to the discord server.
-     *
-     * @return string
      */
     public function getDiscord(): string
     {
@@ -57,8 +51,6 @@ class SoftwareVersionService
 
     /**
      * Get the URL for donations.
-     *
-     * @return string
      */
     public function getDonations(): string
     {

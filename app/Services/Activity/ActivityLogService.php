@@ -164,10 +164,8 @@ class ActivityLogService
 
     /**
      * Executes the provided callback within the scope of a database transaction
-     * and will only save the activity log entry if everything else succesfully
+     * and will only save the activity log entry if everything else successfully
      * settles.
-     *
-     * @return mixed
      *
      * @throws \Throwable
      */

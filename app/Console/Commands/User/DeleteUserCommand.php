@@ -9,14 +9,8 @@ use Pterodactyl\Services\Users\UserDeletionService;
 
 class DeleteUserCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $description = 'Deletes a user from the Panel if no servers are attached to their account.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:user:delete {--user=}';
 
     /**

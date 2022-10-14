@@ -20,8 +20,6 @@ class BackupManager
 
     /**
      * The array of resolved backup drivers.
-     *
-     * @var \League\Flysystem\FilesystemAdapter[]
      */
     protected array $adapters = [];
 

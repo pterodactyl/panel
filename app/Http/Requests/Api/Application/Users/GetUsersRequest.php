@@ -7,13 +7,7 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class GetUsersRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = Acl::RESOURCE_USERS;
+    protected ?string $resource = Acl::RESOURCE_USERS;
 
-    /**
-     * @var int
-     */
-    protected $permission = Acl::READ;
+    protected int $permission = Acl::READ;
 }

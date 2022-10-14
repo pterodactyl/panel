@@ -10,8 +10,6 @@ trait MocksUuids
 {
     /**
      * The known UUID string.
-     *
-     * @var string
      */
     protected string $knownUuid = 'ffb5c3a6-ab17-43ab-97f0-8ff37ccd7f5f';
 

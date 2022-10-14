@@ -40,8 +40,6 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
 
     /**
      * Get the notification's delivery channels.
-     *
-     * @return array
      */
     public function via(): array
     {
@@ -50,8 +48,6 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
     public function toMail(): MailMessage
     {

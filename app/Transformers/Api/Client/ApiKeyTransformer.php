@@ -16,10 +16,8 @@ class ApiKeyTransformer extends BaseClientTransformer
 
     /**
      * Transform this model into a representation that can be consumed by a client.
-     *
-     * @return array
      */
-    public function transform(ApiKey $model)
+    public function transform(ApiKey $model): array
     {
         return [
             'identifier' => $model->identifier,

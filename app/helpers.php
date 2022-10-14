@@ -4,10 +4,6 @@ if (!function_exists('is_digit')) {
     /**
      * Deal with normal (and irritating) PHP behavior to determine if
      * a value is a non-float positive integer.
-     *
-     * @param mixed $value
-     *
-     * @return bool
      */
     function is_digit(mixed $value): bool
     {

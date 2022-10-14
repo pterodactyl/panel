@@ -68,8 +68,6 @@ class ClientController extends ClientApiController
 
     /**
      * Returns all the subuser permissions available on the system.
-     *
-     * @return array
      */
     public function permissions(): array
     {

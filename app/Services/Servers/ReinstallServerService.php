@@ -20,11 +20,9 @@ class ReinstallServerService
     /**
      * Reinstall a server on the remote daemon.
      *
-     * @return \Pterodactyl\Models\Server
-     *
      * @throws \Throwable
      */
-    public function handle(Server $server)
+    public function handle(Server $server): Server
     {
         return $this->connection->transaction(function () use ($server) {
             $server->fill(['status' => Server::STATUS_INSTALLING])->save();

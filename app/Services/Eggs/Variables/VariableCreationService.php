@@ -3,8 +3,8 @@
 namespace Pterodactyl\Services\Eggs\Variables;
 
 use Pterodactyl\Models\EggVariable;
-use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Pterodactyl\Traits\Services\ValidatesValidationRules;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 

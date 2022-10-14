@@ -25,10 +25,8 @@ class ResourceBelongsToServer
      * This is critical to ensuring that all subsequent logic is using exactly the
      * server that is expected, and that we're not accessing a resource completely
      * unrelated to the server provided in the request.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         $params = $request->route()->parameters();
         if (is_null($params) || !$params['server'] instanceof Server) {
@@ -59,8 +57,8 @@ class ResourceBelongsToServer
                         throw $exception;
                     }
                     break;
-                // Regular users are a special case here as we need to make sure they're
-                // currently assigned as a subuser on the server.
+                    // Regular users are a special case here as we need to make sure they're
+                    // currently assigned as a subuser on the server.
                 case User::class:
                     $subuser = $server->subusers()->where('user_id', $model->id)->first();
                     if (is_null($subuser)) {
@@ -70,8 +68,8 @@ class ResourceBelongsToServer
                     // in the underlying logic.
                     $request->attributes->set('subuser', $subuser);
                     break;
-                // Tasks are special since they're (currently) the only item in the API
-                // that requires something in addition to the server in order to be accessed.
+                    // Tasks are special since they're (currently) the only item in the API
+                    // that requires something in addition to the server in order to be accessed.
                 case Task::class:
                     $schedule = $request->route()->parameter('schedule');
                     if ($model->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {

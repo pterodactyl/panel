@@ -7,14 +7,8 @@ use Pterodactyl\Services\Users\UserCreationService;
 
 class MakeUserCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $description = 'Creates a user on the system via the CLI.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:user:make {--email=} {--username=} {--name-first=} {--name-last=} {--password=} {--admin=} {--no-password}';
 
     /**

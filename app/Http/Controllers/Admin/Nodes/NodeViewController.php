@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
-use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
@@ -49,10 +49,8 @@ class NodeViewController extends Controller
 
     /**
      * Returns the settings page for a specific node.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function settings(Request $request, Node $node)
+    public function settings(Request $request, Node $node): View
     {
         return $this->view->make('admin.nodes.view.settings', [
             'node' => $node,
@@ -62,20 +60,16 @@ class NodeViewController extends Controller
 
     /**
      * Return the node configuration page for a specific node.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function configuration(Request $request, Node $node)
+    public function configuration(Request $request, Node $node): View
     {
         return $this->view->make('admin.nodes.view.configuration', compact('node'));
     }
 
     /**
      * Return the node allocation management page.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function allocations(Request $request, Node $node)
+    public function allocations(Request $request, Node $node): View
     {
         $node = $this->repository->loadNodeAllocations($node);
 
@@ -92,10 +86,8 @@ class NodeViewController extends Controller
 
     /**
      * Return a listing of servers that exist for this specific node.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function servers(Request $request, Node $node)
+    public function servers(Request $request, Node $node): View
     {
         $this->plainInject([
             'node' => Collection::wrap($node->makeVisible(['daemon_token_id', 'daemon_token']))

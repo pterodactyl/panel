@@ -12,6 +12,7 @@ use Illuminate\Contracts\Config\Repository as ConfigRepository;
 class TwoFactorSetupService
 {
     public const VALID_BASE32_CHARACTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ234567';
+
     /**
      * TwoFactorSetupService constructor.
      */

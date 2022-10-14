@@ -17,10 +17,8 @@ class RedirectIfAuthenticated
 
     /**
      * Handle an incoming request.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next, string $guard = null)
+    public function handle(Request $request, Closure $next, string $guard = null): mixed
     {
         if ($this->authManager->guard($guard)->check()) {
             return redirect()->route('index');

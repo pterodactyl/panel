@@ -36,7 +36,7 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
     }
 
     /**
-     * Rename some of the attributes in error messages to clarify the field
+     * Rename some attributes in error messages to clarify the field
      * being discussed.
      */
     public function attributes(): array

@@ -69,8 +69,6 @@ class AppServiceProvider extends ServiceProvider
 
     /**
      * Return version information for the footer.
-     *
-     * @return array
      */
     protected function versionData(): array
     {

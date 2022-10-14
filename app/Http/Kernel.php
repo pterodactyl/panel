@@ -38,8 +38,6 @@ class Kernel extends HttpKernel
 {
     /**
      * The application's global HTTP middleware stack.
-     *
-     * @var array
      */
     protected $middleware = [
         TrustProxies::class,
@@ -52,8 +50,6 @@ class Kernel extends HttpKernel
 
     /**
      * The application's route middleware groups.
-     *
-     * @var array
      */
     protected $middlewareGroups = [
         'web' => [
@@ -89,8 +85,6 @@ class Kernel extends HttpKernel
 
     /**
      * The application's route middleware.
-     *
-     * @var array
      */
     protected $routeMiddleware = [
         'auth' => Authenticate::class,

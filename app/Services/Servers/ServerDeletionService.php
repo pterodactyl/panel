@@ -27,12 +27,8 @@ class ServerDeletionService
 
     /**
      * Set if the server should be forcibly deleted from the panel (ignoring daemon errors) or not.
-     *
-     * @param bool $bool
-     *
-     * @return $this
      */
-    public function withForce($bool = true): self
+    public function withForce(bool $bool = true): self
     {
         $this->force = $bool;
 

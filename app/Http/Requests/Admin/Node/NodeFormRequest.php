@@ -11,7 +11,7 @@ class NodeFormRequest extends AdminFormRequest
     /**
      * Get rules to apply to data in this request.
      */
-    public function rules()
+    public function rules(): array
     {
         if ($this->method() === 'PATCH') {
             return Node::getRulesForUpdate($this->route()->parameter('node'));
