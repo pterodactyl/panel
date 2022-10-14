@@ -35,7 +35,7 @@
         "react-dom": "npm:@hot-loader/react-dom",
         "react-fast-compare": "^3.2.0",
         "react-hot-loader": "^4.12.21",
-        "react-i18next": "^11.2.1",
+        "react-i18next": "11.2.1",
         "react-router-dom": "^5.1.2",
         "react-transition-group": "^4.4.1",
         "reaptcha": "^1.7.2",

@@ -28,6 +28,9 @@ i18n.use(I18NextMultiloadBackendAdapter)
             // handling escapes for us.
             escapeValue: false,
         },
+        react: {
+            transKeepBasicHtmlNodesFor: ['span'], //I have 0 idea why this specifically works and no other html tag will work
+        },
     });
 
 export default i18n;
