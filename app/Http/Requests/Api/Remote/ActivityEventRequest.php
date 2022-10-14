@@ -27,9 +27,7 @@ class ActivityEventRequest extends FormRequest
     }
 
     /**
-     * Returns all of the unique server UUIDs that were recieved in this request.
-     *
-     * @return string[]
+     * Returns all the unique server UUIDs that were received in this request.
      */
     public function servers(): array
     {
@@ -37,9 +35,7 @@ class ActivityEventRequest extends FormRequest
     }
 
     /**
-     * Returns all of the unique user UUIDs that were submitted in this request.
-     *
-     * @return string[]
+     * Returns all the unique user UUIDs that were submitted in this request.
      */
     public function users(): array
     {

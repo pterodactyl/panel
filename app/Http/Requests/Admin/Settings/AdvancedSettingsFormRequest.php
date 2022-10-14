@@ -7,11 +7,9 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 class AdvancedSettingsFormRequest extends AdminFormRequest
 {
     /**
-     * Return all of the rules to apply to this request's data.
-     *
-     * @return array
+     * Return all the rules to apply to this request's data.
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'recaptcha:enabled' => 'required|in:true,false',
@@ -36,10 +34,7 @@ class AdvancedSettingsFormRequest extends AdminFormRequest
         ];
     }
 
-    /**
-     * @return array
-     */
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'recaptcha:enabled' => 'reCAPTCHA Enabled',

@@ -9,20 +9,16 @@ class RecordNotFoundException extends RepositoryException implements HttpExcepti
 {
     /**
      * Returns the status code.
-     *
-     * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return Response::HTTP_NOT_FOUND;
     }
 
     /**
      * Returns response headers.
-     *
-     * @return array
      */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return [];
     }

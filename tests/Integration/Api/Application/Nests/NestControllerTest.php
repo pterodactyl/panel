@@ -9,10 +9,7 @@ use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestC
 
 class NestControllerTest extends ApplicationApiIntegrationTestCase
 {
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    private $repository;
+    private NestRepositoryInterface $repository;
 
     /**
      * Setup tests.
@@ -25,7 +22,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
     }
 
     /**
-     * Test that the expected nests are returned in the request.
+     * Test that the expected nests are returned by the request.
      */
     public function testNestResponse()
     {

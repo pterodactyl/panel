@@ -11,22 +11,10 @@ use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 class EggInstallController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
-     */
-    private $environment;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * EggInstallController constructor.
      */
-    public function __construct(EnvironmentService $environment, ServerRepositoryInterface $repository)
+    public function __construct(private EnvironmentService $environment, private ServerRepositoryInterface $repository)
     {
-        $this->environment = $environment;
-        $this->repository = $repository;
     }
 
     /**

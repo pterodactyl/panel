@@ -55,9 +55,6 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->json($method, $this->link($server3, '/backups/' . $backup3->uuid . $endpoint))->assertNotFound();
     }
 
-    /**
-     * @return \string[][]
-     */
     public function methodDataProvider(): array
     {
         return [

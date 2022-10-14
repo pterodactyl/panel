@@ -15,11 +15,9 @@ class AccountTransformer extends BaseClientTransformer
     }
 
     /**
-     * Return basic information about the currently logged in user.
-     *
-     * @return array
+     * Return basic information about the currently logged-in user.
      */
-    public function transform(User $model)
+    public function transform(User $model): array
     {
         return [
             'id' => $model->id,

@@ -8,7 +8,6 @@ use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 use Pterodactyl\Transformers\Api\Client\AllocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Services\Allocations\FindAssignableAllocationService;
@@ -21,38 +20,18 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Network\SetPrimaryAllocationReq
 class NetworkAllocationController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\AllocationRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $serverRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Allocations\FindAssignableAllocationService
-     */
-    private $assignableAllocationService;
-
-    /**
-     * NetworkController constructor.
+     * NetworkAllocationController constructor.
      */
     public function __construct(
-        AllocationRepository $repository,
-        ServerRepository $serverRepository,
-        FindAssignableAllocationService $assignableAllocationService
+        private FindAssignableAllocationService $assignableAllocationService,
+        private ServerRepository $serverRepository
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->serverRepository = $serverRepository;
-        $this->assignableAllocationService = $assignableAllocationService;
     }
 
     /**
-     * Lists all of the allocations available to a server and wether or
-     * not they are currently assigned as the primary for this server.
+     * Lists all the allocations available to a server and whether
+     * they are currently assigned as the primary for this server.
      */
     public function index(GetNetworkRequest $request, Server $server): array
     {
@@ -132,11 +111,9 @@ class NetworkAllocationController extends ClientApiController
     /**
      * Delete an allocation from a server.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation)
+    public function delete(DeleteAllocationRequest $request, Server $server, Allocation $allocation): JsonResponse
     {
         // Don't allow the deletion of allocations if the server does not have an
         // allocation limit set.

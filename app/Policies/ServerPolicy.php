@@ -22,12 +22,8 @@ class ServerPolicy
 
     /**
      * Runs before any of the functions are called. Used to determine if user is root admin, if so, ignore permissions.
-     *
-     * @param string $ability
-     *
-     * @return bool
      */
-    public function before(User $user, $ability, Server $server)
+    public function before(User $user, string $ability, Server $server): bool
     {
         if ($user->root_admin || $server->owner_id === $user->id) {
             return true;
@@ -40,11 +36,8 @@ class ServerPolicy
      * This is a horrendous hack to avoid Laravel's "smart" behavior that does
      * not call the before() function if there isn't a function matching the
      * policy permission.
-     *
-     * @param string $name
-     * @param mixed $arguments
      */
-    public function __call($name, $arguments)
+    public function __call(string $name, mixed $arguments)
     {
         // do nothing
     }

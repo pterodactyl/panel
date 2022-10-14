@@ -8,7 +8,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Nodes\NodeUpdateService;
 use Pterodactyl\Services\Nodes\NodeCreationService;
 use Pterodactyl\Services\Nodes\NodeDeletionService;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\NodeTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodeRequest;
 use Pterodactyl\Http\Requests\Api\Application\Nodes\GetNodesRequest;
@@ -20,44 +19,18 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 class NodeController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeUpdateService
-     */
-    private $updateService;
-
-    /**
      * NodeController constructor.
      */
     public function __construct(
-        NodeCreationService $creationService,
-        NodeDeletionService $deletionService,
-        NodeUpdateService $updateService,
-        NodeRepositoryInterface $repository
+        private NodeCreationService $creationService,
+        private NodeDeletionService $deletionService,
+        private NodeUpdateService $updateService
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->updateService = $updateService;
     }
 
     /**
-     * Return all of the nodes currently available on the Panel.
+     * Return all the nodes currently available on the Panel.
      */
     public function index(GetNodesRequest $request): array
     {
@@ -82,7 +55,7 @@ class NodeController extends ApplicationApiController
     }
 
     /**
-     * Create a new node on the Panel. Returns the created node and a HTTP/201
+     * Create a new node on the Panel. Returns the created node and an HTTP/201
      * status response on success.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

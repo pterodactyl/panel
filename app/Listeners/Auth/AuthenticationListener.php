@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Listeners\Auth;
 
-use Illuminate\Auth\Events\Login;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Auth\Events\Failed;
+use Pterodactyl\Events\Auth\DirectLogin;
 use Illuminate\Contracts\Events\Dispatcher;
 use Pterodactyl\Extensions\Illuminate\Events\Contracts\SubscribesToEvents;
 
@@ -13,10 +13,8 @@ class AuthenticationListener implements SubscribesToEvents
     /**
      * Handles an authentication event by logging the user and information about
      * the request.
-     *
-     * @param \Illuminate\Auth\Events\Login|\Illuminate\Auth\Events\Failed $event
      */
-    public function handle($event): void
+    public function handle(Failed|DirectLogin $event): void
     {
         $activity = Activity::withRequestMetadata();
         if ($event->user) {
@@ -35,6 +33,6 @@ class AuthenticationListener implements SubscribesToEvents
     public function subscribe(Dispatcher $events): void
     {
         $events->listen(Failed::class, self::class);
-        $events->listen(Login::class, self::class);
+        $events->listen(DirectLogin::class, self::class);
     }
 }

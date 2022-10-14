@@ -13,10 +13,8 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Egg::class;
     }
@@ -30,7 +28,7 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     {
         try {
             return $this->getBuilder()->with('variables')->findOrFail($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }
@@ -52,17 +50,17 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
      */
     public function getWithCopyAttributes($value, string $column = 'id'): Egg
     {
-        Assert::true((is_digit($value) || is_string($value)), 'First argument passed to getWithCopyAttributes must be an integer or string, received %s.');
+        Assert::true(is_digit($value) || is_string($value), 'First argument passed to getWithCopyAttributes must be an integer or string, received %s.');
 
         try {
             return $this->getBuilder()->with('scriptFrom', 'configFrom')->where($column, '=', $value)->firstOrFail($this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }
 
     /**
-     * Return all of the data needed to export a service.
+     * Return all the data needed to export a service.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -70,7 +68,7 @@ class EggRepository extends EloquentRepository implements EggRepositoryInterface
     {
         try {
             return $this->getBuilder()->with('scriptFrom', 'configFrom', 'variables')->findOrFail($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }

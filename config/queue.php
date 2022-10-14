@@ -3,14 +3,12 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Default Queue Driver
+    | Default Queue Connection Name
     |--------------------------------------------------------------------------
     |
     | Laravel's queue API supports an assortment of back-ends via a single
     | API, giving you convenient access to each back-end using the same
-    | syntax for each one. Here you may set the default queue driver.
-    |
-    | Supported: "sync", "database", "beanstalkd", "sqs", "redis", "null"
+    | syntax for every one. Here you may define a default connection.
     |
     */
 
@@ -35,24 +33,29 @@ return [
         'database' => [
             'driver' => 'database',
             'table' => 'jobs',
-            'queue' => env('QUEUE_STANDARD', 'standard'),
+            'queue' => 'default',
             'retry_after' => 90,
+            'after_commit' => false,
         ],
 
         'sqs' => [
             'driver' => 'sqs',
-            'key' => env('SQS_KEY'),
-            'secret' => env('SQS_SECRET'),
-            'prefix' => env('SQS_QUEUE_PREFIX'),
-            'queue' => env('QUEUE_STANDARD', 'standard'),
-            'region' => env('SQS_REGION', 'us-east-1'),
+            'key' => env('AWS_ACCESS_KEY_ID'),
+            'secret' => env('AWS_SECRET_ACCESS_KEY'),
+            'prefix' => env('SQS_PREFIX', 'https://sqs.us-east-1.amazonaws.com/your-account-id'),
+            'queue' => env('SQS_QUEUE', 'default'),
+            'suffix' => env('SQS_SUFFIX'),
+            'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+            'after_commit' => false,
         ],
 
         'redis' => [
             'driver' => 'redis',
             'connection' => 'default',
-            'queue' => env('QUEUE_STANDARD', 'standard'),
+            'queue' => env('REDIS_QUEUE', 'default'),
             'retry_after' => 90,
+            'block_for' => null,
+            'after_commit' => false,
         ],
     ],
 
@@ -68,7 +71,8 @@ return [
     */
 
     'failed' => [
-        'database' => 'mysql',
+        'driver' => env('QUEUE_FAILED_DRIVER', 'database-uuids'),
+        'database' => env('DB_CONNECTION', 'mysql'),
         'table' => 'failed_jobs',
     ],
 ];

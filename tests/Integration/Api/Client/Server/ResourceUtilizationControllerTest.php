@@ -7,7 +7,7 @@ use Pterodactyl\Models\Permission;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
-class ResourceUtilitizationControllerTest extends ClientApiIntegrationTestCase
+class ResourceUtilizationControllerTest extends ClientApiIntegrationTestCase
 {
     /**
      * Test that the resource utilization for a server is returned in the expected format.
@@ -23,7 +23,7 @@ class ResourceUtilitizationControllerTest extends ClientApiIntegrationTestCase
             return $server->uuid === $value->uuid;
         }))->andReturnSelf()->getMock()->expects('getDetails')->andReturns([]);
 
-        $response = $this->actingAs($user)->getJson("/api/client/servers/{$server->uuid}/resources");
+        $response = $this->actingAs($user)->getJson("/api/client/servers/$server->uuid/resources");
 
         $response->assertOk();
         $response->assertJson([

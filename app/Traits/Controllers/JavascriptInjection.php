@@ -1,30 +1,18 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Traits\Controllers;
 
-use Javascript;
+use JavaScript;
 use Illuminate\Http\Request;
 
 trait JavascriptInjection
 {
-    /**
-     * @var \Illuminate\Http\Request
-     */
-    private $request;
+    private Request $request;
 
     /**
      * Set the request object to use when injecting JS.
-     *
-     * @return $this
      */
-    public function setRequest(Request $request)
+    public function setRequest(Request $request): self
     {
         $this->request = $request;
 
@@ -33,13 +21,9 @@ trait JavascriptInjection
 
     /**
      * Injects the exact array passed in, nothing more.
-     *
-     * @param array $args
-     *
-     * @return array
      */
-    public function plainInject($args = [])
+    public function plainInject(array $args = []): string
     {
-        return Javascript::put($args);
+        return JavaScript::put($args);
     }
 }

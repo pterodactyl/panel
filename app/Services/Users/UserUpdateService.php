@@ -11,16 +11,10 @@ class UserUpdateService
     use HasUserLevels;
 
     /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
+     * UserUpdateService constructor.
      */
-    private $hasher;
-
-    /**
-     * UpdateService constructor.
-     */
-    public function __construct(Hasher $hasher)
+    public function __construct(private Hasher $hasher)
     {
-        $this->hasher = $hasher;
     }
 
     /**

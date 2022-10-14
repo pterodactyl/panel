@@ -52,7 +52,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Tests that an email is not updated if the password provided in the reuqest is not
+     * Tests that an email is not updated if the password provided in the request is not
      * valid for the account.
      */
     public function testEmailIsNotUpdatedWhenPasswordIsInvalid()

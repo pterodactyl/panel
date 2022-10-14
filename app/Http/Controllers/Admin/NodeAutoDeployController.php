@@ -14,42 +14,22 @@ use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 class NodeAutoDeployController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
-     */
-    private $keyCreationService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ApiKeyRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
      * NodeAutoDeployController constructor.
      */
     public function __construct(
-        ApiKeyRepository $repository,
-        Encrypter $encrypter,
-        KeyCreationService $keyCreationService
+        private ApiKeyRepository $repository,
+        private Encrypter $encrypter,
+        private KeyCreationService $keyCreationService
     ) {
-        $this->keyCreationService = $keyCreationService;
-        $this->repository = $repository;
-        $this->encrypter = $encrypter;
     }
 
     /**
-     * Generates a new API key for the logged in user with only permission to read
+     * Generates a new API key for the logged-in user with only permission to read
      * nodes, and returns that as the deployment key for a node.
-     *
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function __invoke(Request $request, Node $node)
+    public function __invoke(Request $request, Node $node): JsonResponse
     {
         /** @var \Pterodactyl\Models\ApiKey|null $key */
         $key = $this->repository->getApplicationKeys($request->user())

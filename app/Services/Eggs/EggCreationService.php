@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Eggs;
 
@@ -19,22 +12,10 @@ use Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException;
 class EggCreationService
 {
     /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\EggRepositoryInterface
-     */
-    protected $repository;
-
-    /**
      * EggCreationService constructor.
      */
-    public function __construct(ConfigRepository $config, EggRepositoryInterface $repository)
+    public function __construct(private ConfigRepository $config, private EggRepositoryInterface $repository)
     {
-        $this->config = $config;
-        $this->repository = $repository;
     }
 
     /**

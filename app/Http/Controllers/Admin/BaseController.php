@@ -3,22 +3,17 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\View\View;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 
 class BaseController extends Controller
 {
     /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
-     */
-    private $version;
-
-    /**
      * BaseController constructor.
      */
-    public function __construct(SoftwareVersionService $version)
+    public function __construct(private SoftwareVersionService $version, private ViewFactory $view)
     {
-        $this->version = $version;
     }
 
     /**
@@ -26,6 +21,6 @@ class BaseController extends Controller
      */
     public function index(): View
     {
-        return view('admin.index', ['version' => $this->version]);
+        return $this->view->make('admin.index', ['version' => $this->version]);
     }
 }

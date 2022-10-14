@@ -122,7 +122,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that two factor authentication can be disabled on an account as long as the password
+     * Test that two-factor authentication can be disabled on an account as long as the password
      * provided is valid for the account.
      */
     public function testTwoFactorCanBeDisabledOnAccount()
@@ -149,7 +149,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         $user = $user->refresh();
         $this->assertFalse($user->use_totp);
         $this->assertNotNull($user->totp_authenticated_at);
-        $this->assertSame(Carbon::now()->toIso8601String(), $user->totp_authenticated_at->toIso8601String());
+        $this->assertSame(Carbon::now()->toAtomString(), $user->totp_authenticated_at->toAtomString());
     }
 
     /**

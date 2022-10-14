@@ -12,18 +12,11 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerStartupRequest
 class StartupController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Servers\StartupModificationService
-     */
-    private $modificationService;
-
-    /**
      * StartupController constructor.
      */
-    public function __construct(StartupModificationService $modificationService)
+    public function __construct(private StartupModificationService $modificationService)
     {
         parent::__construct();
-
-        $this->modificationService = $modificationService;
     }
 
     /**

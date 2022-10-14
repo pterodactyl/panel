@@ -55,6 +55,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey whereUserId($value)
+ *
  * @mixin \Eloquent
  */
 class ApiKey extends Model
@@ -87,15 +88,11 @@ class ApiKey extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'api_keys';
 
     /**
      * Cast values to correct type.
-     *
-     * @var array
      */
     protected $casts = [
         'allowed_ips' => 'array',
@@ -113,8 +110,6 @@ class ApiKey extends Model
 
     /**
      * Fields that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'identifier',
@@ -127,17 +122,13 @@ class ApiKey extends Model
     /**
      * Fields that should not be included when calling toArray() or toJson()
      * on this model.
-     *
-     * @var array
      */
     protected $hidden = ['token'];
 
     /**
      * Rules to protect against invalid data entry to DB.
-     *
-     * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'user_id' => 'required|exists:users,id',
         'key_type' => 'present|integer|min:0|max:4',
         'identifier' => 'required|string|size:16|unique:api_keys,identifier',
@@ -157,9 +148,6 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_SERVERS => 'integer|min:0|max:3',
     ];
 
-    /**
-     * @var array
-     */
     protected $dates = [
         self::CREATED_AT,
         self::UPDATED_AT,
@@ -177,23 +165,17 @@ class ApiKey extends Model
     /**
      * Required for support with Laravel Sanctum.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     *
      * @see \Laravel\Sanctum\Guard::supportsTokens()
      */
-    public function tokenable()
+    public function tokenable(): BelongsTo
     {
         return $this->user();
     }
 
     /**
      * Finds the model matching the provided token.
-     *
-     * @param string $token
-     *
-     * @return self|null
      */
-    public static function findToken($token)
+    public static function findToken(string $token): ?self
     {
         $identifier = substr($token, 0, self::IDENTIFIER_LENGTH);
 

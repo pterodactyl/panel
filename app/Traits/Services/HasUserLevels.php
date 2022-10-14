@@ -6,17 +6,12 @@ use Pterodactyl\Models\User;
 
 trait HasUserLevels
 {
-    /**
-     * @var int
-     */
-    private $userLevel = User::USER_LEVEL_USER;
+    private int $userLevel = User::USER_LEVEL_USER;
 
     /**
      * Set the access level for running this function.
-     *
-     * @return $this
      */
-    public function setUserLevel(int $level)
+    public function setUserLevel(int $level): self
     {
         $this->userLevel = $level;
 

@@ -9,10 +9,8 @@ class MailSettingsFormRequest extends AdminFormRequest
 {
     /**
      * Return rules to validate mail settings POST data against.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'mail:host' => 'required|string',
@@ -28,12 +26,8 @@ class MailSettingsFormRequest extends AdminFormRequest
     /**
      * Override the default normalization function for this type of request
      * as we need to accept empty values on the keys.
-     *
-     * @param array $only
-     *
-     * @return array
      */
-    public function normalize(array $only = null)
+    public function normalize(array $only = null): array
     {
         $keys = array_flip(array_keys($this->rules()));
 

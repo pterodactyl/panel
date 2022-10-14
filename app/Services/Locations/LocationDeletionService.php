@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Locations;
 
@@ -18,36 +11,20 @@ use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
 class LocationDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NodeRepositoryInterface
-     */
-    protected $nodeRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
-     */
-    protected $repository;
-
-    /**
      * LocationDeletionService constructor.
      */
     public function __construct(
-        LocationRepositoryInterface $repository,
-        NodeRepositoryInterface $nodeRepository
+        protected LocationRepositoryInterface $repository,
+        protected NodeRepositoryInterface $nodeRepository
     ) {
-        $this->nodeRepository = $nodeRepository;
-        $this->repository = $repository;
     }
 
     /**
      * Delete an existing location.
      *
-     * @param int|\Pterodactyl\Models\Location $location
-     *
-     * @return int|null
-     *
      * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
-    public function handle($location)
+    public function handle(Location|int $location): ?int
     {
         $location = ($location instanceof Location) ? $location->id : $location;
 

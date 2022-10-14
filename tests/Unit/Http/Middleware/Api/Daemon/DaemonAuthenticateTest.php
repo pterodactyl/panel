@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Unit\Http\Middleware\Api\Daemon;
 
 use Mockery as m;
+use Mockery\MockInterface;
 use Pterodactyl\Models\Node;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
@@ -15,15 +16,9 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class DaemonAuthenticateTest extends MiddlewareTestCase
 {
-    /**
-     * @var \Mockery\MockInterface
-     */
-    private $repository;
+    private MockInterface $encrypter;
 
-    /**
-     * @var \Mockery\MockInterface
-     */
-    private $encrypter;
+    private MockInterface $repository;
 
     /**
      * Setup tests.

@@ -9,12 +9,10 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 class StoreApplicationApiKeyRequest extends AdminFormRequest
 {
     /**
-     * @return array
-     *
      * @throws \ReflectionException
      * @throws \ReflectionException
      */
-    public function rules()
+    public function rules(): array
     {
         $modelRules = ApiKey::getRules();
 
@@ -23,10 +21,7 @@ class StoreApplicationApiKeyRequest extends AdminFormRequest
         })->merge(['memo' => $modelRules['memo']])->toArray();
     }
 
-    /**
-     * @return array
-     */
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'memo' => 'Description',

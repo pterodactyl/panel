@@ -8,18 +8,14 @@ abstract class AdminFormRequest extends FormRequest
 {
     /**
      * The rules to apply to the incoming form request.
-     *
-     * @return array
      */
-    abstract public function rules();
+    abstract public function rules(): array;
 
     /**
      * Determine if the user is an admin and has permission to access this
      * form controller in the first place.
-     *
-     * @return bool
      */
-    public function authorize()
+    public function authorize(): bool
     {
         if (is_null($this->user())) {
             return false;
@@ -31,10 +27,8 @@ abstract class AdminFormRequest extends FormRequest
     /**
      * Return only the fields that we are interested in from the request.
      * This will include empty fields as a null value.
-     *
-     * @return array
      */
-    public function normalize(array $only = null)
+    public function normalize(array $only = null): array
     {
         return $this->only($only ?? array_keys($this->rules()));
     }

@@ -6,6 +6,7 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
@@ -14,38 +15,15 @@ use Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
 class AdvancedController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alert;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    private $config;
-
-    /**
-     * @var \Illuminate\Contracts\Console\Kernel
-     */
-    private $kernel;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\SettingsRepositoryInterface
-     */
-    private $settings;
-
-    /**
      * AdvancedController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        ConfigRepository $config,
-        Kernel $kernel,
-        SettingsRepositoryInterface $settings
+        private AlertsMessageBag $alert,
+        private ConfigRepository $config,
+        private Kernel $kernel,
+        private SettingsRepositoryInterface $settings,
+        private ViewFactory $view
     ) {
-        $this->alert = $alert;
-        $this->config = $config;
-        $this->kernel = $kernel;
-        $this->settings = $settings;
     }
 
     /**
@@ -61,7 +39,7 @@ class AdvancedController extends Controller
             $showRecaptchaWarning = true;
         }
 
-        return view('admin.settings.advanced', [
+        return $this->view->make('admin.settings.advanced', [
             'showRecaptchaWarning' => $showRecaptchaWarning,
         ]);
     }
