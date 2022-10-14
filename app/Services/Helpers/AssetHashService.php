@@ -15,7 +15,7 @@ class AssetHashService
 
     private Filesystem $filesystem;
 
-    protected static mixed $manifest;
+    protected static mixed $manifest = null;
 
     /**
      * AssetHashService constructor.
@@ -99,9 +99,13 @@ class AssetHashService
      */
     protected function manifest(): array
     {
-        return self::$manifest ?: self::$manifest = json_decode(
-            $this->filesystem->get(self::MANIFEST_PATH),
-            true
-        );
+        if (static::$manifest === null) {
+            self::$manifest = json_decode(
+                $this->filesystem->get(self::MANIFEST_PATH),
+                true
+            );
+        }
+
+        return static::$manifest;
     }
 }
