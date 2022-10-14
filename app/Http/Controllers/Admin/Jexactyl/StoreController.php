@@ -65,8 +65,7 @@ class StoreController extends Controller
             $this->settings->set('jexactyl::' . $key, $value);
         }
 
-        $this->alert->warning('If you have enabled a payment gateway, please remember to configure them. <a href="https://documentation.jexactyl.com">Documentation</a>')->flash();
-        $this->alert->success('Jexactyl Storefront has been updated.')->flash();
+        $this->alert->success('If you have enabled a payment gateway, please remember to configure them. <a href="https://documentation.jexactyl.com">Documentation</a>')->flash();
 
         return redirect()->route('admin.jexactyl.store');
     }
