@@ -17,11 +17,9 @@ class SubuserTransformer extends BaseClientTransformer
     /**
      * Transforms a subuser into a model that can be shown to a front-end user.
      *
-     * @return array|void
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function transform(Subuser $model)
+    public function transform(Subuser $model): array
     {
         return array_merge(
             $this->makeTransformer(UserTransformer::class)->transform($model->user),

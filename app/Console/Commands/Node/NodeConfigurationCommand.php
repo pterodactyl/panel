@@ -13,7 +13,7 @@ class NodeConfigurationCommand extends Command
 
     protected $description = 'Displays the configuration for the specified node.';
 
-    public function handle()
+    public function handle(): int
     {
         $column = ctype_digit((string) $this->argument('node')) ? 'id' : 'uuid';
 
@@ -28,7 +28,7 @@ class NodeConfigurationCommand extends Command
         if (!in_array($format, ['yaml', 'yml', 'json'])) {
             $this->error('Invalid format specified. Valid options are "yaml" and "json".');
 
-            exit(1);
+            return 1;
         }
 
         if ($format === 'json') {

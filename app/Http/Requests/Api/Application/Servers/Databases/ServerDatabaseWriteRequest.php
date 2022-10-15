@@ -6,8 +6,5 @@ use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class ServerDatabaseWriteRequest extends GetServerDatabasesRequest
 {
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
+    protected int $permission = AdminAcl::WRITE;
 }

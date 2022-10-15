@@ -27,7 +27,7 @@ class Add2FaLastAuthorizationTimeColumn extends Migration
 
                 DB::table('users')->where('id', $user->id)->update([
                     'totp_secret' => Crypt::encrypt($user->totp_secret),
-                    'updated_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toAtomString(),
                 ]);
             });
         });
@@ -46,7 +46,7 @@ class Add2FaLastAuthorizationTimeColumn extends Migration
 
                 DB::table('users')->where('id', $user->id)->update([
                     'totp_secret' => Crypt::decrypt($user->totp_secret),
-                    'updated_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toAtomString(),
                 ]);
             });
         });

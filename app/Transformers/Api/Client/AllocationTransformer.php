@@ -14,12 +14,7 @@ class AllocationTransformer extends BaseClientTransformer
         return 'allocation';
     }
 
-    /**
-     * Return basic information about the currently logged in user.
-     *
-     * @return array
-     */
-    public function transform(Allocation $model)
+    public function transform(Allocation $model): array
     {
         return [
             'id' => $model->id,

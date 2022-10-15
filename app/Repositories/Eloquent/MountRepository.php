@@ -12,10 +12,8 @@ class MountRepository extends EloquentRepository
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Mount::class;
     }
@@ -29,9 +27,7 @@ class MountRepository extends EloquentRepository
     }
 
     /**
-     * Return all of the mounts and their respective relations.
-     *
-     * @return mixed
+     * Return all the mounts and their respective relations.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

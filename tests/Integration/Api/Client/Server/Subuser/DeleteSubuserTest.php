@@ -47,7 +47,7 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
 
         $mock->expects('setServer->revokeUserJTI')->with($subuser->id)->andReturnUndefined();
 
-        $this->actingAs($user)->deleteJson($this->link($server) . "/users/{$subuser->uuid}")->assertNoContent();
+        $this->actingAs($user)->deleteJson($this->link($server) . "/users/$subuser->uuid")->assertNoContent();
 
         // Try the same test, but this time with a UUID that if cast to an int (shouldn't) line up with
         // anything in the database.
@@ -63,6 +63,6 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
 
         $mock->expects('setServer->revokeUserJTI')->with($subuser->id)->andReturnUndefined();
 
-        $this->actingAs($user)->deleteJson($this->link($server) . "/users/{$subuser->uuid}")->assertNoContent();
+        $this->actingAs($user)->deleteJson($this->link($server) . "/users/$subuser->uuid")->assertNoContent();
     }
 }

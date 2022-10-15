@@ -14,10 +14,8 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Server::class;
     }
@@ -77,7 +75,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             return $this->getBuilder()->with('egg.variables', 'variables')
                 ->where($this->getModel()->getKeyName(), '=', $id)
                 ->firstOrFail($this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }
@@ -155,7 +153,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
                 ->firstOrFail($this->getColumns());
 
             return $model;
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }
@@ -169,7 +167,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Returns all of the servers that exist for a given node in a paginated response.
+     * Returns all the servers that exist for a given node in a paginated response.
      */
     public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator
     {

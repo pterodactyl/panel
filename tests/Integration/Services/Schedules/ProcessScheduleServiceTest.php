@@ -58,10 +58,9 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
     /**
      * Test that a job is dispatched as expected using the initial delay.
      *
-     * @param bool $now
      * @dataProvider dispatchNowDataProvider
      */
-    public function testJobCanBeDispatchedWithExpectedInitialDelay($now)
+    public function testJobCanBeDispatchedWithExpectedInitialDelay(bool $now)
     {
         Bus::fake();
 
@@ -156,10 +155,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         return [[true], [false]];
     }
 
-    /**
-     * @return \Pterodactyl\Services\Schedules\ProcessScheduleService
-     */
-    private function getService()
+    private function getService(): ProcessScheduleService
     {
         return $this->app->make(ProcessScheduleService::class);
     }

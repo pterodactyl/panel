@@ -12,18 +12,11 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\SendPowerRequest;
 class PowerController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonPowerRepository
-     */
-    private $repository;
-
-    /**
      * PowerController constructor.
      */
-    public function __construct(DaemonPowerRepository $repository)
+    public function __construct(private DaemonPowerRepository $repository)
     {
         parent::__construct();
-
-        $this->repository = $repository;
     }
 
     /**

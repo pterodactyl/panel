@@ -8,15 +8,9 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreNodeRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_NODES;
+    protected ?string $resource = AdminAcl::RESOURCE_NODES;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
+    protected int $permission = AdminAcl::WRITE;
 
     /**
      * Validation rules to apply to this request.
@@ -47,10 +41,8 @@ class StoreNodeRequest extends ApplicationApiRequest
 
     /**
      * Fields to rename for clarity in the API response.
-     *
-     * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'daemon_base' => 'Daemon Base Path',
@@ -63,10 +55,8 @@ class StoreNodeRequest extends ApplicationApiRequest
     /**
      * Change the formatting of some data keys in the validated response data
      * to match what the application expects in the services.
-     *
-     * @return array
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $response = parent::validated();
         $response['daemonListen'] = $response['daemon_listen'];

@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * @property int $id
  * @property int $server_id
@@ -20,23 +22,18 @@ class ServerVariable extends Model
      */
     public const RESOURCE_NAME = 'server_variable';
 
-    /** @var bool */
-    protected $immutableDates = true;
+    protected bool $immutableDates = true;
 
-    /** @var string */
     protected $table = 'server_variables';
 
-    /** @var string[] */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
-    /** @var string[] */
     protected $casts = [
         'server_id' => 'integer',
         'variable_id' => 'integer',
     ];
 
-    /** @var string[] */
-    public static $validationRules = [
+    public static array $validationRules = [
         'server_id' => 'required|int',
         'variable_id' => 'required|int',
         'variable_value' => 'string',
@@ -44,20 +41,16 @@ class ServerVariable extends Model
 
     /**
      * Returns the server this variable is associated with.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function server()
+    public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
     }
 
     /**
      * Returns information about a given variables parent.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function variable()
+    public function variable(): BelongsTo
     {
         return $this->belongsTo(EggVariable::class, 'variable_id');
     }

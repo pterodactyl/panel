@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Models\Server;
-use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -12,24 +11,11 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 class ServerController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\SubuserRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
-     */
-    private $permissionsService;
-
-    /**
      * ServerController constructor.
      */
-    public function __construct(GetUserPermissionsService $permissionsService, SubuserRepository $repository)
+    public function __construct(private GetUserPermissionsService $permissionsService)
     {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->permissionsService = $permissionsService;
     }
 
     /**

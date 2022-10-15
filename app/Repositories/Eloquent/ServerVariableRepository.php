@@ -9,10 +9,8 @@ class ServerVariableRepository extends EloquentRepository implements ServerVaria
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return ServerVariable::class;
     }

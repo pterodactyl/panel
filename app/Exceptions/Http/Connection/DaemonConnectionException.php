@@ -12,20 +12,15 @@ use Pterodactyl\Exceptions\DisplayException;
  */
 class DaemonConnectionException extends DisplayException
 {
-    /**
-     * @var int
-     */
-    private $statusCode = Response::HTTP_GATEWAY_TIMEOUT;
+    private int $statusCode = Response::HTTP_GATEWAY_TIMEOUT;
 
     /**
      * Every request to the Wings instance will return a unique X-Request-Id header
      * which allows for all errors to be efficiently tied to a specific request that
      * triggered them, and gives users a more direct method of informing hosts when
      * something goes wrong.
-     *
-     * @var string|null
      */
-    private $requestId;
+    private ?string $requestId;
 
     /**
      * Throw a displayable exception caused by a daemon connection error.
@@ -34,7 +29,7 @@ class DaemonConnectionException extends DisplayException
     {
         /** @var \GuzzleHttp\Psr7\Response|null $response */
         $response = method_exists($previous, 'getResponse') ? $previous->getResponse() : null;
-        $this->requestId = $response ? $response->getHeaderLine('X-Request-Id') : null;
+        $this->requestId = $response?->getHeaderLine('X-Request-Id');
 
         if ($useStatusCode) {
             $this->statusCode = is_null($response) ? $this->statusCode : $response->getStatusCode();
@@ -72,8 +67,6 @@ class DaemonConnectionException extends DisplayException
     /**
      * Override the default reporting method for DisplayException by just logging immediately
      * here and including the specific X-Request-Id header that was returned by the call.
-     *
-     * @return void
      */
     public function report()
     {
@@ -84,18 +77,13 @@ class DaemonConnectionException extends DisplayException
 
     /**
      * Return the HTTP status code for this exception.
-     *
-     * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return $this->statusCode;
     }
 
-    /**
-     * @return string|null
-     */
-    public function getRequestId()
+    public function getRequestId(): ?string
     {
         return $this->requestId;
     }

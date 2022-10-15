@@ -26,26 +26,13 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\WriteFileContentRequest;
 class FileController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonFileRepository
-     */
-    private $fileRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeJWTService
-     */
-    private $jwtService;
-
-    /**
      * FileController constructor.
      */
     public function __construct(
-        NodeJWTService $jwtService,
-        DaemonFileRepository $fileRepository
+        private NodeJWTService $jwtService,
+        private DaemonFileRepository $fileRepository
     ) {
         parent::__construct();
-
-        $this->fileRepository = $fileRepository;
-        $this->jwtService = $jwtService;
     }
 
     /**
@@ -85,11 +72,9 @@ class FileController extends ClientApiController
      * Generates a one-time token with a link that the user can use to
      * download a given file.
      *
-     * @return array
-     *
      * @throws \Throwable
      */
-    public function download(GetFileContentsRequest $request, Server $server)
+    public function download(GetFileContentsRequest $request, Server $server): array
     {
         $token = $this->jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))

@@ -27,7 +27,7 @@ class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that an error is returned if the task and schedule in the URL do not line up
-     * with eachother.
+     * with each other.
      */
     public function testTaskBelongingToDifferentScheduleReturnsError()
     {
@@ -37,7 +37,7 @@ class DeleteScheduleTaskTest extends ClientApiIntegrationTestCase
         $schedule2 = Schedule::factory()->create(['server_id' => $server->id]);
         $task = Task::factory()->create(['schedule_id' => $schedule->id]);
 
-        $this->actingAs($user)->deleteJson("/api/client/servers/{$server->uuid}/schedules/{$schedule2->id}/tasks/{$task->id}")->assertNotFound();
+        $this->actingAs($user)->deleteJson("/api/client/servers/$server->uuid/schedules/$schedule2->id/tasks/$task->id")->assertNotFound();
     }
 
     /**

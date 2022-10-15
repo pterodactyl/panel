@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\User;
 
@@ -14,29 +7,16 @@ use Pterodactyl\Services\Users\UserCreationService;
 
 class MakeUserCommand extends Command
 {
-    /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
-     */
-    protected $creationService;
-
-    /**
-     * @var string
-     */
     protected $description = 'Creates a user on the system via the CLI.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:user:make {--email=} {--username=} {--name-first=} {--name-last=} {--password=} {--admin=} {--no-password}';
 
     /**
      * MakeUserCommand constructor.
      */
-    public function __construct(UserCreationService $creationService)
+    public function __construct(private UserCreationService $creationService)
     {
         parent::__construct();
-
-        $this->creationService = $creationService;
     }
 
     /**

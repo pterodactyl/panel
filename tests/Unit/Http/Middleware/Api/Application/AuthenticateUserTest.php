@@ -21,7 +21,7 @@ class AuthenticateUserTest extends MiddlewareTestCase
     }
 
     /**
-     * Test that a non-admin user results an an exception.
+     * Test that a non-admin user results in an exception.
      */
     public function testNonAdminUser()
     {

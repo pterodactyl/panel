@@ -11,18 +11,11 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 class NestController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * NestController constructor.
      */
-    public function __construct(NestRepositoryInterface $repository)
+    public function __construct(private NestRepositoryInterface $repository)
     {
         parent::__construct();
-
-        $this->repository = $repository;
     }
 
     /**

@@ -8,7 +8,6 @@ use Pterodactyl\Models\Database;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\ServerDatabaseTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\GetServerDatabaseRequest;
@@ -19,33 +18,13 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\Databases\StoreServerDatab
 class DatabaseController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private $databaseManagementService;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\DatabasePasswordService
-     */
-    private $databasePasswordService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * DatabaseController constructor.
      */
     public function __construct(
-        DatabaseManagementService $databaseManagementService,
-        DatabasePasswordService $databasePasswordService,
-        DatabaseRepositoryInterface $repository
+        private DatabaseManagementService $databaseManagementService,
+        private DatabasePasswordService $databasePasswordService
     ) {
         parent::__construct();
-
-        $this->databaseManagementService = $databaseManagementService;
-        $this->databasePasswordService = $databasePasswordService;
-        $this->repository = $repository;
     }
 
     /**

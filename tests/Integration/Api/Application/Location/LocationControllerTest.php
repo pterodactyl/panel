@@ -161,7 +161,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
     }
 
     /**
-     * Test that all of the defined relationships for a location can be loaded successfully.
+     * Test that all the defined relationships for a location can be loaded successfully.
      */
     public function testRelationshipsCanBeLoaded()
     {
