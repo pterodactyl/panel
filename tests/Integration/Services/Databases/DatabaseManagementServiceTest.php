@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Services\Databases;
 
 use Mockery;
+use Mockery\MockInterface;
 use BadMethodCallException;
 use InvalidArgumentException;
 use Pterodactyl\Models\Database;
@@ -16,8 +17,7 @@ use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledExcep
 
 class DatabaseManagementServiceTest extends IntegrationTestCase
 {
-    /** @var \Mockery\MockInterface */
-    private $repository;
+    private MockInterface $repository;
 
     /**
      * Setup tests.
@@ -28,8 +28,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
 
         config()->set('pterodactyl.client_features.databases.enabled', true);
 
-        $this->repository = Mockery::mock(DatabaseRepository::class);
-        $this->swap(DatabaseRepository::class, $this->repository);
+        $this->repository = $this->mock(DatabaseRepository::class);
     }
 
     /**
@@ -74,10 +73,9 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
     /**
      * Test that a missing or invalid database name format causes an exception to be thrown.
      *
-     * @param array $data
      * @dataProvider invalidDataDataProvider
      */
-    public function testEmptyDatabaseNameOrInvalidNameTriggersAnException($data)
+    public function testEmptyDatabaseNameOrInvalidNameTriggersAnException(array $data)
     {
         $server = $this->createServerModel();
 
@@ -166,7 +164,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
 
         $this->assertInstanceOf(Database::class, $response);
         $this->assertSame($response->server_id, $server->id);
-        $this->assertMatchesRegularExpression('/^(u[\d]+_)(\w){10}$/', $username);
+        $this->assertMatchesRegularExpression('/^(u\d+_)(\w){10}$/', $username);
         $this->assertSame($username, $secondUsername);
         $this->assertSame(24, strlen($password));
 
@@ -174,8 +172,8 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that an exception encountered while creating the database leads to cleanup code being called
-     * and any exceptions encountered while cleaning up go unreported.
+     * Test that an exception encountered while creating the database leads to the cleanup code
+     * being called and any exceptions encountered while cleaning up go unreported.
      */
     public function testExceptionEncounteredWhileCreatingDatabaseAttemptsToCleanup()
     {
@@ -211,10 +209,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         ];
     }
 
-    /**
-     * @return \Pterodactyl\Services\Databases\DatabaseManagementService
-     */
-    private function getService()
+    private function getService(): DatabaseManagementService
     {
         return $this->app->make(DatabaseManagementService::class);
     }

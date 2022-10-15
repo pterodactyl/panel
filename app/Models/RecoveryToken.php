@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * @property int $id
  * @property int $user_id
@@ -16,27 +18,15 @@ class RecoveryToken extends Model
      */
     public const UPDATED_AT = null;
 
-    /**
-     * @var bool
-     */
     public $timestamps = true;
 
-    /**
-     * @var bool
-     */
-    protected $immutableDates = true;
+    protected bool $immutableDates = true;
 
-    /**
-     * @var string[]
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'token' => 'required|string',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

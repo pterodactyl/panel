@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration;
 
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Pterodactyl\Tests\TestCase;
 use Illuminate\Support\Facades\Event;
 use Pterodactyl\Events\ActivityLogged;
@@ -33,8 +34,8 @@ abstract class IntegrationTestCase extends TestCase
      */
     protected function formatTimestamp(string $timestamp): string
     {
-        return CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp)
+        return CarbonImmutable::createFromFormat(CarbonInterface::DEFAULT_TO_STRING_FORMAT, $timestamp)
             ->setTimezone(BaseTransformer::RESPONSE_TIMEZONE)
-            ->toIso8601String();
+            ->toAtomString();
     }
 }

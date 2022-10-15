@@ -10,10 +10,8 @@ class EggVariableRepository extends EloquentRepository implements EggVariableRep
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return EggVariable::class;
     }

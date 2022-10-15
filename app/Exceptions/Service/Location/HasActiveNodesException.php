@@ -7,10 +7,7 @@ use Pterodactyl\Exceptions\DisplayException;
 
 class HasActiveNodesException extends DisplayException
 {
-    /**
-     * @return int
-     */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return Response::HTTP_BAD_REQUEST;
     }

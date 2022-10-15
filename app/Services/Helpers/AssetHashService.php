@@ -4,7 +4,7 @@ namespace Pterodactyl\Services\Helpers;
 
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\FilesystemManager;
-use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Contracts\Filesystem\Filesystem;
 
 class AssetHashService
 {
@@ -13,34 +13,20 @@ class AssetHashService
      */
     public const MANIFEST_PATH = './assets/manifest.json';
 
-    /**
-     * @var \Illuminate\Contracts\Filesystem\Filesystem
-     */
-    private $filesystem;
+    private Filesystem $filesystem;
 
-    /**
-     * @var \Illuminate\Contracts\Foundation\Application
-     */
-    private $application;
-
-    /**
-     * @var array|null
-     */
-    protected static $manifest;
+    protected static mixed $manifest = null;
 
     /**
      * AssetHashService constructor.
      */
-    public function __construct(Application $application, FilesystemManager $filesystem)
+    public function __construct(FilesystemManager $filesystem)
     {
-        $this->application = $application;
         $this->filesystem = $filesystem->createLocalDriver(['root' => public_path()]);
     }
 
     /**
      * Modify a URL to append the asset hash.
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function url(string $resource): string
     {
@@ -52,8 +38,6 @@ class AssetHashService
 
     /**
      * Return the data integrity hash for a resource.
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function integrity(string $resource): string
     {
@@ -65,8 +49,6 @@ class AssetHashService
 
     /**
      * Return a built CSS import using the provided URL.
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function css(string $resource): string
     {
@@ -92,8 +74,6 @@ class AssetHashService
 
     /**
      * Return a built JS import using the provided URL.
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     public function js(string $resource): string
     {
@@ -116,14 +96,16 @@ class AssetHashService
 
     /**
      * Get the asset manifest and store it in the cache for quicker lookups.
-     *
-     * @throws \Illuminate\Contracts\Filesystem\FileNotFoundException
      */
     protected function manifest(): array
     {
-        return self::$manifest ?: self::$manifest = json_decode(
-            $this->filesystem->get(self::MANIFEST_PATH),
-            true
-        );
+        if (static::$manifest === null) {
+            self::$manifest = json_decode(
+                $this->filesystem->get(self::MANIFEST_PATH),
+                true
+            );
+        }
+
+        return static::$manifest;
     }
 }

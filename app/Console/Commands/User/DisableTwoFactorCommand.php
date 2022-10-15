@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Console\Commands\User;
 
@@ -14,29 +7,16 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class DisableTwoFactorCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $description = 'Disable two-factor authentication for a specific user in the Panel.';
 
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * @var string
-     */
     protected $signature = 'p:user:disable2fa {--email= : The email of the user to disable 2-Factor for.}';
 
     /**
      * DisableTwoFactorCommand constructor.
      */
-    public function __construct(UserRepositoryInterface $repository)
+    public function __construct(private UserRepositoryInterface $repository)
     {
         parent::__construct();
-
-        $this->repository = $repository;
     }
 
     /**

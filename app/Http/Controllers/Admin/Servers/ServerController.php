@@ -2,45 +2,29 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Spatie\QueryBuilder\QueryBuilder;
-use Illuminate\Contracts\View\Factory;
 use Spatie\QueryBuilder\AllowedFilter;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Models\Filters\AdminServerFilter;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 
 class ServerController extends Controller
 {
     /**
-     * @var \Illuminate\Contracts\View\Factory
-     */
-    private $view;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
      * ServerController constructor.
      */
-    public function __construct(
-        Factory $view,
-        ServerRepository $repository
-    ) {
-        $this->view = $view;
-        $this->repository = $repository;
+    public function __construct(private ViewFactory $view)
+    {
     }
 
     /**
-     * Returns all of the servers that exist on the system using a paginated result set. If
+     * Returns all the servers that exist on the system using a paginated result set. If
      * a query is passed along in the request it is also passed to the repository function.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function index(Request $request)
+    public function index(Request $request): View
     {
         $servers = QueryBuilder::for(Server::query()->with('node', 'user', 'allocation'))
             ->allowedFilters([

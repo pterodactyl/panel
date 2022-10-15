@@ -3,13 +3,14 @@
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use JavaScript;
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
-use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\EnvironmentService;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
@@ -23,94 +24,40 @@ class ServerViewController extends Controller
     use JavascriptInjection;
 
     /**
-     * @var \Illuminate\Contracts\View\Factory
-     */
-    private $view;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\DatabaseHostRepository
-     */
-    private $databaseHostRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\MountRepository
-     */
-    protected $mountRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\NestRepository
-     */
-    private $nestRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\LocationRepository
-     */
-    private $locationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $nodeRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\EnvironmentService
-     */
-    private $environmentService;
-
-    /**
      * ServerViewController constructor.
      */
     public function __construct(
-        Factory $view,
-        DatabaseHostRepository $databaseHostRepository,
-        LocationRepository $locationRepository,
-        MountRepository $mountRepository,
-        NestRepository $nestRepository,
-        NodeRepository $nodeRepository,
-        ServerRepository $repository,
-        EnvironmentService $environmentService
+        private DatabaseHostRepository $databaseHostRepository,
+        private LocationRepository $locationRepository,
+        private MountRepository $mountRepository,
+        private NestRepository $nestRepository,
+        private NodeRepository $nodeRepository,
+        private ServerRepository $repository,
+        private EnvironmentService $environmentService,
+        private ViewFactory $view
     ) {
-        $this->view = $view;
-        $this->databaseHostRepository = $databaseHostRepository;
-        $this->locationRepository = $locationRepository;
-        $this->mountRepository = $mountRepository;
-        $this->nestRepository = $nestRepository;
-        $this->nodeRepository = $nodeRepository;
-        $this->repository = $repository;
-        $this->environmentService = $environmentService;
     }
 
     /**
      * Returns the index view for a server.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function index(Request $request, Server $server)
+    public function index(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.index', compact('server'));
     }
 
     /**
      * Returns the server details page.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function details(Request $request, Server $server)
+    public function details(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.details', compact('server'));
     }
 
     /**
      * Returns a view of server build settings.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function build(Request $request, Server $server)
+    public function build(Request $request, Server $server): View
     {
         $allocations = $server->node->allocations->toBase();
 
@@ -124,11 +71,9 @@ class ServerViewController extends Controller
     /**
      * Returns the server startup management page.
      *
-     * @return \Illuminate\Contracts\View\View
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function startup(Request $request, Server $server)
+    public function startup(Request $request, Server $server): View
     {
         $nests = $this->nestRepository->getWithEggs();
         $variables = $this->environmentService->handle($server);
@@ -147,11 +92,9 @@ class ServerViewController extends Controller
     }
 
     /**
-     * Returns all of the databases that exist for the server.
-     *
-     * @return \Illuminate\Contracts\View\View
+     * Returns all the databases that exist for the server.
      */
-    public function database(Request $request, Server $server)
+    public function database(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.database', [
             'hosts' => $this->databaseHostRepository->all(),
@@ -160,11 +103,9 @@ class ServerViewController extends Controller
     }
 
     /**
-     * Returns all of the mounts that exist for the server.
-     *
-     * @return \Illuminate\Contracts\View\View
+     * Returns all the mounts that exist for the server.
      */
-    public function mounts(Request $request, Server $server)
+    public function mounts(Request $request, Server $server): View
     {
         $server->load('mounts');
 
@@ -178,11 +119,9 @@ class ServerViewController extends Controller
      * Returns the base server management page, or an exception if the server
      * is in a state that cannot be recovered from.
      *
-     * @return \Illuminate\Contracts\View\View
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function manage(Request $request, Server $server)
+    public function manage(Request $request, Server $server): View
     {
         if ($server->status === Server::STATUS_INSTALL_FAILED) {
             throw new DisplayException('This server is in a failed install state and cannot be recovered. Please delete and re-create the server.');
@@ -195,7 +134,7 @@ class ServerViewController extends Controller
             $canTransfer = true;
         }
 
-        Javascript::put([
+        JavaScript::put([
             'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
         ]);
 
@@ -208,10 +147,8 @@ class ServerViewController extends Controller
 
     /**
      * Returns the server deletion page.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function delete(Request $request, Server $server)
+    public function delete(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.delete', compact('server'));
     }

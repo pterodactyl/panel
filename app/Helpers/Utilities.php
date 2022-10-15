@@ -12,7 +12,7 @@ class Utilities
 {
     /**
      * Generates a random string and injects special characters into it, in addition to
-     * the randomness of the alpha-numeric default response.
+     * the randomness of the alphanumeric default response.
      */
     public static function randomStringWithSpecialCharacters(int $length = 16): string
     {
@@ -36,21 +36,16 @@ class Utilities
     /**
      * Converts schedule cron data into a carbon object.
      *
-     * @return \Carbon\Carbon
+     * @throws \Exception
      */
-    public static function getScheduleNextRunDate(string $minute, string $hour, string $dayOfMonth, string $month, string $dayOfWeek)
+    public static function getScheduleNextRunDate(string $minute, string $hour, string $dayOfMonth, string $month, string $dayOfWeek): Carbon
     {
-        return Carbon::instance(CronExpression::factory(
+        return Carbon::instance((new CronExpression(
             sprintf('%s %s %s %s %s', $minute, $hour, $dayOfMonth, $month, $dayOfWeek)
-        )->getNextRunDate());
+        ))->getNextRunDate());
     }
 
-    /**
-     * @param mixed $default
-     *
-     * @return string
-     */
-    public static function checked(string $name, $default)
+    public static function checked(string $name, mixed $default): string
     {
         $errors = session('errors');
 

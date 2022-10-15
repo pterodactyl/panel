@@ -8,10 +8,8 @@ class Builder extends EloquentBuilder
 {
     /**
      * Do nothing.
-     *
-     * @return $this
      */
-    public function search()
+    public function search(): self
     {
         return $this;
     }

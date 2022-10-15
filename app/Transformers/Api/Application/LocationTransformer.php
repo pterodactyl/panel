@@ -3,6 +3,8 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Location;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class LocationTransformer extends BaseTransformer
@@ -37,11 +39,9 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeServers(Location $location)
+    public function includeServers(Location $location): Collection|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
@@ -55,11 +55,9 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeNodes(Location $location)
+    public function includeNodes(Location $location): Collection|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
             return $this->null();

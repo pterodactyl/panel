@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Requests\Admin\Egg;
 
@@ -13,10 +6,7 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class EggFormRequest extends AdminFormRequest
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function rules()
+    public function rules(): array
     {
         $rules = [
             'name' => 'required|string|max:191',
@@ -39,9 +29,6 @@ class EggFormRequest extends AdminFormRequest
         return $rules;
     }
 
-    /**
-     * @param \Illuminate\Contracts\Validation\Validator $validator
-     */
     public function withValidator($validator)
     {
         $validator->sometimes('config_from', 'exists:eggs,id', function () {
@@ -49,7 +36,7 @@ class EggFormRequest extends AdminFormRequest
         });
     }
 
-    public function validated(): array
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 

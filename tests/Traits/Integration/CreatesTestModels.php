@@ -18,11 +18,9 @@ trait CreatesTestModels
      * is passed in that normally requires this function to create a model no model will be
      * created and that attribute's value will be used.
      *
-     * The returned server model will have all of the relationships loaded onto it.
-     *
-     * @return \Pterodactyl\Models\Server
+     * The returned server model will have all the relationships loaded onto it.
      */
-    public function createServerModel(array $attributes = [])
+    public function createServerModel(array $attributes = []): Server
     {
         if (isset($attributes['user_id'])) {
             $attributes['owner_id'] = $attributes['user_id'];
@@ -126,11 +124,14 @@ trait CreatesTestModels
     }
 
     /**
-     * Most every test just assumes it is using Bungeecord — this is the critical
+     * Almost every test just assumes it is using BungeeCord — this is the critical
      * egg model for all tests unless specified otherwise.
      */
-    private function getBungeecordEgg()
+    private function getBungeecordEgg(): Egg
     {
-        return Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail();
+        /** @var \Pterodactyl\Models\Egg $egg */
+        $egg = Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail();
+
+        return $egg;
     }
 }

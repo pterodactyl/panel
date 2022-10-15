@@ -1,13 +1,5 @@
 <?php
 
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
-
 namespace Pterodactyl\Console\Commands\Node;
 
 use Illuminate\Console\Command;
@@ -15,14 +7,6 @@ use Pterodactyl\Services\Nodes\NodeCreationService;
 
 class MakeNodeCommand extends Command
 {
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeCreationService
-     */
-    protected $creationService;
-
-    /**
-     * @var string
-     */
     protected $signature = 'p:node:make
                             {--name= : A name to identify the node.}
                             {--description= : A description to identify the node.}
@@ -41,20 +25,23 @@ class MakeNodeCommand extends Command
                             {--daemonSFTPPort= : Enter the wings SFTP listening port.}
                             {--daemonBase= : Enter the base folder.}';
 
-    /**
-     * @var string
-     */
     protected $description = 'Creates a new node on the system via the CLI.';
+
+    /**
+     * MakeNodeCommand constructor.
+     */
+    public function __construct(private NodeCreationService $creationService)
+    {
+        parent::__construct();
+    }
 
     /**
      * Handle the command execution process.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(NodeCreationService $creationService)
+    public function handle()
     {
-        $this->creationService = $creationService;
-
         $data['name'] = $this->option('name') ?? $this->ask('Enter a short identifier used to distinguish this node from others');
         $data['description'] = $this->option('description') ?? $this->ask('Enter a description to identify the node');
         $data['location_id'] = $this->option('locationId') ?? $this->ask('Enter a valid location id');

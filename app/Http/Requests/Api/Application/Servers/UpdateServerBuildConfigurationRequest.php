@@ -51,10 +51,8 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 
     /**
      * Convert the allocation field into the expected format for the service handler.
-     *
-     * @return array
      */
-    public function validated()
+    public function validated($key = null, $default = null): array
     {
         $data = parent::validated();
 
@@ -78,10 +76,8 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 
     /**
      * Custom attributes to use in error message responses.
-     *
-     * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'add_allocations' => 'allocations to add',
@@ -99,11 +95,9 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      * compatability with the old API endpoint while also supporting a more correct API
      * call.
      *
-     * @return array
-     *
      * @see https://github.com/pterodactyl/panel/issues/1500
      */
-    protected function requiredToOptional(string $field, array $rules, bool $limits = false)
+    protected function requiredToOptional(string $field, array $rules, bool $limits = false): array
     {
         if (!in_array('required', $rules)) {
             return $rules;

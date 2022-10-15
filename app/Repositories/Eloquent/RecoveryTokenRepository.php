@@ -6,10 +6,7 @@ use Pterodactyl\Models\RecoveryToken;
 
 class RecoveryTokenRepository extends EloquentRepository
 {
-    /**
-     * @return string
-     */
-    public function model()
+    public function model(): string
     {
         return RecoveryToken::class;
     }

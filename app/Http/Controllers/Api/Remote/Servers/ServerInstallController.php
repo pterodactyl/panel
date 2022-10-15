@@ -16,28 +16,14 @@ use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
 class ServerInstallController extends Controller
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Contracts\Events\Dispatcher
-     */
-    private $eventDispatcher;
-
-    /**
      * ServerInstallController constructor.
      */
-    public function __construct(ServerRepository $repository, EventDispatcher $eventDispatcher)
+    public function __construct(private ServerRepository $repository, private EventDispatcher $eventDispatcher)
     {
-        $this->repository = $repository;
-        $this->eventDispatcher = $eventDispatcher;
     }
 
     /**
      * Returns installation information for a server.
-     *
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -55,8 +41,6 @@ class ServerInstallController extends Controller
 
     /**
      * Updates the installation state of a server.
-     *
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
@@ -77,7 +61,7 @@ class ServerInstallController extends Controller
         $isInitialInstall = is_null($server->installed_at);
         if ($isInitialInstall && config()->get('pterodactyl.email.send_install_notification', true)) {
             $this->eventDispatcher->dispatch(new ServerInstalled($server));
-        } elseif (! $isInitialInstall && config()->get('pterodactyl.email.send_reinstall_notification', true)) {
+        } elseif (!$isInitialInstall && config()->get('pterodactyl.email.send_reinstall_notification', true)) {
             $this->eventDispatcher->dispatch(new ServerInstalled($server));
         }
 
