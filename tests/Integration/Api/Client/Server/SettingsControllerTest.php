@@ -22,9 +22,11 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
         $originalName = $server->name;
+        $originalDescription = $server->description;
 
         $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/settings/rename", [
             'name' => '',
+            'description' => '',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -32,36 +34,18 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
 
         $server = $server->refresh();
         $this->assertSame($originalName, $server->name);
+        $this->assertSame($originalDescription, $server->description);
 
         $this->actingAs($user)
             ->postJson("/api/client/servers/{$server->uuid}/settings/rename", [
                 'name' => 'Test Server Name',
+                'description' => 'This is a test server.',
             ])
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $server = $server->refresh();
         $this->assertSame('Test Server Name', $server->name);
-    }
-
-    /**
-     * Test that the server's description can be changed.
-     *
-     * @param array $permissions
-     * @dataProvider changeDescriptionPermissionsDataProvider
-     */
-    public function testServerDescriptionCanBeChanged($permissions)
-    {
-        /** @var \Pterodactyl\Models\Server $server */
-        [$user, $server] = $this->generateTestAccount($permissions);
-
-        $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/settings/description", [
-                'description' => 'Test Server Description',
-            ])
-            ->assertStatus(Response::HTTP_NO_CONTENT);
-
-        $server = $server->refresh();
-        $this->assertSame('Test Server Description', $server->description);
+        $this->assertSame('This is a test server.', $server->description);
     }
 
     /**
@@ -134,11 +118,6 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
     public function renamePermissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SETTINGS_RENAME]]];
-    }
-
-    public function changeDescriptionPermissionsDataProvider(): array
-    {
-        return [[[]], [[Permission::ACTION_SETTINGS_DESCRIPTION]]];
     }
 
     public function reinstallPermissionsDataProvider(): array
