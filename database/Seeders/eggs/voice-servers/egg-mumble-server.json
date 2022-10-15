@@ -10,7 +10,7 @@
     "description": "Mumble is an open source, low-latency, high quality voice chat software primarily intended for use while gaming.",
     "features": null,
     "docker_images": {
-        "ghcr.io\/parkervcp\/yolks:voice_mumble": "ghcr.io\/parkervcp\/yolks:voice_mumble"
+        "Mumble": "ghcr.io\/parkervcp\/yolks:voice_mumble"
     },
     "file_denylist": [],
     "startup": "mumble-server -fg -ini murmur.ini",
