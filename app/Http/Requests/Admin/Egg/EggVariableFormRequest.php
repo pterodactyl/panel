@@ -9,10 +9,8 @@ class EggVariableFormRequest extends AdminFormRequest
 {
     /**
      * Define rules for validation of this request.
-     *
-     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'name' => 'required|string|min:1|max:191',

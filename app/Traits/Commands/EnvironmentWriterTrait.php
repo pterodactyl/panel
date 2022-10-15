@@ -8,7 +8,7 @@ trait EnvironmentWriterTrait
 {
     /**
      * Escapes an environment value by looking for any characters that could
-     * reasonablly cause environment parsing issues. Those values are then wrapped
+     * reasonably cause environment parsing issues. Those values are then wrapped
      * in quotes before being returned.
      */
     public function escapeEnvironmentValue(string $value): string
@@ -25,7 +25,7 @@ trait EnvironmentWriterTrait
      *
      * @throws \Pterodactyl\Exceptions\PterodactylException
      */
-    public function writeToEnvironment(array $values = [])
+    public function writeToEnvironment(array $values = []): void
     {
         $path = base_path('.env');
         if (!file_exists($path)) {

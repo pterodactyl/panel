@@ -3,16 +3,14 @@
 namespace Pterodactyl\Tests\Unit\Http\Middleware;
 
 use Mockery as m;
+use Mockery\MockInterface;
 use Pterodactyl\Models\User;
 use Illuminate\Foundation\Application;
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
 
 class LanguageMiddlewareTest extends MiddlewareTestCase
 {
-    /**
-     * @var \Illuminate\Foundation\Application|\Mockery\Mock
-     */
-    private $appMock;
+    private MockInterface $appMock;
 
     /**
      * Setup tests.

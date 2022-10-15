@@ -16,18 +16,11 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 class CommandController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonCommandRepository
-     */
-    private $repository;
-
-    /**
      * CommandController constructor.
      */
-    public function __construct(DaemonCommandRepository $repository)
+    public function __construct(private DaemonCommandRepository $repository)
     {
         parent::__construct();
-
-        $this->repository = $repository;
     }
 
     /**

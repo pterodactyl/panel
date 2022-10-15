@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Services\Databases;
 
 use Mockery;
+use Mockery\MockInterface;
 use Pterodactyl\Models\Node;
 use InvalidArgumentException;
 use Pterodactyl\Models\Database;
@@ -14,8 +15,7 @@ use Pterodactyl\Exceptions\Service\Database\NoSuitableDatabaseHostException;
 
 class DeployServerDatabaseServiceTest extends IntegrationTestCase
 {
-    /** @var \Mockery\MockInterface */
-    private $managementService;
+    private MockInterface $managementService;
 
     /**
      * Setup tests.
@@ -44,10 +44,9 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     /**
      * Test that an error is thrown if either the database name or the remote host are empty.
      *
-     * @param array $data
      * @dataProvider invalidDataProvider
      */
-    public function testErrorIsThrownIfDatabaseNameIsEmpty($data)
+    public function testErrorIsThrownIfDatabaseNameIsEmpty(array $data)
     {
         $server = $this->createServerModel();
 
@@ -154,10 +153,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
         ];
     }
 
-    /**
-     * @return \Pterodactyl\Services\Databases\DeployServerDatabaseService
-     */
-    private function getService()
+    private function getService(): DeployServerDatabaseService
     {
         return $this->app->make(DeployServerDatabaseService::class);
     }

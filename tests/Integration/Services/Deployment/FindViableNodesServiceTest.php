@@ -53,7 +53,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
 
         try {
             $this->getService()->setLocations(['a']);
-            $this->assertTrue(false, 'This expectation should not be called.');
+            $this->fail('This expectation should not be called.');
         } catch (Exception $exception) {
             $this->assertInstanceOf(InvalidArgumentException::class, $exception);
             $this->assertSame('An array of location IDs should be provided when calling setLocations.', $exception->getMessage());
@@ -61,7 +61,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
 
         try {
             $this->getService()->setLocations(['1.2', '1', 2]);
-            $this->assertTrue(false, 'This expectation should not be called.');
+            $this->fail('This expectation should not be called.');
         } catch (Exception $exception) {
             $this->assertInstanceOf(InvalidArgumentException::class, $exception);
             $this->assertSame('An array of location IDs should be provided when calling setLocations.', $exception->getMessage());
@@ -96,7 +96,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
             ]),
         ];
 
-        // Expect that all of the nodes are returned as we're under all of their limits
+        // Expect that all the nodes are returned as we're under all of their limits
         // and there is no location filter being provided.
         $response = $this->getService()->setDisk(512)->setMemory(512)->handle();
         $this->assertInstanceOf(Collection::class, $response);
@@ -182,10 +182,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
         $this->assertSame($nodes[1]->id, $response[0]->id);
     }
 
-    /**
-     * @return \Pterodactyl\Services\Deployment\FindViableNodesService
-     */
-    private function getService()
+    private function getService(): FindViableNodesService
     {
         return $this->app->make(FindViableNodesService::class);
     }

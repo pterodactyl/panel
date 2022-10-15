@@ -49,7 +49,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
             $this->assertSame(
                 $expected,
                 $actual,
-                'Unable to find JSON fragment: ' . PHP_EOL . PHP_EOL . "[{$expected}]" . PHP_EOL . PHP_EOL . 'within' . PHP_EOL . PHP_EOL . "[{$actual}]."
+                'Unable to find JSON fragment: ' . PHP_EOL . PHP_EOL . "[$expected]" . PHP_EOL . PHP_EOL . 'within' . PHP_EOL . PHP_EOL . "[$actual]."
             );
         }
     }
@@ -77,7 +77,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
     }
 
     /**
-     * Test that a single egg and all of the defined relationships can be returned.
+     * Test that a single egg and all the defined relationships can be returned.
      */
     public function testReturnSingleEggWithRelationships()
     {

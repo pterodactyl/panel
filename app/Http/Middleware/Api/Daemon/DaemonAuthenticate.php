@@ -14,41 +14,25 @@ use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 class DaemonAuthenticate
 {
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
      * Daemon routes that this middleware should be skipped on.
-     *
-     * @var array
      */
-    protected $except = [
+    protected array $except = [
         'daemon.configuration',
     ];
 
     /**
      * DaemonAuthenticate constructor.
      */
-    public function __construct(Encrypter $encrypter, NodeRepository $repository)
+    public function __construct(private Encrypter $encrypter, private NodeRepository $repository)
     {
-        $this->repository = $repository;
-        $this->encrypter = $encrypter;
     }
 
     /**
      * Check if a request from the daemon can be properly attributed back to a single node instance.
      *
-     * @return mixed
-     *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if (in_array($request->route()->getName(), $this->except)) {
             return $next($request);

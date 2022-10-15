@@ -17,10 +17,9 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
     /**
      * Test that a subuser can be created for a server.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
-    public function testSubuserCanBeCreated($permissions)
+    public function testSubuserCanBeCreated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
@@ -62,7 +61,7 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
         ]);
 
         $response = $this->actingAs($user)->postJson($this->link($server) . '/users', [
-            'email' => $email = $this->faker->email,
+            'email' => $this->faker->email,
             'permissions' => [
                 Permission::ACTION_USER_CREATE,
                 Permission::ACTION_USER_UPDATE, // This permission is not assigned to the subuser.

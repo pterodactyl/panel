@@ -10,16 +10,14 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Allocation::class;
     }
 
     /**
-     * Return all of the allocations that exist for a node that are not currently
+     * Return all the allocations that exist for a node that are not currently
      * allocated.
      */
     public function getUnassignedAllocationIds(int $node): array
@@ -57,10 +55,8 @@ class AllocationRepository extends EloquentRepository implements AllocationRepos
 
     /**
      * Return a single allocation from those meeting the requirements.
-     *
-     * @return \Pterodactyl\Models\Allocation|null
      */
-    public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false)
+    public function getRandomAllocation(array $nodes, array $ports, bool $dedicated = false): ?Allocation
     {
         $query = Allocation::query()->whereNull('server_id');
 

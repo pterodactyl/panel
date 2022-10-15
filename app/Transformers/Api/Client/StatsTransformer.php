@@ -14,10 +14,8 @@ class StatsTransformer extends BaseClientTransformer
     /**
      * Transform stats from the daemon into a result set that can be used in
      * the client API.
-     *
-     * @return array
      */
-    public function transform(array $data)
+    public function transform(array $data): array
     {
         return [
             'current_state' => Arr::get($data, 'state', 'stopped'),

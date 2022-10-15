@@ -31,19 +31,8 @@ class AppSettingsCommand extends Command
         'sync' => 'Sync',
     ];
 
-    /**
-     * @var \Illuminate\Contracts\Console\Kernel
-     */
-    protected $command;
-
-    /**
-     * @var string
-     */
     protected $description = 'Configure basic environment settings for the Panel.';
 
-    /**
-     * @var string
-     */
     protected $signature = 'p:environment:setup
                             {--new-salt : Whether or not to generate a new salt for Hashids.}
                             {--author= : The email that services created on this instance should be linked to.}
@@ -57,19 +46,14 @@ class AppSettingsCommand extends Command
                             {--redis-port= : Port to connect to redis over.}
                             {--settings-ui= : Enable or disable the settings UI.}';
 
-    /**
-     * @var array
-     */
-    protected $variables = [];
+    protected array $variables = [];
 
     /**
      * AppSettingsCommand constructor.
      */
-    public function __construct(Kernel $command)
+    public function __construct(private Kernel $console)
     {
         parent::__construct();
-
-        $this->command = $command;
     }
 
     /**
@@ -77,7 +61,7 @@ class AppSettingsCommand extends Command
      *
      * @throws \Pterodactyl\Exceptions\PterodactylException
      */
-    public function handle()
+    public function handle(): int
     {
         if (empty(config('hashids.salt')) || $this->option('new-salt')) {
             $this->variables['HASHIDS_SALT'] = str_random(20);
@@ -98,13 +82,13 @@ class AppSettingsCommand extends Command
         $this->output->comment('The application URL MUST begin with https:// or http:// depending on if you are using SSL or not. If you do not include the scheme your emails and other content will link to the wrong location.');
         $this->variables['APP_URL'] = $this->option('url') ?? $this->ask(
             'Application URL',
-            config('app.url', 'http://example.org')
+            config('app.url', 'https://example.com')
         );
 
-        $this->output->comment('The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference http://php.net/manual/en/timezones.php.');
+        $this->output->comment('The timezone should match one of PHP\'s supported timezones. If you are unsure, please reference https://php.net/manual/en/timezones.php.');
         $this->variables['APP_TIMEZONE'] = $this->option('timezone') ?? $this->anticipate(
             'Application Timezone',
-            DateTimeZone::listIdentifiers(DateTimeZone::ALL),
+            DateTimeZone::listIdentifiers(),
             config('app.timezone')
         );
 
@@ -136,14 +120,16 @@ class AppSettingsCommand extends Command
         }
 
         // Make sure session cookies are set as "secure" when using HTTPS
-        if (strpos($this->variables['APP_URL'], 'https://') === 0) {
+        if (str_starts_with($this->variables['APP_URL'], 'https://')) {
             $this->variables['SESSION_SECURE_COOKIE'] = 'true';
         }
 
         $this->checkForRedis();
         $this->writeToEnvironment($this->variables);
 
-        $this->info($this->command->output());
+        $this->info($this->console->output());
+
+        return 0;
     }
 
     /**

@@ -8,12 +8,12 @@ use Illuminate\Support\Collection;
 interface ScheduleRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Return all of the schedules for a given server.
+     * Return all the schedules for a given server.
      */
     public function findServerSchedules(int $server): Collection;
 
     /**
-     * Return a schedule model with all of the associated tasks as a relationship.
+     * Return a schedule model with all the associated tasks as a relationship.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */

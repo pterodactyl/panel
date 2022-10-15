@@ -12,14 +12,10 @@ class TestResponse extends IlluminateTestResponse
 {
     /**
      * Overrides the default assert status logic to dump out the error to the
-     * test output if it is caused by a 500 level error and we were not specifically
+     * test output if it is caused by a 500 level error, and we were not specifically
      * look for that status response.
-     *
-     * @param int $status
-     *
-     * @return \Pterodactyl\Tests\Integration\TestResponse
      */
-    public function assertStatus($status)
+    public function assertStatus($status): TestResponse
     {
         $actual = $this->getStatusCode();
 
@@ -41,10 +37,7 @@ class TestResponse extends IlluminateTestResponse
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function assertForbidden()
+    public function assertForbidden(): self
     {
         return self::assertStatus(Response::HTTP_FORBIDDEN);
     }

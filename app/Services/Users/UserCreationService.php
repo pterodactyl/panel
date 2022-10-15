@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Users;
 
 use Ramsey\Uuid\Uuid;
+use Pterodactyl\Models\User;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
@@ -12,49 +13,23 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 class UserCreationService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
-     */
-    private $hasher;
-
-    /**
-     * @var \Illuminate\Contracts\Auth\PasswordBroker
-     */
-    private $passwordBroker;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * CreationService constructor.
+     * UserCreationService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        Hasher $hasher,
-        PasswordBroker $passwordBroker,
-        UserRepositoryInterface $repository
+        private ConnectionInterface $connection,
+        private Hasher $hasher,
+        private PasswordBroker $passwordBroker,
+        private UserRepositoryInterface $repository
     ) {
-        $this->connection = $connection;
-        $this->hasher = $hasher;
-        $this->passwordBroker = $passwordBroker;
-        $this->repository = $repository;
     }
 
     /**
      * Create a new user on the system.
      *
-     * @return \Pterodactyl\Models\User
-     *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data)
+    public function handle(array $data): User
     {
         if (array_key_exists('password', $data) && !empty($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);

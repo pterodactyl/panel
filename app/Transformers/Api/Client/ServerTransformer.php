@@ -5,17 +5,17 @@ namespace Pterodactyl\Transformers\Api\Client;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
+use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Permission;
 use Illuminate\Container\Container;
 use Pterodactyl\Models\EggVariable;
+use League\Fractal\Resource\Collection;
+use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Servers\StartupCommandService;
 
 class ServerTransformer extends BaseClientTransformer
 {
-    /**
-     * @var string[]
-     */
     protected array $defaultIncludes = ['allocations', 'variables'];
 
     protected array $availableIncludes = ['egg', 'subusers'];
@@ -80,11 +80,9 @@ class ServerTransformer extends BaseClientTransformer
     /**
      * Returns the allocations associated with this server.
      *
-     * @return \League\Fractal\Resource\Collection
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeAllocations(Server $server)
+    public function includeAllocations(Server $server): Collection
     {
         $transformer = $this->makeTransformer(AllocationTransformer::class);
 
@@ -107,11 +105,9 @@ class ServerTransformer extends BaseClientTransformer
     }
 
     /**
-     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeVariables(Server $server)
+    public function includeVariables(Server $server): Collection|NullResource
     {
         if (!$this->request->user()->can(Permission::ACTION_STARTUP_READ, $server)) {
             return $this->null();
@@ -127,11 +123,9 @@ class ServerTransformer extends BaseClientTransformer
     /**
      * Returns the egg associated with this server.
      *
-     * @return \League\Fractal\Resource\Item
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeEgg(Server $server)
+    public function includeEgg(Server $server): Item
     {
         return $this->item($server->egg, $this->makeTransformer(EggTransformer::class), Egg::RESOURCE_NAME);
     }
@@ -139,11 +133,9 @@ class ServerTransformer extends BaseClientTransformer
     /**
      * Returns the subusers associated with this server.
      *
-     * @return \League\Fractal\Resource\Collection|\League\Fractal\Resource\NullResource
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeSubusers(Server $server)
+    public function includeSubusers(Server $server): Collection|NullResource
     {
         if (!$this->request->user()->can(Permission::ACTION_USER_READ, $server)) {
             return $this->null();

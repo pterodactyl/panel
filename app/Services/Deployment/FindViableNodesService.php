@@ -4,29 +4,18 @@ namespace Pterodactyl\Services\Deployment;
 
 use Pterodactyl\Models\Node;
 use Webmozart\Assert\Assert;
+use Illuminate\Support\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 
 class FindViableNodesService
 {
-    /**
-     * @var array
-     */
-    protected $locations = [];
-
-    /**
-     * @var int
-     */
-    protected $disk;
-
-    /**
-     * @var int
-     */
-    protected $memory;
+    protected array $locations = [];
+    protected ?int $disk = null;
+    protected ?int $memory = null;
 
     /**
      * Set the locations that should be searched through to locate available nodes.
-     *
-     * @return $this
      */
     public function setLocations(array $locations): self
     {
@@ -41,8 +30,6 @@ class FindViableNodesService
      * Set the amount of disk that will be used by the server being created. Nodes will be
      * filtered out if they do not have enough available free disk space for this server
      * to be placed on.
-     *
-     * @return $this
      */
     public function setDisk(int $disk): self
     {
@@ -54,8 +41,6 @@ class FindViableNodesService
     /**
      * Set the amount of memory that this server will be using. As with disk space, nodes that
      * do not have enough free memory will be filtered out.
-     *
-     * @return $this
      */
     public function setMemory(int $memory): self
     {
@@ -79,11 +64,9 @@ class FindViableNodesService
      *                       If "null" is provided as the value no pagination will
      *                       be used.
      *
-     * @return \Illuminate\Support\Collection|\Illuminate\Contracts\Pagination\LengthAwarePaginator
-     *
      * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
      */
-    public function handle(int $perPage = null, int $page = null)
+    public function handle(int $perPage = null, int $page = null): LengthAwarePaginator|Collection
     {
         Assert::integer($this->disk, 'Disk space must be an int, got %s');
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');
