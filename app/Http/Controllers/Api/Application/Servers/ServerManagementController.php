@@ -12,26 +12,13 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 class ServerManagementController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Servers\ReinstallServerService
-     */
-    private $reinstallServerService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\SuspensionService
-     */
-    private $suspensionService;
-
-    /**
-     * SuspensionController constructor.
+     * ServerManagementController constructor.
      */
     public function __construct(
-        ReinstallServerService $reinstallServerService,
-        SuspensionService $suspensionService
+        private ReinstallServerService $reinstallServerService,
+        private SuspensionService $suspensionService
     ) {
         parent::__construct();
-
-        $this->reinstallServerService = $reinstallServerService;
-        $this->suspensionService = $suspensionService;
     }
 
     /**
@@ -41,7 +28,7 @@ class ServerManagementController extends ApplicationApiController
      */
     public function suspend(ServerWriteRequest $request, Server $server): Response
     {
-        $this->suspensionService->toggle($server, SuspensionService::ACTION_SUSPEND);
+        $this->suspensionService->toggle($server);
 
         return $this->returnNoContent();
     }

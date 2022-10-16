@@ -13,26 +13,13 @@ use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerBuildConfigura
 class ServerDetailsController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Servers\BuildModificationService
-     */
-    private $buildModificationService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\DetailsModificationService
-     */
-    private $detailsModificationService;
-
-    /**
      * ServerDetailsController constructor.
      */
     public function __construct(
-        BuildModificationService $buildModificationService,
-        DetailsModificationService $detailsModificationService
+        private BuildModificationService $buildModificationService,
+        private DetailsModificationService $detailsModificationService
     ) {
         parent::__construct();
-
-        $this->buildModificationService = $buildModificationService;
-        $this->detailsModificationService = $detailsModificationService;
     }
 
     /**

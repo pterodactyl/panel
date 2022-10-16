@@ -11,10 +11,7 @@ class BackupTransformer extends BaseClientTransformer
         return Backup::RESOURCE_NAME;
     }
 
-    /**
-     * @return array
-     */
-    public function transform(Backup $backup)
+    public function transform(Backup $backup): array
     {
         return [
             'uuid' => $backup->uuid,
@@ -24,8 +21,8 @@ class BackupTransformer extends BaseClientTransformer
             'ignored_files' => $backup->ignored_files,
             'checksum' => $backup->checksum,
             'bytes' => $backup->bytes,
-            'created_at' => $backup->created_at->toIso8601String(),
-            'completed_at' => $backup->completed_at ? $backup->completed_at->toIso8601String() : null,
+            'created_at' => $backup->created_at->toAtomString(),
+            'completed_at' => $backup->completed_at ? $backup->completed_at->toAtomString() : null,
         ];
     }
 }

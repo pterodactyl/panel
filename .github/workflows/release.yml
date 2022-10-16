@@ -1,16 +1,29 @@
-name: Create Release
+name: Release
+
 on:
   push:
     tags:
       - 'v*'
+
 jobs:
   release:
+    name: Release
     runs-on: ubuntu-20.04
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-node@v1
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
         with:
-          node-version: '16.x'
+          node-version: 16
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build:production
 
       - name: Create release branch and bump version
         env:
@@ -25,11 +38,6 @@ jobs:
           git add config/app.php
           git commit -m "bump version for release"
           git push
-
-      - name: Build assets
-        run: |
-          yarn install
-          yarn run build:production
 
       - name: Create release archive
         run: |
@@ -62,7 +70,7 @@ jobs:
           draft: true
           prerelease: ${{ contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
 
-      - name: Upload binary
+      - name: Upload release archive
         id: upload-release-archive
         uses: actions/upload-release-asset@v1
         env:
@@ -73,7 +81,7 @@ jobs:
           asset_name: panel.tar.gz
           asset_content_type: application/gzip
 
-      - name: Upload checksum
+      - name: Upload release checksum
         id: upload-release-checksum
         uses: actions/upload-release-asset@v1
         env:

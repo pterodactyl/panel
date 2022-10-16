@@ -16,9 +16,6 @@ class SetDockerImageRequest extends ClientApiRequest implements ClientPermission
         return Permission::ACTION_STARTUP_DOCKER_IMAGE;
     }
 
-    /**
-     * @return array[]
-     */
     public function rules(): array
     {
         /** @var \Pterodactyl\Models\Server $server */

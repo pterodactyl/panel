@@ -1,8 +1,3 @@
-{{-- Pterodactyl - Panel --}}
-{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
-
-{{-- This software is licensed under the terms of the MIT license. --}}
-{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -101,7 +96,7 @@
                                     @if($server->disk === 0)
                                         <code>Unlimited</code>
                                     @else
-                                        <code>{{ $server->disk }}MB</code>
+                                        <code>{{ $server->disk }}MiB</code>
                                     @endif
                                 </td>
                             </tr>

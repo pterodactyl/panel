@@ -13,11 +13,9 @@ use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
 class ApiKeyController extends ClientApiController
 {
     /**
-     * Returns all of the API keys that exist for the given client.
-     *
-     * @return array
+     * Returns all the API keys that exist for the given client.
      */
-    public function index(ClientApiRequest $request)
+    public function index(ClientApiRequest $request): array
     {
         return $this->fractal->collection($request->user()->apiKeys)
             ->transformWith($this->getTransformer(ApiKeyTransformer::class))
@@ -27,13 +25,11 @@ class ApiKeyController extends ClientApiController
     /**
      * Store a new API key for a user's account.
      *
-     * @return array
-     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function store(StoreApiKeyRequest $request)
+    public function store(StoreApiKeyRequest $request): array
     {
-        if ($request->user()->apiKeys->count() >= 5) {
+        if ($request->user()->apiKeys->count() >= 25) {
             throw new DisplayException('You have reached the account limit for number of API keys.');
         }
 
@@ -55,10 +51,8 @@ class ApiKeyController extends ClientApiController
 
     /**
      * Deletes a given API key.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function delete(ClientApiRequest $request, string $identifier)
+    public function delete(ClientApiRequest $request, string $identifier): JsonResponse
     {
         /** @var \Pterodactyl\Models\ApiKey $key */
         $key = $request->user()->apiKeys()

@@ -4,22 +4,20 @@ namespace Pterodactyl\Traits\Services;
 
 use BadMethodCallException;
 use Illuminate\Support\Str;
-use Illuminate\Contracts\Validation\Factory;
+use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 use Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException;
 
 trait ValidatesValidationRules
 {
-    abstract protected function getValidator(): Factory;
+    abstract protected function getValidator(): ValidationFactory;
 
     /**
      * Validate that the rules being provided are valid for Laravel and can
      * be resolved.
      *
-     * @param array|string $rules
-     *
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
      */
-    public function validateRules($rules)
+    public function validateRules(array|string $rules): void
     {
         try {
             $this->getValidator()->make(['__TEST' => 'test'], ['__TEST' => $rules])->fails();

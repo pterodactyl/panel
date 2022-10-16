@@ -5,6 +5,7 @@ namespace Pterodactyl\Models;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * @deprecated — this class will be dropped in a future version, use the activity log
@@ -13,10 +14,7 @@ class AuditLog extends Model
 {
     public const UPDATED_AT = null;
 
-    /**
-     * @var string[]
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'uuid' => 'required|uuid',
         'action' => 'required|string|max:191',
         'subaction' => 'nullable|string|max:191',
@@ -26,45 +24,27 @@ class AuditLog extends Model
         'metadata' => 'array',
     ];
 
-    /**
-     * @var string
-     */
     protected $table = 'audit_logs';
 
-    /**
-     * @var bool
-     */
-    protected $immutableDates = true;
+    protected bool $immutableDates = true;
 
-    /**
-     * @var string[]
-     */
     protected $casts = [
         'is_system' => 'bool',
         'device' => 'array',
         'metadata' => 'array',
     ];
 
-    /**
-     * @var string[]
-     */
     protected $guarded = [
         'id',
         'created_at',
     ];
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     */
-    public function server()
+    public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
     }
@@ -74,11 +54,9 @@ class AuditLog extends Model
      * currently authenticated user if available. This model is not saved at this point, so
      * you can always make modifications to it as needed before saving.
      *
-     * @return $this
-     *
      * @deprecated
      */
-    public static function instance(string $action, array $metadata, bool $isSystem = false)
+    public static function instance(string $action, array $metadata, bool $isSystem = false): self
     {
         /** @var \Illuminate\Http\Request $request */
         $request = Container::getInstance()->make('request');

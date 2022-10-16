@@ -16,6 +16,7 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
      * the command to the server.
      *
      * @param string[] $permissions
+     *
      * @dataProvider invalidPermissionDataProvider
      */
     public function testSubuserWithoutPermissionsReceivesError(string $action, array $permissions)
@@ -23,7 +24,7 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount($permissions);
 
         $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/power", ['signal' => $action])
+            ->postJson("/api/client/servers/$server->uuid/power", ['signal' => $action])
             ->assertStatus(Response::HTTP_FORBIDDEN);
     }
 
@@ -34,7 +35,7 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/power", [
+        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/power", [
             'signal' => 'invalid',
         ]);
 
@@ -65,7 +66,7 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
             ->with(trim($action));
 
         $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/power", ['signal' => $action])
+            ->postJson("/api/client/servers/$server->uuid/power", ['signal' => $action])
             ->assertStatus(Response::HTTP_NO_CONTENT);
     }
 

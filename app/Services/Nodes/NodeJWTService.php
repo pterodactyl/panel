@@ -7,6 +7,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
+use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Configuration;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
@@ -18,19 +19,14 @@ class NodeJWTService
 
     private ?User $user = null;
 
-    /**
-     * @var \DateTimeImmutable|null
-     */
-    private $expiresAt;
+    private ?DateTimeImmutable $expiresAt;
 
     private ?string $subject = null;
 
     /**
      * Set the claims to include in this JWT.
-     *
-     * @return $this
      */
-    public function setClaims(array $claims)
+    public function setClaims(array $claims): self
     {
         $this->claims = $claims;
 
@@ -48,20 +44,14 @@ class NodeJWTService
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setExpiresAt(DateTimeImmutable $date)
+    public function setExpiresAt(DateTimeImmutable $date): self
     {
         $this->expiresAt = $date;
 
         return $this;
     }
 
-    /**
-     * @return $this
-     */
-    public function setSubject(string $subject)
+    public function setSubject(string $subject): self
     {
         $this->subject = $subject;
 
@@ -70,12 +60,8 @@ class NodeJWTService
 
     /**
      * Generate a new JWT for a given node.
-     *
-     * @param string|null $identifiedBy
-     *
-     * @return \Lcobucci\JWT\Token\Plain
      */
-    public function handle(Node $node, string $identifiedBy, string $algo = 'md5')
+    public function handle(Node $node, ?string $identifiedBy, string $algo = 'md5'): Plain
     {
         $identifier = hash($algo, $identifiedBy);
         $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($node->getDecryptedKey()));
@@ -112,7 +98,7 @@ class NodeJWTService
         }
 
         return $builder
-            ->withClaim('unique_id', Str::random(16))
+            ->withClaim('unique_id', Str::random())
             ->getToken($config->signer(), $config->signingKey());
     }
 }

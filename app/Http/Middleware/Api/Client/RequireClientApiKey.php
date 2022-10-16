@@ -11,10 +11,8 @@ class RequireClientApiKey
     /**
      * Blocks a request to the Client API endpoints if the user is providing an API token
      * that was created for the application API.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, \Closure $next)
+    public function handle(Request $request, \Closure $next): mixed
     {
         $token = $request->user()->currentAccessToken();
 

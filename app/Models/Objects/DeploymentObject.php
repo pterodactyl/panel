@@ -4,30 +4,18 @@ namespace Pterodactyl\Models\Objects;
 
 class DeploymentObject
 {
-    /**
-     * @var bool
-     */
-    private $dedicated = false;
+    private bool $dedicated = false;
 
-    /**
-     * @var array
-     */
-    private $locations = [];
+    private array $locations = [];
 
-    /**
-     * @var array
-     */
-    private $ports = [];
+    private array $ports = [];
 
     public function isDedicated(): bool
     {
         return $this->dedicated;
     }
 
-    /**
-     * @return $this
-     */
-    public function setDedicated(bool $dedicated)
+    public function setDedicated(bool $dedicated): self
     {
         $this->dedicated = $dedicated;
 
@@ -39,10 +27,7 @@ class DeploymentObject
         return $this->locations;
     }
 
-    /**
-     * @return $this
-     */
-    public function setLocations(array $locations)
+    public function setLocations(array $locations): self
     {
         $this->locations = $locations;
 
@@ -54,10 +39,7 @@ class DeploymentObject
         return $this->ports;
     }
 
-    /**
-     * @return $this
-     */
-    public function setPorts(array $ports)
+    public function setPorts(array $ports): self
     {
         $this->ports = $ports;
 

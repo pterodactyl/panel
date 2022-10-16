@@ -1,17 +1,11 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Controllers\Admin\Nests;
 
 use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Nests\NestUpdateService;
 use Pterodactyl\Services\Nests\NestCreationService;
@@ -22,45 +16,16 @@ use Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest;
 class NestController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    protected $alert;
-
-    /**
-     * @var \Pterodactyl\Services\Nests\NestCreationService
-     */
-    protected $nestCreationService;
-
-    /**
-     * @var \Pterodactyl\Services\Nests\NestDeletionService
-     */
-    protected $nestDeletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    protected $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Nests\NestUpdateService
-     */
-    protected $nestUpdateService;
-
-    /**
      * NestController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        NestCreationService $nestCreationService,
-        NestDeletionService $nestDeletionService,
-        NestRepositoryInterface $repository,
-        NestUpdateService $nestUpdateService
+        protected AlertsMessageBag $alert,
+        protected NestCreationService $nestCreationService,
+        protected NestDeletionService $nestDeletionService,
+        protected NestRepositoryInterface $repository,
+        protected NestUpdateService $nestUpdateService,
+        protected ViewFactory $view
     ) {
-        $this->alert = $alert;
-        $this->nestDeletionService = $nestDeletionService;
-        $this->nestCreationService = $nestCreationService;
-        $this->nestUpdateService = $nestUpdateService;
-        $this->repository = $repository;
     }
 
     /**
@@ -70,7 +35,7 @@ class NestController extends Controller
      */
     public function index(): View
     {
-        return view('admin.nests.index', [
+        return $this->view->make('admin.nests.index', [
             'nests' => $this->repository->getWithCounts(),
         ]);
     }
@@ -80,7 +45,7 @@ class NestController extends Controller
      */
     public function create(): View
     {
-        return view('admin.nests.new');
+        return $this->view->make('admin.nests.new');
     }
 
     /**
@@ -97,13 +62,13 @@ class NestController extends Controller
     }
 
     /**
-     * Return details about a nest including all of the eggs and servers per egg.
+     * Return details about a nest including all the eggs and servers per egg.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $nest): View
     {
-        return view('admin.nests.view', [
+        return $this->view->make('admin.nests.view', [
             'nest' => $this->repository->getWithEggServers($nest),
         ]);
     }

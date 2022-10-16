@@ -9,7 +9,7 @@ class NodeListCommand extends Command
 {
     protected $signature = 'p:node:list {--format=text : The output format: "text" or "json". }';
 
-    public function handle()
+    public function handle(): int
     {
         $nodes = Node::query()->with('location')->get()->map(function (Node $node) {
             return [

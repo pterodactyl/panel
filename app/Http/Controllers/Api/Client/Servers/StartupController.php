@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Services\Servers\StartupCommandService;
-use Pterodactyl\Services\Servers\VariableValidatorService;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Transformers\Api\Client\EggVariableTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -16,40 +15,21 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Startup\UpdateStartupVariableRe
 class StartupController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Servers\VariableValidatorService
-     */
-    private $service;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerVariableRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\StartupCommandService
-     */
-    private $startupCommandService;
-
-    /**
      * StartupController constructor.
      */
-    public function __construct(VariableValidatorService $service, StartupCommandService $startupCommandService, ServerVariableRepository $repository)
-    {
+    public function __construct(
+        private StartupCommandService $startupCommandService,
+        private ServerVariableRepository $repository
+    ) {
         parent::__construct();
-
-        $this->service = $service;
-        $this->repository = $repository;
-        $this->startupCommandService = $startupCommandService;
     }
 
     /**
-     * Returns the startup information for the server including all of the variables.
-     *
-     * @return array
+     * Returns the startup information for the server including all the variables.
      */
-    public function index(GetStartupRequest $request, Server $server)
+    public function index(GetStartupRequest $request, Server $server): array
     {
-        $startup = $this->startupCommandService->handle($server, false);
+        $startup = $this->startupCommandService->handle($server);
 
         return $this->fractal->collection(
             $server->variables()->where('user_viewable', true)->get()
@@ -66,13 +46,11 @@ class StartupController extends ClientApiController
     /**
      * Updates a single variable for a server.
      *
-     * @return array
-     *
      * @throws \Illuminate\Validation\ValidationException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function update(UpdateStartupVariableRequest $request, Server $server)
+    public function update(UpdateStartupVariableRequest $request, Server $server): array
     {
         /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
@@ -97,7 +75,7 @@ class StartupController extends ClientApiController
         $variable = $variable->refresh();
         $variable->server_value = $request->input('value');
 
-        $startup = $this->startupCommandService->handle($server, false);
+        $startup = $this->startupCommandService->handle($server);
 
         if ($variable->env_variable !== $request->input('value')) {
             Activity::event('server:startup.edit')

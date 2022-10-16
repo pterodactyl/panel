@@ -25,7 +25,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
     }
 
     /**
-     * Test that enviornment variables for a server are validated as expected.
+     * Test that environment variables for a server are validated as expected.
      */
     public function testEnvironmentVariablesCanBeValidated()
     {
@@ -36,7 +36,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
                 'BUNGEE_VERSION' => '1.2.3',
             ]);
 
-            $this->assertTrue(false, 'This statement should not be reached.');
+            $this->fail('This statement should not be reached.');
         } catch (ValidationException $exception) {
             $errors = $exception->errors();
 
@@ -96,7 +96,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
                 'SERVER_JARFILE' => 'server.jar',
             ]);
 
-            $this->assertTrue(false, 'This statement should not be reached.');
+            $this->fail('This statement should not be reached.');
         } catch (ValidationException $exception) {
             $this->assertCount(1, $exception->errors());
             $this->assertArrayHasKey('environment.BUNGEE_VERSION', $exception->errors());
@@ -135,10 +135,7 @@ class VariableValidatorServiceTest extends IntegrationTestCase
         $this->assertSame('', $response->get(0)->value);
     }
 
-    /**
-     * @return \Pterodactyl\Services\Servers\VariableValidatorService
-     */
-    private function getService()
+    private function getService(): VariableValidatorService
     {
         return $this->app->make(VariableValidatorService::class);
     }

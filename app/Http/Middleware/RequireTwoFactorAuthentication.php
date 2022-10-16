@@ -15,23 +15,15 @@ class RequireTwoFactorAuthentication
     public const LEVEL_ALL = 2;
 
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
+     * The route to redirect a user to enable 2FA.
      */
-    private $alert;
-
-    /**
-     * The route to redirect a user to to enable 2FA.
-     *
-     * @var string
-     */
-    protected $redirectRoute = '/account';
+    protected string $redirectRoute = '/account';
 
     /**
      * RequireTwoFactorAuthentication constructor.
      */
-    public function __construct(AlertsMessageBag $alert)
+    public function __construct(private AlertsMessageBag $alert)
     {
-        $this->alert = $alert;
     }
 
     /**
@@ -40,11 +32,9 @@ class RequireTwoFactorAuthentication
      * order to perform actions. If so, we check the level at which it is required (all users
      * or just admins) and then check if the user has enabled it for their account.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = $request->user();

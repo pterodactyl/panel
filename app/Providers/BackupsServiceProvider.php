@@ -18,10 +18,7 @@ class BackupsServiceProvider extends ServiceProvider implements DeferrableProvid
         });
     }
 
-    /**
-     * @return string[]
-     */
-    public function provides()
+    public function provides(): array
     {
         return [BackupManager::class];
     }

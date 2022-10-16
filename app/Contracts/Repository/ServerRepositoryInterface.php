@@ -67,7 +67,7 @@ interface ServerRepositoryInterface extends RepositoryInterface
     public function isUniqueUuidCombo(string $uuid, string $short): bool;
 
     /**
-     * Returns all of the servers that exist for a given node in a paginated response.
+     * Returns all the servers that exist for a given node in a paginated response.
      */
     public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;
 }

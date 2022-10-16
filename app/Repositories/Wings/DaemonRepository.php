@@ -10,35 +10,21 @@ use Illuminate\Contracts\Foundation\Application;
 
 abstract class DaemonRepository
 {
-    /**
-     * @var \Illuminate\Contracts\Foundation\Application
-     */
-    protected $app;
+    protected ?Server $server;
+
+    protected ?Node $node;
 
     /**
-     * @var \Pterodactyl\Models\Server|null
+     * DaemonRepository constructor.
      */
-    protected $server;
-
-    /**
-     * @var \Pterodactyl\Models\Node|null
-     */
-    protected $node;
-
-    /**
-     * BaseWingsRepository constructor.
-     */
-    public function __construct(Application $application)
+    public function __construct(protected Application $app)
     {
-        $this->app = $application;
     }
 
     /**
      * Set the server model this request is stemming from.
-     *
-     * @return $this
      */
-    public function setServer(Server $server)
+    public function setServer(Server $server): self
     {
         $this->server = $server;
 
@@ -49,10 +35,8 @@ abstract class DaemonRepository
 
     /**
      * Set the node model this request is stemming from.
-     *
-     * @return $this
      */
-    public function setNode(Node $node)
+    public function setNode(Node $node): self
     {
         $this->node = $node;
 

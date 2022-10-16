@@ -13,16 +13,15 @@ class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
      * Test that the startup command and variables are returned for a server, but only the variables
      * that can be viewed by a user (e.g. user_viewable=true).
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
-    public function testStartupVariablesAreReturnedForServer($permissions)
+    public function testStartupVariablesAreReturnedForServer(array $permissions)
     {
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
 
         $egg = $this->cloneEggAndVariables($server->egg);
-        // BUNGEE_VERSION should never be returned back to the user in this API call, either in
+        // BUNGEE_VERSION should never be returned to the user in this API call, either in
         // the array of variables, or revealed in the startup command.
         $egg->variables()->first()->update([
             'user_viewable' => false,
@@ -59,10 +58,7 @@ class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
         $this->actingAs($user2)->getJson($this->link($server) . '/startup')->assertNotFound();
     }
 
-    /**
-     * @return array[]
-     */
-    public function permissionsDataProvider()
+    public function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_STARTUP_READ]]];
     }

@@ -7,18 +7,13 @@ use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class UpdateStartupVariableRequest extends ClientApiRequest
 {
-    /**
-     * @return string
-     */
-    public function permission()
+    public function permission(): string
     {
         return Permission::ACTION_STARTUP_UPDATE;
     }
 
     /**
      * The actual validation of the variable's value will happen inside the controller.
-     *
-     * @return array|string[]
      */
     public function rules(): array
     {

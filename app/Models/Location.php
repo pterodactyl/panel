@@ -2,6 +2,9 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+
 /**
  * @property int $id
  * @property string $short
@@ -21,24 +24,18 @@ class Location extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'locations';
 
     /**
      * Fields that are not mass assignable.
-     *
-     * @var array
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
      * Rules ensuring that the raw data stored in the database meets expectations.
-     *
-     * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'short' => 'required|string|between:1,60|unique:locations,short',
         'long' => 'string|nullable|between:1,191',
     ];
@@ -53,20 +50,16 @@ class Location extends Model
 
     /**
      * Gets the nodes in a specified location.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function nodes()
+    public function nodes(): HasMany
     {
         return $this->hasMany(Node::class);
     }
 
     /**
      * Gets the servers within a given location.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough
      */
-    public function servers()
+    public function servers(): HasManyThrough
     {
         return $this->hasManyThrough(Server::class, Node::class);
     }
