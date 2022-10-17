@@ -1,14 +1,26 @@
-import React from 'react';
-import { Trans, TransProps, useTranslation } from 'react-i18next';
+import React, { useState } from 'react';
+import i18n from '@/i18n';
 
-type Props = Omit<TransProps, 't'>;
+interface Props {
+    ns: string,
+    i18nKey: string,
+    replace: any
+}
 
-export default ({ ns, children, ...props }: Props) => {
-    const { t } = useTranslation(ns);
+export default ({ ns, i18nKey, replace }: Props) => {
+    
+    let [ translation, setTranslation ] = useState('');
 
+    async function load() {
+        await i18n.loadNamespaces(ns);
+        setTranslation(i18n.t(i18nKey, {ns: ns, replace: replace }));
+    }
+
+    load();
+    
     return (
-        <Trans t={t} {...props}>
-            {children}
-        </Trans>
+        <>
+            {translation}
+        </>
     );
 };

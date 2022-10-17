@@ -1,5 +1,4 @@
 import i18n from 'i18next';
-import { initReactI18next } from 'react-i18next';
 import I18NextHttpBackend, { BackendOptions } from 'i18next-http-backend';
 import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 
@@ -9,9 +8,8 @@ import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 const hash = module.hot ? Date.now().toString(16) : process.env.WEBPACK_BUILD_HASH;
 
 i18n.use(I18NextMultiloadBackendAdapter)
-    .use(initReactI18next)
     .init({
-        debug: process.env.DEBUG === 'true',
+        debug: true,
         lng: 'en',
         fallbackLng: 'en',
         keySeparator: '.',
@@ -27,10 +25,7 @@ i18n.use(I18NextMultiloadBackendAdapter)
             // Per i18n-react documentation: this is not needed since React is already
             // handling escapes for us.
             escapeValue: false,
-        },
-        react: {
-            transKeepBasicHtmlNodesFor: ['span'], //I have 0 idea why this specifically works and no other html tag will work
-        },
+        }
     });
 
 export default i18n;
