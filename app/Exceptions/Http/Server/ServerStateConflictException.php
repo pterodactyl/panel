@@ -17,7 +17,7 @@ class ServerStateConflictException extends ConflictHttpException
         $message = 'This server is currently in an unsupported state, please try again later.';
         if ($server->isSuspended()) {
             $message = 'This server is currently suspended and the functionality requested is unavailable.';
-        } elseif ($server->isUnderMaintenance()) {
+        } elseif ($server->node->isUnderMaintenance()) {
             $message = 'The node of this server is currently under maintenance and the functionality requested is unavailable.';
         } elseif (!$server->isInstalled()) {
             $message = 'This server has not yet completed its installation process, please try again later.';

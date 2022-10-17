@@ -214,11 +214,6 @@ class Server extends Model
         return $this->status === self::STATUS_SUSPENDED;
     }
 
-    public function isUnderMaintenance(): bool
-    {
-        return $this->node->maintenance_mode;
-    }
-
     /**
      * Gets the user who owns the server.
      */
@@ -359,7 +354,7 @@ class Server extends Model
     {
         if (
             $this->isSuspended() ||
-            $this->isUnderMaintenance() ||
+            $this->node->isUnderMaintenance() ||
             !$this->isInstalled() ||
             $this->status === self::STATUS_RESTORING_BACKUP ||
             !is_null($this->transfer)
