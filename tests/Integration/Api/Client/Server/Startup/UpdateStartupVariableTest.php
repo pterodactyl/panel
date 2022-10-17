@@ -13,10 +13,9 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
     /**
      * Test that a startup variable can be edited successfully for a server.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
-    public function testStartupVariableCanBeUpdated($permissions)
+    public function testStartupVariableCanBeUpdated(array $permissions)
     {
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
@@ -150,10 +149,7 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
         $this->actingAs($user2)->putJson($this->link($server) . '/startup/variable')->assertNotFound();
     }
 
-    /**
-     * @return \array[][]
-     */
-    public function permissionsDataProvider()
+    public function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_STARTUP_UPDATE]]];
     }

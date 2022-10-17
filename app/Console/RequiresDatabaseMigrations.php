@@ -33,7 +33,7 @@ trait RequiresDatabaseMigrations
      * them to properly run the migrations rather than ignoring all of the other previous
      * errors...
      */
-    protected function showMigrationWarning()
+    protected function showMigrationWarning(): void
     {
         $this->getOutput()->writeln('<options=bold>
 | @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@ |

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Exceptions\Model;
 
+use Illuminate\Support\MessageBag;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Contracts\Validation\Validator;
 use Pterodactyl\Exceptions\PterodactylException;
@@ -11,19 +12,9 @@ use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
 class DataValidationException extends PterodactylException implements HttpExceptionInterface, MessageProvider
 {
     /**
-     * The validator instance.
-     */
-    protected Validator $validator;
-
-    /**
-     * The underlying model instance that triggered this exception.
-     */
-    protected Model $model;
-
-    /**
      * DataValidationException constructor.
      */
-    public function __construct(Validator $validator, Model $model)
+    public function __construct(protected Validator $validator, protected Model $model)
     {
         $message = sprintf(
             'Could not save %s[%s]: failed to validate data: %s',
@@ -33,35 +24,25 @@ class DataValidationException extends PterodactylException implements HttpExcept
         );
 
         parent::__construct($message);
-
-        $this->validator = $validator;
-        $this->model = $model;
     }
 
     /**
      * Return the validator message bag.
-     *
-     * @return \Illuminate\Support\MessageBag
      */
-    public function getMessageBag()
+    public function getMessageBag(): MessageBag
     {
         return $this->validator->errors();
     }
 
     /**
      * Return the status code for this request.
-     *
-     * @return int
      */
-    public function getStatusCode()
+    public function getStatusCode(): int
     {
         return 500;
     }
 
-    /**
-     * @return array
-     */
-    public function getHeaders()
+    public function getHeaders(): array
     {
         return [];
     }

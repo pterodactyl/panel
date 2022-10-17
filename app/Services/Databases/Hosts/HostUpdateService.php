@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Services\Databases\Hosts;
 
@@ -19,45 +12,15 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 class HostUpdateService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Illuminate\Database\DatabaseManager
-     */
-    private $databaseManager;
-
-    /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
-     */
-    private $dynamic;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * DatabaseHostService constructor.
+     * HostUpdateService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DatabaseManager $databaseManager,
-        DatabaseHostRepositoryInterface $repository,
-        DynamicDatabaseConnection $dynamic,
-        Encrypter $encrypter
+        private ConnectionInterface $connection,
+        private DatabaseManager $databaseManager,
+        private DynamicDatabaseConnection $dynamic,
+        private Encrypter $encrypter,
+        private DatabaseHostRepositoryInterface $repository
     ) {
-        $this->connection = $connection;
-        $this->databaseManager = $databaseManager;
-        $this->dynamic = $dynamic;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

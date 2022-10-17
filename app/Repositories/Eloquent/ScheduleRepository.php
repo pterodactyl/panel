@@ -12,16 +12,14 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Schedule::class;
     }
 
     /**
-     * Return all of the schedules for a given server.
+     * Return all the schedules for a given server.
      */
     public function findServerSchedules(int $server): Collection
     {
@@ -29,7 +27,7 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     }
 
     /**
-     * Return a schedule model with all of the associated tasks as a relationship.
+     * Return a schedule model with all the associated tasks as a relationship.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -37,7 +35,7 @@ class ScheduleRepository extends EloquentRepository implements ScheduleRepositor
     {
         try {
             return $this->getBuilder()->with('tasks')->findOrFail($schedule, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }

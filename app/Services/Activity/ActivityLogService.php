@@ -7,11 +7,11 @@ use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\ActivityLog;
-use Illuminate\Contracts\Auth\Factory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Request;
 use Pterodactyl\Models\ActivityLogSubject;
 use Illuminate\Database\ConnectionInterface;
+use Illuminate\Contracts\Auth\Factory as AuthFactory;
 
 class ActivityLogService
 {
@@ -19,24 +19,12 @@ class ActivityLogService
 
     protected array $subjects = [];
 
-    protected Factory $manager;
-
-    protected ConnectionInterface $connection;
-
-    protected AcitvityLogBatchService $batch;
-
-    protected ActivityLogTargetableService $targetable;
-
     public function __construct(
-        Factory $manager,
-        AcitvityLogBatchService $batch,
-        ActivityLogTargetableService $targetable,
-        ConnectionInterface $connection
+        protected AuthFactory $manager,
+        protected ActivityLogBatchService $batch,
+        protected ActivityLogTargetableService $targetable,
+        protected ConnectionInterface $connection
     ) {
-        $this->manager = $manager;
-        $this->batch = $batch;
-        $this->targetable = $targetable;
-        $this->connection = $connection;
     }
 
     /**
@@ -75,11 +63,17 @@ class ActivityLogService
     /**
      * Sets the subject model instance.
      *
-     * @param \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Model[] $subjects
+     * @template T extends \Illuminate\Database\Eloquent\Model|\Illuminate\Contracts\Auth\Authenticatable
+     *
+     * @param T|T[]|null $subjects
      */
     public function subject(...$subjects): self
     {
         foreach (Arr::wrap($subjects) as $subject) {
+            if (is_null($subject)) {
+                continue;
+            }
+
             foreach ($this->subjects as $entry) {
                 // If this subject is already tracked in our array of subjects just skip over
                 // it and move on to the next one in the list.
@@ -170,10 +164,8 @@ class ActivityLogService
 
     /**
      * Executes the provided callback within the scope of a database transaction
-     * and will only save the activity log entry if everything else succesfully
+     * and will only save the activity log entry if everything else successfully
      * settles.
-     *
-     * @return mixed
      *
      * @throws \Throwable
      */

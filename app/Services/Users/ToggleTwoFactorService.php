@@ -15,51 +15,19 @@ use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 class ToggleTwoFactorService
 {
     /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \PragmaRX\Google2FA\Google2FA
-     */
-    private $google2FA;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository
-     */
-    private $recoveryTokenRepository;
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
      * ToggleTwoFactorService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        Encrypter $encrypter,
-        Google2FA $google2FA,
-        RecoveryTokenRepository $recoveryTokenRepository,
-        UserRepositoryInterface $repository
+        private ConnectionInterface $connection,
+        private Encrypter $encrypter,
+        private Google2FA $google2FA,
+        private RecoveryTokenRepository $recoveryTokenRepository,
+        private UserRepositoryInterface $repository
     ) {
-        $this->encrypter = $encrypter;
-        $this->google2FA = $google2FA;
-        $this->repository = $repository;
-        $this->recoveryTokenRepository = $recoveryTokenRepository;
-        $this->connection = $connection;
     }
 
     /**
      * Toggle 2FA on an account only if the token provided is valid.
-     *
-     * @return string[]
      *
      * @throws \Throwable
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException

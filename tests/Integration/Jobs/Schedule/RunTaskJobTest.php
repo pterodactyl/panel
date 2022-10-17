@@ -48,7 +48,7 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->assertFalse($task->is_queued);
         $this->assertFalse($schedule->is_processing);
         $this->assertFalse($schedule->is_active);
-        $this->assertTrue(CarbonImmutable::now()->isSameAs(CarbonImmutable::ISO8601, $schedule->last_run_at));
+        $this->assertTrue(CarbonImmutable::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at));
     }
 
     public function testJobWithInvalidActionThrowsException()
@@ -105,7 +105,7 @@ class RunTaskJobTest extends IntegrationTestCase
 
         $this->assertFalse($task->is_queued);
         $this->assertFalse($schedule->is_processing);
-        $this->assertTrue(CarbonImmutable::now()->isSameAs(CarbonImmutable::ISO8601, $schedule->last_run_at));
+        $this->assertTrue(CarbonImmutable::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at));
     }
 
     /**
@@ -144,7 +144,7 @@ class RunTaskJobTest extends IntegrationTestCase
 
             $this->assertFalse($task->is_queued);
             $this->assertFalse($schedule->is_processing);
-            $this->assertTrue(CarbonImmutable::now()->isSameAs(CarbonImmutable::ISO8601, $schedule->last_run_at));
+            $this->assertTrue(CarbonImmutable::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at));
         }
     }
 
@@ -178,10 +178,7 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->assertTrue(Carbon::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at));
     }
 
-    /**
-     * @return array
-     */
-    public function isManualRunDataProvider()
+    public function isManualRunDataProvider(): array
     {
         return [[true], [false]];
     }

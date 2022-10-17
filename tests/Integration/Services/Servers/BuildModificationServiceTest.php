@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
 use Mockery;
+use Mockery\MockInterface;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
 use Pterodactyl\Models\Server;
@@ -16,8 +17,7 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class BuildModificationServiceTest extends IntegrationTestCase
 {
-    /** @var \Mockery\MockInterface */
-    private $daemonServerRepository;
+    private MockInterface $daemonServerRepository;
 
     /**
      * Setup tests.
@@ -183,7 +183,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
 
     /**
      * Test that allocations in both the add and remove arrays are only added, and not removed.
-     * This scenario wouldn't really happen in the UI, but it is possible to perform via the API
+     * This scenario wouldn't really happen in the UI, but it is possible to perform via the API,
      * so we want to make sure that the logic being used doesn't break if the allocation exists
      * in both arrays.
      *
@@ -229,7 +229,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
 
     /**
      * Test that any changes we made to the server or allocations are rolled back if there is an
-     * exception while performing any action. This is different than the connection exception
+     * exception while performing any action. This is different from the connection exception
      * test which should properly ignore connection issues. We want any other type of exception
      * to properly be thrown back to the caller.
      */
@@ -248,10 +248,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $this->assertDatabaseHas('allocations', ['id' => $allocation->id, 'server_id' => null]);
     }
 
-    /**
-     * @return \Pterodactyl\Services\Servers\BuildModificationService
-     */
-    private function getService()
+    private function getService(): BuildModificationService
     {
         return $this->app->make(BuildModificationService::class);
     }

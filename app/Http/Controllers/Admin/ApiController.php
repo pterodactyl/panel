@@ -9,6 +9,7 @@ use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -17,31 +18,14 @@ use Pterodactyl\Http\Requests\Admin\Api\StoreApplicationApiKeyRequest;
 class ApiController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alert;
-
-    /**
-     * @var \Pterodactyl\Services\Api\KeyCreationService
-     */
-    private $keyCreationService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * ApplicationApiController constructor.
+     * ApiController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        ApiKeyRepositoryInterface $repository,
-        KeyCreationService $keyCreationService
+        private AlertsMessageBag $alert,
+        private ApiKeyRepositoryInterface $repository,
+        private KeyCreationService $keyCreationService,
+        private ViewFactory $view,
     ) {
-        $this->alert = $alert;
-        $this->keyCreationService = $keyCreationService;
-        $this->repository = $repository;
     }
 
     /**
@@ -49,7 +33,7 @@ class ApiController extends Controller
      */
     public function index(Request $request): View
     {
-        return view('admin.api.index', [
+        return $this->view->make('admin.api.index', [
             'keys' => $this->repository->getApplicationKeys($request->user()),
         ]);
     }
@@ -64,7 +48,7 @@ class ApiController extends Controller
         $resources = AdminAcl::getResourceList();
         sort($resources);
 
-        return view('admin.api.new', [
+        return $this->view->make('admin.api.new', [
             'resources' => $resources,
             'permissions' => [
                 'r' => AdminAcl::READ,

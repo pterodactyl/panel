@@ -22,11 +22,8 @@ class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
 
-    protected GetUserPermissionsService $permissions;
-
-    public function __construct(GetUserPermissionsService $permissions)
+    public function __construct(protected GetUserPermissionsService $permissions)
     {
-        $this->permissions = $permissions;
     }
 
     /**
@@ -44,7 +41,7 @@ class SftpAuthenticationController extends Controller
         if ($this->hasTooManyLoginAttempts($request)) {
             $seconds = $this->limiter()->availableIn($this->throttleKey($request));
 
-            throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in {$seconds} seconds.");
+            throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in $seconds seconds.");
         }
 
         $user = $this->getUser($request, $connection['username']);
@@ -60,7 +57,7 @@ class SftpAuthenticationController extends Controller
             $key = null;
             try {
                 $key = PublicKeyLoader::loadPublicKey(trim($request->input('password')));
-            } catch (NoKeyLoadedException $exception) {
+            } catch (NoKeyLoadedException) {
                 // do nothing
             }
 

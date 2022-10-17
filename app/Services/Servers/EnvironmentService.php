@@ -7,16 +7,13 @@ use Pterodactyl\Models\EggVariable;
 
 class EnvironmentService
 {
-    /**
-     * @var array
-     */
-    private $additional = [];
+    private array $additional = [];
 
     /**
      * Dynamically configure additional environment variables to be assigned
      * with a specific server.
      */
-    public function setEnvironmentKey(string $key, callable $closure)
+    public function setEnvironmentKey(string $key, callable $closure): void
     {
         $this->additional[$key] = $closure;
     }

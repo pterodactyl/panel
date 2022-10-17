@@ -16,18 +16,14 @@ abstract class ApplicationApiRequest extends FormRequest
     /**
      * The resource that should be checked when performing the authorization
      * function for this request.
-     *
-     * @var string|null
      */
-    protected $resource;
+    protected ?string $resource;
 
     /**
      * The permission level that a given API key should have for accessing
      * the defined $resource during the request cycle.
-     *
-     * @var int
      */
-    protected $permission = AdminAcl::NONE;
+    protected int $permission = AdminAcl::NONE;
 
     /**
      * Determine if the current user is authorized to perform
@@ -80,7 +76,7 @@ abstract class ApplicationApiRequest extends FormRequest
      * @param class-string<T> $expect
      *
      * @return T
-     * @noinspection PhpUndefinedClassInspection
+     *
      * @noinspection PhpDocSignatureInspection
      */
     public function parameter(string $key, string $expect)
