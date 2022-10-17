@@ -44,15 +44,6 @@ export default ({ activity, children }: Props) => {
     const actor = activity.relationships.actor;
     const properties = wrapProperties(activity.properties);
 
-    useEffect(() => {
-        test();
-    }, [])
-
-    async function test()
-    {
-        await i18n.loadNamespaces('activity');
-    }
-
     return (
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
             <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
