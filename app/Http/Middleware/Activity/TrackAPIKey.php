@@ -14,10 +14,8 @@ class TrackAPIKey
      * API key, or it is just a cookie authenticated session. This data is set in a
      * request singleton so that all tracked activity log events are properly associated
      * with the given API key.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if ($request->user()) {
             $token = $request->user()->currentAccessToken();

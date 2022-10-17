@@ -11,7 +11,7 @@ use Pterodactyl\Http\Requests\Api\Client\Account\StoreSSHKeyRequest;
 class SSHKeyController extends ClientApiController
 {
     /**
-     * Returns all of the SSH keys that have been configured for the logged in
+     * Returns all the SSH keys that have been configured for the logged-in
      * user account.
      */
     public function index(ClientApiRequest $request): array

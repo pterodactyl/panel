@@ -21,29 +21,17 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
 
 class BackupController extends ClientApiController
 {
-    private InitiateBackupService $initiateBackupService;
-    private DeleteBackupService $deleteBackupService;
-    private DownloadLinkService $downloadLinkService;
-    private DaemonBackupRepository $daemonRepository;
-    private BackupRepository $repository;
-
     /**
      * BackupController constructor.
      */
     public function __construct(
-        DaemonBackupRepository $daemonRepository,
-        DeleteBackupService $deleteBackupService,
-        InitiateBackupService $initiateBackupService,
-        DownloadLinkService $downloadLinkService,
-        BackupRepository $repository
+        private DaemonBackupRepository $daemonRepository,
+        private DeleteBackupService $deleteBackupService,
+        private InitiateBackupService $initiateBackupService,
+        private DownloadLinkService $downloadLinkService,
+        private BackupRepository $repository
     ) {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->initiateBackupService = $initiateBackupService;
-        $this->deleteBackupService = $deleteBackupService;
-        $this->downloadLinkService = $downloadLinkService;
-        $this->daemonRepository = $daemonRepository;
     }
 
     /**
@@ -194,9 +182,9 @@ class BackupController extends ClientApiController
      * to begin the process of finding (or downloading) the backup and unpacking it
      * over the server files.
      *
-     * If the "truncate" flag is passed through in this request then all of the
+     * If the "truncate" flag is passed through in this request then all the
      * files that currently exist on the server will be deleted before restoring.
-     * Otherwise the archive will simply be unpacked over the existing files.
+     * Otherwise, the archive will simply be unpacked over the existing files.
      *
      * @throws \Throwable
      */

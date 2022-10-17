@@ -9,7 +9,6 @@ use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Locations\LocationUpdateService;
 use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\LocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Locations\GetLocationRequest;
@@ -21,44 +20,18 @@ use Pterodactyl\Http\Requests\Api\Application\Locations\UpdateLocationRequest;
 class LocationController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Locations\LocationCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Locations\LocationDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Locations\LocationUpdateService
-     */
-    private $updateService;
-
-    /**
      * LocationController constructor.
      */
     public function __construct(
-        LocationCreationService $creationService,
-        LocationDeletionService $deletionService,
-        LocationRepositoryInterface $repository,
-        LocationUpdateService $updateService
+        private LocationCreationService $creationService,
+        private LocationDeletionService $deletionService,
+        private LocationUpdateService $updateService
     ) {
         parent::__construct();
-
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->repository = $repository;
-        $this->updateService = $updateService;
     }
 
     /**
-     * Return all of the locations currently registered on the Panel.
+     * Return all the locations currently registered on the Panel.
      */
     public function index(GetLocationsRequest $request): array
     {
@@ -83,7 +56,7 @@ class LocationController extends ApplicationApiController
     }
 
     /**
-     * Store a new location on the Panel and return a HTTP/201 response code with the
+     * Store a new location on the Panel and return an HTTP/201 response code with the
      * new location attached.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

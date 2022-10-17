@@ -3,6 +3,8 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Subuser;
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class SubuserTransformer extends BaseTransformer
@@ -38,11 +40,9 @@ class SubuserTransformer extends BaseTransformer
     /**
      * Return a generic item of user for this subuser.
      *
-     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeUser(Subuser $subuser)
+    public function includeUser(Subuser $subuser): Item|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_USERS)) {
             return $this->null();
@@ -56,11 +56,9 @@ class SubuserTransformer extends BaseTransformer
     /**
      * Return a generic item of server for this subuser.
      *
-     * @return \League\Fractal\Resource\Item|\League\Fractal\Resource\NullResource
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeServer(Subuser $subuser)
+    public function includeServer(Subuser $subuser): Item|NullResource
     {
         if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();

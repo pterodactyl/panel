@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Notifications;
 
@@ -18,10 +11,7 @@ class RemovedFromServer extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    /**
-     * @var object
-     */
-    public $server;
+    public object $server;
 
     /**
      * Create a new notification instance.
@@ -33,24 +23,16 @@ class RemovedFromServer extends Notification implements ShouldQueue
 
     /**
      * Get the notification's delivery channels.
-     *
-     * @param mixed $notifiable
-     *
-     * @return array
      */
-    public function via($notifiable)
+    public function via(): array
     {
         return ['mail'];
     }
 
     /**
      * Get the mail representation of the notification.
-     *
-     * @param mixed $notifiable
-     *
-     * @return \Illuminate\Notifications\Messages\MailMessage
      */
-    public function toMail($notifiable)
+    public function toMail(): MailMessage
     {
         return (new MailMessage())
             ->error()

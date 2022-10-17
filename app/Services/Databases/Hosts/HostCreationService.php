@@ -12,45 +12,15 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 class HostCreationService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Illuminate\Database\DatabaseManager
-     */
-    private $databaseManager;
-
-    /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
-     */
-    private $dynamic;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * HostCreationService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DatabaseManager $databaseManager,
-        DatabaseHostRepositoryInterface $repository,
-        DynamicDatabaseConnection $dynamic,
-        Encrypter $encrypter
+        private ConnectionInterface $connection,
+        private DatabaseManager $databaseManager,
+        private DynamicDatabaseConnection $dynamic,
+        private Encrypter $encrypter,
+        private DatabaseHostRepositoryInterface $repository
     ) {
-        $this->connection = $connection;
-        $this->databaseManager = $databaseManager;
-        $this->dynamic = $dynamic;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**

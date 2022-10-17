@@ -15,49 +15,24 @@ use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerDetailsController extends Controller
 {
-    protected ConnectionInterface $connection;
-
-    /**
-     * @var \Pterodactyl\Services\Eggs\EggConfigurationService
-     */
-    private $eggConfigurationService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $configurationStructureService;
-
     /**
      * ServerConfigurationController constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        ServerRepository $repository,
-        ServerConfigurationStructureService $configurationStructureService,
-        EggConfigurationService $eggConfigurationService
+        protected ConnectionInterface $connection,
+        private ServerRepository $repository,
+        private ServerConfigurationStructureService $configurationStructureService,
+        private EggConfigurationService $eggConfigurationService
     ) {
-        $this->eggConfigurationService = $eggConfigurationService;
-        $this->repository = $repository;
-        $this->configurationStructureService = $configurationStructureService;
-        $this->connection = $connection;
     }
 
     /**
      * Returns details about the server that allows Wings to self-recover and ensure
      * that the state of the server matches the Panel at all times.
      *
-     * @param string $uuid
-     *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function __invoke(Request $request, $uuid)
+    public function __invoke(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
 
@@ -69,15 +44,13 @@ class ServerDetailsController extends Controller
 
     /**
      * Lists all servers with their configurations that are assigned to the requesting node.
-     *
-     * @return \Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection
      */
-    public function list(Request $request)
+    public function list(Request $request): ServerConfigurationCollection
     {
         /** @var \Pterodactyl\Models\Node $node */
         $node = $request->attributes->get('node');
 
-        // Avoid run-away N+1 SQL queries by pre-loading the relationships that are used
+        // Avoid run-away N+1 SQL queries by preloading the relationships that are used
         // within each of the services called below.
         $servers = Server::query()->with('allocations', 'egg', 'mounts', 'variables', 'location')
             ->where('node_id', $node->id)
@@ -94,15 +67,13 @@ class ServerDetailsController extends Controller
      * do not get incorrectly stuck in installing/restoring from backup states since
      * a Wings reboot would completely stop those processes.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function resetState(Request $request)
+    public function resetState(Request $request): JsonResponse
     {
         $node = $request->attributes->get('node');
 
-        // Get all of the servers that are currently marked as restoring from a backup
+        // Get all the servers that are currently marked as restoring from a backup
         // on this node that do not have a failed backup tracked in the audit logs table
         // as well.
         //

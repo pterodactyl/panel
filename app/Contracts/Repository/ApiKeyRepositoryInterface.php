@@ -8,12 +8,12 @@ use Illuminate\Support\Collection;
 interface ApiKeyRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Get all of the account API keys that exist for a specific user.
+     * Get all the account API keys that exist for a specific user.
      */
     public function getAccountKeys(User $user): Collection;
 
     /**
-     * Get all of the application API keys that exist for a specific user.
+     * Get all the application API keys that exist for a specific user.
      */
     public function getApplicationKeys(User $user): Collection;
 

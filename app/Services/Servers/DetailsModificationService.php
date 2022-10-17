@@ -14,22 +14,10 @@ class DetailsModificationService
     use ReturnsUpdatedModels;
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $serverRepository;
-
-    /**
      * DetailsModificationService constructor.
      */
-    public function __construct(ConnectionInterface $connection, DaemonServerRepository $serverRepository)
+    public function __construct(private ConnectionInterface $connection, private DaemonServerRepository $serverRepository)
     {
-        $this->connection = $connection;
-        $this->serverRepository = $serverRepository;
     }
 
     /**
@@ -57,7 +45,7 @@ class DetailsModificationService
                     $this->serverRepository->setServer($server)->revokeUserJTI($owner);
                 } catch (DaemonConnectionException $exception) {
                     // Do nothing. A failure here is not ideal, but it is likely to be caused by Wings
-                    // being offline, or in an entirely broken state. Remeber, these tokens reset every
+                    // being offline, or in an entirely broken state. Remember, these tokens reset every
                     // few minutes by default, we're just trying to help it along a little quicker.
                 }
             }

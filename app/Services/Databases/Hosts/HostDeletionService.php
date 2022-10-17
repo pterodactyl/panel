@@ -9,24 +9,12 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 class HostDeletionService
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    private $databaseRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * HostDeletionService constructor.
      */
     public function __construct(
-        DatabaseRepositoryInterface $databaseRepository,
-        DatabaseHostRepositoryInterface $repository
+        private DatabaseRepositoryInterface $databaseRepository,
+        private DatabaseHostRepositoryInterface $repository
     ) {
-        $this->databaseRepository = $databaseRepository;
-        $this->repository = $repository;
     }
 
     /**

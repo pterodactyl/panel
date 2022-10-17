@@ -2,6 +2,9 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * @property int $id
  * @property int $server_id
@@ -29,22 +32,16 @@ class ServerTransfer extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'server_transfers';
 
     /**
      * Fields that are not mass assignable.
-     *
-     * @var array
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
      * Cast values to correct type.
-     *
-     * @var array
      */
     protected $casts = [
         'server_id' => 'int',
@@ -58,10 +55,7 @@ class ServerTransfer extends Model
         'archived' => 'bool',
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'server_id' => 'required|numeric|exists:servers,id',
         'old_node' => 'required|numeric',
         'new_node' => 'required|numeric',
@@ -76,30 +70,24 @@ class ServerTransfer extends Model
 
     /**
      * Gets the server associated with a server transfer.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function server()
+    public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
     }
 
     /**
      * Gets the source node associated with a server transfer.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function oldNode()
+    public function oldNode(): HasOne
     {
         return $this->hasOne(Node::class, 'id', 'old_node');
     }
 
     /**
      * Gets the target node associated with a server transfer.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne
      */
-    public function newNode()
+    public function newNode(): HasOne
     {
         return $this->hasOne(Node::class, 'id', 'new_node');
     }

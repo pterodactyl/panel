@@ -10,18 +10,11 @@ use Pterodactyl\Http\Requests\Api\Application\Nodes\GetDeployableNodesRequest;
 class NodeDeploymentController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Deployment\FindViableNodesService
-     */
-    private $viableNodesService;
-
-    /**
      * NodeDeploymentController constructor.
      */
-    public function __construct(FindViableNodesService $viableNodesService)
+    public function __construct(private FindViableNodesService $viableNodesService)
     {
         parent::__construct();
-
-        $this->viableNodesService = $viableNodesService;
     }
 
     /**

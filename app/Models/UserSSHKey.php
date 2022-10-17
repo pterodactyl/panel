@@ -50,7 +50,7 @@ class UserSSHKey extends Model
         'fingerprint',
     ];
 
-    public static $validationRules = [
+    public static array $validationRules = [
         'name' => ['required', 'string'],
         'fingerprint' => ['required', 'string'],
         'public_key' => ['required', 'string'],

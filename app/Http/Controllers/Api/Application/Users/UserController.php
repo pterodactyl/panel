@@ -3,13 +3,11 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Users;
 
 use Pterodactyl\Models\User;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\UserTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest;
@@ -20,40 +18,14 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 class UserController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
-
-    /**
      * UserController constructor.
      */
     public function __construct(
-        UserRepositoryInterface $repository,
-        UserCreationService $creationService,
-        UserDeletionService $deletionService,
-        UserUpdateService $updateService
+        private UserCreationService $creationService,
+        private UserDeletionService $deletionService,
+        private UserUpdateService $updateService
     ) {
         parent::__construct();
-
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->repository = $repository;
-        $this->updateService = $updateService;
     }
 
     /**
@@ -107,7 +79,7 @@ class UserController extends ApplicationApiController
     }
 
     /**
-     * Store a new user on the system. Returns the created user and a HTTP/201
+     * Store a new user on the system. Returns the created user and an HTTP/201
      * header on successful creation.
      *
      * @throws \Exception

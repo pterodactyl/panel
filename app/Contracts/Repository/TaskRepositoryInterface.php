@@ -15,8 +15,6 @@ interface TaskRepositoryInterface extends RepositoryInterface
 
     /**
      * Returns the next task in a schedule.
-     *
-     * @return \Pterodactyl\Models\Task|null
      */
-    public function getNextTask(int $schedule, int $index);
+    public function getNextTask(int $schedule, int $index): ?Task;
 }

@@ -14,12 +14,8 @@ interface SettingsRepositoryInterface extends RepositoryInterface
 
     /**
      * Retrieve a persistent setting from the database.
-     *
-     * @param mixed $default
-     *
-     * @return mixed
      */
-    public function get(string $key, $default);
+    public function get(string $key, mixed $default): mixed;
 
     /**
      * Remove a key from the database cache.

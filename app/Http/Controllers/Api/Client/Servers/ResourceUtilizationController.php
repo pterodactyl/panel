@@ -12,19 +12,12 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
 
 class ResourceUtilizationController extends ClientApiController
 {
-    private DaemonServerRepository $repository;
-
-    private Repository $cache;
-
     /**
      * ResourceUtilizationController constructor.
      */
-    public function __construct(Repository $cache, DaemonServerRepository $repository)
+    public function __construct(private Repository $cache, private DaemonServerRepository $repository)
     {
         parent::__construct();
-
-        $this->cache = $cache;
-        $this->repository = $repository;
     }
 
     /**
@@ -36,7 +29,7 @@ class ResourceUtilizationController extends ClientApiController
      */
     public function __invoke(GetServerRequest $request, Server $server): array
     {
-        $key = "resources:{$server->uuid}";
+        $key = "resources:$server->uuid";
         $stats = $this->cache->remember($key, Carbon::now()->addSeconds(20), function () use ($server) {
             return $this->repository->setServer($server)->getDetails();
         });
