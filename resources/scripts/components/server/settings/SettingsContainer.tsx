@@ -60,7 +60,7 @@ export default () => {
                     <TitledGreyBox title={'Debug Information'} css={tw`mb-6 md:mb-10`}>
                         <div css={tw`flex items-center justify-between text-sm`}>
                             <p>Node</p>
-                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node.name}</code>
+                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{node}</code>
                         </div>
                         <CopyOnClick text={uuid}>
                             <div css={tw`flex items-center justify-between mt-2 text-sm`}>
