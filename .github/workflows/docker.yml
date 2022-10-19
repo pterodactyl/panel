@@ -21,7 +21,7 @@ jobs:
         uses: docker/metadata-action@v4
         id: docker_meta
         with:
-          images: ghcr.io/pterodactyl/panel
+          images: ghcr.io/jexactyl/jexactyl
 
       - name: Setup QEMU
         uses: docker/setup-qemu-action@v2
