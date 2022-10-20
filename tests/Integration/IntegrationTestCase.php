@@ -27,6 +27,8 @@ abstract class IntegrationTestCase extends TestCase
         parent::setUp();
 
         Event::fake(ActivityLogged::class);
+        
+        $this->withoutNotifications();
     }
 
     /**
