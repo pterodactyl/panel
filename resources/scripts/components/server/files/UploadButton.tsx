@@ -67,7 +67,7 @@ export default ({ className }: WithClassname) => {
     const onFileSubmission = (files: FileList) => {
         clearAndAddHttpError();
         const list = Array.from(files);
-        if (list.some((file) => !file.type && file.size % 4096 === 0)) {
+        if (list.some((file) => !file.size || (!file.type && file.size === 4096))) {
             return addError('Folder uploads are not supported at this time.', 'Error');
         }
 
