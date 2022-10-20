@@ -378,4 +378,45 @@ class Server extends Model
             throw new ServerStateConflictException($this);
         }
     }
+
+    /**
+     * Take all the environment variables configured for this server and return
+     * them in an easy to process format.
+     */
+    public function getEnvironment()
+    {
+        $mappings = [
+            'STARTUP' => 'startup',
+            'P_SERVER_LOCATION' => 'location.short',
+            'P_SERVER_UUID' => 'uuid',
+        ];
+
+        $variables = $this->variables->toBase()->mapWithKeys(function (EggVariable $variable) {
+            return [$variable->env_variable => $variable->server_value ?? $variable->default_value];
+        });
+
+        // Process environment variables defined in this file. This is done first
+        // in order to allow run-time and config defined variables to take
+        // priority over built-in values.
+        foreach ($mappings as $key => $object) {
+            $variables->put($key, object_get($this, $object));
+        }
+
+        // Process variables set in the configuration file.
+        foreach (config('pterodactyl.environment_variables', []) as $key => $object) {
+            $variables->put(
+                $key,
+                is_callable($object) ? call_user_func($object, $this) : object_get($this, $object)
+            );
+        }
+
+        $this->additional ??= [];
+
+        // Process dynamically included environment variables.
+        foreach ($this->additional as $key => $closure) {
+            $variables->put($key, call_user_func($closure, $this));
+        }
+
+        return $variables->toArray();
+    }
 }

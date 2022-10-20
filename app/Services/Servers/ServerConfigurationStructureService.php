@@ -10,7 +10,7 @@ class ServerConfigurationStructureService
     /**
      * ServerConfigurationStructureService constructor.
      */
-    public function __construct(private EnvironmentService $environment)
+    public function __construct()
     {
     }
 
@@ -49,7 +49,7 @@ class ServerConfigurationStructureService
                 'description' => $server->description,
             ],
             'suspended' => $server->isSuspended(),
-            'environment' => $this->environment->handle($server),
+            'environment' => $server->getEnvironment(),
             'invocation' => $server->startup,
             'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
@@ -109,7 +109,7 @@ class ServerConfigurationStructureService
                 'ports' => $server->allocations->groupBy('ip')->map(function ($item) {
                     return $item->pluck('port');
                 })->toArray(),
-                'env' => $this->environment->handle($server),
+                'env' => $server->getEnvironment(),
                 'oom_disabled' => $server->oom_disabled,
                 'memory' => (int) $server->memory,
                 'swap' => (int) $server->swap,

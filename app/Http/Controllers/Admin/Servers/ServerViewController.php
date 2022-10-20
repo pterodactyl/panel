@@ -9,7 +9,6 @@ use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\EnvironmentService;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
@@ -33,7 +32,6 @@ class ServerViewController extends Controller
         private NestRepository $nestRepository,
         private NodeRepository $nodeRepository,
         private ServerRepository $repository,
-        private EnvironmentService $environmentService,
         private ViewFactory $view
     ) {
     }
@@ -76,7 +74,7 @@ class ServerViewController extends Controller
     public function startup(Request $request, Server $server): View
     {
         $nests = $this->nestRepository->getWithEggs();
-        $variables = $this->environmentService->handle($server);
+        $variables = $server->getEnvironment();
 
         $this->plainInject([
             'server' => $server,

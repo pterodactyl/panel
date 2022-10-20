@@ -7,12 +7,9 @@ use League\Fractal\Resource\Item;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Services\Servers\EnvironmentService;
 
 class ServerTransformer extends BaseTransformer
 {
-    private EnvironmentService $environmentService;
-
     /**
      * List of resources that can be included.
      */
@@ -32,9 +29,9 @@ class ServerTransformer extends BaseTransformer
     /**
      * Perform dependency injection.
      */
-    public function handle(EnvironmentService $environmentService)
+    public function handle()
     {
-        $this->environmentService = $environmentService;
+
     }
 
     /**
@@ -84,7 +81,7 @@ class ServerTransformer extends BaseTransformer
                 'image' => $server->image,
                 // This field is deprecated, please use "status".
                 'installed' => $server->isInstalled() ? 1 : 0,
-                'environment' => $this->environmentService->handle($server),
+                'environment' => $server->getEnvironment(),
             ],
             $server->getUpdatedAtColumn() => $this->formatTimestamp($server->updated_at),
             $server->getCreatedAtColumn() => $this->formatTimestamp($server->created_at),

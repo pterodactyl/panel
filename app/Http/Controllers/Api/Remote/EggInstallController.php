@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Controllers\Api\Remote;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\EnvironmentService;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class EggInstallController extends Controller
@@ -13,7 +12,7 @@ class EggInstallController extends Controller
     /**
      * EggInstallController constructor.
      */
-    public function __construct(private EnvironmentService $environment, private ServerRepositoryInterface $repository)
+    public function __construct(private ServerRepositoryInterface $repository)
     {
     }
 
@@ -45,7 +44,7 @@ class EggInstallController extends Controller
                 'container' => $egg->copy_script_container,
                 'entry' => $egg->copy_script_entry,
             ],
-            'env' => $this->environment->handle($server),
+            'env' => $server->getEnvironment(),
         ]);
     }
 }
