@@ -16,17 +16,47 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Http;
+use Pterodactyl\Repositories\Eloquent\SettingsRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 
 class TelemetryCollectionService
 {
+    /**
+     * TelemetryCollectionService constructor.
+     */
     public function __construct(
-        private DaemonConfigurationRepository $daemonConfigurationRepository
+        private DaemonConfigurationRepository $daemonConfigurationRepository,
+        private SettingsRepository $settingsRepository
     ) {
     }
 
+    /**
+     * ?
+     */
     public function __invoke(): void
     {
+        try {
+            $data = $this->collect();
+        } catch (Exception) {
+            return;
+        }
+
+        Http::post('https://telemetry.pterodactyl.io', $data);
+    }
+
+    /**
+     * ?
+     *
+     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     */
+    public function collect(): array
+    {
+        $uuid = $this->settingsRepository->get('app:uuid');
+        if (is_null($uuid)) {
+            $uuid = Uuid::uuid4()->toString();
+            $this->settingsRepository->set('app:uuid', $uuid);
+        }
+
         $nodes = Node::all()->map(function ($node) {
             try {
                 $info = $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
@@ -71,10 +101,10 @@ class TelemetryCollectionService
                     'osType' => $info['os'],
                 ],
             ];
-        })->filter(fn ($node) => !is_null($node))->toArray();
+        })->filter(fn($node) => !is_null($node))->toArray();
 
         $data = [
-            'id' => Uuid::uuid4(),
+            'id' => $uuid,
 
             'panel' => [
                 'version' => config('app.version'),
@@ -140,6 +170,6 @@ class TelemetryCollectionService
             'nodes' => $nodes,
         ];
 
-        Http::post('https://telemetry.pterodactyl.io', $data);
+        return $data;
     }
 }
