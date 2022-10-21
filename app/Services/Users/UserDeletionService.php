@@ -33,6 +33,6 @@ class UserDeletionService
             throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
         }
 
-        return $this->repository->delete($user);
+        return $this->repository->delete($user->id);
     }
 }
