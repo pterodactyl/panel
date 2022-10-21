@@ -38,11 +38,6 @@ interface ServerRepositoryInterface extends RepositoryInterface
     public function getDataForCreation(Server $server, bool $refresh = false): Server;
 
     /**
-     * Load associated databases onto the server model.
-     */
-    public function loadDatabaseRelations(Server $server, bool $refresh = false): Server;
-
-    /**
      * Get data for use when updating a server on the Daemon. Returns an array of
      * the egg which is used for build and rebuild. Only loads relations
      * if they are missing, or refresh is set to true.
