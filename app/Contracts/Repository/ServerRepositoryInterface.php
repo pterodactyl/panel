@@ -9,11 +9,6 @@ use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 interface ServerRepositoryInterface extends RepositoryInterface
 {
     /**
-     * Load the egg relations onto the server model.
-     */
-    public function loadEggRelations(Server $server, bool $refresh = false): Server;
-
-    /**
      * Return a collection of servers with their associated data for rebuild operations.
      */
     public function getDataForRebuild(int $server = null, int $node = null): Collection;

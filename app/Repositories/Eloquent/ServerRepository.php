@@ -21,18 +21,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     }
 
     /**
-     * Load the egg relations onto the server model.
-     */
-    public function loadEggRelations(Server $server, bool $refresh = false): Server
-    {
-        if (!$server->relationLoaded('egg') || $refresh) {
-            $server->load('egg.scriptFrom');
-        }
-
-        return $server;
-    }
-
-    /**
      * Return a collection of servers with their associated data for rebuild operations.
      */
     public function getDataForRebuild(int $server = null, int $node = null): Collection
