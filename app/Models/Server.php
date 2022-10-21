@@ -233,9 +233,9 @@ class Server extends Model
     /**
      * Gets the default allocation for a server.
      */
-    public function allocation(): HasOne
+    public function allocation(): BelongsTo
     {
-        return $this->hasOne(Allocation::class, 'id', 'allocation_id');
+        return $this->belongsTo(Allocation::class);
     }
 
     /**
@@ -365,7 +365,7 @@ class Server extends Model
     /**
      * Checks if the server is currently in a transferable state. If not, an
      * exception is raised. This should be called whenever something needs to make
-     * sure the server is able to be transferred and is not currently being transferred
+     * sure the server can be transferred and is not currently being transferred
      * or installed.
      */
     public function validateTransferState()
@@ -377,5 +377,16 @@ class Server extends Model
         ) {
             throw new ServerStateConflictException($this);
         }
+    }
+
+    public static function findOrFailByUuid(string $uuid): Server
+    {
+        /** @var Server $server */
+        $server = Server::with(['nest', 'node'])
+            ->where('uuidShort', $uuid)
+            ->orWhere('uuid', $uuid)
+            ->firstOrFail();
+
+        return $server;
     }
 }

@@ -28,7 +28,6 @@ use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
@@ -52,7 +51,6 @@ class ServersController extends Controller
         protected ServerDeletionService $deletionService,
         protected DetailsModificationService $detailsModificationService,
         protected ReinstallServerService $reinstallService,
-        protected ServerRepositoryInterface $repository,
         protected MountRepository $mountRepository,
         protected NestRepositoryInterface $nestRepository,
         protected ServerConfigurationStructureService $serverConfigurationStructureService,
@@ -91,9 +89,8 @@ class ServersController extends Controller
             throw new DisplayException(trans('admin/server.exceptions.marked_as_failed'));
         }
 
-        $this->repository->update($server->id, [
-            'status' => $server->isInstalled() ? Server::STATUS_INSTALLING : null,
-        ], true, true);
+        $server->status = $server->isInstalled() ? Server::STATUS_INSTALLING : null;
+        $server->save();
 
         $this->alert->success(trans('admin/server.alerts.install_toggled'))->flash();
 

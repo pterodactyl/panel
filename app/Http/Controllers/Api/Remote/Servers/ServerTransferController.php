@@ -8,11 +8,11 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -24,7 +24,6 @@ class ServerTransferController extends Controller
      */
     public function __construct(
         private ConnectionInterface $connection,
-        private ServerRepository $repository,
         private DaemonServerRepository $daemonServerRepository,
         private DaemonTransferRepository $daemonTransferRepository,
         private NodeJWTService $jwtService
@@ -39,7 +38,7 @@ class ServerTransferController extends Controller
      */
     public function archive(Request $request, string $uuid): JsonResponse
     {
-        $server = $this->repository->getByUuid($uuid);
+        $server = Server::findOrFailByUuid($uuid);
 
         // Unsuspend the server and don't continue the transfer.
         if (!$request->input('successful')) {
@@ -78,7 +77,7 @@ class ServerTransferController extends Controller
      */
     public function failure(string $uuid): JsonResponse
     {
-        $server = $this->repository->getByUuid($uuid);
+        $server = Server::findOrFailByUuid($uuid);
 
         return $this->processFailedTransfer($server->transfer);
     }
@@ -90,7 +89,7 @@ class ServerTransferController extends Controller
      */
     public function success(string $uuid): JsonResponse
     {
-        $server = $this->repository->getByUuid($uuid);
+        $server = Server::findOrFailByUuid($uuid);
         $transfer = $server->transfer;
 
         /** @var \Pterodactyl\Models\Server $server */

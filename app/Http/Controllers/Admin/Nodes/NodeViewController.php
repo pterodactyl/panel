@@ -10,7 +10,6 @@ use Pterodactyl\Models\Allocation;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
@@ -27,7 +26,6 @@ class NodeViewController extends Controller
         private AllocationRepository $allocationRepository,
         private LocationRepository $locationRepository,
         private NodeRepository $repository,
-        private ServerRepository $serverRepository,
         private SoftwareVersionService $versionService,
         private ViewFactory $view
     ) {

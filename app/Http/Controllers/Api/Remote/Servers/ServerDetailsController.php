@@ -9,7 +9,6 @@ use Pterodactyl\Facades\Activity;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Eggs\EggConfigurationService;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Http\Resources\Wings\ServerConfigurationCollection;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
@@ -20,7 +19,6 @@ class ServerDetailsController extends Controller
      */
     public function __construct(
         protected ConnectionInterface $connection,
-        private ServerRepository $repository,
         private ServerConfigurationStructureService $configurationStructureService,
         private EggConfigurationService $eggConfigurationService
     ) {
@@ -30,11 +28,10 @@ class ServerDetailsController extends Controller
      * Returns details about the server that allows Wings to self-recover and ensure
      * that the state of the server matches the Panel at all times.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function __invoke(Request $request, string $uuid): JsonResponse
     {
-        $server = $this->repository->getByUuid($uuid);
+        $server = Server::findOrFailByUuid($uuid);
 
         return new JsonResponse([
             'settings' => $this->configurationStructureService->handle($server),

@@ -7,7 +7,6 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Client\AllocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Services\Allocations\FindAssignableAllocationService;
@@ -22,10 +21,8 @@ class NetworkAllocationController extends ClientApiController
     /**
      * NetworkAllocationController constructor.
      */
-    public function __construct(
-        private FindAssignableAllocationService $assignableAllocationService,
-        private ServerRepository $serverRepository
-    ) {
+    public function __construct(private FindAssignableAllocationService $assignableAllocationService)
+    {
         parent::__construct();
     }
 
@@ -72,7 +69,8 @@ class NetworkAllocationController extends ClientApiController
      */
     public function setPrimary(SetPrimaryAllocationRequest $request, Server $server, Allocation $allocation): array
     {
-        $this->serverRepository->update($server->id, ['allocation_id' => $allocation->id]);
+        $server->allocation()->associate($allocation);
+        $server->save();
 
         Activity::event('server:allocation.primary')
             ->subject($allocation)

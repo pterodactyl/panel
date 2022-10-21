@@ -6,7 +6,6 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Services\Servers\ReinstallServerService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
@@ -19,10 +18,8 @@ class SettingsController extends ClientApiController
     /**
      * SettingsController constructor.
      */
-    public function __construct(
-        private ServerRepository $repository,
-        private ReinstallServerService $reinstallServerService
-    ) {
+    public function __construct(private ReinstallServerService $reinstallServerService)
+    {
         parent::__construct();
     }
 
@@ -34,15 +31,12 @@ class SettingsController extends ClientApiController
      */
     public function rename(RenameServerRequest $request, Server $server): JsonResponse
     {
-        $this->repository->update($server->id, [
-            'name' => $request->input('name'),
-        ]);
+        $server->name = $request->input('name');
+        $server->save();
 
-        if ($server->name !== $request->input('name')) {
-            Activity::event('server:settings.rename')
-                ->property(['old' => $server->name, 'new' => $request->input('name')])
-                ->log();
-        }
+        Activity::event('server:settings.rename')
+            ->property(['old' => $server->name, 'new' => $request->input('name')])
+            ->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

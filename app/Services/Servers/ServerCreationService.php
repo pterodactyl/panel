@@ -12,7 +12,6 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Models\Objects\DeploymentObject;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
 use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
@@ -29,7 +28,6 @@ class ServerCreationService
         private ConnectionInterface $connection,
         private DaemonServerRepository $daemonServerRepository,
         private FindViableNodesService $findViableNodesService,
-        private ServerRepository $repository,
         private ServerDeletionService $serverDeletionService,
         private ServerVariableRepository $serverVariableRepository,
         private VariableValidatorService $validatorService
@@ -82,7 +80,7 @@ class ServerCreationService
         //
         // If that connection fails out we will attempt to perform a cleanup by just
         // deleting the server itself from the system.
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var Server $server */
         $server = $this->connection->transaction(function () use ($data, $eggVariableData) {
             // Create the server and assign any additional allocations to it.
             $server = $this->createModel($data);
@@ -136,8 +134,8 @@ class ServerCreationService
     {
         $uuid = $this->generateUniqueUuidCombo();
 
-        /** @var \Pterodactyl\Models\Server $model */
-        $model = $this->repository->create([
+        /** @var Server $model */
+        $model = Server::create([
             'external_id' => Arr::get($data, 'external_id'),
             'uuid' => $uuid,
             'uuidShort' => substr($uuid, 0, 8),
