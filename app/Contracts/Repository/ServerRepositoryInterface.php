@@ -52,11 +52,6 @@ interface ServerRepositoryInterface extends RepositoryInterface
     public function getByUuid(string $uuid): Server;
 
     /**
-     * Check if a given UUID and UUID-Short string are unique to a server.
-     */
-    public function isUniqueUuidCombo(string $uuid, string $short): bool;
-
-    /**
      * Returns all the servers that exist for a given node in a paginated response.
      */
     public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;
