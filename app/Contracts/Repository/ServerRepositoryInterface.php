@@ -50,9 +50,4 @@ interface ServerRepositoryInterface extends RepositoryInterface
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getByUuid(string $uuid): Server;
-
-    /**
-     * Returns all the servers that exist for a given node in a paginated response.
-     */
-    public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator;
 }

@@ -133,15 +133,4 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
             throw new RecordNotFoundException();
         }
     }
-
-    /**
-     * Returns all the servers that exist for a given node in a paginated response.
-     */
-    public function loadAllServersForNode(int $node, int $limit): LengthAwarePaginator
-    {
-        return $this->getBuilder()
-            ->with(['user', 'nest', 'egg'])
-            ->where('node_id', '=', $node)
-            ->paginate($limit);
-    }
 }
