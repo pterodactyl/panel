@@ -3,18 +3,21 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Carbon\CarbonImmutable;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
+use Lcobucci\JWT\Token\Plain;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Repositories\Wings\DaemonRepository;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerTransferController extends Controller
@@ -26,7 +29,7 @@ class ServerTransferController extends Controller
         private ConnectionInterface $connection,
         private ServerRepository $repository,
         private DaemonServerRepository $daemonServerRepository,
-        private DaemonTransferRepository $daemonTransferRepository,
+        private DaemonRepository $daemonRepository,
         private NodeJWTService $jwtService
     ) {
     }
@@ -62,13 +65,37 @@ class ServerTransferController extends Controller
             // On the daemon transfer repository, make sure to set the node after the server
             // because setServer() tells the repository to use the server's node and not the one
             // we want to specify.
-            $this->daemonTransferRepository
+            $repository = $this->daemonRepository
                 ->setServer($server)
-                ->setNode($server->transfer->newNode)
-                ->notify($server, $token);
+                ->setNode($server->transfer->newNode);
+
+            $this->notify($repository, $server, $token);
         });
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+
+    /**
+     * @throws DaemonConnectionException
+     */
+    private function notify(DaemonRepository $repository, Server $server, Plain $token): void
+    {
+        try {
+            $repository->getHttpClient()->post('/api/transfer', [
+                'json' => [
+                    'server_id' => $server->uuid,
+                    'url' => $server->node->getConnectionAddress() . "/api/servers/$server->uuid/archive",
+                    'token' => 'Bearer ' . $token->toString(),
+                    'server' => [
+                        'uuid' => $server->uuid,
+                        'start_on_completion' => false,
+                    ],
+                ],
+            ]);
+        } catch (GuzzleException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
     }
 
     /**

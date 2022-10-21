@@ -3,6 +3,9 @@
 namespace Pterodactyl\Repositories\Wings;
 
 use GuzzleHttp\Client;
+use GuzzleHttp\Exception\GuzzleException;
+use Lcobucci\JWT\Token\Plain;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Models\Node;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
