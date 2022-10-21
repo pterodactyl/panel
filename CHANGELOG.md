@@ -3,6 +3,20 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## [Unreleased]
+### Changed
+* Changed minimum PHP version is now 8.0 instead of `7.4`.
+* Upgraded from Laravel 8 to Laravel 9.
+
+## v1.10.4
+### Fixed
+* Fixed an issue where subusers could be given permissions that are not actually registered or used.
+* Fixed an issue where node FQDNs could not just be IP addresses.
+
+### Changed
+* Change maximum number of API keys per user from `10` to `25`.
+* Change byte unit prefix from `B` to `iB` to better reflect our usage of base 2 (multiples of 1024).
+
 ## v1.10.3
 ### Fixed
 * S3 Backup driver now supports Cloudflare R2.
