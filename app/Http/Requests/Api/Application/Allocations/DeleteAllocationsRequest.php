@@ -7,17 +7,10 @@ use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class DeleteAllocationsRequest extends ApplicationApiRequest
 {
-    /**
-     * @var string
-     */
-    protected $resource = AdminAcl::RESOURCE_ALLOCATIONS;
+    protected string $resource = AdminAcl::RESOURCE_ALLOCATIONS;
 
-    /**
-     * @var int
-     */
-    protected $permission = AdminAcl::WRITE;
+    protected int $permission = AdminAcl::WRITE;
 
-    
     public function rules(): array
     {
         return [
@@ -34,5 +27,4 @@ class DeleteAllocationsRequest extends ApplicationApiRequest
 
         return $data;
     }
-    
 }

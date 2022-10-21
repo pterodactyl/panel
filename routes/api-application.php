@@ -45,7 +45,7 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::group(['prefix' => '/{node:id}/allocations'], function () {
         Route::get('/', [Application\Nodes\AllocationController::class, 'index'])->name('api.application.allocations');
         Route::post('/', [Application\Nodes\AllocationController::class, 'store']);
-        Route::post('/delete', [Application\Nodes\AllocationController::class, 'delete_multiple']);
+        Route::delete('/', [Application\Nodes\AllocationController::class, 'deleteMultiple']);
         Route::delete('/{allocation:id}', [Application\Nodes\AllocationController::class, 'delete'])->name('api.application.allocations.view');
     });
 });
