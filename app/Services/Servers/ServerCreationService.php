@@ -206,7 +206,7 @@ class ServerCreationService
         $uuid = Uuid::uuid4()->toString();
         $shortUuid = substr($uuid, 0, 8);
 
-        if (!Server::query()->where('uuid', $uuid)->orWhere('uuidShort', $shortUuid)->exists()) {
+        if (Server::query()->where('uuid', $uuid)->orWhere('uuidShort', $shortUuid)->exists()) {
             return $this->generateUniqueUuidCombo();
         }
 
