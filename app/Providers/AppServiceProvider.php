@@ -6,8 +6,10 @@ use View;
 use Cache;
 use Pterodactyl\Models;
 use Illuminate\Support\Str;
+use Pterodactyl\Models\Node;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Extensions\Themes\Theme;
@@ -49,6 +51,17 @@ class AppServiceProvider extends ServiceProvider
             'task' => Models\Task::class,
             'user' => Models\User::class,
         ]);
+
+        Http::macro(
+            'daemon',
+            fn (Node $node, array $headers = []) => Http::acceptJson()->withHeaders([
+                'Authorization' => 'Bearer ' . $node->getDecryptedKey(),
+            ] + $headers)
+                ->withOptions(['verify' => (bool) app()->environment('production')])
+                ->timeout(config('pterodactyl.guzzle.timeout'))
+                ->connectTimeout(config('pterodactyl.guzzle.connect_timeout'))
+                ->baseUrl($node->getConnectionAddress())
+        );
     }
 
     /**

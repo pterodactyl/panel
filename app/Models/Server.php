@@ -2,15 +2,20 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Support\Facades\Http;
+use Psr\Http\Message\ResponseInterface;
 use Illuminate\Notifications\Notifiable;
+use GuzzleHttp\Exception\GuzzleException;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use GuzzleHttp\Exception\TransferException;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 /**
  * \Pterodactyl\Models\Server.
@@ -376,6 +381,22 @@ class Server extends Model
             !is_null($this->transfer)
         ) {
             throw new ServerStateConflictException($this);
+        }
+    }
+
+    /**
+     * Sends a command or multiple commands to a running server instance.
+     *
+     * @throws DaemonConnectionException|GuzzleException
+     */
+    public function send(array|string $command): ResponseInterface
+    {
+        try {
+            return Http::daemon($this->node)->post("/api/servers/{$this->uuid}/commands", [
+                'json' => ['commands' => is_array($command) ? $command : [$command]],
+            ])->toPsrResponse();
+        } catch (TransferException $exception) {
+            throw new DaemonConnectionException($exception);
         }
     }
 }
