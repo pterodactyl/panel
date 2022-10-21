@@ -13,7 +13,7 @@ class ManifestDoesntExistSolution implements Solution
 
     public function getSolutionDescription(): string
     {
-        return 'Run npm run build:production or yarn run build:production to build the frontend first.';
+        return 'Run yarn run build:production to build the frontend first.';
     }
 
     public function getDocumentationLinks(): array
