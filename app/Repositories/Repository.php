@@ -4,53 +4,34 @@ namespace Pterodactyl\Repositories;
 
 use InvalidArgumentException;
 use Illuminate\Foundation\Application;
+use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Contracts\Repository\RepositoryInterface;
 
 abstract class Repository implements RepositoryInterface
 {
-    /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
+    protected array $columns = ['*'];
 
-    /**
-     * @var array
-     */
-    protected $columns = ['*'];
+    protected Model $model;
 
-    /**
-     * @var mixed
-     */
-    protected $model;
-
-    /**
-     * @var bool
-     */
-    protected $withFresh = true;
+    protected bool $withFresh = true;
 
     /**
      * Repository constructor.
      */
-    public function __construct(Application $application)
+    public function __construct(protected Application $app)
     {
-        $this->app = $application;
-
         $this->initializeModel($this->model());
     }
 
     /**
      * Return the model backing this repository.
-     *
-     * @return string|\Closure|object
      */
-    abstract public function model();
+    abstract public function model(): string;
 
     /**
      * Return the model being used for this repository.
-     *
-     * @return mixed
      */
-    public function getModel()
+    public function getModel(): Model
     {
         return $this->model;
     }
@@ -59,10 +40,8 @@ abstract class Repository implements RepositoryInterface
      * Setup column selection functionality.
      *
      * @param array|string $columns
-     *
-     * @return $this
      */
-    public function setColumns($columns = ['*'])
+    public function setColumns($columns = ['*']): self
     {
         $clone = clone $this;
         $clone->columns = is_array($columns) ? $columns : func_get_args();
@@ -72,10 +51,8 @@ abstract class Repository implements RepositoryInterface
 
     /**
      * Return the columns to be selected in the repository call.
-     *
-     * @return array
      */
-    public function getColumns()
+    public function getColumns(): array
     {
         return $this->columns;
     }
@@ -83,31 +60,25 @@ abstract class Repository implements RepositoryInterface
     /**
      * Stop repository update functions from returning a fresh
      * model when changes are committed.
-     *
-     * @return $this
      */
-    public function withoutFreshModel()
+    public function withoutFreshModel(): self
     {
         return $this->setFreshModel(false);
     }
 
     /**
      * Return a fresh model with a repository updates a model.
-     *
-     * @return $this
      */
-    public function withFreshModel()
+    public function withFreshModel(): self
     {
-        return $this->setFreshModel(true);
+        return $this->setFreshModel();
     }
 
     /**
-     * Set whether or not the repository should return a fresh model
+     * Set whether the repository should return a fresh model
      * when changes are committed.
-     *
-     * @return $this
      */
-    public function setFreshModel(bool $fresh = true)
+    public function setFreshModel(bool $fresh = true): self
     {
         $clone = clone $this;
         $clone->withFresh = $fresh;
@@ -117,12 +88,8 @@ abstract class Repository implements RepositoryInterface
 
     /**
      * Take the provided model and make it accessible to the rest of the repository.
-     *
-     * @param array $model
-     *
-     * @return mixed
      */
-    protected function initializeModel(...$model)
+    protected function initializeModel(string ...$model): mixed
     {
         switch (count($model)) {
             case 1:

@@ -5,40 +5,29 @@ namespace Pterodactyl\Http\Middleware\Api\Client\Server;
 use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 class AuthenticateServerAccess
 {
     /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * Routes that this middleware should not apply to if the user is an admin.
-     *
-     * @var string[]
      */
-    protected $except = [
+    protected array $except = [
         'api:client:server.ws',
     ];
 
     /**
      * AuthenticateServerAccess constructor.
      */
-    public function __construct(ServerRepositoryInterface $repository)
+    public function __construct()
     {
-        $this->repository = $repository;
     }
 
     /**
      * Authenticate that this server exists and is not suspended or marked as installing.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = $request->user();

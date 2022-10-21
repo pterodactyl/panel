@@ -21,30 +21,17 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 class AllocationController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Allocations\AssignmentService
-     */
-    private $assignmentService;
-
-    /**
-     * @var \Pterodactyl\Services\Allocations\AllocationDeletionService
-     */
-    private $deletionService;
-
-    /**
      * AllocationController constructor.
      */
     public function __construct(
-        AssignmentService $assignmentService,
-        AllocationDeletionService $deletionService
+        private AssignmentService $assignmentService,
+        private AllocationDeletionService $deletionService
     ) {
         parent::__construct();
-
-        $this->assignmentService = $assignmentService;
-        $this->deletionService = $deletionService;
     }
 
     /**
-     * Return all of the allocations that exist for a given node.
+     * Return all the allocations that exist for a given node.
      */
     public function index(GetAllocationsRequest $request, Node $node): array
     {

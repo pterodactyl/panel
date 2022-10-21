@@ -37,10 +37,8 @@ class AdminAcl
 
     /**
      * Determine if an API key has permission to perform a specific read/write operation.
-     *
-     * @return bool
      */
-    public static function can(int $permission, int $action = self::READ)
+    public static function can(int $permission, int $action = self::READ): bool
     {
         if ($permission & $action) {
             return true;
@@ -52,10 +50,8 @@ class AdminAcl
     /**
      * Determine if an API Key model has permission to access a given resource
      * at a specific action level.
-     *
-     * @return bool
      */
-    public static function check(ApiKey $key, string $resource, int $action = self::READ)
+    public static function check(ApiKey $key, string $resource, int $action = self::READ): bool
     {
         return self::can(data_get($key, self::COLUMN_IDENTIFIER . $resource, self::NONE), $action);
     }

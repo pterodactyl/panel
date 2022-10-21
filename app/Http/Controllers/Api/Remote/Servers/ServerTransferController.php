@@ -16,68 +16,28 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 
 class ServerTransferController extends Controller
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $daemonServerRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonTransferRepository
-     */
-    private $daemonTransferRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $configurationStructureService;
-
-    /**
-     * @var \Pterodactyl\Services\Nodes\NodeJWTService
-     */
-    private $jwtService;
-
-    /**
      * ServerTransferController constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        ServerRepository $repository,
-        DaemonServerRepository $daemonServerRepository,
-        DaemonTransferRepository $daemonTransferRepository,
-        ServerConfigurationStructureService $configurationStructureService,
-        NodeJWTService $jwtService
+        private ConnectionInterface $connection,
+        private ServerRepository $repository,
+        private DaemonServerRepository $daemonServerRepository,
+        private DaemonTransferRepository $daemonTransferRepository,
+        private NodeJWTService $jwtService
     ) {
-        $this->connection = $connection;
-        $this->repository = $repository;
-        $this->daemonServerRepository = $daemonServerRepository;
-        $this->daemonTransferRepository = $daemonTransferRepository;
-        $this->configurationStructureService = $configurationStructureService;
-        $this->jwtService = $jwtService;
     }
 
     /**
      * The daemon notifies us about the archive status.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      * @throws \Throwable
      */
-    public function archive(Request $request, string $uuid)
+    public function archive(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
 
@@ -114,11 +74,9 @@ class ServerTransferController extends Controller
     /**
      * The daemon notifies us about a transfer failure.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function failure(string $uuid)
+    public function failure(string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
 
@@ -168,14 +126,12 @@ class ServerTransferController extends Controller
     }
 
     /**
-     * Release all of the reserved allocations for this transfer and mark it as failed in
+     * Release all the reserved allocations for this transfer and mark it as failed in
      * the database.
-     *
-     * @return \Illuminate\Http\JsonResponse
      *
      * @throws \Throwable
      */
-    protected function processFailedTransfer(ServerTransfer $transfer)
+    protected function processFailedTransfer(ServerTransfer $transfer): JsonResponse
     {
         $this->connection->transaction(function () use (&$transfer) {
             $transfer->forceFill(['successful' => false])->saveOrFail();

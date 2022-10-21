@@ -11,16 +11,14 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return ApiKey::class;
     }
 
     /**
-     * Get all of the account API keys that exist for a specific user.
+     * Get all the account API keys that exist for a specific user.
      */
     public function getAccountKeys(User $user): Collection
     {
@@ -30,7 +28,7 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     }
 
     /**
-     * Get all of the application API keys that exist for a specific user.
+     * Get all the application API keys that exist for a specific user.
      */
     public function getApplicationKeys(User $user): Collection
     {

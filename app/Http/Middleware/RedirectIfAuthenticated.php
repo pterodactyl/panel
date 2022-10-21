@@ -9,24 +9,16 @@ use Illuminate\Auth\AuthManager;
 class RedirectIfAuthenticated
 {
     /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    private $authManager;
-
-    /**
      * RedirectIfAuthenticated constructor.
      */
-    public function __construct(AuthManager $authManager)
+    public function __construct(private AuthManager $authManager)
     {
-        $this->authManager = $authManager;
     }
 
     /**
      * Handle an incoming request.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next, string $guard = null)
+    public function handle(Request $request, Closure $next, string $guard = null): mixed
     {
         if ($this->authManager->guard($guard)->check()) {
             return redirect()->route('index');

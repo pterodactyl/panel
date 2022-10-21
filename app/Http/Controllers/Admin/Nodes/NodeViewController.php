@@ -2,12 +2,13 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Nodes;
 
+use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
-use Illuminate\Contracts\View\Factory;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
@@ -20,60 +21,22 @@ class NodeViewController extends Controller
     use JavascriptInjection;
 
     /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Contracts\View\Factory
-     */
-    private $view;
-
-    /**
-     * @var \Pterodactyl\Services\Helpers\SoftwareVersionService
-     */
-    private $versionService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\LocationRepository
-     */
-    private $locationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\AllocationRepository
-     */
-    private $allocationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $serverRepository;
-
-    /**
      * NodeViewController constructor.
      */
     public function __construct(
-        AllocationRepository $allocationRepository,
-        LocationRepository $locationRepository,
-        NodeRepository $repository,
-        ServerRepository $serverRepository,
-        SoftwareVersionService $versionService,
-        Factory $view
+        private AllocationRepository $allocationRepository,
+        private LocationRepository $locationRepository,
+        private NodeRepository $repository,
+        private ServerRepository $serverRepository,
+        private SoftwareVersionService $versionService,
+        private ViewFactory $view
     ) {
-        $this->repository = $repository;
-        $this->view = $view;
-        $this->versionService = $versionService;
-        $this->locationRepository = $locationRepository;
-        $this->allocationRepository = $allocationRepository;
-        $this->serverRepository = $serverRepository;
     }
 
     /**
      * Returns index view for a specific node on the system.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function index(Request $request, Node $node)
+    public function index(Request $request, Node $node): View
     {
         $node = $this->repository->loadLocationAndServerCount($node);
 
@@ -86,10 +49,8 @@ class NodeViewController extends Controller
 
     /**
      * Returns the settings page for a specific node.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function settings(Request $request, Node $node)
+    public function settings(Request $request, Node $node): View
     {
         return $this->view->make('admin.nodes.view.settings', [
             'node' => $node,
@@ -99,20 +60,16 @@ class NodeViewController extends Controller
 
     /**
      * Return the node configuration page for a specific node.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function configuration(Request $request, Node $node)
+    public function configuration(Request $request, Node $node): View
     {
         return $this->view->make('admin.nodes.view.configuration', compact('node'));
     }
 
     /**
      * Return the node allocation management page.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function allocations(Request $request, Node $node)
+    public function allocations(Request $request, Node $node): View
     {
         $node = $this->repository->loadNodeAllocations($node);
 
@@ -129,10 +86,8 @@ class NodeViewController extends Controller
 
     /**
      * Return a listing of servers that exist for this specific node.
-     *
-     * @return \Illuminate\Contracts\View\View
      */
-    public function servers(Request $request, Node $node)
+    public function servers(Request $request, Node $node): View
     {
         $this->plainInject([
             'node' => Collection::wrap($node->makeVisible(['daemon_token_id', 'daemon_token']))

@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Container\Container;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
@@ -40,22 +41,16 @@ class Task extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'tasks';
 
     /**
      * Relationships to be updated when this model is updated.
-     *
-     * @var array
      */
     protected $touches = ['schedule'];
 
     /**
      * Fields that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'schedule_id',
@@ -69,8 +64,6 @@ class Task extends Model
 
     /**
      * Cast values to correct type.
-     *
-     * @var array
      */
     protected $casts = [
         'id' => 'integer',
@@ -83,8 +76,6 @@ class Task extends Model
 
     /**
      * Default attributes when creating a new model.
-     *
-     * @var array
      */
     protected $attributes = [
         'time_offset' => 0,
@@ -92,10 +83,7 @@ class Task extends Model
         'continue_on_failure' => false,
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'schedule_id' => 'required|numeric|exists:schedules,id',
         'sequence_id' => 'required|numeric|min:1',
         'action' => 'required|string',
@@ -115,32 +103,24 @@ class Task extends Model
 
     /**
      * Return a hashid encoded string to represent the ID of the task.
-     *
-     * @return string
      */
-    public function getHashidAttribute()
+    public function getHashidAttribute(): string
     {
         return Container::getInstance()->make(HashidsInterface::class)->encode($this->id);
     }
 
     /**
      * Return the schedule that a task belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function schedule()
+    public function schedule(): BelongsTo
     {
         return $this->belongsTo(Schedule::class);
     }
 
     /**
      * Return the server a task is assigned to, acts as a belongsToThrough.
-     *
-     * @return \Znck\Eloquent\Relations\BelongsToThrough
-     *
-     * @throws \Exception
      */
-    public function server()
+    public function server(): \Znck\Eloquent\Relations\BelongsToThrough
     {
         return $this->belongsToThrough(Server::class, Schedule::class);
     }

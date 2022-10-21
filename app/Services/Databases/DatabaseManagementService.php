@@ -26,48 +26,19 @@ class DatabaseManagementService
     private const MATCH_NAME_REGEX = '/^(s[\d]+_)(.*)$/';
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
-     */
-    private $dynamic;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\DatabaseRepository
-     */
-    private $repository;
-
-    /**
      * Determines if the service should validate the user's ability to create an additional
      * database for this server. In almost all cases this should be true, but to keep things
      * flexible you can also set it to false and create more databases than the server is
      * allocated.
-     *
-     * @var bool
      */
-    protected $validateDatabaseLimit = true;
+    protected bool $validateDatabaseLimit = true;
 
-    /**
-     * CreationService constructor.
-     */
     public function __construct(
-        ConnectionInterface $connection,
-        DynamicDatabaseConnection $dynamic,
-        DatabaseRepository $repository,
-        Encrypter $encrypter
+        protected ConnectionInterface $connection,
+        protected DynamicDatabaseConnection $dynamic,
+        protected Encrypter $encrypter,
+        protected DatabaseRepository $repository
     ) {
-        $this->connection = $connection;
-        $this->dynamic = $dynamic;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**
@@ -82,10 +53,8 @@ class DatabaseManagementService
     }
 
     /**
-     * Set wether or not this class should validate that the server has enough slots
+     * Set whether this class should validate that the server has enough slots
      * left before creating the new database.
-     *
-     * @return $this
      */
     public function setValidateDatabaseLimit(bool $validate): self
     {
@@ -97,13 +66,11 @@ class DatabaseManagementService
     /**
      * Create a new database that is linked to a specific host.
      *
-     * @return \Pterodactyl\Models\Database
-     *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
      * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
      */
-    public function create(Server $server, array $data)
+    public function create(Server $server, array $data): Database
     {
         if (!config('pterodactyl.client_features.databases.enabled')) {
             throw new DatabaseClientFeatureNotEnabledException();
@@ -169,11 +136,9 @@ class DatabaseManagementService
     /**
      * Delete a database from the given host server.
      *
-     * @return bool|null
-     *
      * @throws \Exception
      */
-    public function delete(Database $database)
+    public function delete(Database $database): ?bool
     {
         $this->dynamic->set('dynamic', $database->database_host_id);
 

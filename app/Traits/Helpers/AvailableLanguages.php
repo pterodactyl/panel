@@ -7,23 +7,15 @@ use Illuminate\Filesystem\Filesystem;
 
 trait AvailableLanguages
 {
-    /**
-     * @var \Illuminate\Filesystem\Filesystem
-     */
-    private $filesystem;
+    private ?ISO639 $iso639 = null;
+
+    private ?Filesystem $filesystem = null;
 
     /**
-     * @var \Matriphe\ISO639\ISO639
-     */
-    private $iso639;
-
-    /**
-     * Return all of the available languages on the Panel based on those
+     * Return all the available languages on the Panel based on those
      * that are present in the language folder.
-     *
-     * @param bool $localize
      */
-    public function getAvailableLanguages($localize = false): array
+    public function getAvailableLanguages(bool $localize = false): array
     {
         return collect($this->getFilesystemInstance()->directories(resource_path('lang')))->mapWithKeys(function ($path) use ($localize) {
             $code = basename($path);

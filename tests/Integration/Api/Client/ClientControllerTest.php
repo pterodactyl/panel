@@ -11,7 +11,7 @@ use Pterodactyl\Models\Permission;
 class ClientControllerTest extends ClientApiIntegrationTestCase
 {
     /**
-     * Test that only the servers a logged in user is assigned to are returned by the
+     * Test that only the servers a logged-in user is assigned to are returned by the
      * API endpoint. Obviously there are cases such as being an administrator or being
      * a subuser, but for this test we just want to test a basic scenario and pretend
      * subusers do not exist at all.
@@ -241,7 +241,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         ]);
 
         // Only servers 2 & 3 (0 indexed) should be returned by the API at this point. The user making
-        // the request is the owner of server 0, and a subuser of server 1 so they should be exluded.
+        // the request is the owner of server 0, and a subuser of server 1, so they should be excluded.
         $response = $this->actingAs($users[0])->getJson('/api/client?type=admin');
 
         $response->assertOk();
@@ -286,10 +286,9 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
      * Test that no servers get returned if the user requests all admin level servers by using
      * ?type=admin or ?type=admin-all in the request.
      *
-     * @param string $type
      * @dataProvider filterTypeDataProvider
      */
-    public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser($type)
+    public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser(string $type)
     {
         /** @var \Pterodactyl\Models\User[] $users */
         $users = User::factory()->times(3)->create();
@@ -332,10 +331,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('data.0.attributes.relationships.allocations.data.0.attributes.notes', null);
     }
 
-    /**
-     * @return array
-     */
-    public function filterTypeDataProvider()
+    public function filterTypeDataProvider(): array
     {
         return [['admin'], ['admin-all']];
     }

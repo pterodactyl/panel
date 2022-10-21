@@ -13,11 +13,9 @@ class DaemonCommandRepository extends DaemonRepository
     /**
      * Sends a command or multiple commands to a running server instance.
      *
-     * @param string|string[] $command
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function send($command): ResponseInterface
+    public function send(array|string $command): ResponseInterface
     {
         Assert::isInstanceOf($this->server, Server::class);
 

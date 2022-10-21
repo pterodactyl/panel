@@ -11,17 +11,12 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DaemonBackupRepository extends DaemonRepository
 {
-    /**
-     * @var string|null
-     */
-    protected $adapter;
+    protected ?string $adapter;
 
     /**
      * Sets the backup adapter for this execution instance.
-     *
-     * @return $this
      */
-    public function setBackupAdapter(string $adapter)
+    public function setBackupAdapter(string $adapter): self
     {
         $this->adapter = $adapter;
 

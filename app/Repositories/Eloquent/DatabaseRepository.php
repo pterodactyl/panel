@@ -11,46 +11,22 @@ use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabaseRepository extends EloquentRepository implements DatabaseRepositoryInterface
 {
-    /**
-     * @var string
-     */
-    protected $connection = self::DEFAULT_CONNECTION_NAME;
-
-    /**
-     * @var \Illuminate\Database\DatabaseManager
-     */
-    protected $database;
+    protected string $connection = self::DEFAULT_CONNECTION_NAME;
 
     /**
      * DatabaseRepository constructor.
      */
-    public function __construct(Application $application, DatabaseManager $database)
+    public function __construct(Application $application, private DatabaseManager $database)
     {
         parent::__construct($application);
-
-        $this->database = $database;
     }
 
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Database::class;
-    }
-
-    /**
-     * Set the connection name to execute statements against.
-     *
-     * @return $this
-     */
-    public function setConnection(string $connection)
-    {
-        $this->connection = $connection;
-
-        return $this;
     }
 
     /**
@@ -62,7 +38,17 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
-     * Return all of the databases belonging to a server.
+     * Set the connection name to execute statements against.
+     */
+    public function setConnection(string $connection): self
+    {
+        $this->connection = $connection;
+
+        return $this;
+    }
+
+    /**
+     * Return all the databases belonging to a server.
      */
     public function getDatabasesForServer(int $server): Collection
     {
@@ -70,7 +56,7 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
     }
 
     /**
-     * Return all of the databases for a given host with the server relationship loaded.
+     * Return all the databases for a given host with the server relationship loaded.
      */
     public function getDatabasesForHost(int $host, int $count = 25): LengthAwarePaginator
     {
@@ -89,16 +75,18 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
 
     /**
      * Create a new database user on a given connection.
-     *
-     * @param $max_connections
      */
-    public function createUser(string $username, string $remote, string $password, $max_connections): bool
+    public function createUser(string $username, string $remote, string $password, ?int $max_connections): bool
     {
-        if (!$max_connections) {
-            return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'', $username, $remote, $password));
-        } else {
-            return $this->run(sprintf('CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\' WITH MAX_USER_CONNECTIONS %s', $username, $remote, $password, $max_connections));
+        $args = [$username, $remote, $password];
+        $command = 'CREATE USER `%s`@`%s` IDENTIFIED BY \'%s\'';
+
+        if (!empty($max_connections)) {
+            $args[] = $max_connections;
+            $command .= ' WITH MAX_USER_CONNECTIONS %s';
         }
+
+        return $this->run(sprintf($command, ...$args));
     }
 
     /**
@@ -132,8 +120,6 @@ class DatabaseRepository extends EloquentRepository implements DatabaseRepositor
 
     /**
      * Drop a given user on a specific connection.
-     *
-     * @return mixed
      */
     public function dropUser(string $username, string $remote): bool
     {

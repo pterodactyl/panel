@@ -15,44 +15,22 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 class BuildModificationService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonServerRepository
-     */
-    private $daemonServerRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $structureService;
-
-    /**
      * BuildModificationService constructor.
-     *
-     * @param \Pterodactyl\Services\Servers\ServerConfigurationStructureService $structureService
      */
     public function __construct(
-        ServerConfigurationStructureService $structureService,
-        ConnectionInterface $connection,
-        DaemonServerRepository $daemonServerRepository
+        private ConnectionInterface $connection,
+        private DaemonServerRepository $daemonServerRepository,
+        private ServerConfigurationStructureService $structureService
     ) {
-        $this->daemonServerRepository = $daemonServerRepository;
-        $this->connection = $connection;
-        $this->structureService = $structureService;
     }
 
     /**
      * Change the build details for a specified server.
      *
-     * @return \Pterodactyl\Models\Server
-     *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle(Server $server, array $data)
+    public function handle(Server $server, array $data): Server
     {
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $data) {
@@ -61,7 +39,7 @@ class BuildModificationService
             if (isset($data['allocation_id']) && $data['allocation_id'] != $server->allocation_id) {
                 try {
                     Allocation::query()->where('id', $data['allocation_id'])->where('server_id', $server->id)->firstOrFail();
-                } catch (ModelNotFoundException $ex) {
+                } catch (ModelNotFoundException) {
                     throw new DisplayException('The requested default allocation is not currently assigned to this server.');
                 }
             }
@@ -101,7 +79,7 @@ class BuildModificationService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    private function processAllocations(Server $server, array &$data)
+    private function processAllocations(Server $server, array &$data): void
     {
         if (empty($data['add_allocations']) && empty($data['remove_allocations'])) {
             return;
