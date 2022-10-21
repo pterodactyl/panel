@@ -3,10 +3,8 @@
 namespace Pterodactyl\Repositories\Eloquent;
 
 use Pterodactyl\Models\Server;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
@@ -18,98 +16,6 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     public function model(): string
     {
         return Server::class;
-    }
-
-    /**
-     * Return a collection of servers with their associated data for rebuild operations.
-     */
-    public function getDataForRebuild(int $server = null, int $node = null): Collection
-    {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
-
-        if (!is_null($server) && is_null($node)) {
-            $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && !is_null($node)) {
-            $instance = $instance->where('node_id', '=', $node);
-        }
-
-        return $instance->get($this->getColumns());
-    }
-
-    /**
-     * Return a collection of servers with their associated data for reinstall operations.
-     */
-    public function getDataForReinstall(int $server = null, int $node = null): Collection
-    {
-        $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
-
-        if (!is_null($server) && is_null($node)) {
-            $instance = $instance->where('id', '=', $server);
-        } elseif (is_null($server) && !is_null($node)) {
-            $instance = $instance->where('node_id', '=', $node);
-        }
-
-        return $instance->get($this->getColumns());
-    }
-
-    /**
-     * Return a server model and all variables associated with the server.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function findWithVariables(int $id): Server
-    {
-        try {
-            return $this->getBuilder()->with('egg.variables', 'variables')
-                ->where($this->getModel()->getKeyName(), '=', $id)
-                ->firstOrFail($this->getColumns());
-        } catch (ModelNotFoundException) {
-            throw new RecordNotFoundException();
-        }
-    }
-
-    /**
-     * Get the primary allocation for a given server. If a model is passed into
-     * the function, load the allocation relationship onto it. Otherwise, find and
-     * return the server from the database.
-     */
-    public function getPrimaryAllocation(Server $server, bool $refresh = false): Server
-    {
-        if (!$server->relationLoaded('allocation') || $refresh) {
-            $server->load('allocation');
-        }
-
-        return $server;
-    }
-
-    /**
-     * Return enough data to be used for the creation of a server via the daemon.
-     */
-    public function getDataForCreation(Server $server, bool $refresh = false): Server
-    {
-        foreach (['allocation', 'allocations', 'egg'] as $relation) {
-            if (!$server->relationLoaded($relation) || $refresh) {
-                $server->load($relation);
-            }
-        }
-
-        return $server;
-    }
-
-    /**
-     * Get data for use when updating a server on the Daemon. Returns an array of
-     * the egg which is used for build and rebuild. Only loads relations
-     * if they are missing, or refresh is set to true.
-     */
-    public function getDaemonServiceData(Server $server, bool $refresh = false): array
-    {
-        if (!$server->relationLoaded('egg') || $refresh) {
-            $server->load('egg');
-        }
-
-        return [
-            'egg' => $server->getRelation('egg')->uuid,
-        ];
     }
 
     /**
