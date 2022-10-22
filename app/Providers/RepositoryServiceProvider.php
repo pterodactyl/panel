@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Repositories\Eloquent\EggRepository;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Repositories\Eloquent\UserRepository;
 use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
@@ -20,7 +19,6 @@ use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\EggVariableRepository;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\TaskRepositoryInterface;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -58,7 +56,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SessionRepositoryInterface::class, SessionRepository::class);
         $this->app->bind(SettingsRepositoryInterface::class, SettingsRepository::class);
         $this->app->bind(SubuserRepositoryInterface::class, SubuserRepository::class);
-        $this->app->bind(TaskRepositoryInterface::class, TaskRepository::class);
         $this->app->bind(UserRepositoryInterface::class, UserRepository::class);
     }
 }

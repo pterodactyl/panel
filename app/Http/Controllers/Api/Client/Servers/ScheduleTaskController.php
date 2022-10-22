@@ -9,7 +9,6 @@ use Pterodactyl\Models\Schedule;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Transformers\Api\Client\TaskTransformer;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
@@ -23,7 +22,7 @@ class ScheduleTaskController extends ClientApiController
     /**
      * ScheduleTaskController constructor.
      */
-    public function __construct(private TaskRepository $repository)
+    public function __construct()
     {
         parent::__construct();
     }
@@ -45,11 +44,11 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        /** @var \Pterodactyl\Models\Task|null $lastTask */
+        /** @var Task|null $lastTask */
         $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
 
-        /** @var \Pterodactyl\Models\Task $task */
-        $task = $this->repository->create([
+        /** @var Task $task */
+        $task = Task::query()->create([
             'schedule_id' => $schedule->id,
             'sequence_id' => ($lastTask->sequence_id ?? 0) + 1,
             'action' => $request->input('action'),
@@ -84,7 +83,7 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        $this->repository->update($task->id, [
+        Task::query()->update([
             'action' => $request->input('action'),
             'payload' => $request->input('payload') ?? '',
             'time_offset' => $request->input('time_offset'),
