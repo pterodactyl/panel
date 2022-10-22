@@ -8,7 +8,6 @@ use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
@@ -21,8 +20,7 @@ class ToggleTwoFactorService
         private ConnectionInterface $connection,
         private Encrypter $encrypter,
         private Google2FA $google2FA,
-        private RecoveryTokenRepository $recoveryTokenRepository,
-        private UserRepositoryInterface $repository
+        private RecoveryTokenRepository $recoveryTokenRepository
     ) {
     }
 
@@ -78,10 +76,9 @@ class ToggleTwoFactorService
                 $this->recoveryTokenRepository->insert($inserts);
             }
 
-            $this->repository->withoutFreshModel()->update($user->id, [
-                'totp_authenticated_at' => Carbon::now(),
-                'use_totp' => (is_null($toggleState) ? !$user->use_totp : $toggleState),
-            ]);
+            $user->totp_authenticated_at = now();
+            $user->use_totp = (is_null($toggleState) ? !$user->use_totp : $toggleState);
+            $user->save();
 
             return $tokens;
         });

@@ -3,7 +3,7 @@
 namespace Pterodactyl\Console\Commands\User;
 
 use Illuminate\Console\Command;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Models\User;
 
 class DisableTwoFactorCommand extends Command
 {
@@ -14,7 +14,7 @@ class DisableTwoFactorCommand extends Command
     /**
      * DisableTwoFactorCommand constructor.
      */
-    public function __construct(private UserRepositoryInterface $repository)
+    public function __construct()
     {
         parent::__construct();
     }
@@ -32,12 +32,12 @@ class DisableTwoFactorCommand extends Command
         }
 
         $email = $this->option('email') ?? $this->ask(trans('command/messages.user.ask_email'));
-        $user = $this->repository->setColumns(['id', 'email'])->findFirstWhere([['email', '=', $email]]);
 
-        $this->repository->withoutFreshModel()->update($user->id, [
-            'use_totp' => false,
-            'totp_secret' => null,
-        ]);
+        $user = User::query()->where('email', $email)->firstOrFail();
+        $user->use_totp = false;
+        $user->totp_secret = null;
+        $user->save();
+
         $this->info(trans('command/messages.user.2fa_disabled', ['email' => $user->email]));
     }
 }

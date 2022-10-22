@@ -8,7 +8,7 @@ use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Pterodactyl\Notifications\AccountCreated;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 
 class UserCreationService
 {
@@ -18,8 +18,7 @@ class UserCreationService
     public function __construct(
         private ConnectionInterface $connection,
         private Hasher $hasher,
-        private PasswordBroker $passwordBroker,
-        private UserRepositoryInterface $repository
+        private PasswordBroker $passwordBroker
     ) {
     }
 
@@ -27,7 +26,7 @@ class UserCreationService
      * Create a new user on the system.
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws DataValidationException
      */
     public function handle(array $data): User
     {
@@ -36,15 +35,17 @@ class UserCreationService
         }
 
         $this->connection->beginTransaction();
-        if (!isset($data['password']) || empty($data['password'])) {
+        if (empty($data['password'])) {
             $generateResetToken = true;
             $data['password'] = $this->hasher->make(str_random(30));
         }
 
-        /** @var \Pterodactyl\Models\User $user */
-        $user = $this->repository->create(array_merge($data, [
+        // /** @var User $user */
+        // $user = $this->repository->create($data, true, true);
+
+        $user = User::query()->forceCreate(array_merge($data, [
             'uuid' => Uuid::uuid4()->toString(),
-        ]), true, true);
+        ]));
 
         if (isset($generateResetToken)) {
             $token = $this->passwordBroker->createToken($user);

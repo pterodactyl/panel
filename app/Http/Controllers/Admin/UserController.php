@@ -19,7 +19,6 @@ use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller
 {
@@ -34,7 +33,6 @@ class UserController extends Controller
         protected UserDeletionService $deletionService,
         protected Translator $translator,
         protected UserUpdateService $updateService,
-        protected UserRepositoryInterface $repository,
         protected ViewFactory $view
     ) {
     }

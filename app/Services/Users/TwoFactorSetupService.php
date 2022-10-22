@@ -6,7 +6,6 @@ use Exception;
 use RuntimeException;
 use Pterodactyl\Models\User;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class TwoFactorSetupService
@@ -18,8 +17,7 @@ class TwoFactorSetupService
      */
     public function __construct(
         private ConfigRepository $config,
-        private Encrypter $encrypter,
-        private UserRepositoryInterface $repository
+        private Encrypter $encrypter
     ) {
     }
 
@@ -27,9 +25,6 @@ class TwoFactorSetupService
      * Generate a 2FA token and store it in the database before returning the
      * QR code URL. This URL will need to be attached to a QR generating service in
      * order to function.
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function handle(User $user): array
     {
@@ -42,9 +37,8 @@ class TwoFactorSetupService
             throw new RuntimeException($exception->getMessage(), 0, $exception);
         }
 
-        $this->repository->withoutFreshModel()->update($user->id, [
-            'totp_secret' => $this->encrypter->encrypt($secret),
-        ]);
+        $user->totp_secret = $this->encrypter->encrypt($secret);
+        $user->save();
 
         $company = urlencode(preg_replace('/\s/', '', $this->config->get('app.name')));
 
