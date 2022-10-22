@@ -85,8 +85,7 @@ class NetworkAllocationController extends ClientApiController
     }
 
     /**
-     * Set the notes for the allocation for a server.
-     *s.
+     * Adds an allocation to a server.
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
