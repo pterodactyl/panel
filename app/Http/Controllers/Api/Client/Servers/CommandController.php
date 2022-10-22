@@ -8,7 +8,6 @@ use Pterodactyl\Facades\Activity;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
-use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\SendCommandRequest;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -18,7 +17,7 @@ class CommandController extends ClientApiController
     /**
      * CommandController constructor.
      */
-    public function __construct(private DaemonCommandRepository $repository)
+    public function __construct()
     {
         parent::__construct();
     }
@@ -31,7 +30,7 @@ class CommandController extends ClientApiController
     public function index(SendCommandRequest $request, Server $server): Response
     {
         try {
-            $this->repository->setServer($server)->send($request->input('command'));
+            $server->send($request->input('command'));
         } catch (DaemonConnectionException $exception) {
             $previous = $exception->getPrevious();
 

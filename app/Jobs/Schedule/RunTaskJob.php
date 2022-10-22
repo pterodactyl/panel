@@ -13,7 +13,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
-use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class RunTaskJob extends Job implements ShouldQueue
@@ -36,7 +35,6 @@ class RunTaskJob extends Job implements ShouldQueue
      * @throws \Throwable
      */
     public function handle(
-        DaemonCommandRepository $commandRepository,
         InitiateBackupService $backupService,
         DaemonPowerRepository $powerRepository
     ) {
@@ -66,7 +64,7 @@ class RunTaskJob extends Job implements ShouldQueue
                     $powerRepository->setServer($server)->send($this->task->payload);
                     break;
                 case Task::ACTION_COMMAND:
-                    $commandRepository->setServer($server)->send($this->task->payload);
+                    $server->send($this->task->payload);
                     break;
                 case Task::ACTION_BACKUP:
                     $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
