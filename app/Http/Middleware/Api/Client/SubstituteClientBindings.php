@@ -3,11 +3,17 @@
 namespace Pterodactyl\Http\Middleware\Api\Client;
 
 use Closure;
+use Illuminate\Contracts\Routing\Registrar;
 use Pterodactyl\Models\Server;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
 class SubstituteClientBindings extends SubstituteBindings
 {
+    public function __construct(Registrar $router, private Server $server)
+    {
+        parent::__construct($router);
+    }
+
     /**
      * @param \Illuminate\Http\Request $request
      */
@@ -16,7 +22,7 @@ class SubstituteClientBindings extends SubstituteBindings
         // Override default behavior of the model binding to use a specific table
         // column rather than the default 'id'.
         $this->router->bind('server', function ($value) {
-            return Server::query()->where(strlen($value) === 8 ? 'uuidShort' : 'uuid', $value)->firstOrFail();
+            return $this->server->query()->where(strlen($value) === 8 ? 'uuidShort' : 'uuid', $value)->firstOrFail();
         });
 
         $this->router->bind('user', function ($value, $route) {
