@@ -12,7 +12,7 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Helpers\Utilities;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Repositories\Eloquent\ScheduleRepository;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Services\Schedules\ProcessScheduleService;
 use Pterodactyl\Transformers\Api\Client\ScheduleTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -28,7 +28,7 @@ class ScheduleController extends ClientApiController
     /**
      * ScheduleController constructor.
      */
-    public function __construct(private ScheduleRepository $repository, private ProcessScheduleService $service)
+    public function __construct(private ProcessScheduleService $service)
     {
         parent::__construct();
     }
@@ -48,13 +48,13 @@ class ScheduleController extends ClientApiController
     /**
      * Store a new schedule for a server.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws DisplayException
+     * @throws DataValidationException
      */
     public function store(StoreScheduleRequest $request, Server $server): array
     {
-        /** @var \Pterodactyl\Models\Schedule $model */
-        $model = $this->repository->create([
+        /** @var Schedule $model */
+        $model = Schedule::query()->create([
             'server_id' => $server->id,
             'name' => $request->input('name'),
             'cron_day_of_week' => $request->input('day_of_week'),
@@ -96,8 +96,8 @@ class ScheduleController extends ClientApiController
     /**
      * Updates a given schedule with the new data provided.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws DisplayException
+     * @throws DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function update(UpdateScheduleRequest $request, Server $server, Schedule $schedule): array
@@ -124,7 +124,7 @@ class ScheduleController extends ClientApiController
             $data['is_processing'] = false;
         }
 
-        $this->repository->update($schedule->id, $data);
+        $schedule->update($data);
 
         Activity::event('server:schedule.update')
             ->subject($schedule)
@@ -156,7 +156,7 @@ class ScheduleController extends ClientApiController
      */
     public function delete(DeleteScheduleRequest $request, Server $server, Schedule $schedule): JsonResponse
     {
-        $this->repository->delete($schedule->id);
+        $schedule->delete();
 
         Activity::event('server:schedule.delete')->subject($schedule)->property('name', $schedule->name)->log();
 
@@ -166,7 +166,7 @@ class ScheduleController extends ClientApiController
     /**
      * Get the next run timestamp based on the cron data provided.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     protected function getNextRunAt(Request $request): Carbon
     {
@@ -178,7 +178,7 @@ class ScheduleController extends ClientApiController
                 $request->input('month'),
                 $request->input('day_of_week')
             );
-        } catch (Exception $exception) {
+        } catch (Exception) {
             throw new DisplayException('The cron data provided does not evaluate to a valid expression.');
         }
     }
