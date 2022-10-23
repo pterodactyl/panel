@@ -25,7 +25,6 @@ use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Services\Servers\StartupModificationService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
@@ -48,7 +47,6 @@ class ServersController extends Controller
         protected DatabaseManagementService $databaseManagementService,
         protected DatabasePasswordService $databasePasswordService,
         protected DatabaseRepositoryInterface $databaseRepository,
-        protected DatabaseHostRepository $databaseHostRepository,
         protected ServerDeletionService $deletionService,
         protected DetailsModificationService $detailsModificationService,
         protected ReinstallServerService $reinstallService,

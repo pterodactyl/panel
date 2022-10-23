@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Services\Databases\Hosts;
 
+use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostDeletionService
 {
@@ -12,8 +12,7 @@ class HostDeletionService
      * HostDeletionService constructor.
      */
     public function __construct(
-        private DatabaseRepositoryInterface $databaseRepository,
-        private DatabaseHostRepositoryInterface $repository
+        private DatabaseRepositoryInterface $databaseRepository
     ) {
     }
 
@@ -21,7 +20,7 @@ class HostDeletionService
      * Delete a specified host from the Panel if no databases are
      * attached to it.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws HasActiveServersException
      */
     public function handle(int $host): int
     {
@@ -30,6 +29,11 @@ class HostDeletionService
             throw new HasActiveServersException(trans('exceptions.databases.delete_has_databases'));
         }
 
-        return $this->repository->delete($host);
+        $host = DatabaseHost::query()->find($host);
+        if ($host) {
+            return $host->delete();
+        }
+
+        return true;
     }
 }

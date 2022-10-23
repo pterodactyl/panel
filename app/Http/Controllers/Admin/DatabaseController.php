@@ -12,11 +12,11 @@ use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
+use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Services\Databases\Hosts\HostCreationService;
 use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class DatabaseController extends Controller
 {
@@ -25,7 +25,6 @@ class DatabaseController extends Controller
      */
     public function __construct(
         private AlertsMessageBag $alert,
-        private DatabaseHostRepositoryInterface $repository,
         private DatabaseRepositoryInterface $databaseRepository,
         private HostCreationService $creationService,
         private HostDeletionService $deletionService,
@@ -40,22 +39,25 @@ class DatabaseController extends Controller
      */
     public function index(): View
     {
+        $hosts = DatabaseHost::query()
+            ->withCount('databases')
+            ->with('node')
+            ->get();
+
         return $this->view->make('admin.databases.index', [
             'locations' => $this->locationRepository->getAllWithNodes(),
-            'hosts' => $this->repository->getWithViewDetails(),
+            'hosts' => $hosts,
         ]);
     }
 
     /**
      * Display database host to user.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $host): View
     {
         return $this->view->make('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),
-            'host' => $this->repository->find($host),
+            'host' => DatabaseHost::query()->findOrFail($host),
             'databases' => $this->databaseRepository->getDatabasesForHost($host),
         ]);
     }
@@ -118,7 +120,7 @@ class DatabaseController extends Controller
     /**
      * Handle request to delete a database host.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws HasActiveServersException
      */
     public function delete(int $host): RedirectResponse
     {
