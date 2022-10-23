@@ -13,7 +13,6 @@ use Pterodactyl\Http\Requests\Admin\LocationFormRequest;
 use Pterodactyl\Services\Locations\LocationUpdateService;
 use Pterodactyl\Services\Locations\LocationCreationService;
 use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class LocationController extends Controller
 {
@@ -24,7 +23,6 @@ class LocationController extends Controller
         protected AlertsMessageBag $alert,
         protected LocationCreationService $creationService,
         protected LocationDeletionService $deletionService,
-        protected LocationRepositoryInterface $repository,
         protected LocationUpdateService $updateService,
         protected ViewFactory $view
     ) {
@@ -35,20 +33,23 @@ class LocationController extends Controller
      */
     public function index(): View
     {
+        $locations = Location::query()->withCount(['nodes', 'servers'])->get();
+
         return $this->view->make('admin.locations.index', [
-            'locations' => $this->repository->getAllWithDetails(),
+            'locations' => $locations,
         ]);
     }
 
     /**
      * Return the location view page.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $id): View
     {
+        $location = Location::with('nodes.servers')->findOrFail($id);
+
         return $this->view->make('admin.locations.view', [
-            'location' => $this->repository->getWithNodes($id),
+            'location' => $location,
         ]);
     }
 

@@ -5,7 +5,6 @@ namespace Pterodactyl\Services\Locations;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Location;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
 
 class LocationDeletionService
@@ -13,16 +12,15 @@ class LocationDeletionService
     /**
      * LocationDeletionService constructor.
      */
-    public function __construct(
-        protected LocationRepositoryInterface $repository,
-        protected NodeRepositoryInterface $nodeRepository
-    ) {
+    public function __construct(protected NodeRepositoryInterface $nodeRepository)
+    {
+
     }
 
     /**
      * Delete an existing location.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
+     * @throws HasActiveNodesException
      */
     public function handle(Location|int $location): ?int
     {
@@ -35,6 +33,6 @@ class LocationDeletionService
             throw new HasActiveNodesException(trans('exceptions.locations.has_nodes'));
         }
 
-        return $this->repository->delete($location);
+        return $location->delete();
     }
 }

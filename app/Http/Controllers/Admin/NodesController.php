@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Admin;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Allocation;
@@ -22,7 +23,6 @@ use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest;
 
@@ -39,7 +39,6 @@ class NodesController extends Controller
         protected CacheRepository $cache,
         protected NodeCreationService $creationService,
         protected NodeDeletionService $deletionService,
-        protected LocationRepositoryInterface $locationRepository,
         protected NodeRepositoryInterface $repository,
         protected ServerRepositoryInterface $serverRepository,
         protected NodeUpdateService $updateService,
@@ -53,7 +52,7 @@ class NodesController extends Controller
      */
     public function create(): View|RedirectResponse
     {
-        $locations = $this->locationRepository->all();
+        $locations = Location::all();
         if (count($locations) < 1) {
             $this->alert->warning(trans('admin/node.notices.location_required'))->flash();
 
