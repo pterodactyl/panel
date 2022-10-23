@@ -6,10 +6,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use PragmaRX\Google2FA\Google2FA;
+use Pterodactyl\Models\RecoveryToken;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\RecoveryTokenRepository;
 use Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid;
 
 class ToggleTwoFactorService
@@ -21,7 +21,6 @@ class ToggleTwoFactorService
         private ConnectionInterface $connection,
         private Encrypter $encrypter,
         private Google2FA $google2FA,
-        private RecoveryTokenRepository $recoveryTokenRepository,
         private UserRepositoryInterface $repository
     ) {
     }
@@ -70,12 +69,12 @@ class ToggleTwoFactorService
                     $tokens[] = $token;
                 }
 
-                // Before inserting any new records make sure all of the old ones are deleted to avoid
+                // Before inserting any new records make sure all the old ones are deleted to avoid
                 // any issues or storing an unnecessary number of tokens in the database.
-                $this->recoveryTokenRepository->deleteWhere(['user_id' => $user->id]);
+                $user->recoveryTokens()->delete();
 
                 // Bulk insert the hashed tokens.
-                $this->recoveryTokenRepository->insert($inserts);
+                RecoveryToken::query()->insert($inserts);
             }
 
             $this->repository->withoutFreshModel()->update($user->id, [
