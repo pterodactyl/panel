@@ -13,7 +13,6 @@ use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Services\Eggs\Variables\VariableUpdateService;
 use Pterodactyl\Http\Requests\Admin\Egg\EggVariableFormRequest;
 use Pterodactyl\Services\Eggs\Variables\VariableCreationService;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 
 class EggVariableController extends Controller
 {
@@ -25,7 +24,6 @@ class EggVariableController extends Controller
         protected VariableCreationService $creationService,
         protected VariableUpdateService $updateService,
         protected EggRepositoryInterface $repository,
-        protected EggVariableRepositoryInterface $variableRepository,
         protected ViewFactory $view
     ) {
     }
@@ -80,7 +78,7 @@ class EggVariableController extends Controller
      */
     public function destroy(int $egg, EggVariable $variable): RedirectResponse
     {
-        $this->variableRepository->delete($variable->id);
+        $variable->delete();
         $this->alert->success(trans('admin/nests.variables.notices.variable_deleted', [
             'variable' => $variable->name,
         ]))->flash();

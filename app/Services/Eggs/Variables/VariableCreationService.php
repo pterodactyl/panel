@@ -5,7 +5,6 @@ namespace Pterodactyl\Services\Eggs\Variables;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Traits\Services\ValidatesValidationRules;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableCreationService
@@ -15,7 +14,7 @@ class VariableCreationService
     /**
      * VariableCreationService constructor.
      */
-    public function __construct(private EggVariableRepositoryInterface $repository, private ValidationFactory $validator)
+    public function __construct(private ValidationFactory $validator)
     {
     }
 
@@ -47,7 +46,8 @@ class VariableCreationService
 
         $options = array_get($data, 'options') ?? [];
 
-        return $this->repository->create([
+        /** @var EggVariable $eggVariable */
+        $eggVariable = EggVariable::query()->create([
             'egg_id' => $egg,
             'name' => $data['name'] ?? '',
             'description' => $data['description'] ?? '',
@@ -57,5 +57,7 @@ class VariableCreationService
             'user_editable' => in_array('user_editable', $options),
             'rules' => $data['rules'] ?? '',
         ]);
+
+        return $eggVariable;
     }
 }
