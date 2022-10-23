@@ -13,7 +13,6 @@ class UpgradeCommand extends Command
 {
     protected const DEFAULT_URL = 'https://github.com/pterodactyl/panel/releases/%s/panel.tar.gz';
 
-    /** @var string */
     protected $signature = 'p:upgrade
         {--user= : The user that PHP runs under. All files will be owned by this user.}
         {--group= : The group that PHP runs under. All files will be owned by this group.}
@@ -22,7 +21,6 @@ class UpgradeCommand extends Command
         {--skip-download : If set no archive will be downloaded.}
         {--directory= : The root directory of the panel. This defaults to "/var/www/pterodactyl".}';
 
-    /** @var string */
     protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
 
     /**
@@ -44,7 +42,7 @@ class UpgradeCommand extends Command
             $this->line($this->getUrl());
         }
 
-        if (version_compare(PHP_VERSION, '7.4.0') < 0) {
+        if (\version_compare(PHP_VERSION, '7.4.0') < 0) {
             $this->error('Cannot execute self-upgrade process. The minimum required PHP version required is 7.4.0, you have [' . PHP_VERSION . '].');
         }
 
@@ -55,8 +53,8 @@ class UpgradeCommand extends Command
                 $skipDownload = !$this->confirm('Would you like to download and unpack the archive files for the latest version?', true);
             }
 
-            if (is_null($this->option('user'))) {
-                $userDetails = posix_getpwuid(fileowner('public'));
+            if (\is_null($this->option('user'))) {
+                $userDetails = \posix_getpwuid(\fileowner('public'));
                 $user = $userDetails['name'] ?? 'www-data';
 
                 if (!$this->confirm("Your webserver user has been detected as <fg=blue>[{$user}]:</> is this correct?", true)) {
@@ -71,8 +69,8 @@ class UpgradeCommand extends Command
                 }
             }
 
-            if (is_null($this->option('group'))) {
-                $groupDetails = posix_getgrgid(filegroup('public'));
+            if (\is_null($this->option('group'))) {
+                $groupDetails = \posix_getgrgid(\filegroup('public'));
                 $group = $groupDetails['name'] ?? 'www-data';
 
                 if (!$this->confirm("Your webserver group has been detected as <fg=blue>[{$group}]:</> is this correct?", true)) {
@@ -94,64 +92,37 @@ class UpgradeCommand extends Command
             }
         }
 
-        ini_set('output_buffering', 0);
-        $bar = $this->output->createProgressBar($skipDownload ? 8 : 13);
-        $bar->start();
-        $dir = sprintf('/var/www/backup_%s', preg_replace('/:|\+/', '_', CarbonImmutable::now()->toIso8601String()));
+        \ini_set('output_buffering', '0');
+        $dir = \sprintf('/var/www/pterodactyl/_backups/panel_%s', \preg_replace('/:|\+/', '_', CarbonImmutable::now()->toIso8601String()));
         $root = $this->option('directory') ?? '/var/www/pterodactyl';
+        $fallback = $this->getFallback($root, $dir);
+        $bar = $this->output->createProgressBar($skipDownload ? 9 : 14);
+        $bar->start();
 
         if (!$skipDownload) {
-            $this->withProgress($bar, function () {
+            $this->withProgress($bar, function () use ($fallback) {
                 $this->line("\$upgrader> curl -L \"{$this->getUrl()}\" -o /tmp/panel.tar.gz");
-                $process = Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" -o /tmp/panel.tar.gz");
-                $process->run(function ($type, $buffer) {
-                    $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
-                    if ($type === Process:ERR) {
-                        return $this->processError(false);
-                    }
-                });
+                Process::fromShellCommandline("curl -L \"{$this->getUrl()}\" -o /tmp/panel.tar.gz")->run($fallback);
             });
-            
-            $this->withProgress($bar, function () {
-                $this->line("\$upgrader> mkdir ${$dir}");
-                Process::fromShellCommandline("mkdir ${$dir}")->run(function ($type, $buffer) {
-                    if ($type === Process::ERR) {
-                        return $this->processError(false, $buffer);
-                    }
-                });
+
+            $this->withProgress($bar, function () use ($dir, $fallback) {
+                $this->line("\$upgrader> mkdir -p {$dir}");
+                Process::fromShellCommandline("mkdir -p {$dir}")->run($fallback);
             });
-            
-            $this->withProgress($bar, function () {
-                $this->line("\$upgrader> mv ${$root}/* ${$dir}");
-                Process::fromShellCommandline("mv ${$root}/* ${$dir}")->run(function ($type, $buffer) {
-                    if ($type === Process:ERR) {
-                        return $this->processError(false, $buffer);
-                    }
-                    
-                    $this->info("Current panel has been backed up. If the upgrade fails, you can restore your files at ${$dir}");
-                });
+
+            $this->withProgress($bar, function () use ($dir, $fallback, $root) {
+                $this->line("\$upgrader> mv {$root}/* {$dir}");
+                Process::fromShellCommandline("mv {$root}/* {$dir}")->run($fallback);
             });
-            
-            $this->withProgress($bar, function () {
-                $this->line("\$upgrader> mv /tmp/panel.tar.gz ${$root}");
-                $process = Process::fromShellCommandline("mv /tmp/panel.tar.gz ${$root}");
-                $process->run(function ($type, $buffer) {
-                    $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
-                    if ($type === Process::ERR) {
-                        return $this->processError(true);
-                    }
-                });
+
+            $this->withProgress($bar, function () use ($fallback, $root) {
+                $this->line("\$upgrader> mv /tmp/panel.tar.gz {$root}");
+                Process::fromShellCommandline("mv /tmp/panel.tar.gz {$root}")->run($fallback);
             });
-            
-            $this->withProgress($bar, function () {
-                $this->line("\$upgrader> cd ${$root} && tar -xzvf panel.tar.gz");
-                $process = Process::fromShellCommandline("cd ${$root} && tar -xzvf panel.tar.gz");
-                $process->run(function ($type, $buffer) {
-                    $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
-                    if ($type === Process::ERR) {
-                        return $this->processError(true);
-                    }
-                });
+
+            $this->withProgress($bar, function () use ($fallback, $root) {
+                $this->line("\$upgrader> tar -xzvf panel.tar.gz");
+                Process::fromShellCommandline('tar -xzvf panel.tar.gz', $root)->run($fallback);
             });
         }
 
@@ -160,22 +131,19 @@ class UpgradeCommand extends Command
             $this->call('down');
         });
 
-        $this->withProgress($bar, function () {
+        $this->withProgress($bar, function () use ($fallback) {
             $this->line('$upgrader> chmod -R 755 storage bootstrap/cache');
-            $process = new Process(['chmod', '-R', '755', 'storage', 'bootstrap/cache']);
-            $process->run(function ($type, $buffer) {
-                $this->{$type === Process::ERR ? 'error' : 'line'}($buffer);
-            });
+            Process::fromShellCommandline('chmod -R 755 storage bootstrap/cache')->run($fallback);
         });
 
         $this->withProgress($bar, function () {
             $command = ['composer', 'install', '--no-ansi'];
-            if (config('app.env') === 'production' && !config('app.debug')) {
+            if (\config('app.env') === 'production' && !\config('app.debug')) {
                 $command[] = '--optimize-autoloader';
                 $command[] = '--no-dev';
             }
 
-            $this->line('$upgrader> ' . implode(' ', $command));
+            $this->line('$upgrader> ' . \implode(' ', $command));
             $process = new Process($command);
             $process->setTimeout(10 * 60);
             $process->run(function ($type, $buffer) {
@@ -191,8 +159,13 @@ class UpgradeCommand extends Command
         $this->setLaravel($app);
 
         $this->withProgress($bar, function () {
-            $this->line('\$upgrader> php artisan optimize:clear');
-            $this->call('optimize:clear');
+            $this->line('$upgrader> php artisan view:clear');
+            $this->call('view:clear');
+        });
+
+        $this->withProgress($bar, function () {
+            $this->line('$upgrader> php artisan config:clear');
+            $this->call('config:clear');
         });
 
         $this->withProgress($bar, function () {
@@ -237,33 +210,32 @@ class UpgradeCommand extends Command
             return $this->option('url');
         }
 
-        return sprintf(self::DEFAULT_URL, $this->option('release') ? 'download/v' . $this->option('release') : 'latest/download');
+        return \sprintf(self::DEFAULT_URL, $this->option('release') ? 'download/v' . $this->option('release') : 'latest/download');
     }
-    
-    protected function processError($restore, $data = null)
+
+    protected function getFallback(string $root, string $dir): Closure
     {
-        if (!!$data) {
-            $this->error($data);
-        }
-        
-        if ($restore) {
+        return function (string $type, mixed $data) use ($root, $dir) {
+            $this->{$type === Process::ERR ? 'error' : 'line'}($data);
             $this->info('Attempting to restore latest backup.');
-            $process = Process::fromShellCommandline("mv ${$dir}/* ${$root}");
-            $process->run(function ($type, $buffer) {
+
+            Process::fromShellCommandline("mv {$dir}/* {$root}")->run(function ($type, $buffer) use ($dir) {
                 if ($type === Process::ERR) {
-                    $this->error($buffer);
                     $this->error('Failed to rollback to previous panel version.');
-                    $this->error("You can do this manually by moving the files from ${$dir} to the default path.");
+                    $this->error("You can do this manually by moving the files from {$dir} to the default path.");
                 } else {
-                    $this->info('Rolled back to previous panel version.');
+                    $this->info('Rolled back to previous version.');
                 }
             });
-        }
-        
-        Process::fromShellCommandline('rm -f /tmp/panel.tar.gz')->run(function ($type, $buffer) {
-            if ($type === Process::ERR) {
-                $this->error('Failed to remove archive from tmp folder.');
-            }
-        });
+
+            Process::fromShellCommandline('rm -rf /tmp/panel.tar.gz')->run(function ($type, $buffer) {
+                if ($type === Process::ERR) {
+                    $this->error('Failed to remove archive from tmp folder.');
+                    $this->error($buffer);
+                }
+            });
+
+            $this->exit(1);
+        };
     }
 }
