@@ -4,7 +4,6 @@ namespace Pterodactyl\Services\Api;
 
 use Pterodactyl\Models\ApiKey;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 
 class KeyCreationService
 {
@@ -13,7 +12,7 @@ class KeyCreationService
     /**
      * ApiKeyService constructor.
      */
-    public function __construct(private ApiKeyRepositoryInterface $repository, private Encrypter $encrypter)
+    public function __construct(private Encrypter $encrypter)
     {
     }
 
@@ -33,7 +32,6 @@ class KeyCreationService
      * This will automatically generate an identifier and an encrypted token that are
      * stored in the database.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
     public function handle(array $data, array $permissions = []): ApiKey
     {
@@ -47,6 +45,6 @@ class KeyCreationService
             $data = array_merge($data, $permissions);
         }
 
-        return $this->repository->create($data, true, true);
+        return ApiKey::query()->forceCreate($data);
     }
 }

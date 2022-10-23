@@ -8,8 +8,8 @@ use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 
 class NodeAutoDeployController extends Controller
 {
@@ -17,7 +17,6 @@ class NodeAutoDeployController extends Controller
      * NodeAutoDeployController constructor.
      */
     public function __construct(
-        private ApiKeyRepository $repository,
         private Encrypter $encrypter,
         private KeyCreationService $keyCreationService
     ) {
@@ -31,8 +30,15 @@ class NodeAutoDeployController extends Controller
      */
     public function __invoke(Request $request, Node $node): JsonResponse
     {
-        /** @var \Pterodactyl\Models\ApiKey|null $key */
-        $key = $this->repository->getApplicationKeys($request->user())
+        /** @var User $user */
+        $user = $request->user();
+
+        $keys = $user->apiKeys()
+            ->where('key_type', ApiKey::TYPE_APPLICATION)
+            ->get();
+
+        /** @var ApiKey|null $key */
+        $key = $keys
             ->filter(function (ApiKey $key) {
                 foreach ($key->getAttributes() as $permission => $value) {
                     if ($permission === 'r_nodes' && $value === 1) {
