@@ -3,15 +3,16 @@
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
-use Prologue\Alerts\AlertsMessageBag;
+use Pterodactyl\Models\Allocation;
 use Illuminate\Http\RedirectResponse;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServerTransfer;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\TransferService;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServerTransferController extends Controller
 {
@@ -20,7 +21,6 @@ class ServerTransferController extends Controller
      */
     public function __construct(
         private AlertsMessageBag $alert,
-        private AllocationRepositoryInterface $allocationRepository,
         private NodeRepository $nodeRepository,
         private TransferService $transferService,
         private DaemonConfigurationRepository $daemonConfigurationRepository
@@ -87,7 +87,12 @@ class ServerTransferController extends Controller
         $allocations = $additional_allocations;
         $allocations[] = $allocation_id;
 
-        $unassigned = $this->allocationRepository->getUnassignedAllocationIds($node_id);
+        /** @var Node $node */
+        $node = Node::query()->findOrFail($node_id);
+        $unassigned = $node->allocations()
+            ->whereNull('server_id')
+            ->pluck('id')
+            ->toArray();
 
         $updateIds = [];
         foreach ($allocations as $allocation) {
@@ -99,7 +104,9 @@ class ServerTransferController extends Controller
         }
 
         if (!empty($updateIds)) {
-            $this->allocationRepository->updateWhereIn('id', $updateIds, ['server_id' => $server->id]);
+            Allocation::query()
+                ->whereIn('id', $updateIds)
+                ->update(['server_id' => $server->id]);
         }
     }
 }

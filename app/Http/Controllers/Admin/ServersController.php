@@ -30,7 +30,6 @@ use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
 
@@ -41,7 +40,6 @@ class ServersController extends Controller
      */
     public function __construct(
         protected AlertsMessageBag $alert,
-        protected AllocationRepositoryInterface $allocationRepository,
         protected BuildModificationService $buildModificationService,
         protected ConfigRepository $config,
         protected DaemonServerRepository $daemonServerRepository,

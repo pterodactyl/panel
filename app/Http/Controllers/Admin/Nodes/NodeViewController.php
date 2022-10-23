@@ -14,7 +14,6 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 
 class NodeViewController extends Controller
 {
@@ -24,7 +23,6 @@ class NodeViewController extends Controller
      * NodeViewController constructor.
      */
     public function __construct(
-        private AllocationRepository $allocationRepository,
         private LocationRepository $locationRepository,
         private NodeRepository $repository,
         private ServerRepository $serverRepository,

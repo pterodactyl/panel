@@ -4,10 +4,10 @@ namespace Pterodactyl\Services\Allocations;
 
 use Exception;
 use IPTools\Network;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Allocation\CidrOutOfRangeException;
 use Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException;
 use Pterodactyl\Exceptions\Service\Allocation\InvalidPortMappingException;
@@ -25,7 +25,7 @@ class AssignmentService
     /**
      * AssignmentService constructor.
      */
-    public function __construct(protected AllocationRepositoryInterface $repository, protected ConnectionInterface $connection)
+    public function __construct(protected ConnectionInterface $connection)
     {
     }
 
@@ -101,7 +101,7 @@ class AssignmentService
                     ];
                 }
 
-                $this->repository->insertIgnore($insertData);
+                Allocation::query()->insertOrIgnore($insertData);
             }
         }
 
