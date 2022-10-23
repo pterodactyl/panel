@@ -8,6 +8,7 @@ Route::post('/sftp/auth', Remote\SftpAuthenticationController::class);
 
 Route::get('/servers', [Remote\Servers\ServerDetailsController::class, 'list']);
 Route::post('/servers/reset', [Remote\Servers\ServerDetailsController::class, 'resetState']);
+Route::post('/activity', Remote\ActivityProcessingController::class);
 
 Route::group(['prefix' => '/servers/{uuid}'], function () {
     Route::get('/', Remote\Servers\ServerDetailsController::class);

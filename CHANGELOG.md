@@ -3,6 +3,91 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## [Unreleased]
+### Changed
+* Changed minimum PHP version is now 8.0 instead of `7.4`.
+* Upgraded from Laravel 8 to Laravel 9.
+
+## v1.10.4
+### Fixed
+* Fixed an issue where subusers could be given permissions that are not actually registered or used.
+* Fixed an issue where node FQDNs could not just be IP addresses.
+
+### Changed
+* Change maximum number of API keys per user from `10` to `25`.
+* Change byte unit prefix from `B` to `iB` to better reflect our usage of base 2 (multiples of 1024).
+
+## v1.10.3
+### Fixed
+* S3 Backup driver now supports Cloudflare R2.
+* Node FQDNs can now be used with AAAA records with no A records present.
+* Server transfers can no longer be initiated if the server is being installed, transferred, or restoring a backup.
+* Fixed an issue relating to the use of arrays in the `config_files` field with eggs.
+* Fixed `oom_disabled` not being mapped in the Application API when creating a new server.
+
+### Added
+* File manager now supports selecting multiple files for upload (when using the upload button).
+* Added a configuration option for specifying the S3 storage class for backups.
+
+### Changed
+* Servers will now show the current uptime when the server is starting rather than only showing when the server is marked as online.
+
+## v1.10.2
+### Fixed
+* Fixes a rendering issue with egg descriptions in the admin area
+* Fixes the page title on the SSH Keys page
+
+### Changed
+* Additional validation rules will now show a toggle switch rather than an input when editing server variables
+* The eggs endpoint will now always return an empty JSON object for the `config_files` field, even if the field is completely empty
+
+### Added
+* Adds a `Force Outgoing IP` option for eggs that can be used to ensure servers making outgoing connections use their allocation IP rather than the node's primary ip
+* Adds options to configure sending of email (re)install notifications
+* Add an option to configure the part size for backups uploaded to S3
+
+## v1.10.1
+### Fixed
+* Fixes a surprise `clock()` function that was used for debugging and should not have made it into the release. This was causing activity events to not properly sync between the Panel and Wings.
+
+## v1.10.0
+### Fixed
+* Fixes improper cache key naming on the frontend causing server activity logs to be duplicated across server page views.
+* Fixes overflow issues on dialogs when the internal content is too long.
+* Fixes spinner overlay on console improperly taking up the entire page making it impossible to use navigation controls.
+* Fixes 2FA QR code background being too dark for some phones to properly scan.
+* File manager now properly displays an error message if a user attempts to upload a folder rather than files.
+* Fixes the "Create Directory" dialog persisting the previously entered value when it is re-opened.
+
+### Changed
+* IP addresses in activity logs are now always displayed to administrators, regardless of if they own the server or not.
+* Scroll down indicator on the console has been changed to a down arrow to be clearer.
+* Docker builds have been updated to use `PHP 8.1`.
+* Recaptcha validation domain is now configurable using the `RECAPTCHA_DOMAIN` environment variable.
+* Drag and drop overlay on the file manager has been tweaked to be slightly more consistent with the frontend style and be a little easier to read.
+
+### Added
+* Adds support for the `user_uuid` claim on all generated JWTs which allows Wings to properly identify the user performing each action.
+* Adds support for recieving external activity log events from Wings instances (power state, commands, SFTP, and uploads).
+* Adds support for tracking failed password-based SFTP logins.
+* Server name and description are now passed along to Wings making them available in egg variables for parsing and including.
+* Adds support for displaying all active file uploads in the file manager.
+
+## v1.9.2
+### Fixed
+* Fixes rouding in sidebar of CPU usage graph that was causing an excessive number of zeros to be rendered.
+* Fixes the Java Version selector modal having the wrong default value selected initially.
+* Fixes console rendering in Safari that was causing the console to resize excessively and graphs to overlay content.
+* Fixes missing "Starting"/"Stopping" status display in the server uptime block.
+* Fixes incorrect formatting of activity log when viewing certain file actions.
+
+### Changed
+* Updated the UI for the two-step authorization setup on accounts to use new Dialog UI and provide better clarity to new users.
+
+### Added
+* Added missing `<DOCTYPE html>` tag to template output to avoid entering quirks mode in browsers.
+* Added password requirement when enabling TOTP on an account.
+
 ## v1.9.1
 ### Fixed
 * Fixes missing "Click to Copy" for server address on the console data blocks.

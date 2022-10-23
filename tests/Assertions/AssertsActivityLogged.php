@@ -31,10 +31,8 @@ trait AssertsActivityLogged
     /**
      * Asserts that a given activity log event was stored with the subjects being
      * any of the values provided.
-     *
-     * @param \Illuminate\Database\Eloquent\Model|array $subjects
      */
-    public function assertActivitySubjects(string $event, $subjects): void
+    public function assertActivitySubjects(string $event, Model|array $subjects): void
     {
         if (is_array($subjects)) {
             \Webmozart\Assert\Assert::lessThanEq(count(func_get_args()), 2, 'Invalid call to ' . __METHOD__ . ': cannot provide additional arguments if providing an array.');

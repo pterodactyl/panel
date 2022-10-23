@@ -16,8 +16,8 @@ export default () => {
     const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
 
-    const cpu = useChartTickLabel('CPU', limits.cpu, '%');
-    const memory = useChartTickLabel('Memory', limits.memory, 'MB');
+    const cpu = useChartTickLabel('CPU', limits.cpu, '%', 2);
+    const memory = useChartTickLabel('Memory', limits.memory, 'MiB');
     const network = useChart('Network', {
         sets: 2,
         options: {
@@ -56,8 +56,7 @@ export default () => {
         } catch (e) {
             return;
         }
-
-        cpu.push(values.cpu_absolute.toFixed(2));
+        cpu.push(values.cpu_absolute);
         memory.push(Math.floor(values.memory_bytes / 1024 / 1024));
         network.push([
             previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),

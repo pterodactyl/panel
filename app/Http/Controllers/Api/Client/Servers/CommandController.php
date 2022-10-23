@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Facades\Activity;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\BadResponseException;
 use Symfony\Component\HttpKernel\Exception\HttpException;
@@ -15,18 +16,11 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 class CommandController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonCommandRepository
-     */
-    private $repository;
-
-    /**
      * CommandController constructor.
      */
-    public function __construct(DaemonCommandRepository $repository)
+    public function __construct(private DaemonCommandRepository $repository)
     {
         parent::__construct();
-
-        $this->repository = $repository;
     }
 
     /**
@@ -52,6 +46,8 @@ class CommandController extends ClientApiController
 
             throw $exception;
         }
+
+        Activity::event('server:console.command')->property('command', $request->input('command'))->log();
 
         return $this->returnNoContent();
     }

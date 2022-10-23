@@ -31,6 +31,7 @@ export default class Transformers {
         const { actor } = attributes.relationships || {};
 
         return {
+            id: attributes.id,
             batch: attributes.batch,
             event: attributes.event,
             ip: attributes.ip,

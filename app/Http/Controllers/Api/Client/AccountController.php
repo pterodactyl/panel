@@ -15,24 +15,11 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
 class AccountController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
-
-    /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    private $manager;
-
-    /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $manager, UserUpdateService $updateService)
+    public function __construct(private AuthManager $manager, private UserUpdateService $updateService)
     {
         parent::__construct();
-
-        $this->updateService = $updateService;
-        $this->manager = $manager;
     }
 
     public function index(Request $request): array
@@ -50,9 +37,11 @@ class AccountController extends ClientApiController
         $original = $request->user()->email;
         $this->updateService->handle($request->user(), $request->validated());
 
-        Activity::event('user:account.email-changed')
-            ->property(['old' => $original, 'new' => $request->input('email')])
-            ->log();
+        if ($original !== $request->input('email')) {
+            Activity::event('user:account.email-changed')
+                ->property(['old' => $original, 'new' => $request->input('email')])
+                ->log();
+        }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

@@ -15,37 +15,22 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 class WebsocketController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Nodes\NodeJWTService
-     */
-    private $jwtService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\GetUserPermissionsService
-     */
-    private $permissionsService;
-
-    /**
      * WebsocketController constructor.
      */
     public function __construct(
-        NodeJWTService $jwtService,
-        GetUserPermissionsService $permissionsService
+        private NodeJWTService $jwtService,
+        private GetUserPermissionsService $permissionsService
     ) {
         parent::__construct();
-
-        $this->jwtService = $jwtService;
-        $this->permissionsService = $permissionsService;
     }
 
     /**
      * Generates a one-time token that is sent along in every websocket call to the Daemon.
-     * This is a signed JWT that the Daemon then uses the verify the user's identity, and
-     * allows us to continually renew this token and avoid users mainitaining sessions wrongly,
+     * This is a signed JWT that the Daemon then uses to verify the user's identity, and
+     * allows us to continually renew this token and avoid users maintaining sessions wrongly,
      * as well as ensure that user's only perform actions they're allowed to.
-     *
-     * @return \Illuminate\Http\JsonResponse
      */
-    public function __invoke(ClientApiRequest $request, Server $server)
+    public function __invoke(ClientApiRequest $request, Server $server): JsonResponse
     {
         $user = $request->user();
         if ($user->cannot(Permission::ACTION_WEBSOCKET_CONNECT, $server)) {
@@ -69,8 +54,8 @@ class WebsocketController extends ClientApiController
 
         $token = $this->jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(10))
+            ->setUser($request->user())
             ->setClaims([
-                'user_id' => $request->user()->id,
                 'server_uuid' => $server->uuid,
                 'permissions' => $permissions,
             ])

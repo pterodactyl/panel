@@ -8,6 +8,7 @@ use Illuminate\View\View;
 use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
@@ -20,59 +21,18 @@ use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 class DatabaseController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alert;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    private $databaseRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\LocationRepositoryInterface
-     */
-    private $locationRepository;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Services\Databases\Hosts\HostUpdateService
-     */
-    private $updateService;
-
-    /**
      * DatabaseController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        DatabaseHostRepositoryInterface $repository,
-        DatabaseRepositoryInterface $databaseRepository,
-        HostCreationService $creationService,
-        HostDeletionService $deletionService,
-        HostUpdateService $updateService,
-        LocationRepositoryInterface $locationRepository
+        private AlertsMessageBag $alert,
+        private DatabaseHostRepositoryInterface $repository,
+        private DatabaseRepositoryInterface $databaseRepository,
+        private HostCreationService $creationService,
+        private HostDeletionService $deletionService,
+        private HostUpdateService $updateService,
+        private LocationRepositoryInterface $locationRepository,
+        private ViewFactory $view
     ) {
-        $this->alert = $alert;
-        $this->creationService = $creationService;
-        $this->databaseRepository = $databaseRepository;
-        $this->deletionService = $deletionService;
-        $this->repository = $repository;
-        $this->locationRepository = $locationRepository;
-        $this->updateService = $updateService;
     }
 
     /**
@@ -80,7 +40,7 @@ class DatabaseController extends Controller
      */
     public function index(): View
     {
-        return view('admin.databases.index', [
+        return $this->view->make('admin.databases.index', [
             'locations' => $this->locationRepository->getAllWithNodes(),
             'hosts' => $this->repository->getWithViewDetails(),
         ]);
@@ -93,7 +53,7 @@ class DatabaseController extends Controller
      */
     public function view(int $host): View
     {
-        return view('admin.databases.view', [
+        return $this->view->make('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),
             'host' => $this->repository->find($host),
             'databases' => $this->databaseRepository->getDatabasesForHost($host),

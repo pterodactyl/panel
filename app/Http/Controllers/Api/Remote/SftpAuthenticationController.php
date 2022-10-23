@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Permission;
 use phpseclib3\Crypt\PublicKeyLoader;
 use Pterodactyl\Http\Controllers\Controller;
@@ -21,11 +22,8 @@ class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
 
-    protected GetUserPermissionsService $permissions;
-
-    public function __construct(GetUserPermissionsService $permissions)
+    public function __construct(protected GetUserPermissionsService $permissions)
     {
-        $this->permissions = $permissions;
     }
 
     /**
@@ -43,7 +41,7 @@ class SftpAuthenticationController extends Controller
         if ($this->hasTooManyLoginAttempts($request)) {
             $seconds = $this->limiter()->availableIn($this->throttleKey($request));
 
-            throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in {$seconds} seconds.");
+            throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in $seconds seconds.");
         }
 
         $user = $this->getUser($request, $connection['username']);
@@ -51,17 +49,26 @@ class SftpAuthenticationController extends Controller
 
         if ($request->input('type') !== 'public_key') {
             if (!password_verify($request->input('password'), $user->password)) {
+                Activity::event('auth:sftp.fail')->property('method', 'password')->subject($user)->log();
+
                 $this->reject($request);
             }
         } else {
             $key = null;
             try {
                 $key = PublicKeyLoader::loadPublicKey(trim($request->input('password')));
-            } catch (NoKeyLoadedException $exception) {
+            } catch (NoKeyLoadedException) {
                 // do nothing
             }
 
             if (!$key || !$user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {
+                // We don't log here because of the way the SFTP system works. This endpoint
+                // will get hit for every key the user provides, which could be 4 or 5. That is
+                // a lot of unnecessary log noise.
+                //
+                // For now, we'll only log failures due to a bad password as those are not likely
+                // to occur more than once in a session for the user, and are more likely to be of
+                // value to the end user.
                 $this->reject($request, is_null($key));
             }
         }
@@ -69,6 +76,7 @@ class SftpAuthenticationController extends Controller
         $this->validateSftpAccess($user, $server);
 
         return new JsonResponse([
+            'user' => $user->uuid,
             'server' => $server->uuid,
             'permissions' => $this->permissions->handle($server, $user),
         ]);
@@ -136,6 +144,8 @@ class SftpAuthenticationController extends Controller
             $permissions = $this->permissions->handle($server, $user);
 
             if (!in_array(Permission::ACTION_FILE_SFTP, $permissions)) {
+                Activity::event('server:sftp.denied')->actor($user)->subject($server)->log();
+
                 throw new HttpForbiddenException('You do not have permission to access SFTP for this server.');
             }
         }

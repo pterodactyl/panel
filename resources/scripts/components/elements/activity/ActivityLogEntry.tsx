@@ -5,40 +5,43 @@ import Translate from '@/components/elements/Translate';
 import { format, formatDistanceToNowStrict } from 'date-fns';
 import { ActivityLog } from '@definitions/user';
 import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMetaButton';
-import { TerminalIcon } from '@heroicons/react/solid';
+import { FolderOpenIcon, TerminalIcon } from '@heroicons/react/solid';
 import classNames from 'classnames';
 import style from './style.module.css';
-import { isObject } from '@/lib/objects';
 import Avatar from '@/components/Avatar';
 import useLocationHash from '@/plugins/useLocationHash';
+import { getObjectKeys, isObject } from '@/lib/objects';
 
 interface Props {
     activity: ActivityLog;
     children?: React.ReactNode;
 }
 
-const formatProperties = (properties: Record<string, unknown>): Record<string, unknown> => {
-    return Object.keys(properties).reduce((obj, key) => {
-        const value = properties[key];
-        // noinspection SuspiciousTypeOfGuard
-        const isCount = key === 'count' || (typeof key === 'string' && key.endsWith('_count'));
+function wrapProperties(value: unknown): any {
+    if (value === null || typeof value === 'string' || typeof value === 'number') {
+        return `<strong>${String(value)}</strong>`;
+    }
 
-        return {
-            ...obj,
-            [key]:
-                isCount || typeof value !== 'string'
-                    ? isObject(value)
-                        ? formatProperties(value)
-                        : value
-                    : `<strong>${value}</strong>`,
-        };
-    }, {});
-};
+    if (isObject(value)) {
+        return getObjectKeys(value).reduce((obj, key) => {
+            if (key === 'count' || (typeof key === 'string' && key.endsWith('_count'))) {
+                return { ...obj, [key]: value[key] };
+            }
+            return { ...obj, [key]: wrapProperties(value[key]) };
+        }, {} as Record<string, unknown>);
+    }
+
+    if (Array.isArray(value)) {
+        return value.map(wrapProperties);
+    }
+
+    return value;
+}
 
 export default ({ activity, children }: Props) => {
     const { pathTo } = useLocationHash();
     const actor = activity.relationships.actor;
-    const properties = formatProperties(activity.properties);
+    const properties = wrapProperties(activity.properties);
 
     return (
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
@@ -62,10 +65,13 @@ export default ({ activity, children }: Props) => {
                         </Link>
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi && (
-                                <Tooltip placement={'top'} content={'Performed using API Key'}>
-                                    <span>
-                                        <TerminalIcon />
-                                    </span>
+                                <Tooltip placement={'top'} content={'Using API Key'}>
+                                    <TerminalIcon />
+                                </Tooltip>
+                            )}
+                            {activity.event.startsWith('server:sftp.') && (
+                                <Tooltip placement={'top'} content={'Using SFTP'}>
+                                    <FolderOpenIcon />
                                 </Tooltip>
                             )}
                             {children}

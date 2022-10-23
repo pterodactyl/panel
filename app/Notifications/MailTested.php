@@ -8,22 +8,16 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class MailTested extends Notification
 {
-    /**
-     * @var \Pterodactyl\Models\User
-     */
-    private $user;
-
-    public function __construct(User $user)
+    public function __construct(private User $user)
     {
-        $this->user = $user;
     }
 
-    public function via()
+    public function via(): array
     {
         return ['mail'];
     }
 
-    public function toMail()
+    public function toMail(): MailMessage
     {
         return (new MailMessage())
             ->subject('Pterodactyl Test Message')

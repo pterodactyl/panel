@@ -1,4 +1,4 @@
-.checkbox {
+.checkbox_input {
     @apply w-4 h-4 rounded-sm border-neutral-500 bg-neutral-600 text-primary-500;
 
     &:focus, &:active {
@@ -12,10 +12,14 @@
 }
 
 .text_input {
-    @apply transition-all duration-75;
-    @apply bg-neutral-800 border-neutral-600 rounded px-4 py-2 outline-none;
+    @apply transition-shadow duration-75;
+    @apply w-full bg-neutral-800 rounded px-4 py-2 outline-none border-0;
 
-    &:focus {
-        @apply border-blue-600 ring-2 ring-blue-500;
+    &:focus, &:active {
+        @apply ring-4 ring-blue-300 ring-opacity-75;
+    }
+
+    &.loose {
+        @apply px-6 py-3;
     }
 }

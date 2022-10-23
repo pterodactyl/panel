@@ -1,8 +1,3 @@
-{{-- Pterodactyl - Panel --}}
-{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
-
-{{-- This software is licensed under the terms of the MIT license. --}}
-{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -49,6 +44,21 @@
                                 <label for="pDescription" class="form-label">Description</label>
                                 <textarea id="pDescription" name="description" class="form-control" rows="8">{{ old('description') }}</textarea>
                                 <p class="text-muted small">A description of this Egg.</p>
+                            </div>
+                            <div class="form-group">
+                                <div class="checkbox checkbox-primary no-margin-bottom">
+                                    <input id="pForceOutgoingIp" name="force_outgoing_ip" type="checkbox" value="1" {{ \Pterodactyl\Helpers\Utilities::checked('force_outgoing_ip', 0) }} />
+                                    <label for="pForceOutgoingIp" class="strong">Force Outgoing IP</label>
+                                    <p class="text-muted small">
+                                        Forces all outgoing network traffic to have its Source IP NATed to the IP of the server's primary allocation IP.
+                                        Required for certain games to work properly when the Node has multiple public IP addresses.
+                                        <br>
+                                        <strong>
+                                            Enabling this option will disable internal networking for any servers using this egg,
+                                            causing them to be unable to internally access other servers on the same node.
+                                        </strong>
+                                    </p>
+                                </div>
                             </div>
                         </div>
                         <div class="col-sm-6">

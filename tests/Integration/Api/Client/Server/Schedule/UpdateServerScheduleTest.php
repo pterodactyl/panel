@@ -11,10 +11,8 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
 {
     /**
      * The data to use when updating a schedule.
-     *
-     * @var array
      */
-    private $updateData = [
+    private array $updateData = [
         'name' => 'Updated Schedule Name',
         'minute' => '5',
         'hour' => '*',
@@ -27,10 +25,9 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
     /**
      * Test that a schedule can be updated.
      *
-     * @param array $permissions
      * @dataProvider permissionsDataProvider
      */
-    public function testScheduleCanBeUpdated($permissions)
+    public function testScheduleCanBeUpdated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
@@ -48,7 +45,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
         $this->assertFalse($schedule->is_active);
         $this->assertJsonTransformedWith($response->json('attributes'), $schedule);
 
-        $this->assertSame($expected->toIso8601String(), $schedule->next_run_at->toIso8601String());
+        $this->assertSame($expected->toAtomString(), $schedule->next_run_at->toAtomString());
     }
 
     /**

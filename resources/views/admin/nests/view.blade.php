@@ -1,8 +1,3 @@
-{{-- Pterodactyl - Panel --}}
-{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
-
-{{-- This software is licensed under the terms of the MIT license. --}}
-{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -93,7 +88,7 @@
                         <tr>
                             <td class="align-middle"><code>{{ $egg->id }}</code></td>
                             <td class="align-middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $egg->author }}">{{ $egg->name }}</a></td>
-                            <td class="col-xs-8 align-middle">{!! $egg->description !!}</td>
+                            <td class="col-xs-8 align-middle">{{ $egg->description }}</td>
                             <td class="text-center align-middle"><code>{{ $egg->servers->count() }}</code></td>
                             <td class="align-middle">
                                 <a href="{{ route('admin.nests.egg.export', ['egg' => $egg->id]) }}"><i class="fa fa-download"></i></a>

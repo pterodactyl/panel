@@ -10,16 +10,10 @@ use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 class EggConfigurationService
 {
     /**
-     * @var \Pterodactyl\Services\Servers\ServerConfigurationStructureService
-     */
-    private $configurationStructureService;
-
-    /**
      * EggConfigurationService constructor.
      */
-    public function __construct(ServerConfigurationStructureService $configurationStructureService)
+    public function __construct(private ServerConfigurationStructureService $configurationStructureService)
     {
-        $this->configurationStructureService = $configurationStructureService;
     }
 
     /**
@@ -41,10 +35,8 @@ class EggConfigurationService
 
     /**
      * Convert the "done" variable into an array if it is not currently one.
-     *
-     * @return array
      */
-    protected function convertStartupToNewFormat(array $startup)
+    protected function convertStartupToNewFormat(array $startup): array
     {
         $done = Arr::get($startup, 'done');
 
@@ -85,10 +77,7 @@ class EggConfigurationService
         ];
     }
 
-    /**
-     * @return array
-     */
-    protected function replacePlaceholders(Server $server, object $configs)
+    protected function replacePlaceholders(Server $server, object $configs): array
     {
         // Get the legacy configuration structure for the server so that we
         // can property map the egg placeholders to values.
@@ -161,20 +150,15 @@ class EggConfigurationService
             case 'env.SERVER_PORT':
                 $replace = 'server.build.default.port';
                 break;
-            // By default we don't need to change anything, only if we ended up matching a specific legacy item.
             default:
+                // By default, we don't need to change anything, only if we ended up matching a specific legacy item.
                 $replace = $key;
         }
 
         return str_replace("{{{$key}}}", "{{{$replace}}}", $value);
     }
 
-    /**
-     * @param mixed $value
-     *
-     * @return mixed|null
-     */
-    protected function matchAndReplaceKeys($value, array $structure)
+    protected function matchAndReplaceKeys(mixed $value, array $structure): mixed
     {
         preg_match_all('/{{(?<key>[\w.-]*)}}/', $value, $matches);
 
@@ -229,12 +213,8 @@ class EggConfigurationService
      * Iterates over a set of "find" values for a given file in the parser configuration. If
      * the value of the line match is something iterable, continue iterating, otherwise perform
      * a match & replace.
-     *
-     * @param mixed $data
-     *
-     * @return mixed
      */
-    private function iterate($data, array $structure)
+    private function iterate(mixed $data, array $structure): mixed
     {
         if (!is_iterable($data) && !is_object($data)) {
             return $data;
@@ -243,7 +223,13 @@ class EggConfigurationService
         // Remember, in PHP objects are always passed by reference, so if we do not clone this object
         // instance we'll end up making modifications to the object outside the scope of this function
         // which leads to some fun behavior in the parser.
-        $clone = clone $data;
+        if (is_array($data)) {
+            // Copy the array.
+            // NOTE: if the array contains any objects, they will be passed by reference.
+            $clone = $data;
+        } else {
+            $clone = clone $data;
+        }
         foreach ($clone as $key => &$value) {
             if (is_iterable($value) || is_object($value)) {
                 $value = $this->iterate($value, $structure);

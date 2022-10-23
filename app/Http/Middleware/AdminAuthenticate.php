@@ -1,11 +1,4 @@
 <?php
-/**
- * Pterodactyl - Panel
- * Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com>.
- *
- * This software is licensed under the terms of the MIT license.
- * https://opensource.org/licenses/MIT
- */
 
 namespace Pterodactyl\Http\Middleware;
 
@@ -18,11 +11,9 @@ class AdminAuthenticate
     /**
      * Handle an incoming request.
      *
-     * @return mixed
-     *
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if (!$request->user() || !$request->user()->root_admin) {
             throw new AccessDeniedHttpException();

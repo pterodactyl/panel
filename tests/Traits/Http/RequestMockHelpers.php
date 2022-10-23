@@ -3,6 +3,7 @@
 namespace Pterodactyl\Tests\Traits\Http;
 
 use Mockery as m;
+use Mockery\Mock;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use InvalidArgumentException;
@@ -10,20 +11,14 @@ use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait RequestMockHelpers
 {
-    /**
-     * @var string
-     */
-    private $requestMockClass = Request::class;
+    private string $requestMockClass = Request::class;
 
-    /**
-     * @var \Illuminate\Http\Request|\Mockery\Mock
-     */
-    protected $request;
+    protected Request|Mock $request;
 
     /**
      * Set the class to mock for requests.
      */
-    public function setRequestMockClass(string $class)
+    public function setRequestMockClass(string $class): void
     {
         $this->requestMockClass = $class;
 
@@ -33,7 +28,7 @@ trait RequestMockHelpers
     /**
      * Configure the user model that the request mock should return with.
      */
-    public function setRequestUserModel(User $user = null)
+    public function setRequestUserModel(User $user = null): void
     {
         $this->request->shouldReceive('user')->andReturn($user);
     }
@@ -43,6 +38,7 @@ trait RequestMockHelpers
      */
     public function generateRequestUserModel(array $args = []): User
     {
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->make($args);
         $this->setRequestUserModel($user);
 
@@ -51,10 +47,8 @@ trait RequestMockHelpers
 
     /**
      * Set a request attribute on the mock object.
-     *
-     * @param mixed $value
      */
-    public function setRequestAttribute(string $attribute, $value)
+    public function setRequestAttribute(string $attribute, mixed $value): void
     {
         $this->request->attributes->set($attribute, $value);
     }
@@ -62,7 +56,7 @@ trait RequestMockHelpers
     /**
      * Set the request route name.
      */
-    public function setRequestRouteName(string $name)
+    public function setRequestRouteName(string $name): void
     {
         $this->request->shouldReceive('route->getName')->andReturn($name);
     }
@@ -70,7 +64,7 @@ trait RequestMockHelpers
     /**
      * Set the active request object to be an instance of a mocked request.
      */
-    protected function buildRequestMock()
+    protected function buildRequestMock(): void
     {
         $this->request = m::mock($this->requestMockClass);
         if (!$this->request instanceof Request) {

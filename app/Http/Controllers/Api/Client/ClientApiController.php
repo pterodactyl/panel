@@ -10,10 +10,8 @@ abstract class ClientApiController extends ApplicationApiController
 {
     /**
      * Returns only the includes which are valid for the given transformer.
-     *
-     * @return string[]
      */
-    protected function getIncludesForTransformer(BaseClientTransformer $transformer, array $merge = [])
+    protected function getIncludesForTransformer(BaseClientTransformer $transformer, array $merge = []): array
     {
         $filtered = array_filter($this->parseIncludes(), function ($datum) use ($transformer) {
             return in_array($datum, $transformer->getAvailableIncludes());
@@ -24,10 +22,8 @@ abstract class ClientApiController extends ApplicationApiController
 
     /**
      * Returns the parsed includes for this request.
-     *
-     * @return string[]
      */
-    protected function parseIncludes()
+    protected function parseIncludes(): array
     {
         $includes = $this->request->query('include') ?? [];
 
@@ -49,7 +45,6 @@ abstract class ClientApiController extends ApplicationApiController
      *
      * @return T
      *
-     * @noinspection PhpUndefinedClassInspection
      * @noinspection PhpDocSignatureInspection
      */
     public function getTransformer(string $abstract)

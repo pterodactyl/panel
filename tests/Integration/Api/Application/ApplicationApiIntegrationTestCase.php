@@ -20,15 +20,9 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     use DatabaseTransactions;
     use IntegrationJsonRequestAssertions;
 
-    /**
-     * @var \Pterodactyl\Models\ApiKey
-     */
-    private $key;
+    private ApiKey $key;
 
-    /**
-     * @var \Pterodactyl\Models\User
-     */
-    private $user;
+    private User $user;
 
     /**
      * Bootstrap application API tests. Creates a default admin user and associated API key

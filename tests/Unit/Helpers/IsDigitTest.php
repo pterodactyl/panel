@@ -18,10 +18,8 @@ class IsDigitTest extends TestCase
 
     /**
      * Provide data to test against the helper function.
-     *
-     * @return array
      */
-    public function helperDataProvider()
+    public function helperDataProvider(): array
     {
         return [
             [true, false],

@@ -9,14 +9,15 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ServerContext } from '@/state/server';
 import { usePermissions } from '@/plugins/usePermissions';
 import { theme as th } from 'twin.macro';
-import 'xterm/css/xterm.css';
 import useEventListener from '@/plugins/useEventListener';
 import { debounce } from 'debounce';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import classNames from 'classnames';
-import styles from './style.module.css';
 import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
+
+import 'xterm/css/xterm.css';
+import styles from './style.module.css';
 
 const theme = {
     background: th`colors.black`.toString(),
@@ -45,7 +46,7 @@ const terminalProps: ITerminalOptions = {
     cursorStyle: 'underline',
     allowTransparency: true,
     fontSize: 12,
-    fontFamily: 'Menlo, Monaco, Consolas, monospace',
+    fontFamily: th('fontFamily.mono'),
     rows: 30,
     theme: theme,
 };
@@ -192,12 +193,14 @@ export default () => {
     }, [connected, instance]);
 
     return (
-        <div className={styles.terminal}>
+        <div className={classNames(styles.terminal, 'relative')}>
             <SpinnerOverlay visible={!connected} size={'large'} />
             <div
                 className={classNames(styles.container, styles.overflows_container, { 'rounded-b': !canSendCommands })}
             >
-                <div id={styles.terminal} ref={ref} />
+                <div className={'h-full'}>
+                    <div id={styles.terminal} ref={ref} />
+                </div>
             </div>
             {canSendCommands && (
                 <div className={classNames('relative', styles.overflows_container)}>

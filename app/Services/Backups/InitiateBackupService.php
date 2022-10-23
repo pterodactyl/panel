@@ -16,65 +16,25 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class InitiateBackupService
 {
-    /**
-     * @var string[]|null
-     */
-    private $ignoredFiles;
+    private ?array $ignoredFiles;
 
-    /**
-     * @var bool
-     */
-    private $isLocked = false;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\BackupRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonBackupRepository
-     */
-    private $daemonBackupRepository;
-
-    /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
-
-    /**
-     * @var \Pterodactyl\Services\Backups\DeleteBackupService
-     */
-    private $deleteBackupService;
+    private bool $isLocked = false;
 
     /**
      * InitiateBackupService constructor.
-     *
-     * @param \Pterodactyl\Services\Backups\DeleteBackupService $deleteBackupService
      */
     public function __construct(
-        BackupRepository $repository,
-        ConnectionInterface $connection,
-        DaemonBackupRepository $daemonBackupRepository,
-        DeleteBackupService $deleteBackupService,
-        BackupManager $backupManager
+        private BackupRepository $repository,
+        private ConnectionInterface $connection,
+        private DaemonBackupRepository $daemonBackupRepository,
+        private DeleteBackupService $deleteBackupService,
+        private BackupManager $backupManager
     ) {
-        $this->repository = $repository;
-        $this->connection = $connection;
-        $this->daemonBackupRepository = $daemonBackupRepository;
-        $this->backupManager = $backupManager;
-        $this->deleteBackupService = $deleteBackupService;
     }
 
     /**
      * Set if the backup should be locked once it is created which will prevent
      * its deletion by users or automated system processes.
-     *
-     * @return $this
      */
     public function setIsLocked(bool $isLocked): self
     {
@@ -87,10 +47,8 @@ class InitiateBackupService
      * Sets the files to be ignored by this backup.
      *
      * @param string[]|null $ignored
-     *
-     * @return $this
      */
-    public function setIgnoredFiles(?array $ignored)
+    public function setIgnoredFiles(?array $ignored): self
     {
         if (is_array($ignored)) {
             foreach ($ignored as $value) {

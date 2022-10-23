@@ -12,48 +12,22 @@ use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 class DatabasePasswordService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Extensions\DynamicDatabaseConnection
-     */
-    private $dynamic;
-
-    /**
-     * @var \Illuminate\Contracts\Encryption\Encrypter
-     */
-    private $encrypter;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * DatabasePasswordService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        DatabaseRepositoryInterface $repository,
-        DynamicDatabaseConnection $dynamic,
-        Encrypter $encrypter
+        private ConnectionInterface $connection,
+        private DynamicDatabaseConnection $dynamic,
+        private Encrypter $encrypter,
+        private DatabaseRepositoryInterface $repository
     ) {
-        $this->connection = $connection;
-        $this->dynamic = $dynamic;
-        $this->encrypter = $encrypter;
-        $this->repository = $repository;
     }
 
     /**
      * Updates a password for a given database.
      *
-     * @param \Pterodactyl\Models\Database|int $database
-     *
      * @throws \Throwable
      */
-    public function handle(Database $database): string
+    public function handle(Database|int $database): string
     {
         $password = Utilities::randomStringWithSpecialCharacters(24);
 

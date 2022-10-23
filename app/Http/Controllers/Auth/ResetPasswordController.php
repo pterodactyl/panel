@@ -20,39 +20,19 @@ class ResetPasswordController extends Controller
 
     /**
      * The URL to redirect users to after password reset.
-     *
-     * @var string
      */
-    public $redirectTo = '/';
+    public string $redirectTo = '/';
 
-    /**
-     * @var bool
-     */
-    protected $hasTwoFactor = false;
-
-    /**
-     * @var \Illuminate\Contracts\Events\Dispatcher
-     */
-    private $dispatcher;
-
-    /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
-     */
-    private $hasher;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $userRepository;
+    protected bool $hasTwoFactor = false;
 
     /**
      * ResetPasswordController constructor.
      */
-    public function __construct(Dispatcher $dispatcher, Hasher $hasher, UserRepositoryInterface $userRepository)
-    {
-        $this->dispatcher = $dispatcher;
-        $this->hasher = $hasher;
-        $this->userRepository = $userRepository;
+    public function __construct(
+        private Dispatcher $dispatcher,
+        private Hasher $hasher,
+        private UserRepositoryInterface $userRepository
+    ) {
     }
 
     /**
@@ -64,7 +44,7 @@ class ResetPasswordController extends Controller
     {
         // Here we will attempt to reset the user's password. If it is successful we
         // will update the password on an actual user model and persist it to the
-        // database. Otherwise we will parse the error and return the response.
+        // database. Otherwise, we will parse the error and return the response.
         $response = $this->broker()->reset(
             $this->credentials($request),
             function ($user, $password) {

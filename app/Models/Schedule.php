@@ -5,6 +5,8 @@ namespace Pterodactyl\Models;
 use Cron\CronExpression;
 use Carbon\CarbonImmutable;
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
@@ -37,22 +39,16 @@ class Schedule extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'schedules';
 
     /**
      * Always return the tasks associated with this schedule.
-     *
-     * @var array
      */
     protected $with = ['tasks'];
 
     /**
      * Mass assignable attributes on this model.
-     *
-     * @var array
      */
     protected $fillable = [
         'server_id',
@@ -69,9 +65,6 @@ class Schedule extends Model
         'next_run_at',
     ];
 
-    /**
-     * @var array
-     */
     protected $casts = [
         'id' => 'integer',
         'server_id' => 'integer',
@@ -82,17 +75,12 @@ class Schedule extends Model
 
     /**
      * Columns to mutate to a date.
-     *
-     * @var array
      */
     protected $dates = [
         'last_run_at',
         'next_run_at',
     ];
 
-    /**
-     * @var array
-     */
     protected $attributes = [
         'name' => null,
         'cron_day_of_week' => '*',
@@ -105,10 +93,7 @@ class Schedule extends Model
         'only_when_online' => false,
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'server_id' => 'required|exists:servers,id',
         'name' => 'required|string|max:191',
         'cron_day_of_week' => 'required|string',
@@ -134,11 +119,9 @@ class Schedule extends Model
     /**
      * Returns the schedule's execution crontab entry as a string.
      *
-     * @return \Carbon\CarbonImmutable
-     *
      * @throws \Exception
      */
-    public function getNextRunDate()
+    public function getNextRunDate(): CarbonImmutable
     {
         $formatted = sprintf('%s %s %s %s %s', $this->cron_minute, $this->cron_hour, $this->cron_day_of_month, $this->cron_month, $this->cron_day_of_week);
 
@@ -149,30 +132,24 @@ class Schedule extends Model
 
     /**
      * Return a hashid encoded string to represent the ID of the schedule.
-     *
-     * @return string
      */
-    public function getHashidAttribute()
+    public function getHashidAttribute(): string
     {
         return Container::getInstance()->make(HashidsInterface::class)->encode($this->id);
     }
 
     /**
      * Return tasks belonging to a schedule.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function tasks()
+    public function tasks(): HasMany
     {
         return $this->hasMany(Task::class);
     }
 
     /**
      * Return the server model that a schedule belongs to.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function server()
+    public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
     }

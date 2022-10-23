@@ -59,13 +59,13 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create(['use_totp' => false]);
 
-        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor', [
-            'code' => '',
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.code', 'ValidationException');
-        $response->assertJsonPath('errors.0.meta.rule', 'required');
+        $this->actingAs($user)
+            ->postJson('/api/client/account/two-factor', ['code' => ''])
+            ->assertUnprocessable()
+            ->assertJsonPath('errors.0.meta.rule', 'required')
+            ->assertJsonPath('errors.0.meta.source_field', 'code')
+            ->assertJsonPath('errors.1.meta.rule', 'required')
+            ->assertJsonPath('errors.1.meta.source_field', 'password');
     }
 
     /**
@@ -90,6 +90,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
 
         $response = $this->actingAs($user)->postJson('/api/client/account/two-factor', [
             'code' => $token,
+            'password' => 'password',
         ]);
 
         $response->assertOk();
@@ -121,7 +122,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that two factor authentication can be disabled on an account as long as the password
+     * Test that two-factor authentication can be disabled on an account as long as the password
      * provided is valid for the account.
      */
     public function testTwoFactorCanBeDisabledOnAccount()
@@ -148,7 +149,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         $user = $user->refresh();
         $this->assertFalse($user->use_totp);
         $this->assertNotNull($user->totp_authenticated_at);
-        $this->assertSame(Carbon::now()->toIso8601String(), $user->totp_authenticated_at->toIso8601String());
+        $this->assertSame(Carbon::now()->toAtomString(), $user->totp_authenticated_at->toAtomString());
     }
 
     /**
@@ -167,5 +168,40 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         ]);
 
         $response->assertStatus(Response::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Test that a valid account password is required when enabling two-factor.
+     */
+    public function testEnablingTwoFactorRequiresValidPassword()
+    {
+        $user = User::factory()->create(['use_totp' => false]);
+
+        $this->actingAs($user)
+            ->postJson('/api/client/account/two-factor', [
+                'code' => '123456',
+                'password' => 'foo',
+            ])
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonPath('errors.0.detail', 'The password provided was not valid.');
+
+        $this->assertFalse($user->refresh()->use_totp);
+    }
+
+    /**
+     * Test that a valid account password is required when disabling two-factor.
+     */
+    public function testDisablingTwoFactorRequiresValidPassword()
+    {
+        $user = User::factory()->create(['use_totp' => true]);
+
+        $this->actingAs($user)
+            ->deleteJson('/api/client/account/two-factor', [
+                'password' => 'foo',
+            ])
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonPath('errors.0.detail', 'The password provided was not valid.');
+
+        $this->assertTrue($user->refresh()->use_totp);
     }
 }

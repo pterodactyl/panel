@@ -7,36 +7,28 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Backup;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
+use Pterodactyl\Extensions\Filesystem\S3Filesystem;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Remote\ReportBackupCompleteRequest;
 
 class BackupStatusController extends Controller
 {
     /**
-     * @var \Pterodactyl\Extensions\Backups\BackupManager
-     */
-    private $backupManager;
-
-    /**
      * BackupStatusController constructor.
      */
-    public function __construct(BackupManager $backupManager)
+    public function __construct(private BackupManager $backupManager)
     {
-        $this->backupManager = $backupManager;
     }
 
     /**
      * Handles updating the state of a backup.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function index(ReportBackupCompleteRequest $request, string $backup)
+    public function index(ReportBackupCompleteRequest $request, string $backup): JsonResponse
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -65,8 +57,8 @@ class BackupStatusController extends Controller
             // Check if we are using the s3 backup adapter. If so, make sure we mark the backup as
             // being completed in S3 correctly.
             $adapter = $this->backupManager->adapter();
-            if ($adapter instanceof AwsS3Adapter) {
-                $this->completeMultipartUpload($model, $adapter, $successful);
+            if ($adapter instanceof S3Filesystem) {
+                $this->completeMultipartUpload($model, $adapter, $successful, $request->input('parts'));
             }
         });
 
@@ -81,11 +73,9 @@ class BackupStatusController extends Controller
      * The only thing the successful field does is update the entry value for the audit logs
      * table tracking for this restoration.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Throwable
      */
-    public function restore(Request $request, string $backup)
+    public function restore(Request $request, string $backup): JsonResponse
     {
         /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
@@ -101,23 +91,24 @@ class BackupStatusController extends Controller
     }
 
     /**
-     * Marks a multipart upload in a given S3-compatiable instance as failed or successful for
+     * Marks a multipart upload in a given S3-compatible instance as failed or successful for
      * the given backup.
      *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    protected function completeMultipartUpload(Backup $backup, AwsS3Adapter $adapter, bool $successful)
+    protected function completeMultipartUpload(Backup $backup, S3Filesystem $adapter, bool $successful, ?array $parts): void
     {
         // This should never really happen, but if it does don't let us fall victim to Amazon's
         // wildly fun error messaging. Just stop the process right here.
         if (empty($backup->upload_id)) {
-            // A failed backup doesn't need to error here, this can happen if the backup encouters
+            // A failed backup doesn't need to error here, this can happen if the backup encounters
             // an error before we even start the upload. AWS gives you tooling to clear these failed
             // multipart uploads as needed too.
             if (!$successful) {
                 return;
             }
+
             throw new DisplayException('Cannot complete backup request: no upload_id present on model.');
         }
 
@@ -136,8 +127,19 @@ class BackupStatusController extends Controller
 
         // Otherwise send a CompleteMultipartUpload request.
         $params['MultipartUpload'] = [
-            'Parts' => $client->execute($client->getCommand('ListParts', $params))['Parts'],
+            'Parts' => [],
         ];
+
+        if (is_null($parts)) {
+            $params['MultipartUpload']['Parts'] = $client->execute($client->getCommand('ListParts', $params))['Parts'];
+        } else {
+            foreach ($parts as $part) {
+                $params['MultipartUpload']['Parts'][] = [
+                    'ETag' => $part['etag'],
+                    'PartNumber' => $part['part_number'],
+                ];
+            }
+        }
 
         $client->execute($client->getCommand('CompleteMultipartUpload', $params));
     }

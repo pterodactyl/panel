@@ -10,10 +10,8 @@ class SubuserRepository extends EloquentRepository implements SubuserRepositoryI
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Subuser::class;
     }

@@ -4,7 +4,7 @@
         "node": ">=14"
     },
     "dependencies": {
-        "@floating-ui/react-dom-interactions": "^0.6.3",
+        "@floating-ui/react-dom-interactions": "^0.6.6",
         "@fortawesome/fontawesome-svg-core": "^1.2.32",
         "@fortawesome/free-solid-svg-icons": "^5.15.1",
         "@fortawesome/react-fontawesome": "^0.1.11",
@@ -46,12 +46,11 @@
         "tailwindcss": "^3.0.24",
         "use-fit-text": "^2.4.0",
         "uuid": "^8.3.2",
-        "xterm": "^4.15.0",
-        "xterm-addon-attach": "^0.6.0",
-        "xterm-addon-fit": "^0.4.0",
-        "xterm-addon-search": "^0.7.0",
+        "xterm": "^4.19.0",
+        "xterm-addon-fit": "^0.5.0",
+        "xterm-addon-search": "^0.9.0",
         "xterm-addon-search-bar": "^0.2.0",
-        "xterm-addon-web-links": "^0.4.0",
+        "xterm-addon-web-links": "^0.6.0",
         "yup": "^0.29.1"
     },
     "devDependencies": {

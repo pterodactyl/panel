@@ -7,6 +7,6 @@ export default styled.div<{ $hoverable?: boolean }>`
     ${(props) => props.$hoverable !== false && tw`hover:border-neutral-500`};
 
     & .icon {
-        ${tw`rounded-full bg-neutral-500 p-3`};
+        ${tw`rounded-full w-16 flex items-center justify-center bg-neutral-500 p-3`};
     }
 `;

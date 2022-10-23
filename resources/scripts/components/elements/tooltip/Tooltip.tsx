@@ -7,7 +7,7 @@ import {
     Placement,
     shift,
     Side,
-    Strategy,
+    useClick,
     useDismiss,
     useFloating,
     useFocus,
@@ -18,15 +18,16 @@ import {
 import { AnimatePresence, motion } from 'framer-motion';
 import classNames from 'classnames';
 
+type Interaction = 'hover' | 'click' | 'focus';
+
 interface Props {
     rest?: number;
     delay?: number | Partial<{ open: number; close: number }>;
-    alwaysOpen?: boolean;
     content: string | React.ReactChild;
     disabled?: boolean;
     arrow?: boolean;
+    interactions?: Interaction[];
     placement?: Placement;
-    strategy?: Strategy;
     className?: string;
     children: React.ReactElement;
 }
@@ -38,27 +39,33 @@ const arrowSides: Record<Side, string> = {
     left: 'top-0 right-[-6px]',
 };
 
-export default ({ content, children, disabled = false, alwaysOpen = false, delay = 0, rest = 30, ...props }: Props) => {
+export default ({ children, ...props }: Props) => {
     const arrowEl = useRef<HTMLDivElement>(null);
-    const [open, setOpen] = useState(alwaysOpen || false);
+    const [open, setOpen] = useState(false);
 
     const { x, y, reference, floating, middlewareData, strategy, context } = useFloating({
         open,
+        strategy: 'fixed',
         placement: props.placement || 'top',
-        strategy: props.strategy || 'absolute',
         middleware: [
             offset(props.arrow ? 10 : 6),
             flip(),
             shift({ padding: 6 }),
             arrow({ element: arrowEl, padding: 6 }),
         ],
-        onOpenChange: (o) => setOpen(o || alwaysOpen || false),
+        onOpenChange: setOpen,
         whileElementsMounted: autoUpdate,
     });
 
+    const interactions = props.interactions || ['hover', 'focus'];
     const { getReferenceProps, getFloatingProps } = useInteractions([
-        useFocus(context),
-        useHover(context, { restMs: rest, delay }),
+        useHover(context, {
+            restMs: props.rest ?? 30,
+            delay: props.delay ?? 0,
+            enabled: interactions.includes('hover'),
+        }),
+        useFocus(context, { enabled: interactions.includes('focus') }),
+        useClick(context, { enabled: interactions.includes('click') }),
         useRole(context, { role: 'tooltip' }),
         useDismiss(context),
     ]);
@@ -66,7 +73,7 @@ export default ({ content, children, disabled = false, alwaysOpen = false, delay
     const side = arrowSides[(props.placement || 'top').split('-')[0] as Side];
     const { x: ax, y: ay } = middlewareData.arrow || {};
 
-    if (disabled) {
+    if (props.disabled) {
         return children;
     }
 
@@ -83,7 +90,7 @@ export default ({ content, children, disabled = false, alwaysOpen = false, delay
                         {...getFloatingProps({
                             ref: floating,
                             className:
-                                'absolute top-0 left-0 bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[20rem] z-[9999]',
+                                'bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[24rem]',
                             style: {
                                 position: strategy,
                                 top: `${y || 0}px`,
@@ -91,7 +98,7 @@ export default ({ content, children, disabled = false, alwaysOpen = false, delay
                             },
                         })}
                     >
-                        {content}
+                        {props.content}
                         {props.arrow && (
                             <div
                                 ref={arrowEl}

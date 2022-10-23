@@ -12,20 +12,14 @@ use Pterodactyl\Services\Schedules\ProcessScheduleService;
 
 class ProcessRunnableCommand extends Command
 {
-    /**
-     * @var string
-     */
     protected $signature = 'p:schedule:process';
 
-    /**
-     * @var string
-     */
     protected $description = 'Process schedules in the database and determine which are ready to run.';
 
     /**
      * Handle command execution.
      */
-    public function handle()
+    public function handle(): int
     {
         $schedules = Schedule::query()
             ->with('tasks')
@@ -38,7 +32,7 @@ class ProcessRunnableCommand extends Command
         if ($schedules->count() < 1) {
             $this->line('There are no scheduled tasks for servers that need to be run.');
 
-            return;
+            return 0;
         }
 
         $bar = $this->output->createProgressBar(count($schedules));
@@ -50,6 +44,8 @@ class ProcessRunnableCommand extends Command
         }
 
         $this->line('');
+
+        return 0;
     }
 
     /**
@@ -75,7 +71,7 @@ class ProcessRunnableCommand extends Command
         } catch (Throwable|Exception $exception) {
             Log::error($exception, ['schedule_id' => $schedule->id]);
 
-            $this->error("An error was encountered while processing Schedule #{$schedule->id}: " . $exception->getMessage());
+            $this->error("An error was encountered while processing Schedule #$schedule->id: " . $exception->getMessage());
         }
     }
 }

@@ -5,6 +5,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\ActivityLog;
+use Illuminate\Database\Eloquent\Model;
 
 class ActivityLogTransformer extends BaseClientTransformer
 {
@@ -18,14 +19,18 @@ class ActivityLogTransformer extends BaseClientTransformer
     public function transform(ActivityLog $model): array
     {
         return [
+            // This is not for security, it is only to provide a unique identifier to
+            // the front-end for each entry to improve rendering performance since there
+            // is nothing else sufficiently unique to key off at this point.
+            'id' => sha1($model->id),
             'batch' => $model->batch,
             'event' => $model->event,
             'is_api' => !is_null($model->api_key_id),
-            'ip' => optional($model->actor)->is($this->request->user()) ? $model->ip : null,
+            'ip' => $this->canViewIP($model->actor) ? $model->ip : null,
             'description' => $model->description,
             'properties' => $this->properties($model),
             'has_additional_metadata' => $this->hasAdditionalMetadata($model),
-            'timestamp' => $model->timestamp->toIso8601String(),
+            'timestamp' => $model->timestamp->toAtomString(),
         ];
     }
 
@@ -55,6 +60,11 @@ class ActivityLogTransformer extends BaseClientTransformer
                 }
 
                 if (!is_array($value)) {
+                    // Perform some directory normalization at this point.
+                    if ($key === 'directory') {
+                        $value = str_replace('//', '/', '/' . trim($value, '/') . '/');
+                    }
+
                     return [$key => $value];
                 }
 
@@ -87,7 +97,7 @@ class ActivityLogTransformer extends BaseClientTransformer
         $str = trans('activity.' . str_replace(':', '.', $model->event));
         preg_match_all('/:(?<key>[\w.-]+\w)(?:[^\w:]?|$)/', $str, $matches);
 
-        $exclude = array_merge($matches['key'], ['ip', 'useragent']);
+        $exclude = array_merge($matches['key'], ['ip', 'useragent', 'using_sftp']);
         foreach ($model->properties->keys() as $key) {
             if (!in_array($key, $exclude, true)) {
                 return true;
@@ -95,5 +105,14 @@ class ActivityLogTransformer extends BaseClientTransformer
         }
 
         return false;
+    }
+
+    /**
+     * Determines if the user can view the IP address in the output either because they are the
+     * actor that performed the action, or because they are an administrator on the Panel.
+     */
+    protected function canViewIP(Model $actor = null): bool
+    {
+        return optional($actor)->is($this->request->user()) || $this->request->user()->root_admin;
     }
 }
