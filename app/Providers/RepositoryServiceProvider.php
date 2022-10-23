@@ -26,7 +26,6 @@ use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Contracts\Repository\SessionRepositoryInterface;
 use Pterodactyl\Contracts\Repository\SubuserRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
@@ -36,7 +35,6 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerVariableRepositoryInterface;
 
 class RepositoryServiceProvider extends ServiceProvider
 {
@@ -57,7 +55,6 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(NodeRepositoryInterface::class, NodeRepository::class);
         $this->app->bind(ScheduleRepositoryInterface::class, ScheduleRepository::class);
         $this->app->bind(ServerRepositoryInterface::class, ServerRepository::class);
-        $this->app->bind(ServerVariableRepositoryInterface::class, ServerVariableRepository::class);
         $this->app->bind(SessionRepositoryInterface::class, SessionRepository::class);
         $this->app->bind(SettingsRepositoryInterface::class, SettingsRepository::class);
         $this->app->bind(SubuserRepositoryInterface::class, SubuserRepository::class);

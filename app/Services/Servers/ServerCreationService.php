@@ -10,12 +10,12 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\ServerVariable;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Models\Objects\DeploymentObject;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Services\Deployment\FindViableNodesService;
-use Pterodactyl\Repositories\Eloquent\ServerVariableRepository;
 use Pterodactyl\Services\Deployment\AllocationSelectionService;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
@@ -31,7 +31,6 @@ class ServerCreationService
         private FindViableNodesService $findViableNodesService,
         private ServerRepository $repository,
         private ServerDeletionService $serverDeletionService,
-        private ServerVariableRepository $serverVariableRepository,
         private VariableValidatorService $validatorService
     ) {
     }
@@ -196,7 +195,7 @@ class ServerCreationService
         })->toArray();
 
         if (!empty($records)) {
-            $this->serverVariableRepository->insert($records);
+            ServerVariable::query()->insert($records);
         }
     }
 
