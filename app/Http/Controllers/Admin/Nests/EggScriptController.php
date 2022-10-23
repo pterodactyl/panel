@@ -9,7 +9,6 @@ use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Eggs\Scripts\InstallScriptService;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Egg\EggScriptFormRequest;
 
 class EggScriptController extends Controller
@@ -19,7 +18,6 @@ class EggScriptController extends Controller
      */
     public function __construct(
         protected AlertsMessageBag $alert,
-        protected EggRepositoryInterface $repository,
         protected InstallScriptService $installScriptService,
         protected ViewFactory $view
     ) {
@@ -30,16 +28,17 @@ class EggScriptController extends Controller
      */
     public function index(int $egg): View
     {
-        $egg = $this->repository->getWithCopyAttributes($egg);
-        $copy = $this->repository->findWhere([
-            ['copy_script_from', '=', null],
-            ['nest_id', '=', $egg->nest_id],
-            ['id', '!=', $egg],
-        ]);
+        $egg = Egg::with('scriptFrom', 'configFrom')
+            ->where('id', $egg)
+            ->firstOrFail();
 
-        $rely = $this->repository->findWhere([
-            ['copy_script_from', '=', $egg->id],
-        ]);
+        $copy = Egg::query()
+            ->whereNull('copy_script_from')
+            ->where('nest_id', $egg->nest_id)
+            ->whereNot('id', $egg->id)
+            ->firstOrFail();
+
+        $rely = Egg::query()->where('copy_script_from', $egg->id)->firstOrFail();
 
         return $this->view->make('admin.eggs.scripts', [
             'copyFromOptions' => $copy,

@@ -13,7 +13,6 @@ use Pterodactyl\Services\Eggs\EggUpdateService;
 use Pterodactyl\Services\Eggs\EggCreationService;
 use Pterodactyl\Services\Eggs\EggDeletionService;
 use Pterodactyl\Http\Requests\Admin\Egg\EggFormRequest;
-use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class EggController extends Controller
@@ -25,7 +24,6 @@ class EggController extends Controller
         protected AlertsMessageBag $alert,
         protected EggCreationService $creationService,
         protected EggDeletionService $deletionService,
-        protected EggRepositoryInterface $repository,
         protected EggUpdateService $updateService,
         protected NestRepositoryInterface $nestRepository,
         protected ViewFactory $view
