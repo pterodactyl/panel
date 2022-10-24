@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Container\Container;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Znck\Eloquent\Traits\BelongsToThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
@@ -104,9 +105,11 @@ class Task extends Model
     /**
      * Return a hashid encoded string to represent the ID of the task.
      */
-    public function getHashidAttribute(): string
+    public function hashid(): Attribute
     {
-        return Container::getInstance()->make(HashidsInterface::class)->encode($this->id);
+        return Attribute::make(
+            get: fn () => Container::getInstance()->make(HashidsInterface::class)->encode($this->id),
+        );
     }
 
     /**

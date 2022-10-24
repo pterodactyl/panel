@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -55,9 +56,11 @@ class Subuser extends Model
     /**
      * Return a hashid encoded string to represent the ID of the subuser.
      */
-    public function getHashidAttribute(): string
+    public function hashid(): Attribute
     {
-        return app()->make('hashids')->encode($this->id);
+        return Attribute::make(
+            get: fn () => app()->make('hashids')->encode($this->id),
+        );
     }
 
     /**

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -85,25 +86,22 @@ class Allocation extends Model
     /**
      * Return a hashid encoded string to represent the ID of the allocation.
      */
-    public function getHashidAttribute(): string
+    public function hashid(): Attribute
     {
-        return app()->make('hashids')->encode($this->id);
+        return new Attribute(
+            get: fn () => app()->make('hashids')->encode($this->id),
+        );
     }
 
     /**
-     * Accessor to automatically provide the IP alias if defined.
+     * Accessor and mutator to automatically provide the IP alias if defined.
      */
-    public function getAliasAttribute(?string $value): string
+    public function alias(): Attribute
     {
-        return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
-    }
-
-    /**
-     * Accessor to quickly determine if this allocation has an alias.
-     */
-    public function getHasAliasAttribute(?string $value): bool
-    {
-        return !is_null($this->ip_alias);
+        return new Attribute(
+            get: fn ($ip) => is_null($this->ip_alias) ? $this->ip : $this->ip_alias,
+            set: fn ($ip) => ['ip_alias' => $ip],
+        );
     }
 
     public function toString(): string

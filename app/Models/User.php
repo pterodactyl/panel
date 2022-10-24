@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Pterodactyl\Rules\Username;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Support\Collection;
@@ -209,19 +210,24 @@ class User extends Model implements
     }
 
     /**
-     * Store the username as a lowercase string.
+     * Get and Set the username as a lowercase string.
      */
-    public function setUsernameAttribute(string $value)
+    public function username(): Attribute
     {
-        $this->attributes['username'] = mb_strtolower($value);
+        return new Attribute(
+            get: fn () => mb_strtolower($this->username),
+            set: fn ($username) => mb_strtolower($username),
+        );
     }
 
     /**
      * Return a concatenated result for the accounts full name.
      */
-    public function getNameAttribute(): string
+    public function name(): Attribute
     {
-        return trim($this->name_first . ' ' . $this->name_last);
+        return new Attribute(
+            get: fn () => trim($this->name_first . ' ' . $this->name_last),
+        );
     }
 
     /**
