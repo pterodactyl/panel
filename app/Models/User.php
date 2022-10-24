@@ -215,7 +215,7 @@ class User extends Model implements
     public function username(): Attribute
     {
         return new Attribute(
-            get: fn () => mb_strtolower($this->username),
+            get: fn ($username) => mb_strtolower($username),
             set: fn ($username) => mb_strtolower($username),
         );
     }
