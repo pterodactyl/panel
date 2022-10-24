@@ -14,7 +14,6 @@ use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
 use Pterodactyl\Services\Databases\Hosts\HostCreationService;
 use Pterodactyl\Services\Databases\Hosts\HostDeletionService;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
@@ -26,7 +25,6 @@ class DatabaseController extends Controller
     public function __construct(
         private AlertsMessageBag $alert,
         private DatabaseHostRepositoryInterface $repository,
-        private DatabaseRepositoryInterface $databaseRepository,
         private HostCreationService $creationService,
         private HostDeletionService $deletionService,
         private HostUpdateService $updateService,
@@ -49,14 +47,17 @@ class DatabaseController extends Controller
     /**
      * Display database host to user.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $host): View
     {
+        /** @var DatabaseHost $host */
+        $host = DatabaseHost::query()->findOrFail($host);
+        $databases = $host->databases()->with('server')->paginate(25);
+
         return $this->view->make('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),
-            'host' => $this->repository->find($host),
-            'databases' => $this->databaseRepository->getDatabasesForHost($host),
+            'host' => $host,
+            'databases' => $databases,
         ]);
     }
 

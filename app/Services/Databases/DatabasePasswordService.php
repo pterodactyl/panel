@@ -7,7 +7,6 @@ use Pterodactyl\Helpers\Utilities;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 
 class DatabasePasswordService
 {
@@ -17,8 +16,7 @@ class DatabasePasswordService
     public function __construct(
         private ConnectionInterface $connection,
         private DynamicDatabaseConnection $dynamic,
-        private Encrypter $encrypter,
-        private DatabaseRepositoryInterface $repository
+        private Encrypter $encrypter
     ) {
     }
 
@@ -34,14 +32,14 @@ class DatabasePasswordService
         $this->connection->transaction(function () use ($database, $password) {
             $this->dynamic->set('dynamic', $database->database_host_id);
 
-            $this->repository->withoutFreshModel()->update($database->id, [
+            $database->update([
                 'password' => $this->encrypter->encrypt($password),
             ]);
 
-            $this->repository->dropUser($database->username, $database->remote);
-            $this->repository->createUser($database->username, $database->remote, $password, $database->max_connections);
-            $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
-            $this->repository->flush();
+            $database->dropUser($database->username, $database->remote);
+            $database->createUser($database->username, $database->remote, $password, $database->max_connections);
+            $database->assignUserToDatabase($database->database, $database->username, $database->remote);
+            $database->flush();
         });
 
         return $password;

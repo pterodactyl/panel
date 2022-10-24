@@ -29,7 +29,6 @@ use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
-use Pterodactyl\Contracts\Repository\DatabaseRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Services\Servers\ServerConfigurationStructureService;
 use Pterodactyl\Http\Requests\Admin\Servers\Databases\StoreServerDatabaseRequest;
@@ -47,7 +46,6 @@ class ServersController extends Controller
         protected DaemonServerRepository $daemonServerRepository,
         protected DatabaseManagementService $databaseManagementService,
         protected DatabasePasswordService $databasePasswordService,
-        protected DatabaseRepositoryInterface $databaseRepository,
         protected DatabaseHostRepository $databaseHostRepository,
         protected ServerDeletionService $deletionService,
         protected DetailsModificationService $detailsModificationService,

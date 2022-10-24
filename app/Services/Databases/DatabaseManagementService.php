@@ -10,7 +10,6 @@ use Pterodactyl\Helpers\Utilities;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Repositories\Eloquent\DatabaseRepository;
 use Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException;
 use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
 use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
@@ -36,8 +35,7 @@ class DatabaseManagementService
     public function __construct(
         protected ConnectionInterface $connection,
         protected DynamicDatabaseConnection $dynamic,
-        protected Encrypter $encrypter,
-        protected DatabaseRepository $repository
+        protected Encrypter $encrypter
     ) {
     }
 
@@ -105,26 +103,26 @@ class DatabaseManagementService
 
                 $this->dynamic->set('dynamic', $data['database_host_id']);
 
-                $this->repository->createDatabase($database->database);
-                $this->repository->createUser(
+                $database->createDatabase($database->database);
+                $database->createUser(
                     $database->username,
                     $database->remote,
                     $this->encrypter->decrypt($database->password),
                     $database->max_connections
                 );
-                $this->repository->assignUserToDatabase($database->database, $database->username, $database->remote);
-                $this->repository->flush();
+                $database->assignUserToDatabase($database->database, $database->username, $database->remote);
+                $database->flush();
 
                 return $database;
             });
         } catch (Exception $exception) {
             try {
                 if ($database instanceof Database) {
-                    $this->repository->dropDatabase($database->database);
-                    $this->repository->dropUser($database->username, $database->remote);
-                    $this->repository->flush();
+                    $database->dropDatabase($database->database);
+                    $database->dropUser($database->username, $database->remote);
+                    $database->flush();
                 }
-            } catch (Exception $deletionException) {
+            } catch (Exception) {
                 // Do nothing here. We've already encountered an issue before this point so no
                 // reason to prioritize this error over the initial one.
             }
@@ -142,9 +140,9 @@ class DatabaseManagementService
     {
         $this->dynamic->set('dynamic', $database->database_host_id);
 
-        $this->repository->dropDatabase($database->database);
-        $this->repository->dropUser($database->username, $database->remote);
-        $this->repository->flush();
+        $database->dropDatabase($database->database);
+        $database->dropUser($database->username, $database->remote);
+        $database->flush();
 
         return $database->delete();
     }
