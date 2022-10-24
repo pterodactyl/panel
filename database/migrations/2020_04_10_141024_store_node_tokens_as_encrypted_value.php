@@ -26,7 +26,7 @@ class StoreNodeTokensAsEncryptedValue extends Migration
         Schema::table('nodes', function (Blueprint $table) {
             $table->char('uuid', 36)->after('id');
             $table->char('daemon_token_id', 16)->after('upload_size');
-            $table->renameColumn('daemonSecret', 'daemon_token');
+            $table->renameColumn('`daemonSecret`', 'daemon_token');
         });
 
         Schema::table('nodes', function (Blueprint $table) {
