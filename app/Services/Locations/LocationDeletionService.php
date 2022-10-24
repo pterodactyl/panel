@@ -24,11 +24,9 @@ class LocationDeletionService
      */
     public function handle(Location|int $location): ?int
     {
-        $location = ($location instanceof Location) ? $location->id : $location;
+        $location = ($location instanceof Location) ? $location : $location->id;
 
-        Assert::integerish($location, 'First argument passed to handle must be numeric or an instance of ' . Location::class . ', received %s.');
-
-        $count = $this->nodeRepository->findCountWhere([['location_id', '=', $location]]);
+        $count = $location->nodes()->count();
         if ($count > 0) {
             throw new HasActiveNodesException(trans('exceptions.locations.has_nodes'));
         }
