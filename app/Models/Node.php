@@ -225,4 +225,26 @@ class Node extends Model
 
         return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
+
+    public static function getForServerCreation()
+    {
+        return self::with('allocations')->get()->map(function (Node $item) {
+            $filtered = $item->getRelation('allocations')->where('server_id', null)->map(function ($map) {
+                return collect($map)->only(['id', 'ip', 'port']);
+            });
+
+            $item->ports = $filtered->map(function ($map) {
+                return [
+                    'id' => $map['id'],
+                    'text' => sprintf('%s:%s', $map['ip'], $map['port']),
+                ];
+            })->values();
+
+            return [
+                'id' => $item->id,
+                'text' => $item->name,
+                'allocations' => $item->ports,
+            ];
+        })->values();
+    }
 }

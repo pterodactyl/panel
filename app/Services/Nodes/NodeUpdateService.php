@@ -7,7 +7,6 @@ use Pterodactyl\Models\Node;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Exceptions\Service\Node\ConfigurationNotPersistedException;
@@ -20,8 +19,7 @@ class NodeUpdateService
     public function __construct(
         private ConnectionInterface $connection,
         private DaemonConfigurationRepository $configurationRepository,
-        private Encrypter $encrypter,
-        private NodeRepository $repository
+        private Encrypter $encrypter
     ) {
     }
 
@@ -39,7 +37,7 @@ class NodeUpdateService
 
         [$updated, $exception] = $this->connection->transaction(function () use ($data, $node) {
             /** @var \Pterodactyl\Models\Node $updated */
-            $updated = $this->repository->withFreshModel()->update($node->id, $data, true, true);
+            $updated = (clone $node)->update($data);
 
             try {
                 // If we're changing the FQDN for the node, use the newly provided FQDN for the connection

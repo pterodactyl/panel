@@ -6,13 +6,13 @@ use JavaScript;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Nest;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\EnvironmentService;
 use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
@@ -31,7 +31,6 @@ class ServerViewController extends Controller
         private LocationRepository $locationRepository,
         private MountRepository $mountRepository,
         private NestRepository $nestRepository,
-        private NodeRepository $nodeRepository,
         private ServerRepository $repository,
         private EnvironmentService $environmentService,
         private ViewFactory $view
@@ -128,14 +127,14 @@ class ServerViewController extends Controller
         }
 
         // Check if the panel doesn't have at least 2 nodes configured.
-        $nodes = $this->nodeRepository->all();
+        $nodeCount = Node::query()->count();
         $canTransfer = false;
-        if (count($nodes) >= 2) {
+        if ($nodeCount >= 2) {
             $canTransfer = true;
         }
 
         JavaScript::put([
-            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
+            'nodeData' => Node::getForServerCreation(),
         ]);
 
         return $this->view->make('admin.servers.view.manage', [

@@ -18,7 +18,6 @@ use Pterodactyl\Services\Nodes\NodeDeletionService;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Http\Requests\Admin\Node\NodeFormRequest;
-use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationFormRequest;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
@@ -40,7 +39,6 @@ class NodesController extends Controller
         protected NodeCreationService $creationService,
         protected NodeDeletionService $deletionService,
         protected LocationRepositoryInterface $locationRepository,
-        protected NodeRepositoryInterface $repository,
         protected ServerRepositoryInterface $serverRepository,
         protected NodeUpdateService $updateService,
         protected SoftwareVersionService $versionService,

@@ -9,7 +9,6 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\View\Factory as ViewFactory;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
@@ -26,7 +25,6 @@ class NodeViewController extends Controller
     public function __construct(
         private AllocationRepository $allocationRepository,
         private LocationRepository $locationRepository,
-        private NodeRepository $repository,
         private ServerRepository $serverRepository,
         private SoftwareVersionService $versionService,
         private ViewFactory $view
@@ -38,11 +36,37 @@ class NodeViewController extends Controller
      */
     public function index(Request $request, Node $node): View
     {
-        $node = $this->repository->loadLocationAndServerCount($node);
+        $node->load('location')->loadCount('servers');
+
+        $stats = Node::query()
+            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->join('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('node_id', '=', $node->id)
+            ->first();
+
+        $usageStats = Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
+            ->mapWithKeys(function ($value, $key) use ($node) {
+                $maxUsage = $node->{$key};
+                if ($node->{$key . '_overallocate'} > 0) {
+                    $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
+                }
+
+                $percent = ($value / $maxUsage) * 100;
+
+                return [
+                    $key => [
+                        'value' => number_format($value),
+                        'max' => number_format($maxUsage),
+                        'percent' => $percent,
+                        'css' => ($percent <= self::THRESHOLD_PERCENTAGE_LOW) ? 'green' : (($percent > self::THRESHOLD_PERCENTAGE_MEDIUM) ? 'red' : 'yellow'),
+                    ],
+                ];
+            })
+            ->toArray();
 
         return $this->view->make('admin.nodes.view.index', [
             'node' => $node,
-            'stats' => $this->repository->getUsageStats($node),
+            'stats' => $usageStats,
             'version' => $this->versionService,
         ]);
     }
@@ -71,7 +95,15 @@ class NodeViewController extends Controller
      */
     public function allocations(Request $request, Node $node): View
     {
-        $node = $this->repository->loadNodeAllocations($node);
+        $node->setRelation(
+            'allocations',
+            $node->allocations()
+                ->orderByRaw('server_id IS NOT NULL DESC, server_id IS NULL')
+                ->orderByRaw('INET_ATON(ip) ASC')
+                ->orderBy('port')
+                ->with('server:id,name')
+                ->paginate(50)
+        );
 
         $this->plainInject(['node' => Collection::wrap($node)->only(['id'])]);
 

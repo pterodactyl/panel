@@ -11,7 +11,6 @@ use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Services\Servers\ServerCreationService;
 
@@ -23,7 +22,6 @@ class CreateServerController extends Controller
     public function __construct(
         private AlertsMessageBag $alert,
         private NestRepository $nestRepository,
-        private NodeRepository $nodeRepository,
         private ServerCreationService $creationService,
         private ViewFactory $view
     ) {
@@ -46,7 +44,7 @@ class CreateServerController extends Controller
         $nests = $this->nestRepository->getWithEggs();
 
         JavaScript::put([
-            'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
+            'nodeData' => Node::getForServerCreation(),
             'nests' => $nests->map(function ($item) {
                 return array_merge($item->toArray(), [
                     'eggs' => $item->eggs->keyBy('id')->toArray(),
