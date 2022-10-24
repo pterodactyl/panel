@@ -79,7 +79,7 @@ class EggVariable extends Model
     public function required(): Attribute
     {
         return Attribute::make(
-            get: fn ($value, $attributes) => in_array('required', explode('|', $this->rules)),
+            get: fn () => in_array('required', explode('|', $this->rules)),
         );
     }
 
