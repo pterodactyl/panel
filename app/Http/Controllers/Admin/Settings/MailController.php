@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Contracts\Console\Kernel;
+use Pterodactyl\Models\Setting;
 use Pterodactyl\Notifications\MailTested;
 use Illuminate\View\Factory as ViewFactory;
 use Illuminate\Support\Facades\Notification;
@@ -15,7 +16,6 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Providers\SettingsServiceProvider;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Settings\MailSettingsFormRequest;
 
 class MailController extends Controller
@@ -27,7 +27,6 @@ class MailController extends Controller
         private ConfigRepository $config,
         private Encrypter $encrypter,
         private Kernel $kernel,
-        private SettingsRepositoryInterface $settings,
         private ViewFactory $view
     ) {
     }
@@ -66,7 +65,7 @@ class MailController extends Controller
                 $value = $this->encrypter->encrypt($value);
             }
 
-            $this->settings->set('settings::' . $key, $value);
+            Setting::set('settings::' . $key, $value);
         }
 
         $this->kernel->call('queue:restart');

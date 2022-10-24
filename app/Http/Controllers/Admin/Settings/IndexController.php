@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
 use Illuminate\View\View;
+use Pterodactyl\Models\Setting;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
@@ -10,7 +11,8 @@ use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Http\Requests\Admin\Settings\BaseSettingsFormRequest;
 
 class IndexController extends Controller
@@ -23,7 +25,6 @@ class IndexController extends Controller
     public function __construct(
         private AlertsMessageBag $alert,
         private Kernel $kernel,
-        private SettingsRepositoryInterface $settings,
         private SoftwareVersionService $versionService,
         private ViewFactory $view
     ) {
@@ -43,13 +44,13 @@ class IndexController extends Controller
     /**
      * Handle settings update.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws DataValidationException
+     * @throws RecordNotFoundException
      */
     public function update(BaseSettingsFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
-            $this->settings->set('settings::' . $key, $value);
+            Setting::set('settings::' . $key, $value);
         }
 
         $this->kernel->call('queue:restart');

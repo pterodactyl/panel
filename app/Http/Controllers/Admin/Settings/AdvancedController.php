@@ -7,10 +7,12 @@ use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\View\Factory as ViewFactory;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Settings\AdvancedSettingsFormRequest;
+use Pterodactyl\Models\Setting;
 
 class AdvancedController extends Controller
 {
@@ -21,7 +23,6 @@ class AdvancedController extends Controller
         private AlertsMessageBag $alert,
         private ConfigRepository $config,
         private Kernel $kernel,
-        private SettingsRepositoryInterface $settings,
         private ViewFactory $view
     ) {
     }
@@ -45,13 +46,13 @@ class AdvancedController extends Controller
     }
 
     /**
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws DataValidationException
+     * @throws RecordNotFoundException
      */
     public function update(AdvancedSettingsFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
-            $this->settings->set('settings::' . $key, $value);
+            Setting::set('settings::' . $key, $value);
         }
 
         $this->kernel->call('queue:restart');
