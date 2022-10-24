@@ -11,9 +11,8 @@ class AddForeignServiceOptions extends Migration
      */
     public function up()
     {
-        DB::statement('ALTER TABLE service_options MODIFY parent_service INT(10) UNSIGNED NOT NULL');
-
         Schema::table('service_options', function (Blueprint $table) {
+            $table->integer('parent_service', false, true)->change();
             $table->foreign('parent_service')->references('id')->on('services');
         });
     }
@@ -26,8 +25,7 @@ class AddForeignServiceOptions extends Migration
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropForeign('service_options_parent_service_foreign');
             $table->dropIndex('service_options_parent_service_foreign');
+            $table->mediumInteger('parent_service', false, true)->change();
         });
-
-        DB::statement('ALTER TABLE service_options MODIFY parent_service MEDIUMINT(8) UNSIGNED NOT NULL');
     }
 }

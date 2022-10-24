@@ -12,10 +12,8 @@ class RenameColumns extends Migration
     public function up()
     {
         Schema::table('allocations', function (Blueprint $table) {
-            $table->dropForeign('allocations_node_foreign');
-            $table->dropForeign('allocations_assigned_to_foreign');
-            $table->dropIndex('allocations_node_foreign');
-            $table->dropIndex('allocations_assigned_to_foreign');
+            $table->dropForeign(['node']);
+            $table->dropForeign(['assigned_to']);
 
             $table->renameColumn('node', 'node_id');
             $table->renameColumn('assigned_to', 'server_id');
@@ -30,10 +28,10 @@ class RenameColumns extends Migration
     public function down()
     {
         Schema::table('allocations', function (Blueprint $table) {
-            $table->dropForeign('allocations_node_id_foreign');
-            $table->dropForeign('allocations_server_id_foreign');
-            $table->dropIndex('allocations_node_id_foreign');
-            $table->dropIndex('allocations_server_id_foreign');
+            $table->dropForeign(['node_id']);
+            $table->dropForeign(['server_id']);
+            $table->dropIndex(['node_id']);
+            $table->dropIndex(['server_id']);
 
             $table->renameColumn('node_id', 'node');
             $table->renameColumn('server_id', 'assigned_to');

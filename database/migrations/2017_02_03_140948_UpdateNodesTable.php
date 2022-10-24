@@ -12,8 +12,7 @@ class UpdateNodesTable extends Migration
     public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->dropForeign('nodes_location_foreign');
-            $table->dropIndex('nodes_location_foreign');
+            $table->dropForeign(['location']);
 
             $table->renameColumn('location', 'location_id');
             $table->foreign('location_id')->references('id')->on('locations');
@@ -26,8 +25,7 @@ class UpdateNodesTable extends Migration
     public function down()
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->dropForeign('nodes_location_id_foreign');
-            $table->dropIndex('nodes_location_id_foreign');
+            $table->dropForeign(['location_id']);
 
             $table->renameColumn('location_id', 'location');
             $table->foreign('location')->references('id')->on('locations');
