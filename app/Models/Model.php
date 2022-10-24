@@ -117,7 +117,7 @@ abstract class Model extends IlluminateModel
      * Returns the rules associated with the model, specifically for updating the given model
      * rather than just creating it.
      */
-    public static function getRulesForUpdate(IlluminateModel|int|string $model, string $column = 'id'): array
+    public static function getRulesForUpdate($model, string $column = 'id'): array
     {
         if ($model instanceof Model) {
             [$id, $column] = [$model->getKey(), $model->getKeyName()];
