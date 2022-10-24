@@ -5,14 +5,17 @@ namespace Pterodactyl\Http\Controllers\Auth;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Pterodactyl\Models\User;
+use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use PragmaRX\Google2FA\Google2FA;
-use Illuminate\Support\Facades\Event;
+use Pterodactyl\Models\SecurityKey;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Webauthn\PublicKeyCredentialRequestOptions;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Pterodactyl\Events\Auth\ProvidedAuthenticationToken;
 use Pterodactyl\Http\Requests\Auth\LoginCheckpointRequest;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
+use Pterodactyl\Repositories\SecurityKeys\WebauthnServerRepository;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
 class LoginCheckpointController extends AbstractLoginController
 {
@@ -24,6 +27,7 @@ class LoginCheckpointController extends AbstractLoginController
     public function __construct(
         private Encrypter $encrypter,
         private Google2FA $google2FA,
+        private WebauthnServerRepository $webauthnServerRepository,
         private ValidationFactory $validation
     ) {
         parent::__construct();
@@ -34,13 +38,80 @@ class LoginCheckpointController extends AbstractLoginController
      * token. Once a user has reached this stage it is assumed that they have already
      * provided a valid username and password.
      *
+     * @return \Illuminate\Http\JsonResponse|void
+     *
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
-     * @throws \Exception
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws \Exception
      */
-    public function __invoke(LoginCheckpointRequest $request): JsonResponse
+    public function token(LoginCheckpointRequest $request)
+    {
+        $user = $this->extractUserFromRequest($request);
+
+        // Recovery tokens go through a slightly different pathway for usage.
+        if (!is_null($recoveryToken = $request->input('recovery_token'))) {
+            if ($this->isValidRecoveryToken($user, $recoveryToken)) {
+                return $this->sendLoginResponse($user, $request);
+            }
+        } else {
+            if (!$user->use_totp) {
+                $this->sendFailedLoginResponse($request, $user);
+            }
+
+            $decrypted = $this->encrypter->decrypt($user->totp_secret);
+
+            if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {
+                return $this->sendLoginResponse($user, $request);
+            }
+        }
+
+        $this->sendFailedLoginResponse($request, $user, !empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
+    }
+
+    /**
+     * Authenticates a login request using a security key for a user.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    public function key(Request $request): JsonResponse
+    {
+        $options = $request->session()->get(SecurityKey::PK_SESSION_NAME);
+        if (!$options instanceof PublicKeyCredentialRequestOptions) {
+            throw new BadRequestHttpException('No security keys configured in session.');
+        }
+
+        $user = $this->extractUserFromRequest($request);
+
+        try {
+            $source = $this->webauthnServerRepository->loadAndCheckAssertionResponse(
+                $user,
+                // TODO: we may have to `json_encode` this so it will be decoded properly.
+                $request->input('data'),
+                $options,
+                SecurityKey::getPsrRequestFactory($request)
+            );
+        } catch (\Exception|\Throwable $e) {
+            throw $e;
+        }
+
+        if (hash_equals($user->uuid, $source->getUserHandle())) {
+            return $this->sendLoginResponse($user, $request);
+        }
+
+        throw new BadRequestHttpException('An unexpected error was encountered while validating that security key.');
+    }
+
+    /**
+     * Extracts the user from the session data using the provided confirmation token.
+     *
+     * @throws \Illuminate\Validation\ValidationException
+     * @throws \Pterodactyl\Exceptions\DisplayException
+     */
+    protected function extractUserFromRequest(Request $request): User
     {
         if ($this->hasTooManyLoginAttempts($request)) {
             $this->sendLockoutResponse($request);
@@ -62,24 +133,7 @@ class LoginCheckpointController extends AbstractLoginController
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
         }
 
-        // Recovery tokens go through a slightly different pathway for usage.
-        if (!is_null($recoveryToken = $request->input('recovery_token'))) {
-            if ($this->isValidRecoveryToken($user, $recoveryToken)) {
-                Event::dispatch(new ProvidedAuthenticationToken($user, true));
-
-                return $this->sendLoginResponse($user, $request);
-            }
-        } else {
-            $decrypted = $this->encrypter->decrypt($user->totp_secret);
-
-            if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {
-                Event::dispatch(new ProvidedAuthenticationToken($user));
-
-                return $this->sendLoginResponse($user, $request);
-            }
-        }
-
-        $this->sendFailedLoginResponse($request, $user, !empty($recoveryToken) ? 'The recovery token provided is not valid.' : null);
+        return $user;
     }
 
     /**
@@ -101,14 +155,19 @@ class LoginCheckpointController extends AbstractLoginController
         return false;
     }
 
+    protected function hasValidSessionData(array $data): bool
+    {
+        return static::isValidSessionData($this->validation, $data);
+    }
+
     /**
      * Determines if the data provided from the session is valid or not. This
      * will return false if the data is invalid, or if more time has passed than
      * was configured when the session was written.
      */
-    protected function hasValidSessionData(array $data): bool
+    protected static function isValidSessionData(ValidationFactory $validation, array $data): bool
     {
-        $validator = $this->validation->make($data, [
+        $validator = $validation->make($data, [
             'user_id' => 'required|integer|min:1',
             'token_value' => 'required|string',
             'expires_at' => 'required',

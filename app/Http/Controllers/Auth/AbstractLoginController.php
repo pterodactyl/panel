@@ -8,7 +8,6 @@ use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
-use Illuminate\Support\Facades\Event;
 use Pterodactyl\Events\Auth\DirectLogin;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
@@ -37,7 +36,7 @@ abstract class AbstractLoginController extends Controller
     protected string $redirectTo = '/';
 
     /**
-     * LoginController constructor.
+     * AbstractLoginController constructor.
      */
     public function __construct()
     {
@@ -58,7 +57,7 @@ abstract class AbstractLoginController extends Controller
             $this->getField($request->input('user')) => $request->input('user'),
         ]);
 
-        if ($request->route()->named('auth.login-checkpoint')) {
+        if ($request->route()->named('auth.checkpoint') || $request->route()->named('auth.checkpoint.key')) {
             throw new DisplayException($message ?? trans('auth.two_factor.checkpoint_failed'));
         }
 
@@ -77,14 +76,13 @@ abstract class AbstractLoginController extends Controller
 
         $this->auth->guard()->login($user, true);
 
-        Event::dispatch(new DirectLogin($user, true));
+        event(new DirectLogin($user, true));
 
         return new JsonResponse([
-            'data' => [
-                'complete' => true,
-                'intended' => $this->redirectPath(),
-                'user' => $user->toVueObject(),
-            ],
+            'complete' => true,
+            'methods' => [],
+            'intended' => $this->redirectPath(),
+            'user' => $user->toReactObject(),
         ]);
     }
 
@@ -101,6 +99,6 @@ abstract class AbstractLoginController extends Controller
      */
     protected function fireFailedLoginEvent(Authenticatable $user = null, array $credentials = [])
     {
-        Event::dispatch(new Failed('auth', $user, $credentials));
+        event(new Failed('auth', $user, $credentials));
     }
 }

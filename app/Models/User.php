@@ -9,6 +9,7 @@ use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
+use Webauthn\PublicKeyCredentialUserEntity;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
@@ -47,6 +48,8 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property int|null $notifications_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\RecoveryToken[] $recoveryTokens
  * @property int|null $recovery_tokens_count
+ * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\SecurityKey[] $securityKeys
+ * @property int|null $security_keys_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  * @property int|null $servers_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\UserSSHKey[] $sshKeys
@@ -186,9 +189,9 @@ class User extends Model implements
     }
 
     /**
-     * Return the user model in a format that can be passed over to Vue templates.
+     * Return the user model in a format that can be passed over to React templates.
      */
-    public function toVueObject(): array
+    public function toReactObject(): array
     {
         return Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
     }
@@ -248,6 +251,11 @@ class User extends Model implements
         return $this->hasMany(UserSSHKey::class);
     }
 
+    public function securityKeys(): HasMany
+    {
+        return $this->hasMany(SecurityKey::class);
+    }
+
     /**
      * Returns all the activity logs where this user is the subject — not to
      * be confused by activity logs where this user is the _actor_.
@@ -270,5 +278,18 @@ class User extends Model implements
                 $builder->where('servers.owner_id', $this->id)->orWhere('subusers.user_id', $this->id);
             })
             ->groupBy('servers.id');
+    }
+
+    public function toPublicKeyCredentialEntity(): PublicKeyCredentialUserEntity
+    {
+        return PublicKeyCredentialUserEntity::create($this->username, $this->uuid, $this->email);
+    }
+
+    /**
+     * Returns true if the user has two-factor authentication enabled.
+     */
+    public function has2FAEnabled(): bool
+    {
+        return $this->use_totp || $this->securityKeys->isNotEmpty();
     }
 }

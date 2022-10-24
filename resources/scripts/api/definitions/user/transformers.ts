@@ -3,6 +3,36 @@ import { FractalResponseData } from '@/api/http';
 import { transform } from '@definitions/helpers';
 
 export default class Transformers {
+    static toActivityLog = ({ attributes }: FractalResponseData): Models.ActivityLog => {
+        const { actor } = attributes.relationships || {};
+
+        return {
+            id: attributes.id,
+            batch: attributes.batch,
+            event: attributes.event,
+            ip: attributes.ip,
+            isApi: attributes.is_api,
+            description: attributes.description,
+            properties: attributes.properties,
+            hasAdditionalMetadata: attributes.has_additional_metadata ?? false,
+            timestamp: new Date(attributes.timestamp),
+            relationships: {
+                actor: transform(actor as FractalResponseData, this.toUser, null),
+            },
+        };
+    };
+
+    static toSecurityKey (data: Record<string, any>): Models.SecurityKey {
+        return {
+            uuid: data.uuid,
+            name: data.name,
+            type: data.type,
+            publicKeyId: data.public_key_id,
+            createdAt: new Date(data.created_at),
+            updatedAt: new Date(data.updated_at),
+        };
+    }
+
     static toSSHKey = (data: Record<any, any>): Models.SSHKey => {
         return {
             name: data.name,
@@ -23,25 +53,6 @@ export default class Transformers {
             createdAt: new Date(attributes.created_at),
             can(permission): boolean {
                 return this.permissions.includes(permission);
-            },
-        };
-    };
-
-    static toActivityLog = ({ attributes }: FractalResponseData): Models.ActivityLog => {
-        const { actor } = attributes.relationships || {};
-
-        return {
-            id: attributes.id,
-            batch: attributes.batch,
-            event: attributes.event,
-            ip: attributes.ip,
-            isApi: attributes.is_api,
-            description: attributes.description,
-            properties: attributes.properties,
-            hasAdditionalMetadata: attributes.has_additional_metadata ?? false,
-            timestamp: new Date(attributes.timestamp),
-            relationships: {
-                actor: transform(actor as FractalResponseData, this.toUser, null),
             },
         };
     };
