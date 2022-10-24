@@ -39,7 +39,7 @@ class RemoveUserInteraction extends Migration
                 break;
             case 'pgsql':
                 DB::table('eggs')->update([
-                    'config_startup' => DB::raw('jsonb_set(config_startup, \'$.userInteraction\', array_agg())'),
+                    'config_startup' => DB::raw('jsonb_set(config_startup, \'$.userInteraction\', jsonb_build_array())'),
                 ]);
                 break;
         }

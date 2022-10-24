@@ -8,7 +8,6 @@ class AddFeaturesColumnToEggs extends Migration
 {
     /**
      * Run the migrations.
-'styled-components'
      */
     public function up(): void
     {
