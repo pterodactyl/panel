@@ -4,13 +4,13 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use JavaScript;
 use Illuminate\View\View;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Http\Requests\Admin\ServerFormRequest;
 use Pterodactyl\Services\Servers\ServerCreationService;
@@ -22,7 +22,6 @@ class CreateServerController extends Controller
      */
     public function __construct(
         private AlertsMessageBag $alert,
-        private NestRepository $nestRepository,
         private NodeRepository $nodeRepository,
         private ServerCreationService $creationService,
         private ViewFactory $view
@@ -43,7 +42,7 @@ class CreateServerController extends Controller
             return redirect()->route('admin.nodes');
         }
 
-        $nests = $this->nestRepository->getWithEggs();
+        $nests = Nest::with('eggs.variables')->get();
 
         JavaScript::put([
             'nodeData' => $this->nodeRepository->getNodesForServerCreation(),

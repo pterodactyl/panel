@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\Controllers\Api\Application\Nests;
 
 use Pterodactyl\Models\Nest;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\NestTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Nests\GetNestsRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
@@ -13,7 +12,7 @@ class NestController extends ApplicationApiController
     /**
      * NestController constructor.
      */
-    public function __construct(private NestRepositoryInterface $repository)
+    public function __construct()
     {
         parent::__construct();
     }
@@ -23,7 +22,7 @@ class NestController extends ApplicationApiController
      */
     public function index(GetNestsRequest $request): array
     {
-        $nests = $this->repository->paginated($request->query('per_page') ?? 50);
+        $nests = Nest::query()->paginate($request->query('per_page') ?? 50);
 
         return $this->fractal->collection($nests)
             ->transformWith($this->getTransformer(NestTransformer::class))

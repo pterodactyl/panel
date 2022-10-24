@@ -7,10 +7,10 @@ use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Services\Nests\NestUpdateService;
 use Pterodactyl\Services\Nests\NestCreationService;
 use Pterodactyl\Services\Nests\NestDeletionService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Nest\StoreNestFormRequest;
 
 class NestController extends Controller
@@ -22,7 +22,6 @@ class NestController extends Controller
         protected AlertsMessageBag $alert,
         protected NestCreationService $nestCreationService,
         protected NestDeletionService $nestDeletionService,
-        protected NestRepositoryInterface $repository,
         protected NestUpdateService $nestUpdateService,
         protected ViewFactory $view
     ) {
@@ -31,12 +30,13 @@ class NestController extends Controller
     /**
      * Render nest listing page.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function index(): View
     {
+        $nests = Nest::query()->withCount(['eggs', 'servers']);
+
         return $this->view->make('admin.nests.index', [
-            'nests' => $this->repository->getWithCounts(),
+            'nests' => $nests,
         ]);
     }
 
@@ -64,12 +64,11 @@ class NestController extends Controller
     /**
      * Return details about a nest including all the eggs and servers per egg.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function view(int $nest): View
     {
         return $this->view->make('admin.nests.view', [
-            'nest' => $this->repository->getWithEggServers($nest),
+            'nest' => Nest::with('eggs.servers')->findOrFail($nest),
         ]);
     }
 

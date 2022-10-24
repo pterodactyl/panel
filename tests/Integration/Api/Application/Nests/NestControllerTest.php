@@ -3,31 +3,19 @@
 namespace Pterodactyl\Tests\Integration\Api\Application\Nests;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Transformers\Api\Application\NestTransformer;
 use Pterodactyl\Tests\Integration\Api\Application\ApplicationApiIntegrationTestCase;
 
 class NestControllerTest extends ApplicationApiIntegrationTestCase
 {
-    private NestRepositoryInterface $repository;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->repository = $this->app->make(NestRepositoryInterface::class);
-    }
-
     /**
      * Test that the expected nests are returned by the request.
      */
     public function testNestResponse()
     {
-        /** @var \Pterodactyl\Models\Nest[] $nests */
-        $nests = $this->repository->all();
+        /** @var Nest[] $nests */
+        $nests = Nest::all();
 
         $response = $this->getJson('/api/application/nests');
         $response->assertStatus(Response::HTTP_OK);

@@ -2,7 +2,7 @@
 
 namespace Pterodactyl\Services\Nests;
 
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Exceptions\Service\HasActiveServersException;
 use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
@@ -11,16 +11,14 @@ class NestDeletionService
     /**
      * NestDeletionService constructor.
      */
-    public function __construct(
-        protected ServerRepositoryInterface $serverRepository,
-        protected NestRepositoryInterface $repository
-    ) {
+    public function __construct(protected ServerRepositoryInterface $serverRepository)
+    {
     }
 
     /**
      * Delete a nest from the system only if there are no servers attached to it.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws HasActiveServersException
      */
     public function handle(int $nest): int
     {
@@ -29,6 +27,8 @@ class NestDeletionService
             throw new HasActiveServersException(trans('exceptions.nest.delete_has_servers'));
         }
 
-        return $this->repository->delete($nest);
+        $nest = Nest::query()->findOrFail($nest);
+
+        return $nest->delete();
     }
 }

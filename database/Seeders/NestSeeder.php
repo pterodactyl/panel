@@ -3,8 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Services\Nests\NestCreationService;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 
 class NestSeeder extends Seeder
 {
@@ -14,19 +14,11 @@ class NestSeeder extends Seeder
     private $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * NestSeeder constructor.
      */
-    public function __construct(
-        NestCreationService $creationService,
-        NestRepositoryInterface $repository
-    ) {
+    public function __construct(NestCreationService $creationService)
+    {
         $this->creationService = $creationService;
-        $this->repository = $repository;
     }
 
     /**
@@ -36,9 +28,10 @@ class NestSeeder extends Seeder
      */
     public function run()
     {
-        $items = $this->repository->findWhere([
-            'author' => 'support@pterodactyl.io',
-        ])->keyBy('name')->toArray();
+        $items = Nest::query()
+            ->where('author', 'support@pterodactyl.io')
+            ->get()
+            ->keyBy('name')->toArray();
 
         $this->createMinecraftNest(array_get($items, 'Minecraft'));
         $this->createSourceEngineNest(array_get($items, 'Source Engine'));

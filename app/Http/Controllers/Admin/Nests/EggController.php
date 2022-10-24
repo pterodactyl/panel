@@ -5,6 +5,7 @@ namespace Pterodactyl\Http\Controllers\Admin\Nests;
 use JavaScript;
 use Illuminate\View\View;
 use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Nest;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\View\Factory as ViewFactory;
@@ -14,7 +15,7 @@ use Pterodactyl\Services\Eggs\EggCreationService;
 use Pterodactyl\Services\Eggs\EggDeletionService;
 use Pterodactyl\Http\Requests\Admin\Egg\EggFormRequest;
 use Pterodactyl\Contracts\Repository\EggRepositoryInterface;
-use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
 class EggController extends Controller
 {
@@ -27,19 +28,16 @@ class EggController extends Controller
         protected EggDeletionService $deletionService,
         protected EggRepositoryInterface $repository,
         protected EggUpdateService $updateService,
-        protected NestRepositoryInterface $nestRepository,
         protected ViewFactory $view
     ) {
     }
 
     /**
      * Handle a request to display the Egg creation page.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function create(): View
     {
-        $nests = $this->nestRepository->getWithEggs();
+        $nests = Nest::with('eggs.variables')->get();
         JavaScript::put(['nests' => $nests->keyBy('id')]);
 
         return $this->view->make('admin.eggs.new', ['nests' => $nests]);
@@ -81,7 +79,7 @@ class EggController extends Controller
      * Handle request to update an Egg.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws RecordNotFoundException
      * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
     public function update(EggFormRequest $request, Egg $egg): RedirectResponse
