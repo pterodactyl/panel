@@ -12,8 +12,13 @@ class LocationUpdateService
      */
     public function handle(Location|int $location, array $data): Location
     {
-        $location = ($location instanceof Location) ? $location->id : $location;
+        /** @var Location $location */
+        if (is_int($location)) {
+            $location = Location::query()->findOrFail($location);
+        }
 
-        return $location->update($data);
+        $location->update($data);
+
+        return $location;
     }
 }
