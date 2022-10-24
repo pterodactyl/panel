@@ -30,10 +30,13 @@ class MigratePubPrivFormatToSingleKey extends Migration
 
         Schema::table('api_keys', function (Blueprint $table) {
             $table->dropColumn('public');
-            $table->string('secret', 32)->change();
+            $table->renameColumn('secret', 'token');
         });
 
-        DB::statement('ALTER TABLE `api_keys` CHANGE `secret` `token` CHAR(32) NOT NULL, ADD UNIQUE INDEX `api_keys_token_unique` (`token`(32))');
+        Schema::table('api_keys', function (Blueprint $table) {
+            $table->char('token', 32)->change();
+            $table->unique('token');
+        });
     }
 
     /**
@@ -44,6 +47,14 @@ class MigratePubPrivFormatToSingleKey extends Migration
         DB::statement('ALTER TABLE `api_keys` CHANGE `token` `secret` TEXT, DROP INDEX `api_keys_token_unique`');
 
         Schema::table('api_keys', function (Blueprint $table) {
+            $table->dropUnique('token');
+            $table->text('token')->change();
+        });
+
+        Schema::table('api_keys', function (Blueprint $table) {
+            $table->renameColumn('token', 'secret');
+
+            $table->text('secret')->nullable()->change();
             $table->char('public', 16)->after('user_id');
         });
 
