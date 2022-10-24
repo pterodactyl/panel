@@ -22,7 +22,7 @@ class SupportMultipleDockerImagesAndUpdates extends Migration
                 DB::table('eggs')->update(['docker_images' => DB::raw('JSON_ARRAY(docker_image)')]);
                 break;
             case 'pgsql':
-                DB::table('eggs')->update(['docker_images' => DB::raw('json_build_array(docker_image)')]);
+                DB::table('eggs')->update(['docker_images' => DB::raw('jsonb_build_array(docker_image)')]);
                 break;
         }
 
