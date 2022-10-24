@@ -19,9 +19,7 @@ class AddArchivedFieldToServerTransfersTable extends Migration
         });
 
         // Update archived to all be true on existing transfers.
-        Schema::table('server_transfers', function (Blueprint $table) {
-            DB::statement('UPDATE `server_transfers` SET `archived` = 1 WHERE `successful` = 1');
-        });
+        DB::table('server_transfers')->where('successful', true)->update(['archived' => 1]);
     }
 
     /**
