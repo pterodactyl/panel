@@ -53,7 +53,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testSingleNestResponse()
     {
-        $nest = $this->repository->find(1);
+        $nest = Nest::query()->findOrFail(1);
 
         $response = $this->getJson('/api/application/nests/' . $nest->id);
         $response->assertStatus(Response::HTTP_OK);
@@ -73,7 +73,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testSingleNestWithEggsIncluded()
     {
-        $nest = $this->repository->find(1);
+        $nest = Nest::query()->findOrFail(1);
         $nest->loadMissing('eggs');
 
         $response = $this->getJson('/api/application/nests/' . $nest->id . '?include=servers,eggs');
@@ -106,7 +106,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testErrorReturnedIfNoPermission()
     {
-        $nest = $this->repository->find(1);
+        $nest = Nest::query()->findOrFail(1);
         $this->createNewDefaultApiKey($this->getApiUser(), ['r_nests' => 0]);
 
         $response = $this->getJson('/api/application/nests/' . $nest->id);
