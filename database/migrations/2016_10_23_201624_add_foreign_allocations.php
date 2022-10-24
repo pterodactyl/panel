@@ -9,7 +9,7 @@ class AddForeignAllocations extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->integer('assigned_to', false, true)->nullable()->change();
@@ -22,7 +22,7 @@ class AddForeignAllocations extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign('allocations_assigned_to_foreign');

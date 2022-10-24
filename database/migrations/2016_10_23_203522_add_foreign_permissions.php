@@ -9,7 +9,7 @@ class AddForeignPermissions extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('users');
@@ -20,7 +20,7 @@ class AddForeignPermissions extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->dropForeign('permissions_user_id_foreign');

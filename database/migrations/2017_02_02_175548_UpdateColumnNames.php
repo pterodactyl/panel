@@ -9,7 +9,7 @@ class UpdateColumnNames extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropForeign(['node']);
@@ -40,7 +40,7 @@ class UpdateColumnNames extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropForeign(['node_id', 'owner_id', 'allocation_id', 'service_id', 'option_id']);

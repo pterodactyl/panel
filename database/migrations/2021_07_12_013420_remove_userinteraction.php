@@ -7,10 +7,8 @@ class RemoveUserInteraction extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Remove User Interaction from startup config
         switch (DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME)) {
@@ -20,22 +18,29 @@ class RemoveUserInteraction extends Migration
                 ]);
                 break;
             case 'pgsql':
-                // TODO: json_remove function
+                DB::table('eggs')->update([
+                    'config_startup' => DB::raw('config_startup - \'userInteraction\''),
+                ]);
                 break;
         }
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         // Add blank User Interaction array back to startup config
         switch (DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME)) {
             case 'mysql':
                 DB::table('eggs')->update([
-                    'config_startup' => DB::raw('JSON_REMOVE(config_startup, \'$.userInteraction\')'),
+                    'config_startup' => DB::raw('JSON_SET(config_startup, \'$.userInteraction\', JSON_ARRAY())'),
                 ]);
                 break;
             case 'pgsql':
-                // TODO: json_remove function
+                DB::table('eggs')->update([
+                    'config_startup' => DB::raw('jsonb_set(config_startup, \'$.userInteraction\', array_agg())'),
+                ]);
                 break;
         }
     }

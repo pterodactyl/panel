@@ -9,7 +9,7 @@ class AddForeignServiceVariables extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('service_variables', function (Blueprint $table) {
             $table->integer('option_id', false, true)->change();
@@ -20,7 +20,7 @@ class AddForeignServiceVariables extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('service_variables', function (Blueprint $table) {
             $table->dropForeign('service_variables_option_id_foreign');

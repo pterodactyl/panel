@@ -9,7 +9,7 @@ class AddForeignServerVariables extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('server_variables', function (Blueprint $table) {
             $table->integer('server_id', false, true)->nullable()->change();
@@ -22,7 +22,7 @@ class AddForeignServerVariables extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('server_variables', function (Blueprint $table) {
             $table->dropForeign(['server_id']);

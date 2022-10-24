@@ -10,7 +10,7 @@ class TransferOldTasksToNewScheduler extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         $tasks = DB::table('tasks_old')->get();
 
@@ -52,7 +52,7 @@ class TransferOldTasksToNewScheduler extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::create('tasks_old', function (Blueprint $table) {
             $table->increments('id');

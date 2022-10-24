@@ -9,7 +9,7 @@ class UpdateNodesTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->dropForeign(['location']);
@@ -22,7 +22,7 @@ class UpdateNodesTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->dropForeign(['location_id']);

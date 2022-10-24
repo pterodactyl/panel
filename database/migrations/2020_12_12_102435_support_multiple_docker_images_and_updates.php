@@ -9,10 +9,8 @@ class SupportMultipleDockerImagesAndUpdates extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->json('docker_images')->after('docker_image')->nullable();
@@ -24,11 +22,9 @@ class SupportMultipleDockerImagesAndUpdates extends Migration
                 DB::table('eggs')->update(['docker_images' => DB::raw('JSON_ARRAY(docker_image)')]);
                 break;
             case 'pgsql':
-                // TODO: json_array function
+                DB::table('eggs')->update(['docker_images' => DB::raw('array_agg(docker_image)')]);
                 break;
         }
-
-        DB::table('eggs')->update(['docker_images' => DB::raw('JSON_ARRAY(docker_image)')]);
 
         Schema::table('eggs', function (Blueprint $table) {
             $table->dropColumn('docker_image');
@@ -37,16 +33,22 @@ class SupportMultipleDockerImagesAndUpdates extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->text('docker_image')->after('docker_images');
         });
 
-        DB::table('eggs')->update(['docker_images' => DB::raw('JSON_UNQUOTE(JSON_EXTRACT(docker_images, "$[0]")')]);
+        switch (DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+            case 'mysql':
+                DB::table('eggs')->update(['docker_images' => DB::raw('JSON_UNQUOTE(JSON_EXTRACT(docker_images, "$[0]")')]);
+                break;
+            case 'pgsql':
+                DB::table('eggs')->update(['docker_images' => DB::raw('JSON_UNQUOTE(JSON_EXTRACT(docker_images, "$[0]")')]);
+                DB::table('eggs')->update(['docker_images' => DB::raw('docker_images->>0')]);
+                break;
+        }
 
         Schema::table('eggs', function (Blueprint $table) {
             $table->dropColumn('docker_images');

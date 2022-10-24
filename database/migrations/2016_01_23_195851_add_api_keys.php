@@ -8,7 +8,7 @@ class AddApiKeys extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('api_keys', function (Blueprint $table) {
             $table->increments('id');
@@ -22,7 +22,7 @@ class AddApiKeys extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('api_keys');
     }

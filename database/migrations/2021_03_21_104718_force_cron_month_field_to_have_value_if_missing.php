@@ -9,20 +9,16 @@ class ForceCronMonthFieldToHaveValueIfMissing extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         DB::table('schedules')->where('cron_month', '')->update(['cron_month' => '*']);
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // No down function.
     }

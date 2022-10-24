@@ -9,10 +9,8 @@ class RemoveNullableFromScheduleNameField extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         DB::update("UPDATE schedules SET name = 'Schedule' WHERE name IS NULL OR name = ''");
 
@@ -23,10 +21,8 @@ class RemoveNullableFromScheduleNameField extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('schedules', function (Blueprint $table) {
             $table->string('name')->nullable()->change();

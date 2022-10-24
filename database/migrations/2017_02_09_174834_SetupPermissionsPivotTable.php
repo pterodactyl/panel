@@ -11,7 +11,7 @@ class SetupPermissionsPivotTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->unsignedInteger('subuser_id')->after('id');
@@ -40,7 +40,7 @@ class SetupPermissionsPivotTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->unsignedInteger('server_id')->after('subuser_id');

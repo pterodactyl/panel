@@ -9,7 +9,7 @@ class AdjustColumnNamesForServicePacks extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('service_packs', function (Blueprint $table) {
             $table->dropForeign(['option']);
@@ -22,7 +22,7 @@ class AdjustColumnNamesForServicePacks extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('service_packs', function (Blueprint $table) {
             $table->dropForeign(['option_id']);

@@ -8,10 +8,8 @@ class AddTableServerTransfers extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Nuclear approach to whatever plugins are out there and not properly namespacing their own tables
         // leading to constant support requests from people...
@@ -35,10 +33,8 @@ class AddTableServerTransfers extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('server_transfers');
     }

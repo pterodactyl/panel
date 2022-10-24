@@ -8,7 +8,7 @@ class AddSuspensionForServers extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->tinyInteger('suspended')->unsigned()->default(0)->after('active');
@@ -18,7 +18,7 @@ class AddSuspensionForServers extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropColumn('suspended');

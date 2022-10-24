@@ -9,7 +9,7 @@ class AddForeignServiceOptions extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->integer('parent_service', false, true)->change();
@@ -20,7 +20,7 @@ class AddForeignServiceOptions extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropForeign('service_options_parent_service_foreign');

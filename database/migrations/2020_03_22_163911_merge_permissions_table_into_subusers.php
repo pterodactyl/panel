@@ -61,10 +61,8 @@ class MergePermissionsTableIntoSubusers extends Migration
 
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('subusers', function (Blueprint $table) {
             $table->json('permissions')->nullable()->after('server_id');
@@ -103,10 +101,8 @@ class MergePermissionsTableIntoSubusers extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         $flipped = array_flip(array_filter(self::$permissionsMap));
 

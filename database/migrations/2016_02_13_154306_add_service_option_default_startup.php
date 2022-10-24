@@ -8,7 +8,7 @@ class AddServiceOptionDefaultStartup extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->text('executable')->after('docker_image')->nullable()->default(null);
@@ -19,7 +19,7 @@ class AddServiceOptionDefaultStartup extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropColumn('executable');

@@ -9,7 +9,7 @@ class UpdateJobsTables extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('jobs', function (Blueprint $table) {
             $table->dropIndex('jobs_queue_reserved_reserved_at_index');
@@ -21,7 +21,7 @@ class UpdateJobsTables extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('jobs', function (Blueprint $table) {
             $table->dropIndex('jobs_queue_reserved_at_index');

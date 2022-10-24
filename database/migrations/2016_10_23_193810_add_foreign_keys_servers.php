@@ -9,7 +9,7 @@ class AddForeignKeysServers extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->integer('node', false, true)->change();
@@ -30,7 +30,7 @@ class AddForeignKeysServers extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropForeign('servers_node_foreign');

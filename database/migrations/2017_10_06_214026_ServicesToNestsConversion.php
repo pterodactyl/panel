@@ -8,7 +8,7 @@ class ServicesToNestsConversion extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::disableForeignKeyConstraints();
 
@@ -34,7 +34,7 @@ class ServicesToNestsConversion extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::disableForeignKeyConstraints();
 
