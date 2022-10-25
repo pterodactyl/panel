@@ -58,15 +58,16 @@ class InfoCommand extends Command
             ['Username', $this->config->get("database.connections.$driver.username")],
         ], 'compact');
 
+        // TODO: Update this to handle other mail drivers
         $this->output->title('Email Configuration');
         $this->table([], [
-            ['Driver', $this->config->get('mail.driver')],
-            ['Host', $this->config->get('mail.host')],
-            ['Port', $this->config->get('mail.port')],
-            ['Username', $this->config->get('mail.username')],
+            ['Driver', $this->config->get('mail.default')],
+            ['Host', $this->config->get('mail.mailers.smtp.host')],
+            ['Port', $this->config->get('mail.mailers.smtp.port')],
+            ['Username', $this->config->get('mail.mailers.smtp.username')],
             ['From Address', $this->config->get('mail.from.address')],
             ['From Name', $this->config->get('mail.from.name')],
-            ['Encryption', $this->config->get('mail.encryption')],
+            ['Encryption', $this->config->get('mail.mailers.smtp.encryption')],
         ], 'compact');
     }
 
