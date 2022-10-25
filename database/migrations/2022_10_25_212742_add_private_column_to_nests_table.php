@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('nests', function (Blueprint $table) {
-            $table->boolean('private')->default(false);
+            $table->boolean('private')->nullable()->default(false);
         });
     }
 

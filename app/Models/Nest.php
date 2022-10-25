@@ -42,7 +42,6 @@ class Nest extends Model
         'author' => 'required|string|email',
         'name' => 'required|string|max:191',
         'description' => 'nullable|string',
-        'private' => 'bool',
     ];
 
     /**
