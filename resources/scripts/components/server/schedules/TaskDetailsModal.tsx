@@ -35,7 +35,7 @@ interface Values {
 const schema = object().shape({
     action: string().required().oneOf(['command', 'power', 'backup']),
     payload: string().when('action', {
-        is: (v) => v !== 'backup',
+        is: (v: string) => v !== 'backup',
         then: string().required('A task payload must be provided.'),
         otherwise: string(),
     }),

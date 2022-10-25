@@ -48,7 +48,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
             {children({ items, isFirstPage, isLastPage })}
             {pages.length > 1 && (
                 <div css={tw`mt-4 flex justify-center`}>
-                    {pages[0] > 1 && !isFirstPage && (
+                    {(pages?.[0] ?? 0) > 1 && !isFirstPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(1)}>
                             <FontAwesomeIcon icon={faAngleDoubleLeft} />
                         </Block>
@@ -63,7 +63,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
                             {i}
                         </Block>
                     ))}
-                    {pages[4] < pagination.totalPages && !isLastPage && (
+                    {(pages?.[4] ?? 0) < pagination.totalPages && !isLastPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(pagination.totalPages)}>
                             <FontAwesomeIcon icon={faAngleDoubleRight} />
                         </Block>

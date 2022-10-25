@@ -119,9 +119,10 @@ function useChart(label: string, opts?: UseChartOptions) {
             merge(state, {
                 datasets: (Array.isArray(items) ? items : [items]).map((item, index) => ({
                     ...state.datasets[index],
-                    data: state.datasets[index].data
-                        .slice(1)
-                        .concat(typeof item === 'number' ? Number(item.toFixed(2)) : item),
+                    data:
+                        state.datasets[index]?.data
+                            ?.slice(1)
+                            ?.concat(typeof item === 'number' ? Number(item.toFixed(2)) : item) ?? [],
                 })),
             })
         );

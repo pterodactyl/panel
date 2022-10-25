@@ -120,7 +120,7 @@ const findModeByFilename = (filename: string) => {
     for (let i = 0; i < modes.length; i++) {
         const info = modes[i];
 
-        if (info.file && info.file.test(filename)) {
+        if (info?.file !== undefined && info.file.test(filename)) {
             return info;
         }
     }
@@ -131,7 +131,7 @@ const findModeByFilename = (filename: string) => {
     if (ext) {
         for (let i = 0; i < modes.length; i++) {
             const info = modes[i];
-            if (info.ext) {
+            if (info?.ext !== undefined) {
                 for (let j = 0; j < info.ext.length; j++) {
                     if (info.ext[j] === ext) {
                         return info;
@@ -159,7 +159,6 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
             indentWithTabs: false,
             lineWrapping: true,
             lineNumbers: true,
-            foldGutter: true,
             fixedGutter: true,
             scrollbarStyle: 'overlay',
             coverGutterNextToScrollbar: false,

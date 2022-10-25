@@ -179,7 +179,12 @@ export default () => {
             }
 
             Object.keys(listeners).forEach((key: string) => {
-                instance.addListener(key, listeners[key]);
+                const listener = listeners[key];
+                if (listener === undefined) {
+                    return;
+                }
+
+                instance.addListener(key, listener);
             });
             instance.send(SocketRequest.SEND_LOGS);
         }
@@ -187,7 +192,12 @@ export default () => {
         return () => {
             if (instance) {
                 Object.keys(listeners).forEach((key: string) => {
-                    instance.removeListener(key, listeners[key]);
+                    const listener = listeners[key];
+                    if (listener === undefined) {
+                        return;
+                    }
+
+                    instance.removeListener(key, listener);
                 });
             }
         };

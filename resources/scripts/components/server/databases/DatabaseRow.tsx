@@ -44,7 +44,7 @@ export default ({ database, className }: Props) => {
             .oneOf([database.name.split('_', 2)[1], database.name], 'The database name must be provided.'),
     });
 
-    const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
+    const submit = (_: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
         clearFlashes();
         deleteServerDatabase(uuid, database.id)
             .then(() => {

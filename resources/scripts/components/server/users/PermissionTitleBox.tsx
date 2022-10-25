@@ -7,7 +7,7 @@ import Input from '@/components/elements/Input';
 import isEqual from 'react-fast-compare';
 
 interface Props {
-    isEditable: boolean;
+    isEditable?: boolean;
     title: string;
     permissions: string[];
     className?: string;

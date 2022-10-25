@@ -26,16 +26,16 @@ interface State {
 class DropdownMenu extends React.PureComponent<Props, State> {
     menu = createRef<HTMLDivElement>();
 
-    state: State = {
+    override state: State = {
         posX: 0,
         visible: false,
     };
 
-    componentWillUnmount() {
+    override componentWillUnmount() {
         this.removeListeners();
     }
 
-    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
+    override componentDidUpdate(_prevProps: Readonly<Props>, prevState: Readonly<State>) {
         const menu = this.menu.current;
 
         if (this.state.visible && !prevState.visible && menu) {
@@ -83,7 +83,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
             visible: !s.visible,
         }));
 
-    render() {
+    override render() {
         return (
             <div>
                 {this.props.renderToggle(this.onClickHandler)}

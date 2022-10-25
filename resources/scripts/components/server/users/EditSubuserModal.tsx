@@ -46,7 +46,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
     // The permissions that can be modified by this user.
     const editablePermissions = useDeepCompareMemo(() => {
         const cleaned = Object.keys(permissions).map((key) =>
-            Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)
+            Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`)
         );
 
         const list: string[] = ([] as string[]).concat.apply([], Object.values(cleaned));
@@ -143,11 +143,11 @@ const EditSubuserModal = ({ subuser }: Props) => {
                                 key={`permission_${key}`}
                                 title={key}
                                 isEditable={canEditUser}
-                                permissions={Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)}
+                                permissions={Object.keys(permissions[key]?.keys ?? {}).map((pkey) => `${key}.${pkey}`)}
                                 css={index > 0 ? tw`mt-4` : undefined}
                             >
-                                <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key].description}</p>
-                                {Object.keys(permissions[key].keys).map((pkey) => (
+                                <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key]?.description}</p>
+                                {Object.keys(permissions[key]?.keys ?? {}).map((pkey) => (
                                     <PermissionRow
                                         key={`permission_${key}.${pkey}`}
                                         permission={`${key}.${pkey}`}
