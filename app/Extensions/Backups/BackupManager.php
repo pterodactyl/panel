@@ -104,7 +104,7 @@ class BackupManager
      */
     public function createWingsAdapter(array $config): FilesystemAdapter
     {
-        return new InMemoryFilesystemAdapter(null);
+        return new InMemoryFilesystemAdapter();
     }
 
     /**
