@@ -12,7 +12,7 @@ class UserStoreFormRequest extends AdminFormRequest
      * Rules to apply to requests for updating a users
      * storefront balances via the admin panel.
      */
-    public function rules()
+    public function rules(): array
     {
         return [
             'store_cpu' => 'required|int',
