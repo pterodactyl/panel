@@ -9,7 +9,7 @@ import Can from '@/components/elements/Can';
 import { Button } from '@/components/elements/button/index';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import { useFlashKey } from '@/plugins/useFlash';

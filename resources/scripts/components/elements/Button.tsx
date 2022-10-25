@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components/macro';
+import styled, { css } from 'styled-components';
 import tw from 'twin.macro';
 import Spinner from '@/components/elements/Spinner';
 

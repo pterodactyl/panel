@@ -6,7 +6,7 @@ import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFac
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
 

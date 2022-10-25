@@ -8,7 +8,7 @@ import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import isEqual from 'react-fast-compare';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather

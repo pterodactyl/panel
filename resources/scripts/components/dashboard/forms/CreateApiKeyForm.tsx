@@ -11,7 +11,7 @@ import { ApiKey } from '@/api/account/getApiKeys';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input, { Textarea } from '@/components/elements/Input';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import ApiKeyModal from '@/components/dashboard/ApiKeyModal';
 
 interface Values {

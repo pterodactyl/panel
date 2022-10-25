@@ -1,6 +1,6 @@
 import * as React from 'react';
 import tw, { TwStyle } from 'twin.macro';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 
 export type FlashMessageType = 'success' | 'info' | 'warning' | 'error';
 

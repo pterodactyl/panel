@@ -2,7 +2,7 @@ import React from 'react';
 import Spinner from '@/components/elements/Spinner';
 import Fade from '@/components/elements/Fade';
 import tw from 'twin.macro';
-import styled, { css } from 'styled-components/macro';
+import styled, { css } from 'styled-components';
 import Select from '@/components/elements/Select';
 
 const Container = styled.div<{ visible?: boolean }>`

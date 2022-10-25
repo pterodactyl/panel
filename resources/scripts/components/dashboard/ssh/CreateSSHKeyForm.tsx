@@ -6,7 +6,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input, { Textarea } from '@/components/elements/Input';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import { useFlashKey } from '@/plugins/useFlash';
 import { createSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
 

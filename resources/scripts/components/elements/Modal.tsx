@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import tw from 'twin.macro';
-import styled, { css } from 'styled-components/macro';
+import styled, { css } from 'styled-components';
 import { breakpoint } from '@/theme';
 import Fade from '@/components/elements/Fade';
 import { createPortal } from 'react-dom';
