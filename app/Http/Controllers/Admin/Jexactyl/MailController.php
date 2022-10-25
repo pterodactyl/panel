@@ -39,7 +39,7 @@ class MailController extends Controller
     public function index(): View
     {
         return $this->view->make('admin.jexactyl.mail', [
-            'disabled' => $this->config->get('mail.driver') !== 'smtp',
+            'disabled' => $this->config->get('mail.default') !== 'smtp',
         ]);
     }
 
@@ -52,7 +52,7 @@ class MailController extends Controller
      */
     public function update(MailFormRequest $request): Response
     {
-        if ($this->config->get('mail.driver') !== 'smtp') {
+        if ($this->config->get('mail.default') !== 'smtp') {
             throw new DisplayException('This feature is only available if SMTP is the selected email driver for the Panel.');
         }
 
