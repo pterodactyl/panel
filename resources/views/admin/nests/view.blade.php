@@ -32,6 +32,16 @@
                             <textarea name="description" class="form-control" rows="7">{{ $nest->description }}</textarea>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Nest Visibility</label>
+                        <div>
+                            <select name="private" class="form-control">
+                                <option @if (!$nest->private) selected @endif value="0">Public</option>
+                                <option @if ($nest->private) selected @endif value="1">Private</option>
+                            </select>
+                            <p class="text-muted"><small>Determines whether users can deploy to this nest.</small></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}

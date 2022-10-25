@@ -35,6 +35,16 @@
                             <textarea name="description" class="form-control" rows="6">{{ old('description') }}</textarea>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label class="control-label">Nest Visibility</label>
+                        <div>
+                            <select name="private" class="form-control">
+                                <option selected value="0">Public</option>
+                                <option value="1">Private</option>
+                            </select>
+                            <p class="text-muted"><small>Determines whether users can deploy to this nest.</small></p>
+                        </div>
+                    </div>
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}

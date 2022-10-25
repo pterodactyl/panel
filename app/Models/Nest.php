@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * @property int $id
+ * @property bool $private
  * @property string $uuid
  * @property string $author
  * @property string $name
@@ -33,6 +34,7 @@ class Nest extends Model
      */
     protected $fillable = [
         'name',
+        'private',
         'description',
     ];
 
@@ -40,6 +42,7 @@ class Nest extends Model
         'author' => 'required|string|email',
         'name' => 'required|string|max:191',
         'description' => 'nullable|string',
+        'private' => 'bool',
     ];
 
     /**

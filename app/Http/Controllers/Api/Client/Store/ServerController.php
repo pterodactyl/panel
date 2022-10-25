@@ -41,7 +41,7 @@ class ServerController extends ClientApiController
      */
     public function nests(GetStoreNestsRequest $request): array
     {
-        return $this->fractal->collection(Nest::all())
+        return $this->fractal->collection(Nest::where('private', false)->get())
             ->transformWith($this->getTransformer(NestTransformer::class))
             ->toArray();
     }
@@ -69,6 +69,9 @@ class ServerController extends ClientApiController
         $user = $request->user();
         $disk = $request->input('disk') * 1024;
         $memory = $request->input('memory') * 1024;
+
+        $nest = Nest::find($request->input('nest'));
+        if ($nest->private) throw new DisplayException('This nest is private and cannot be deployed to.');
 
         $this->creationService->handle($request);
 
