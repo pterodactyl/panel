@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Server\ServerDeletionService;
+use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
