@@ -23,7 +23,7 @@ $kernel->bootstrap();
 $output = new ConsoleOutput();
 
 $prefix = 'database.connections.' . config('database.default');
-if (config("$prefix.database") !== 'panel_test') {
+if (config("$prefix.database") !== 'testing') {
     $output->writeln(PHP_EOL . '<error>Cannot run test process against non-testing database.</error>');
     $output->writeln(PHP_EOL . '<error>Environment is currently pointed at: "' . config("$prefix.database") . '".</error>');
     exit(1);
