@@ -63,9 +63,4 @@ export default createGlobalStyle`
     ::-webkit-scrollbar-corner {
         background: transparent;
     }
-
-    /* 999 isn't a valid z-index <3 */
-    .xterm-search-bar__addon {
-        z-index: 10 !important;
-    }
 `;
