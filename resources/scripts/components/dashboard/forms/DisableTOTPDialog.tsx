@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import * as React from 'react';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';

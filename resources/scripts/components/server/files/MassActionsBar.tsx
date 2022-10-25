@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
 import Fade from '@/components/elements/Fade';
@@ -49,12 +49,12 @@ const MassActionsBar = () => {
         setLoadingMessage('Deleting files...');
 
         deleteFiles(uuid, directory, selectedFiles)
-            .then(() => {
-                mutate((files) => files.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
+            .then(async () => {
+                await mutate((files) => files!.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
             })
-            .catch((error) => {
-                mutate();
+            .catch(async (error) => {
+                await mutate();
                 clearAndAddHttpError({ key: 'files', error });
             })
             .then(() => setLoading(false));

@@ -1,4 +1,5 @@
-import React, { memo, useCallback } from 'react';
+import { memo, useCallback } from 'react';
+import * as React from 'react';
 import { useField } from 'formik';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import tw from 'twin.macro';

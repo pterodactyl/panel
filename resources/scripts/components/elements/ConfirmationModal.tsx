@@ -1,4 +1,5 @@
-import React, { useContext } from 'react';
+import { useContext } from 'react';
+import * as React from 'react';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import asModal from '@/hoc/asModal';

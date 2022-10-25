@@ -2,7 +2,7 @@ import axios from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { ModalMask } from '@/components/elements/Modal';
 import Fade from '@/components/elements/Fade';
 import useEventListener from '@/plugins/useEventListener';

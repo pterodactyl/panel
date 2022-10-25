@@ -1,4 +1,5 @@
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
+import * as React from 'react';
 import styled, { css, keyframes } from 'styled-components';
 import tw from 'twin.macro';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';

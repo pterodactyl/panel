@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';

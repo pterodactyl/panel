@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import Icon from '@/components/elements/Icon';
 import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';

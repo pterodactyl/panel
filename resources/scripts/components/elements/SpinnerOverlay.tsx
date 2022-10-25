@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import Spinner, { SpinnerSize } from '@/components/elements/Spinner';
 import Fade from '@/components/elements/Fade';
 import tw from 'twin.macro';

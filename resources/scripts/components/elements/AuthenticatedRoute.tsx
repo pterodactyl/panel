@@ -1,4 +1,3 @@
-import React from 'react';
 import { Redirect, Route, RouteProps } from 'react-router';
 import { useStoreState } from '@/state/hooks';
 

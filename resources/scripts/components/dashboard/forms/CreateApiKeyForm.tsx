@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';

@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -36,9 +36,9 @@ const VariableBox = ({ variable }: Props) => {
             .then(([response, invocation]) =>
                 mutate(
                     (data) => ({
-                        ...data,
+                        ...data!,
                         invocation,
-                        variables: (data.variables || []).map((v) =>
+                        variables: (data!.variables || []).map((v) =>
                             v.envVariable === response.envVariable ? response : v
                         ),
                     }),
@@ -47,7 +47,7 @@ const VariableBox = ({ variable }: Props) => {
             )
             .catch((error) => {
                 console.error(error);
-                clearAndAddHttpError({ error, key: FLASH_KEY });
+                clearAndAddHttpError({ key: FLASH_KEY, error });
             })
             .then(() => setLoading(false));
     }, 500);

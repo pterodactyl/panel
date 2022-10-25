@@ -1,4 +1,5 @@
-import React, { lazy } from 'react';
+import { lazy } from 'react';
+import * as React from 'react';
 import ServerConsole from '@/components/server/console/ServerConsoleContainer';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';

@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { CloudUploadIcon } from '@heroicons/react/solid';
 import asDialog from '@/hoc/asDialog';

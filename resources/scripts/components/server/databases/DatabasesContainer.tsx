@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import getServerDatabases from '@/api/server/databases/getServerDatabases';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';

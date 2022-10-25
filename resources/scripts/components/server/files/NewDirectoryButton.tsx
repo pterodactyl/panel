@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
@@ -57,7 +57,7 @@ const NewDirectoryDialog = asDialog({
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
-            .then(() => mutate((data) => [...data, generateDirectoryData(directoryName)], false))
+            .then(() => mutate((data) => [...data!, generateDirectoryData(directoryName)], false))
             .then(() => close())
             .catch((error) => {
                 setSubmitting(false);

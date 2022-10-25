@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { NavLink, useLocation } from 'react-router-dom';
 import { encodePathSegments, hashToPath } from '@/helpers';
@@ -46,7 +46,7 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
             /
             {breadcrumbs().map((crumb, index) =>
                 crumb.path ? (
-                    <React.Fragment key={index}>
+                    <Fragment key={index}>
                         <NavLink
                             to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
                             css={tw`px-1 text-neutral-200 no-underline hover:text-neutral-100`}
@@ -54,7 +54,7 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
                             {crumb.name}
                         </NavLink>
                         /
-                    </React.Fragment>
+                    </Fragment>
                 ) : (
                     <span key={index} css={tw`px-1 text-neutral-300`}>
                         {crumb.name}
@@ -62,9 +62,9 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
                 )
             )}
             {file && (
-                <React.Fragment>
+                <Fragment>
                     <span css={tw`px-1 text-neutral-300`}>{file}</span>
-                </React.Fragment>
+                </Fragment>
             )}
         </div>
     );

@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
 import { Form, Formik, FormikHelpers } from 'formik';
 import * as Yup from 'yup';
@@ -53,7 +53,7 @@ export default () => {
     return (
         <Formik onSubmit={submit} validationSchema={schema} initialValues={{ email: user!.email, password: '' }}>
             {({ isSubmitting, isValid }) => (
-                <React.Fragment>
+                <Fragment>
                     <SpinnerOverlay size={'large'} visible={isSubmitting} />
                     <Form css={tw`m-0`}>
                         <Field id={'current_email'} type={'email'} name={'email'} label={'Email'} />
@@ -69,7 +69,7 @@ export default () => {
                             <Button disabled={isSubmitting || !isValid}>Update Email</Button>
                         </div>
                     </Form>
-                </React.Fragment>
+                </Fragment>
             )}
         </Formik>
     );

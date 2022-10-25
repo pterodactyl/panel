@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import Field from '@/components/elements/Field';
 import { Form, Formik, FormikHelpers } from 'formik';

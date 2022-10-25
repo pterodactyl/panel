@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import * as React from 'react';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
 import { useFlashKey } from '@/plugins/useFlash';

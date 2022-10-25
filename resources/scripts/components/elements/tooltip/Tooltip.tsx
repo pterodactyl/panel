@@ -1,4 +1,5 @@
-import React, { cloneElement, useRef, useState } from 'react';
+import { cloneElement, useRef, useState } from 'react';
+import * as React from 'react';
 import {
     arrow,
     autoUpdate,

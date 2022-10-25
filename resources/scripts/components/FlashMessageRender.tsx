@@ -1,4 +1,4 @@
-import React from 'react';
+import { Fragment } from 'react';
 import MessageBox from '@/components/MessageBox';
 import { useStoreState } from 'easy-peasy';
 import tw from 'twin.macro';
@@ -16,12 +16,12 @@ const FlashMessageRender = ({ byKey, className }: Props) => {
     return flashes.length ? (
         <div className={className}>
             {flashes.map((flash, index) => (
-                <React.Fragment key={flash.id || flash.type + flash.message}>
+                <Fragment key={flash.id || flash.type + flash.message}>
                     {index > 0 && <div css={tw`mt-2`}></div>}
                     <MessageBox type={flash.type} title={flash.title}>
                         {flash.message}
                     </MessageBox>
-                </React.Fragment>
+                </Fragment>
             ))}
         </div>
     ) : null;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';

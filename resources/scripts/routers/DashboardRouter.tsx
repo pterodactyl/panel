@@ -1,4 +1,4 @@
-import React from 'react';
+import { Suspense } from 'react';
 import { NavLink, Route, Switch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
@@ -29,7 +29,7 @@ export default () => {
                 </SubNavigation>
             )}
             <TransitionRouter>
-                <React.Suspense fallback={<Spinner centered />}>
+                <Suspense fallback={<Spinner centered />}>
                     <Switch location={location}>
                         <Route path={'/'} exact>
                             <DashboardContainer />
@@ -43,7 +43,7 @@ export default () => {
                             <NotFound />
                         </Route>
                     </Switch>
-                </React.Suspense>
+                </Suspense>
             </TransitionRouter>
         </>
     );

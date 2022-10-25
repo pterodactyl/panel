@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Link, RouteComponentProps } from 'react-router-dom';
 import loginCheckpoint from '@/api/auth/loginCheckpoint';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';

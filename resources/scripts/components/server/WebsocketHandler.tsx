@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Websocket } from '@/plugins/Websocket';
 import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';

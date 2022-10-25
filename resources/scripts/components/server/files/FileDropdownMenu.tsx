@@ -1,4 +1,5 @@
-import React, { memo, useRef, useState } from 'react';
+import { memo, useRef, useState } from 'react';
+import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faBoxOpen,
@@ -71,12 +72,12 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         }
     });
 
-    const doDeletion = () => {
+    const doDeletion = async () => {
         clearFlashes('files');
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        mutate((files) => files.filter((f) => f.key !== file.key), false);
+        await mutate((files) => files!.filter((f) => f.key !== file.key), false);
 
         deleteFiles(uuid, directory, [file.name]).catch((error) => {
             mutate();

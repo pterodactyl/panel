@@ -1,4 +1,4 @@
-import React from 'react';
+import { Component } from 'react';
 import tw from 'twin.macro';
 import Icon from '@/components/elements/Icon';
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons';
@@ -8,7 +8,7 @@ interface State {
 }
 
 // eslint-disable-next-line @typescript-eslint/ban-types
-class ErrorBoundary extends React.Component<{}, State> {
+class ErrorBoundary extends Component<{}, State> {
     state: State = {
         hasError: false,
     };

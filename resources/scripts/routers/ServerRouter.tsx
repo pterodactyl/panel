@@ -1,5 +1,5 @@
 import TransferListener from '@/components/server/TransferListener';
-import React, { useEffect, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import TransitionRouter from '@/TransitionRouter';
@@ -63,7 +63,7 @@ export default () => {
     }, [match.params.id]);
 
     return (
-        <React.Fragment key={'server-router'}>
+        <Fragment key={'server-router'}>
             <NavigationBar />
             {!uuid || !id ? (
                 error ? (
@@ -123,6 +123,6 @@ export default () => {
                     )}
                 </>
             )}
-        </React.Fragment>
+        </Fragment>
     );
 };

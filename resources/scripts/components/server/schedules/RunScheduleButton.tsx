@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react';
+import { useCallback, useState } from 'react';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { Button } from '@/components/elements/button/index';
 import triggerScheduleExecution from '@/api/server/schedules/triggerScheduleExecution';

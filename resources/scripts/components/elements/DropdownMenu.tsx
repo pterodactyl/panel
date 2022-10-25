@@ -1,4 +1,5 @@
-import React, { createRef } from 'react';
+import { createRef } from 'react';
+import * as React from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import Fade from '@/components/elements/Fade';

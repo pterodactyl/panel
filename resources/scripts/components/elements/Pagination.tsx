@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { PaginatedResult } from '@/api/http';
 import tw from 'twin.macro';
 import styled from 'styled-components';

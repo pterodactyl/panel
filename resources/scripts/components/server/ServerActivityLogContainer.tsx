@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useActivityLogs } from '@/api/server/activity';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { useFlashKey } from '@/plugins/useFlash';

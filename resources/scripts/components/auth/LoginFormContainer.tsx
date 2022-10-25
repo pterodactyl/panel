@@ -1,4 +1,5 @@
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
+import * as React from 'react';
 import { Form } from 'formik';
 import styled from 'styled-components';
 import { breakpoint } from '@/theme';

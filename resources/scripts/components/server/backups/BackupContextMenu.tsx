@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     faBoxOpen,
     faCloudDownloadAlt,
@@ -55,15 +55,16 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         deleteBackup(uuid, backup.uuid)
-            .then(() =>
-                mutate(
-                    (data) => ({
-                        ...data,
-                        items: data.items.filter((b) => b.uuid !== backup.uuid),
-                        backupCount: data.backupCount - 1,
-                    }),
-                    false
-                )
+            .then(
+                async () =>
+                    await mutate(
+                        (data) => ({
+                            ...data!,
+                            items: data!.items.filter((b) => b.uuid !== backup.uuid),
+                            backupCount: data!.backupCount - 1,
+                        }),
+                        false
+                    )
             )
             .catch((error) => {
                 console.error(error);
@@ -97,21 +98,22 @@ export default ({ backup }: Props) => {
         }
 
         http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
-            .then(() =>
-                mutate(
-                    (data) => ({
-                        ...data,
-                        items: data.items.map((b) =>
-                            b.uuid !== backup.uuid
-                                ? b
-                                : {
-                                      ...b,
-                                      isLocked: !b.isLocked,
-                                  }
-                        ),
-                    }),
-                    false
-                )
+            .then(
+                async () =>
+                    await mutate(
+                        (data) => ({
+                            ...data!,
+                            items: data!.items.map((b) =>
+                                b.uuid !== backup.uuid
+                                    ? b
+                                    : {
+                                          ...b,
+                                          isLocked: !b.isLocked,
+                                      }
+                            ),
+                        }),
+                        false
+                    )
             )
             .catch((error) => alert(httpErrorToHuman(error)))
             .then(() => setModal(''));

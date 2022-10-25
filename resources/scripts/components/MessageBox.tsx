@@ -1,4 +1,3 @@
-import * as React from 'react';
 import tw, { TwStyle } from 'twin.macro';
 import styled from 'styled-components';
 

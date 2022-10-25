@@ -1,4 +1,3 @@
-import React from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import tw from 'twin.macro';
 import Icon from '@/components/elements/Icon';

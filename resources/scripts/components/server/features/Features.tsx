@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
+import * as React from 'react';
 import features from './index';
 import { getObjectKeys } from '@/lib/objects';
 

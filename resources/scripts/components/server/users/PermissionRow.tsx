@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import tw from 'twin.macro';
 import Checkbox from '@/components/elements/Checkbox';
-import React from 'react';
 import { useStoreState } from 'easy-peasy';
 import Label from '@/components/elements/Label';
 

@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
+import * as React from 'react';
 import Fade from '@/components/elements/Fade';
 import Portal from '@/components/elements/Portal';
 import copy from 'copy-to-clipboard';

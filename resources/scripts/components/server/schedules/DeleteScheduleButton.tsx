@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import deleteSchedule from '@/api/server/schedules/deleteSchedule';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions } from 'easy-peasy';

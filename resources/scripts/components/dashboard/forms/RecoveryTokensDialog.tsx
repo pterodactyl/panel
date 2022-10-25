@@ -1,4 +1,3 @@
-import React from 'react';
 import { Dialog, DialogProps } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import CopyOnClick from '@/components/elements/CopyOnClick';
