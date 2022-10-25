@@ -8,7 +8,7 @@
 }
 
 .title {
-    @apply font-header text-xl font-medium mb-2 text-gray-50 pr-4;
+    @apply text-xl font-medium mb-2 text-gray-50 pr-4;
 }
 
 .close_icon {

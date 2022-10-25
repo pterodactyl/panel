@@ -6,10 +6,7 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class ApprovalFormRequest extends AdminFormRequest
 {
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             'enabled' => 'required|in:true,false',
