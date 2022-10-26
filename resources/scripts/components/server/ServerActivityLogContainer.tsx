@@ -10,7 +10,7 @@ import { ActivityLogFilters } from '@/api/account/activity';
 import { Link } from 'react-router-dom';
 import classNames from 'classnames';
 import { styles as btnStyles } from '@/components/elements/button/index';
-import { XCircleIcon } from '@heroicons/react/solid';
+import { XCircleIcon } from '@heroicons/react/24/solid';
 import useLocationHash from '@/plugins/useLocationHash';
 
 export default () => {

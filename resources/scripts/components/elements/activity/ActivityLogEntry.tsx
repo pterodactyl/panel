@@ -5,7 +5,7 @@ import Translate from '@/components/elements/Translate';
 import { format, formatDistanceToNowStrict } from 'date-fns';
 import { ActivityLog } from '@definitions/user';
 import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMetaButton';
-import { FolderOpenIcon, TerminalIcon } from '@heroicons/react/solid';
+import { FolderOpenIcon, CommandLineIcon } from '@heroicons/react/24/solid';
 import classNames from 'classnames';
 import style from './style.module.css';
 import Avatar from '@/components/Avatar';
@@ -66,7 +66,7 @@ export default ({ activity, children }: Props) => {
                         <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
                             {activity.isApi && (
                                 <Tooltip placement={'top'} content={'Using API Key'}>
-                                    <TerminalIcon />
+                                    <CommandLineIcon />
                                 </Tooltip>
                             )}
                             {activity.event.startsWith('server:sftp.') && (

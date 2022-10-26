@@ -5,7 +5,7 @@ import PageContentBlock from '@/components/elements/PageContentBlock';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Link } from 'react-router-dom';
 import PaginationFooter from '@/components/elements/table/PaginationFooter';
-import { DesktopComputerIcon, XCircleIcon } from '@heroicons/react/solid';
+import { ComputerDesktopIcon, XCircleIcon } from '@heroicons/react/24/solid';
 import Spinner from '@/components/elements/Spinner';
 import { styles as btnStyles } from '@/components/elements/button/index';
 import classNames from 'classnames';
@@ -53,7 +53,7 @@ export default () => {
                             {typeof activity.properties.useragent === 'string' && (
                                 <Tooltip content={activity.properties.useragent} placement={'top'}>
                                     <span>
-                                        <DesktopComputerIcon />
+                                        <ComputerDesktopIcon />
                                     </span>
                                 </Tooltip>
                             )}
