@@ -3,8 +3,8 @@ name: Publish Docker Image
 on:
   push:
     branches:
-      - 'develop'
-      - 'release/v*'
+      - "develop"
+      - "release/v*"
 
 jobs:
   push:
