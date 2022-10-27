@@ -90,7 +90,12 @@ class UserCreationService
         }
 
         $this->connection->commit();
-        $user->notify(new AccountCreated($user, $token ?? null));
+
+        try {
+            $user->notify(new AccountCreated($user, $token ?? null));
+        } catch (\Exception $e) {
+            // If the email system isn't active, still let users create accounts.
+        }
 
         return $user;
     }
