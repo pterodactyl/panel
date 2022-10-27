@@ -40,8 +40,6 @@ class ServerDeletionService
     /**
      * Set if the server's owner should recieve the resources upon server deletion.
      *
-     * @param bool $bool
-     *
      * @return $this
      */
     public function returnResources(bool $bool = true): self
@@ -97,7 +95,9 @@ class ServerDeletionService
             $server->delete();
         });
 
-        if (!$this->return_resources) return;
+        if (!$this->return_resources) {
+            return;
+        }
 
         try {
             $user = User::findOrFail($server->owner_id);

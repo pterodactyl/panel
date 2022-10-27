@@ -21,7 +21,7 @@ class ServerEditService
 
     /**
      * Updates the requested instance with new limits.
-     * 
+     *
      * @throws DisplayException
      */
     public function handle(EditServerRequest $request, Server $server)
@@ -32,7 +32,7 @@ class ServerEditService
 
         if ($user->id != $server->owner_id) {
             throw new DisplayException('You do not own this server, therefore you cannot make changes.');
-        };
+        }
 
         $this->verify($request, $server, $user);
 
@@ -57,27 +57,27 @@ class ServerEditService
         // Check if the amount requested goes over defined limits.
         if (($amount + $this->toServer($resource, $server)) > $limit) {
             throw new DisplayException('You cannot add this resource because an administrator has set a maximum limit.');
-        };
+        }
 
         // Verify baseline limits. We don't want servers with -4% CPU.
         if ($this->toServer($resource, $server) <= $this->toMin($resource) && $amount < 0) {
             throw new DisplayException('You cannot go below this amount.');
-        };
+        }
 
         // Verify that the user has the resource in their account.
         if ($this->toUser($resource, $user) < $amount) {
             throw new DisplayException('You do not have the resources available to make this change.');
-        };
+        }
     }
 
-    /**
-     * Gets the minimum value for a specific resource.
-     *
-     * @throws DisplayException
-     */
+     /**
+      * Gets the minimum value for a specific resource.
+      *
+      * @throws DisplayException
+      */
      protected function toMin(string $resource): int
      {
-         return match($resource) {
+         return match ($resource) {
              'cpu' => 50,
              'allocation_limit' => 1,
              'disk', 'memory' => 1024,
@@ -86,12 +86,12 @@ class ServerEditService
          };
      }
 
-    /**
-     * Get the requested resource type and transform it
-     * so it can be used in a database statement.
-     *
-     * @throws DisplayException
-     */
+     /**
+      * Get the requested resource type and transform it
+      * so it can be used in a database statement.
+      *
+      * @throws DisplayException
+      */
      protected function toUser(string $resource, User $user): int
      {
          return match ($resource) {

@@ -1,4 +1,5 @@
 <?php
+
 namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 
 use Illuminate\View\View;
@@ -7,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Transformers\Api\Client\StatsTransformer;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Traits\Controllers\PlainJavascriptInjection;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -19,7 +19,7 @@ class IndexController extends Controller
 
     public function __construct(
         private Fractal $fractal,
-        private  DaemonServerRepository $repository,
+        private DaemonServerRepository $repository,
         private SoftwareVersionService $versionService,
         private NodeRepositoryInterface $nodeRepository,
         private ServerRepositoryInterface $serverRepository,
@@ -87,4 +87,4 @@ class IndexController extends Controller
 
         return redirect()->route('admin.settings');
     }
-} 
+}

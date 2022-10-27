@@ -5,7 +5,8 @@ namespace Pterodactyl\Services\Store;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 
-class StoreVerificationService {
+class StoreVerificationService
+{
     /**
      * This service ensures that users cannot create servers, gift
      * resources or edit a servers resource limits if they do not
@@ -25,6 +26,8 @@ class StoreVerificationService {
             $user->store_cpu < $request->input('cpu') ||
             $user->store_backups < $request->input('backups') ||
             $user->store_databases < $request->input('databases')
-        ) throw new DisplayException('You do not have sufficient resources to deploy this server.');
+        ) {
+            throw new DisplayException('You do not have sufficient resources to deploy this server.');
+        }
     }
 }

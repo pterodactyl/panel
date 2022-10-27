@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Nest;
+use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
@@ -71,7 +71,9 @@ class ServerController extends ClientApiController
         $memory = $request->input('memory') * 1024;
 
         $nest = Nest::find($request->input('nest'));
-        if ($nest->private) throw new DisplayException('This nest is private and cannot be deployed to.');
+        if ($nest->private) {
+            throw new DisplayException('This nest is private and cannot be deployed to.');
+        }
 
         $this->creationService->handle($request);
 
@@ -87,5 +89,4 @@ class ServerController extends ClientApiController
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
-
 }

@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Http\Requests\Admin\Users;
 
-use Pterodactyl\Models\User;
-use Illuminate\Support\Collection;
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class UserStoreFormRequest extends AdminFormRequest

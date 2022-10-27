@@ -3,9 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Exception;
-use PayPalHttp\IOException;
 use Illuminate\Http\Request;
-use PayPalHttp\HttpException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;

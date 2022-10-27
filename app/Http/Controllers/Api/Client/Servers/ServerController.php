@@ -10,7 +10,6 @@ use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\DeleteServerRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\UpdateBackgroundRequest;
 
@@ -53,7 +52,7 @@ class ServerController extends ClientApiController
     /**
      * Deletes the requested server via the API and
      * returns the resources to the authenticated user.
-     * 
+     *
      * @throws DisplayException
      */
     public function delete(DeleteServerRequest $request, Server $server): JsonResponse
@@ -62,11 +61,11 @@ class ServerController extends ClientApiController
 
         if ($user->id != $server->owner_id) {
             throw new DisplayException('You are not authorized to perform this action.');
-        };
+        }
 
         if ($this->settings->get('jexactyl::renewal:deletion') != 'true') {
             throw new DisplayException('This feature has been locked by administrators.');
-        };
+        }
 
         try {
             $this->deletionService->returnResources(true)->handle($server);

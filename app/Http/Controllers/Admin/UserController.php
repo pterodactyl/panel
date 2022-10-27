@@ -84,7 +84,7 @@ class UserController extends Controller
 
     /**
      * Display user resource page.
-     * 
+     *
      * @return \Illuminate\View\View
      */
     public function viewStore(User $user)
@@ -141,7 +141,7 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.view', $user->id);
     }
- 
+
     /**
      * Update a user's storefront balances.
      *

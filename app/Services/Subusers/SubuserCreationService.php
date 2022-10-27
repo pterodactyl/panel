@@ -58,7 +58,9 @@ class SubuserCreationService
                 $username = substr(preg_replace('/([^\w\.-]+)/', '', strtok($email, '@')), 0, 64) . Str::random(3);
 
                 $appr = true;
-                if ($this->settings->get('jexactyl::approvals:enabled') == 'true') $appr = false;
+                if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
+                    $appr = false;
+                }
 
                 $user = $this->userCreationService->handle([
                     'email' => $email,

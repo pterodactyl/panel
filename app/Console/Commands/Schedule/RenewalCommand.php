@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Console\Commands\Schedule;
 
-use Exception;
-use Throwable;
 use Pterodactyl\Models\Server;
 use Illuminate\Console\Command;
 use Pterodactyl\Services\Servers\SuspensionService;
@@ -30,8 +28,7 @@ class RenewalCommand extends Command
     public function __construct(
         SuspensionService $suspensionService,
         ServerDeletionService $deletionService
-    )
-    {
+    ) {
         parent::__construct();
 
         $this->suspensionService = $suspensionService;
@@ -43,7 +40,7 @@ class RenewalCommand extends Command
      */
     public function handle(Server $server)
     {
-        $this->line('Executing daily renewal script.');    
+        $this->line('Executing daily renewal script.');
         $this->process($server);
         $this->line('Renewals completed successfully.');
     }
@@ -55,22 +52,22 @@ class RenewalCommand extends Command
     protected function process(Server $server)
     {
         $servers = $server->where('renewable', true)->get();
-        $this->line('Processing renewals for '.$servers->count().' servers.');
+        $this->line('Processing renewals for ' . $servers->count() . ' servers.');
 
         foreach ($servers as $svr) {
-            $this->line('Renewing server '.$svr->name, false);
+            $this->line('Renewing server ' . $svr->name, false);
 
             $svr->update(['renewal' => $svr->renewal - 1]);
 
             if ($svr->renewal <= 0) {
-                $this->line('Suspending server '.$svr->name, false);
+                $this->line('Suspending server ' . $svr->name, false);
                 $this->suspensionService->toggle($svr, 'suspend');
             }
 
             if ($svr->renewal <= -7) {
-                $this->line('Deleting server '.$svr->name, false);
+                $this->line('Deleting server ' . $svr->name, false);
                 $this->deletionService->handle($svr);
             }
-        };
+        }
     }
 }

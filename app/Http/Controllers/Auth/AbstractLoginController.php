@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Auth\Events\Failed;
 use Illuminate\Container\Container;
 use Illuminate\Support\Facades\Event;
@@ -73,7 +72,7 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Send the response after the user was authenticated.
-     * 
+     *
      * @throws DisplayException
      */
     protected function sendLoginResponse(User $user, Request $request): JsonResponse

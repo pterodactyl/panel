@@ -4,12 +4,11 @@ namespace Pterodactyl\Http\Controllers\Api\Application\Users;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest;
-use Pterodactyl\Transformers\Api\Application\UserResourcesTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest;
+use Pterodactyl\Transformers\Api\Application\UserResourcesTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class UserResourcesController extends ApplicationApiController
@@ -74,7 +73,7 @@ class UserResourcesController extends ApplicationApiController
         ]);
 
         return $this->fractal->item($user)
-            >transformWith($this->getTransformer(UserResourcesTransformer::class))
+            > transformWith($this->getTransformer(UserResourcesTransformer::class))
             ->toArray()
             ->respond(201);
     }

@@ -20,7 +20,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property string $uuid
  * @property string $uuidShort
  * @property int $node_id
- * @property boolean $renewable
+ * @property bool $renewable
  * @property int $renewal
  * @property string|null $bg
  * @property string $name

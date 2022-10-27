@@ -3,8 +3,6 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Support\Str;
-use Webmozart\Assert\Assert;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -14,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $code
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Pterodactyl\Models\User $user
- *
  */
 class ReferralCode extends Model
 {

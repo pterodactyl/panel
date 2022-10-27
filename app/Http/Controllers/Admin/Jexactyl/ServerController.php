@@ -26,7 +26,7 @@ class ServerController extends Controller
     public function index(): View
     {
         $prefix = 'jexactyl::renewal:';
-    
+
         return view('admin.jexactyl.server', [
             'enabled' => $this->settings->get($prefix . 'enabled', false),
             'default' => $this->settings->get($prefix . 'default', 7),

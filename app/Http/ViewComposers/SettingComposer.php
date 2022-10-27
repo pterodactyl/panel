@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\View\View;
-use Pterodactyl\Http\ViewComposers\Composer;
 use Pterodactyl\Services\Helpers\AssetHashService;
 
 class SettingComposer extends Composer

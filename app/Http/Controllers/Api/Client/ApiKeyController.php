@@ -6,9 +6,6 @@ use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Exceptions\DisplayException;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Services\Api\KeyCreationService;
-use Pterodactyl\Repositories\Eloquent\ApiKeyRepository;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\ApiKeyTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\StoreApiKeyRequest;
@@ -62,7 +59,7 @@ class ApiKeyController extends ClientApiController
             ->where('key_type', ApiKey::TYPE_ACCOUNT)
             ->where('identifier', $identifier)
             ->firstOrFail();
-        
+
         $key->delete();
 
         Activity::event('user:api-key.delete')

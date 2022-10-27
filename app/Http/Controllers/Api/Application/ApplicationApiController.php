@@ -50,8 +50,7 @@ abstract class ApplicationApiController extends Controller
         Fractal $fractal,
         Request $request,
         SettingsRepositoryInterface $settings,
-    )
-    {
+    ) {
         $this->fractal = $fractal;
         $this->request = $request;
         $this->settings = $settings;

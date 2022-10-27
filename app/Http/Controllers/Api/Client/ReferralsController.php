@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\DB;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 use Pterodactyl\Transformers\Api\Client\ReferralCodeTransformer;
-use Pterodacty\Http\Requests\Api\Client\Account\StoreReferralCodeRequest;
 
 class ReferralsController extends ClientApiController
 {
@@ -26,7 +25,7 @@ class ReferralsController extends ClientApiController
 
     /**
      * Use a referral code.
-     * 
+     *
      * @throws DisplayException
      */
     public function use(ClientApiRequest $request): JsonResponse
@@ -36,7 +35,7 @@ class ReferralsController extends ClientApiController
 
         if ($request->user()->referral_code) {
             throw new DisplayException('You have already used a referral code.');
-        };
+        }
 
         // Get the user who owns the referral code.
         $id = DB::table('referral_codes')
@@ -47,7 +46,7 @@ class ReferralsController extends ClientApiController
 
         if ($id->user_id == $request->user()->id) {
             throw new DisplayException('You can\'t use your own referral code.');
-        };
+        }
 
         // Update the user with the code and give them the reward.
         $request->user()->update([
@@ -66,7 +65,7 @@ class ReferralsController extends ClientApiController
 
     /**
      * Store a new referral code for a user's account.
-     * 
+     *
      * @throws DisplayException
      */
     public function store(ClientApiRequest $request): array
@@ -94,7 +93,7 @@ class ReferralsController extends ClientApiController
         $referralCode = $request->user()->referralCodes()
             ->where('code', $code)
             ->firstOrFail();
-    
+
         $referralCode->delete();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
@@ -107,6 +106,7 @@ class ReferralsController extends ClientApiController
     public function generate(): string
     {
         $chars = '1234567890ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
         return substr(str_shuffle($chars), 0, 16);
     }
 }

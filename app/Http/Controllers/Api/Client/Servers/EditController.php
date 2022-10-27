@@ -29,11 +29,11 @@ class EditController extends ClientApiController
     {
         if ($this->settings->get('jexactyl::renewal:editing') != 'true') {
             throw new DisplayException('Server editing is currently disabled.');
-        };
+        }
 
         if ($request->user()->id != $server->owner_id) {
             throw new DisplayException('You do not own this server, so you cannot edit the resources.');
-        };
+        }
 
         $this->editService->handle($request, $server);
 

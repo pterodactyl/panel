@@ -19,8 +19,7 @@ class ThemeController extends Controller
         private Repository $config,
         private AlertsMessageBag $alert,
         private SettingsRepositoryInterface $settings
-    ) 
-    {
+    ) {
     }
 
     /**
