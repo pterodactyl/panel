@@ -37,7 +37,7 @@ class Composer
 
     protected function getDatabaseAvailability(): bool
     {
-      $databases = DB::table('databases')->count();
+      $databases = DB::table('database_hosts')->count();
 
       if ($databases <= 0) {
         return false;
