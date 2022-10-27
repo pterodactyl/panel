@@ -24,6 +24,9 @@ jobs:
           php-version: '8.1'
           tools: composer:v2
           coverage: none
+    
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
       - name: PHP CS Fixer
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
