@@ -1,9 +1,11 @@
+import { createContext, useContext } from 'react';
 import useSWR from 'swr';
-import http, { getPaginationSet, PaginatedResult } from '@/api/http';
-import { ServerBackup } from '@/api/server/types';
+
+import type { PaginatedResult } from '@/api/http';
+import http, { getPaginationSet } from '@/api/http';
+import type { ServerBackup } from '@/api/server/types';
 import { rawDataToServerBackup } from '@/api/transformers';
 import { ServerContext } from '@/state/server';
-import { createContext, useContext } from 'react';
 
 interface ctx {
     page: number;
