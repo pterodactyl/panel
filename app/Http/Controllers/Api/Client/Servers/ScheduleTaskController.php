@@ -83,7 +83,7 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        Task::query()->update([
+        $task->update([
             'action' => $request->input('action'),
             'payload' => $request->input('payload') ?? '',
             'time_offset' => $request->input('time_offset'),
