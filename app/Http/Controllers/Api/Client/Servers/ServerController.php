@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
+use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Servers\ServerDeletionService;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
@@ -18,7 +19,7 @@ class ServerController extends ClientApiController
     /**
      * ServerController constructor.
      */
-    public function __construct(private GetUserPermissionsService $permissionsService, ServerDeletionService $deletionService)
+    public function __construct(private GetUserPermissionsService $permissionsService, private ServerDeletionService $deletionService)
     {
         parent::__construct();
     }
