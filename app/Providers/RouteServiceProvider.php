@@ -110,7 +110,7 @@ class RouteServiceProvider extends ServiceProvider
         });
     }
 
-    // Node Ping Test Helper
+    // Laravel Dusk Browser Testing Route Helpers for the Daemon
     private function duskBoot()
     {
         // Make sure we're only running in the Dusk testing environment
