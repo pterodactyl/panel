@@ -5,8 +5,8 @@ import ServerErrorSvg from '@/assets/images/server_error.svg';
 import ServerRestoreSvg from '@/assets/images/server_restore.svg';
 
 export default () => {
-    const status = ServerContext.useStoreState((state) => state.server.data?.status || null);
-    const isTransferring = ServerContext.useStoreState((state) => state.server.data?.isTransferring || false);
+    const status = ServerContext.useStoreState(state => state.server.data?.status || null);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data?.isTransferring || false);
 
     return status === 'installing' || status === 'install_failed' ? (
         <ScreenBlock

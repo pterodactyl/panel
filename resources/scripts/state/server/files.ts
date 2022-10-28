@@ -36,14 +36,14 @@ const files: ServerFileStore = {
     }),
 
     appendSelectedFile: action((state, payload) => {
-        state.selectedFiles = state.selectedFiles.filter((f) => f !== payload).concat(payload);
+        state.selectedFiles = state.selectedFiles.filter(f => f !== payload).concat(payload);
     }),
 
     removeSelectedFile: action((state, payload) => {
-        state.selectedFiles = state.selectedFiles.filter((f) => f !== payload);
+        state.selectedFiles = state.selectedFiles.filter(f => f !== payload);
     }),
 
-    clearFileUploads: action((state) => {
+    clearFileUploads: action(state => {
         state.uploads = [];
     }),
 
@@ -51,7 +51,7 @@ const files: ServerFileStore = {
         if (!state.uploads.some(({ name }) => name === payload.name)) {
             state.uploads = [...state.uploads, payload];
         } else {
-            state.uploads = state.uploads.map((file) => (file.name === payload.name ? payload : file));
+            state.uploads = state.uploads.map(file => (file.name === payload.name ? payload : file));
         }
     }),
 

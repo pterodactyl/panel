@@ -38,7 +38,7 @@ type ModalType = 'rename' | 'move' | 'chmod';
 
 const StyledRow = styled.div<{ $danger?: boolean }>`
     ${tw`p-2 flex items-center rounded`};
-    ${(props) =>
+    ${props =>
         props.$danger ? tw`hover:bg-red-100 hover:text-red-700` : tw`hover:bg-neutral-100 hover:text-neutral-700`};
 `;
 
@@ -61,10 +61,10 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
     const [modal, setModal] = useState<ModalType | null>(null);
     const [showConfirmation, setShowConfirmation] = useState(false);
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearAndAddHttpError, clearFlashes } = useFlash();
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
 
     useEventListener(`pterodactyl:files:ctx:${file.key}`, (e: CustomEvent) => {
         if (onClickRef.current) {
@@ -77,9 +77,9 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         // For UI speed, immediately remove the file from the listing before calling the deletion function.
         // If the delete actually fails, we'll fetch the current directory contents again automatically.
-        await mutate((files) => files!.filter((f) => f.key !== file.key), false);
+        await mutate(files => files!.filter(f => f.key !== file.key), false);
 
-        deleteFiles(uuid, directory, [file.name]).catch((error) => {
+        deleteFiles(uuid, directory, [file.name]).catch(error => {
             mutate();
             clearAndAddHttpError({ key: 'files', error });
         });
@@ -91,7 +91,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         copyFile(uuid, join(directory, file.name))
             .then(() => mutate())
-            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -100,11 +100,11 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
         clearFlashes('files');
 
         getFileDownloadUrl(uuid, join(directory, file.name))
-            .then((url) => {
+            .then(url => {
                 // @ts-expect-error this is valid
                 window.location = url;
             })
-            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -114,7 +114,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         compressFiles(uuid, directory, [file.name])
             .then(() => mutate())
-            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -124,7 +124,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
 
         decompressFiles(uuid, directory, file.name)
             .then(() => mutate())
-            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setShowSpinner(false));
     };
 
@@ -142,7 +142,7 @@ const FileDropdownMenu = ({ file }: { file: FileObject }) => {
             </Dialog.Confirm>
             <DropdownMenu
                 ref={onClickRef}
-                renderToggle={(onClick) => (
+                renderToggle={onClick => (
                     <div css={tw`px-4 py-2 hover:text-white`} onClick={onClick}>
                         <FontAwesomeIcon icon={faEllipsisH} />
                         {modal ? (

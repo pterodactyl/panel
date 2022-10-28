@@ -24,7 +24,7 @@ interface ServerDataStore {
 const server: ServerDataStore = {
     permissions: [],
 
-    inConflictState: computed((state) => {
+    inConflictState: computed(state => {
         if (!state.data) {
             return false;
         }
@@ -32,7 +32,7 @@ const server: ServerDataStore = {
         return state.data.status !== null || state.data.isTransferring;
     }),
 
-    isInstalling: computed((state) => {
+    isInstalling: computed(state => {
         return state.data?.status === 'installing' || state.data?.status === 'install_failed';
     }),
 
@@ -94,7 +94,7 @@ export const ServerContext = createContextStore<ServerStore>({
     files,
     subusers,
     schedules,
-    clearServerState: action((state) => {
+    clearServerState: action(state => {
         state.server.data = undefined;
         state.server.permissions = [];
         state.databases.data = [];

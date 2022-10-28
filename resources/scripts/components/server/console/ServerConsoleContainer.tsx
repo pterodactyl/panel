@@ -14,11 +14,11 @@ import { Alert } from '@/components/elements/alert';
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
 const ServerConsoleContainer = () => {
-    const name = ServerContext.useStoreState((state) => state.server.data!.name);
-    const description = ServerContext.useStoreState((state) => state.server.data!.description);
-    const isInstalling = ServerContext.useStoreState((state) => state.server.isInstalling);
-    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
-    const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
+    const name = ServerContext.useStoreState(state => state.server.data!.name);
+    const description = ServerContext.useStoreState(state => state.server.data!.description);
+    const isInstalling = ServerContext.useStoreState(state => state.server.isInstalling);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
+    const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
 
     return (
         <ServerContentBlock title={'Console'}>

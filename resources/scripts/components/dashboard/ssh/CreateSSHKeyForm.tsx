@@ -26,11 +26,11 @@ export default () => {
         clearAndAddHttpError();
 
         createSSHKey(values.name, values.publicKey)
-            .then((key) => {
+            .then(key => {
                 resetForm();
-                mutate((data) => (data || []).concat(key));
+                mutate(data => (data || []).concat(key));
             })
-            .catch((error) => clearAndAddHttpError(error))
+            .catch(error => clearAndAddHttpError(error))
             .then(() => setSubmitting(false));
     };
 

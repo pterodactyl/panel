@@ -7,7 +7,7 @@ export interface ModalContextValues {
         value:
             | ((current: Readonly<Partial<SettableModalProps>>) => Partial<SettableModalProps>)
             | Partial<SettableModalProps>
-            | null
+            | null,
     ) => void;
 }
 

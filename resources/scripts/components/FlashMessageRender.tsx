@@ -9,9 +9,7 @@ type Props = Readonly<{
 }>;
 
 const FlashMessageRender = ({ byKey, className }: Props) => {
-    const flashes = useStoreState((state) =>
-        state.flashes.items.filter((flash) => (byKey ? flash.key === byKey : true))
-    );
+    const flashes = useStoreState(state => state.flashes.items.filter(flash => (byKey ? flash.key === byKey : true)));
 
     return flashes.length ? (
         <div className={className}>

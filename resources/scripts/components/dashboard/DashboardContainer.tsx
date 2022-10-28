@@ -20,13 +20,13 @@ export default () => {
 
     const [page, setPage] = useState(!isNaN(defaultPage) && defaultPage > 0 ? defaultPage : 1);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const uuid = useStoreState((state) => state.user.data!.uuid);
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const uuid = useStoreState(state => state.user.data!.uuid);
+    const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [showOnlyAdmin, setShowOnlyAdmin] = usePersistedState(`${uuid}:show_all_servers`, false);
 
     const { data: servers, error } = useSWR<PaginatedResult<Server>>(
         ['/api/client/servers', showOnlyAdmin && rootAdmin, page],
-        () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined })
+        () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined }),
     );
 
     useEffect(() => {
@@ -58,7 +58,7 @@ export default () => {
                     <Switch
                         name={'show_all_servers'}
                         defaultChecked={showOnlyAdmin}
-                        onChange={() => setShowOnlyAdmin((s) => !s)}
+                        onChange={() => setShowOnlyAdmin(s => !s)}
                     />
                 </div>
             )}

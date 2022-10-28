@@ -58,7 +58,7 @@ const Switch = ({ name, label, description, defaultChecked, readOnly, onChange, 
                         id={uuid}
                         name={name}
                         type={'checkbox'}
-                        onChange={(e) => onChange && onChange(e)}
+                        onChange={e => onChange && onChange(e)}
                         defaultChecked={defaultChecked}
                         disabled={readOnly}
                     />

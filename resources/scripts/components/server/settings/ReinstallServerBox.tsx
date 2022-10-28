@@ -10,7 +10,7 @@ import { Button } from '@/components/elements/button/index';
 import { Dialog } from '@/components/elements/dialog';
 
 export default () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [modalVisible, setModalVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -24,7 +24,7 @@ export default () => {
                     message: 'Your server has begun the reinstallation process.',
                 });
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
 
                 addFlash({ key: 'settings', type: 'error', message: httpErrorToHuman(error) });

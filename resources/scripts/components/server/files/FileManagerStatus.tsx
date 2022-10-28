@@ -31,13 +31,13 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
 
 const FileUploadList = () => {
     const { close } = useContext(DialogWrapperContext);
-    const uploads = ServerContext.useStoreState((state) =>
-        state.files.uploads.sort((a, b) => a.name.localeCompare(b.name))
+    const uploads = ServerContext.useStoreState(state =>
+        state.files.uploads.sort((a, b) => a.name.localeCompare(b.name)),
     );
 
     return (
         <div className={'space-y-2 mt-6'}>
-            {uploads.map((file) => (
+            {uploads.map(file => (
                 <div key={file.name} className={'flex items-center space-x-3 bg-gray-700 p-3 rounded'}>
                     <Tooltip content={`${Math.floor((file.loaded / file.total) * 100)}%`} placement={'left'}>
                         <div className={'flex-shrink-0'}>
@@ -62,8 +62,8 @@ const FileUploadListDialog = asDialog({
 export default () => {
     const [open, setOpen] = useState(false);
 
-    const count = ServerContext.useStoreState((state) => state.files.uploads.length);
-    const progress = ServerContext.useStoreState((state) => ({
+    const count = ServerContext.useStoreState(state => state.files.uploads.length);
+    const progress = ServerContext.useStoreState(state => ({
         uploaded: state.files.uploads.reduce((count, file) => count + file.loaded, 0),
         total: state.files.uploads.reduce((count, file) => count + file.total, 0),
     }));

@@ -20,14 +20,14 @@ interface Props {
 export default ({ backup, className }: Props) => {
     const { mutate } = getServerBackups();
 
-    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, async (data) => {
+    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, async data => {
         try {
             const parsed = JSON.parse(data);
 
             await mutate(
-                (data) => ({
+                data => ({
                     ...data!,
-                    items: data!.items.map((b) =>
+                    items: data!.items.map(b =>
                         b.uuid !== backup.uuid
                             ? b
                             : {
@@ -36,10 +36,10 @@ export default ({ backup, className }: Props) => {
                                   checksum: (parsed.checksum_type || '') + ':' + (parsed.checksum || ''),
                                   bytes: parsed.file_size || 0,
                                   completedAt: new Date(),
-                              }
+                              },
                     ),
                 }),
-                false
+                false,
             );
         } catch (e) {
             console.warn(e);

@@ -68,7 +68,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
 };
 
 export default () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [visible, setVisible] = useState(false);
     const { mutate } = getServerBackups();
@@ -80,14 +80,14 @@ export default () => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('backups:create');
         createServerBackup(uuid, values)
-            .then(async (backup) => {
+            .then(async backup => {
                 await mutate(
-                    (data) => ({ ...data!, items: data!.items.concat(backup), backupCount: data!.backupCount + 1 }),
-                    false
+                    data => ({ ...data!, items: data!.items.concat(backup), backupCount: data!.backupCount + 1 }),
+                    false,
                 );
                 setVisible(false);
             })
-            .catch((error) => {
+            .catch(error => {
                 clearAndAddHttpError({ key: 'backups:create', error });
                 setSubmitting(false);
             });

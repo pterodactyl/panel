@@ -18,7 +18,8 @@ export default () => {
 
     return (
         <>
-            {visible && <SearchModal appear visible={visible} onDismissed={() => setVisible(false)} />}
+            <SearchModal appear visible={visible} onDismissed={() => setVisible(false)} />
+
             <Tooltip placement={'bottom'} content={'Search'}>
                 <div className={'navigation-link'} onClick={() => setVisible(true)}>
                     <FontAwesomeIcon icon={faSearch} />

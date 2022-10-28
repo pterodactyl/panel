@@ -1,9 +1,3 @@
-const prettier = {
-    singleQuote: true,
-    jsxSingleQuote: true,
-    printWidth: 120,
-};
-
 /** @type {import('eslint').Linter.Config} */
 module.exports = {
     parser: '@typescript-eslint/parser',
@@ -45,7 +39,7 @@ module.exports = {
     ],
     rules: {
         eqeqeq: 'error',
-        'prettier/prettier': ['error', prettier],
+        'prettier/prettier': ['error', {}, {usePrettierrc: true}],
         // TypeScript can infer this significantly better than eslint ever can.
         'react/prop-types': 0,
         'react/display-name': 0,

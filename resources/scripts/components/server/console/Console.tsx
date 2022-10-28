@@ -61,10 +61,10 @@ export default () => {
     const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [canSendCommands] = usePermissions(['control.console']);
-    const serverId = ServerContext.useStoreState((state) => state.server.data!.id);
-    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
+    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [historyIndex, setHistoryIndex] = useState(-1);
 
@@ -82,14 +82,14 @@ export default () => {
             case 'archive':
                 terminal.writeln(
                     TERMINAL_PRELUDE +
-                        'Server has been archived successfully, attempting connection to target node..\u001b[0m'
+                        'Server has been archived successfully, attempting connection to target node..\u001b[0m',
                 );
         }
     };
 
     const handleDaemonErrorOutput = (line: string) =>
         terminal.writeln(
-            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
         );
 
     const handlePowerChangeEvent = (state: string) =>
@@ -116,7 +116,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory((prevHistory) => [command, ...prevHistory!].slice(0, 32));
+            setHistory(prevHistory => [command, ...prevHistory!].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -158,7 +158,7 @@ export default () => {
             if (terminal.element) {
                 fitAddon.fit();
             }
-        }, 100)
+        }, 100),
     );
 
     useEffect(() => {
@@ -168,7 +168,7 @@ export default () => {
             [SocketEvent.INSTALL_OUTPUT]: handleConsoleOutput,
             [SocketEvent.TRANSFER_LOGS]: handleConsoleOutput,
             [SocketEvent.TRANSFER_STATUS]: handleTransferStatus,
-            [SocketEvent.DAEMON_MESSAGE]: (line) => handleConsoleOutput(line, true),
+            [SocketEvent.DAEMON_MESSAGE]: line => handleConsoleOutput(line, true),
             [SocketEvent.DAEMON_ERROR]: handleDaemonErrorOutput,
         };
 
@@ -228,7 +228,7 @@ export default () => {
                     <div
                         className={classNames(
                             'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
-                            styles.command_icon
+                            styles.command_icon,
                         )}
                     >
                         <ChevronDoubleRightIcon className={'w-4 h-4'} />

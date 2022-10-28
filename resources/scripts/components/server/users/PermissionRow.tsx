@@ -36,7 +36,7 @@ interface Props {
 
 const PermissionRow = ({ permission, disabled }: Props) => {
     const [key = '', pkey = ''] = permission.split('.', 2);
-    const permissions = useStoreState((state) => state.permissions.data);
+    const permissions = useStoreState(state => state.permissions.data);
 
     return (
         <Container htmlFor={`permission_${permission}`} className={disabled ? 'disabled' : undefined}>

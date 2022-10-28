@@ -19,7 +19,7 @@ interface State {
 
 // eslint-disable-next-line @typescript-eslint/ban-types
 function asModal<P extends {}>(
-    modalProps?: SettableModalProps | ((props: P) => SettableModalProps)
+    modalProps?: SettableModalProps | ((props: P) => SettableModalProps),
 ): (Component: any) => any {
     return function (Component) {
         return class extends PureComponent<P & AsModalProps, State> {
@@ -59,8 +59,8 @@ function asModal<P extends {}>(
 
             dismiss = () => this.setState({ visible: false });
 
-            setPropOverrides: ModalContextValues['setPropOverrides'] = (value) =>
-                this.setState((state) => ({
+            setPropOverrides: ModalContextValues['setPropOverrides'] = value =>
+                this.setState(state => ({
                     propOverrides: !value ? {} : typeof value === 'function' ? value(state.propOverrides) : value,
                 }));
 

@@ -24,8 +24,8 @@ const Dropdown = forwardRef<typeof Menu, Props>(({ as, children }, ref) => {
         const list = React.Children.toArray(children) as unknown as TypedChild[];
 
         return [
-            list.filter((child) => child.type === DropdownButton),
-            list.filter((child) => child.type !== DropdownButton),
+            list.filter(child => child.type === DropdownButton),
+            list.filter(child => child.type !== DropdownButton),
         ];
     }, [children]);
 

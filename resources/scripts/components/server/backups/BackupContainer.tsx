@@ -16,7 +16,7 @@ const BackupContainer = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: backups, error, isValidating } = getServerBackups();
 
-    const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
+    const backupLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.backups);
 
     useEffect(() => {
         if (!error) {

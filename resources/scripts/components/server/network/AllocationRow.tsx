@@ -32,11 +32,11 @@ interface Props {
 const AllocationRow = ({ allocation }: Props) => {
     const [loading, setLoading] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = getServerAllocations();
 
     const onNotesChanged = useCallback((id: number, notes: string) => {
-        mutate((data) => data?.map((a) => (a.id === id ? { ...a, notes } : a)), false);
+        mutate(data => data?.map(a => (a.id === id ? { ...a, notes } : a)), false);
     }, []);
 
     const setAllocationNotes = debounce((notes: string) => {
@@ -45,15 +45,15 @@ const AllocationRow = ({ allocation }: Props) => {
 
         setServerAllocationNotes(uuid, allocation.id, notes)
             .then(() => onNotesChanged(allocation.id, notes))
-            .catch((error) => clearAndAddHttpError(error))
+            .catch(error => clearAndAddHttpError(error))
             .then(() => setLoading(false));
     }, 750);
 
     const setPrimaryAllocation = () => {
         clearFlashes();
-        mutate((data) => data?.map((a) => ({ ...a, isDefault: a.id === allocation.id })), false);
+        mutate(data => data?.map(a => ({ ...a, isDefault: a.id === allocation.id })), false);
 
-        setPrimaryServerAllocation(uuid, allocation.id).catch((error) => {
+        setPrimaryServerAllocation(uuid, allocation.id).catch(error => {
             clearAndAddHttpError(error);
             mutate();
         });
@@ -90,7 +90,7 @@ const AllocationRow = ({ allocation }: Props) => {
                         className={'bg-neutral-800 hover:border-neutral-600 border-transparent'}
                         placeholder={'Notes'}
                         defaultValue={allocation.notes || undefined}
-                        onChange={(e) => setAllocationNotes(e.currentTarget.value)}
+                        onChange={e => setAllocationNotes(e.currentTarget.value)}
                     />
                 </InputSpinner>
             </div>

@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
-import * as React from 'react';
 import CodeMirror from 'codemirror';
+import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import tw from 'twin.macro';
+
 import modes from '@/modes';
 
 require('codemirror/lib/codemirror.css');
@@ -107,7 +108,7 @@ const EditorContainer = styled.div`
 `;
 
 export interface Props {
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     initialContent?: string;
     mode: string;
     filename?: string;
@@ -147,10 +148,12 @@ const findModeByFilename = (filename: string) => {
 export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
     const [editor, setEditor] = useState<CodeMirror.Editor>();
 
-    const ref = useCallback((node) => {
-        if (!node) return;
+    const ref = useCallback<(_?: unknown) => void>(node => {
+        if (node === undefined) {
+            return;
+        }
 
-        const e = CodeMirror.fromTextArea(node, {
+        const e = CodeMirror.fromTextArea(node as HTMLTextAreaElement, {
             mode: 'text/plain',
             theme: 'ayu-mirage',
             indentUnit: 4,

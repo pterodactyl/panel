@@ -105,7 +105,7 @@ export default ({ children, ...props }: Props) => {
                                 ref={arrowEl}
                                 style={{
                                     transform: `translate(${Math.round(ax || 0)}px, ${Math.round(
-                                        ay || 0
+                                        ay || 0,
                                     )}px) rotate(45deg)`,
                                 }}
                                 className={classNames('absolute bg-gray-900 w-3 h-3', side)}

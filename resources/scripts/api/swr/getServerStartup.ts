@@ -26,5 +26,5 @@ export default (uuid: string, fallbackData?: Response, config?: SWRConfiguration
                 dockerImages: data.meta.docker_images || {},
             };
         },
-        { fallbackData, errorRetryCount: 3, ...(config ?? {}) }
+        { fallbackData, errorRetryCount: 3, ...(config ?? {}) },
     );

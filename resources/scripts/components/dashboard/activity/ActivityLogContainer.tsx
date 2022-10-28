@@ -23,7 +23,7 @@ export default () => {
     });
 
     useEffect(() => {
-        setFilters((value) => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+        setFilters(value => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
     }, [hash]);
 
     useEffect(() => {
@@ -38,7 +38,7 @@ export default () => {
                     <Link
                         to={'#'}
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
-                        onClick={() => setFilters((value) => ({ ...value, filters: {} }))}
+                        onClick={() => setFilters(value => ({ ...value, filters: {} }))}
                     >
                         Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'} />
                     </Link>
@@ -48,7 +48,7 @@ export default () => {
                 <Spinner centered />
             ) : (
                 <div className={'bg-gray-700'}>
-                    {data?.items.map((activity) => (
+                    {data?.items.map(activity => (
                         <ActivityLogEntry key={activity.id} activity={activity}>
                             {typeof activity.properties.useragent === 'string' && (
                                 <Tooltip content={activity.properties.useragent} placement={'top'}>
@@ -64,7 +64,7 @@ export default () => {
             {data && (
                 <PaginationFooter
                     pagination={data.pagination}
-                    onPageSelect={(page) => setFilters((value) => ({ ...value, page }))}
+                    onPageSelect={page => setFilters(value => ({ ...value, page }))}
                 />
             )}
         </PageContentBlock>

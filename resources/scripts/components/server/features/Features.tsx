@@ -9,7 +9,7 @@ type ListItems = [string, ComponentType][];
 export default ({ enabled }: { enabled: string[] }) => {
     const mapped: ListItems = useMemo(() => {
         return getObjectKeys(features)
-            .filter((key) => enabled.map((v) => v.toLowerCase()).includes(key.toLowerCase()))
+            .filter(key => enabled.map(v => v.toLowerCase()).includes(key.toLowerCase()))
             .reduce((arr, key) => [...arr, [key, features[key]]] as ListItems, [] as ListItems);
     }, [enabled]);
 

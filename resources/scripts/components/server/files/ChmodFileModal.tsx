@@ -21,29 +21,29 @@ interface File {
 type OwnProps = RequiredModalProps & { files: File[] };
 
 const ChmodFileModal = ({ files, ...props }: OwnProps) => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
     const submit = async ({ mode }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
         clearFlashes('files');
 
         await mutate(
-            (data) =>
-                data!.map((f) =>
-                    f.name === files[0]?.file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f
+            data =>
+                data!.map(f =>
+                    f.name === files[0]?.file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f,
                 ),
-            false
+            false,
         );
 
-        const data = files.map((f) => ({ file: f.file, mode: mode }));
+        const data = files.map(f => ({ file: f.file, mode: mode }));
 
         chmodFiles(uuid, directory, data)
             .then((): Promise<any> => (files.length > 0 ? mutate() : Promise.resolve()))
             .then(() => setSelectedFiles([]))
-            .catch((error) => {
+            .catch(error => {
                 mutate();
                 setSubmitting(false);
                 clearAndAddHttpError({ key: 'files', error });

@@ -18,7 +18,7 @@ type BackupResponse = PaginatedResult<ServerBackup> & { backupCount: number };
 
 export default () => {
     const { page } = useContext(Context);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
     return useSWR<BackupResponse>(['server:backups', uuid, page], async () => {
         const { data } = await http.get(`/api/client/servers/${uuid}/backups`, { params: { page } });

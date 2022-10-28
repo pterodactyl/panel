@@ -14,10 +14,10 @@ const PIDLimitModalFeature = () => {
     const [visible, setVisible] = useState(false);
     const [loading] = useState(false);
 
-    const status = ServerContext.useStoreState((state) => state.status.value);
+    const status = ServerContext.useStoreState(state => state.status.value);
     const { clearFlashes } = useFlash();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
-    const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
+    const isAdmin = useStoreState(state => state.user.data!.rootAdmin);
 
     useEffect(() => {
         if (!connected || !instance || status === 'running') return;
@@ -32,7 +32,7 @@ const PIDLimitModalFeature = () => {
         ];
 
         const listener = (line: string) => {
-            if (errors.some((p) => line.toLowerCase().includes(p))) {
+            if (errors.some(p => line.toLowerCase().includes(p))) {
                 setVisible(true);
             }
         };

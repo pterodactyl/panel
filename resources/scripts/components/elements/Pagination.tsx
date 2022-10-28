@@ -53,7 +53,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
                             <FontAwesomeIcon icon={faAngleDoubleLeft} />
                         </Block>
                     )}
-                    {pages.map((i) => (
+                    {pages.map(i => (
                         <Block
                             isSecondary={pagination.currentPage !== i}
                             color={'primary'}

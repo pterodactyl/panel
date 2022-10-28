@@ -26,13 +26,13 @@ interface Props {
 }
 
 export default ({ database, className }: Props) => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [visible, setVisible] = useState(false);
     const [connectionVisible, setConnectionVisible] = useState(false);
 
-    const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
-    const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
+    const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
+    const removeDatabase = ServerContext.useStoreActions(actions => actions.databases.removeDatabase);
 
     const jdbcConnectionString = `jdbc:mysql://${database.username}${
         database.password ? `:${database.password}` : ''
@@ -51,7 +51,7 @@ export default ({ database, className }: Props) => {
                 setVisible(false);
                 setTimeout(() => removeDatabase(database.id), 150);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 setSubmitting(false);
                 addError({ key: 'database:delete', message: httpErrorToHuman(error) });

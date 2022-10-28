@@ -22,7 +22,7 @@ export default () => {
         }
 
         return Object.keys(current)
-            .map((key) => `${key}=${current[key]}`)
+            .map(key => `${key}=${current[key]}`)
             .join('&');
     };
 

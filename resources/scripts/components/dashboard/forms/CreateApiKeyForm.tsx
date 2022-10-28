@@ -36,7 +36,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                 setApiKey(`${key.identifier}${secretToken}`);
                 onKeyCreated(key);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
 
                 addError({ key: 'account', message: httpErrorToHuman(error) });

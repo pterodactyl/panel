@@ -32,15 +32,15 @@ const RenameServerBox = () => {
 };
 
 export default () => {
-    const server = ServerContext.useStoreState((state) => state.server.data!);
-    const setServer = ServerContext.useStoreActions((actions) => actions.server.setServer);
+    const server = ServerContext.useStoreState(state => state.server.data!);
+    const setServer = ServerContext.useStoreActions(actions => actions.server.setServer);
     const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
     const submit = ({ name }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('settings');
         renameServer(server.uuid, name)
             .then(() => setServer({ ...server, name }))
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 addError({ key: 'settings', message: httpErrorToHuman(error) });
             })

@@ -32,15 +32,15 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
-    const id = ServerContext.useStoreState((state) => state.server.data!.id);
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const clearFlashes = useStoreActions((actions) => actions.flashes.clearFlashes);
-    const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const clearFlashes = useStoreActions(actions => actions.flashes.clearFlashes);
+    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
 
-    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
-    const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
+    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
+    const selectedFilesLength = ServerContext.useStoreState(state => state.files.selectedFiles.length);
 
     useEffect(() => {
         clearFlashes('files');
@@ -53,7 +53,7 @@ export default () => {
     }, [directory]);
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setSelectedFiles(e.currentTarget.checked ? files?.map((file) => file.name) || [] : []);
+        setSelectedFiles(e.currentTarget.checked ? files?.map(file => file.name) || [] : []);
     };
 
     if (error) {
@@ -93,7 +93,8 @@ export default () => {
                     {!files.length ? (
                         <p css={tw`text-sm text-neutral-400 text-center`}>This directory seems to be empty.</p>
                     ) : (
-                        <CSSTransition classNames={'fade'} timeout={150} appear in>
+                        // @ts-expect-error go away
+                        <CSSTransition classNames="fade" timeout={150} appear in>
                             <div>
                                 {files.length > 250 && (
                                     <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
@@ -103,7 +104,7 @@ export default () => {
                                         </p>
                                     </div>
                                 )}
-                                {sortFiles(files.slice(0, 250)).map((file) => (
+                                {sortFiles(files.slice(0, 250)).map(file => (
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />

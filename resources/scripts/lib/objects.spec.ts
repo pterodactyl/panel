@@ -16,7 +16,7 @@ describe('@/lib/objects.ts', function () {
             'should return false for %p',
             function (value) {
                 expect(isObject(value)).toBe(false);
-            }
+            },
         );
     });
 });

@@ -15,9 +15,9 @@ export type ActivityLogFilters = QueryBuilderParams<'ip' | 'event', 'timestamp'>
 
 const useActivityLogs = (
     filters?: ActivityLogFilters,
-    config?: SWRConfiguration<PaginatedResult<ActivityLog>, AxiosError>
+    config?: SWRConfiguration<PaginatedResult<ActivityLog>, AxiosError>,
 ) => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
     const key = useServerSWRKey(['activity', useFilteredObject(filters || {})]);
 
     return useSWR<PaginatedResult<ActivityLog>>(
@@ -32,7 +32,7 @@ const useActivityLogs = (
 
             return toPaginatedSet(data, Transformers.toActivityLog);
         },
-        { revalidateOnMount: false, ...(config || {}) }
+        { revalidateOnMount: false, ...(config || {}) },
     );
 };
 

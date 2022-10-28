@@ -24,7 +24,7 @@ const schema = Yup.object().shape({
         'Password confirmation does not match the password you entered.',
         function (value) {
             return value === this.parent.password;
-        }
+        },
     ),
 });
 
@@ -43,13 +43,13 @@ export default () => {
                 // @ts-expect-error this is valid
                 window.location = '/auth/login';
             })
-            .catch((error) =>
+            .catch(error =>
                 addFlash({
                     key: 'account:password',
                     type: 'error',
                     title: 'Error',
                     message: httpErrorToHuman(error),
-                })
+                }),
             )
             .then(() => setSubmitting(false));
     };
