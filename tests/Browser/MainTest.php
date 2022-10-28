@@ -37,6 +37,8 @@ class MainTest extends DuskTestCase
         $this->artisan('migrate --seed --force');
 
         $this->browse(function (Browser $browser) use ($login, $pass) {
+            [$protocol, $panelDomain] = explode('://', config('app.url'), 2);
+
             // Test Failed Login
             $browser->visit('/auth/login');
             $browser->type('username', $login);
@@ -101,7 +103,7 @@ class MainTest extends DuskTestCase
             $browser->type('name', 'noderize');
             $browser->type('description', 'my server is the best');
             $browser->select('location_id', '1');
-            $browser->type('fqdn', 'panel_dev.test');
+            $browser->type('fqdn', $panelDomain);
             $browser->click('label[for=pSSLFalse]'); // radio http
             $browser->type('memory', '1024');
             $browser->type('memory_overallocate', '0');
@@ -132,7 +134,7 @@ class MainTest extends DuskTestCase
             $browser->type('name', 'antinode');
             $browser->type('description', 'my server broke :(');
             $browser->select('location_id', '1');
-            $browser->type('fqdn', 'panel_dev.test');
+            $browser->type('fqdn', $panelDomain);
             $browser->click('label[for=pSSLFalse]'); // radio http
             $browser->type('memory', '1024');
             $browser->type('memory_overallocate', '0');
