@@ -23,6 +23,10 @@ jobs:
         run: composer install --no-progress --prefer-dist --optimize-autoloader
       - name: Generate Application Key
         run: php artisan key:generate
+      - name: Install NPM Dependencies
+        run: yarn
+      - name: Build Front End
+        run: yarn build:production
       - name: Upgrade Chrome Driver
         run: php artisan dusk:chrome-driver --detect
       - name: Start Chrome Driver
