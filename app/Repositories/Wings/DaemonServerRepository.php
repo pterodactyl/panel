@@ -4,6 +4,7 @@ namespace Pterodactyl\Repositories\Wings;
 
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
+use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\GuzzleException;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -38,6 +39,8 @@ class DaemonServerRepository extends DaemonRepository
     public function create(bool $startOnCompletion = true): void
     {
         Assert::isInstanceOf($this->server, Server::class);
+
+        Log::info(app()->environment());
 
         try {
             $this->getHttpClient()->post('/api/servers', [
