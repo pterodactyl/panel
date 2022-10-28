@@ -28,10 +28,9 @@ class Login extends Page
         $browser->assertPathIs($this->url());
     }
 
-    public function loginToPanel(Browser $browser, $username, $password)
+    public function loginToPanel(Browser $browser, string $username, string $password)
     {
         $browser->type('username', $username);
-        $browser->script("document.querySelector('input[name=username]').value = '$username'");
         $browser->type('password', $password);
 
         $browser->clickAndWaitForReload('button[type=submit]', 2);
