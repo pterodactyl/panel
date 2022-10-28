@@ -67,11 +67,8 @@ class MainTest extends DuskTestCase
             $browser->assertDontSee('Forbidden');
             $browser->assertSee('Admin');
 
-            // Click on Users in navigation then click on Create New
-            $browser->visit('/admin/users/new');
-            // $browser->assertSee('Create New');
-
             // Create new non administrator user and see success
+            $browser->visit('/admin/users/new');
             $browser->type('email', 'matthew@example.com');
             $browser->type('username', 'bird');
             $browser->type('name_first', 'Matthew');
@@ -103,8 +100,7 @@ class MainTest extends DuskTestCase
             $browser->clickAndWaitForReload('button[type=submit]');
             $browser->assertPathIs('/admin/locations/view/1');
 
-            // Click on Nodes in navigation and then click on Create New
-            // Create New Node successfully
+            // Click on Nodes in navigation and then create a new Node successfully
             $browser->visit('/admin/nodes/new');
             $browser->type('name', 'noderize');
             $browser->type('description', 'my server is the best');
