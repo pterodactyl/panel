@@ -5,7 +5,7 @@ jobs:
   dusk-php:
     runs-on: ubuntu-latest
     env:
-      APP_URL: "http://127.0.0.1:8000"
+      APP_URL: "http://localhost:8000"
       APP_ENV: dusk
       DB_USERNAME: root
       DB_PASSWORD: root
