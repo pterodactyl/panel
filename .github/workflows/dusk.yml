@@ -23,7 +23,7 @@ jobs:
       - name: Install Composer Dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
       - name: Generate Application Key
-        run: php artisan key:generate --force
+        run: php artisan key:generate --force --no-interaction
       - name: Install NPM Dependencies
         run: yarn
       - name: Build Front End
