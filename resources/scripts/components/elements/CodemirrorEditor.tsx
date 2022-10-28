@@ -1,10 +1,17 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import CodeMirror from 'codemirror';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import styled from 'styled-components/macro';
 import tw from 'twin.macro';
 import modes from '@/modes';
+import CodeMirror from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
+import { bracketMatching } from '@codemirror/language';
+import { basicSetup, minimalSetup } from '@uiw/codemirror-extensions-basic-setup';
+import { loadLanguage } from '@uiw/codemirror-extensions-langs';
+import { hyperLink } from '@uiw/codemirror-extensions-hyper-link';
+import { languages } from '@/languages';
+import { fil } from 'date-fns/locale';
 
-require('codemirror/lib/codemirror.css');
+/* require('codemirror/lib/codemirror.css');
 require('codemirror/theme/ayu-mirage.css');
 require('codemirror/addon/edit/closebrackets');
 require('codemirror/addon/edit/closetag');
@@ -77,7 +84,7 @@ require('codemirror/mode/toml/toml');
 require('codemirror/mode/twig/twig');
 require('codemirror/mode/vue/vue');
 require('codemirror/mode/xml/xml');
-require('codemirror/mode/yaml/yaml');
+require('codemirror/mode/yaml/yaml'); */
 
 const EditorContainer = styled.div`
     min-height: 16rem;
@@ -88,7 +95,7 @@ const EditorContainer = styled.div`
         ${tw`rounded h-full`};
     }
 
-    .CodeMirror {
+    .cm-content {
         font-size: 12px;
         line-height: 1.375rem;
     }
@@ -105,8 +112,16 @@ const EditorContainer = styled.div`
     }
 `;
 
+const CodemirrorWrapper = styled(CodeMirror)`
+    box-shadow: 0 0 0 1px rgb(16 22 26 / 10%), 0 0 0 rgb(16 22 26 / 0%), 0 1px 1px rgb(16 22 26 / 20%);
+    margin: 0 auto;
+    text-align: left;
+
+    overflow: auto;
+    border-radius: 5px;
+`;
+
 export interface Props {
-    style?: React.CSSProperties;
     initialContent?: string;
     mode: string;
     filename?: string;
@@ -115,102 +130,77 @@ export interface Props {
     onContentSaved: () => void;
 }
 
-const findModeByFilename = (filename: string) => {
-    for (let i = 0; i < modes.length; i++) {
-        const info = modes[i];
-
-        if (info.file && info.file.test(filename)) {
-            return info;
-        }
+export default ({ initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
+    
+    function change(str: string) {
+        fetchContent(() => Promise.resolve(str));
     }
 
-    const dot = filename.lastIndexOf('.');
-    const ext = dot > -1 && filename.substring(dot + 1, filename.length);
-
-    if (ext) {
-        for (let i = 0; i < modes.length; i++) {
-            const info = modes[i];
-            if (info.ext) {
-                for (let j = 0; j < info.ext.length; j++) {
-                    if (info.ext[j] === ext) {
-                        return info;
-                    }
-                }
-            }
+    /**
+     * Gets the language based off of the file extension
+     * @returns the language to use
+     */
+    function getLanguage() {
+        //Specific cases
+        if(filename?.toLocaleUpperCase()==='DOCKERFILE')
+        {
+            return loadLanguage('dockerfile');
         }
+
+        if (filename?.match('.*\\..*')) {
+            const lang = languages[filename?.split('.')[1]];
+
+            return lang ? lang : languages['js'];
+        }
+        return languages['js'];
     }
 
-    return undefined;
-};
-
-export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
-    const [editor, setEditor] = useState<CodeMirror.Editor>();
-
-    const ref = useCallback((node) => {
-        if (!node) return;
-
-        const e = CodeMirror.fromTextArea(node, {
-            mode: 'text/plain',
-            theme: 'ayu-mirage',
-            indentUnit: 4,
-            smartIndent: true,
-            tabSize: 4,
-            indentWithTabs: false,
-            lineWrapping: true,
-            lineNumbers: true,
-            foldGutter: true,
-            fixedGutter: true,
-            scrollbarStyle: 'overlay',
-            coverGutterNextToScrollbar: false,
-            readOnly: false,
-            showCursorWhenSelecting: false,
-            autofocus: false,
-            spellcheck: true,
-            autocorrect: false,
-            autocapitalize: false,
-            lint: false,
-            // @ts-expect-error this property is actually used, the d.ts file for CodeMirror is incorrect.
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        });
-
-        setEditor(e);
-    }, []);
-
     useEffect(() => {
-        if (filename === undefined) {
-            return;
-        }
-
-        onModeChanged(findModeByFilename(filename)?.mime || 'text/plain');
-    }, [filename]);
-
-    useEffect(() => {
-        editor && editor.setOption('mode', mode);
-    }, [editor, mode]);
-
-    useEffect(() => {
-        editor && editor.setValue(initialContent || '');
-    }, [editor, initialContent]);
-
-    useEffect(() => {
-        if (!editor) {
-            fetchContent(() => Promise.reject(new Error('no editor session has been configured')));
-            return;
-        }
-
-        editor.addKeyMap({
-            'Ctrl-S': () => onContentSaved(),
-            'Cmd-S': () => onContentSaved(),
-        });
-
-        fetchContent(() => Promise.resolve(editor.getValue()));
-    }, [editor, fetchContent, onContentSaved]);
+        console.log(mode);
+    }, [mode]);
 
     return (
-        <EditorContainer style={style}>
-            <textarea ref={ref} />
-        </EditorContainer>
+        <CodemirrorWrapper
+            value={initialContent}
+            theme={'dark'}
+            onChange={change}
+            extensions={[
+                getLanguage()!,
+                hyperLink,
+                basicSetup({
+                    lineNumbers: true,
+                    foldGutter: true,
+                    highlightActiveLineGutter: true,
+                    highlightSpecialChars: true,
+                    history: true,
+                    drawSelection: true,
+                    dropCursor: true,
+                    allowMultipleSelections: true,
+                    indentOnInput: true,
+                    syntaxHighlighting: true,
+                    bracketMatching: true,
+                    closeBrackets: true,
+                    autocompletion: true,
+                    rectangularSelection: true,
+                    crosshairCursor: false,
+                    highlightActiveLine: true,
+                    highlightSelectionMatches: true,
+                    closeBracketsKeymap: true,
+                    defaultKeymap: true,
+                    searchKeymap: true,
+                    historyKeymap: true,
+                    foldKeymap: true,
+                    completionKeymap: true,
+                    lintKeymap: true,
+                }),
+            ]}
+            height={'500px'}
+            onKeyDown={(key) => {
+                if (key.ctrlKey && key.key === 's') {
+                    key.preventDefault();
+                    onContentSaved();
+                }
+            }}
+        />
     );
 };
