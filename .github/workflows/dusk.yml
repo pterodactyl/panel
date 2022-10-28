@@ -48,3 +48,9 @@ jobs:
         with:
           name: console
           path: tests/Browser/console
+      - name: Upload Application Logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: application
+          path: storage/logs
