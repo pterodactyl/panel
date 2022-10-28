@@ -3,8 +3,8 @@
 namespace Pterodactyl\Tests\Browser;
 
 use Laravel\Dusk\Browser;
-use Pterodactyl\Models\Server;
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Tests\DuskTestCase;
 use Illuminate\Support\Facades\Hash;
 use Pterodactyl\Tests\Browser\Pages\Login;
@@ -190,7 +190,6 @@ class MainTest extends DuskTestCase
             // Switch back to the owned servers
             $browser->click('input[name=show_all_servers] + label');
             $browser->waitForText('banana');
-
 
             /** @var Server $server */
             $server = Server::query()->findOrFail(2);
