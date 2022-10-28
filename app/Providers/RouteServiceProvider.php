@@ -113,6 +113,7 @@ class RouteServiceProvider extends ServiceProvider
     // Node Ping Test Helper
     private function duskBoot()
     {
+        // Make sure we're only running in the Dusk testing environment
         if (!app()->environment('dusk')) {
             return;
         }
@@ -126,6 +127,7 @@ class RouteServiceProvider extends ServiceProvider
             'cpu_count' => 2,
         ]);
 
+        // Simulate Successful Server Creation
         Route::post('/api/servers', fn () => []);
     }
 }
