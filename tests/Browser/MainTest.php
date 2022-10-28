@@ -214,9 +214,9 @@ class MainTest extends DuskTestCase
 
             // Click on logout and see redirect back to login screen
             $browser->clickAndWaitForReload('#logo + div button');
+            $browser->assertPathIs('/auth/login');
 
             // Login as the non admin user successfully
-            $browser->visit('/auth/login');
             $browser->type('username', 'matthew@example.com');
             $browser->type('password', 'mypasswordiscooler');
             $browser->clickAndWaitForReload('button[type=submit]');
