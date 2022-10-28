@@ -37,7 +37,13 @@ class MainTest extends DuskTestCase
         $this->artisan('migrate --seed --force');
 
         $this->browse(function (Browser $browser) use ($login, $pass) {
-            [$protocol, $panelDomain] = explode('://', config('app.url'), 2);
+            [$panelProtocol, $panelUrl] = explode('://', config('app.url'), 2);
+
+            $panelDomain = $panelUrl;
+            if (str_contains($panelUrl, ':')) {
+                [$panelDomain, $panelPort] = explode(':', $panelUrl, 2);
+            }
+            $panelPort ??= '80';
 
             // Test Failed Login
             $browser->visit('/auth/login');
@@ -109,7 +115,7 @@ class MainTest extends DuskTestCase
             $browser->type('memory_overallocate', '0');
             $browser->type('disk', '1024');
             $browser->type('disk_overallocate', '0');
-            $browser->type('daemonListen', '80');
+            $browser->type('daemonListen', $panelPort);
             $browser->clickAndWaitForReload('button[type=submit]');
             $browser->assertPathIs('/admin/nodes/view/1/allocation');
 
