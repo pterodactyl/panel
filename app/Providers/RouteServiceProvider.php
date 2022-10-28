@@ -62,6 +62,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('/api/remote')
                 ->scopeBindings()
                 ->group(base_path('routes/api-remote.php'));
+
+            $this->duskBoot();
         });
     }
 
@@ -106,5 +108,24 @@ class RouteServiceProvider extends ServiceProvider
                 config('http.rate_limit.application')
             )->by($key);
         });
+    }
+
+    // Node Ping Test Helper
+    private function duskBoot()
+    {
+        if (!app()->environment('dusk')) {
+            return;
+        }
+
+        // Simulate Node Ping
+        Route::get('/api/system', fn () => [
+            'version' => '1.7.0',
+            'kernel_version' => '5.4.0-126-generic',
+            'architecture' => 'amd64',
+            'os' => 'linux',
+            'cpu_count' => 2,
+        ]);
+
+        Route::post('/api/servers', fn () => []);
     }
 }
