@@ -21,8 +21,8 @@ export default () => {
     }, [visible]);
 
     const onTokens = (tokens: string[]) => {
-        setTokens(tokens);
         setVisible(null);
+        setTimeout(() => setTokens(tokens), 200);
     };
 
     return (
