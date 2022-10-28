@@ -4,9 +4,9 @@ import tw from 'twin.macro';
 import modes from '@/modes';
 import CodeMirror from '@uiw/react-codemirror';
 import { javascript } from '@codemirror/lang-javascript';
-import { bracketMatching } from '@codemirror/language';
+import { bracketMatching, LanguageSupport, StreamLanguage } from '@codemirror/language';
 import { basicSetup, minimalSetup } from '@uiw/codemirror-extensions-basic-setup';
-import { loadLanguage } from '@uiw/codemirror-extensions-langs';
+import { langs, loadLanguage } from '@uiw/codemirror-extensions-langs';
 import { hyperLink } from '@uiw/codemirror-extensions-hyper-link';
 import { languages } from '@/languages';
 import { fil } from 'date-fns/locale';
@@ -123,7 +123,7 @@ const CodemirrorWrapper = styled(CodeMirror)`
 
 export interface Props {
     initialContent?: string;
-    mode: string;
+    mode: string | undefined;
     filename?: string;
     onModeChanged: (mode: string) => void;
     fetchContent: (callback: () => Promise<string>) => void;
@@ -131,7 +131,8 @@ export interface Props {
 }
 
 export default ({ initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
-    
+    const [language, setLanguage] = useState<StreamLanguage<unknown> | LanguageSupport | null>(languages['js']);
+
     function change(str: string) {
         fetchContent(() => Promise.resolve(str));
     }
@@ -142,21 +143,24 @@ export default ({ initialContent, filename, mode, fetchContent, onContentSaved, 
      */
     function getLanguage() {
         //Specific cases
-        if(filename?.toLocaleUpperCase()==='DOCKERFILE')
-        {
+        if (filename?.toLocaleUpperCase() === 'DOCKERFILE') {
             return loadLanguage('dockerfile');
         }
 
         if (filename?.match('.*\\..*')) {
             const lang = languages[filename?.split('.')[1]];
 
-            return lang ? lang : languages['js'];
+            setLanguage(lang ? lang : languages['js']);
+            return;
         }
-        return languages['js'];
+        setLanguage(languages['js']);
     }
 
     useEffect(() => {
-        console.log(mode);
+        if (mode) {
+            console.log(mode);
+            setLanguage(loadLanguage(mode as keyof typeof langs));
+        }
     }, [mode]);
 
     return (
@@ -165,7 +169,7 @@ export default ({ initialContent, filename, mode, fetchContent, onContentSaved, 
             theme={'dark'}
             onChange={change}
             extensions={[
-                getLanguage()!,
+                language!,
                 hyperLink,
                 basicSetup({
                     lineNumbers: true,

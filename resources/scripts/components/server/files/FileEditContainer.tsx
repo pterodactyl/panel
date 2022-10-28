@@ -20,6 +20,7 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
 import { dirname } from 'path';
 import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
+import { langs } from '@uiw/codemirror-extensions-langs';
 
 export default () => {
     const [error, setError] = useState('');
@@ -27,7 +28,7 @@ export default () => {
     const [loading, setLoading] = useState(action === 'edit');
     const [content, setContent] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const [mode, setMode] = useState('text/plain');
+    const [mode, setMode] = useState<string>();
 
     const history = useHistory();
     const { hash } = useLocation();
@@ -132,11 +133,13 @@ export default () => {
             <div css={tw`flex justify-end mt-4`}>
                 <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
                     <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
-                        {modes.map((mode) => (
-                            <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
-                                {mode.name}
-                            </option>
-                        ))}
+                        {Object.keys(langs)
+                            .sort()
+                            .map((langs) => (
+                                <option css={tw`capitalize`} key={langs} value={langs}>
+                                    {langs}
+                                </option>
+                            ))}
                     </Select>
                 </div>
                 {action === 'edit' ? (
