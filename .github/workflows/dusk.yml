@@ -11,6 +11,7 @@ jobs:
       DB_PASSWORD: root
       MAIL_MAILER: log
       APP_KEY: "base64:8hOaU5CSjb45bxnFEToJwOsfhOpOvH/g4OWcoJPNyyE="
+      RECAPTCHA_ENABLED: false
     steps:
       - uses: actions/checkout@v3
       - name: Prepare The Environment
