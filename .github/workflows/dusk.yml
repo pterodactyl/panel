@@ -54,6 +54,9 @@ jobs:
       - name: Run Laravel Server
         run: php artisan serve --no-reload &
 
+      - name: Run Laravel Server Pseudo Daemon
+        run: php artisan serve --no-reload &
+
       - name: Upgrade Chrome Driver
         run: php artisan dusk:chrome-driver --detect
       - name: Start Chrome Driver
