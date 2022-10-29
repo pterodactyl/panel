@@ -5,7 +5,7 @@ jobs:
   dusk-php:
     runs-on: ubuntu-latest
     env:
-      APP_URL: "http://panel.test:8000"
+      APP_URL: "http://localhost:8000"
       APP_ENV: dusk
       DB_USERNAME: root
       DB_PASSWORD: root
@@ -16,8 +16,6 @@ jobs:
       - uses: actions/checkout@v3
       - name: Prepare The Environment
         run: cp .env.example .env
-      - name: Add hosts to /etc/hosts
-        run: sudo echo "127.0.0.1 panel.test" | sudo tee -a /etc/hosts
       - name: Create Database
         run: |
           sudo systemctl start mysql
