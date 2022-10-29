@@ -60,16 +60,16 @@ jobs:
         run: ./vendor/laravel/dusk/bin/chromedriver-linux --whitelisted-ips="" &
 
       - name: Curl Test 127.0.0.1
-        run: curl 127.0.0.1:8000/api/system
+        run: curl -X POST 127.0.0.1:8000/api/servers
 
       - name: Curl Test Localhost
-        run: curl localhost:8000/api/system
+        run: curl -X POST localhost:8000/api/servers
 
       - name: PHP Curl Test 127.0.0.1
-        run: "php -r 'echo curl_exec(curl_init(\"127.0.0.1:8000/api/system\")) ?: \"failed\";'"
+        run: "php -r '$ch = curl_init(\"127.0.0.1:8000/api/servers\"); curl_setopt($ch, CURLOPT_POST, 1); echo curl_exec($ch) ?: \"failed\";'"
 
       - name: PHP Curl Test Localhost
-        run: "php -r 'echo curl_exec(curl_init(\"localhost:8000/api/system\")) ?: \"failed\";'"
+        run: "php -r '$ch = curl_init(\"localhost:8000/api/servers\"); curl_setopt($ch, CURLOPT_POST, 1); echo curl_exec($ch) ?: \"failed\";'"
 
       - name: Run Dusk Tests
         run: php artisan dusk
