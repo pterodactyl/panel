@@ -20,14 +20,37 @@ jobs:
         run: |
           sudo systemctl start mysql
           mysql --user="root" --password="root" -e "CREATE DATABASE \`panel\` character set UTF8mb4 collate utf8mb4_bin;"
+
       - name: Install Composer Dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Get Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache Composer
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-8.1-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-8.1-
+
       - name: Generate Application Key
         run: php artisan key:generate --force --no-interaction
-      - name: Install NPM Dependencies
-        run: yarn
-      - name: Build Front End
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
         run: yarn build:production
+
       - name: Upgrade Chrome Driver
         run: php artisan dusk:chrome-driver --detect
       - name: Start Chrome Driver
