@@ -65,6 +65,12 @@ jobs:
       - name: Curl Test Localhost
         run: curl localhost:8000/api/system
 
+      - name: PHP Curl Test 127.0.0.1
+        run: "php -r 'echo curl_exec(curl_init(\"127.0.0.1:8000/api/system\")) ?: \"failed\";'"
+
+      - name: PHP Curl Test Localhost
+        run: "php -r 'echo curl_exec(curl_init(\"localhost:8000/api/system\")) ?: \"failed\";'"
+
       - name: Run Dusk Tests
         run: php artisan dusk
       - name: Upload Screenshots
