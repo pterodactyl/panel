@@ -51,13 +51,13 @@ jobs:
       - name: Build
         run: yarn build:production
 
+      - name: Run Laravel Server
+        run: php artisan serve --no-reload &
+
       - name: Upgrade Chrome Driver
         run: php artisan dusk:chrome-driver --detect
       - name: Start Chrome Driver
         run: ./vendor/laravel/dusk/bin/chromedriver-linux &
-
-      - name: Run Laravel Server
-        run: php artisan serve --no-reload &
 
       - name: Curl Test
         run: curl 127.0.0.1:8000/api/system
