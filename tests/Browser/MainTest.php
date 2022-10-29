@@ -43,8 +43,14 @@ class MainTest extends DuskTestCase
             if (str_contains($panelUrl, ':')) {
                 [$panelDomain, $panelPort] = explode(':', $panelUrl, 2);
             }
-            $panelPort ??= '80';
-            $panelPort = intval($panelPort) + 1;
+
+            // Default to HTTP if not specified
+            $panelPort = intval($panelPort ?? 80);
+
+            // For CI, use next port
+            if ($panelPort !== 80) {
+                ++$panelPort;
+            }
 
             // Test Failed Login
             $browser->visit('/auth/login');
