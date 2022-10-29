@@ -3,7 +3,6 @@
 namespace Pterodactyl\Providers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\Database;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -22,7 +21,6 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        Log::info(app()->environment());
         $this->configureRateLimiting();
 
         // Disable trimming string values when requesting file information — it isn't helpful
