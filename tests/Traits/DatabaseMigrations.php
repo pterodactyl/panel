@@ -3,8 +3,8 @@
 namespace Pterodactyl\Tests\Traits;
 
 use Illuminate\Contracts\Console\Kernel;
-use Illuminate\Foundation\Testing\Traits\CanConfigureMigrationCommands;
 use Illuminate\Foundation\Testing\DatabaseMigrations as DM;
+use Illuminate\Foundation\Testing\Traits\CanConfigureMigrationCommands;
 
 trait DatabaseMigrations
 {
