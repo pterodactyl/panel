@@ -44,6 +44,7 @@ class MainTest extends DuskTestCase
                 [$panelDomain, $panelPort] = explode(':', $panelUrl, 2);
             }
             $panelPort ??= '80';
+            $panelPort = intval($panelPort) + 1;
 
             // Test Failed Login
             $browser->visit('/auth/login');
