@@ -33,14 +33,11 @@ class ReferralCode extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'referral_codes';
+
     /**
      * Fields that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'code',
@@ -48,17 +45,12 @@ class ReferralCode extends Model
 
     /**
      * Rules to protect against invalid data entry to DB.
-     *
-     * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'user_id' => 'required|exists:users,id',
         'code' => 'present|string|size:16',
     ];
 
-    /**
-     * @var array
-     */
     protected $dates = [
         self::CREATED_AT,
     ];
