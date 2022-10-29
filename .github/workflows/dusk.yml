@@ -59,8 +59,11 @@ jobs:
       - name: Start Chrome Driver
         run: ./vendor/laravel/dusk/bin/chromedriver-linux --whitelisted-ips="" &
 
-      - name: Curl Test
+      - name: Curl Test 127.0.0.1
         run: curl 127.0.0.1:8000/api/system
+
+      - name: Curl Test Localhost
+        run: curl localhost:8000/api/system
 
       - name: Run Dusk Tests
         run: php artisan dusk
