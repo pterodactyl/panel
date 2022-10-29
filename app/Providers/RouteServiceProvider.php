@@ -118,16 +118,19 @@ class RouteServiceProvider extends ServiceProvider
             return;
         }
 
-        // Simulate Node Ping
-        Route::get('/api/system', fn () => [
-            'version' => '1.7.0',
-            'kernel_version' => '5.4.0-126-generic',
-            'architecture' => 'amd64',
-            'os' => 'linux',
-            'cpu_count' => 2,
-        ]);
+        Route::middleware('cors')->group(function () {
 
-        // Simulate Successful Server Creation
-        Route::post('/api/servers', fn () => []);
+            // Simulate Node Ping
+            Route::get('/api/system', fn () => [
+                'version' => '1.7.0',
+                'kernel_version' => '5.4.0-126-generic',
+                'architecture' => 'amd64',
+                'os' => 'linux',
+                'cpu_count' => 2,
+            ]);
+
+            // Simulate Successful Server Creation
+            Route::post('/api/servers', fn () => []);
+        });
     }
 }
