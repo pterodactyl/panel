@@ -194,7 +194,7 @@ class User extends Model implements
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
         'approved' => 'nullable|boolean',
-        'verified' => 'boolean'
+        'verified' => 'boolean',
     ];
 
     /**

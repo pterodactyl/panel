@@ -34,6 +34,7 @@ class StoreCreationService
 
     /**
      * Creates a server on Jexactyl using the Storefront.
+     *
      * @throws DisplayException
      */
     public function handle(CreateServerRequest $request): Server
