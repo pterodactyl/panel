@@ -19,6 +19,7 @@ use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Http\Requests\Admin\UserFormRequest;
+use Pterodactyl\Http\Requests\Admin\NewUserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 
 class UserController extends Controller
@@ -103,7 +104,7 @@ class UserController extends Controller
      * @throws \Exception
      * @throws \Throwable
      */
-    public function store(UserFormRequest $request): RedirectResponse
+    public function store(NewUserFormRequest $request): RedirectResponse
     {
         $user = $this->creationService->handle($request->normalize());
         $this->alert->success($this->translator->get('admin/user.notices.account_created'))->flash();

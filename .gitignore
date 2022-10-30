@@ -8,6 +8,7 @@
 storage/framework/*
 /.idea
 /nbproject
+/.direnv
 
 node_modules
 *.log
