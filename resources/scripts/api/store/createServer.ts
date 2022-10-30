@@ -15,10 +15,15 @@ interface Params {
     node: number | null;
 }
 
-export default (params: Params, egg: number, nest: number, node: number): Promise<void> => {
+interface Data {
+    success: boolean;
+    data: { id: string; };
+}
+
+export default (params: Params, egg: number, nest: number, node: number): Promise<Data> => {
     return new Promise((resolve, reject) => {
         http.post('/api/client/store/create', { ...params, egg, nest, node })
-            .then(() => resolve())
+            .then((data) => resolve(data.data))
             .catch(reject);
     });
 };

@@ -64,6 +64,7 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property int $store_databases
  * @property string $referral_code
  * @property bool|null $approved
+ * @property bool $verified
  *
  * @method static \Database\Factories\UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
@@ -193,6 +194,7 @@ class User extends Model implements
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
         'approved' => 'nullable|boolean',
+        'verified' => 'boolean'
     ];
 
     /**

@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Store\StoreCreationService;
@@ -14,6 +13,7 @@ use Pterodactyl\Transformers\Api\Client\Store\NodeTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreEggsRequest;
+use Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException;
 use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreNestsRequest;
 use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreNodesRequest;
 
@@ -67,15 +67,20 @@ class ServerController extends ClientApiController
     public function store(CreateServerRequest $request): JsonResponse
     {
         $user = $request->user();
+
+        if (!$user->verified) {
+            throw new DisplayException('Server deployment is unavailable for unverified accounts.');
+        }
+
         $disk = $request->input('disk') * 1024;
         $memory = $request->input('memory') * 1024;
-
         $nest = Nest::find($request->input('nest'));
+
         if ($nest->private) {
             throw new DisplayException('This nest is private and cannot be deployed to.');
         }
 
-        $this->creationService->handle($request);
+        $server = $this->creationService->handle($request);
 
         $user->update([
             'store_cpu' => $user->store_cpu - $request->input('cpu'),
@@ -87,6 +92,6 @@ class ServerController extends ClientApiController
             'store_databases' => $user->store_databases - $request->input('databases'),
         ]);
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return new JsonResponse(['success' => true, 'data' => ['id' => $server->uuidShort]]);
     }
 }
