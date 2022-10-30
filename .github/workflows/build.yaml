@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "1.0-develop"
+  pull_request:
+    branches:
+      - "develop"
+      - "1.0-develop"
+
+jobs:
+  ui:
+    name: UI
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: [16]
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build:production

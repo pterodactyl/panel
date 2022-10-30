@@ -21,6 +21,8 @@ class ServerEditService
 
     /**
      * Updates the requested instance with new limits.
+     *
+     * @throws DisplayException
      */
     public function handle(EditServerRequest $request, Server $server)
     {
@@ -28,17 +30,14 @@ class ServerEditService
         $amount = $request->input('amount');
         $resource = $request->input('resource');
 
-        if ($user->id != $server->owner_id) return;
-        $verify = $this->verify($request);
-        if (!$verify) return;
+        if ($user->id != $server->owner_id) {
+            throw new DisplayException('You do not own this server, therefore you cannot make changes.');
+        }
 
-        $server->update([
-            $resource => $this->getServerResource($request, $server) + $amount,
-        ]);
+        $this->verify($request, $server, $user);
 
-        $user->update([
-            'store_' . (string) $request->input('resource') => $this->toUser($request, $user) - $amount,
-        ]);
+        $server->update([$resource => $this->toServer($resource, $server) + $amount]);
+        $user->update(['store_' . $resource => $this->toUser($resource, $user) - $amount]);
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
@@ -49,34 +48,36 @@ class ServerEditService
      *
      * @throws DisplayException
      */
-    protected function verify(EditServerRequest $request, Server $server, User $user): bool
+    protected function verify(EditServerRequest $request, Server $server, User $user)
     {
         $amount = $request->input('amount');
         $resource = $request->input('resource');
+        $limit = $this->settings->get('jexactyl::store:limit:' . $resource);
 
-        foreach ($resource as $r) {
-          $limit = $this->settings->get('jexactyl::store:limit:' . $r);
-
-          // Check if the amount requested goes over defined limits.
-          if (($amount + $this->toServer($r, $server)) > $limit) return false;
-          // Verify baseline limits. We don't want servers with -4% CPU.
-          if ($this->toServer($r, $server) <= $this->toMin($r) && $amount < 0) return false;
-          // Verify that the user has the resource in their account.
-          if ($this->toUser($r, $user) < $amount) return false;
+        // Check if the amount requested goes over defined limits.
+        if (($amount + $this->toServer($resource, $server)) > $limit) {
+            throw new DisplayException('You cannot add this resource because an administrator has set a maximum limit.');
         }
 
-        // Return true if all checked.
-        return true;
+        // Verify baseline limits. We don't want servers with -4% CPU.
+        if ($this->toServer($resource, $server) <= $this->toMin($resource) && $amount < 0) {
+            throw new DisplayException('You cannot go below this amount.');
+        }
+
+        // Verify that the user has the resource in their account.
+        if ($this->toUser($resource, $user) < $amount) {
+            throw new DisplayException('You do not have the resources available to make this change.');
+        }
     }
 
-    /**
-     * Gets the minimum value for a specific resource.
-     *
-     * @throws DisplayException
-     */
-     protected function toMin(EditServerRequest $request): int
+     /**
+      * Gets the minimum value for a specific resource.
+      *
+      * @throws DisplayException
+      */
+     protected function toMin(string $resource): int
      {
-         return match($request->input('resource')) {
+         return match ($resource) {
              'cpu' => 50,
              'allocation_limit' => 1,
              'disk', 'memory' => 1024,
@@ -85,15 +86,15 @@ class ServerEditService
          };
      }
 
-    /**
-     * Get the requested resource type and transform it
-     * so it can be used in a database statement.
-     *
-     * @throws DisplayException
-     */
-     protected function toUser(EditServerRequest $request, User $user): int
+     /**
+      * Get the requested resource type and transform it
+      * so it can be used in a database statement.
+      *
+      * @throws DisplayException
+      */
+     protected function toUser(string $resource, User $user): int
      {
-         return match ($request->input('resource')) {
+         return match ($resource) {
              'cpu' => $user->store_cpu,
              'disk' => $user->store_disk,
              'memory' => $user->store_memory,
@@ -110,9 +111,9 @@ class ServerEditService
      *
      * @throws DisplayException
      */
-    protected function toServer(EditServerRequest $request, Server $server): ?int
+    protected function toServer(string $resource, Server $server): int
     {
-        return match ($request->input('resource')) {
+        return match ($resource) {
             'cpu' => $server->cpu,
             'disk' => $server->disk,
             'memory' => $server->memory,

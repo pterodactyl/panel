@@ -12,26 +12,18 @@ use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 class SystemInformationController extends Controller
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository
-     */
-    private $repository;
-
-    /**
      * SystemInformationController constructor.
      */
-    public function __construct(DaemonConfigurationRepository $repository)
+    public function __construct(private DaemonConfigurationRepository $repository)
     {
-        $this->repository = $repository;
     }
 
     /**
      * Returns system information from the Daemon.
      *
-     * @return \Illuminate\Http\JsonResponse
-     *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function __invoke(Request $request, Node $node)
+    public function __invoke(Request $request, Node $node): JsonResponse
     {
         $data = $this->repository->setNode($node)->getSystemInformation();
 

@@ -3,26 +3,22 @@
 namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\View\View;
-use Pterodactyl\Http\ViewComposers\Composer;
 use Pterodactyl\Services\Helpers\AssetHashService;
 
 class SettingComposer extends Composer
 {
-    private AssetHashService $assetHashService;
-
     /**
      * AssetComposer constructor.
      */
-    public function __construct(AssetHashService $assetHashService)
+    public function __construct(private AssetHashService $assetHashService)
     {
         parent::__construct();
-        $this->assetHashService = $assetHashService;
     }
 
     /**
      * Provide access to the asset service in the views.
      */
-    public function compose(View $view)
+    public function compose(View $view): void
     {
         $view->with('asset', $this->assetHashService);
 
@@ -30,7 +26,7 @@ class SettingComposer extends Composer
             'name' => config('app.name') ?? 'Pterodactyl',
             'locale' => config('app.locale') ?? 'en',
             'logo' => $this->setting('logo', Composer::TYPE_STR),
-    
+
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),
                 'siteKey' => config('recaptcha.website_key') ?? '',
@@ -42,6 +38,7 @@ class SettingComposer extends Composer
             ],
 
             'approvals' => $this->setting('approvals:enabled', Composer::TYPE_BOOL),
+            'databases' => $this->getDatabaseAvailability(),
         ]);
     }
 }

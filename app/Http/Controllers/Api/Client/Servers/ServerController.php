@@ -6,35 +6,21 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Transformers\Api\Client\ServerTransformer;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Requests\Api\Client\Servers\GetServerRequest;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\DeleteServerRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\UpdateBackgroundRequest;
 
 class ServerController extends ClientApiController
 {
-    private SubuserRepository $repository;
-    private ServerDeletionService $deletionService;
-    private GetUserPermissionsService $permissionsService;
-
     /**
      * ServerController constructor.
      */
-    public function __construct(
-        GetUserPermissionsService $permissionsService,
-        ServerDeletionService $deletionService,
-        SubuserRepository $repository,
-    )
+    public function __construct(private GetUserPermissionsService $permissionsService, private ServerDeletionService $deletionService)
     {
         parent::__construct();
-
-        $this->repository = $repository;
-        $this->deletionService = $deletionService;
-        $this->permissionsService = $permissionsService;
     }
 
     /**
@@ -66,20 +52,20 @@ class ServerController extends ClientApiController
     /**
      * Deletes the requested server via the API and
      * returns the resources to the authenticated user.
-     * 
+     *
      * @throws DisplayException
      */
     public function delete(DeleteServerRequest $request, Server $server): JsonResponse
     {
         $user = $request->user();
 
-        if ($user->id != $server->owner_id ||$request['name'] != $server->name) {
+        if ($user->id != $server->owner_id) {
             throw new DisplayException('You are not authorized to perform this action.');
-        };
+        }
 
         if ($this->settings->get('jexactyl::renewal:deletion') != 'true') {
             throw new DisplayException('This feature has been locked by administrators.');
-        };
+        }
 
         try {
             $this->deletionService->returnResources(true)->handle($server);

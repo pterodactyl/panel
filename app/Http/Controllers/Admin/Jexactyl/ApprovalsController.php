@@ -3,29 +3,23 @@
 namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 
 use Illuminate\View\View;
-use Pterodactyl\Models\User;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\Jexactyl\ApprovalFormRequest;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\ApprovalFormRequest;
 
 class ApprovalsController extends Controller
 {
-    private AlertsMessageBag $alert;
-    private SettingsRepositoryInterface $settings;
-
     /**
      * ApprovalsController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        SettingsRepositoryInterface $settings,
-    )
-    {
-        $this->alert = $alert;
-        $this->settings = $settings;
+        private AlertsMessageBag $alert,
+        private SettingsRepositoryInterface $settings,
+    ) {
     }
 
     /**
@@ -55,6 +49,19 @@ class ApprovalsController extends Controller
         }
 
         $this->alert->success('Jexactyl Approval settings have been updated.')->flash();
+
+        return redirect()->route('admin.jexactyl.approvals');
+    }
+
+    /**
+     * Approve all users currently waiting to be approved.
+     */
+    public function approveAll(Request $request): RedirectResponse
+    {
+        User::where('approved', false)->update(['approved', true]);
+
+        $this->alert->success('All users have been approved successfully.')->flash();
+
         return redirect()->route('admin.jexactyl.approvals');
     }
 
@@ -68,6 +75,7 @@ class ApprovalsController extends Controller
         // This gives the user access to the frontend.
 
         $this->alert->success($user->username . ' has been approved.')->flash();
+
         return redirect()->route('admin.jexactyl.approvals');
     }
 
@@ -82,6 +90,7 @@ class ApprovalsController extends Controller
         // shouldn't be any present - as the user has been waiting for approval.
 
         $this->alert->success($user->username . ' has been denied.')->flash();
+
         return redirect()->route('admin.jexactyl.approvals');
     }
 }

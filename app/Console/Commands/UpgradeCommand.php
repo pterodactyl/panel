@@ -12,16 +12,14 @@ class UpgradeCommand extends Command
 {
     protected const DEFAULT_URL = 'https://github.com/jexactyl/jexactyl/releases/%s/panel.tar.gz';
 
-    /** @var string */
     protected $signature = 'p:upgrade
         {--user= : The user that PHP runs under. All files will be owned by this user.}
         {--group= : The group that PHP runs under. All files will be owned by this group.}
         {--url= : The specific archive to download.}
-        {--release= : A specific Pterodactyl version to download from GitHub. Leave blank to use latest.}
+        {--release= : A specific version to download from GitHub. Leave blank to use latest.}
         {--skip-download : If set no archive will be downloaded.}';
 
-    /** @var string */
-    protected $description = 'Downloads a new archive for Jexactyl from GitHub and then executes the normal upgrade commands.';
+    protected $description = 'Downloads a new archive from Jexactyl\'s GitHub and executes the upgrade commands.';
 
     /**
      * Executes an upgrade command which will run through all of our standard
@@ -92,7 +90,7 @@ class UpgradeCommand extends Command
             }
         }
 
-        ini_set('output_buffering', 0);
+        ini_set('output_buffering', '0');
         $bar = $this->output->createProgressBar($skipDownload ? 9 : 10);
         $bar->start();
 

@@ -62,6 +62,10 @@
                 <div class="box-header with-border">
                     <i class="fa fa-list"></i>
                     <h3 class="box-title">Approval Requests <small>Allow or deny reqursts to create accounts.</small></h3>
+                    <form id="massapproveform" action="{{ route('admin.jexactyl.approvals.all') }}" method="POST">
+                        {!! csrf_field() !!}
+                        <button id="approvalAllBtn" class="btn btn-success pull-right">Approve All</button>
+                    </form>
                  </div>
                 <div class="box-body table-responsive no-padding">
                     <table class="table table-hover">
@@ -146,6 +150,20 @@
             closeOnConfirm: false
         }, function () {
             $('#approveform').submit()
+        });
+    });
+
+    $('#approvalAllBtn').click(function (event) {
+        event.preventDefault();
+        swal({
+            title: 'Approve All Users?',
+            text: 'This will approve all of the users waiting for approval.',
+            showCancelButton: true,
+            confirmButtonText: 'Approve All',
+            confirmButtonColor: 'green',
+            closeOnConfirm: false
+        }, function () {
+            $('#massapproveform').submit()
         });
     });
     </script>

@@ -22,7 +22,7 @@ export default () => {
     };
 
     const PanelDiv = styled.div`
-        ${tw`h-screen sticky bg-neutral-900 flex flex-col w-28 fixed top-0`};
+        ${tw`h-screen sticky bg-neutral-800 flex flex-col w-28 fixed top-0`};
 
         & > div {
             ${tw`mx-auto`};

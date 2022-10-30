@@ -23,22 +23,10 @@ class AssignmentService
     public const PORT_RANGE_REGEX = '/^(\d{4,5})-(\d{4,5})$/';
 
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    protected $connection;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
-     */
-    protected $repository;
-
-    /**
      * AssignmentService constructor.
      */
-    public function __construct(AllocationRepositoryInterface $repository, ConnectionInterface $connection)
+    public function __construct(protected AllocationRepositoryInterface $repository, protected ConnectionInterface $connection)
     {
-        $this->connection = $connection;
-        $this->repository = $repository;
     }
 
     /**
@@ -50,7 +38,7 @@ class AssignmentService
      * @throws \Pterodactyl\Exceptions\Service\Allocation\PortOutOfRangeException
      * @throws \Pterodactyl\Exceptions\Service\Allocation\TooManyPortsInRangeException
      */
-    public function handle(Node $node, array $data)
+    public function handle(Node $node, array $data): void
     {
         $explode = explode('/', $data['allocation_ip']);
         if (count($explode) !== 1) {
@@ -60,6 +48,10 @@ class AssignmentService
         }
 
         try {
+            // TODO: how should we approach supporting IPv6 with this?
+            // gethostbyname only supports IPv4, but the alternative (dns_get_record) returns
+            // an array of records, which is not ideal for this use case, we need a SINGLE
+            // IP to use, not multiple.
             $underlying = gethostbyname($data['allocation_ip']);
             $parsed = Network::parse($underlying);
         } catch (Exception $exception) {

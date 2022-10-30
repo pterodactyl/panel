@@ -22,12 +22,13 @@ Route::group(['prefix' => '/'], function () {
     Route::get('/discord', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.discord');
     Route::get('/referrals', [Admin\Jexactyl\ReferralsController::class, 'index'])->name('admin.jexactyl.referrals');
     Route::get('/registration', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.registration');
-    
+
     Route::group(['prefix' => '/approvals'], function () {
         Route::get('/', [Admin\Jexactyl\ApprovalsController::class, 'index'])->name('admin.jexactyl.approvals');
 
         Route::patch('/', [Admin\Jexactyl\ApprovalsController::class, 'update'])->name('admin.jexactyl.approvals');
         Route::post('/deny/{id}', [Admin\Jexactyl\ApprovalsController::class, 'deny'])->name('admin.jexactyl.approvals.deny');
+        Route::post('/approve/all', [Admin\Jexactyl\ApprovalsController::class, 'approveAll'])->name('admin.jexactyl.approvals.all');
         Route::post('/approve/{id}', [Admin\Jexactyl\ApprovalsController::class, 'approve'])->name('admin.jexactyl.approvals.approve');
     });
 

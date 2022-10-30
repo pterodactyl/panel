@@ -6,18 +6,12 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class AuthenticateWebsocketDetailsRequest extends FormRequest
 {
-    /**
-     * @return bool
-     */
-    public function authorize()
+    public function authorize(): bool
     {
         return true;
     }
 
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             'server_uuid' => 'required|string',

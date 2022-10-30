@@ -4,7 +4,7 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\Schedule;
-use Illuminate\Database\Eloquent\Model;
+use League\Fractal\Resource\Collection;
 
 class ScheduleTransformer extends BaseClientTransformer
 {
@@ -22,10 +22,8 @@ class ScheduleTransformer extends BaseClientTransformer
 
     /**
      * Returns a transformed schedule model such that a client can view the information.
-     *
-     * @return array
      */
-    public function transform(Schedule $model)
+    public function transform(Schedule $model): array
     {
         return [
             'id' => $model->id,
@@ -40,21 +38,19 @@ class ScheduleTransformer extends BaseClientTransformer
             'is_active' => $model->is_active,
             'is_processing' => $model->is_processing,
             'only_when_online' => $model->only_when_online,
-            'last_run_at' => $model->last_run_at ? $model->last_run_at->toIso8601String() : null,
-            'next_run_at' => $model->next_run_at ? $model->next_run_at->toIso8601String() : null,
-            'created_at' => $model->created_at->toIso8601String(),
-            'updated_at' => $model->updated_at->toIso8601String(),
+            'last_run_at' => $model->last_run_at?->toAtomString(),
+            'next_run_at' => $model->next_run_at?->toAtomString(),
+            'created_at' => $model->created_at->toAtomString(),
+            'updated_at' => $model->updated_at->toAtomString(),
         ];
     }
 
     /**
      * Allows attaching the tasks specific to the schedule in the response.
      *
-     * @return \League\Fractal\Resource\Collection
-     *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeTasks(Schedule $model)
+    public function includeTasks(Schedule $model): Collection
     {
         return $this->collection(
             $model->tasks,

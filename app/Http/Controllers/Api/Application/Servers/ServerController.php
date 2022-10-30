@@ -8,7 +8,6 @@ use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Services\Servers\ServerDeletionService;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServerRequest;
 use Pterodactyl\Http\Requests\Api\Application\Servers\GetServersRequest;
@@ -19,37 +18,17 @@ use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 class ServerController extends ApplicationApiController
 {
     /**
-     * @var \Pterodactyl\Services\Servers\ServerCreationService
-     */
-    private $creationService;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\ServerDeletionService
-     */
-    private $deletionService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\ServerRepositoryInterface
-     */
-    private $repository;
-
-    /**
      * ServerController constructor.
      */
     public function __construct(
-        ServerCreationService $creationService,
-        ServerDeletionService $deletionService,
-        ServerRepositoryInterface $repository
+        private ServerCreationService $creationService,
+        private ServerDeletionService $deletionService
     ) {
         parent::__construct();
-
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->repository = $repository;
     }
 
     /**
-     * Return all of the servers that currently exist on the Panel.
+     * Return all the servers that currently exist on the Panel.
      */
     public function index(GetServersRequest $request): array
     {
@@ -94,6 +73,8 @@ class ServerController extends ApplicationApiController
     }
 
     /**
+     * Deletes a server.
+     *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function delete(ServerWriteRequest $request, Server $server, string $force = ''): Response

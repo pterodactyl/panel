@@ -9,64 +9,45 @@ use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use InvalidArgumentException;
 use Illuminate\Foundation\Application;
-use League\Flysystem\AdapterInterface;
-use League\Flysystem\AwsS3v3\AwsS3Adapter;
-use League\Flysystem\Memory\MemoryAdapter;
-use Illuminate\Contracts\Config\Repository;
+use League\Flysystem\FilesystemAdapter;
+use Pterodactyl\Extensions\Filesystem\S3Filesystem;
+use League\Flysystem\InMemory\InMemoryFilesystemAdapter;
+use Illuminate\Contracts\Config\Repository as ConfigRepository;
 
 class BackupManager
 {
-    /**
-     * @var \Illuminate\Foundation\Application
-     */
-    protected $app;
-
-    /**
-     * @var \Illuminate\Contracts\Config\Repository
-     */
-    protected $config;
+    protected ConfigRepository $config;
 
     /**
      * The array of resolved backup drivers.
-     *
-     * @var \League\Flysystem\AdapterInterface[]
      */
-    protected $adapters = [];
+    protected array $adapters = [];
 
     /**
      * The registered custom driver creators.
-     *
-     * @var array
      */
-    protected $customCreators;
+    protected array $customCreators;
 
     /**
      * BackupManager constructor.
      */
-    public function __construct(Application $app)
+    public function __construct(protected Application $app)
     {
-        $this->app = $app;
-        $this->config = $app->make(Repository::class);
+        $this->config = $app->make(ConfigRepository::class);
     }
 
     /**
      * Returns a backup adapter instance.
-     *
-     * @return \League\Flysystem\AdapterInterface
      */
-    public function adapter(string $name = null)
+    public function adapter(string $name = null): FilesystemAdapter
     {
         return $this->get($name ?: $this->getDefaultAdapter());
     }
 
     /**
      * Set the given backup adapter instance.
-     *
-     * @param \League\Flysystem\AdapterInterface $disk
-     *
-     * @return $this
      */
-    public function set(string $name, $disk)
+    public function set(string $name, FilesystemAdapter $disk): self
     {
         $this->adapters[$name] = $disk;
 
@@ -75,25 +56,21 @@ class BackupManager
 
     /**
      * Gets a backup adapter.
-     *
-     * @return \League\Flysystem\AdapterInterface
      */
-    protected function get(string $name)
+    protected function get(string $name): FilesystemAdapter
     {
         return $this->adapters[$name] = $this->resolve($name);
     }
 
     /**
      * Resolve the given backup disk.
-     *
-     * @return \League\Flysystem\AdapterInterface
      */
-    protected function resolve(string $name)
+    protected function resolve(string $name): FilesystemAdapter
     {
         $config = $this->getConfig($name);
 
         if (empty($config['adapter'])) {
-            throw new InvalidArgumentException("Backup disk [{$name}] does not have a configured adapter.");
+            throw new InvalidArgumentException("Backup disk [$name] does not have a configured adapter.");
         }
 
         $adapter = $config['adapter'];
@@ -106,44 +83,34 @@ class BackupManager
         if (method_exists($this, $adapterMethod)) {
             $instance = $this->{$adapterMethod}($config);
 
-            Assert::isInstanceOf($instance, AdapterInterface::class);
+            Assert::isInstanceOf($instance, FilesystemAdapter::class);
 
             return $instance;
         }
 
-        throw new InvalidArgumentException("Adapter [{$adapter}] is not supported.");
+        throw new InvalidArgumentException("Adapter [$adapter] is not supported.");
     }
 
     /**
      * Calls a custom creator for a given adapter type.
-     *
-     * @return \League\Flysystem\AdapterInterface
      */
-    protected function callCustomCreator(array $config)
+    protected function callCustomCreator(array $config): mixed
     {
-        $adapter = $this->customCreators[$config['adapter']]($this->app, $config);
-
-        Assert::isInstanceOf($adapter, AdapterInterface::class);
-
-        return $adapter;
+        return $this->customCreators[$config['adapter']]($this->app, $config);
     }
 
     /**
-     * Creates a new wings adapter.
-     *
-     * @return \League\Flysystem\AdapterInterface
+     * Creates a new Wings adapter.
      */
-    public function createWingsAdapter(array $config)
+    public function createWingsAdapter(array $config): FilesystemAdapter
     {
-        return new MemoryAdapter(null);
+        return new InMemoryFilesystemAdapter();
     }
 
     /**
      * Creates a new S3 adapter.
-     *
-     * @return \League\Flysystem\AdapterInterface
      */
-    public function createS3Adapter(array $config)
+    public function createS3Adapter(array $config): FilesystemAdapter
     {
         $config['version'] = 'latest';
 
@@ -153,25 +120,21 @@ class BackupManager
 
         $client = new S3Client($config);
 
-        return new AwsS3Adapter($client, $config['bucket'], $config['prefix'] ?? '', $config['options'] ?? []);
+        return new S3Filesystem($client, $config['bucket'], $config['prefix'] ?? '', $config['options'] ?? []);
     }
 
     /**
      * Returns the configuration associated with a given backup type.
-     *
-     * @return array
      */
-    protected function getConfig(string $name)
+    protected function getConfig(string $name): array
     {
-        return $this->config->get("backups.disks.{$name}") ?: [];
+        return $this->config->get("backups.disks.$name") ?: [];
     }
 
     /**
      * Get the default backup driver name.
-     *
-     * @return string
      */
-    public function getDefaultAdapter()
+    public function getDefaultAdapter(): string
     {
         return $this->config->get('backups.default');
     }
@@ -179,7 +142,7 @@ class BackupManager
     /**
      * Set the default session driver name.
      */
-    public function setDefaultAdapter(string $name)
+    public function setDefaultAdapter(string $name): void
     {
         $this->config->set('backups.default', $name);
     }
@@ -188,13 +151,11 @@ class BackupManager
      * Unset the given adapter instances.
      *
      * @param string|string[] $adapter
-     *
-     * @return $this
      */
-    public function forget($adapter)
+    public function forget(array|string $adapter): self
     {
         foreach ((array) $adapter as $adapterName) {
-            unset($this->adapters[$adapter]);
+            unset($this->adapters[$adapterName]);
         }
 
         return $this;
@@ -202,10 +163,8 @@ class BackupManager
 
     /**
      * Register a custom adapter creator closure.
-     *
-     * @return $this
      */
-    public function extend(string $adapter, Closure $callback)
+    public function extend(string $adapter, Closure $callback): self
     {
         $this->customCreators[$adapter] = $callback;
 

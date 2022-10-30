@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\ViewComposers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Container\Container;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
@@ -32,6 +33,17 @@ class Composer
     public function loadDependencies(SettingsRepositoryInterface $settings)
     {
         $this->settings = $settings;
+    }
+
+    protected function getDatabaseAvailability(): bool
+    {
+        $databases = DB::table('database_hosts')->count();
+
+        if ($databases <= 0) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

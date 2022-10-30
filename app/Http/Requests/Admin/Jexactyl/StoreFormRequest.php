@@ -6,10 +6,7 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class StoreFormRequest extends AdminFormRequest
 {
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             'store:enabled' => 'required|in:true,false',

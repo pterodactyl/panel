@@ -12,16 +12,12 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\EditServerRequest;
 
 class EditController extends ClientApiController
 {
-    private ServerEditService $editService;
-
     /**
      * PowerController constructor.
      */
-    public function __construct(ServerEditService $editService)
+    public function __construct(private ServerEditService $editService)
     {
         parent::__construct();
-
-        $this->editService = $editService;
     }
 
     /**
@@ -31,9 +27,13 @@ class EditController extends ClientApiController
      */
     public function index(EditServerRequest $request, Server $server): JsonResponse
     {
-        if ($this->settings->get('jexactyl::renewal:editing') == 'false') {
+        if ($this->settings->get('jexactyl::renewal:editing') != 'true') {
             throw new DisplayException('Server editing is currently disabled.');
-        };
+        }
+
+        if ($request->user()->id != $server->owner_id) {
+            throw new DisplayException('You do not own this server, so you cannot edit the resources.');
+        }
 
         $this->editService->handle($request, $server);
 

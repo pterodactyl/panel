@@ -13,6 +13,7 @@ export interface SiteSettings {
         discord: boolean;
     };
     approvals: boolean;
+    databases: boolean;
 }
 
 export interface SettingsStore {

@@ -2,9 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Redirect;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
@@ -12,6 +10,7 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -21,24 +20,11 @@ use Pterodactyl\Http\Requests\Api\Client\Account\UpdateUsernameRequest;
 class AccountController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Services\Users\UserUpdateService
-     */
-    private $updateService;
-
-    /**
-     * @var \Illuminate\Auth\AuthManager
-     */
-    private $manager;
-
-    /**
      * AccountController constructor.
      */
-    public function __construct(AuthManager $manager, UserUpdateService $updateService)
+    public function __construct(private AuthManager $manager, private UserUpdateService $updateService)
     {
         parent::__construct();
-
-        $this->manager = $manager;
-        $this->updateService = $updateService;
     }
 
     public function index(Request $request): array

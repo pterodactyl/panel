@@ -3,8 +3,8 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Facades\Activity;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Facades\Activity;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Transformers\Api\Client\Store\UserTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -24,11 +24,11 @@ class ResourceController extends ClientApiController
 
     /**
      * Get the resources for the authenticated user.
-     * 
+     *
      * This method is used instead of states so that we can retrieve
      * data via API calls, so the page does not need a full refresh
      * in order to retrieve the values.
-     * 
+     *
      * @throws DisplayException
      */
     public function user(GetStoreUserRequest $request)
@@ -40,7 +40,7 @@ class ResourceController extends ClientApiController
 
     /**
      * Allows a user to earn credits via passive earning.
-     * 
+     *
      * @throws DisplayException
      */
     public function earn(StoreEarnRequest $request)
@@ -49,9 +49,10 @@ class ResourceController extends ClientApiController
         $amount = $this->settings->get('jexactyl::earn:amount', 0);
 
         if ($this->settings->get('jexactyl::earn:enabled') == 'false') {
-            throw new DisplayException('Credit earning is currently disabled');
+            throw new DisplayException('Credit earning is currently disabled.');
+
             return;
-        };
+        }
 
         try {
             $user->update([
@@ -66,7 +67,7 @@ class ResourceController extends ClientApiController
 
     /**
      * Allows users to purchase resources via the store.
-     * 
+     *
      * @throws DisplayException
      */
     public function purchase(PurchaseResourceRequest $request): JsonResponse
@@ -80,11 +81,11 @@ class ResourceController extends ClientApiController
 
         if ($balance < $cost) {
             throw new DisplayException('Unable to purchase resource: You do not have enough credits.');
-        };
+        }
 
         $request->user()->update([
             'store_balance' => $balance - $cost,
-            'store_'.$resource => $type + $amount,
+            'store_' . $resource => $type + $amount,
         ]);
 
         Activity::event('user:store.resource-purchase')
@@ -96,7 +97,7 @@ class ResourceController extends ClientApiController
 
     /**
      * Returns the price of the resource.
-     * 
+     *
      * @throws DisplayException
      */
     protected function getPrice(string $resource): int
@@ -105,19 +106,19 @@ class ResourceController extends ClientApiController
 
         switch ($resource) {
             case 'cpu':
-                return $this->settings->get($prefix.'cpu');
+                return $this->settings->get($prefix . 'cpu');
             case 'memory':
-                return $this->settings->get($prefix.'memory');
+                return $this->settings->get($prefix . 'memory');
             case 'disk':
-                return $this->settings->get($prefix.'disk');
+                return $this->settings->get($prefix . 'disk');
             case 'slots':
-                return $this->settings->get($prefix.'slot');
+                return $this->settings->get($prefix . 'slot');
             case 'ports':
-                return $this->settings->get($prefix.'port');
+                return $this->settings->get($prefix . 'port');
             case 'backups':
-                return $this->settings->get($prefix.'backup');
+                return $this->settings->get($prefix . 'backup');
             case 'databases':
-                return $this->settings->get($prefix.'database');
+                return $this->settings->get($prefix . 'database');
             default:
                 throw new DisplayException('Unable to get resource price.');
         }
@@ -125,7 +126,7 @@ class ResourceController extends ClientApiController
 
     /**
      * Returns how much of the resource to assign.
-     * 
+     *
      * @throws DisplayException
      */
     protected function getAmount(string $resource): int
@@ -152,7 +153,7 @@ class ResourceController extends ClientApiController
 
     /**
      * Return the resource type for database entries.
-     * 
+     *
      * @throws DisplayException
      */
     protected function getResource(PurchaseResourceRequest $request)

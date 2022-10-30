@@ -3,9 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Exception;
-use PayPalHttp\IOException;
 use Illuminate\Http\Request;
-use PayPalHttp\HttpException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\RedirectResponse;
@@ -102,13 +100,13 @@ class PayPalController extends ClientApiController
 
             $temp = DB::table('paypal')
                 ->where('user_id', $id)
-                ->get();
+                ->first();
 
             $res = $client->execute($order);
 
             if ($res->statusCode == 200 | 201) {
                 $request->user()->update([
-                    'store_balance' => $request->user()->store_balance + $temp[0]->amount,
+                    'store_balance' => $request->user()->store_balance + $temp->amount,
                 ]);
             }
 
@@ -125,7 +123,7 @@ class PayPalController extends ClientApiController
      */
     public function cancel(): RedirectResponse
     {
-        return redirect()->route('api.client.store.paypal.cancel');
+        return redirect()->route('api:client.index');
     }
 
     /**

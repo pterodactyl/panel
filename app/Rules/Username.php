@@ -13,7 +13,7 @@ class Username implements Rule
 
     /**
      * Validate that a username contains only the allowed characters and starts/ends
-     * with alpha-numeric characters.
+     * with alphanumeric characters.
      *
      * Allowed characters: a-z0-9_-.
      *
@@ -37,10 +37,8 @@ class Username implements Rule
     /**
      * Convert the rule to a validation string. This is necessary to avoid
      * issues with Eloquence which tries to use this rule as a string.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return 'p_username';
     }

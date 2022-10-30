@@ -13,10 +13,8 @@ class IsValidJson
      * Throw an exception if the request should be valid JSON data but there is an error while
      * parsing the data. This avoids confusing validation errors where every field is flagged and
      * it is not immediately clear that there is an issue with the JSON being passed.
-     *
-     * @return mixed
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         if ($request->isJson() && !empty($request->getContent())) {
             try {

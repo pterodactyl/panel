@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Application;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
-use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
 class ApprovalsController extends ApplicationApiController
 {

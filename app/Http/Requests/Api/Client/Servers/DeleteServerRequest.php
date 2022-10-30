@@ -23,7 +23,6 @@ class DeleteServerRequest extends ClientApiRequest
     {
         return [
             'name' => 'required|string',
-            'password' => 'required|string',
         ];
     }
 }

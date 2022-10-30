@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Nest;
+use Pterodactyl\Models\Node;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
@@ -19,16 +19,12 @@ use Pterodactyl\Http\Requests\Api\Client\Store\GetStoreNodesRequest;
 
 class ServerController extends ClientApiController
 {
-    private StoreCreationService $creationService;
-
     /**
      * ServerController constructor.
      */
-    public function __construct(StoreCreationService $creationService)
+    public function __construct(private StoreCreationService $creationService)
     {
         parent::__construct();
-
-        $this->creationService = $creationService;
     }
 
     public function nodes(GetStoreNodesRequest $request): array
@@ -45,7 +41,7 @@ class ServerController extends ClientApiController
      */
     public function nests(GetStoreNestsRequest $request): array
     {
-        return $this->fractal->collection(Nest::all())
+        return $this->fractal->collection(Nest::where('private', false)->get())
             ->transformWith($this->getTransformer(NestTransformer::class))
             ->toArray();
     }
@@ -74,6 +70,11 @@ class ServerController extends ClientApiController
         $disk = $request->input('disk') * 1024;
         $memory = $request->input('memory') * 1024;
 
+        $nest = Nest::find($request->input('nest'));
+        if ($nest->private) {
+            throw new DisplayException('This nest is private and cannot be deployed to.');
+        }
+
         $this->creationService->handle($request);
 
         $user->update([
@@ -88,5 +89,4 @@ class ServerController extends ClientApiController
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
-
 }

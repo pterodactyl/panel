@@ -3,12 +3,12 @@
 namespace Pterodactyl\Facades;
 
 use Illuminate\Support\Facades\Facade;
-use Pterodactyl\Services\Activity\AcitvityLogBatchService;
+use Pterodactyl\Services\Activity\ActivityLogBatchService;
 
 class LogBatch extends Facade
 {
-    protected static function getFacadeAccessor()
+    protected static function getFacadeAccessor(): string
     {
-        return AcitvityLogBatchService::class;
+        return ActivityLogBatchService::class;
     }
 }

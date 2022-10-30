@@ -10,44 +10,22 @@ use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
 use Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException;
 
 class SubuserCreationService
 {
     /**
-     * @var \Illuminate\Database\ConnectionInterface
-     */
-    private $connection;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\SubuserRepository
-     */
-    private $subuserRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Users\UserCreationService
-     */
-    private $userCreationService;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $userRepository;
-
-    /**
      * SubuserCreationService constructor.
      */
     public function __construct(
-        ConnectionInterface $connection,
-        SubuserRepository $subuserRepository,
-        UserCreationService $userCreationService,
-        UserRepositoryInterface $userRepository
+        private ConnectionInterface $connection,
+        private SubuserRepository $subuserRepository,
+        private UserCreationService $userCreationService,
+        private UserRepositoryInterface $userRepository,
+        private SettingsRepositoryInterface $settings
     ) {
-        $this->connection = $connection;
-        $this->subuserRepository = $subuserRepository;
-        $this->userRepository = $userRepository;
-        $this->userCreationService = $userCreationService;
     }
 
     /**
@@ -74,10 +52,15 @@ class SubuserCreationService
                 if ($subuserCount !== 0) {
                     throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
                 }
-            } catch (RecordNotFoundException $exception) {
+            } catch (RecordNotFoundException) {
                 // Just cap the username generated at 64 characters at most and then append a random string
                 // to the end to make it "unique"...
                 $username = substr(preg_replace('/([^\w\.-]+)/', '', strtok($email, '@')), 0, 64) . Str::random(3);
+
+                $appr = true;
+                if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
+                    $appr = false;
+                }
 
                 $user = $this->userCreationService->handle([
                     'email' => $email,
@@ -85,6 +68,7 @@ class SubuserCreationService
                     'name_first' => 'Server',
                     'name_last' => 'Subuser',
                     'root_admin' => false,
+                    'approved' => $appr,
                 ]);
             }
 

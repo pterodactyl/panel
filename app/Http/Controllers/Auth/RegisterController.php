@@ -33,14 +33,14 @@ class RegisterController extends AbstractLoginController
     {
         if ($this->settings->get('jexactyl::registration:enabled') == 'false') {
             throw new DisplayException('Unable to register: Registration is currently disabled.');
-        };
+        }
 
         $prefix = 'jexactyl::registration:';
         $approved = true;
 
         if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
             $approved = false;
-        };
+        }
 
         $data = [
             'approved' => $approved,
@@ -50,13 +50,13 @@ class RegisterController extends AbstractLoginController
             'name_last' => 'User',
             'password' => $request->input('password'),
             'ip' => $request->getClientIp(),
-            'store_cpu' => $this->settings->get($prefix.'cpu', 0),
-            'store_memory' => $this->settings->get($prefix.'memory', 0),
-            'store_disk' => $this->settings->get($prefix.'disk', 0),
-            'store_slots' => $this->settings->get($prefix.'slot', 0),
-            'store_ports' => $this->settings->get($prefix.'port', 0),
-            'store_backups' => $this->settings->get($prefix.'backup', 0),
-            'store_databases' => $this->settings->get($prefix.'database', 0),
+            'store_cpu' => $this->settings->get($prefix . 'cpu', 0),
+            'store_memory' => $this->settings->get($prefix . 'memory', 0),
+            'store_disk' => $this->settings->get($prefix . 'disk', 0),
+            'store_slots' => $this->settings->get($prefix . 'slot', 0),
+            'store_ports' => $this->settings->get($prefix . 'port', 0),
+            'store_backups' => $this->settings->get($prefix . 'backup', 0),
+            'store_databases' => $this->settings->get($prefix . 'database', 0),
         ];
 
         if (!$this->settings->get($prefix.'verification')) $data['verified'] = true; else $data['verified'] = false;

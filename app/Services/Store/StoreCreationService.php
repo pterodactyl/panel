@@ -3,21 +3,20 @@
 namespace Pterodactyl\Services\Store;
 
 use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Services\Servers\ServerCreationService;
-use Pterodactyl\Services\Store\StoreVerificationService;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 
-class StoreCreationService {
-
+class StoreCreationService
+{
     private ServerCreationService $creation;
     private SettingsRepositoryInterface $settings;
     private StoreVerificationService $verification;
@@ -26,8 +25,7 @@ class StoreCreationService {
         ServerCreationService $creation,
         SettingsRepositoryInterface $settings,
         StoreVerificationService $verification
-    )
-    {
+    ) {
         $this->creation = $creation;
         $this->settings = $settings;
         $this->verification = $verification;
@@ -39,7 +37,7 @@ class StoreCreationService {
     public function handle(CreateServerRequest $request): JsonResponse
     {
         $this->verification->handle($request);
-        
+
         $user = User::find($request->user()->id);
         $egg = Egg::find($request->input('egg'));
 
@@ -102,7 +100,7 @@ class StoreCreationService {
 
         if (!$allocation) {
             throw new NoViableAllocationException('No allocations are available for deployment.');
-        };
+        }
 
         return $allocation->id;
     }

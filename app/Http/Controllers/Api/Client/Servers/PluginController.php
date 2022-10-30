@@ -15,39 +15,34 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Files\PullFileRequest;
 class PluginController extends ClientApiController
 {
     /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonFileRepository
-     */
-    private $fileRepository;
-
-    /**
      * PluginController constructor.
      */
-    public function __construct(DaemonFileRepository $fileRepository)
+    public function __construct(private DaemonFileRepository $fileRepository)
     {
         parent::__construct();
-
-        $this->fileRepository = $fileRepository;
     }
 
     /**
      * List all plugins from the Spigot API.
-     * 
+     *
      * @throws DisplayException
      */
     public function index(Request $request): ?array
     {
         $query = $request->input('query');
-        if (!$query) return null;
+        if (!$query) {
+            return null;
+        }
 
         $client = new Client();
 
-        $api = 'https://api.spiget.org/v2/search/resources/' . urlencode($query) .'?page=1&size=18';
+        $api = 'https://api.spiget.org/v2/search/resources/' . urlencode($query) . '?page=1&size=18';
 
         try {
-            $res = $client->request('GET', $api, ['headers' => ['User-Agent' => 'jexactyl/3.x']] );
+            $res = $client->request('GET', $api, ['headers' => ['User-Agent' => 'jexactyl/3.x']]);
         } catch (DisplayException $e) {
             throw new DisplayException('Couldn\'t find any results for that query.');
-        };
+        }
 
         $plugins = json_decode($res->getBody(), true);
 
@@ -61,7 +56,7 @@ class PluginController extends ClientApiController
 
     /**
      * Install the plugin using the Panel.
-     * 
+     *
      * @throws DisplayException
      */
     public function install(PullFileRequest $request, Server $server, int $id): JsonResponse

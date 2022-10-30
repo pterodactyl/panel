@@ -4,82 +4,35 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
+use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServerTransfer;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\TransferService;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
-use Pterodactyl\Repositories\Eloquent\ServerRepository;
-use Pterodactyl\Repositories\Eloquent\LocationRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServerTransferController extends Controller
 {
     /**
-     * @var \Prologue\Alerts\AlertsMessageBag
-     */
-    private $alert;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\AllocationRepositoryInterface
-     */
-    private $allocationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\ServerRepository
-     */
-    private $repository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\LocationRepository
-     */
-    private $locationRepository;
-
-    /**
-     * @var \Pterodactyl\Repositories\Eloquent\NodeRepository
-     */
-    private $nodeRepository;
-
-    /**
-     * @var \Pterodactyl\Services\Servers\TransferService
-     */
-    private $transferService;
-
-    /**
-     * @var \Pterodactyl\Repositories\Wings\DaemonConfigurationRepository
-     */
-    private $daemonConfigurationRepository;
-
-    /**
      * ServerTransferController constructor.
      */
     public function __construct(
-        AlertsMessageBag $alert,
-        AllocationRepositoryInterface $allocationRepository,
-        ServerRepository $repository,
-        LocationRepository $locationRepository,
-        NodeRepository $nodeRepository,
-        TransferService $transferService,
-        DaemonConfigurationRepository $daemonConfigurationRepository
+        private AlertsMessageBag $alert,
+        private AllocationRepositoryInterface $allocationRepository,
+        private NodeRepository $nodeRepository,
+        private TransferService $transferService,
+        private DaemonConfigurationRepository $daemonConfigurationRepository
     ) {
-        $this->alert = $alert;
-        $this->allocationRepository = $allocationRepository;
-        $this->repository = $repository;
-        $this->locationRepository = $locationRepository;
-        $this->nodeRepository = $nodeRepository;
-        $this->transferService = $transferService;
-        $this->daemonConfigurationRepository = $daemonConfigurationRepository;
     }
 
     /**
      * Starts a transfer of a server to a new node.
      *
-     * @return \Illuminate\Http\RedirectResponse
-     *
      * @throws \Throwable
      */
-    public function transfer(Request $request, Server $server)
+    public function transfer(Request $request, Server $server): RedirectResponse
     {
         $validatedData = $request->validate([
             'node_id' => 'required|exists:nodes,id',
@@ -97,6 +50,8 @@ class ServerTransferController extends Controller
             // Check if the selected daemon is online.
             $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
 
+            $server->validateTransferState();
+
             // Create a new ServerTransfer entry.
             $transfer = new ServerTransfer();
 
@@ -110,7 +65,7 @@ class ServerTransferController extends Controller
 
             $transfer->save();
 
-            // Add the allocations to the server so they cannot be automatically assigned while the transfer is in progress.
+            // Add the allocations to the server, so they cannot be automatically assigned while the transfer is in progress.
             $this->assignAllocationsToServer($server, $node_id, $allocation_id, $additional_allocations);
 
             // Request an archive from the server's current daemon. (this also checks if the daemon is online)
@@ -130,7 +85,7 @@ class ServerTransferController extends Controller
     private function assignAllocationsToServer(Server $server, int $node_id, int $allocation_id, array $additional_allocations)
     {
         $allocations = $additional_allocations;
-        array_push($allocations, $allocation_id);
+        $allocations[] = $allocation_id;
 
         $unassigned = $this->allocationRepository->getUnassignedAllocationIds($node_id);
 

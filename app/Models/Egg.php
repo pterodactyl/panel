@@ -2,6 +2,9 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
 /**
  * @property int $id
  * @property string $uuid
@@ -11,8 +14,9 @@ namespace Pterodactyl\Models;
  * @property string|null $description
  * @property array|null $features
  * @property string $docker_image -- deprecated, use $docker_images
- * @property string $update_url
  * @property array<string, string> $docker_images
+ * @property string $update_url
+ * @property bool $force_outgoing_ip
  * @property array|null $file_denylist
  * @property string|null $config_files
  * @property string|null $config_startup
@@ -69,21 +73,18 @@ class Egg extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'eggs';
 
     /**
      * Fields that are not mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'name',
         'description',
         'features',
         'docker_images',
+        'force_outgoing_ip',
         'file_denylist',
         'config_files',
         'config_startup',
@@ -100,23 +101,19 @@ class Egg extends Model
 
     /**
      * Cast values to correct type.
-     *
-     * @var array
      */
     protected $casts = [
         'nest_id' => 'integer',
         'config_from' => 'integer',
         'script_is_privileged' => 'boolean',
+        'force_outgoing_ip' => 'boolean',
         'copy_script_from' => 'integer',
         'features' => 'array',
         'docker_images' => 'array',
         'file_denylist' => 'array',
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'nest_id' => 'required|bail|numeric|exists:nests,id',
         'uuid' => 'required|string|size:36',
         'name' => 'required|string|max:191',
@@ -134,11 +131,9 @@ class Egg extends Model
         'config_logs' => 'required_without:config_from|nullable|json',
         'config_files' => 'required_without:config_from|nullable|json',
         'update_url' => 'sometimes|nullable|string',
+        'force_outgoing_ip' => 'sometimes|boolean',
     ];
 
-    /**
-     * @var array
-     */
     protected $attributes = [
         'features' => null,
         'file_denylist' => null,
@@ -152,10 +147,8 @@ class Egg extends Model
     /**
      * Returns the install script for the egg; if egg is copying from another
      * it will return the copied script.
-     *
-     * @return string
      */
-    public function getCopyScriptInstallAttribute()
+    public function getCopyScriptInstallAttribute(): ?string
     {
         if (!is_null($this->script_install) || is_null($this->copy_script_from)) {
             return $this->script_install;
@@ -167,10 +160,8 @@ class Egg extends Model
     /**
      * Returns the entry command for the egg; if egg is copying from another
      * it will return the copied entry command.
-     *
-     * @return string
      */
-    public function getCopyScriptEntryAttribute()
+    public function getCopyScriptEntryAttribute(): string
     {
         if (!is_null($this->script_entry) || is_null($this->copy_script_from)) {
             return $this->script_entry;
@@ -182,10 +173,8 @@ class Egg extends Model
     /**
      * Returns the install container for the egg; if egg is copying from another
      * it will return the copied install container.
-     *
-     * @return string
      */
-    public function getCopyScriptContainerAttribute()
+    public function getCopyScriptContainerAttribute(): string
     {
         if (!is_null($this->script_container) || is_null($this->copy_script_from)) {
             return $this->script_container;
@@ -196,10 +185,8 @@ class Egg extends Model
 
     /**
      * Return the file configuration for an egg.
-     *
-     * @return string
      */
-    public function getInheritConfigFilesAttribute()
+    public function getInheritConfigFilesAttribute(): ?string
     {
         if (!is_null($this->config_files) || is_null($this->config_from)) {
             return $this->config_files;
@@ -210,10 +197,8 @@ class Egg extends Model
 
     /**
      * Return the startup configuration for an egg.
-     *
-     * @return string
      */
-    public function getInheritConfigStartupAttribute()
+    public function getInheritConfigStartupAttribute(): ?string
     {
         if (!is_null($this->config_startup) || is_null($this->config_from)) {
             return $this->config_startup;
@@ -224,10 +209,8 @@ class Egg extends Model
 
     /**
      * Return the log reading configuration for an egg.
-     *
-     * @return string
      */
-    public function getInheritConfigLogsAttribute()
+    public function getInheritConfigLogsAttribute(): ?string
     {
         if (!is_null($this->config_logs) || is_null($this->config_from)) {
             return $this->config_logs;
@@ -238,10 +221,8 @@ class Egg extends Model
 
     /**
      * Return the stop command configuration for an egg.
-     *
-     * @return string
      */
-    public function getInheritConfigStopAttribute()
+    public function getInheritConfigStopAttribute(): ?string
     {
         if (!is_null($this->config_stop) || is_null($this->config_from)) {
             return $this->config_stop;
@@ -253,10 +234,8 @@ class Egg extends Model
     /**
      * Returns the features available to this egg from the parent configuration if there are
      * no features defined for this egg specifically and there is a parent egg configured.
-     *
-     * @return array|null
      */
-    public function getInheritFeaturesAttribute()
+    public function getInheritFeaturesAttribute(): ?array
     {
         if (!is_null($this->features) || is_null($this->config_from)) {
             return $this->features;
@@ -268,10 +247,8 @@ class Egg extends Model
     /**
      * Returns the features available to this egg from the parent configuration if there are
      * no features defined for this egg specifically and there is a parent egg configured.
-     *
-     * @return string[]|null
      */
-    public function getInheritFileDenylistAttribute()
+    public function getInheritFileDenylistAttribute(): ?array
     {
         if (is_null($this->config_from)) {
             return $this->file_denylist;
@@ -282,50 +259,40 @@ class Egg extends Model
 
     /**
      * Gets nest associated with an egg.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function nest()
+    public function nest(): BelongsTo
     {
         return $this->belongsTo(Nest::class);
     }
 
     /**
      * Gets all servers associated with this egg.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function servers()
+    public function servers(): HasMany
     {
         return $this->hasMany(Server::class, 'egg_id');
     }
 
     /**
      * Gets all variables associated with this egg.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
      */
-    public function variables()
+    public function variables(): HasMany
     {
         return $this->hasMany(EggVariable::class, 'egg_id');
     }
 
     /**
      * Get the parent egg from which to copy scripts.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function scriptFrom()
+    public function scriptFrom(): BelongsTo
     {
         return $this->belongsTo(self::class, 'copy_script_from');
     }
 
     /**
      * Get the parent egg from which to copy configuration settings.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      */
-    public function configFrom()
+    public function configFrom(): BelongsTo
     {
         return $this->belongsTo(self::class, 'config_from');
     }

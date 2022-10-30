@@ -6,7 +6,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Mail Settings<small>Configure how Pterodactyl should handle sending emails.</small></h1>
+    <h1>Mail Settings<small>Configure how Jexactyl should handle sending emails.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Settings</li>
@@ -38,14 +38,14 @@
                                 <div class="form-group col-md-6">
                                     <label class="control-label">SMTP Host</label>
                                     <div>
-                                        <input required type="text" class="form-control" name="mail:host" value="{{ old('mail:host', config('mail.host')) }}" />
+                                        <input required type="text" class="form-control" name="mail:host" value="{{ old('mail:host', config('mail.mailers.smtp.host')) }}" />
                                         <p class="text-muted small">Enter the SMTP server address that mail should be sent through.</p>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-2">
                                     <label class="control-label">SMTP Port</label>
                                     <div>
-                                        <input required type="number" class="form-control" name="mail:port" value="{{ old('mail:port', config('mail.port')) }}" />
+                                        <input required type="number" class="form-control" name="mail:port" value="{{ old('mail:port', config('mail.mailers.smtp.port')) }}" />
                                         <p class="text-muted small">Enter the SMTP server port that mail should be sent through.</p>
                                     </div>
                                 </div>
@@ -53,7 +53,7 @@
                                     <label class="control-label">Encryption</label>
                                     <div>
                                         @php
-                                            $encryption = old('mail:encryption', config('mail.encryption'));
+                                            $encryption = old('mail:encryption', config('mail.mailers.smtp.encryption'));
                                         @endphp
                                         <select name="mail:encryption" class="form-control">
                                             <option value="" @if($encryption === '') selected @endif>None</option>
@@ -66,7 +66,7 @@
                                 <div class="form-group col-md-6">
                                     <label class="control-label">Username <span class="field-optional"></span></label>
                                     <div>
-                                        <input type="text" class="form-control" name="mail:username" value="{{ old('mail:username', config('mail.username')) }}" />
+                                        <input type="text" class="form-control" name="mail:username" value="{{ old('mail:username', config('mail.mailers.smtp.username')) }}" />
                                         <p class="text-muted small">The username to use when connecting to the SMTP server.</p>
                                     </div>
                                 </div>

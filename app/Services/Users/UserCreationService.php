@@ -4,7 +4,7 @@ namespace Pterodactyl\Services\Users;
 
 use Illuminate\Support\Facades\DB;
 use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Facades\Http;
+use Pterodactyl\Models\User;
 use Illuminate\Contracts\Hashing\Hasher;
 use Pterodactyl\Notifications\VerifyEmail;
 use Illuminate\Database\ConnectionInterface;
@@ -15,48 +15,25 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class UserCreationService
 {
-    private SettingsRepositoryInterface $settings;
     /**
-     * @var \Illuminate\Database\ConnectionInterface
+     * UserCreationService constructor.
      */
-    private $connection;
-
-    /**
-     * @var \Illuminate\Contracts\Hashing\Hasher
-     */
-    private $hasher;
-
-    /**
-     * @var \Illuminate\Contracts\Auth\PasswordBroker
-     */
-    private $passwordBroker;
-
-    /**
-     * @var \Pterodactyl\Contracts\Repository\UserRepositoryInterface
-     */
-    private $repository;
-
-    /**
-     * CreationService constructor.
-     */
-    public function __construct(ConnectionInterface $connection, Hasher $hasher, PasswordBroker $passwordBroker, UserRepositoryInterface $repository, SettingsRepositoryInterface $settings)
-    {
-        $this->settings = $settings;
-        $this->connection = $connection;
-        $this->hasher = $hasher;
-        $this->passwordBroker = $passwordBroker;
-        $this->repository = $repository;
+    public function __construct(
+        private ConnectionInterface $connection,
+        private Hasher $hasher,
+        private PasswordBroker $passwordBroker,
+        private UserRepositoryInterface $repository,
+        private SettingsRepositoryInterface $settings
+    ) {
     }
 
     /**
      * Create a new user on the system.
      *
-     * @return \Pterodactyl\Models\User
-     *
      * @throws \Exception
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data)
+    public function handle(array $data): User
     {
         $name = $this->settings->get('settings::app:name', 'Jexactyl');
 
@@ -122,7 +99,12 @@ class UserCreationService
         }
 
         $this->connection->commit();
-        $user->notify(new AccountCreated($user, $token ?? null));
+
+        try {
+            $user->notify(new AccountCreated($user, $token ?? null));
+        } catch (\Exception $e) {
+            // If the email system isn't active, still let users create accounts.
+        }
 
         return $user;
     }

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Extensions\Spatie\Fractalistic;
 
+use League\Fractal\Scope;
 use League\Fractal\TransformerAbstract;
 use Spatie\Fractal\Fractal as SpatieFractal;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -13,12 +14,10 @@ class Fractal extends SpatieFractal
     /**
      * Create fractal data.
      *
-     * @return \League\Fractal\Scope
-     *
      * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
      * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
      */
-    public function createData()
+    public function createData(): Scope
     {
         // Set the serializer by default.
         if (is_null($this->serializer)) {

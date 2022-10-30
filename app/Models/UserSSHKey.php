@@ -32,6 +32,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|UserSSHKey whereUserId($value)
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withTrashed()
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withoutTrashed()
+ *
  * @mixin \Eloquent
  *
  * @method static \Database\Factories\UserSSHKeyFactory factory(...$parameters)
@@ -50,7 +51,7 @@ class UserSSHKey extends Model
         'fingerprint',
     ];
 
-    public static $validationRules = [
+    public static array $validationRules = [
         'name' => ['required', 'string'],
         'fingerprint' => ['required', 'string'],
         'public_key' => ['required', 'string'],

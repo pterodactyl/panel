@@ -1,8 +1,3 @@
-{{-- Pterodactyl - Panel --}}
-{{-- Copyright (c) 2015 - 2017 Dane Everitt <dane@daneeveritt.com> --}}
-
-{{-- This software is licensed under the terms of the MIT license. --}}
-{{-- https://opensource.org/licenses/MIT --}}
 @extends('layouts.admin')
 
 @section('title')
@@ -35,6 +30,16 @@
                         <label class="control-label">Description</label>
                         <div>
                             <textarea name="description" class="form-control" rows="7">{{ $nest->description }}</textarea>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label">Nest Visibility</label>
+                        <div>
+                            <select name="private" class="form-control">
+                                <option @if (!$nest->private) selected @endif value="0">Public</option>
+                                <option @if ($nest->private) selected @endif value="1">Private</option>
+                            </select>
+                            <p class="text-muted"><small>Determines whether users can deploy to this nest.</small></p>
                         </div>
                     </div>
                 </div>
@@ -93,7 +98,7 @@
                         <tr>
                             <td class="align-middle"><code>{{ $egg->id }}</code></td>
                             <td class="align-middle"><a href="{{ route('admin.nests.egg.view', $egg->id) }}" data-toggle="tooltip" data-placement="right" title="{{ $egg->author }}">{{ $egg->name }}</a></td>
-                            <td class="col-xs-8 align-middle">{!! $egg->description !!}</td>
+                            <td class="col-xs-8 align-middle">{{ $egg->description }}</td>
                             <td class="text-center align-middle"><code>{{ $egg->servers->count() }}</code></td>
                             <td class="align-middle">
                                 <a href="{{ route('admin.nests.egg.export', ['egg' => $egg->id]) }}"><i class="fa fa-download"></i></a>

@@ -1,10 +1,10 @@
 [![Logo Image](https://cdn.discordapp.com/attachments/1012411945141424218/1012430446556090468/JexactylBannerBasic.jpg)](https://jexactyl.com)
 
-![Tests](https://img.shields.io/github/workflow/status/jexactyl/jexactyl/Build%20Panel?style=for-the-badge)
-<a href="https://discord.gg/qttGR4Z5Pk">![Discord](https://img.shields.io/discord/922284031129825280?style=for-the-badge)</a>
-![Downloads - Total](https://img.shields.io/github/downloads/jexactyl/jexactyl/total?style=for-the-badge)
-![Downloads - Latest](https://img.shields.io/github/downloads/jexactyl/jexactyl/latest/total?style=for-the-badge)
-![Version](https://img.shields.io/github/v/release/jexactyl/jexactyl?style=for-the-badge)
+![Tests](https://img.shields.io/github/workflow/status/jexactyl/jexactyl/Build%20Panel)
+<a href="https://discord.gg/qttGR4Z5Pk">![Discord](https://img.shields.io/discord/922284031129825280)</a>
+![Downloads - Total](https://img.shields.io/github/downloads/jexactyl/jexactyl/total)
+![Downloads - Latest](https://img.shields.io/github/downloads/jexactyl/jexactyl/latest/total)
+![Version](https://img.shields.io/github/v/release/jexactyl/jexactyl)
 
 # Jexactyl
 Jexactyl is a fast, advanced and customisable game management panel and billing system in one.
@@ -27,7 +27,7 @@ Built on [Pterodactyl](https://pterodactyl.io), this software is designed from t
 | [**SneakyHub**](https://sneakyhub.com/discord) | A SneakyNodes LTD project, Free 24/7 hosting for games, websites, discord bots and more. | [@SneakyHub](https://github.com/sneakyhub) |
 | [**Wumpus Host**](https://wumpus.host) | A Discord bot host that offers free hosting, 24/7. | [@WumpusHost](https://github.com/wumpushost) |
 | [**GigaNodes**](https://client.giganodes.net) | A cheap host, with many locations like Europe, United States, Asia, United Kingdom | [@GigaNodes](https://discord.gg/dSgpmZ2C) |
-| [**CryptoHosting**](https://crypto-hosting.eu) | Crypto-Hosting offer high performance servers with extreme DDoS protection! | [@Crypto-Hosting](https://github.com/crypto-hosting) |
+| [**ShieldCore**](https://crypto-hosting.eu) | ShieldCore offer high performance servers with extreme DDoS protection! | [@ShieldCore](https://crypto-hosting.eu) |
 
 ## Previews
 <p float="left">

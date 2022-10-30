@@ -4,7 +4,7 @@ namespace Pterodactyl\Services\Activity;
 
 use Ramsey\Uuid\Uuid;
 
-class AcitvityLogBatchService
+class ActivityLogBatchService
 {
     protected int $transaction = 0;
     protected ?string $uuid = null;
@@ -47,10 +47,8 @@ class AcitvityLogBatchService
     /**
      * Executes the logic provided within the callback in the scope of an activity
      * log batch transaction.
-     *
-     * @return mixed
      */
-    public function transaction(\Closure $callback)
+    public function transaction(\Closure $callback): mixed
     {
         $this->start();
         $result = $callback($this->uuid());

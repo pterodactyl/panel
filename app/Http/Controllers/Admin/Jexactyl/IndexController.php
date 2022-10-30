@@ -1,4 +1,5 @@
 <?php
+
 namespace Pterodactyl\Http\Controllers\Admin\Jexactyl;
 
 use Illuminate\View\View;
@@ -7,7 +8,6 @@ use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
-use Pterodactyl\Transformers\Api\Client\StatsTransformer;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Traits\Controllers\PlainJavascriptInjection;
 use Pterodactyl\Contracts\Repository\NodeRepositoryInterface;
@@ -17,24 +17,13 @@ class IndexController extends Controller
 {
     use PlainJavascriptInjection;
 
-    private Fractal $fractal;
-    private DaemonServerRepository $repository;
-    private SoftwareVersionService $versionService;
-    private NodeRepositoryInterface $nodeRepository;
-    private ServerRepositoryInterface $serverRepository;
-
     public function __construct(
-        Fractal $fractal,
-        DaemonServerRepository $repository,
-        SoftwareVersionService $versionService,
-        NodeRepositoryInterface $nodeRepository,
-        ServerRepositoryInterface $serverRepository,
+        private Fractal $fractal,
+        private DaemonServerRepository $repository,
+        private SoftwareVersionService $versionService,
+        private NodeRepositoryInterface $nodeRepository,
+        private ServerRepositoryInterface $serverRepository,
     ) {
-        $this->fractal = $fractal;
-        $this->repository = $repository;
-        $this->nodeRepository = $nodeRepository;
-        $this->versionService = $versionService;
-        $this->serverRepository = $serverRepository;
     }
 
     public function index(): View
@@ -98,4 +87,4 @@ class IndexController extends Controller
 
         return redirect()->route('admin.settings');
     }
-} 
+}

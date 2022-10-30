@@ -67,51 +67,38 @@ class Permission extends Model
 
     /**
      * Should timestamps be used on this model.
-     *
-     * @var bool
      */
     public $timestamps = false;
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'permissions';
 
     /**
      * Fields that are not mass assignable.
-     *
-     * @var array
      */
     protected $guarded = ['id', 'created_at', 'updated_at'];
 
     /**
      * Cast values to correct type.
-     *
-     * @var array
      */
     protected $casts = [
         'subuser_id' => 'integer',
     ];
 
-    /**
-     * @var array
-     */
-    public static $validationRules = [
+    public static array $validationRules = [
         'subuser_id' => 'required|numeric|min:1',
         'permission' => 'required|string',
     ];
 
     /**
-     * All of the permissions available on the system. You should use self::permissions()
+     * All the permissions available on the system. You should use self::permissions()
      * to retrieve them, and not directly access this array as it is subject to change.
-     *
-     * @var array
      *
      * @see \Pterodactyl\Models\Permission::permissions()
      */
-    protected static $permissions = [
+    protected static array $permissions = [
         'websocket' => [
             'description' => 'Allows the user to connect to the server websocket, giving them access to view console output and realtime server stats.',
             'keys' => [
@@ -230,10 +217,8 @@ class Permission extends Model
     ];
 
     /**
-     * Returns all of the permissions available on the system for a user to
+     * Returns all the permissions available on the system for a user to
      * have when controlling a server.
-     *
-     * @return \Illuminate\Database\Eloquent\Collection
      */
     public static function permissions(): Collection
     {

@@ -3,8 +3,6 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Support\Str;
-use Webmozart\Assert\Assert;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
@@ -14,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $code
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Pterodactyl\Models\User $user
- *
  */
 class ReferralCode extends Model
 {
@@ -36,14 +33,11 @@ class ReferralCode extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'referral_codes';
+
     /**
      * Fields that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'code',
@@ -51,17 +45,12 @@ class ReferralCode extends Model
 
     /**
      * Rules to protect against invalid data entry to DB.
-     *
-     * @var array
      */
-    public static $validationRules = [
+    public static array $validationRules = [
         'user_id' => 'required|exists:users,id',
         'code' => 'present|string|size:16',
     ];
 
-    /**
-     * @var array
-     */
     protected $dates = [
         self::CREATED_AT,
     ];

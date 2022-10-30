@@ -12,10 +12,8 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
 {
     /**
      * Return the model backing this repository.
-     *
-     * @return string
      */
-    public function model()
+    public function model(): string
     {
         return Location::class;
     }
@@ -29,7 +27,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Return all of the available locations with the nodes as a relationship.
+     * Return all the available locations with the nodes as a relationship.
      */
     public function getAllWithNodes(): Collection
     {
@@ -37,9 +35,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     }
 
     /**
-     * Return all of the nodes and their respective count of servers for a location.
-     *
-     * @return mixed
+     * Return all the nodes and their respective count of servers for a location.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
@@ -47,7 +43,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     {
         try {
             return $this->getBuilder()->with('nodes.servers')->findOrFail($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }
@@ -55,15 +51,13 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     /**
      * Return a location and the count of nodes in that location.
      *
-     * @return mixed
-     *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
     public function getWithNodeCount(int $id): Location
     {
         try {
             return $this->getBuilder()->withCount('nodes')->findOrFail($id, $this->getColumns());
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
         }
     }

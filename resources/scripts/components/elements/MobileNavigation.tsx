@@ -11,7 +11,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 const Navigation = styled.div`
-    ${tw`w-full bg-neutral-875 shadow-xl overflow-x-auto`};
+    ${tw`w-full bg-neutral-800 shadow-xl overflow-x-auto`};
     & > div {
         ${tw`mx-auto w-full flex items-center`};
     }
@@ -19,7 +19,7 @@ const Navigation = styled.div`
         ${tw`flex-1`};
 
         & > a {
-            ${tw`text-2xl font-header px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150`};
+            ${tw`text-2xl px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150`};
         }
     }
 `;

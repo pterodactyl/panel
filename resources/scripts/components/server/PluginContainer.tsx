@@ -70,9 +70,9 @@ export default () => {
                     <div className={'grid grid-cols-12 mb-10'}>
                         <div className={'col-span-11 mr-4'}>
                             <Field
-                                className={'p-2 bg-neutral-900 w-full'}
                                 name={'query'}
                                 placeholder={'Type to search...'}
+                                className={'p-3 text-sm w-full bg-gray-800 rounded'}
                             />
                         </div>
                         <Button type={'submit'}>

@@ -3,7 +3,6 @@
 namespace Pterodactyl\Http\ViewComposers;
 
 use Illuminate\View\View;
-use Pterodactyl\Http\ViewComposers\Composer;
 
 class StoreComposer extends Composer
 {
@@ -64,7 +63,7 @@ class StoreComposer extends Composer
                 'port' => $this->setting('store:limit:port', Composer::TYPE_INT),
                 'backup' => $this->setting('store:limit:backup', Composer::TYPE_INT),
                 'database' => $this->setting('store:limit:database', Composer::TYPE_INT),
-            ]
+            ],
         ]);
     }
 }

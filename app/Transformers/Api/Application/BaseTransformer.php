@@ -3,6 +3,7 @@
 namespace Pterodactyl\Transformers\Api\Application;
 
 use Carbon\CarbonImmutable;
+use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\ApiKey;
@@ -38,8 +39,6 @@ abstract class BaseTransformer extends TransformerAbstract
 
     /**
      * Sets the request on the instance.
-     *
-     * @return static
      */
     public function setRequest(Request $request): self
     {
@@ -50,10 +49,8 @@ abstract class BaseTransformer extends TransformerAbstract
 
     /**
      * Returns a new transformer instance with the request set on the instance.
-     *
-     * @return \Pterodactyl\Transformers\Api\Application\BaseTransformer
      */
-    public static function fromRequest(Request $request)
+    public static function fromRequest(Request $request): BaseTransformer
     {
         return app(static::class)->setRequest($request);
     }
@@ -81,7 +78,7 @@ abstract class BaseTransformer extends TransformerAbstract
             return $this->request->user()->root_admin;
         }
 
-        return AdminAcl::check($token, $resource, AdminAcl::READ);
+        return AdminAcl::check($token, $resource);
     }
 
     /**
@@ -96,7 +93,6 @@ abstract class BaseTransformer extends TransformerAbstract
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      *
-     * @noinspection PhpUndefinedClassInspection
      * @noinspection PhpDocSignatureInspection
      */
     protected function makeTransformer(string $abstract)
@@ -111,8 +107,8 @@ abstract class BaseTransformer extends TransformerAbstract
      */
     protected function formatTimestamp(string $timestamp): string
     {
-        return CarbonImmutable::createFromFormat(CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $timestamp)
+        return CarbonImmutable::createFromFormat(CarbonInterface::DEFAULT_TO_STRING_FORMAT, $timestamp)
             ->setTimezone(self::RESPONSE_TIMEZONE)
-            ->toIso8601String();
+            ->toAtomString();
     }
 }

@@ -6,10 +6,7 @@ use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
 class RegistrationFormRequest extends AdminFormRequest
 {
-    /**
-     * @return array
-     */
-    public function rules()
+    public function rules(): array
     {
         return [
             'registration:enabled' => 'required|in:true,false',

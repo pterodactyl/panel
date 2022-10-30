@@ -12,10 +12,10 @@ class AddDefaultServerDeletionKeyToSettingsTable extends Migration
     public function up()
     {
         DB::table('settings')->insertOrIgnore(
-            array(
+            [
                 'key' => 'jexactyl::renewal:deletion',
                 'value' => 'true',
-            ),
+            ],
         );
     }
 

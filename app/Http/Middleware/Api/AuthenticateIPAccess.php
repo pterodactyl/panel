@@ -15,12 +15,10 @@ class AuthenticateIPAccess
     /**
      * Determine if a request IP has permission to access the API.
      *
-     * @return mixed
-     *
      * @throws \Exception
      * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
-    public function handle(Request $request, Closure $next)
+    public function handle(Request $request, Closure $next): mixed
     {
         /** @var \Laravel\Sanctum\TransientToken|\Pterodactyl\Models\ApiKey $token */
         $token = $request->user()->currentAccessToken();

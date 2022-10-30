@@ -18,30 +18,21 @@ class LoginCheckpointController extends AbstractLoginController
 {
     private const TOKEN_EXPIRED_MESSAGE = 'The authentication token provided has expired, please refresh the page and try again.';
 
-    private ValidationFactory $validation;
-
-    private Google2FA $google2FA;
-
-    private Encrypter $encrypter;
-
     /**
      * LoginCheckpointController constructor.
      */
-    public function __construct(Encrypter $encrypter, Google2FA $google2FA, ValidationFactory $validation)
-    {
+    public function __construct(
+        private Encrypter $encrypter,
+        private Google2FA $google2FA,
+        private ValidationFactory $validation
+    ) {
         parent::__construct();
-
-        $this->google2FA = $google2FA;
-        $this->encrypter = $encrypter;
-        $this->validation = $validation;
     }
 
     /**
      * Handle a login where the user is required to provide a TOTP authentication
      * token. Once a user has reached this stage it is assumed that they have already
      * provided a valid username and password.
-     *
-     * @return \Illuminate\Http\JsonResponse|void
      *
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
@@ -67,7 +58,7 @@ class LoginCheckpointController extends AbstractLoginController
         try {
             /** @var \Pterodactyl\Models\User $user */
             $user = User::query()->findOrFail($details['user_id']);
-        } catch (ModelNotFoundException $exception) {
+        } catch (ModelNotFoundException) {
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
         }
 
@@ -95,11 +86,9 @@ class LoginCheckpointController extends AbstractLoginController
      * Determines if a given recovery token is valid for the user account. If we find a matching token
      * it will be deleted from the database.
      *
-     * @return bool
-     *
      * @throws \Exception
      */
-    protected function isValidRecoveryToken(User $user, string $value)
+    protected function isValidRecoveryToken(User $user, string $value): bool
     {
         foreach ($user->recoveryTokens as $token) {
             if (password_verify($value, $token->token)) {
