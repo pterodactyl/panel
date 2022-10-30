@@ -149,7 +149,9 @@ class AccountController extends ClientApiController
         $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
         $pieces = [];
         $max = mb_strlen($chars, '8bit') - 1;
-        for ($i = 0; $i < 32; ++$i) $pieces[] = $chars[mt_rand(0, $max)];
+        for ($i = 0; $i < 32; ++$i) {
+            $pieces[] = $chars[mt_rand(0, $max)];
+        }
         return implode('', $pieces);
     }
 }
