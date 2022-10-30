@@ -3,8 +3,8 @@ name: Publish Docker Image
 on:
   push:
     branches:
-      - 'develop'
-      - 'release/v*'
+      - "develop"
+      - "release/v*"
 
 jobs:
   push:
@@ -40,6 +40,8 @@ jobs:
         uses: docker/build-push-action@v2
         if: "contains(github.ref, 'release/v')"
         with:
+          context: .
+          file: ./Dockerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
@@ -49,7 +51,11 @@ jobs:
         uses: docker/build-push-action@v2
         if: "contains(github.ref, 'develop')"
         with:
+          context: .
+          file: ./Dockerfile
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
