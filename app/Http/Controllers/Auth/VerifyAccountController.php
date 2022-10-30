@@ -21,6 +21,7 @@ class VerifyAccountController extends Controller
         }
         User::whereId($user->id)->update(['verified' => true]);
         DB::table('verification_tokens')->where('user', '=', $user->id)->delete();
+
         return response()->redirectTo('/');
     }
 }

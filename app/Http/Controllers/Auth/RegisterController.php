@@ -4,9 +4,9 @@ namespace Pterodactyl\Http\Controllers\Auth;
 
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Http\Requests\Auth\RegisterRequest;
 use Pterodactyl\Services\Users\UserCreationService;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class RegisterController extends AbstractLoginController
@@ -59,7 +59,7 @@ class RegisterController extends AbstractLoginController
             'store_databases' => $this->settings->get($prefix . 'database', 0),
         ];
 
-        if (!$this->settings->get($prefix.'verification')) {
+        if (!$this->settings->get($prefix . 'verification')) {
             $data['verified'] = true;
         } else {
             $data['verified'] = false;

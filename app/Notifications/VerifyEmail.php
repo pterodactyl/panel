@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Notifications;
 
+use Pterodactyl\Models\User;
 use Illuminate\Bus\Queueable;
+use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Notifications\Notification;
-use Pterodactyl\Models\User;
 
 class VerifyEmail extends Notification implements ShouldQueue
 {
@@ -31,10 +31,11 @@ class VerifyEmail extends Notification implements ShouldQueue
     public function toMail(): MailMessage
     {
         $message = new MailMessage();
-        $message->greeting('Hello '.$this->user->username.'! Welcome to '.$this->name.'.');
+        $message->greeting('Hello ' . $this->user->username . '! Welcome to ' . $this->name . '.');
         $message->line('Please click the link below to verify your email address.');
-        $message->action('Verify Email', url('/auth/verify/'.$this->token));
-        $message->line('If you did not create this account please contact '.$this->name.'.');
+        $message->action('Verify Email', url('/auth/verify/' . $this->token));
+        $message->line('If you did not create this account please contact ' . $this->name . '.');
+
         return $message;
     }
 }

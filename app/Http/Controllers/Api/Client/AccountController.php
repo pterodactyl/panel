@@ -141,6 +141,7 @@ class AccountController extends ClientApiController
         $name = $this->settings->get('settings::app:name', 'Jexactyl');
         DB::table('verification_tokens')->insert(['user' => $request->user()->id, 'token' => $token]);
         $request->user()->notify(new VerifyEmail($request->user(), $name, $token));
+
         return new JsonResponse(['success' => true, 'data' => []]);
     }
 
@@ -152,6 +153,7 @@ class AccountController extends ClientApiController
         for ($i = 0; $i < 32; ++$i) {
             $pieces[] = $chars[mt_rand(0, $max)];
         }
+
         return implode('', $pieces);
     }
 }

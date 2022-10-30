@@ -46,7 +46,6 @@ Route::middleware(['throttle:authentication'])->group(function () {
 Route::post('/password/reset', Auth\ResetPasswordController::class)->name('auth.reset-password');
 Route::get('/verify/{token}', [Auth\VerifyAccountController::class, 'index'])->withoutMiddleware('guest')->name('auth.verify');
 
-
 // Remove the guest middleware and apply the authenticated middleware to this endpoint
 // so it cannot be used unless you're already logged in.
 Route::post('/logout', [Auth\LoginController::class, 'logout'])
