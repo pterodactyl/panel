@@ -6,6 +6,7 @@ export interface UserData {
     username: string;
     email: string;
     approved: boolean;
+    verified: boolean;
     discordId: string;
     language: string;
     rootAdmin: boolean;

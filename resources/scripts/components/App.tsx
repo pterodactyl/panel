@@ -20,6 +20,7 @@ interface ExtendedWindow extends Window {
         username: string;
         email: string;
         approved: boolean;
+        verified: boolean;
         /* eslint-disable camelcase */
         discord_id: string;
         root_admin: boolean;
@@ -43,6 +44,7 @@ const App = () => {
             username: JexactylUser.username,
             email: JexactylUser.email,
             approved: JexactylUser.approved,
+            verified: JexactylUser.verified,
             discordId: JexactylUser.discord_id,
             language: JexactylUser.language,
             rootAdmin: JexactylUser.root_admin,
