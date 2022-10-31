@@ -9,6 +9,7 @@ use Pterodactyl\Tests\DuskTestCase;
 use Illuminate\Support\Facades\Hash;
 use Pterodactyl\Tests\Browser\Pages\Login;
 use Pterodactyl\Tests\Traits\DatabaseMigrations;
+use Pterodactyl\Tests\Browser\Pages\CreateUser;
 
 class MainTest extends DuskTestCase
 {
@@ -53,17 +54,16 @@ class MainTest extends DuskTestCase
             }
 
             // Test Failed Login
-            $browser->visit('/auth/login');
-            $browser->type('username', $login);
-            $browser->type('password', 'incorrect');
-            $browser->click('button[type=submit]');
-            $browser->waitFor('div[role=alert]', 2);
-            $browser->assertSeeIn('div[role=alert]>span', 'ERROR');
+            $browser->visit(new Login())
+                ->submit($login, 'incorrect')
+                ->waitFor('@alert', 2)
+                ->assertSeeIn('@alert', 'ERROR');
 
             // Test Successful Login
-            $browser->type('password', $pass);
-            $browser->visit(new Login())->loginToPanel($login, $pass);
-            $browser->assertPathIs('/');
+            $browser->visit(new Login())
+                ->submit($login, $pass)
+                ->waitForReload()
+                ->assertPathIs('/');
 
             // Test No Servers
             $browser->assertMissing('section div>a');
@@ -75,25 +75,15 @@ class MainTest extends DuskTestCase
             $browser->assertSee('Admin');
 
             // Create new non administrator user and see success
-            $browser->visit('/admin/users/new');
-            $browser->type('email', 'matthew@example.com');
-            $browser->type('username', 'bird');
-            $browser->type('name_first', 'Matthew');
-            $browser->type('name_last', 'Dactyl');
-            $browser->type('password', 'mypasswordiscooler');
-            $browser->clickAndWaitForReload('input[type=submit]', 3);
-            $browser->assertPathIs('/admin/users/view/2');
+            $browser->visit(new CreateUser())
+                ->create('matthew@example.com', 'bird', 'mypasswordiscooler', 'Matthew', 'Dactyl')
+                ->assertPathIs('/admin/users/view/2');
 
             // Try to create duplicate user and see failure
-            $browser->visit('/admin/users/new');
-            $browser->type('email', 'matthew@example.com');
-            $browser->type('username', 'bird');
-            $browser->type('name_first', 'First');
-            $browser->type('name_last', 'Last');
-            $browser->type('password', 'mypasswordiscool');
-            $browser->clickAndWaitForReload('input[type=submit]', 3);
-            $browser->assertSee('There was an error');
-            $browser->assertPathIs('/admin/users/new');
+            $browser->visit(new CreateUser())
+                ->create('matthew@example.com', 'bird', 'mypasswordiscool', 'Matthew', 'Dactyl')
+                ->assertSee('There was an error')
+                ->assertPathIs('/admin/users/new');
 
             // Click on Locations in navigation and then click on Create New
             $browser->visit('/admin/locations');
