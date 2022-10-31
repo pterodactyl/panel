@@ -3,16 +3,19 @@ name: Build
 on:
   push:
     branches:
-      - 'develop'
-      - 'v2'
+      - "develop"
+      - "1.0-develop"
   pull_request:
+    branches:
+      - "develop"
+      - "1.0-develop"
 
 jobs:
   ui:
     name: UI
     runs-on: ubuntu-20.04
-    if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
     strategy:
+      fail-fast: false
       matrix:
         node-version: [16]
     steps:
@@ -23,7 +26,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
+          cache: "yarn"
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
