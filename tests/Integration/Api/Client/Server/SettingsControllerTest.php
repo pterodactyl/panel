@@ -21,9 +21,11 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
         $originalName = $server->name;
+        $originalDescription = $server->description;
 
         $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/settings/rename", [
             'name' => '',
+            'description' => '',
         ]);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -31,15 +33,18 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
 
         $server = $server->refresh();
         $this->assertSame($originalName, $server->name);
+        $this->assertSame($originalDescription, $server->description);
 
         $this->actingAs($user)
             ->postJson("/api/client/servers/$server->uuid/settings/rename", [
                 'name' => 'Test Server Name',
+                'description' => 'This is a test server.',
             ])
             ->assertStatus(Response::HTTP_NO_CONTENT);
 
         $server = $server->refresh();
         $this->assertSame('Test Server Name', $server->name);
+        $this->assertSame('This is a test server.', $server->description);
     }
 
     /**
