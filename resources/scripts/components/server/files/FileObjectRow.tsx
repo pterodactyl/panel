@@ -6,7 +6,7 @@ import { memo } from 'react';
 import isEqual from 'react-fast-compare';
 import { NavLink } from 'react-router-dom';
 import tw from 'twin.macro';
-import { join } from 'path';
+import { join } from 'pathe';
 
 import { encodePathSegments } from '@/helpers';
 import { FileObject } from '@/api/server/files/loadDirectory';
