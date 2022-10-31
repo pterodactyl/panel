@@ -23,12 +23,13 @@ jobs:
       database:
         image: docker.io/library/${{ matrix.database }}
         env:
-          MYSQL_USER: panel
-          MYSQL_PASSWORD: password
-          MYSQL_DATABASE: testing
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: panel_test
         ports:
-          - 3306
+          - 3306/tcp
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      DB_CONNECTION: mysql
     steps:
       - name: Code Checkout
         uses: actions/checkout@v3
@@ -70,6 +71,7 @@ jobs:
         run: vendor/bin/phpunit tests/Integration
         env:
           DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_USERNAME: root
 
   postgres:
     name: PostgreSQL
@@ -84,11 +86,11 @@ jobs:
       database:
         image: docker.io/library/${{ matrix.database }}
         env:
-          POSTGRES_USER: panel
-          POSTGRES_PASSWORD: password
-          POSTGRES_DB: testing
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: panel_test
         ports:
-          - 5432
+          - 5432/tcp
         options: --health-cmd=pg_isready --health-interval=10s --health-timeout=5s --health-retries=3
     env:
       DB_CONNECTION: pgsql
@@ -137,3 +139,5 @@ jobs:
         run: vendor/bin/phpunit tests/Integration
         env:
           DB_PORT: ${{ job.services.database.ports[5432] }}
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
