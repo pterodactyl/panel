@@ -12,15 +12,8 @@ class VerifyEmail extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public User $user;
-    public string $name;
-    public string $token;
-
-    public function __construct(User $user, string $name, string $token)
+    public function __construct(private User $user, private string $name, private string $token)
     {
-        $this->user = $user;
-        $this->name = $name;
-        $this->token = $token;
     }
 
     public function via(): array

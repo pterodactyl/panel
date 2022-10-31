@@ -92,6 +92,6 @@ class ServerController extends ClientApiController
             'store_databases' => $user->store_databases - $request->input('databases'),
         ]);
 
-        return new JsonResponse(['success' => true, 'data' => ['id' => $server->uuidShort]]);
+        return new JsonResponse(['success' => true, 'id' => $server->uuidShort]);
     }
 }

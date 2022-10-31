@@ -1,5 +1,5 @@
-import {AlertCircle} from 'react-feather';
 import useFlash from '@/plugins/useFlash';
+import { AlertCircle } from 'react-feather';
 import apiVerify from '@/api/account/verify';
 import { useStoreState } from '@/state/hooks';
 import React, { useEffect, useState } from 'react';

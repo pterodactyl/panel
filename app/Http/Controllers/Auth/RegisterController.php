@@ -59,11 +59,11 @@ class RegisterController extends AbstractLoginController
             'store_databases' => $this->settings->get($prefix . 'database', 0),
         ];
 
-        if (!$this->settings->get($prefix . 'verification')) {
-            $data['verified'] = true;
-        } else {
+        $data['verified'] = true;
+        if ($this->settings->get($prefix . 'verification') === 'true') {
             $data['verified'] = false;
         }
+
         $this->creationService->handle($data);
 
         return new JsonResponse([

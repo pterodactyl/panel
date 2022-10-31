@@ -100,7 +100,7 @@ export default () => {
                 setLoading(false);
                 clearFlashes('store:create');
                 // @ts-expect-error this is valid
-                window.location = `/server/${data.data.id}`;
+                window.location = `/server/${data.id}`;
             })
             .catch((error) => {
                 setLoading(false);

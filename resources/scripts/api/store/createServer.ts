@@ -17,7 +17,7 @@ interface Params {
 
 interface Data {
     success: boolean;
-    data: { id: string; };
+    id: string;
 }
 
 export default (params: Params, egg: number, nest: number, node: number): Promise<Data> => {
