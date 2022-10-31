@@ -22,8 +22,8 @@ class AddForeignDatabaseServers extends Migration
     public function down(): void
     {
         Schema::table('database_servers', function (Blueprint $table) {
-            $table->dropForeign('database_servers_linked_node_foreign');
-            $table->dropIndex('database_servers_linked_node_foreign');
+            $table->dropForeign(['linked_node']);
+            $table->dropIndex(['linked_node']);
         });
     }
 }

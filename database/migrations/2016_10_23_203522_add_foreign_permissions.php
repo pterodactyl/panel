@@ -23,11 +23,11 @@ class AddForeignPermissions extends Migration
     public function down(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
-            $table->dropForeign('permissions_user_id_foreign');
-            $table->dropForeign('permissions_server_id_foreign');
+            $table->dropForeign(['user_id']);
+            $table->dropIndex(['user_id']);
 
-            $table->dropIndex('permissions_user_id_foreign');
-            $table->dropIndex('permissions_server_id_foreign');
+            $table->dropForeign(['server_id']);
+            $table->dropIndex(['server_id']);
         });
     }
 }

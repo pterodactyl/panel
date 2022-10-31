@@ -23,11 +23,11 @@ class AddForeignDatabases extends Migration
     public function down(): void
     {
         Schema::table('databases', function (Blueprint $table) {
-            $table->dropForeign('databases_server_id_foreign');
-            $table->dropForeign('databases_db_server_foreign');
+            $table->dropForeign(['server_id']);
+            $table->dropIndex(['server_id']);
 
-            $table->dropIndex('databases_server_id_foreign');
-            $table->dropIndex('databases_db_server_foreign');
+            $table->dropForeign(['db_server']);
+            $table->dropIndex(['db_server']);
         });
     }
 }

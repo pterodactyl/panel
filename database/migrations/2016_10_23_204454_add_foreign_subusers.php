@@ -23,11 +23,11 @@ class AddForeignSubusers extends Migration
     public function down(): void
     {
         Schema::table('subusers', function (Blueprint $table) {
-            $table->dropForeign('subusers_user_id_foreign');
-            $table->dropForeign('subusers_server_id_foreign');
+            $table->dropForeign(['user_id']);
+            $table->dropIndex(['user_id']);
 
-            $table->dropIndex('subusers_user_id_foreign');
-            $table->dropIndex('subusers_server_id_foreign');
+            $table->dropForeign(['server_id']);
+            $table->dropIndex(['server_id']);
         });
     }
 }

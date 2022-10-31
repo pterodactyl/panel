@@ -23,8 +23,9 @@ class AddForeignServiceOptions extends Migration
     public function down(): void
     {
         Schema::table('service_options', function (Blueprint $table) {
-            $table->dropForeign('service_options_parent_service_foreign');
-            $table->dropIndex('service_options_parent_service_foreign');
+            $table->dropForeign(['parent_service']);
+            $table->dropIndex(['parent_service']);
+
             $table->mediumInteger('parent_service', false, true)->change();
         });
     }

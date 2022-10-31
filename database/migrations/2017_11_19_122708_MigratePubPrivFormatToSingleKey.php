@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Schema;
@@ -18,7 +19,7 @@ class MigratePubPrivFormatToSingleKey extends Migration
             DB::table('api_keys')->get()->each(function ($item) {
                 try {
                     $decrypted = Crypt::decrypt($item->secret);
-                } catch (DecryptException $exception) {
+                } catch (DecryptException) {
                     $decrypted = str_random(32);
                 } finally {
                     DB::table('api_keys')->where('id', $item->id)->update([
@@ -44,7 +45,10 @@ class MigratePubPrivFormatToSingleKey extends Migration
      */
     public function down(): void
     {
-        DB::statement('ALTER TABLE `api_keys` CHANGE `token` `secret` TEXT, DROP INDEX `api_keys_token_unique`');
+        Schema::table('api_keys', function (Blueprint $table) {
+            $table->dropUnique(['token']);
+            $table->renameColumn('token', 'secret');
+        });
 
         Schema::table('api_keys', function (Blueprint $table) {
             $table->dropUnique('token');
@@ -61,7 +65,7 @@ class MigratePubPrivFormatToSingleKey extends Migration
         DB::transaction(function () {
             DB::table('api_keys')->get()->each(function ($item) {
                 DB::table('api_keys')->where('id', $item->id)->update([
-                    'public' => str_random(16),
+                    'public' => Str::random(16),
                     'secret' => Crypt::encrypt($item->secret),
                 ]);
             });

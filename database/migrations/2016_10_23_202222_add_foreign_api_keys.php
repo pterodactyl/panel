@@ -22,8 +22,8 @@ class AddForeignApiKeys extends Migration
     public function down(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
-            $table->dropForeign('api_keys_user_foreign');
-            $table->dropIndex('api_keys_user_foreign');
+            $table->dropForeign(['user']);
+            $table->dropIndex(['user']);
         });
     }
 }

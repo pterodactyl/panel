@@ -23,8 +23,9 @@ class AddForeignNodes extends Migration
     public function down(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->dropForeign('nodes_location_foreign');
-            $table->dropIndex('nodes_location_foreign');
+            $table->dropForeign(['location']);
+            $table->dropIndex(['location']);
+
             $table->mediumInteger('location', false, true)->nullable(false)->change();
         });
     }

@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -25,11 +26,11 @@ class AddForeignAllocations extends Migration
     public function down(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
-            $table->dropForeign('allocations_assigned_to_foreign');
-            $table->dropForeign('allocations_node_foreign');
+            $table->dropForeign(['assigned_to']);
+            $table->dropIndex(['assigned_to']);
 
-            $table->dropIndex('allocations_assigned_to_foreign');
-            $table->dropIndex('allocations_node_foreign');
+            $table->dropForeign(['node']);
+            $table->dropIndex(['node']);
 
             $table->mediumInteger('assigned_to', false, true)->nullable()->change();
             $table->mediumInteger('node', false, true)->nullable(false)->change();
