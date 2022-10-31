@@ -63,6 +63,7 @@ jobs:
         uses: php-actions/phpstan@v3
         with:
           path: /
+          memory_limit: 256M
 
       - name: Unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
