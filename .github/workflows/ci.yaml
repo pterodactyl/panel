@@ -60,10 +60,8 @@ jobs:
         run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
       - name: Static analysis
-        uses: php-actions/phpstan@v3
-        with:
-          path: /
-          memory_limit: 256M
+        run: vendor/bin/phpstan analyse
+        if: ${{ always() }}
 
       - name: Unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
