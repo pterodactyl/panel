@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Models;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
-use Carbon\CarbonImmutable;
 use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 use Illuminate\Container\Container;

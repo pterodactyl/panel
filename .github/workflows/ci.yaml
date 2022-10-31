@@ -3,14 +3,17 @@ name: Tests
 on:
   push:
     branches:
-      - 'develop'
+      - "develop"
+      - "1.0-develop"
   pull_request:
+    branches:
+      - "develop"
+      - "1.0-develop"
 
 jobs:
   mysql:
     name: MySQL
     runs-on: ubuntu-20.04
-    if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       fail-fast: false
       matrix:
@@ -21,9 +24,9 @@ jobs:
         image: docker.io/library/${{ matrix.database }}
         env:
           MYSQL_ALLOW_EMPTY_PASSWORD: yes
-          MYSQL_DATABASE: panel_test
+          MYSQL_DATABASE: testing
         ports:
-          - 3306/tcp
+          - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
       - name: Code Checkout
@@ -32,15 +35,15 @@ jobs:
       - name: Get cache directory
         id: composer-cache
         run: |
-          echo "::set-output name=dir::$(composer config cache-files-dir)"
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
 
       - name: Cache
         uses: actions/cache@v3
         with:
-          path: |
-            ~/.php_cs.cache
-            ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-cache-${{ matrix.php }}-${{ hashFiles('**.composer.lock') }}
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}-
 
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
@@ -55,10 +58,6 @@ jobs:
 
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
-
-      - name: PHP CS Fixer
-        run: vendor/bin/php-cs-fixer fix --dry-run --diff
-        continue-on-error: true
 
       - name: Unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
@@ -89,7 +88,7 @@ jobs:
           POSTGRES_PASSWORD: postgres
           POSTGRES_DB: panel_test
         ports:
-          - 5432/tcp
+          - 5432
         options: --health-cmd=pg_isready --health-interval=10s --health-timeout=5s --health-retries=3
     env:
       DB_CONNECTION: pgsql
