@@ -50,9 +50,7 @@ class RequireTwoFactorAuthentication
         // send them right through, nothing else needs to be checked.
         //
         // If the level is set as admin and the user is not an admin, pass them through as well.
-        if ($level === self::LEVEL_NONE || $user->has2FAEnabled()) {
-            return $next($request);
-        } elseif ($level === self::LEVEL_ADMIN && !$user->root_admin) {
+        if ($level === self::LEVEL_NONE || $user->has2FAEnabled() || ($level === self::LEVEL_ADMIN && !$user->root_admin)) {
             return $next($request);
         }
 

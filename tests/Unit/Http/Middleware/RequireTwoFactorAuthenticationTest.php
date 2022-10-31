@@ -19,6 +19,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isEmpty());
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -39,6 +40,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertTrue($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isEmpty());
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -49,21 +51,21 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $middleware->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testNoRequirementUserWithWebauthn2fa()
+    public function testNoRequirementUserWithSecurityKey2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_NONE);
 
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()
-            ->has(SecurityKey::factory()->count(1))
-            ->create(['use_totp' => false]);
+            ->make(['use_totp' => false])
+            ->setRelation('securityKeys', SecurityKey::factory()->count(1)->make());
         $this->setRequestUserModel($user);
 
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
-        $this->assertNotEmpty($user->securityKeys);
+        $this->assertTrue($user->securityKeys->isNotEmpty());
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -102,7 +104,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
-        $this->assertEmpty($user->securityKeys);
+        $this->assertTrue($user->securityKeys->isEmpty());
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -123,6 +125,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertTrue($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isEmpty());
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -133,21 +136,21 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $middleware->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAllRequirementRuserWithWebauthn2fa()
+    public function testAllRequirementUserWithSecurityKey2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ALL);
 
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()
-            ->has(SecurityKey::factory()->count(1))
-            ->create(['use_totp' => false]);
+            ->make(['use_totp' => false])
+            ->setRelation('securityKeys', SecurityKey::factory()->count(1)->make());
         $this->setRequestUserModel($user);
 
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
-        $this->assertNotEmpty($user->securityKeys);
+        $this->assertTrue($user->securityKeys->isNotEmpty());
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
@@ -184,6 +187,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isEmpty());
         $this->assertFalse($user->root_admin);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
@@ -207,6 +211,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isEmpty());
         $this->assertTrue($user->root_admin);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
@@ -228,6 +233,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertTrue($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isEmpty());
         $this->assertFalse($user->root_admin);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
@@ -249,6 +255,7 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $this->assertTrue($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isEmpty());
         $this->assertTrue($user->root_admin);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
@@ -260,46 +267,49 @@ class RequireTwoFactorAuthenticationTest extends MiddlewareTestCase
         $middleware->handle($this->request, $this->getClosureAssertions());
     }
 
-    public function testAdminRequirementUserWithWebauthn2fa()
-    {
-        // Disable the 2FA requirement
-        config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
-
-        /** @var \Pterodactyl\Models\User $user */
-        $user = User::factory()->has(SecurityKey::factory()->count(1))->create(['use_totp' => false]);
-        $this->setRequestUserModel($user);
-
-        $this->assertFalse($user->use_totp);
-        $this->assertEmpty($user->totp_secret);
-        $this->assertEmpty($user->totp_authenticated_at);
-        $this->assertFalse($user->root_admin);
-        $this->assertNotEmpty($user->securityKeys);
-
-        $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
-        $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
-        $this->request->shouldReceive('isJson')->withNoArgs()->andReturn(true);
-
-        /** @var \Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication $controller */
-        $middleware = $this->app->make(RequireTwoFactorAuthentication::class);
-        $middleware->handle($this->request, $this->getClosureAssertions());
-    }
-
-    public function testAdminRequirementAdminUserWithWebauthn2fa()
+    public function testAdminRequirementUserWithSecurityKey2fa()
     {
         // Disable the 2FA requirement
         config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
 
         /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()
-            ->has(SecurityKey::factory()->count(1))
-            ->create(['use_totp' => false, 'root_admin' => true]);
+            ->make(['use_totp' => false])
+            ->setRelation('securityKeys', SecurityKey::factory()->count(1)->make());
         $this->setRequestUserModel($user);
 
         $this->assertFalse($user->use_totp);
         $this->assertEmpty($user->totp_secret);
         $this->assertEmpty($user->totp_authenticated_at);
-        $this->assertTrue($user->root_admin);
+        $this->assertFalse($user->root_admin);
+        $this->assertTrue($user->securityKeys->isNotEmpty());
         $this->assertNotEmpty($user->securityKeys);
+
+        $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
+        $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
+        $this->request->shouldReceive('isJson')->withNoArgs()->andReturn(true);
+
+        /** @var \Pterodactyl\Http\Middleware\RequireTwoFactorAuthentication $controller */
+        $middleware = $this->app->make(RequireTwoFactorAuthentication::class);
+        $middleware->handle($this->request, $this->getClosureAssertions());
+    }
+
+    public function testAdminRequirementAdminUserWithSecurityKey2fa()
+    {
+        // Disable the 2FA requirement
+        config()->set('pterodactyl.auth.2fa_required', RequireTwoFactorAuthentication::LEVEL_ADMIN);
+
+        /** @var \Pterodactyl\Models\User $user */
+        $user = User::factory()
+            ->make(['use_totp' => false, 'root_admin' => true])
+            ->setRelation('securityKeys', SecurityKey::factory()->count(1)->make());
+        $this->setRequestUserModel($user);
+
+        $this->assertFalse($user->use_totp);
+        $this->assertEmpty($user->totp_secret);
+        $this->assertEmpty($user->totp_authenticated_at);
+        $this->assertTrue($user->securityKeys->isNotEmpty());
+        $this->assertTrue($user->root_admin);
 
         $this->request->shouldReceive('getRequestUri')->withNoArgs()->andReturn('/');
         $this->request->shouldReceive('route->getName')->withNoArgs()->andReturn(null);
