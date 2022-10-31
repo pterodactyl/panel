@@ -149,6 +149,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
 
         /** @var Node $node */
         $node = $instance->first();
+
         return $node;
     }
 }
