@@ -147,6 +147,8 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
             ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
             ->where('nodes.id', $node_id);
 
-        return $instance->first();
+        /** @var Node $node */
+        $node = $instance->first();
+        return $node;
     }
 }
