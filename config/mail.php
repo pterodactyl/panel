@@ -91,7 +91,7 @@ return [
     */
 
     'from' => [
-        'address' => env('MAIL_FROM_ADDRESS', env('MAIL_FROM')),
+        'address' => env('MAIL_FROM_ADDRESS', env('MAIL_FROM', 'hello@example.com')),
         'name' => env('MAIL_FROM_NAME', 'Pterodactyl Panel'),
     ],
 
