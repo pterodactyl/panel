@@ -3,13 +3,13 @@
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServerTransfer;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\TransferService;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
@@ -21,7 +21,6 @@ class ServerTransferController extends Controller
     public function __construct(
         private AlertsMessageBag $alert,
         private AllocationRepositoryInterface $allocationRepository,
-        private NodeRepository $nodeRepository,
         private TransferService $transferService,
         private DaemonConfigurationRepository $daemonConfigurationRepository
     ) {
@@ -45,7 +44,7 @@ class ServerTransferController extends Controller
         $additional_allocations = array_map('intval', $validatedData['allocation_additional'] ?? []);
 
         // Check if the node is viable for the transfer.
-        $node = $this->nodeRepository->getNodeWithResourceUsage($node_id);
+        $node = Node::query()->findOrFail($node_id);
         if ($node->isViable($server->memory, $server->disk)) {
             // Check if the selected daemon is online.
             $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();

@@ -24,8 +24,10 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property bool $maintenance_mode
  * @property int $memory
  * @property int $memory_overallocate
+ * @property int $sum_memory
  * @property int $disk
  * @property int $disk_overallocate
+ * @property int $sum_disk
  * @property int $upload_size
  * @property string $daemon_token_id
  * @property string $daemon_token
@@ -220,6 +222,9 @@ class Node extends Model
      */
     public function isViable(int $memory, int $disk): bool
     {
+        $this->loadSum('servers as sum_memory', 'memory');
+        $this->loadSum('servers as disk_memory', 'disk');
+
         $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
 
