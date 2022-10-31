@@ -4,7 +4,7 @@ namespace Pterodactyl\Exceptions\Solutions;
 
 use Spatie\Ignition\Contracts\Solution;
 
-class ManifestDoesntExistSolution implements Solution
+class ManifestDoesNotExistSolution implements Solution
 {
     public function getSolutionTitle(): string
     {

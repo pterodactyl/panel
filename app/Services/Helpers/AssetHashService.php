@@ -5,7 +5,7 @@ namespace Pterodactyl\Services\Helpers;
 use Illuminate\Support\Arr;
 use Illuminate\Filesystem\FilesystemManager;
 use Illuminate\Contracts\Filesystem\Filesystem;
-use Pterodactyl\Exceptions\ManifestDoesntExistException;
+use Pterodactyl\Exceptions\ManifestDoesNotExistException;
 
 class AssetHashService
 {
@@ -109,7 +109,7 @@ class AssetHashService
 
         $manifest = static::$manifest;
         if ($manifest === null) {
-            throw new ManifestDoesntExistException();
+            throw new ManifestDoesNotExistException();
         }
 
         return $manifest;
