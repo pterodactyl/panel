@@ -4,8 +4,8 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
-use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Http\RedirectResponse;
+use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServerTransfer;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\TransferService;

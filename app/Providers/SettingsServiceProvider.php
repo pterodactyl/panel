@@ -61,7 +61,7 @@ class SettingsServiceProvider extends ServiceProvider
     {
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.
-        if ($config->get('mail.driver') === 'smtp') {
+        if ($config->get('mail.default') === 'smtp') {
             $this->keys = array_merge($this->keys, $this->emailKeys);
         }
 
