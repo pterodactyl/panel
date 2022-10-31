@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Str;
 use NunoMaduro\Collision\Provider;
 use Illuminate\Contracts\Console\Kernel;
 use Symfony\Component\Console\Output\ConsoleOutput;
@@ -23,7 +24,7 @@ $kernel->bootstrap();
 $output = new ConsoleOutput();
 
 $prefix = 'database.connections.' . config('database.default');
-if (config("$prefix.database") !== 'testing') {
+if (!Str::contains(config("$prefix.database"), 'test')) {
     $output->writeln(PHP_EOL . '<error>Cannot run test process against non-testing database.</error>');
     $output->writeln(PHP_EOL . '<error>Environment is currently pointed at: "' . config("$prefix.database") . '".</error>');
     exit(1);
