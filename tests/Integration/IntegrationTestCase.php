@@ -16,7 +16,7 @@ abstract class IntegrationTestCase extends TestCase
     use CreatesTestModels;
     use AssertsActivityLogged;
 
-    protected array $connectionsToTransact = ['mysql'];
+//    protected array $connectionsToTransact = ['pgsql'];
 
     protected $defaultHeaders = [
         'Accept' => 'application/json',
