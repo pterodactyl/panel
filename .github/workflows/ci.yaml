@@ -39,7 +39,6 @@ jobs:
 
       DB_CONNECTION: mysql
       DB_HOST: 127.0.0.1
-      DB_PORT: ${{ job.services.database.ports[3306] }}
       DB_DATABASE: testing
       DB_USERNAME: root
 
@@ -118,7 +117,6 @@ jobs:
 
       DB_CONNECTION: pgsql
       DB_HOST: 127.0.0.1
-      DB_PORT: ${{ job.services.database.ports[3306] }}
       DB_DATABASE: testing
       DB_USERNAME: postgres
       DB_PASSWORD: postgres
