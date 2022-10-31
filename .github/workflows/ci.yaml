@@ -62,7 +62,7 @@ jobs:
       - name: Static analysis
         uses: php-actions/phpstan@v3
         with:
-          path: src/
+          path: /
 
       - name: Unit tests
         run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
