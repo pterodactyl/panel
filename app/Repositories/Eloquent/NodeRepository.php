@@ -78,9 +78,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
         // This is quite ugly and can probably be improved down the road.
         // And by probably, I mean it should.
         if (is_null($node->servers_count) || $refresh) {
-            $node->load('servers');
-            $node->setRelation('servers_count', count($node->getRelation('servers')));
-            unset($node->servers);
+            $node->loadCount('servers');
         }
 
         return $node;
