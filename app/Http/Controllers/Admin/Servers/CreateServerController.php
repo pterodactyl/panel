@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use JavaScript;
 use Illuminate\View\View;
+use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
@@ -47,7 +48,7 @@ class CreateServerController extends Controller
 
         JavaScript::put([
             'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
-            'nests' => $nests->map(function ($item) {
+            'nests' => $nests->map(function (Nest $item) {
                 return array_merge($item->toArray(), [
                     'eggs' => $item->eggs->keyBy('id')->toArray(),
                 ]);
