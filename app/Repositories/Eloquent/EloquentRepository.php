@@ -75,6 +75,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
      */
     public function create(array $fields, bool $validate = true, bool $force = false): Model|bool
     {
+        /** @var \Pterodactyl\Models\Model $instance */
         $instance = $this->getBuilder()->newModelInstance();
         ($force) ? $instance->forceFill($fields) : $instance->fill($fields);
 
@@ -160,6 +161,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     public function update(int $id, array $fields, bool $validate = true, bool $force = false): Model|bool
     {
         try {
+            /** @var \Pterodactyl\Models\Model $instance */
             $instance = $this->getBuilder()->where('id', $id)->firstOrFail();
         } catch (ModelNotFoundException) {
             throw new RecordNotFoundException();
