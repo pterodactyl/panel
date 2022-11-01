@@ -19,8 +19,8 @@ parameters:
         # Ignore magic spatie calls
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::allowed(\w+)\(\)#'
 
-#
-#    excludePaths:
-#        - ./*/*/FileToBeExcluded.php
+    excludePaths:
+        - app/Repositories
+
 #
 #    checkMissingIterableValueType: false
