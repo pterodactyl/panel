@@ -12,8 +12,9 @@ class UpdateNodeRequest extends StoreNodeRequest
      */
     public function rules(array $rules = null): array
     {
-        $node = $this->route()->parameter('node')->id;
+        /** @var Node $node */
+        $node = $this->route()->parameter('node');
 
-        return parent::rules(Node::getRulesForUpdate($node));
+        return parent::rules(Node::getRulesForUpdate($node->id));
     }
 }

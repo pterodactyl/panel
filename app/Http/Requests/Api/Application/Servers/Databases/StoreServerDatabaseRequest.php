@@ -21,6 +21,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
      */
     public function rules(): array
     {
+        /** @var Server $server */
         $server = $this->route()->parameter('server');
 
         return [
@@ -67,6 +68,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
      */
     public function databaseName(): string
     {
+        /** @var Server $server */
         $server = $this->route()->parameter('server');
 
         Assert::isInstanceOf($server, Server::class);

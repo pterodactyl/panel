@@ -72,6 +72,7 @@ class ResourceBelongsToServer
                     // Tasks are special since they're (currently) the only item in the API
                     // that requires something in addition to the server in order to be accessed.
                 case Task::class:
+                    /** @var Schedule $schedule */
                     $schedule = $request->route()->parameter('schedule');
                     if ($model->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
                         throw $exception;
