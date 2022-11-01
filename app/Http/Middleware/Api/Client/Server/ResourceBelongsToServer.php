@@ -29,7 +29,7 @@ class ResourceBelongsToServer
     public function handle(Request $request, Closure $next): mixed
     {
         $params = $request->route()->parameters();
-        if (is_null($params) || !$params['server'] instanceof Server) {
+        if (!$params['server'] instanceof Server) {
             throw new InvalidArgumentException('This middleware cannot be used in a context that is missing a server in the parameters.');
         }
 
