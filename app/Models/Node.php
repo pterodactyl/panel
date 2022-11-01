@@ -217,13 +217,20 @@ class Node extends Model
         return $this->hasMany(Allocation::class);
     }
 
+    public function loadServerSums(): self
+    {
+        $this->loadSum('servers as sum_memory', 'memory');
+        $this->loadSum('servers as sum_disk', 'disk');
+
+        return $this;
+    }
+
     /**
      * Returns a boolean if the node is viable for an additional server to be placed on it.
      */
-    public function isViable(int $memory, int $disk): bool
+    public function isViable(int $memory = 0, int $disk = 0): bool
     {
-        $this->loadSum('servers as sum_memory', 'memory');
-        $this->loadSum('servers as disk_memory', 'disk');
+        $this->loadServerSums();
 
         $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
