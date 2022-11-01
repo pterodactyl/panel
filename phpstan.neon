@@ -16,6 +16,8 @@ parameters:
         # Ignore repository interface missing methods
         - '#Call to an undefined method Pterodactyl\\Repositories\\Wings\\DaemonRepository::(\w+)\(\)#'
 
+        # Ignore magic spatie calls
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::allowed(\w+)\(\)#'
 
 #
 #    excludePaths:
