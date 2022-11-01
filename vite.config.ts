@@ -5,6 +5,22 @@ import { dirname, resolve } from 'pathe';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
+const plugins = [
+    react({
+        babel: {
+            plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
+        },
+    }),
+];
+
+if (process.env.VITEST === undefined) {
+    plugins.push(
+        laravel({
+            input: 'resources/scripts/index.tsx',
+        }),
+    );
+}
+
 export default defineConfig({
     define:
         process.env.VITEST === undefined
@@ -16,14 +32,7 @@ export default defineConfig({
               }
             : undefined,
 
-    plugins: [
-        laravel('resources/scripts/index.tsx'),
-        react({
-            babel: {
-                plugins: ['babel-plugin-macros', 'babel-plugin-styled-components'],
-            },
-        }),
-    ],
+    plugins,
 
     resolve: {
         alias: {
