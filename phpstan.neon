@@ -14,7 +14,7 @@ parameters:
         - '#Call to an undefined method Prologue\\Alerts\\AlertsMessageBag::(success|info|warning|danger)\(\)#'
 
         # Ignore repository interface missing methods
-        - '#Call to an undefined method Pterodactyl\\Repositories\\Wings\\DaemonRepository::(\w+)\(\).#'
+        - '#Call to an undefined method Pterodactyl\\Repositories\\Wings\\DaemonRepository::(\w+)\(\)#'
 
 
 #
