@@ -45,6 +45,7 @@ class ResourceBelongsToServer
                 continue;
             }
 
+            /** @var Allocation|Backup|Database|Schedule|Subuser $model */
             switch (get_class($model)) {
                 // All of these models use "server_id" as the field key for the server
                 // they are assigned to, so the logic is identical for them all.
