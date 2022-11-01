@@ -9,7 +9,6 @@ use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -23,8 +22,7 @@ class ApiController extends Controller
     public function __construct(
         private AlertsMessageBag $alert,
         private ApiKeyRepositoryInterface $repository,
-        private KeyCreationService $keyCreationService,
-        private ViewFactory $view,
+        private KeyCreationService $keyCreationService
     ) {
     }
 

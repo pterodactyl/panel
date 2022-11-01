@@ -7,17 +7,9 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\Contracts\View\Factory as ViewFactory;
 
 class NodeController extends Controller
 {
-    /**
-     * NodeController constructor.
-     */
-    public function __construct(private ViewFactory $view)
-    {
-    }
-
     /**
      * Returns a listing of nodes on the system.
      */

@@ -9,7 +9,6 @@ use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Location;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\NestRepository;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
@@ -25,8 +24,7 @@ class CreateServerController extends Controller
         private AlertsMessageBag $alert,
         private NestRepository $nestRepository,
         private NodeRepository $nodeRepository,
-        private ServerCreationService $creationService,
-        private ViewFactory $view
+        private ServerCreationService $creationService
     ) {
     }
 

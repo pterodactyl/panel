@@ -8,7 +8,6 @@ use Illuminate\View\View;
 use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
@@ -30,8 +29,7 @@ class DatabaseController extends Controller
         private HostCreationService $creationService,
         private HostDeletionService $deletionService,
         private HostUpdateService $updateService,
-        private LocationRepositoryInterface $locationRepository,
-        private ViewFactory $view
+        private LocationRepositoryInterface $locationRepository
     ) {
     }
 

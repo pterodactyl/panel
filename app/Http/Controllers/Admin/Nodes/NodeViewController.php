@@ -8,13 +8,11 @@ use Pterodactyl\Models\Node;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\Contracts\View\Factory as ViewFactory;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 
 class NodeViewController extends Controller
 {
@@ -24,12 +22,10 @@ class NodeViewController extends Controller
      * NodeViewController constructor.
      */
     public function __construct(
-        private AllocationRepository $allocationRepository,
         private LocationRepository $locationRepository,
         private NodeRepository $repository,
         private ServerRepository $serverRepository,
-        private SoftwareVersionService $versionService,
-        private ViewFactory $view
+        private SoftwareVersionService $versionService
     ) {
     }
 
