@@ -6,13 +6,13 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Model;
-use Illuminate\Support\Collection;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Spatie\QueryBuilder\QueryBuilder;
 use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Contracts\Translation\Translator;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
@@ -132,22 +132,13 @@ class UserController extends Controller
     /**
      * Get a JSON response of users on the system.
      */
-    public function json(Request $request): Model|Collection
+    public function json(Request $request): Model|LengthAwarePaginator
     {
-        $users = QueryBuilder::for(User::query())->allowedFilters(['email'])->paginate(25);
-
         // Handle single user requests.
         if ($request->query('user_id')) {
-            $user = User::query()->findOrFail($request->input('user_id'));
-            $user->md5 = md5(strtolower($user->email));
-
-            return $user;
+            return User::query()->findOrFail($request->input('user_id'));
         }
 
-        return $users->map(function ($item) {
-            $item->md5 = md5(strtolower($item->email));
-
-            return $item;
-        });
+        return QueryBuilder::for(User::query())->allowedFilters(['email'])->paginate(25);
     }
 }

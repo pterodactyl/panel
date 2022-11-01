@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Pterodactyl\Rules\Username;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Support\Collection;
@@ -125,6 +126,10 @@ class User extends Model implements
         'totp_authenticated_at',
         'gravatar',
         'root_admin',
+    ];
+
+    protected $appends = [
+        'md5',
     ];
 
     /**
@@ -255,6 +260,13 @@ class User extends Model implements
     public function activity(): MorphToMany
     {
         return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
+    }
+
+    public function md5(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => md5(strtolower($this->email)),
+        );
     }
 
     /**
