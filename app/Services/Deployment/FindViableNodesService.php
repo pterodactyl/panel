@@ -71,10 +71,11 @@ class FindViableNodesService
         Assert::integer($this->disk, 'Disk space must be an int, got %s');
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');
 
-        $query = Node::query()
-            ->withSum('servers as sum_memory', 'memory')
-            ->withSum('servers as sum_disk', 'disk')
-            ->where('public', 1);
+        $query = Node::query()->select('nodes.*')
+            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory')
+            ->selectRaw('IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('nodes.public', 1);
 
         if (!empty($this->locations)) {
             $query = $query->whereIn('location_id', $this->locations);
