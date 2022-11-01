@@ -5,6 +5,15 @@
     "engines": {
         "node": ">=16.0"
     },
+    "scripts": {
+        "build": "vite build",
+        "clean": "rimraf public/build",
+        "coverage": "vitest run --coverage",
+        "dev": "vite",
+        "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
+        "test": "vitest run",
+        "test:ui": "vitest --ui"
+    },
     "dependencies": {
         "@floating-ui/react-dom-interactions": "0.10.2",
         "@fortawesome/fontawesome-svg-core": "6.2.0",
@@ -55,13 +64,11 @@
     },
     "devDependencies": {
         "@testing-library/dom": "8.19.0",
-        "@testing-library/jest-dom": "5.16.5",
         "@testing-library/react": "13.4.0",
         "@testing-library/user-event": "14.4.3",
         "@types/codemirror": "0.0.109",
         "@types/debounce": "1.2.1",
         "@types/events": "3.0.0",
-        "@types/jest": "29.2.0",
         "@types/node": "18.11.9",
         "@types/react": "18.0.24",
         "@types/react-dom": "18.0.8",
@@ -76,13 +83,11 @@
         "cross-env": "7.0.3",
         "eslint": "8.18.0",
         "eslint-config-prettier": "8.5.0",
-        "eslint-plugin-jest-dom": "4.0.2",
         "eslint-plugin-node": "11.1.0",
         "eslint-plugin-prettier": "4.2.1",
         "eslint-plugin-react": "7.31.10",
         "eslint-plugin-react-hooks": "4.6.0",
-        "identity-obj-proxy": "3.0.0",
-        "jest": "29.2.2",
+        "happy-dom": "7.6.6",
         "laravel-vite-plugin": "0.7.0",
         "pathe": "0.3.9",
         "postcss": "8.4.18",
@@ -92,17 +97,10 @@
         "prettier": "2.7.1",
         "rimraf": "3.0.2",
         "ts-essentials": "9.3.0",
-        "ts-jest": "29.0.3",
         "twin.macro": "2.8.2",
         "typescript": "4.8.4",
-        "vite": "3.2.2"
-    },
-    "scripts": {
-        "build": "vite build",
-        "clean": "rimraf public/assets/*.{js,json,map}",
-        "dev": "vite",
-        "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
-        "test": "jest"
+        "vite": "3.2.2",
+        "vitest": "0.24.5"
     },
     "browserslist": [
         "> 0.5%",

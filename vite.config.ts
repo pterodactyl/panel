@@ -1,3 +1,4 @@
+/// <reference types="vitest" />
 import react from '@vitejs/plugin-react';
 import laravel from 'laravel-vite-plugin';
 import { dirname, resolve } from 'pathe';
@@ -5,23 +6,15 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vite';
 
 export default defineConfig({
-    build: {
-        assetsInlineLimit: 0,
-        emptyOutDir: true,
-        manifest: true,
-        outDir: 'public/build',
-
-        rollupOptions: {
-            input: 'resources/scripts/index.tsx',
-        },
-    },
-
-    define: {
-        'process.env': {},
-        'process.platform': null,
-        'process.version': null,
-        'process.versions': null,
-    },
+    define:
+        process.env.VITEST === undefined
+            ? {
+                  'process.env': {},
+                  'process.platform': null,
+                  'process.version': null,
+                  'process.versions': null,
+              }
+            : undefined,
 
     plugins: [
         laravel('resources/scripts/index.tsx'),
@@ -51,5 +44,10 @@ export default defineConfig({
                 'features',
             ),
         },
+    },
+
+    test: {
+        environment: 'happy-dom',
+        include: ['resources/scripts/**/*.{spec,test}.{ts,tsx}'],
     },
 });

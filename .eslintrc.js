@@ -35,7 +35,6 @@ module.exports = {
         'plugin:react/recommended',
         'plugin:react/jsx-runtime',
         'plugin:@typescript-eslint/recommended',
-        'plugin:jest-dom/recommended',
     ],
     rules: {
         eqeqeq: 'error',
