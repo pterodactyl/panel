@@ -104,7 +104,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
     {
         $egg = Egg::query()->findOrFail(1);
 
-        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/nil');
+        $response = $this->getJson('/api/application/nests/' . $egg->nest_id . '/eggs/0');
         $this->assertNotFoundJson($response);
     }
 

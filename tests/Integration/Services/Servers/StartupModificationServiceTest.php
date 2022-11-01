@@ -128,9 +128,10 @@ class StartupModificationServiceTest extends IntegrationTestCase
             ],
         ]);
 
-        $this->assertCount(2, $response->variables);
-        $this->assertSame('EXIST', $response->variables[0]->server_value);
-        $this->assertSame('test.jar', $response->variables[1]->server_value);
+        $variables = $response->variables->sortBy('server_value')->values();
+        $this->assertCount(2, $variables);
+        $this->assertSame('EXIST', $variables->get(0)->server_value);
+        $this->assertSame('test.jar', $variables->get(1)->server_value);
 
         $response = $this->getService()
             ->setUserLevel(User::USER_LEVEL_ADMIN)
@@ -141,9 +142,11 @@ class StartupModificationServiceTest extends IntegrationTestCase
                 ],
             ]);
 
-        $this->assertCount(2, $response->variables);
-        $this->assertSame('1234', $response->variables[0]->server_value);
-        $this->assertSame('test.jar', $response->variables[1]->server_value);
+        $variables = $response->variables->sortBy('server_value')->values();
+
+        $this->assertCount(2, $variables);
+        $this->assertSame('1234', $variables->get(0)->server_value);
+        $this->assertSame('test.jar', $variables->get(1)->server_value);
     }
 
     /**

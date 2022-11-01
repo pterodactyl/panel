@@ -18,10 +18,8 @@ class DropGoogleAnalytics extends Migration
      */
     public function down(): void
     {
-        DB::table('settings')->insert(
-            [
+        DB::table('settings')->insert([
             'key' => 'settings::app:analytics',
-            ]
-        );
+        ]);
     }
 }
