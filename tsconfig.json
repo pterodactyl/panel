@@ -50,6 +50,6 @@
         "stripInternal": true,
         "useDefineForClassFields": true
     },
-    "include": ["./resources/scripts/**/*"],
+    "include": ["./resources/scripts/**/*", "vite.config.ts"],
     "exclude": ["node_modules"]
 }

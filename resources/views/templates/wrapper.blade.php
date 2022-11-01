@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <title>{{ config('app.name', 'Pterodactyl') }}</title>
 
@@ -39,15 +39,15 @@
         @yield('assets')
 
         @include('layouts.scripts')
+
+        @viteReactRefresh
+        @vite('resources/scripts/index.tsx')
     </head>
     <body class="{{ $css['body'] ?? 'bg-neutral-50' }}">
         @section('content')
             @yield('above-container')
             @yield('container')
             @yield('below-container')
-        @show
-        @section('scripts')
-            {!! $asset->js('main.js') !!}
         @show
     </body>
 </html>

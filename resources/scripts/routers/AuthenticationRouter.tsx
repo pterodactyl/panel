@@ -12,25 +12,11 @@ export default () => {
     return (
         <div className="pt-8 xl:pt-32">
             <Routes>
-                <Route path="login">
-                    <LoginContainer />
-                </Route>
-
-                <Route path="login/checkpoint/*">
-                    <LoginCheckpointContainer />
-                </Route>
-
-                <Route path="password">
-                    <ForgotPasswordContainer />
-                </Route>
-
-                <Route path="password/reset/:token">
-                    <ResetPasswordContainer />
-                </Route>
-
-                <Route path="*">
-                    <NotFound onBack={() => navigate('/auth/login')} />
-                </Route>
+                <Route path="login" element={<LoginContainer />} />
+                <Route path="login/checkpoint/*" element={<LoginCheckpointContainer />} />
+                <Route path="password" element={<ForgotPasswordContainer />} />
+                <Route path="password/reset/:token" element={<ResetPasswordContainer />} />
+                <Route path="*" element={<NotFound onBack={() => navigate('/auth/login')} />} />
             </Routes>
         </div>
     );

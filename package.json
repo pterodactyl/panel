@@ -3,7 +3,7 @@
     "license": "MIT",
     "private": true,
     "engines": {
-        "node": ">=14.0"
+        "node": ">=16.0"
     },
     "dependencies": {
         "@floating-ui/react-dom-interactions": "0.10.2",
@@ -54,18 +54,6 @@
         "yup": "0.32.11"
     },
     "devDependencies": {
-        "@babel/core": "^7.19.0",
-        "@babel/plugin-proposal-class-properties": "^7.18.0",
-        "@babel/plugin-proposal-nullish-coalescing-operator": "^7.18.0",
-        "@babel/plugin-proposal-object-rest-spread": "^7.19.0",
-        "@babel/plugin-proposal-optional-chaining": "^7.18.0",
-        "@babel/plugin-transform-modules-commonjs": "^7.19.0",
-        "@babel/plugin-transform-react-jsx": "^7.19.0",
-        "@babel/plugin-transform-runtime": "^7.19.0",
-        "@babel/preset-env": "^7.19.0",
-        "@babel/preset-react": "^7.18.0",
-        "@babel/preset-typescript": "^7.18.0",
-        "@babel/runtime": "^7.20.0",
         "@testing-library/dom": "8.19.0",
         "@testing-library/jest-dom": "5.16.5",
         "@testing-library/react": "13.4.0",
@@ -74,21 +62,18 @@
         "@types/debounce": "1.2.1",
         "@types/events": "3.0.0",
         "@types/jest": "29.2.0",
-        "@types/node": "14.18.33",
+        "@types/node": "18.11.9",
         "@types/react": "18.0.24",
         "@types/react-dom": "18.0.8",
         "@types/react-transition-group": "4.4.5",
         "@types/styled-components": "5.1.26",
-        "@types/webpack-env": "1.18.0",
         "@typescript-eslint/eslint-plugin": "5.41.0",
         "@typescript-eslint/parser": "5.41.0",
+        "@vitejs/plugin-react": "2.2.0",
         "autoprefixer": "10.4.12",
-        "babel-jest": "29.2.2",
-        "babel-loader": "8.2.5",
         "babel-plugin-styled-components": "2.0.7",
         "babel-plugin-twin": "1.0.2",
         "cross-env": "7.0.3",
-        "css-loader": "5.2.7",
         "eslint": "8.18.0",
         "eslint-config-prettier": "8.5.0",
         "eslint-plugin-jest-dom": "4.0.2",
@@ -96,39 +81,28 @@
         "eslint-plugin-prettier": "4.2.1",
         "eslint-plugin-react": "7.31.10",
         "eslint-plugin-react-hooks": "4.6.0",
-        "fork-ts-checker-webpack-plugin": "6.5.2",
         "identity-obj-proxy": "3.0.0",
         "jest": "29.2.2",
+        "laravel-vite-plugin": "0.7.0",
         "pathe": "0.3.9",
         "postcss": "8.4.18",
         "postcss-import": "15.0.0",
-        "postcss-loader": "4.3.0",
         "postcss-nesting": "10.2.0",
         "postcss-preset-env": "7.8.2",
         "prettier": "2.7.1",
         "rimraf": "3.0.2",
-        "source-map-loader": "1.1.3",
-        "style-loader": "2.0.0",
-        "svg-url-loader": "7.1.1",
-        "terser-webpack-plugin": "4.2.3",
         "ts-essentials": "9.3.0",
         "ts-jest": "29.0.3",
         "twin.macro": "2.8.2",
         "typescript": "4.8.4",
-        "webpack": "4.46.0",
-        "webpack-assets-manifest": "3.1.1",
-        "webpack-bundle-analyzer": "3.9.0",
-        "webpack-cli": "3.3.12",
-        "webpack-dev-server": "3.11.3"
+        "vite": "3.2.2"
     },
     "scripts": {
+        "build": "vite build",
         "clean": "rimraf public/assets/*.{js,json,map}",
-        "test": "jest",
+        "dev": "vite",
         "lint": "eslint ./resources/scripts/**/*.{ts,tsx} --ext .ts,.tsx",
-        "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
-        "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
-        "build:production": "yarn run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
-        "serve": "yarn run clean && cross-env WEBPACK_PUBLIC_PATH=/webpack@hmr/ NODE_ENV=development webpack-dev-server --host 0.0.0.0 --port 8080 --public https://pterodactyl.test --hot"
+        "test": "jest"
     },
     "browserslist": [
         "> 0.5%",
@@ -138,6 +112,7 @@
     ],
     "babelMacros": {
         "twin": {
+            "config": "tailwind.config.cjs",
             "preset": "styled-components"
         },
         "styledComponents": {
