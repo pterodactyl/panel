@@ -28,6 +28,8 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
      */
     public function handle(Event|Installed $notification): void
     {
+        abort_unless($notification instanceof Installed, 500);
+        /* @var Installed $notification */
         $notification->server->loadMissing('user');
 
         $this->server = $notification->server;
