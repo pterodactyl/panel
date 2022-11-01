@@ -13,6 +13,7 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Pterodactyl\Http\Requests\Auth\ResetPasswordRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Models\User;
 
 class ResetPasswordController extends Controller
 {
@@ -67,13 +68,13 @@ class ResetPasswordController extends Controller
      * account do not automatically log them in. In those cases, send the user back to the login
      * form with a note telling them their password was changed and to log back in.
      *
-     * @param \Illuminate\Contracts\Auth\CanResetPassword|\Pterodactyl\Models\User $user
+     * @param User $user
      * @param string $password
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    protected function resetPassword($user, $password)
+    protected function resetPassword(User $user, $password)
     {
         $user = $this->userRepository->update($user->id, [
             'password' => $this->hasher->make($password),
