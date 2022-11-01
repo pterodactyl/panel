@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Auth;
 
 use Illuminate\Support\Str;
+use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\Password;
@@ -13,7 +14,6 @@ use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
 use Pterodactyl\Http\Requests\Auth\ResetPasswordRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Models\User;
 
 class ResetPasswordController extends Controller
 {
@@ -68,7 +68,6 @@ class ResetPasswordController extends Controller
      * account do not automatically log them in. In those cases, send the user back to the login
      * form with a note telling them their password was changed and to log back in.
      *
-     * @param User $user
      * @param string $password
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

@@ -14,6 +14,7 @@ class MountFormRequest extends AdminFormRequest
         if ($this->method() === 'PATCH') {
             /** @var Mount $mount */
             $mount = $this->route()->parameter('mount');
+
             return Mount::getRulesForUpdate($mount->id);
         }
 

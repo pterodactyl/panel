@@ -14,6 +14,7 @@ class LocationFormRequest extends AdminFormRequest
         if ($this->method() === 'PATCH') {
             /** @var Location $location */
             $location = $this->route()->parameter('location');
+
             return Location::getRulesForUpdate($location->id);
         }
 
