@@ -5,9 +5,9 @@ namespace Pterodactyl\Http\Middleware;
 use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
-use Pterodactyl\Models\User;
 
 class RequireTwoFactorAuthentication
 {
