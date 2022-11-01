@@ -33,7 +33,7 @@ class ResourceBelongsToServer
             throw new InvalidArgumentException('This middleware cannot be used in a context that is missing a server in the parameters.');
         }
 
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var Server $server */
         $server = $request->route()->parameter('server');
         $exception = new NotFoundHttpException('The requested resource was not found for this server.');
         foreach ($params as $key => $model) {
