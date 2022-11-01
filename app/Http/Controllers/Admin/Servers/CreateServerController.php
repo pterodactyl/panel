@@ -55,7 +55,7 @@ class CreateServerController extends Controller
             })->keyBy('id'),
         ]);
 
-        return $this->view->make('admin.servers.new', [
+        return view('admin.servers.new', [
             'locations' => Location::all(),
             'nests' => $nests,
         ]);

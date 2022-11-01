@@ -34,7 +34,7 @@ class IndexController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.settings.index', [
+        return view('admin.settings.index', [
             'version' => $this->versionService,
             'languages' => $this->getAvailableLanguages(true),
         ]);

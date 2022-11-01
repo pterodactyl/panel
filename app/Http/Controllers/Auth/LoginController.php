@@ -29,7 +29,7 @@ class LoginController extends AbstractLoginController
      */
     public function index(): View
     {
-        return $this->view->make('templates/auth.core');
+        return view('templates/auth.core');
     }
 
     /**

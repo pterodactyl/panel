@@ -33,6 +33,6 @@ class ServerController extends Controller
             ])
             ->paginate(config()->get('pterodactyl.paginate.admin.servers'));
 
-        return $this->view->make('admin.servers.index', ['servers' => $servers]);
+        return view('admin.servers.index', ['servers' => $servers]);
     }
 }

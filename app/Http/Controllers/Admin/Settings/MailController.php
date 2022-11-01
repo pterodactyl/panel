@@ -38,7 +38,7 @@ class MailController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.settings.mail', [
+        return view('admin.settings.mail', [
             'disabled' => $this->config->get('mail.default') !== 'smtp',
         ]);
     }

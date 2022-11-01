@@ -39,7 +39,7 @@ class AdvancedController extends Controller
             $showRecaptchaWarning = true;
         }
 
-        return $this->view->make('admin.settings.advanced', [
+        return view('admin.settings.advanced', [
             'showRecaptchaWarning' => $showRecaptchaWarning,
         ]);
     }

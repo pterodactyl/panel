@@ -57,7 +57,7 @@ class UserController extends Controller
             ->allowedSorts(['id', 'uuid'])
             ->paginate(50);
 
-        return $this->view->make('admin.users.index', ['users' => $users]);
+        return view('admin.users.index', ['users' => $users]);
     }
 
     /**
@@ -65,7 +65,7 @@ class UserController extends Controller
      */
     public function create(): View
     {
-        return $this->view->make('admin.users.new', [
+        return view('admin.users.new', [
             'languages' => $this->getAvailableLanguages(true),
         ]);
     }
@@ -75,7 +75,7 @@ class UserController extends Controller
      */
     public function view(User $user): View
     {
-        return $this->view->make('admin.users.view', [
+        return view('admin.users.view', [
             'user' => $user,
             'languages' => $this->getAvailableLanguages(true),
         ]);

@@ -21,6 +21,6 @@ class BaseController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.index', ['version' => $this->version]);
+        return view('admin.index', ['version' => $this->version]);
     }
 }

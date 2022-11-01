@@ -33,7 +33,7 @@ class ApiController extends Controller
      */
     public function index(Request $request): View
     {
-        return $this->view->make('admin.api.index', [
+        return view('admin.api.index', [
             'keys' => $this->repository->getApplicationKeys($request->user()),
         ]);
     }
@@ -48,7 +48,7 @@ class ApiController extends Controller
         $resources = AdminAcl::getResourceList();
         sort($resources);
 
-        return $this->view->make('admin.api.new', [
+        return view('admin.api.new', [
             'resources' => $resources,
             'permissions' => [
                 'r' => AdminAcl::READ,
