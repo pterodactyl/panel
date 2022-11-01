@@ -77,12 +77,12 @@ class FindViableNodesService
             ->where('public', 1);
 
         if (!empty($this->locations)) {
-            $query = $query->whereIn('nodes.location_id', $this->locations);
+            $query = $query->whereIn('location_id', $this->locations);
         }
 
-        $results = $query->groupBy('nodes.id')
-            ->havingRaw('(IFNULL(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100)))', [$this->memory])
-            ->havingRaw('(IFNULL(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100)))', [$this->disk]);
+        $results = $query->groupBy('id')
+            ->havingRaw('(sum_memory + ?) <= (memory * (1 + (memory_overallocate / 100)))', [$this->memory])
+            ->havingRaw('(sum_disk + ?) <= (disk * (1 + (disk_overallocate / 100)))', [$this->disk]);
 
         if (!is_null($page)) {
             $results = $results->paginate($perPage ?? 50, ['*'], 'page', $page);
