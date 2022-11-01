@@ -25,5 +25,11 @@ parameters:
     excludePaths:
         - app/Repositories
 
+        # Bug in Laravel Framework #44807
+        - app/Console/Commands/Overrides/UpCommand.php
+
+        # More magic spatie to be replaced
+        - app/Extensions/Spatie/Fractalistic/Fractal.php
+
 #
 #    checkMissingIterableValueType: false
