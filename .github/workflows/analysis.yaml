@@ -41,6 +41,9 @@ jobs:
           tools: composer:v2
           coverage: none
 
+      - name: Setup .env
+        run: cp .env.ci .env
+
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
