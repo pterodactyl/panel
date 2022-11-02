@@ -4,10 +4,15 @@ with pkgs;
     buildInputs = [
       alejandra
       (php81.buildEnv {
-        extensions = ({ enabled, all }: enabled ++ (with all; [
-          redis
-          xdebug
-        ]));
+        extensions = {
+          enabled,
+          all,
+        }:
+          enabled
+          ++ (with all; [
+            redis
+            xdebug
+          ]);
         extraConfig = ''
           xdebug.mode=debug
         '';

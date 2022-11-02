@@ -32,3 +32,5 @@ resources/lang/locales.js
 
 /public/build
 /public/hot
+result
+docker-compose.yaml
