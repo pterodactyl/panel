@@ -24,7 +24,7 @@ export interface Server {
     };
     invocation: string;
     dockerImage: string;
-    description: string;
+    description: string | null;
     limits: {
         memory: number;
         swap: number;

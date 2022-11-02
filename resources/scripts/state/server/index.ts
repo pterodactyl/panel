@@ -1,11 +1,19 @@
-import getServer, { Server } from '@/api/server/getServer';
-import { action, Action, computed, Computed, createContextStore, thunk, Thunk } from 'easy-peasy';
-import socket, { SocketStore } from './socket';
-import files, { ServerFileStore } from '@/state/server/files';
-import subusers, { ServerSubuserStore } from '@/state/server/subusers';
-import schedules, { ServerScheduleStore } from '@/state/server/schedules';
-import databases, { ServerDatabaseStore } from '@/state/server/databases';
+import type { Action, Computed, Thunk } from 'easy-peasy';
+import { action, computed, createContextStore, thunk } from 'easy-peasy';
 import isEqual from 'react-fast-compare';
+
+import type { Server } from '@/api/server/getServer';
+import getServer from '@/api/server/getServer';
+import type { ServerDatabaseStore } from '@/state/server/databases';
+import databases from '@/state/server/databases';
+import type { ServerFileStore } from '@/state/server/files';
+import files from '@/state/server/files';
+import type { ServerScheduleStore } from '@/state/server/schedules';
+import schedules from '@/state/server/schedules';
+import type { SocketStore } from '@/state/server/socket';
+import socket from '@/state/server/socket';
+import type { ServerSubuserStore } from '@/state/server/subusers';
+import subusers from '@/state/server/subusers';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | null;
 

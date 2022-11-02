@@ -19,6 +19,7 @@ import styles from './style.module.css';
 
 function Clickable({ file, children }: { file: FileObject; children: ReactNode }) {
     const [canReadContents] = usePermissions(['file.read-content']);
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
     return !canReadContents || (file.isFile && !file.isEditable()) ? (
@@ -26,7 +27,7 @@ function Clickable({ file, children }: { file: FileObject; children: ReactNode }
     ) : (
         <NavLink
             className={styles.details}
-            to={`${file.isFile ? '/edit' : ''}#${encodePathSegments(join(directory, file.name))}`}
+            to={`/server/${id}/files${file.isFile ? '/edit' : ''}#${encodePathSegments(join(directory, file.name))}`}
         >
             {children}
         </NavLink>

@@ -92,8 +92,7 @@ class DropdownMenu extends PureComponent<Props, State> {
             <div>
                 {this.props.renderToggle(this.onClickHandler)}
 
-                {/* TODO: appear? */}
-                <FadeTransition duration="duration-150" show={this.state.visible} unmount>
+                <FadeTransition duration="duration-150" show={this.state.visible} appear unmount>
                     <div
                         ref={this.menu}
                         onClick={e => {

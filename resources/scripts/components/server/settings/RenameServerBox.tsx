@@ -62,7 +62,7 @@ export default () => {
             onSubmit={submit}
             initialValues={{
                 name: server.name,
-                description: server.description,
+                description: server.description ?? '',
             }}
             validationSchema={object().shape({
                 name: string().required().min(1),

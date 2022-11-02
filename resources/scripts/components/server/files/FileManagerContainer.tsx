@@ -1,7 +1,8 @@
+import type { ChangeEvent } from 'react';
 import { useEffect } from 'react';
-import * as React from 'react';
+import tw from 'twin.macro';
+
 import { httpErrorToHuman } from '@/api/http';
-import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
 import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
@@ -10,7 +11,6 @@ import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
 import { ServerError } from '@/components/elements/ScreenBlock';
-import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
@@ -23,6 +23,7 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox';
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
@@ -49,10 +50,10 @@ export default () => {
     }, [hash]);
 
     useEffect(() => {
-        mutate();
+        void mutate();
     }, [directory]);
 
-    const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const onSelectAllClick = (e: ChangeEvent<HTMLInputElement>) => {
         setSelectedFiles(e.currentTarget.checked ? files?.map(file => file.name) || [] : []);
     };
 
@@ -93,8 +94,7 @@ export default () => {
                     {!files.length ? (
                         <p css={tw`text-sm text-neutral-400 text-center`}>This directory seems to be empty.</p>
                     ) : (
-                        // @ts-expect-error go away
-                        <CSSTransition classNames="fade" timeout={150} appear in>
+                        <FadeTransition duration="duration-150" appear show>
                             <div>
                                 {files.length > 250 && (
                                     <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
@@ -109,7 +109,7 @@ export default () => {
                                 ))}
                                 <MassActionsBar />
                             </div>
-                        </CSSTransition>
+                        </FadeTransition>
                     )}
                 </>
             )}

@@ -42,7 +42,7 @@ interface RouteDefinition {
 }
 
 interface ServerRouteDefinition extends RouteDefinition {
-    permission: string | string[] | null;
+    permission?: string | string[];
 }
 
 interface Routes {
@@ -97,7 +97,13 @@ export default {
             component: FileManagerContainer,
         },
         {
-            route: 'files/:action(edit|new)/*',
+            route: 'files/edit/*',
+            permission: 'file.*',
+            name: undefined,
+            component: FileEditContainer,
+        },
+        {
+            route: 'files/new/*',
             permission: 'file.*',
             name: undefined,
             component: FileEditContainer,

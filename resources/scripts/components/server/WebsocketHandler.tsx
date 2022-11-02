@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
-import { CSSTransition } from 'react-transition-group';
 import tw from 'twin.macro';
 
-import { Websocket } from '@/plugins/Websocket';
-import { ServerContext } from '@/state/server';
 import getWebsocketToken from '@/api/server/getWebsocketToken';
 import ContentContainer from '@/components/elements/ContentContainer';
 import Spinner from '@/components/elements/Spinner';
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
+import { Websocket } from '@/plugins/Websocket';
+import { ServerContext } from '@/state/server';
 
 const reconnectErrors = ['jwt: exp claim is invalid', 'jwt: created too far in past (denylist)'];
 
@@ -108,8 +108,7 @@ function WebsocketHandler() {
     }, [uuid]);
 
     return error ? (
-        // @ts-expect-error go away
-        <CSSTransition timeout={150} in appear classNames="fade">
+        <FadeTransition duration="duration-150" appear show>
             <div css={tw`bg-red-500 py-2`}>
                 <ContentContainer css={tw`flex items-center justify-center`}>
                     {error === 'connecting' ? (
@@ -124,7 +123,7 @@ function WebsocketHandler() {
                     )}
                 </ContentContainer>
             </div>
-        </CSSTransition>
+        </FadeTransition>
     ) : null;
 }
 

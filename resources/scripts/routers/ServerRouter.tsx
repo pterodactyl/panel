@@ -20,7 +20,6 @@ import PermissionRoute from '@/components/elements/PermissionRoute';
 import routes from '@/routers/routes';
 
 function ServerRouter() {
-    // const match = useMatches();
     const params = useParams<'id'>();
     const location = useLocation();
 
@@ -76,17 +75,19 @@ function ServerRouter() {
                                 .map(route =>
                                     route.permission ? (
                                         <Can key={route.path} action={route.permission} matchAny>
-                                            <NavLink to={`${location.pathname}/${route.path}`}>{route.name}</NavLink>
+                                            <NavLink to={`/server/${id}/${route.path ?? ''}`} end>
+                                                {route.name}
+                                            </NavLink>
                                         </Can>
                                     ) : (
-                                        <NavLink key={route.path} to={`${location.pathname}/${route.path}`}>
+                                        <NavLink key={route.path} to={`/server/${id}/${route.path ?? ''}`} end>
                                             {route.name}
                                         </NavLink>
                                     ),
                                 )}
                             {rootAdmin && (
                                 // eslint-disable-next-line react/jsx-no-target-blank
-                                <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
+                                <a href={`/admin/servers/view/${serverId}`} target="_blank">
                                     <FontAwesomeIcon icon={faExternalLinkAlt} />
                                 </a>
                             )}
@@ -99,22 +100,22 @@ function ServerRouter() {
                         <ConflictStateRenderer />
                     ) : (
                         <ErrorBoundary>
-                            <Routes>
+                            <Routes location={location}>
                                 {routes.server.map(({ route, permission, component: Component }) => (
-                                    <PermissionRoute
+                                    <Route
                                         key={route}
-                                        permission={permission}
-                                        path={`${location.pathname}/${route}`}
-                                    >
-                                        <Spinner.Suspense>
-                                            <Component />
-                                        </Spinner.Suspense>
-                                    </PermissionRoute>
+                                        path={route}
+                                        element={
+                                            <PermissionRoute permission={permission}>
+                                                <Spinner.Suspense>
+                                                    <Component />
+                                                </Spinner.Suspense>
+                                            </PermissionRoute>
+                                        }
+                                    />
                                 ))}
 
-                                <Route path="*">
-                                    <NotFound />
-                                </Route>
+                                <Route path="*" element={<NotFound />} />
                             </Routes>
                         </ErrorBoundary>
                     )}

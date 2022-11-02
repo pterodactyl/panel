@@ -1,7 +1,6 @@
 import { StoreProvider } from 'easy-peasy';
 import { lazy } from 'react';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import tw from 'twin.macro';
 
 import '@/assets/tailwind.css';
 import GlobalStylesheet from '@/assets/css/GlobalStylesheet';
@@ -10,11 +9,12 @@ import ProgressBar from '@/components/elements/ProgressBar';
 import { NotFound } from '@/components/elements/ScreenBlock';
 import Spinner from '@/components/elements/Spinner';
 import { store } from '@/state';
+import { ServerContext } from '@/state/server';
 import { SiteSettings } from '@/state/settings';
 
-const DashboardRouter = lazy(() => import(/* webpackChunkName: "dashboard" */ '@/routers/DashboardRouter'));
-const ServerRouter = lazy(() => import(/* webpackChunkName: "server" */ '@/routers/ServerRouter'));
-const AuthenticationRouter = lazy(() => import(/* webpackChunkName: "auth" */ '@/routers/AuthenticationRouter'));
+const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
+const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
+const AuthenticationRouter = lazy(() => import('@/routers/AuthenticationRouter'));
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -61,7 +61,7 @@ function App() {
             <StoreProvider store={store}>
                 <ProgressBar />
 
-                <div css={tw`mx-auto w-auto`}>
+                <div className="mx-auto w-auto">
                     <BrowserRouter>
                         <Routes>
                             <Route
@@ -78,7 +78,9 @@ function App() {
                                 element={
                                     <AuthenticatedRoute>
                                         <Spinner.Suspense>
-                                            <ServerRouter />
+                                            <ServerContext.Provider>
+                                                <ServerRouter />
+                                            </ServerContext.Provider>
                                         </Spinner.Suspense>
                                     </AuthenticatedRoute>
                                 }

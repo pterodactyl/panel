@@ -4,8 +4,8 @@ import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
-import SubNavigation from '@/components/elements/SubNavigation';
 import Spinner from '@/components/elements/Spinner';
+import SubNavigation from '@/components/elements/SubNavigation';
 import routes from '@/routers/routes';
 
 function DashboardRouter() {
