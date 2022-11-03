@@ -40,6 +40,11 @@ class ClientController extends ClientApiController
             AllowedFilter::custom('*', new MultiFieldServerFilter()),
         ]);
 
+        $loweredBindings = collect($builder->getBindings())
+            ->map(fn ($f, $key) => is_string($f) ? strtolower($f) : $f)
+            ->all();
+        $builder->setBindings($loweredBindings);
+
         $type = $request->input('type');
         // Either return all the servers the user has access to because they are an admin `?type=admin` or
         // just return all the servers the user has access to because they are the owner or a subuser of the
