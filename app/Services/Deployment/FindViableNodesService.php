@@ -82,8 +82,8 @@ class FindViableNodesService
         }
 
         $results = $query->groupBy('nodes.id')
-            ->havingRaw('(COALESCE(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100)))', [$this->memory])
-            ->havingRaw('(COALESCE(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100)))', [$this->disk]);
+            ->havingRaw('(COALESCE(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1.0 + (nodes.memory_overallocate / 100.0)))', [$this->memory])
+            ->havingRaw('(COALESCE(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1.0 + (nodes.disk_overallocate / 100.0)))', [$this->disk]);
 
         if (!is_null($page)) {
             $results = $results->paginate($perPage ?? 50, ['*'], 'page', $page);
