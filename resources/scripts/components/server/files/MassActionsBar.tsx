@@ -1,15 +1,16 @@
 import { useEffect, useState } from 'react';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+
+import compressFiles from '@/api/server/files/compressFiles';
+import deleteFiles from '@/api/server/files/deleteFiles';
+import { Button } from '@/components/elements/button';
+import { Dialog } from '@/components/elements/dialog';
+import Portal from '@/components/elements/Portal';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import RenameFileModal from '@/components/server/files/RenameFileModal';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
-import compressFiles from '@/api/server/files/compressFiles';
 import { ServerContext } from '@/state/server';
-import deleteFiles from '@/api/server/files/deleteFiles';
-import RenameFileModal from '@/components/server/files/RenameFileModal';
-import Portal from '@/components/elements/Portal';
-import { Dialog } from '@/components/elements/dialog';
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
 
 const MassActionsBar = () => {
     const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
@@ -61,7 +62,7 @@ const MassActionsBar = () => {
 
     return (
         <>
-            <div css={tw`pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center`}>
+            <div className="pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center">
                 <SpinnerOverlay visible={loading} size={'large'} fixed>
                     {loadingMessage}
                 </SpinnerOverlay>
@@ -72,9 +73,9 @@ const MassActionsBar = () => {
                     onClose={() => setShowConfirm(false)}
                     onConfirmed={onClickConfirmDeletion}
                 >
-                    <p className={'mb-2'}>
+                    <p className="mb-2">
                         Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
+                        <span className="font-semibold text-gray-50">{selectedFiles.length} files</span>? This is a
                         permanent action and the files cannot be recovered.
                     </p>
                     {selectedFiles.slice(0, 15).map(file => (
@@ -92,14 +93,16 @@ const MassActionsBar = () => {
                     />
                 )}
                 <Portal>
-                    <div className={'fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
-                        <div css={tw`flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50`}>
-                            <Button onClick={() => setShowMove(true)}>Move</Button>
-                            <Button onClick={onClickCompress}>Archive</Button>
-                            <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
-                                Delete
-                            </Button.Danger>
-                        </div>
+                    <div className="fixed bottom-0 mb-6 flex justify-center w-full z-50">
+                        <FadeTransition duration="duration-75" show={selectedFiles.length > 0} appear unmount>
+                            <div className="flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50">
+                                <Button onClick={() => setShowMove(true)}>Move</Button>
+                                <Button onClick={onClickCompress}>Archive</Button>
+                                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
+                                    Delete
+                                </Button.Danger>
+                            </div>
+                        </FadeTransition>
                     </div>
                 </Portal>
             </div>

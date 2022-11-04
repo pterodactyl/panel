@@ -1,5 +1,3 @@
-import { useEffect, useMemo, useState } from 'react';
-import * as React from 'react';
 import {
     faClock,
     faCloudDownloadAlt,
@@ -9,18 +7,21 @@ import {
     faMicrochip,
     faWifi,
 } from '@fortawesome/free-solid-svg-icons';
-import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
-import { ServerContext } from '@/state/server';
+import classNames from 'classnames';
+import type { ReactNode } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
 import StatBlock from '@/components/server/console/StatBlock';
-import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import classNames from 'classnames';
+import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import { capitalize } from '@/lib/strings';
+import { ServerContext } from '@/state/server';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
-const getBackgroundColor = (value: number, max: number | null): string | undefined => {
+function getBackgroundColor(value: number, max: number | null): string | undefined {
     const delta = !max ? 0 : value / max;
 
     if (delta > 0.8) {
@@ -31,16 +32,18 @@ const getBackgroundColor = (value: number, max: number | null): string | undefin
     }
 
     return undefined;
-};
+}
 
-const Limit = ({ limit, children }: { limit: string | null; children: React.ReactNode }) => (
-    <>
-        {children}
-        <span className={'ml-1 text-gray-300 text-[70%] select-none'}>/ {limit || <>&infin;</>}</span>
-    </>
-);
+function Limit({ limit, children }: { limit: string | null; children: ReactNode }) {
+    return (
+        <>
+            {children}
+            <span className={'ml-1 text-gray-300 text-[70%] select-none'}>/ {limit || <>&infin;</>}</span>
+        </>
+    );
+}
 
-const ServerDetailsBlock = ({ className }: { className?: string }) => {
+function ServerDetailsBlock({ className }: { className?: string }) {
     const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
 
     const status = ServerContext.useStoreState(state => state.status.value);
@@ -136,6 +139,6 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
             </StatBlock>
         </div>
     );
-};
+}
 
 export default ServerDetailsBlock;

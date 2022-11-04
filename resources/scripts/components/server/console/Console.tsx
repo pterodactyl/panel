@@ -1,26 +1,28 @@
+import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import { debounce } from 'debounce';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
 import { useEffect, useMemo, useRef, useState } from 'react';
-import * as React from 'react';
-import { ITerminalOptions, Terminal } from 'xterm';
+import type { ITerminalInitOnlyOptions, ITerminalOptions, ITheme } from 'xterm';
+import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
 import { WebLinksAddon } from 'xterm-addon-web-links';
-import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { ServerContext } from '@/state/server';
-import { usePermissions } from '@/plugins/usePermissions';
 import { theme as th } from 'twin.macro';
-import useEventListener from '@/plugins/useEventListener';
-import { debounce } from 'debounce';
-import { usePersistedState } from '@/plugins/usePersistedState';
+
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import classNames from 'classnames';
-import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
+import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
+import useEventListener from '@/plugins/useEventListener';
+import { usePermissions } from '@/plugins/usePermissions';
+import { usePersistedState } from '@/plugins/usePersistedState';
+import { ServerContext } from '@/state/server';
 
 import 'xterm/css/xterm.css';
 import styles from './style.module.css';
 
-const theme = {
+const theme: ITheme = {
     background: th`colors.black`.toString(),
     cursor: 'transparent',
     black: th`colors.black`.toString(),
@@ -39,7 +41,7 @@ const theme = {
     brightMagenta: '#C792EA',
     brightCyan: '#89DDFF',
     brightWhite: '#ffffff',
-    selection: '#FAF089',
+    selectionBackground: '#FAF089',
 };
 
 const terminalProps: ITerminalOptions = {
@@ -48,14 +50,18 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: th('fontFamily.mono'),
-    rows: 30,
     theme: theme,
+    allowProposedApi: true,
+};
+
+const terminalInitOnlyProps: ITerminalInitOnlyOptions = {
+    rows: 30,
 };
 
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
-    const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
+    const terminal = useMemo(() => new Terminal({ ...terminalProps, ...terminalInitOnlyProps }), []);
     const fitAddon = new FitAddon();
     const searchAddon = new SearchAddon();
     const searchBar = new SearchBarAddon({ searchAddon });
@@ -95,14 +101,14 @@ export default () => {
     const handlePowerChangeEvent = (state: string) =>
         terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
-    const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleCommandKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
             const newIndex = Math.min(historyIndex + 1, history!.length - 1);
 
             setHistoryIndex(newIndex);
             e.currentTarget.value = history![newIndex] || '';
 
-            // By default up arrow will also bring the cursor to the start of the line,
+            // By default, up arrow will also bring the cursor to the start of the line,
             // so we'll preventDefault to keep it at the end.
             e.preventDefault();
         }

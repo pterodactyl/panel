@@ -3,6 +3,8 @@ with pkgs;
   mkShell rec {
     buildInputs = [
       alejandra
+      nodejs-18_x
+      nodePackages.yarn
       (php81.buildEnv {
         extensions = {
           enabled,

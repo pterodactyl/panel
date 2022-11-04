@@ -19,6 +19,7 @@
         "@fortawesome/fontawesome-svg-core": "6.2.0",
         "@fortawesome/free-solid-svg-icons": "6.2.0",
         "@fortawesome/react-fontawesome": "0.2.0",
+        "@flyyer/use-fit-text": "3.0.1",
         "@headlessui/react": "1.7.3",
         "@heroicons/react": "1.0.6",
         "@tailwindcss/forms": "0.5.3",
@@ -53,12 +54,11 @@
         "styled-components-breakpoint": "3.0.0-preview.20",
         "swr": "1.3.0",
         "tailwindcss": "3.2.1",
-        "use-fit-text": "2.4.0",
-        "xterm": "4.19.0",
-        "xterm-addon-fit": "0.5.0",
-        "xterm-addon-search": "0.9.0",
+        "xterm": "5.0.0",
+        "xterm-addon-fit": "0.6.0",
+        "xterm-addon-search": "0.10.0",
         "xterm-addon-search-bar": "0.2.0",
-        "xterm-addon-web-links": "0.6.0",
+        "xterm-addon-web-links": "0.7.0",
         "yup": "0.32.11"
     },
     "devDependencies": {
@@ -108,7 +108,7 @@
     ],
     "babelMacros": {
         "twin": {
-            "config": "tailwind.config.cjs",
+            "config": "tailwind.config.js",
             "preset": "styled-components"
         },
         "styledComponents": {
