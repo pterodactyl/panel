@@ -23,6 +23,10 @@ function ServerRouter() {
     const params = useParams<'id'>();
     const location = useLocation();
 
+    useEffect(() => {
+        console.log(location);
+    }, [location]);
+
     const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [error, setError] = useState('');
 
@@ -96,7 +100,7 @@ function ServerRouter() {
                     <InstallListener />
                     <TransferListener />
                     <WebsocketHandler />
-                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`))) ? (
+                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}/`))) ? (
                         <ConflictStateRenderer />
                     ) : (
                         <ErrorBoundary>

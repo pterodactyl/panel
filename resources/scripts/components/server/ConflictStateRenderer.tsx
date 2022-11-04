@@ -26,7 +26,7 @@ export default () => {
             image={ServerRestoreSvg}
             message={
                 isTransferring
-                    ? 'Your server is being transfered to a new node, please check back later.'
+                    ? 'Your server is being transferred to a new node, please check back later.'
                     : 'Your server is currently being restored from a backup, please check back in a few minutes.'
             }
         />
