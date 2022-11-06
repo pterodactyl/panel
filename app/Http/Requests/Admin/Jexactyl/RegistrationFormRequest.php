@@ -10,7 +10,7 @@ class RegistrationFormRequest extends AdminFormRequest
     {
         return [
             'registration:enabled' => 'required|in:true,false',
-
+            'registration:verification' => 'required|boolean',
             'discord:enabled' => 'required|in:true,false',
             'discord:id' => 'required|int',
             'discord:secret' => 'required|string',

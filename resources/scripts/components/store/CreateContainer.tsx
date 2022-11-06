@@ -52,7 +52,7 @@ interface CreateValues {
 export default () => {
     const limit = useStoreState((state) => state.storefront.data!.limit);
     const user = useStoreState((state) => state.user.data!);
-    const { addFlash, clearFlashes, clearAndAddHttpError } = useFlash();
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [loading, setLoading] = useState(false);
     const [resources, setResources] = useState<Resources>();
     const [egg, setEgg] = useState<number>(0);
@@ -95,22 +95,16 @@ export default () => {
         clearFlashes('store:create');
 
         createServer(values, egg, nest, node)
-            .then(() => {
+            .then((data) => {
+                if (!data.success) return;
                 setLoading(false);
                 clearFlashes('store:create');
                 // @ts-expect-error this is valid
-                window.location = '/';
+                window.location = `/server/${data.id}`;
             })
             .catch((error) => {
                 setLoading(false);
                 clearAndAddHttpError({ key: 'store:create', error });
-            })
-            .then(() => {
-                addFlash({
-                    type: 'success',
-                    key: 'store:create',
-                    message: 'Your server has been deployed and is now installing.',
-                });
             });
     };
 

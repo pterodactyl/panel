@@ -2,10 +2,11 @@
 
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Requests\Auth\RegisterRequest;
 use Pterodactyl\Services\Users\UserCreationService;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class RegisterController extends AbstractLoginController
@@ -18,6 +19,7 @@ class RegisterController extends AbstractLoginController
      */
     public function __construct(UserCreationService $creationService, SettingsRepositoryInterface $settings)
     {
+        parent::__construct();
         $this->settings = $settings;
         $this->creationService = $creationService;
     }
@@ -25,8 +27,7 @@ class RegisterController extends AbstractLoginController
     /**
      * Handle a register request to the application.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws DataValidationException|DisplayException
      */
     public function register(RegisterRequest $request): JsonResponse
     {
@@ -57,6 +58,11 @@ class RegisterController extends AbstractLoginController
             'store_backups' => $this->settings->get($prefix . 'backup', 0),
             'store_databases' => $this->settings->get($prefix . 'database', 0),
         ];
+
+        $data['verified'] = true;
+        if ($this->settings->get($prefix . 'verification') === 'true') {
+            $data['verified'] = false;
+        }
 
         $this->creationService->handle($data);
 

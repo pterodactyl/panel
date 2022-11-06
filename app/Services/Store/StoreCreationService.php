@@ -2,14 +2,15 @@
 
 namespace Pterodactyl\Services\Store;
 
+use Throwable;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
-use Illuminate\Http\Response;
-use Illuminate\Http\JsonResponse;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Servers\ServerCreationService;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Http\Requests\Api\Client\Store\CreateServerRequest;
@@ -33,8 +34,10 @@ class StoreCreationService
 
     /**
      * Creates a server on Jexactyl using the Storefront.
+     *
+     * @throws DisplayException
      */
-    public function handle(CreateServerRequest $request): JsonResponse
+    public function handle(CreateServerRequest $request): Server
     {
         $this->verification->handle($request);
 
@@ -79,12 +82,12 @@ class StoreCreationService
         }
 
         try {
-            $this->creation->handle($data);
-        } catch (DisplayException $exception) {
+            $server = $this->creation->handle($data);
+        } catch (Throwable $exception) {
             throw new DisplayException('Unable to deploy server - Please contact an administrator.');
         }
 
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
+        return $server;
     }
 
     /**

@@ -8,9 +8,11 @@ use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\RedirectResponse;
+use Pterodactyl\Notifications\VerifyEmail;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
@@ -131,5 +133,27 @@ class AccountController extends ClientApiController
         User::query()->where('id', '=', Auth::user()->id)->update(['discord_id' => $discord->id]);
 
         return redirect('/account');
+    }
+
+    public function verify(Request $request): JsonResponse
+    {
+        $token = $this->genStr();
+        $name = $this->settings->get('settings::app:name', 'Jexactyl');
+        DB::table('verification_tokens')->insert(['user' => $request->user()->id, 'token' => $token]);
+        $request->user()->notify(new VerifyEmail($request->user(), $name, $token));
+
+        return new JsonResponse(['success' => true, 'data' => []]);
+    }
+
+    private function genStr(): string
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $pieces = [];
+        $max = mb_strlen($chars, '8bit') - 1;
+        for ($i = 0; $i < 32; ++$i) {
+            $pieces[] = $chars[mt_rand(0, $max)];
+        }
+
+        return implode('', $pieces);
     }
 }

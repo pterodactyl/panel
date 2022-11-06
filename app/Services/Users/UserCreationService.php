@@ -4,7 +4,9 @@ namespace Pterodactyl\Services\Users;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Contracts\Hashing\Hasher;
+use Pterodactyl\Notifications\VerifyEmail;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
 use Pterodactyl\Notifications\AccountCreated;
@@ -33,6 +35,8 @@ class UserCreationService
      */
     public function handle(array $data): User
     {
+        $name = $this->settings->get('settings::app:name', 'Jexactyl');
+
         if (array_key_exists('password', $data) && !empty($data['password'])) {
             $data['password'] = $this->hasher->make($data['password']);
         }
@@ -53,7 +57,6 @@ class UserCreationService
         }
 
         if ($this->settings->get('jexactyl::approvals:enabled') === 'true' && $this->settings->get('jexactyl::approvals:webhook')) {
-            $name = $this->settings->get('settings::app:name', 'Jexactyl');
             $icon = $this->settings->get('settings::app:logo', 'https://avatars.githubusercontent.com/u/91636558');
             $webhook_data = [
                 'username' => $name,
@@ -89,6 +92,12 @@ class UserCreationService
             }
         }
 
+        if (array_has($data, 'verified') && !$data['verified']) {
+            $token = $this->genStr();
+            DB::table('verification_tokens')->insert(['user' => $user->id, 'token' => $token]);
+            $user->notify(new VerifyEmail($user, $name, $token));
+        }
+
         $this->connection->commit();
 
         try {
@@ -98,5 +107,17 @@ class UserCreationService
         }
 
         return $user;
+    }
+
+    private function genStr(): string
+    {
+        $chars = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+        $pieces = [];
+        $max = mb_strlen($chars, '8bit') - 1;
+        for ($i = 0; $i < 32; ++$i) {
+            $pieces[] = $chars[mt_rand(0, $max)];
+        }
+
+        return implode('', $pieces);
     }
 }
