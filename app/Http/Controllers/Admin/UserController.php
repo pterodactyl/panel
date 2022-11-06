@@ -18,8 +18,8 @@ use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Pterodactyl\Services\Users\UserCreationService;
 use Pterodactyl\Services\Users\UserDeletionService;
-use Pterodactyl\Http\Requests\Admin\UserFormRequest;
 use Pterodactyl\Http\Requests\Admin\NewUserFormRequest;
+use Pterodactyl\Http\Requests\Admin\Users\UserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Users\UserStoreFormRequest;
 
