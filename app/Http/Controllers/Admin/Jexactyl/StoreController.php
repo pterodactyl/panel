@@ -6,6 +6,8 @@ use Illuminate\View\View;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Http\Requests\Admin\Jexactyl\StoreFormRequest;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
@@ -27,11 +29,17 @@ class StoreController extends Controller
     {
         $prefix = 'jexactyl::store:';
 
+        $currencies = [];
+        foreach (config('store.currencies') as $key => $value) {
+            $currencies[] = ['code' => $key, 'name' => $value];
+        }
+
         return view('admin.jexactyl.store', [
             'enabled' => $this->settings->get($prefix . 'enabled', false),
             'paypal_enabled' => $this->settings->get($prefix . 'paypal:enabled', false),
             'stripe_enabled' => $this->settings->get($prefix . 'stripe:enabled', false),
-            'currency' => $this->settings->get($prefix . 'currency', 'USD'),
+            'selected_currency' => $this->settings->get($prefix . 'currency', 'USD'),
+            'currencies' => $currencies,
 
             'earn_enabled' => $this->settings->get('jexactyl::earn:enabled', false),
             'earn_amount' => $this->settings->get('jexactyl::earn:amount', 1),
@@ -56,8 +64,8 @@ class StoreController extends Controller
     /**
      * Handle settings update.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws DataValidationException
+     * @throws RecordNotFoundException
      */
     public function update(StoreFormRequest $request): RedirectResponse
     {
