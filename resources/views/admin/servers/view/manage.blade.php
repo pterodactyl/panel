@@ -110,7 +110,7 @@
                             <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
                         @else
                             <button class="btn btn-success disabled">Transfer Server</button>
-                            <p style="padding-top: 1rem;">Transferring a server requires more than one node to be configured on your panel.</p>
+                            <p style="padding-top: 1rem; font-style: italic;">You currently can't transfer any servers because you don't have at least a second node that's configured in your panel.</p>
                         @endif
                     </div>
                 </div>
