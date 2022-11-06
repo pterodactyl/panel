@@ -35,7 +35,7 @@ export default ({ database, className }: Props) => {
     const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
 
     const jdbcConnectionString = `jdbc:mysql://${database.username}${
-        database.password ? `:${database.password}` : ''
+        database.password ? `:${encodeURIComponent(database.password)}` : ''
     }@${database.connectionString}/${database.name}`;
 
     const schema = object().shape({
