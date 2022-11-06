@@ -10,4 +10,13 @@ return [
     | get and set configurations for the Jexactyl Storefront.
     |
     */
+
+    'currencies' => [
+        'EUR' => 'Euro',
+        'USD' => 'US Dollar',
+        'JPY' => 'Japanese Yen',
+        'GBP' => 'Pound Sterling',
+        'CAD' => 'Canadian Dollar',
+        'AUD' => 'Australian Dollar',
+    ],
 ];

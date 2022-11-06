@@ -61,18 +61,13 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="control-label">Name of currency</label>
-                                <div>
-                                    <select name="store:currency" class="form-control">
-                                        <option @if ($currency == 'EUR') selected @endif value="EUR">EUR (Euro)</option>
-                                        <option @if ($currency == 'USD') selected @endif value="USD">USD (US dollar)</option>
-                                        <option @if ($currency == 'JPY') selected @endif value="JPY">JPY (Japanese yen)</option>
-                                        <option @if ($currency == 'GBP') selected @endif value="EUR">GBP (Pound sterling)</option>                                        <option @if ($currency == 'GBP') selected @endif value="EUR">GBP (Pound sterling)</option>
-                                        <option @if ($currency == 'CAD') selected @endif value="CAD">CAD (Canadian dollar)</option>
-                                        <option @if ($currency == 'AUD') selected @endif value="AUD">AUD (Australian dollar)</option>
-                                    </select>
-                                    <p class="text-muted"><small>The name of the currency used for Jexactyl.</small></p>
-                                </div>
+                                <label class="control-label" for="store:currency">Name of currency</label>
+                                <select name="store:currency" id="store:currency" class="form-control">
+                                    @foreach ($currencies as $currency)
+                                        <option @if ($selected_currency === $currency['code']) selected @endif value="{{ $currency['code'] }}">{{ $currency['name'] }}</option>
+                                    @endforeach
+                                </select>
+                                <p class="text-muted"><small>The name of the currency used for Jexactyl.</small></p>
                             </div>
                         </div>
                     </div>
