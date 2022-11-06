@@ -17,6 +17,7 @@ export interface Server {
     uuid: string;
     name: string;
     node: string;
+    isNodeUnderMaintenance: boolean;
     status: ServerStatus;
     sftpDetails: {
         ip: string;
@@ -53,6 +54,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     uuid: data.uuid,
     name: data.name,
     node: data.node,
+    isNodeUnderMaintenance: data.is_node_under_maintenance,
     status: data.status,
     invocation: data.invocation,
     dockerImage: data.docker_image,

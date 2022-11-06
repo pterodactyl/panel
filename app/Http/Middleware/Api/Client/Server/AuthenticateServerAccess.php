@@ -54,7 +54,7 @@ class AuthenticateServerAccess
                 // Still allow users to get information about their server if it is installing or
                 // being transferred.
                 if (!$request->routeIs('api:client:server.view')) {
-                    if ($server->isSuspended() && !$request->routeIs('api:client:server.resources')) {
+                    if (($server->isSuspended() || $server->node->isUnderMaintenance()) && !$request->routeIs('api:client:server.resources')) {
                         throw $exception;
                     }
                     if (!$user->root_admin || !$request->routeIs($this->except)) {

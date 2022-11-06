@@ -17,11 +17,11 @@ class ActivityEventRequest extends FormRequest
         return [
             'data' => ['required', 'array'],
             'data.*' => ['array'],
-            'data.*.user' => ['present', 'uuid'],
+            'data.*.user' => ['sometimes', 'nullable', 'uuid'],
             'data.*.server' => ['required', 'uuid'],
             'data.*.event' => ['required', 'string'],
             'data.*.metadata' => ['present', 'nullable', 'array'],
-            'data.*.ip' => ['present', 'ip'],
+            'data.*.ip' => ['sometimes', 'nullable', 'ip'],
             'data.*.timestamp' => ['required', 'string'],
         ];
     }
