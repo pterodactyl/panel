@@ -354,6 +354,7 @@ class Server extends Model
     {
         if (
             $this->isSuspended() ||
+            $this->node->isUnderMaintenance() ||
             !$this->isInstalled() ||
             $this->status === self::STATUS_RESTORING_BACKUP ||
             !is_null($this->transfer)
