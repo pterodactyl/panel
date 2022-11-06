@@ -43,4 +43,4 @@ Built on [Pterodactyl](https://pterodactyl.io), this software is designed from t
 Some Javascript and CSS used within the panel are licensed under a `MIT` or `Apache 2.0` license. Please check their
 respective header files for more information.
 
- *While Jexactyl's artwork derives from Pterodactyl's, Jexactyl is not affiliated with [Pterodactyl Software](https://pterodactyl.io).*
+*While Jexactyl's artwork derives from Pterodactyl's, Jexactyl is not affiliated with [Pterodactyl Software](https://pterodactyl.io).*

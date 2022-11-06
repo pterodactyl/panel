@@ -3,7 +3,7 @@
     "description": "A fast, advanced and customisable game management panel and billing system in one. ",
     "license": "MIT",
     "require": {
-        "php": "^8.0.2 || ^8.1",
+        "php": "^8.0.2 || ^8.1 || ^8.2",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
@@ -46,6 +46,7 @@
         "fakerphp/faker": "~1.20",
         "friendsofphp/php-cs-fixer": "~3.11",
         "itsgoingd/clockwork": "~5.1",
+        "laravel/sail": "~1.16",
         "mockery/mockery": "~1.5",
         "nunomaduro/collision": "~6.3",
         "php-mock/php-mock-phpunit": "~2.6",

@@ -36,6 +36,7 @@ class SettingsController extends ClientApiController
     {
         $this->repository->update($server->id, [
             'name' => $request->input('name'),
+            'description' => $request->input('description') ?? '',
         ]);
 
         if ($server->name !== $request->input('name')) {
