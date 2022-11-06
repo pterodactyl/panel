@@ -15,6 +15,7 @@ class InstallationDataRequest extends FormRequest
     {
         return [
             'successful' => 'present|boolean',
+            'reinstall' => 'sometimes|boolean',
         ];
     }
 }
