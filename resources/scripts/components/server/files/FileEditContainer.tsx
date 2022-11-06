@@ -1,26 +1,27 @@
+import type { LanguageDescription } from '@codemirror/language';
+import { dirname } from 'pathe';
 import { useEffect, useState } from 'react';
-import getFileContents from '@/api/server/files/getFileContents';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import tw from 'twin.macro';
+
 import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import getFileContents from '@/api/server/files/getFileContents';
 import saveFileContents from '@/api/server/files/saveFileContents';
-import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-import { useLocation, useParams } from 'react-router';
-import FileNameModal from '@/components/server/files/FileNameModal';
-import Can from '@/components/elements/Can';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import Button from '@/components/elements/Button';
+import Can from '@/components/elements/Can';
+import Select from '@/components/elements/Select';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { ServerError } from '@/components/elements/ScreenBlock';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Select from '@/components/elements/Select';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
+import FileNameModal from '@/components/server/files/FileNameModal';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import { Editor } from '@/components/elements/editor';
 import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
-import { dirname } from 'pathe';
-import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
-import { useNavigate } from 'react-router-dom';
 
 export default () => {
     const [error, setError] = useState('');
@@ -29,6 +30,7 @@ export default () => {
     const [content, setContent] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [mode, setMode] = useState('text/plain');
+    const [language, setLanguage] = useState<LanguageDescription>();
 
     const { hash } = useLocation();
     const navigate = useNavigate();
@@ -118,11 +120,11 @@ export default () => {
 
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading} />
-                <CodemirrorEditor
-                    mode={mode}
+                <Editor
                     filename={hash.replace(/^#/, '')}
-                    onModeChanged={setMode}
                     initialContent={content}
+                    language={language}
+                    onLanguageChanged={setLanguage}
                     fetchContent={value => {
                         fetchFileContent = value;
                     }}
