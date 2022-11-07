@@ -70,6 +70,6 @@ class DatabaseHostTransformer extends BaseTransformer
 
         $model->loadMissing('nodes');
 
-        return $this->collection($model->getRelation('nodes'), $this->makeTransformer(ServerDatabaseTransformer::class), Node::RESOURCE_NAME);
+        return $this->collection($model->getRelation('nodes'), $this->makeTransformer(NodeTransformer::class), Node::RESOURCE_NAME);
     }
 }
