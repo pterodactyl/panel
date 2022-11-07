@@ -2,12 +2,12 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use League\Fractal\Resource\Item;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Database;
+use League\Fractal\Resource\Item;
 use Pterodactyl\Models\DatabaseHost;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class DatabaseHostTransformer extends BaseTransformer

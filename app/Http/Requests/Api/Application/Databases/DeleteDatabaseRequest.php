@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Databases;
 
-use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class DeleteDatabaseRequest extends ApplicationApiRequest
 {
