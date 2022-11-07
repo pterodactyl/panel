@@ -25,6 +25,25 @@ Route::group(['prefix' => '/users'], function () {
 
 /*
 |--------------------------------------------------------------------------
+| Database Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/application/databases
+|
+*/
+Route::group(['prefix' => '/databases'], function () {
+    Route::get('/', [Application\Databases\DatabaseController::class, 'index'])->name('api.application.databases');
+    Route::get('/{databaseHost:id}', [Application\Databases\DatabaseController::class, 'view'])->name('api.application.databases.view');
+
+    Route::post('/', [Application\Databases\DatabaseController::class, 'store']);
+
+    Route::patch('/{databaseHost:id}', [Application\Databases\DatabaseController::class, 'update']);
+
+    Route::delete('/{databaseHost:id}', [Application\Databases\DatabaseController::class, 'delete']);
+});
+
+/*
+|--------------------------------------------------------------------------
 | Node Controller Routes
 |--------------------------------------------------------------------------
 |
