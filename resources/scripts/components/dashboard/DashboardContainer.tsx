@@ -9,12 +9,12 @@ import { Server } from '@/api/server/getServer';
 import Switch from '@/components/elements/Switch';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
+import NotFoundSvg from '@/assets/images/not_found.svg';
 import ServerRow from '@/components/dashboard/ServerRow';
 import Pagination from '@/components/elements/Pagination';
+import ScreenBlock from '@/components/elements/ScreenBlock';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import ScreenBlock from '@/components/elements/ScreenBlock';
-import NotFoundSvg from '@/assets/images/not_found.svg';
 
 export default () => {
     const { search } = useLocation();

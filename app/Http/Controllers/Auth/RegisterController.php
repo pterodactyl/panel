@@ -11,17 +11,12 @@ use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 
 class RegisterController extends AbstractLoginController
 {
-    private UserCreationService $creationService;
-    private SettingsRepositoryInterface $settings;
-
     /**
      * RegisterController constructor.
      */
-    public function __construct(UserCreationService $creationService, SettingsRepositoryInterface $settings)
+    public function __construct(private UserCreationService $creationService, private SettingsRepositoryInterface $settings)
     {
         parent::__construct();
-        $this->settings = $settings;
-        $this->creationService = $creationService;
     }
 
     /**
@@ -31,19 +26,22 @@ class RegisterController extends AbstractLoginController
      */
     public function register(RegisterRequest $request): JsonResponse
     {
-        if ($this->settings->get('jexactyl::registration:enabled') == 'false') {
-            throw new DisplayException('Unable to register: Registration is currently disabled.');
+        $approved = false;
+        $verified = false;
+
+        if ($this->settings->get($prefix . 'enabled') != 'true') {
+            throw new DisplayException('Unable to register user.');
+        };
+
+        if ($this->settings->get($prefix . 'verification') != 'true') {
+            $verified = true;
         }
 
-        $prefix = 'jexactyl::registration:';
-        $approved = true;
-
-        if ($this->settings->get('jexactyl::approvals:enabled') == 'true') {
-            $approved = false;
+        if ($this->settings->get('jexactyl::approvals:enabled') != 'true') {
+            $approved = true;
         }
 
-        $data = [
-            'approved' => $approved,
+        $this->creationService->handle([
             'email' => $request->input('email'),
             'username' => $request->input('user'),
             'name_first' => 'Jexactyl',
@@ -57,14 +55,9 @@ class RegisterController extends AbstractLoginController
             'store_ports' => $this->settings->get($prefix . 'port', 0),
             'store_backups' => $this->settings->get($prefix . 'backup', 0),
             'store_databases' => $this->settings->get($prefix . 'database', 0),
-        ];
-
-        $data['verified'] = true;
-        if ($this->settings->get($prefix . 'verification') === 'true') {
-            $data['verified'] = false;
-        }
-
-        $this->creationService->handle($data);
+            'approved' => $approved,
+            'verified' => $verified,
+        ]);
 
         return new JsonResponse([
             'data' => [

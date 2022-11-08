@@ -52,7 +52,7 @@ export default () => {
             ) : (
                 <SubNavigation className={'j-down lg:visible invisible'}>
                     <div>
-                        <InformationContainer/>
+                        <InformationContainer />
                     </div>
                 </SubNavigation>
             )}

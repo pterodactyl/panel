@@ -41,15 +41,15 @@ class Composer
 
         if ($databases <= 0) {
             return false;
-        } else {
-            return true;
         }
+
+        return true;
     }
 
     /**
      * Get the setting from the database and cast it to the correct type.
      */
-    protected function setting(string $data, string $type)
+    protected function setting(string $data, int $type)
     {
         $setting = $this->settings->get('jexactyl::' . $data, false);
 
