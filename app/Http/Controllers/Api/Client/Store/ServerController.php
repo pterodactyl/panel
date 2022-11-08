@@ -41,7 +41,9 @@ class ServerController extends ClientApiController
      */
     public function nests(GetStoreNestsRequest $request): array
     {
-        return $this->fractal->collection(Nest::where('private', false)->get())
+        $nests = Nest::where('private', false)->get();
+
+        return $this->fractal->collection($nests)
             ->transformWith($this->getTransformer(NestTransformer::class))
             ->toArray();
     }
@@ -52,8 +54,9 @@ class ServerController extends ClientApiController
     public function eggs(GetStoreEggsRequest $request): array
     {
         $id = $request->input('id') ?? Nest::first()->id;
+        $eggs = Nest::query()->where('id', $id)->first()->eggs;
 
-        return $this->fractal->collection(Nest::query()->where('id', $id)->first()->eggs)
+        return $this->fractal->collection($eggs)
             ->transformWith($this->getTransformer(EggTransformer::class))
             ->toArray();
     }

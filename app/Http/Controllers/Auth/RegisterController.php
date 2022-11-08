@@ -31,7 +31,7 @@ class RegisterController extends AbstractLoginController
 
         if ($this->settings->get($prefix . 'enabled') != 'true') {
             throw new DisplayException('Unable to register user.');
-        };
+        }
 
         if ($this->settings->get($prefix . 'verification') != 'true') {
             $verified = true;

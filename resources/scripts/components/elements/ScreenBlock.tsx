@@ -45,7 +45,7 @@ const ScreenBlock = ({ title, image, message, onBack, onRetry, noContainer }: Sc
         {noContainer ? (
             <div css={tw`flex justify-center`}>
                 <div
-                    css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-900 rounded-lg shadow-lg text-center relative`}
+                    css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-800 rounded-lg shadow-lg text-center relative`}
                 >
                     {(typeof onBack === 'function' || typeof onRetry === 'function') && (
                         <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
