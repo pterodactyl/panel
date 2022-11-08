@@ -58,7 +58,7 @@ class ApprovalsController extends Controller
      */
     public function approveAll(Request $request): RedirectResponse
     {
-        User::where('approved', false)->update(['approved', true]);
+        User::query()->where('approved', false)->update(['approved' => true]);
 
         $this->alert->success('All users have been approved successfully.')->flash();
 
