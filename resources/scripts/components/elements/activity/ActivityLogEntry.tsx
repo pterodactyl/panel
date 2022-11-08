@@ -19,7 +19,7 @@ interface Props {
 
 function wrapProperties(value: unknown): any {
     if (value === null || typeof value === 'string' || typeof value === 'number') {
-        return `<strong>${String(value)}</strong>`;
+        return `${String(value)}`;
     }
 
     if (isObject(value)) {
