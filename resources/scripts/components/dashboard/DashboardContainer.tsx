@@ -1,12 +1,9 @@
 import useSWR from 'swr';
 import tw from 'twin.macro';
-import * as Icon from 'react-feather';
 import getServers from '@/api/getServers';
 import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
-import styled from 'styled-components/macro';
 import { PaginatedResult } from '@/api/http';
-import { megabytesToHuman } from '@/helpers';
 import { useLocation } from 'react-router-dom';
 import { Server } from '@/api/server/getServer';
 import Switch from '@/components/elements/Switch';
@@ -14,21 +11,14 @@ import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import NotFoundSvg from '@/assets/images/not_found.svg';
 import ServerRow from '@/components/dashboard/ServerRow';
-import ContentBox from '@/components/elements/ContentBox';
 import Pagination from '@/components/elements/Pagination';
 import ScreenBlock from '@/components/elements/ScreenBlock';
 import { usePersistedState } from '@/plugins/usePersistedState';
-import StoreContainer from '@/components/elements/StoreContainer';
-import { getResources, Resources } from '@/api/store/getResources';
+import ResourceBar from '@/components/elements/store/ResourceBar';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-
-const Wrapper = styled.div`
-    ${tw`text-2xl flex flex-row justify-center items-center`};
-`;
 
 export default () => {
     const { search } = useLocation();
-    const [resources, setResources] = useState<Resources>();
     const defaultPage = Number(new URLSearchParams(search).get('page') || '1');
 
     const [page, setPage] = useState(!isNaN(defaultPage) && defaultPage > 0 ? defaultPage : 1);
@@ -41,10 +31,6 @@ export default () => {
         ['/api/client/servers', showOnlyAdmin && rootAdmin, page],
         () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined })
     );
-
-    useEffect(() => {
-        getResources().then((resources) => setResources(resources));
-    }, []);
 
     useEffect(() => {
         if (!servers) return;
@@ -65,47 +51,9 @@ export default () => {
         if (!error) clearFlashes('dashboard');
     }, [error]);
 
-    if (!resources) return <Spinner size={'large'} centered />;
-
     return (
         <PageContentBlock title={'Dashboard'} css={tw`mt-4 sm:mt-10`} showFlashKey={'dashboard' || 'store:create'}>
-            <StoreContainer className={'j-right lg:grid lg:grid-cols-7 gap-6 my-10'}>
-                <ContentBox title={'CPU'}>
-                    <Wrapper>
-                        <Icon.Cpu className={'mr-2'} /> {resources.cpu}%
-                    </Wrapper>
-                </ContentBox>
-                <ContentBox title={'Memory'}>
-                    <Wrapper>
-                        <Icon.PieChart className={'mr-2'} /> {megabytesToHuman(resources.memory)}
-                    </Wrapper>
-                </ContentBox>
-                <ContentBox title={'Disk'}>
-                    <Wrapper>
-                        <Icon.HardDrive className={'mr-2'} /> {megabytesToHuman(resources.disk)}
-                    </Wrapper>
-                </ContentBox>
-                <ContentBox title={'Slots'}>
-                    <Wrapper>
-                        <Icon.Server className={'mr-2'} /> {resources.slots}
-                    </Wrapper>
-                </ContentBox>
-                <ContentBox title={'Ports'}>
-                    <Wrapper>
-                        <Icon.Share2 className={'mr-2'} /> {resources.ports}
-                    </Wrapper>
-                </ContentBox>
-                <ContentBox title={'Backups'}>
-                    <Wrapper>
-                        <Icon.Archive className={'mr-2'} /> {resources.backups}
-                    </Wrapper>
-                </ContentBox>
-                <ContentBox title={'Databases'}>
-                    <Wrapper>
-                        <Icon.Database className={'mr-2'} /> {resources.databases}
-                    </Wrapper>
-                </ContentBox>
-            </StoreContainer>
+            <ResourceBar className={'my-10'} titles />
             {rootAdmin && (
                 <div css={tw`mb-10 flex justify-between items-center`}>
                     <div>

@@ -6,6 +6,11 @@ module.exports = {
     ],
     theme: {
         extend: {
+            backgroundImage: {
+                'storeone': "url('https://wallpapershome.com/images/pages/pic_v/13964.jpg')",
+                'storetwo': "url('https://wallpapershome.com/images/pages/pic_v/13972.jpg')",
+                'storethree': "url('https://wallpapershome.com/images/wallpapers/minecraft-4k-edition-1440x2560-e3-2017-xbox-one-x-screenshot-13960.jpg')",
+            },
             colors: {
                 black: '#000',
                 // "primary" and "neutral" are deprecated.
