@@ -5,11 +5,13 @@ namespace Pterodactyl\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Query\JoinClause;
 use Znck\Eloquent\Traits\BelongsToThrough;
+use Pterodactyl\Http\Resources\StatsResource;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
+use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
 
 /**
@@ -378,5 +380,18 @@ class Server extends Model
         ) {
             throw new ServerStateConflictException($this);
         }
+    }
+
+    public function getStats(): array
+    {
+        $resourceService = app()->make(DaemonServerRepository::class);
+
+        $stats = cache()->remember(
+            "resources:$this->uuid",
+            now()->addSeconds(20),
+            fn () => $resourceService->setServer($this)->getDetails()
+        );
+
+        return (new StatsResource($stats))->resolve();
     }
 }

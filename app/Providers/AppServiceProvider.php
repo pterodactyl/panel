@@ -49,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
             'task' => Models\Task::class,
             'user' => Models\User::class,
         ]);
+
+        \Pterodactyl\Http\Resources\StatsResource::withoutWrapping();
     }
 
     /**
