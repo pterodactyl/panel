@@ -12,9 +12,9 @@ import createServer from '@/api/store/createServer';
 import Spinner from '@/components/elements/Spinner';
 import { getNodes, Node } from '@/api/store/getNodes';
 import { getNests, Nest } from '@/api/store/getNests';
-import StoreError from '@/components/elements/StoreError';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import InputSpinner from '@/components/elements/InputSpinner';
+import StoreError from '@/components/elements/store/StoreError';
 import React, { ChangeEvent, useEffect, useState } from 'react';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import StoreContainer from '@/components/elements/StoreContainer';
@@ -108,14 +108,22 @@ export default () => {
             });
     };
 
-    if (!resources || !nests || !eggs) return <Spinner size={'large'} centered />;
+    if (!resources) return <Spinner size={'large'} centered />;
 
     if (!nodes) {
         return (
             <StoreError
                 message={'No nodes are available for deployment. Try again later.'}
                 admin={'Ensure you have at least one node that can be deployed to.'}
-                link={'https://docs.jexactyl.com'}
+            />
+        );
+    }
+
+    if (!nests || !eggs) {
+        return (
+            <StoreError
+                message={'No server types are available for deployment. Try again later.'}
+                admin={'Ensure you have at least one egg which is in a public nest.'}
             />
         );
     }

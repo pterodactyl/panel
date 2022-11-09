@@ -1,8 +1,8 @@
 import React from 'react';
 import { useStoreState } from 'easy-peasy';
-import Button from '@/components/elements/button/Button';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import ResourceBar from '@/components/elements/store/ResourceBar';
+import StoreBanner from '@/components/elements/store/StoreBanner';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 
 export default () => {
@@ -21,24 +21,24 @@ export default () => {
                 <ResourceBar className={'w-full lg:w-3/4'} />
             </div>
             <div className={'lg:grid lg:grid-cols-3 gap-8 my-10'}>
-                <div className={'w-full bg-auto bg-center rounded-tr-xl rounded-bl-xl bg-storeone'}>
-                    <div className={'bg-gray-900 bg-opacity-75 text-center rounded-lg p-2 m-2 lg:mt-[40rem]'}>
-                        <p className={'text-3xl text-gray-200'}>Want to create a server?</p>
-                        <Button className={'my-2 w-full lg:w-1/2'}>Create</Button>
-                    </div>
-                </div>
-                <div className={'w-full bg-auto bg-center rounded-tr-xl rounded-bl-xl bg-storetwo'}>
-                    <div className={'bg-gray-900 bg-opacity-75 text-center rounded-lg p-2 m-2 lg:mt-[40rem]'}>
-                        <p className={'text-3xl text-gray-200'}>Need more resources?</p>
-                        <Button className={'my-2 w-full lg:w-1/2'}>Purchase</Button>
-                    </div>
-                </div>
-                <div className={'w-full bg-auto bg-center rounded-tr-xl rounded-bl-xl bg-storethree'}>
-                    <div className={'bg-gray-900 bg-opacity-75 text-center rounded-lg p-2 m-2 lg:mt-[40rem]'}>
-                        <p className={'text-3xl text-gray-200'}>Sample text here</p>
-                        <Button className={'my-2 w-full lg:w-1/2'}>Modify</Button>
-                    </div>
-                </div>
+                <StoreBanner
+                    title={'Want to create a server?'}
+                    className={'bg-storeone'}
+                    action={'Create'}
+                    link={'create'}
+                />
+                <StoreBanner
+                    title={'Need more resources?'}
+                    className={'bg-storetwo'}
+                    action={'Purchase'}
+                    link={'purchase'}
+                />
+                <StoreBanner
+                    title={'Looking for support?'}
+                    className={'bg-storethree'}
+                    action={'Contact Support'}
+                    link={''}
+                />
             </div>
         </PageContentBlock>
     );

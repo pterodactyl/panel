@@ -25,6 +25,7 @@ interface BoxProps {
     icon: React.ReactElement;
     amount: number;
     toHuman?: boolean;
+    suffix?: string;
 }
 
 export default ({ className, titles }: RowProps) => {
@@ -36,26 +37,26 @@ export default ({ className, titles }: RowProps) => {
 
     if (!resources) return <Spinner size={'large'} centered />;
 
-    const ResourceBox = ({ title, description, icon, amount, toHuman }: BoxProps) => (
-        <ContentBox title={titles ? title : undefined}>
-            <Tooltip content={description}>
+    const ResourceBox = (props: BoxProps) => (
+        <ContentBox title={titles ? props.title : undefined}>
+            <Tooltip content={props.description}>
                 <Wrapper>
-                    {icon}
-                    <span className={'mx-1'} />
-                    {toHuman ? megabytesToHuman(amount) : amount}
+                    {props.icon}
+                    <span className={'ml-2'}>{props.toHuman ? megabytesToHuman(props.amount) : props.amount}</span>
+                    {props.suffix}
                 </Wrapper>
             </Tooltip>
         </ContentBox>
     );
 
     return (
-        <StoreContainer className={classNames(className, 'j-right lg:grid lg:grid-cols-7 gap-x-6 gap-2')}>
+        <StoreContainer className={classNames(className, 'j-right lg:grid lg:grid-cols-7 gap-x-6 gap-y-2')}>
             <ResourceBox
                 title={'CPU'}
                 description={'The amount of CPU (in %) you have available.'}
                 icon={<Icon.Cpu />}
-                // @ts-expect-error We hate strongly typed stuff.
-                amount={resources.cpu + '%'}
+                amount={resources.cpu}
+                suffix={'%'}
             />
             <ResourceBox
                 title={'Memory'}
