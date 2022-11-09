@@ -7,8 +7,8 @@ use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Pterodactyl\Http\Controllers\Admin\UserController;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Pterodactyl\Http\Controllers\Admin\Users\UserController;
 
 class UserControllerTest extends IntegrationTestCase
 {
