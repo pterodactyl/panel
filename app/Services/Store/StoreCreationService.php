@@ -22,7 +22,8 @@ class StoreCreationService
         private ServerCreationService $creation,
         private SettingsRepositoryInterface $settings,
         private StoreVerificationService $verification
-    ) {}
+    ) {
+    }
 
     /**
      * Creates a server on Jexactyl using the Storefront.

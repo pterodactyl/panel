@@ -12,13 +12,14 @@ class ResourcePurchaseService
     /**
      * ResourcePurchaseService constructor.
      */
-    public function __construct(private SettingsRepositoryInterface $settings) {}
-  
-    
+    public function __construct(private SettingsRepositoryInterface $settings)
+    {
+    }
+
     /**
      * This service processes the purchase of resources
      * via the Jexactyl Storefront.
-     * 
+     *
      * @throws DisplayException
      */
     public function handle(PurchaseResourceRequest $request)
@@ -63,9 +64,9 @@ class ResourcePurchaseService
             $resource === 'backups' ||
             $resource === 'databases'
         ) {
-            $resource = rtrim($resource, "s");
-        };
-    
+            $resource = rtrim($resource, 's');
+        }
+
         return $this->settings->get('jexactyl::store:cost:' . $resource);
     }
 }

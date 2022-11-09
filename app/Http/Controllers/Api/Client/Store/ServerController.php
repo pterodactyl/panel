@@ -86,7 +86,7 @@ class ServerController extends ClientApiController
             $server = $this->creationService->handle($request);
         } catch (DisplayException $exception) {
             throw new DisplayException('Unable to create this server. Please contact an administrator.');
-        };
+        }
 
         $user->update([
             'store_cpu' => $user->store_cpu - $request->input('cpu'),

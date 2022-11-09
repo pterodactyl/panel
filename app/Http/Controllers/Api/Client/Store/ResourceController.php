@@ -4,7 +4,6 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Store;
 
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Store\ResourcePurchaseService;
 use Pterodactyl\Transformers\Api\Client\Store\UserTransformer;
