@@ -5,6 +5,7 @@
 ![Downloads - Total](https://img.shields.io/github/downloads/jexactyl/jexactyl/total)
 ![Downloads - Latest](https://img.shields.io/github/downloads/jexactyl/jexactyl/latest/total)
 ![Version](https://img.shields.io/github/v/release/jexactyl/jexactyl)
+![Contributors](https://img.shields.io/github/contributors-anon/jexactyl/jexactyl)
 
 # Jexactyl
 Jexactyl is a fast, advanced and customisable game management panel and billing system in one.
