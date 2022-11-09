@@ -96,24 +96,33 @@ Route::group(['prefix' => 'databases'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| User Controller Routes
+| Node Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /admin/users
+| Endpoint: /admin/nodes
 |
 */
-Route::group(['prefix' => 'users'], function () {
-    Route::get('/', [Admin\UserController::class, 'index'])->name('admin.users');
-    Route::get('/accounts.json', [Admin\UserController::class, 'json'])->name('admin.users.json');
-    Route::get('/new', [Admin\UserController::class, 'create'])->name('admin.users.new');
-    Route::get('/view/{user:id}', [Admin\UserController::class, 'view'])->name('admin.users.view');
-    Route::get('/view/{user:id}/store', [Admin\UserController::class, 'viewStore'])->name('admin.users.store');
+Route::group(['prefix' => 'nodes'], function () {
+    Route::get('/', [Admin\Nodes\NodeController::class, 'index'])->name('admin.nodes');
+    Route::get('/new', [Admin\NodesController::class, 'create'])->name('admin.nodes.new');
+    Route::get('/view/{node:id}', [Admin\Nodes\NodeViewController::class, 'index'])->name('admin.nodes.view');
+    Route::get('/view/{node:id}/settings', [Admin\Nodes\NodeViewController::class, 'settings'])->name('admin.nodes.view.settings');
+    Route::get('/view/{node:id}/configuration', [Admin\Nodes\NodeViewController::class, 'configuration'])->name('admin.nodes.view.configuration');
+    Route::get('/view/{node:id}/allocation', [Admin\Nodes\NodeViewController::class, 'allocations'])->name('admin.nodes.view.allocation');
+    Route::get('/view/{node:id}/servers', [Admin\Nodes\NodeViewController::class, 'servers'])->name('admin.nodes.view.servers');
+    Route::get('/view/{node:id}/system-information', Admin\Nodes\SystemInformationController::class);
 
-    Route::post('/new', [Admin\UserController::class, 'store']);
+    Route::post('/new', [Admin\NodesController::class, 'store']);
+    Route::post('/view/{node:id}/allocation', [Admin\NodesController::class, 'createAllocation']);
+    Route::post('/view/{node:id}/allocation/remove', [Admin\NodesController::class, 'allocationRemoveBlock'])->name('admin.nodes.view.allocation.removeBlock');
+    Route::post('/view/{node:id}/allocation/alias', [Admin\NodesController::class, 'allocationSetAlias'])->name('admin.nodes.view.allocation.setAlias');
+    Route::post('/view/{node:id}/settings/token', Admin\NodeAutoDeployController::class)->name('admin.nodes.view.configuration.token');
 
-    Route::patch('/view/{user:id}', [Admin\UserController::class, 'update']);
-    Route::patch('/view/{user:id}/store', [Admin\UserController::class, 'updateStore']);
-    Route::delete('/view/{user:id}', [Admin\UserController::class, 'delete']);
+    Route::patch('/view/{node:id}/settings', [Admin\NodesController::class, 'updateSettings']);
+
+    Route::delete('/view/{node:id}/delete', [Admin\NodesController::class, 'delete'])->name('admin.nodes.view.delete');
+    Route::delete('/view/{node:id}/allocation/remove/{allocation:id}', [Admin\NodesController::class, 'allocationRemoveSingle'])->name('admin.nodes.view.allocation.removeSingle');
+    Route::delete('/view/{node:id}/allocations', [Admin\NodesController::class, 'allocationRemoveMultiple'])->name('admin.nodes.view.allocation.removeMultiple');
 });
 
 /*
@@ -161,33 +170,25 @@ Route::group(['prefix' => 'servers'], function () {
 
 /*
 |--------------------------------------------------------------------------
-| Node Controller Routes
+| User Controller Routes
 |--------------------------------------------------------------------------
 |
-| Endpoint: /admin/nodes
+| Endpoint: /admin/users
 |
 */
-Route::group(['prefix' => 'nodes'], function () {
-    Route::get('/', [Admin\Nodes\NodeController::class, 'index'])->name('admin.nodes');
-    Route::get('/new', [Admin\NodesController::class, 'create'])->name('admin.nodes.new');
-    Route::get('/view/{node:id}', [Admin\Nodes\NodeViewController::class, 'index'])->name('admin.nodes.view');
-    Route::get('/view/{node:id}/settings', [Admin\Nodes\NodeViewController::class, 'settings'])->name('admin.nodes.view.settings');
-    Route::get('/view/{node:id}/configuration', [Admin\Nodes\NodeViewController::class, 'configuration'])->name('admin.nodes.view.configuration');
-    Route::get('/view/{node:id}/allocation', [Admin\Nodes\NodeViewController::class, 'allocations'])->name('admin.nodes.view.allocation');
-    Route::get('/view/{node:id}/servers', [Admin\Nodes\NodeViewController::class, 'servers'])->name('admin.nodes.view.servers');
-    Route::get('/view/{node:id}/system-information', Admin\Nodes\SystemInformationController::class);
+Route::group(['prefix' => 'users'], function () {
+    Route::get('/', [Admin\Users\UserController::class, 'index'])->name('admin.users');
+    Route::get('/accounts.json', [Admin\Users\UserController::class, 'json'])->name('admin.users.json');
+    Route::get('/new', [Admin\Users\UserController::class, 'create'])->name('admin.users.new');
+    Route::get('/view/{user:id}', [Admin\Users\UserController::class, 'view'])->name('admin.users.view');
+    Route::get('/view/{user:id}/resources', [Admin\Users\ResourceController::class, 'view'])->name('admin.users.resources');
 
-    Route::post('/new', [Admin\NodesController::class, 'store']);
-    Route::post('/view/{node:id}/allocation', [Admin\NodesController::class, 'createAllocation']);
-    Route::post('/view/{node:id}/allocation/remove', [Admin\NodesController::class, 'allocationRemoveBlock'])->name('admin.nodes.view.allocation.removeBlock');
-    Route::post('/view/{node:id}/allocation/alias', [Admin\NodesController::class, 'allocationSetAlias'])->name('admin.nodes.view.allocation.setAlias');
-    Route::post('/view/{node:id}/settings/token', Admin\NodeAutoDeployController::class)->name('admin.nodes.view.configuration.token');
+    Route::post('/new', [Admin\Users\UserController::class, 'store']);
 
-    Route::patch('/view/{node:id}/settings', [Admin\NodesController::class, 'updateSettings']);
+    Route::patch('/view/{user:id}', [Admin\Users\UserController::class, 'update']);
+    Route::patch('/view/{user:id}/resources', [Admin\Users\ResourceController::class, 'update']);
 
-    Route::delete('/view/{node:id}/delete', [Admin\NodesController::class, 'delete'])->name('admin.nodes.view.delete');
-    Route::delete('/view/{node:id}/allocation/remove/{allocation:id}', [Admin\NodesController::class, 'allocationRemoveSingle'])->name('admin.nodes.view.allocation.removeSingle');
-    Route::delete('/view/{node:id}/allocations', [Admin\NodesController::class, 'allocationRemoveMultiple'])->name('admin.nodes.view.allocation.removeMultiple');
+    Route::delete('/view/{user:id}', [Admin\Users\UserController::class, 'delete']);
 });
 
 /*

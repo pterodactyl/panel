@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Pterodactyl\Http\Controllers\Admin\Users;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -21,7 +21,6 @@ use Pterodactyl\Services\Users\UserDeletionService;
 use Pterodactyl\Http\Requests\Admin\NewUserFormRequest;
 use Pterodactyl\Http\Requests\Admin\Users\UserFormRequest;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Http\Requests\Admin\Users\UserStoreFormRequest;
 
 class UserController extends Controller
 {
@@ -83,18 +82,6 @@ class UserController extends Controller
     }
 
     /**
-     * Display user resource page.
-     *
-     * @return \Illuminate\View\View
-     */
-    public function viewStore(User $user)
-    {
-        return view('admin.users.store', [
-            'user' => $user,
-        ]);
-    }
-
-    /**
      * Delete a user from the system.
      *
      * @throws \Exception
@@ -140,33 +127,6 @@ class UserController extends Controller
         $this->alert->success(trans('admin/user.notices.account_updated'))->flash();
 
         return redirect()->route('admin.users.view', $user->id);
-    }
-
-    /**
-     * Update a user's storefront balances.
-     *
-     * @return \Illuminate\Http\RedirectResponse
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     */
-    public function updateStore(UserStoreFormRequest $request, User $user)
-    {
-        // TODO: use userUpdateService in future.
-        $user->update([
-            'store_balance' => $request->input('store_balance'),
-            'store_cpu' => $request->input('store_cpu'),
-            'store_memory' => $request->input('store_memory'),
-            'store_disk' => $request->input('store_disk'),
-            'store_slots' => $request->input('store_slots'),
-            'store_ports' => $request->input('store_ports'),
-            'store_backups' => $request->input('store_backups'),
-            'store_databases' => $request->input('store_databases'),
-        ]);
-
-        $this->alert->success(trans('admin/user.notices.account_updated'))->flash();
-
-        return redirect()->route('admin.users.store', $user->id);
     }
 
     /**

@@ -4,7 +4,7 @@ namespace Pterodactyl\Http\Requests\Admin\Users;
 
 use Pterodactyl\Http\Requests\Admin\AdminFormRequest;
 
-class UserStoreFormRequest extends AdminFormRequest
+class ResourceFormRequest extends AdminFormRequest
 {
     /**
      * Rules to apply to requests for updating a users

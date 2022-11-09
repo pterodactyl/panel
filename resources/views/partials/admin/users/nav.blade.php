@@ -4,7 +4,7 @@
             <div class="nav-tabs-custom nav-tabs-floating">
                 <ul class="nav nav-tabs">
                     <li @if($activeTab === 'overview')class="active"@endif><a href="{{ route('admin.users.view', ['user' => $user]) }}">Overview</a></li>
-                    <li @if($activeTab === 'storefront')class="active"@endif><a href="{{ route('admin.users.store', ['user' => $user]) }}">Resources</a></li>
+                    <li @if($activeTab === 'resources')class="active"@endif><a href="{{ route('admin.users.resources', ['user' => $user]) }}">Resources</a></li>
                 </ul>
             </div>
         </div>
