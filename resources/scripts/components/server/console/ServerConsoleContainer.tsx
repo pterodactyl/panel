@@ -20,6 +20,7 @@ const ServerConsoleContainer = () => {
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
     const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
     const isNodeUnderMaintenance = ServerContext.useStoreState((state) => state.server.data!.isNodeUnderMaintenance);
+    const isSuspended = ServerContext.useStoreState((state) => state.server.data!.status === 'suspended');
 
     return (
         <ServerContentBlock title={'Console'}>
@@ -30,6 +31,11 @@ const ServerConsoleContainer = () => {
                         : isInstalling
                         ? 'This server is currently running its installation process and most actions are unavailable.'
                         : 'This server is currently being transferred to another node and all actions are unavailable.'}
+                </Alert>
+            )}
+            {isSuspended && (
+                <Alert type={'danger'} className={'mb-4'}>
+                    This server is currently suspended.
                 </Alert>
             )}
             <div className={'grid grid-cols-4 gap-4 mb-4'}>
