@@ -30,14 +30,14 @@ export default () => {
                 <StoreBanner
                     title={'Need more resources?'}
                     className={'bg-storetwo'}
-                    action={'Purchase'}
-                    link={'purchase'}
+                    action={'Buy Resources'}
+                    link={'resources'}
                 />
                 <StoreBanner
-                    title={'Looking for support?'}
+                    title={'Run out of credits?'}
                     className={'bg-storethree'}
-                    action={'Contact Support'}
-                    link={''}
+                    action={'Buy Credits'}
+                    link={'credits'}
                 />
             </div>
         </PageContentBlock>

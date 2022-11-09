@@ -1,5 +1,4 @@
 import React from 'react';
-import { useStoreState } from 'easy-peasy';
 import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
 import SidePanel from '@/components/elements/SidePanel';
@@ -7,17 +6,15 @@ import { NotFound } from '@/components/elements/ScreenBlock';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import { Route, Switch, useRouteMatch } from 'react-router-dom';
 import CreateContainer from '@/components/store/CreateContainer';
-import BalanceContainer from '@/components/store/BalanceContainer';
-import ReferralContainer from '@/components/store/ReferralContainer';
+import PurchaseContainer from '@/components/store/PurchaseContainer';
 import OverviewContainer from '@/components/store/OverviewContainer';
 import MobileNavigation from '@/components/elements/MobileNavigation';
 import ResourcesContainer from '@/components/store/ResourcesContainer';
 
-const StoreRouter = () => {
+export default () => {
     const location = useLocation();
     const { width } = useWindowDimensions();
     const match = useRouteMatch<{ id: string }>();
-    const referrals = useStoreState((state) => state.storefront.data!.referrals);
 
     return (
         <>
@@ -27,8 +24,8 @@ const StoreRouter = () => {
                     <Route path={`${match.path}`} exact>
                         <OverviewContainer />
                     </Route>
-                    <Route path={`${match.path}/balance`} exact>
-                        <BalanceContainer />
+                    <Route path={`${match.path}/credits`} exact>
+                        <PurchaseContainer />
                     </Route>
                     <Route path={`${match.path}/resources`} exact>
                         <ResourcesContainer />
@@ -36,11 +33,6 @@ const StoreRouter = () => {
                     <Route path={`${match.path}/create`} exact>
                         <CreateContainer />
                     </Route>
-                    {referrals.enabled && (
-                        <Route path={`${match.path}/referrals`} exact>
-                            <ReferralContainer />
-                        </Route>
-                    )}
                     <Route path={'*'}>
                         <NotFound />
                     </Route>
@@ -49,5 +41,3 @@ const StoreRouter = () => {
         </>
     );
 };
-
-export default StoreRouter;

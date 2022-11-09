@@ -63,6 +63,8 @@ export default () => {
     const [nodes, setNodes] = useState<Node[]>();
 
     useEffect(() => {
+        clearFlashes();
+
         getResources().then((resources) => setResources(resources));
 
         getNodes().then((nodes) => {
@@ -96,7 +98,8 @@ export default () => {
 
         createServer(values, egg, nest, node)
             .then((data) => {
-                if (!data.success) return;
+                if (!data.id) return;
+
                 setLoading(false);
                 clearFlashes('store:create');
                 // @ts-expect-error this is valid
@@ -168,7 +171,7 @@ export default () => {
                 })}
             >
                 <Form>
-                    <div className={'mb-10'}>
+                    <div className={'my-10'}>
                         <Link to={'/store'}>
                             <Button.Text className={'w-full lg:w-1/6 m-2'}>
                                 <Icon.ArrowLeft className={'mr-1'} />
@@ -178,7 +181,7 @@ export default () => {
                         <Link to={'/store/resources'}>
                             <Button className={'w-full lg:w-1/6 m-2'}>
                                 <Icon.ShoppingCart className={'mr-2'} />
-                                Purchase Resources
+                                Need more resources?
                             </Button>
                         </Link>
                     </div>

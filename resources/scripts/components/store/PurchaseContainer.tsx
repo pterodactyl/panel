@@ -1,9 +1,12 @@
 import tw from 'twin.macro';
 import { breakpoint } from '@/theme';
+import { Link } from 'react-router-dom';
+import { ArrowLeft } from 'react-feather';
 import styled from 'styled-components/macro';
 import { useStoreState } from '@/state/hooks';
 import React, { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
+import { Button } from '@/components/elements/button';
 import ContentBox from '@/components/elements/ContentBox';
 import { getResources, Resources } from '@/api/store/getResources';
 import PageContentBlock from '@/components/elements/PageContentBlock';
@@ -40,6 +43,14 @@ export default () => {
 
     return (
         <PageContentBlock title={'Account Balance'}>
+            <div className={'my-10'}>
+                <Link to={'/store'}>
+                    <Button.Text className={'w-full lg:w-1/6 m-2'}>
+                        <ArrowLeft className={'mr-1'} />
+                        Return to Storefront
+                    </Button.Text>
+                </Link>
+            </div>
             <h1 className={'j-left text-5xl'}>Account Balance</h1>
             <h3 className={'j-left text-2xl mt-2 text-neutral-500'}>Purchase credits easily via Stripe or PayPal.</h3>
             <Container className={'j-up lg:grid lg:grid-cols-2 my-10'}>

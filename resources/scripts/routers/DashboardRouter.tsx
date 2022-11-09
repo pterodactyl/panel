@@ -1,6 +1,7 @@
 import React from 'react';
 import tw from 'twin.macro';
 import * as Icon from 'react-feather';
+import { useStoreState } from 'easy-peasy';
 import { useLocation } from 'react-router';
 import TransitionRouter from '@/TransitionRouter';
 import Spinner from '@/components/elements/Spinner';
@@ -10,6 +11,7 @@ import { NotFound } from '@/components/elements/ScreenBlock';
 import SubNavigation from '@/components/elements/SubNavigation';
 import useWindowDimensions from '@/plugins/useWindowDimensions';
 import MobileNavigation from '@/components/elements/MobileNavigation';
+import ReferralContainer from '@/components/dashboard/ReferralContainer';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import InformationContainer from '@/components/elements/InformationContainer';
@@ -20,6 +22,7 @@ import AccountSecurityContainer from '@/components/dashboard/AccountSecurityCont
 export default () => {
     const location = useLocation();
     const { width } = useWindowDimensions();
+    const referrals = useStoreState((state) => state.storefront.data!.referrals.enabled);
 
     return (
         <>
@@ -37,6 +40,13 @@ export default () => {
                                 Security <Icon.Key css={tw`ml-1`} size={18} />
                             </div>
                         </NavLink>
+                        {referrals && (
+                            <NavLink to={'/account/referrals'}>
+                                <div css={tw`flex items-center justify-between`}>
+                                    Referrals <Icon.DollarSign css={tw`ml-1`} size={18} />
+                                </div>
+                            </NavLink>
+                        )}
                         <NavLink to={'/account/api'}>
                             <div css={tw`flex items-center justify-between`}>
                                 API <Icon.Code css={tw`ml-1`} size={18} />
@@ -68,6 +78,11 @@ export default () => {
                         <Route path={'/account/security'} exact>
                             <AccountSecurityContainer />
                         </Route>
+                        {referrals && (
+                            <Route path={`/account/referrals`} exact>
+                                <ReferralContainer />
+                            </Route>
+                        )}
                         <Route path={'/account/api'} exact>
                             <AccountApiContainer />
                         </Route>

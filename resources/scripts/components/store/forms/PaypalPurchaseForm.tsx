@@ -46,12 +46,7 @@ export default () => {
             >
                 <Form>
                     <SpinnerOverlay size={'large'} visible={submitting} />
-                    <Select
-                        name={'amount'}
-                        disabled={submitting}
-                        // @ts-expect-error this is valid
-                        onChange={(e) => setAmount(e.target.value)}
-                    >
+                    <Select name={'amount'} disabled={submitting} onChange={(e) => setAmount(parseInt(e.target.value))}>
                         <option key={'paypal:placeholder'} hidden>
                             Choose an amount...
                         </option>
