@@ -11,8 +11,8 @@ on:
       - "1.0-develop"
 
 jobs:
-  lint:
-    name: Lint
+  php:
+    name: PHP
     runs-on: ubuntu-20.04
     steps:
       - name: Code Checkout
@@ -35,5 +35,24 @@ jobs:
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
-      - name: PHP CS Fixer
+      - name: Run PHP CS Fixer
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+  typescript:
+    name: TypeScript
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Code Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Run Eslint
+        run: yarn lint
