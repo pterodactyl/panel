@@ -15,7 +15,7 @@ interface BoxProps {
 }
 
 export default (props: BoxProps) => (
-    <TitledGreyBox title={'Purchase ' + props.type.toUpperCase()}>
+    <TitledGreyBox title={'Purchase ' + props.type}>
         <div className={'flex flex-row justify-center items-center my-2'}>
             {props.icon}
             <Button.Success
@@ -26,13 +26,13 @@ export default (props: BoxProps) => (
                 }}
             >
                 +{props.amount}
-                {props.suffix} {props.type.toUpperCase()}
+                {props.suffix} {props.type}
             </Button.Success>
         </div>
         <p className={'mt-2 text-gray-500 text-xs flex justify-center'}>{props.description}</p>
         <p className={'mt-1 text-gray-500 text-xs flex justify-center'}>
             Cost per {props.amount}
-            {props.suffix} {props.type.toUpperCase()}: {props.cost} credits
+            {props.suffix} {props.type}: {props.cost} credits
         </p>
     </TitledGreyBox>
 );

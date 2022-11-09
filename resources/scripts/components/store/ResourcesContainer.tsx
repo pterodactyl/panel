@@ -76,7 +76,7 @@ export default () => {
             <h3 className={'j-left text-2xl text-neutral-500'}>Buy more resources to add to your server.</h3>
             <Container className={'j-up lg:grid lg:grid-cols-4 my-10 gap-8'}>
                 <PurchaseBox
-                    type={'cpu'}
+                    type={'CPU'}
                     amount={50}
                     suffix={'%'}
                     cost={cost.cpu}
@@ -86,7 +86,7 @@ export default () => {
                     description={'Buy CPU to improve server load times and performance.'}
                 />
                 <PurchaseBox
-                    type={'memory'}
+                    type={'Memory'}
                     amount={1}
                     suffix={'GB'}
                     cost={cost.memory}
@@ -96,7 +96,7 @@ export default () => {
                     description={'Buy RAM to improve overall server performance.'}
                 />
                 <PurchaseBox
-                    type={'disk'}
+                    type={'Disk'}
                     amount={1}
                     suffix={'GB'}
                     cost={cost.disk}
@@ -106,7 +106,7 @@ export default () => {
                     description={'Buy disk to store more files.'}
                 />
                 <PurchaseBox
-                    type={'slots'}
+                    type={'Slots'}
                     amount={1}
                     cost={cost.slot}
                     setOpen={setOpen}
@@ -117,7 +117,7 @@ export default () => {
             </Container>
             <Container className={'j-up lg:grid lg:grid-cols-4 my-10 gap-8'}>
                 <PurchaseBox
-                    type={'ports'}
+                    type={'Ports'}
                     amount={1}
                     cost={cost.port}
                     setOpen={setOpen}
@@ -126,7 +126,7 @@ export default () => {
                     description={'Buy a network port to add to a server.'}
                 />
                 <PurchaseBox
-                    type={'backups'}
+                    type={'Backups'}
                     amount={1}
                     cost={cost.backup}
                     setOpen={setOpen}
@@ -135,7 +135,7 @@ export default () => {
                     description={'Buy a backup to keep your data secure.'}
                 />
                 <PurchaseBox
-                    type={'databases'}
+                    type={'Databases'}
                     amount={1}
                     cost={cost.database}
                     setOpen={setOpen}
@@ -156,6 +156,16 @@ export default () => {
                     </p>
                 </TitledGreyBox>
             </Container>
+            <div className={'flex justify-center items-center'}>
+                <div className={'bg-auto bg-center bg-storeone p-4 m-4 rounded-lg'}>
+                    <div className={'text-center bg-gray-900 bg-opacity-75 p-4'}>
+                        <h1 className={'j-down text-4xl'}>Ready to get started?</h1>
+                        <Link to={'/store/create'}>
+                            <Button.Text className={'j-up w-full mt-4'}>Create a server</Button.Text>
+                        </Link>
+                    </div>
+                </div>
+            </div>
         </PageContentBlock>
     );
 };

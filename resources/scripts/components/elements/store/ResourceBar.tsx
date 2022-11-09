@@ -50,7 +50,7 @@ export default ({ className, titles }: RowProps) => {
     );
 
     return (
-        <StoreContainer className={classNames(className, 'j-right lg:grid lg:grid-cols-7 gap-x-6 gap-y-2')}>
+        <StoreContainer className={classNames(className, 'j-right grid grid-cols-2 sm:grid-cols-7 gap-x-6 gap-y-2')}>
             <ResourceBox
                 title={'Credits'}
                 description={'The amount of credits you have available.'}
