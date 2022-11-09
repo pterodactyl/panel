@@ -70,20 +70,23 @@ class ServerController extends ClientApiController
     public function store(CreateServerRequest $request): JsonResponse
     {
         $user = $request->user();
+        $disk = $request->input('disk') * 1024;
+        $memory = $request->input('memory') * 1024;
+        $nest = Nest::find($request->input('nest'));
 
         if (!$user->verified) {
             throw new DisplayException('Server deployment is unavailable for unverified accounts.');
         }
 
-        $disk = $request->input('disk') * 1024;
-        $memory = $request->input('memory') * 1024;
-        $nest = Nest::find($request->input('nest'));
-
         if ($nest->private) {
             throw new DisplayException('This nest is private and cannot be deployed to.');
         }
 
-        $server = $this->creationService->handle($request);
+        try {
+            $server = $this->creationService->handle($request);
+        } catch (DisplayException $exception) {
+            throw new DisplayException('Unable to create this server. Please contact an administrator.');
+        };
 
         $user->update([
             'store_cpu' => $user->store_cpu - $request->input('cpu'),
@@ -95,6 +98,6 @@ class ServerController extends ClientApiController
             'store_databases' => $user->store_databases - $request->input('databases'),
         ]);
 
-        return new JsonResponse(['success' => true, 'id' => $server->uuidShort]);
+        return new JsonResponse(['id' => $server->uuidShort]);
     }
 }
