@@ -139,8 +139,8 @@ export default () => {
                     name: `${user.username}'s server`,
                     description: 'Write a short description here.',
                     cpu: resources.cpu,
-                    memory: resources.memory / 1024,
-                    disk: resources.disk / 1024,
+                    memory: resources.memory,
+                    disk: resources.disk,
                     ports: resources.ports,
                     backups: resources.backups,
                     databases: resources.databases,
@@ -151,23 +151,18 @@ export default () => {
                 validationSchema={object().shape({
                     name: string().required().min(3),
                     description: string().optional().min(3).max(191),
-                    cpu: number().required().min(50).max(resources.cpu).max(limit.cpu),
-                    memory: number()
-                        .required()
-                        .min(1)
-                        .max(resources.memory / 1024)
-                        .max(limit.memory / 1024),
-                    disk: number()
-                        .required()
-                        .min(1)
-                        .max(resources.disk / 1024)
-                        .max(limit.disk / 1024),
+
+                    cpu: number().required().min(25).max(resources.cpu).max(limit.cpu),
+                    memory: number().required().min(256).max(resources.memory).max(limit.memory),
+                    disk: number().required().min(256).max(resources.disk).max(limit.disk),
+
                     ports: number().required().min(1).max(resources.ports).max(limit.port),
                     backups: number().optional().max(resources.backups).max(limit.backup),
                     databases: number().optional().max(resources.databases).max(limit.database),
-                    nest: number().required().default(1),
-                    egg: number().required().default(1),
-                    node: number().required().min(1),
+
+                    node: number().required().default(node),
+                    nest: number().required().default(nest),
+                    egg: number().required().default(egg),
                 })}
             >
                 <Form>
@@ -210,14 +205,20 @@ export default () => {
                             <p className={'mt-1 text-xs text-gray-400'}>{resources.cpu}% available</p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server RAM limit'} icon={faMemory} className={'mt-8 sm:mt-0'}>
-                            <Field name={'memory'} />
+                            <div className={'relative'}>
+                                <Field name={'memory'} />
+                                <p className={'absolute text-sm top-1.5 right-2 bg-gray-700 p-2 rounded-lg'}>MB</p>
+                            </div>
                             <p className={'mt-1 text-xs'}>Assign a limit for usable RAM.</p>
                             <p className={'mt-1 text-xs text-gray-400'}>
                                 {megabytesToHuman(resources.memory)} available
                             </p>
                         </TitledGreyBox>
                         <TitledGreyBox title={'Server Storage limit'} icon={faHdd} className={'mt-8 sm:mt-0'}>
-                            <Field name={'disk'} />
+                            <div className={'relative'}>
+                                <Field name={'disk'} />
+                                <p className={'absolute text-sm top-1.5 right-2 bg-gray-700 p-2 rounded-lg'}>MB</p>
+                            </div>
                             <p className={'mt-1 text-xs'}>Assign a limit for usable storage.</p>
                             <p className={'mt-1 text-xs text-gray-400'}>{megabytesToHuman(resources.disk)} available</p>
                         </TitledGreyBox>

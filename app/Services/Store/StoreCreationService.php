@@ -18,19 +18,11 @@ use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
 
 class StoreCreationService
 {
-    private ServerCreationService $creation;
-    private SettingsRepositoryInterface $settings;
-    private StoreVerificationService $verification;
-
     public function __construct(
-        ServerCreationService $creation,
-        SettingsRepositoryInterface $settings,
-        StoreVerificationService $verification
-    ) {
-        $this->creation = $creation;
-        $this->settings = $settings;
-        $this->verification = $verification;
-    }
+        private ServerCreationService $creation,
+        private SettingsRepositoryInterface $settings,
+        private StoreVerificationService $verification
+    ) {}
 
     /**
      * Creates a server on Jexactyl using the Storefront.
@@ -47,8 +39,8 @@ class StoreCreationService
         $nest = Nest::find($request->input('nest'));
         $node = Node::find($request->input('node'));
 
-        $disk = $request->input('disk') * 1024;
-        $memory = $request->input('memory') * 1024;
+        $disk = $request->input('disk');
+        $memory = $request->input('memory');
 
         $data = [
             'name' => $request->input('name'),
@@ -56,7 +48,7 @@ class StoreCreationService
             'egg_id' => $egg->id,
             'nest_id' => $nest->id,
             'node_id' => $node->id,
-            'allocation_id' => $this->getAlloc($node->id),
+            'allocation_id' => $this->getAllocation($node->id),
             'allocation_limit' => $request->input('ports'),
             'backup_limit' => $request->input('backups'),
             'database_limit' => $request->input('databases'),
@@ -95,7 +87,7 @@ class StoreCreationService
      *
      * @throws NoViableAllocationException
      */
-    protected function getAlloc(int $node): int
+    protected function getAllocatiom(int $node): int
     {
         $allocation = Allocation::where('node_id', $node)
             ->where('server_id', null)
