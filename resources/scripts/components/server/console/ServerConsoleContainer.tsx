@@ -44,9 +44,11 @@ const ServerConsoleContainer = () => {
                     <p className={'text-sm line-clamp-2'}>{description}</p>
                 </div>
                 <div className={'col-span-4 sm:col-span-2 lg:col-span-1 self-end'}>
-                    <Can action={['control.start', 'control.stop', 'control.restart']} matchAny>
-                        <PowerButtons className={'flex sm:justify-end space-x-2'} />
-                    </Can>
+                    {!isSuspended && (
+                        <Can action={['control.start', 'control.stop', 'control.restart']} matchAny>
+                            <PowerButtons className={'flex sm:justify-end space-x-2'} />
+                        </Can>
+                    )}
                 </div>
             </div>
             <div className={'grid grid-cols-4 gap-2 sm:gap-4 mb-4'}>
