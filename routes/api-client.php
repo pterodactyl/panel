@@ -40,8 +40,9 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
     Route::get('/activity/latest', [Client\ActivityLogController::class, 'latest'])->name('api:client.account.activity');
 
     Route::get('/referrals', [Client\ReferralsController::class, 'index']);
+    Route::get('/referrals/activity', [Client\ReferralsController::class, 'activity']);
     Route::post('/referrals', [Client\ReferralsController::class, 'store']);
-    Route::put('/use-referral', [Client\ReferralsController::class, 'use'])->middleware('auth', 'throttle:1,1');
+    Route::put('/use-referral', [Client\ReferralsController::class, 'use']);
     Route::delete('/referrals/{code}', [Client\ReferralsController::class, 'delete']);
 
     Route::get('/discord', [Client\AccountController::class, 'discord'])->name('api:client.account.discord');

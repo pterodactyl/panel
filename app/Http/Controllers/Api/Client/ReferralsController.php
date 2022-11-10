@@ -4,22 +4,39 @@ namespace Pterodactyl\Http\Controllers\Api\Client;
 
 use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Support\Facades\DB;
+use Pterodactyl\Models\ReferralUses;
 use Pterodactyl\Exceptions\DisplayException;
+use Pterodactyl\Services\Referrals\UseReferralService;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Transformers\Api\Client\ReferralCodeTransformer;
+use Pterodactyl\Transformers\Api\Client\Referrals\ReferralCodeTransformer;
+use Pterodactyl\Transformers\Api\Client\Referrals\ReferralActivityTransformer;
 
 class ReferralsController extends ClientApiController
 {
+    public function __construct(private UseReferralService $useService)
+    {
+        parent::__construct();
+    }
+
     /**
-     * Returns all of the API keys that exist for the given client.
-     *
-     * @return array
+     * Returns all of the referral codes that exist for the given client.
      */
-    public function index(ClientApiRequest $request)
+    public function index(ClientApiRequest $request): array
     {
         return $this->fractal->collection($request->user()->referralCodes)
             ->transformWith($this->getTransformer(ReferralCodeTransformer::class))
+            ->toArray();
+    }
+
+    /**
+     * Returns all of the referral code uses.
+     */
+    public function activity(ClientApiRequest $request): array
+    {
+        $activity = ReferralUses::where('referrer_id', $request->user()->id)->get();
+
+        return $this->fractal->collection($activity)
+            ->transformWith($this->getTransformer(ReferralActivityTransformer::class))
             ->toArray();
     }
 
@@ -30,36 +47,12 @@ class ReferralsController extends ClientApiController
      */
     public function use(ClientApiRequest $request): JsonResponse
     {
-        $reward = $this->settings->get('jexactyl::referrals:reward', 0);
-        $code = $request->input('code');
-
         if ($request->user()->referral_code) {
             throw new DisplayException('You have already used a referral code.');
         }
 
-        // Get the user who owns the referral code.
-        $id = DB::table('referral_codes')
-            ->where('code', $code)
-            ->first();
+        $this->useService->handle($request);
 
-        $referrer = User::where('id', $id->user_id)->first();
-
-        if ($id->user_id == $request->user()->id) {
-            throw new DisplayException('You can\'t use your own referral code.');
-        }
-
-        // Update the user with the code and give them the reward.
-        $request->user()->update([
-            'referral_code' => $code,
-            'store_balance' => $request->user()->store_balance + $reward,
-        ]);
-
-        // Give the reward to the referrer.
-        $referrer->update([
-            'store_balance' => $referrer->store_balance + $reward,
-        ]);
-
-        // Return a success code.
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
@@ -70,8 +63,8 @@ class ReferralsController extends ClientApiController
      */
     public function store(ClientApiRequest $request): array
     {
-        if ($request->user()->referralCodes->count() >= 3) {
-            throw new DisplayException('You cannot have more than 3 referral codes.');
+        if ($request->user()->referralCodes->count() >= 5) {
+            throw new DisplayException('You cannot have more than 5 referral codes.');
         }
 
         $code = $request->user()->referralCodes()->create([

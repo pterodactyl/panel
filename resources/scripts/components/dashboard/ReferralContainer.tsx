@@ -3,6 +3,7 @@ import { format } from 'date-fns';
 import { breakpoint } from '@/theme';
 import * as Icon from 'react-feather';
 import styled from 'styled-components/macro';
+import { useStoreState } from '@/state/hooks';
 import React, { useState, useEffect } from 'react';
 import { Button } from '@/components/elements/button';
 import { Dialog } from '@/components/elements/dialog';
@@ -15,7 +16,7 @@ import createReferralCode from '@/api/account/createReferralCode';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import getReferralCodes, { ReferralCode } from '@/api/account/getReferralCodes';
-import { useStoreState } from '@/state/hooks';
+import getReferralActivity, { ReferralActivity } from '@/api/account/getReferralActivity';
 
 const Container = styled.div`
     ${tw`flex flex-wrap`};
@@ -34,18 +35,30 @@ const Container = styled.div`
 `;
 
 export default () => {
-    const [code, setCode] = useState('');
-    const [loading, setLoading] = useState(true);
-    const reward = useStoreState((state) => state.storefront.data?.referrals.reward);
-    const [codes, setCodes] = useState<ReferralCode[]>([]);
     const { addFlash } = useFlash();
+    const [code, setCode] = useState('');
+    const [loading, setLoading] = useState(false);
+    const [codes, setCodes] = useState<ReferralCode[]>([]);
+    const [activity, setActivity] = useState<ReferralActivity[]>([]);
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('referrals');
+    const reward = useStoreState((state) => state.storefront.data?.referrals.reward);
 
     useEffect(() => {
         clearFlashes();
+        setLoading(true);
+
         getReferralCodes()
-            .then((codes) => setCodes(codes))
-            .then(() => setLoading(false))
+            .then((codes) => {
+                setCodes(codes);
+                setLoading(false);
+            })
+            .catch((error) => clearAndAddHttpError(error));
+
+        getReferralActivity()
+            .then((activity) => {
+                setActivity(activity);
+                setLoading(false);
+            })
             .catch((error) => clearAndAddHttpError(error));
     }, []);
 
@@ -140,7 +153,29 @@ export default () => {
                     </h1>
                 </ContentBox>
                 <ContentBox title={'Users Referred'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
-                    <h1 css={tw`text-gray-400`}>Unable to view statistics at this time.</h1>
+                    <SpinnerOverlay visible={loading} />
+                    {activity.length === 0 ? (
+                        <p css={tw`text-center my-2`}>{!loading && 'No referral activity exists for this account.'}</p>
+                    ) : (
+                        activity.map((act, index) => (
+                            <GreyRowBox
+                                key={act.code}
+                                css={[tw`bg-neutral-900 flex items-center`, index > 0 && tw`mt-2`]}
+                            >
+                                <Icon.GitBranch css={tw`text-neutral-300`} />
+                                <div css={tw`ml-4 flex-1 overflow-hidden`}>
+                                    <p css={tw`text-sm break-words`}>
+                                        {act.userEmail} (ID: {act.userId})
+                                    </p>
+                                    <p css={tw`text-2xs text-neutral-300 uppercase`}>
+                                        Used at:&nbsp;
+                                        {act.createdAt ? format(act.createdAt, 'MMM do, yyyy HH:mm') : 'Never'}
+                                    </p>
+                                    <p css={tw`text-2xs text-neutral-300 uppercase`}>Code used:&nbsp;{act.code}</p>
+                                </div>
+                            </GreyRowBox>
+                        ))
+                    )}
                 </ContentBox>
             </Container>
         </PageContentBlock>

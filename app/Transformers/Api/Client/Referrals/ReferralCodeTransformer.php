@@ -1,8 +1,9 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Pterodactyl\Transformers\Api\Client\Referrals;
 
 use Pterodactyl\Models\ReferralCode;
+use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
 class ReferralCodeTransformer extends BaseClientTransformer
 {

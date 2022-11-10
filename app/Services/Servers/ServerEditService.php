@@ -12,11 +12,8 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\EditServerRequest;
 
 class ServerEditService
 {
-    private SettingsRepositoryInterface $settings;
-
-    public function __construct(SettingsRepositoryInterface $settings)
+    public function __construct(private SettingsRepositoryInterface $settings)
     {
-        $this->settings = $settings;
     }
 
     /**
