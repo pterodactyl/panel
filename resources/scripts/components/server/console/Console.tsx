@@ -76,13 +76,6 @@ export default () => {
             case 'failure':
                 terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
                 return;
-
-            // Sent by the source node whenever the server was archived successfully.
-            case 'archive':
-                terminal.writeln(
-                    TERMINAL_PRELUDE +
-                        'Server has been archived successfully, attempting connection to target node..\u001b[0m'
-                );
         }
     };
 
