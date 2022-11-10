@@ -62,9 +62,11 @@ export default () => {
                 <ContentBox title={'Purchase credits'} showFlashes={'account:balance'} css={tw`mt-8 sm:mt-0 sm:ml-8`}>
                     {paypal && <PaypalPurchaseForm />}
                     {stripe && <StripePurchaseForm />}
-                    <p className={'text-gray-400 text-sm m-2'}>
-                        If no gateways appear here, it&apos;s because they haven&apos;t been configured yet.
-                    </p>
+                    {!paypal && !stripe && (
+                        <p className={'text-gray-400 text-sm m-2'}>
+                            If no gateways appear here, it&apos;s because they haven&apos;t been configured yet.
+                        </p>
+                    )}
                 </ContentBox>
             </Container>
             {earn.enabled && (
