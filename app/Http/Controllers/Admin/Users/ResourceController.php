@@ -7,6 +7,7 @@ use Pterodactyl\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Http\Requests\Admin\Users\ResourceFormRequest;
@@ -16,7 +17,7 @@ class ResourceController extends Controller
     /**
      * UserController constructor.
      */
-    public function __construct(private AlertsMessageBag $alert)
+    public function __construct(private AlertsMessageBag $alert, private UserUpdateService $updateService)
     {
     }
 
@@ -36,17 +37,9 @@ class ResourceController extends Controller
      */
     public function update(ResourceFormRequest $request, User $user): RedirectResponse
     {
-        // TODO: use userUpdateService in future.
-        $user->update([
-            'store_balance' => $request->input('store_balance'),
-            'store_cpu' => $request->input('store_cpu'),
-            'store_memory' => $request->input('store_memory'),
-            'store_disk' => $request->input('store_disk'),
-            'store_slots' => $request->input('store_slots'),
-            'store_ports' => $request->input('store_ports'),
-            'store_backups' => $request->input('store_backups'),
-            'store_databases' => $request->input('store_databases'),
-        ]);
+        $this->updateService
+            ->setUserLevel(User::USER_LEVEL_ADMIN)
+            ->handle($user, $request->normalize());
 
         $this->alert->success('User resources have been updated.')->flash();
 

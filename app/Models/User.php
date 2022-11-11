@@ -195,6 +195,14 @@ class User extends Model implements
         'totp_secret' => 'nullable|string',
         'approved' => 'nullable|boolean',
         'verified' => 'boolean',
+        'store_balance' => 'sometimes|int',
+        'store_cpu' => 'sometimes|int',
+        'store_memory' => 'sometimes|int',
+        'store_disk' => 'sometimes|int',
+        'store_slots' => 'sometimes|int',
+        'store_ports' => 'sometimes|int',
+        'store_backups' => 'sometimes|int',
+        'store_database' => 'sometimes|int',
     ];
 
     /**

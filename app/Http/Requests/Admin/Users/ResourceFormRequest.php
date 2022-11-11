@@ -13,6 +13,7 @@ class ResourceFormRequest extends AdminFormRequest
     public function rules(): array
     {
         return [
+            'store_balance' => 'required|int',
             'store_cpu' => 'required|int',
             'store_memory' => 'required|int',
             'store_disk' => 'required|int',
