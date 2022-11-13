@@ -62,7 +62,7 @@
             "name": "Query Protocols",
             "description": "Comma separated list of protocols that can be used to connect to the ServerQuery | \r\nPossible values are raw, ssh and http | \r\nE.g.: raw,ssh,http",
             "env_variable": "QUERY_PROTOCOLS_VAR",
-            "default_value": "raw",
+            "default_value": "raw,ssh",
             "user_viewable": true,
             "user_editable": true,
             "rules": "required|string|max:12",
