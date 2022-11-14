@@ -73,7 +73,7 @@ export default () => {
                 onConfirmed={() => doRenewal()}
             >
                 <SpinnerOverlay visible={isSubmit} />
-                Are you sure you want to spend {store.renewals.cost} {store.currency} to renew your server?
+                Are you sure you want to spend {store.renewals.cost} credits to renew your server?
             </Dialog.Confirm>
             <Dialog.Confirm
                 open={deleteDialog}
