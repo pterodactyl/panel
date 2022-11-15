@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
-import { CloudUploadIcon } from '@heroicons/react/solid';
+import { CloudArrowUpIcon } from '@heroicons/react/24/solid';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
@@ -80,7 +80,7 @@ export default () => {
                 <Tooltip content={`${count} files are uploading, click to view`}>
                     <button className={'flex items-center justify-center w-10 h-10'} onClick={setOpen.bind(this, true)}>
                         <Spinner progress={(progress.uploaded / progress.total) * 100} className={'w-8 h-8'} />
-                        <CloudUploadIcon className={'h-3 absolute mx-auto animate-pulse'} />
+                        <CloudArrowUpIcon className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}

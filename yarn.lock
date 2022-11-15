@@ -1170,10 +1170,10 @@
   resolved "https://registry.yarnpkg.com/@headlessui/react/-/react-1.6.4.tgz#c73084e23386bef5fb86cd16da3352c3a844bb4c"
   integrity sha512-0yqz1scwbFtwljmbbKjXsSGl5ABEYNICVHZnMCWo0UtOZodo2Tpu94uOVgCRjRZ77l2WcTi2S0uidINDvG7lsA==
 
-"@heroicons/react@^1.0.6":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@heroicons/react/-/react-1.0.6.tgz#35dd26987228b39ef2316db3b1245c42eb19e324"
-  integrity sha512-JJCXydOFWMDpCP4q13iEplA503MQO3xLoZiKum+955ZCtHINWnx26CUxVxxFQu/uLb4LW3ge15ZpzIkXKkJ8oQ==
+"@heroicons/react@2.0.12":
+  version "2.0.12"
+  resolved "https://registry.yarnpkg.com/@heroicons/react/-/react-2.0.12.tgz#7e5a16c82512f89a30266dd36f8b8465b3e3e216"
+  integrity sha512-FZxKh3i9aKIDxyALTgIpSF2t6V6/eZfF5mRu41QlwkX3Oxzecdm1u6dpft6PQGxIBwO7TKYWaMAYYL8mp/EaOg==
 
 "@hot-loader/react-dom@^16.14.0":
   version "16.14.0"

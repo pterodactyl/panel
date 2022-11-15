@@ -9,7 +9,7 @@
         "@fortawesome/free-solid-svg-icons": "^5.15.1",
         "@fortawesome/react-fontawesome": "^0.1.11",
         "@headlessui/react": "^1.6.4",
-        "@heroicons/react": "^1.0.6",
+        "@heroicons/react": "2.0.12",
         "@hot-loader/react-dom": "^16.14.0",
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/line-clamp": "^0.4.0",
