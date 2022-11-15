@@ -3,10 +3,17 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## [Unreleased]
+## v1.11.0-rc.1
 ### Changed
 * Changed minimum PHP version is now 8.0 instead of `7.4`.
 * Upgraded from Laravel 8 to Laravel 9.
+* This release requires Wings v1.11.x in order for Server Transfers to work.
+
+### Fixed
+* Node maintenance mode now properly blocks access to servers.
+* Fixed the length validation on the Minecraft Forge egg.
+* Fixed the password in the JDBC string not being properly URL encoded.
+* Fixed an issue where Wings would throw a validation error while attempting to upload activity logs.
 
 ## v1.10.4
 ### Fixed
