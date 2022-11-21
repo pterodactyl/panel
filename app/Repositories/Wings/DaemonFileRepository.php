@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
+use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
@@ -35,8 +36,7 @@ class DaemonFileRepository extends DaemonRepository
             throw new DaemonConnectionException($exception);
         }
 
-        $length = (int) $response->getHeader('Content-Length')[0] ?? 0;
-
+        $length = (int) Arr::get($response->getHeader('Content-Length'), 0, 0);
         if ($notLargerThan && $length > $notLargerThan) {
             throw new FileSizeTooLargeException();
         }
