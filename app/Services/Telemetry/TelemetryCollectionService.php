@@ -2,10 +2,10 @@
 
 namespace Pterodactyl\Services\Telemetry;
 
-use DB;
 use PDO;
 use Exception;
 use Ramsey\Uuid\Uuid;
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
@@ -14,6 +14,7 @@ use Pterodactyl\Models\Mount;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Location;
+use Illuminate\Support\Facades\DB;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Http;
 use Pterodactyl\Repositories\Eloquent\SettingsRepository;
@@ -31,7 +32,7 @@ class TelemetryCollectionService
     }
 
     /**
-     * ?
+     * Collects telemetry data and sends it to the Pterodactyl Telemetry Service.
      */
     public function __invoke(): void
     {
@@ -45,7 +46,7 @@ class TelemetryCollectionService
     }
 
     /**
-     * ?
+     * Collects telemetry data and returns it as an array.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
@@ -59,51 +60,52 @@ class TelemetryCollectionService
 
         $nodes = Node::all()->map(function ($node) {
             try {
-                $info = $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
+                $info = $this->daemonConfigurationRepository->setNode($node)->getSystemInformation(2);
             } catch (Exception) {
                 return null;
             }
 
             return [
                 'id' => $node->uuid,
-                'version' => $info['version'],
+                'version' => Arr::get($info, 'version', ''),
 
-//                'docker' => [
-//                    'version' => '',
-//
-//                    'cgroups' => [
-//                        'driver' => '',
-//                        'version' => '',
-//                    ],
-//
-//                    'containers' => [
-//                        'running' => 0,
-//                        'paused' => 0,
-//                        'stopped' => 0,
-//                    ],
-//
-//                    'storage' => [
-//                        'driver' => '',
-//                        'filesystem' => '',
-//                    ],
-//
-//                    'runc' => [
-//                        'version' => '',
-//                    ],
-//                ],
+                'docker' => [
+                    'version' => Arr::get($info, 'docker.version', ''),
+
+                    'cgroups' => [
+                        'driver' => Arr::get($info, 'docker.cgroups.driver', ''),
+                        'version' => Arr::get($info, 'docker.cgroups.version', ''),
+                    ],
+
+                    'containers' => [
+                        'total' => Arr::get($info, 'docker.containers.total', -1),
+                        'running' => Arr::get($info, 'docker.containers.running', -1),
+                        'paused' => Arr::get($info, 'docker.containers.paused', -1),
+                        'stopped' => Arr::get($info, 'docker.containers.stopped', -1),
+                    ],
+
+                    'storage' => [
+                        'driver' => Arr::get($info, 'docker.storage.driver', ''),
+                        'filesystem' => Arr::get($info, 'docker.storage.filesystem', ''),
+                    ],
+
+                    'runc' => [
+                        'version' => Arr::get($info, 'docker.runc.version', ''),
+                    ],
+                ],
 
                 'system' => [
-                    'architecture' => $info['architecture'],
-                    'cpuThreads' => $info['cpu_count'],
-//                    'memoryBytes' => -1,
-                    'kernelVersion' => $info['kernel_version'],
-//                    'os' => '',
-                    'osType' => $info['os'],
+                    'architecture' => Arr::get($info, 'system.architecture', ''),
+                    'cpuThreads' => Arr::get($info, 'system.cpu_threads', ''),
+                    'memoryBytes' => Arr::get($info, 'system.memory_bytes', ''),
+                    'kernelVersion' => Arr::get($info, 'system.kernel_version', ''),
+                    'os' => Arr::get($info, 'system.os', ''),
+                    'osType' => Arr::get($info, 'system.os_type', ''),
                 ],
             ];
-        })->filter(fn($node) => !is_null($node))->toArray();
+        })->filter(fn ($node) => !is_null($node))->toArray();
 
-        $data = [
+        return [
             'id' => $uuid,
 
             'panel' => [
@@ -169,7 +171,5 @@ class TelemetryCollectionService
 
             'nodes' => $nodes,
         ];
-
-        return $data;
     }
 }
