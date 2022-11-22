@@ -24,7 +24,7 @@ export default () => {
     });
 
     useEffect(() => {
-        setFilters((value) => ({ ...value, filters: { ip: hash.ip, event: hash.event } }));
+        setFilters((value) => ({ ...value, filters: { event: hash.event } }));
     }, [hash]);
 
     useEffect(() => {
