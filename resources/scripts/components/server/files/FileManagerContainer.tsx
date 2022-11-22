@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { httpErrorToHuman } from '@/api/http';
 import { CSSTransition } from 'react-transition-group';
 import Spinner from '@/components/elements/Spinner';
@@ -23,10 +23,42 @@ import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
 
-const sortFiles = (files: FileObject[]): FileObject[] => {
-    const sortedFiles: FileObject[] = files
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
+enum SortMethod {
+    NameDown,
+    NameUp,
+    SizeDown,
+    SizeUp,
+    DateDown,
+    DateUp,
+}
+
+const sortFiles = (files: FileObject[], method: SortMethod): FileObject[] => {
+    let sortedFiles: FileObject[] = files;
+
+    sortedFiles = sortedFiles.sort((a, b) => {
+        switch (method) {
+            case SortMethod.NameDown: {
+                return a.name.localeCompare(b.name);
+            }
+            case SortMethod.NameUp: {
+                return b.name.localeCompare(a.name);
+            }
+            case SortMethod.DateDown: {
+                return b.modifiedAt.valueOf() - a.modifiedAt.valueOf();
+            }
+            case SortMethod.DateUp: {
+                return a.modifiedAt.valueOf() - b.modifiedAt.valueOf();
+            }
+            case SortMethod.SizeDown: {
+                return b.size - a.size;
+            }
+            case SortMethod.SizeUp: {
+                return a.size - b.size;
+            }
+        }
+    });
+
+    sortedFiles = sortedFiles.sort((a, b) => (a.isFile === b.isFile ? 0 : a.isFile ? 1 : -1));
     return sortedFiles.filter((file, index) => index === 0 || file.name !== sortedFiles[index - 1].name);
 };
 
@@ -41,6 +73,8 @@ export default () => {
     const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState((state) => state.files.selectedFiles.length);
 
+    const [sortMethod, setSortMethod] = useState(SortMethod.NameDown);
+
     useEffect(() => {
         clearFlashes('files');
         setSelectedFiles([]);
@@ -49,7 +83,7 @@ export default () => {
 
     useEffect(() => {
         mutate();
-    }, [directory]);
+    }, [directory, sortMethod]);
 
     const onSelectAllClick = (e: React.ChangeEvent<HTMLInputElement>) => {
         setSelectedFiles(e.currentTarget.checked ? files?.map((file) => file.name) || [] : []);
@@ -85,6 +119,36 @@ export default () => {
                     </Can>
                 </div>
             </ErrorBoundary>
+            <div css={tw`w-full flex flex-nowrap`}>
+                <button
+                    css={tw`ml-20 mb-2 whitespace-nowrap`}
+                    onClick={() => {
+                        setSortMethod(sortMethod === SortMethod.NameUp ? SortMethod.NameDown : SortMethod.NameUp);
+                    }}
+                >
+                    Name {sortMethod === SortMethod.NameUp ? '↑' : '↓'}
+                </button>
+                <div css={tw`w-full flex justify-end`}>
+                    <button
+                        css={tw`mb-2`}
+                        style={{ marginRight: '11rem' }}
+                        onClick={() => {
+                            setSortMethod(sortMethod === SortMethod.SizeUp ? SortMethod.SizeDown : SortMethod.SizeUp);
+                        }}
+                    >
+                        Size {sortMethod === SortMethod.SizeUp ? '↑' : '↓'}
+                    </button>
+                    <button
+                        css={tw`mb-2`}
+                        style={{ marginRight: '6rem' }}
+                        onClick={() => {
+                            setSortMethod(sortMethod === SortMethod.DateUp ? SortMethod.DateDown : SortMethod.DateUp);
+                        }}
+                    >
+                        Date {sortMethod === SortMethod.DateUp ? '↑' : '↓'}
+                    </button>
+                </div>
+            </div>
             {!files ? (
                 <Spinner size={'large'} centered />
             ) : (
@@ -102,7 +166,7 @@ export default () => {
                                         </p>
                                     </div>
                                 )}
-                                {sortFiles(files.slice(0, 250)).map((file) => (
+                                {sortFiles(files.slice(0, 250), sortMethod).map((file) => (
                                     <FileObjectRow key={file.key} file={file} />
                                 ))}
                                 <MassActionsBar />
