@@ -118,6 +118,7 @@ class Server extends Model
 
     public const STATUS_INSTALLING = 'installing';
     public const STATUS_INSTALL_FAILED = 'install_failed';
+    public const STATUS_REINSTALL_FAILED = 'reinstall_failed';
     public const STATUS_SUSPENDED = 'suspended';
     public const STATUS_RESTORING_BACKUP = 'restoring_backup';
 
