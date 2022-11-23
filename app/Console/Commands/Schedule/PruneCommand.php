@@ -47,7 +47,7 @@ class PruneCommand extends Command
         $this->line('Processing renewals for ' . $servers->count() . ' servers.');
 
         foreach ($servers as $s) {
-            $this->line('Processing server ' . $s->name .', ID: ' . $s->id, false);
+            $this->line('Processing server ' . $s->name . ', ID: ' . $s->id, false);
 
             if ($s->isSuspended()) {
                 $this->line('Deleting server ' . $s->name, false);
