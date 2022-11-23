@@ -16,6 +16,21 @@
       system: let
         pkgs = import nixpkgs {inherit system;};
 
+        php81WithExtensions = with pkgs; (php81.buildEnv {
+          extensions = {
+            enabled,
+            all,
+          }:
+            enabled
+            ++ (with all; [
+              redis
+              xdebug
+            ]);
+          extraConfig = ''
+            xdebug.mode=debug
+          '';
+        });
+
         caCertificates = pkgs.runCommand "ca-certificates" {} ''
           mkdir -p $out/etc/ssl/certs $out/etc/pki/tls/certs
           ln -s ${pkgs.cacert}/etc/ssl/certs/ca-bundle.crt $out/etc/ssl/certs/ca-bundle.crt
@@ -84,7 +99,7 @@
           ln -s ${phpfpmConf} $out/etc/php-fpm.conf
         '';
       in {
-        devShell = import ./shell.nix {inherit pkgs;};
+        devShell = import ./shell.nix {inherit pkgs php81WithExtensions;};
 
         packages = {
           development = pkgs.dockerTools.buildImage {
@@ -104,21 +119,8 @@
                 nodePackages.npm
                 nodePackages.pnpm
                 nodePackages.yarn
-                (php81.buildEnv {
-                  extensions = {
-                    enabled,
-                    all,
-                  }:
-                    enabled
-                    ++ (with all; [
-                      redis
-                      xdebug
-                    ]);
-                  extraConfig = ''
-                    xdebug.mode=debug
-                  '';
-                })
-                php81Packages.composer
+                php81WithExtensions
+                (php81Packages.composer.override {php = php81WithExtensions;})
                 postgresql_14
               ];
               pathsToLink = ["/bin" "/etc"];
