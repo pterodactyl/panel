@@ -23,12 +23,13 @@ Built on [Pterodactyl](https://pterodactyl.io), this software is designed from t
 
 | Company | About | Sponsor |
 | ------- | ----- | ------- |
-| [**HostEZ**](https://hostez.io) | Providing North America Valheim, Minecraft and other popular games with low latency, high uptime and maximum availability. EZ! | [@hostez](https://hostez.io) |
-| [**Nero Nodes**](https://neronodes.net) | A Minecraft server provider that's completely free, 24/7. | [@lucatolton](https://github.com/lucatolton) |
-| [**SneakyHub**](https://sneakyhub.com/discord) | A SneakyNodes LTD project, Free 24/7 hosting for games, websites, discord bots and more. | [@SneakyHub](https://github.com/sneakyhub) |
-| [**Wumpus Host**](https://wumpus.host) | A Discord bot host that offers free hosting, 24/7. | [@WumpusHost](https://github.com/wumpushost) |
-| [**GigaNodes**](https://client.giganodes.net) | A cheap host, with many locations like Europe, United States, Asia, United Kingdom | [@GigaNodes](https://discord.gg/dSgpmZ2C) |
-| [**ShieldCore**](https://crypto-hosting.eu) | ShieldCore offer high performance servers with extreme DDoS protection! | [@ShieldCore](https://crypto-hosting.eu) |
+| [**HostEZ**](https://hostez.io) | Providing North America Valheim, Minecraft and other popular games with low latency, high uptime and maximum availability. EZ! | [Website](https://hostez.io) |
+| [**Nero Nodes**](https://neronodes.net) | A Minecraft server provider that's completely free, 24/7. | [GitHub](https://github.com/lucatolton) |
+| [**SneakyHub**](https://sneakyhub.com/discord) | A SneakyNodes LTD project, Free 24/7 hosting for games, websites, discord bots and more. | [GitHub](https://github.com/sneakyhub) |
+| [**Wumpus Host**](https://wumpus.host) | A Discord bot host that offers free hosting, 24/7. | [GitHub](https://github.com/wumpushost) |
+| [**GigaNodes**](https://client.giganodes.net) | A cheap host, with many locations like Europe, United States, Asia, United Kingdom | [Discord](https://discord.gg/dSgpmZ2C) |
+| [**ShieldCore**](https://crypto-hosting.eu) | ShieldCore offer high performance servers with extreme DDoS protection! | [Website](https://crypto-hosting.eu) |
+| [**ShadowHub**](https://shadowhub.tk/) | Server hosting for Discord Bots, Minecraft servers and more. | [Discord](https://discord.gg/sXxJ7PkhC3) |
 
 ## Previews
 ![image](https://user-images.githubusercontent.com/72230943/201116518-af5e3291-74f7-433a-b035-6d80e8c7e8f8.png)
