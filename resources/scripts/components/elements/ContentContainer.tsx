@@ -6,7 +6,7 @@ const ContentContainer = styled.div`
     ${tw`mx-4`};
 
     ${breakpoint('xl')`
-        ${tw`ml-36 mr-8`};
+        ${tw`ml-36 mr-16`};
     `};
 `;
 

@@ -20,17 +20,10 @@
                 <div class="col-xs-12">
                     <div class="box">
                         <div class="box-header with-border">
-                            <h3 class="box-title">Panel Settings</h3>
+                            <h3 class="box-title">Security Settings</h3>
                         </div>
                         <div class="box-body">
                             <div class="row">
-                                <div class="form-group col-md-4">
-                                    <label class="control-label">Company Name</label>
-                                    <div>
-                                        <input type="text" class="form-control" name="app:name" value="{{ old('app:name', config('app.name')) }}" />
-                                        <p class="text-muted"><small>This is the name that is used throughout the panel and in emails sent to clients.</small></p>
-                                    </div>
-                                </div>
                                 <div class="form-group col-md-4">
                                     <label class="control-label">Require 2-Factor Authentication</label>
                                     <div>
@@ -49,13 +42,6 @@
                                             </label>
                                         </div>
                                         <p class="text-muted"><small>If enabled, any account falling into the selected grouping will be required to have 2-Factor authentication enabled to use the Panel.</small></p>
-                                    </div>
-                                </div>
-                                <div class="form-group col-md-4">
-                                    <label class="control-label">Panel Logo</label>
-                                    <div>
-                                        <input type="text" class="form-control" name="app:logo" value="{{ $logo }}" />
-                                        <p class="text-muted"><small>The logo which is used for the Panel&apos;s frontend.</small></p>
                                     </div>
                                 </div>
                             </div>

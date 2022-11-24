@@ -10,9 +10,9 @@ import Tooltip from '@/components/elements/tooltip/Tooltip';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
 
 export default () => {
+    const logo = useStoreState((state) => state.settings.data?.logo);
     const store = useStoreState((state) => state.storefront.data!.enabled);
     const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
-    const logo = useStoreState((state) => state.settings.data!.logo);
 
     const onTriggerLogout = () => {
         http.post('/auth/logout').finally(() => {
@@ -22,7 +22,7 @@ export default () => {
     };
 
     const PanelDiv = styled.div`
-        ${tw`h-screen sticky bg-neutral-800 flex flex-col w-28 fixed top-0`};
+        ${tw`h-screen sticky bg-neutral-800 flex flex-col w-20 fixed top-0`};
 
         & > div {
             ${tw`mx-auto`};
@@ -45,40 +45,52 @@ export default () => {
         <PanelDiv>
             <ProgressBar />
             <Link to={'/'}>
-                <img css={tw`p-4`} src={logo ?? 'https://avatars.githubusercontent.com/u/91636558'} />
+                <img className={'p-2'} src={logo ?? 'https://avatars.githubusercontent.com/u/91636558'} />
             </Link>
             <div>
-                <div css={tw`mx-auto mb-8`} className={'navigation-link'}>
-                    <SearchContainer size={32} />
+                <div className={'navigation-link'}>
+                    <div className={'bg-gray-700 rounded-lg p-2 my-8'}>
+                        <SearchContainer size={32} />
+                    </div>
                 </div>
                 <NavLink to={'/'} className={'navigation-link'} exact>
                     <Tooltip placement={'bottom'} content={'Servers'}>
-                        <Icon.Server size={32} css={tw`my-8`} />
+                        <div className={'bg-gray-700 rounded-lg p-2 my-8'}>
+                            <Icon.Server size={32} />
+                        </div>
                     </Tooltip>
                 </NavLink>
                 <NavLink to={'/account'} className={'navigation-link'}>
                     <Tooltip placement={'bottom'} content={'Account'}>
-                        <Icon.User size={32} css={tw`my-8`} />
+                        <div className={'bg-gray-700 rounded-lg p-2 my-8'}>
+                            <Icon.User size={32} />
+                        </div>
                     </Tooltip>
                 </NavLink>
                 {store && (
                     <NavLink to={'/store'} className={'navigation-link'}>
                         <Tooltip placement={'bottom'} content={'Store'}>
-                            <Icon.ShoppingCart size={32} css={tw`my-8`} />
+                            <div className={'bg-gray-700 rounded-lg p-2 my-8'}>
+                                <Icon.ShoppingCart size={32} />
+                            </div>
                         </Tooltip>
                     </NavLink>
                 )}
                 {rootAdmin && (
                     <a href={'/admin'} className={'navigation-link'}>
                         <Tooltip placement={'bottom'} content={'Admin'}>
-                            <Icon.Settings size={32} css={tw`my-8`} />
+                            <div className={'bg-gray-700 rounded-lg p-2 my-8'}>
+                                <Icon.Settings size={32} />
+                            </div>
                         </Tooltip>
                     </a>
                 )}
                 <div id={'logo'}>
                     <button onClick={onTriggerLogout} className={'navigation-link'}>
                         <Tooltip placement={'bottom'} content={'Logout'}>
-                            <Icon.LogOut size={32} css={tw`flex flex-row fixed bottom-0 mb-8`} />
+                            <div className={'flex flex-row fixed bottom-0 mb-8 bg-gray-700 rounded-lg p-2'}>
+                                <Icon.LogOut size={32} />
+                            </div>
                         </Tooltip>
                     </button>
                 </div>

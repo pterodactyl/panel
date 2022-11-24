@@ -37,7 +37,7 @@
         <div class="wrapper">
             <header class="main-header">
                 <a href="{{ route('index') }}" class="logo">
-                    <img src="https://avatars.githubusercontent.com/u/91636558" width="48" height="48" />
+                    <img src="{{ config('app.logo') }}" width="48" height="48" />
                 </a>
             </header>
             <aside class="main-sidebar">

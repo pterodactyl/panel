@@ -36,6 +36,18 @@
                 </script>
             @endif
         @show
+
+        @if(!empty($siteConfiguration['background']))
+            <style>
+                body {
+                    background-image: url({!! $siteConfiguration['background'] !!});
+                    background-repeat: no-repeat;
+                    background-attachment: fixed;
+                    background-size: cover;
+                }
+            </style>
+        @endif
+
         <style>
             @import url('//fonts.googleapis.com/css?family=Rubik:300,400,500&display=swap');
             @import url('//fonts.googleapis.com/css?family=IBM+Plex+Mono|IBM+Plex+Sans:500&display=swap');
