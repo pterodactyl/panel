@@ -12,9 +12,7 @@ class AdvancedFormRequest extends AdminFormRequest
     public function rules(): array
     {
         return [
-            'app:name' => 'required|string|max:191',
             'pterodactyl:auth:2fa_required' => 'required|integer|in:0,1,2',
-            'app:logo' => 'required|string|max:191',
 
             'recaptcha:enabled' => 'required|in:true,false',
             'recaptcha:secret_key' => 'required|string|max:191',

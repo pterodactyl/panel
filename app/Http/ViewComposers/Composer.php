@@ -55,6 +55,8 @@ class Composer
 
         if ($data == 'logo') {
             return $this->settings->get('settings::app:logo', 'https://avatars.githubusercontent.com/u/91636558');
+        } elseif ($data == 'background') {
+            return $this->settings->get('settings:app:background');
         }
 
         switch ($type) {

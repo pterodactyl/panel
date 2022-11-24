@@ -15,9 +15,9 @@ use Pterodactyl\Http\Middleware\Admin\Servers\ServerInstalled;
 Route::group(['prefix' => '/'], function () {
     Route::get('/', [Admin\Jexactyl\IndexController::class, 'index'])->name('admin.index');
     Route::get('/mail', [Admin\Jexactyl\MailController::class, 'index'])->name('admin.jexactyl.mail');
-    Route::get('/theme', [Admin\Jexactyl\ThemeController::class, 'index'])->name('admin.jexactyl.theme');
     Route::get('/store', [Admin\Jexactyl\StoreController::class, 'index'])->name('admin.jexactyl.store');
     Route::get('/server', [Admin\Jexactyl\ServerController::class, 'index'])->name('admin.jexactyl.server');
+    Route::get('/appearance', [Admin\Jexactyl\AppearanceController::class, 'index'])->name('admin.jexactyl.appearance');
     Route::get('/advanced', [Admin\Jexactyl\AdvancedController::class, 'index'])->name('admin.jexactyl.advanced');
     Route::get('/discord', [Admin\Jexactyl\RegistrationController::class, 'index'])->name('admin.jexactyl.discord');
     Route::get('/referrals', [Admin\Jexactyl\ReferralsController::class, 'index'])->name('admin.jexactyl.referrals');
@@ -35,12 +35,12 @@ Route::group(['prefix' => '/'], function () {
     Route::post('/mail/test', [Admin\Jexactyl\MailController::class, 'test'])->name('admin.jexactyl.mail.test');
 
     Route::patch('/mail', [Admin\Jexactyl\MailController::class, 'update'])->name('admin.jexactyl.mail');
-    Route::patch('/theme', [Admin\Jexactyl\ThemeController::class, 'update'])->name('admin.jexactyl.theme');
     Route::patch('/store', [Admin\Jexactyl\StoreController::class, 'update'])->name('admin.jexactyl.store');
     Route::patch('/server', [Admin\Jexactyl\ServerController::class, 'update'])->name('admin.jexactyl.server');
     Route::patch('/advanced', [Admin\Jexactyl\AdvancedController::class, 'update'])->name('admin.jexactyl.advanced');
     Route::patch('/discord', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.discord');
     Route::patch('/referrals', [Admin\Jexactyl\ReferralsController::class, 'update'])->name('admin.jexactyl.referrals');
+    Route::patch('/appearance', [Admin\Jexactyl\AppearanceController::class, 'update'])->name('admin.jexactyl.appearance');
     Route::patch('/registration', [Admin\Jexactyl\RegistrationController::class, 'update'])->name('admin.jexactyl.registration');
 });
 

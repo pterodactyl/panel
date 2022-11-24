@@ -23,9 +23,10 @@ class SettingComposer extends Composer
         $view->with('asset', $this->assetHashService);
 
         $view->with('siteConfiguration', [
-            'name' => config('app.name') ?? 'Pterodactyl',
+            'name' => config('app.name') ?? 'Jexactyl',
             'locale' => config('app.locale') ?? 'en',
-            'logo' => $this->setting('logo', Composer::TYPE_STR),
+            'logo' => config('app.logo'),
+            'background' => config('theme.user.background'),
 
             'recaptcha' => [
                 'enabled' => config('recaptcha.enabled', false),

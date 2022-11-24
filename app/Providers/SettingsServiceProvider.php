@@ -17,20 +17,20 @@ class SettingsServiceProvider extends ServiceProvider
      * if they exist.
      */
     protected array $keys = [
+        'app:logo',
         'app:name',
         'app:locale',
         'theme:admin',
         'recaptcha:enabled',
         'recaptcha:secret_key',
         'recaptcha:website_key',
+        'theme:user:background',
         'pterodactyl:guzzle:timeout',
-        'pterodactyl:guzzle:connect_timeout',
-        'pterodactyl:console:count',
-        'pterodactyl:console:frequency',
         'pterodactyl:auth:2fa_required',
+        'pterodactyl:guzzle:connect_timeout',
         'pterodactyl:client_features:allocations:enabled',
-        'pterodactyl:client_features:allocations:range_start',
         'pterodactyl:client_features:allocations:range_end',
+        'pterodactyl:client_features:allocations:range_start',
     ];
 
     /**

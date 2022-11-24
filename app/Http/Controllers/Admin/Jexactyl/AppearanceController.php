@@ -7,13 +7,15 @@ use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Illuminate\Contracts\Config\Repository;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Http\Requests\Admin\Jexactyl\ThemeFormRequest;
+use Pterodactyl\Exceptions\Model\DataValidationException;
+use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\Jexactyl\AppearanceFormRequest;
 
-class ThemeController extends Controller
+class AppearanceController extends Controller
 {
     /**
-     * ThemeController constructor.
+     * AppearanceController constructor.
      */
     public function __construct(
         private Repository $config,
@@ -27,25 +29,28 @@ class ThemeController extends Controller
      */
     public function index(): View
     {
-        return view('admin.jexactyl.theme', [
-            'admin' => $this->settings->get('settings::theme:admin', 'jexactyl'),
+        return view('admin.jexactyl.appearance', [
+            'name' => config('app.name'),
+            'logo' => config('app.logo'),
+
+            'admin' => config('theme.admin'),
+            'user' => ['background' => config('theme.user.background')],
         ]);
     }
 
     /**
      * Handle settings update.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws DataValidationException|RecordNotFoundException
      */
-    public function update(ThemeFormRequest $request): RedirectResponse
+    public function update(AppearanceFormRequest $request): RedirectResponse
     {
         foreach ($request->normalize() as $key => $value) {
             $this->settings->set('settings::' . $key, $value);
         }
 
-        $this->alert->success('Jexactyl Admin Theme has been updated.')->flash();
+        $this->alert->success('Jexactyl Appearance has been updated.')->flash();
 
-        return redirect()->route('admin.jexactyl.theme');
+        return redirect()->route('admin.jexactyl.appearance');
     }
 }
