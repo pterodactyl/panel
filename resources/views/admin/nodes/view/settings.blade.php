@@ -67,16 +67,16 @@
                         </div>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label for="fqdn" class="control-label">Fully Qualified Domain Name</label>
+                        <label for="fqdn" class="control-label">FQDN / IP Address</label>
                         <div>
                             <input type="text" autocomplete="off" name="fqdn" class="form-control" value="{{ old('fqdn', $node->fqdn) }}" />
                         </div>
-                        <p class="text-muted"><small>Please enter domain name (e.g <code>node.example.com</code>) to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.
+                        <p class="text-muted"><small>Please enter the domain name (e.g <code>node.example.com</code>) or IP Address to be used for connecting to the daemon. An IP address may only be used if you are not using SSL for this node.
                                 <a tabindex="0" data-toggle="popover" data-trigger="focus" title="Why do I need a FQDN?" data-content="In order to secure communications between your server and this node we use SSL. We cannot generate a SSL certificate for IP Addresses, and as such you will need to provide a FQDN.">Why?</a>
                             </small></p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label class="form-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Communicate Over SSL</label>
+                        <label class="form-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> SSL</label>
                         <div>
                             <div class="radio radio-success radio-inline">
                                 <input type="radio" id="pSSLTrue" value="https" name="scheme" {{ (old('scheme', $node->scheme) === 'https') ? 'checked' : '' }}>
@@ -87,10 +87,10 @@
                                 <label for="pSSLFalse"> Use HTTP Connection</label>
                             </div>
                         </div>
-                        <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use SSL at all, select a HTTP connection.</p>
+                        <p class="text-muted small">In most cases you should select to use a SSL connection. If using an IP Address or you do not wish to use an SSL, select a HTTP connection.</p>
                     </div>
                     <div class="form-group col-xs-12">
-                        <label class="form-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Behind Proxy</label>
+                        <label class="form-label"><span class="label label-warning"><i class="fa fa-power-off"></i></span> Proxy</label>
                         <div>
                             <div class="radio radio-success radio-inline">
                                 <input type="radio" id="pProxyFalse" value="0" name="behind_proxy" {{ (old('behind_proxy', $node->behind_proxy) == false) ? 'checked' : '' }}>
@@ -136,7 +136,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-xs-6">
-                                <label for="memory_overallocate" class="control-label">Overallocate</label>
+                                <label for="memory_overallocate" class="control-label">Overallocation</label>
                                 <div class="input-group">
                                     <input type="text" name="memory_overallocate" class="form-control" value="{{ old('memory_overallocate', $node->memory_overallocate) }}"/>
                                     <span class="input-group-addon">%</span>
@@ -155,7 +155,7 @@
                                 </div>
                             </div>
                             <div class="form-group col-xs-6">
-                                <label for="disk_overallocate" class="control-label">Overallocate</label>
+                                <label for="disk_overallocate" class="control-label">Overallocation</label>
                                 <div class="input-group">
                                     <input type="text" name="disk_overallocate" class="form-control" value="{{ old('disk_overallocate', $node->disk_overallocate) }}"/>
                                     <span class="input-group-addon">%</span>
@@ -215,13 +215,13 @@
                         <div>
                             <input type="checkbox" name="reset_secret" id="reset_secret" /> <label for="reset_secret" class="control-label">Reset Daemon Master Key</label>
                         </div>
-                        <p class="text-muted"><small>Resetting the daemon master key will void any request coming from the old key. This key is used for all sensitive operations on the daemon including server creation and deletion. We suggest changing this key regularly for security.</small></p>
+                        <p class="text-muted"><small>Resetting the daemon master key will invalidate any requests originating from the old key. This key is used for all sensitive operations on the daemon including server creation and deletion. We suggest changing this key regularly for security.</small></p>
                     </div>
                 </div>
                 <div class="box-footer">
                     {!! method_field('PATCH') !!}
                     {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-primary pull-right">Save Changes</button>
+                    <button type="submit" class="btn btn-primary pull-right">Save</button>
                 </div>
             </div>
         </div>
