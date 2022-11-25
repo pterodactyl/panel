@@ -75,8 +75,8 @@ const FileUploadListDialog = asDialog({
 export default () => {
     const open = useSignal(false);
 
-    const count = ServerContext.useStoreState((state) => Object.keys(state.files.uploads).length);
-    const progress = ServerContext.useStoreState((state) => ({
+    const count = ServerContext.useStoreState(state => Object.keys(state.files.uploads).length);
+    const progress = ServerContext.useStoreState(state => ({
         uploaded: Object.values(state.files.uploads).reduce((count, file) => count + file.loaded, 0),
         total: Object.values(state.files.uploads).reduce((count, file) => count + file.total, 0),
     }));

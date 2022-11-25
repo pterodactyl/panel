@@ -10,12 +10,12 @@ const TransferListener = () => {
     // Listen for the transfer status event, so we can update the state of the server.
     useWebsocketEvent(SocketEvent.TRANSFER_STATUS, (status: string) => {
         if (status === 'pending' || status === 'processing') {
-            setServerFromState((s) => ({ ...s, isTransferring: true }));
+            setServerFromState(s => ({ ...s, isTransferring: true }));
             return;
         }
 
         if (status === 'failed') {
-            setServerFromState((s) => ({ ...s, isTransferring: false }));
+            setServerFromState(s => ({ ...s, isTransferring: false }));
             return;
         }
 

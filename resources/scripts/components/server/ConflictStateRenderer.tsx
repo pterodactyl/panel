@@ -8,7 +8,7 @@ export default () => {
     const status = ServerContext.useStoreState(state => state.server.data?.status || null);
     const isTransferring = ServerContext.useStoreState(state => state.server.data?.isTransferring || false);
     const isNodeUnderMaintenance = ServerContext.useStoreState(
-        state => state.server.data?.isNodeUnderMaintenance || false
+        state => state.server.data?.isNodeUnderMaintenance || false,
     );
 
     return status === 'installing' || status === 'install_failed' ? (
