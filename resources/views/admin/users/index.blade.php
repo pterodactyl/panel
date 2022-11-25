@@ -5,7 +5,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Users<small>All registered users on the system.</small></h1>
+    <h1>Users<small>A list of all of the users on the system.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Users</li>
@@ -36,10 +36,10 @@
                         <tr>
                             <th>ID</th>
                             <th>Email</th>
-                            <th>Client Name</th>
+                            <th>Full Name</th>
                             <th>Username</th>
                             <th class="text-center">2FA</th>
-                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Servers Owned</span></th>
+                            <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user is marked as the owner of.">Owned Servers</span></th>
                             <th class="text-center"><span data-toggle="tooltip" data-placement="top" title="Servers that this user can access because they are marked as a subuser.">Can Access</span></th>
                             <th></th>
                         </tr>
