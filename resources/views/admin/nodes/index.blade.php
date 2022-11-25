@@ -10,7 +10,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Nodes<small>All nodes available on the system.</small></h1>
+    <h1>Nodes<small>A list of all of the nodes registered on the system.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Nodes</li>
@@ -91,7 +91,7 @@
                 });
                 $(element).removeClass('text-muted').find('i').removeClass().addClass('fa fa-fw fa-heartbeat faa-pulse animated').css('color', '#50af51');
             }).fail(function (error) {
-                var errorText = 'Error connecting to node! Check browser console for details.';
+                var errorText = 'Error connecting to node! Check the browser console for details.';
                 try {
                     errorText = error.responseJSON.errors[0].detail || errorText;
                 } catch (ex) {}
