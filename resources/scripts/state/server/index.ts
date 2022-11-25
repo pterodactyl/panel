@@ -37,7 +37,7 @@ const server: ServerDataStore = {
             return false;
         }
 
-        return state.data.status !== null || state.data.isTransferring;
+        return state.data.status !== null || state.data.isTransferring || state.data.isNodeUnderMaintenance;
     }),
 
     isInstalling: computed(state => {

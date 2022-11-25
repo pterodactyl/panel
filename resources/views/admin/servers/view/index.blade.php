@@ -78,7 +78,7 @@
                                     @if($server->memory === 0)
                                         <code>Unlimited</code>
                                     @else
-                                        <code>{{ $server->memory }}MB</code>
+                                        <code>{{ $server->memory }}MiB</code>
                                     @endif
                                     /
                                     @if($server->swap === 0)
@@ -86,7 +86,7 @@
                                     @elseif($server->swap === -1)
                                         <code data-toggle="tooltip" data-placement="top" title="Swap Space">Unlimited</code>
                                     @else
-                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space"> {{ $server->swap }}MB</code>
+                                        <code data-toggle="tooltip" data-placement="top" title="Swap Space"> {{ $server->swap }}MiB</code>
                                     @endif
                                 </td>
                             </tr>
