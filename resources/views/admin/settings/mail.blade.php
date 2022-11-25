@@ -6,7 +6,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Mail Settings<small>Configure how Pterodactyl should handle sending emails.</small></h1>
+    <h1>Mail Settings<small>Configure how Pterodactyl handles sending emails.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Settings</li>
@@ -60,7 +60,7 @@
                                             <option value="tls" @if($encryption === 'tls') selected @endif>Transport Layer Security (TLS)</option>
                                             <option value="ssl" @if($encryption === 'ssl') selected @endif>Secure Sockets Layer (SSL)</option>
                                         </select>
-                                        <p class="text-muted small">Select the type of encryption to use when sending mail.</p>
+                                        <p class="text-muted small">The type of encryption to use when sending mail.</p>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -74,7 +74,7 @@
                                     <label class="control-label">Password <span class="field-optional"></span></label>
                                     <div>
                                         <input type="password" class="form-control" name="mail:password"/>
-                                        <p class="text-muted small">The password to use in conjunction with the SMTP username. Leave blank to continue using the existing password. To set the password to an empty value enter <code>!e</code> into the field.</p>
+                                        <p class="text-muted small">The password to use in conjunction with the SMTP username. Leave blank to continue using the existing password. If you don't use a password, enter <code>!e</code> into the field.</p>
                                     </div>
                                 </div>
                             </div>
@@ -84,7 +84,7 @@
                                     <label class="control-label">Mail From</label>
                                     <div>
                                         <input required type="email" class="form-control" name="mail:from:address" value="{{ old('mail:from:address', config('mail.from.address')) }}" />
-                                        <p class="text-muted small">Enter an email address that all outgoing emails will originate from.</p>
+                                        <p class="text-muted small">The email address that all outgoing emails will originate from.</p>
                                     </div>
                                 </div>
                                 <div class="form-group col-md-6">
@@ -153,7 +153,7 @@
                 }).done(function () {
                     swal({
                         title: 'Success',
-                        text: 'The test message was sent successfully.',
+                        text: 'The test email was sent successfully.',
                         type: 'success'
                     });
                 });
