@@ -26,6 +26,10 @@
                     <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
                             <tr>
+                                <td>Server Name</td>
+                                <td>{{ $server->name }}</td>
+                            </tr>
+                            <tr>
                                 <td>Internal Identifier</td>
                                 <td><code>{{ $server->id }}</code></td>
                             </tr>
@@ -42,15 +46,11 @@
                                 <td><code>{{ $server->uuid }}</code></td>
                             </tr>
                             <tr>
-                                <td>Current Egg</td>
+                                <td>Egg</td>
                                 <td>
-                                    <a href="{{ route('admin.nests.view', $server->nest_id) }}">{{ $server->nest->name }}</a> ::
+                                    <a href="{{ route('admin.nests.view', $server->nest_id) }}">{{ $server->nest->name }}</a> :
                                     <a href="{{ route('admin.nests.egg.view', $server->egg_id) }}">{{ $server->egg->name }}</a>
                                 </td>
-                            </tr>
-                            <tr>
-                                <td>Server Name</td>
-                                <td>{{ $server->name }}</td>
                             </tr>
                             <tr>
                                 <td>CPU Limit</td>
@@ -78,7 +78,7 @@
                                     @if($server->memory === 0)
                                         <code>Unlimited</code>
                                     @else
-                                        <code>{{ $server->memory }}MiB</code>
+                                        <code>{{ $server->memory }}</code>
                                     @endif
                                     /
                                     @if($server->swap === 0)
