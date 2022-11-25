@@ -180,7 +180,7 @@
             }
 
             swal({
-                title: 'Whoops!',
+                title: 'Error',
                 text: 'An error occurred while attempting to ' + verb + ' mail settings: ' + errorText,
                 type: 'error'
             });

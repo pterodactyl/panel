@@ -5,7 +5,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Application API<small>Control access credentials for managing this Panel via the API.</small></h1>
+    <h1>API<small>Control access credentials for managing this Panel via the API.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Application API</li>
@@ -92,7 +92,7 @@
                         console.error(jqXHR);
                         swal({
                             type: 'error',
-                            title: 'Whoops!',
+                            title: 'Error',
                             text: 'An error occurred while attempting to revoke this key.'
                         });
                     });

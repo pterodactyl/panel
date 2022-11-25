@@ -219,7 +219,7 @@
             }).fail(function (jqXHR) {
                 console.error(jqXHR);
                 swal({
-                    title: 'Whoops!',
+                    title: 'Error',
                     text: jqXHR.responseJSON.error,
                     type: 'error'
                 });
@@ -338,7 +338,7 @@
                     console.error(jqXHR);
                     swal({
                         type: 'error',
-                        title: 'Whoops!',
+                        title: 'Error',
                         html: true,
                         text: 'An error occurred while attempting to delete these allocations. Please try again.',
                     });

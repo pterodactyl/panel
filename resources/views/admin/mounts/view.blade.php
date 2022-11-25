@@ -280,7 +280,7 @@
                 }).fail(function (jqXHR) {
                     console.error(jqXHR);
                     swal({
-                        title: 'Whoops!',
+                        title: 'Error',
                         text: jqXHR.responseJSON.error,
                         type: 'error'
                     });
@@ -303,7 +303,7 @@
                 }).fail(function (jqXHR) {
                     console.error(jqXHR);
                     swal({
-                        title: 'Whoops!',
+                        title: 'Error',
                         text: jqXHR.responseJSON.error,
                         type: 'error'
                     });

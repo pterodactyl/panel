@@ -31,8 +31,8 @@ $(document).ready(function () {
                 html: true,
                 showCancelButton: true,
                 showConfirmButton: true,
-                cancelButtonText: 'I do not Accept',
-                confirmButtonText: 'I Accept',
+                cancelButtonText: 'Decline',
+                confirmButtonText: 'Accept',
                 closeOnConfirm: false,
                 showLoaderOnConfirm: true
             }, function () {
@@ -49,13 +49,13 @@ $(document).ready(function () {
                     swal({
                         type: 'success',
                         title: '',
-                        text: 'The EULA for this server has been accepted, restarting server now.',
+                        text: 'Successfully accepted the EULA, restarting server now.',
                     });
                 }).fail(function (jqXHR) {
                     console.error(jqXHR);
                     swal({
-                        title: 'Whoops!',
-                        text: 'An error occurred while attempting to set the EULA as accepted: ' + jqXHR.responseJSON.error,
+                        title: 'Error',
+                        text: 'An error occurred while trying to accept the EULA: ' + jqXHR.responseJSON.error,
                         type: 'error'
                     })
                 });

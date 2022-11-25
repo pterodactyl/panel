@@ -129,7 +129,7 @@
                 console.error(jqXHR);
                 swal({
                     type: 'error',
-                    title: 'Whoops!',
+                    title: 'Error',
                     text: (typeof jqXHR.responseJSON.error !== 'undefined') ? jqXHR.responseJSON.error : 'An error occurred while processing this request.'
                 });
             });
@@ -158,7 +158,7 @@
             }
             swal({
                 type: 'error',
-                title: 'Whoops!',
+                title: 'Error',
                 text: error
             });
         }).always(function () {

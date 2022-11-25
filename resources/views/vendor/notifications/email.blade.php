@@ -88,7 +88,7 @@ $style = [
                                                 {{ $greeting }}
                                             @else
                                                 @if ($level == 'error')
-                                                    Whoops!
+                                                    Error
                                                 @else
                                                     Hello!
                                                 @endif
