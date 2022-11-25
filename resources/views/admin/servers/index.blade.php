@@ -5,7 +5,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Servers<small>All servers available on the system.</small></h1>
+    <h1>Servers<small>A list of all of the servers available on the host.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Servers</li>
@@ -21,7 +21,7 @@
                 <div class="box-tools search01">
                     <form action="{{ route('admin.servers') }}" method="GET">
                         <div class="input-group input-group-sm">
-                            <input type="text" name="filter[*]" class="form-control pull-right" value="{{ request()->input()['filter']['*'] ?? '' }}" placeholder="Search Servers">
+                            <input type="text" name="filter[*]" class="form-control pull-right" value="{{ request()->input()['filter']['*'] ?? '' }}" placeholder="Search">
                             <div class="input-group-btn">
                                 <button type="submit" class="btn btn-default"><i class="fa fa-search"></i></button>
                                 <a href="{{ route('admin.servers.new') }}"><button type="button" class="btn btn-sm btn-primary" style="border-radius: 0 3px 3px 0;margin-left:-1px;">Create New</button></a>
@@ -38,7 +38,7 @@
                             <th>UUID</th>
                             <th>Owner</th>
                             <th>Node</th>
-                            <th>Connection</th>
+                            <th>Default Allocation</th>
                             <th></th>
                             <th></th>
                         </tr>
