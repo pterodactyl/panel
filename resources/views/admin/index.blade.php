@@ -5,7 +5,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Administrative Overview<small>A quick glance at your system.</small></h1>
+    <h1>Overview<small>A quick glance at your system.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Index</li>
@@ -47,7 +47,7 @@
         <a href="https://github.com/pterodactyl/panel"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-support"></i> Github</button></a>
     </div>
     <div class="col-xs-6 col-sm-3 text-center">
-        <a href="{{ $version->getDonations() }}"><button class="btn btn-success" style="width:100%;"><i class="fa fa-fw fa-money"></i> Support the Project</button></a>
+        <a href="{{ $version->getDonations() }}"><button class="btn btn-success" style="width:100%;"><i class="fa fa-fw fa-money"></i> Donate</button></a>
     </div>
 </div>
 @endsection
