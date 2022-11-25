@@ -41,7 +41,7 @@
                             <input type="checkbox" class="select-all-files hidden-xs" data-action="selectAll">
                         </th>
                         <th>IP Address <i class="fa fa-fw fa-minus-square" style="font-weight:normal;color:#d9534f;cursor:pointer;" data-toggle="modal" data-target="#allocationModal"></i></th>
-                        <th>IP Alias</th>
+                        <th>Alias</th>
                         <th>Port</th>
                         <th>Assigned To</th>
                         <th>
@@ -106,14 +106,14 @@
                                     <option value="{{ $allocation->ip }}">{{ $allocation->ip }}</option>
                                 @endforeach
                             </select>
-                            <p class="text-muted small">Enter an IP address to assign ports to here.</p>
+                            <p class="text-muted small">Enter the IP address to assign ports to here.</p>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="pAllocationIP" class="control-label">IP Alias</label>
+                        <label for="pAllocationIP" class="control-label">Alias</label>
                         <div>
                             <input type="text" id="pAllocationAlias" class="form-control" name="allocation_alias" placeholder="alias" />
-                            <p class="text-muted small">If you would like to assign a default alias to these allocations enter it here.</p>
+                            <p class="text-muted small">If you would like to assign an alias to these allocations, enter it here.</p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -126,7 +126,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <button type="submit" class="btn btn-success btn-sm pull-right">Submit</button>
+                    <button type="submit" class="btn btn-success btn-sm pull-right">Add</button>
                 </div>
             </div>
         </form>
