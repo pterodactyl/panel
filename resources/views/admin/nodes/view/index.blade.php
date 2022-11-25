@@ -77,7 +77,7 @@
                         <form action="{{ route('admin.nodes.view.delete', $node->id) }}" method="POST">
                             {!! csrf_field() !!}
                             {!! method_field('DELETE') !!}
-                            <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($node->servers_count < 1) ?: 'disabled' }}>Delete This Node</button>
+                            <button type="submit" class="btn btn-danger btn-sm pull-right" {{ ($node->servers_count < 1) ?: 'disabled' }}>Delete Node</button>
                         </form>
                     </div>
                 </div>
