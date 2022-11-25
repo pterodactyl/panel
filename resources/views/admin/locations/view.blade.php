@@ -23,7 +23,7 @@
             <form action="{{ route('admin.locations.view', $location->id) }}" method="POST">
                 <div class="box-body">
                     <div class="form-group">
-                        <label for="pShort" class="form-label">Short Code</label>
+                        <label for="pShort" class="form-label">Name</label>
                         <input type="text" id="pShort" name="short" class="form-control" value="{{ $location->short }}" />
                     </div>
                     <div class="form-group">
@@ -35,7 +35,7 @@
                     {!! csrf_field() !!}
                     {!! method_field('PATCH') !!}
                     <button name="action" value="edit" class="btn btn-sm btn-primary pull-right">Save</button>
-                    <button name="action" value="delete" class="btn btn-sm btn-danger pull-left muted muted-hover"><i class="fa fa-trash-o"></i></button>
+                    <button name="action" value="delete" class="btn btn-sm btn-danger pull-left"><i class="fa fa-trash-o"></i></button>
                 </div>
             </form>
         </div>
@@ -43,7 +43,7 @@
     <div class="col-sm-6">
         <div class="box">
             <div class="box-header with-border">
-                <h3 class="box-title">Nodes</h3>
+                <h3 class="box-title">Assigned Nodes</h3>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">
