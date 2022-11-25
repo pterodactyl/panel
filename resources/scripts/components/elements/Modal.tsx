@@ -1,12 +1,16 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import Spinner from '@/components/elements/Spinner';
-import tw from 'twin.macro';
-import styled, { css } from 'styled-components/macro';
-import { breakpoint } from '@/theme';
-import Fade from '@/components/elements/Fade';
+import type { ReactNode } from 'react';
+import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { createPortal } from 'react-dom';
+import styled, { css } from 'styled-components';
+import tw from 'twin.macro';
+
+import Spinner from '@/components/elements/Spinner';
+import { breakpoint } from '@/theme';
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
 
 export interface RequiredModalProps {
+    children?: ReactNode;
+
     visible: boolean;
     onDismissed: () => void;
     appear?: boolean;
@@ -32,7 +36,7 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     ${breakpoint('lg')`max-width: 50%`};
 
     ${tw`relative flex flex-col w-full m-auto`};
-    ${(props) =>
+    ${props =>
         props.alignTop &&
         css`
             margin-top: 20%;
@@ -55,7 +59,7 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     }
 `;
 
-const Modal: React.FC<ModalProps> = ({
+function Modal({
     visible,
     appear,
     dismissable,
@@ -65,7 +69,7 @@ const Modal: React.FC<ModalProps> = ({
     closeOnEscape = true,
     onDismissed,
     children,
-}) => {
+}: ModalProps) {
     const [render, setRender] = useState(visible);
 
     const isDismissable = useMemo(() => {
@@ -85,14 +89,20 @@ const Modal: React.FC<ModalProps> = ({
         };
     }, [isDismissable, closeOnEscape, render]);
 
-    useEffect(() => setRender(visible), [visible]);
+    useEffect(() => {
+        setRender(visible);
+
+        if (!visible) {
+            onDismissed();
+        }
+    }, [visible]);
 
     return (
-        <Fade in={render} timeout={150} appear={appear || true} unmountOnExit onExited={() => onDismissed()}>
+        <FadeTransition as={Fragment} show={render} duration="duration-150" appear={appear ?? true} unmount>
             <ModalMask
-                onClick={(e) => e.stopPropagation()}
-                onContextMenu={(e) => e.stopPropagation()}
-                onMouseDown={(e) => {
+                onClick={e => e.stopPropagation()}
+                onContextMenu={e => e.stopPropagation()}
+                onMouseDown={e => {
                     if (isDismissable && closeOnBackground) {
                         e.stopPropagation();
                         if (e.target === e.currentTarget) {
@@ -119,16 +129,16 @@ const Modal: React.FC<ModalProps> = ({
                             </svg>
                         </div>
                     )}
-                    {showSpinnerOverlay && (
-                        <Fade timeout={150} appear in>
-                            <div
-                                css={tw`absolute w-full h-full rounded flex items-center justify-center`}
-                                style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
-                            >
-                                <Spinner />
-                            </div>
-                        </Fade>
-                    )}
+
+                    <FadeTransition duration="duration-150" show={showSpinnerOverlay ?? false} appear>
+                        <div
+                            css={tw`absolute w-full h-full rounded flex items-center justify-center`}
+                            style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
+                        >
+                            <Spinner />
+                        </div>
+                    </FadeTransition>
+
                     <div
                         css={tw`bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}
                     >
@@ -136,14 +146,14 @@ const Modal: React.FC<ModalProps> = ({
                     </div>
                 </ModalContainer>
             </ModalMask>
-        </Fade>
+        </FadeTransition>
     );
-};
+}
 
-const PortaledModal: React.FC<ModalProps> = ({ children, ...props }) => {
+function PortaledModal({ children, ...props }: ModalProps): JSX.Element {
     const element = useRef(document.getElementById('modal-portal'));
 
     return createPortal(<Modal {...props}>{children}</Modal>, element.current!);
-};
+}
 
 export default PortaledModal;

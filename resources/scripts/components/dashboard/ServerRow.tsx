@@ -1,4 +1,5 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
+import * as React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
 import { Link } from 'react-router-dom';
@@ -8,7 +9,7 @@ import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import Spinner from '@/components/elements/Spinner';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import isEqual from 'react-fast-compare';
 
 // Determines if the current value is in an alarm threshold so we can show it in red rather
@@ -17,14 +18,14 @@ const isAlarmState = (current: number, limit: number): boolean => limit > 0 && c
 
 const Icon = memo(
     styled(FontAwesomeIcon)<{ $alarm: boolean }>`
-        ${(props) => (props.$alarm ? tw`text-red-400` : tw`text-neutral-500`)};
+        ${props => (props.$alarm ? tw`text-red-400` : tw`text-neutral-500`)};
     `,
-    isEqual
+    isEqual,
 );
 
 const IconDescription = styled.p<{ $alarm: boolean }>`
     ${tw`text-sm ml-2`};
-    ${(props) => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
+    ${props => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
 `;
 
 const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
@@ -56,8 +57,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
 
     const getStats = () =>
         getServerResourceUsage(server.uuid)
-            .then((data) => setStats(data))
-            .catch((error) => console.error(error));
+            .then(data => setStats(data))
+            .catch(error => console.error(error));
 
     useEffect(() => {
         setIsSuspended(stats?.isSuspended || server.status === 'suspended');
@@ -106,8 +107,8 @@ export default ({ server, className }: { server: Server; className?: string }) =
                     <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`} />
                     <p css={tw`text-sm text-neutral-400 ml-2`}>
                         {server.allocations
-                            .filter((alloc) => alloc.isDefault)
-                            .map((allocation) => (
+                            .filter(alloc => alloc.isDefault)
+                            .map(allocation => (
                                 <React.Fragment key={allocation.ip + allocation.port.toString()}>
                                     {allocation.alias || ip(allocation.ip)}:{allocation.port}
                                 </React.Fragment>

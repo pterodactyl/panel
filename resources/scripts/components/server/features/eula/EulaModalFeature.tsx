@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import tw from 'twin.macro';
@@ -12,10 +12,10 @@ const EulaModalFeature = () => {
     const [visible, setVisible] = useState(false);
     const [loading, setLoading] = useState(false);
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const status = ServerContext.useStoreState((state) => state.status.value);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const status = ServerContext.useStoreState(state => state.status.value);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
 
     useEffect(() => {
         if (!connected || !instance || status === 'running') return;
@@ -46,7 +46,7 @@ const EulaModalFeature = () => {
                 setLoading(false);
                 setVisible(false);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'feature:eula', error });
             })
@@ -72,7 +72,7 @@ const EulaModalFeature = () => {
                     target={'_blank'}
                     css={tw`text-primary-300 underline transition-colors duration-150 hover:text-primary-400`}
                     rel={'noreferrer noopener'}
-                    href='https://account.mojang.com/documents/minecraft_eula'
+                    href="https://account.mojang.com/documents/minecraft_eula"
                 >
                     Minecraft&reg; EULA
                 </a>

@@ -18,7 +18,7 @@ const useFlashKey = (key: string): KeyedFlashStore => {
     return {
         addError: (message, title) => addFlash({ key, message, title, type: 'error' }),
         clearFlashes: () => clearFlashes(key),
-        clearAndAddHttpError: (error) => clearAndAddHttpError({ key, error }),
+        clearAndAddHttpError: error => clearAndAddHttpError({ key, error }),
     };
 };
 

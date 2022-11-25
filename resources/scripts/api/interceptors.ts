@@ -1,21 +1,22 @@
-import http from '@/api/http';
-import { AxiosError } from 'axios';
-import { History } from 'history';
+import type { AxiosError } from 'axios';
+import type { NavigateFunction } from 'react-router-dom';
 
-export const setupInterceptors = (history: History) => {
+import http from '@/api/http';
+
+export const setupInterceptors = (navigate: NavigateFunction) => {
     http.interceptors.response.use(
-        (resp) => resp,
+        resp => resp,
         (error: AxiosError) => {
             if (error.response?.status === 400) {
                 if (
                     (error.response?.data as Record<string, any>).errors?.[0].code === 'TwoFactorAuthRequiredException'
                 ) {
                     if (!window.location.pathname.startsWith('/account')) {
-                        history.replace('/account', { twoFactorRedirect: true });
+                        navigate('/account', { state: { twoFactorRedirect: true } });
                     }
                 }
             }
             throw error;
-        }
+        },
     );
 };

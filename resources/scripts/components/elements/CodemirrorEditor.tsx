@@ -1,7 +1,9 @@
-import React, { useCallback, useEffect, useState } from 'react';
 import CodeMirror from 'codemirror';
-import styled from 'styled-components/macro';
+import type { CSSProperties } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import styled from 'styled-components';
 import tw from 'twin.macro';
+
 import modes from '@/modes';
 
 require('codemirror/lib/codemirror.css');
@@ -106,7 +108,7 @@ const EditorContainer = styled.div`
 `;
 
 export interface Props {
-    style?: React.CSSProperties;
+    style?: CSSProperties;
     initialContent?: string;
     mode: string;
     filename?: string;
@@ -119,7 +121,7 @@ const findModeByFilename = (filename: string) => {
     for (let i = 0; i < modes.length; i++) {
         const info = modes[i];
 
-        if (info.file && info.file.test(filename)) {
+        if (info?.file !== undefined && info.file.test(filename)) {
             return info;
         }
     }
@@ -130,7 +132,7 @@ const findModeByFilename = (filename: string) => {
     if (ext) {
         for (let i = 0; i < modes.length; i++) {
             const info = modes[i];
-            if (info.ext) {
+            if (info?.ext !== undefined) {
                 for (let j = 0; j < info.ext.length; j++) {
                     if (info.ext[j] === ext) {
                         return info;
@@ -146,10 +148,12 @@ const findModeByFilename = (filename: string) => {
 export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
     const [editor, setEditor] = useState<CodeMirror.Editor>();
 
-    const ref = useCallback((node) => {
-        if (!node) return;
+    const ref = useCallback<(_?: unknown) => void>(node => {
+        if (node === undefined) {
+            return;
+        }
 
-        const e = CodeMirror.fromTextArea(node, {
+        const e = CodeMirror.fromTextArea(node as HTMLTextAreaElement, {
             mode: 'text/plain',
             theme: 'ayu-mirage',
             indentUnit: 4,
@@ -158,7 +162,6 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
             indentWithTabs: false,
             lineWrapping: true,
             lineNumbers: true,
-            foldGutter: true,
             fixedGutter: true,
             scrollbarStyle: 'overlay',
             coverGutterNextToScrollbar: false,

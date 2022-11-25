@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import * as React from 'react';
 import { Dialog as HDialog } from '@headlessui/react';
 import { Button } from '@/components/elements/button/index';
 import { XIcon } from '@heroicons/react/solid';

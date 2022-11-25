@@ -1,4 +1,3 @@
-import React from 'react';
 import { PaginationDataSet } from '@/api/http';
 import classNames from 'classnames';
 import { Button } from '@/components/elements/button/index';
@@ -53,7 +52,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
                     <Button.Text {...buttonProps(1)} disabled={pages.previous.length !== 2}>
                         <ChevronDoubleLeftIcon className={'w-3 h-3'} />
                     </Button.Text>
-                    {pages.previous.reverse().map((value) => (
+                    {pages.previous.reverse().map(value => (
                         <Button.Text key={`previous-${value}`} {...buttonProps(value)}>
                             {value}
                         </Button.Text>
@@ -61,7 +60,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
                     <Button size={Button.Sizes.Small} shape={Button.Shapes.IconSquare}>
                         {current}
                     </Button>
-                    {pages.next.map((value) => (
+                    {pages.next.map(value => (
                         <Button.Text key={`next-${value}`} {...buttonProps(value)}>
                             {value}
                         </Button.Text>
