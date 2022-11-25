@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { ClipboardListIcon } from '@heroicons/react/outline';
 import { Dialog } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';

@@ -60,7 +60,7 @@ const subusers: ServerSubuserStore = {
         let matched = false;
         state.data = [
             ...state.data
-                .map((user) => {
+                .map(user => {
                     if (user.uuid === payload.uuid) {
                         matched = true;
 
@@ -74,7 +74,7 @@ const subusers: ServerSubuserStore = {
     }),
 
     removeSubuser: action((state, payload) => {
-        state.data = [...state.data.filter((user) => user.uuid !== payload)];
+        state.data = [...state.data.filter(user => user.uuid !== payload)];
     }),
 };
 

@@ -1,101 +1,99 @@
+import { CloudUploadIcon } from '@heroicons/react/outline';
+import { useSignal } from '@preact/signals-react';
 import axios from 'axios';
-import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
+import { useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+
+import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import { Button } from '@/components/elements/button/index';
-import React, { useEffect, useRef, useState } from 'react';
 import { ModalMask } from '@/components/elements/Modal';
-import Fade from '@/components/elements/Fade';
+import Portal from '@/components/elements/Portal';
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
+import type { WithClassname } from '@/components/types';
 import useEventListener from '@/plugins/useEventListener';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
-import { WithClassname } from '@/components/types';
-import Portal from '@/components/elements/Portal';
-import { CloudUploadIcon } from '@heroicons/react/outline';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
         return false;
     }
 
-    return event.dataTransfer.types.some((value) => value.toLowerCase() === 'files');
+    return event.dataTransfer.types.some(value => value.toLowerCase() === 'files');
 }
 
 export default ({ className }: WithClassname) => {
     const fileUploadInput = useRef<HTMLInputElement>(null);
-    const [timeouts, setTimeouts] = useState<NodeJS.Timeout[]>([]);
-    const [visible, setVisible] = useState(false);
+
+    const visible = useSignal(false);
+    const timeouts = useSignal<NodeJS.Timeout[]>([]);
+
     const { mutate } = useFileManagerSwr();
     const { addError, clearAndAddHttpError } = useFlashKey('files');
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const { clearFileUploads, appendFileUpload, removeFileUpload } = ServerContext.useStoreActions(
-        (actions) => actions.files
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
+    const { clearFileUploads, removeFileUpload, pushFileUpload, setUploadProgress } = ServerContext.useStoreActions(
+        actions => actions.files,
     );
 
     useEventListener(
         'dragenter',
-        (e) => {
+        e => {
             e.preventDefault();
             e.stopPropagation();
             if (isFileOrDirectory(e)) {
-                return setVisible(true);
+                visible.value = true;
             }
         },
-        { capture: true }
+        { capture: true },
     );
 
-    useEventListener('dragexit', () => setVisible(false), { capture: true });
+    useEventListener('dragexit', () => (visible.value = false), { capture: true });
 
-    useEventListener('keydown', () => {
-        visible && setVisible(false);
-    });
+    useEventListener('keydown', () => (visible.value = false));
 
     useEffect(() => {
-        return () => timeouts.forEach(clearTimeout);
+        return () => timeouts.value.forEach(clearTimeout);
     }, []);
 
     const onUploadProgress = (data: ProgressEvent, name: string) => {
-        appendFileUpload({ name, loaded: data.loaded, total: data.total });
+        setUploadProgress({ name, loaded: data.loaded });
         if (data.loaded >= data.total) {
-            const timeout = setTimeout(() => removeFileUpload(name), 500);
-            setTimeouts((t) => [...t, timeout]);
+            timeouts.value.push(setTimeout(() => removeFileUpload(name), 500));
         }
     };
 
     const onFileSubmission = (files: FileList) => {
         clearAndAddHttpError();
         const list = Array.from(files);
-        if (list.some((file) => !file.size || (!file.type && file.size === 4096))) {
+        if (list.some(file => !file.size || (!file.type && file.size === 4096))) {
             return addError('Folder uploads are not supported at this time.', 'Error');
         }
 
-        if (!list.length) {
-            return;
-        }
+        const uploads = list.map(file => {
+            const controller = new AbortController();
+            pushFileUpload({ name: file.name, data: { abort: controller, loaded: 0, total: file.size } });
 
-        const uploads = list.map((file) => {
-            appendFileUpload({ name: file.name, loaded: 0, total: file.size });
             return () =>
-                getFileUploadUrl(uuid).then((url) =>
+                getFileUploadUrl(uuid).then(url =>
                     axios.post(
                         url,
                         { files: file },
                         {
+                            signal: controller.signal,
                             headers: { 'Content-Type': 'multipart/form-data' },
                             params: { directory },
-                            onUploadProgress: (data) => {
-                                onUploadProgress(data, file.name);
-                            },
-                        }
-                    )
+                            onUploadProgress: data => onUploadProgress(data, file.name),
+                        },
+                    ),
                 );
         });
 
-        Promise.all(uploads.map((fn) => fn()))
+        Promise.all(uploads.map(fn => fn()))
             .then(() => mutate())
-            .catch((error) => {
+            .catch(error => {
                 clearFileUploads();
                 clearAndAddHttpError(error);
             });
@@ -104,16 +102,18 @@ export default ({ className }: WithClassname) => {
     return (
         <>
             <Portal>
-                <Fade appear in={visible} timeout={75} key={'upload_modal_mask'} unmountOnExit>
+                <FadeTransition show={visible.value} duration="duration-75" key="upload_modal_mask" appear unmount>
                     <ModalMask
-                        onClick={() => setVisible(false)}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => {
+                        onClick={() => (visible.value = false)}
+                        onDragOver={e => e.preventDefault()}
+                        onDrop={e => {
                             e.preventDefault();
                             e.stopPropagation();
 
-                            setVisible(false);
-                            if (!e.dataTransfer?.files.length) return;
+                            visible.value = false;
+                            if (!e.dataTransfer?.files.length) {
+                                return;
+                            }
 
                             onFileSubmission(e.dataTransfer.files);
                         }}
@@ -131,13 +131,13 @@ export default ({ className }: WithClassname) => {
                             </div>
                         </div>
                     </ModalMask>
-                </Fade>
+                </FadeTransition>
             </Portal>
             <input
                 type={'file'}
                 ref={fileUploadInput}
                 css={tw`hidden`}
-                onChange={(e) => {
+                onChange={e => {
                     if (!e.currentTarget.files) return;
 
                     onFileSubmission(e.currentTarget.files);

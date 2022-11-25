@@ -1,7 +1,8 @@
-import React from 'react';
+import { PureComponent } from 'react';
+import isEqual from 'react-fast-compare';
+
 import PortaledModal, { ModalProps } from '@/components/elements/Modal';
 import ModalContext, { ModalContextValues } from '@/context/ModalContext';
-import isEqual from 'react-fast-compare';
 
 export interface AsModalProps {
     visible: boolean;
@@ -16,14 +17,12 @@ interface State {
     propOverrides: Partial<SettableModalProps>;
 }
 
-type ExtendedComponentType<T> = (C: React.ComponentType<T>) => React.ComponentType<T & AsModalProps>;
-
 // eslint-disable-next-line @typescript-eslint/ban-types
 function asModal<P extends {}>(
-    modalProps?: SettableModalProps | ((props: P) => SettableModalProps)
-): ExtendedComponentType<P> {
+    modalProps?: SettableModalProps | ((props: P) => SettableModalProps),
+): (Component: any) => any {
     return function (Component) {
-        return class extends React.PureComponent<P & AsModalProps, State> {
+        return class extends PureComponent<P & AsModalProps, State> {
             static displayName = `asModal(${Component.displayName})`;
 
             constructor(props: P & AsModalProps) {
@@ -47,7 +46,7 @@ function asModal<P extends {}>(
             /**
              * @this {React.PureComponent<P & AsModalProps, State>}
              */
-            componentDidUpdate(prevProps: Readonly<P & AsModalProps>, prevState: Readonly<State>) {
+            override componentDidUpdate(prevProps: Readonly<P & AsModalProps>, prevState: Readonly<State>) {
                 if (prevProps.visible && !this.props.visible) {
                     this.setState({ visible: false, propOverrides: {} });
                 } else if (!prevProps.visible && this.props.visible) {
@@ -60,15 +59,15 @@ function asModal<P extends {}>(
 
             dismiss = () => this.setState({ visible: false });
 
-            setPropOverrides: ModalContextValues['setPropOverrides'] = (value) =>
-                this.setState((state) => ({
+            setPropOverrides: ModalContextValues['setPropOverrides'] = value =>
+                this.setState(state => ({
                     propOverrides: !value ? {} : typeof value === 'function' ? value(state.propOverrides) : value,
                 }));
 
             /**
              * @this {React.PureComponent<P & AsModalProps, State>}
              */
-            render() {
+            override render() {
                 if (!this.state.render) return null;
 
                 return (

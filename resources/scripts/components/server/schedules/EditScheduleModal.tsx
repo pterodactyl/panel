@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import Field from '@/components/elements/Field';
 import { Form, Formik, FormikHelpers } from 'formik';
@@ -34,8 +34,8 @@ const EditScheduleModal = ({ schedule }: Props) => {
     const { addError, clearFlashes } = useFlash();
     const { dismiss } = useContext(ModalContext);
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const appendSchedule = ServerContext.useStoreActions(actions => actions.schedules.appendSchedule);
     const [showCheatsheet, setShowCheetsheet] = useState(false);
 
     useEffect(() => {
@@ -59,12 +59,12 @@ const EditScheduleModal = ({ schedule }: Props) => {
             onlyWhenOnline: values.onlyWhenOnline,
             isActive: values.enabled,
         })
-            .then((schedule) => {
+            .then(schedule => {
                 setSubmitting(false);
                 appendSchedule(schedule);
                 dismiss();
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -114,7 +114,7 @@ const EditScheduleModal = ({ schedule }: Props) => {
                             description={'Show the cron cheatsheet for some examples.'}
                             label={'Show Cheatsheet'}
                             defaultChecked={showCheatsheet}
-                            onChange={() => setShowCheetsheet((s) => !s)}
+                            onChange={() => setShowCheetsheet(s => !s)}
                         />
                         {showCheatsheet && (
                             <div css={tw`block md:flex w-full`}>

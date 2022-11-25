@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import tw from 'twin.macro';

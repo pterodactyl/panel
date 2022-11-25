@@ -1,4 +1,4 @@
-name: Build
+name: UI
 
 on:
   push:
@@ -11,13 +11,13 @@ on:
       - "1.0-develop"
 
 jobs:
-  ui:
-    name: UI
+  build-and-test:
+    name: Build and Test
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16]
+        node-version: [16, 18]
     steps:
       - name: Code Checkout
         uses: actions/checkout@v3
@@ -32,4 +32,7 @@ jobs:
         run: yarn install --frozen-lockfile
 
       - name: Build
-        run: yarn build:production
+        run: yarn build
+
+      - name: Tests
+        run: yarn test

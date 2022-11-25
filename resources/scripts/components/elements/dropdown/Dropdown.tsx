@@ -1,4 +1,5 @@
-import React, { ElementType, forwardRef, useMemo } from 'react';
+import { ElementType, forwardRef, useMemo } from 'react';
+import * as React from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import styles from './style.module.css';
 import classNames from 'classnames';
@@ -23,8 +24,8 @@ const Dropdown = forwardRef<typeof Menu, Props>(({ as, children }, ref) => {
         const list = React.Children.toArray(children) as unknown as TypedChild[];
 
         return [
-            list.filter((child) => child.type === DropdownButton),
-            list.filter((child) => child.type !== DropdownButton),
+            list.filter(child => child.type === DropdownButton),
+            list.filter(child => child.type !== DropdownButton),
         ];
     }, [children]);
 

@@ -17,6 +17,7 @@ export interface Server {
     uuid: string;
     name: string;
     node: string;
+    isNodeUnderMaintenance: boolean;
     status: ServerStatus;
     sftpDetails: {
         ip: string;
@@ -24,7 +25,7 @@ export interface Server {
     };
     invocation: string;
     dockerImage: string;
-    description: string;
+    description: string | null;
     limits: {
         memory: number;
         swap: number;
@@ -50,6 +51,7 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     uuid: data.uuid,
     name: data.name,
     node: data.node,
+    isNodeUnderMaintenance: data.is_node_under_maintenance,
     status: data.status,
     invocation: data.invocation,
     dockerImage: data.docker_image,
@@ -63,10 +65,10 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     featureLimits: { ...data.feature_limits },
     isTransferring: data.is_transferring,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerEggVariable
+        rawDataToServerEggVariable,
     ),
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerAllocation
+        rawDataToServerAllocation,
     ),
 });
 
@@ -78,7 +80,7 @@ export default (uuid: string): Promise<[Server, string[]]> => {
                     rawDataToServerObject(data),
                     // eslint-disable-next-line camelcase
                     data.meta?.is_server_owner ? ['*'] : data.meta?.user_permissions || [],
-                ])
+                ]),
             )
             .catch(reject);
     });

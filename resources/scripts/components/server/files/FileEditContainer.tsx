@@ -1,25 +1,27 @@
-import React, { useEffect, useState } from 'react';
-import getFileContents from '@/api/server/files/getFileContents';
+import type { LanguageDescription } from '@codemirror/language';
+import { dirname } from 'pathe';
+import { useEffect, useState } from 'react';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import tw from 'twin.macro';
+
 import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import getFileContents from '@/api/server/files/getFileContents';
 import saveFileContents from '@/api/server/files/saveFileContents';
-import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-import { useHistory, useLocation, useParams } from 'react-router';
-import FileNameModal from '@/components/server/files/FileNameModal';
-import Can from '@/components/elements/Can';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import Button from '@/components/elements/Button';
+import Can from '@/components/elements/Can';
+import Select from '@/components/elements/Select';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { ServerError } from '@/components/elements/ScreenBlock';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Select from '@/components/elements/Select';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
+import FileNameModal from '@/components/server/files/FileNameModal';
+import ErrorBoundary from '@/components/elements/ErrorBoundary';
+import { Editor } from '@/components/elements/editor';
 import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
-import { dirname } from 'path';
-import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
 
 export default () => {
     const [error, setError] = useState('');
@@ -28,13 +30,14 @@ export default () => {
     const [content, setContent] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
     const [mode, setMode] = useState('text/plain');
+    const [language, setLanguage] = useState<LanguageDescription>();
 
-    const history = useHistory();
     const { hash } = useLocation();
+    const navigate = useNavigate();
 
-    const id = ServerContext.useStoreState((state) => state.server.data!.id);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
+    const id = ServerContext.useStoreState(state => state.server.data!.id);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const setDirectory = ServerContext.useStoreActions(actions => actions.files.setDirectory);
     const { addError, clearFlashes } = useFlash();
 
     let fetchFileContent: null | (() => Promise<string>) = null;
@@ -48,7 +51,7 @@ export default () => {
         setDirectory(dirname(path));
         getFileContents(uuid, path)
             .then(setContent)
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 setError(httpErrorToHuman(error));
             })
@@ -63,16 +66,16 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then((content) => saveFileContents(uuid, name || hashToPath(hash), content))
+            .then(content => saveFileContents(uuid, name || hashToPath(hash), content))
             .then(() => {
                 if (name) {
-                    history.push(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
+                    navigate(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
                     return;
                 }
 
                 return Promise.resolve();
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 addError({ message: httpErrorToHuman(error), key: 'files:view' });
             })
@@ -80,17 +83,20 @@ export default () => {
     };
 
     if (error) {
-        return <ServerError message={error} onBack={() => history.goBack()} />;
+        // TODO: onBack
+        return <ServerError message={error} />;
     }
 
     return (
         <PageContentBlock>
             <FlashMessageRender byKey={'files:view'} css={tw`mb-4`} />
+
             <ErrorBoundary>
                 <div css={tw`mb-4`}>
                     <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'} />
                 </div>
             </ErrorBoundary>
+
             {hash.replace(/^#/, '').endsWith('.pteroignore') && (
                 <div css={tw`mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400`}>
                     <p css={tw`text-neutral-300 text-sm`}>
@@ -102,22 +108,24 @@ export default () => {
                     </p>
                 </div>
             )}
+
             <FileNameModal
                 visible={modalVisible}
                 onDismissed={() => setModalVisible(false)}
-                onFileNamed={(name) => {
+                onFileNamed={name => {
                     setModalVisible(false);
                     save(name);
                 }}
             />
+
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading} />
-                <CodemirrorEditor
-                    mode={mode}
+                <Editor
                     filename={hash.replace(/^#/, '')}
-                    onModeChanged={setMode}
                     initialContent={content}
-                    fetchContent={(value) => {
+                    language={language}
+                    onLanguageChanged={setLanguage}
+                    fetchContent={value => {
                         fetchFileContent = value;
                     }}
                     onContentSaved={() => {
@@ -129,16 +137,18 @@ export default () => {
                     }}
                 />
             </div>
+
             <div css={tw`flex justify-end mt-4`}>
                 <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
-                    <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
-                        {modes.map((mode) => (
+                    <Select value={mode} onChange={e => setMode(e.currentTarget.value)}>
+                        {modes.map(mode => (
                             <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
                                 {mode.name}
                             </option>
                         ))}
                     </Select>
                 </div>
+
                 {action === 'edit' ? (
                     <Can action={'file.update'}>
                         <Button css={tw`flex-1 sm:flex-none`} onClick={() => save()}>

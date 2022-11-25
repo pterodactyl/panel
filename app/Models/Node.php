@@ -186,6 +186,11 @@ class Node extends Model
         );
     }
 
+    public function isUnderMaintenance(): bool
+    {
+        return $this->maintenance_mode;
+    }
+
     public function mounts(): HasManyThrough
     {
         return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');

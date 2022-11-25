@@ -1,4 +1,3 @@
-import React from 'react';
 import { Schedule } from '@/api/server/schedules/getServerSchedules';
 import classNames from 'classnames';
 

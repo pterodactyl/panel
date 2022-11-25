@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import { useRef, useState } from 'react';
+import * as React from 'react';
 import { Dialog as HDialog } from '@headlessui/react';
 import { Button } from '@/components/elements/button/index';
 import { XIcon } from '@heroicons/react/solid';
@@ -90,7 +91,7 @@ export default ({
                                 >
                                     <div className={'flex p-6 pb-0 overflow-y-auto'}>
                                         {iconPosition === 'container' && icon}
-                                        <div className={'flex-1 max-h-[70vh]'}>
+                                        <div className={'flex-1 max-h-[70vh] min-w-0'}>
                                             <div className={'flex items-center'}>
                                                 {iconPosition !== 'container' && icon}
                                                 <div>

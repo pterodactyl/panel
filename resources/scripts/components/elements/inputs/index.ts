@@ -6,7 +6,7 @@ const Input = Object.assign(
     {
         Text: InputField,
         Checkbox: Checkbox,
-    }
+    },
 );
 
 export { Input };
