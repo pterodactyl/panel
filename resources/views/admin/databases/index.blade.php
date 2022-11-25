@@ -5,7 +5,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Database Hosts<small>Database hosts that servers can have databases created on.</small></h1>
+    <h1>Database Hosts<small>Hosts of which host databases for servers.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Database Hosts</li>
@@ -87,12 +87,12 @@
                         <div class="col-md-6">
                             <label for="pUsername" class="form-label">Username</label>
                             <input type="text" name="username" id="pUsername" class="form-control" />
-                            <p class="text-muted small">The username of an account that has enough permissions to create new users and databases on the system.</p>
+                            <p class="text-muted small">The username of an account that has permission to create new users and databases on the host.</p>
                         </div>
                         <div class="col-md-6">
                             <label for="pPassword" class="form-label">Password</label>
                             <input type="password" name="password" id="pPassword" class="form-control" />
-                            <p class="text-muted small">The password to the account defined.</p>
+                            <p class="text-muted small">The password to the account of which has the permission to create new users and databases on the host.</p>
                         </div>
                     </div>
                     <div class="form-group">
@@ -107,11 +107,11 @@
                                 </optgroup>
                             @endforeach
                         </select>
-                        <p class="text-muted small">This setting does nothing other than default to this database host when adding a database to a server on the selected node.</p>
+                        <p class="text-muted small">This setting makes the specified node default to this database host when adding a database to a server on that node.</p>
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <p class="text-danger small text-left">The account defined for this database host <strong>must</strong> have the <code>WITH GRANT OPTION</code> permission. If the defined account does not have this permission requests to create databases <em>will</em> fail. <strong>Do not use the same account details for MySQL that you have defined for this panel.</strong></p>
+                    <p class="text-danger small text-left">The account defined for this database host <strong>must</strong> have the <code>WITH GRANT OPTION</code> permission. If the specified account does not have this permission, requests to create databases <em>will</em> fail. <strong>Do not use the same account details for MySQL that you use for this panel.</strong></p>
                     {!! csrf_field() !!}
                     <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
                     <button type="submit" class="btn btn-success btn-sm">Create</button>
