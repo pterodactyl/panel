@@ -92,7 +92,7 @@
                 </div>
                 <div class="box-footer">
                     {!! csrf_field() !!}
-                    <p class="text-muted small no-margin">A username and password for this database will be randomly generated after form submission.</p>
+                    <p class="text-muted small no-margin">A username and password for this database will be randomly generated after creation.</p>
                     <input type="submit" class="btn btn-sm btn-success pull-right" value="Create Database" />
                 </div>
             </form>
