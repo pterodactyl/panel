@@ -249,7 +249,7 @@ class LocationControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingLocation()
     {
-        $response = $this->getJson('/api/application/locations/nil');
+        $response = $this->getJson('/api/application/locations/0');
         $this->assertNotFoundJson($response);
     }
 

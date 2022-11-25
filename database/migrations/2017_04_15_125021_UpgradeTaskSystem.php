@@ -10,7 +10,7 @@ class UpgradeTaskSystem extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
             $table->dropForeign(['server']);
@@ -33,7 +33,7 @@ class UpgradeTaskSystem extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
 //            $table->dropForeign(['server_id']);

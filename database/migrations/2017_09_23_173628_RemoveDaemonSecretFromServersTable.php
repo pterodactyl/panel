@@ -12,7 +12,7 @@ class RemoveDaemonSecretFromServersTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         $inserts = [];
 
@@ -41,7 +41,7 @@ class RemoveDaemonSecretFromServersTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->char('daemonSecret', 36)->after('startup')->unique();

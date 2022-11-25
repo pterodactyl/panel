@@ -9,7 +9,7 @@ class AddForeignDatabaseServers extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('database_servers', function (Blueprint $table) {
             $table->foreign('linked_node')->references('id')->on('nodes');
@@ -19,11 +19,11 @@ class AddForeignDatabaseServers extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('database_servers', function (Blueprint $table) {
-            $table->dropForeign('database_servers_linked_node_foreign');
-            $table->dropIndex('database_servers_linked_node_foreign');
+            $table->dropForeign(['linked_node']);
+            $table->dropIndex(['linked_node']);
         });
     }
 }

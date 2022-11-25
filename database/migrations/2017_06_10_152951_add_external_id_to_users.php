@@ -9,7 +9,7 @@ class AddExternalIdToUsers extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedInteger('external_id')->after('id')->nullable()->unique();
@@ -19,7 +19,7 @@ class AddExternalIdToUsers extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('external_id');
