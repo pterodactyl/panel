@@ -5,7 +5,7 @@
 @endsection
 
 @section('content-header')
-    <h1>Locations<small>All locations that nodes can be assigned to for easier categorization.</small></h1>
+    <h1>Locations<small>A list of all of the locations that nodes can be assigned to for easier categorization.</small></h1>
     <ol class="breadcrumb">
         <li><a href="{{ route('admin.index') }}">Admin</a></li>
         <li class="active">Locations</li>
@@ -58,14 +58,14 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-md-12">
-                            <label for="pShortModal" class="form-label">Short Code</label>
+                            <label for="pShortModal" class="form-label">Name</label>
                             <input type="text" name="short" id="pShortModal" class="form-control" />
                             <p class="text-muted small">A short identifier used to distinguish this location from others. Must be between 1 and 60 characters, for example, <code>us.nyc.lvl3</code>.</p>
                         </div>
                         <div class="col-md-12">
                             <label for="pLongModal" class="form-label">Description</label>
                             <textarea name="long" id="pLongModal" class="form-control" rows="4"></textarea>
-                            <p class="text-muted small">A longer description of this location. Must be less than 191 characters.</p>
+                            <p class="text-muted small">A description of this location. Must be less than 191 characters.</p>
                         </div>
                     </div>
                 </div>
