@@ -52,21 +52,21 @@
                                 </div>
                             </div>
                             <div class="form-group col-md-4">
-                                <label class="control-label">Default Language</label>
+                                <label class="control-label">Language</label>
                                 <div>
                                     <select name="app:locale" class="form-control">
                                         @foreach($languages as $key => $value)
                                             <option value="{{ $key }}" @if(config('app.locale') === $key) selected @endif>{{ $value }}</option>
                                         @endforeach
                                     </select>
-                                    <p class="text-muted"><small>The default language to use when rendering UI components.</small></p>
+                                    <p class="text-muted"><small>The language to use when rendering UI components.</small></p>
                                 </div>
                             </div>
                         </div>
                     </div>
                     <div class="box-footer">
                         {!! csrf_field() !!}
-                        <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save</button>
+                        <button type="submit" name="_method" value="PATCH" class="btn btn-sm btn-primary pull-right">Save Changes</button>
                     </div>
                 </form>
             </div>
