@@ -21,7 +21,7 @@
         <div class="col-xs-12">
             <div class="box box-primary">
                 <div class="box-header with-border">
-                    <h3 class="box-title">Startup Command Modification</h3>
+                    <h3 class="box-title">Startup Command</h3>
                 </div>
                 <div class="box-body">
                     <label for="pStartup" class="form-label">Startup Command</label>
@@ -29,7 +29,7 @@
                     <p class="small text-muted">Edit your server's startup command here. The following variables are available by default: <code>@{{SERVER_MEMORY}}</code>, <code>@{{SERVER_IP}}</code>, and <code>@{{SERVER_PORT}}</code>.</p>
                 </div>
                 <div class="box-body">
-                    <label for="pDefaultStartupCommand" class="form-label">Default Service Start Command</label>
+                    <label for="pDefaultStartupCommand" class="form-label">Default Startup Command</label>
                     <input id="pDefaultStartupCommand" class="form-control" type="text" readonly />
                 </div>
                 <div class="box-footer">
