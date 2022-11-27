@@ -29,23 +29,22 @@ COPY        --chown=1001:0 artisan CHANGELOG.md composer.json composer.lock LICE
 # Stage 2 - Final
 FROM        registry.access.redhat.com/ubi9/ubi-minimal
 
-RUN         useradd --home-dir /var/lib/caddy --create-home caddy \
-                && microdnf update -y \
+RUN         microdnf update -y \
                 && rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
                 && rpm --install https://rpms.remirepo.net/enterprise/remi-release-9.rpm \
                 && microdnf update -y \
-                && microdnf install -y ca-certificates tar tzdata unzip wget \
+                && microdnf install -y ca-certificates shadow-utils tar tzdata unzip wget \
                 && microdnf module -y reset php \
                 && microdnf module -y enable php:remi-8.1 \
                 && microdnf install -y cronie php-{bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,pdo,pecl-redis5,pecl-zip,phpiredis,pgsql,process,sodium,xml,zstd} supervisor \
-                && rm /etc/php-fpm.d/www.conf \
                 && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
-                && microdnf remove -y tar \
-                && microdnf clean all \
+                && rm /etc/php-fpm.d/www.conf \
+                && useradd --home-dir /var/lib/caddy --create-home caddy \
                 && mkdir /etc/caddy \
-                && wget -O /usr/local/bin/yacron https://github.com/gjcarneiro/yacron/releases/download/0.17.0/yacron-0.17.0-x86_64-unknown-linux-gnu
-
-RUN         chmod 755 /usr/local/bin/yacron
+                && wget -O /usr/local/bin/yacron https://github.com/gjcarneiro/yacron/releases/download/0.17.0/yacron-0.17.0-x86_64-unknown-linux-gnu \
+                && chmod 755 /usr/local/bin/yacron \
+                && microdnf remove -y tar wget \
+                && microdnf clean all
 
 COPY        --chown=caddy:caddy --from=builder /var/www/pterodactyl /var/www/pterodactyl
 
@@ -65,8 +64,6 @@ ENV         USER=caddy
 
 RUN         composer install --no-dev --optimize-autoloader \
                 && rm -rf bootstrap/cache/*.php \
-#                && php artisan route:cache \
-#                && php artisan view:cache \
                 && rm -rf .env storage/logs/*.log
 
 COPY        --from=caddy /usr/bin/caddy /usr/local/bin/caddy
