@@ -70,11 +70,6 @@ export default () => {
     const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
     const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [historyIndex, setHistoryIndex] = useState(-1);
-    // SearchBarAddon has hardcoded z-index: 999 :(
-    const zIndex = `
-    .xterm-search-bar__addon {
-        z-index: 10;
-    }`;
 
     const handleConsoleOutput = (line: string, prelude = false) =>
         terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
@@ -142,7 +137,6 @@ export default () => {
 
             terminal.open(ref.current);
             fitAddon.fit();
-            searchBar.addNewStyle(zIndex);
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
