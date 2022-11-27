@@ -41,7 +41,7 @@ jobs:
         if: "contains(github.ref, 'release/v')"
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Containerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
@@ -52,7 +52,7 @@ jobs:
         if: "contains(github.ref, 'develop')"
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Containerfile
           push: ${{ github.event_name != 'pull_request' }}
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
