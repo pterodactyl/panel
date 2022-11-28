@@ -4,8 +4,8 @@ namespace Pterodactyl\Console\Commands\Location;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
+use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 
 class DeleteLocationCommand extends Command
 {
@@ -18,10 +18,8 @@ class DeleteLocationCommand extends Command
     /**
      * DeleteLocationCommand constructor.
      */
-    public function __construct(
-        private LocationDeletionService $deletionService,
-        private LocationRepositoryInterface $repository
-    ) {
+    public function __construct(private LocationDeletionService $deletionService)
+    {
         parent::__construct();
     }
 
@@ -33,7 +31,7 @@ class DeleteLocationCommand extends Command
      */
     public function handle()
     {
-        $this->locations = $this->locations ?? $this->repository->all();
+        $this->locations = $this->locations ?? Location::all();
         $short = $this->option('short') ?? $this->anticipate(
             trans('command/messages.location.ask_short'),
             $this->locations->pluck('short')->toArray()
