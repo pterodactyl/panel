@@ -28,7 +28,6 @@ jobs:
           tools: composer:v2
           coverage: none
 
-
       - name: Install dependencies
         run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
 
