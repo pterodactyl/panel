@@ -1,7 +1,7 @@
 import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useFlashKey } from '@/plugins/useFlash';
 import { deleteSSHKey, useSSHKeys } from '@/api/account/ssh-keys';
 import { Dialog } from '@/components/elements/dialog';
@@ -16,9 +16,9 @@ export default ({ name, fingerprint }: { name: string; fingerprint: string }) =>
         clearAndAddHttpError();
 
         Promise.all([
-            mutate((data) => data?.filter((value) => value.fingerprint !== fingerprint), false),
+            mutate(data => data?.filter(value => value.fingerprint !== fingerprint), false),
             deleteSSHKey(fingerprint),
-        ]).catch((error) => {
+        ]).catch(error => {
             mutate(undefined, true).catch(console.error);
             clearAndAddHttpError(error);
         });

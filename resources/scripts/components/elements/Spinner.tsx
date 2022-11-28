@@ -1,19 +1,23 @@
-import React, { Suspense } from 'react';
-import styled, { css, keyframes } from 'styled-components/macro';
+import type { FC, ReactNode } from 'react';
+import { Suspense } from 'react';
+import styled, { css, keyframes } from 'styled-components';
 import tw from 'twin.macro';
+
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 export type SpinnerSize = 'small' | 'base' | 'large';
 
 interface Props {
+    children?: ReactNode;
+
     size?: SpinnerSize;
     centered?: boolean;
     isBlue?: boolean;
 }
 
-interface Spinner extends React.FC<Props> {
+interface Spinner extends FC<Props> {
     Size: Record<'SMALL' | 'BASE' | 'LARGE', SpinnerSize>;
-    Suspense: React.FC<Props>;
+    Suspense: FC<Props>;
 }
 
 const spin = keyframes`
@@ -27,7 +31,7 @@ const SpinnerComponent = styled.div<Props>`
     border-radius: 50%;
     animation: ${spin} 1s cubic-bezier(0.55, 0.25, 0.25, 0.7) infinite;
 
-    ${(props) =>
+    ${props =>
         props.size === 'small'
             ? tw`w-4 h-4 border-2`
             : props.size === 'large'
@@ -37,8 +41,8 @@ const SpinnerComponent = styled.div<Props>`
               `
             : null};
 
-    border-color: ${(props) => (!props.isBlue ? 'rgba(255, 255, 255, 0.2)' : 'hsla(212, 92%, 43%, 0.2)')};
-    border-top-color: ${(props) => (!props.isBlue ? 'rgb(255, 255, 255)' : 'hsl(212, 92%, 43%)')};
+    border-color: ${props => (!props.isBlue ? 'rgba(255, 255, 255, 0.2)' : 'hsla(212, 92%, 43%, 0.2)')};
+    border-top-color: ${props => (!props.isBlue ? 'rgb(255, 255, 255)' : 'hsl(212, 92%, 43%)')};
 `;
 
 const Spinner: Spinner = ({ centered, ...props }) =>

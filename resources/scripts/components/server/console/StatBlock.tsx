@@ -1,21 +1,23 @@
-import React from 'react';
-import Icon from '@/components/elements/Icon';
-import { IconDefinition } from '@fortawesome/free-solid-svg-icons';
+import type { IconDefinition } from '@fortawesome/free-solid-svg-icons';
 import classNames from 'classnames';
-import styles from './style.module.css';
-import useFitText from 'use-fit-text';
+import type { ReactNode } from 'react';
+import { useFitText } from '@flyyer/use-fit-text';
+
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import Icon from '@/components/elements/Icon';
+
+import styles from './style.module.css';
 
 interface StatBlockProps {
     title: string;
     copyOnClick?: string;
     color?: string | undefined;
     icon: IconDefinition;
-    children: React.ReactNode;
+    children: ReactNode;
     className?: string;
 }
 
-export default ({ title, copyOnClick, icon, color, className, children }: StatBlockProps) => {
+function StatBlock({ title, copyOnClick, icon, color, className, children }: StatBlockProps) {
     const { fontSize, ref } = useFitText({ minFontSize: 8, maxFontSize: 500 });
 
     return (
@@ -44,4 +46,6 @@ export default ({ title, copyOnClick, icon, color, className, children }: StatBl
             </div>
         </CopyOnClick>
     );
-};
+}
+
+export default StatBlock;

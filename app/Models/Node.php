@@ -191,6 +191,11 @@ class Node extends Model
         );
     }
 
+    public function isUnderMaintenance(): bool
+    {
+        return $this->maintenance_mode;
+    }
+
     public function mounts(): HasManyThrough
     {
         return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');
@@ -235,8 +240,8 @@ class Node extends Model
     {
         $this->loadServerSums();
 
-        $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
-        $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
+        $memoryLimit = $this->memory * (1.0 + ($this->memory_overallocate / 100.0));
+        $diskLimit = $this->disk * (1.0 + ($this->disk_overallocate / 100.0));
 
         return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }

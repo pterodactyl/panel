@@ -9,10 +9,8 @@ class ModifyChecksumsColumnForBackups extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->renameColumn('sha256_hash', 'checksum');
@@ -25,10 +23,8 @@ class ModifyChecksumsColumnForBackups extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->renameColumn('checksum', 'sha256_hash');

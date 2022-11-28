@@ -127,9 +127,10 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertNotNull($response->uuid);
         $this->assertSame($response->uuidShort, substr($response->uuid, 0, 8));
         $this->assertSame($egg->id, $response->egg_id);
-        $this->assertCount(2, $response->variables);
-        $this->assertSame('123', $response->variables[0]->server_value);
-        $this->assertSame('server2.jar', $response->variables[1]->server_value);
+        $variables = $response->variables->sortBy('server_value')->values();
+        $this->assertCount(2, $variables);
+        $this->assertSame('123', $variables->get(0)->server_value);
+        $this->assertSame('server2.jar', $variables->get(1)->server_value);
 
         foreach ($data as $key => $value) {
             if (in_array($key, ['allocation_additional', 'environment', 'start_on_completion'])) {

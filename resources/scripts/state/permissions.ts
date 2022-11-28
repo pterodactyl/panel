@@ -21,7 +21,7 @@ const permissions: GloablPermissionsStore = {
         state.data = payload;
     }),
 
-    getPermissions: thunk(async (actions) => {
+    getPermissions: thunk(async actions => {
         const permissions = await getSystemPermissions();
 
         actions.setPermissions(permissions);

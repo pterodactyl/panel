@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect, useRef } from 'react';
 import { ServerContext } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
@@ -12,8 +12,8 @@ import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 
 export default () => {
-    const status = ServerContext.useStoreState((state) => state.status.value);
-    const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
+    const status = ServerContext.useStoreState(state => state.status.value);
+    const limits = ServerContext.useStoreState(state => state.server.data!.limits);
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
 
     const cpu = useChartTickLabel('CPU', limits.cpu, '%', 2);

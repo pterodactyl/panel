@@ -8,10 +8,8 @@ class CreateUserRecoveryTokensTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('recovery_tokens', function (Blueprint $table) {
             $table->id();
@@ -25,10 +23,8 @@ class CreateUserRecoveryTokensTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('recovery_tokens');
     }

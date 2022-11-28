@@ -77,7 +77,9 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @method static Builder|User whereUsername($value)
  * @method static Builder|User whereUuid($value)
  *
- * @mixin \Eloquent
+ * @mixin \Barryvdh\LaravelIdeHelper\Eloquent
+ * @mixin \Illuminate\Database\Query\Builder
+ * @mixin \Illuminate\Database\Eloquent\Builder
  */
 class User extends Model implements
     AuthenticatableContract,

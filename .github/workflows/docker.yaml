@@ -37,24 +37,24 @@ jobs:
           password: ${{ secrets.REGISTRY_TOKEN }}
 
       - name: Release production build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         if: "contains(github.ref, 'release/v')"
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Containerfile
           push: true
           platforms: linux/amd64,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
 
       - name: Release development build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         if: "contains(github.ref, 'develop')"
         with:
           context: .
-          file: ./Dockerfile
+          file: ./Containerfile
           push: ${{ github.event_name != 'pull_request' }}
-          platforms: linux/amd64,linux/arm64
+          platforms: linux/amd64 #,linux/arm64
           tags: ${{ steps.docker_meta.outputs.tags }}
           labels: ${{ steps.docker_meta.outputs.labels }}
           cache-from: type=gha

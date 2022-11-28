@@ -184,7 +184,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingUser()
     {
-        $response = $this->getJson('/api/application/users/nil');
+        $response = $this->getJson('/api/application/users/0');
         $this->assertNotFoundJson($response);
     }
 

@@ -2,9 +2,12 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use PDO;
+use RuntimeException;
 use Illuminate\Http\Request;
 use Webmozart\Assert\Assert;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use Pterodactyl\Repositories\Repository;
 use Illuminate\Database\Eloquent\Builder;
@@ -273,7 +276,17 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
             return sprintf('(%s)', $grammar->parameterize($record));
         })->implode(', ');
 
-        $statement = "insert ignore into $table ($columns) values $parameters";
+        $driver = DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME);
+        switch ($driver) {
+            case 'mysql':
+                $statement = "insert ignore into $table ($columns) values $parameters";
+                break;
+            case 'pgsql':
+                $statement = "insert into $table ($columns) values $parameters on conflict do nothing";
+                break;
+            default:
+                throw new RuntimeException("Unsupported database driver \"$driver\" for insert ignore.");
+        }
 
         return $this->getBuilder()->getConnection()->statement($statement, $bindings);
     }

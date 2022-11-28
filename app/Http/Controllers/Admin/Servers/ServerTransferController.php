@@ -2,15 +2,18 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
+use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Models\ServerTransfer;
+use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Servers\TransferService;
-use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
+use Pterodactyl\Services\Nodes\NodeJWTService;
+use Pterodactyl\Repositories\Eloquent\NodeRepository;
+use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
 class ServerTransferController extends Controller
@@ -21,8 +24,10 @@ class ServerTransferController extends Controller
     public function __construct(
         private AlertsMessageBag $alert,
         private AllocationRepositoryInterface $allocationRepository,
-        private TransferService $transferService,
-        private DaemonConfigurationRepository $daemonConfigurationRepository
+        private ConnectionInterface $connection,
+        private DaemonTransferRepository $daemonTransferRepository,
+        private NodeJWTService $nodeJWTService,
+        private NodeRepository $nodeRepository
     ) {
     }
 
@@ -45,13 +50,15 @@ class ServerTransferController extends Controller
 
         // Check if the node is viable for the transfer.
         $node = Node::query()->findOrFail($node_id);
-        if ($node->isViable($server->memory, $server->disk)) {
-            // Check if the selected daemon is online.
-            $this->daemonConfigurationRepository->setNode($node)->getSystemInformation();
+        if (!$node->isViable($server->memory, $server->disk)) {
+            $this->alert->danger(trans('admin/server.alerts.transfer_not_viable'))->flash();
 
-            $server->validateTransferState();
+            return redirect()->route('admin.servers.view.manage', $server->id);
+        }
 
-            // Create a new ServerTransfer entry.
+        $server->validateTransferState();
+
+        $this->connection->transaction(function () use ($server, $node_id, $allocation_id, $additional_allocations) {
             $transfer = new ServerTransfer();
 
             $transfer->server_id = $server->id;
@@ -67,13 +74,19 @@ class ServerTransferController extends Controller
             // Add the allocations to the server, so they cannot be automatically assigned while the transfer is in progress.
             $this->assignAllocationsToServer($server, $node_id, $allocation_id, $additional_allocations);
 
-            // Request an archive from the server's current daemon. (this also checks if the daemon is online)
-            $this->transferService->requestArchive($server);
+            // Generate a token for the destination node that the source node can use to authenticate with.
+            $token = $this->nodeJWTService
+                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
+                ->setSubject($server->uuid)
+                ->handle($transfer->newNode, $server->uuid, 'sha256');
 
-            $this->alert->success(trans('admin/server.alerts.transfer_started'))->flash();
-        } else {
-            $this->alert->danger(trans('admin/server.alerts.transfer_not_viable'))->flash();
-        }
+            // Notify the source node of the pending outgoing transfer.
+            $this->daemonTransferRepository->setServer($server)->notify($transfer->newNode, $token);
+
+            return $transfer;
+        });
+
+        $this->alert->success(trans('admin/server.alerts.transfer_started'))->flash();
 
         return redirect()->route('admin.servers.view.manage', $server->id);
     }
