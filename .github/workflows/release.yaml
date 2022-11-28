@@ -10,20 +10,20 @@ jobs:
     name: Release
     runs-on: ubuntu-20.04
     steps:
-      - name: Code Checkout
+      - name: Code checkout
         uses: actions/checkout@v3
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: 16
-          cache: "yarn"
+          node-version: 18
+          cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build
-        run: yarn build:production
+        run: yarn build
 
       - name: Create release branch and bump version
         env:
@@ -41,7 +41,7 @@ jobs:
 
       - name: Create release archive
         run: |
-          rm -rf node_modules/ test/ codecov.yml CODE_OF_CONDUCT.md CONTRIBUTING.md phpunit.xml Vagrantfile
+          rm -rf node_modules/ tests/ CODE_OF_CONDUCT.md CONTRIBUTING.md phpstan.neon phpunit.xml
           tar -czf panel.tar.gz * .env.example .eslintignore .eslintrc.js
 
       - name: Extract changelog
@@ -58,7 +58,7 @@ jobs:
           echo -e "\n#### SHA256 Checksum\n\n\`\`\`\n$SUM\n\`\`\`\n" >> ./RELEASE_CHANGELOG
           echo $SUM > checksum.txt
 
-      - name: Create Release
+      - name: Create release
         id: create_release
         uses: actions/create-release@v1
         env:

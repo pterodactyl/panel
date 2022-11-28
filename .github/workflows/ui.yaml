@@ -11,28 +11,47 @@ on:
       - "1.0-develop"
 
 jobs:
-  build-and-test:
-    name: Build and Test
+  lint:
+    name: Lint
     runs-on: ubuntu-20.04
-    strategy:
-      fail-fast: false
-      matrix:
-        node-version: [16, 18]
     steps:
-      - name: Code Checkout
+      - name: Code checkout
         uses: actions/checkout@v3
 
       - name: Setup Node
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: "yarn"
+          node-version: 18
+          cache: yarn
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Lint
+        run: yarn run lint
+
+  tests:
+    name: Tests
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        node: [16, 18]
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
       - name: Build
-        run: yarn build
+        run: yarn run build
 
       - name: Tests
-        run: yarn test
+        run: yarn run test
