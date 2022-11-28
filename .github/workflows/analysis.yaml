@@ -20,19 +20,6 @@ jobs:
       - name: Code Checkout
         uses: actions/checkout@v3
 
-      - name: Get cache directory
-        id: composer-cache
-        run: |
-          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache
-        uses: actions/cache@v3
-        with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.php }}-
-
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
