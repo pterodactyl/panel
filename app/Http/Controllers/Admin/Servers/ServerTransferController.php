@@ -26,8 +26,7 @@ class ServerTransferController extends Controller
         private AllocationRepositoryInterface $allocationRepository,
         private ConnectionInterface $connection,
         private DaemonTransferRepository $daemonTransferRepository,
-        private NodeJWTService $nodeJWTService,
-        private NodeRepository $nodeRepository
+        private NodeJWTService $nodeJWTService
     ) {
     }
 
