@@ -7,6 +7,7 @@ use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Servers\EnvironmentService;
@@ -17,7 +18,6 @@ use Pterodactyl\Repositories\Eloquent\MountRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 
 class ServerViewController extends Controller
 {
@@ -27,7 +27,6 @@ class ServerViewController extends Controller
      * ServerViewController constructor.
      */
     public function __construct(
-        private DatabaseHostRepository $databaseHostRepository,
         private LocationRepository $locationRepository,
         private MountRepository $mountRepository,
         private NestRepository $nestRepository,
@@ -97,7 +96,7 @@ class ServerViewController extends Controller
     public function database(Request $request, Server $server): View
     {
         return $this->view->make('admin.servers.view.database', [
-            'hosts' => $this->databaseHostRepository->all(),
+            'hosts' => DatabaseHost::all(),
             'server' => $server,
         ]);
     }

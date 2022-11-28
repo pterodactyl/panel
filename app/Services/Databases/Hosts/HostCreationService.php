@@ -7,7 +7,6 @@ use Illuminate\Database\DatabaseManager;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Extensions\DynamicDatabaseConnection;
-use Pterodactyl\Contracts\Repository\DatabaseHostRepositoryInterface;
 
 class HostCreationService
 {
@@ -18,8 +17,7 @@ class HostCreationService
         private ConnectionInterface $connection,
         private DatabaseManager $databaseManager,
         private DynamicDatabaseConnection $dynamic,
-        private Encrypter $encrypter,
-        private DatabaseHostRepositoryInterface $repository
+        private Encrypter $encrypter
     ) {
     }
 
@@ -31,7 +29,8 @@ class HostCreationService
     public function handle(array $data): DatabaseHost
     {
         return $this->connection->transaction(function () use ($data) {
-            $host = $this->repository->create([
+            /** @var DatabaseHost $host */
+            $host = DatabaseHost::query()->create([
                 'password' => $this->encrypter->encrypt(array_get($data, 'password')),
                 'name' => array_get($data, 'name'),
                 'host' => array_get($data, 'host'),
