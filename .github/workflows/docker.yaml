@@ -37,7 +37,7 @@ jobs:
           password: ${{ secrets.REGISTRY_TOKEN }}
 
       - name: Release production build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         if: "contains(github.ref, 'release/v')"
         with:
           context: .
@@ -48,7 +48,7 @@ jobs:
           labels: ${{ steps.docker_meta.outputs.labels }}
 
       - name: Release development build
-        uses: docker/build-push-action@v2
+        uses: docker/build-push-action@v3
         if: "contains(github.ref, 'develop')"
         with:
           context: .
