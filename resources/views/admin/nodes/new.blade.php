@@ -110,7 +110,7 @@
                             <label for="pMemory" class="form-label">Total Memory</label>
                             <div class="input-group">
                                 <input type="text" name="memory" data-multiplicator="true" class="form-control" id="pMemory" value="{{ old('memory') }}"/>
-                                <span class="input-group-addon">MB</span>
+                                <span class="input-group-addon">MiB</span>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
@@ -129,7 +129,7 @@
                             <label for="pDisk" class="form-label">Total Disk Space</label>
                             <div class="input-group">
                                 <input type="text" name="disk" data-multiplicator="true" class="form-control" id="pDisk" value="{{ old('disk') }}"/>
-                                <span class="input-group-addon">MB</span>
+                                <span class="input-group-addon">MiB</span>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
