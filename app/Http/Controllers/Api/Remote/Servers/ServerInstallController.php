@@ -48,8 +48,18 @@ class ServerInstallController extends Controller
     public function store(InstallationDataRequest $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
+        $status = null;
 
-        $status = $request->boolean('successful') ? null : Server::STATUS_INSTALL_FAILED;
+        // Make sure the type of failure is accurate
+        if (!$request->boolean('successful')) {
+            $status = Server::STATUS_INSTALL_FAILED;
+
+            if ($request->boolean('reinstall')) {
+                $status = Server::STATUS_REINSTALL_FAILED;
+            }
+        }
+
+        // Keep the server suspended if it's already suspended
         if ($server->status === Server::STATUS_SUSPENDED) {
             $status = Server::STATUS_SUSPENDED;
         }
