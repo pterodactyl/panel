@@ -20,6 +20,10 @@ jobs:
       APP_ENV: testing
       APP_DEBUG: "true"
       APP_KEY: SomeRandomString3232RandomString
+      CACHE_DRIVER: array
+      MAIL_MAILER: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
     steps:
       - name: Code Checkout
         uses: actions/checkout@v3
