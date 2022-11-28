@@ -126,7 +126,14 @@ class Node extends Model
      */
     public function getConnectionAddress(): string
     {
-        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+        $scheme = strtolower($this->scheme);
+        $port = intval($this->daemonListen);
+
+        if ((($scheme == "http") && ($port == 80)) || (($scheme == "https") && ($port == 443))) {
+            return sprintf('%s://%s', $scheme, $this->fqdn);
+        } else {
+            return sprintf('%s://%s:%s', $scheme, $this->fqdn, $port);
+        }
     }
 
     /**
