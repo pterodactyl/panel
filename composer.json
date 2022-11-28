@@ -61,6 +61,7 @@
         "laravel/sail": "~1.16",
         "mockery/mockery": "~1.5",
         "nunomaduro/collision": "~6.3",
+        "nunomaduro/larastan": "^2.0",
         "php-mock/php-mock-phpunit": "~2.6",
         "phpunit/phpunit": "~9.5",
         "spatie/laravel-ignition": "~1.5"

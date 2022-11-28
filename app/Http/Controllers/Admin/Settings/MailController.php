@@ -8,7 +8,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Contracts\Console\Kernel;
 use Pterodactyl\Notifications\MailTested;
-use Illuminate\View\Factory as ViewFactory;
 use Illuminate\Support\Facades\Notification;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
@@ -27,8 +26,7 @@ class MailController extends Controller
         private ConfigRepository $config,
         private Encrypter $encrypter,
         private Kernel $kernel,
-        private SettingsRepositoryInterface $settings,
-        private ViewFactory $view
+        private SettingsRepositoryInterface $settings
     ) {
     }
 
@@ -38,7 +36,7 @@ class MailController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.settings.mail', [
+        return view('admin.settings.mail', [
             'disabled' => $this->config->get('mail.default') !== 'smtp',
         ]);
     }

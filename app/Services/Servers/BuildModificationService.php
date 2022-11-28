@@ -88,14 +88,13 @@ class BuildModificationService
         // Handle the addition of allocations to this server. Only assign allocations that are not currently
         // assigned to a different server, and only allocations on the same node as the server.
         if (!empty($data['add_allocations'])) {
-            $query = Allocation::query()
-                ->where('node_id', $server->node_id)
+            $query = $server->node->allocations()
                 ->whereIn('id', $data['add_allocations'])
                 ->whereNull('server_id');
 
             // Keep track of all the allocations we're just now adding so that we can use the first
             // one to reset the default allocation to.
-            $freshlyAllocated = $query->pluck('id')->first();
+            $freshlyAllocated = $query->first()->id ?? null;
 
             $query->update(['server_id' => $server->id, 'notes' => null]);
         }

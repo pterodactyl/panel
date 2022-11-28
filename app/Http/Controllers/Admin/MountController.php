@@ -37,7 +37,7 @@ class MountController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.mounts.index', [
+        return view('admin.mounts.index', [
             'mounts' => $this->repository->getAllWithDetails(),
         ]);
     }
@@ -52,7 +52,7 @@ class MountController extends Controller
         $nests = Nest::query()->with('eggs')->get();
         $locations = Location::query()->with('nodes')->get();
 
-        return $this->view->make('admin.mounts.view', [
+        return view('admin.mounts.view', [
             'mount' => $this->repository->getWithRelations($id),
             'nests' => $nests,
             'locations' => $locations,

@@ -119,6 +119,7 @@ class DatabaseManagementService
             });
         } catch (Exception $exception) {
             try {
+                /** @var ?Database $database */
                 if ($database instanceof Database) {
                     $this->repository->dropDatabase($database->database);
                     $this->repository->dropUser($database->username, $database->remote);

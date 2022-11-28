@@ -9,19 +9,10 @@ use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Contracts\View\View;
-use Illuminate\Contracts\View\Factory as ViewFactory;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class LoginController extends AbstractLoginController
 {
-    /**
-     * LoginController constructor.
-     */
-    public function __construct(private ViewFactory $view)
-    {
-        parent::__construct();
-    }
-
     /**
      * Handle all incoming requests for the authentication routes and render the
      * base authentication view component. React will take over at this point and
@@ -29,7 +20,7 @@ class LoginController extends AbstractLoginController
      */
     public function index(): View
     {
-        return $this->view->make('templates/auth.core');
+        return view('templates/auth.core');
     }
 
     /**
