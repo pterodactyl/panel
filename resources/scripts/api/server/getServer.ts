@@ -25,7 +25,7 @@ export interface Server {
     };
     invocation: string;
     dockerImage: string;
-    description: string;
+    description: string | null;
     limits: {
         memory: number;
         swap: number;
@@ -65,10 +65,10 @@ export const rawDataToServerObject = ({ attributes: data }: FractalResponseData)
     featureLimits: { ...data.feature_limits },
     isTransferring: data.is_transferring,
     variables: ((data.relationships?.variables as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerEggVariable
+        rawDataToServerEggVariable,
     ),
     allocations: ((data.relationships?.allocations as FractalResponseList | undefined)?.data || []).map(
-        rawDataToServerAllocation
+        rawDataToServerAllocation,
     ),
 });
 
@@ -80,7 +80,7 @@ export default (uuid: string): Promise<[Server, string[]]> => {
                     rawDataToServerObject(data),
                     // eslint-disable-next-line camelcase
                     data.meta?.is_server_owner ? ['*'] : data.meta?.user_permissions || [],
-                ])
+                ]),
             )
             .catch(reject);
     });

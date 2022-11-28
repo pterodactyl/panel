@@ -1,4 +1,4 @@
-import React from 'react';
+import * as React from 'react';
 import { Field, FieldProps } from 'formik';
 import InputError from '@/components/elements/InputError';
 import Label from '@/components/elements/Label';

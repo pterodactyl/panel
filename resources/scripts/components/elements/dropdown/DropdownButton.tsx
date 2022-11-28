@@ -2,7 +2,7 @@ import classNames from 'classnames';
 import styles from '@/components/elements/dropdown/style.module.css';
 import { ChevronDownIcon } from '@heroicons/react/solid';
 import { Menu } from '@headlessui/react';
-import React from 'react';
+import * as React from 'react';
 
 interface Props {
     className?: string;

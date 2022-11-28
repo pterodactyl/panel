@@ -1,4 +1,3 @@
-import React from 'react';
 import BoringAvatar, { AvatarProps } from 'boring-avatars';
 import { useStoreState } from '@/state/hooks';
 
@@ -11,7 +10,7 @@ const _Avatar = ({ variant = 'beam', ...props }: AvatarProps) => (
 );
 
 const _UserAvatar = ({ variant = 'beam', ...props }: Omit<Props, 'name'>) => {
-    const uuid = useStoreState((state) => state.user.data?.uuid);
+    const uuid = useStoreState(state => state.user.data?.uuid);
 
     return <BoringAvatar colors={palette} name={uuid || 'system'} variant={variant} {...props} />;
 };

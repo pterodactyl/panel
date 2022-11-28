@@ -22,7 +22,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     public function getUsageStats(Node $node): array
     {
         $stats = $this->getBuilder()
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
             ->join('servers', 'servers.node_id', '=', 'nodes.id')
             ->where('node_id', '=', $node->id)
             ->first();
@@ -54,7 +54,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     public function getUsageStatsRaw(Node $node): array
     {
         $stats = $this->getBuilder()->select(
-            $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            $this->getBuilder()->raw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
         )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
 
         return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
@@ -143,7 +143,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     {
         $instance = $this->getBuilder()
             ->select(['nodes.id', 'nodes.fqdn', 'nodes.scheme', 'nodes.daemon_token', 'nodes.daemonListen', 'nodes.memory', 'nodes.disk', 'nodes.memory_overallocate', 'nodes.disk_overallocate'])
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory, COALESCE(SUM(servers.disk), 0) as sum_disk')
             ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
             ->where('nodes.id', $node_id);
 
