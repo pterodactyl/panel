@@ -39,7 +39,7 @@
         "league/flysystem-memory": "~3.3.0",
         "matriphe/iso-639": "~1.2",
         "phpseclib/phpseclib": "~3.0",
-        "pragmarx/google2fa": "~5.0.0",
+        "pragmarx/google2fa": "~8.0.0",
         "predis/predis": "~2.0.2",
         "prologue/alerts": "~1.0.0",
         "psr/cache": "~3.0.0",
