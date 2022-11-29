@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Exceptions\Http\Server;
 
-use Throwable;
 use Pterodactyl\Models\Server;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 
@@ -12,7 +11,7 @@ class ServerStateConflictException extends ConflictHttpException
      * Exception thrown when the server is in an unsupported state for API access or
      * certain operations within the codebase.
      */
-    public function __construct(Server $server, Throwable $previous = null)
+    public function __construct(Server $server, \Throwable $previous = null)
     {
         $message = 'This server is currently in an unsupported state, please try again later.';
         if ($server->isSuspended()) {

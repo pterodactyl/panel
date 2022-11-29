@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Middleware\Api\Client;
 
-use Closure;
 use Pterodactyl\Models\Server;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 
@@ -11,7 +10,7 @@ class SubstituteClientBindings extends SubstituteBindings
     /**
      * @param \Illuminate\Http\Request $request
      */
-    public function handle($request, Closure $next): mixed
+    public function handle($request, \Closure $next): mixed
     {
         // Override default behavior of the model binding to use a specific table
         // column rather than the default 'id'.

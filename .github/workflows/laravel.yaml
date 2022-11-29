@@ -62,7 +62,7 @@ jobs:
         run: vendor/bin/php-cs-fixer fix --dry-run --diff
 
   mysql:
-    name: Tests (MySQL)
+    name: Tests
     runs-on: ubuntu-20.04
     strategy:
       fail-fast: false
@@ -134,7 +134,7 @@ jobs:
           DB_PORT: ${{ job.services.database.ports[3306] }}
 
   postgres:
-    name: Tests (PostgreSQL)
+    name: Tests
     runs-on: ubuntu-20.04
     if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
     strategy:

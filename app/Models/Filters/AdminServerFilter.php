@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Models\Filters;
 
-use BadMethodCallException;
 use Spatie\QueryBuilder\Filters\Filter;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -17,7 +16,7 @@ class AdminServerFilter implements Filter
     public function __invoke(Builder $query, $value, string $property)
     {
         if ($query->getQuery()->from !== 'servers') {
-            throw new BadMethodCallException('Cannot use the AdminServerFilter against a non-server model.');
+            throw new \BadMethodCallException('Cannot use the AdminServerFilter against a non-server model.');
         }
         $query
             ->select('servers.*')

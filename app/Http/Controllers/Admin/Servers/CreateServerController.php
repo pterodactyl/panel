@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
-use JavaScript;
 use Illuminate\View\View;
 use Pterodactyl\Models\Nest;
 use Pterodactyl\Models\Node;
@@ -44,7 +43,7 @@ class CreateServerController extends Controller
 
         $nests = $this->nestRepository->getWithEggs();
 
-        JavaScript::put([
+        \JavaScript::put([
             'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
             'nests' => $nests->map(function (Nest $item) {
                 return array_merge($item->toArray(), [

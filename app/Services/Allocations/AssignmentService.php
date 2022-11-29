@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Allocations;
 
-use Exception;
 use IPTools\Network;
 use Pterodactyl\Models\Node;
 use Illuminate\Database\ConnectionInterface;
@@ -56,7 +55,7 @@ class AssignmentService
             // IP to use, not multiple.
             $underlying = gethostbyname($allocationIp);
             $parsed = Network::parse($underlying);
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new DisplayException("Could not parse provided allocation IP address for $allocationIp ($underlying): {$exception->getMessage()}", $exception);
         }
 
