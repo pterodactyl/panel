@@ -1,8 +1,8 @@
 # Stage 0 - Caddy
-FROM        docker.io/library/caddy:latest AS caddy
+FROM        --platform=$TARGETOS/$TARGETARCH docker.io/library/caddy:latest AS caddy
 
 # Stage 1 - Builder
-FROM        registry.access.redhat.com/ubi9/nodejs-16-minimal AS builder
+FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/nodejs-16-minimal AS builder
 
 RUN         npm install -g yarn
 
@@ -27,7 +27,7 @@ COPY        --chown=1001:0 .env.example ./.env
 COPY        --chown=1001:0 artisan CHANGELOG.md composer.json composer.lock LICENSE.md README.md SECURITY.md .
 
 # Stage 2 - Final
-FROM        registry.access.redhat.com/ubi9/ubi-minimal
+FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/ubi-minimal
 
 RUN         microdnf update -y \
                 && rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
