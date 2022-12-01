@@ -39,7 +39,7 @@ class ServerTransferController extends Controller
             throw new ConflictHttpException('Server is not being transferred.');
         }
 
-        return $this->processFailedTransfer($server->transfer);
+        return $this->processFailedTransfer($transfer);
     }
 
     /**
