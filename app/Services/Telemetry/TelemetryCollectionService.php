@@ -116,9 +116,11 @@ class TelemetryCollectionService
                     'backup' => [
                         'type' => config('backups.default'),
                     ],
+
                     'cache' => [
                         'type' => config('cache.default'),
                     ],
+
                     'database' => [
                         'type' => config('database.default'),
                         'version' => DB::getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION),
@@ -139,7 +141,10 @@ class TelemetryCollectionService
 
                 'eggs' => [
                     'count' => Egg::count(),
-                    'ids' => Egg::pluck('uuid')->toArray(),
+                    'server_usage' => Egg::all()
+                        ->flatMap(fn (Egg $egg) => [$egg->uuid => $egg->servers->count()])
+                        ->filter(fn (int $count) => $count > 0)
+                        ->toArray(),
                 ],
 
                 'locations' => [
@@ -152,6 +157,10 @@ class TelemetryCollectionService
 
                 'nests' => [
                     'count' => Nest::count(),
+                    'server_usage' => Nest::all()
+                        ->flatMap(fn (Nest $nest) => [$nest->uuid => $nest->eggs->sum(fn (Egg $egg) => $egg->servers->count())])
+                        ->filter(fn (int $count) => $count > 0)
+                        ->toArray(),
                 ],
 
                 'nodes' => [
