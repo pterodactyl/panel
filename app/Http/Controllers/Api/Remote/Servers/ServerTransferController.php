@@ -11,6 +11,7 @@ use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerTransferController extends Controller
@@ -33,6 +34,10 @@ class ServerTransferController extends Controller
     public function failure(string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
+        $transfer = $server->transfer;
+        if (is_null($transfer)) {
+            throw new ConflictHttpException('Server is not being transferred.');
+        }
 
         return $this->processFailedTransfer($server->transfer);
     }
@@ -46,6 +51,9 @@ class ServerTransferController extends Controller
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
+        if (is_null($transfer)) {
+            throw new ConflictHttpException('Server is not being transferred.');
+        }
 
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $transfer) {
