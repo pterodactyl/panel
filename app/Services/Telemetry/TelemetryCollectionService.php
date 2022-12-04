@@ -52,10 +52,10 @@ class TelemetryCollectionService
      */
     public function collect(): array
     {
-        $uuid = $this->settingsRepository->get('app:uuid');
+        $uuid = $this->settingsRepository->get('app:telemetry:uuid');
         if (is_null($uuid)) {
             $uuid = Uuid::uuid4()->toString();
-            $this->settingsRepository->set('app:uuid', $uuid);
+            $this->settingsRepository->set('app:telemetry:uuid', $uuid);
         }
 
         $nodes = Node::all()->map(function ($node) {
