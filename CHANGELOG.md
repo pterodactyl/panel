@@ -3,10 +3,31 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.0
+### Changed (since 1.10.4)
+* Changed minimum PHP version requirement from `7.4` to `8.0`.
+* Upgraded from Laravel 8 to Laravel 9.
+* This release requires Wings v1.11.x in order for Server Transfers to work.
+* `MB` byte suffixes are now displayed as `MiB` to more accurately reflect the actual value.
+* Server re-installation failures are tracked independently of the initial installation process.
+
+### Fixed (since 1.10.4)
+* Node maintenance mode now properly blocks access to servers.
+* Fixed the length validation on the Minecraft Forge egg.
+* Fixed the password in the JDBC string not being properly URL encoded.
+* Fixed an issue where Wings would throw a validation error while attempting to upload activity logs.
+* Properly handle a missing `Content-Length` header in the response from the daemon.
+* Ensure activity log properties are always returned as an object instead of an empty array.
+
+### Added (since 1.10.4)
+* Added the `server:settings.description` activity log event for when a server description is changed.
+* Added the ability to cancel file uploads in the file manager for a server.
+* Added a telemetry service to collect anonymous metrics from the panel, this feature is *enabled* by default and can be toggled using the `PTERODACTYL_TELEMETRY_ENABLED` environment variable.
+
 ## v1.11.0-rc.2
 ### Changed
-* `MB` byte suffix are now `MiB` to more accurately reflect the actual value.
-* Server reinstallation failures are tracked independently of the initial installation process.
+* `MB` byte suffixes are now displayed as `MiB` to more accurately reflect the actual value.
+* Server re-installation failures are tracked independently of the initial installation process.
 
 ### Fixed
 * Properly handle a missing `Content-Length` header in the response from the daemon.
@@ -19,7 +40,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 
 ## v1.11.0-rc.1
 ### Changed
-* Changed minimum PHP version is now 8.0 instead of `7.4`.
+* Changed minimum PHP version requirement from `7.4` to `8.0`.
 * Upgraded from Laravel 8 to Laravel 9.
 * This release requires Wings v1.11.x in order for Server Transfers to work.
 
