@@ -51,10 +51,10 @@ class TelemetryCollectionService
      */
     public function collect(): array
     {
-        $uuid = $this->settingsRepository->get('app:uuid');
+        $uuid = $this->settingsRepository->get('app:telemetry:uuid');
         if (is_null($uuid)) {
             $uuid = Uuid::uuid4()->toString();
-            $this->settingsRepository->set('app:uuid', $uuid);
+            $this->settingsRepository->set('app:telemetry:uuid', $uuid);
         }
 
         $nodes = Node::all()->map(function ($node) {
@@ -115,9 +115,11 @@ class TelemetryCollectionService
                     'backup' => [
                         'type' => config('backups.default'),
                     ],
+
                     'cache' => [
                         'type' => config('cache.default'),
                     ],
+
                     'database' => [
                         'type' => config('database.default'),
                         'version' => DB::getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION),
@@ -138,7 +140,10 @@ class TelemetryCollectionService
 
                 'eggs' => [
                     'count' => Egg::count(),
-                    'ids' => Egg::pluck('uuid')->toArray(),
+                    'server_usage' => Egg::all()
+                        ->flatMap(fn (Egg $egg) => [$egg->uuid => $egg->servers->count()])
+                        ->filter(fn (int $count) => $count > 0)
+                        ->toArray(),
                 ],
 
                 'locations' => [
@@ -151,6 +156,10 @@ class TelemetryCollectionService
 
                 'nests' => [
                     'count' => Nest::count(),
+                    'server_usage' => Nest::all()
+                        ->flatMap(fn (Nest $nest) => [$nest->uuid => $nest->eggs->sum(fn (Egg $egg) => $egg->servers->count())])
+                        ->filter(fn (int $count) => $count > 0)
+                        ->toArray(),
                 ],
 
                 'nodes' => [
