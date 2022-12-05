@@ -25,6 +25,7 @@ jobs:
         with:
           images: ghcr.io/pterodactyl/panel
           tags: |
+            latest=false
             type=raw,value=latest,enable=${{ github.event_name == 'release' && github.event.action == 'published' && github.event.release.prerelease == false }}
             type=ref,event=tag
             type=ref,event=branch
@@ -41,6 +42,11 @@ jobs:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.REGISTRY_TOKEN }}
+
+      - name: Update app.php version
+        if: "github.event_name == 'release' && github.event.action == 'published'"
+        run: |
+          sed -i "s/    'version' => 'canary',/    'version' => '${REF:11}',/" config/app.php
 
       - name: Build and Push (tag)
         uses: docker/build-push-action@v3
