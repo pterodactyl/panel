@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Http\Middleware;
 
-use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\User;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
 
@@ -34,14 +34,19 @@ class RequireTwoFactorAuthentication
      *
      * @throws \Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = $request->user();
         $uri = rtrim($request->getRequestUri(), '/') . '/';
         $current = $request->route()->getName();
 
-        if (!$user || Str::startsWith($uri, ['/auth/']) || Str::startsWith($current, ['auth.', 'account.'])) {
+        // Must be logged in
+        if (!$user instanceof User) {
+            return $next($request);
+        }
+
+        if (Str::startsWith($uri, ['/auth/']) || Str::startsWith($current, ['auth.', 'account.'])) {
             return $next($request);
         }
 

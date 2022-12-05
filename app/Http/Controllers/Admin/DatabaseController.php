@@ -3,12 +3,10 @@
 namespace Pterodactyl\Http\Controllers\Admin;
 
 use Exception;
-use PDOException;
 use Illuminate\View\View;
 use Pterodactyl\Models\DatabaseHost;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
-use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Databases\Hosts\HostUpdateService;
 use Pterodactyl\Http\Requests\Admin\DatabaseHostFormRequest;
@@ -30,8 +28,7 @@ class DatabaseController extends Controller
         private HostCreationService $creationService,
         private HostDeletionService $deletionService,
         private HostUpdateService $updateService,
-        private LocationRepositoryInterface $locationRepository,
-        private ViewFactory $view
+        private LocationRepositoryInterface $locationRepository
     ) {
     }
 
@@ -40,7 +37,7 @@ class DatabaseController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.databases.index', [
+        return view('admin.databases.index', [
             'locations' => $this->locationRepository->getAllWithNodes(),
             'hosts' => $this->repository->getWithViewDetails(),
         ]);
@@ -53,7 +50,7 @@ class DatabaseController extends Controller
      */
     public function view(int $host): View
     {
-        return $this->view->make('admin.databases.view', [
+        return view('admin.databases.view', [
             'locations' => $this->locationRepository->getAllWithNodes(),
             'host' => $this->repository->find($host),
             'databases' => $this->databaseRepository->getDatabasesForHost($host),
@@ -69,8 +66,8 @@ class DatabaseController extends Controller
     {
         try {
             $host = $this->creationService->handle($request->normalize());
-        } catch (Exception $exception) {
-            if ($exception instanceof PDOException || $exception->getPrevious() instanceof PDOException) {
+        } catch (\Exception $exception) {
+            if ($exception instanceof \PDOException || $exception->getPrevious() instanceof \PDOException) {
                 $this->alert->danger(
                     sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
                 )->flash();
@@ -98,10 +95,10 @@ class DatabaseController extends Controller
         try {
             $this->updateService->handle($host->id, $request->normalize());
             $this->alert->success('Database host was updated successfully.')->flash();
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             // Catch any SQL related exceptions and display them back to the user, otherwise just
             // throw the exception like normal and move on with it.
-            if ($exception instanceof PDOException || $exception->getPrevious() instanceof PDOException) {
+            if ($exception instanceof \PDOException || $exception->getPrevious() instanceof \PDOException) {
                 $this->alert->danger(
                     sprintf('There was an error while trying to connect to the host or while executing a query: "%s"', $exception->getMessage())
                 )->flash();

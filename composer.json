@@ -39,7 +39,7 @@
         "league/flysystem-memory": "~3.3.0",
         "matriphe/iso-639": "~1.2",
         "phpseclib/phpseclib": "~3.0",
-        "pragmarx/google2fa": "~5.0.0",
+        "pragmarx/google2fa": "~8.0.0",
         "predis/predis": "~2.0.2",
         "prologue/alerts": "~1.0.0",
         "psr/cache": "~3.0.0",
@@ -61,6 +61,7 @@
         "laravel/sail": "~1.16",
         "mockery/mockery": "~1.5",
         "nunomaduro/collision": "~6.3",
+        "nunomaduro/larastan": "^2.0",
         "php-mock/php-mock-phpunit": "~2.6",
         "phpunit/phpunit": "~9.5",
         "spatie/laravel-ignition": "~1.5"

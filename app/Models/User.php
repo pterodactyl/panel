@@ -11,6 +11,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -127,6 +128,10 @@ class User extends Model implements
         'totp_authenticated_at',
         'gravatar',
         'root_admin',
+    ];
+
+    protected $appends = [
+        'md5',
     ];
 
     /**
@@ -257,6 +262,13 @@ class User extends Model implements
     public function activity(): MorphToMany
     {
         return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
+    }
+
+    public function md5(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => md5(strtolower($this->email)),
+        );
     }
 
     /**

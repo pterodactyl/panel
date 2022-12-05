@@ -29,7 +29,7 @@ abstract class ApplicationApiRequest extends FormRequest
      * Determine if the current user is authorized to perform
      * the requested action against the API.
      *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @throws PterodactylException
      */
     public function authorize(): bool
     {
@@ -42,6 +42,7 @@ abstract class ApplicationApiRequest extends FormRequest
             return true;
         }
 
+        /** @var ApiKey $token */
         if ($token->key_type === ApiKey::TYPE_ACCOUNT) {
             return true;
         }
@@ -81,6 +82,7 @@ abstract class ApplicationApiRequest extends FormRequest
      */
     public function parameter(string $key, string $expect)
     {
+        /** @var ApiKey $value */
         $value = $this->route()->parameter($key);
 
         Assert::isInstanceOf($value, $expect);

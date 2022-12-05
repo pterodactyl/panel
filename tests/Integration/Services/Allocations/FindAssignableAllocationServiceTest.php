@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Services\Allocations;
 
-use Exception;
-use InvalidArgumentException;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Pterodactyl\Services\Allocations\FindAssignableAllocationService;
@@ -142,8 +140,8 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
         try {
             $this->getService()->handle($server);
             $this->fail('This assertion should not be reached.');
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
+        } catch (\Exception $exception) {
+            $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
             $this->assertSame('Expected an integerish value. Got: string', $exception->getMessage());
         }
 
@@ -153,8 +151,8 @@ class FindAssignableAllocationServiceTest extends IntegrationTestCase
         try {
             $this->getService()->handle($server);
             $this->fail('This assertion should not be reached.');
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
+        } catch (\Exception $exception) {
+            $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
             $this->assertSame('Expected an integerish value. Got: string', $exception->getMessage());
         }
     }

@@ -26,9 +26,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $startup
  * @property bool $script_is_privileged
  * @property string|null $script_install
- * @property string $script_entry
- * @property string $script_container
- * @property int|null $copy_script_from
+ * @property ?string $script_entry
+ * @property ?string $script_container
+ * @property ?int $copy_script_from
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string|null $copy_script_install

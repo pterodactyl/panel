@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Helpers;
 
-use Exception;
 use Carbon\Carbon;
 use Cron\CronExpression;
 use Illuminate\Support\Facades\Log;
@@ -25,7 +24,7 @@ class Utilities
 
                 $string = substr_replace($string, $character, random_int(0, $length - 1), 1);
             }
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             // Just log the error and hope for the best at this point.
             Log::error($exception);
         }

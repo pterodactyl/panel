@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Traits\Controllers;
 
-use JavaScript;
 use Illuminate\Http\Request;
 
 trait JavascriptInjection
@@ -24,6 +23,6 @@ trait JavascriptInjection
      */
     public function plainInject(array $args = []): string
     {
-        return JavaScript::put($args);
+        return \JavaScript::put($args);
     }
 }

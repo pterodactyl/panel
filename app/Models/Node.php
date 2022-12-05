@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,20 +25,24 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property bool $maintenance_mode
  * @property int $memory
  * @property int $memory_overallocate
+ * @property int $sum_memory
  * @property int $disk
  * @property int $disk_overallocate
+ * @property int $sum_disk
  * @property int $upload_size
  * @property string $daemon_token_id
  * @property string $daemon_token
  * @property int $daemonListen
  * @property int $daemonSFTP
  * @property string $daemonBase
+ * @property int $servers_count
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
+ * @property Location $location
+ * @property int[]|\Illuminate\Support\Collection $ports
+ * @property Mount[]|Collection $mounts
+ * @property Server[]|Collection $servers
+ * @property Allocation[]|Collection $allocations
  */
 class Node extends Model
 {
@@ -220,11 +225,21 @@ class Node extends Model
         return $this->hasMany(Allocation::class);
     }
 
+    public function loadServerSums(): self
+    {
+        $this->loadSum('servers as sum_memory', 'memory');
+        $this->loadSum('servers as sum_disk', 'disk');
+
+        return $this;
+    }
+
     /**
      * Returns a boolean if the node is viable for an additional server to be placed on it.
      */
-    public function isViable(int $memory, int $disk): bool
+    public function isViable(int $memory = 0, int $disk = 0): bool
     {
+        $this->loadServerSums();
+
         $memoryLimit = $this->memory * (1.0 + ($this->memory_overallocate / 100.0));
         $diskLimit = $this->disk * (1.0 + ($this->disk_overallocate / 100.0));
 

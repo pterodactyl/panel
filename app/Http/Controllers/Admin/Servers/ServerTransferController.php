@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
@@ -11,7 +12,6 @@ use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Nodes\NodeJWTService;
-use Pterodactyl\Repositories\Eloquent\NodeRepository;
 use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 
@@ -25,8 +25,7 @@ class ServerTransferController extends Controller
         private AllocationRepositoryInterface $allocationRepository,
         private ConnectionInterface $connection,
         private DaemonTransferRepository $daemonTransferRepository,
-        private NodeJWTService $nodeJWTService,
-        private NodeRepository $nodeRepository
+        private NodeJWTService $nodeJWTService
     ) {
     }
 
@@ -48,7 +47,7 @@ class ServerTransferController extends Controller
         $additional_allocations = array_map('intval', $validatedData['allocation_additional'] ?? []);
 
         // Check if the node is viable for the transfer.
-        $node = $this->nodeRepository->getNodeWithResourceUsage($node_id);
+        $node = Node::query()->findOrFail($node_id);
         if (!$node->isViable($server->memory, $server->disk)) {
             $this->alert->danger(trans('admin/server.alerts.transfer_not_viable'))->flash();
 
@@ -58,7 +57,6 @@ class ServerTransferController extends Controller
         $server->validateTransferState();
 
         $this->connection->transaction(function () use ($server, $node_id, $allocation_id, $additional_allocations) {
-            // Create a new ServerTransfer entry.
             $transfer = new ServerTransfer();
 
             $transfer->server_id = $server->id;
@@ -66,7 +64,7 @@ class ServerTransferController extends Controller
             $transfer->new_node = $node_id;
             $transfer->old_allocation = $server->allocation_id;
             $transfer->new_allocation = $allocation_id;
-            $transfer->old_additional_allocations = $server->allocations->where('id', '!=', $server->allocation_id)->pluck('id');
+            $transfer->old_additional_allocations = $server->allocations->where('id', '!=', $server->allocation_id)->pluck('id')->all();
             $transfer->new_additional_allocations = $additional_allocations;
 
             $transfer->save();

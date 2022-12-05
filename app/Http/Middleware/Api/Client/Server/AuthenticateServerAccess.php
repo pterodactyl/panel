@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Middleware\Api\Client\Server;
 
-use Closure;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Server;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -27,7 +26,7 @@ class AuthenticateServerAccess
     /**
      * Authenticate that this server exists and is not suspended or marked as installing.
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = $request->user();

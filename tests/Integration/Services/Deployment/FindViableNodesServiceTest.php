@@ -2,9 +2,7 @@
 
 namespace Pterodactyl\Tests\Integration\Services\Deployment;
 
-use Exception;
 use Pterodactyl\Models\Node;
-use InvalidArgumentException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\Location;
@@ -26,7 +24,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
 
     public function testExceptionIsThrownIfNoDiskSpaceHasBeenSet()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Disk space must be an int, got NULL');
 
         $this->getService()->handle();
@@ -34,7 +32,7 @@ class FindViableNodesServiceTest extends IntegrationTestCase
 
     public function testExceptionIsThrownIfNoMemoryHasBeenSet()
     {
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessage('Memory usage must be an int, got NULL');
 
         $this->getService()->setDisk(10)->handle();
@@ -54,16 +52,16 @@ class FindViableNodesServiceTest extends IntegrationTestCase
         try {
             $this->getService()->setLocations(['a']);
             $this->fail('This expectation should not be called.');
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
+        } catch (\Exception $exception) {
+            $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
             $this->assertSame('An array of location IDs should be provided when calling setLocations.', $exception->getMessage());
         }
 
         try {
             $this->getService()->setLocations(['1.2', '1', 2]);
             $this->fail('This expectation should not be called.');
-        } catch (Exception $exception) {
-            $this->assertInstanceOf(InvalidArgumentException::class, $exception);
+        } catch (\Exception $exception) {
+            $this->assertInstanceOf(\InvalidArgumentException::class, $exception);
             $this->assertSame('An array of location IDs should be provided when calling setLocations.', $exception->getMessage());
         }
     }

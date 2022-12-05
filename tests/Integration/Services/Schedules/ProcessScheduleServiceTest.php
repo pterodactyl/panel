@@ -2,11 +2,9 @@
 
 namespace Pterodactyl\Tests\Integration\Services\Schedules;
 
-use Mockery;
 use Exception;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;
-use InvalidArgumentException;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Bus;
 use Illuminate\Contracts\Bus\Dispatcher;
@@ -47,7 +45,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Task $task */
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
 
         $this->getService()->handle($schedule);
 
@@ -126,7 +124,7 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
      */
     public function testTaskDispatchedNowIsResetProperlyIfErrorIsEncountered()
     {
-        $this->swap(Dispatcher::class, $dispatcher = Mockery::mock(Dispatcher::class));
+        $this->swap(Dispatcher::class, $dispatcher = \Mockery::mock(Dispatcher::class));
 
         $server = $this->createServerModel();
         /** @var \Pterodactyl\Models\Schedule $schedule */
@@ -134,9 +132,9 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
         /** @var \Pterodactyl\Models\Task $task */
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1]);
 
-        $dispatcher->expects('dispatchNow')->andThrows(new Exception('Test thrown exception'));
+        $dispatcher->expects('dispatchNow')->andThrows(new \Exception('Test thrown exception'));
 
-        $this->expectException(Exception::class);
+        $this->expectException(\Exception::class);
         $this->expectExceptionMessage('Test thrown exception');
 
         $this->getService()->handle($schedule, true);

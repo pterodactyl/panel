@@ -2,11 +2,9 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
-use ReflectionClass;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
-use InvalidArgumentException;
 use Pterodactyl\Models\Model;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
@@ -75,7 +73,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
                 $link = "/api/client/servers/{$model->server->uuid}/backups/$model->uuid";
                 break;
             default:
-                throw new InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
+                throw new \InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
         }
 
         return $link . ($append ? '/' . ltrim($append, '/') : '');
@@ -87,7 +85,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function assertJsonTransformedWith(array $data, Model|EloquentModel $model)
     {
-        $reflect = new ReflectionClass($model);
+        $reflect = new \ReflectionClass($model);
         $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
         $transformer = new $transformer();

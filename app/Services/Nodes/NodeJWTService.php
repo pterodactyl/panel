@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Nodes;
 
-use DateTimeImmutable;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
@@ -19,7 +18,7 @@ class NodeJWTService
 
     private ?User $user = null;
 
-    private ?DateTimeImmutable $expiresAt;
+    private ?\DateTimeImmutable $expiresAt;
 
     private ?string $subject = null;
 
@@ -44,7 +43,7 @@ class NodeJWTService
         return $this;
     }
 
-    public function setExpiresAt(DateTimeImmutable $date): self
+    public function setExpiresAt(\DateTimeImmutable $date): self
     {
         $this->expiresAt = $date;
 

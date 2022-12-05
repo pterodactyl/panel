@@ -27,13 +27,13 @@ class ProcessScheduleService
      */
     public function handle(Schedule $schedule, bool $now = false): void
     {
-        /** @var \Pterodactyl\Models\Task $task */
         $task = $schedule->tasks()->orderBy('sequence_id')->first();
 
         if (is_null($task)) {
             throw new DisplayException('Cannot process schedule for task execution: no tasks are registered.');
         }
 
+        /* @var \Pterodactyl\Models\Task $task */
         $this->connection->transaction(function () use ($schedule, $task) {
             $schedule->forceFill([
                 'is_processing' => true,
@@ -56,7 +56,7 @@ class ProcessScheduleService
 
                     return;
                 }
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 if (!$exception instanceof DaemonConnectionException) {
                     // If we encountered some exception during this process that wasn't just an
                     // issue connecting to Wings run the failed sequence for a job. Otherwise we
@@ -78,7 +78,7 @@ class ProcessScheduleService
             // @see https://github.com/pterodactyl/panel/issues/2550
             try {
                 $this->dispatcher->dispatchNow($job);
-            } catch (Exception $exception) {
+            } catch (\Exception $exception) {
                 $job->failed($exception);
 
                 throw $exception;

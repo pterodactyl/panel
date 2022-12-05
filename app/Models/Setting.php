@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+/** @property string $value */
 class Setting extends Model
 {
     /**

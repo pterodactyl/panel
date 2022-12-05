@@ -4,6 +4,7 @@ namespace Pterodactyl\Transformers\Api\Application;
 
 use League\Fractal\Resource\Item;
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Models\ServerVariable;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 

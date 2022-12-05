@@ -78,7 +78,7 @@ class FindViableNodesService
             ->where('nodes.public', 1);
 
         if (!empty($this->locations)) {
-            $query = $query->whereIn('nodes.location_id', $this->locations);
+            $query = $query->whereIn('location_id', $this->locations);
         }
 
         $results = $query->groupBy('nodes.id')
