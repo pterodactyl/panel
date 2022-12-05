@@ -1,22 +1,25 @@
-name: Publish Docker Image
+name: Docker
 
 on:
   push:
     branches:
       - develop
+      - 1.0-develop
+  pull_request:
+    branches:
+      - develop
+      - 1.0-develop
   release:
     types:
       - published
 
 jobs:
   push:
-    name: Push Image to GitHub Packages
+    name: Push
     runs-on: ubuntu-20.04
-    # Always run against a tag, even if the commit into the tag has [docker skip]
-    # within the commit message.
     if: "!contains(github.ref, 'develop') || (!contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip'))"
     steps:
-      - name: Code Checkout
+      - name: Code checkout
         uses: actions/checkout@v3
 
       - name: Docker metadata
@@ -44,25 +47,13 @@ jobs:
           username: ${{ github.repository_owner }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
-      - name: Update app.php version
+      - name: Update version
         if: "github.event_name == 'release' && github.event.action == 'published'"
         run: |
           sed -i "s/    'version' => 'canary',/    'version' => '${REF:11}',/" config/app.php
 
-      - name: Build and Push (tag)
+      - name: Build and Push
         uses: docker/build-push-action@v3
-        if: "github.event_name == 'release' && github.event.action == 'published'"
-        with:
-          context: .
-          file: ./Dockerfile
-          push: true
-          platforms: linux/amd64,linux/arm64
-          labels: ${{ steps.docker_meta.outputs.labels }}
-          tags: ${{ steps.docker_meta.outputs.tags }}
-
-      - name: Build and Push (develop)
-        uses: docker/build-push-action@v3
-        if: "github.event_name == 'push' && contains(github.ref, 'develop')"
         with:
           context: .
           file: ./Dockerfile
