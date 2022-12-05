@@ -24,8 +24,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/pterodactyl/panel
-          tags: |
+          flavor: |
             latest=false
+          tags: |
             type=raw,value=latest,enable=${{ github.event_name == 'release' && github.event.action == 'published' && github.event.release.prerelease == false }}
             type=ref,event=tag
             type=ref,event=branch
