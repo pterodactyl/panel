@@ -52,7 +52,7 @@ jobs:
         env:
           REF: ${{ github.event.release.tag_name }}
         run: |
-          sed -i "s/    'version' => 'canary',/    'version' => '${REF}',/" config/app.php
+          sed -i "s/    'version' => 'canary',/    'version' => '${REF:1}',/" config/app.php
 
       - name: Build and Push
         uses: docker/build-push-action@v3
