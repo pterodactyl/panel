@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
-use Carbon\CarbonImmutable;
-use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
@@ -11,10 +9,9 @@ use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Services\Nodes\NodeJWTService;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Repositories\Wings\DaemonTransferRepository;
+use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class ServerTransferController extends Controller
@@ -25,50 +22,8 @@ class ServerTransferController extends Controller
     public function __construct(
         private ConnectionInterface $connection,
         private ServerRepository $repository,
-        private DaemonServerRepository $daemonServerRepository,
-        private DaemonTransferRepository $daemonTransferRepository,
-        private NodeJWTService $jwtService
+        private DaemonServerRepository $daemonServerRepository
     ) {
-    }
-
-    /**
-     * The daemon notifies us about the archive status.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Throwable
-     */
-    public function archive(Request $request, string $uuid): JsonResponse
-    {
-        $server = $this->repository->getByUuid($uuid);
-
-        // Unsuspend the server and don't continue the transfer.
-        if (!$request->input('successful')) {
-            return $this->processFailedTransfer($server->transfer);
-        }
-
-        $this->connection->transaction(function () use ($server) {
-            // This token is used by the new node the server is being transferred to. It allows
-            // that node to communicate with the old node during the process to initiate the
-            // actual file transfer.
-            $token = $this->jwtService
-                ->setExpiresAt(CarbonImmutable::now()->addMinutes(15))
-                ->setSubject($server->uuid)
-                ->handle($server->node, $server->uuid, 'sha256');
-
-            // Update the archived field on the transfer to make clients connect to the websocket
-            // on the new node to be able to receive transfer logs.
-            $server->transfer->forceFill(['archived' => true])->saveOrFail();
-
-            // On the daemon transfer repository, make sure to set the node after the server
-            // because setServer() tells the repository to use the server's node and not the one
-            // we want to specify.
-            $this->daemonTransferRepository
-                ->setServer($server)
-                ->setNode($server->transfer->newNode)
-                ->notify($server, $token);
-        });
-
-        return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }
 
     /**
@@ -79,8 +34,12 @@ class ServerTransferController extends Controller
     public function failure(string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
+        $transfer = $server->transfer;
+        if (is_null($transfer)) {
+            throw new ConflictHttpException('Server is not being transferred.');
+        }
 
-        return $this->processFailedTransfer($server->transfer);
+        return $this->processFailedTransfer($transfer);
     }
 
     /**
@@ -92,6 +51,9 @@ class ServerTransferController extends Controller
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
+        if (is_null($transfer)) {
+            throw new ConflictHttpException('Server is not being transferred.');
+        }
 
         /** @var \Pterodactyl\Models\Server $server */
         $server = $this->connection->transaction(function () use ($server, $transfer) {
