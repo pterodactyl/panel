@@ -144,11 +144,15 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
                             <label for="pDaemonListen" class="form-label">Daemon Port</label>
                             <input type="text" name="daemonListen" class="form-control" id="pDaemonListen" value="8080" />
                         </div>
-                        <div class="form-group col-md-6">
+                        <div class="form-group col-md-4">
+                            <label for="pDaemonSFTPIP" class="form-label">Daemon SFTP IP</label>
+                            <input type="text" name="daemonSFTPIP" class="form-control" id="pDaemonSFTPIP"/>
+                        </div>
+                        <div class="form-group col-md-4">
                             <label for="pDaemonSFTP" class="form-label">Daemon SFTP Port</label>
                             <input type="text" name="daemonSFTP" class="form-control" id="pDaemonSFTP" value="2022" />
                         </div>
