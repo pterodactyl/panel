@@ -181,7 +181,7 @@
 
                         <div class="input-group">
                             <input type="text" id="pSwap" name="swap" class="form-control" value="{{ old('swap', 0) }}" />
-                            <span class="input-group-addon">MiB</span>
+                            <span class="input-group-addon">MB</span>
                         </div>
 
                         <p class="text-muted small">Setting this to <code>0</code> will disable swap space on this server. Setting to <code>-1</code> will allow unlimited swap.</p>
@@ -194,7 +194,7 @@
 
                         <div class="input-group">
                             <input type="text" id="pDisk" name="disk" class="form-control" value="{{ old('disk') }}" />
-                            <span class="input-group-addon">MiB</span>
+                            <span class="input-group-addon">MB</span>
                         </div>
 
                         <p class="text-muted small">This server will not be allowed to boot if it is using more than this amount of space. If a server goes over this limit while running it will be safely stopped and locked until enough space is available. Set to <code>0</code> to allow unlimited disk usage.</p>
