@@ -32,7 +32,7 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
 
 const FileUploadList = () => {
     const { close } = useContext(DialogWrapperContext);
-    const removeFileUpload = ServerContext.useStoreActions((actions) => actions.files.removeFileUpload);
+    const cancelFileUpload = ServerContext.useStoreActions((actions) => actions.files.cancelFileUpload);
     const clearFileUploads = ServerContext.useStoreActions((actions) => actions.files.clearFileUploads);
     const uploads = ServerContext.useStoreState((state) =>
         Object.entries(state.files.uploads).sort(([a], [b]) => a.localeCompare(b))
@@ -49,7 +49,7 @@ const FileUploadList = () => {
                     </Tooltip>
                     <Code className={'flex-1 truncate'}>{name}</Code>
                     <button
-                        onClick={removeFileUpload.bind(this, name)}
+                        onClick={cancelFileUpload.bind(this, name)}
                         className={'text-gray-500 hover:text-gray-200 transition-colors duration-75'}
                     >
                         <XIcon className={'w-5 h-5'} />

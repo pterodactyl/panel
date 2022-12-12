@@ -14,10 +14,10 @@ class DaemonConfigurationRepository extends DaemonRepository
      *
      * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
      */
-    public function getSystemInformation(): array
+    public function getSystemInformation(?int $version = null): array
     {
         try {
-            $response = $this->getHttpClient()->get('/api/system');
+            $response = $this->getHttpClient()->get('/api/system' . (!is_null($version) ? '?v=' . $version : ''));
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
