@@ -67,12 +67,6 @@ class EmailSettingsCommand extends Command
             $this->config->get('mail.from.name')
         );
 
-        $this->variables['MAIL_ENCRYPTION'] = $this->option('encryption') ?? $this->choice(
-            trans('command/messages.environment.mail.ask_encryption'),
-            ['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None'],
-            $this->config->get('mail.encryption', 'tls')
-        );
-
         $this->writeToEnvironment($this->variables);
 
         $this->line('Updating stored environment configuration file.');
@@ -101,6 +95,12 @@ class EmailSettingsCommand extends Command
 
         $this->variables['MAIL_PASSWORD'] = $this->option('password') ?? $this->secret(
             trans('command/messages.environment.mail.ask_smtp_password')
+        );
+
+        $this->variables['MAIL_ENCRYPTION'] = $this->option('encryption') ?? $this->choice(
+            trans('command/messages.environment.mail.ask_encryption'),
+            ['tls' => 'TLS', 'ssl' => 'SSL', '' => 'None'],
+            $this->config->get('mail.mailers.smtp.encryption', 'tls')
         );
     }
 
