@@ -9,13 +9,11 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        DB::transaction(function () {
-            DB::statement('UPDATE settings SET `key` = \'mail:mailers:smtp:host\' WHERE `key` = \'mail:host\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:host\')');
-            DB::statement('UPDATE settings SET `key` = \'mail:mailers:smtp:port\' WHERE `key` = \'mail:port\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:port\')');
-            DB::statement('UPDATE settings SET `key` = \'mail:mailers:smtp:encryption\' WHERE `key` = \'mail:encryption\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:encryption\')');
-            DB::statement('UPDATE settings SET `key` = \'mail:mailers:smtp:username\' WHERE `key` = \'mail:username\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:username\')');
-            DB::statement('UPDATE settings SET `key` = \'mail:mailers:smtp:password\' WHERE `key` = \'mail:password\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:password\')');
-        });
+        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:host\' WHERE `key` = \'mail:host\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:host\')');
+        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:port\' WHERE `key` = \'mail:port\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:port\')');
+        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:encryption\' WHERE `key` = \'mail:encryption\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:encryption\')');
+        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:username\' WHERE `key` = \'mail:username\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:username\')');
+        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:password\' WHERE `key` = \'mail:password\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:password\')');
     }
 
     /**
@@ -24,13 +22,13 @@ return new class () extends Migration {
     public function down(): void
     {
         DB::transaction(function () {
-            DB::statement('DELETE FROM settings WHERE `key` IN (\'mail:host\', \'mail:port\', \'mail:encryption\', \'mail:username\', \'mail:password\')');
+            DB::delete('DELETE FROM settings WHERE `key` IN (\'mail:host\', \'mail:port\', \'mail:encryption\', \'mail:username\', \'mail:password\')');
 
-            DB::statement('UPDATE settings SET `key` = \'mail:host\' WHERE `key` = \'mail:mailers:smtp:host\'');
-            DB::statement('UPDATE settings SET `key` = \'mail:port\' WHERE `key` = \'mail:mailers:smtp:port\'');
-            DB::statement('UPDATE settings SET `key` = \'mail:encryption\' WHERE `key` = \'mail:mailers:smtp:encryption\'');
-            DB::statement('UPDATE settings SET `key` = \'mail:username\' WHERE `key` = \'mail:mailers:smtp:username\'');
-            DB::statement('UPDATE settings SET `key` = \'mail:password\' WHERE `key` = \'mail:mailers:smtp:password\'');
+            DB::update('UPDATE settings SET `key` = \'mail:host\' WHERE `key` = \'mail:mailers:smtp:host\'');
+            DB::update('UPDATE settings SET `key` = \'mail:port\' WHERE `key` = \'mail:mailers:smtp:port\'');
+            DB::update('UPDATE settings SET `key` = \'mail:encryption\' WHERE `key` = \'mail:mailers:smtp:encryption\'');
+            DB::update('UPDATE settings SET `key` = \'mail:username\' WHERE `key` = \'mail:mailers:smtp:username\'');
+            DB::update('UPDATE settings SET `key` = \'mail:password\' WHERE `key` = \'mail:mailers:smtp:password\'');
         });
     }
 };
