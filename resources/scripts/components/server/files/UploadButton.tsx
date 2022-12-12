@@ -60,9 +60,6 @@ export default ({ className }: WithClassname) => {
 
     const onUploadProgress = (data: ProgressEvent, name: string) => {
         setUploadProgress({ name, loaded: data.loaded });
-        if (data.loaded >= data.total) {
-            timeouts.value.push(setTimeout(() => removeFileUpload(name), 500));
-        }
     };
 
     const onFileSubmission = (files: FileList) => {
@@ -74,20 +71,25 @@ export default ({ className }: WithClassname) => {
 
         const uploads = list.map(file => {
             const controller = new AbortController();
-            pushFileUpload({ name: file.name, data: { abort: controller, loaded: 0, total: file.size } });
+            pushFileUpload({
+                name: file.name,
+                data: { abort: controller, loaded: 0, total: file.size },
+            });
 
             return () =>
-                getFileUploadUrl(uuid).then(url =>
-                    axios.post(
-                        url,
-                        { files: file },
-                        {
-                            signal: controller.signal,
-                            headers: { 'Content-Type': 'multipart/form-data' },
-                            params: { directory },
-                            onUploadProgress: data => onUploadProgress(data, file.name),
-                        },
-                    ),
+                getFileUploadUrl(uuid).then((url) =>
+                    axios
+                        .post(
+                            url,
+                            { files: file },
+                            {
+                                signal: controller.signal,
+                                headers: { 'Content-Type': 'multipart/form-data' },
+                                params: { directory },
+                                onUploadProgress: (data) => onUploadProgress(data, file.name),
+                            }
+                        )
+                        .then(() => timeouts.value.push(setTimeout(() => removeFileUpload(file.name), 500)))
                 );
         });
 

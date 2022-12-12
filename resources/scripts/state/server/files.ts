@@ -23,6 +23,7 @@ interface ServerFileStore {
     setUploadProgress: Action<ServerFileStore, { name: string; loaded: number }>;
     clearFileUploads: Action<ServerFileStore>;
     removeFileUpload: Action<ServerFileStore, string>;
+    cancelFileUpload: Action<ServerFileStore, string>;
 }
 
 const files: ServerFileStore = {
@@ -66,6 +67,15 @@ const files: ServerFileStore = {
     }),
 
     removeFileUpload: action((state, payload) => {
+        const upload = state.uploads[payload];
+        if (upload === undefined) {
+            return;
+        }
+
+        delete state.uploads[payload];
+    }),
+
+    cancelFileUpload: action((state, payload) => {
         const upload = state.uploads[payload];
         if (upload === undefined) {
             return;

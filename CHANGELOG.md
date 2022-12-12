@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.1
+### Fixed
+* Fixed Panel Docker image showing `canary` as it's version.
+
 ## v1.11.0
 ### Changed (since 1.10.4)
 * Changed minimum PHP version requirement from `7.4` to `8.0`.
