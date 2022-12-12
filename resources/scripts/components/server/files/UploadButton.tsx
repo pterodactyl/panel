@@ -77,7 +77,7 @@ export default ({ className }: WithClassname) => {
             });
 
             return () =>
-                getFileUploadUrl(uuid).then((url) =>
+                getFileUploadUrl(uuid).then(url =>
                     axios
                         .post(
                             url,
@@ -86,10 +86,10 @@ export default ({ className }: WithClassname) => {
                                 signal: controller.signal,
                                 headers: { 'Content-Type': 'multipart/form-data' },
                                 params: { directory },
-                                onUploadProgress: (data) => onUploadProgress(data, file.name),
-                            }
+                                onUploadProgress: data => onUploadProgress(data, file.name),
+                            },
                         )
-                        .then(() => timeouts.value.push(setTimeout(() => removeFileUpload(file.name), 500)))
+                        .then(() => timeouts.value.push(setTimeout(() => removeFileUpload(file.name), 500))),
                 );
         });
 
