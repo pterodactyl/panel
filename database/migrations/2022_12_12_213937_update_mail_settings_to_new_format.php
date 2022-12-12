@@ -1,19 +1,48 @@
 <?php
 
+use Pterodactyl\Models\Setting;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Migrations\Migration;
 
 return new class () extends Migration {
+    private array $keys = [
+        ['mail:host', 'mail:mailers:smtp:host'],
+        ['mail:port', 'mail:mailers:smtp:port'],
+        ['mail:encryption', 'mail:mailers:smtp:encryption'],
+        ['mail:username', 'mail:mailers:smtp:username'],
+        ['mail:password', 'mail:mailers:smtp:password'],
+    ];
+
     /**
      * Run the migrations.
      */
     public function up(): void
     {
-        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:host\' WHERE `key` = \'mail:host\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:host\')');
-        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:port\' WHERE `key` = \'mail:port\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:port\')');
-        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:encryption\' WHERE `key` = \'mail:encryption\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:encryption\')');
-        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:username\' WHERE `key` = \'mail:username\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:username\')');
-        DB::update('UPDATE settings SET `key` = \'mail:mailers:smtp:password\' WHERE `key` = \'mail:password\' AND NOT EXISTS (SELECT 1 FROM settings WHERE `key` = \'mail:mailers:smtp:password\')');
+        $settings = Setting::all();
+
+        // Gets the first column in our key table and gets all matching settings.
+        $oldKeys = array_column($this->keys, 0);
+        $oldSettings = $settings->filter(fn (Setting $setting) => in_array($setting->key, $oldKeys));
+
+        // Gets the second column in our key table and gets all matching settings.
+        $newKeys = array_column($this->keys, 1);
+        $newSettings = $settings->filter(fn (Setting $setting) => in_array($setting->key, $newKeys));
+
+        // Map all the old settings to their new key.
+        $oldSettings->map(function (Setting $setting) use ($oldKeys) {
+            $row = array_search($setting->key, $oldKeys, true);
+            $setting->key = $this->keys[$row][1];
+
+            return $setting;
+            // Check if any settings with the new key already exist.
+        })->filter(function (Setting $setting) use ($newSettings) {
+            if ($newSettings->contains('key', $setting->key)) {
+                return false;
+            }
+
+            return true;
+            // Update the settings to use their new keys if they don't already exist.
+        })->each(fn (Setting $setting) => $setting->save());
     }
 
     /**
@@ -22,13 +51,27 @@ return new class () extends Migration {
     public function down(): void
     {
         DB::transaction(function () {
-            DB::delete('DELETE FROM settings WHERE `key` IN (\'mail:host\', \'mail:port\', \'mail:encryption\', \'mail:username\', \'mail:password\')');
+            $settings = Setting::all();
 
-            DB::update('UPDATE settings SET `key` = \'mail:host\' WHERE `key` = \'mail:mailers:smtp:host\'');
-            DB::update('UPDATE settings SET `key` = \'mail:port\' WHERE `key` = \'mail:mailers:smtp:port\'');
-            DB::update('UPDATE settings SET `key` = \'mail:encryption\' WHERE `key` = \'mail:mailers:smtp:encryption\'');
-            DB::update('UPDATE settings SET `key` = \'mail:username\' WHERE `key` = \'mail:mailers:smtp:username\'');
-            DB::update('UPDATE settings SET `key` = \'mail:password\' WHERE `key` = \'mail:mailers:smtp:password\'');
+            // Gets the second column in our key table and gets all matching settings.
+            $newKeys = array_column($this->keys, 0);
+            $newSettings = $settings->filter(fn (Setting $setting) => in_array($setting->key, $newKeys));
+
+            // Delete all settings that already have the new key.
+            $newSettings->each(fn (Setting $setting) => $setting->delete());
+
+            // Gets the first column in our key table and gets all matching settings.
+            $oldKeys = array_column($this->keys, 1);
+            $oldSettings = $settings->filter(fn (Setting $setting) => in_array($setting->key, $oldKeys));
+
+            // Map all the old settings to their new key.
+            $oldSettings->map(function (Setting $setting) use ($oldKeys) {
+                $row = array_search($setting->key, $oldKeys, true);
+                $setting->key = $this->keys[$row][0];
+
+                return $setting;
+                // Update the settings to use their new keys if they don't already exist.
+            })->each(fn (Setting $setting) => $setting->save());
         });
     }
 };
