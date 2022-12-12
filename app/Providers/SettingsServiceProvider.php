@@ -51,7 +51,7 @@ class SettingsServiceProvider extends ServiceProvider
      * configuration array.
      */
     protected static array $encrypted = [
-        'mail:password',
+        'mail:mailers:smtp:password',
     ];
 
     /**

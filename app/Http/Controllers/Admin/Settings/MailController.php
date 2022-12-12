@@ -57,8 +57,8 @@ class MailController extends Controller
         }
 
         $values = $request->normalize();
-        if (array_get($values, 'mail:password') === '!e') {
-            $values['mail:password'] = '';
+        if (array_get($values, 'mail:mailers:smtp:password') === '!e') {
+            $values['mail:mailers:smtp:password'] = '';
         }
 
         foreach ($values as $key => $value) {
