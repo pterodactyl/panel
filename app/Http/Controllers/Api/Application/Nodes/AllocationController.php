@@ -10,11 +10,13 @@ use Spatie\QueryBuilder\AllowedFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Services\Allocations\AssignmentService;
 use Pterodactyl\Services\Allocations\AllocationDeletionService;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Pterodactyl\Transformers\Api\Application\AllocationTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\GetAllocationsRequest;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\StoreAllocationRequest;
 use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationRequest;
+use Pterodactyl\Http\Requests\Api\Application\Allocations\DeleteAllocationsRequest;
 
 class AllocationController extends ApplicationApiController
 {
@@ -77,6 +79,35 @@ class AllocationController extends ApplicationApiController
     public function delete(DeleteAllocationRequest $request, Node $node, Allocation $allocation): JsonResponse
     {
         $this->deletionService->handle($allocation);
+
+        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Deletes multiple allocations from the Panel.
+     *
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
+     */
+    public function deleteMultiple(DeleteAllocationsRequest $request, Node $node): JsonResponse
+    {
+        $data = $request->validated();
+
+        // Generates an array of allocations that the user specified that aren't real allocations
+        $node_ids = array_map(function ($allocation) {
+            return $allocation['id'];
+        }, $node->allocations()->get()->toArray());
+
+        // If there are any allocations that do not exist, throw an error
+        if (count(array_diff($data['ids'], $node_ids)) > 0) {
+            throw new NotFoundHttpException('The requested allocation was not found for this server.');
+        }
+
+        // Delete each allocation
+        foreach ($node->allocations()->get() as $allocation) {
+            if (in_array($allocation->id, $data['ids'])) {
+                $this->deletionService->handle($allocation);
+            }
+        }
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
