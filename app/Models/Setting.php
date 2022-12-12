@@ -2,7 +2,13 @@
 
 namespace Pterodactyl\Models;
 
-/** @property string $value */
+/**
+ * Pterodactyl\Models\Setting.
+ *
+ * @property int $id
+ * @property string $key
+ * @property string $value
+ */
 class Setting extends Model
 {
     /**
