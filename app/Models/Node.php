@@ -107,6 +107,7 @@ class Node extends Model
         'disk_overallocate' => 'required|numeric|min:-1',
         'daemonBase' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
         'daemonSFTP' => 'required|numeric|between:1,65535',
+        'daemonSFTPIP' => 'nullable|string',
         'daemonListen' => 'required|numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
