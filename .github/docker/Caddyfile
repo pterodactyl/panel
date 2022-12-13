@@ -17,14 +17,5 @@
 		trusted_proxies 172.20.0.0/16
 	}
 
-	@startsWithDot {
-		path \/\.
-		not path .well-known
-	}
-	rewrite @startsWithDot /index.php{uri}
-
-	@phpRewrite {
-		not file favicon.ico
-	}
-	try_files @phpRewrite {path} {path}/ /index.php?{query}
+	try_files {path} {path}/ /index.php?{query}
 }

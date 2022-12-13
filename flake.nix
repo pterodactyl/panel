@@ -80,16 +80,7 @@
 
           	php_fastcgi localhost:9000
 
-          	@startsWithDot {
-          		path \/\.
-          		not path .well-known
-          	}
-          	rewrite @startsWithDot /index.php{uri}
-
-          	@phpRewrite {
-          		not file favicon.ico
-          	}
-          	try_files @phpRewrite {path} {path}/ /index.php?{query}
+          	try_files {path} {path}/ /index.php?{query}
           }
         '';
 
