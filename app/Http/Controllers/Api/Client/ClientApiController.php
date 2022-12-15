@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Webmozart\Assert\Assert;
 use Pterodactyl\Transformers\Api\Transformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 

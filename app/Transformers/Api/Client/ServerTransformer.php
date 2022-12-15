@@ -4,12 +4,10 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Subuser;
 use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Permission;
 use Illuminate\Container\Container;
-use Pterodactyl\Models\EggVariable;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Transformers\Api\Transformer;

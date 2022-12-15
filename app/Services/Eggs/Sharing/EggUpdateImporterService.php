@@ -8,8 +8,8 @@ use Illuminate\Support\Collection;
 use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Eggs\EggParserService;
-use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 use Pterodactyl\Exceptions\Service\Egg\BadJsonFormatException;
+use Pterodactyl\Exceptions\Service\InvalidFileUploadException;
 
 class EggUpdateImporterService
 {

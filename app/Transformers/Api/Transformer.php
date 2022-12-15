@@ -2,8 +2,6 @@
 
 namespace Pterodactyl\Transformers\Api;
 
-use Closure;
-use DateTimeInterface;
 use Carbon\CarbonImmutable;
 use Carbon\CarbonInterface;
 use Illuminate\Http\Request;
@@ -70,7 +68,7 @@ abstract class Transformer extends TransformerAbstract
      */
     protected function item($data, $transformer, ?string $resourceKey = null): Item
     {
-        if (!$transformer instanceof Closure) {
+        if (!$transformer instanceof \Closure) {
             self::assertSameNamespace($transformer);
         }
 
@@ -91,7 +89,7 @@ abstract class Transformer extends TransformerAbstract
      */
     protected function collection($data, $transformer, ?string $resourceKey = null): Collection
     {
-        if (!$transformer instanceof Closure) {
+        if (!$transformer instanceof \Closure) {
             self::assertSameNamespace($transformer);
         }
 
@@ -145,7 +143,7 @@ abstract class Transformer extends TransformerAbstract
             return null;
         }
 
-        if ($timestamp instanceof DateTimeInterface) {
+        if ($timestamp instanceof \DateTimeInterface) {
             $value = CarbonImmutable::instance($timestamp);
         } else {
             $value = CarbonImmutable::createFromFormat(CarbonInterface::DEFAULT_TO_STRING_FORMAT, $timestamp);
