@@ -58,7 +58,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
     public function testDatabaseCannotBeCreatedIfServerHasReachedLimit()
     {
         $server = $this->createServerModel(['database_limit' => 2]);
-        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $host = DatabaseHost::factory()->create();
 
         Database::factory()->times(2)->create(['server_id' => $server->id, 'database_host_id' => $host->id]);
 
@@ -90,8 +90,8 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
 
-        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
-        $host2 = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $host = DatabaseHost::factory()->create();
+        $host2 = DatabaseHost::factory()->create();
         Database::factory()->create([
             'database' => $name,
             'database_host_id' => $host->id,
@@ -119,7 +119,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
 
-        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $host = DatabaseHost::factory()->create();
 
         $this->repository->expects('createDatabase')->with($name);
 
@@ -177,7 +177,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
         $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
 
-        $host = DatabaseHost::factory()->create(['node_id' => $server->node_id]);
+        $host = DatabaseHost::factory()->create();
 
         $this->repository->expects('createDatabase')->with($name)->andThrows(new \BadMethodCallException());
         $this->repository->expects('dropDatabase')->with($name);

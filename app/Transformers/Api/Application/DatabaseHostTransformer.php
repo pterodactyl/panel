@@ -31,7 +31,6 @@ class DatabaseHostTransformer extends Transformer
             'host' => $model->host,
             'port' => $model->port,
             'username' => $model->username,
-            'node_id' => $model->node_id,
             'created_at' => self::formatTimestamp($model->created_at),
             'updated_at' => self::formatTimestamp($model->updated_at),
         ];
