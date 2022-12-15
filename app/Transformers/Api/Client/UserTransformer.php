@@ -25,7 +25,7 @@ class UserTransformer extends Transformer
             'uuid' => $model->uuid,
             'username' => $model->username,
             'email' => $model->email,
-            'image' => $model->avatarURL(),
+            'image' => $model->avatar_url,
             '2fa_enabled' => $model->use_totp,
             'created_at' => self::formatTimestamp($model->created_at),
         ];

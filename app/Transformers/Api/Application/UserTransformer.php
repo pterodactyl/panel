@@ -37,9 +37,9 @@ class UserTransformer extends Transformer
             'language' => $model->language,
             'root_admin' => (bool) $model->root_admin,
             '2fa' => (bool) $model->use_totp,
-            'avatar_url' => $model->avatarURL(),
+            'avatar_url' => $model->avatar_url,
             'admin_role_id' => $model->admin_role_id,
-            'role_name' => $model->adminRoleName(),
+            'role_name' => $model->admin_role_name,
             'created_at' => self::formatTimestamp($model->created_at),
             'updated_at' => self::formatTimestamp($model->updated_at),
         ];

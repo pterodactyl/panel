@@ -41,6 +41,10 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property bool $gravatar
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property string $avatar_url
+ * @property string|null $admin_role_name
+ * @property string $md5
+ * @property \Pterodactyl\Models\AdminRole|null $adminRole
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $apiKeys
  * @property int|null $api_keys_count
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
@@ -127,10 +131,6 @@ class User extends Model implements
         'root_admin',
     ];
 
-    protected $appends = [
-        'md5',
-    ];
-
     /**
      * Cast values to correct type.
      */
@@ -192,11 +192,9 @@ class User extends Model implements
      */
     public function toReactObject(): array
     {
-        $object = Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
-        $object['avatar_url'] = $this->avatarURL();
-        $object['role_name'] = $this->adminRoleName();
-
-        return $object;
+        return Collection::make($this->append(['avatar_url', 'admin_role_name'])->toArray())
+            ->except(['id', 'external_id', 'admin_role', 'admin_role_id'])
+            ->toArray();
     }
 
     /**
@@ -222,35 +220,39 @@ class User extends Model implements
         $this->attributes['username'] = mb_strtolower($value);
     }
 
-    public function avatarURL(): string
+    public function avatarUrl(): Attribute
     {
-        return 'https://www.gravatar.com/avatar/' . $this->md5 . '.jpg';
+        return Attribute::make(
+            get: fn () => 'https://www.gravatar.com/avatar/' . $this->md5 . '.jpg',
+        );
+    }
+
+    public function adminRoleName(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => is_null($this->adminRole) ? ($this->root_admin ? 'None' : null) : $this->adminRole->name,
+        );
+    }
+
+    public function md5(): Attribute
+    {
+        return Attribute::make(
+            get: fn () => md5(strtolower($this->email)),
+        );
     }
 
     /**
-     * Gets the name of the role assigned to a user.
+     * Returns all the activity logs where this user is the subject — not to
+     * be confused by activity logs where this user is the _actor_.
      */
-    public function adminRoleName(): ?string
+    public function activity(): MorphToMany
     {
-        $role = $this->adminRole;
-        if (is_null($role)) {
-            return $this->root_admin ? 'None' : null;
-        }
-
-        return $role->name;
+        return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
     }
 
     public function adminRole(): HasOne
     {
         return $this->hasOne(AdminRole::class, 'id', 'admin_role_id');
-    }
-
-    /**
-     * Returns all servers that a user owns.
-     */
-    public function servers(): HasMany
-    {
-        return $this->hasMany(Server::class, 'owner_id');
     }
 
     public function apiKeys(): HasMany
@@ -264,25 +266,14 @@ class User extends Model implements
         return $this->hasMany(RecoveryToken::class);
     }
 
+    public function servers(): HasMany
+    {
+        return $this->hasMany(Server::class, 'owner_id');
+    }
+
     public function sshKeys(): HasMany
     {
         return $this->hasMany(UserSSHKey::class);
-    }
-
-    /**
-     * Returns all the activity logs where this user is the subject — not to
-     * be confused by activity logs where this user is the _actor_.
-     */
-    public function activity(): MorphToMany
-    {
-        return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
-    }
-
-    public function md5(): Attribute
-    {
-        return Attribute::make(
-            get: fn () => md5(strtolower($this->email)),
-        );
     }
 
     /**

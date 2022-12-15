@@ -92,7 +92,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Return a transformer that can be used for testing purposes.
      *
-     * @deprecated Instantiate the transformer directly.
+     * @deprecated instantiate the transformer directly
      */
     protected function getTransformer(string $abstract): Transformer
     {
