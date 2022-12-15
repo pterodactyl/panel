@@ -10,9 +10,6 @@ parameters:
     level: 4
 
     ignoreErrors:
-        # Ignore dynamic methods from 3rd Party Vendor
-        - '#Call to an undefined method Prologue\\Alerts\\AlertsMessageBag::(success|info|warning|danger)\(\)#'
-
         # Ignore repository interface missing methods
         - '#Call to an undefined method Pterodactyl\\Repositories\\Wings\\DaemonRepository::(\w+)\(\)#'
 
@@ -21,9 +18,6 @@ parameters:
 
     excludePaths:
         - app/Repositories
-
-        # Bug in Laravel Framework #44807
-        - app/Console/Commands/Overrides/UpCommand.php
 
         # More magic spatie to be replaced
         - app/Extensions/Spatie/Fractalistic/Fractal.php

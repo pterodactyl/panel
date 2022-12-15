@@ -202,11 +202,6 @@ return [
         Pterodactyl\Providers\RouteServiceProvider::class,
         Pterodactyl\Providers\RepositoryServiceProvider::class,
         Pterodactyl\Providers\ViewComposerServiceProvider::class,
-
-        /*
-         * Additional Dependencies
-         */
-        Prologue\Alerts\AlertsServiceProvider::class,
     ],
 
     /*
@@ -221,7 +216,6 @@ return [
     */
 
     'aliases' => Facade::defaultAliases()->merge([
-        'Alert' => Prologue\Alerts\Facades\Alert::class,
         'Carbon' => Carbon\Carbon::class,
         'JavaScript' => Laracasts\Utilities\JavaScript\JavaScriptFacade::class,
 

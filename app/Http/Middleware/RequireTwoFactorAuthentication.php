@@ -5,7 +5,6 @@ namespace Pterodactyl\Http\Middleware;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
 
 class RequireTwoFactorAuthentication
@@ -18,13 +17,6 @@ class RequireTwoFactorAuthentication
      * The route to redirect a user to enable 2FA.
      */
     protected string $redirectRoute = '/account';
-
-    /**
-     * RequireTwoFactorAuthentication constructor.
-     */
-    public function __construct(private AlertsMessageBag $alert)
-    {
-    }
 
     /**
      * Check the user state on the incoming request to determine if they should be allowed to
@@ -65,8 +57,6 @@ class RequireTwoFactorAuthentication
         if ($request->isJson() || Str::startsWith($uri, '/api/')) {
             throw new TwoFactorAuthRequiredException();
         }
-
-        $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();
 
         return redirect()->to($this->redirectRoute);
     }
