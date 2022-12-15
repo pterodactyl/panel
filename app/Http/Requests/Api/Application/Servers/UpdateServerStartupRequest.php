@@ -9,7 +9,7 @@ class UpdateServerStartupRequest extends ApplicationApiRequest
 {
     public function rules(): array
     {
-        $rules = Server::getRulesForUpdate($this->route()->parameter('server')->id);
+        $rules = Server::getRulesForUpdate($this->route()->parameter('server'));
 
         return [
             'startup' => $rules['startup'],

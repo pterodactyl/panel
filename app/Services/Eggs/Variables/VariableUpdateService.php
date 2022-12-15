@@ -8,7 +8,6 @@ use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Traits\Services\ValidatesValidationRules;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
-use Pterodactyl\Contracts\Repository\EggVariableRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException;
 
 class VariableUpdateService
@@ -18,7 +17,7 @@ class VariableUpdateService
     /**
      * VariableUpdateService constructor.
      */
-    public function __construct(private EggVariableRepositoryInterface $repository, private ValidationFactory $validator)
+    public function __construct(private ValidationFactory $validator)
     {
     }
 

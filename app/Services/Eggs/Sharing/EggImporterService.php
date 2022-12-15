@@ -116,7 +116,7 @@ class EggImporterService
                 'copy_script_from' => null,
             ]);
 
-            $egg = $this->parser->fillFromParsed($egg, $parsed);
+            $egg = $this->eggParserService->fillFromParsed($egg, $parsed);
             $egg->save();
 
             foreach ($parsed['variables'] ?? [] as $variable) {

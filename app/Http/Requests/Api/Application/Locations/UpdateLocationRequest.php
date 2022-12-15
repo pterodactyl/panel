@@ -8,7 +8,7 @@ class UpdateLocationRequest extends StoreLocationRequest
 {
     public function rules(): array
     {
-        $locationId = $this->route()->parameter('location')->id;
+        $locationId = $this->route()->parameter('location');
 
         return collect(Location::getRulesForUpdate($locationId))->only([
             'short',

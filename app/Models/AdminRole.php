@@ -2,6 +2,8 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Relations\HasMany;
+
 /**
  * @property int $id
  * @property string $name
@@ -19,15 +21,11 @@ class AdminRole extends Model
 
     /**
      * The table associated with the model.
-     *
-     * @var string
      */
     protected $table = 'admin_roles';
 
     /**
      * Fields that are mass assignable.
-     *
-     * @var array
      */
     protected $fillable = [
         'name',
@@ -37,8 +35,6 @@ class AdminRole extends Model
 
     /**
      * Cast values to correct type.
-     *
-     * @var array
      */
     protected $casts = [
         'sort_id' => 'int',
@@ -51,17 +47,12 @@ class AdminRole extends Model
         'sort_id' => 'sometimes|numeric',
     ];
 
-    /**
-     * @var bool
-     */
     public $timestamps = false;
 
     /**
-     * Gets the permissions associated with a admin role.
-     *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * Gets the permissions associated with an admin role.
      */
-    public function permissions()
+    public function permissions(): HasMany
     {
         return $this->hasMany(Permission::class);
     }

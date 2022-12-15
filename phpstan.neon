@@ -19,9 +19,6 @@ parameters:
         # Ignore magic spatie calls
         - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::allowed(\w+)\(\)#'
 
-        # This should be replaced with resources instead of a magic transformer factory, robots in disguise
-        - '#Method Pterodactyl\\Http\\Controllers\\Api\\Client\\ClientApiController::getTransformer\(\) should return T#'
-
     excludePaths:
         - app/Repositories
 

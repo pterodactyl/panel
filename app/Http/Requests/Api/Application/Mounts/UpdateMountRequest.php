@@ -8,6 +8,6 @@ class UpdateMountRequest extends StoreMountRequest
 {
     public function rules(array $rules = null): array
     {
-        return $rules ?? Mount::getRulesForUpdate($this->route()->parameter('mount')->id);
+        return $rules ?? Mount::getRulesForUpdate($this->route()->parameter('mount'));
     }
 }

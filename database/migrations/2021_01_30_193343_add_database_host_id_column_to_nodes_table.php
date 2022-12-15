@@ -17,7 +17,7 @@ return new class () extends Migration {
 
         Schema::table('nodes', function (Blueprint $table) {
             $table->integer('database_host_id')->nullable()->unsigned()->after('location_id');
-            $table->index('database_host_id')->nullable();
+            $table->index('database_host_id');
             $table->foreign('database_host_id')->references('id')->on('database_hosts')->onDelete('set null');
         });
     }
@@ -34,7 +34,7 @@ return new class () extends Migration {
 
         Schema::table('database_hosts', function (Blueprint $table) {
             $table->integer('node_id')->nullable()->unsigned()->after('max_databases');
-            $table->index('node_id')->nullable();
+            $table->index('node_id');
             $table->foreign('node_id')->references('id')->on('nodes');
         });
     }

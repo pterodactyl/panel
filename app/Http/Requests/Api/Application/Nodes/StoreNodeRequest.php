@@ -42,10 +42,8 @@ class StoreNodeRequest extends ApplicationApiRequest
 
     /**
      * Fields to rename for clarity in the API response.
-     *
-     * @return array
      */
-    public function attributes()
+    public function attributes(): array
     {
         return [
             'daemon_base' => 'Daemon Base Path',
@@ -58,13 +56,8 @@ class StoreNodeRequest extends ApplicationApiRequest
     /**
      * Change the formatting of some data keys in the validated response data
      * to match what the application expects in the services.
-     *
-     * @param string|null $key
-     * @param string|array|null $default
-     *
-     * @return mixed
      */
-    public function validated($key = null, $default = null)
+    public function validated($key = null, $default = null): array
     {
         $response = parent::validated();
         $response['daemon_base'] = $response['daemon_base'] ?? Node::DEFAULT_DAEMON_BASE;

@@ -122,7 +122,7 @@ class SoftwareVersionService
     protected function versionData(): array
     {
         return $this->cache->remember(self::GIT_VERSION_CACHE_KEY, CarbonImmutable::now()->addSeconds(15), function () {
-            $configVersion = config()->get('app.version');
+            $configVersion = $this->getCurrentVersion();
 
             if (file_exists(base_path('.git/HEAD'))) {
                 $head = explode(' ', file_get_contents(base_path('.git/HEAD')));

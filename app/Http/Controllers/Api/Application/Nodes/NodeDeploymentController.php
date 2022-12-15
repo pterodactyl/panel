@@ -30,7 +30,7 @@ class NodeDeploymentController extends ApplicationApiController
         $nodes = $this->viableNodesService->setLocations($data['location_ids'] ?? [])
             ->setMemory($data['memory'])
             ->setDisk($data['disk'])
-            ->handle($request->query('per_page'), $request->query('page')); // @phpstan-ignore-line
+            ->handle($request->query('per_page'), $request->query('page'));
 
         return $this->fractal->collection($nodes)
             ->transformWith(NodeTransformer::class)
