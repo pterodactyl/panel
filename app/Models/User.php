@@ -43,7 +43,6 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $apiKeys
  * @property int|null $api_keys_count
- * @property string $name
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property int|null $notifications_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\RecoveryToken[] $recoveryTokens
@@ -221,14 +220,6 @@ class User extends Model implements
     public function setUsernameAttribute(string $value)
     {
         $this->attributes['username'] = mb_strtolower($value);
-    }
-
-    /**
-     * Return a concatenated result for the accounts full name.
-     */
-    public function getNameAttribute(): string
-    {
-        return trim($this->name_first . ' ' . $this->name_last);
     }
 
     public function avatarURL(): string

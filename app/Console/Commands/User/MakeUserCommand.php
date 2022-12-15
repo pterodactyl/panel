@@ -30,8 +30,6 @@ class MakeUserCommand extends Command
         $root_admin = $this->option('admin') ?? $this->confirm(trans('command/messages.user.ask_admin'));
         $email = $this->option('email') ?? $this->ask(trans('command/messages.user.ask_email'));
         $username = $this->option('username') ?? $this->ask(trans('command/messages.user.ask_username'));
-        $name_first = $this->option('name-first') ?? $this->ask(trans('command/messages.user.ask_name_first'));
-        $name_last = $this->option('name-last') ?? $this->ask(trans('command/messages.user.ask_name_last'));
 
         if (is_null($password = $this->option('password')) && !$this->option('no-password')) {
             $this->warn(trans('command/messages.user.ask_password_help'));
@@ -39,12 +37,11 @@ class MakeUserCommand extends Command
             $password = $this->secret(trans('command/messages.user.ask_password'));
         }
 
-        $user = $this->creationService->handle(compact('email', 'username', 'name_first', 'name_last', 'password', 'root_admin'));
+        $user = $this->creationService->handle(compact('email', 'username', 'password', 'root_admin'));
         $this->table(['Field', 'Value'], [
             ['UUID', $user->uuid],
             ['Email', $user->email],
             ['Username', $user->username],
-            ['Name', $user->name],
             ['Admin', $user->root_admin ? 'Yes' : 'No'],
         ]);
     }
