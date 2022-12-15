@@ -14,6 +14,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
 {
     public function rules(): array
     {
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->route()->parameter('server');
 
         return [

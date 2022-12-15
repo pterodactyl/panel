@@ -148,7 +148,7 @@ class Node extends Model
      */
     public function getConnectionAddress(): string
     {
-        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->public_port_http);
     }
 
     /**
