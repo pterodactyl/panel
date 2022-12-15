@@ -125,13 +125,4 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
     {
         $this->markTestSkipped('todo: implement proper admin api key permissions system');
     }
-
-    /**
-     * Test that a nests's existence is not exposed unless an API key has permission
-     * to access the resource.
-     */
-    public function testResourceIsNotExposedWithoutPermissions()
-    {
-        $this->markTestSkipped('todo: implement proper admin api key permissions system');
-    }
 }

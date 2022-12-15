@@ -224,7 +224,7 @@ class User extends Model implements
 
     public function avatarURL(): string
     {
-        return 'https://www.gravatar.com/avatar/' . md5($this->email) . '.jpg';
+        return 'https://www.gravatar.com/avatar/' . $this->md5 . '.jpg';
     }
 
     /**

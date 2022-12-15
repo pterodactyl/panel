@@ -88,7 +88,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
     public function testCreatingDatabaseWithIdenticalNameTriggersAnException()
     {
         $server = $this->createServerModel();
-        $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
+        $name = DatabaseManagementService::generateUniqueDatabaseName('something', $server->id);
 
         $host = DatabaseHost::factory()->create();
         $host2 = DatabaseHost::factory()->create();
@@ -117,7 +117,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
     public function testServerDatabaseCanBeCreated()
     {
         $server = $this->createServerModel();
-        $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
+        $name = DatabaseManagementService::generateUniqueDatabaseName('something', $server->id);
 
         $host = DatabaseHost::factory()->create();
 
@@ -175,7 +175,7 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
     public function testExceptionEncounteredWhileCreatingDatabaseAttemptsToCleanup()
     {
         $server = $this->createServerModel();
-        $name = DatabaseManagementService::generateUniqueDatabaseName('soemthing', $server->id);
+        $name = DatabaseManagementService::generateUniqueDatabaseName('something', $server->id);
 
         $host = DatabaseHost::factory()->create();
 
