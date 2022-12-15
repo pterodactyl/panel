@@ -3,8 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class ApiKeyTransformer extends BaseClientTransformer
+class ApiKeyTransformer extends Transformer
 {
     /**
      * {@inheritdoc}

@@ -2,16 +2,13 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Application;
 
-use Illuminate\Http\Request;
 use Pterodactyl\Models\User;
-use PHPUnit\Framework\Assert;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
@@ -95,18 +92,8 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Return a transformer that can be used for testing purposes.
      */
-    protected function getTransformer(string $abstract): BaseTransformer
+    protected function getTransformer(string $abstract): Transformer
     {
-        $request = Request::createFromGlobals();
-        $request->setUserResolver(function () {
-            return $this->getApiKey()->user;
-        });
-
-        $transformer = $abstract::fromRequest($request);
-
-        Assert::assertInstanceOf(BaseTransformer::class, $transformer);
-        Assert::assertNotInstanceOf(BaseClientTransformer::class, $transformer);
-
-        return $transformer;
+        return new $abstract();
     }
 }

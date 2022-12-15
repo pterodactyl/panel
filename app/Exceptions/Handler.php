@@ -233,7 +233,7 @@ final class Handler extends ExceptionHandler
     /**
      * Return an array of exceptions that should not be reported.
      */
-    public static function isReportable(\Exception $exception): bool
+    public static function isReportable(Exception $exception): bool
     {
         return (new static(Container::getInstance()))->shouldReport($exception);
     }

@@ -7,8 +7,9 @@ use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Models\ServerVariable;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class ServerVariableTransformer extends BaseTransformer
+class ServerVariableTransformer extends Transformer
 {
     /**
      * List of resources that can be included.
@@ -26,15 +27,13 @@ class ServerVariableTransformer extends BaseTransformer
     /**
      * Return a generic transformed server variable array.
      */
-    public function transform(EggVariable $variable): array
+    public function transform(EggVariable $model): array
     {
-        return $variable->toArray();
+        return $model->toArray();
     }
 
     /**
      * Return the parent service variable data.
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeParent(EggVariable $variable): Item|NullResource
     {
@@ -42,8 +41,7 @@ class ServerVariableTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $variable->loadMissing('variable');
-
-        return $this->item($variable->getRelation('variable'), $this->makeTransformer(EggVariableTransformer::class), 'variable');
+        // TODO: what the fuck?
+        return $this->item($variable->variable, new EggVariableTransformer());
     }
 }

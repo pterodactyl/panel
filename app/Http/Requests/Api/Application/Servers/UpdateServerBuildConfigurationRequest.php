@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
 use Illuminate\Support\Collection;
 
@@ -12,7 +13,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      */
     public function rules(): array
     {
-        $rules = Server::getRulesForUpdate($this->parameter('server', Server::class));
+        $rules = Server::getRulesForUpdate($this->route()->parameter('server')->id);
 
         return [
             'allocation' => $rules['allocation_id'],
@@ -26,7 +27,7 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             'limits.threads' => $this->requiredToOptional('threads', $rules['threads'], true),
             'limits.disk' => $this->requiredToOptional('disk', $rules['disk'], true),
 
-            // Legacy rules to maintain backwards compatable API support without requiring
+            // Legacy rules to maintain backwards compatible API support without requiring
             // a major version bump.
             //
             // @see https://github.com/pterodactyl/panel/issues/1500
@@ -51,8 +52,13 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
 
     /**
      * Convert the allocation field into the expected format for the service handler.
+     *
+     * @param string|null $key
+     * @param string|array|null $default
+     *
+     * @return mixed
      */
-    public function validated($key = null, $default = null): array
+    public function validated($key = null, $default = null)
     {
         $data = parent::validated();
 
@@ -71,13 +77,19 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
             unset($data['limits']);
         }
 
+        if (!is_null($key)) {
+            return Arr::get($data, $key, $default);
+        }
+
         return $data;
     }
 
     /**
      * Custom attributes to use in error message responses.
+     *
+     * @return array
      */
-    public function attributes(): array
+    public function attributes()
     {
         return [
             'add_allocations' => 'allocations to add',
@@ -95,9 +107,11 @@ class UpdateServerBuildConfigurationRequest extends ServerWriteRequest
      * compatability with the old API endpoint while also supporting a more correct API
      * call.
      *
+     * @return array
+     *
      * @see https://github.com/pterodactyl/panel/issues/1500
      */
-    protected function requiredToOptional(string $field, array $rules, bool $limits = false): array
+    protected function requiredToOptional(string $field, array $rules, bool $limits = false)
     {
         if (!in_array('required', $rules)) {
             return $rules;

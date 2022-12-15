@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
@@ -29,11 +30,10 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property string $uuid
  * @property string $username
  * @property string $email
- * @property string|null $name_first
- * @property string|null $name_last
  * @property string $password
  * @property string|null $remember_token
  * @property string $language
+ * @property int|null $admin_role_id
  * @property bool $root_admin
  * @property bool $use_totp
  * @property string|null $totp_secret
@@ -119,8 +119,6 @@ class User extends Model implements
         'external_id',
         'username',
         'email',
-        'name_first',
-        'name_last',
         'password',
         'language',
         'use_totp',
@@ -169,8 +167,6 @@ class User extends Model implements
         'email' => 'required|email|between:1,191|unique:users,email',
         'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',
         'username' => 'required|between:1,191|unique:users,username',
-        'name_first' => 'required|string|between:1,191',
-        'name_last' => 'required|string|between:1,191',
         'password' => 'sometimes|nullable|string',
         'root_admin' => 'boolean',
         'language' => 'string',
@@ -193,11 +189,15 @@ class User extends Model implements
     }
 
     /**
-     * Return the user model in a format that can be passed over to Vue templates.
+     * Return the user model in a format that can be passed over to React templates.
      */
-    public function toVueObject(): array
+    public function toReactObject(): array
     {
-        return Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
+        $object = Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
+        $object['avatar_url'] = $this->avatarURL();
+        $object['role_name'] = $this->adminRoleName();
+
+        return $object;
     }
 
     /**
@@ -229,6 +229,29 @@ class User extends Model implements
     public function getNameAttribute(): string
     {
         return trim($this->name_first . ' ' . $this->name_last);
+    }
+
+    public function avatarURL(): string
+    {
+        return 'https://www.gravatar.com/avatar/' . md5($this->email) . '.jpg';
+    }
+
+    /**
+     * Gets the name of the role assigned to a user.
+     */
+    public function adminRoleName(): ?string
+    {
+        $role = $this->adminRole;
+        if (is_null($role)) {
+            return $this->root_admin ? 'None' : null;
+        }
+
+        return $role->name;
+    }
+
+    public function adminRole(): HasOne
+    {
+        return $this->hasOne(AdminRole::class, 'id', 'admin_role_id');
     }
 
     /**

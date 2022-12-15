@@ -35,7 +35,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $allocation_id
  * @property int $nest_id
  * @property int $egg_id
- * @property string $startup
+ * @property string|null $startup
  * @property string $image
  * @property int|null $allocation_limit
  * @property int|null $database_limit
@@ -55,6 +55,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property \Pterodactyl\Models\Egg|null $egg
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Mount[] $mounts
  * @property int|null $mounts_count
+ * @property \Pterodactyl\Models\Location $location
  * @property \Pterodactyl\Models\Nest $nest
  * @property \Pterodactyl\Models\Node $node
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications

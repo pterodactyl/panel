@@ -64,7 +64,7 @@ class ScheduleTaskController extends ClientApiController
             ->log();
 
         return $this->fractal->item($task)
-            ->transformWith($this->getTransformer(TaskTransformer::class))
+            ->transformWith(TaskTransformer::class)
             ->toArray();
     }
 
@@ -97,7 +97,7 @@ class ScheduleTaskController extends ClientApiController
             ->log();
 
         return $this->fractal->item($task->refresh())
-            ->transformWith($this->getTransformer(TaskTransformer::class))
+            ->transformWith(TaskTransformer::class)
             ->toArray();
     }
 
