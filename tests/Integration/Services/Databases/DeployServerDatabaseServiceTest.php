@@ -62,7 +62,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
         $server = $this->createServerModel();
 
         $host = DatabaseHost::factory()->create();
-        $node = Node::factory()->create(['location_id' => $server->location->id]);
+        $node = Node::factory()->create(['database_host_id' => $host->id, 'location_id' => $server->location->id]);
 
         config()->set('pterodactyl.client_features.databases.allow_random', false);
 
@@ -96,12 +96,13 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        $node = Node::factory()->create(['location_id' => $server->location->id, 'database_host_id' => DatabaseHost::factory()->create()->id]);
-        $host = DatabaseHost::factory()->create();
-        $server->node->database_host_id = $host->id;
+        $host1 = DatabaseHost::factory()->create();
+        $host2 = DatabaseHost::factory()->create();
+        $node = Node::factory()->create(['database_host_id' => $host2->id, 'location_id' => $server->location->id]);
+        $server->node->database_host_id = $host2->id;
 
         $this->managementService->expects('create')->with($server, [
-            'database_host_id' => $host->id,
+            'database_host_id' => $host2->id,
             'database' => "s{$server->id}_something",
             'remote' => '%',
         ])->andReturns(new Database());
