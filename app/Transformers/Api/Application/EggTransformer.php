@@ -86,7 +86,6 @@ class EggTransformer extends Transformer
                 'files' => json_decode($model->inherit_config_files),
                 'startup' => json_decode($model->inherit_config_startup),
                 'stop' => $model->inherit_config_stop,
-                'logs' => json_decode($model->inherit_config_logs),
             ];
         });
     }
