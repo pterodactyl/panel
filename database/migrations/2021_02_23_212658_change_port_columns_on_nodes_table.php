@@ -12,9 +12,9 @@ return new class () extends Migration {
     public function up(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->renameColumn('daemonListen', 'listen_port_http');
-            $table->renameColumn('daemonSFTP', 'listen_port_sftp');
-            $table->renameColumn('daemonBase', 'daemon_base');
+            $table->renameColumn('`daemonListen`', 'listen_port_http');
+            $table->renameColumn('`daemonSFTP`', 'listen_port_sftp');
+            $table->renameColumn('`daemonBase`', 'daemon_base');
         });
 
         Schema::table('nodes', function (Blueprint $table) {
@@ -42,9 +42,9 @@ return new class () extends Migration {
     public function down(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->renameColumn('listen_port_http', 'daemonListen');
-            $table->renameColumn('listen_port_sftp', 'daemonSFTP');
-            $table->renameColumn('daemon_base', 'daemonBase');
+            $table->renameColumn('listen_port_http', '`daemonListen`');
+            $table->renameColumn('listen_port_sftp', '`daemonSFTP`');
+            $table->renameColumn('daemon_base', '`daemonBase`');
 
             $table->dropColumn('public_port_http');
             $table->dropColumn('public_port_sftp');
