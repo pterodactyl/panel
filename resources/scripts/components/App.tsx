@@ -11,10 +11,12 @@ import Spinner from '@/components/elements/Spinner';
 import { store } from '@/state';
 import { ServerContext } from '@/state/server';
 import { SiteSettings } from '@/state/settings';
+import { AdminContext } from '@/state/admin';
 
+const AdminRouter = lazy(() => import('@/routers/AdminRouter'));
+const AuthenticationRouter = lazy(() => import('@/routers/AuthenticationRouter'));
 const DashboardRouter = lazy(() => import('@/routers/DashboardRouter'));
 const ServerRouter = lazy(() => import('@/routers/ServerRouter'));
-const AuthenticationRouter = lazy(() => import('@/routers/AuthenticationRouter'));
 
 interface ExtendedWindow extends Window {
     SiteConfiguration?: SiteSettings;
@@ -83,6 +85,17 @@ function App() {
                                             </ServerContext.Provider>
                                         </Spinner.Suspense>
                                     </AuthenticatedRoute>
+                                }
+                            />
+
+                            <Route
+                                path="/admin/*"
+                                element={
+                                    <Spinner.Suspense>
+                                        <AdminContext.Provider>
+                                            <AdminRouter />
+                                        </AdminContext.Provider>
+                                    </Spinner.Suspense>
                                 }
                             />
 

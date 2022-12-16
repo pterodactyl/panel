@@ -11,7 +11,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
             <Dialog open={open} onClose={() => setOpen(false)} hideCloseIcon title={'Metadata'}>
                 <pre
                     className={
-                        'bg-gray-900 rounded p-2 font-mono text-sm leading-relaxed overflow-x-scroll whitespace-pre-wrap'
+                        'bg-slate-900 rounded p-2 font-mono text-sm leading-relaxed overflow-x-scroll whitespace-pre-wrap'
                     }
                 >
                     {JSON.stringify(meta, null, 2)}
@@ -23,7 +23,7 @@ export default ({ meta }: { meta: Record<string, unknown> }) => {
             <button
                 aria-describedby={'View additional event metadata'}
                 className={
-                    'p-2 transition-colors duration-100 text-gray-400 group-hover:text-gray-300 group-hover:hover:text-gray-50'
+                    'p-2 transition-colors duration-100 text-slate-400 group-hover:text-slate-300 group-hover:hover:text-slate-50'
                 }
                 onClick={() => setOpen(true)}
             >

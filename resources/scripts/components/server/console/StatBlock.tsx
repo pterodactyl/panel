@@ -22,22 +22,22 @@ function StatBlock({ title, copyOnClick, icon, color, className, children }: Sta
 
     return (
         <CopyOnClick text={copyOnClick}>
-            <div className={classNames(styles.stat_block, 'bg-gray-600', className)}>
-                <div className={classNames(styles.status_bar, color || 'bg-gray-700')} />
-                <div className={classNames(styles.icon, color || 'bg-gray-700')}>
+            <div className={classNames(styles.stat_block, 'bg-slate-600', className)}>
+                <div className={classNames(styles.status_bar, color || 'bg-slate-700')} />
+                <div className={classNames(styles.icon, color || 'bg-slate-700')}>
                     <Icon
                         icon={icon}
                         className={classNames({
-                            'text-gray-100': !color || color === 'bg-gray-700',
-                            'text-gray-50': color && color !== 'bg-gray-700',
+                            'text-slate-100': !color || color === 'bg-slate-700',
+                            'text-slate-50': color && color !== 'bg-slate-700',
                         })}
                     />
                 </div>
                 <div className={'flex flex-col justify-center overflow-hidden w-full'}>
-                    <p className={'font-header leading-tight text-xs md:text-sm text-gray-200'}>{title}</p>
+                    <p className={'font-header leading-tight text-xs md:text-sm text-slate-200'}>{title}</p>
                     <div
                         ref={ref}
-                        className={'h-[1.75rem] w-full font-semibold text-gray-50 truncate'}
+                        className={'h-[1.75rem] w-full font-semibold text-slate-50 truncate'}
                         style={{ fontSize }}
                     >
                         {children}
