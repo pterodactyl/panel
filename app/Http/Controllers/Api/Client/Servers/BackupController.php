@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Jobs\Backups\DeleteAll;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
@@ -147,6 +148,29 @@ class BackupController extends ClientApiController
             ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+    }
+
+    /**
+     * Starts a job to delete all backups for a server.
+     *
+     * @param Request $request
+     * @param Server $server
+     *
+     * @return JsonResponse
+     * @throws AuthorizationException
+     */
+    public function deleteAll(Request $request, Server $server): JsonResponse
+    {
+        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
+            throw new AuthorizationException();
+        }
+
+        // Dispatch a job to delete all backups for this server
+        DeleteAll::dispatch($server);
+
+        return new JsonResponse([
+            'message' => 'Job has been dispatched to delete all backups for this server. This may take a while.',
+        ]);
     }
 
     /**
