@@ -48,9 +48,9 @@ import Sidebar from '@/components/admin/Sidebar';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 
 function AdminRouter() {
-    // const email = useStoreState((state: State<ApplicationStore>) => state.user.data!.email);
-    // const roleName = useStoreState((state: State<ApplicationStore>) => state.user.data!.roleName);
-    // const avatarURL = useStoreState((state: State<ApplicationStore>) => state.user.data!.avatarURL);
+    const email = useStoreState((state: ApplicationStore) => state.user.data!.email);
+    const roleName = useStoreState((state: ApplicationStore) => state.user.data!.roleName);
+    const avatarURL = useStoreState((state: ApplicationStore) => state.user.data!.avatarURL);
     const applicationName = useStoreState((state: ApplicationStore) => state.settings.data!.name);
 
     // const [collapsed, setCollapsed] = useUserPersistedState('admin_sidebar_collapsed', false);
@@ -71,7 +71,7 @@ function AdminRouter() {
                 </div>
                 <Sidebar.Wrapper>
                     <Sidebar.Section>Administration</Sidebar.Section>
-                    <NavLink to="/admin">
+                    <NavLink to="/admin" end>
                         <OfficeBuildingIcon />
                         <span>Overview</span>
                     </NavLink>
@@ -118,27 +118,27 @@ function AdminRouter() {
                     <ReplyIcon />
                     <span>Return</span>
                 </NavLink>
-                {/*<Sidebar.User>*/}
-                {/*    {avatarURL && (*/}
-                {/*        <img*/}
-                {/*            src={`${avatarURL}?s=64`}*/}
-                {/*            alt="Profile Picture"*/}
-                {/*            css={tw`h-10 w-10 rounded-full select-none`}*/}
-                {/*        />*/}
-                {/*    )}*/}
-                {/*    <div css={tw`flex flex-col ml-3`}>*/}
-                {/*        <span*/}
-                {/*            css={tw`font-sans font-normal text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}*/}
-                {/*        >*/}
-                {/*            {email}*/}
-                {/*        </span>*/}
-                {/*        <span*/}
-                {/*            css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}*/}
-                {/*        >*/}
-                {/*            {roleName}*/}
-                {/*        </span>*/}
-                {/*    </div>*/}
-                {/*</Sidebar.User>*/}
+                <Sidebar.User>
+                    {avatarURL && (
+                        <img
+                            src={`${avatarURL}?s=64`}
+                            alt="Profile Picture"
+                            css={tw`h-10 w-10 rounded-full select-none`}
+                        />
+                    )}
+                    <div css={tw`flex flex-col ml-3`}>
+                        <span
+                            css={tw`font-sans font-normal text-sm text-neutral-50 whitespace-nowrap leading-tight select-none`}
+                        >
+                            {email}
+                        </span>
+                        <span
+                            css={tw`font-header font-normal text-xs text-neutral-300 whitespace-nowrap leading-tight select-none`}
+                        >
+                            {roleName}
+                        </span>
+                    </div>
+                </Sidebar.User>
             </Sidebar>
 
             <div css={tw`flex-1 overflow-x-hidden px-6 pt-6 lg:px-10 lg:pt-8 xl:px-16 xl:pt-12`}>

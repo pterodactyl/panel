@@ -18,7 +18,8 @@ import AdminTable, {
     ContentWrapper,
     useTableHooks,
 } from '@/components/admin/AdminTable';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
+import { Size } from '@/components/elements/button/types';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
@@ -94,7 +95,7 @@ const MountsContainer = () => {
 
                 <div css={tw`flex ml-auto pl-4`}>
                     <NavLink to={`/admin/mounts/new`}>
-                        <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                        <Button type={'button'} size={Size.Large} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
                             New Mount
                         </Button>
                     </NavLink>

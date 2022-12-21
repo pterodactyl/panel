@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faLayerGroup, faScrewdriverWrench, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
@@ -57,6 +57,7 @@ export default () => {
                         {name}
                     </Link>
                 </div>
+
                 <RightNavigation className="flex h-full items-center justify-center">
                     <SearchContainer />
 
@@ -66,14 +67,6 @@ export default () => {
                         </NavLink>
                     </Tooltip>
 
-                    {rootAdmin && (
-                        <Tooltip placement="bottom" content="Admin">
-                            <a href="/admin" rel="noreferrer">
-                                <FontAwesomeIcon icon={faCogs} />
-                            </a>
-                        </Tooltip>
-                    )}
-
                     <Tooltip placement="bottom" content="Account Settings">
                         <NavLink to="/account">
                             <span className="flex items-center w-5 h-5">
@@ -81,6 +74,14 @@ export default () => {
                             </span>
                         </NavLink>
                     </Tooltip>
+
+                    {rootAdmin && (
+                        <Tooltip placement="bottom" content="Admin">
+                            <a href="/admin" rel="noreferrer">
+                                <FontAwesomeIcon icon={faScrewdriverWrench} />
+                            </a>
+                        </Tooltip>
+                    )}
 
                     <Tooltip placement="bottom" content="Sign Out">
                         <button onClick={onTriggerLogout}>

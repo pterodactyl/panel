@@ -1,10 +1,11 @@
 import type { FormikHelpers } from 'formik';
 import { Field as FormikField, Form, Formik } from 'formik';
+import type { ReactNode } from 'react';
 import tw from 'twin.macro';
 import { boolean, object, string } from 'yup';
 
 import AdminBox from '@/components/admin/AdminBox';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import Field from '@/components/elements/Field';
 import Label from '@/components/elements/Label';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -25,7 +26,7 @@ interface Props {
 
     onSubmit: (values: Values, helpers: FormikHelpers<Values>) => void;
 
-    children?: React.ReactNode;
+    children?: ReactNode;
 }
 
 function MountForm({ action, title, initialValues, children, onSubmit }: Props) {
@@ -118,7 +119,7 @@ function MountForm({ action, title, initialValues, children, onSubmit }: Props) 
                             {children}
 
                             <div css={tw`flex ml-auto`}>
-                                <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                <Button type="submit" disabled={isSubmitting || !isValid}>
                                     {action}
                                 </Button>
                             </div>

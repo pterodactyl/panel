@@ -1,15 +1,18 @@
+import { LanguageDescription, LanguageSupport, StreamLanguage } from '@codemirror/language';
+import { shell } from '@codemirror/legacy-modes/mode/shell';
+import { faScroll } from '@fortawesome/free-solid-svg-icons';
+import type { FormikHelpers } from 'formik';
+import { Form, Formik } from 'formik';
+import tw from 'twin.macro';
+
 import { useEggFromRoute } from '@/api/admin/egg';
 import updateEgg from '@/api/admin/eggs/updateEgg';
-import Field from '@/components/elements/Field';
-import useFlash from '@/plugins/useFlash';
-// import { shell } from '@codemirror/legacy-modes/mode/shell';
-import { faScroll } from '@fortawesome/free-solid-svg-icons';
-import { Form, Formik, FormikHelpers } from 'formik';
-import tw from 'twin.macro';
 import AdminBox from '@/components/admin/AdminBox';
-import Button from '@/components/elements/Button';
-// import Editor from '@/components/elements/Editor';
+import { Button } from '@/components/elements/button';
+import { Editor } from '@/components/elements/editor';
+import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import useFlash from '@/plugins/useFlash';
 
 interface Values {
     scriptContainer: string;
@@ -60,14 +63,17 @@ export default function EggInstallContainer() {
                         <SpinnerOverlay visible={isSubmitting} />
 
                         <Form>
-                            {/*<Editor*/}
-                            {/*    overrides={tw`h-96 mb-4`}*/}
-                            {/*    initialContent={egg.scriptInstall || ''}*/}
-                            {/*    mode={shell}*/}
-                            {/*    fetchContent={value => {*/}
-                            {/*        fetchFileContent = value;*/}
-                            {/*    }}*/}
-                            {/*/>*/}
+                            <Editor
+                                className="mb-4 h-96 overflow-scroll"
+                                initialContent={egg.scriptInstall || ''}
+                                fetchContent={value => {
+                                    fetchFileContent = value;
+                                }}
+                                language={LanguageDescription.of({
+                                    name: 'shell',
+                                    support: new LanguageSupport(StreamLanguage.define(shell)),
+                                })}
+                            />
 
                             <div css={tw`mx-6 mb-4`}>
                                 <div css={tw`grid grid-cols-3 gap-x-8 gap-y-6`}>
@@ -92,12 +98,7 @@ export default function EggInstallContainer() {
                             </div>
 
                             <div css={tw`flex flex-row border-t border-neutral-600`}>
-                                <Button
-                                    type={'submit'}
-                                    size={'small'}
-                                    css={tw`ml-auto mr-6 mt-4`}
-                                    disabled={isSubmitting || !isValid}
-                                >
+                                <Button type="submit" css={tw`ml-auto mr-6 mt-4`} disabled={isSubmitting || !isValid}>
                                     Save Changes
                                 </Button>
                             </div>

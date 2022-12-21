@@ -9,8 +9,9 @@ import { useEggFromRoute } from '@/api/admin/egg';
 import { EggVariableForm, validationSchema } from '@/components/admin/nests/eggs/EggVariablesContainer';
 import Modal from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import useFlash from '@/plugins/useFlash';
+import { Variant } from '@/components/elements/button/types';
 
 export default function NewVariableButton() {
     const { setValues } = useFormikContext();
@@ -75,16 +76,16 @@ export default function NewVariableButton() {
 
                             <div css={tw`flex flex-wrap justify-end mt-6`}>
                                 <Button
-                                    type={'button'}
-                                    isSecondary
+                                    type="button"
+                                    variant={Variant.Secondary}
                                     css={tw`w-full sm:w-auto sm:mr-2`}
                                     onClick={() => setVisible(false)}
                                 >
                                     Cancel
                                 </Button>
                                 <Button
+                                    type="submit"
                                     css={tw`w-full mt-4 sm:w-auto sm:mt-0`}
-                                    type={'submit'}
                                     disabled={isSubmitting || !isValid}
                                 >
                                     Create Variable
@@ -95,7 +96,8 @@ export default function NewVariableButton() {
                 )}
             </Formik>
 
-            <Button type={'button'} color={'green'} onClick={() => setVisible(true)}>
+            {/* TODO: make button green */}
+            <Button type="button" onClick={() => setVisible(true)}>
                 New Variable
             </Button>
         </>

@@ -13,7 +13,7 @@ import updateLocation from '@/api/admin/locations/updateLocation';
 import AdminBox from '@/components/admin/AdminBox';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import Field from '@/components/elements/Field';
 import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -99,7 +99,7 @@ const EditInformationContainer = () => {
                                 </div>
 
                                 <div css={tw`flex ml-auto`}>
-                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                    <Button type="submit" disabled={isSubmitting || !isValid}>
                                         Save Changes
                                     </Button>
                                 </div>

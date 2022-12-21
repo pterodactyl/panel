@@ -14,7 +14,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import AdminBox from '@/components/admin/AdminBox';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import DatabaseDeleteButton from '@/components/admin/databases/DatabaseDeleteButton';
@@ -115,7 +115,7 @@ export const InformationContainer = ({ title, initialValues, children, onSubmit 
                             <div css={tw`w-full flex flex-row items-center mt-6`}>
                                 {children}
                                 <div css={tw`flex ml-auto`}>
-                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                    <Button type="submit" disabled={isSubmitting || !isValid}>
                                         Save Changes
                                     </Button>
                                 </div>

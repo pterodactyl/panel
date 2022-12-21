@@ -13,11 +13,12 @@ import type { EggVariable } from '@/api/admin/egg';
 import { useEggFromRoute } from '@/api/admin/egg';
 import NewVariableButton from '@/components/admin/nests/eggs/NewVariableButton';
 import AdminBox from '@/components/admin/AdminBox';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import Checkbox from '@/components/elements/Checkbox';
 import Field, { FieldRow, TextareaField } from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
+import Label from '@/components/elements/Label';
 
 export const validationSchema = object().shape({
     name: string().required().min(1).max(191),
@@ -59,14 +60,23 @@ export function EggVariableForm({ prefix }: { prefix: string }) {
             </FieldRow>
 
             <div css={tw`flex flex-row mb-6`}>
-                <Checkbox id={`${prefix}isUserViewable`} name={`${prefix}isUserViewable`} label={'User Viewable'} />
+                <div className="ml-auto flex flex-row">
+                    {/* TODO: fix Checkbox component, current one is designed for subuser permissions and not for individual values */}
+                    <Checkbox id={`${prefix}isUserViewable`} name={`${prefix}isUserViewable`} />
 
-                <Checkbox
-                    id={`${prefix}isUserEditable`}
-                    name={`${prefix}isUserEditable`}
-                    label={'User Editable'}
-                    css={tw`ml-auto`}
-                />
+                    <div css={tw`flex-1`}>
+                        <Label>User Viewable</Label>
+                    </div>
+                </div>
+
+                <div className="ml-auto flex flex-row">
+                    {/* TODO: fix Checkbox component, current one is designed for subuser permissions and not for individual values */}
+                    <Checkbox id={`${prefix}isUserEditable`} name={`${prefix}isUserEditable`} />
+
+                    <div css={tw`flex-1`}>
+                        <Label>User Editable</Label>
+                    </div>
+                </div>
             </div>
 
             <Field
@@ -111,7 +121,7 @@ function EggVariableDeleteButton({ onClick }: { onClick: (success: () => void) =
                 css={tw`ml-auto text-neutral-500 hover:text-neutral-300`}
                 onClick={() => setVisible(true)}
             >
-                <TrashIcon css={tw`h-5 w-5`} />
+                <TrashIcon className="h-5 w-5" />
             </button>
         </>
     );
@@ -200,12 +210,7 @@ export default function EggVariablesContainer() {
                             <div css={tw`flex flex-row`}>
                                 <NewVariableButton />
 
-                                <Button
-                                    type={'submit'}
-                                    size={'small'}
-                                    css={tw`ml-auto`}
-                                    disabled={isSubmitting || !isValid}
-                                >
+                                <Button type="submit" className="ml-auto" disabled={isSubmitting || !isValid}>
                                     Save Changes
                                 </Button>
                             </div>

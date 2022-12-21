@@ -4,7 +4,6 @@ import { useState } from 'react';
 import Checkbox from '@/components/elements/inputs/Checkbox';
 import { Dropdown } from '@/components/elements/dropdown';
 import { Dialog } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button';
 import { User } from '@definitions/admin';
 
 interface Props {
@@ -18,14 +17,17 @@ const UserTableRow = ({ user, selected, onRowChange }: Props) => {
 
     return (
         <>
-            <Dialog title={'Delete account'} visible={visible} onDismissed={() => setVisible(false)}>
-                <Dialog.Icon type={'danger'} />
+            <Dialog.Confirm
+                title={'Delete account'}
+                open={visible}
+                onClose={() => setVisible(false)}
+                onConfirmed={() => {
+                    console.log('yeet');
+                }}
+            >
                 This account will be permanently deleted.
-                <Dialog.Buttons>
-                    <Button.Text onClick={() => setVisible(false)}>Cancel</Button.Text>
-                    <Button.Danger>Delete</Button.Danger>
-                </Dialog.Buttons>
-            </Dialog>
+            </Dialog.Confirm>
+
             <tr>
                 <td className={'whitespace-nowrap'}>
                     <div className={'flex justify-end items-center w-8'}>

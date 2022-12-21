@@ -10,17 +10,18 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import AdminCheckbox from '@/components/admin/AdminCheckbox';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import AdminTable, {
+    ContentWrapper,
+    Loading,
+    NoItems,
+    Pagination,
     TableBody,
     TableHead,
     TableHeader,
     TableRow,
-    Pagination,
-    Loading,
-    NoItems,
-    ContentWrapper,
     useTableHooks,
 } from '@/components/admin/AdminTable';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
+import { Size } from '@/components/elements/button/types';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 
 const RowCheckbox = ({ id }: { id: number }) => {
@@ -93,7 +94,7 @@ const DatabasesContainer = () => {
 
                 <div css={tw`flex ml-auto pl-4`}>
                     <NavLink to="/admin/databases/new">
-                        <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                        <Button type="button" size={Size.Large} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
                             New Database Host
                         </Button>
                     </NavLink>

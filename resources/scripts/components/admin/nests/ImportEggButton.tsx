@@ -1,13 +1,17 @@
+import { LanguageDescription } from '@codemirror/language';
+import { json } from '@codemirror/lang-json';
+import { useState } from 'react';
+import { useParams } from 'react-router-dom';
+import tw from 'twin.macro';
+
 import getEggs from '@/api/admin/nests/getEggs';
 import importEgg from '@/api/admin/nests/importEgg';
 import useFlash from '@/plugins/useFlash';
-// import { Editor } from '@/components/elements/editor';
-import { useState } from 'react';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
+import { Size, Variant } from '@/components/elements/button/types';
+import { Editor } from '@/components/elements/editor';
 import Modal from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { useParams } from 'react-router-dom';
-import tw from 'twin.macro';
 
 export default ({ className }: { className?: string }) => {
     const [visible, setVisible] = useState(false);
@@ -43,24 +47,24 @@ export default ({ className }: { className?: string }) => {
 
                 <h2 css={tw`mb-6 text-2xl text-neutral-100`}>Import Egg</h2>
 
-                {/*<Editor*/}
-                {/*    // overrides={tw`h-64 rounded`}*/}
-                {/*    initialContent={''}*/}
-                {/*    // language={jsonLanguage}*/}
-                {/*    fetchContent={value => {*/}
-                {/*        fetchFileContent = value;*/}
-                {/*    }}*/}
-                {/*/>*/}
+                <Editor
+                    className="h-64 overflow-hidden rounded"
+                    initialContent={''}
+                    fetchContent={value => {
+                        fetchFileContent = value;
+                    }}
+                    language={LanguageDescription.of({ name: 'json', support: json() })}
+                />
 
                 <div css={tw`flex flex-wrap justify-end mt-4 sm:mt-6`}>
-                    <Button
-                        type={'button'}
+                    <Button.Text
+                        type="button"
+                        variant={Variant.Secondary}
                         css={tw`w-full sm:w-auto sm:mr-2`}
                         onClick={() => setVisible(false)}
-                        isSecondary
                     >
                         Cancel
-                    </Button>
+                    </Button.Text>
                     <Button css={tw`w-full sm:w-auto mt-4 sm:mt-0`} onClick={submit}>
                         Import Egg
                     </Button>
@@ -68,12 +72,12 @@ export default ({ className }: { className?: string }) => {
             </Modal>
 
             <Button
-                type={'button'}
-                size={'large'}
+                type="button"
+                size={Size.Large}
+                variant={Variant.Secondary}
                 css={tw`h-10 px-4 py-0 whitespace-nowrap`}
                 className={className}
                 onClick={() => setVisible(true)}
-                isSecondary
             >
                 Import
             </Button>

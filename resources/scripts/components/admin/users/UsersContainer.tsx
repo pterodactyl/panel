@@ -12,6 +12,7 @@ import TFootPaginated from '@/components/elements/table/TFootPaginated';
 import type { User } from '@definitions/admin';
 import extractSearchFilters from '@/helpers/extractSearchFilters';
 import useDebouncedState from '@/plugins/useDebouncedState';
+import { Shape } from '@/components/elements/button/types';
 
 const filters = ['id', 'uuid', 'external_id', 'username', 'email'] as const;
 
@@ -77,13 +78,13 @@ const UsersContainer = () => {
                                 onChange={onSelectAll}
                             />
                         </div>
-                        <Button.Text square>
+                        <Button.Text shape={Shape.IconSquare}>
                             <SupportIcon className={'w-4 h-4'} />
                         </Button.Text>
-                        <Button.Text square>
+                        <Button.Text shape={Shape.IconSquare}>
                             <LockOpenIcon className={'w-4 h-4'} />
                         </Button.Text>
-                        <Button.Text square>
+                        <Button.Text shape={Shape.IconSquare}>
                             <TrashIcon className={'w-4 h-4'} />
                         </Button.Text>
                     </div>

@@ -1,23 +1,26 @@
+import { LanguageDescription } from '@codemirror/language';
+import { json } from '@codemirror/lang-json';
+import { faDocker } from '@fortawesome/free-brands-svg-icons';
+import { faEgg, faFireAlt, faMicrochip, faTerminal } from '@fortawesome/free-solid-svg-icons';
+import type { FormikHelpers } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
+import { forwardRef, useImperativeHandle, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
+import tw from 'twin.macro';
+import { object } from 'yup';
+
 import { useEggFromRoute } from '@/api/admin/egg';
 import updateEgg from '@/api/admin/eggs/updateEgg';
+import AdminBox from '@/components/admin/AdminBox';
 import EggDeleteButton from '@/components/admin/nests/eggs/EggDeleteButton';
 import EggExportButton from '@/components/admin/nests/eggs/EggExportButton';
-import Button from '@/components/elements/Button';
-// import Editor from '@/components/elements/Editor';
+import { Button } from '@/components/elements/button';
+import { Editor } from '@/components/elements/editor';
 import Field, { TextareaField } from '@/components/elements/Field';
 import Input from '@/components/elements/Input';
 import Label from '@/components/elements/Label';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import useFlash from '@/plugins/useFlash';
-// import { jsonLanguage } from '@codemirror/lang-json';
-import { faDocker } from '@fortawesome/free-brands-svg-icons';
-import { faEgg, faFireAlt, faMicrochip, faTerminal } from '@fortawesome/free-solid-svg-icons';
-import { forwardRef, useImperativeHandle, useRef } from 'react';
-import AdminBox from '@/components/admin/AdminBox';
-import { useNavigate } from 'react-router-dom';
-import tw from 'twin.macro';
-import { object } from 'yup';
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 
 export function EggInformationContainer() {
     const { isSubmitting } = useFormikContext();
@@ -104,8 +107,7 @@ export const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(fun
     { className },
     ref,
 ) {
-    // const { isSubmitting, values } = useFormikContext<Values>();
-    const { isSubmitting } = useFormikContext<Values>();
+    const { isSubmitting, values } = useFormikContext<Values>();
 
     let fetchStartupConfiguration: (() => Promise<string>) | null = null;
     let fetchFilesConfiguration: (() => Promise<string>) | null = null;
@@ -132,26 +134,26 @@ export const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(fun
 
             <div css={tw`mb-5`}>
                 <Label>Startup Configuration</Label>
-                {/*<Editor*/}
-                {/*    mode={jsonLanguage}*/}
-                {/*    initialContent={values.configStartup}*/}
-                {/*    overrides={tw`h-32 rounded`}*/}
-                {/*    fetchContent={value => {*/}
-                {/*        fetchStartupConfiguration = value;*/}
-                {/*    }}*/}
-                {/*/>*/}
+                <Editor
+                    className="h-32 overflow-scroll rounded"
+                    initialContent={values.configStartup}
+                    fetchContent={value => {
+                        fetchStartupConfiguration = value;
+                    }}
+                    language={LanguageDescription.of({ name: 'json', support: json() })}
+                />
             </div>
 
             <div css={tw`mb-1`}>
                 <Label>Configuration Files</Label>
-                {/*<Editor*/}
-                {/*    mode={jsonLanguage}*/}
-                {/*    initialContent={values.configFiles}*/}
-                {/*    overrides={tw`h-48 rounded`}*/}
-                {/*    fetchContent={value => {*/}
-                {/*        fetchFilesConfiguration = value;*/}
-                {/*    }}*/}
-                {/*/>*/}
+                <Editor
+                    className="h-48 overflow-scroll rounded"
+                    initialContent={values.configFiles}
+                    fetchContent={value => {
+                        fetchFilesConfiguration = value;
+                    }}
+                    language={LanguageDescription.of({ name: 'json', support: json() })}
+                />
             </div>
         </AdminBox>
     );
@@ -233,7 +235,7 @@ export default function EggSettingsContainer() {
                         <div css={tw`flex flex-row`}>
                             <EggDeleteButton eggId={egg.id} onDeleted={() => navigate('/admin/nests')} />
                             <EggExportButton css={tw`ml-auto mr-4`} />
-                            <Button type="submit" size="small" disabled={isSubmitting || !isValid}>
+                            <Button type="submit" disabled={isSubmitting || !isValid}>
                                 Save Changes
                             </Button>
                         </div>

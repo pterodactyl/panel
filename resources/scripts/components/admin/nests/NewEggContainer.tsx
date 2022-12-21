@@ -15,7 +15,7 @@ import {
     EggProcessContainerRef,
     EggStartupContainer,
 } from '@/components/admin/nests/eggs/EggSettingsContainer';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 
@@ -45,7 +45,16 @@ export default () => {
         values.configStartup = (await ref.current?.getStartupConfiguration()) || '';
         values.configFiles = (await ref.current?.getFilesConfiguration()) || '';
 
-        createEgg({ ...values, dockerImages: values.dockerImages.split('\n'), nestId })
+        const dockerImages: Record<string, string> = {};
+        values.dockerImages.split('\n').forEach(v => {
+            dockerImages[v] = v;
+        });
+
+        createEgg({
+            ...values,
+            dockerImages,
+            nestId,
+        })
             .then(egg => navigate(`/admin/nests/${nestId}/eggs/${egg.id}`))
             .catch(error => {
                 console.error(error);
@@ -97,12 +106,7 @@ export default () => {
 
                         <div css={tw`bg-neutral-700 rounded shadow-md py-2 px-6 mb-16`}>
                             <div css={tw`flex flex-row`}>
-                                <Button
-                                    type="submit"
-                                    size="small"
-                                    css={tw`ml-auto`}
-                                    disabled={isSubmitting || !isValid}
-                                >
+                                <Button type="submit" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
                                     Create
                                 </Button>
                             </div>

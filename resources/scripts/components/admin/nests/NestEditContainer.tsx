@@ -14,7 +14,8 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import type { Nest } from '@/api/admin/nests/getNests';
 import getNest from '@/api/admin/nests/getNest';
 import updateNest from '@/api/admin/nests/updateNest';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
+import { Size } from '@/components/elements/button/types';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import AdminBox from '@/components/admin/AdminBox';
@@ -117,7 +118,7 @@ const EditInformationContainer = () => {
                                 </div>
 
                                 <div css={tw`flex ml-auto`}>
-                                    <Button type={'submit'} disabled={isSubmitting || !isValid}>
+                                    <Button type="submit" disabled={isSubmitting || !isValid}>
                                         Save Changes
                                     </Button>
                                 </div>
@@ -222,7 +223,7 @@ const NestEditContainer = () => {
                     <ImportEggButton css={tw`mr-4`} />
 
                     <NavLink to={`/admin/nests/${params.nestId}/new`}>
-                        <Button type={'button'} size={'large'} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
+                        <Button type={'button'} size={Size.Large} css={tw`h-10 px-4 py-0 whitespace-nowrap`}>
                             New Egg
                         </Button>
                     </NavLink>

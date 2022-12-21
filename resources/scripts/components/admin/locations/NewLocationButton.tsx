@@ -6,7 +6,8 @@ import { object, string } from 'yup';
 
 import createLocation from '@/api/admin/locations/createLocation';
 import getLocations from '@/api/admin/locations/getLocations';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
+import { Size, Variant } from '@/components/elements/button/types';
 import Field from '@/components/elements/Field';
 import Modal from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -82,14 +83,14 @@ export default () => {
                             </div>
 
                             <div css={tw`flex flex-wrap justify-end mt-6`}>
-                                <Button
-                                    type={'button'}
-                                    isSecondary
+                                <Button.Text
+                                    type="button"
+                                    variant={Variant.Secondary}
                                     css={tw`w-full sm:w-auto sm:mr-2`}
                                     onClick={() => setVisible(false)}
                                 >
                                     Cancel
-                                </Button>
+                                </Button.Text>
                                 <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
                                     Create Location
                                 </Button>
@@ -100,8 +101,8 @@ export default () => {
             </Formik>
 
             <Button
-                type={'button'}
-                size={'large'}
+                type="button"
+                size={Size.Large}
                 css={tw`h-10 px-4 py-0 whitespace-nowrap`}
                 onClick={() => setVisible(true)}
             >

@@ -85,7 +85,7 @@ export const searchEggs = async (
     return data.data.map(Transformers.toEgg);
 };
 
-export const exportEgg = async (eggId: number): Promise<Record<string, any>> => {
+export const exportEgg = async (eggId: number): Promise<string> => {
     const { data } = await http.get(`/api/application/eggs/${eggId}/export`);
     return data;
 };

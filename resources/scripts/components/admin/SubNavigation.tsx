@@ -35,7 +35,7 @@ interface PropsWithoutIcon extends Props {
 }
 
 export const SubNavigationLink = ({ to, name, icon: IconComponent, children }: PropsWithIcon | PropsWithoutIcon) => (
-    <NavLink to={to}>
+    <NavLink to={to} end>
         {IconComponent ? <IconComponent /> : children}
         {name}
     </NavLink>

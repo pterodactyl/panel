@@ -64,7 +64,7 @@ function ServerRouter() {
                 error ? (
                     <ServerError message={error} />
                 ) : (
-                    <Spinner size={'large'} centered />
+                    <Spinner size="large" centered />
                 )
             ) : (
                 <>
@@ -75,21 +75,24 @@ function ServerRouter() {
                                 .map(route =>
                                     route.permission ? (
                                         <Can key={route.path} action={route.permission} matchAny>
-                                            <NavLink to={`/server/${id}/${route.path ?? ''}`} end>
+                                            <NavLink to={`/server/${id}/${route.path ?? ''}`.replace(/\/$/, '')} end>
                                                 {route.name}
                                             </NavLink>
                                         </Can>
                                     ) : (
-                                        <NavLink key={route.path} to={`/server/${id}/${route.path ?? ''}`} end>
+                                        <NavLink
+                                            key={route.path}
+                                            to={`/server/${id}/${route.path ?? ''}`.replace(/\/$/, '')}
+                                            end
+                                        >
                                             {route.name}
                                         </NavLink>
                                     ),
                                 )}
                             {rootAdmin && (
-                                // eslint-disable-next-line react/jsx-no-target-blank
-                                <a href={`/admin/servers/view/${serverId}`} target="_blank">
+                                <NavLink to={`/admin/servers/${serverId}`}>
                                     <FontAwesomeIcon icon={faExternalLinkAlt} />
-                                </a>
+                                </NavLink>
                             )}
                         </div>
                     </SubNavigation>

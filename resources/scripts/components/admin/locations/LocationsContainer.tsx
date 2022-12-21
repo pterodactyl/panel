@@ -24,7 +24,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import { AdminContext } from '@/state/admin';
 
-const RowCheckbox = ({ id }: { id: number }) => {
+function RowCheckbox({ id }: { id: number }) {
     const isChecked = AdminContext.useStoreState(state => state.locations.selectedLocations.indexOf(id) >= 0);
     const appendSelectedLocation = AdminContext.useStoreActions(actions => actions.locations.appendSelectedLocation);
     const removeSelectedLocation = AdminContext.useStoreActions(actions => actions.locations.removeSelectedLocation);
@@ -42,9 +42,9 @@ const RowCheckbox = ({ id }: { id: number }) => {
             }}
         />
     );
-};
+}
 
-const LocationsContainer = () => {
+function LocationsContainer() {
     const { page, setPage, setFilters, sort, setSort, sortDirection } = useContext(LocationsContext);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { data: locations, error, isValidating } = getLocations();
@@ -173,7 +173,7 @@ const LocationsContainer = () => {
             </AdminTable>
         </AdminContentBlock>
     );
-};
+}
 
 export default () => {
     const hooks = useTableHooks<Filters>();

@@ -1,13 +1,11 @@
-import http, {
-    FractalPaginatedResponse,
-    PaginatedResult,
-    QueryBuilderParams,
-    getPaginationSet,
-    withQueryBuilderParams,
-} from '@/api/http';
-import { Transformers, User } from '@definitions/admin';
-import useSWR, { SWRConfiguration, SWRResponse } from 'swr';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
+import type { SWRConfiguration, SWRResponse } from 'swr';
+import useSWR from 'swr';
+
+import type { FractalPaginatedResponse, PaginatedResult, QueryBuilderParams } from '@/api/http';
+import http, { getPaginationSet, withQueryBuilderParams } from '@/api/http';
+import type { User } from '@definitions/admin';
+import { Transformers } from '@definitions/admin';
 
 export interface UpdateUserValues {
     externalId: string;
@@ -32,7 +30,10 @@ const useGetUsers = (
                 params: withQueryBuilderParams(params),
             });
 
-            return getPaginationSet(data, Transformers.toUser);
+            return {
+                items: (data.data || []).map(Transformers.toUser),
+                pagination: getPaginationSet(data.meta.pagination),
+            };
         },
         config || { revalidateOnMount: true, revalidateOnFocus: false },
     );
