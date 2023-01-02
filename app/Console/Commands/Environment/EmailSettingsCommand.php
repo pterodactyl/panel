@@ -57,7 +57,7 @@ class EmailSettingsCommand extends Command
             $this->{$method}();
         }
 
-        $this->variables['MAIL_FROM'] = $this->option('email') ?? $this->ask(
+        $this->variables['MAIL_FROM_ADDRESS'] = $this->option('email') ?? $this->ask(
             trans('command/messages.environment.mail.ask_mail_from'),
             $this->config->get('mail.from.address')
         );
