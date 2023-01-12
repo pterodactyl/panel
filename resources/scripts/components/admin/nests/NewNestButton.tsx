@@ -6,10 +6,11 @@ import { object, string } from 'yup';
 
 import createNest from '@/api/admin/nests/createNest';
 import getNests from '@/api/admin/nests/getNests';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
+import { Size, Variant } from '@/components/elements/button/types';
 import Field from '@/components/elements/Field';
-import Modal from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
+import Modal from '@/components/elements/Modal';
 import useFlash from '@/plugins/useFlash';
 
 interface Values {
@@ -80,15 +81,16 @@ export default () => {
                             </div>
 
                             <div css={tw`flex flex-wrap justify-end mt-6`}>
-                                <Button
-                                    type={'button'}
-                                    isSecondary
-                                    css={tw`w-full sm:w-auto sm:mr-2`}
+                                <Button.Text
+                                    type="button"
+                                    variant={Variant.Secondary}
+                                    className="w-full sm:mr-2 sm:w-auto"
                                     onClick={() => setVisible(false)}
                                 >
                                     Cancel
-                                </Button>
-                                <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
+                                </Button.Text>
+
+                                <Button type="submit" className="mt-4 w-full sm:mt-0 sm:w-auto">
                                     Create Nest
                                 </Button>
                             </div>
@@ -98,9 +100,9 @@ export default () => {
             </Formik>
 
             <Button
-                type={'button'}
-                size={'large'}
-                css={tw`h-10 px-4 py-0 whitespace-nowrap`}
+                type="button"
+                size={Size.Large}
+                className="h-10 whitespace-nowrap px-4 py-0"
                 onClick={() => setVisible(true)}
             >
                 New Nest

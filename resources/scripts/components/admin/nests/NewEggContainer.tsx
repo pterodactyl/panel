@@ -7,12 +7,12 @@ import { object } from 'yup';
 
 import createEgg from '@/api/admin/eggs/createEgg';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
+import type { EggProcessContainerRef } from '@/components/admin/nests/eggs/EggSettingsContainer';
 import {
     EggImageContainer,
     EggInformationContainer,
     EggLifecycleContainer,
     EggProcessContainer,
-    EggProcessContainerRef,
     EggStartupContainer,
 } from '@/components/admin/nests/eggs/EggSettingsContainer';
 import { Button } from '@/components/elements/button';
