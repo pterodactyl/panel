@@ -1,6 +1,6 @@
 import { CSSObject } from '@emotion/serialize';
 import { Field as FormikField, FieldProps } from 'formik';
-import React, { forwardRef } from 'react';
+import { forwardRef } from 'react';
 import Select, {
     ContainerProps,
     ControlProps,

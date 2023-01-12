@@ -51,7 +51,7 @@ export default (id: string | number, filters: Filters = {}, include: string[] = 
     const params = {};
     if (filters !== null) {
         Object.keys(filters).forEach(key => {
-            // @ts-ignore
+            // @ts-expect-error todo
             params['filter[' + key + ']'] = filters[key];
         });
     }

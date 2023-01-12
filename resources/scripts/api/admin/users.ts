@@ -58,7 +58,7 @@ const searchUserAccounts = async (params: QueryBuilderParams<'username' | 'email
 const createUser = (values: UpdateUserValues, include: string[] = []): Promise<User> => {
     const data = {};
     Object.keys(values).forEach(k => {
-        // @ts-ignore
+        // @ts-expect-error todo
         data[k.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`)] = values[k];
     });
 
@@ -76,7 +76,7 @@ const updateUser = (id: number, values: Partial<UpdateUserValues>, include: stri
         if (k === 'password' && values[k] === '') {
             return;
         }
-        // @ts-ignore
+        // @ts-expect-error todo
         data[k.replace(/[A-Z]/g, l => `_${l.toLowerCase()}`)] = values[k];
     });
     return new Promise((resolve, reject) => {

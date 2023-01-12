@@ -16,7 +16,6 @@ export default () => {
 
     const loadOptions = async (inputValue: string, callback: (options: Option[]) => void) => {
         if (!server) {
-            // eslint-disable-next-line node/no-callback-literal
             callback([] as Option[]);
             return;
         }

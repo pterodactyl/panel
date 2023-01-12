@@ -9,7 +9,7 @@ export default (id: number, node: Partial<Node>, include: string[] = []): Promis
             .replace('HTTP', 'Http')
             .replace('SFTP', 'Sftp')
             .replace(/[A-Z]/g, letter => `_${letter.toLowerCase()}`);
-        // @ts-ignore
+        // @ts-expect-error todo
         data[key2] = node[key];
     });
 

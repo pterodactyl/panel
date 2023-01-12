@@ -42,7 +42,7 @@ const extractSearchFilters = <T extends string, D extends string = '*'>(
         return { filters: {} };
     }
 
-    // @ts-expect-error
+    // @ts-expect-error todo
     return { filters: Object.fromEntries(filters) };
 };
 

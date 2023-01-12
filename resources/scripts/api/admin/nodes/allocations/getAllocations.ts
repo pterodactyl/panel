@@ -18,13 +18,13 @@ export default (id: number, include: string[] = []) => {
     const params = {};
     if (filters !== null) {
         Object.keys(filters).forEach(key => {
-            // @ts-ignore
+            // @ts-expect-error todo
             params['filter[' + key + ']'] = filters[key];
         });
     }
 
     if (sort !== null) {
-        // @ts-ignore
+        // @ts-expect-error todo
         params.sort = (sortDirection ? '-' : '') + sort;
     }
 

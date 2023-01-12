@@ -1,4 +1,3 @@
-import React from 'react';
 import { PaginationDataSet } from '@/api/http';
 
 const TFootPaginated = ({ pagination, span }: { span: number; pagination: PaginationDataSet }) => {

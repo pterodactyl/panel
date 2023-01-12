@@ -10,7 +10,7 @@ export default (filters?: Filters): Promise<Location[]> => {
     const params = {};
     if (filters !== undefined) {
         Object.keys(filters).forEach(key => {
-            // @ts-ignore
+            // @ts-expect-error todo
             params['filter[' + key + ']'] = filters[key];
         });
     }
