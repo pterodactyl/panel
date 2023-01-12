@@ -33,7 +33,6 @@ use Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull;
 use Pterodactyl\Http\Middleware\Api\Client\SubstituteClientBindings;
 use Illuminate\Foundation\Http\Middleware\PreventRequestsDuringMaintenance;
 use Pterodactyl\Http\Middleware\Api\Application\AuthenticateApplicationUser;
-use Pterodactyl\Http\Middleware\Api\Application\SubstituteApplicationApiBindings;
 
 class Kernel extends HttpKernel
 {
@@ -71,7 +70,6 @@ class Kernel extends HttpKernel
             AuthenticateIPAccess::class,
         ],
         'application-api' => [
-//            SubstituteApplicationApiBindings::class,
             SubstituteBindings::class,
             AuthenticateApplicationUser::class,
         ],
