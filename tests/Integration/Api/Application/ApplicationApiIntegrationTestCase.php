@@ -5,7 +5,6 @@ namespace Pterodactyl\Tests\Integration\Api\Application;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Transformers\Api\Transformer;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
@@ -87,15 +86,5 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
             'r_database_hosts' => AdminAcl::READ | AdminAcl::WRITE,
             'r_server_databases' => AdminAcl::READ | AdminAcl::WRITE,
         ], $permissions));
-    }
-
-    /**
-     * Return a transformer that can be used for testing purposes.
-     *
-     * @deprecated instantiate the transformer directly
-     */
-    protected function getTransformer(string $abstract): Transformer
-    {
-        return new $abstract();
     }
 }

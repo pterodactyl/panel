@@ -140,7 +140,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
             'data' => [
                 [
                     'object' => 'server',
-                    'attributes' => $this->getTransformer(ServerTransformer::class)->transform($server),
+                    'attributes' => (new ServerTransformer())->transform($server),
                 ],
             ],
         ]);
@@ -184,11 +184,10 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         ]);
 
         $response->assertStatus(Response::HTTP_CREATED);
-        $response->assertJsonCount(3);
+        $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
             'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at'],
-            'meta' => ['resource'],
         ]);
 
         $this->assertDatabaseHas('users', ['username' => 'testuser', 'email' => 'test@example.com']);
@@ -196,10 +195,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $user = User::where('username', 'testuser')->first();
         $response->assertJson([
             'object' => 'user',
-            'attributes' => $this->getTransformer(UserTransformer::class)->transform($user),
-            'meta' => [
-                'resource' => route('api.application.users.view', $user->id),
-            ],
+            'attributes' => (new UserTransformer())->transform($user),
         ], true);
     }
 
@@ -226,7 +222,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
 
         $response->assertJson([
             'object' => 'user',
-            'attributes' => $this->getTransformer(UserTransformer::class)->transform($user),
+            'attributes' => (new UserTransformer())->transform($user),
         ]);
     }
 

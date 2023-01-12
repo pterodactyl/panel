@@ -55,7 +55,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
         foreach ($nests as $nest) {
             $response->assertJsonFragment([
                 'object' => 'nest',
-                'attributes' => $this->getTransformer(NestTransformer::class)->transform($nest),
+                'attributes' => (new NestTransformer())->transform($nest),
             ]);
         }
     }
@@ -76,7 +76,7 @@ class NestControllerTest extends ApplicationApiIntegrationTestCase
 
         $response->assertJson([
             'object' => 'nest',
-            'attributes' => $this->getTransformer(NestTransformer::class)->transform($nest),
+            'attributes' => (new NestTransformer())->transform($nest),
         ]);
     }
 

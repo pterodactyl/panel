@@ -38,7 +38,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
                 [
                     'object',
                     'attributes' => [
-                        'id', 'uuid', 'nest', 'author', 'description', 'docker_image', 'startup', 'created_at', 'updated_at',
+                        'id', 'uuid', 'nest_id', 'author', 'description', 'docker_images', 'startup', 'created_at', 'updated_at',
                         'script' => ['privileged', 'install', 'entry', 'container', 'extends'],
                         'config' => [
                             'files' => [],
@@ -77,7 +77,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'attributes' => [
-                'id', 'uuid', 'nest', 'author', 'description', 'docker_image', 'startup', 'script' => [], 'config' => [], 'created_at', 'updated_at',
+                'id', 'uuid', 'nest_id', 'author', 'description', 'docker_images', 'startup', 'script' => [], 'config' => [], 'created_at', 'updated_at',
             ],
         ]);
 
@@ -113,7 +113,7 @@ class EggControllerTest extends ApplicationApiIntegrationTestCase
      */
     public function testGetMissingEgg()
     {
-        $response = $this->getJson('/api/application/eggs/nil');
+        $response = $this->getJson('/api/application/eggs/0');
         $this->assertNotFoundJson($response);
     }
 
