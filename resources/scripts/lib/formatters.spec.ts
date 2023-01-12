@@ -49,15 +49,27 @@ describe('@/lib/formatters.ts', () => {
             expect(ip('127.0.0.1')).equals('127.0.0.1');
         });
 
+        it('should format an IPv4 address with a port', () => {
+            expect(ip('127.0.0.1:25565')).equals('[127.0.0.1:25565]');
+        });
+
         it('should format an IPv6 address', () => {
+            expect(ip('::1')).equals('[::1]');
             expect(ip(':::1')).equals('[:::1]');
             expect(ip('2001:db8::')).equals('[2001:db8::]');
+
+            expect(ip('[::1]')).equals('[::1]');
+            expect(ip('[2001:db8::]')).equals('[2001:db8::]');
+        });
+
+        it('should format an IPv6 address with a port', () => {
+            expect(ip('[::1]:25565')).equals('[::1]:25565');
+            expect(ip('[2001:db8::]:25565')).equals('[2001:db8::]:25565');
         });
 
         it('should handle random inputs', () => {
             expect(ip('1')).equals('1');
             expect(ip('foobar')).equals('foobar');
-            expect(ip('127.0.0.1:25565')).equals('[127.0.0.1:25565]');
         });
     });
 });

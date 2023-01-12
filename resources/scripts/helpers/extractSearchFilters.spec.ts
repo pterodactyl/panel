@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import extractSearchFilters from '@/helpers/extractSearchFilters';
 
 type TestCase = [string, 0 | Record<string, string[]>];

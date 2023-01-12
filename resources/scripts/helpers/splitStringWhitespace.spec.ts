@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import splitStringWhitespace from '@/helpers/splitStringWhitespace';
 
 describe('@/helpers/splitStringWhitespace.ts', function () {
