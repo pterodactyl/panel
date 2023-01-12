@@ -1,14 +1,15 @@
 import type { LanguageDescription } from '@codemirror/language';
+import { languages } from '@codemirror/language-data';
 import { dirname } from 'pathe';
 import { useEffect, useState } from 'react';
-import { useLocation, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import tw from 'twin.macro';
 
 import { httpErrorToHuman } from '@/api/http';
 import getFileContents from '@/api/server/files/getFileContents';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import Can from '@/components/elements/Can';
 import Select from '@/components/elements/Select';
 import PageContentBlock from '@/components/elements/PageContentBlock';
@@ -18,21 +19,24 @@ import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcr
 import FileNameModal from '@/components/server/files/FileNameModal';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { Editor } from '@/components/elements/editor';
-import modes from '@/modes';
 import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
-import { encodePathSegments, hashToPath } from '@/helpers';
+import { encodePathSegments } from '@/helpers';
 
 export default () => {
     const [error, setError] = useState('');
-    const { action } = useParams<{ action: 'new' | string }>();
+    const { action, '*': rawFilename } = useParams<{ action: 'edit' | 'new'; '*': string }>();
     const [loading, setLoading] = useState(action === 'edit');
     const [content, setContent] = useState('');
     const [modalVisible, setModalVisible] = useState(false);
-    const [mode, setMode] = useState('text/plain');
     const [language, setLanguage] = useState<LanguageDescription>();
 
-    const { hash } = useLocation();
+    const [filename, setFilename] = useState<string>('');
+
+    useEffect(() => {
+        setFilename(decodeURIComponent(rawFilename ?? ''));
+    }, [rawFilename]);
+
     const navigate = useNavigate();
 
     const id = ServerContext.useStoreState(state => state.server.data!.id);
@@ -43,20 +47,25 @@ export default () => {
     let fetchFileContent: null | (() => Promise<string>) = null;
 
     useEffect(() => {
-        if (action === 'new') return;
+        if (action === 'new') {
+            return;
+        }
+
+        if (filename === '') {
+            return;
+        }
 
         setError('');
         setLoading(true);
-        const path = hashToPath(hash);
-        setDirectory(dirname(path));
-        getFileContents(uuid, path)
+        setDirectory(dirname(filename));
+        getFileContents(uuid, filename)
             .then(setContent)
             .catch(error => {
                 console.error(error);
                 setError(httpErrorToHuman(error));
             })
             .then(() => setLoading(false));
-    }, [action, uuid, hash]);
+    }, [action, uuid, filename]);
 
     const save = (name?: string) => {
         if (!fetchFileContent) {
@@ -66,10 +75,10 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then(content => saveFileContents(uuid, name || hashToPath(hash), content))
+            .then(content => saveFileContents(uuid, name ?? filename, content))
             .then(() => {
                 if (name) {
-                    navigate(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
+                    navigate(`/server/${id}/files/edit/${encodePathSegments(name)}`);
                     return;
                 }
 
@@ -97,7 +106,7 @@ export default () => {
                 </div>
             </ErrorBoundary>
 
-            {hash.replace(/^#/, '').endsWith('.pteroignore') && (
+            {filename === '.pteroignore' ? (
                 <div css={tw`mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400`}>
                     <p css={tw`text-neutral-300 text-sm`}>
                         You&apos;re editing a <code css={tw`font-mono bg-black rounded py-px px-1`}>.pteroignore</code>{' '}
@@ -107,7 +116,7 @@ export default () => {
                         <code css={tw`font-mono bg-black rounded py-px px-1`}>!</code>).
                     </p>
                 </div>
-            )}
+            ) : null}
 
             <FileNameModal
                 visible={modalVisible}
@@ -121,10 +130,12 @@ export default () => {
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading} />
                 <Editor
-                    filename={hash.replace(/^#/, '')}
+                    filename={filename}
                     initialContent={content}
                     language={language}
-                    onLanguageChanged={setLanguage}
+                    onLanguageChanged={l => {
+                        setLanguage(l);
+                    }}
                     fetchContent={value => {
                         fetchFileContent = value;
                     }}
@@ -140,10 +151,15 @@ export default () => {
 
             <div css={tw`flex justify-end mt-4`}>
                 <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
-                    <Select value={mode} onChange={e => setMode(e.currentTarget.value)}>
-                        {modes.map(mode => (
-                            <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
-                                {mode.name}
+                    <Select
+                        value={language?.name ?? ''}
+                        onChange={e => {
+                            setLanguage(languages.find(l => l.name === e.target.value));
+                        }}
+                    >
+                        {languages.map(language => (
+                            <option key={language.name} value={language.name}>
+                                {language.name}
                             </option>
                         ))}
                     </Select>

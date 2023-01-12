@@ -97,13 +97,7 @@ export default {
             component: FileManagerContainer,
         },
         {
-            route: 'files/edit/*',
-            permission: 'file.*',
-            name: undefined,
-            component: FileEditContainer,
-        },
-        {
-            route: 'files/new/*',
+            route: 'files/:action/*',
             permission: 'file.*',
             name: undefined,
             component: FileEditContainer,

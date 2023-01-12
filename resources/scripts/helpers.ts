@@ -45,5 +45,5 @@ export function encodePathSegments(path: string): string {
 }
 
 export function hashToPath(hash: string): string {
-    return hash.length > 0 ? decodeURIComponent(hash.substr(1)) : '/';
+    return hash.length > 0 ? decodeURIComponent(hash.substring(1)) : '/';
 }

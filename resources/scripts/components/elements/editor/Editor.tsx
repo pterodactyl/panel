@@ -7,8 +7,9 @@ import {
     bracketMatching,
     foldGutter,
     foldKeymap,
-    LanguageDescription,
     indentUnit,
+    LanguageDescription,
+    LanguageSupport,
 } from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
 import { lintKeymap } from '@codemirror/lint';
@@ -108,13 +109,15 @@ export function Editor(props: EditorProps) {
     // eslint-disable-next-line react/hook-use-state
     const [keybindings] = useState(new Compartment());
 
+    const [languageSupport, setLanguageSupport] = useState<LanguageSupport>();
+
     const createEditorState = () =>
         EditorState.create({
             doc: props.initialContent,
             extensions: [
                 defaultExtensions,
                 props.extensions === undefined ? [] : props.extensions,
-                languageConfig.of([]),
+                languageConfig.of(languageSupport ?? []),
                 keybindings.of([]),
             ],
         });
@@ -124,12 +127,18 @@ export function Editor(props: EditorProps) {
             return;
         }
 
-        setView(
-            new EditorView({
-                state: createEditorState(),
-                parent: ref.current,
-            }),
-        );
+        if (view === undefined) {
+            setView(
+                new EditorView({
+                    state: createEditorState(),
+                    parent: ref.current,
+                }),
+            );
+        } else {
+            // Fully replace the state whenever the initial content changes, this prevents any unrelated
+            // history (for undo and redo) from being tracked.
+            view.setState(createEditorState());
+        }
 
         return () => {
             if (view === undefined) {
@@ -139,15 +148,7 @@ export function Editor(props: EditorProps) {
             view.destroy();
             setView(undefined);
         };
-    }, [ref]);
-
-    useEffect(() => {
-        if (view === undefined) {
-            return;
-        }
-
-        view.setState(createEditorState());
-    }, [props.initialContent]);
+    }, [ref, view, props.initialContent]);
 
     useEffect(() => {
         if (view === undefined) {
@@ -159,16 +160,24 @@ export function Editor(props: EditorProps) {
             return;
         }
 
-        void language.load().then(language => {
-            view.dispatch({
-                effects: languageConfig.reconfigure(language),
-            });
+        void language.load().then(support => {
+            setLanguageSupport(support);
         });
 
         if (props.onLanguageChanged !== undefined) {
             props.onLanguageChanged(language);
         }
     }, [view, props.filename, props.language]);
+
+    useEffect(() => {
+        if (languageSupport === undefined || view === undefined) {
+            return;
+        }
+
+        view.dispatch({
+            effects: languageConfig.reconfigure(languageSupport),
+        });
+    }, [view, languageSupport]);
 
     useEffect(() => {
         if (props.fetchContent === undefined) {

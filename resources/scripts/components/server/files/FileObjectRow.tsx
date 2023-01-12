@@ -8,10 +8,10 @@ import { NavLink } from 'react-router-dom';
 import tw from 'twin.macro';
 import { join } from 'pathe';
 
-import { encodePathSegments } from '@/helpers';
-import { FileObject } from '@/api/server/files/loadDirectory';
+import type { FileObject } from '@/api/server/files/loadDirectory';
 import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
+import { encodePathSegments } from '@/helpers';
 import { bytesToString } from '@/lib/formatters';
 import { usePermissions } from '@/plugins/usePermissions';
 import { ServerContext } from '@/state/server';
@@ -27,7 +27,7 @@ function Clickable({ file, children }: { file: FileObject; children: ReactNode }
     ) : (
         <NavLink
             className={styles.details}
-            to={`/server/${id}/files${file.isFile ? '/edit' : ''}#${encodePathSegments(join(directory, file.name))}`}
+            to={`/server/${id}/files${file.isFile ? '/edit' : '#'}${encodePathSegments(join(directory, file.name))}`}
         >
             {children}
         </NavLink>
