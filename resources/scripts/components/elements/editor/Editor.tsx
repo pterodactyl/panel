@@ -30,6 +30,8 @@ import {
 } from '@codemirror/view';
 import type { CSSProperties } from 'react';
 import { useEffect, useRef, useState } from 'react';
+import type { TwStyle } from 'twin.macro';
+import tw, { styled } from 'twin.macro';
 
 import { ayuMirageHighlightStyle, ayuMirageTheme } from './theme';
 
@@ -78,10 +80,24 @@ const defaultExtensions: Extension = [
     indentUnit.of('\t'),
 ];
 
+const EditorContainer = styled.div<{ overrides?: TwStyle }>`
+    //min-height: 12rem;
+    ${tw`relative`};
+
+    & > div {
+        ${props => props.overrides};
+
+        &.cm-focused {
+            outline: none;
+        }
+    }
+`;
+
 export interface EditorProps {
     // DOM
     className?: string;
     style?: CSSProperties;
+    childClassName?: TwStyle;
 
     // CodeMirror Config
     extensions?: Extension[];
@@ -211,5 +227,7 @@ export function Editor(props: EditorProps) {
         props.fetchContent(async () => view.state.doc.toJSON().join('\n'));
     }, [view, props.fetchContent, props.onContentSaved]);
 
-    return <div ref={ref} className={`relative ${props.className ?? ''}`.trimEnd()} style={props.style} />;
+    return (
+        <EditorContainer ref={ref} className={props.className} style={props.style} overrides={props.childClassName} />
+    );
 }

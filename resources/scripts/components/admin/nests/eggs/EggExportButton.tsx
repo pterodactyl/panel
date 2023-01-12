@@ -49,7 +49,7 @@ export default ({ className }: { className?: string }) => {
                 <FlashMessageRender byKey={'egg:export'} css={tw`mb-6`} />
 
                 <Editor
-                    className="h-[32rem] overflow-scroll rounded"
+                    childClassName={tw`h-[32rem] rounded`}
                     initialContent={content ?? ''}
                     language={LanguageDescription.of({ name: 'json', support: json() })}
                 />

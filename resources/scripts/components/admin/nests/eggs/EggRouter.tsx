@@ -19,7 +19,7 @@ const EggRouter = () => {
     const { data: egg, error, isValidating, mutate } = useEggFromRoute();
 
     useEffect(() => {
-        mutate();
+        void mutate();
     }, []);
 
     useEffect(() => {

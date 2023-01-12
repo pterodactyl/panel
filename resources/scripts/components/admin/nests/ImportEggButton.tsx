@@ -48,7 +48,7 @@ export default ({ className }: { className?: string }) => {
                 <h2 css={tw`mb-6 text-2xl text-neutral-100`}>Import Egg</h2>
 
                 <Editor
-                    className="h-64 overflow-hidden rounded"
+                    childClassName={tw`h-64 rounded`}
                     initialContent={''}
                     fetchContent={value => {
                         fetchFileContent = value;

@@ -33,7 +33,7 @@ const RowCheckbox = ({ id }: { id: number }) => {
         <AdminCheckbox
             name={id.toString()}
             checked={isChecked}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            onChange={(e: ChangeEvent<HTMLInputElement>) => {
                 if (e.currentTarget.checked) {
                     appendSelectedNest(id);
                 } else {

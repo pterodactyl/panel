@@ -130,6 +130,8 @@ export default () => {
             <div css={tw`relative`}>
                 <SpinnerOverlay visible={loading} />
                 <Editor
+                    style={{ height: 'calc(100vh - 20rem)' }}
+                    childClassName={tw`rounded-md h-full`}
                     filename={filename}
                     initialContent={content}
                     language={language}

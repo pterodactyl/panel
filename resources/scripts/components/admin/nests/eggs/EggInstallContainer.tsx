@@ -64,7 +64,8 @@ export default function EggInstallContainer() {
 
                         <Form>
                             <Editor
-                                className="mb-4 h-96 overflow-scroll"
+                                className="mb-4"
+                                childClassName={tw`h-96`}
                                 initialContent={egg.scriptInstall || ''}
                                 fetchContent={value => {
                                     fetchFileContent = value;

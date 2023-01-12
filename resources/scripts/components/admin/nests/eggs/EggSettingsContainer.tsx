@@ -135,7 +135,7 @@ export const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(fun
             <div css={tw`mb-5`}>
                 <Label>Startup Configuration</Label>
                 <Editor
-                    className="h-32 overflow-scroll rounded"
+                    childClassName={tw`h-32 rounded`}
                     initialContent={values.configStartup}
                     fetchContent={value => {
                         fetchStartupConfiguration = value;
@@ -147,7 +147,7 @@ export const EggProcessContainer = forwardRef<any, EggProcessContainerProps>(fun
             <div css={tw`mb-1`}>
                 <Label>Configuration Files</Label>
                 <Editor
-                    className="h-48 overflow-scroll rounded"
+                    childClassName={tw`h-48 rounded`}
                     initialContent={values.configFiles}
                     fetchContent={value => {
                         fetchFilesConfiguration = value;
@@ -185,13 +185,23 @@ export default function EggSettingsContainer() {
     const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('egg');
 
-        values.configStartup = (await ref.current?.getStartupConfiguration()) || '';
-        values.configFiles = (await ref.current?.getFilesConfiguration()) || '';
+        values.configStartup = (await ref.current?.getStartupConfiguration()) ?? '';
+        values.configFiles = (await ref.current?.getFilesConfiguration()) ?? '';
+
+        const dockerImages: Record<string, string> = {};
+        for (const v of values.dockerImages.split('\n')) {
+            const parts = v.trim().split('|');
+            const image = parts[0] ?? '';
+            const alias = parts[1] ?? image;
+
+            dockerImages[alias] = image;
+        }
+
+        console.log(dockerImages);
 
         updateEgg(egg.id, {
             ...values,
-            // TODO
-            dockerImages: {},
+            dockerImages,
         })
             .catch(error => {
                 console.error(error);
@@ -207,8 +217,11 @@ export default function EggSettingsContainer() {
                 name: egg.name,
                 description: egg.description || '',
                 startup: egg.startup,
-                // TODO
-                dockerImages: egg.dockerImages.toString(),
+                dockerImages: Object.keys(egg.dockerImages)
+                    .map(key => {
+                        return `${egg.dockerImages[key]}|${key}`;
+                    })
+                    .join('\n'),
                 configStop: egg.configStop || '',
                 configStartup: JSON.stringify(egg.configStartup, null, '\t') || '',
                 configFiles: JSON.stringify(egg.configFiles, null, '\t') || '',
