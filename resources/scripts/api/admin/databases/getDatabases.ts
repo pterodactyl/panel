@@ -13,7 +13,7 @@ export interface Database {
     createdAt: Date;
     updatedAt: Date;
 
-    getAddress (): string;
+    getAddress(): string;
 }
 
 export const rawDataToDatabase = ({ attributes }: FractalResponseData): Database => ({
@@ -53,12 +53,14 @@ export default (include: string[] = []) => {
         params.sort = (sortDirection ? '-' : '') + sort;
     }
 
-    return useSWR<PaginatedResult<Database>>([ 'databases', page, filters, sort, sortDirection ], async () => {
-        const { data } = await http.get('/api/application/databases', { params: { include: include.join(','), page, ...params } });
+    return useSWR<PaginatedResult<Database>>(['databases', page, filters, sort, sortDirection], async () => {
+        const { data } = await http.get('/api/application/databases', {
+            params: { include: include.join(','), page, ...params },
+        });
 
-        return ({
+        return {
             items: (data.data || []).map(rawDataToDatabase),
             pagination: getPaginationSet(data.meta.pagination),
-        });
+        };
     });
 };

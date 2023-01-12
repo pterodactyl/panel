@@ -16,7 +16,6 @@ export default ({ selected }: { selected?: User }) => {
     };
 
     const onSelect = (user: User | null) => {
-        console.log(user);
         setUser(user);
         setFieldValue('ownerId', user?.id || null);
     };

@@ -4,11 +4,11 @@ export interface VersionData {
     panel: {
         current: string;
         latest: string;
-    }
+    };
 
     wings: {
         latest: string;
-    }
+    };
 
     git: string | null;
 }

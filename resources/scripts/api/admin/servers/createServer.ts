@@ -16,7 +16,7 @@ export interface CreateServerRequest {
         cpu: number;
         threads: string;
         oomDisabled: boolean;
-    }
+    };
 
     featureLimits: {
         allocations: number;
@@ -39,41 +39,45 @@ export interface CreateServerRequest {
 
 export default (r: CreateServerRequest, include: string[] = []): Promise<Server> => {
     return new Promise((resolve, reject) => {
-        http.post('/api/application/servers', {
-            externalId: r.externalId,
-            name: r.name,
-            description: r.description,
-            owner_id: r.ownerId,
-            node_id: r.nodeId,
+        http.post(
+            '/api/application/servers',
+            {
+                externalId: r.externalId,
+                name: r.name,
+                description: r.description,
+                owner_id: r.ownerId,
+                node_id: r.nodeId,
 
-            limits: {
-                cpu: r.limits.cpu,
-                disk: r.limits.disk,
-                io: r.limits.io,
-                memory: r.limits.memory,
-                swap: r.limits.swap,
-                threads: r.limits.threads,
-                oom_killer: r.limits.oomDisabled,
+                limits: {
+                    cpu: r.limits.cpu,
+                    disk: r.limits.disk,
+                    io: r.limits.io,
+                    memory: r.limits.memory,
+                    swap: r.limits.swap,
+                    threads: r.limits.threads,
+                    oom_killer: r.limits.oomDisabled,
+                },
+
+                feature_limits: {
+                    allocations: r.featureLimits.allocations,
+                    backups: r.featureLimits.backups,
+                    databases: r.featureLimits.databases,
+                },
+
+                allocation: {
+                    default: r.allocation.default,
+                    additional: r.allocation.additional,
+                },
+
+                startup: r.startup,
+                environment: r.environment,
+                egg_id: r.eggId,
+                image: r.image,
+                skip_scripts: r.skipScripts,
+                start_on_completion: r.startOnCompletion,
             },
-
-            feature_limits: {
-                allocations: r.featureLimits.allocations,
-                backups: r.featureLimits.backups,
-                databases: r.featureLimits.databases,
-            },
-
-            allocation: {
-                default: r.allocation.default,
-                additional: r.allocation.additional,
-            },
-
-            startup: r.startup,
-            environment: r.environment,
-            egg_id: r.eggId,
-            image: r.image,
-            skip_scripts: r.skipScripts,
-            start_on_completion: r.startOnCompletion,
-        }, { params: { include: include.join(',') } })
+            { params: { include: include.join(',') } },
+        )
             .then(({ data }) => resolve(rawDataToServer(data)))
             .catch(reject);
     });

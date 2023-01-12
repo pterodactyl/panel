@@ -197,8 +197,6 @@ export default function EggSettingsContainer() {
             dockerImages[alias] = image;
         }
 
-        console.log(dockerImages);
-
         updateEgg(egg.id, {
             ...values,
             dockerImages,

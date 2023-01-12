@@ -30,14 +30,14 @@ const UserTableRow = ({ user, selected, onRowChange }: Props) => {
 
             <tr>
                 <td className={'whitespace-nowrap'}>
-                    <div className={'flex justify-end items-center w-8'}>
+                    <div className={'flex w-8 items-center justify-end'}>
                         <Checkbox checked={selected} onChange={e => onRowChange(user, e.currentTarget.checked)} />
                     </div>
                 </td>
-                <td className={'pl-6 py-4 whitespace-nowrap'}>
+                <td className={'whitespace-nowrap py-4 pl-6'}>
                     <div className={'flex items-center'}>
-                        <div className={'w-10 h-10'}>
-                            <img src={user.avatarUrl} className={'w-10 h-10 rounded-full'} alt={'User avatar'} />
+                        <div className={'h-10 w-10'}>
+                            <img src={user.avatarUrl} className={'h-10 w-10 rounded-full'} alt={'User avatar'} />
                         </div>
                         <div className={'ml-4'}>
                             <p className={'font-medium'}>{user.email}</p>
@@ -45,18 +45,18 @@ const UserTableRow = ({ user, selected, onRowChange }: Props) => {
                         </div>
                     </div>
                 </td>
-                <td className={'pl-2 py-4 whitespace-nowrap'}>
+                <td className={'whitespace-nowrap py-4 pl-2'}>
                     {user.isUsingTwoFactor && (
                         <span
                             className={
-                                'bg-green-100 uppercase text-green-700 font-semibold text-xs px-2 py-0.5 rounded'
+                                'rounded bg-green-100 px-2 py-0.5 text-xs font-semibold uppercase text-green-700'
                             }
                         >
                             2-FA Enabled
                         </span>
                     )}
                 </td>
-                <td className={'px-6 py-4 whitespace-nowrap'}>
+                <td className={'whitespace-nowrap px-6 py-4'}>
                     <Dropdown>
                         <Dropdown.Button className={'px-2'}>
                             <DotsVerticalIcon />

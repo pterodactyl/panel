@@ -232,11 +232,11 @@ export default () => {
                     />
                     <div
                         className={classNames(
-                            'text-slate-100 peer-focus:text-slate-50 peer-focus:animate-pulse',
+                            'text-slate-100 peer-focus:animate-pulse peer-focus:text-slate-50',
                             styles.command_icon,
                         )}
                     >
-                        <ChevronDoubleRightIcon className={'w-4 h-4'} />
+                        <ChevronDoubleRightIcon className={'h-4 w-4'} />
                     </div>
                 </div>
             )}

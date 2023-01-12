@@ -33,11 +33,11 @@ function StatBlock({ title, copyOnClick, icon, color, className, children }: Sta
                         })}
                     />
                 </div>
-                <div className={'flex flex-col justify-center overflow-hidden w-full'}>
-                    <p className={'font-header leading-tight text-xs md:text-sm text-slate-200'}>{title}</p>
+                <div className={'flex w-full flex-col justify-center overflow-hidden'}>
+                    <p className={'font-header text-xs leading-tight text-slate-200 md:text-sm'}>{title}</p>
                     <div
                         ref={ref}
-                        className={'h-[1.75rem] w-full font-semibold text-slate-50 truncate'}
+                        className={'h-[1.75rem] w-full truncate font-semibold text-slate-50'}
                         style={{ fontSize }}
                     >
                         {children}

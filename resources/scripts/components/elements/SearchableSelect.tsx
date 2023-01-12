@@ -26,7 +26,15 @@ interface IdObj {
     id: number;
 }
 
-export const Option = <T extends IdObj>({ selectId, id, item, active, isHighlighted, onClick, children }: OptionProps<T>) => {
+export const Option = <T extends IdObj>({
+    selectId,
+    id,
+    item,
+    active,
+    isHighlighted,
+    onClick,
+    children,
+}: OptionProps<T>) => {
     if (isHighlighted === undefined) {
         isHighlighted = false;
     }
@@ -39,16 +47,32 @@ export const Option = <T extends IdObj>({ selectId, id, item, active, isHighligh
 
     if (active) {
         return (
-            <li id={selectId + '-select-item-' + id} role="option" css={[ tw`relative py-2 pl-3 cursor-pointer select-none text-neutral-200 pr-9 hover:bg-neutral-700`, isHighlighted ? tw`bg-neutral-700` : null ]} onClick={onClick(item)}>
+            <li
+                id={selectId + '-select-item-' + id}
+                role="option"
+                css={[
+                    tw`relative py-2 pl-3 cursor-pointer select-none text-neutral-200 pr-9 hover:bg-neutral-700`,
+                    isHighlighted ? tw`bg-neutral-700` : null,
+                ]}
+                onClick={onClick(item)}
+            >
                 <div css={tw`flex items-center`}>
-                    <span css={tw`block font-medium truncate`}>
-                        {children}
-                    </span>
+                    <span css={tw`block font-medium truncate`}>{children}</span>
                 </div>
 
                 <span css={tw`absolute inset-y-0 right-0 flex items-center pr-4`}>
-                    <svg css={tw`w-5 h-5 text-primary-400`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path clipRule="evenodd" fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"/>
+                    <svg
+                        css={tw`w-5 h-5 text-primary-400`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
+                    >
+                        <path
+                            clipRule="evenodd"
+                            fillRule="evenodd"
+                            d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                        />
                     </svg>
                 </span>
             </li>
@@ -56,11 +80,17 @@ export const Option = <T extends IdObj>({ selectId, id, item, active, isHighligh
     }
 
     return (
-        <li id={selectId + 'select-item-' + id} role="option" css={[ tw`relative py-2 pl-3 cursor-pointer select-none text-neutral-200 pr-9 hover:bg-neutral-700`, isHighlighted ? tw`bg-neutral-700` : null ]} onClick={onClick(item)}>
+        <li
+            id={selectId + 'select-item-' + id}
+            role="option"
+            css={[
+                tw`relative py-2 pl-3 cursor-pointer select-none text-neutral-200 pr-9 hover:bg-neutral-700`,
+                isHighlighted ? tw`bg-neutral-700` : null,
+            ]}
+            onClick={onClick(item)}
+        >
             <div css={tw`flex items-center`}>
-                <span css={tw`block font-normal truncate`}>
-                    {children}
-                </span>
+                <span css={tw`block font-normal truncate`}>{children}</span>
             </div>
         </li>
     );
@@ -88,13 +118,27 @@ interface SearchableSelectProps<T> {
     className?: string;
 }
 
-export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder, selected, setSelected, items, setItems, onSearch, onSelect, getSelectedText, children, className }: SearchableSelectProps<T>) => {
-    const [ loading, setLoading ] = useState(false);
-    const [ expanded, setExpanded ] = useState(false);
+export const SearchableSelect = <T extends IdObj>({
+    id,
+    name,
+    label,
+    placeholder,
+    selected,
+    setSelected,
+    items,
+    setItems,
+    onSearch,
+    onSelect,
+    getSelectedText,
+    children,
+    className,
+}: SearchableSelectProps<T>) => {
+    const [loading, setLoading] = useState(false);
+    const [expanded, setExpanded] = useState(false);
 
-    const [ inputText, setInputText ] = useState('');
+    const [inputText, setInputText] = useState('');
 
-    const [ highlighted, setHighlighted ] = useState<number | null>(null);
+    const [highlighted, setHighlighted] = useState<number | null>(null);
 
     const searchInput = createRef<HTMLInputElement>();
     const itemsList = createRef<HTMLDivElement>();
@@ -220,7 +264,7 @@ export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder
             window.removeEventListener('mousedown', clickHandler);
             window.removeEventListener('contextmenu', contextmenuHandler);
         };
-    }, [ expanded ]);
+    }, [expanded]);
 
     const onClick = (item: T) => () => {
         onSelect(item);
@@ -235,13 +279,15 @@ export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder
         }
 
         setInputText(getSelectedText(selected) || '');
-    }, [ selected ]);
+    }, [selected]);
 
     // This shit is really stupid but works, so is it really stupid?
-    const c = React.Children.map(children, child => React.cloneElement(child as ReactElement, {
-        isHighlighted: ((child as ReactElement).props as OptionProps<T>).id === highlighted,
-        onClick: onClick.bind(child),
-    }));
+    const c = React.Children.map(children, child =>
+        React.cloneElement(child as ReactElement, {
+            isHighlighted: ((child as ReactElement).props as OptionProps<T>).id === highlighted,
+            onClick: onClick.bind(child),
+        }),
+    );
 
     return (
         <div className={className}>
@@ -269,33 +315,57 @@ export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder
                     />
                 </InputSpinner>
 
-                <div css={[ tw`absolute inset-y-0 right-0 flex items-center pr-2 ml-3`, !expanded && tw`pointer-events-none` ]}>
-                    {inputText !== '' && expanded &&
-                    <svg css={tw`w-5 h-5 text-neutral-400 cursor-pointer`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
-                        onMouseDown={e => {
-                            e.preventDefault();
-                            setInputText('');
-                        }}
+                <div
+                    css={[
+                        tw`absolute inset-y-0 right-0 flex items-center pr-2 ml-3`,
+                        !expanded && tw`pointer-events-none`,
+                    ]}
+                >
+                    {inputText !== '' && expanded && (
+                        <svg
+                            css={tw`w-5 h-5 text-neutral-400 cursor-pointer`}
+                            xmlns="http://www.w3.org/2000/svg"
+                            viewBox="0 0 20 20"
+                            fill="currentColor"
+                            onMouseDown={e => {
+                                e.preventDefault();
+                                setInputText('');
+                            }}
+                        >
+                            <path
+                                clipRule="evenodd"
+                                fillRule="evenodd"
+                                d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"
+                            />
+                        </svg>
+                    )}
+                    <svg
+                        css={tw`w-5 h-5 text-neutral-400 pointer-events-none`}
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 20 20"
+                        fill="currentColor"
+                        aria-hidden="true"
                     >
-                        <path clipRule="evenodd" fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z"/>
-                    </svg>
-                    }
-                    <svg css={tw`w-5 h-5 text-neutral-400 pointer-events-none`} xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                        <path clipRule="evenodd" fillRule="evenodd" d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"/>
+                        <path
+                            clipRule="evenodd"
+                            fillRule="evenodd"
+                            d="M10 3a1 1 0 01.707.293l3 3a1 1 0 01-1.414 1.414L10 5.414 7.707 7.707a1 1 0 01-1.414-1.414l3-3A1 1 0 0110 3zm-3.707 9.293a1 1 0 011.414 0L10 14.586l2.293-2.293a1 1 0 011.414 1.414l-3 3a1 1 0 01-1.414 0l-3-3a1 1 0 010-1.414z"
+                        />
                     </svg>
                 </div>
 
                 <Dropdown ref={itemsList} expanded={expanded}>
-                    {items === null || items.length < 1 ?
-                        items === null || inputText.length < 2 ?
+                    {items === null || items.length < 1 ? (
+                        items === null || inputText.length < 2 ? (
                             <div css={tw`flex flex-row items-center h-10 px-3`}>
                                 <p css={tw`text-sm`}>Please type 2 or more characters.</p>
                             </div>
-                            :
+                        ) : (
                             <div css={tw`flex flex-row items-center h-10 px-3`}>
                                 <p css={tw`text-sm`}>No results found.</p>
                             </div>
-                        :
+                        )
+                    ) : (
                         <ul
                             tabIndex={-1}
                             role={id + '-select'}
@@ -305,7 +375,7 @@ export const SearchableSelect = <T extends IdObj>({ id, name, label, placeholder
                         >
                             {c}
                         </ul>
-                    }
+                    )}
                 </Dropdown>
             </div>
         </div>

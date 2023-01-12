@@ -15,7 +15,7 @@ export interface Nest {
 
     relations: {
         eggs: Egg[] | undefined;
-    },
+    };
 }
 
 export const rawDataToNest = ({ attributes }: FractalResponseData): Nest => ({
@@ -55,12 +55,14 @@ export default (include: string[] = []) => {
         params.sort = (sortDirection ? '-' : '') + sort;
     }
 
-    return useSWR<PaginatedResult<Nest>>([ 'nests', page, filters, sort, sortDirection ], async () => {
-        const { data } = await http.get('/api/application/nests', { params: { include: include.join(','), page, ...params } });
+    return useSWR<PaginatedResult<Nest>>(['nests', page, filters, sort, sortDirection], async () => {
+        const { data } = await http.get('/api/application/nests', {
+            params: { include: include.join(','), page, ...params },
+        });
 
-        return ({
+        return {
             items: (data.data || []).map(rawDataToNest),
             pagination: getPaginationSet(data.meta.pagination),
-        });
+        };
     });
 };

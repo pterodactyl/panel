@@ -50,7 +50,7 @@ export default ({ scheduleId, onDeleted }: Props) => {
             </Dialog.Confirm>
             <Button.Danger
                 variant={Button.Variants.Secondary}
-                className={'flex-1 sm:flex-none mr-4 border-transparent'}
+                className={'mr-4 flex-1 border-transparent sm:flex-none'}
                 onClick={() => setVisible(true)}
             >
                 Delete

@@ -17,9 +17,7 @@ export default (filters?: Filters): Promise<Location[]> => {
 
     return new Promise((resolve, reject) => {
         http.get('/api/application/locations', { params })
-            .then(response => resolve(
-                (response.data.data || []).map(rawDataToLocation)
-            ))
+            .then(response => resolve((response.data.data || []).map(rawDataToLocation)))
             .catch(reject);
     });
 };

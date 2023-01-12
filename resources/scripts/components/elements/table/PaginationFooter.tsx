@@ -37,7 +37,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
     });
 
     return (
-        <div className={classNames('flex items-center justify-between my-2', className)}>
+        <div className={classNames('my-2 flex items-center justify-between', className)}>
             <p className={'text-sm text-neutral-500'}>
                 Showing&nbsp;
                 <span className={'font-semibold text-neutral-400'}>
@@ -50,7 +50,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
             {pagination.totalPages > 1 && (
                 <div className={'flex space-x-1'}>
                     <Button.Text {...buttonProps(1)} disabled={pages.previous.length !== 2}>
-                        <ChevronDoubleLeftIcon className={'w-3 h-3'} />
+                        <ChevronDoubleLeftIcon className={'h-3 w-3'} />
                     </Button.Text>
                     {pages.previous.reverse().map(value => (
                         <Button.Text key={`previous-${value}`} {...buttonProps(value)}>
@@ -66,7 +66,7 @@ const PaginationFooter = ({ pagination, className, onPageSelect }: Props) => {
                         </Button.Text>
                     ))}
                     <Button.Text {...buttonProps(total)} disabled={pages.next.length !== 2}>
-                        <ChevronDoubleRightIcon className={'w-3 h-3'} />
+                        <ChevronDoubleRightIcon className={'h-3 w-3'} />
                     </Button.Text>
                 </div>
             )}

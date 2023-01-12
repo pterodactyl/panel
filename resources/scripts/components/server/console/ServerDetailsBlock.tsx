@@ -38,7 +38,7 @@ function Limit({ limit, children }: { limit: string | null; children: ReactNode 
     return (
         <>
             {children}
-            <span className={'ml-1 text-slate-300 text-[70%] select-none'}>/ {limit || <>&infin;</>}</span>
+            <span className={'ml-1 select-none text-[70%] text-slate-300'}>/ {limit || <>&infin;</>}</span>
         </>
     );
 }

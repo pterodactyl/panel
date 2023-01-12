@@ -1,7 +1,22 @@
 import { CSSObject } from '@emotion/serialize';
 import { Field as FormikField, FieldProps } from 'formik';
 import React, { forwardRef } from 'react';
-import Select, { ContainerProps, ControlProps, GroupProps, IndicatorContainerProps, IndicatorProps, InputProps, MenuListComponentProps, MenuProps, MultiValueProps, OptionProps, PlaceholderProps, SingleValueProps, StylesConfig, ValueContainerProps } from 'react-select';
+import Select, {
+    ContainerProps,
+    ControlProps,
+    GroupProps,
+    IndicatorContainerProps,
+    IndicatorProps,
+    InputProps,
+    MenuListComponentProps,
+    MenuProps,
+    MultiValueProps,
+    OptionProps,
+    PlaceholderProps,
+    SingleValueProps,
+    StylesConfig,
+    ValueContainerProps,
+} from 'react-select';
 import Async from 'react-select/async';
 import Creatable from 'react-select/creatable';
 import tw, { theme } from 'twin.macro';
@@ -42,10 +57,9 @@ export const SelectStyle: StylesConfig<T, any, any> = {
             borderWidth: '2px',
             color: theme`colors.neutral.200`,
             cursor: 'pointer',
-            boxShadow: props.isFocused ?
-                'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(36, 135, 235, 0.5) 0px 0px 0px 2px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px'
-                :
-                undefined,
+            boxShadow: props.isFocused
+                ? 'rgb(255, 255, 255) 0px 0px 0px 0px, rgba(36, 135, 235, 0.5) 0px 0px 0px 2px, rgba(0, 0, 0, 0.1) 0px 4px 6px -1px, rgba(0, 0, 0, 0.06) 0px 2px 4px -1px'
+                : undefined,
 
             ':hover': {
                 borderColor: !props.isFocused ? theme`colors.neutral.400` : theme`colors.primary.300`,
@@ -228,67 +242,74 @@ interface SelectFieldProps {
     isSearchable?: boolean;
 
     isCreatable?: boolean;
-    isValidNewOption?: ((
-        inputValue: string,
-        value: ValueType<any, boolean>,
-        options: ReadonlyArray<any>,
-    ) => boolean) | undefined;
+    isValidNewOption?:
+        | ((inputValue: string, value: ValueType<any, boolean>, options: ReadonlyArray<any>) => boolean)
+        | undefined;
 
     className?: string;
 }
 
-const SelectField = forwardRef<HTMLElement, SelectFieldProps>(
-    function Select2 ({ id, name, label, description, validate, className, isMulti, isCreatable, ...props }, ref) {
-        const { options } = props;
+const SelectField = forwardRef<HTMLElement, SelectFieldProps>(function Select2(
+    { id, name, label, description, validate, className, isMulti, isCreatable, ...props },
+    ref,
+) {
+    const { options } = props;
 
-        const onChange = (options: Option | Option[], name: string, setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void) => {
-            if (isMulti) {
-                setFieldValue(name, (options as Option[]).map(o => o.value));
-                return;
-            }
+    const onChange = (
+        options: Option | Option[],
+        name: string,
+        setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void,
+    ) => {
+        if (isMulti) {
+            setFieldValue(
+                name,
+                (options as Option[]).map(o => o.value),
+            );
+            return;
+        }
 
-            setFieldValue(name, (options as Option).value);
-        };
+        setFieldValue(name, (options as Option).value);
+    };
 
-        return (
-            <FormikField innerRef={ref} name={name} validate={validate}>
-                {({ field, form: { errors, touched, setFieldValue } }: FieldProps) => (
-                    <div className={className}>
-                        {label && <Label htmlFor={id}>{label}</Label>}
-                        {isCreatable ?
-                            <Creatable
-                                {...field}
-                                {...props}
-                                styles={SelectStyle}
-                                options={options}
-                                value={(options ? options.find(o => o.value === field.value) : '') as any}
-                                onChange={o => onChange(o, name, setFieldValue)}
-                                isMulti={isMulti}
-                            />
-                            :
-                            <Select
-                                {...field}
-                                {...props}
-                                styles={SelectStyle}
-                                options={options}
-                                value={(options ? options.find(o => o.value === field.value) : '') as any}
-                                onChange={o => onChange(o, name, setFieldValue)}
-                                isMulti={isMulti}
-                            />
-                        }
-                        {touched[field.name] && errors[field.name] ?
-                            <p css={tw`text-red-200 text-xs mt-1`}>
-                                {(errors[field.name] as string).charAt(0).toUpperCase() + (errors[field.name] as string).slice(1)}
-                            </p>
-                            :
-                            description ? <p css={tw`text-neutral-400 text-xs mt-1`}>{description}</p> : null
-                        }
-                    </div>
-                )}
-            </FormikField>
-        );
-    }
-);
+    return (
+        <FormikField innerRef={ref} name={name} validate={validate}>
+            {({ field, form: { errors, touched, setFieldValue } }: FieldProps) => (
+                <div className={className}>
+                    {label && <Label htmlFor={id}>{label}</Label>}
+                    {isCreatable ? (
+                        <Creatable
+                            {...field}
+                            {...props}
+                            styles={SelectStyle}
+                            options={options}
+                            value={(options ? options.find(o => o.value === field.value) : '') as any}
+                            onChange={o => onChange(o, name, setFieldValue)}
+                            isMulti={isMulti}
+                        />
+                    ) : (
+                        <Select
+                            {...field}
+                            {...props}
+                            styles={SelectStyle}
+                            options={options}
+                            value={(options ? options.find(o => o.value === field.value) : '') as any}
+                            onChange={o => onChange(o, name, setFieldValue)}
+                            isMulti={isMulti}
+                        />
+                    )}
+                    {touched[field.name] && errors[field.name] ? (
+                        <p css={tw`text-red-200 text-xs mt-1`}>
+                            {(errors[field.name] as string).charAt(0).toUpperCase() +
+                                (errors[field.name] as string).slice(1)}
+                        </p>
+                    ) : description ? (
+                        <p css={tw`text-neutral-400 text-xs mt-1`}>{description}</p>
+                    ) : null}
+                </div>
+            )}
+        </FormikField>
+    );
+});
 
 interface AsyncSelectFieldProps {
     id?: string;
@@ -305,43 +326,52 @@ interface AsyncSelectFieldProps {
     loadOptions(inputValue: string, callback: (options: Array<Option>) => void): void;
 }
 
-const AsyncSelectField = forwardRef<HTMLElement, AsyncSelectFieldProps>(
-    function AsyncSelect2 ({ id, name, label, description, validate, className, isMulti, ...props }, ref) {
-        const onChange = (options: Option | Option[], name: string, setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void) => {
-            if (isMulti) {
-                setFieldValue(name, (options as Option[]).map(o => Number(o.value)));
-                return;
-            }
+const AsyncSelectField = forwardRef<HTMLElement, AsyncSelectFieldProps>(function AsyncSelect2(
+    { id, name, label, description, validate, className, isMulti, ...props },
+    ref,
+) {
+    const onChange = (
+        options: Option | Option[],
+        name: string,
+        setFieldValue: (field: string, value: any, shouldValidate?: boolean) => void,
+    ) => {
+        if (isMulti) {
+            setFieldValue(
+                name,
+                (options as Option[]).map(o => Number(o.value)),
+            );
+            return;
+        }
 
-            setFieldValue(name, Number((options as Option).value));
-        };
+        setFieldValue(name, Number((options as Option).value));
+    };
 
-        return (
-            <FormikField innerRef={ref} name={name} validate={validate}>
-                {({ field, form: { errors, touched, setFieldValue } }: FieldProps) => (
-                    <div className={className}>
-                        {label && <Label htmlFor={id}>{label}</Label>}
-                        <Async
-                            {...props}
-                            id={id}
-                            name={name}
-                            styles={SelectStyle}
-                            onChange={o => onChange(o, name, setFieldValue)}
-                            isMulti={isMulti}
-                        />
-                        {touched[field.name] && errors[field.name] ?
-                            <p css={tw`text-red-200 text-xs mt-1`}>
-                                {(errors[field.name] as string).charAt(0).toUpperCase() + (errors[field.name] as string).slice(1)}
-                            </p>
-                            :
-                            description ? <p css={tw`text-neutral-400 text-xs mt-1`}>{description}</p> : null
-                        }
-                    </div>
-                )}
-            </FormikField>
-        );
-    }
-);
+    return (
+        <FormikField innerRef={ref} name={name} validate={validate}>
+            {({ field, form: { errors, touched, setFieldValue } }: FieldProps) => (
+                <div className={className}>
+                    {label && <Label htmlFor={id}>{label}</Label>}
+                    <Async
+                        {...props}
+                        id={id}
+                        name={name}
+                        styles={SelectStyle}
+                        onChange={o => onChange(o, name, setFieldValue)}
+                        isMulti={isMulti}
+                    />
+                    {touched[field.name] && errors[field.name] ? (
+                        <p css={tw`text-red-200 text-xs mt-1`}>
+                            {(errors[field.name] as string).charAt(0).toUpperCase() +
+                                (errors[field.name] as string).slice(1)}
+                        </p>
+                    ) : description ? (
+                        <p css={tw`text-neutral-400 text-xs mt-1`}>{description}</p>
+                    ) : null}
+                </div>
+            )}
+        </FormikField>
+    );
+});
 
 export default SelectField;
 export { AsyncSelectField };

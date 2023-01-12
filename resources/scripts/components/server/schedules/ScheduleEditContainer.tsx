@@ -118,7 +118,7 @@ export default () => {
                             </div>
                             <div css={tw`flex sm:block mt-3 sm:mt-0`}>
                                 <Can action={'schedule.update'}>
-                                    <Button.Text className={'flex-1 mr-4'} onClick={toggleEditModal}>
+                                    <Button.Text className={'mr-4 flex-1'} onClick={toggleEditModal}>
                                         Edit
                                     </Button.Text>
                                     <NewTaskButton schedule={schedule} />

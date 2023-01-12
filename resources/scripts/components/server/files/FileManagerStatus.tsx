@@ -25,7 +25,7 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
             {...svgProps}
             stroke={'white'}
             strokeDasharray={28 * Math.PI}
-            className={'rotate-[-90deg] origin-[50%_50%] transition-[stroke-dashoffset] duration-300'}
+            className={'origin-[50%_50%] rotate-[-90deg] transition-[stroke-dashoffset] duration-300'}
             style={{ strokeDashoffset: ((100 - progress) / 100) * 28 * Math.PI }}
         />
     </svg>
@@ -40,20 +40,20 @@ const FileUploadList = () => {
     );
 
     return (
-        <div className={'space-y-2 mt-6'}>
+        <div className={'mt-6 space-y-2'}>
             {uploads.map(([name, file]) => (
-                <div key={name} className={'flex items-center space-x-3 bg-slate-700 p-3 rounded'}>
+                <div key={name} className={'flex items-center space-x-3 rounded bg-slate-700 p-3'}>
                     <Tooltip content={`${Math.floor((file.loaded / file.total) * 100)}%`} placement={'left'}>
                         <div className={'flex-shrink-0'}>
-                            <Spinner progress={(file.loaded / file.total) * 100} className={'w-6 h-6'} />
+                            <Spinner progress={(file.loaded / file.total) * 100} className={'h-6 w-6'} />
                         </div>
                     </Tooltip>
                     <Code className={'flex-1 truncate'}>{name}</Code>
                     <button
                         onClick={cancelFileUpload.bind(this, name)}
-                        className={'text-slate-500 hover:text-slate-200 transition-colors duration-75'}
+                        className={'text-slate-500 transition-colors duration-75 hover:text-slate-200'}
                     >
-                        <XIcon className={'w-5 h-5'} />
+                        <XIcon className={'h-5 w-5'} />
                     </button>
                 </div>
             ))}
@@ -92,11 +92,11 @@ export default () => {
             {count > 0 && (
                 <Tooltip content={`${count} files are uploading, click to view`}>
                     <button
-                        className={'flex items-center justify-center w-10 h-10'}
+                        className={'flex h-10 w-10 items-center justify-center'}
                         onClick={() => (open.value = true)}
                     >
-                        <Spinner progress={(progress.uploaded / progress.total) * 100} className={'w-8 h-8'} />
-                        <CloudUploadIcon className={'h-3 absolute mx-auto animate-pulse'} />
+                        <Spinner progress={(progress.uploaded / progress.total) * 100} className={'h-8 w-8'} />
+                        <CloudUploadIcon className={'absolute mx-auto h-3 animate-pulse'} />
                     </button>
                 </Tooltip>
             )}

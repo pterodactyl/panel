@@ -25,7 +25,7 @@ export interface Values {
 export default (values: Values, include: string[] = []): Promise<Node> => {
     const data = {};
 
-    Object.keys(values).forEach((key) => {
+    Object.keys(values).forEach(key => {
         const key2 = key
             .replace('HTTP', 'Http')
             .replace('SFTP', 'Sftp')

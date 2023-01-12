@@ -43,12 +43,14 @@ export default (include: string[] = []) => {
         params.sort = (sortDirection ? '-' : '') + sort;
     }
 
-    return useSWR<PaginatedResult<Location>>([ 'locations', page, filters, sort, sortDirection ], async () => {
-        const { data } = await http.get('/api/application/locations', { params: { include: include.join(','), page, ...params } });
+    return useSWR<PaginatedResult<Location>>(['locations', page, filters, sort, sortDirection], async () => {
+        const { data } = await http.get('/api/application/locations', {
+            params: { include: include.join(','), page, ...params },
+        });
 
-        return ({
+        return {
             items: (data.data || []).map(rawDataToLocation),
             pagination: getPaginationSet(data.meta.pagination),
-        });
+        };
     });
 };

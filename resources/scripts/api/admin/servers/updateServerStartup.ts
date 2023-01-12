@@ -20,7 +20,7 @@ export default (id: number, values: Partial<Values>, include: string[] = []): Pr
                 image: values.image,
                 skip_scripts: values.skipScripts,
             },
-            { params: { include: include.join(',') } }
+            { params: { include: include.join(',') } },
         )
             .then(({ data }) => resolve(rawDataToServer(data)))
             .catch(reject);

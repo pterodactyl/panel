@@ -28,12 +28,14 @@ export default (id: number, include: string[] = []) => {
         params.sort = (sortDirection ? '-' : '') + sort;
     }
 
-    return useSWR<PaginatedResult<Allocation>>([ 'allocations', page, filters, sort, sortDirection ], async () => {
-        const { data } = await http.get(`/api/application/nodes/${id}/allocations`, { params: { include: include.join(','), page, ...params } });
+    return useSWR<PaginatedResult<Allocation>>(['allocations', page, filters, sort, sortDirection], async () => {
+        const { data } = await http.get(`/api/application/nodes/${id}/allocations`, {
+            params: { include: include.join(','), page, ...params },
+        });
 
-        return ({
+        return {
             items: (data.data || []).map(rawDataToAllocation),
             pagination: getPaginationSet(data.meta.pagination),
-        });
+        };
     });
 };

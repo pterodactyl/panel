@@ -13,8 +13,8 @@ export type UUID = string;
 export type WithRelationships<M extends Model, R extends string> = Omit<M, 'relationships'> & {
     relationships: Omit<M['relationships'], keyof R> & {
         [K in R]: NonNullable<M['relationships'][K]>;
-    }
-}
+    };
+};
 
 /**
  * Helper type that allows you to infer the type of an object by giving
@@ -29,7 +29,7 @@ export type InferModel<T extends (...args: any) => any> = ReturnType<T> extends 
  * such that TypeScript understands the relationships on it. This is just to help
  * reduce the amount of duplicated type casting all over the codebase.
  */
-export const withRelationships = <M extends Model, R extends string> (model: M, ..._keys: R[]) => {
+export const withRelationships = <M extends Model, R extends string>(model: M, ..._keys: R[]) => {
     return model as unknown as WithRelationships<M, R>;
 };
 
@@ -47,7 +47,7 @@ export interface ListContext<T> {
     setSortDirection: (direction: ((p: boolean) => boolean) | boolean) => void;
 }
 
-function create<T> () {
+function create<T>() {
     return createContext<ListContext<T>>({
         page: 1,
         setPage: () => 1,

@@ -14,13 +14,13 @@ export interface Values {
         cpu: number;
         threads: string;
         oomDisabled: boolean;
-    }
+    };
 
     featureLimits: {
         allocations: number;
         backups: number;
         databases: number;
-    }
+    };
 
     allocationId: number;
     addAllocations: number[];
@@ -56,7 +56,7 @@ export default (id: number, server: Partial<Values>, include: string[] = []): Pr
                 add_allocations: server.addAllocations,
                 remove_allocations: server.removeAllocations,
             },
-            { params: { include: include.join(',') } }
+            { params: { include: include.join(',') } },
         )
             .then(({ data }) => resolve(rawDataToServer(data)))
             .catch(reject);

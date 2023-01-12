@@ -28,7 +28,7 @@ export default ({ tokens, open, onClose }: RecoveryTokenDialogProps) => {
         >
             <Dialog.Icon position={'container'} type={'success'} />
             <CopyOnClick text={tokens.join('\n')} showInNotification={false}>
-                <pre className={'bg-slate-800 rounded p-2 mt-6'}>
+                <pre className={'mt-6 rounded bg-slate-800 p-2'}>
                     {grouped.map(value => (
                         <span key={value.join('_')} className={'block'}>
                             {value[0]}

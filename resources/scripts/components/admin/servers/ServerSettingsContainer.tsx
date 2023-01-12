@@ -27,8 +27,6 @@ export default () => {
         // OOM Killer is enabled, rather than when disabled.
         values.limits.oomDisabled = !values.limits.oomDisabled;
 
-        console.log(values);
-
         updateServer(server.id, values)
             .then(() => {
                 // setServer({ ...server, ...s });

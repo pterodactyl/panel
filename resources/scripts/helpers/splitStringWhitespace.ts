@@ -7,9 +7,9 @@
  */
 export default (str: string): string[] => {
     let quoted = false;
-    const parts = [ '' ] as string[];
+    const parts = [''] as string[];
 
-    for (const char of (str.trim().match(/\\?.|^$/g) || [])) {
+    for (const char of str.trim().match(/\\?.|^$/g) || []) {
         if (char === '"') {
             quoted = !quoted;
         } else if (!quoted && char === ' ') {

@@ -120,14 +120,14 @@ export default ({ className }: WithClassname) => {
                             onFileSubmission(e.dataTransfer.files);
                         }}
                     >
-                        <div className={'w-full flex items-center justify-center pointer-events-none'}>
+                        <div className={'pointer-events-none flex w-full items-center justify-center'}>
                             <div
                                 className={
-                                    'flex items-center space-x-4 bg-black w-full ring-4 ring-blue-200 ring-opacity-60 rounded p-6 mx-10 max-w-sm'
+                                    'mx-10 flex w-full max-w-sm items-center space-x-4 rounded bg-black p-6 ring-4 ring-blue-200 ring-opacity-60'
                                 }
                             >
-                                <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
-                                <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>
+                                <CloudUploadIcon className={'h-10 w-10 flex-shrink-0'} />
+                                <p className={'flex-1 text-center font-header text-lg text-neutral-100'}>
                                     Drag and drop files to upload.
                                 </p>
                             </div>

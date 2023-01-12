@@ -73,8 +73,8 @@ export default ({
                         open={open}
                         onClose={onDialogClose}
                     >
-                        <div className={'fixed inset-0 bg-slate-900/50 z-40'} />
-                        <div className={'fixed inset-0 overflow-y-auto z-50'}>
+                        <div className={'fixed inset-0 z-40 bg-slate-900/50'} />
+                        <div className={'fixed inset-0 z-50 overflow-y-auto'}>
                             <div
                                 ref={container}
                                 className={styles.container}
@@ -89,9 +89,9 @@ export default ({
                                     variants={variants}
                                     className={styles.panel}
                                 >
-                                    <div className={'flex p-6 pb-0 overflow-y-auto'}>
+                                    <div className={'flex overflow-y-auto p-6 pb-0'}>
                                         {iconPosition === 'container' && icon}
-                                        <div className={'flex-1 max-h-[70vh] min-w-0'}>
+                                        <div className={'max-h-[70vh] min-w-0 flex-1'}>
                                             <div className={'flex items-center'}>
                                                 {iconPosition !== 'container' && icon}
                                                 <div>

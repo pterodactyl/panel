@@ -33,7 +33,6 @@ function ServerStartupLineContainer({ egg, server }: { egg: Egg | null; server: 
         }
 
         if (server.eggId === egg.id) {
-            console.log(server.container);
             setFieldValue('image', server.container.image);
             setFieldValue('startup', server.container.startup || '');
             return;

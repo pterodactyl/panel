@@ -35,20 +35,20 @@ export default () => {
         <ServerContentBlock title={'Activity Log'}>
             <FlashMessageRender byKey={'server:activity'} />
             {(filters.filters?.event || filters.filters?.ip) && (
-                <div className={'flex justify-end mb-2'}>
+                <div className={'mb-2 flex justify-end'}>
                     <Link
                         to={'#'}
                         className={classNames(btnStyles.button, btnStyles.text, 'w-full sm:w-auto')}
                         onClick={() => setFilters(value => ({ ...value, filters: {} }))}
                     >
-                        Clear Filters <XCircleIcon className={'w-4 h-4 ml-2'} />
+                        Clear Filters <XCircleIcon className={'ml-2 h-4 w-4'} />
                     </Link>
                 </div>
             )}
             {!data && isValidating ? (
                 <Spinner centered />
             ) : !data?.items.length ? (
-                <p className={'text-sm text-center text-slate-400'}>No activity logs available for this server.</p>
+                <p className={'text-center text-sm text-slate-400'}>No activity logs available for this server.</p>
             ) : (
                 <div className={'bg-slate-700'}>
                     {data?.items.map(activity => (

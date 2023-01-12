@@ -7,13 +7,13 @@ interface Options<D extends string = string> {
     returnUnmatched?: boolean;
 }
 
-const extractSearchFilters = <T extends string, D extends string = '*'> (
+const extractSearchFilters = <T extends string, D extends string = '*'>(
     str: string,
     params: Readonly<T[]>,
     options?: Options<D>,
 ): QueryBuilderParams<T> | QueryBuilderParams<D> | QueryBuilderParams<T & D> => {
     const opts: Required<Options<D>> = {
-        defaultFilter: options?.defaultFilter || '*' as D,
+        defaultFilter: options?.defaultFilter || ('*' as D),
         splitUnmatched: options?.splitUnmatched || false,
         returnUnmatched: options?.returnUnmatched || false,
     };
@@ -30,12 +30,12 @@ const extractSearchFilters = <T extends string, D extends string = '*'> (
         } else if (!params.includes(filter)) {
             unmatched.push(segment);
         } else {
-            filters.set(filter, [ ...(filters.get(filter) || []), value ]);
+            filters.set(filter, [...(filters.get(filter) || []), value]);
         }
     }
 
     if (opts.returnUnmatched && str.trim().length > 0) {
-        filters.set(opts.defaultFilter as any, opts.splitUnmatched ? unmatched : [ unmatched.join(' ') ]);
+        filters.set(opts.defaultFilter as any, opts.splitUnmatched ? unmatched : [unmatched.join(' ')]);
     }
 
     if (filters.size === 0) {
