@@ -50,7 +50,7 @@ function InternalForm() {
 
         setFieldValue('eggId', egg.id);
         setFieldValue('startup', '');
-        setFieldValue('image', egg.dockerImages.length > 0 ? egg.dockerImages[0] : '');
+        setFieldValue('image', Object.values(egg.dockerImages)[0] ?? '');
     }, [egg]);
 
     useEffect(() => {

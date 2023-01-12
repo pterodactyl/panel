@@ -3,9 +3,8 @@ import type { Actions } from 'easy-peasy';
 import { useStoreActions } from 'easy-peasy';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import tw from 'twin.macro';
 
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteServer from '@/api/admin/servers/deleteServer';
 import { useServerFromRoute } from '@/api/admin/server';
@@ -52,15 +51,10 @@ export default () => {
             >
                 Are you sure you want to delete this server?
             </ConfirmationModal>
-            <Button
-                type={'button'}
-                size={'small'}
-                color={'red'}
-                onClick={() => setVisible(true)}
-                css={tw`flex items-center justify-center`}
-            >
-                <TrashIcon css={tw`w-5 h-5 mr-2`} /> Delete Server
-            </Button>
+
+            <Button.Danger type="button" onClick={() => setVisible(true)} className="flex items-center justify-center">
+                <TrashIcon className="mr-2 h-5 w-5" /> Delete Server
+            </Button.Danger>
         </>
     );
 };

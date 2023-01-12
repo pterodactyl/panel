@@ -37,7 +37,7 @@ export interface Server extends Model {
     name: string;
     description: string;
     status: string;
-    userId: number;
+    ownerId: number;
     nodeId: number;
     allocationId: number;
     eggId: number;

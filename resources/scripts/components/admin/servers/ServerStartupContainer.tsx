@@ -33,13 +33,14 @@ function ServerStartupLineContainer({ egg, server }: { egg: Egg | null; server: 
         }
 
         if (server.eggId === egg.id) {
+            console.log(server.container);
             setFieldValue('image', server.container.image);
             setFieldValue('startup', server.container.startup || '');
             return;
         }
 
         // Whenever the egg is changed, set the server's startup command to the egg's default.
-        setFieldValue('image', egg.dockerImages.length > 0 ? egg.dockerImages[0] : '');
+        setFieldValue('image', Object.values(egg.dockerImages)[0] ?? '');
         setFieldValue('startup', '');
     }, [egg]);
 
@@ -105,6 +106,7 @@ export function ServerImageContainer() {
 
             <div css={tw`md:w-full md:flex md:flex-col`}>
                 <div>
+                    {/* TODO: make this a proper select but allow a custom image to be specified if needed. */}
                     <Field id={'image'} name={'image'} label={'Docker Image'} type={'text'} />
                 </div>
             </div>
@@ -249,7 +251,7 @@ export default () => {
         >
             <ServerStartupForm
                 egg={egg}
-                // @ts-ignore
+                // @ts-expect-error fix this
                 setEgg={setEgg}
                 server={server}
             />

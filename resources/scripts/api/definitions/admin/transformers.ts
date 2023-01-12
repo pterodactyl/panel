@@ -9,10 +9,26 @@ import { Nest } from '@/api/admin/nest';
 
 const isList = (data: FractalResponseList | FractalResponseData): data is FractalResponseList => data.object === 'list';
 
-function transform<T, M = undefined> (data: undefined, transformer: (callback: FractalResponseData) => T, missing?: M): undefined;
-function transform<T, M> (data: FractalResponseData | undefined, transformer: (callback: FractalResponseData) => T, missing?: M): T | M | undefined;
-function transform<T, M> (data: FractalResponseList | undefined, transformer: (callback: FractalResponseData) => T, missing?: M): T[] | undefined;
-function transform<T> (data: FractalResponseData | FractalResponseList | undefined, transformer: (callback: FractalResponseData) => T, missing = undefined) {
+function transform<T, M = undefined>(
+    data: undefined,
+    transformer: (callback: FractalResponseData) => T,
+    missing?: M,
+): undefined;
+function transform<T, M>(
+    data: FractalResponseData | undefined,
+    transformer: (callback: FractalResponseData) => T,
+    missing?: M,
+): T | M | undefined;
+function transform<T, M>(
+    data: FractalResponseList | undefined,
+    transformer: (callback: FractalResponseData) => T,
+    missing?: M,
+): T[] | undefined;
+function transform<T>(
+    data: FractalResponseData | FractalResponseList | undefined,
+    transformer: (callback: FractalResponseData) => T,
+    missing = undefined,
+) {
     if (data === undefined) return undefined;
 
     if (isList(data)) {
@@ -35,7 +51,7 @@ export default class Transformers {
             name: attributes.name,
             description: attributes.description,
             status: attributes.status,
-            userId: attributes.owner_id,
+            ownerId: attributes.owner_id,
             nodeId: attributes.node_id,
             allocationId: attributes.allocation_id,
             eggId: attributes.egg_id,
@@ -190,7 +206,7 @@ export default class Transformers {
             node: transform(attributes.relationships?.node as FractalResponseData, this.toNode),
             server: transform(attributes.relationships?.server as FractalResponseData, this.toServer),
         },
-        getDisplayText (): string {
+        getDisplayText(): string {
             const raw = `${this.ip}:${this.port}`;
 
             return !this.alias ? raw : `${this.alias} (${raw})`;
