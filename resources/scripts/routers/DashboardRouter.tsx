@@ -21,7 +21,7 @@ function DashboardRouter() {
                         {routes.account
                             .filter(route => route.path !== undefined)
                             .map(({ path, name, end = false }) => (
-                                <NavLink key={path} to={`/account/${path ?? ''}`.replace('//', '/')} end={end}>
+                                <NavLink key={path} to={`/account/${path ?? ''}`.replace(/\/$/, '')} end={end}>
                                     {name}
                                 </NavLink>
                             ))}
@@ -34,7 +34,7 @@ function DashboardRouter() {
                     <Route path="" element={<DashboardContainer />} />
 
                     {routes.account.map(({ route, component: Component }) => (
-                        <Route key={route} path={`/account/${route}`.replace('//', '/')} element={<Component />} />
+                        <Route key={route} path={`/account/${route}`.replace(/\/$/, '')} element={<Component />} />
                     ))}
 
                     <Route path="*" element={<NotFound />} />
