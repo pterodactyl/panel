@@ -4,10 +4,13 @@ namespace Pterodactyl\Transformers\Api\Client;
 
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
+use League\Fractal\Resource\Item;
 use Pterodactyl\Models\ActivityLog;
 use Illuminate\Database\Eloquent\Model;
+use League\Fractal\Resource\NullResource;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class ActivityLogTransformer extends BaseClientTransformer
+class ActivityLogTransformer extends Transformer
 {
     protected array $availableIncludes = ['actor'];
 
@@ -34,23 +37,23 @@ class ActivityLogTransformer extends BaseClientTransformer
         ];
     }
 
-    public function includeActor(ActivityLog $model)
+    public function includeActor(ActivityLog $model): Item|NullResource
     {
         if (!$model->actor instanceof User) {
             return $this->null();
         }
 
-        return $this->item($model->actor, $this->makeTransformer(UserTransformer::class), User::RESOURCE_NAME);
+        return $this->item($model->actor, new UserTransformer());
     }
 
     /**
      * Transforms any array values in the properties into a countable field for easier
      * use within the translation outputs.
      */
-    protected function properties(ActivityLog $model): array
+    protected function properties(ActivityLog $model): object
     {
         if (!$model->properties || $model->properties->isEmpty()) {
-            return [];
+            return (object) [];
         }
 
         $properties = $model->properties
@@ -76,7 +79,7 @@ class ActivityLogTransformer extends BaseClientTransformer
             $properties = $properties->merge(['count' => $properties->get($keys[0])])->except($keys[0]);
         }
 
-        return $properties->toArray();
+        return (object) $properties->toArray();
     }
 
     /**

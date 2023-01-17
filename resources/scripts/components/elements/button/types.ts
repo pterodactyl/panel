@@ -1,15 +1,15 @@
-enum Shape {
+export enum Shape {
     Default,
     IconSquare,
 }
 
-enum Size {
+export enum Size {
     Default,
     Small,
     Large,
 }
 
-enum Variant {
+export enum Variant {
     Primary,
     Secondary,
 }

@@ -7,22 +7,41 @@ class RemoveUserInteraction extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Remove User Interaction from startup config
-        DB::table('eggs')->update([
-            'config_startup' => DB::raw('JSON_REMOVE(config_startup, \'$.userInteraction\')'),
-        ]);
+        switch (DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+            case 'mysql':
+                DB::table('eggs')->update([
+                    'config_startup' => DB::raw('JSON_REMOVE(config_startup, \'$.userInteraction\')'),
+                ]);
+                break;
+            case 'pgsql':
+                DB::table('eggs')->update([
+                    'config_startup' => DB::raw('config_startup::jsonb - \'userInteraction\''),
+                ]);
+                break;
+        }
     }
 
-    public function down()
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
         // Add blank User Interaction array back to startup config
-        DB::table('eggs')->update([
-            'config_startup' => DB::raw('JSON_SET(config_startup, \'$.userInteraction\', JSON_ARRAY())'),
-        ]);
+        switch (DB::getPdo()->getAttribute(PDO::ATTR_DRIVER_NAME)) {
+            case 'mysql':
+                DB::table('eggs')->update([
+                    'config_startup' => DB::raw('JSON_SET(config_startup, \'$.userInteraction\', JSON_ARRAY())'),
+                ]);
+                break;
+            case 'pgsql':
+                DB::table('eggs')->update([
+                    'config_startup' => DB::raw('jsonb_set(config_startup::jsonb, \'$.userInteraction\', jsonb_build_array())'),
+                ]);
+                break;
+        }
     }
 }

@@ -1,25 +1,28 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { ITerminalOptions, Terminal } from 'xterm';
+import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
+import classNames from 'classnames';
+import { debounce } from 'debounce';
+import type { KeyboardEvent as ReactKeyboardEvent } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
+import type { ITerminalInitOnlyOptions, ITerminalOptions, ITheme } from 'xterm';
+import { Terminal } from 'xterm';
 import { FitAddon } from 'xterm-addon-fit';
 import { SearchAddon } from 'xterm-addon-search';
 import { SearchBarAddon } from 'xterm-addon-search-bar';
 import { WebLinksAddon } from 'xterm-addon-web-links';
-import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { ServerContext } from '@/state/server';
-import { usePermissions } from '@/plugins/usePermissions';
 import { theme as th } from 'twin.macro';
-import useEventListener from '@/plugins/useEventListener';
-import { debounce } from 'debounce';
-import { usePersistedState } from '@/plugins/usePersistedState';
+
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
-import classNames from 'classnames';
-import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
+import { ScrollDownHelperAddon } from '@/plugins/XtermScrollDownHelperAddon';
+import useEventListener from '@/plugins/useEventListener';
+import { usePermissions } from '@/plugins/usePermissions';
+import { usePersistedState } from '@/plugins/usePersistedState';
+import { ServerContext } from '@/state/server';
 
 import 'xterm/css/xterm.css';
 import styles from './style.module.css';
 
-const theme = {
+const theme: ITheme = {
     background: th`colors.black`.toString(),
     cursor: 'transparent',
     black: th`colors.black`.toString(),
@@ -38,7 +41,7 @@ const theme = {
     brightMagenta: '#C792EA',
     brightCyan: '#89DDFF',
     brightWhite: '#ffffff',
-    selection: '#FAF089',
+    selectionBackground: '#FAF089',
 };
 
 const terminalProps: ITerminalOptions = {
@@ -47,25 +50,34 @@ const terminalProps: ITerminalOptions = {
     allowTransparency: true,
     fontSize: 12,
     fontFamily: th('fontFamily.mono'),
-    rows: 30,
     theme: theme,
+    allowProposedApi: true,
+};
+
+const terminalInitOnlyProps: ITerminalInitOnlyOptions = {
+    rows: 30,
 };
 
 export default () => {
     const TERMINAL_PRELUDE = '\u001b[1m\u001b[33mcontainer@pterodactyl~ \u001b[0m';
     const ref = useRef<HTMLDivElement>(null);
-    const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
+    const terminal = useMemo(() => new Terminal({ ...terminalProps, ...terminalInitOnlyProps }), []);
     const fitAddon = new FitAddon();
     const searchAddon = new SearchAddon();
     const searchBar = new SearchBarAddon({ searchAddon });
     const webLinksAddon = new WebLinksAddon();
     const scrollDownHelperAddon = new ScrollDownHelperAddon();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
     const [canSendCommands] = usePermissions(['control.console']);
-    const serverId = ServerContext.useStoreState((state) => state.server.data!.id);
-    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
+    const serverId = ServerContext.useStoreState(state => state.server.data!.id);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
     const [history, setHistory] = usePersistedState<string[]>(`${serverId}:command_history`, []);
     const [historyIndex, setHistoryIndex] = useState(-1);
+    // SearchBarAddon has hardcoded z-index: 999 :(
+    const zIndex = `
+    .xterm-search-bar__addon {
+        z-index: 10;
+    }`;
 
     const handleConsoleOutput = (line: string, prelude = false) =>
         terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
@@ -76,32 +88,25 @@ export default () => {
             case 'failure':
                 terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
                 return;
-
-            // Sent by the source node whenever the server was archived successfully.
-            case 'archive':
-                terminal.writeln(
-                    TERMINAL_PRELUDE +
-                        'Server has been archived successfully, attempting connection to target node..\u001b[0m'
-                );
         }
     };
 
     const handleDaemonErrorOutput = (line: string) =>
         terminal.writeln(
-            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m',
         );
 
     const handlePowerChangeEvent = (state: string) =>
         terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
 
-    const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const handleCommandKeyDown = (e: ReactKeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
             const newIndex = Math.min(historyIndex + 1, history!.length - 1);
 
             setHistoryIndex(newIndex);
             e.currentTarget.value = history![newIndex] || '';
 
-            // By default up arrow will also bring the cursor to the start of the line,
+            // By default, up arrow will also bring the cursor to the start of the line,
             // so we'll preventDefault to keep it at the end.
             e.preventDefault();
         }
@@ -115,7 +120,7 @@ export default () => {
 
         const command = e.currentTarget.value;
         if (e.key === 'Enter' && command.length > 0) {
-            setHistory((prevHistory) => [command, ...prevHistory!].slice(0, 32));
+            setHistory(prevHistory => [command, ...prevHistory!].slice(0, 32));
             setHistoryIndex(-1);
 
             instance && instance.send('send command', command);
@@ -133,6 +138,7 @@ export default () => {
 
             terminal.open(ref.current);
             fitAddon.fit();
+            searchBar.addNewStyle(zIndex);
 
             // Add support for capturing keys
             terminal.attachCustomKeyEventHandler((e: KeyboardEvent) => {
@@ -157,7 +163,7 @@ export default () => {
             if (terminal.element) {
                 fitAddon.fit();
             }
-        }, 100)
+        }, 100),
     );
 
     useEffect(() => {
@@ -167,7 +173,7 @@ export default () => {
             [SocketEvent.INSTALL_OUTPUT]: handleConsoleOutput,
             [SocketEvent.TRANSFER_LOGS]: handleConsoleOutput,
             [SocketEvent.TRANSFER_STATUS]: handleTransferStatus,
-            [SocketEvent.DAEMON_MESSAGE]: (line) => handleConsoleOutput(line, true),
+            [SocketEvent.DAEMON_MESSAGE]: line => handleConsoleOutput(line, true),
             [SocketEvent.DAEMON_ERROR]: handleDaemonErrorOutput,
         };
 
@@ -178,7 +184,12 @@ export default () => {
             }
 
             Object.keys(listeners).forEach((key: string) => {
-                instance.addListener(key, listeners[key]);
+                const listener = listeners[key];
+                if (listener === undefined) {
+                    return;
+                }
+
+                instance.addListener(key, listener);
             });
             instance.send(SocketRequest.SEND_LOGS);
         }
@@ -186,7 +197,12 @@ export default () => {
         return () => {
             if (instance) {
                 Object.keys(listeners).forEach((key: string) => {
-                    instance.removeListener(key, listeners[key]);
+                    const listener = listeners[key];
+                    if (listener === undefined) {
+                        return;
+                    }
+
+                    instance.removeListener(key, listener);
                 });
             }
         };
@@ -216,11 +232,11 @@ export default () => {
                     />
                     <div
                         className={classNames(
-                            'text-gray-100 peer-focus:text-gray-50 peer-focus:animate-pulse',
-                            styles.command_icon
+                            'text-slate-100 peer-focus:animate-pulse peer-focus:text-slate-50',
+                            styles.command_icon,
                         )}
                     >
-                        <ChevronDoubleRightIcon className={'w-4 h-4'} />
+                        <ChevronDoubleRightIcon className={'h-4 w-4'} />
                     </div>
                 </div>
             )}

@@ -13,7 +13,7 @@ class NodeCreationService
     /**
      * NodeCreationService constructor.
      */
-    public function __construct(private Encrypter $encrypter, protected NodeRepositoryInterface $repository)
+    public function __construct(protected NodeRepositoryInterface $repository)
     {
     }
 
@@ -25,7 +25,7 @@ class NodeCreationService
     public function handle(array $data): Node
     {
         $data['uuid'] = Uuid::uuid4()->toString();
-        $data['daemon_token'] = $this->encrypter->encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
+        $data['daemon_token'] = app(Encrypter::class)->encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH));
         $data['daemon_token_id'] = Str::random(Node::DAEMON_TOKEN_ID_LENGTH);
 
         return $this->repository->create($data, true, true);

@@ -3,7 +3,6 @@
 namespace Pterodactyl\Services\Databases;
 
 use Exception;
-use InvalidArgumentException;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Helpers\Utilities;
@@ -86,7 +85,7 @@ class DatabaseManagementService
 
         // Protect against developer mistakes...
         if (empty($data['database']) || !preg_match(self::MATCH_NAME_REGEX, $data['database'])) {
-            throw new InvalidArgumentException('The database name passed to DatabaseManagementService::handle MUST be prefixed with "s{server_id}_".');
+            throw new \InvalidArgumentException('The database name passed to DatabaseManagementService::handle MUST be prefixed with "s{server_id}_".');
         }
 
         $data = array_merge($data, [
@@ -117,14 +116,15 @@ class DatabaseManagementService
 
                 return $database;
             });
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             try {
+                /** @var ?Database $database */
                 if ($database instanceof Database) {
                     $this->repository->dropDatabase($database->database);
                     $this->repository->dropUser($database->username, $database->remote);
                     $this->repository->flush();
                 }
-            } catch (Exception $deletionException) {
+            } catch (\Exception $deletionException) {
                 // Do nothing here. We've already encountered an issue before this point so no
                 // reason to prioritize this error over the initial one.
             }

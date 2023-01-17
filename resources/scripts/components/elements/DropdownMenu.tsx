@@ -1,11 +1,13 @@
-import React, { createRef } from 'react';
-import styled from 'styled-components/macro';
+import type { MouseEvent as ReactMouseEvent, ReactNode } from 'react';
+import { createRef, PureComponent } from 'react';
+import styled from 'styled-components';
 import tw from 'twin.macro';
-import Fade from '@/components/elements/Fade';
+
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
 
 interface Props {
-    children: React.ReactNode;
-    renderToggle: (onClick: (e: React.MouseEvent<any, MouseEvent>) => void) => React.ReactChild;
+    children: ReactNode;
+    renderToggle: (onClick: (e: ReactMouseEvent<unknown>) => void) => any;
 }
 
 export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
@@ -13,7 +15,7 @@ export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
     transition: 150ms all ease;
 
     &:hover {
-        ${(props) => (props.danger ? tw`text-red-700 bg-red-100` : tw`text-neutral-700 bg-neutral-100`)};
+        ${props => (props.danger ? tw`text-red-700 bg-red-100` : tw`text-neutral-700 bg-neutral-100`)};
     }
 `;
 
@@ -22,19 +24,19 @@ interface State {
     visible: boolean;
 }
 
-class DropdownMenu extends React.PureComponent<Props, State> {
+class DropdownMenu extends PureComponent<Props, State> {
     menu = createRef<HTMLDivElement>();
 
-    state: State = {
+    override state: State = {
         posX: 0,
         visible: false,
     };
 
-    componentWillUnmount() {
+    override componentWillUnmount() {
         this.removeListeners();
     }
 
-    componentDidUpdate(prevProps: Readonly<Props>, prevState: Readonly<State>) {
+    override componentDidUpdate(_prevProps: Readonly<Props>, prevState: Readonly<State>) {
         const menu = this.menu.current;
 
         if (this.state.visible && !prevState.visible && menu) {
@@ -48,19 +50,21 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         }
     }
 
-    removeListeners = () => {
+    removeListeners() {
         document.removeEventListener('click', this.windowListener);
         document.removeEventListener('contextmenu', this.contextMenuListener);
-    };
+    }
 
-    onClickHandler = (e: React.MouseEvent<any, MouseEvent>) => {
+    onClickHandler(e: ReactMouseEvent<unknown>) {
         e.preventDefault();
         this.triggerMenu(e.clientX);
-    };
+    }
 
-    contextMenuListener = () => this.setState({ visible: false });
+    contextMenuListener() {
+        this.setState({ visible: false });
+    }
 
-    windowListener = (e: MouseEvent) => {
+    windowListener(e: MouseEvent): any {
         const menu = this.menu.current;
 
         if (e.button === 2 || !this.state.visible || !menu) {
@@ -74,22 +78,24 @@ class DropdownMenu extends React.PureComponent<Props, State> {
         if (e.target !== menu && !menu.contains(e.target as Node)) {
             this.setState({ visible: false });
         }
-    };
+    }
 
-    triggerMenu = (posX: number) =>
-        this.setState((s) => ({
+    triggerMenu(posX: number) {
+        this.setState(s => ({
             posX: !s.visible ? posX : s.posX,
             visible: !s.visible,
         }));
+    }
 
-    render() {
+    override render() {
         return (
             <div>
                 {this.props.renderToggle(this.onClickHandler)}
-                <Fade timeout={150} in={this.state.visible} unmountOnExit>
+
+                <FadeTransition duration="duration-150" show={this.state.visible} appear unmount>
                     <div
                         ref={this.menu}
-                        onClick={(e) => {
+                        onClick={e => {
                             e.stopPropagation();
                             this.setState({ visible: false });
                         }}
@@ -98,7 +104,7 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                     >
                         {this.props.children}
                     </div>
-                </Fade>
+                </FadeTransition>
             </div>
         );
     }

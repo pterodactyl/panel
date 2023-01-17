@@ -49,7 +49,7 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
 
         const matches = ['application/jar', 'application/octet-stream', 'inode/directory', /^image\//];
 
-        return matches.every((m) => !this.mimetype.match(m));
+        return matches.every(m => !this.mimetype.match(m));
     },
 });
 

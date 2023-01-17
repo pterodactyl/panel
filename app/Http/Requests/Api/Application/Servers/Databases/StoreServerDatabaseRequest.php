@@ -2,25 +2,19 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Servers\Databases;
 
+use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreServerDatabaseRequest extends ApplicationApiRequest
 {
-    protected ?string $resource = AdminAcl::RESOURCE_SERVER_DATABASES;
-
-    protected int $permission = AdminAcl::WRITE;
-
-    /**
-     * Validation rules for database creation.
-     */
     public function rules(): array
     {
+        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->route()->parameter('server');
 
         return [
@@ -39,20 +33,22 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
     }
 
     /**
-     * Return data formatted in the correct format for the service to consume.
+     * @param string|null $key
+     * @param string|array|null $default
+     *
+     * @return mixed
      */
-    public function validated($key = null, $default = null): array
+    public function validated($key = null, $default = null)
     {
-        return [
+        $data = [
             'database' => $this->input('database'),
             'remote' => $this->input('remote'),
             'database_host_id' => $this->input('host'),
         ];
+
+        return is_null($key) ? $data : Arr::get($data, $key, $default);
     }
 
-    /**
-     * Format error messages in a more understandable format for API output.
-     */
     public function attributes(): array
     {
         return [
@@ -62,9 +58,6 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
         ];
     }
 
-    /**
-     * Returns the database name in the expected format.
-     */
     public function databaseName(): string
     {
         $server = $this->route()->parameter('server');

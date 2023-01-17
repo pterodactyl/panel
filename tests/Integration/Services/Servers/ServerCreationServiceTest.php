@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
-use Mockery;
 use Mockery\MockInterface;
 use Pterodactyl\Models\Egg;
 use GuzzleHttp\Psr7\Request;
@@ -42,7 +41,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
             ->where('name', 'Bungeecord')
             ->firstOrFail();
 
-        $this->daemonServerRepository = Mockery::mock(DaemonServerRepository::class);
+        $this->daemonServerRepository = \Mockery::mock(DaemonServerRepository::class);
         $this->swap(DaemonServerRepository::class, $this->daemonServerRepository);
     }
 
@@ -127,9 +126,10 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertNotNull($response->uuid);
         $this->assertSame($response->uuidShort, substr($response->uuid, 0, 8));
         $this->assertSame($egg->id, $response->egg_id);
-        $this->assertCount(2, $response->variables);
-        $this->assertSame('123', $response->variables[0]->server_value);
-        $this->assertSame('server2.jar', $response->variables[1]->server_value);
+        $variables = $response->variables->sortBy('server_value')->values();
+        $this->assertCount(2, $variables);
+        $this->assertSame('123', $variables->get(0)->server_value);
+        $this->assertSame('server2.jar', $variables->get(1)->server_value);
 
         foreach ($data as $key => $value) {
             if (in_array($key, ['allocation_additional', 'environment', 'start_on_completion'])) {
@@ -145,7 +145,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
         $this->assertSame($allocations[4]->id, $response->allocations[1]->id);
 
         $this->assertFalse($response->isSuspended());
-        $this->assertTrue($response->oom_disabled);
+        $this->assertFalse($response->oom_killer);
         $this->assertSame(0, $response->database_limit);
         $this->assertSame(0, $response->allocation_limit);
         $this->assertSame(0, $response->backup_limit);

@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 export default (
     eventName: string,
     handler: (e: Event | CustomEvent | UIEvent | any) => void,
-    options?: boolean | EventListenerOptions
+    options?: boolean | EventListenerOptions,
 ) => {
     const savedHandler = useRef<any>(null);
 

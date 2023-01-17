@@ -3,10 +3,67 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## [Unreleased]
+## v1.11.2
 ### Changed
-* Changed minimum PHP version is now 8.0 instead of `7.4`.
+* Telemetry no longer sends a map of Egg and Nest UUIDs to the number of servers using them.
+* Increased the timeout for the decompress files endpoint in the client API from 15 seconds to 15 minutes.
+
+### Fixed
+* Fixed Panel Docker image having a `v` prefix in the version displayed in the admin area.
+* Fixed emails using the wrong queue name, causing them to not be sent.
+* Fixed the settings keys used for configuring SMTP settings, causing settings to not save properly.
+* Fixed the `MAIL_EHLO_DOMAIN` environment variable not being properly backwards compatible with the old `SERVER_NAME` variable.
+
+## v1.11.1
+### Fixed
+* Fixed Panel Docker image showing `canary` as it's version.
+
+## v1.11.0
+### Changed (since 1.10.4)
+* Changed minimum PHP version requirement from `7.4` to `8.0`.
 * Upgraded from Laravel 8 to Laravel 9.
+* This release requires Wings v1.11.x in order for Server Transfers to work.
+* `MB` byte suffixes are now displayed as `MiB` to more accurately reflect the actual value.
+* Server re-installation failures are tracked independently of the initial installation process.
+
+### Fixed (since 1.10.4)
+* Node maintenance mode now properly blocks access to servers.
+* Fixed the length validation on the Minecraft Forge egg.
+* Fixed the password in the JDBC string not being properly URL encoded.
+* Fixed an issue where Wings would throw a validation error while attempting to upload activity logs.
+* Properly handle a missing `Content-Length` header in the response from the daemon.
+* Ensure activity log properties are always returned as an object instead of an empty array.
+
+### Added (since 1.10.4)
+* Added the `server:settings.description` activity log event for when a server description is changed.
+* Added the ability to cancel file uploads in the file manager for a server.
+* Added a telemetry service to collect anonymous metrics from the panel, this feature is *enabled* by default and can be toggled using the `PTERODACTYL_TELEMETRY_ENABLED` environment variable.
+
+## v1.11.0-rc.2
+### Changed
+* `MB` byte suffixes are now displayed as `MiB` to more accurately reflect the actual value.
+* Server re-installation failures are tracked independently of the initial installation process.
+
+### Fixed
+* Properly handle a missing `Content-Length` header in the response from the daemon.
+* Ensure activity log properties are always returned as an object instead of an empty array.
+
+### Added
+* Added the `server:settings.description` activity log event for when a server description is changed.
+* Added the ability to cancel file uploads in the file manager for a server.
+* Added a telemetry service to collect anonymous metrics from the panel, this feature is disabled by default and can be toggled using the `PTERODACTYL_TELEMETRY_ENABLED` environment variable.
+
+## v1.11.0-rc.1
+### Changed
+* Changed minimum PHP version requirement from `7.4` to `8.0`.
+* Upgraded from Laravel 8 to Laravel 9.
+* This release requires Wings v1.11.x in order for Server Transfers to work.
+
+### Fixed
+* Node maintenance mode now properly blocks access to servers.
+* Fixed the length validation on the Minecraft Forge egg.
+* Fixed the password in the JDBC string not being properly URL encoded.
+* Fixed an issue where Wings would throw a validation error while attempting to upload activity logs.
 
 ## v1.10.4
 ### Fixed

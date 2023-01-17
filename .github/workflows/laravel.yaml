@@ -1,0 +1,209 @@
+name: Laravel
+
+on:
+  push:
+    branches:
+      - "develop"
+      - "1.0-develop"
+  pull_request:
+    branches:
+      - "develop"
+      - "1.0-develop"
+
+jobs:
+  analysis:
+    name: Static Analysis
+    runs-on: ubuntu-20.04
+    env:
+      APP_ENV: testing
+      APP_DEBUG: "true"
+      APP_KEY: SomeRandomString3232RandomString
+      CACHE_DRIVER: array
+      MAIL_MAILER: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: Analyze
+        run: vendor/bin/phpstan analyse
+
+  lint:
+    name: Lint
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.1
+          extensions: bcmath, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: PHP CS Fixer
+        run: vendor/bin/php-cs-fixer fix --dry-run --diff
+
+  mysql:
+    name: Tests
+    runs-on: ubuntu-20.04
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.1]
+        database: ["mariadb:10.2", "mariadb:10.9", "mysql:8"]
+    services:
+      database:
+        image: docker.io/library/${{ matrix.database }}
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: yes
+          MYSQL_DATABASE: testing
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      APP_ENV: testing
+      APP_DEBUG: "true"
+      APP_KEY: SomeRandomString3232RandomString
+      APP_THEME: pterodactyl
+      APP_TIMEZONE: UTC
+      APP_URL: http://localhost/
+      APP_ENVIRONMENT_ONLY: "true"
+      CACHE_DRIVER: array
+      MAIL_MAILER: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      HASHIDS_SALT: test123
+      DB_CONNECTION: mysql
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: testing
+      DB_USERNAME: root
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Get cache directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: Unit tests
+        run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
+        env:
+          DB_HOST: UNIT_NO_DB
+
+      - name: Integration tests
+        run: vendor/bin/phpunit tests/Integration
+        env:
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+
+  postgres:
+    name: Tests
+    runs-on: ubuntu-20.04
+    if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
+    strategy:
+      fail-fast: false
+      matrix:
+        php: [8.1]
+        database: ["postgres:13", "postgres:14", "postgres:15"]
+    services:
+      database:
+        image: docker.io/library/${{ matrix.database }}
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: testing
+        ports:
+          - 5432/tcp
+        options: --health-cmd=pg_isready --health-interval=10s --health-timeout=5s --health-retries=3
+    env:
+      APP_ENV: testing
+      APP_DEBUG: "true"
+      APP_KEY: SomeRandomString3232RandomString
+      APP_THEME: pterodactyl
+      APP_TIMEZONE: UTC
+      APP_URL: http://localhost/
+      APP_ENVIRONMENT_ONLY: "true"
+      CACHE_DRIVER: array
+      MAIL_MAILER: array
+      SESSION_DRIVER: array
+      QUEUE_CONNECTION: sync
+      HASHIDS_SALT: test123
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_DATABASE: testing
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+    steps:
+      - name: Code checkout
+        uses: actions/checkout@v3
+
+      - name: Get cache directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-${{ matrix.php }}-
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          tools: composer:v2
+          coverage: none
+
+      - name: Install dependencies
+        run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+
+      - name: Unit tests
+        run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
+        env:
+          DB_HOST: UNIT_NO_DB
+
+      - name: Integration tests
+        run: vendor/bin/phpunit tests/Integration
+        env:
+          DB_PORT: ${{ job.services.database.ports[5432] }}

@@ -1,4 +1,5 @@
-import React, { ElementType, forwardRef, useMemo } from 'react';
+import { ElementType, forwardRef, useMemo } from 'react';
+import * as React from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import styles from './style.module.css';
 import classNames from 'classnames';
@@ -11,7 +12,7 @@ interface Props {
 }
 
 const DropdownGap = ({ invisible }: { invisible?: boolean }) => (
-    <div className={classNames('border m-2', { 'border-neutral-700': !invisible, 'border-transparent': invisible })} />
+    <div className={classNames('m-2 border', { 'border-neutral-700': !invisible, 'border-transparent': invisible })} />
 );
 
 type TypedChild = (React.ReactChild | React.ReactFragment | React.ReactPortal) & {
@@ -23,8 +24,8 @@ const Dropdown = forwardRef<typeof Menu, Props>(({ as, children }, ref) => {
         const list = React.Children.toArray(children) as unknown as TypedChild[];
 
         return [
-            list.filter((child) => child.type === DropdownButton),
-            list.filter((child) => child.type !== DropdownButton),
+            list.filter(child => child.type === DropdownButton),
+            list.filter(child => child.type !== DropdownButton),
         ];
     }, [children]);
 

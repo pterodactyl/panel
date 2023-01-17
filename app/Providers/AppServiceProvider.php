@@ -2,15 +2,12 @@
 
 namespace Pterodactyl\Providers;
 
-use View;
-use Cache;
 use Pterodactyl\Models;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
-use Pterodactyl\Extensions\Themes\Theme;
 use Illuminate\Database\Eloquent\Relations\Relation;
 
 class AppServiceProvider extends ServiceProvider
@@ -21,9 +18,6 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
-
-        View::share('appVersion', $this->versionData()['version'] ?? 'undefined');
-        View::share('appIsGit', $this->versionData()['is_git'] ?? false);
 
         Paginator::useBootstrap();
 
@@ -61,37 +55,5 @@ class AppServiceProvider extends ServiceProvider
         if (!config('pterodactyl.load_environment_only', false) && $this->app->environment() !== 'testing') {
             $this->app->register(SettingsServiceProvider::class);
         }
-
-        $this->app->singleton('extensions.themes', function () {
-            return new Theme();
-        });
-    }
-
-    /**
-     * Return version information for the footer.
-     */
-    protected function versionData(): array
-    {
-        return Cache::remember('git-version', 5, function () {
-            if (file_exists(base_path('.git/HEAD'))) {
-                $head = explode(' ', file_get_contents(base_path('.git/HEAD')));
-
-                if (array_key_exists(1, $head)) {
-                    $path = base_path('.git/' . trim($head[1]));
-                }
-            }
-
-            if (isset($path) && file_exists($path)) {
-                return [
-                    'version' => substr(file_get_contents($path), 0, 8),
-                    'is_git' => true,
-                ];
-            }
-
-            return [
-                'version' => config('app.version'),
-                'is_git' => false,
-            ];
-        });
     }
 }

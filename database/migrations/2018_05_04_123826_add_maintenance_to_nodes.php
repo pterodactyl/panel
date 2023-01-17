@@ -8,10 +8,8 @@ class AddMaintenanceToNodes extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->boolean('maintenance_mode')->after('behind_proxy')->default(false);
@@ -20,10 +18,8 @@ class AddMaintenanceToNodes extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->dropColumn('maintenance_mode');

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Exception;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -41,7 +40,7 @@ class ScheduleController extends ClientApiController
         $schedules = $server->schedules->loadMissing('tasks');
 
         return $this->fractal->collection($schedules)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -73,7 +72,7 @@ class ScheduleController extends ClientApiController
             ->log();
 
         return $this->fractal->item($model)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -89,7 +88,7 @@ class ScheduleController extends ClientApiController
         $schedule->loadMissing('tasks');
 
         return $this->fractal->item($schedule)
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -132,7 +131,7 @@ class ScheduleController extends ClientApiController
             ->log();
 
         return $this->fractal->item($schedule->refresh())
-            ->transformWith($this->getTransformer(ScheduleTransformer::class))
+            ->transformWith(ScheduleTransformer::class)
             ->toArray();
     }
 
@@ -178,7 +177,7 @@ class ScheduleController extends ClientApiController
                 $request->input('month'),
                 $request->input('day_of_week')
             );
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new DisplayException('The cron data provided does not evaluate to a valid expression.');
         }
     }

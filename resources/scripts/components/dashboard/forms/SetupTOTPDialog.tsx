@@ -1,4 +1,5 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import * as React from 'react';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import getTwoFactorTokenData, { TwoFactorTokenData } from '@/api/account/getTwoFactorTokenData';
 import { useFlashKey } from '@/plugins/useFlash';
@@ -32,11 +33,11 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
     useEffect(() => {
         getTwoFactorTokenData()
             .then(setToken)
-            .catch((error) => clearAndAddHttpError(error));
+            .catch(error => clearAndAddHttpError(error));
     }, []);
 
     useEffect(() => {
-        setProps((state) => ({ ...state, preventExternalClose: submitting }));
+        setProps(state => ({ ...state, preventExternalClose: submitting }));
     }, [submitting]);
 
     const submit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -48,11 +49,11 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
         setSubmitting(true);
         clearAndAddHttpError();
         enableAccountTwoFactor(value, password)
-            .then((tokens) => {
+            .then(tokens => {
                 updateUserData({ useTotp: true });
                 onTokens(tokens);
             })
-            .catch((error) => {
+            .catch(error => {
                 clearAndAddHttpError(error);
                 setSubmitting(false);
             });
@@ -61,7 +62,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
     return (
         <form id={'enable-totp-form'} onSubmit={submit}>
             <FlashMessageRender byKey={'account:two-step'} className={'mt-4'} />
-            <div className={'flex items-center justify-center w-56 h-56 p-2 bg-gray-50 shadow mx-auto mt-6'}>
+            <div className={'mx-auto mt-6 flex h-56 w-56 items-center justify-center bg-slate-50 p-2 shadow'}>
                 {!token ? (
                     <Spinner />
                 ) : (
@@ -69,7 +70,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 )}
             </div>
             <CopyOnClick text={token?.secret}>
-                <p className={'font-mono text-sm text-gray-100 text-center mt-2'}>
+                <p className={'mt-2 text-center font-mono text-sm text-slate-100'}>
                     {token?.secret.match(/.{1,4}/g)!.join(' ') || 'Loading...'}
                 </p>
             </CopyOnClick>
@@ -81,7 +82,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 aria-labelledby={'totp-code-description'}
                 variant={Input.Text.Variants.Loose}
                 value={value}
-                onChange={(e) => setValue(e.currentTarget.value)}
+                onChange={e => setValue(e.currentTarget.value)}
                 className={'mt-3'}
                 placeholder={'000000'}
                 type={'text'}
@@ -89,7 +90,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 autoComplete={'one-time-code'}
                 pattern={'\\d{6}'}
             />
-            <label htmlFor={'totp-password'} className={'block mt-3'}>
+            <label htmlFor={'totp-password'} className={'mt-3 block'}>
                 Account Password
             </label>
             <Input.Text
@@ -97,7 +98,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 className={'mt-1'}
                 type={'password'}
                 value={password}
-                onChange={(e) => setPassword(e.currentTarget.value)}
+                onChange={e => setPassword(e.currentTarget.value)}
             />
             <Dialog.Footer>
                 <Button.Text onClick={close}>Cancel</Button.Text>

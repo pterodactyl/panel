@@ -6,11 +6,11 @@ use Illuminate\Support\Arr;
 use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Contracts\Validation\DataAwareRule;
 
-class Fqdn implements Rule, DataAwareRule
+final class Fqdn implements Rule, DataAwareRule
 {
-    protected array $data = [];
-    protected string $message = '';
-    protected ?string $schemeField = null;
+    private array $data = [];
+    private string $message = '';
+    private ?string $schemeField = null;
 
     /**
      * @param array $data

@@ -34,7 +34,7 @@ class DatabaseController extends ApplicationApiController
     public function index(GetServerDatabasesRequest $request, Server $server): array
     {
         return $this->fractal->collection($server->databases)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
+            ->transformWith(ServerDatabaseTransformer::class)
             ->toArray();
     }
 
@@ -44,7 +44,7 @@ class DatabaseController extends ApplicationApiController
     public function view(GetServerDatabaseRequest $request, Server $server, Database $database): array
     {
         return $this->fractal->item($database)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
+            ->transformWith(ServerDatabaseTransformer::class)
             ->toArray();
     }
 
@@ -53,11 +53,11 @@ class DatabaseController extends ApplicationApiController
      *
      * @throws \Throwable
      */
-    public function resetPassword(ServerDatabaseWriteRequest $request, Server $server, Database $database): JsonResponse
+    public function resetPassword(ServerDatabaseWriteRequest $request, Server $server, Database $database): Response
     {
         $this->databasePasswordService->handle($database);
 
-        return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
+        return $this->returnNoContent();
     }
 
     /**
@@ -72,23 +72,19 @@ class DatabaseController extends ApplicationApiController
         ]));
 
         return $this->fractal->item($database)
-            ->transformWith($this->getTransformer(ServerDatabaseTransformer::class))
-            ->addMeta([
-                'resource' => route('api.application.servers.databases.view', [
-                    'server' => $server->id,
-                    'database' => $database->id,
-                ]),
-            ])
+            ->transformWith(ServerDatabaseTransformer::class)
             ->respond(Response::HTTP_CREATED);
     }
 
     /**
      * Handle a request to delete a specific server database from the Panel.
+     *
+     * @throws \Exception
      */
-    public function delete(ServerDatabaseWriteRequest $request, Server $server, Database $database): Response
+    public function delete(ServerDatabaseWriteRequest $request, Database $database): Response
     {
         $this->databaseManagementService->delete($database);
 
-        return response('', 204);
+        return $this->returnNoContent();
     }
 }
