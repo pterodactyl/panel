@@ -31,7 +31,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property int $io
  * @property int $cpu
  * @property string|null $threads
- * @property bool $oom_disabled
+ * @property bool $oom_killer
  * @property int $allocation_id
  * @property int $nest_id
  * @property int $egg_id
@@ -90,7 +90,7 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereNestId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereNodeId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|Server whereOomDisabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|Server whereOomKiller($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereOwnerId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereSkipScripts($value)
  * @method static \Illuminate\Database\Eloquent\Builder|Server whereStartup($value)
@@ -131,7 +131,7 @@ class Server extends Model
      */
     protected $attributes = [
         'status' => self::STATUS_INSTALLING,
-        'oom_disabled' => true,
+        'oom_killer' => false,
         'installed_at' => null,
     ];
 
@@ -162,7 +162,7 @@ class Server extends Model
         'io' => 'required|numeric|between:10,1000',
         'cpu' => 'required|numeric|min:0',
         'threads' => 'nullable|regex:/^[0-9-,]+$/',
-        'oom_disabled' => 'sometimes|boolean',
+        'oom_killer' => 'sometimes|boolean',
         'disk' => 'required|numeric|min:0',
         'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
         'nest_id' => 'required|exists:nests,id',
@@ -187,7 +187,7 @@ class Server extends Model
         'disk' => 'integer',
         'io' => 'integer',
         'cpu' => 'integer',
-        'oom_disabled' => 'boolean',
+        'oom_killer' => 'boolean',
         'allocation_id' => 'integer',
         'nest_id' => 'integer',
         'egg_id' => 'integer',

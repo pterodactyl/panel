@@ -52,8 +52,6 @@ export default () => {
                     io: server.limits.io,
                     cpu: server.limits.cpu,
                     threads: server.limits.threads || '',
-                    // This value is inverted to have the switch be on when the
-                    // OOM Killer is enabled, rather than when disabled.
                     oomKiller: server.limits.oomKiller,
                 },
                 featureLimits: {

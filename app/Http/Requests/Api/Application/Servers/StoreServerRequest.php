@@ -67,7 +67,7 @@ class StoreServerRequest extends ApplicationApiRequest
             'io' => array_get($data, 'limits.io'),
             'threads' => array_get($data, 'limits.threads'),
             'cpu' => array_get($data, 'limits.cpu'),
-            'oom_disabled' => !array_get($data, 'limits.oom_killer'),
+            'oom_killer' => array_get($data, 'limits.oom_killer'),
 
             'allocation_limit' => array_get($data, 'feature_limits.allocations'),
             'backup_limit' => array_get($data, 'feature_limits.backups'),

@@ -59,7 +59,9 @@ class ServerConfigurationStructureService
                 'cpu_limit' => $server->cpu,
                 'threads' => $server->threads,
                 'disk_space' => $server->disk,
-                'oom_disabled' => $server->oom_disabled,
+                // TODO: remove oom_disabled and use oom_killer, this requires a Wings update.
+                'oom_disabled' => !$server->oom_killer,
+                'oom_killer' => $server->oom_killer,
             ],
             'container' => [
                 'image' => $server->image,
@@ -105,7 +107,7 @@ class ServerConfigurationStructureService
                     return $item->pluck('port');
                 })->toArray(),
                 'env' => $this->environment->handle($server),
-                'oom_disabled' => $server->oom_disabled,
+                'oom_disabled' => !$server->oom_killer,
                 'memory' => (int) $server->memory,
                 'swap' => (int) $server->swap,
                 'io' => (int) $server->io,

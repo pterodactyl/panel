@@ -153,7 +153,7 @@ class ServerCreationService
             'io' => Arr::get($data, 'io'),
             'cpu' => Arr::get($data, 'cpu'),
             'threads' => Arr::get($data, 'threads'),
-            'oom_disabled' => Arr::get($data, 'oom_disabled') ?? true,
+            'oom_killer' => Arr::get($data, 'oom_killer') ?? false,
             'allocation_id' => Arr::get($data, 'allocation_id'),
             'nest_id' => Arr::get($data, 'nest_id'),
             'egg_id' => Arr::get($data, 'egg_id'),
