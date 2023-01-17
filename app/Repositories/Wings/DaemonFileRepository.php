@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -32,7 +33,7 @@ class DaemonFileRepository extends DaemonRepository
                     'query' => ['file' => $path],
                 ]
             );
-        } catch (TransferException $exception) {
+        } catch (ClientException|TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
 
