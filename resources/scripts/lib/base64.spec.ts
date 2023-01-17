@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { decodeBase64 } from '@/lib/base64';
 
 describe('@/lib/base64.ts', function () {

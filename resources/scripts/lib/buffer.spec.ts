@@ -1,3 +1,5 @@
+import { describe, expect, it } from 'vitest';
+
 import { decodeBuffer, encodeBuffer } from '@/lib/buffer';
 
 describe('@/lib/buffer.ts', function () {

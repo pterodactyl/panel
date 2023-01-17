@@ -1,11 +1,14 @@
-import useSWR, { ConfigInterface } from 'swr';
-import { useStoreState } from '@/state/hooks';
-import http, { FractalResponseList } from '@/api/http';
-import { SecurityKey, Transformers } from '@definitions/user';
-import { AxiosError } from 'axios';
+import type { AxiosError } from 'axios';
+import type { SWRConfiguration } from 'swr';
+import useSWR from 'swr';
+
+import type { SecurityKey } from '@definitions/user';
+import { Transformers } from '@definitions/user';
+import { LoginResponse } from '@/api/auth/login';
+import type { FractalResponseList } from '@/api/http';
+import http from '@/api/http';
 import { decodeBase64 } from '@/lib/base64';
 import { decodeBuffer, encodeBuffer } from '@/lib/buffer';
-import { LoginResponse } from '@/api/auth/login';
 import { useUserSWRKey } from '@/plugins/useSWRKey';
 
 function decodeSecurityKeyCredentials(credentials: PublicKeyCredentialDescriptor[]) {
@@ -16,8 +19,7 @@ function decodeSecurityKeyCredentials(credentials: PublicKeyCredentialDescriptor
     }));
 }
 
-function useSecurityKeys(config?: ConfigInterface<SecurityKey[], AxiosError>) {
-    const uuid = useStoreState(state => state.user.data!.uuid);
+function useSecurityKeys(config?: SWRConfiguration<SecurityKey[], AxiosError>) {
     const key = useUserSWRKey(['account', 'security-keys']);
 
     return useSWR<SecurityKey[], AxiosError>(
@@ -25,9 +27,9 @@ function useSecurityKeys(config?: ConfigInterface<SecurityKey[], AxiosError>) {
         async (): Promise<SecurityKey[]> => {
             const { data } = await http.get('/api/client/account/security-keys');
 
-            return (data as FractalResponseList).data.map((datum) => Transformers.toSecurityKey(datum.attributes));
+            return (data as FractalResponseList).data.map(datum => Transformers.toSecurityKey(datum.attributes));
         },
-        { revalidateOnMount: false, ...(config || {}) },
+        { revalidateOnMount: false, ...(config ?? {}) },
     );
 }
 
@@ -35,7 +37,11 @@ async function deleteSecurityKey(uuid: string): Promise<void> {
     await http.delete(`/api/client/account/security-keys/${uuid}`);
 }
 
-async function registerCredentialForAccount(name: string, tokenId: string, credential: PublicKeyCredential): Promise<SecurityKey> {
+async function registerCredentialForAccount(
+    name: string,
+    tokenId: string,
+    credential: PublicKeyCredential,
+): Promise<SecurityKey> {
     const { data } = await http.post('/api/client/account/security-keys/register', {
         name,
         token_id: tokenId,
@@ -44,7 +50,9 @@ async function registerCredentialForAccount(name: string, tokenId: string, crede
             type: credential.type,
             rawId: encodeBuffer(credential.rawId),
             response: {
-                attestationObject: encodeBuffer((credential.response as AuthenticatorAttestationResponse).attestationObject),
+                attestationObject: encodeBuffer(
+                    (credential.response as AuthenticatorAttestationResponse).attestationObject,
+                ),
                 clientDataJSON: encodeBuffer(credential.response.clientDataJSON),
             },
         },
@@ -66,7 +74,9 @@ async function registerSecurityKey(name: string): Promise<SecurityKey> {
 
     const credentials = await navigator.credentials.create({ publicKey });
     if (!credentials || credentials.type !== 'public-key') {
-        throw new Error(`Unexpected type returned by navigator.credentials.create(): expected "public-key", got "${credentials?.type}"`);
+        throw new Error(
+            `Unexpected type returned by navigator.credentials.create(): expected "public-key", got "${credentials?.type}"`,
+        );
     }
 
     return await registerCredentialForAccount(name, data.data.token_id, credentials as PublicKeyCredential);

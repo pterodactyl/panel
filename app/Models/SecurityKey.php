@@ -2,11 +2,12 @@
 
 namespace Pterodactyl\Models;
 
-use Ramsey\Uuid\Uuid;
 use Illuminate\Http\Request;
-use Ramsey\Uuid\UuidInterface;
+use Symfony\Component\Uid\Uuid;
 use Webauthn\TrustPath\TrustPath;
+use Symfony\Component\Uid\NilUuid;
 use Nyholm\Psr7\Factory\Psr17Factory;
+use Symfony\Component\Uid\AbstractUid;
 use Webauthn\PublicKeyCredentialSource;
 use Webauthn\TrustPath\TrustPathLoader;
 use Webauthn\PublicKeyCredentialDescriptor;
@@ -14,7 +15,27 @@ use Psr\Http\Message\ServerRequestInterface;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Symfony\Bridge\PsrHttpMessage\Factory\PsrHttpFactory;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
+/**
+ * @property int $id
+ * @property string $uuid
+ * @property int $user_id
+ * @property string $name
+ * @property string $public_key_id
+ * @property string $public_key
+ * @property AbstractUid $aaguid
+ * @property string $type
+ * @property string[] $transports
+ * @property string $attestation_type
+ * @property \Webauthn\TrustPath\TrustPath $trust_path
+ * @property string $user_handle
+ * @property int $counter
+ * @property array<string, mixed>|null $other_ui
+ *
+ * @property \Carbon\CarbonImmutable $created_at
+ * @property \Carbon\CarbonImmutable $updated_at
+ */
 class SecurityKey extends Model
 {
     use HasFactory;
@@ -33,57 +54,36 @@ class SecurityKey extends Model
         'user_id',
     ];
 
-    public function getPublicKeyAttribute(string $value): string
+    public function publicKey(): Attribute
     {
-        return base64_decode($value);
+        return new Attribute(
+            get: fn (string $value) => base64_decode($value),
+            set: fn (string $value) => base64_encode($value),
+        );
     }
 
-    public function setPublicKeyAttribute(string $value): void
+    public function publicKeyId(): Attribute
     {
-        $this->attributes['public_key'] = base64_encode($value);
+        return new Attribute(
+            get: fn (string $value) => base64_decode($value),
+            set: fn (string $value) => base64_encode($value),
+        );
     }
 
-    public function getPublicKeyIdAttribute(string $value): string
+    public function aaguid(): Attribute
     {
-        return base64_decode($value);
+        return Attribute::make(
+            get: fn (string|null $value): AbstractUid => is_null($value) ? new NilUuid() : Uuid::fromString($value),
+            set: fn (AbstractUid|null $value): string|null => (is_null($value) || $value instanceof NilUuid) ? null : $value->__toString(),
+        );
     }
 
-    public function setPublicKeyIdAttribute(string $value): void
+    public function trustPath(): Attribute
     {
-        $this->attributes['public_key_id'] = base64_encode($value);
-    }
-
-    public function getTrustPathAttribute(?string $value): ?TrustPath
-    {
-        if (is_null($value)) {
-            return null;
-        }
-
-        return TrustPathLoader::loadTrustPath(json_decode($value, true));
-    }
-
-    public function setTrustPathAttribute(?TrustPath $value): void
-    {
-        $this->attributes['trust_path'] = json_encode($value);
-    }
-
-    /**
-     * @param \Ramsey\Uuid\UuidInterface|string|null $value
-     */
-    public function setAaguidAttribute($value): void
-    {
-        $value = $value instanceof UuidInterface ? $value->__toString() : $value;
-
-        $this->attributes['aaguid'] = (is_null($value) || $value === Uuid::NIL) ? null : $value;
-    }
-
-    public function getAaguidAttribute(?string $value): ?UuidInterface
-    {
-        if (!is_null($value) && Uuid::isValid($value)) {
-            return Uuid::fromString($value);
-        }
-
-        return null;
+        return new Attribute(
+            get: fn (mixed $value) => is_null($value) ? null : TrustPathLoader::loadTrustPath(json_decode($value, true)),
+            set: fn (TrustPath|null $value) => json_encode($value),
+        );
     }
 
     public function getPublicKeyCredentialDescriptor(): PublicKeyCredentialDescriptor
@@ -99,7 +99,7 @@ class SecurityKey extends Model
             $this->transports,
             $this->attestation_type,
             $this->trust_path,
-            $this->aaguid ?? Uuid::fromString(Uuid::NIL),
+            $this->aaguid,
             $this->public_key,
             $this->user_handle,
             $this->counter

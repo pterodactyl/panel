@@ -1,4 +1,4 @@
-function decodeBase64 (input: string): string {
+function decodeBase64(input: string): string {
     input = input.replace(/-/g, '+').replace(/_/g, '/');
 
     const pad = input.length % 4;
@@ -13,4 +13,4 @@ function decodeBase64 (input: string): string {
     return input;
 }
 
-export { decodeBase64 }
+export { decodeBase64 };

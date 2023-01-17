@@ -22,7 +22,7 @@ export default class Transformers {
         };
     };
 
-    static toSecurityKey (data: Record<string, any>): Models.SecurityKey {
+    static toSecurityKey(data: Record<string, any>): Models.SecurityKey {
         return {
             uuid: data.uuid,
             name: data.name,

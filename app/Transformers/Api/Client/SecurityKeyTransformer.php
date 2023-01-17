@@ -3,8 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\SecurityKey;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class SecurityKeyTransformer extends BaseClientTransformer
+class SecurityKeyTransformer extends Transformer
 {
     public function getResourceName(): string
     {
