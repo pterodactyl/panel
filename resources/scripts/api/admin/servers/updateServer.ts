@@ -13,7 +13,7 @@ export interface Values {
         io: number;
         cpu: number;
         threads: string;
-        oomDisabled: boolean;
+        oomKiller: boolean;
     };
 
     featureLimits: {
@@ -43,7 +43,7 @@ export default (id: number, server: Partial<Values>, include: string[] = []): Pr
                     io: server.limits?.io,
                     cpu: server.limits?.cpu,
                     threads: server.limits?.threads,
-                    oom_killer: server.limits?.oomDisabled,
+                    oom_killer: server.limits?.oomKiller,
                 },
 
                 feature_limits: {

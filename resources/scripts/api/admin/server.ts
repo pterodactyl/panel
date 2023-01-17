@@ -18,7 +18,7 @@ interface ServerLimits {
     io: number;
     cpu: number;
     threads: string | null;
-    oomDisabled: boolean;
+    oomKiller: boolean;
 }
 
 export interface ServerVariable extends EggVariable {

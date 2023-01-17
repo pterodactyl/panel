@@ -60,7 +60,7 @@ export default () => {
                 />
                 <div css={tw`xl:col-span-2 bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
                     <FormikSwitch
-                        name={'limits.oomDisabled'}
+                        name={'limits.oomKiller'}
                         label={'Out of Memory Killer'}
                         description={
                             'Enabling the Out of Memory Killer may cause server processes to exit unexpectedly.'

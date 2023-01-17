@@ -55,7 +55,7 @@ export interface Server {
         io: number;
         cpu: number;
         threads: string | null;
-        oomDisabled: boolean;
+        oomKiller: boolean;
     };
 
     featureLimits: {
@@ -105,7 +105,7 @@ export const rawDataToServer = ({ attributes }: FractalResponseData): Server =>
             io: attributes.limits.io,
             cpu: attributes.limits.cpu,
             threads: attributes.limits.threads,
-            oomDisabled: attributes.limits.oom_disabled,
+            oomKiller: attributes.limits.oom_killer,
         },
 
         featureLimits: {

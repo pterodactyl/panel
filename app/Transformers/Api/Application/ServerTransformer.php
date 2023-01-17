@@ -64,7 +64,7 @@ class ServerTransformer extends Transformer
                 'disk' => $model->disk,
                 'io' => $model->io,
                 'memory' => $model->memory,
-                'oom_disabled' => $model->oom_disabled,
+                'oom_killer' => !$model->oom_disabled,
                 'swap' => $model->swap,
                 'threads' => $model->threads,
             ],

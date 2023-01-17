@@ -40,7 +40,7 @@ function transform<T>(
 
 export default class Transformers {
     static toServer = ({ attributes }: FractalResponseData): Server => {
-        const { oom_disabled, ...limits } = attributes.limits;
+        const { oom_killer, ...limits } = attributes.limits;
         const { allocations, egg, nest, node, user, variables } = attributes.relationships || {};
 
         return {
@@ -56,7 +56,7 @@ export default class Transformers {
             allocationId: attributes.allocation_id,
             eggId: attributes.egg_id,
             nestId: attributes.nest_id,
-            limits: { ...limits, oomDisabled: oom_disabled },
+            limits: { ...limits, oomKiller: oom_killer },
             featureLimits: attributes.feature_limits,
             container: attributes.container,
             createdAt: new Date(attributes.created_at),

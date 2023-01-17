@@ -23,10 +23,6 @@ export default () => {
     const submit = (values: Values, { setSubmitting, setFieldValue }: FormikHelpers<Values>) => {
         clearFlashes('server');
 
-        // This value is inverted to have the switch be on when the
-        // OOM Killer is enabled, rather than when disabled.
-        values.limits.oomDisabled = !values.limits.oomDisabled;
-
         updateServer(server.id, values)
             .then(() => {
                 // setServer({ ...server, ...s });
@@ -58,7 +54,7 @@ export default () => {
                     threads: server.limits.threads || '',
                     // This value is inverted to have the switch be on when the
                     // OOM Killer is enabled, rather than when disabled.
-                    oomDisabled: !server.limits.oomDisabled,
+                    oomKiller: server.limits.oomKiller,
                 },
                 featureLimits: {
                     allocations: server.featureLimits.allocations,

@@ -15,7 +15,7 @@ export interface CreateServerRequest {
         io: number;
         cpu: number;
         threads: string;
-        oomDisabled: boolean;
+        oomKiller: boolean;
     };
 
     featureLimits: {
@@ -55,7 +55,7 @@ export default (r: CreateServerRequest, include: string[] = []): Promise<Server>
                     memory: r.limits.memory,
                     swap: r.limits.swap,
                     threads: r.limits.threads,
-                    oom_killer: r.limits.oomDisabled,
+                    oom_killer: r.limits.oomKiller,
                 },
 
                 feature_limits: {

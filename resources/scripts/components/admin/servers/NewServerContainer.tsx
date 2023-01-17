@@ -195,9 +195,7 @@ export default () => {
                             io: 500,
                             cpu: 0,
                             threads: '',
-                            // This value is inverted to have the switch be on when the
-                            // OOM Killer is enabled, rather than when disabled.
-                            oomDisabled: false,
+                            oomKiller: true,
                         },
                         featureLimits: {
                             allocations: 1,
