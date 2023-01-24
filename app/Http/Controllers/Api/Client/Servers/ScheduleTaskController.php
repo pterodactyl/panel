@@ -56,6 +56,11 @@ class ScheduleTaskController extends ClientApiController
             $sequenceId = ($lastTask->sequence_id ?? 0) + 1;
             $requestSequenceId = $request->integer('sequence_id', $sequenceId);
 
+            // Ensure that the sequence id is at least 1.
+            if ($requestSequenceId < 1) {
+                $requestSequenceId = 1;
+            }
+
             // If the sequence id from the request is greater than or equal to the next available
             // sequence id, we don't need to do anything special.  Otherwise, we need to update
             // the sequence id of all tasks that are greater than or equal to the request sequence
@@ -105,6 +110,10 @@ class ScheduleTaskController extends ClientApiController
 
         $this->connection->transaction(function () use ($request, $schedule, $task) {
             $sequenceId = $request->integer('sequence_id', $task->sequence_id);
+            // Ensure that the sequence id is at least 1.
+            if ($sequenceId < 1) {
+                $sequenceId = 1;
+            }
 
             // Shift all other tasks in the schedule up or down to make room for the new task.
             if ($sequenceId < $task->sequence_id) {
