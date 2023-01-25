@@ -9,6 +9,7 @@ use Pterodactyl\Models\Schedule;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Permission;
+use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Repositories\Eloquent\TaskRepository;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Transformers\Api\Client\TaskTransformer;
@@ -23,8 +24,10 @@ class ScheduleTaskController extends ClientApiController
     /**
      * ScheduleTaskController constructor.
      */
-    public function __construct(private TaskRepository $repository)
-    {
+    public function __construct(
+        private ConnectionInterface $connection,
+        private TaskRepository $repository
+    ) {
         parent::__construct();
     }
 
@@ -49,14 +52,35 @@ class ScheduleTaskController extends ClientApiController
         $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
 
         /** @var \Pterodactyl\Models\Task $task */
-        $task = $this->repository->create([
-            'schedule_id' => $schedule->id,
-            'sequence_id' => ($lastTask->sequence_id ?? 0) + 1,
-            'action' => $request->input('action'),
-            'payload' => $request->input('payload') ?? '',
-            'time_offset' => $request->input('time_offset'),
-            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
-        ]);
+        $task = $this->connection->transaction(function () use ($request, $schedule, $lastTask) {
+            $sequenceId = ($lastTask->sequence_id ?? 0) + 1;
+            $requestSequenceId = $request->integer('sequence_id', $sequenceId);
+
+            // Ensure that the sequence id is at least 1.
+            if ($requestSequenceId < 1) {
+                $requestSequenceId = 1;
+            }
+
+            // If the sequence id from the request is greater than or equal to the next available
+            // sequence id, we don't need to do anything special.  Otherwise, we need to update
+            // the sequence id of all tasks that are greater than or equal to the request sequence
+            // id to be one greater than the current value.
+            if ($requestSequenceId < $sequenceId) {
+                $schedule->tasks()
+                    ->where('sequence_id', '>=', $requestSequenceId)
+                    ->increment('sequence_id');
+                $sequenceId = $requestSequenceId;
+            }
+
+            return $this->repository->create([
+                'schedule_id' => $schedule->id,
+                'sequence_id' => $sequenceId,
+                'action' => $request->input('action'),
+                'payload' => $request->input('payload') ?? '',
+                'time_offset' => $request->input('time_offset'),
+                'continue_on_failure' => $request->boolean('continue_on_failure'),
+            ]);
+        });
 
         Activity::event('server:task.create')
             ->subject($schedule, $task)
@@ -84,12 +108,34 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        $this->repository->update($task->id, [
-            'action' => $request->input('action'),
-            'payload' => $request->input('payload') ?? '',
-            'time_offset' => $request->input('time_offset'),
-            'continue_on_failure' => (bool) $request->input('continue_on_failure'),
-        ]);
+        $this->connection->transaction(function () use ($request, $schedule, $task) {
+            $sequenceId = $request->integer('sequence_id', $task->sequence_id);
+            // Ensure that the sequence id is at least 1.
+            if ($sequenceId < 1) {
+                $sequenceId = 1;
+            }
+
+            // Shift all other tasks in the schedule up or down to make room for the new task.
+            if ($sequenceId < $task->sequence_id) {
+                $schedule->tasks()
+                    ->where('sequence_id', '>=', $sequenceId)
+                    ->where('sequence_id', '<', $task->sequence_id)
+                    ->increment('sequence_id');
+            } elseif ($sequenceId > $task->sequence_id) {
+                $schedule->tasks()
+                    ->where('sequence_id', '>', $task->sequence_id)
+                    ->where('sequence_id', '<=', $sequenceId)
+                    ->decrement('sequence_id');
+            }
+
+            $this->repository->update($task->id, [
+                'sequence_id' => $sequenceId,
+                'action' => $request->input('action'),
+                'payload' => $request->input('payload') ?? '',
+                'time_offset' => $request->input('time_offset'),
+                'continue_on_failure' => $request->boolean('continue_on_failure'),
+            ]);
+        });
 
         Activity::event('server:task.update')
             ->subject($schedule, $task)
@@ -117,10 +163,9 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException('You do not have permission to perform this action.');
         }
 
-        $schedule->tasks()->where('sequence_id', '>', $task->sequence_id)->update([
-            'sequence_id' => $schedule->tasks()->getConnection()->raw('(sequence_id - 1)'),
-        ]);
-
+        $schedule->tasks()
+            ->where('sequence_id', '>', $task->sequence_id)
+            ->decrement('sequence_id');
         $task->delete();
 
         Activity::event('server:task.delete')->subject($schedule, $task)->property('name', $schedule->name)->log();
