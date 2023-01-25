@@ -2,7 +2,7 @@
 FROM        --platform=$TARGETOS/$TARGETARCH docker.io/library/caddy:latest AS caddy
 
 # Stage 1 - Builder
-FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/nodejs-16-minimal AS builder
+FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/nodejs-18-minimal AS builder
 
 RUN         npm install -g yarn
 
@@ -36,8 +36,7 @@ RUN         microdnf update -y \
                 && microdnf install -y ca-certificates shadow-utils tar tzdata unzip wget \
                 && microdnf module -y reset php \
                 && microdnf module -y enable php:remi-8.1 \
-                && microdnf install -y cronie php-{bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,pdo,pecl-redis5,pecl-zip,phpiredis,pgsql,process,sodium,xml,zstd} supervisor \
-                && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+                && microdnf install -y composer cronie php-{bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,pdo,pecl-redis5,pecl-zip,phpiredis,pgsql,process,sodium,xml,zstd} supervisor \
                 && rm /etc/php-fpm.d/www.conf \
                 && useradd --home-dir /var/lib/caddy --create-home caddy \
                 && mkdir /etc/caddy \
