@@ -159,6 +159,7 @@
               }
             ];
             systems = [system];
+            autoProjects = true;
           })
           .packages
           ."${system}"
