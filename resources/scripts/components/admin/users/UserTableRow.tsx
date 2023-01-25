@@ -4,7 +4,7 @@ import { useState } from 'react';
 import Checkbox from '@/components/elements/inputs/Checkbox';
 import { Dropdown } from '@/components/elements/dropdown';
 import { Dialog } from '@/components/elements/dialog';
-import { User } from '@definitions/admin';
+import type { User } from '@definitions/admin';
 
 interface Props {
     user: User;
@@ -12,7 +12,7 @@ interface Props {
     onRowChange: (user: User, selected: boolean) => void;
 }
 
-const UserTableRow = ({ user, selected, onRowChange }: Props) => {
+function UserTableRow({ user, selected, onRowChange }: Props) {
     const [visible, setVisible] = useState(false);
 
     return (
@@ -56,12 +56,14 @@ const UserTableRow = ({ user, selected, onRowChange }: Props) => {
                         </span>
                     )}
                 </td>
-                <td className={'whitespace-nowrap px-6 py-4'}>
+                <td className="whitespace-nowrap px-6 py-4">
                     <Dropdown>
-                        <Dropdown.Button className={'px-2'}>
+                        <Dropdown.Button className="px-2">
                             <DotsVerticalIcon />
                         </Dropdown.Button>
-                        <Dropdown.Item icon={<PencilIcon />}>Edit</Dropdown.Item>
+                        <Dropdown.Item to={`/admin/users/${user.id}`} icon={<PencilIcon />}>
+                            Edit
+                        </Dropdown.Item>
                         <Dropdown.Item icon={<SupportIcon />}>Reset Password</Dropdown.Item>
                         <Dropdown.Item icon={<LockOpenIcon />} disabled={!user.isUsingTwoFactor}>
                             Disable 2-FA
@@ -76,6 +78,6 @@ const UserTableRow = ({ user, selected, onRowChange }: Props) => {
             </tr>
         </>
     );
-};
+}
 
 export default UserTableRow;
