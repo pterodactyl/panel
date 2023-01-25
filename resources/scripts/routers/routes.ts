@@ -1,7 +1,6 @@
 import type { ComponentType } from 'react';
 import { lazy } from 'react';
 
-import ServerConsole from '@/components/server/console/ServerConsoleContainer';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
 import UsersContainer from '@/components/server/users/UsersContainer';
@@ -21,6 +20,7 @@ import ServerActivityLogContainer from '@/components/server/ServerActivityLogCon
 //
 // These specific lazy loaded routes are to avoid loading in heavy screens
 // for the server dashboard when they're only needed for specific instances.
+const ServerConsoleContainer = lazy(() => import('@/components/server/console/ServerConsoleContainer'));
 const FileEditContainer = lazy(() => import('@/components/server/files/FileEditContainer'));
 const ScheduleEditContainer = lazy(() => import('@/components/server/schedules/ScheduleEditContainer'));
 
@@ -86,7 +86,7 @@ export default {
             path: '',
             permission: null,
             name: 'Console',
-            component: ServerConsole,
+            component: ServerConsoleContainer,
             end: true,
         },
         {
