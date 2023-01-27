@@ -35,7 +35,7 @@
             "default_value": "changeme",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|string|max:32",
+            "rules": "nullable|string|max:32",
             "field_type": "text"
         },
         {
