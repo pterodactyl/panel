@@ -3,6 +3,17 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.3
+### Changed
+* When updating a server's description through the client API, if no value is specified, the description will now remain unchanged.
+* When installing the Panel for the first time, the queue driver will now all default to `redis` instead of `sync`.
+
+### Fixed
+* `php artisan p:environment:mail` not correctly setting the right variable for `MAIL_FROM_ADDRESS`.
+* Fixed the conflict state rendering on the UI for a server showing `reinstall_failed` as `restoring_backup`.
+* Fixed the unknown column `uuid` error when jobs fail, causing them not to get stored correctly.
+* Fixed the server task endpoints in the client API not allowing `sequence_id` and `continue_on_failure` to be set.
+
 ## v1.11.2
 ### Changed
 * Telemetry no longer sends a map of Egg and Nest UUIDs to the number of servers using them.
