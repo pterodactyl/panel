@@ -21,6 +21,7 @@ export interface ServerFileStore {
     setUploadProgress: Action<ServerFileStore, { name: string; loaded: number }>;
     clearFileUploads: Action<ServerFileStore>;
     removeFileUpload: Action<ServerFileStore, string>;
+    cancelFileUpload: Action<ServerFileStore, string>;
 }
 
 const files: ServerFileStore = {
@@ -61,6 +62,12 @@ const files: ServerFileStore = {
     }),
 
     removeFileUpload: action((state, payload) => {
+        if (state.uploads[payload]) {
+            delete state.uploads[payload];
+        }
+    }),
+
+    cancelFileUpload: action((state, payload) => {
         if (state.uploads[payload]) {
             // Abort the request if it is still in flight. If it already completed this is
             // a no-op.

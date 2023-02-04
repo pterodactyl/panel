@@ -6,6 +6,7 @@ use Illuminate\Support\Arr;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
+use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
@@ -32,7 +33,7 @@ class DaemonFileRepository extends DaemonRepository
                     'query' => ['file' => $path],
                 ]
             );
-        } catch (TransferException $exception) {
+        } catch (ClientException|TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
 
@@ -231,6 +232,9 @@ class DaemonFileRepository extends DaemonRepository
                         'root' => $root ?? '/',
                         'file' => $file,
                     ],
+                    // Wait for up to 15 minutes for the decompress to be completed when calling this endpoint
+                    // since it will likely take quite awhile for large directories.
+                    'timeout' => 60 * 15,
                 ]
             );
         } catch (TransferException $exception) {

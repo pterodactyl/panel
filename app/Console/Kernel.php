@@ -56,10 +56,10 @@ class Kernel extends ConsoleKernel
     {
         $settingsRepository = app()->make(SettingsRepository::class);
 
-        $uuid = $settingsRepository->get('app:uuid');
+        $uuid = $settingsRepository->get('app:telemetry:uuid');
         if (is_null($uuid)) {
             $uuid = Uuid::uuid4()->toString();
-            $settingsRepository->set('app:uuid', $uuid);
+            $settingsRepository->set('app:telemetry:uuid', $uuid);
         }
 
         // Calculate a fixed time to run the data push at, this will be the same time every day.
