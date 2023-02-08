@@ -9,10 +9,23 @@ use Pterodactyl\Models\User;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Contracts\View\View;
+use Pterodactyl\Models\SecurityKey;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
+use Pterodactyl\Repositories\SecurityKeys\WebauthnServerRepository;
 
 class LoginController extends AbstractLoginController
 {
+    private const METHOD_TOTP = 'totp';
+    private const METHOD_WEBAUTHN = 'webauthn';
+
+    /**
+     * LoginController constructor.
+     */
+    public function __construct(protected WebauthnServerRepository $webauthnServerRepository)
+    {
+        parent::__construct();
+    }
+
     /**
      * Handle all incoming requests for the authentication routes and render the
      * base authentication view component. React will take over at this point and
@@ -28,6 +41,7 @@ class LoginController extends AbstractLoginController
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      * @throws \Illuminate\Validation\ValidationException
+     * @throws \Webauthn\Exception\InvalidDataException
      */
     public function login(Request $request): JsonResponse
     {
@@ -53,7 +67,9 @@ class LoginController extends AbstractLoginController
             $this->sendFailedLoginResponse($request, $user);
         }
 
-        if (!$user->use_totp) {
+        // Return early if the user does not have 2FA enabled, otherwise we will require them
+        // to complete a secondary challenge before they can log in.
+        if (!$user->has2FAEnabled()) {
             return $this->sendLoginResponse($user, $request);
         }
 
@@ -65,11 +81,23 @@ class LoginController extends AbstractLoginController
             'expires_at' => CarbonImmutable::now()->addMinutes(5),
         ]);
 
-        return new JsonResponse([
-            'data' => [
-                'complete' => false,
-                'confirmation_token' => $token,
-            ],
-        ]);
+        $response = [
+            'complete' => false,
+            'methods' => array_values(array_filter([
+                $user->use_totp ? self::METHOD_TOTP : null,
+                $user->securityKeys->isNotEmpty() ? self::METHOD_WEBAUTHN : null,
+            ])),
+            'confirm_token' => $token,
+        ];
+
+        if ($user->securityKeys->isNotEmpty()) {
+            $key = $this->webauthnServerRepository->generatePublicKeyCredentialRequestOptions($user);
+
+            $request->session()->put(SecurityKey::PK_SESSION_NAME, $key);
+
+            $request['webauthn'] = ['public_key' => $key];
+        }
+
+        return new JsonResponse($response);
     }
 }

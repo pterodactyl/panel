@@ -23,7 +23,7 @@ class ClientApiRequest extends ApplicationApiRequest
                 return $this->user()->can($this->permission(), $server);
             }
 
-            // If there is no server available on the reqest, trigger a failure since
+            // If there is no server available on the request, trigger a failure since
             // we expect there to be one at this point.
             return false;
         }

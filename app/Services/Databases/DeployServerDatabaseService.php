@@ -38,7 +38,9 @@ class DeployServerDatabaseService
                 throw new NoSuitableDatabaseHostException();
             }
 
-            $databaseHostId = $hosts->random()->id;
+            /** @var \Pterodactyl\Models\DatabaseHost $databaseHost */
+            $databaseHost = $hosts->random();
+            $databaseHostId = $databaseHost->id;
         }
 
         return $this->managementService->create($server, [

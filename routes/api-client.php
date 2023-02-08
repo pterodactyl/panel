@@ -36,6 +36,11 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);
 
+    Route::get('/security-keys', [Client\SecurityKeyController::class, 'index'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::get('/security-keys/register', [Client\SecurityKeyController::class, 'create'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::post('/security-keys/register', [Client\SecurityKeyController::class, 'store'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+    Route::delete('/security-keys/{securityKey}', [Client\SecurityKeyController::class, 'delete'])->withoutMiddleware(RequireTwoFactorAuthentication::class);
+
     Route::prefix('/ssh-keys')->group(function () {
         Route::get('/', [Client\SSHKeyController::class, 'index']);
         Route::post('/', [Client\SSHKeyController::class, 'store']);

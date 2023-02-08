@@ -25,7 +25,8 @@ Route::get('/password/reset/{token}', [Auth\LoginController::class, 'index'])->n
 Route::middleware(['throttle:authentication'])->group(function () {
     // Login endpoints.
     Route::post('/login', [Auth\LoginController::class, 'login'])->middleware('recaptcha');
-    Route::post('/login/checkpoint', Auth\LoginCheckpointController::class)->name('auth.login-checkpoint');
+    Route::post('/login/checkpoint', [Auth\LoginCheckpointController::class, 'token'])->name('auth.checkpoint');
+    Route::post('/login/checkpoint/key', [Auth\LoginCheckpointController::class, 'key'])->name('auth.checkpoint.key');
 
     // Forgot password route. A post to this endpoint will trigger an
     // email to be sent containing a reset token.
@@ -46,5 +47,5 @@ Route::post('/logout', [Auth\LoginController::class, 'logout'])
     ->middleware('auth')
     ->name('auth.logout');
 
-// Catch any other combinations of routes and pass them off to the React component.
+// Catch any other combinations of routes and pass them off to the React frontend.
 Route::fallback([Auth\LoginController::class, 'index']);
