@@ -16,6 +16,7 @@ use Pterodactyl\Transformers\Api\Application\UserTransformer;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\GetUsersRequest;
+use Pterodactyl\Transformers\Api\Application\HostariUserTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest;
@@ -118,7 +119,7 @@ class UserController extends ApplicationApiController
         $user = $this->creationService->handle($request->validated());
 
         return $this->fractal->item($user)
-            ->transformWith(UserTransformer::class)
+            ->transformWith(HostariUserTransformer::class)
             ->respond(201);
     }
 

@@ -187,7 +187,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonCount(2);
         $response->assertJsonStructure([
             'object',
-            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at'],
+            'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'language', 'admin_role_id', 'root_admin', '2fa', 'avatar_url', 'role_name', 'created_at', 'updated_at', 'token'],
         ]);
 
         $this->assertDatabaseHas('users', ['username' => 'testuser', 'email' => 'test@example.com']);
