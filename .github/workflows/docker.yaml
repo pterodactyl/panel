@@ -26,7 +26,7 @@ jobs:
         id: docker_meta
         uses: docker/metadata-action@v4
         with:
-          images: ghcr.io/pterodactyl/panel
+          images: registry.digitalocean.com/makisu/pterodactyl-panel
           flavor: |
             latest=false
           tags: |
@@ -43,8 +43,8 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v2
         with:
-          registry: ghcr.io
-          username: ${{ github.repository_owner }}
+          registry: registry.digitalocean.com
+          username: ${{ secrets.REGISTRY_TOKEN }}
           password: ${{ secrets.REGISTRY_TOKEN }}
 
       - name: Update version
