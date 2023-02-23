@@ -35,7 +35,7 @@ RUN         microdnf update -y \
                 && microdnf update -y \
                 && microdnf install -y ca-certificates shadow-utils tar tzdata unzip wget \
                 && microdnf module -y reset php \
-                && microdnf module -y enable php:remi-8.1 \
+                && microdnf module -y enable php:remi-8.2 \
                 && microdnf install -y composer cronie php-{bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,pdo,pecl-redis5,pecl-zip,phpiredis,pgsql,process,sodium,xml,zstd} supervisor \
                 && rm /etc/php-fpm.d/www.conf \
                 && useradd --home-dir /var/lib/caddy --create-home caddy \
