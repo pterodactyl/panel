@@ -72,7 +72,7 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
     /**
      * Returns invalid permission combinations for a given power action.
      */
-    public function invalidPermissionDataProvider(): array
+    public static function invalidPermissionDataProvider(): array
     {
         return [
             ['start', [Permission::ACTION_CONTROL_STOP, Permission::ACTION_CONTROL_RESTART]],
@@ -83,7 +83,7 @@ class PowerControllerTest extends ClientApiIntegrationTestCase
         ];
     }
 
-    public function validPowerActionDataProvider(): array
+    public static function validPowerActionDataProvider(): array
     {
         return [
             ['start', Permission::ACTION_CONTROL_START],

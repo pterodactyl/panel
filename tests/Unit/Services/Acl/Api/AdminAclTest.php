@@ -31,7 +31,7 @@ class AdminAclTest extends TestCase
     /**
      * Provide valid and invalid permissions combos for testing.
      */
-    public function permissionsDataProvider(): array
+    public static function permissionsDataProvider(): array
     {
         return [
             [AdminAcl::READ, AdminAcl::READ, true],

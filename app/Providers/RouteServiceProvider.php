@@ -19,7 +19,7 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Define your route model bindings, pattern filters, etc.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->configureRateLimiting();
 
@@ -68,7 +68,7 @@ class RouteServiceProvider extends ServiceProvider
     /**
      * Configure the rate limiters for the application.
      */
-    protected function configureRateLimiting()
+    protected function configureRateLimiting(): void
     {
         // Authentication rate limiting. For login and checkpoint endpoints we'll apply
         // a limit of 10 requests per minute, for the forgot password endpoint apply a

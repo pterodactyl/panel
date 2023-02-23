@@ -18,6 +18,7 @@ use Pterodactyl\Transformers\Api\Client\BackupTransformer;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\RestoreBackupRequest;
 
 class BackupController extends ClientApiController
 {
@@ -188,12 +189,8 @@ class BackupController extends ClientApiController
      *
      * @throws \Throwable
      */
-    public function restore(Request $request, Server $server, Backup $backup): JsonResponse
+    public function restore(RestoreBackupRequest $request, Server $server, Backup $backup): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_RESTORE, $server)) {
-            throw new AuthorizationException();
-        }
-
         // Cannot restore a backup unless a server is fully installed and not currently
         // processing a different backup restoration request.
         if (!is_null($server->status)) {

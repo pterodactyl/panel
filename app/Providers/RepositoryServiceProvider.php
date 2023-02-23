@@ -43,7 +43,7 @@ class RepositoryServiceProvider extends ServiceProvider
     /**
      * Register all the repository bindings.
      */
-    public function register()
+    public function register(): void
     {
         // Eloquent Repositories
         $this->app->bind(AllocationRepositoryInterface::class, AllocationRepository::class);

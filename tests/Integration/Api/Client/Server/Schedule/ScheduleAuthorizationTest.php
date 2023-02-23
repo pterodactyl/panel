@@ -54,7 +54,7 @@ class ScheduleAuthorizationTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->json($method, $this->link($server3, '/schedules/' . $schedule3->id . $endpoint))->assertNotFound();
     }
 
-    public function methodDataProvider(): array
+    public static function methodDataProvider(): array
     {
         return [
             ['GET', ''],

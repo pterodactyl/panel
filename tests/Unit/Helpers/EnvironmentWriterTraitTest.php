@@ -17,7 +17,7 @@ class EnvironmentWriterTraitTest extends TestCase
         $this->assertSame($expected, $output);
     }
 
-    public function variableDataProvider(): array
+    public static function variableDataProvider(): array
     {
         return [
             ['foo', 'foo'],

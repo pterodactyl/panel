@@ -11,7 +11,7 @@ class BackupsServiceProvider extends ServiceProvider implements DeferrableProvid
     /**
      * Register the S3 backup disk.
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(BackupManager::class, function ($app) {
             return new BackupManager($app);
