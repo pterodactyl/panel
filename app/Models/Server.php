@@ -140,11 +140,6 @@ class Server extends Model
     protected $with = ['allocation'];
 
     /**
-     * The attributes that should be mutated to dates.
-     */
-    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at', 'installed_at'];
-
-    /**
      * Fields that are not mass assignable.
      */
     protected $guarded = ['id', self::CREATED_AT, self::UPDATED_AT, 'deleted_at', 'installed_at'];
@@ -193,6 +188,10 @@ class Server extends Model
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
         'backup_limit' => 'integer',
+        self::CREATED_AT => 'datetime',
+        self::UPDATED_AT => 'datetime',
+        'deleted_at' => 'datetime',
+        'installed_at' => 'datetime',
     ];
 
     /**

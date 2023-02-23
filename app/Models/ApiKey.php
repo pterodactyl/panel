@@ -97,6 +97,9 @@ class ApiKey extends Model
     protected $casts = [
         'allowed_ips' => 'array',
         'user_id' => 'int',
+        self::CREATED_AT => 'datetime',
+        self::UPDATED_AT => 'datetime',
+        'last_used_at' => 'datetime',
         'r_' . AdminAcl::RESOURCE_USERS => 'int',
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'int',
         'r_' . AdminAcl::RESOURCE_DATABASE_HOSTS => 'int',
@@ -146,12 +149,6 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_NESTS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_NODES => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_SERVERS => 'integer|min:0|max:3',
-    ];
-
-    protected $dates = [
-        self::CREATED_AT,
-        self::UPDATED_AT,
-        'last_used_at',
     ];
 
     /**
