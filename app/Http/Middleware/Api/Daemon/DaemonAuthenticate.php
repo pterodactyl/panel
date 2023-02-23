@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Middleware\Api\Daemon;
 
-use Closure;
 use Illuminate\Http\Request;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Repositories\Eloquent\NodeRepository;
@@ -32,7 +31,7 @@ class DaemonAuthenticate
      *
      * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         if (in_array($request->route()->getName(), $this->except)) {
             return $next($request);

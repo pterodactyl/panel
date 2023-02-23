@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
-use BadMethodCallException;
 use Pterodactyl\Models\EggVariable;
 
 class EggVariableTransformer extends BaseClientTransformer
@@ -18,7 +17,7 @@ class EggVariableTransformer extends BaseClientTransformer
         // them into the transformer and along to the user. Just throw an exception and break the entire
         // pathway since you should never be exposing these types of variables to a client.
         if (!$variable->user_viewable) {
-            throw new BadMethodCallException('Cannot transform a hidden egg variable in a client transformer.');
+            throw new \BadMethodCallException('Cannot transform a hidden egg variable in a client transformer.');
         }
 
         return [

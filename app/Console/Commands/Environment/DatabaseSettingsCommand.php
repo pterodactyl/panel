@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Console\Commands\Environment;
 
-use PDOException;
 use Illuminate\Console\Command;
 use Illuminate\Contracts\Console\Kernel;
 use Illuminate\Database\DatabaseManager;
@@ -72,7 +71,7 @@ class DatabaseSettingsCommand extends Command
 
         try {
             $this->testMySQLConnection();
-        } catch (PDOException $exception) {
+        } catch (\PDOException $exception) {
             $this->output->error(sprintf('Unable to connect to the MySQL server using the provided credentials. The error returned was "%s".', $exception->getMessage()));
             $this->output->error('Your connection credentials have NOT been saved. You will need to provide valid connection information before proceeding.');
 

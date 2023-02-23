@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Servers;
 
-use JavaScript;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Nest;
@@ -134,7 +133,7 @@ class ServerViewController extends Controller
             $canTransfer = true;
         }
 
-        JavaScript::put([
+        \JavaScript::put([
             'nodeData' => $this->nodeRepository->getNodesForServerCreation(),
         ]);
 

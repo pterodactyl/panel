@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Backup;
 
-use Mockery;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Subuser;
@@ -31,7 +30,7 @@ class BackupAuthorizationTest extends ClientApiIntegrationTestCase
         $backup2 = Backup::factory()->create(['server_id' => $server2->id, 'completed_at' => CarbonImmutable::now()]);
         $backup3 = Backup::factory()->create(['server_id' => $server3->id, 'completed_at' => CarbonImmutable::now()]);
 
-        $this->instance(DeleteBackupService::class, $mock = Mockery::mock(DeleteBackupService::class));
+        $this->instance(DeleteBackupService::class, $mock = \Mockery::mock(DeleteBackupService::class));
 
         if ($method === 'DELETE') {
             $mock->expects('handle')->andReturnUndefined();

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Exception;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -178,7 +177,7 @@ class ScheduleController extends ClientApiController
                 $request->input('month'),
                 $request->input('day_of_week')
             );
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             throw new DisplayException('The cron data provided does not evaluate to a valid expression.');
         }
     }

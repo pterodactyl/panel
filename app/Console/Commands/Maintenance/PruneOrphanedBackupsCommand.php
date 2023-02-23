@@ -3,7 +3,6 @@
 namespace Pterodactyl\Console\Commands\Maintenance;
 
 use Carbon\CarbonImmutable;
-use InvalidArgumentException;
 use Illuminate\Console\Command;
 use Pterodactyl\Repositories\Eloquent\BackupRepository;
 
@@ -25,7 +24,7 @@ class PruneOrphanedBackupsCommand extends Command
     {
         $since = $this->option('prune-age') ?? config('backups.prune_age', 360);
         if (!$since || !is_digit($since)) {
-            throw new InvalidArgumentException('The "--prune-age" argument must be a value greater than 0.');
+            throw new \InvalidArgumentException('The "--prune-age" argument must be a value greater than 0.');
         }
 
         $query = $this->backupRepository->getBuilder()
