@@ -2,10 +2,8 @@
 
 namespace Pterodactyl\Tests\Integration\Services\Databases;
 
-use Mockery;
 use Mockery\MockInterface;
 use Pterodactyl\Models\Node;
-use InvalidArgumentException;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
@@ -24,7 +22,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     {
         parent::setUp();
 
-        $this->managementService = Mockery::mock(DatabaseManagementService::class);
+        $this->managementService = \Mockery::mock(DatabaseManagementService::class);
         $this->swap(DatabaseManagementService::class, $this->managementService);
     }
 
@@ -50,7 +48,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        $this->expectException(InvalidArgumentException::class);
+        $this->expectException(\InvalidArgumentException::class);
         $this->expectExceptionMessageMatches('/^Expected a non-empty value\. Got: /');
         $this->getService()->handle($server, $data);
     }
@@ -142,7 +140,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
         $this->assertInstanceOf(Database::class, $response);
     }
 
-    public function invalidDataProvider(): array
+    public static function invalidDataProvider(): array
     {
         return [
             [['remote' => '%']],

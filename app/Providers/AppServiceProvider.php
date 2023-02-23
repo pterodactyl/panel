@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot()
+    public function boot(): void
     {
         Schema::defaultStringLength(191);
 
@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register application service providers.
      */
-    public function register()
+    public function register(): void
     {
         // Only load the settings service provider if the environment
         // is configured to allow it.

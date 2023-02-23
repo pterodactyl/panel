@@ -43,10 +43,7 @@ class Backup extends Model
         'is_locked' => 'bool',
         'ignored_files' => 'array',
         'bytes' => 'int',
-    ];
-
-    protected $dates = [
-        'completed_at',
+        'completed_at' => 'datetime',
     ];
 
     protected $attributes = [

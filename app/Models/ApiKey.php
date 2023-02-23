@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array|null $allowed_ips
  * @property string|null $memo
  * @property \Illuminate\Support\Carbon|null $last_used_at
+ * @property \Illuminate\Support\Carbon|null $expires_at
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property int $r_servers
@@ -97,6 +98,10 @@ class ApiKey extends Model
     protected $casts = [
         'allowed_ips' => 'array',
         'user_id' => 'int',
+        'last_used_at' => 'datetime',
+        'expires_at' => 'datetime',
+        self::CREATED_AT => 'datetime',
+        self::UPDATED_AT => 'datetime',
         'r_' . AdminAcl::RESOURCE_USERS => 'int',
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'int',
         'r_' . AdminAcl::RESOURCE_DATABASE_HOSTS => 'int',
@@ -117,6 +122,7 @@ class ApiKey extends Model
         'allowed_ips',
         'memo',
         'last_used_at',
+        'expires_at',
     ];
 
     /**
@@ -137,6 +143,7 @@ class ApiKey extends Model
         'allowed_ips' => 'nullable|array',
         'allowed_ips.*' => 'string',
         'last_used_at' => 'nullable|date',
+        'expires_at' => 'nullable|date',
         'r_' . AdminAcl::RESOURCE_USERS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_ALLOCATIONS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_DATABASE_HOSTS => 'integer|min:0|max:3',
@@ -146,12 +153,6 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_NESTS => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_NODES => 'integer|min:0|max:3',
         'r_' . AdminAcl::RESOURCE_SERVERS => 'integer|min:0|max:3',
-    ];
-
-    protected $dates = [
-        self::CREATED_AT,
-        self::UPDATED_AT,
-        'last_used_at',
     ];
 
     /**

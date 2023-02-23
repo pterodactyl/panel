@@ -38,7 +38,7 @@ class UsernameTest extends TestCase
     /**
      * Provide valid usernames.
      */
-    public function validUsernameDataProvider(): array
+    public static function validUsernameDataProvider(): array
     {
         return [
             ['username'],
@@ -54,7 +54,7 @@ class UsernameTest extends TestCase
     /**
      * Provide invalid usernames.
      */
-    public function invalidUsernameDataProvider(): array
+    public static function invalidUsernameDataProvider(): array
     {
         return [
             ['_username'],

@@ -86,7 +86,7 @@ class CreateNewAllocationTest extends ClientApiIntegrationTestCase
             ->assertJsonPath('errors.0.detail', 'Cannot assign additional allocations to this server: limit has been reached.');
     }
 
-    public function permissionDataProvider(): array
+    public static function permissionDataProvider(): array
     {
         return [[[Permission::ACTION_ALLOCATION_CREATE]], [[]]];
     }

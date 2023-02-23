@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client\Server;
 
-use Mockery;
 use GuzzleHttp\Psr7\Request;
 use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
@@ -55,7 +54,7 @@ class CommandControllerTest extends ClientApiIntegrationTestCase
 
         $mock = $this->mock(DaemonCommandRepository::class);
         $mock->expects('setServer')
-            ->with(Mockery::on(fn (Server $value) => $value->is($server)))
+            ->with(\Mockery::on(fn (Server $value) => $value->is($server)))
             ->andReturnSelf();
 
         $mock->expects('send')->with('say Test')->andReturn(new GuzzleResponse());

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Telemetry;
 
-use PDO;
 use Exception;
 use Ramsey\Uuid\Uuid;
 use Illuminate\Support\Arr;
@@ -123,7 +122,7 @@ class TelemetryCollectionService
 
                     'database' => [
                         'type' => config('database.default'),
-                        'version' => DB::getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION),
+                        'version' => DB::getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION),
                     ],
                 ],
             ],

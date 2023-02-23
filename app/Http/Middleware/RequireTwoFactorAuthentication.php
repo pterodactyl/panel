@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Middleware;
 
-use Closure;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Prologue\Alerts\AlertsMessageBag;
@@ -34,7 +33,7 @@ class RequireTwoFactorAuthentication
      *
      * @throws \Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException
      */
-    public function handle(Request $request, Closure $next): mixed
+    public function handle(Request $request, \Closure $next): mixed
     {
         /** @var \Pterodactyl\Models\User $user */
         $user = $request->user();

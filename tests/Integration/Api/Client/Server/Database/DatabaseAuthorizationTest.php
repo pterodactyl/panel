@@ -58,7 +58,7 @@ class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->json($method, $this->link($server3, '/databases/' . $hashids->encode($database3->id) . $endpoint))->assertNotFound();
     }
 
-    public function methodDataProvider(): array
+    public static function methodDataProvider(): array
     {
         return [
             ['POST', '/rotate-password'],

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Traits;
 
-use Mockery;
 use Mockery\Mock;
 use Mockery\MockInterface;
 use GuzzleHttp\Exception\RequestException;
@@ -27,6 +26,6 @@ trait MocksRequestException
      */
     protected function getExceptionMock(string $abstract = RequestException::class): MockInterface
     {
-        return $this->exception ?? $this->exception = Mockery::mock($abstract);
+        return $this->exception ?? $this->exception = \Mockery::mock($abstract);
     }
 }
