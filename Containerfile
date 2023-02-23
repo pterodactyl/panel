@@ -1,18 +1,20 @@
 # Stage 1 - Builder
-FROM        registry.access.redhat.com/ubi9/nodejs-18-minimal AS builder
+FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/nodejs-18-minimal AS builder
 
 USER        0
-RUN         npm install -g yarn
+RUN         npm install -g pnpm
 
 WORKDIR     /var/www/pterodactyl
 
 COPY        --chown=1001:0 public ./public
 COPY        --chown=1001:0 resources/scripts ./resources/scripts
-COPY        --chown=1001:0 .eslintignore .eslintrc.js .prettierrc.json package.json tailwind.config.js tsconfig.json vite.config.ts yarn.lock .
+COPY        --chown=1001:0 .eslintignore .eslintrc.js .npmrc .prettierrc.json package.json pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts .
 
-RUN         /opt/app-root/src/.npm-global/bin/yarn install --frozen-lockfile \
-                && /opt/app-root/src/.npm-global/bin/yarn build \
-                && rm -rf resources/scripts .eslintignore .eslintrc.yml .yarnrc.yml package.json tailwind.config.js tsconfig.json vite.config.ts yarn.lock node_modules
+RUN         /opt/app-root/src/.npm-global/bin/pnpm install \
+                && /opt/app-root/src/.npm-global/bin/pnpm build \
+                && rm -rf resources/scripts .eslintignore .eslintrc.yml .npmrc package.json pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts node_modules
+
+USER        1001
 
 COPY        --chown=1001:0 app ./app
 COPY        --chown=1001:0 bootstrap ./bootstrap
@@ -25,7 +27,7 @@ COPY        --chown=1001:0 .env.example ./.env
 COPY        --chown=1001:0 artisan CHANGELOG.md composer.json composer.lock LICENSE.md README.md SECURITY.md .
 
 # Stage 2 - Final
-FROM        registry.access.redhat.com/ubi9/ubi-minimal
+FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/ubi-minimal
 
 RUN         microdnf update -y \
                 && rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
