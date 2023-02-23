@@ -1,9 +1,7 @@
-# Stage 0 - Caddy
-FROM        --platform=$TARGETOS/$TARGETARCH docker.io/library/caddy:latest AS caddy
-
 # Stage 1 - Builder
 FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/nodejs-18-minimal AS builder
 
+USER        0
 RUN         npm install -g yarn
 
 WORKDIR     /var/www/pterodactyl
@@ -34,6 +32,8 @@ RUN         microdnf update -y \
                 && rpm --install https://rpms.remirepo.net/enterprise/remi-release-9.rpm \
                 && microdnf update -y \
                 && microdnf install -y ca-certificates shadow-utils tar tzdata unzip wget \
+# ref; https://bugzilla.redhat.com/show_bug.cgi?id=1870814
+                && microdnf reinstall -y tzdata \
                 && microdnf module -y reset php \
                 && microdnf module -y enable php:remi-8.2 \
                 && microdnf install -y composer cronie php-{bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,pdo,pecl-redis5,pecl-zip,phpiredis,pgsql,process,sodium,xml,zstd} supervisor \
@@ -65,7 +65,7 @@ RUN         composer install --no-dev --optimize-autoloader \
                 && rm -rf bootstrap/cache/*.php \
                 && rm -rf .env storage/logs/*.log
 
-COPY        --from=caddy /usr/bin/caddy /usr/local/bin/caddy
+COPY        --from=docker.io/library/caddy:latest /usr/bin/caddy /usr/local/bin/caddy
 COPY        .github/docker/Caddyfile /etc/caddy/Caddyfile
 COPY        .github/docker/php-fpm.conf /etc/php-fpm.conf
 COPY        .github/docker/supervisord.conf /etc/supervisord.conf
