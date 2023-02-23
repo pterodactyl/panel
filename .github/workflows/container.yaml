@@ -53,7 +53,6 @@ jobs:
         with:
           context: .
           containerfiles: ./Containerfile
-          image: my-new-image
           platforms: linux/amd64,linux/arm64
           labels: ${{ steps.metadata.outputs.labels }}
           tags: ${{ steps.metadata.outputs.tags }}
@@ -61,6 +60,7 @@ jobs:
 
       - name: Push to GitHub Container Registry
         uses: redhat-actions/push-to-registry@v2
+        if: "github.event_name != 'pull_request'"
         with:
           image: ${{ steps.build.outputs.image }}
           tags: ${{ steps.build.outputs.tags }}
