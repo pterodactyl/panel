@@ -13,7 +13,7 @@ on:
 jobs:
   analysis:
     name: Static Analysis
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       APP_ENV: testing
       APP_DEBUG: "true"
@@ -42,7 +42,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Code checkout
         uses: actions/checkout@v3
@@ -64,7 +64,7 @@ jobs:
 
   mysql:
     name: Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
@@ -136,7 +136,7 @@ jobs:
 
   postgres:
     name: Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       fail-fast: false

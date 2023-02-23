@@ -1,9 +1,11 @@
 {
     "name": "@pterodactyl/panel",
+    "version": "1.0.0",
     "license": "MIT",
     "private": true,
+    "packageManager": "pnpm@7.26.3",
     "engines": {
-        "node": ">=16.0"
+        "node": ">=16.13"
     },
     "scripts": {
         "build": "vite build",
