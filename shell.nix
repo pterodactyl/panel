@@ -1,17 +1,15 @@
-{pkgs ? import <nixpkgs> {}}:
+{
+  composer ? null,
+  php81WithExtensions ? null,
+  pkgs ? import <nixpkgs> {},
+}:
 with pkgs;
   mkShell rec {
     buildInputs = [
       alejandra
-      (php81.buildEnv {
-        extensions = ({ enabled, all }: enabled ++ (with all; [
-          redis
-          xdebug
-        ]));
-        extraConfig = ''
-          xdebug.mode=debug
-        '';
-      })
-      php81Packages.composer
+      composer
+      nodejs-18_x
+      nodePackages.yarn
+      php81WithExtensions
     ];
   }
