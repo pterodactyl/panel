@@ -299,7 +299,7 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
      * Endpoints that should return a 403 error when the key does not have write
      * permissions for user management.
      */
-    public function userWriteEndpointsDataProvider(): array
+    public static function userWriteEndpointsDataProvider(): array
     {
         return [
             ['postJson', '/api/application/users'],

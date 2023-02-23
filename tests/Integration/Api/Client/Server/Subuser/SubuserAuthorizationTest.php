@@ -50,7 +50,7 @@ class SubuserAuthorizationTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->json($method, $this->link($server3, '/users/' . $internal->uuid))->assertNotFound();
     }
 
-    public function methodDataProvider(): array
+    public static function methodDataProvider(): array
     {
         return [['GET'], ['POST'], ['DELETE']];
     }

@@ -142,7 +142,7 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
         $this->assertInstanceOf(Database::class, $response);
     }
 
-    public function invalidDataProvider(): array
+    public static function invalidDataProvider(): array
     {
         return [
             [['remote' => '%']],

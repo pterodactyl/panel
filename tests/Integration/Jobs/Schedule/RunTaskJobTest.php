@@ -40,7 +40,7 @@ class RunTaskJobTest extends IntegrationTestCase
 
         $job = new RunTaskJob($task);
 
-        Bus::dispatchNow($job);
+        Bus::dispatchSync($job);
 
         $task->refresh();
         $schedule->refresh();
@@ -64,7 +64,7 @@ class RunTaskJobTest extends IntegrationTestCase
 
         $this->expectException(InvalidArgumentException::class);
         $this->expectExceptionMessage('Invalid task action provided: foobar');
-        Bus::dispatchNow($job);
+        Bus::dispatchSync($job);
     }
 
     /**
@@ -98,7 +98,7 @@ class RunTaskJobTest extends IntegrationTestCase
         }))->andReturnSelf();
         $mock->expects('send')->with('start')->andReturn(new Response());
 
-        Bus::dispatchNow(new RunTaskJob($task, $isManualRun));
+        Bus::dispatchSync(new RunTaskJob($task, $isManualRun));
 
         $task->refresh();
         $schedule->refresh();
@@ -136,7 +136,7 @@ class RunTaskJobTest extends IntegrationTestCase
             $this->expectException(DaemonConnectionException::class);
         }
 
-        Bus::dispatchNow(new RunTaskJob($task));
+        Bus::dispatchSync(new RunTaskJob($task));
 
         if ($continueOnFailure) {
             $task->refresh();
@@ -168,7 +168,7 @@ class RunTaskJobTest extends IntegrationTestCase
             'payload' => 'start',
         ]);
 
-        Bus::dispatchNow(new RunTaskJob($task));
+        Bus::dispatchSync(new RunTaskJob($task));
 
         $task->refresh();
         $schedule->refresh();
@@ -178,7 +178,7 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->assertTrue(Carbon::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at));
     }
 
-    public function isManualRunDataProvider(): array
+    public static function isManualRunDataProvider(): array
     {
         return [[true], [false]];
     }
