@@ -1,5 +1,5 @@
 # Stage 1 - Builder
-FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/nodejs-18-minimal AS builder
+FROM        registry.access.redhat.com/ubi9/nodejs-18-minimal AS builder
 
 USER        0
 RUN         npm install -g yarn
@@ -25,7 +25,7 @@ COPY        --chown=1001:0 .env.example ./.env
 COPY        --chown=1001:0 artisan CHANGELOG.md composer.json composer.lock LICENSE.md README.md SECURITY.md .
 
 # Stage 2 - Final
-FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/ubi-minimal
+FROM        registry.access.redhat.com/ubi9/ubi-minimal
 
 RUN         microdnf update -y \
                 && rpm --install https://dl.fedoraproject.org/pub/epel/epel-release-latest-9.noarch.rpm \
