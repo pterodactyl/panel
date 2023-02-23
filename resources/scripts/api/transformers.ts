@@ -47,7 +47,7 @@ export const rawDataToFileObject = (data: FractalResponseData): FileObject => ({
     isEditable: function () {
         if (this.isArchiveType() || !this.isFile) return false;
 
-        const matches = ['application/jar', 'application/octet-stream', 'inode/directory', /^image\//];
+        const matches = ['application/jar', 'application/octet-stream', 'inode/directory', /^image\/(?!svg\+xml)/];
 
         return matches.every((m) => !this.mimetype.match(m));
     },
