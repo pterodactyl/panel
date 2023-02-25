@@ -4,9 +4,8 @@
     xsi:noNamespaceSchemaLocation="./vendor/phpunit/phpunit/phpunit.xsd"
     bootstrap="bootstrap/tests.php"
     colors="true"
-    printerClass="NunoMaduro\Collision\Adapters\Phpunit\Printer"
 >
-    <coverage processUncoveredFiles="true">
+    <coverage>
         <include>
             <directory suffix=".php">./app</directory>
         </include>

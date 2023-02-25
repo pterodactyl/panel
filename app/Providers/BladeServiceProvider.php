@@ -9,7 +9,7 @@ class BladeServiceProvider extends ServiceProvider
     /**
      * Perform post-registration booting of services.
      */
-    public function boot()
+    public function boot(): void
     {
         $this->app->make('blade.compiler')
             ->directive('datetimeHuman', function ($expression) {

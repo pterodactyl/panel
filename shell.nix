@@ -9,7 +9,7 @@ with pkgs;
       alejandra
       composer
       nodejs-18_x
-      nodePackages.yarn
+      nodePackages.pnpm
       php81WithExtensions
     ];
   }

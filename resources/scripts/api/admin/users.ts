@@ -17,7 +17,7 @@ export interface UpdateUserValues {
 }
 
 const filters = ['id', 'uuid', 'external_id', 'username', 'email'] as const;
-type Filters = typeof filters[number];
+type Filters = (typeof filters)[number];
 
 const useGetUsers = (
     params?: QueryBuilderParams<Filters>,

@@ -241,7 +241,7 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
      * Provides some different IP address combinations that can be used when
      * testing that we accept the expected IP values.
      */
-    public function validIPAddressDataProvider(): array
+    public static function validIPAddressDataProvider(): array
     {
         return [
             [[]],

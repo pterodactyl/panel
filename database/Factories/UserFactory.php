@@ -41,7 +41,7 @@ class UserFactory extends Factory
     /**
      * Indicate that the user is an admin.
      */
-    public function admin(): Factory
+    public function admin(): static
     {
         return $this->state(['root_admin' => true]);
     }

@@ -13,7 +13,7 @@ on:
 jobs:
   analysis:
     name: Static Analysis
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     env:
       APP_ENV: testing
       APP_DEBUG: "true"
@@ -42,7 +42,7 @@ jobs:
 
   lint:
     name: Lint
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
       - name: Code checkout
         uses: actions/checkout@v3
@@ -50,6 +50,7 @@ jobs:
       - name: Setup PHP
         uses: shivammathur/setup-php@v2
         with:
+          # TODO: Update to 8.2 once php-cs-fixer supports it
           php-version: 8.1
           extensions: bcmath, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
@@ -63,11 +64,11 @@ jobs:
 
   mysql:
     name: Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     strategy:
       fail-fast: false
       matrix:
-        php: [8.1]
+        php: [8.1, 8.2]
         database: ["mariadb:10.2", "mariadb:10.9", "mysql:8"]
     services:
       database:
@@ -135,12 +136,12 @@ jobs:
 
   postgres:
     name: Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     if: "!contains(github.event.head_commit.message, 'skip ci') && !contains(github.event.head_commit.message, 'ci skip')"
     strategy:
       fail-fast: false
       matrix:
-        php: [8.1]
+        php: [8.1, 8.2]
         database: ["postgres:13", "postgres:14", "postgres:15"]
     services:
       database:

@@ -149,7 +149,7 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
         $this->actingAs($user2)->putJson($this->link($server) . '/startup/variable')->assertNotFound();
     }
 
-    public function permissionsDataProvider(): array
+    public static function permissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_STARTUP_UPDATE]]];
     }

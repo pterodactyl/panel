@@ -1,20 +1,20 @@
-# Stage 0 - Caddy
-FROM        --platform=$TARGETOS/$TARGETARCH docker.io/library/caddy:latest AS caddy
-
 # Stage 1 - Builder
 FROM        --platform=$TARGETOS/$TARGETARCH registry.access.redhat.com/ubi9/nodejs-18-minimal AS builder
 
-RUN         npm install -g yarn
+USER        0
+RUN         npm install -g pnpm
 
 WORKDIR     /var/www/pterodactyl
 
 COPY        --chown=1001:0 public ./public
 COPY        --chown=1001:0 resources/scripts ./resources/scripts
-COPY        --chown=1001:0 .eslintignore .eslintrc.js .prettierrc.json package.json tailwind.config.js tsconfig.json vite.config.ts yarn.lock .
+COPY        --chown=1001:0 .eslintignore .eslintrc.js .npmrc .prettierrc.json package.json pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts .
 
-RUN         /opt/app-root/src/.npm-global/bin/yarn install --frozen-lockfile \
-                && /opt/app-root/src/.npm-global/bin/yarn build \
-                && rm -rf resources/scripts .eslintignore .eslintrc.yml .yarnrc.yml package.json tailwind.config.js tsconfig.json vite.config.ts yarn.lock node_modules
+RUN         /opt/app-root/src/.npm-global/bin/pnpm install \
+                && /opt/app-root/src/.npm-global/bin/pnpm build \
+                && rm -rf resources/scripts .eslintignore .eslintrc.yml .npmrc package.json pnpm-lock.yaml tailwind.config.js tsconfig.json vite.config.ts node_modules
+
+USER        1001
 
 COPY        --chown=1001:0 app ./app
 COPY        --chown=1001:0 bootstrap ./bootstrap
@@ -34,8 +34,10 @@ RUN         microdnf update -y \
                 && rpm --install https://rpms.remirepo.net/enterprise/remi-release-9.rpm \
                 && microdnf update -y \
                 && microdnf install -y ca-certificates shadow-utils tar tzdata unzip wget \
+# ref; https://bugzilla.redhat.com/show_bug.cgi?id=1870814
+                && microdnf reinstall -y tzdata \
                 && microdnf module -y reset php \
-                && microdnf module -y enable php:remi-8.1 \
+                && microdnf module -y enable php:remi-8.2 \
                 && microdnf install -y composer cronie php-{bcmath,cli,common,fpm,gd,gmp,intl,json,mbstring,mysqlnd,opcache,pdo,pecl-redis5,pecl-zip,phpiredis,pgsql,process,sodium,xml,zstd} supervisor \
                 && rm /etc/php-fpm.d/www.conf \
                 && useradd --home-dir /var/lib/caddy --create-home caddy \
@@ -65,7 +67,7 @@ RUN         composer install --no-dev --optimize-autoloader \
                 && rm -rf bootstrap/cache/*.php \
                 && rm -rf .env storage/logs/*.log
 
-COPY        --from=caddy /usr/bin/caddy /usr/local/bin/caddy
+COPY        --from=docker.io/library/caddy:latest /usr/bin/caddy /usr/local/bin/caddy
 COPY        .github/docker/Caddyfile /etc/caddy/Caddyfile
 COPY        .github/docker/php-fpm.conf /etc/php-fpm.conf
 COPY        .github/docker/supervisord.conf /etc/supervisord.conf
