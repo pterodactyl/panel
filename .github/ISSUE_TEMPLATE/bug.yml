@@ -1,0 +1,43 @@
+name: "\U0001F41B Bug report"
+description: Create a report to help us improve
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What is your request about?
+      description: |
+        Provide a clear description of what the problem is.
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: Branch
+      description: What branch are you on?
+      multiple: false
+      options:
+        - "main"
+        - "development"
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution idea
+      description: |
+        Provide a clear description of how you want this bug to be fixed (Optional)
+    validations:
+      required: false
+  - type: textarea
+    id: controlpanel-logs
+    attributes:
+      label: Controlpanel Logs
+      description: Please copy and paste your laravel-log output. You may also provide a link to it using the following command `tail -n 100 /var/www/controlpanel/storage/logs/laravel.log | nc pteropaste.com 99`
+      render: Shell
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Info
+      description: Anything else that could be used to narrow down the issue, like your config.

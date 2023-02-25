@@ -1,0 +1,24 @@
+name: "\U0001F680 Feature request"
+description: Suggest a feature or idea for this project
+title: "[Feature] "
+labels: ["feature"]
+body:
+  - type: textarea
+    id: feature-description
+    attributes:
+      label: Feature Description
+      description: Provide a clear description of what your idea is all about, what it tries to solve and why it should be implemented.
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Solution Idea
+      description: Provide a clear description how the idea should be implemented and why.
+    validations:
+      required: true
+  - type: textarea
+    id: additional-info
+    attributes:
+      label: Additional Info
+      description: Anything else that could be used to implement your idea.

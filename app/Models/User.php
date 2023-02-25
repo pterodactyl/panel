@@ -1,274 +1,308 @@
 <?php
 
-namespace Pterodactyl\Models;
+namespace App\Models;
 
-use Pterodactyl\Rules\Username;
-use Pterodactyl\Facades\Activity;
-use Illuminate\Support\Collection;
-use Illuminate\Validation\Rules\In;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Builder;
-use Pterodactyl\Models\Traits\HasAccessTokens;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use App\Classes\Pterodactyl;
+use App\Notifications\Auth\QueuedVerifyEmail;
+use App\Notifications\WelcomeMessage;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
-use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
+use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Spatie\Activitylog\LogOptions;
+use Spatie\Activitylog\Traits\CausesActivity;
+use Spatie\Activitylog\Traits\LogsActivity;
 
 /**
- * Pterodactyl\Models\User.
- *
- * @property int $id
- * @property string|null $external_id
- * @property string $uuid
- * @property string $username
- * @property string $email
- * @property string|null $name_first
- * @property string|null $name_last
- * @property string $password
- * @property string|null $remember_token
- * @property string $language
- * @property bool $root_admin
- * @property bool $use_totp
- * @property string|null $totp_secret
- * @property \Illuminate\Support\Carbon|null $totp_authenticated_at
- * @property bool $gravatar
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $apiKeys
- * @property int|null $api_keys_count
- * @property string $name
- * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property int|null $notifications_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\RecoveryToken[] $recoveryTokens
- * @property int|null $recovery_tokens_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
- * @property int|null $servers_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\UserSSHKey[] $sshKeys
- * @property int|null $ssh_keys_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $tokens
- * @property int|null $tokens_count
- *
- * @method static \Database\Factories\UserFactory factory(...$parameters)
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User query()
- * @method static Builder|User whereCreatedAt($value)
- * @method static Builder|User whereEmail($value)
- * @method static Builder|User whereExternalId($value)
- * @method static Builder|User whereGravatar($value)
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereLanguage($value)
- * @method static Builder|User whereNameFirst($value)
- * @method static Builder|User whereNameLast($value)
- * @method static Builder|User wherePassword($value)
- * @method static Builder|User whereRememberToken($value)
- * @method static Builder|User whereRootAdmin($value)
- * @method static Builder|User whereTotpAuthenticatedAt($value)
- * @method static Builder|User whereTotpSecret($value)
- * @method static Builder|User whereUpdatedAt($value)
- * @method static Builder|User whereUseTotp($value)
- * @method static Builder|User whereUsername($value)
- * @method static Builder|User whereUuid($value)
- *
- * @mixin \Eloquent
+ * Class User
  */
-class User extends Model implements
-    AuthenticatableContract,
-    AuthorizableContract,
-    CanResetPasswordContract
+class User extends Authenticatable implements MustVerifyEmail
 {
-    use Authenticatable;
-    use Authorizable;
-    use AvailableLanguages;
-    use CanResetPassword;
-    use HasAccessTokens;
-    use Notifiable;
-
-    public const USER_LEVEL_USER = 0;
-    public const USER_LEVEL_ADMIN = 1;
+    use HasFactory, Notifiable, LogsActivity, CausesActivity;
 
     /**
-     * The resource name for this model when it is transformed into an
-     * API representation using fractal.
+     * @var string[]
      */
-    public const RESOURCE_NAME = 'user';
+    protected static $logAttributes = ['name', 'email'];
 
     /**
-     * Level of servers to display when using access() on a user.
+     * @var string[]
      */
-    protected string $accessLevel = 'all';
+    protected static $ignoreChangedAttributes = [
+        'remember_token',
+        'credits',
+        'updated_at',
+        'server_limit',
+        'last_seen',
+        'ip',
+        'pterodactyl_id',
+    ];
 
     /**
-     * The table associated with the model.
-     */
-    protected $table = 'users';
-
-    /**
-     * A list of mass-assignable variables.
+     * The attributes that are mass assignable.
+     *
+     * @var array
      */
     protected $fillable = [
-        'external_id',
-        'username',
+        'name',
+        'ip',
+        'mac',
+        'last_seen',
+        'role',
+        'credits',
         'email',
-        'name_first',
-        'name_last',
+        'server_limit',
         'password',
-        'language',
-        'use_totp',
-        'totp_secret',
-        'totp_authenticated_at',
-        'gravatar',
-        'root_admin',
+        'pterodactyl_id',
+        'discord_verified_at',
+        'avatar',
+        'suspended',
+        'referral_code',
     ];
 
     /**
-     * Cast values to correct type.
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
+     * The attributes that should be cast to native types.
+     *
+     * @var array
      */
     protected $casts = [
-        'root_admin' => 'boolean',
-        'use_totp' => 'boolean',
-        'gravatar' => 'boolean',
+        'email_verified_at' => 'datetime',
+        'last_seen' => 'datetime',
+        'credits' => 'float',
+        'server_limit' => 'float',
     ];
 
-    protected $dates = ['totp_authenticated_at'];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     */
-    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
-
-    /**
-     * Default values for specific fields in the database.
-     */
-    protected $attributes = [
-        'external_id' => null,
-        'root_admin' => false,
-        'language' => 'en',
-        'use_totp' => false,
-        'totp_secret' => null,
-    ];
-
-    /**
-     * Rules verifying that the data being stored matches the expectations of the database.
-     */
-    public static array $validationRules = [
-        'uuid' => 'required|string|size:36|unique:users,uuid',
-        'email' => 'required|email|between:1,191|unique:users,email',
-        'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',
-        'username' => 'required|between:1,191|unique:users,username',
-        'name_first' => 'required|string|between:1,191',
-        'name_last' => 'required|string|between:1,191',
-        'password' => 'sometimes|nullable|string',
-        'root_admin' => 'boolean',
-        'language' => 'string',
-        'use_totp' => 'boolean',
-        'totp_secret' => 'nullable|string',
-    ];
-
-    /**
-     * Implement language verification by overriding Eloquence's gather
-     * rules function.
-     */
-    public static function getRules(): array
+    public static function boot()
     {
-        $rules = parent::getRules();
+        parent::boot();
 
-        $rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
-        $rules['username'][] = new Username();
+        static::created(function (User $user) {
+            $user->notify(new WelcomeMessage($user));
+        });
 
-        return $rules;
+        static::deleting(function (User $user) {
+            $user->servers()->chunk(10, function ($servers) {
+                foreach ($servers as $server) {
+                    $server->delete();
+                }
+            });
+
+            $user->payments()->chunk(10, function ($payments) {
+                foreach ($payments as $payment) {
+                    $payment->delete();
+                }
+            });
+
+            $user->tickets()->chunk(10, function ($tickets) {
+                foreach ($tickets as $ticket) {
+                    $ticket->delete();
+                }
+            });
+
+            $user->ticketBlackList()->delete();
+
+            $user->vouchers()->detach();
+
+            $user->discordUser()->delete();
+
+            Pterodactyl::client()->delete("/application/users/{$user->pterodactyl_id}");
+        });
     }
 
     /**
-     * Return the user model in a format that can be passed over to Vue templates.
+     * @return HasMany
      */
-    public function toVueObject(): array
+    public function servers()
     {
-        return Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
+        return $this->hasMany(Server::class);
     }
 
     /**
-     * Send the password reset notification.
-     *
-     * @param string $token
+     * @return HasMany
      */
-    public function sendPasswordResetNotification($token)
+    public function payments()
     {
-        Activity::event('auth:reset-password')
-            ->withRequestMetadata()
-            ->subject($this)
-            ->log('sending password reset email');
-
-        $this->notify(new ResetPasswordNotification($token));
+        return $this->hasMany(Payment::class);
     }
 
     /**
-     * Store the username as a lowercase string.
+     * @return HasMany
      */
-    public function setUsernameAttribute(string $value)
+    public function tickets()
     {
-        $this->attributes['username'] = mb_strtolower($value);
+        return $this->hasMany(Ticket::class);
     }
 
     /**
-     * Return a concatenated result for the accounts full name.
+     * @return HasMany
      */
-    public function getNameAttribute(): string
+    public function ticketBlackList()
     {
-        return trim($this->name_first . ' ' . $this->name_last);
+        return $this->hasMany(TicketBlacklist::class);
     }
 
     /**
-     * Returns all servers that a user owns.
+     * @return BelongsToMany
      */
-    public function servers(): HasMany
+    public function vouchers()
     {
-        return $this->hasMany(Server::class, 'owner_id');
-    }
-
-    public function apiKeys(): HasMany
-    {
-        return $this->hasMany(ApiKey::class)
-            ->where('key_type', ApiKey::TYPE_ACCOUNT);
-    }
-
-    public function recoveryTokens(): HasMany
-    {
-        return $this->hasMany(RecoveryToken::class);
-    }
-
-    public function sshKeys(): HasMany
-    {
-        return $this->hasMany(UserSSHKey::class);
+        return $this->belongsToMany(Voucher::class);
     }
 
     /**
-     * Returns all the activity logs where this user is the subject — not to
-     * be confused by activity logs where this user is the _actor_.
+     * @return HasOne
      */
-    public function activity(): MorphToMany
+    public function discordUser()
     {
-        return $this->morphToMany(ActivityLog::class, 'subject', 'activity_log_subjects');
+        return $this->hasOne(DiscordUser::class);
+    }
+
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new QueuedVerifyEmail);
     }
 
     /**
-     * Returns all the servers that a user can access by way of being the owner of the
-     * server, or because they are assigned as a subuser for that server.
+     * @return string
      */
-    public function accessibleServers(): Builder
+    public function credits()
     {
-        return Server::query()
-            ->select('servers.*')
-            ->leftJoin('subusers', 'subusers.server_id', '=', 'servers.id')
-            ->where(function (Builder $builder) {
-                $builder->where('servers.owner_id', $this->id)->orWhere('subusers.user_id', $this->id);
-            })
-            ->groupBy('servers.id');
+        return number_format($this->credits, 2, '.', '');
     }
+
+    /**
+     * @return bool
+     */
+    public function isSuspended()
+    {
+        return $this->suspended;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function suspend()
+    {
+        foreach ($this->servers as $server) {
+            $server->suspend();
+        }
+
+        $this->update([
+            'suspended' => true,
+        ]);
+
+        return $this;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function unSuspend()
+    {
+        foreach ($this->getServersWithProduct() as $server) {
+            if ($this->credits >= $server->product->getHourlyPrice()) {
+                $server->unSuspend();
+            }
+        }
+
+        $this->update([
+            'suspended' => false,
+        ]);
+
+        return $this;
+    }
+
+    private function getServersWithProduct()
+    {
+        return $this->servers()
+            ->whereNull('suspended')
+            ->whereNull('cancelled')
+            ->with('product')
+            ->get();
+    }
+
+    /**
+     * @return string
+     */
+    public function getAvatar()
+    {
+        //TODO loading the images to confirm they exist is causing to much load time. alternative has to be found :) maybe onerror tag on the <img tags>
+//        if ($this->discordUser()->exists()) {
+//            if(@getimagesize($this->discordUser->getAvatar())) {
+//                $avatar = $this->discordUser->getAvatar();
+//            } else {
+//                $avatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email)));
+//            }
+//        } else {
+//            $avatar = "https://www.gravatar.com/avatar/" . md5(strtolower(trim($this->email)));
+//        }
+
+        return 'https://www.gravatar.com/avatar/'.md5(strtolower(trim($this->email)));
+    }
+
+    /**
+     * @return string
+     */
+    public function creditUsage()
+    {
+        $usage = 0;
+        foreach ($this->getServersWithProduct() as $server) {
+            $usage += $server->product->getHourlyPrice() * 24 * 30;
+        }
+
+        return number_format($usage, 2, '.', '');
+    }
+
+    /**
+     * @return array|string|string[]
+     */
+    public function getVerifiedStatus()
+    {
+        $status = '';
+        if ($this->hasVerifiedEmail()) {
+            $status .= 'email ';
+        }
+        if ($this->discordUser()->exists()) {
+            $status .= 'discord';
+        }
+        $status = str_replace(' ', '/', $status);
+
+        return $status;
+    }
+
+    public function verifyEmail()
+    {
+        $this->forceFill([
+            'email_verified_at' => now(),
+        ])->save();
+    }
+
+    public function reVerifyEmail()
+    {
+        $this->forceFill([
+            'email_verified_at' => null,
+        ])->save();
+    }
+
+    public function getActivitylogOptions(): LogOptions
+    {
+        return LogOptions::defaults()
+            -> logOnly(['role', 'name', 'server_limit', 'pterodactyl_id', 'email'])
+            -> logOnlyDirty()
+            -> dontSubmitEmptyLogs();
+    }
+
 }

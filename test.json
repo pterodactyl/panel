@@ -1,0 +1,12 @@
+[
+    {
+        "PASSWORD": "",
+        "USERNAME": "",
+        "AUTO_UPDATE": "0",
+        "BOT_PY_FILE": "bot.py",
+        "PY_PACKAGES": "",
+        "USER_UPLOAD": "0",
+        "INSTALL_REPO": "",
+        "INSTALL_BRANCH": ""
+    }
+]
