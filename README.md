@@ -36,8 +36,6 @@ I would like to extend my sincere thanks to the following sponsors for helping f
 | [**Skynode**](https://www.skynode.pro/)                   | Skynode provides blazing fast game servers along with a top-notch user experience. Whatever our clients are looking for, we're able to provide it!                                                                              |
 | [**VibeGAMES**](https://vibegames.net/)                   | VibeGAMES is a game server provider that specializes in DDOS protection for the games we offer. We have multiple locations in the US, Brazil, France, Germany, Singapore, Australia and South Africa.                           |
 | [**Pterodactyl Market**](https://pterodactylmarket.com/)  | Pterodactyl Market is a one-and-stop shop for Pterodactyl. In our market, you can find Add-ons, Themes, Eggs, and more for Pterodactyl.                                                                                         |
-| [**UltraServers**](https://ultraservers.com/)             | Deploy premium games hosting with the click of a button. Manage and swap games with ease and let us take care of the rest. We currently support Minecraft, Rust, ARK, 7 Days to Die, Garys MOD, CS:GO, Satisfactory and others. |
-| [**Realms Hosting**](https://realmshosting.com/)          | Want to build your Gaming Empire? Use Realms Hosting today to kick start your game server hosting with outstanding DDOS Protection, 24/7 Support, Cheap Prices and a Custom Control Panel.                                      |                                                                                                                                                                                                                                |
 
 ### Supported Games
 
