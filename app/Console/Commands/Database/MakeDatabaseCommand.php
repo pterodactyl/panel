@@ -39,7 +39,7 @@ class MakeDatabaseCommand extends Command
         $data['password'] = $this->option('password') ?? $this->secret('The password to the account defined.');
         $data['node_id'] = $this->option('nodeId');
 
-        $node = $this->creationService->handle($data);
+        $database = $this->creationService->handle($data);
         $this->line('The new database has been successfully added to your panel');
     }
 }
