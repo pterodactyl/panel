@@ -29,7 +29,7 @@ class PruneOrphanedBackupsCommand extends Command
 
         $query = $this->backupRepository->getBuilder()
             ->whereNull('completed_at')
-            ->where('created_at', '<=', CarbonImmutable::now()->subMinutes($since)->toDateTimeString());
+            ->where('created_at', '>=', CarbonImmutable::now()->subMinutes($since)->toDateTimeString());
 
         $count = $query->count();
         if (!$count) {
