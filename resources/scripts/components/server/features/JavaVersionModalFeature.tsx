@@ -17,6 +17,7 @@ import { usePermissions } from '@/plugins/usePermissions';
 const MATCH_ERRORS = [
     'minecraft 1.17 requires running the server with java 16 or above',
     'minecraft 1.18 requires running the server with java 17 or above',
+    'minecraft 1.19 requires running the server with Java 17 or above',
     'java.lang.unsupportedclassversionerror',
     'unsupported major.minor version',
     'has been compiled by a more recent version of the java runtime',
