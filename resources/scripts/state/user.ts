@@ -8,6 +8,8 @@ export interface UserData {
     language: string;
     rootAdmin: boolean;
     useTotp: boolean;
+    avatarURL: string;
+    roleName: string;
     createdAt: Date;
     updatedAt: Date;
 }

@@ -4,6 +4,19 @@
 	"useTabs": false,
 	"semi": true,
 	"singleQuote": true,
-	"jsxSingleQuote": true,
-	"endOfLine": "lf"
+	"jsxSingleQuote": false,
+	"trailingComma": "all",
+	"bracketSpacing": true,
+	"arrowParens": "avoid",
+	"endOfLine": "lf",
+	"overrides": [
+		{
+			"files": ["**/*.md"],
+			"options": {
+				"tabWidth": 2,
+				"useTabs": false,
+				"singleQuote": false
+			}
+		}
+	]
 }

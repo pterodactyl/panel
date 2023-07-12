@@ -1,9 +1,9 @@
-import React from 'react';
-import { Trans, TransProps, useTranslation } from 'react-i18next';
+import type { TransProps } from 'react-i18next';
+import { Trans, useTranslation } from 'react-i18next';
 
-type Props = Omit<TransProps, 't'>;
+type Props = Omit<TransProps<string, string>, 't'>;
 
-export default ({ ns, children, ...props }: Props) => {
+function Translate({ ns, children, ...props }: Props) {
     const { t } = useTranslation(ns);
 
     return (
@@ -11,4 +11,6 @@ export default ({ ns, children, ...props }: Props) => {
             {children}
         </Trans>
     );
-};
+}
+
+export default Translate;

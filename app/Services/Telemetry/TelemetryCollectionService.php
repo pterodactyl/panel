@@ -16,6 +16,7 @@ use Pterodactyl\Models\Location;
 use Illuminate\Support\Facades\DB;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Http;
+use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Repositories\Eloquent\SettingsRepository;
 use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
 
@@ -26,7 +27,8 @@ class TelemetryCollectionService
      */
     public function __construct(
         private DaemonConfigurationRepository $daemonConfigurationRepository,
-        private SettingsRepository $settingsRepository
+        private SettingsRepository $settingsRepository,
+        private SoftwareVersionService $softwareVersionService
     ) {
     }
 
@@ -108,7 +110,7 @@ class TelemetryCollectionService
             'id' => $uuid,
 
             'panel' => [
-                'version' => config('app.version'),
+                'version' => $this->softwareVersionService->getCurrentVersion(),
                 'phpVersion' => phpversion(),
 
                 'drivers' => [

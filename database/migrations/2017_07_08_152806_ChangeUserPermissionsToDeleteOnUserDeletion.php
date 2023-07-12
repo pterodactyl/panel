@@ -9,7 +9,7 @@ class ChangeUserPermissionsToDeleteOnUserDeletion extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->dropForeign(['subuser_id']);
@@ -29,7 +29,7 @@ class ChangeUserPermissionsToDeleteOnUserDeletion extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('subusers', function (Blueprint $table) {
             $table->dropForeign(['user_id']);

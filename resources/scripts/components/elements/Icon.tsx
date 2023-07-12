@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import { CSSProperties } from 'react';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import tw from 'twin.macro';
 

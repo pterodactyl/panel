@@ -6,6 +6,7 @@ use Illuminate\Support\Str;
 use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -18,26 +19,34 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property string $name
  * @property string|null $description
  * @property int $location_id
- * @property string $fqdn
+ * @property int|null $database_host_id
  * @property string $scheme
+ * @property string $fqdn
+ * @property int $listen_port_http
+ * @property int $listen_port_sftp
+ * @property int $public_port_http
+ * @property int $public_port_sftp
  * @property bool $behind_proxy
  * @property bool $maintenance_mode
  * @property int $memory
  * @property int $memory_overallocate
+ * @property int $sum_memory
  * @property int $disk
  * @property int $disk_overallocate
+ * @property int $sum_disk
  * @property int $upload_size
  * @property string $daemon_token_id
  * @property string $daemon_token
- * @property int $daemonListen
- * @property int $daemonSFTP
- * @property string $daemonBase
+ * @property string $daemon_base
+ * @property int $servers_count
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Location $location
- * @property \Pterodactyl\Models\Mount[]|\Illuminate\Database\Eloquent\Collection $mounts
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
- * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
+ * @property Allocation[]|Collection $allocations
+ * @property \Pterodactyl\Models\DatabaseHost|null $databaseHost
+ * @property Location $location
+ * @property Mount[]|Collection $mounts
+ * @property int[]|\Illuminate\Support\Collection $ports
+ * @property Server[]|Collection $servers
  */
 class Node extends Model
 {
@@ -48,6 +57,11 @@ class Node extends Model
      * API representation using fractal.
      */
     public const RESOURCE_NAME = 'node';
+
+    /**
+     * The default location of server files on the Wings instance.
+     */
+    public const DEFAULT_DAEMON_BASE = '/var/lib/pterodactyl/volumes';
 
     public const DAEMON_TOKEN_ID_LENGTH = 16;
     public const DAEMON_TOKEN_LENGTH = 64;
@@ -67,10 +81,13 @@ class Node extends Model
      */
     protected $casts = [
         'location_id' => 'integer',
+        'database_host_id' => 'integer',
+        'listen_port_http' => 'integer',
+        'listen_port_sftp' => 'integer',
+        'public_port_http' => 'integer',
+        'public_port_sftp' => 'integer',
         'memory' => 'integer',
         'disk' => 'integer',
-        'daemonListen' => 'integer',
-        'daemonSFTP' => 'integer',
         'behind_proxy' => 'boolean',
         'public' => 'boolean',
         'maintenance_mode' => 'boolean',
@@ -80,11 +97,11 @@ class Node extends Model
      * Fields that are mass assignable.
      */
     protected $fillable = [
-        'public', 'name', 'location_id',
+        'public', 'name', 'location_id', 'database_host_id',
+        'listen_port_http', 'listen_port_sftp', 'public_port_http', 'public_port_sftp',
         'fqdn', 'scheme', 'behind_proxy',
         'memory', 'memory_overallocate', 'disk',
-        'disk_overallocate', 'upload_size', 'daemonBase',
-        'daemonSFTP', 'daemonListen',
+        'disk_overallocate', 'upload_size', 'daemon_base',
         'description', 'maintenance_mode',
     ];
 
@@ -92,17 +109,20 @@ class Node extends Model
         'name' => 'required|regex:/^([\w .-]{1,100})$/',
         'description' => 'string|nullable',
         'location_id' => 'required|exists:locations,id',
+        'database_host_id' => 'sometimes|nullable|exists:database_hosts,id',
         'public' => 'boolean',
         'fqdn' => 'required|string',
+        'listen_port_http' => 'required|numeric|between:1,65535',
+        'listen_port_sftp' => 'required|numeric|between:1,65535',
+        'public_port_http' => 'required|numeric|between:1,65535',
+        'public_port_sftp' => 'required|numeric|between:1,65535',
         'scheme' => 'required',
         'behind_proxy' => 'boolean',
         'memory' => 'required|numeric|min:1',
         'memory_overallocate' => 'required|numeric|min:-1',
         'disk' => 'required|numeric|min:1',
         'disk_overallocate' => 'required|numeric|min:-1',
-        'daemonBase' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
-        'daemonSFTP' => 'required|numeric|between:1,65535',
-        'daemonListen' => 'required|numeric|between:1,65535',
+        'daemon_base' => 'sometimes|required|regex:/^([\/][\d\w.\-\/]+)$/',
         'maintenance_mode' => 'boolean',
         'upload_size' => 'int|between:1,1024',
     ];
@@ -111,13 +131,15 @@ class Node extends Model
      * Default values for specific columns that are generally not changed on base installs.
      */
     protected $attributes = [
+        'listen_port_http' => 8080,
+        'listen_port_sftp' => 2022,
+        'public_port_http' => 8080,
+        'public_port_sftp' => 2022,
         'public' => true,
         'behind_proxy' => false,
         'memory_overallocate' => 0,
         'disk_overallocate' => 0,
-        'daemonBase' => '/var/lib/pterodactyl/volumes',
-        'daemonSFTP' => 2022,
-        'daemonListen' => 8080,
+        'daemon_base' => self::DEFAULT_DAEMON_BASE,
         'maintenance_mode' => false,
     ];
 
@@ -126,7 +148,7 @@ class Node extends Model
      */
     public function getConnectionAddress(): string
     {
-        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->daemonListen);
+        return sprintf('%s://%s:%s', $this->scheme, $this->fqdn, $this->public_port_http);
     }
 
     /**
@@ -141,7 +163,7 @@ class Node extends Model
             'token' => Container::getInstance()->make(Encrypter::class)->decrypt($this->daemon_token),
             'api' => [
                 'host' => '0.0.0.0',
-                'port' => $this->daemonListen,
+                'port' => $this->listen_port_http,
                 'ssl' => [
                     'enabled' => (!$this->behind_proxy && $this->scheme === 'https'),
                     'cert' => '/etc/letsencrypt/live/' . Str::lower($this->fqdn) . '/fullchain.pem',
@@ -150,9 +172,9 @@ class Node extends Model
                 'upload_limit' => $this->upload_size,
             ],
             'system' => [
-                'data' => $this->daemonBase,
+                'data' => $this->daemon_base,
                 'sftp' => [
-                    'bind_port' => $this->daemonSFTP,
+                    'bind_port' => $this->listen_port_sftp,
                 ],
             ],
             'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
@@ -191,9 +213,20 @@ class Node extends Model
         return $this->maintenance_mode;
     }
 
-    public function mounts(): HasManyThrough
+    /**
+     * Gets the allocations associated with a node.
+     */
+    public function allocations(): HasMany
     {
-        return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');
+        return $this->hasMany(Allocation::class);
+    }
+
+    /**
+     * Returns the database host associated with a node.
+     */
+    public function databaseHost(): BelongsTo
+    {
+        return $this->belongsTo(DatabaseHost::class);
     }
 
     /**
@@ -205,6 +238,14 @@ class Node extends Model
     }
 
     /**
+     * Returns a HasManyThrough relationship for all the mounts associated with a node.
+     */
+    public function mounts(): HasManyThrough
+    {
+        return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');
+    }
+
+    /**
      * Gets the servers associated with a node.
      */
     public function servers(): HasMany
@@ -212,21 +253,23 @@ class Node extends Model
         return $this->hasMany(Server::class);
     }
 
-    /**
-     * Gets the allocations associated with a node.
-     */
-    public function allocations(): HasMany
+    public function loadServerSums(): self
     {
-        return $this->hasMany(Allocation::class);
+        $this->loadSum('servers as sum_memory', 'memory');
+        $this->loadSum('servers as sum_disk', 'disk');
+
+        return $this;
     }
 
     /**
      * Returns a boolean if the node is viable for an additional server to be placed on it.
      */
-    public function isViable(int $memory, int $disk): bool
+    public function isViable(int $memory = 0, int $disk = 0): bool
     {
-        $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
-        $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
+        $this->loadServerSums();
+
+        $memoryLimit = $this->memory * (1.0 + ($this->memory_overallocate / 100.0));
+        $diskLimit = $this->disk * (1.0 + ($this->disk_overallocate / 100.0));
 
         return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }

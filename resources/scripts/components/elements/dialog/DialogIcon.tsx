@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import { useContext, useEffect } from 'react';
 import { CheckIcon, ExclamationIcon, InformationCircleIcon, ShieldExclamationIcon } from '@heroicons/react/outline';
 import classNames from 'classnames';
 import { DialogContext, DialogIconProps, styles } from './';
@@ -18,8 +18,8 @@ export default ({ type, position, className }: DialogIconProps) => {
 
         setIcon(
             <div className={classNames(styles.dialog_icon, styles[type], className)}>
-                <Icon className={'w-6 h-6'} />
-            </div>
+                <Icon className={'h-6 w-6'} />
+            </div>,
         );
     }, [type, className]);
 

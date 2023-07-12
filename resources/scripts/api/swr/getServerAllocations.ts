@@ -1,11 +1,12 @@
-import { ServerContext } from '@/state/server';
 import useSWR from 'swr';
+
 import http from '@/api/http';
-import { rawDataToServerAllocation } from '@/api/transformers';
 import { Allocation } from '@/api/server/getServer';
+import { rawDataToServerAllocation } from '@/api/transformers';
+import { ServerContext } from '@/state/server';
 
 export default () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
     return useSWR<Allocation[]>(
         ['server:allocations', uuid],
@@ -14,6 +15,6 @@ export default () => {
 
             return (data.data || []).map(rawDataToServerAllocation);
         },
-        { revalidateOnFocus: false, revalidateOnMount: false }
+        { revalidateOnFocus: false, revalidateOnMount: false },
     );
 };

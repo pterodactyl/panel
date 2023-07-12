@@ -1,6 +1,7 @@
-import React, { useMemo } from 'react';
-import styled from 'styled-components/macro';
-import { v4 } from 'uuid';
+import type { ChangeEvent, ReactNode } from 'react';
+import { useMemo } from 'react';
+import { nanoid } from 'nanoid';
+import styled from 'styled-components';
 import tw from 'twin.macro';
 import Label from '@/components/elements/Label';
 import Input from '@/components/elements/Input';
@@ -42,12 +43,12 @@ export interface SwitchProps {
     description?: string;
     defaultChecked?: boolean;
     readOnly?: boolean;
-    onChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
-    children?: React.ReactNode;
+    onChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+    children?: ReactNode;
 }
 
 const Switch = ({ name, label, description, defaultChecked, readOnly, onChange, children }: SwitchProps) => {
-    const uuid = useMemo(() => v4(), []);
+    const uuid = useMemo(() => nanoid(), []);
 
     return (
         <div css={tw`flex items-center`}>
@@ -57,7 +58,7 @@ const Switch = ({ name, label, description, defaultChecked, readOnly, onChange, 
                         id={uuid}
                         name={name}
                         type={'checkbox'}
-                        onChange={(e) => onChange && onChange(e)}
+                        onChange={e => onChange && onChange(e)}
                         defaultChecked={defaultChecked}
                         disabled={readOnly}
                     />

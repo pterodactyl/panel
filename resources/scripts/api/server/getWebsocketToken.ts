@@ -12,7 +12,7 @@ export default (server: string): Promise<Response> => {
                 resolve({
                     token: data.data.token,
                     socket: data.data.socket,
-                })
+                }),
             )
             .catch(reject);
     });

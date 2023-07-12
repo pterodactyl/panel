@@ -15,10 +15,10 @@ declare module 'styled-components' {
         T extends object,
         // eslint-disable-next-line @typescript-eslint/ban-types
         O extends object = {},
-        A extends keyof any = never
+        A extends keyof any = never,
     > extends ForwardRefExoticBase<StyledComponentProps<C, T, O, A>> {
         (
-            props: StyledComponentProps<C, T, O, A> & { as?: Element | string; forwardedAs?: never | undefined }
+            props: StyledComponentProps<C, T, O, A> & { as?: Element | string; forwardedAs?: never | undefined },
         ): ReactElement<StyledComponentProps<C, T, O, A>>;
     }
 }

@@ -30,7 +30,7 @@ class RouteServiceProvider extends ServiceProvider
         });
 
         // This is needed to make use of the "resolveRouteBinding" functionality in the
-        // model. Without it you'll never trigger that logic flow thus resulting in a 404
+        // model. Without it, you'll never trigger that logic flow thus resulting in a 404
         // error because we request databases with a HashID, and not with a normal ID.
         Route::model('database', Database::class);
 

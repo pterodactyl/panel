@@ -12,7 +12,7 @@ export default (description: string, allowedIps: string): Promise<ApiKey & { sec
                     ...rawDataToApiKey(data.attributes),
                     // eslint-disable-next-line camelcase
                     secretToken: data.meta?.secret_token ?? '',
-                })
+                }),
             )
             .catch(reject);
     });

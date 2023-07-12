@@ -73,7 +73,10 @@ class DeleteBackupService
             /** @var \Pterodactyl\Extensions\Filesystem\S3Filesystem $adapter */
             $adapter = $this->manager->adapter(Backup::ADAPTER_AWS_S3);
 
-            $adapter->getClient()->deleteObject([
+            /** @var \Aws\S3\S3Client $client */
+            $client = $adapter->getClient();
+
+            $client->deleteObject([
                 'Bucket' => $adapter->getBucket(),
                 'Key' => sprintf('%s/%s.tar.gz', $backup->server->uuid, $backup->uuid),
             ]);

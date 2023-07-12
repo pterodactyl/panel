@@ -9,7 +9,7 @@ class BuildApiLogTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('api_logs', function (Blueprint $table) {
             $table->increments('id');
@@ -28,7 +28,7 @@ class BuildApiLogTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::drop('api_logs');
     }

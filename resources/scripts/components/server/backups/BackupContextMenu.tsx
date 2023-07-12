@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
     faBoxOpen,
     faCloudDownloadAlt,
@@ -28,8 +28,8 @@ interface Props {
 }
 
 export default ({ backup }: Props) => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
     const [modal, setModal] = useState('');
     const [loading, setLoading] = useState(false);
     const [truncate, setTruncate] = useState(false);
@@ -40,11 +40,11 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         getBackupDownloadUrl(uuid, backup.uuid)
-            .then((url) => {
+            .then(url => {
                 // @ts-expect-error this is valid
                 window.location = url;
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
             })
@@ -55,17 +55,18 @@ export default ({ backup }: Props) => {
         setLoading(true);
         clearFlashes('backups');
         deleteBackup(uuid, backup.uuid)
-            .then(() =>
-                mutate(
-                    (data) => ({
-                        ...data,
-                        items: data.items.filter((b) => b.uuid !== backup.uuid),
-                        backupCount: data.backupCount - 1,
-                    }),
-                    false
-                )
+            .then(
+                async () =>
+                    await mutate(
+                        data => ({
+                            ...data!,
+                            items: data!.items.filter(b => b.uuid !== backup.uuid),
+                            backupCount: data!.backupCount - 1,
+                        }),
+                        false,
+                    ),
             )
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
                 setLoading(false);
@@ -78,12 +79,12 @@ export default ({ backup }: Props) => {
         clearFlashes('backups');
         restoreServerBackup(uuid, backup.uuid, truncate)
             .then(() =>
-                setServerFromState((s) => ({
+                setServerFromState(s => ({
                     ...s,
                     status: 'restoring_backup',
-                }))
+                })),
             )
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'backups', error });
             })
@@ -97,23 +98,24 @@ export default ({ backup }: Props) => {
         }
 
         http.post(`/api/client/servers/${uuid}/backups/${backup.uuid}/lock`)
-            .then(() =>
-                mutate(
-                    (data) => ({
-                        ...data,
-                        items: data.items.map((b) =>
-                            b.uuid !== backup.uuid
-                                ? b
-                                : {
-                                      ...b,
-                                      isLocked: !b.isLocked,
-                                  }
-                        ),
-                    }),
-                    false
-                )
+            .then(
+                async () =>
+                    await mutate(
+                        data => ({
+                            ...data!,
+                            items: data!.items.map(b =>
+                                b.uuid !== backup.uuid
+                                    ? b
+                                    : {
+                                          ...b,
+                                          isLocked: !b.isLocked,
+                                      },
+                            ),
+                        }),
+                        false,
+                    ),
             )
-            .catch((error) => alert(httpErrorToHuman(error)))
+            .catch(error => alert(httpErrorToHuman(error)))
             .then(() => setModal(''));
     };
 
@@ -138,7 +140,7 @@ export default ({ backup }: Props) => {
                     Your server will be stopped. You will not be able to control the power state, access the file
                     manager, or create additional backups until completed.
                 </p>
-                <p css={tw`mt-4 -mb-2 bg-gray-700 p-3 rounded`}>
+                <p css={tw`mt-4 -mb-2 bg-slate-700 p-3 rounded`}>
                     <label htmlFor={'restore_truncate'} css={tw`text-base flex items-center cursor-pointer`}>
                         <Input
                             type={'checkbox'}
@@ -146,7 +148,7 @@ export default ({ backup }: Props) => {
                             id={'restore_truncate'}
                             value={'true'}
                             checked={truncate}
-                            onChange={() => setTruncate((s) => !s)}
+                            onChange={() => setTruncate(s => !s)}
                         />
                         Delete all files before restoring backup.
                     </label>
@@ -164,10 +166,10 @@ export default ({ backup }: Props) => {
             <SpinnerOverlay visible={loading} fixed />
             {backup.isSuccessful ? (
                 <DropdownMenu
-                    renderToggle={(onClick) => (
+                    renderToggle={onClick => (
                         <button
                             onClick={onClick}
-                            css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
+                            css={tw`text-slate-200 transition-colors duration-150 hover:text-slate-100 p-2`}
                         >
                             <FontAwesomeIcon icon={faEllipsisH} />
                         </button>
@@ -209,7 +211,7 @@ export default ({ backup }: Props) => {
             ) : (
                 <button
                     onClick={() => setModal('delete')}
-                    css={tw`text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2`}
+                    css={tw`text-slate-200 transition-colors duration-150 hover:text-slate-100 p-2`}
                 >
                     <FontAwesomeIcon icon={faTrashAlt} />
                 </button>

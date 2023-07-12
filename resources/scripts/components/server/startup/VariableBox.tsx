@@ -1,4 +1,4 @@
-import React, { memo, useState } from 'react';
+import { memo, useState } from 'react';
 import { ServerEggVariable } from '@/api/server/types';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
 import { usePermissions } from '@/plugins/usePermissions';
@@ -22,7 +22,7 @@ interface Props {
 const VariableBox = ({ variable }: Props) => {
     const FLASH_KEY = `server:startup:${variable.envVariable}`;
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const [loading, setLoading] = useState(false);
     const [canEdit] = usePermissions(['startup.update']);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -35,28 +35,28 @@ const VariableBox = ({ variable }: Props) => {
         updateStartupVariable(uuid, variable.envVariable, value)
             .then(([response, invocation]) =>
                 mutate(
-                    (data) => ({
-                        ...data,
+                    data => ({
+                        ...data!,
                         invocation,
-                        variables: (data.variables || []).map((v) =>
-                            v.envVariable === response.envVariable ? response : v
+                        variables: (data!.variables || []).map(v =>
+                            v.envVariable === response.envVariable ? response : v,
                         ),
                     }),
-                    false
-                )
+                    false,
+                ),
             )
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
-                clearAndAddHttpError({ error, key: FLASH_KEY });
+                clearAndAddHttpError({ key: FLASH_KEY, error });
             })
             .then(() => setLoading(false));
     }, 500);
 
     const useSwitch = variable.rules.some(
-        (v) => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true'
+        v => v === 'boolean' || v === 'in:0,1' || v === 'in:1,0' || v === 'in:true,false' || v === 'in:false,true',
     );
-    const isStringSwitch = variable.rules.some((v) => v === 'string');
-    const selectValues = variable.rules.find((v) => v.startsWith('in:'))?.split(',') || [];
+    const isStringSwitch = variable.rules.some(v => v === 'string');
+    const selectValues = variable.rules.find(v => v.startsWith('in:'))?.split(',') || [];
 
     return (
         <TitledGreyBox
@@ -95,12 +95,12 @@ const VariableBox = ({ variable }: Props) => {
                         {selectValues.length > 0 ? (
                             <>
                                 <Select
-                                    onChange={(e) => setVariableValue(e.target.value)}
+                                    onChange={e => setVariableValue(e.target.value)}
                                     name={variable.envVariable}
                                     defaultValue={variable.serverValue}
                                     disabled={!canEdit || !variable.isEditable}
                                 >
-                                    {selectValues.map((selectValue) => (
+                                    {selectValues.map(selectValue => (
                                         <option
                                             key={selectValue.replace('in:', '')}
                                             value={selectValue.replace('in:', '')}
@@ -113,7 +113,7 @@ const VariableBox = ({ variable }: Props) => {
                         ) : (
                             <>
                                 <Input
-                                    onKeyUp={(e) => {
+                                    onKeyUp={e => {
                                         if (canEdit && variable.isEditable) {
                                             setVariableValue(e.currentTarget.value);
                                         }

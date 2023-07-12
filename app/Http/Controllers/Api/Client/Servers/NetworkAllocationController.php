@@ -36,7 +36,7 @@ class NetworkAllocationController extends ClientApiController
     public function index(GetNetworkRequest $request, Server $server): array
     {
         return $this->fractal->collection($server->allocations)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
+            ->transformWith(AllocationTransformer::class)
             ->toArray();
     }
 
@@ -60,7 +60,7 @@ class NetworkAllocationController extends ClientApiController
         }
 
         return $this->fractal->item($allocation)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
+            ->transformWith(AllocationTransformer::class)
             ->toArray();
     }
 
@@ -80,7 +80,7 @@ class NetworkAllocationController extends ClientApiController
             ->log();
 
         return $this->fractal->item($allocation)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
+            ->transformWith(AllocationTransformer::class)
             ->toArray();
     }
 
@@ -104,7 +104,7 @@ class NetworkAllocationController extends ClientApiController
             ->log();
 
         return $this->fractal->item($allocation)
-            ->transformWith($this->getTransformer(AllocationTransformer::class))
+            ->transformWith(AllocationTransformer::class)
             ->toArray();
     }
 

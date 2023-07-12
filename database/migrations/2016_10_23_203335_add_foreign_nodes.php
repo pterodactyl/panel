@@ -9,11 +9,10 @@ class AddForeignNodes extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
-        DB::statement('ALTER TABLE nodes MODIFY location INT(10) UNSIGNED NOT NULL');
-
         Schema::table('nodes', function (Blueprint $table) {
+            $table->integer('location', false, true)->nullable(false)->change();
             $table->foreign('location')->references('id')->on('locations');
         });
     }
@@ -21,13 +20,13 @@ class AddForeignNodes extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
-            $table->dropForeign('nodes_location_foreign');
-            $table->dropIndex('nodes_location_foreign');
-        });
+            $table->dropForeign(['location']);
+            $table->dropIndex(['location']);
 
-        DB::statement('ALTER TABLE nodes MODIFY location MEDIUMINT(10) UNSIGNED NOT NULL');
+            $table->mediumInteger('location', false, true)->nullable(false)->change();
+        });
     }
 }

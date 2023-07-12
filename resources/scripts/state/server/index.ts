@@ -1,12 +1,19 @@
-import getServer, { Server } from '@/api/server/getServer';
-import { action, Action, computed, Computed, createContextStore, thunk, Thunk } from 'easy-peasy';
-import socket, { SocketStore } from './socket';
-import files, { ServerFileStore } from '@/state/server/files';
-import subusers, { ServerSubuserStore } from '@/state/server/subusers';
-import { composeWithDevTools } from 'redux-devtools-extension';
-import schedules, { ServerScheduleStore } from '@/state/server/schedules';
-import databases, { ServerDatabaseStore } from '@/state/server/databases';
+import type { Action, Computed, Thunk } from 'easy-peasy';
+import { action, computed, createContextStore, thunk } from 'easy-peasy';
 import isEqual from 'react-fast-compare';
+
+import type { Server } from '@/api/server/getServer';
+import getServer from '@/api/server/getServer';
+import type { ServerDatabaseStore } from '@/state/server/databases';
+import databases from '@/state/server/databases';
+import type { ServerFileStore } from '@/state/server/files';
+import files from '@/state/server/files';
+import type { ServerScheduleStore } from '@/state/server/schedules';
+import schedules from '@/state/server/schedules';
+import type { SocketStore } from '@/state/server/socket';
+import socket from '@/state/server/socket';
+import type { ServerSubuserStore } from '@/state/server/subusers';
+import subusers from '@/state/server/subusers';
 
 export type ServerStatus = 'offline' | 'starting' | 'stopping' | 'running' | null;
 
@@ -25,7 +32,7 @@ interface ServerDataStore {
 const server: ServerDataStore = {
     permissions: [],
 
-    inConflictState: computed((state) => {
+    inConflictState: computed(state => {
         if (!state.data) {
             return false;
         }
@@ -33,7 +40,7 @@ const server: ServerDataStore = {
         return state.data.status !== null || state.data.isTransferring || state.data.isNodeUnderMaintenance;
     }),
 
-    isInstalling: computed((state) => {
+    isInstalling: computed(state => {
         return state.data?.status === 'installing' || state.data?.status === 'install_failed';
     }),
 
@@ -87,37 +94,29 @@ export interface ServerStore {
     clearServerState: Action<ServerStore>;
 }
 
-export const ServerContext = createContextStore<ServerStore>(
-    {
-        server,
-        socket,
-        status,
-        databases,
-        files,
-        subusers,
-        schedules,
-        clearServerState: action((state) => {
-            state.server.data = undefined;
-            state.server.permissions = [];
-            state.databases.data = [];
-            state.subusers.data = [];
-            state.files.directory = '/';
-            state.files.selectedFiles = [];
-            state.schedules.data = [];
+export const ServerContext = createContextStore<ServerStore>({
+    server,
+    socket,
+    status,
+    databases,
+    files,
+    subusers,
+    schedules,
+    clearServerState: action(state => {
+        state.server.data = undefined;
+        state.server.permissions = [];
+        state.databases.data = [];
+        state.subusers.data = [];
+        state.files.directory = '/';
+        state.files.selectedFiles = [];
+        state.schedules.data = [];
 
-            if (state.socket.instance) {
-                state.socket.instance.removeAllListeners();
-                state.socket.instance.close();
-            }
+        if (state.socket.instance) {
+            state.socket.instance.removeAllListeners();
+            state.socket.instance.close();
+        }
 
-            state.socket.instance = null;
-            state.socket.connected = false;
-        }),
-    },
-    {
-        compose: composeWithDevTools({
-            name: 'ServerStore',
-            trace: true,
-        }),
-    }
-);
+        state.socket.instance = null;
+        state.socket.connected = false;
+    }),
+});

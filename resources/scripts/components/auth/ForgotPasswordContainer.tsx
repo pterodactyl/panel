@@ -1,28 +1,29 @@
-import * as React from 'react';
+import { useStoreState } from 'easy-peasy';
+import type { FormikHelpers } from 'formik';
+import { Formik } from 'formik';
 import { useEffect, useRef, useState } from 'react';
 import { Link } from 'react-router-dom';
+import Reaptcha from 'reaptcha';
+import tw from 'twin.macro';
+import { object, string } from 'yup';
+
 import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
 import { httpErrorToHuman } from '@/api/http';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
-import { useStoreState } from 'easy-peasy';
-import Field from '@/components/elements/Field';
-import { Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import Reaptcha from 'reaptcha';
+import Field from '@/components/elements/Field';
 import useFlash from '@/plugins/useFlash';
 
 interface Values {
     email: string;
 }
 
-export default () => {
+function ForgotPasswordContainer() {
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
 
     const { clearFlashes, addFlash } = useFlash();
-    const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
+    const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
 
     useEffect(() => {
         clearFlashes();
@@ -34,7 +35,7 @@ export default () => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch((error) => {
+            ref.current!.execute().catch(error => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -45,17 +46,19 @@ export default () => {
         }
 
         requestPasswordResetEmail(email, token)
-            .then((response) => {
+            .then(response => {
                 resetForm();
                 addFlash({ type: 'success', title: 'Success', message: response });
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
             })
             .then(() => {
                 setToken('');
-                if (ref.current) ref.current.reset();
+                if (ref.current !== null) {
+                    void ref.current.reset();
+                }
 
                 setSubmitting(false);
             });
@@ -92,9 +95,9 @@ export default () => {
                             ref={ref}
                             size={'invisible'}
                             sitekey={siteKey || '_invalid_key'}
-                            onVerify={(response) => {
+                            onVerify={response => {
                                 setToken(response);
-                                submitForm();
+                                void submitForm();
                             }}
                             onExpire={() => {
                                 setSubmitting(false);
@@ -114,4 +117,6 @@ export default () => {
             )}
         </Formik>
     );
-};
+}
+
+export default ForgotPasswordContainer;

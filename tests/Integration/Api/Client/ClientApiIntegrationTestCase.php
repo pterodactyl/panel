@@ -14,10 +14,10 @@ use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Transformers\Api\Transformer;
 use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
 abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -89,7 +89,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
         $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
 
         $transformer = new $transformer();
-        $this->assertInstanceOf(BaseClientTransformer::class, $transformer);
+        $this->assertInstanceOf(Transformer::class, $transformer);
 
         $this->assertSame(
             $transformer->transform($model),

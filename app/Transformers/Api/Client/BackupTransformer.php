@@ -3,26 +3,27 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Backup;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class BackupTransformer extends BaseClientTransformer
+class BackupTransformer extends Transformer
 {
     public function getResourceName(): string
     {
         return Backup::RESOURCE_NAME;
     }
 
-    public function transform(Backup $backup): array
+    public function transform(Backup $model): array
     {
         return [
-            'uuid' => $backup->uuid,
-            'is_successful' => $backup->is_successful,
-            'is_locked' => $backup->is_locked,
-            'name' => $backup->name,
-            'ignored_files' => $backup->ignored_files,
-            'checksum' => $backup->checksum,
-            'bytes' => $backup->bytes,
-            'created_at' => $backup->created_at->toAtomString(),
-            'completed_at' => $backup->completed_at ? $backup->completed_at->toAtomString() : null,
+            'uuid' => $model->uuid,
+            'is_successful' => $model->is_successful,
+            'is_locked' => $model->is_locked,
+            'name' => $model->name,
+            'ignored_files' => $model->ignored_files,
+            'checksum' => $model->checksum,
+            'bytes' => $model->bytes,
+            'created_at' => self::formatTimestamp($model->created_at),
+            'completed_at' => self::formatTimestamp($model->completed_at),
         ];
     }
 }

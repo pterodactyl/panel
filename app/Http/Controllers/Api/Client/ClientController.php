@@ -27,7 +27,7 @@ class ClientController extends ClientApiController
     public function index(GetServersRequest $request): array
     {
         $user = $request->user();
-        $transformer = $this->getTransformer(ServerTransformer::class);
+        $transformer = new ServerTransformer();
 
         // Start the query builder and ensure we eager load any requested relationships from the request.
         $builder = QueryBuilder::for(
@@ -39,6 +39,11 @@ class ClientController extends ClientApiController
             'external_id',
             AllowedFilter::custom('*', new MultiFieldServerFilter()),
         ]);
+
+        $loweredBindings = collect($builder->getBindings())
+            ->map(fn ($f, $key) => is_string($f) ? strtolower($f) : $f)
+            ->all();
+        $builder->setBindings($loweredBindings);
 
         $type = $request->input('type');
         // Either return all the servers the user has access to because they are an admin `?type=admin` or

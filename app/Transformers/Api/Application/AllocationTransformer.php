@@ -2,18 +2,14 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\Server;
 use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Allocation;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class AllocationTransformer extends BaseTransformer
+class AllocationTransformer extends Transformer
 {
-    /**
-     * Relationships that can be loaded onto allocation transformations.
-     */
     protected array $availableIncludes = ['node', 'server'];
 
     /**
@@ -27,22 +23,21 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Return a generic transformed allocation array.
      */
-    public function transform(Allocation $allocation): array
+    public function transform(Allocation $model): array
     {
         return [
-            'id' => $allocation->id,
-            'ip' => $allocation->ip,
-            'alias' => $allocation->ip_alias,
-            'port' => $allocation->port,
-            'notes' => $allocation->notes,
-            'assigned' => !is_null($allocation->server_id),
+            'id' => $model->id,
+            'ip' => $model->ip,
+            'alias' => $model->ip_alias,
+            'port' => $model->port,
+            'notes' => $model->notes,
+            'server_id' => $model->server_id,
+            'assigned' => !is_null($model->server_id),
         ];
     }
 
     /**
      * Load the node relationship onto a given transformation.
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeNode(Allocation $allocation): Item|NullResource
     {
@@ -50,17 +45,11 @@ class AllocationTransformer extends BaseTransformer
             return $this->null();
         }
 
-        return $this->item(
-            $allocation->node,
-            $this->makeTransformer(NodeTransformer::class),
-            Node::RESOURCE_NAME
-        );
+        return $this->item($allocation->node, new NodeTransformer());
     }
 
     /**
      * Load the server relationship onto a given transformation.
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServer(Allocation $allocation): Item|NullResource
     {
@@ -68,10 +57,6 @@ class AllocationTransformer extends BaseTransformer
             return $this->null();
         }
 
-        return $this->item(
-            $allocation->server,
-            $this->makeTransformer(ServerTransformer::class),
-            Server::RESOURCE_NAME
-        );
+        return $this->item($allocation->server, new ServerTransformer());
     }
 }

@@ -2,21 +2,18 @@
 
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Server;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class NestTransformer extends BaseTransformer
+class NestTransformer extends Transformer
 {
     /**
      * Relationships that can be loaded onto this transformation.
      */
-    protected array $availableIncludes = [
-        'eggs', 'servers',
-    ];
+    protected array $availableIncludes = ['eggs', 'servers'];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -34,16 +31,14 @@ class NestTransformer extends BaseTransformer
     {
         $response = $model->toArray();
 
-        $response[$model->getUpdatedAtColumn()] = $this->formatTimestamp($model->updated_at);
-        $response[$model->getCreatedAtColumn()] = $this->formatTimestamp($model->created_at);
+        $response['created_at'] = self::formatTimestamp($model->created_at);
+        $response['updated_at'] = self::formatTimestamp($model->updated_at);
 
         return $response;
     }
 
     /**
      * Include the Eggs relationship on the given Nest model transformation.
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeEggs(Nest $model): Collection|NullResource
     {
@@ -51,15 +46,11 @@ class NestTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $model->loadMissing('eggs');
-
-        return $this->collection($model->getRelation('eggs'), $this->makeTransformer(EggTransformer::class), Egg::RESOURCE_NAME);
+        return $this->collection($model->eggs, new EggTransformer());
     }
 
     /**
      * Include the servers relationship on the given Nest model.
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(Nest $model): Collection|NullResource
     {
@@ -67,8 +58,6 @@ class NestTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $model->loadMissing('servers');
-
-        return $this->collection($model->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), Server::RESOURCE_NAME);
+        return $this->collection($model->servers, new ServerTransformer());
     }
 }

@@ -3,7 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -13,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $username
  * @property string $password
  * @property int|null $max_databases
- * @property int|null $node_id
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  */
@@ -41,7 +40,7 @@ class DatabaseHost extends Model
      * Fields that are mass assignable.
      */
     protected $fillable = [
-        'name', 'host', 'port', 'username', 'password', 'max_databases', 'node_id',
+        'name', 'host', 'port', 'username', 'password', 'max_databases',
     ];
 
     /**
@@ -50,7 +49,6 @@ class DatabaseHost extends Model
     protected $casts = [
         'id' => 'integer',
         'max_databases' => 'integer',
-        'node_id' => 'integer',
     ];
 
     /**
@@ -62,16 +60,7 @@ class DatabaseHost extends Model
         'port' => 'required|numeric|between:1,65535',
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
-        'node_id' => 'sometimes|nullable|integer|exists:nodes,id',
     ];
-
-    /**
-     * Gets the node associated with a database host.
-     */
-    public function node(): BelongsTo
-    {
-        return $this->belongsTo(Node::class);
-    }
 
     /**
      * Gets the databases associated with this host.
@@ -79,5 +68,13 @@ class DatabaseHost extends Model
     public function databases(): HasMany
     {
         return $this->hasMany(Database::class);
+    }
+
+    /**
+     * Returns the nodes that a database host is assigned to.
+     */
+    public function nodes(): BelongsToMany
+    {
+        return $this->belongsToMany(Node::class);
     }
 }

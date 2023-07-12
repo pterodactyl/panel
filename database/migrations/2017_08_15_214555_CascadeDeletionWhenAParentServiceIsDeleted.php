@@ -9,7 +9,7 @@ class CascadeDeletionWhenAParentServiceIsDeleted extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropForeign(['service_id']);
@@ -21,7 +21,7 @@ class CascadeDeletionWhenAParentServiceIsDeleted extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropForeign(['service_id']);

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Field as FormikField, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { boolean, object, string } from 'yup';
@@ -68,7 +68,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
 };
 
 export default () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const [visible, setVisible] = useState(false);
     const { mutate } = getServerBackups();
@@ -80,14 +80,14 @@ export default () => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('backups:create');
         createServerBackup(uuid, values)
-            .then((backup) => {
-                mutate(
-                    (data) => ({ ...data, items: data.items.concat(backup), backupCount: data.backupCount + 1 }),
-                    false
+            .then(async backup => {
+                await mutate(
+                    data => ({ ...data!, items: data!.items.concat(backup), backupCount: data!.backupCount + 1 }),
+                    false,
                 );
                 setVisible(false);
             })
-            .catch((error) => {
+            .catch(error => {
                 clearAndAddHttpError({ key: 'backups:create', error });
                 setSubmitting(false);
             });

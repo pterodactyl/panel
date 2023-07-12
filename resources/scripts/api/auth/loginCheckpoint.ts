@@ -8,11 +8,11 @@ export default (token: string, code: string, recoveryToken?: string): Promise<Lo
             authentication_code: code,
             recovery_token: recoveryToken && recoveryToken.length > 0 ? recoveryToken : undefined,
         })
-            .then((response) =>
+            .then(response =>
                 resolve({
                     complete: response.data.data.complete,
                     intended: response.data.data.intended || undefined,
-                })
+                }),
             )
             .catch(reject);
     });

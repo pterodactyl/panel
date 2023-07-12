@@ -1,4 +1,4 @@
-import React from 'react';
+import { createContext } from 'react';
 import { SettableModalProps } from '@/hoc/asModal';
 
 export interface ModalContextValues {
@@ -7,11 +7,11 @@ export interface ModalContextValues {
         value:
             | ((current: Readonly<Partial<SettableModalProps>>) => Partial<SettableModalProps>)
             | Partial<SettableModalProps>
-            | null
+            | null,
     ) => void;
 }
 
-const ModalContext = React.createContext<ModalContextValues>({
+const ModalContext = createContext<ModalContextValues>({
     dismiss: () => null,
     setPropOverrides: () => null,
 });

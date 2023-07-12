@@ -8,10 +8,8 @@ class AddOnlyRunWhenServerOnlineOptionToSchedules extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('schedules', function (Blueprint $table) {
             $table->unsignedTinyInteger('only_when_online')->after('is_processing')->default(0);
@@ -20,10 +18,8 @@ class AddOnlyRunWhenServerOnlineOptionToSchedules extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('schedules', function (Blueprint $table) {
             $table->dropColumn('only_when_online');

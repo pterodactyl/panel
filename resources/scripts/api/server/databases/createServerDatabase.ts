@@ -11,9 +11,9 @@ export default (uuid: string, data: { connectionsFrom: string; databaseName: str
             },
             {
                 params: { include: 'password' },
-            }
+            },
         )
-            .then((response) => resolve(rawDataToServerDatabase(response.data.attributes)))
+            .then(response => resolve(rawDataToServerDatabase(response.data.attributes)))
             .catch(reject);
     });
 };

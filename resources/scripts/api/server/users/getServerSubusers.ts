@@ -9,7 +9,7 @@ export const rawDataToServerSubuser = (data: FractalResponseData): Subuser => ({
     twoFactorEnabled: data.attributes['2fa_enabled'],
     createdAt: new Date(data.attributes.created_at),
     permissions: data.attributes.permissions || [],
-    can: (permission) => (data.attributes.permissions || []).indexOf(permission) >= 0,
+    can: permission => (data.attributes.permissions || []).indexOf(permission) >= 0,
 });
 
 export default (uuid: string): Promise<Subuser[]> => {

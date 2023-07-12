@@ -9,7 +9,7 @@ class AddForeignKeyToPacks extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->foreign('pack_id')->references('id')->on('packs');
@@ -19,7 +19,7 @@ class AddForeignKeyToPacks extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropForeign(['pack_id']);

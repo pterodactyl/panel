@@ -6,8 +6,9 @@ use Pterodactyl\Models\User;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class UserTransformer extends BaseTransformer
+class UserTransformer extends Transformer
 {
     /**
      * List of resources that can be included.
@@ -25,28 +26,27 @@ class UserTransformer extends BaseTransformer
     /**
      * Return a transformed User model that can be consumed by external services.
      */
-    public function transform(User $user): array
+    public function transform(User $model): array
     {
         return [
-            'id' => $user->id,
-            'external_id' => $user->external_id,
-            'uuid' => $user->uuid,
-            'username' => $user->username,
-            'email' => $user->email,
-            'first_name' => $user->name_first,
-            'last_name' => $user->name_last,
-            'language' => $user->language,
-            'root_admin' => (bool) $user->root_admin,
-            '2fa' => (bool) $user->use_totp,
-            'created_at' => $this->formatTimestamp($user->created_at),
-            'updated_at' => $this->formatTimestamp($user->updated_at),
+            'id' => $model->id,
+            'external_id' => $model->external_id,
+            'uuid' => $model->uuid,
+            'username' => $model->username,
+            'email' => $model->email,
+            'language' => $model->language,
+            'root_admin' => (bool) $model->root_admin,
+            '2fa' => (bool) $model->use_totp,
+            'avatar_url' => $model->avatar_url,
+            'admin_role_id' => $model->admin_role_id,
+            'role_name' => $model->admin_role_name,
+            'created_at' => self::formatTimestamp($model->created_at),
+            'updated_at' => self::formatTimestamp($model->updated_at),
         ];
     }
 
     /**
      * Return the servers associated with this user.
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
     public function includeServers(User $user): Collection|NullResource
     {
@@ -54,8 +54,6 @@ class UserTransformer extends BaseTransformer
             return $this->null();
         }
 
-        $user->loadMissing('servers');
-
-        return $this->collection($user->getRelation('servers'), $this->makeTransformer(ServerTransformer::class), 'server');
+        return $this->collection($user->servers, new ServerTransformer());
     }
 }

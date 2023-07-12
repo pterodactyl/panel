@@ -12,7 +12,7 @@ class Add2FaLastAuthorizationTimeColumn extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
             $table->text('totp_secret')->nullable()->change();
@@ -36,7 +36,7 @@ class Add2FaLastAuthorizationTimeColumn extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         DB::transaction(function () {
             DB::table('users')->get()->each(function ($user) {

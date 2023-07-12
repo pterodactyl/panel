@@ -50,7 +50,7 @@ class BackupController extends ClientApiController
         $limit = min($request->query('per_page') ?? 20, 50);
 
         return $this->fractal->collection($server->backups()->paginate($limit))
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->addMeta([
                 'backup_count' => $this->repository->getNonFailedBackups($server)->count(),
             ])
@@ -85,7 +85,7 @@ class BackupController extends ClientApiController
             ->log();
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 
@@ -108,7 +108,7 @@ class BackupController extends ClientApiController
         Activity::event($action)->subject($backup)->property('name', $backup->name)->log();
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 
@@ -124,7 +124,7 @@ class BackupController extends ClientApiController
         }
 
         return $this->fractal->item($backup)
-            ->transformWith($this->getTransformer(BackupTransformer::class))
+            ->transformWith(BackupTransformer::class)
             ->toArray();
     }
 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import tw from 'twin.macro';
@@ -26,25 +26,25 @@ const JavaVersionModalFeature = () => {
     const [loading, setLoading] = useState(false);
     const [selectedVersion, setSelectedVersion] = useState('');
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const status = ServerContext.useStoreState((state) => state.status.value);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const status = ServerContext.useStoreState(state => state.status.value);
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { instance } = ServerContext.useStoreState((state) => state.socket);
+    const { instance } = ServerContext.useStoreState(state => state.socket);
 
-    const { data, isValidating, mutate } = getServerStartup(uuid, null, { revalidateOnMount: false });
+    const { data, isValidating, mutate } = getServerStartup(uuid, undefined, { revalidateOnMount: false });
 
     useEffect(() => {
         if (!visible) return;
 
-        mutate().then((value) => {
+        mutate().then(value => {
             setSelectedVersion(Object.values(value?.dockerImages || [])[0] || '');
         });
     }, [visible]);
 
-    useWebsocketEvent(SocketEvent.CONSOLE_OUTPUT, (data) => {
+    useWebsocketEvent(SocketEvent.CONSOLE_OUTPUT, data => {
         if (status === 'running') return;
 
-        if (MATCH_ERRORS.some((p) => data.toLowerCase().includes(p.toLowerCase()))) {
+        if (MATCH_ERRORS.some(p => data.toLowerCase().includes(p.toLowerCase()))) {
             setVisible(true);
         }
     });
@@ -60,7 +60,7 @@ const JavaVersionModalFeature = () => {
                 }
                 setVisible(false);
             })
-            .catch((error) => clearAndAddHttpError({ key: 'feature:javaVersion', error }))
+            .catch(error => clearAndAddHttpError({ key: 'feature:javaVersion', error }))
             .then(() => setLoading(false));
     };
 
@@ -86,11 +86,11 @@ const JavaVersionModalFeature = () => {
             <Can action={'startup.docker-image'}>
                 <div css={tw`mt-4`}>
                     <InputSpinner visible={!data || isValidating}>
-                        <Select disabled={!data} onChange={(e) => setSelectedVersion(e.target.value)}>
+                        <Select disabled={!data} onChange={e => setSelectedVersion(e.target.value)}>
                             {!data ? (
                                 <option disabled />
                             ) : (
-                                Object.keys(data.dockerImages).map((key) => (
+                                Object.keys(data.dockerImages).map(key => (
                                     <option key={key} value={data.dockerImages[key]}>
                                         {key}
                                     </option>

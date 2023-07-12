@@ -7,7 +7,7 @@ type Context = string | string[] | (string | number | null | {})[];
 
 function useSWRKey(context: Context, prefix: string | null = null): string {
     const key = useDeepCompareMemo((): string => {
-        return (Array.isArray(context) ? context : [context]).map((value) => JSON.stringify(value)).join(':');
+        return (Array.isArray(context) ? context : [context]).map(value => JSON.stringify(value)).join(':');
     }, [context]);
 
     if (!key.trim().length) {
@@ -18,13 +18,13 @@ function useSWRKey(context: Context, prefix: string | null = null): string {
 }
 
 function useServerSWRKey(context: Context): string {
-    const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
 
     return useSWRKey(context, `server:${uuid}`);
 }
 
 function useUserSWRKey(context: Context): string {
-    const uuid = useStoreState((state) => state.user.data?.uuid);
+    const uuid = useStoreState(state => state.user.data?.uuid);
 
     return useSWRKey(context, `user:${uuid}`);
 }

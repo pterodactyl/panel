@@ -8,10 +8,8 @@ class AddApiKeyPermissionColumns extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::dropIfExists('api_permissions');
 
@@ -31,10 +29,8 @@ class AddApiKeyPermissionColumns extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::create('api_permissions', function (Blueprint $table) {
             $table->increments('id');

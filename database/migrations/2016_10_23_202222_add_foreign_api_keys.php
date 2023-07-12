@@ -9,7 +9,7 @@ class AddForeignApiKeys extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
             $table->foreign('user')->references('id')->on('users');
@@ -19,11 +19,11 @@ class AddForeignApiKeys extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
-            $table->dropForeign('api_keys_user_foreign');
-            $table->dropIndex('api_keys_user_foreign');
+            $table->dropForeign(['user']);
+            $table->dropIndex(['user']);
         });
     }
 }

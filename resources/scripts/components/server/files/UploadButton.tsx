@@ -1,25 +1,26 @@
+import { CloudUploadIcon } from '@heroicons/react/outline';
+import { useSignal } from '@preact/signals-react';
 import axios from 'axios';
-import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
+import { useEffect, useRef } from 'react';
 import tw from 'twin.macro';
+
+import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
 import { Button } from '@/components/elements/button/index';
-import React, { useEffect, useRef } from 'react';
 import { ModalMask } from '@/components/elements/Modal';
-import Fade from '@/components/elements/Fade';
+import Portal from '@/components/elements/Portal';
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
+import type { WithClassname } from '@/components/types';
 import useEventListener from '@/plugins/useEventListener';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import { ServerContext } from '@/state/server';
-import { WithClassname } from '@/components/types';
-import Portal from '@/components/elements/Portal';
-import { CloudUploadIcon } from '@heroicons/react/outline';
-import { useSignal } from '@preact/signals-react';
 
 function isFileOrDirectory(event: DragEvent): boolean {
     if (!event.dataTransfer?.types) {
         return false;
     }
 
-    return event.dataTransfer.types.some((value) => value.toLowerCase() === 'files');
+    return event.dataTransfer.types.some(value => value.toLowerCase() === 'files');
 }
 
 export default ({ className }: WithClassname) => {
@@ -31,22 +32,22 @@ export default ({ className }: WithClassname) => {
     const { mutate } = useFileManagerSwr();
     const { addError, clearAndAddHttpError } = useFlashKey('files');
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
     const { clearFileUploads, removeFileUpload, pushFileUpload, setUploadProgress } = ServerContext.useStoreActions(
-        (actions) => actions.files
+        actions => actions.files,
     );
 
     useEventListener(
         'dragenter',
-        (e) => {
+        e => {
             e.preventDefault();
             e.stopPropagation();
             if (isFileOrDirectory(e)) {
                 visible.value = true;
             }
         },
-        { capture: true }
+        { capture: true },
     );
 
     useEventListener('dragexit', () => (visible.value = false), { capture: true });
@@ -64,11 +65,11 @@ export default ({ className }: WithClassname) => {
     const onFileSubmission = (files: FileList) => {
         clearAndAddHttpError();
         const list = Array.from(files);
-        if (list.some((file) => !file.size || (!file.type && file.size === 4096))) {
+        if (list.some(file => !file.size || (!file.type && file.size === 4096))) {
             return addError('Folder uploads are not supported at this time.', 'Error');
         }
 
-        const uploads = list.map((file) => {
+        const uploads = list.map(file => {
             const controller = new AbortController();
             pushFileUpload({
                 name: file.name,
@@ -76,7 +77,7 @@ export default ({ className }: WithClassname) => {
             });
 
             return () =>
-                getFileUploadUrl(uuid).then((url) =>
+                getFileUploadUrl(uuid).then(url =>
                     axios
                         .post(
                             url,
@@ -85,16 +86,16 @@ export default ({ className }: WithClassname) => {
                                 signal: controller.signal,
                                 headers: { 'Content-Type': 'multipart/form-data' },
                                 params: { directory },
-                                onUploadProgress: (data) => onUploadProgress(data, file.name),
-                            }
+                                onUploadProgress: data => onUploadProgress(data, file.name),
+                            },
                         )
-                        .then(() => timeouts.value.push(setTimeout(() => removeFileUpload(file.name), 500)))
+                        .then(() => timeouts.value.push(setTimeout(() => removeFileUpload(file.name), 500))),
                 );
         });
 
-        Promise.all(uploads.map((fn) => fn()))
+        Promise.all(uploads.map(fn => fn()))
             .then(() => mutate())
-            .catch((error) => {
+            .catch(error => {
                 clearFileUploads();
                 clearAndAddHttpError(error);
             });
@@ -103,40 +104,42 @@ export default ({ className }: WithClassname) => {
     return (
         <>
             <Portal>
-                <Fade appear in={visible.value} timeout={75} key={'upload_modal_mask'} unmountOnExit>
+                <FadeTransition show={visible.value} duration="duration-75" key="upload_modal_mask" appear unmount>
                     <ModalMask
                         onClick={() => (visible.value = false)}
-                        onDragOver={(e) => e.preventDefault()}
-                        onDrop={(e) => {
+                        onDragOver={e => e.preventDefault()}
+                        onDrop={e => {
                             e.preventDefault();
                             e.stopPropagation();
 
                             visible.value = false;
-                            if (!e.dataTransfer?.files.length) return;
+                            if (!e.dataTransfer?.files.length) {
+                                return;
+                            }
 
                             onFileSubmission(e.dataTransfer.files);
                         }}
                     >
-                        <div className={'w-full flex items-center justify-center pointer-events-none'}>
+                        <div className={'pointer-events-none flex w-full items-center justify-center'}>
                             <div
                                 className={
-                                    'flex items-center space-x-4 bg-black w-full ring-4 ring-blue-200 ring-opacity-60 rounded p-6 mx-10 max-w-sm'
+                                    'mx-10 flex w-full max-w-sm items-center space-x-4 rounded bg-black p-6 ring-4 ring-blue-200 ring-opacity-60'
                                 }
                             >
-                                <CloudUploadIcon className={'w-10 h-10 flex-shrink-0'} />
-                                <p className={'font-header flex-1 text-lg text-neutral-100 text-center'}>
+                                <CloudUploadIcon className={'h-10 w-10 flex-shrink-0'} />
+                                <p className={'flex-1 text-center font-header text-lg text-neutral-100'}>
                                     Drag and drop files to upload.
                                 </p>
                             </div>
                         </div>
                     </ModalMask>
-                </Fade>
+                </FadeTransition>
             </Portal>
             <input
                 type={'file'}
                 ref={fileUploadInput}
                 css={tw`hidden`}
-                onChange={(e) => {
+                onChange={e => {
                     if (!e.currentTarget.files) return;
 
                     onFileSubmission(e.currentTarget.files);

@@ -1,14 +1,16 @@
-import React, { useEffect, useRef, useState } from 'react';
-import { Link, RouteComponentProps } from 'react-router-dom';
+import { useStoreState } from 'easy-peasy';
+import type { FormikHelpers } from 'formik';
+import { Formik } from 'formik';
+import { useEffect, useRef, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import Reaptcha from 'reaptcha';
+import tw from 'twin.macro';
+import { object, string } from 'yup';
+
 import login from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
-import { useStoreState } from 'easy-peasy';
-import { Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
 
 interface Values {
@@ -16,12 +18,14 @@ interface Values {
     password: string;
 }
 
-const LoginContainer = ({ history }: RouteComponentProps) => {
+function LoginContainer() {
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
+    const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
+
+    const navigate = useNavigate();
 
     useEffect(() => {
         clearFlashes();
@@ -33,7 +37,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
         if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch((error) => {
+            ref.current!.execute().catch(error => {
                 console.error(error);
 
                 setSubmitting(false);
@@ -44,16 +48,16 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
         }
 
         login({ ...values, recaptchaData: token })
-            .then((response) => {
+            .then(response => {
                 if (response.complete) {
                     // @ts-expect-error this is valid
                     window.location = response.intended || '/';
                     return;
                 }
 
-                history.replace('/auth/login/checkpoint', { token: response.confirmationToken });
+                navigate('/auth/login/checkpoint', { state: { token: response.confirmationToken } });
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
 
                 setToken('');
@@ -89,7 +93,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             ref={ref}
                             size={'invisible'}
                             sitekey={siteKey || '_invalid_key'}
-                            onVerify={(response) => {
+                            onVerify={response => {
                                 setToken(response);
                                 submitForm();
                             }}
@@ -111,6 +115,6 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             )}
         </Formik>
     );
-};
+}
 
 export default LoginContainer;

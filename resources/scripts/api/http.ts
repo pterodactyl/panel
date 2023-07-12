@@ -11,7 +11,7 @@ const http: AxiosInstance = axios.create({
     },
 });
 
-http.interceptors.request.use((req) => {
+http.interceptors.request.use(req => {
     if (!req.url?.endsWith('/resources')) {
         store.getActions().progress.startContinuous();
     }
@@ -20,18 +20,18 @@ http.interceptors.request.use((req) => {
 });
 
 http.interceptors.response.use(
-    (resp) => {
+    resp => {
         if (!resp.request?.url?.endsWith('/resources')) {
             store.getActions().progress.setComplete();
         }
 
         return resp;
     },
-    (error) => {
+    error => {
         store.getActions().progress.setComplete();
 
         throw error;
-    }
+    },
 );
 
 export default http;

@@ -9,7 +9,7 @@ class RemoveLegacySFTPInformation extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropUnique(['username']);
@@ -22,7 +22,7 @@ class RemoveLegacySFTPInformation extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->string('username')->nullable()->after('image')->unique();

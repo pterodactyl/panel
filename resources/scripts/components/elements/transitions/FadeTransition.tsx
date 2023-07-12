@@ -1,16 +1,18 @@
-import React from 'react';
 import { Transition } from '@headlessui/react';
+import type { ElementType, ReactNode } from 'react';
 
 type Duration = `duration-${number}`;
 
 interface Props {
-    as?: React.ElementType;
+    as?: ElementType;
     duration?: Duration | [Duration, Duration];
+    appear?: boolean;
+    unmount?: boolean;
     show: boolean;
-    children: React.ReactNode;
+    children: ReactNode;
 }
 
-export default ({ children, duration, ...props }: Props) => {
+function FadeTransition({ children, duration, ...props }: Props) {
     const [enterDuration, exitDuration] = Array.isArray(duration)
         ? duration
         : !duration
@@ -30,4 +32,6 @@ export default ({ children, duration, ...props }: Props) => {
             {children}
         </Transition>
     );
-};
+}
+
+export default FadeTransition;

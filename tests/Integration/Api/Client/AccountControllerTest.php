@@ -26,8 +26,6 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
                 'admin' => false,
                 'username' => $user->username,
                 'email' => $user->email,
-                'first_name' => $user->name_first,
-                'last_name' => $user->name_last,
                 'language' => $user->language,
             ],
         ]);

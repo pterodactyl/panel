@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useRef } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { Form, Formik } from 'formik';
 import { array, object, string } from 'yup';
@@ -29,24 +29,24 @@ interface Values {
 
 const EditSubuserModal = ({ subuser }: Props) => {
     const ref = useRef<HTMLHeadingElement>(null);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const appendSubuser = ServerContext.useStoreActions((actions) => actions.subusers.appendSubuser);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const appendSubuser = ServerContext.useStoreActions(actions => actions.subusers.appendSubuser);
     const { clearFlashes, clearAndAddHttpError } = useStoreActions(
-        (actions: Actions<ApplicationStore>) => actions.flashes
+        (actions: Actions<ApplicationStore>) => actions.flashes,
     );
     const { dismiss, setPropOverrides } = useContext(ModalContext);
 
-    const isRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
-    const permissions = useStoreState((state) => state.permissions.data);
+    const isRootAdmin = useStoreState(state => state.user.data!.rootAdmin);
+    const permissions = useStoreState(state => state.permissions.data);
     // The currently logged in user's permissions. We're going to filter out any permissions
     // that they should not need.
-    const loggedInPermissions = ServerContext.useStoreState((state) => state.server.permissions);
+    const loggedInPermissions = ServerContext.useStoreState(state => state.server.permissions);
     const [canEditUser] = usePermissions(subuser ? ['user.update'] : ['user.create']);
 
     // The permissions that can be modified by this user.
     const editablePermissions = useDeepCompareMemo(() => {
-        const cleaned = Object.keys(permissions).map((key) =>
-            Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)
+        const cleaned = Object.keys(permissions).map(key =>
+            Object.keys(permissions[key]?.keys ?? {}).map(pkey => `${key}.${pkey}`),
         );
 
         const list: string[] = ([] as string[]).concat.apply([], Object.values(cleaned));
@@ -55,7 +55,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
             return list;
         }
 
-        return list.filter((key) => loggedInPermissions.indexOf(key) >= 0);
+        return list.filter(key => loggedInPermissions.indexOf(key) >= 0);
     }, [isRootAdmin, permissions, loggedInPermissions]);
 
     const submit = (values: Values) => {
@@ -63,11 +63,11 @@ const EditSubuserModal = ({ subuser }: Props) => {
         clearFlashes('user:edit');
 
         createOrUpdateSubuser(uuid, values, subuser)
-            .then((subuser) => {
+            .then(subuser => {
                 appendSubuser(subuser);
                 dismiss();
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 setPropOverrides(null);
                 clearAndAddHttpError({ key: 'user:edit', error });
@@ -82,7 +82,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
         () => () => {
             clearFlashes('user:edit');
         },
-        []
+        [],
     );
 
     return (
@@ -137,17 +137,17 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 )}
                 <div css={tw`my-6`}>
                     {Object.keys(permissions)
-                        .filter((key) => key !== 'websocket')
+                        .filter(key => key !== 'websocket')
                         .map((key, index) => (
                             <PermissionTitleBox
                                 key={`permission_${key}`}
                                 title={key}
                                 isEditable={canEditUser}
-                                permissions={Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)}
+                                permissions={Object.keys(permissions[key]?.keys ?? {}).map(pkey => `${key}.${pkey}`)}
                                 css={index > 0 ? tw`mt-4` : undefined}
                             >
-                                <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key].description}</p>
-                                {Object.keys(permissions[key].keys).map((pkey) => (
+                                <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key]?.description}</p>
+                                {Object.keys(permissions[key]?.keys ?? {}).map(pkey => (
                                     <PermissionRow
                                         key={`permission_${key}.${pkey}`}
                                         permission={`${key}.${pkey}`}

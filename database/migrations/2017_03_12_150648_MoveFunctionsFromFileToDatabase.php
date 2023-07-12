@@ -85,7 +85,7 @@ EOF;
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('services', function (Blueprint $table) {
             $table->text('index_file')->after('startup');
@@ -105,7 +105,7 @@ EOF;
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('services', function (Blueprint $table) {
             $table->dropColumn('index_file');

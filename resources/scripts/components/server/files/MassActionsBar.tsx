@@ -1,19 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
-import Fade from '@/components/elements/Fade';
+import { useEffect, useState } from 'react';
+
+import compressFiles from '@/api/server/files/compressFiles';
+import deleteFiles from '@/api/server/files/deleteFiles';
+import { Button } from '@/components/elements/button';
+import { Dialog } from '@/components/elements/dialog';
+import Portal from '@/components/elements/Portal';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import RenameFileModal from '@/components/server/files/RenameFileModal';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
-import compressFiles from '@/api/server/files/compressFiles';
 import { ServerContext } from '@/state/server';
-import deleteFiles from '@/api/server/files/deleteFiles';
-import RenameFileModal from '@/components/server/files/RenameFileModal';
-import Portal from '@/components/elements/Portal';
-import { Dialog } from '@/components/elements/dialog';
+import FadeTransition from '@/components/elements/transitions/FadeTransition';
 
 const MassActionsBar = () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
 
     const { mutate } = useFileManagerSwr();
     const { clearFlashes, clearAndAddHttpError } = useFlash();
@@ -21,10 +21,10 @@ const MassActionsBar = () => {
     const [loadingMessage, setLoadingMessage] = useState('');
     const [showConfirm, setShowConfirm] = useState(false);
     const [showMove, setShowMove] = useState(false);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
 
-    const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
-    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+    const selectedFiles = ServerContext.useStoreState(state => state.files.selectedFiles);
+    const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
 
     useEffect(() => {
         if (!loading) setLoadingMessage('');
@@ -38,7 +38,7 @@ const MassActionsBar = () => {
         compressFiles(uuid, directory, selectedFiles)
             .then(() => mutate())
             .then(() => setSelectedFiles([]))
-            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
+            .catch(error => clearAndAddHttpError({ key: 'files', error }))
             .then(() => setLoading(false));
     };
 
@@ -49,12 +49,12 @@ const MassActionsBar = () => {
         setLoadingMessage('Deleting files...');
 
         deleteFiles(uuid, directory, selectedFiles)
-            .then(() => {
-                mutate((files) => files.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
+            .then(async () => {
+                await mutate(files => files!.filter(f => selectedFiles.indexOf(f.name) < 0), false);
                 setSelectedFiles([]);
             })
-            .catch((error) => {
-                mutate();
+            .catch(async error => {
+                await mutate();
                 clearAndAddHttpError({ key: 'files', error });
             })
             .then(() => setLoading(false));
@@ -62,7 +62,7 @@ const MassActionsBar = () => {
 
     return (
         <>
-            <div css={tw`pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center`}>
+            <div className="pointer-events-none fixed bottom-0 left-0 right-0 z-20 flex justify-center">
                 <SpinnerOverlay visible={loading} size={'large'} fixed>
                     {loadingMessage}
                 </SpinnerOverlay>
@@ -73,12 +73,12 @@ const MassActionsBar = () => {
                     onClose={() => setShowConfirm(false)}
                     onConfirmed={onClickConfirmDeletion}
                 >
-                    <p className={'mb-2'}>
+                    <p className="mb-2">
                         Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
+                        <span className="font-semibold text-slate-50">{selectedFiles.length} files</span>? This is a
                         permanent action and the files cannot be recovered.
                     </p>
-                    {selectedFiles.slice(0, 15).map((file) => (
+                    {selectedFiles.slice(0, 15).map(file => (
                         <li key={file}>{file}</li>
                     ))}
                     {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
@@ -93,16 +93,16 @@ const MassActionsBar = () => {
                     />
                 )}
                 <Portal>
-                    <div className={'fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
-                        <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-                            <div css={tw`flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50`}>
+                    <div className="fixed bottom-0 z-50 mb-6 flex w-full justify-center">
+                        <FadeTransition duration="duration-75" show={selectedFiles.length > 0} appear unmount>
+                            <div className="pointer-events-auto flex items-center space-x-4 rounded bg-black/50 p-4">
                                 <Button onClick={() => setShowMove(true)}>Move</Button>
                                 <Button onClick={onClickCompress}>Archive</Button>
                                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
                                     Delete
                                 </Button.Danger>
                             </div>
-                        </Fade>
+                        </FadeTransition>
                     </div>
                 </Portal>
             </div>

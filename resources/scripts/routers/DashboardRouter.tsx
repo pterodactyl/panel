@@ -1,50 +1,47 @@
-import React from 'react';
-import { NavLink, Route, Switch } from 'react-router-dom';
+import { Suspense } from 'react';
+import { NavLink, Route, Routes, useLocation } from 'react-router-dom';
+
 import NavigationBar from '@/components/NavigationBar';
 import DashboardContainer from '@/components/dashboard/DashboardContainer';
 import { NotFound } from '@/components/elements/ScreenBlock';
-import TransitionRouter from '@/TransitionRouter';
-import SubNavigation from '@/components/elements/SubNavigation';
-import { useLocation } from 'react-router';
 import Spinner from '@/components/elements/Spinner';
+import SubNavigation from '@/components/elements/SubNavigation';
 import routes from '@/routers/routes';
 
-export default () => {
+function DashboardRouter() {
     const location = useLocation();
 
     return (
         <>
             <NavigationBar />
+
             {location.pathname.startsWith('/account') && (
                 <SubNavigation>
                     <div>
                         {routes.account
-                            .filter((route) => !!route.name)
-                            .map(({ path, name, exact = false }) => (
-                                <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
+                            .filter(route => route.path !== undefined)
+                            .map(({ path, name, end = false }) => (
+                                <NavLink key={path} to={`/account/${path ?? ''}`.replace(/\/$/, '')} end={end}>
                                     {name}
                                 </NavLink>
                             ))}
                     </div>
                 </SubNavigation>
             )}
-            <TransitionRouter>
-                <React.Suspense fallback={<Spinner centered />}>
-                    <Switch location={location}>
-                        <Route path={'/'} exact>
-                            <DashboardContainer />
-                        </Route>
-                        {routes.account.map(({ path, component: Component }) => (
-                            <Route key={path} path={`/account/${path}`.replace('//', '/')} exact>
-                                <Component />
-                            </Route>
-                        ))}
-                        <Route path={'*'}>
-                            <NotFound />
-                        </Route>
-                    </Switch>
-                </React.Suspense>
-            </TransitionRouter>
+
+            <Suspense fallback={<Spinner centered />}>
+                <Routes>
+                    <Route path="" element={<DashboardContainer />} />
+
+                    {routes.account.map(({ route, component: Component }) => (
+                        <Route key={route} path={`/account/${route}`.replace(/\/$/, '')} element={<Component />} />
+                    ))}
+
+                    <Route path="*" element={<NotFound />} />
+                </Routes>
+            </Suspense>
         </>
     );
-};
+}
+
+export default DashboardRouter;

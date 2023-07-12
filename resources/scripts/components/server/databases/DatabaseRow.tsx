@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDatabase, faEye, faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import Modal from '@/components/elements/Modal';
@@ -26,13 +26,13 @@ interface Props {
 }
 
 export default ({ database, className }: Props) => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { addError, clearFlashes } = useFlash();
     const [visible, setVisible] = useState(false);
     const [connectionVisible, setConnectionVisible] = useState(false);
 
-    const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
-    const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
+    const appendDatabase = ServerContext.useStoreActions(actions => actions.databases.appendDatabase);
+    const removeDatabase = ServerContext.useStoreActions(actions => actions.databases.removeDatabase);
 
     const jdbcConnectionString = `jdbc:mysql://${database.username}${
         database.password ? `:${encodeURIComponent(database.password)}` : ''
@@ -44,14 +44,14 @@ export default ({ database, className }: Props) => {
             .oneOf([database.name.split('_', 2)[1], database.name], 'The database name must be provided.'),
     });
 
-    const submit = (values: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
+    const submit = (_: { confirm: string }, { setSubmitting }: FormikHelpers<{ confirm: string }>) => {
         clearFlashes();
         deleteServerDatabase(uuid, database.id)
             .then(() => {
                 setVisible(false);
                 setTimeout(() => removeDatabase(database.id), 150);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 setSubmitting(false);
                 addError({ key: 'database:delete', message: httpErrorToHuman(error) });

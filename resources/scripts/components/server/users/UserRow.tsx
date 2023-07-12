@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Subuser } from '@/state/server/subusers';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPencilAlt, faUnlockAlt, faUserLock } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +14,7 @@ interface Props {
 }
 
 export default ({ subuser }: Props) => {
-    const uuid = useStoreState((state) => state.user!.data!.uuid);
+    const uuid = useStoreState(state => state.user!.data!.uuid);
     const [visible, setVisible] = useState(false);
 
     return (
@@ -40,7 +40,7 @@ export default ({ subuser }: Props) => {
             </div>
             <div css={tw`ml-4 hidden md:block`}>
                 <p css={tw`font-medium text-center`}>
-                    {subuser.permissions.filter((permission) => permission !== 'websocket.connect').length}
+                    {subuser.permissions.filter(permission => permission !== 'websocket.connect').length}
                 </p>
                 <p css={tw`text-2xs text-neutral-500 uppercase`}>Permissions</p>
             </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import Modal from '@/components/elements/Modal';
 import tw from 'twin.macro';
@@ -12,10 +12,10 @@ const SteamDiskSpaceFeature = () => {
     const [visible, setVisible] = useState(false);
     const [loading] = useState(false);
 
-    const status = ServerContext.useStoreState((state) => state.status.value);
+    const status = ServerContext.useStoreState(state => state.status.value);
     const { clearFlashes } = useFlash();
-    const { connected, instance } = ServerContext.useStoreState((state) => state.socket);
-    const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const { connected, instance } = ServerContext.useStoreState(state => state.socket);
+    const isAdmin = useStoreState(state => state.user.data!.rootAdmin);
 
     useEffect(() => {
         if (!connected || !instance || status === 'running') return;
@@ -23,7 +23,7 @@ const SteamDiskSpaceFeature = () => {
         const errors = ['steamcmd needs 250mb of free disk space to update', '0x202 after update job'];
 
         const listener = (line: string) => {
-            if (errors.some((p) => line.toLowerCase().includes(p))) {
+            if (errors.some(p => line.toLowerCase().includes(p))) {
                 setVisible(true);
             }
         };

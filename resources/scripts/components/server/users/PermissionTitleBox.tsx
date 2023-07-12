@@ -1,29 +1,33 @@
-import React, { memo, useCallback } from 'react';
 import { useField } from 'formik';
-import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import tw from 'twin.macro';
-import Input from '@/components/elements/Input';
+import type { ReactNode } from 'react';
+import { memo, useCallback } from 'react';
 import isEqual from 'react-fast-compare';
+import tw from 'twin.macro';
+
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
+import Input from '@/components/elements/Input';
 
 interface Props {
-    isEditable: boolean;
+    children?: ReactNode;
+    className?: string;
+
+    isEditable?: boolean;
     title: string;
     permissions: string[];
-    className?: string;
 }
 
-const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissions, className, children }) => {
+function PermissionTitleBox({ isEditable, title, permissions, className, children }: Props) {
     const [{ value }, , { setValue }] = useField<string[]>('permissions');
 
     const onCheckboxClicked = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             if (e.currentTarget.checked) {
-                setValue([...value, ...permissions.filter((p) => !value.includes(p))]);
+                setValue([...value, ...permissions.filter(p => !value.includes(p))]);
             } else {
-                setValue(value.filter((p) => !permissions.includes(p)));
+                setValue(value.filter(p => !permissions.includes(p)));
             }
         },
-        [permissions, value]
+        [permissions, value],
     );
 
     return (
@@ -34,7 +38,7 @@ const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissio
                     {isEditable && (
                         <Input
                             type={'checkbox'}
-                            checked={permissions.every((p) => value.includes(p))}
+                            checked={permissions.every(p => value.includes(p))}
                             onChange={onCheckboxClicked}
                         />
                     )}
@@ -45,6 +49,8 @@ const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissio
             {children}
         </TitledGreyBox>
     );
-}, isEqual);
+}
 
-export default PermissionTitleBox;
+const MemoizedPermissionTitleBox = memo(PermissionTitleBox, isEqual);
+
+export default MemoizedPermissionTitleBox;

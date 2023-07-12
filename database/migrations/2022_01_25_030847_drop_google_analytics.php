@@ -7,25 +7,19 @@ class DropGoogleAnalytics extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         DB::table('settings')->where('key', 'settings::app:analytics')->delete();
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
-        DB::table('settings')->insert(
-            [
+        DB::table('settings')->insert([
             'key' => 'settings::app:analytics',
-            ]
-        );
+        ]);
     }
 }

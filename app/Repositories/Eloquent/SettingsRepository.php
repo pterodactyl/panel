@@ -46,6 +46,7 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
             return value($default);
         }
 
+        /** @var Setting $instance */
         $instance = $this->getBuilder()->where('key', $key)->first();
         if (is_null($instance)) {
             self::$databaseMiss[$key] = true;

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
 import { useFlashKey } from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
@@ -15,10 +15,10 @@ import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
 
 const NetworkContainer = () => {
     const [loading, setLoading] = useState(false);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const allocationLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.allocations);
-    const allocations = ServerContext.useStoreState((state) => state.server.data!.allocations, isEqual);
-    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const allocationLimit = ServerContext.useStoreState(state => state.server.data!.featureLimits.allocations);
+    const allocations = ServerContext.useStoreState(state => state.server.data!.allocations, isEqual);
+    const setServerFromState = ServerContext.useStoreActions(actions => actions.server.setServerFromState);
 
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
     const { data, error, mutate } = getServerAllocations();
@@ -34,7 +34,7 @@ const NetworkContainer = () => {
     useDeepCompareEffect(() => {
         if (!data) return;
 
-        setServerFromState((state) => ({ ...state, allocations: data }));
+        setServerFromState(state => ({ ...state, allocations: data }));
     }, [data]);
 
     const onCreateAllocation = () => {
@@ -42,11 +42,11 @@ const NetworkContainer = () => {
 
         setLoading(true);
         createServerAllocation(uuid)
-            .then((allocation) => {
-                setServerFromState((s) => ({ ...s, allocations: s.allocations.concat(allocation) }));
+            .then(allocation => {
+                setServerFromState(s => ({ ...s, allocations: s.allocations.concat(allocation) }));
                 return mutate(data?.concat(allocation), false);
             })
-            .catch((error) => clearAndAddHttpError(error))
+            .catch(error => clearAndAddHttpError(error))
             .then(() => setLoading(false));
     };
 
@@ -56,7 +56,7 @@ const NetworkContainer = () => {
                 <Spinner size={'large'} centered />
             ) : (
                 <>
-                    {data.map((allocation) => (
+                    {data.map(allocation => (
                         <AllocationRow key={`${allocation.ip}:${allocation.port}`} allocation={allocation} />
                     ))}
                     {allocationLimit > 0 && (

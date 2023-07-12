@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
 import { Button } from '@/components/elements/button/index';
 

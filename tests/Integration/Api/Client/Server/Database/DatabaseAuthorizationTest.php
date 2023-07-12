@@ -24,7 +24,7 @@ class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
         // And as no access to $server3.
         $server3 = $this->createServerModel();
 
-        $host = DatabaseHost::factory()->create([]);
+        $host = DatabaseHost::factory()->create();
 
         // Set the API $user as a subuser of server 2, but with no permissions
         // to do anything with the databases for that server.

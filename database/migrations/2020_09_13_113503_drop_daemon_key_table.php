@@ -8,20 +8,16 @@ class DropDaemonKeyTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::dropIfExists('daemon_keys');
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::create('daemon_keys', function (Blueprint $table) {
             $table->increments('id');

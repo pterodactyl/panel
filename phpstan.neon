@@ -1,0 +1,26 @@
+includes:
+    - ./vendor/nunomaduro/larastan/extension.neon
+
+parameters:
+
+    paths:
+        - app/
+
+    # Level 9 is the highest level
+    level: 4
+
+    ignoreErrors:
+        # Ignore repository interface missing methods
+        - '#Call to an undefined method Pterodactyl\\Repositories\\Wings\\DaemonRepository::(\w+)\(\)#'
+
+        # Ignore magic spatie calls
+        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::allowed(\w+)\(\)#'
+
+    excludePaths:
+        - app/Repositories
+
+        # More magic spatie to be replaced
+        - app/Extensions/Spatie/Fractalistic/Fractal.php
+
+#
+#    checkMissingIterableValueType: false

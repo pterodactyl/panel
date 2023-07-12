@@ -34,7 +34,7 @@ class StartupController extends ClientApiController
         return $this->fractal->collection(
             $server->variables()->where('user_viewable', true)->get()
         )
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->transformWith(EggVariableTransformer::class)
             ->addMeta([
                 'startup_command' => $startup,
                 'docker_images' => $server->egg->docker_images,
@@ -52,7 +52,6 @@ class StartupController extends ClientApiController
      */
     public function update(UpdateStartupVariableRequest $request, Server $server): array
     {
-        /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
         $original = $variable->server_value;
 
@@ -61,6 +60,8 @@ class StartupController extends ClientApiController
         } elseif (!$variable->user_editable) {
             throw new BadRequestHttpException('The environment variable you are trying to edit is read-only.');
         }
+
+        /* @var \Pterodactyl\Models\EggVariable $variable */
 
         // Revalidate the variable value using the egg variable specific validation rules for it.
         $this->validate($request, ['value' => $variable->rules]);
@@ -89,7 +90,7 @@ class StartupController extends ClientApiController
         }
 
         return $this->fractal->item($variable)
-            ->transformWith($this->getTransformer(EggVariableTransformer::class))
+            ->transformWith(EggVariableTransformer::class)
             ->addMeta([
                 'startup_command' => $startup,
                 'raw_startup_command' => $server->startup,

@@ -1,8 +1,8 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
-import { join } from 'path';
+import { join } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';
@@ -42,8 +42,8 @@ const generateDirectoryData = (name: string): FileObject => ({
 const NewDirectoryDialog = asDialog({
     title: 'Create Directory',
 })(() => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const directory = ServerContext.useStoreState(state => state.files.directory);
 
     const { mutate } = useFileManagerSwr();
     const { close } = useContext(DialogWrapperContext);
@@ -57,9 +57,9 @@ const NewDirectoryDialog = asDialog({
 
     const submit = ({ directoryName }: Values, { setSubmitting }: FormikHelpers<Values>) => {
         createDirectory(uuid, directory, directoryName)
-            .then(() => mutate((data) => [...data, generateDirectoryData(directoryName)], false))
+            .then(() => mutate(data => [...data!, generateDirectoryData(directoryName)], false))
             .then(() => close())
-            .catch((error) => {
+            .catch(error => {
                 setSubmitting(false);
                 clearAndAddHttpError(error);
             });

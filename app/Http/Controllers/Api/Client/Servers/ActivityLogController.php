@@ -48,7 +48,7 @@ class ActivityLogController extends ClientApiController
             ->appends($request->query());
 
         return $this->fractal->collection($activity)
-            ->transformWith($this->getTransformer(ActivityLogTransformer::class))
+            ->transformWith(ActivityLogTransformer::class)
             ->toArray();
     }
 }

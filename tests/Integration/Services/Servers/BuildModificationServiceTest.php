@@ -114,7 +114,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
         $this->daemonServerRepository->expects('sync')->withNoArgs()->andReturnUndefined();
 
         $response = $this->getService()->handle($server, [
-            'oom_disabled' => false,
+            'oom_killer' => true,
             'memory' => 256,
             'swap' => 128,
             'io' => 600,
@@ -126,7 +126,7 @@ class BuildModificationServiceTest extends IntegrationTestCase
             'allocation_limit' => 20,
         ]);
 
-        $this->assertFalse($response->oom_disabled);
+        $this->assertTrue($response->oom_killer);
         $this->assertSame(256, $response->memory);
         $this->assertSame(128, $response->swap);
         $this->assertSame(600, $response->io);

@@ -7,17 +7,6 @@ use League\Fractal\Serializer\ArraySerializer;
 class PterodactylSerializer extends ArraySerializer
 {
     /**
-     * Serialize an item.
-     */
-    public function item(?string $resourceKey, array $data): array
-    {
-        return [
-            'object' => $resourceKey,
-            'attributes' => $data,
-        ];
-    }
-
-    /**
      * Serialize a collection.
      */
     public function collection(?string $resourceKey, array $data): array
@@ -30,6 +19,17 @@ class PterodactylSerializer extends ArraySerializer
         return [
             'object' => 'list',
             'data' => $response,
+        ];
+    }
+
+    /**
+     * Serialize an item.
+     */
+    public function item(?string $resourceKey, array $data): array
+    {
+        return [
+            'object' => $resourceKey,
+            'attributes' => $data,
         ];
     }
 

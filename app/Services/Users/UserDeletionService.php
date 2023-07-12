@@ -25,7 +25,7 @@ class UserDeletionService
      *
      * @throws \Pterodactyl\Exceptions\DisplayException
      */
-    public function handle(int|User $user): ?bool
+    public function handle(int|User $user): void
     {
         if ($user instanceof User) {
             $user = $user->id;
@@ -36,6 +36,6 @@ class UserDeletionService
             throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
         }
 
-        return $this->repository->delete($user);
+        $this->repository->delete($user);
     }
 }
