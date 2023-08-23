@@ -93,7 +93,7 @@ const MassActionsBar = () => {
                     />
                 )}
                 <Portal>
-                    <div className="fixed bottom-0 z-50 mb-6 flex w-full justify-center">
+                    <div className="pointer-events-none fixed bottom-0 z-50 mb-6 flex w-full justify-center">
                         <FadeTransition duration="duration-75" show={selectedFiles.length > 0} appear unmount>
                             <div className="pointer-events-auto flex items-center space-x-4 rounded bg-black/50 p-4">
                                 <Button onClick={() => setShowMove(true)}>Move</Button>
