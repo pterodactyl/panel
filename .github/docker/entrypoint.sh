@@ -3,7 +3,7 @@ cd /app
 
 mkdir -p /var/log/panel/logs/ /var/log/supervisord/ /var/log/nginx/ /var/log/php7/ \
   && chmod 777 /var/log/panel/logs/ \
-  && ln -s /var/log/panel/logs/ /app/storage/logs/
+  && ln -s /app/storage/logs/ /var/log/panel/
 
 ## check for .env file and generate app keys if missing
 if [ -f /app/var/.env ]; then
