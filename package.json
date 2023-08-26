@@ -18,12 +18,12 @@
         "boring-avatars": "^1.7.0",
         "chart.js": "^3.8.0",
         "classnames": "^2.3.1",
-        "codemirror": "^5.57.0",
+        "codemirror": "^5.58.2",
         "copy-to-clipboard": "^3.3.1",
         "date-fns": "^2.28.0",
         "debounce": "^1.2.0",
         "deepmerge-ts": "^4.2.1",
-        "easy-peasy": "^4.0.1",
+        "easy-peasy": "^4.0.2",
         "events": "^3.0.0",
         "formik": "^2.2.6",
         "framer-motion": "^6.3.10",
@@ -52,7 +52,7 @@
         "xterm-addon-search": "^0.9.0",
         "xterm-addon-search-bar": "^0.2.0",
         "xterm-addon-web-links": "^0.6.0",
-        "yup": "^0.29.1"
+        "yup": "^0.30.0"
     },
     "devDependencies": {
         "@babel/core": "^7.12.1",
