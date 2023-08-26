@@ -15,8 +15,6 @@ final class Time
      */
     public static function getMySQLTimezoneOffset(string $timezone): string
     {
-        $offset = round(CarbonImmutable::now($timezone)->getTimezone()->getOffset(CarbonImmutable::now('UTC')) / 3600);
-
-        return sprintf('%s%s:00', $offset > 0 ? '+' : '-', str_pad((string) abs($offset), 2, '0', STR_PAD_LEFT));
+        return CarbonImmutable::now($timezone)->getTimezone()->toOffsetName();
     }
 }
