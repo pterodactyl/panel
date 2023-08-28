@@ -76,7 +76,7 @@
         "react-select": "5.7.0",
         "reaptcha": "1.12.1",
         "sockette": "2.0.6",
-        "styled-components": "5.3.6",
+        "styled-components": "5.3.7",
         "styled-components-breakpoint": "3.0.0-preview.20",
         "swr": "2.0.3",
         "xterm": "5.1.0",
