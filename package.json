@@ -44,7 +44,7 @@
         "styled-components": "^5.2.1",
         "styled-components-breakpoint": "^3.0.0-preview.20",
         "swr": "^0.2.3",
-        "tailwindcss": "^3.0.24",
+        "tailwindcss": "^3.3.3",
         "use-fit-text": "^2.4.0",
         "uuid": "^8.3.2",
         "xterm": "^4.19.0",
