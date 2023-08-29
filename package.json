@@ -4,7 +4,7 @@
         "node": ">=14"
     },
     "dependencies": {
-        "@floating-ui/react-dom-interactions": "^0.6.6",
+        "@floating-ui/react-dom-interactions": "^0.13.3",
         "@fortawesome/fontawesome-svg-core": "^1.2.32",
         "@fortawesome/free-solid-svg-icons": "^5.15.1",
         "@fortawesome/react-fontawesome": "^0.1.11",
