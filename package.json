@@ -60,7 +60,7 @@
         "deepmerge-ts": "4.3.0",
         "easy-peasy": "5.2.0",
         "events": "3.3.0",
-        "formik": "2.2.9",
+        "formik": "2.4.3",
         "framer-motion": "9.1.6",
         "i18next": "22.4.10",
         "i18next-http-backend": "2.1.1",
