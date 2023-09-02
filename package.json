@@ -39,7 +39,7 @@
         "react-i18next": "^11.2.1",
         "react-router-dom": "^5.1.2",
         "react-transition-group": "^4.4.1",
-        "reaptcha": "^1.7.2",
+        "reaptcha": "^1.12.1",
         "sockette": "^2.0.6",
         "styled-components": "^5.3.11",
         "styled-components-breakpoint": "^3.0.0-preview.20",
