@@ -18,11 +18,12 @@ import { ServerContext } from '@/state/server';
 import styles from './style.module.css';
 
 function Clickable({ file, children }: { file: FileObject; children: ReactNode }) {
+    const [canRead] = usePermissions(['file.read']);
     const [canReadContents] = usePermissions(['file.read-content']);
     const id = ServerContext.useStoreState(state => state.server.data!.id);
     const directory = ServerContext.useStoreState(state => state.files.directory);
 
-    return !canReadContents || (file.isFile && !file.isEditable()) ? (
+    return (file.isFile && (!file.isEditable() || !canReadContents)) || (!file.isFile && !canRead) ? (
         <div className={styles.details}>{children}</div>
     ) : (
         <NavLink

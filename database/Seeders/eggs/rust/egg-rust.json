@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2023-02-04T14:45:12-05:00",
+    "exported_at": "2023-03-25T13:37:00+00:00",
     "name": "Rust",
     "author": "support@pterodactyl.io",
     "description": "The only aim in Rust is to survive. To do this you will need to overcome struggles such as hunger, thirst and cold. Build a fire. Build a shelter. Kill animals for meat. Protect yourself from other players, and kill them for meat. Create alliances with other players and form a town. Do whatever it takes to survive.",
@@ -41,13 +41,13 @@
             "field_type": "text"
         },
         {
-            "name": "OxideMod",
-            "description": "Set whether you want the server to use and auto update OxideMod or not. Valid options are \"1\" for true and \"0\" for false.",
-            "env_variable": "OXIDE",
-            "default_value": "0",
+            "name": "Modding Framework",
+            "description": "The modding framework to be used: carbon, oxide, vanilla.\r\nDefaults to \"vanilla\" for a non-modded server installation.",
+            "env_variable": "FRAMEWORK",
+            "default_value": "vanilla",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|boolean",
+            "rules": "required|in:carbon,oxide,vanilla",
             "field_type": "text"
         },
         {
@@ -121,6 +121,16 @@
             "field_type": "text"
         },
         {
+            "name": "Query Port",
+            "description": "Server Query Port. Can't be the same as Game's primary port.",
+            "env_variable": "QUERY_PORT",
+            "default_value": "27017",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|integer",
+            "field_type": "text"
+        },
+        {
             "name": "RCON Port",
             "description": "Port for RCON connections.",
             "env_variable": "RCON_PORT",
@@ -188,16 +198,6 @@
             "user_viewable": true,
             "user_editable": true,
             "rules": "nullable|url",
-            "field_type": "text"
-        },
-        {
-            "name": "Query Port",
-            "description": "Server Query Port. Can't be the same as Game's primary port.",
-            "env_variable": "QUERY_PORT",
-            "default_value": "27017",
-            "user_viewable": true,
-            "user_editable": false,
-            "rules": "required|integer",
             "field_type": "text"
         }
     ]
