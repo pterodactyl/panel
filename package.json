@@ -16,7 +16,7 @@
         "@tailwindcss/line-clamp": "^0.4.4",
         "axios": "^0.27.2",
         "boring-avatars": "^1.7.0",
-        "chart.js": "^3.8.0",
+        "chart.js": "^3.9.1",
         "classnames": "^2.3.1",
         "codemirror": "^5.58.2",
         "copy-to-clipboard": "^3.3.1",
