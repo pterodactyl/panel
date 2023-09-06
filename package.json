@@ -28,7 +28,7 @@
         "formik": "^2.2.6",
         "framer-motion": "^6.5.1",
         "i18next": "^21.8.9",
-        "i18next-http-backend": "^1.4.1",
+        "i18next-http-backend": "^1.4.5",
         "i18next-multiload-backend-adapter": "^1.0.0",
         "qrcode.react": "^1.0.1",
         "react": "^16.14.0",
