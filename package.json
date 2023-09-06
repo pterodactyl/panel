@@ -24,7 +24,7 @@
         "debounce": "^1.2.0",
         "deepmerge-ts": "^4.2.1",
         "easy-peasy": "^4.0.2",
-        "events": "^3.0.0",
+        "events": "^3.3.0",
         "formik": "^2.2.6",
         "framer-motion": "^6.5.1",
         "i18next": "^21.8.9",
