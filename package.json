@@ -34,7 +34,7 @@
         "react": "^16.14.0",
         "react-chartjs-2": "^4.2.0",
         "react-dom": "16.14.0",
-        "react-fast-compare": "^3.2.0",
+        "react-fast-compare": "^3.2.2",
         "react-hot-loader": "^4.12.21",
         "react-i18next": "^11.2.1",
         "react-router-dom": "^5.3.4",
