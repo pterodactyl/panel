@@ -21,7 +21,7 @@
         "codemirror": "^5.58.2",
         "copy-to-clipboard": "^3.3.3",
         "date-fns": "^2.28.0",
-        "debounce": "^1.2.0",
+        "debounce": "^1.2.1",
         "deepmerge-ts": "^4.3.0",
         "easy-peasy": "^4.0.2",
         "events": "^3.3.0",
