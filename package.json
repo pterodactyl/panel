@@ -78,7 +78,7 @@
         "sockette": "2.0.6",
         "styled-components": "5.3.7",
         "styled-components-breakpoint": "3.0.0-preview.20",
-        "swr": "2.0.3",
+        "swr": "2.2.0",
         "xterm": "5.2.1",
         "xterm-addon-fit": "0.7.0",
         "xterm-addon-search": "0.11.0",
