@@ -32,7 +32,7 @@
         "i18next-multiload-backend-adapter": "^1.0.0",
         "qrcode.react": "^1.0.1",
         "react": "^16.14.0",
-        "react-chartjs-2": "^4.2.0",
+        "react-chartjs-2": "^4.3.1",
         "react-dom": "16.14.0",
         "react-fast-compare": "^3.2.2",
         "react-hot-loader": "^4.12.21",
