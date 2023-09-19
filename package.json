@@ -18,7 +18,7 @@
         "boring-avatars": "^1.7.0",
         "chart.js": "^3.9.1",
         "classnames": "^2.3.2",
-        "codemirror": "^5.58.2",
+        "codemirror": "^5.65.15",
         "copy-to-clipboard": "^3.3.3",
         "date-fns": "^2.28.0",
         "debounce": "^1.2.1",
