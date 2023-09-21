@@ -4,7 +4,9 @@ use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Api\Application;
 
 Route::get('/version', [Application\VersionController::class, '__invoke']);
-
+Route::group(['prefix' => '/settings'], function () {
+    Route::get('/', [Application\SettingsController::class, '__invoke']);
+});
 /*
 |--------------------------------------------------------------------------
 | Database Controller Routes

@@ -7,7 +7,7 @@ import MailSettings from '@/components/admin/settings/MailSettings';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
 import GeneralSettings from '@/components/admin/settings/GeneralSettings';
-import SecuritySettings from './SecuritySettings';
+import SecuritySettings from '@/components/admin/settings/SecuritySettings';
 
 export default () => {
     return (
