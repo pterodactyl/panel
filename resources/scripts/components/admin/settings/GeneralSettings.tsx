@@ -30,17 +30,6 @@ export default () => {
                             <Field id={'appName'} name={'appName'} type={'text'} label={'App Name'} description={''} />
                         </FieldRow>
                     </AdminBox>
-                    <AdminBox title="Analytics">
-                        <FieldRow>
-                            <Field
-                                id={'googleAnalytics'}
-                                name={'googleAnalytics'}
-                                type={'text'}
-                                label={'Google Analytics'}
-                                description={''}
-                            />
-                        </FieldRow>
-                    </AdminBox>
                     <AdminBox title="Language">
                         <FieldRow>
                             <SelectField
