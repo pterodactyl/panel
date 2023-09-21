@@ -5,9 +5,10 @@ import AdminBox from '@/components/admin/AdminBox';
 import Field, { FieldRow } from '@/components/elements/Field';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
+import SelectField from '@/components/elements/SelectField';
 
 export default () => {
-    const { name: appName } = useStoreState((state: ApplicationStore) => state.settings.data!);
+    const { name: appName, locale: language } = useStoreState((state: ApplicationStore) => state.settings.data!);
 
     const submit = () => {
         //
@@ -18,6 +19,7 @@ export default () => {
             onSubmit={submit}
             initialValues={{
                 appName,
+                language,
                 googleAnalytics: '',
             }}
         >
@@ -36,6 +38,17 @@ export default () => {
                                 type={'text'}
                                 label={'Google Analytics'}
                                 description={''}
+                            />
+                        </FieldRow>
+                    </AdminBox>
+                    <AdminBox title="Language">
+                        <FieldRow>
+                            <SelectField
+                                id={'language'}
+                                name={'language'}
+                                label={'Default language'}
+                                description={''}
+                                options={[{ value: 'en', label: 'English' }]}
                             />
                         </FieldRow>
                     </AdminBox>

@@ -7,6 +7,7 @@ import MailSettings from '@/components/admin/settings/MailSettings';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigation';
 import GeneralSettings from '@/components/admin/settings/GeneralSettings';
+import SecuritySettings from './SecuritySettings';
 
 export default () => {
     return (
@@ -43,7 +44,7 @@ export default () => {
             <Routes>
                 <Route path="/" element={<GeneralSettings />} />
                 <Route path="/mail" element={<MailSettings />} />
-                <Route path="/security" element={<p>Security</p>} />
+                <Route path="/security" element={<SecuritySettings />} />
                 <Route path="/features" element={<p>Features</p>} />
                 <Route path="/advanced" element={<p>Advanced</p>} />
             </Routes>
