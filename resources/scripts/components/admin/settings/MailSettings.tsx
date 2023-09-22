@@ -6,8 +6,13 @@ import Button from '@/components/elements/Button';
 import Field, { FieldRow } from '@/components/elements/Field';
 import Label from '@/components/elements/Label';
 import Select from '@/components/elements/Select';
+import { MailSettings } from '@/api/admin/settings';
 
-export default () => {
+interface Props {
+    data?: MailSettings;
+}
+
+export default ({ data }: Props) => {
     const submit = () => {
         //
     };

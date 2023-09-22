@@ -6,8 +6,13 @@ import Field, { FieldRow } from '@/components/elements/Field';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SelectField from '@/components/elements/SelectField';
+import { SecuritySettings } from '@/api/admin/settings';
 
-export default () => {
+interface Props {
+    data?: SecuritySettings;
+}
+
+export default ({ data }: Props) => {
     const { recaptcha } = useStoreState((state: ApplicationStore) => state.settings.data!);
     const { enabled: recaptchaStatus, siteKey } = recaptcha;
 

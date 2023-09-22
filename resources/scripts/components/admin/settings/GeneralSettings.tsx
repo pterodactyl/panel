@@ -6,8 +6,13 @@ import Field, { FieldRow } from '@/components/elements/Field';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SelectField from '@/components/elements/SelectField';
+import { GeneralSettings } from '@/api/admin/settings';
 
-export default () => {
+interface Props {
+    data?: GeneralSettings;
+}
+
+export default ({ data }: Props) => {
     const { name: appName, locale: language } = useStoreState((state: ApplicationStore) => state.settings.data!);
 
     const submit = () => {
@@ -20,7 +25,6 @@ export default () => {
             initialValues={{
                 appName,
                 language,
-                googleAnalytics: '',
             }}
         >
             <Form>

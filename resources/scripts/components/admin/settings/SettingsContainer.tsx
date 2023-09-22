@@ -9,8 +9,23 @@ import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigati
 import GeneralSettings from '@/components/admin/settings/GeneralSettings';
 import SecuritySettings from '@/components/admin/settings/SecuritySettings';
 import AdvancedSettings from './AdvancedSettings';
+import { getSettings } from '@/api/admin/settings';
+import { useEffect } from 'react';
+import useFlash from '@/plugins/useFlash';
 
 export default () => {
+    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const { data, error } = getSettings();
+
+    useEffect(() => {
+        if (!error) {
+            clearFlashes('admin:settings');
+            return;
+        }
+
+        clearAndAddHttpError({ key: 'admin:settings', error });
+    }, [error]);
+
     return (
         <AdminContentBlock title={'Settings'}>
             <div css={tw`w-full flex flex-row items-center mb-8`}>
@@ -46,7 +61,7 @@ export default () => {
                 <Route path="/" element={<GeneralSettings />} />
                 <Route path="/mail" element={<MailSettings />} />
                 <Route path="/security" element={<SecuritySettings />} />
-                <Route path="/features" element={<p>Features</p>} />
+                {/* <Route path="/features" element={<p>Features</p>} /> */}
                 <Route path="/advanced" element={<AdvancedSettings />} />
             </Routes>
         </AdminContentBlock>
