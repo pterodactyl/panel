@@ -6,10 +6,11 @@ import { object, string } from 'yup';
 
 import { getRoles, createRole } from '@/api/admin/roles';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import Field from '@/components/elements/Field';
 import Modal from '@/components/elements/Modal';
 import useFlash from '@/plugins/useFlash';
+import { Size, Variant } from '@/components/elements/button/types';
 
 interface Values {
     name: string;
@@ -77,14 +78,14 @@ export default () => {
                             </div>
 
                             <div css={tw`flex flex-wrap justify-end mt-6`}>
-                                <Button
+                                <Button.Text
                                     type={'button'}
-                                    isSecondary
+                                    variant={Variant.Secondary}
                                     css={tw`w-full sm:w-auto sm:mr-2`}
                                     onClick={() => setVisible(false)}
                                 >
                                     Cancel
-                                </Button>
+                                </Button.Text>
                                 <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
                                     Create Role
                                 </Button>
@@ -96,7 +97,7 @@ export default () => {
 
             <Button
                 type={'button'}
-                size={'large'}
+                size={Size.Large}
                 css={tw`h-10 px-4 py-0 whitespace-nowrap`}
                 onClick={() => setVisible(true)}
             >
