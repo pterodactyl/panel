@@ -58,7 +58,7 @@ class NodeAutoDeployController extends ApplicationApiController
             'debug' => config('app.debug'),
             'node' => $node->id,
             'token' => $key->identifier . $this->encrypter->decrypt($key->token),
-            'remote' => route('index'),
+            'remote' => config('app.url'),
         ]);
     }
 }
