@@ -1,7 +1,6 @@
 import { Model } from '@/api/admin/index';
 import http from '@/api/http';
 import Transformers from '../definitions/admin/transformers';
-import useSWR from 'swr';
 
 export interface Settings extends Model {
     general: GeneralSettings;
@@ -14,9 +13,9 @@ export interface GeneralSettings {
     languages: Language[];
 }
 
-type Language = {
+interface Language {
     [key: string]: string;
-};
+}
 
 export type LanguageKey = 'en';
 
@@ -39,10 +38,18 @@ export interface SecuritySettings {
     '2faEnabled': boolean;
 }
 
-export const getSettings = () => {
-    return useSWR<Settings>('settings', async () => {
-        const { data } = await http.get(`/api/application/settings`);
+// export const getSettings = () => {
+//     return useSWR<Settings>('settings', async () => {
+//         const { data } = await http.get(`/api/application/settings`);
 
-        return Transformers.toSettings(data);
+//         return Transformers.toSettings(data);
+//     });
+// };
+
+export const getSettings = (): Promise<Settings> => {
+    return new Promise((resolve, reject) => {
+        http.get('/api/application/settings')
+            .then(({ data }) => resolve(Transformers.toSettings(data)))
+            .catch(reject);
     });
 };

@@ -1,33 +1,44 @@
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 
 import AdminBox from '@/components/admin/AdminBox';
 import Button from '@/components/elements/Button';
 import Field, { FieldRow } from '@/components/elements/Field';
 import Label from '@/components/elements/Label';
-import Select from '@/components/elements/Select';
-import { MailSettings } from '@/api/admin/settings';
+import { Context } from './SettingsRouter';
+import SelectField from '@/components/elements/SelectField';
 
-interface Props {
-    data?: MailSettings;
+interface Values {
+    smtpHost: string;
+    smtpPort: number;
+    smtpEncryption: string;
+    username: string;
+    password: string;
+    mailFrom: string;
+    mailFromName: string;
 }
 
-export default ({ data }: Props) => {
-    const submit = () => {
-        //
+export default () => {
+    const { host, port, encryption, username, password, fromAddress, fromName } = Context.useStoreState(
+        state => state.settings!.mail,
+    );
+
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        console.log(values);
+        setSubmitting(false);
     };
 
     return (
         <Formik
             onSubmit={submit}
             initialValues={{
-                smtpHost: 'smtp.example.com',
-                smtpPort: 587,
-                smtpEncryption: 'tls',
-                username: '',
-                password: '',
-                mailFrom: 'no-reply@example.com',
-                mailFromName: 'Pterodactyl Panel',
+                smtpHost: host ?? 'smtp.example.com',
+                smtpPort: port ?? 587,
+                smtpEncryption: encryption ?? 'tls',
+                username: username ?? '',
+                password: password ?? '',
+                mailFrom: fromAddress ?? 'no-reply@example.com',
+                mailFromName: fromName ?? 'Pterodactyl Panel',
             }}
         >
             {({ isSubmitting, isValid }) => (
@@ -50,11 +61,14 @@ export default ({ data }: Props) => {
                             />
                             <div>
                                 <Label>Encryption</Label>
-                                <Select id={'smtpEncryption'} name={'smtpEncryption'} defaultValue={'tls'}>
-                                    <option value="">None</option>
-                                    <option value="ssl">Secure Sockets Layer (SSL)</option>
-                                    <option value="tls">Transport Layer Security (TLS)</option>
-                                </Select>
+                                <SelectField
+                                    id={'smtpEncryption'}
+                                    name={'smtpEncryption'}
+                                    options={[
+                                        { value: 'ssl', label: 'Secure Sockets Layer (SSL)' },
+                                        { value: 'tls', label: 'Transport Layer Security (TLS)' },
+                                    ]}
+                                />
                             </div>
                         </FieldRow>
 

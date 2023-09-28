@@ -9,22 +9,57 @@ import { SubNavigation, SubNavigationLink } from '@/components/admin/SubNavigati
 import GeneralSettings from '@/components/admin/settings/GeneralSettings';
 import SecuritySettings from '@/components/admin/settings/SecuritySettings';
 import AdvancedSettings from './AdvancedSettings';
-import { getSettings } from '@/api/admin/settings';
-import { useEffect } from 'react';
-import useFlash from '@/plugins/useFlash';
+import { Settings, getSettings } from '@/api/admin/settings';
+import { useEffect, useState } from 'react';
+import { Action, Actions, action, createContextStore, useStoreActions } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
+import Spinner from '@/components/elements/Spinner';
 
-export default () => {
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data, error } = getSettings();
+interface ctx {
+    settings: Settings | undefined;
+    setSettings: Action<ctx, Settings | undefined>;
+}
+
+export const Context = createContextStore<ctx>({
+    settings: undefined,
+
+    setSettings: action((state, payload) => {
+        state.settings = payload;
+    }),
+});
+
+const SettingsRouter = () => {
+    const { clearFlashes, clearAndAddHttpError } = useStoreActions(
+        (actions: Actions<ApplicationStore>) => actions.flashes,
+    );
+    const [loading, setLoading] = useState(true);
+
+    const settings = Context.useStoreState(state => state.settings);
+    const setSettings = Context.useStoreActions(actions => actions.setSettings);
 
     useEffect(() => {
-        if (!error) {
-            clearFlashes('admin:settings');
-            return;
-        }
+        clearFlashes('settings');
 
-        clearAndAddHttpError({ key: 'admin:settings', error });
-    }, [error]);
+        getSettings()
+            .then(settings => setSettings(settings))
+            .catch(error => {
+                console.error(error);
+                clearAndAddHttpError({ key: 'settings', error });
+            })
+            .then(() => setLoading(false));
+    }, []);
+
+    if (loading || settings === undefined) {
+        return (
+            <AdminContentBlock>
+                <FlashMessageRender byKey={'settings'} css={tw`mb-4`} />
+
+                <div css={tw`w-full flex flex-col items-center justify-center`} style={{ height: '24rem' }}>
+                    <Spinner size={'base'} />
+                </div>
+            </AdminContentBlock>
+        );
+    }
 
     return (
         <AdminContentBlock title={'Settings'}>
@@ -65,5 +100,13 @@ export default () => {
                 <Route path="/advanced" element={<AdvancedSettings />} />
             </Routes>
         </AdminContentBlock>
+    );
+};
+
+export default () => {
+    return (
+        <Context.Provider>
+            <SettingsRouter />
+        </Context.Provider>
     );
 };

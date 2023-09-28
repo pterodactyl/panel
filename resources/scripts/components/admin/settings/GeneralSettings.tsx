@@ -6,14 +6,11 @@ import Field, { FieldRow } from '@/components/elements/Field';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SelectField from '@/components/elements/SelectField';
-import { GeneralSettings } from '@/api/admin/settings';
+import { Context } from './SettingsRouter';
 
-interface Props {
-    data?: GeneralSettings;
-}
-
-export default ({ data }: Props) => {
-    const { name: appName, locale: language } = useStoreState((state: ApplicationStore) => state.settings.data!);
+export default () => {
+    const { name: appName, languages } = Context.useStoreState(state => state.settings!.general);
+    const { locale: language } = useStoreState((state: ApplicationStore) => state.settings.data!);
 
     const submit = () => {
         //
@@ -41,7 +38,12 @@ export default ({ data }: Props) => {
                                 name={'language'}
                                 label={'Default language'}
                                 description={''}
-                                options={[{ value: 'en', label: 'English' }]}
+                                options={Object.keys(languages).map(key => {
+                                    return {
+                                        value: key,
+                                        label: languages[key as any] as unknown as string,
+                                    };
+                                })}
                             />
                         </FieldRow>
                     </AdminBox>

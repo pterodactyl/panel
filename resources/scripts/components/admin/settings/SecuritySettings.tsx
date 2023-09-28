@@ -1,23 +1,25 @@
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 
 import AdminBox from '@/components/admin/AdminBox';
 import Field, { FieldRow } from '@/components/elements/Field';
-import { useStoreState } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
 import SelectField from '@/components/elements/SelectField';
-import { SecuritySettings } from '@/api/admin/settings';
+import { Context } from './SettingsRouter';
 
-interface Props {
-    data?: SecuritySettings;
+interface Values {
+    recaptchaStatus: string;
+    siteKey: string;
+    secretKey: string;
+    sfaRequired: string;
 }
 
-export default ({ data }: Props) => {
-    const { recaptcha } = useStoreState((state: ApplicationStore) => state.settings.data!);
-    const { enabled: recaptchaStatus, siteKey } = recaptcha;
+export default () => {
+    const security = Context.useStoreState(state => state.settings!.security);
+    const { enabled: recaptchaStatus, siteKey, secretKey } = security.recaptcha;
 
-    const submit = () => {
-        //
+    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        console.log(values);
+        setSubmitting(false);
     };
 
     return (
@@ -26,7 +28,8 @@ export default ({ data }: Props) => {
             initialValues={{
                 recaptchaStatus: `${recaptchaStatus}`,
                 siteKey,
-                sfaRequired: '0',
+                secretKey,
+                sfaRequired: `${security['2faEnabled']}` ?? '0',
             }}
         >
             <Form>
