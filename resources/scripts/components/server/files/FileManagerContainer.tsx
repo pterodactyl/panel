@@ -1,5 +1,5 @@
 import type { ChangeEvent } from 'react';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import tw from 'twin.macro';
 
 import { httpErrorToHuman } from '@/api/http';
@@ -24,6 +24,7 @@ import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
 import FadeTransition from '@/components/elements/transitions/FadeTransition';
+import { useVirtualizer } from '@tanstack/react-virtual';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
@@ -42,6 +43,17 @@ export default () => {
 
     const setSelectedFiles = ServerContext.useStoreActions(actions => actions.files.setSelectedFiles);
     const selectedFilesLength = ServerContext.useStoreState(state => state.files.selectedFiles.length);
+
+    // The scrollable element for your list
+    const parentRef = useRef<HTMLDivElement>(null);
+    const sortedFiles = sortFiles(files || []);
+
+    // The virtualizer
+    const rowVirtualizer = useVirtualizer({
+        count: files?.length || 0,
+        getScrollElement: () => parentRef.current,
+        estimateSize: () => 250,
+    });
 
     useEffect(() => {
         clearFlashes('files');
@@ -95,8 +107,13 @@ export default () => {
                         <p css={tw`text-sm text-neutral-400 text-center`}>This directory seems to be empty.</p>
                     ) : (
                         <FadeTransition duration="duration-150" appear show>
-                            <div>
-                                {files.length > 250 && (
+                            <div ref={parentRef}>
+                                {rowVirtualizer.getVirtualItems().map(virtualItem => {
+                                    const file = sortedFiles[virtualItem.index];
+                                    if (!file) return null;
+                                    return <FileObjectRow key={virtualItem.key} file={file} />;
+                                })}
+                                {/* {files.length > 250 && (
                                     <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
                                         <p css={tw`text-yellow-900 text-sm text-center`}>
                                             This directory is too large to display in the browser, limiting the output
@@ -106,7 +123,7 @@ export default () => {
                                 )}
                                 {sortFiles(files.slice(0, 250)).map(file => (
                                     <FileObjectRow key={file.key} file={file} />
-                                ))}
+                                ))} */}
                                 <MassActionsBar />
                             </div>
                         </FadeTransition>
