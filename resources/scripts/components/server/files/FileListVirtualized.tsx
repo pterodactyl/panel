@@ -5,16 +5,16 @@ import MassActionsBar from './MassActionsBar';
 import FileObjectRow from './FileObjectRow';
 
 export default function FileListVirtualized({ files }: { files: FileObject[] }) {
-    const parrent = useRef<HTMLDivElement>(null);
+    const parent = useRef<HTMLDivElement>(null);
 
     const rowVirtualizer = useVirtualizer({
         count: files.length,
-        getScrollElement: () => parrent.current,
+        getScrollElement: () => parent.current,
         estimateSize: () => 35,
     });
 
     return (
-        <div ref={parrent}>
+        <div ref={parent}>
             {rowVirtualizer.getVirtualItems().map(virtualItem => {
                 const file = files[virtualItem.index];
                 if (!file) return null;
