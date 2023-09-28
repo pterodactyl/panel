@@ -4,7 +4,6 @@ import tw from 'twin.macro';
 
 import { httpErrorToHuman } from '@/api/http';
 import Spinner from '@/components/elements/Spinner';
-import FileObjectRow from '@/components/server/files/FileObjectRow';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
@@ -15,7 +14,6 @@ import { Button } from '@/components/elements/button/index';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 // import FileManagerStatus from '@/components/server/files/FileManagerStatus';
-import MassActionsBar from '@/components/server/files/MassActionsBar';
 // import UploadButton from '@/components/server/files/UploadButton';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { useStoreActions } from '@/state/hooks';
@@ -24,6 +22,7 @@ import { FileActionCheckbox } from '@/components/server/files/SelectFileCheckbox
 import { hashToPath } from '@/helpers';
 import style from './style.module.css';
 import FadeTransition from '@/components/elements/transitions/FadeTransition';
+import FileListVirtualized from './FileListVirtualized';
 
 const sortFiles = (files: FileObject[]): FileObject[] => {
     const sortedFiles: FileObject[] = files
@@ -95,20 +94,7 @@ export default () => {
                         <p css={tw`text-sm text-neutral-400 text-center`}>This directory seems to be empty.</p>
                     ) : (
                         <FadeTransition duration="duration-150" appear show>
-                            <div>
-                                {files.length > 250 && (
-                                    <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                        <p css={tw`text-yellow-900 text-sm text-center`}>
-                                            This directory is too large to display in the browser, limiting the output
-                                            to the first 250 files.
-                                        </p>
-                                    </div>
-                                )}
-                                {sortFiles(files.slice(0, 250)).map(file => (
-                                    <FileObjectRow key={file.key} file={file} />
-                                ))}
-                                <MassActionsBar />
-                            </div>
+                            <FileListVirtualized files={sortFiles(files)} />
                         </FadeTransition>
                     )}
                 </>
