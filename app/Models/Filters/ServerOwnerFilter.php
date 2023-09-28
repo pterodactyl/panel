@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Builder;
 class ServerOwnerFilter implements Filter
 {
     /**
-     * A multi-column filter for the servers table that allows an administrative user to search
-     * across UUID, name, owner username, and owner email.
+     * A multi-column filter for the users table that allows an administrative user to search
+     * across username & email.
      *
      * @param string $value
      */
