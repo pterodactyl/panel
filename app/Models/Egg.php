@@ -78,6 +78,9 @@ class Egg extends Model
      * Fields that are not mass assignable.
      */
     protected $fillable = [
+        'nest_id',
+        'author',
+        'uuid',
         'name',
         'description',
         'features',

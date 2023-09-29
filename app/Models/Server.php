@@ -162,7 +162,7 @@ class Server extends Model
         'allocation_id' => 'required|bail|unique:servers|exists:allocations,id',
         'nest_id' => 'required|exists:nests,id',
         'egg_id' => 'required|exists:eggs,id',
-        'startup' => 'required|string',
+        'startup' => 'nullable|string',
         'skip_scripts' => 'sometimes|boolean',
         'image' => 'required|string|max:191',
         'database_limit' => 'present|nullable|integer|min:0',
