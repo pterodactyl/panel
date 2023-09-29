@@ -82,14 +82,14 @@ export function ServerServiceContainer({
     const [nestId, setNestId] = useState<number>(_nestId);
 
     return (
-        <AdminBox title={'Service Configuration'} isLoading={isSubmitting} css={tw`w-full`}>
-            <div css={tw`mb-6`}>
+        <AdminBox title={'Service Configuration'} isLoading={isSubmitting} className="w-full">
+            <div className="mb-6">
                 <NestSelector selectedNestId={nestId} onNestSelect={setNestId} />
             </div>
-            <div css={tw`mb-6`}>
+            <div className="mb-6">
                 <EggSelect nestId={nestId} selectedEggId={egg?.id} onEggSelect={setEgg} />
             </div>
-            <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
+            <div className="bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded">
                 <FormikSwitch name={'skipScripts'} label={'Skip Egg Install Script'} description={'Soon™'} />
             </div>
         </AdminBox>
