@@ -43,15 +43,15 @@ export interface Egg {
     configFiles: Record<string, any> | null;
     configStartup: Record<string, any> | null;
     configStop: string | null;
-    configFrom: number | null;
     startup: string;
     scriptContainer: string;
-    copyScriptFrom: number | null;
     scriptEntry: string;
-    scriptIsPrivileged: boolean;
     scriptInstall: string | null;
     createdAt: Date;
     updatedAt: Date;
+    // configFrom: number | null;
+    // copyScriptFrom: number | null;
+    // scriptIsPrivileged: boolean;
 
     relations: {
         nest?: Nest;
