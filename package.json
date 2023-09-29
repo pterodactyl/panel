@@ -51,7 +51,7 @@
         "xterm-addon-fit": "^0.8.0",
         "xterm-addon-search": "^0.12.0",
         "xterm-addon-search-bar": "^0.2.0",
-        "xterm-addon-web-links": "^0.8.0",
+        "xterm-addon-web-links": "^0.9.0",
         "yup": "^0.30.0"
     },
     "devDependencies": {
