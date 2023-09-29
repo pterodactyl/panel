@@ -56,7 +56,7 @@ export interface EggVariable extends Model {
  * A standard API response with the minimum viable details for the frontend
  * to correctly render a egg.
  */
-type LoadedEgg = WithRelationships<Egg, 'nest' | 'variables'>;
+export type LoadedEgg = WithRelationships<Egg, 'nest' | 'variables'>;
 
 /**
  * Gets a single egg from the database and returns it.
