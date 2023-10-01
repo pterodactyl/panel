@@ -7,7 +7,7 @@ import tw from 'twin.macro';
 import { object } from 'yup';
 
 import type { InferModel } from '@/api/admin';
-import type { Egg, EggVariable } from '@/api/admin/egg';
+import type {Egg, EggVariable, LoadedEgg} from '@/api/admin/egg';
 import { getEgg } from '@/api/admin/egg';
 import type { Server } from '@/api/admin/server';
 import { useServerFromRoute } from '@/api/admin/server';
@@ -23,12 +23,13 @@ import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Label from '@/components/elements/Label';
 import type { ApplicationStore } from '@/state';
+import {WithRelationships} from "@/api/admin";
 
-function ServerStartupLineContainer({ egg, server }: { egg: Egg | null; server: Server }) {
+function ServerStartupLineContainer({ egg, server }: { egg?: Egg; server: Server }) {
     const { isSubmitting, setFieldValue } = useFormikContext();
 
     useEffect(() => {
-        if (egg === null) {
+        if (egg === undefined) {
             return;
         }
 
@@ -44,10 +45,10 @@ function ServerStartupLineContainer({ egg, server }: { egg: Egg | null; server: 
     }, [egg]);
 
     return (
-        <AdminBox title={'Startup Command'} css={tw`relative w-full`}>
+        <AdminBox title={'Startup Command'} className="relative w-full">
             <SpinnerOverlay visible={isSubmitting} />
 
-            <div css={tw`mb-6`}>
+            <div className="mb-6">
                 <Field
                     id={'startup'}
                     name={'startup'}
@@ -69,12 +70,12 @@ function ServerStartupLineContainer({ egg, server }: { egg: Egg | null; server: 
 }
 
 export function ServerServiceContainer({
-    egg,
+    selectedEggId,
     setEgg,
     nestId: _nestId,
 }: {
-    egg: Egg | null;
-    setEgg: (value: Egg | null) => void;
+    selectedEggId?: number;
+    setEgg: (value: WithRelationships<Egg, 'variables'> | undefined) => void;
     nestId: number;
 }) {
     const { isSubmitting } = useFormikContext();
@@ -82,14 +83,14 @@ export function ServerServiceContainer({
     const [nestId, setNestId] = useState<number>(_nestId);
 
     return (
-        <AdminBox title={'Service Configuration'} isLoading={isSubmitting} css={tw`w-full`}>
-            <div css={tw`mb-6`}>
+        <AdminBox title={'Service Configuration'} isLoading={isSubmitting} className="w-full">
+            <div className="mb-6">
                 <NestSelector selectedNestId={nestId} onNestSelect={setNestId} />
             </div>
-            <div css={tw`mb-6`}>
-                <EggSelect nestId={nestId} selectedEggId={egg?.id} onEggSelect={setEgg} />
+            <div className="mb-6">
+                <EggSelect nestId={nestId} selectedEggId={selectedEggId} onEggSelect={setEgg} />
             </div>
-            <div css={tw`bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded`}>
+            <div className="bg-neutral-800 border border-neutral-900 shadow-inner p-4 rounded">
                 <FormikSwitch name={'skipScripts'} label={'Skip Egg Install Script'} description={'Soon™'} />
             </div>
         </AdminBox>
@@ -100,10 +101,10 @@ export function ServerImageContainer() {
     const { isSubmitting } = useFormikContext();
 
     return (
-        <AdminBox title={'Image Configuration'} css={tw`relative w-full`}>
+        <AdminBox title={'Image Configuration'} className="relative w-full">
             <SpinnerOverlay visible={isSubmitting} />
 
-            <div css={tw`md:w-full md:flex md:flex-col`}>
+            <div className="md:w-full md:flex md:flex-col">
                 <div>
                     {/* TODO: make this a proper select but allow a custom image to be specified if needed. */}
                     <Field id={'image'} name={'image'} label={'Docker Image'} type={'text'} />
@@ -130,7 +131,7 @@ export function ServerVariableContainer({ variable, value }: { variable: EggVari
     }, [value]);
 
     return (
-        <AdminBox css={tw`relative w-full`} title={<p css={tw`text-sm uppercase`}>{variable.name}</p>}>
+        <AdminBox className="relative w-full" title={<p className="text-sm uppercase">{variable.name}</p>}>
             <SpinnerOverlay visible={isSubmitting} />
 
             <Field
@@ -145,12 +146,14 @@ export function ServerVariableContainer({ variable, value }: { variable: EggVari
 }
 
 function ServerStartupForm({
+    selectedEggId,
     egg,
     setEgg,
     server,
 }: {
-    egg: Egg | null;
-    setEgg: (value: Egg | null) => void;
+    selectedEggId?: number;
+    egg?: LoadedEgg;
+    setEgg: (value: LoadedEgg | undefined) => void;
     server: Server;
 }) {
     const {
@@ -161,22 +164,22 @@ function ServerStartupForm({
 
     return (
         <Form>
-            <div css={tw`flex flex-col mb-16`}>
-                <div css={tw`flex flex-row mb-6`}>
+            <div className="flex flex-col mb-16">
+                <div className="flex flex-row mb-6">
                     <ServerStartupLineContainer egg={egg} server={server} />
                 </div>
 
-                <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6`}>
-                    <div css={tw`flex`}>
-                        <ServerServiceContainer egg={egg} setEgg={setEgg} nestId={server.nestId} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 mb-6">
+                    <div className="flex">
+                        <ServerServiceContainer selectedEggId={selectedEggId} setEgg={setEgg} nestId={server.nestId} />
                     </div>
 
-                    <div css={tw`flex`}>
+                    <div className="flex">
                         <ServerImageContainer />
                     </div>
                 </div>
 
-                <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8`}>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-y-6 gap-x-8">
                     {/* This ensures that no variables are rendered unless the environment has a value for the variable. */}
                     {egg?.relationships.variables
                         ?.filter(v => Object.keys(environment).find(e => e === v.environmentVariable) !== undefined)
@@ -193,9 +196,9 @@ function ServerStartupForm({
                         ))}
                 </div>
 
-                <div css={tw`bg-neutral-700 rounded shadow-md py-2 pr-6 mt-6`}>
-                    <div css={tw`flex flex-row`}>
-                        <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                <div className="bg-neutral-700 rounded shadow-md py-2 pr-6 mt-6">
+                    <div className="flex flex-row">
+                        <Button type="submit" size="small" className="ml-auto" disabled={isSubmitting || !isValid}>
                             Save Changes
                         </Button>
                     </div>
@@ -210,10 +213,12 @@ export default () => {
     const { clearFlashes, clearAndAddHttpError } = useStoreActions(
         (actions: Actions<ApplicationStore>) => actions.flashes,
     );
-    const [egg, setEgg] = useState<InferModel<typeof getEgg> | null>(null);
+    const [egg, setEgg] = useState<LoadedEgg | undefined>(undefined);
 
     useEffect(() => {
-        if (!server) return;
+        if (!server) {
+            return;
+        }
 
         getEgg(server.eggId)
             .then(egg => setEgg(egg))
@@ -249,10 +254,10 @@ export default () => {
             validationSchema={object().shape({})}
         >
             <ServerStartupForm
+                selectedEggId={egg?.id ?? server.eggId}
                 egg={egg}
-                // @ts-expect-error fix this
                 setEgg={setEgg}
-                server={server}
+                server={server as Server}
             />
         </Formik>
     );
