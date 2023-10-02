@@ -9,6 +9,9 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Spatie\QueryBuilder\QueryBuilder;
 use Pterodactyl\Services\Eggs\Sharing\EggExporterService;
+use Pterodactyl\Services\Eggs\EggCreationService;
+use Pterodactyl\Services\Eggs\EggUpdateService;
+use Pterodactyl\Services\Eggs\EggDeletionService;
 use Pterodactyl\Transformers\Api\Application\EggTransformer;
 use Pterodactyl\Http\Requests\Api\Application\Eggs\GetEggRequest;
 use Pterodactyl\Exceptions\Http\QueryValueOutOfRangeHttpException;
@@ -24,11 +27,14 @@ class EggController extends ApplicationApiController
     /**
      * EggController constructor.
      */
-    public function __construct(private EggExporterService $eggExporterService)
+    public function __construct(private EggExporterService $eggExporterService,private EggCreationService $eggCreationService,private EggUpdateService $eggUpdateService,private EggDeletionService $eggDeletionService)
     {
         parent::__construct();
 
         $this->eggExporterService = $eggExporterService;
+		$this->eggCreationService = $eggCreationService;
+		$this->eggUpdateService= $eggUpdateService;
+		$this->eggDeletionService=$eggDeletionService;
     }
 
     /**
@@ -76,8 +82,8 @@ class EggController extends ApplicationApiController
             // TODO: allow this to be set in the request, and default to config value if null or not present.
             'author' => config('pterodactyl.service.author'),
         ]);
-
-        $egg = Egg::query()->create($merged);
+		$egg =$this->eggCreationService->handle($merged);
+//        $egg = Egg::query()->create($merged);
 
         return $this->fractal->item($egg)
             ->transformWith(EggTransformer::class)
@@ -89,8 +95,8 @@ class EggController extends ApplicationApiController
      */
     public function update(UpdateEggRequest $request, Egg $egg): array
     {
-        $egg->update($request->validated());
-
+        //$egg->update($request->validated());
+		$this->eggUpdateService->handle($request->validated());
         return $this->fractal->item($egg)
             ->transformWith(EggTransformer::class)
             ->toArray();
@@ -103,7 +109,8 @@ class EggController extends ApplicationApiController
      */
     public function delete(DeleteEggRequest $request, Egg $egg): Response
     {
-        $egg->delete();
+        //$egg->delete();
+		$egg =$this->EggDeletionService->handle($request->validated());
 
         return $this->returnNoContent();
     }
