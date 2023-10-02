@@ -30,7 +30,7 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
-import {WithRelationships} from "@/api/admin";
+import { WithRelationships } from '@/api/admin';
 
 function InternalForm() {
     const {

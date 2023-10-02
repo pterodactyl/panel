@@ -3,11 +3,9 @@ import { useStoreActions } from 'easy-peasy';
 import type { FormikHelpers } from 'formik';
 import { Form, Formik, useField, useFormikContext } from 'formik';
 import { useEffect, useState } from 'react';
-import tw from 'twin.macro';
 import { object } from 'yup';
 
-import type { InferModel } from '@/api/admin';
-import type {Egg, EggVariable, LoadedEgg} from '@/api/admin/egg';
+import type { Egg, EggVariable, LoadedEgg } from '@/api/admin/egg';
 import { getEgg } from '@/api/admin/egg';
 import type { Server } from '@/api/admin/server';
 import { useServerFromRoute } from '@/api/admin/server';
@@ -23,7 +21,7 @@ import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Label from '@/components/elements/Label';
 import type { ApplicationStore } from '@/state';
-import {WithRelationships} from "@/api/admin";
+import { WithRelationships } from '@/api/admin';
 
 function ServerStartupLineContainer({ egg, server }: { egg?: Egg; server: Server }) {
     const { isSubmitting, setFieldValue } = useFormikContext();
