@@ -43,10 +43,14 @@ class NestController extends ApplicationApiController
         if ($perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
-
+		/*-----------change to use model Pterodactyl\Models\Nest
         $nests = QueryBuilder::for(Nest::query())
             ->allowedFilters(['id', 'name', 'author'])
             ->allowedSorts(['id', 'name', 'author']);
+		*/
+        $nests = Nest::find($request->user())
+            ->allowedFilters(['id', 'name', 'author'])
+            ->allowedSorts(['id', 'name', 'author']);		
         if ($perPage > 0) {
             $nests = $nests->paginate($perPage);
         }

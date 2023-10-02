@@ -36,11 +36,16 @@ class DatabaseController extends ApplicationApiController
         if ($perPage < 1 || $perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
-
+		/*-----------change to use model Pterodactyl\Models\DatabaseHost
         $databases = QueryBuilder::for(DatabaseHost::query())
             ->allowedFilters(['name', 'host'])
             ->allowedSorts(['id', 'name', 'host'])
             ->paginate($perPage);
+		*/	
+        $databases = DatabaseHost::find($request->user())
+            ->allowedFilters(['name', 'host'])
+            ->allowedSorts(['id', 'name', 'host'])
+            ->paginate($perPage);		
 
         return $this->fractal->collection($databases)
             ->transformWith(DatabaseHostTransformer::class)

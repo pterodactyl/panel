@@ -15,6 +15,7 @@ class ActivityLogController extends ClientApiController
      */
     public function __invoke(ClientApiRequest $request): array
     {
+		/*-----------change to use model Pterodactyl\Models\ActivityLog
         $activity = QueryBuilder::for($request->user()->activity())
             ->with('actor')
             ->allowedFilters([AllowedFilter::partial('event')])
@@ -22,7 +23,13 @@ class ActivityLogController extends ClientApiController
             ->whereNotIn('activity_logs.event', ActivityLog::DISABLED_EVENTS)
             ->paginate(min($request->query('per_page', 25), 100))
             ->appends($request->query());
-
+		*/
+		$activity =ActivityLog::find($request->user()->activity())->with('actor')
+            ->allowedFilters([AllowedFilter::partial('event')])
+            ->allowedSorts(['timestamp'])
+            ->whereNotIn('activity_logs.event', ActivityLog::DISABLED_EVENTS)
+            ->paginate(min($request->query('per_page', 25), 100))
+            ->appends($request->query());
         return $this->fractal->collection($activity)
             ->transformWith(ActivityLogTransformer::class)
             ->toArray();

@@ -36,9 +36,13 @@ class MountController extends ApplicationApiController
         if ($perPage < 1 || $perPage > 100) {
             throw new QueryValueOutOfRangeHttpException('per_page', 1, 100);
         }
-
+		/*-----------change to use model Pterodactyl\Models\Mount
         $mounts = QueryBuilder::for(Mount::query())
             ->allowedFilters(['id', 'name', 'source', 'target'])
+            ->allowedSorts(['id', 'name', 'source', 'target'])
+            ->paginate($perPage);
+		*/
+		$mounts=Mount::find($request->user())->allowedFilters(['id', 'name', 'source', 'target'])
             ->allowedSorts(['id', 'name', 'source', 'target'])
             ->paginate($perPage);
 
