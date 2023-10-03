@@ -11,5 +11,11 @@ with pkgs;
       nodejs-18_x
       nodePackages.pnpm
       php81WithExtensions
+
+      docker-compose
     ];
+
+    shellHook = ''
+      PATH="$PATH:${pkgs.docker-compose}/libexec/docker/cli-plugins"
+    '';
   }
