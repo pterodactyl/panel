@@ -172,7 +172,7 @@
           buildInputs = [];
 
           buildPhase = ''
-            yarn run build
+            yarn run build:production
           '';
 
           installPhase = ''
@@ -214,6 +214,7 @@
               copyToRoot = pkgs.buildEnv {
                 name = "image-root";
                 paths = [
+                  bash
                   dockerTools.fakeNss
                   caCertificates
                   caddy
@@ -221,12 +222,9 @@
                   configs
                   coreutils
                   mysql80
-                  nodejs-18_x
-                  nodePackages.npm
-                  nodePackages.pnpm
+                  nodejs_18
                   nodePackages.yarn
                   php81WithExtensions
-                  postgresql_14
                 ];
                 pathsToLink = ["/bin" "/etc"];
               };
