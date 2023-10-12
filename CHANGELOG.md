@@ -3,6 +3,10 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.5
+### Fixed
+* Rust egg using the wrong Docker image, breaking Rust modding frameworks.
+
 ## v1.11.4
 ### Added
 * Added support for the `server.queryport` option on the Rust egg.
