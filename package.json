@@ -25,7 +25,7 @@
         "deepmerge-ts": "^4.3.0",
         "easy-peasy": "^4.0.2",
         "events": "^3.3.0",
-        "formik": "2.4.5",
+        "formik": "2.4.4",
         "framer-motion": "^6.5.1",
         "i18next": "^21.8.9",
         "i18next-http-backend": "^1.4.5",
