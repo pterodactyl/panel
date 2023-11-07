@@ -1,5 +1,6 @@
 import BoringAvatar, { AvatarProps } from 'boring-avatars';
 import { useStoreState } from '@/state/hooks';
+import crypto from 'crypto';
 
 const palette = ['#FFAD08', '#EDD75A', '#73B06F', '#0C8F8F', '#587291'];
 
@@ -10,9 +11,9 @@ const _Avatar = ({ variant = 'beam', ...props }: AvatarProps) => (
 );
 
 const _UserAvatar = ({ variant = 'beam', ...props }: Omit<Props, 'name'>) => {
-    const uuid = useStoreState(state => state.user.data?.uuid);
+    const avatar = useStoreState((state) => `https://www.gravatar.com/avatar/${crypto.createHash('md5').update(state.user.data!.email).digest('hex')}?s=512`);
 
-    return <BoringAvatar colors={palette} name={uuid || 'system'} variant={variant} {...props} />;
+    return <img src={avatar} className="user-image" alt="User Image" />;
 };
 
 _Avatar.displayName = 'Avatar';
