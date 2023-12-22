@@ -9,7 +9,7 @@ import { useEggFromRoute } from '@/api/admin/egg';
 import { EggVariableForm, validationSchema } from '@/components/admin/nests/eggs/EggVariablesContainer';
 import Modal from '@/components/elements/Modal';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Button } from '@/components/elements/button';
+import { Button } from '@/components/elements/button/index';
 import useFlash from '@/plugins/useFlash';
 import { Variant } from '@/components/elements/button/types';
 

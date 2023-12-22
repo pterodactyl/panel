@@ -14,7 +14,7 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import type { Nest } from '@/api/admin/nests/getNests';
 import getNest from '@/api/admin/nests/getNest';
 import updateNest from '@/api/admin/nests/updateNest';
-import { Button } from '@/components/elements/button';
+import { Button } from '@/components/elements/button/index';
 import { Size } from '@/components/elements/button/types';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';

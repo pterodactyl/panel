@@ -4,7 +4,7 @@ import { useStoreActions } from 'easy-peasy';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { Button } from '@/components/elements/button';
+import { Button } from '@/components/elements/button/index';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import deleteServer from '@/api/admin/servers/deleteServer';
 import { useServerFromRoute } from '@/api/admin/server';

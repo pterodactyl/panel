@@ -14,7 +14,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import Spinner from '@/components/elements/Spinner';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import AdminBox from '@/components/admin/AdminBox';
-import { Button } from '@/components/elements/button';
+import { Button } from '@/components/elements/button/index';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import DatabaseDeleteButton from '@/components/admin/databases/DatabaseDeleteButton';

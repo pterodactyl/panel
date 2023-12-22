@@ -13,7 +13,7 @@ import updateLocation from '@/api/admin/locations/updateLocation';
 import AdminBox from '@/components/admin/AdminBox';
 import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import LocationDeleteButton from '@/components/admin/locations/LocationDeleteButton';
-import { Button } from '@/components/elements/button';
+import { Button } from '@/components/elements/button/index';
 import Field from '@/components/elements/Field';
 import Spinner from '@/components/elements/Spinner';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';

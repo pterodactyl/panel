@@ -18,7 +18,7 @@ import AdminTable, {
     ContentWrapper,
     useTableHooks,
 } from '@/components/admin/AdminTable';
-import { Button } from '@/components/elements/button';
+import { Button } from '@/components/elements/button/index';
 import { Size } from '@/components/elements/button/types';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import FlashMessageRender from '@/components/FlashMessageRender';

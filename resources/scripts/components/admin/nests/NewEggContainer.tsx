@@ -15,7 +15,7 @@ import {
     EggProcessContainer,
     EggStartupContainer,
 } from '@/components/admin/nests/eggs/EggSettingsContainer';
-import { Button } from '@/components/elements/button';
+import { Button } from '@/components/elements/button/index';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 
