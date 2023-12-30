@@ -97,6 +97,12 @@ function Modal({
         }
     }, [visible]);
 
+    useEffect(() => {
+        if (!render) {
+            onDismissed();
+        }
+    }, [render])
+
     return (
         <FadeTransition as={Fragment} show={render} duration="duration-150" appear={appear ?? true} unmount>
             <ModalMask
