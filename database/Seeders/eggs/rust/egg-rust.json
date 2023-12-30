@@ -12,7 +12,7 @@
         "steam_disk_space"
     ],
     "docker_images": {
-        "quay.io\/pterodactyl\/core:rust": "quay.io\/pterodactyl\/core:rust"
+        "ghcr.io\/pterodactyl\/games:rust": "ghcr.io\/pterodactyl\/games:rust"
     },
     "file_denylist": [],
     "startup": ".\/RustDedicated -batchmode +server.port {{SERVER_PORT}} +server.queryport {{QUERY_PORT}} +server.identity \"rust\" +rcon.port {{RCON_PORT}} +rcon.web true +server.hostname \\\"{{HOSTNAME}}\\\" +server.level \\\"{{LEVEL}}\\\" +server.description \\\"{{DESCRIPTION}}\\\" +server.url \\\"{{SERVER_URL}}\\\" +server.headerimage \\\"{{SERVER_IMG}}\\\" +server.logoimage \\\"{{SERVER_LOGO}}\\\" +server.maxplayers {{MAX_PLAYERS}} +rcon.password \\\"{{RCON_PASS}}\\\" +server.saveinterval {{SAVEINTERVAL}} +app.port {{APP_PORT}}  $( [ -z ${MAP_URL} ] && printf %s \"+server.worldsize \\\"{{WORLD_SIZE}}\\\" +server.seed \\\"{{WORLD_SEED}}\\\"\" || printf %s \"+server.levelurl {{MAP_URL}}\" ) {{ADDITIONAL_ARGS}}",
@@ -47,7 +47,7 @@
             "default_value": "vanilla",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|in:carbon,oxide,vanilla",
+            "rules": "required|in:vanilla,oxide,carbon",
             "field_type": "text"
         },
         {
