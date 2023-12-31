@@ -8,15 +8,17 @@ import Label from '@/components/elements/Label';
 import { Context } from './SettingsRouter';
 import SelectField from '@/components/elements/SelectField';
 import { updateSetting } from '@/api/admin/settings';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
 
 interface Values {
     smtpHost: string;
     smtpPort: number;
     smtpEncryption: string;
-    username: string;
-    password: string;
-    mailFrom: string;
-    mailFromName: string;
+    smtpUsername: string;
+    smtpPassword: string;
+    smtpMailFrom: string;
+    smtpMailFromName: string;
 }
 
 export default () => {
@@ -24,12 +26,21 @@ export default () => {
         state => state.settings!.mail,
     );
 
+    const { addFlash, clearFlashes, clearAndAddHttpError } = useStoreActions(
+        (actions: Actions<ApplicationStore>) => actions.flashes,
+    );
+
     const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        console.log(values);
+        clearFlashes('admin:settings');
+        setSubmitting(true);
+
         try {
             await updateSetting(values);
+            addFlash({ type: 'success', message: 'Successfully updated settings.', key: 'admin:settings' });
+            setTimeout(() => clearFlashes('admin:settings'), 2000);
         } catch (error) {
             console.error(error);
+            clearAndAddHttpError({ key: 'admin:settings', error });
         } finally {
             setSubmitting(false);
         }
@@ -42,10 +53,10 @@ export default () => {
                 smtpHost: host ?? 'smtp.example.com',
                 smtpPort: port ?? 587,
                 smtpEncryption: encryption ?? 'tls',
-                username: username ?? '',
-                password: password ?? '',
-                mailFrom: fromAddress ?? 'no-reply@example.com',
-                mailFromName: fromName ?? 'Pterodactyl Panel',
+                smtpUsername: username ?? '',
+                smtpPassword: password ?? '',
+                smtpMailFrom: fromAddress ?? 'no-reply@example.com',
+                smtpMailFromName: fromName ?? 'Pterodactyl Panel',
             }}
         >
             {({ isSubmitting, isValid }) => (
@@ -81,15 +92,15 @@ export default () => {
 
                         <FieldRow>
                             <Field
-                                id={'username'}
-                                name={'username'}
+                                id={'smtpUsername'}
+                                name={'smtpUsername'}
                                 type={'text'}
                                 label={'Username'}
                                 description={''}
                             />
                             <Field
-                                id={'password'}
-                                name={'password'}
+                                id={'smtpPassword'}
+                                name={'smtpPassword'}
                                 type={'password'}
                                 label={'Password'}
                                 description={''}
@@ -98,15 +109,15 @@ export default () => {
 
                         <FieldRow>
                             <Field
-                                id={'mailFrom'}
-                                name={'mailFrom'}
+                                id={'smtpMailFrom'}
+                                name={'smtpMailFrom'}
                                 type={'text'}
                                 label={'Mail From'}
                                 description={''}
                             />
                             <Field
-                                id={'mailFromName'}
-                                name={'mailFromName'}
+                                id={'smtpMailFromName'}
+                                name={'smtpMailFromName'}
                                 type={'text'}
                                 label={'Mail From Name'}
                                 description={''}

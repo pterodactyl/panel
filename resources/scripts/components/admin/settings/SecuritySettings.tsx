@@ -6,31 +6,50 @@ import Field, { FieldRow } from '@/components/elements/Field';
 import SelectField from '@/components/elements/SelectField';
 import { Context } from './SettingsRouter';
 import { Button } from '@/components/elements/button/index';
+import { ApplicationStore } from '@/state';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { updateSetting } from '@/api/admin/settings';
 
 interface Values {
-    recaptchaStatus: string;
-    siteKey: string;
-    secretKey: string;
-    sfaRequired: string;
+    recaptchaEnabled: string;
+    recaptchaSiteKey: string;
+    recaptchaSecretKey: string;
+    sfaEnabled: string;
 }
 
 export default () => {
     const security = Context.useStoreState(state => state.settings!.security);
     const { enabled: recaptchaStatus, siteKey, secretKey } = security.recaptcha;
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        console.log(values);
-        setSubmitting(false);
+    const { addFlash, clearFlashes, clearAndAddHttpError } = useStoreActions(
+        (actions: Actions<ApplicationStore>) => actions.flashes,
+    );
+
+    const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('admin:settings');
+        setSubmitting(true);
+
+        try {
+            console.log(values);
+            await updateSetting(values);
+            addFlash({ type: 'success', message: 'Successfully updated settings.', key: 'admin:settings' });
+            setTimeout(() => clearFlashes('admin:settings'), 2000);
+        } catch (error) {
+            console.error(error);
+            clearAndAddHttpError({ key: 'admin:settings', error });
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
         <Formik
             onSubmit={submit}
             initialValues={{
-                recaptchaStatus: `${recaptchaStatus}`,
-                siteKey,
-                secretKey,
-                sfaRequired: `${security['2faEnabled']}` ?? '0',
+                recaptchaEnabled: `${recaptchaStatus}`,
+                recaptchaSiteKey: siteKey,
+                recaptchaSecretKey: secretKey,
+                sfaEnabled: `${security['2faEnabled']}` ?? '0',
             }}
         >
             <Form>
@@ -38,24 +57,30 @@ export default () => {
                     <AdminBox title="reCaptcha">
                         <FieldRow>
                             <SelectField
-                                id={'recaptchaStatus'}
-                                name={'recaptchaStatus'}
+                                id={'recaptchaEnabled'}
+                                name={'recaptchaEnabled'}
                                 label={'Status'}
                                 description={
                                     'If enabled, login forms and password reset forms will do a silent captcha check and display a visible captcha if needed.'
                                 }
                                 options={[
-                                    { value: 'true', label: 'Enabled' },
-                                    { value: 'false', label: 'Disabled' },
+                                    { value: '1', label: 'Enabled' },
+                                    { value: '0', label: 'Disabled' },
                                 ]}
                             />
                         </FieldRow>
                         <FieldRow>
-                            <Field id={'siteKey'} name={'siteKey'} type={'text'} label={'Site Key'} description={''} />
+                            <Field
+                                id={'recaptchaSiteKey'}
+                                name={'recaptchaSiteKey'}
+                                type={'text'}
+                                label={'Site Key'}
+                                description={''}
+                            />
 
                             <Field
-                                id={'secretKey'}
-                                name={'secretKey'}
+                                id={'recaptchaSecretKey'}
+                                name={'recaptchaSecretKey'}
                                 type={'password'}
                                 label={'Secret Key'}
                                 description={
@@ -67,8 +92,8 @@ export default () => {
                     <AdminBox title="Two Factor Authentication">
                         <FieldRow>
                             <SelectField
-                                id={'sfaRequired'}
-                                name={'sfaRequired'}
+                                id={'sfaEnabled'}
+                                name={'sfaEnabled'}
                                 label={'Status'}
                                 description={
                                     'If enabled, any account falling into the selected grouping will be required to have 2-Factor authentication enabled to use the Panel.'

@@ -19,8 +19,8 @@ class AssetComposer
             'name' => $this->repository->get('appName', config('app.name')),
             'locale' => $this->repository->get('language', config('app.locale')),
             'recaptcha' => [
-                'enabled' => config('recaptcha.enabled', false),
-                'siteKey' => config('recaptcha.website_key') ?? '',
+                'enabled' => (bool)$this->repository->get('recaptchaEnabled', config('recaptcha.enabled', false)),
+                'siteKey' => $this->repository->get('recaptchaSiteKey',config('recaptcha.website_key') ?? ''),
             ],
         ]);
     }

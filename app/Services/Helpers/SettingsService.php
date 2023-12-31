@@ -10,7 +10,7 @@ class SettingsService
 {
     use AvailableLanguages;
 
-    public function __construct(private SettingsRepository $repository) {}
+    public function __construct(private readonly SettingsRepository $repository) {}
 
     /**
      * Return the current version of the panel that is being used.
@@ -29,16 +29,16 @@ class SettingsService
                 'encryption' => $this->repository->get('smtpEncryption', config('mail.mailers.smtp.encryption')),
                 'username' => $this->repository->get('smtpUsername', config('mail.mailers.smtp.username')),
                 'password' => $this->repository->get('smtpPassword', config('mail.mailers.smtp.password')),
-                'from_address' => $this->repository->get('smtpFromAddress', config('mail.from.address')),
-                'from_name' => $this->repository->get('smtpFromName', config('mail.from.name')),
+                'from_address' => $this->repository->get('smtpMailFrom', config('mail.from.address')),
+                'from_name' => $this->repository->get('smtpMailFromName', config('mail.from.name')),
             ],
             'security' => [
                 'recaptcha' => [
-                    'enabled' => config('recaptcha.enabled'),
-                    'site_key' => config('recaptcha.website_key'),
-                    'secret_key' => config('recaptcha.secret_key'),
+                    'enabled' => $this->repository->get('recaptchaEnabled' , config('recaptcha.enabled')),
+                    'site_key' => $this->repository->get('recaptchaSiteKey', config('recaptcha.website_key')),
+                    'secret_key' => $this->repository->get('recaptchaSecretKey', config('recaptcha.secret_key')),
                 ],
-                '2fa_enabled' => config('pterodactyl.auth.2fa_required'),
+                '2fa_enabled' => $this->repository->get('sfaEnabled', config('pterodactyl.auth.2fa_required')),
             ],
         );
     }
