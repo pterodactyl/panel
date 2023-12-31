@@ -8,8 +8,14 @@ with pkgs;
     buildInputs = [
       alejandra
       composer
-      nodejs-18_x
+      nodejs_18
       nodePackages.pnpm
       php81WithExtensions
+
+      docker-compose
     ];
+
+    shellHook = ''
+      PATH="$PATH:${pkgs.docker-compose}/libexec/docker/cli-plugins"
+    '';
   }

@@ -214,6 +214,7 @@
               copyToRoot = pkgs.buildEnv {
                 name = "image-root";
                 paths = [
+                  bash
                   dockerTools.fakeNss
                   caCertificates
                   caddy
@@ -221,11 +222,10 @@
                   configs
                   coreutils
                   mysql80
-                  nodejs-18_x
-                  nodePackages.npm
+                  nodejs_18
                   nodePackages.pnpm
                   php81WithExtensions
-                  postgresql_14
+                  postgresql_15
                 ];
                 pathsToLink = ["/bin" "/etc"];
               };

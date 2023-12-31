@@ -3,7 +3,7 @@ import type { ChangeEvent } from 'react';
 import { useEffect, useState } from 'react';
 
 import type { WithRelationships } from '@/api/admin';
-import type {Egg, LoadedEgg} from '@/api/admin/egg';
+import type { Egg } from '@/api/admin/egg';
 import { searchEggs } from '@/api/admin/egg';
 import Label from '@/components/elements/Label';
 import Select from '@/components/elements/Select';
