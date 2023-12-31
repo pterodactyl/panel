@@ -192,7 +192,7 @@ class FileController extends ClientApiController
      */
     public function decompress(DecompressFilesRequest $request, Server $server): JsonResponse
     {
-        set_time_limit(300);
+        set_time_limit(99);
 
         $this->fileRepository->setServer($server)->decompressFile(
             $request->input('root'),
