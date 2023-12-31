@@ -24,6 +24,7 @@ import Button from '@/components/elements/Button';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { bytesToString, mbToBytes } from '@/lib/formatters';
 import NodeStatus from '@/components/admin/nodes/NodeStatus';
+import { Size } from '@/components/elements/button/types';
 
 const RowCheckbox = ({ id }: { id: number }) => {
     const isChecked = AdminContext.useStoreState(state => state.nodes.selectedNodes.indexOf(id) >= 0);
