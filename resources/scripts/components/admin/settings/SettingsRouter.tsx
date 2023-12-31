@@ -84,9 +84,9 @@ const SettingsRouter = () => {
                 <SubNavigationLink to="/admin/settings/security" name="Security">
                     <ShieldCheckIcon />
                 </SubNavigationLink>
-                <SubNavigationLink to="/admin/settings/features" name="Features">
+                {/* <SubNavigationLink to="/admin/settings/features" name="Features">
                     <AdjustmentsIcon />
-                </SubNavigationLink>
+                </SubNavigationLink> */}
                 <SubNavigationLink to="/admin/settings/advanced" name="Advanced">
                     <CodeIcon />
                 </SubNavigationLink>

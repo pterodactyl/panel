@@ -3,11 +3,15 @@ import tw from 'twin.macro';
 
 import AdminBox from '@/components/admin/AdminBox';
 import Field, { FieldRow } from '@/components/elements/Field';
-import { useStoreState } from 'easy-peasy';
+import { Actions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SelectField from '@/components/elements/SelectField';
 import { Context } from './SettingsRouter';
-import { debounce } from 'debounce';
+import { Button } from '@/components/elements/button/index';
+import { useState } from 'react';
+import { LanguageKey, updateSetting } from '@/api/admin/settings';
+import { useStoreActions } from '@/state/hooks';
+import { SiteSettings } from '@/state/settings';
 
 type Values = {
     appName: string;
@@ -15,17 +19,31 @@ type Values = {
 };
 
 export default function GeneralSettings() {
-    const { name: appName, languages } = Context.useStoreState(state => state.settings!.general);
-    const { locale: language } = useStoreState((state: ApplicationStore) => state.settings.data!);
+    const { name: appName, languages, language } = Context.useStoreState(state => state.settings!.general);
+    const setSettings = useStoreActions(actions => actions.settings!.setSettings);
 
-    const submit = (values: Values) => {
-        //
-        console.log(values);
+    const { addFlash, clearFlashes, clearAndAddHttpError } = useStoreActions(
+        (actions: Actions<ApplicationStore>) => actions.flashes,
+    );
+
+    const [loading, setLoading] = useState(false);
+
+    const submit = async (values: Values) => {
+        clearFlashes('admin:settings');
+        setLoading(true);
+
+        try {
+            await updateSetting(values);
+            setSettings({ name: values.appName, locale: values.language } as SiteSettings);
+            addFlash({ type: 'success', message: 'Successfully updated settings.', key: 'admin:settings' });
+            setTimeout(() => clearFlashes('admin:settings'), 2000);
+        } catch (error) {
+            console.error(error);
+            clearAndAddHttpError({ key: 'admin:settings', error });
+        } finally {
+            setLoading(false);
+        }
     };
-
-    const setVariableValue = debounce((value: string) => {
-        console.log(value);
-    }, 500);
 
     return (
         <Formik
@@ -39,14 +57,7 @@ export default function GeneralSettings() {
                 <div css={tw`grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6`}>
                     <AdminBox title="Branding">
                         <FieldRow>
-                            <Field
-                                onKeyUp={e => setVariableValue(e.currentTarget.value)}
-                                id={'appName'}
-                                name={'appName'}
-                                type={'text'}
-                                label={'App Name'}
-                                description={''}
-                            />
+                            <Field id={'appName'} name={'appName'} type={'text'} label={'App Name'} description={''} />
                         </FieldRow>
                     </AdminBox>
                     <AdminBox title="Language">
@@ -55,15 +66,22 @@ export default function GeneralSettings() {
                                 id={'language'}
                                 name={'language'}
                                 label={'Default language'}
-                                options={Object.keys(languages).map(key => {
+                                options={Object.keys(languages).map(lang => {
                                     return {
-                                        value: key,
-                                        label: languages[key as any] as unknown as string,
+                                        value: lang,
+                                        label: languages[lang as LanguageKey],
                                     };
                                 })}
                             />
                         </FieldRow>
                     </AdminBox>
+                </div>
+                <div css={tw`bg-neutral-700 rounded shadow-md px-4 xl:px-5 py-4 mt-6`}>
+                    <div css={tw`flex flex-row`}>
+                        <Button type="submit" css={tw`ml-auto`} disabled={loading}>
+                            Save Changes
+                        </Button>
+                    </div>
                 </div>
             </Form>
         </Formik>

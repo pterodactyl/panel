@@ -2,7 +2,7 @@ import { Model } from '@/api/admin/index';
 import http from '@/api/http';
 import Transformers from '../definitions/admin/transformers';
 
-export interface Settings extends Model {
+export interface Settings {
     general: GeneralSettings;
     mail: MailSettings;
     security: SecuritySettings;
@@ -10,14 +10,11 @@ export interface Settings extends Model {
 
 export interface GeneralSettings {
     name: string;
-    languages: Language[];
+    language: LanguageKey;
+    languages: Record<LanguageKey, 'string'>;
 }
 
-interface Language {
-    [key: string]: string;
-}
-
-export type LanguageKey = 'en';
+export type LanguageKey = 'en' | 'es' | 'ro';
 
 export interface MailSettings {
     host: string;
@@ -50,6 +47,14 @@ export const getSettings = (): Promise<Settings> => {
     return new Promise((resolve, reject) => {
         http.get('/api/application/settings')
             .then(({ data }) => resolve(Transformers.toSettings(data)))
+            .catch(reject);
+    });
+};
+
+export const updateSetting = <Type>(values: Type): Promise<void> => {
+    return new Promise((resolve, reject) => {
+        http.patch('/api/application/settings', { ...values })
+            .then(() => resolve())
             .catch(reject);
     });
 };

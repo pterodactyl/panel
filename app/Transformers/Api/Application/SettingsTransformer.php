@@ -23,6 +23,7 @@ class SettingsTransformer extends Transformer
         return [
             'general' => [
                 'name' => $model['general']['name'],
+                'language' => $model['general']['language'],
                 'languages' => $model['general']['languages'],
             ],
             'mail' => [

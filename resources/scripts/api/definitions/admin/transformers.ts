@@ -230,6 +230,7 @@ export default class Transformers {
     static toSettings = ({ attributes }: FractalResponseData): Settings => ({
         general: {
             name: attributes.general.name,
+            language: attributes.general.language,
             languages: attributes.general.languages,
         },
         mail: {

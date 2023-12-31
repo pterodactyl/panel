@@ -2,11 +2,15 @@
 
 namespace Pterodactyl\Services\Helpers;
 
+use Pterodactyl\Repositories\Eloquent\SettingsRepository;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
+use Pterodactyl\Models\Setting;
 
 class SettingsService
 {
     use AvailableLanguages;
+
+    public function __construct(private SettingsRepository $repository) {}
 
     /**
      * Return the current version of the panel that is being used.
@@ -15,17 +19,18 @@ class SettingsService
     {
         return array(
             'general' => [
-                'name' => config('app.name'),
+                'name' => $this->repository->get('appName', config('app.name')),
+                'language' => $this->repository->get('language', config('app.locale')),
                 'languages' => $this->getAvailableLanguages(true),
             ],
             'mail' => [
-                'host' => config('mail.mailers.smtp.host'),
-                'port' => config('mail.mailers.smtp.port'),
-                'encryption' => config('mail.mailers.smtp.encryption'),
-                'username' => config('mail.mailers.smtp.username'),
-                'password' => config('mail.mailers.smtp.password'),
-                'from_address' => config('mail.from.address'),
-                'from_name' => config('mail.from.name')
+                'host' => $this->repository->get('smtpHost', config('mail.mailers.smtp.host')),
+                'port' => $this->repository->get('smtpPort', config('mail.mailers.smtp.port')),
+                'encryption' => $this->repository->get('smtpEncryption', config('mail.mailers.smtp.encryption')),
+                'username' => $this->repository->get('smtpUsername', config('mail.mailers.smtp.username')),
+                'password' => $this->repository->get('smtpPassword', config('mail.mailers.smtp.password')),
+                'from_address' => $this->repository->get('smtpFromAddress', config('mail.from.address')),
+                'from_name' => $this->repository->get('smtpFromName', config('mail.from.name')),
             ],
             'security' => [
                 'recaptcha' => [

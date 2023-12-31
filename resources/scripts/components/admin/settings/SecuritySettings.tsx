@@ -5,6 +5,7 @@ import AdminBox from '@/components/admin/AdminBox';
 import Field, { FieldRow } from '@/components/elements/Field';
 import SelectField from '@/components/elements/SelectField';
 import { Context } from './SettingsRouter';
+import { Button } from '@/components/elements/button/index';
 
 interface Values {
     recaptchaStatus: string;
@@ -80,6 +81,13 @@ export default () => {
                             />
                         </FieldRow>
                     </AdminBox>
+                </div>
+                <div css={tw`bg-neutral-700 rounded shadow-md px-4 xl:px-5 py-4 mt-6`}>
+                    <div css={tw`flex flex-row`}>
+                        <Button type="submit" className="ml-auto">
+                            Save Changes
+                        </Button>
+                    </div>
                 </div>
             </Form>
         </Formik>

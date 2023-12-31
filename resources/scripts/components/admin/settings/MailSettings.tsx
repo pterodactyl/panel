@@ -2,11 +2,12 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 
 import AdminBox from '@/components/admin/AdminBox';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button/index';
 import Field, { FieldRow } from '@/components/elements/Field';
 import Label from '@/components/elements/Label';
 import { Context } from './SettingsRouter';
 import SelectField from '@/components/elements/SelectField';
+import { updateSetting } from '@/api/admin/settings';
 
 interface Values {
     smtpHost: string;
@@ -23,9 +24,15 @@ export default () => {
         state => state.settings!.mail,
     );
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+    const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         console.log(values);
-        setSubmitting(false);
+        try {
+            await updateSetting(values);
+        } catch (error) {
+            console.error(error);
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
@@ -109,7 +116,7 @@ export default () => {
 
                     <div css={tw`bg-neutral-700 rounded shadow-md px-4 xl:px-5 py-4 mt-6`}>
                         <div css={tw`flex flex-row`}>
-                            <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                            <Button type="submit" className="ml-auto" disabled={isSubmitting || !isValid}>
                                 Save Changes
                             </Button>
                         </div>

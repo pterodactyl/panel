@@ -4,6 +4,7 @@ import tw from 'twin.macro';
 import AdminBox from '@/components/admin/AdminBox';
 import Field, { FieldRow } from '@/components/elements/Field';
 import SelectField from '@/components/elements/SelectField';
+import { Button } from '@/components/elements/button/index';
 
 export default () => {
     const submit = () => {
@@ -75,6 +76,13 @@ export default () => {
                             />
                         </FieldRow>
                     </AdminBox>
+                </div>
+                <div css={tw`bg-neutral-700 rounded shadow-md px-4 xl:px-5 py-4 mt-6`}>
+                    <div css={tw`flex flex-row`}>
+                        <Button type="submit" css={tw`ml-auto`}>
+                            Save Changes
+                        </Button>
+                    </div>
                 </div>
             </Form>
         </Formik>
