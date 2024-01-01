@@ -30,7 +30,7 @@ class UpdateSettingsRequest extends ApplicationApiRequest
            'recaptchaEnabled' => 'sometimes|required|boolean',
            'recaptchaSiteKey' => 'sometimes|required_if:recaptchaEnabled,true|string|max:191',
            'recaptchaSecretKey' => 'sometimes|required_if:recaptchaEnabled,true|string|max:191',
-           'sfaEnabled' => 'sometimes|required|boolean',
+           'sfaEnabled' => 'sometimes|required|integer|between:0,2',
        ];
     }
 }

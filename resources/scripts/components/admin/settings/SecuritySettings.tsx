@@ -46,7 +46,7 @@ export default () => {
         <Formik
             onSubmit={submit}
             initialValues={{
-                recaptchaEnabled: `${recaptchaStatus}`,
+                recaptchaEnabled: `${recaptchaStatus ? 1 : 0}`,
                 recaptchaSiteKey: siteKey,
                 recaptchaSecretKey: secretKey,
                 sfaEnabled: `${security['2faEnabled']}` ?? '0',
