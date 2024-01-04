@@ -41,10 +41,14 @@ class EggTransformer extends BaseTransformer
      */
     public function transform(Egg $model): array
     {
-        $files = json_decode($model->config_files, true, 512, JSON_THROW_ON_ERROR);
+        $model->loadMissing('configFrom');
+
+        $files = json_decode($model->inherit_config_files, true, 512, JSON_THROW_ON_ERROR);
         if (empty($files)) {
             $files = new \stdClass();
         }
+
+        $model->loadMissing('scriptFrom');
 
         return [
             'id' => $model->id,
@@ -60,18 +64,18 @@ class EggTransformer extends BaseTransformer
             'docker_images' => $model->docker_images,
             'config' => [
                 'files' => $files,
-                'startup' => json_decode($model->config_startup, true),
-                'stop' => $model->config_stop,
-                'logs' => json_decode($model->config_logs, true),
+                'startup' => json_decode($model->inherit_config_startup, true),
+                'stop' => $model->inherit_config_stop,
+                'logs' => json_decode($model->inherit_config_logs, true),
                 'file_denylist' => $model->file_denylist,
                 'extends' => $model->config_from,
             ],
             'startup' => $model->startup,
             'script' => [
                 'privileged' => $model->script_is_privileged,
-                'install' => $model->script_install,
-                'entry' => $model->script_entry,
-                'container' => $model->script_container,
+                'install' => $model->copy_script_install,
+                'entry' => $model->copy_script_entry,
+                'container' => $model->copy_script_container,
                 'extends' => $model->copy_script_from,
             ],
             $model->getCreatedAtColumn() => $this->formatTimestamp($model->created_at),
@@ -114,6 +118,8 @@ class EggTransformer extends BaseTransformer
     /**
      * Include more detailed information about the configuration if this Egg is
      * extending another.
+     *
+     * TODO: since the config info is already in the base response this include could be removed (in v2?)
      */
     public function includeConfig(Egg $model): Item|NullResource
     {
@@ -136,6 +142,8 @@ class EggTransformer extends BaseTransformer
     /**
      * Include more detailed information about the script configuration if the
      * Egg is extending another.
+     *
+     * TODO: since the script info is already in the base response this include could be removed (in v2?)
      */
     public function includeScript(Egg $model): Item|NullResource
     {
