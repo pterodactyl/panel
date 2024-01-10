@@ -7,7 +7,7 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Services\Users\UserCreationService;
-use Pterodactyl\Repositories\Eloquent\SubuserRepository;
+use Pterodactyl\Exceptions\Model\DataValidationException;
 use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 use Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException;
@@ -20,7 +20,6 @@ class SubuserCreationService
      */
     public function __construct(
         private ConnectionInterface $connection,
-        private SubuserRepository $subuserRepository,
         private UserCreationService $userCreationService,
         private UserRepositoryInterface $userRepository
     ) {
@@ -31,9 +30,9 @@ class SubuserCreationService
      * If the email address already belongs to a user on the system a new user will not
      * be created.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\ServerSubuserExistsException
-     * @throws \Pterodactyl\Exceptions\Service\Subuser\UserIsServerOwnerException
+     * @throws DataValidationException
+     * @throws ServerSubuserExistsException
+     * @throws UserIsServerOwnerException
      * @throws \Throwable
      */
     public function handle(Server $server, string $email, array $permissions): Subuser
@@ -46,7 +45,7 @@ class SubuserCreationService
                     throw new UserIsServerOwnerException(trans('exceptions.subusers.user_is_owner'));
                 }
 
-                $subuserCount = $this->subuserRepository->findCountWhere([['user_id', '=', $user->id], ['server_id', '=', $server->id]]);
+                $subuserCount = $server->subusers()->where('user_id', $user->id)->count();
                 if ($subuserCount !== 0) {
                     throw new ServerSubuserExistsException(trans('exceptions.subusers.subuser_exists'));
                 }
@@ -62,7 +61,7 @@ class SubuserCreationService
                 ]);
             }
 
-            return $this->subuserRepository->create([
+            return Subuser::query()->create([
                 'user_id' => $user->id,
                 'server_id' => $server->id,
                 'permissions' => array_unique($permissions),
