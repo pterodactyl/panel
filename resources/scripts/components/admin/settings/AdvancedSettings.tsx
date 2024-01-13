@@ -4,7 +4,7 @@ import tw from 'twin.macro';
 import AdminBox from '@/components/admin/AdminBox';
 import Field, { FieldRow } from '@/components/elements/Field';
 import SelectField from '@/components/elements/SelectField';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 
 export default () => {
     const submit = () => {

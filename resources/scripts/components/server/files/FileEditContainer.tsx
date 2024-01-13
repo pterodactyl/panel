@@ -9,7 +9,7 @@ import { httpErrorToHuman } from '@/api/http';
 import getFileContents from '@/api/server/files/getFileContents';
 import saveFileContents from '@/api/server/files/saveFileContents';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import Can from '@/components/elements/Can';
 import Select from '@/components/elements/Select';
 import PageContentBlock from '@/components/elements/PageContentBlock';

@@ -1,4 +1,4 @@
-import { AdjustmentsIcon, ChipIcon, CodeIcon, MailIcon, ShieldCheckIcon } from '@heroicons/react/outline';
+import { ChipIcon, CodeIcon, MailIcon, ShieldCheckIcon } from '@heroicons/react/outline';
 import { Route, Routes } from 'react-router-dom';
 import tw from 'twin.macro';
 

@@ -14,7 +14,7 @@ import updateEgg from '@/api/admin/eggs/updateEgg';
 import AdminBox from '@/components/admin/AdminBox';
 import EggDeleteButton from '@/components/admin/nests/eggs/EggDeleteButton';
 import EggExportButton from '@/components/admin/nests/eggs/EggExportButton';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Editor } from '@/components/elements/editor';
 import Field, { TextareaField } from '@/components/elements/Field';
 import Input from '@/components/elements/Input';

@@ -20,7 +20,7 @@ import AdminTable, {
     TableRow,
     useTableHooks,
 } from '@/components/admin/AdminTable';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Size } from '@/components/elements/button/types';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 

@@ -7,7 +7,7 @@ import { Actions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SelectField from '@/components/elements/SelectField';
 import { Context } from './SettingsRouter';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { LanguageKey, updateSetting } from '@/api/admin/settings';
 import { useStoreActions } from '@/state/hooks';
 import { SiteSettings } from '@/state/settings';

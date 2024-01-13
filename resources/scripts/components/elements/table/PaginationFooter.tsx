@@ -1,6 +1,6 @@
 import { PaginationDataSet } from '@/api/http';
 import classNames from 'classnames';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { ChevronDoubleLeftIcon, ChevronDoubleRightIcon } from '@heroicons/react/solid';
 
 interface Props {

@@ -2,7 +2,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 
 import AdminBox from '@/components/admin/AdminBox';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import Field, { FieldRow } from '@/components/elements/Field';
 import Label from '@/components/elements/Label';
 import { Context } from './SettingsRouter';

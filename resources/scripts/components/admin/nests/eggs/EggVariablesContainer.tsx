@@ -13,7 +13,7 @@ import type { EggVariable } from '@/api/admin/egg';
 import { useEggFromRoute } from '@/api/admin/egg';
 import NewVariableButton from '@/components/admin/nests/eggs/NewVariableButton';
 import AdminBox from '@/components/admin/AdminBox';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import Checkbox from '@/components/elements/Checkbox';
 import Field, { FieldRow, TextareaField } from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';

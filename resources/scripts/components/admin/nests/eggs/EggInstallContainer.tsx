@@ -8,7 +8,7 @@ import tw from 'twin.macro';
 import { useEggFromRoute } from '@/api/admin/egg';
 import updateEgg from '@/api/admin/eggs/updateEgg';
 import AdminBox from '@/components/admin/AdminBox';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Editor } from '@/components/elements/editor';
 import Field from '@/components/elements/Field';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';

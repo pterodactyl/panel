@@ -6,7 +6,7 @@ import tw from 'twin.macro';
 
 import { exportEgg } from '@/api/admin/egg';
 import FlashMessageRender from '@/components/FlashMessageRender';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Variant } from '@/components/elements/button/types';
 import { Editor } from '@/components/elements/editor';
 import Modal from '@/components/elements/Modal';

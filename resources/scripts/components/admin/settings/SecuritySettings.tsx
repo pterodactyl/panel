@@ -5,7 +5,7 @@ import AdminBox from '@/components/admin/AdminBox';
 import Field, { FieldRow } from '@/components/elements/Field';
 import SelectField from '@/components/elements/SelectField';
 import { Context } from './SettingsRouter';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { ApplicationStore } from '@/state';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { updateSetting } from '@/api/admin/settings';

@@ -12,7 +12,7 @@ import BaseSettingsBox from '@/components/admin/servers/settings/BaseSettingsBox
 import FeatureLimitsBox from '@/components/admin/servers/settings/FeatureLimitsBox';
 import NetworkingBox from '@/components/admin/servers/settings/NetworkingBox';
 import ServerResourceBox from '@/components/admin/servers/settings/ServerResourceBox';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 
 export default () => {
     const { data: server } = useServerFromRoute();

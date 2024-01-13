@@ -6,7 +6,7 @@ import { object, string } from 'yup';
 
 import createLocation from '@/api/admin/locations/createLocation';
 import getLocations from '@/api/admin/locations/getLocations';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Size, Variant } from '@/components/elements/button/types';
 import Field from '@/components/elements/Field';
 import Modal from '@/components/elements/Modal';

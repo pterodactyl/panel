@@ -7,7 +7,7 @@ import tw from 'twin.macro';
 import getEggs from '@/api/admin/nests/getEggs';
 import importEgg from '@/api/admin/nests/importEgg';
 import useFlash from '@/plugins/useFlash';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Size, Variant } from '@/components/elements/button/types';
 import { Editor } from '@/components/elements/editor';
 import Modal from '@/components/elements/Modal';
