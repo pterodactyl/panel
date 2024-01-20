@@ -12,7 +12,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import NodeLimitContainer from '@/components/admin/nodes/NodeLimitContainer';
 import NodeListenContainer from '@/components/admin/nodes/NodeListenContainer';
 import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import type { ApplicationStore } from '@/state';
 

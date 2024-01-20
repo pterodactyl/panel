@@ -12,7 +12,7 @@ import NodeLimitContainer from '@/components/admin/nodes/NodeLimitContainer';
 import NodeListenContainer from '@/components/admin/nodes/NodeListenContainer';
 import { Context } from '@/components/admin/nodes/NodeRouter';
 import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import type { ApplicationStore } from '@/state';
 
 interface Values {
