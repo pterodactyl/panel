@@ -2,10 +2,10 @@ import type { ReactNode } from 'react';
 import { useContext } from 'react';
 import tw from 'twin.macro';
 
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
-import { Variant } from './button/types';
+import { Variant } from '@/components/elements/button/types';
 
 interface Props {
     children: ReactNode;

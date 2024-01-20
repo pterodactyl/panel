@@ -6,7 +6,7 @@ import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import InputSpinner from '@/components/elements/InputSpinner';
 import { Textarea } from '@/components/elements/Input';
 import Can from '@/components/elements/Can';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
 import styled from 'styled-components';
