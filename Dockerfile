@@ -2,19 +2,31 @@
 # Build the assets that are needed for the frontend. This build stage is then discarded
 # since we won't need NodeJS anymore in the future. This Docker image ships a final production
 # level distribution of Pterodactyl.
-FROM --platform=$TARGETOS/$TARGETARCH mhart/ubuntu:latest
+FROM --platform=$TARGETOS/$TARGETARCH ubuntu:latest
+ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /app
 COPY . ./
-RUN yarn install --frozen-lockfile \
-    && yarn run build:production
+RUN apt-get update && \
+    apt-get install -y ca-certificates curl gnupg
+
+RUN mkdir -p /etc/apt/keyrings && \
+    curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg && \
+    echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    npm i -g yarn
+
+RUN yarn install --frozen-lockfile && \
+    yarn run build:production
 
 # Stage 1:
 # Build the actual container with all of the needed PHP dependencies that will run the application.
-FROM --platform=$TARGETOS/$TARGETARCH php:8.1-fpm-alpine
+FROM --platform=$TARGETOS/$TARGETARCH php:8.1-fpm-bullseye
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
-RUN apt update && apt install --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot certbot-nginx \
+# dcron
+RUN apt update && apt install -y ca-certificates curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot python3-certbot-nginx \
     && docker-php-ext-configure zip \
     && docker-php-ext-install bcmath gd pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
