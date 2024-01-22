@@ -26,7 +26,8 @@ WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
 # dcron
-RUN apt update && apt install -y ca-certificates curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot python3-certbot-nginx \
+RUN useradd nginx
+RUN apt update && apt install -y ca-certificates curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot python3-certbot-nginx cron \
     && docker-php-ext-configure zip \
     && docker-php-ext-install bcmath gd pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
