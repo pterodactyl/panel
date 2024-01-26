@@ -21,12 +21,12 @@ RUN yarn install --frozen-lockfile && \
 
 # Stage 1:
 # Build the actual container with all of the needed PHP dependencies that will run the application.
-FROM --platform=$TARGETOS/$TARGETARCH php:8.1-fpm-bulleye
+FROM --platform=$TARGETOS/$TARGETARCH php:8.1-fpm-bullseye
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
-RUN useradd nginx
-RUN apt update && apt install ca-certificates cron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot python3-certbot-nginx \
+# dcron
+RUN apt update && apt install -y ca-certificates curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot python3-certbot-nginx \
     && docker-php-ext-configure zip \
     && docker-php-ext-install bcmath gd pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
