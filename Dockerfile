@@ -2,7 +2,8 @@
 # Build the assets that are needed for the frontend. This build stage is then discarded
 # since we won't need NodeJS anymore in the future. This Docker image ships a final production
 # level distribution of Pterodactyl.
-FROM --platform=$TARGETOS/$TARGETARCH ubuntu:latest
+FROM --platform=linux/amd64 ubuntu:latest
+
 ENV NODE_OPTIONS=--openssl-legacy-provider
 WORKDIR /app
 COPY . ./
