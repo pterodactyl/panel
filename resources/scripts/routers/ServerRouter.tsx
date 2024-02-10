@@ -1,11 +1,9 @@
 import TransferListener from '@/components/server/TransferListener';
-import React, { useEffect, useState } from 'react';
-import { NavLink, Route, Switch, useRouteMatch } from 'react-router-dom';
+import { Fragment, useEffect, useState } from 'react';
+import { NavLink, Route, Routes, useParams } from 'react-router-dom';
 import NavigationBar from '@/components/NavigationBar';
-import TransitionRouter from '@/TransitionRouter';
 import WebsocketHandler from '@/components/server/WebsocketHandler';
 import { ServerContext } from '@/state/server';
-import { CSSTransition } from 'react-transition-group';
 import Can from '@/components/elements/Can';
 import Spinner from '@/components/elements/Spinner';
 import { NotFound, ServerError } from '@/components/elements/ScreenBlock';
@@ -21,38 +19,35 @@ import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/components/elements/PermissionRoute';
 import routes from '@/routers/routes';
 
-export default () => {
-    const match = useRouteMatch<{ id: string }>();
+function ServerRouter() {
+    const params = useParams<'id'>();
     const location = useLocation();
 
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const rootAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [error, setError] = useState('');
 
-    const id = ServerContext.useStoreState((state) => state.server.data?.id);
-    const uuid = ServerContext.useStoreState((state) => state.server.data?.uuid);
-    const inConflictState = ServerContext.useStoreState((state) => state.server.inConflictState);
-    const serverId = ServerContext.useStoreState((state) => state.server.data?.internalId);
-    const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
-    const clearServerState = ServerContext.useStoreActions((actions) => actions.clearServerState);
-
-    const to = (value: string, url = false) => {
-        if (value === '/') {
-            return url ? match.url : match.path;
-        }
-        return `${(url ? match.url : match.path).replace(/\/*$/, '')}/${value.replace(/^\/+/, '')}`;
-    };
+    const id = ServerContext.useStoreState(state => state.server.data?.id);
+    const uuid = ServerContext.useStoreState(state => state.server.data?.uuid);
+    const inConflictState = ServerContext.useStoreState(state => state.server.inConflictState);
+    const serverId = ServerContext.useStoreState(state => state.server.data?.internalId);
+    const getServer = ServerContext.useStoreActions(actions => actions.server.getServer);
+    const clearServerState = ServerContext.useStoreActions(actions => actions.clearServerState);
 
     useEffect(
         () => () => {
             clearServerState();
         },
-        []
+        [],
     );
 
     useEffect(() => {
         setError('');
 
-        getServer(match.params.id).catch((error) => {
+        if (params.id === undefined) {
+            return;
+        }
+
+        getServer(params.id).catch(error => {
             console.error(error);
             setError(httpErrorToHuman(error));
         });
@@ -60,69 +55,77 @@ export default () => {
         return () => {
             clearServerState();
         };
-    }, [match.params.id]);
+    }, [params.id]);
 
     return (
-        <React.Fragment key={'server-router'}>
+        <Fragment key={'server-router'}>
             <NavigationBar />
             {!uuid || !id ? (
                 error ? (
                     <ServerError message={error} />
                 ) : (
-                    <Spinner size={'large'} centered />
+                    <Spinner size="large" centered />
                 )
             ) : (
                 <>
-                    <CSSTransition timeout={150} classNames={'fade'} appear in>
-                        <SubNavigation>
-                            <div>
-                                {routes.server
-                                    .filter((route) => !!route.name)
-                                    .map((route) =>
-                                        route.permission ? (
-                                            <Can key={route.path} action={route.permission} matchAny>
-                                                <NavLink to={to(route.path, true)} exact={route.exact}>
-                                                    {route.name}
-                                                </NavLink>
-                                            </Can>
-                                        ) : (
-                                            <NavLink key={route.path} to={to(route.path, true)} exact={route.exact}>
+                    <SubNavigation>
+                        <div>
+                            {routes.server
+                                .filter(route => route.path !== undefined)
+                                .map(route =>
+                                    route.permission ? (
+                                        <Can key={route.path} action={route.permission} matchAny>
+                                            <NavLink to={`/server/${id}/${route.path ?? ''}`.replace(/\/$/, '')} end>
                                                 {route.name}
                                             </NavLink>
-                                        )
-                                    )}
-                                {rootAdmin && (
-                                    // eslint-disable-next-line react/jsx-no-target-blank
-                                    <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
-                                        <FontAwesomeIcon icon={faExternalLinkAlt} />
-                                    </a>
+                                        </Can>
+                                    ) : (
+                                        <NavLink
+                                            key={route.path}
+                                            to={`/server/${id}/${route.path ?? ''}`.replace(/\/$/, '')}
+                                            end
+                                        >
+                                            {route.name}
+                                        </NavLink>
+                                    ),
                                 )}
-                            </div>
-                        </SubNavigation>
-                    </CSSTransition>
+                            {rootAdmin && (
+                                <NavLink to={`/admin/servers/${serverId}`}>
+                                    <FontAwesomeIcon icon={faExternalLinkAlt} />
+                                </NavLink>
+                            )}
+                        </div>
+                    </SubNavigation>
                     <InstallListener />
                     <TransferListener />
                     <WebsocketHandler />
-                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}`))) ? (
+                    {inConflictState && (!rootAdmin || (rootAdmin && !location.pathname.endsWith(`/server/${id}/`))) ? (
                         <ConflictStateRenderer />
                     ) : (
                         <ErrorBoundary>
-                            <TransitionRouter>
-                                <Switch location={location}>
-                                    {routes.server.map(({ path, permission, component: Component }) => (
-                                        <PermissionRoute key={path} permission={permission} path={to(path)} exact>
-                                            <Spinner.Suspense>
-                                                <Component />
-                                            </Spinner.Suspense>
-                                        </PermissionRoute>
-                                    ))}
-                                    <Route path={'*'} component={NotFound} />
-                                </Switch>
-                            </TransitionRouter>
+                            <Routes location={location}>
+                                {routes.server.map(({ route, permission, component: Component }) => (
+                                    <Route
+                                        key={route}
+                                        path={route}
+                                        element={
+                                            <PermissionRoute permission={permission}>
+                                                <Spinner.Suspense>
+                                                    <Component />
+                                                </Spinner.Suspense>
+                                            </PermissionRoute>
+                                        }
+                                    />
+                                ))}
+
+                                <Route path="*" element={<NotFound />} />
+                            </Routes>
                         </ErrorBoundary>
                     )}
                 </>
             )}
-        </React.Fragment>
+        </Fragment>
     );
-};
+}
+
+export default ServerRouter;

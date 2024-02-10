@@ -9,12 +9,10 @@ class SetupTableForKeyEncryption extends Migration
     /**
      * Run the migrations.
      *
-     * @return void
-     *
      * @throws \Exception
      * @throws \Throwable
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
             $table->char('identifier', 16)->nullable()->unique()->after('user_id');
@@ -29,12 +27,10 @@ class SetupTableForKeyEncryption extends Migration
     /**
      * Reverse the migrations.
      *
-     * @return void
-     *
      * @throws \Exception
      * @throws \Throwable
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
             $table->dropColumn('identifier');

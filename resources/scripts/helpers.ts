@@ -40,10 +40,10 @@ export function fileBitsToString(mode: string, directory: boolean): string {
 export function encodePathSegments(path: string): string {
     return path
         .split('/')
-        .map((s) => encodeURIComponent(s))
+        .map(s => encodeURIComponent(s))
         .join('/');
 }
 
 export function hashToPath(hash: string): string {
-    return hash.length > 0 ? decodeURIComponent(hash.substr(1)) : '/';
+    return hash.length > 0 ? decodeURIComponent(hash.substring(1)) : '/';
 }

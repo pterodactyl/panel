@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
@@ -15,9 +15,9 @@ import tw from 'twin.macro';
 export default () => {
     const [loading, setLoading] = useState(true);
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const subusers = ServerContext.useStoreState((state) => state.subusers.data);
-    const setSubusers = ServerContext.useStoreActions((actions) => actions.subusers.setSubusers);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
+    const subusers = ServerContext.useStoreState(state => state.subusers.data);
+    const setSubusers = ServerContext.useStoreActions(actions => actions.subusers.setSubusers);
 
     const permissions = useStoreState((state: ApplicationStore) => state.permissions.data);
     const getPermissions = useStoreActions((actions: Actions<ApplicationStore>) => actions.permissions.getPermissions);
@@ -26,18 +26,18 @@ export default () => {
     useEffect(() => {
         clearFlashes('users');
         getServerSubusers(uuid)
-            .then((subusers) => {
+            .then(subusers => {
                 setSubusers(subusers);
                 setLoading(false);
             })
-            .catch((error) => {
+            .catch(error => {
                 console.error(error);
                 addError({ key: 'users', message: httpErrorToHuman(error) });
             });
     }, []);
 
     useEffect(() => {
-        getPermissions().catch((error) => {
+        getPermissions().catch(error => {
             addError({ key: 'users', message: httpErrorToHuman(error) });
             console.error(error);
         });
@@ -53,7 +53,7 @@ export default () => {
             {!subusers.length ? (
                 <p css={tw`text-center text-sm text-neutral-300`}>It looks like you don&apos;t have any subusers.</p>
             ) : (
-                subusers.map((subuser) => <UserRow key={subuser.uuid} subuser={subuser} />)
+                subusers.map(subuser => <UserRow key={subuser.uuid} subuser={subuser} />)
             )}
             <Can action={'user.create'}>
                 <div css={tw`flex justify-end mt-6`}>

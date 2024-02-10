@@ -3,8 +3,9 @@
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\UserSSHKey;
+use Pterodactyl\Transformers\Api\Transformer;
 
-class UserSSHKeyTransformer extends BaseClientTransformer
+class UserSSHKeyTransformer extends Transformer
 {
     public function getResourceName(): string
     {
@@ -20,7 +21,7 @@ class UserSSHKeyTransformer extends BaseClientTransformer
             'name' => $model->name,
             'fingerprint' => $model->fingerprint,
             'public_key' => $model->public_key,
-            'created_at' => $model->created_at->toAtomString(),
+            'created_at' => self::formatTimestamp($model->created_at),
         ];
     }
 }

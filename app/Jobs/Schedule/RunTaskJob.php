@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Jobs\Schedule;
 
-use Exception;
 use Pterodactyl\Jobs\Job;
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;

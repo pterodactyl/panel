@@ -50,7 +50,7 @@ class ServerConfigurationStructureService
             ],
             'suspended' => $server->isSuspended(),
             'environment' => $this->environment->handle($server),
-            'invocation' => $server->startup,
+            'invocation' => !is_null($server->startup) ? $server->startup : $server->egg->startup,
             'skip_egg_scripts' => $server->skip_scripts,
             'build' => [
                 'memory_limit' => $server->memory,
@@ -59,22 +59,19 @@ class ServerConfigurationStructureService
                 'cpu_limit' => $server->cpu,
                 'threads' => $server->threads,
                 'disk_space' => $server->disk,
-                'oom_disabled' => $server->oom_disabled,
+                // TODO: remove oom_disabled and use oom_killer, this requires a Wings update.
+                'oom_disabled' => !$server->oom_killer,
+                'oom_killer' => $server->oom_killer,
             ],
             'container' => [
                 'image' => $server->image,
-                // This field is deprecated — use the value in the "build" block.
-                //
-                // TODO: remove this key in V2.
-                'oom_disabled' => $server->oom_disabled,
-                'requires_rebuild' => false,
             ],
             'allocations' => [
-                'force_outgoing_ip' => $server->egg->force_outgoing_ip,
                 'default' => [
                     'ip' => $server->allocation->ip,
                     'port' => $server->allocation->port,
                 ],
+                'force_outgoing_ip' => $server->egg->force_outgoing_ip,
                 'mappings' => $server->getAllocationMappings(),
             ],
             'mounts' => $server->mounts->map(function (Mount $mount) {
@@ -110,7 +107,7 @@ class ServerConfigurationStructureService
                     return $item->pluck('port');
                 })->toArray(),
                 'env' => $this->environment->handle($server),
-                'oom_disabled' => $server->oom_disabled,
+                'oom_disabled' => !$server->oom_killer,
                 'memory' => (int) $server->memory,
                 'swap' => (int) $server->swap,
                 'io' => (int) $server->io,

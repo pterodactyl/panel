@@ -20,15 +20,14 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array|null $file_denylist
  * @property string|null $config_files
  * @property string|null $config_startup
- * @property string|null $config_logs
  * @property string|null $config_stop
  * @property int|null $config_from
  * @property string|null $startup
  * @property bool $script_is_privileged
  * @property string|null $script_install
- * @property string $script_entry
- * @property string $script_container
- * @property int|null $copy_script_from
+ * @property ?string $script_entry
+ * @property ?string $script_container
+ * @property ?int $copy_script_from
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string|null $copy_script_install
@@ -36,7 +35,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string $copy_script_container
  * @property string|null $inherit_config_files
  * @property string|null $inherit_config_startup
- * @property string|null $inherit_config_logs
  * @property string|null $inherit_config_stop
  * @property string $inherit_file_denylist
  * @property array|null $inherit_features
@@ -80,6 +78,9 @@ class Egg extends Model
      * Fields that are not mass assignable.
      */
     protected $fillable = [
+        'nest_id',
+        'author',
+        'uuid',
         'name',
         'description',
         'features',
@@ -88,7 +89,6 @@ class Egg extends Model
         'file_denylist',
         'config_files',
         'config_startup',
-        'config_logs',
         'config_stop',
         'config_from',
         'startup',
@@ -128,7 +128,6 @@ class Egg extends Model
         'config_from' => 'sometimes|bail|nullable|numeric|exists:eggs,id',
         'config_stop' => 'required_without:config_from|nullable|string|max:191',
         'config_startup' => 'required_without:config_from|nullable|json',
-        'config_logs' => 'required_without:config_from|nullable|json',
         'config_files' => 'required_without:config_from|nullable|json',
         'update_url' => 'sometimes|nullable|string',
         'force_outgoing_ip' => 'sometimes|boolean',
@@ -139,7 +138,6 @@ class Egg extends Model
         'file_denylist' => null,
         'config_stop' => null,
         'config_startup' => null,
-        'config_logs' => null,
         'config_files' => null,
         'update_url' => null,
     ];
@@ -205,18 +203,6 @@ class Egg extends Model
         }
 
         return $this->configFrom->config_startup;
-    }
-
-    /**
-     * Return the log reading configuration for an egg.
-     */
-    public function getInheritConfigLogsAttribute(): ?string
-    {
-        if (!is_null($this->config_logs) || is_null($this->config_from)) {
-            return $this->config_logs;
-        }
-
-        return $this->configFrom->config_logs;
     }
 
     /**

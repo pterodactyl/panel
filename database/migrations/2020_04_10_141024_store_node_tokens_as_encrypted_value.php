@@ -13,11 +13,9 @@ class StoreNodeTokensAsEncryptedValue extends Migration
     /**
      * Run the migrations.
      *
-     * @return void
-     *
      * @throws \Exception
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->dropUnique(['daemonSecret']);
@@ -26,7 +24,8 @@ class StoreNodeTokensAsEncryptedValue extends Migration
         Schema::table('nodes', function (Blueprint $table) {
             $table->char('uuid', 36)->after('id');
             $table->char('daemon_token_id', 16)->after('upload_size');
-            $table->renameColumn('daemonSecret', 'daemon_token');
+
+            $table->renameColumn('`daemonSecret`', 'daemon_token');
         });
 
         Schema::table('nodes', function (Blueprint $table) {
@@ -53,10 +52,8 @@ class StoreNodeTokensAsEncryptedValue extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         DB::transaction(function () {
             /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */

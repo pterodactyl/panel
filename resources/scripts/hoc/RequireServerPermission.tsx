@@ -1,12 +1,15 @@
-import React from 'react';
+import type { ReactNode } from 'react';
+
 import Can from '@/components/elements/Can';
 import { ServerError } from '@/components/elements/ScreenBlock';
 
 export interface RequireServerPermissionProps {
+    children?: ReactNode;
+
     permissions: string | string[];
 }
 
-const RequireServerPermission: React.FC<RequireServerPermissionProps> = ({ children, permissions }) => {
+function RequireServerPermission({ children, permissions }: RequireServerPermissionProps) {
     return (
         <Can
             action={permissions}
@@ -17,6 +20,6 @@ const RequireServerPermission: React.FC<RequireServerPermissionProps> = ({ child
             {children}
         </Can>
     );
-};
+}
 
 export default RequireServerPermission;

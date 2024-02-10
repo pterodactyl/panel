@@ -1,0 +1,21 @@
+:8080 {
+	root * /var/www/pterodactyl/public/
+	file_server
+
+	header {
+		-Server
+		-X-Powered-By
+		Referrer-Policy "same-origin"
+		X-Frame-Options "deny"
+		X-XSS-Protection "1; mode=block"
+		X-Content-Type-Options "nosniff"
+	}
+
+	encode gzip zstd
+
+	php_fastcgi 127.0.0.1:9000 {
+		trusted_proxies 172.20.0.0/16
+	}
+
+	try_files {path} {path}/ /index.php?{query}
+}
