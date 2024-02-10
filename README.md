@@ -11,7 +11,7 @@ Pterodactyl® is a free, open-source game server management panel built with PHP
 in mind, Pterodactyl runs all game servers in isolated Docker containers while exposing a beautiful and intuitive
 UI to end users.
 
-Stop settling for less. Make game servers a first class citizen on your platform.
+Stop settling for less. Make game servers a first class citizen on your platform/
 
 ![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
 
