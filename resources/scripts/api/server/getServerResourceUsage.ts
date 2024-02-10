@@ -26,7 +26,7 @@ export default (server: string): Promise<ServerStats> => {
                     networkRxInBytes: attributes.resources.network_rx_bytes,
                     networkTxInBytes: attributes.resources.network_tx_bytes,
                     uptime: attributes.resources.uptime,
-                })
+                }),
             )
             .catch(reject);
     });

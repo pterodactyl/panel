@@ -9,8 +9,10 @@ with pkgs;
       alejandra
       composer
       nodejs_18
-      nodePackages.yarn
+      nodePackages.pnpm
       php81WithExtensions
+
+      docker-compose
     ];
 
     shellHook = ''

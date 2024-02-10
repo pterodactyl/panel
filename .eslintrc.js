@@ -28,8 +28,8 @@ module.exports = {
         // 'standard',
         'eslint:recommended',
         'plugin:react/recommended',
+        'plugin:react/jsx-runtime',
         'plugin:@typescript-eslint/recommended',
-        'plugin:jest-dom/recommended',
     ],
     rules: {
         eqeqeq: 'error',
@@ -37,6 +37,7 @@ module.exports = {
         // TypeScript can infer this significantly better than eslint ever can.
         'react/prop-types': 0,
         'react/display-name': 0,
+        'react/no-unknown-property': ['error', {ignore: ['css']}],
         '@typescript-eslint/no-explicit-any': 0,
         '@typescript-eslint/no-non-null-assertion': 0,
         // This setup is required to avoid a spam of errors when running eslint about React being

@@ -27,6 +27,10 @@ class NodeFactory extends Factory
             'public' => true,
             'name' => 'FactoryNode_' . Str::random(10),
             'fqdn' => $this->faker->unique()->ipv4,
+            'listen_port_http' => 8080,
+            'listen_port_sftp' => 2022,
+            'public_port_http' => 8080,
+            'public_port_sftp' => 2022,
             'scheme' => 'http',
             'behind_proxy' => false,
             'memory' => 1024,
@@ -36,9 +40,7 @@ class NodeFactory extends Factory
             'upload_size' => 100,
             'daemon_token_id' => Str::random(Node::DAEMON_TOKEN_ID_LENGTH),
             'daemon_token' => Crypt::encrypt(Str::random(Node::DAEMON_TOKEN_LENGTH)),
-            'daemonListen' => 8080,
-            'daemonSFTP' => 2022,
-            'daemonBase' => '/var/lib/pterodactyl/volumes',
+            'daemon_base' => Node::DEFAULT_DAEMON_BASE,
         ];
     }
 }

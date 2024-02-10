@@ -1,7 +1,7 @@
 .button {
     @apply px-4 py-2 inline-flex items-center justify-center;
     @apply rounded text-base font-semibold transition-all duration-100;
-    @apply focus:ring-[3px] focus:ring-offset-2 focus:ring-offset-gray-700 focus:ring-opacity-50;
+    @apply focus:ring-[3px] focus:ring-offset-2 focus:ring-offset-slate-700 focus:ring-opacity-50;
 
     /* Sizing Controls */
     &.small {
@@ -13,7 +13,7 @@
     }
 
     &.secondary {
-        @apply text-gray-50 bg-transparent;
+        @apply text-slate-50 bg-transparent;
 
         &:disabled {
             background: transparent !important;
@@ -47,20 +47,20 @@
 }
 
 .text {
-    @apply bg-gray-500 text-gray-50;
-    @apply hover:bg-gray-400 active:bg-gray-400 focus:ring-gray-300 focus:ring-opacity-50;
+    @apply bg-slate-500 text-slate-50;
+    @apply hover:bg-slate-400 active:bg-slate-400 focus:ring-slate-300 focus:ring-opacity-50;
 
     &.secondary {
-        @apply hover:bg-gray-500 active:bg-gray-500;
+        @apply hover:bg-slate-500 active:bg-slate-500;
     }
 
     &:disabled {
-        @apply bg-gray-500/75 text-gray-200/75;
+        @apply bg-slate-500/75 text-slate-200/75;
     }
 }
 
 .danger {
-    @apply bg-red-600 text-gray-50;
+    @apply bg-red-600 text-slate-50;
     @apply hover:bg-red-500 active:bg-red-500 focus:ring-red-400 focus:ring-opacity-75;
 
     &.secondary {

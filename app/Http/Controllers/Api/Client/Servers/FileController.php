@@ -47,7 +47,7 @@ class FileController extends ClientApiController
             ->getDirectory($request->get('directory') ?? '/');
 
         return $this->fractal->collection($contents)
-            ->transformWith($this->getTransformer(FileObjectTransformer::class))
+            ->transformWith(FileObjectTransformer::class)
             ->toArray();
     }
 
@@ -183,7 +183,7 @@ class FileController extends ClientApiController
             ->log();
 
         return $this->fractal->item($file)
-            ->transformWith($this->getTransformer(FileObjectTransformer::class))
+            ->transformWith(FileObjectTransformer::class)
             ->toArray();
     }
 

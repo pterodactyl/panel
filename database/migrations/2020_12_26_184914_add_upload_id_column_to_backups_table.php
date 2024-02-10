@@ -8,10 +8,8 @@ class AddUploadIdColumnToBackupsTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->text('upload_id')->nullable()->after('uuid');
@@ -20,10 +18,8 @@ class AddUploadIdColumnToBackupsTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->dropColumn('upload_id');

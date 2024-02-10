@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import Modal, { RequiredModalProps } from '@/components/elements/Modal';
 import { Field, Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
@@ -10,7 +10,7 @@ import getServers from '@/api/getServers';
 import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import tw from 'twin.macro';
 import Input from '@/components/elements/Input';
 import { ip } from '@/lib/formatters';
@@ -47,10 +47,10 @@ const SearchWatcher = () => {
 
 export default ({ ...props }: Props) => {
     const ref = useRef<HTMLInputElement>(null);
-    const isAdmin = useStoreState((state) => state.user.data!.rootAdmin);
+    const isAdmin = useStoreState(state => state.user.data!.rootAdmin);
     const [servers, setServers] = useState<Server[]>([]);
     const { clearAndAddHttpError, clearFlashes } = useStoreActions(
-        (actions: Actions<ApplicationStore>) => actions.flashes
+        (actions: Actions<ApplicationStore>) => actions.flashes,
     );
 
     const search = debounce(({ term }: Values, { setSubmitting }: FormikHelpers<Values>) => {
@@ -58,8 +58,8 @@ export default ({ ...props }: Props) => {
 
         // if (ref.current) ref.current.focus();
         getServers({ query: term, type: isAdmin ? 'admin-all' : undefined })
-            .then((servers) => setServers(servers.items.filter((_, index) => index < 5)))
-            .catch((error) => {
+            .then(servers => setServers(servers.items.filter((_, index) => index < 5)))
+            .catch(error => {
                 console.error(error);
                 clearAndAddHttpError({ key: 'search', error });
             })
@@ -100,7 +100,7 @@ export default ({ ...props }: Props) => {
                     </Form>
                     {servers.length > 0 && (
                         <div css={tw`mt-6`}>
-                            {servers.map((server) => (
+                            {servers.map(server => (
                                 <ServerResult
                                     key={server.uuid}
                                     to={`/server/${server.id}`}
@@ -110,8 +110,8 @@ export default ({ ...props }: Props) => {
                                         <p css={tw`text-sm`}>{server.name}</p>
                                         <p css={tw`mt-1 text-xs text-neutral-400`}>
                                             {server.allocations
-                                                .filter((alloc) => alloc.isDefault)
-                                                .map((allocation) => (
+                                                .filter(alloc => alloc.isDefault)
+                                                .map(allocation => (
                                                     <span key={allocation.ip + allocation.port.toString()}>
                                                         {allocation.alias || ip(allocation.ip)}:{allocation.port}
                                                     </span>

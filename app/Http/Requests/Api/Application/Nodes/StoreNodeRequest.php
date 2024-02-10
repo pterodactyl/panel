@@ -2,40 +2,40 @@
 
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
+use Illuminate\Support\Arr;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
 
 class StoreNodeRequest extends ApplicationApiRequest
 {
-    protected ?string $resource = AdminAcl::RESOURCE_NODES;
-
-    protected int $permission = AdminAcl::WRITE;
-
     /**
      * Validation rules to apply to this request.
      */
     public function rules(array $rules = null): array
     {
         return collect($rules ?? Node::getRules())->only([
-            'public',
             'name',
+            'description',
             'location_id',
+            'database_host_id',
             'fqdn',
             'scheme',
             'behind_proxy',
-            'maintenance_mode',
+            'public',
+
+            'listen_port_http',
+            'public_port_http',
+            'listen_port_sftp',
+            'public_port_sftp',
+
             'memory',
             'memory_overallocate',
             'disk',
             'disk_overallocate',
-            'upload_size',
-            'daemonListen',
-            'daemonSFTP',
-            'daemonBase',
-        ])->mapWithKeys(function ($value, $key) {
-            $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
 
+            'upload_size',
+            'daemon_base',
+        ])->mapWithKeys(function ($value, $key) {
             return [snake_case($key) => $value];
         })->toArray();
     }
@@ -60,11 +60,11 @@ class StoreNodeRequest extends ApplicationApiRequest
     public function validated($key = null, $default = null): array
     {
         $response = parent::validated();
-        $response['daemonListen'] = $response['daemon_listen'];
-        $response['daemonSFTP'] = $response['daemon_sftp'];
-        $response['daemonBase'] = $response['daemon_base'] ?? (new Node())->getAttribute('daemonBase');
+        $response['daemon_base'] = $response['daemon_base'] ?? Node::DEFAULT_DAEMON_BASE;
 
-        unset($response['daemon_base'], $response['daemon_listen'], $response['daemon_sftp']);
+        if (!is_null($key)) {
+            return Arr::get($response, $key, $default);
+        }
 
         return $response;
     }

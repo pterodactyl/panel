@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
 import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -9,7 +9,7 @@ import Can from '@/components/elements/Can';
 import { Button } from '@/components/elements/button/index';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Allocation } from '@/api/server/getServer';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import { debounce } from 'debounce';
 import setServerAllocationNotes from '@/api/server/network/setServerAllocationNotes';
 import { useFlashKey } from '@/plugins/useFlash';
@@ -32,11 +32,11 @@ interface Props {
 const AllocationRow = ({ allocation }: Props) => {
     const [loading, setLoading] = useState(false);
     const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const uuid = ServerContext.useStoreState(state => state.server.data!.uuid);
     const { mutate } = getServerAllocations();
 
     const onNotesChanged = useCallback((id: number, notes: string) => {
-        mutate((data) => data?.map((a) => (a.id === id ? { ...a, notes } : a)), false);
+        mutate(data => data?.map(a => (a.id === id ? { ...a, notes } : a)), false);
     }, []);
 
     const setAllocationNotes = debounce((notes: string) => {
@@ -45,23 +45,23 @@ const AllocationRow = ({ allocation }: Props) => {
 
         setServerAllocationNotes(uuid, allocation.id, notes)
             .then(() => onNotesChanged(allocation.id, notes))
-            .catch((error) => clearAndAddHttpError(error))
+            .catch(error => clearAndAddHttpError(error))
             .then(() => setLoading(false));
     }, 750);
 
     const setPrimaryAllocation = () => {
         clearFlashes();
-        mutate((data) => data?.map((a) => ({ ...a, isDefault: a.id === allocation.id })), false);
+        mutate(data => data?.map(a => ({ ...a, isDefault: a.id === allocation.id })), false);
 
-        setPrimaryServerAllocation(uuid, allocation.id).catch((error) => {
+        setPrimaryServerAllocation(uuid, allocation.id).catch(error => {
             clearAndAddHttpError(error);
             mutate();
         });
     };
 
     return (
-        <GreyRowBox $hoverable={false} className={'flex-wrap md:flex-nowrap mt-2'}>
-            <div className={'flex items-center w-full md:w-auto'}>
+        <GreyRowBox $hoverable={false} className={'mt-2 flex-wrap md:flex-nowrap'}>
+            <div className={'flex w-full items-center md:w-auto'}>
                 <div className={'pl-4 pr-6 text-neutral-400'}>
                     <FontAwesomeIcon icon={faNetworkWired} />
                 </div>
@@ -79,24 +79,24 @@ const AllocationRow = ({ allocation }: Props) => {
                     )}
                     <Label>{allocation.alias ? 'Hostname' : 'IP Address'}</Label>
                 </div>
-                <div className={'w-16 md:w-24 overflow-hidden'}>
+                <div className={'w-16 overflow-hidden md:w-24'}>
                     <Code dark>{allocation.port}</Code>
                     <Label>Port</Label>
                 </div>
             </div>
-            <div className={'mt-4 w-full md:mt-0 md:flex-1 md:w-auto'}>
+            <div className={'mt-4 w-full md:mt-0 md:w-auto md:flex-1'}>
                 <InputSpinner visible={loading}>
                     <Textarea
-                        className={'bg-neutral-800 hover:border-neutral-600 border-transparent'}
+                        className={'border-transparent bg-neutral-800 hover:border-neutral-600'}
                         placeholder={'Notes'}
                         defaultValue={allocation.notes || undefined}
-                        onChange={(e) => setAllocationNotes(e.currentTarget.value)}
+                        onChange={e => setAllocationNotes(e.currentTarget.value)}
                     />
                 </InputSpinner>
             </div>
-            <div className={'flex justify-end space-x-4 mt-4 w-full md:mt-0 md:w-48'}>
+            <div className={'mt-4 flex w-full justify-end space-x-4 md:mt-0 md:w-48'}>
                 {allocation.isDefault ? (
-                    <Button size={Button.Sizes.Small} className={'!text-gray-50 !bg-blue-600'} disabled>
+                    <Button size={Button.Sizes.Small} className={'!bg-blue-600 !text-slate-50'} disabled>
                         Primary
                     </Button>
                 ) : (

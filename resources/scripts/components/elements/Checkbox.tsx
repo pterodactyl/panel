@@ -1,10 +1,13 @@
-import React from 'react';
-import { Field, FieldProps } from 'formik';
+import type { FieldProps } from 'formik';
+import { Field } from 'formik';
+
 import Input from '@/components/elements/Input';
 
 interface Props {
+    id: string;
     name: string;
-    value: string;
+    value?: string;
+    label?: string;
     className?: string;
 }
 
@@ -29,7 +32,7 @@ const Checkbox = ({ name, value, className, ...props }: Props & InputProps) => (
                     type={'checkbox'}
                     checked={(field.value || []).includes(value)}
                     onClick={() => form.setFieldTouched(field.name, true)}
-                    onChange={(e) => {
+                    onChange={e => {
                         const set = new Set(field.value);
                         set.has(value) ? set.delete(value) : set.add(value);
 

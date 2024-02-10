@@ -1,47 +1,55 @@
 {
-  "compilerOptions": {
-    "target": "es2015",
-    "module": "es2020",
-    "jsx": "react",
-    "moduleResolution": "node",
-    "lib": [
-      "es2015",
-      "dom"
-    ],
-    "strict": true,
-    "noEmit": true,
-    "sourceMap": true,
-    "noImplicitReturns": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "esModuleInterop": true,
-    "allowSyntheticDefaultImports": true,
-    "baseUrl": ".",
-    "importsNotUsedAsValues": "preserve",
-    "paths": {
-      "@/*": [
-        "./resources/scripts/*"
-      ],
-      "@definitions/*": [
-        "./resources/scripts/api/definitions/*"
-      ],
-      "@feature/*": [
-        "./resources/scripts/components/server/features/*"
-      ]
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "display": "Default",
+    "compilerOptions": {
+        "lib": ["DOM", "DOM.Iterable", "ESNext"],
+        "jsx": "react-jsx",
+        "module": "ESNext",
+        "target": "ES2019",
+        "paths": {
+            "@/*": [
+                "./resources/scripts/*"
+            ],
+            "@definitions/*": [
+                "./resources/scripts/api/definitions/*"
+            ],
+            "@feature/*": [
+                "./resources/scripts/components/server/features/*"
+            ]
+        },
+        "plugins": [
+            {
+                "name": "typescript-plugin-tw-template"
+            }
+        ],
+
+        "allowJs": false,
+        "allowSyntheticDefaultImports": true,
+        "composite": false,
+        "declaration": true,
+        "declarationMap": true,
+        "esModuleInterop": true,
+        "forceConsistentCasingInFileNames": true,
+        "inlineSources": false,
+        "isolatedModules": true,
+        "moduleResolution": "Node",
+        "newLine": "lf",
+        "noEmit": true,
+        "noFallthroughCasesInSwitch": true,
+        "noImplicitOverride": true,
+        "noImplicitReturns": true,
+        "noPropertyAccessFromIndexSignature": false,
+        "noUncheckedIndexedAccess": true,
+        "noUnusedLocals": true,
+        "noUnusedParameters": true,
+        "preserveWatchOutput": true,
+        "resolveJsonModule": true,
+        "skipLibCheck": true,
+        "sourceMap": true,
+        "strict": true,
+        "stripInternal": true,
+        "useDefineForClassFields": true
     },
-    "plugins": [
-      {
-        "name": "typescript-plugin-tw-template"
-      }
-    ],
-    "typeRoots": [
-      "node_modules/@types"
-    ]
-  },
-  "include": [
-    "./resources/scripts/**/*"
-  ],
-  "exclude": [
-    "/node_modules/"
-  ]
+    "include": ["./resources/scripts/**/*", "vite.config.ts"],
+    "exclude": ["node_modules"]
 }

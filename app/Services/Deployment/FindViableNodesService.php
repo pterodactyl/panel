@@ -72,18 +72,18 @@ class FindViableNodesService
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');
 
         $query = Node::query()->select('nodes.*')
-            ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory')
-            ->selectRaw('IFNULL(SUM(servers.disk), 0) as sum_disk')
+            ->selectRaw('COALESCE(SUM(servers.memory), 0) as sum_memory')
+            ->selectRaw('COALESCE(SUM(servers.disk), 0) as sum_disk')
             ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
             ->where('nodes.public', 1);
 
         if (!empty($this->locations)) {
-            $query = $query->whereIn('nodes.location_id', $this->locations);
+            $query = $query->whereIn('location_id', $this->locations);
         }
 
         $results = $query->groupBy('nodes.id')
-            ->havingRaw('(IFNULL(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1 + (nodes.memory_overallocate / 100)))', [$this->memory])
-            ->havingRaw('(IFNULL(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1 + (nodes.disk_overallocate / 100)))', [$this->disk]);
+            ->havingRaw('(COALESCE(SUM(servers.memory), 0) + ?) <= (nodes.memory * (1.0 + (nodes.memory_overallocate / 100.0)))', [$this->memory])
+            ->havingRaw('(COALESCE(SUM(servers.disk), 0) + ?) <= (nodes.disk * (1.0 + (nodes.disk_overallocate / 100.0)))', [$this->disk]);
 
         if (!is_null($page)) {
             $results = $results->paginate($perPage ?? 50, ['*'], 'page', $page);

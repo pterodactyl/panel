@@ -1,17 +1,19 @@
+import { describe, expect, it } from 'vitest';
+
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
 
-describe('@/lib/formatters.ts', function () {
-    describe('mbToBytes()', function () {
-        it('should convert from MB to Bytes', function () {
-            expect(mbToBytes(1)).toBe(1_048_576);
-            expect(mbToBytes(0)).toBe(0);
-            expect(mbToBytes(0.1)).toBe(104_857);
-            expect(mbToBytes(0.001)).toBe(1_048);
-            expect(mbToBytes(1024)).toBe(1_073_741_824);
+describe('@/lib/formatters.ts', () => {
+    describe('mbToBytes()', () => {
+        it('should convert from MB to Bytes', () => {
+            expect(mbToBytes(1)).equals(1_048_576);
+            expect(mbToBytes(0)).equals(0);
+            expect(mbToBytes(0.1)).equals(104_857);
+            expect(mbToBytes(0.001)).equals(1_048);
+            expect(mbToBytes(1024)).equals(1_073_741_824);
         });
     });
 
-    describe('bytesToString()', function () {
+    describe('bytesToString()', () => {
         it.each([
             [0, '0 Bytes'],
             [0.5, '0 Bytes'],
@@ -38,24 +40,36 @@ describe('@/lib/formatters.ts', function () {
             [1_000_000_000_000, '931.32 GiB'],
             [1_099_511_627_776, '1 TiB'],
         ])('should format %d bytes as "%s"', function (input, output) {
-            expect(bytesToString(input)).toBe(output);
+            expect(bytesToString(input)).equals(output);
         });
     });
 
-    describe('ip()', function () {
-        it('should format an IPv4 address', function () {
-            expect(ip('127.0.0.1')).toBe('127.0.0.1');
+    describe('ip()', () => {
+        it('should format an IPv4 address', () => {
+            expect(ip('127.0.0.1')).equals('127.0.0.1');
         });
 
-        it('should format an IPv6 address', function () {
-            expect(ip(':::1')).toBe('[:::1]');
-            expect(ip('2001:db8::')).toBe('[2001:db8::]');
+        it('should format an IPv4 address with a port', () => {
+            expect(ip('127.0.0.1:25565')).equals('[127.0.0.1:25565]');
         });
 
-        it('should handle random inputs', function () {
-            expect(ip('1')).toBe('1');
-            expect(ip('foobar')).toBe('foobar');
-            expect(ip('127.0.0.1:25565')).toBe('[127.0.0.1:25565]');
+        it('should format an IPv6 address', () => {
+            expect(ip('::1')).equals('[::1]');
+            expect(ip(':::1')).equals('[:::1]');
+            expect(ip('2001:db8::')).equals('[2001:db8::]');
+
+            expect(ip('[::1]')).equals('[::1]');
+            expect(ip('[2001:db8::]')).equals('[2001:db8::]');
+        });
+
+        it('should format an IPv6 address with a port', () => {
+            expect(ip('[::1]:25565')).equals('[::1]:25565');
+            expect(ip('[2001:db8::]:25565')).equals('[2001:db8::]:25565');
+        });
+
+        it('should handle random inputs', () => {
+            expect(ip('1')).equals('1');
+            expect(ip('foobar')).equals('foobar');
         });
     });
 });

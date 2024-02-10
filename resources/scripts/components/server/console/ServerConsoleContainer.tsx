@@ -1,25 +1,26 @@
-import React, { memo } from 'react';
-import { ServerContext } from '@/state/server';
+import { memo } from 'react';
+import isEqual from 'react-fast-compare';
+
+import { Alert } from '@/components/elements/alert';
 import Can from '@/components/elements/Can';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import isEqual from 'react-fast-compare';
 import Spinner from '@/components/elements/Spinner';
-import Features from '@feature/Features';
 import Console from '@/components/server/console/Console';
-import StatGraphs from '@/components/server/console/StatGraphs';
 import PowerButtons from '@/components/server/console/PowerButtons';
 import ServerDetailsBlock from '@/components/server/console/ServerDetailsBlock';
-import { Alert } from '@/components/elements/alert';
+import StatGraphs from '@/components/server/console/StatGraphs';
+import Features from '@feature/Features';
+import { ServerContext } from '@/state/server';
 
 export type PowerAction = 'start' | 'stop' | 'restart' | 'kill';
 
-const ServerConsoleContainer = () => {
-    const name = ServerContext.useStoreState((state) => state.server.data!.name);
-    const description = ServerContext.useStoreState((state) => state.server.data!.description);
-    const isInstalling = ServerContext.useStoreState((state) => state.server.isInstalling);
-    const isTransferring = ServerContext.useStoreState((state) => state.server.data!.isTransferring);
-    const eggFeatures = ServerContext.useStoreState((state) => state.server.data!.eggFeatures, isEqual);
-    const isNodeUnderMaintenance = ServerContext.useStoreState((state) => state.server.data!.isNodeUnderMaintenance);
+function ServerConsoleContainer() {
+    const name = ServerContext.useStoreState(state => state.server.data!.name);
+    const description = ServerContext.useStoreState(state => state.server.data!.description);
+    const isInstalling = ServerContext.useStoreState(state => state.server.isInstalling);
+    const isTransferring = ServerContext.useStoreState(state => state.server.data!.isTransferring);
+    const eggFeatures = ServerContext.useStoreState(state => state.server.data!.eggFeatures, isEqual);
+    const isNodeUnderMaintenance = ServerContext.useStoreState(state => state.server.data!.isNodeUnderMaintenance);
 
     return (
         <ServerContentBlock title={'Console'}>
@@ -32,26 +33,26 @@ const ServerConsoleContainer = () => {
                         : 'This server is currently being transferred to another node and all actions are unavailable.'}
                 </Alert>
             )}
-            <div className={'grid grid-cols-4 gap-4 mb-4'}>
-                <div className={'hidden sm:block sm:col-span-2 lg:col-span-3 pr-4'}>
-                    <h1 className={'font-header text-2xl text-gray-50 leading-relaxed line-clamp-1'}>{name}</h1>
+            <div className={'mb-4 grid grid-cols-4 gap-4'}>
+                <div className={'hidden pr-4 sm:col-span-2 sm:block lg:col-span-3'}>
+                    <h1 className={'font-header text-2xl leading-relaxed text-slate-50 line-clamp-1'}>{name}</h1>
                     <p className={'text-sm line-clamp-2'}>{description}</p>
                 </div>
-                <div className={'col-span-4 sm:col-span-2 lg:col-span-1 self-end'}>
+                <div className={'col-span-4 self-end sm:col-span-2 lg:col-span-1'}>
                     <Can action={['control.start', 'control.stop', 'control.restart']} matchAny>
-                        <PowerButtons className={'flex sm:justify-end space-x-2'} />
+                        <PowerButtons className={'flex space-x-2 sm:justify-end'} />
                     </Can>
                 </div>
             </div>
-            <div className={'grid grid-cols-4 gap-2 sm:gap-4 mb-4'}>
-                <div className={'flex col-span-4 lg:col-span-3'}>
+            <div className={'mb-4 grid grid-cols-4 gap-2 sm:gap-4'}>
+                <div className={'col-span-4 flex lg:col-span-3'}>
                     <Spinner.Suspense>
                         <Console />
                     </Spinner.Suspense>
                 </div>
-                <ServerDetailsBlock className={'col-span-4 lg:col-span-1 order-last lg:order-none'} />
+                <ServerDetailsBlock className={'order-last col-span-4 lg:order-none lg:col-span-1'} />
             </div>
-            <div className={'grid grid-cols-1 md:grid-cols-3 gap-2 sm:gap-4'}>
+            <div className={'grid grid-cols-1 gap-2 sm:gap-4 md:grid-cols-3'}>
                 <Spinner.Suspense>
                     <StatGraphs />
                 </Spinner.Suspense>
@@ -59,6 +60,6 @@ const ServerConsoleContainer = () => {
             <Features enabled={eggFeatures} />
         </ServerContentBlock>
     );
-};
+}
 
 export default memo(ServerConsoleContainer, isEqual);

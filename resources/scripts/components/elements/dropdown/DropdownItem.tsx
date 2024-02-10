@@ -1,42 +1,68 @@
-import React, { forwardRef } from 'react';
 import { Menu } from '@headlessui/react';
-import styles from './style.module.css';
 import classNames from 'classnames';
+import type { MouseEvent, ReactNode, Ref } from 'react';
+import { forwardRef } from 'react';
+import type { NavLinkProps } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+
+import styles from './style.module.css';
 
 interface Props {
-    children: React.ReactNode | ((opts: { active: boolean; disabled: boolean }) => JSX.Element);
+    children: ReactNode | ((opts: { active: boolean; disabled: boolean }) => JSX.Element);
     danger?: boolean;
     disabled?: boolean;
     className?: string;
     icon?: JSX.Element;
-    onClick?: (e: React.MouseEvent) => void;
+    onClick?: (e: MouseEvent) => void;
 }
 
-const DropdownItem = forwardRef<HTMLAnchorElement, Props>(
-    ({ disabled, danger, className, onClick, children, icon: IconComponent }, ref) => {
+const DropdownItem = forwardRef<HTMLAnchorElement | HTMLButtonElement, Props & Partial<Omit<NavLinkProps, 'children'>>>(
+    ({ disabled, danger, className, onClick, children, icon: IconComponent, ...props }, ref) => {
         return (
             <Menu.Item disabled={disabled}>
                 {({ disabled, active }) => (
-                    <a
-                        ref={ref}
-                        href={'#'}
-                        className={classNames(
-                            styles.menu_item,
-                            {
-                                [styles.danger]: danger,
-                                [styles.disabled]: disabled,
-                            },
-                            className
+                    <>
+                        {'to' in props && props.to !== undefined ? (
+                            <NavLink
+                                {...props}
+                                to={props.to}
+                                ref={ref as unknown as Ref<HTMLAnchorElement>}
+                                className={classNames(
+                                    styles.menu_item,
+                                    {
+                                        [styles.danger]: danger,
+                                        [styles.disabled]: disabled,
+                                    },
+                                    className,
+                                )}
+                                onClick={onClick}
+                            >
+                                {IconComponent}
+                                {typeof children === 'function' ? children({ disabled, active }) : children}
+                            </NavLink>
+                        ) : (
+                            <button
+                                type="button"
+                                ref={ref as unknown as Ref<HTMLButtonElement>}
+                                className={classNames(
+                                    styles.menu_item,
+                                    {
+                                        [styles.danger]: danger,
+                                        [styles.disabled]: disabled,
+                                    },
+                                    className,
+                                )}
+                                onClick={onClick}
+                            >
+                                {IconComponent}
+                                {typeof children === 'function' ? children({ disabled, active }) : children}
+                            </button>
                         )}
-                        onClick={onClick}
-                    >
-                        {IconComponent}
-                        {typeof children === 'function' ? children({ disabled, active }) : children}
-                    </a>
+                    </>
                 )}
             </Menu.Item>
         );
-    }
+    },
 );
 
-export default DropdownItem;
+export { DropdownItem };
