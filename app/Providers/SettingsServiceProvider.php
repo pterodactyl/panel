@@ -37,13 +37,13 @@ class SettingsServiceProvider extends ServiceProvider
      * when using the SMTP driver.
      */
     protected array $emailKeys = [
-        'mail:host',
-        'mail:port',
+        'mail:mailers:smtp:host',
+        'mail:mailers:smtp:port',
+        'mail:mailers:smtp:encryption',
+        'mail:mailers:smtp:username',
+        'mail:mailers:smtp:password',
         'mail:from:address',
         'mail:from:name',
-        'mail:encryption',
-        'mail:username',
-        'mail:password',
     ];
 
     /**
@@ -51,13 +51,13 @@ class SettingsServiceProvider extends ServiceProvider
      * configuration array.
      */
     protected static array $encrypted = [
-        'mail:password',
+        'mail:mailers:smtp:password',
     ];
 
     /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings)
+    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
     {
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.

@@ -115,6 +115,7 @@ class Server extends Model
 
     public const STATUS_INSTALLING = 'installing';
     public const STATUS_INSTALL_FAILED = 'install_failed';
+    public const STATUS_REINSTALL_FAILED = 'reinstall_failed';
     public const STATUS_SUSPENDED = 'suspended';
     public const STATUS_RESTORING_BACKUP = 'restoring_backup';
 
@@ -137,11 +138,6 @@ class Server extends Model
      * The default relationships to load for all server models.
      */
     protected $with = ['allocation'];
-
-    /**
-     * The attributes that should be mutated to dates.
-     */
-    protected $dates = [self::CREATED_AT, self::UPDATED_AT, 'deleted_at', 'installed_at'];
 
     /**
      * Fields that are not mass assignable.
@@ -192,6 +188,10 @@ class Server extends Model
         'database_limit' => 'integer',
         'allocation_limit' => 'integer',
         'backup_limit' => 'integer',
+        self::CREATED_AT => 'datetime',
+        self::UPDATED_AT => 'datetime',
+        'deleted_at' => 'datetime',
+        'installed_at' => 'datetime',
     ];
 
     /**
@@ -354,6 +354,7 @@ class Server extends Model
     {
         if (
             $this->isSuspended() ||
+            $this->node->isUnderMaintenance() ||
             !$this->isInstalled() ||
             $this->status === self::STATUS_RESTORING_BACKUP ||
             !is_null($this->transfer)

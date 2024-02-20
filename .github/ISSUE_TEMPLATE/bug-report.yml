@@ -68,8 +68,8 @@ body:
       Run the following command to collect logs on your system.
       
       Wings: `sudo wings diagnostics`
-      Panel: `tail -n 100 /var/www/pterodactyl/storage/logs/laravel-$(date +%F).log | nc bin.ptdl.co 99`
-    placeholder: "https://bin.ptdl.co/a1h6z"
+      Panel: `tail -n 150 /var/www/pterodactyl/storage/logs/laravel-$(date +%F).log | nc pteropaste.com 99`
+    placeholder: "https://pteropaste.com/a1h6z"
     render: bash
   validations:
     required: false

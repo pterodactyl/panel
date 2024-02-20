@@ -1,11 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { ServerContext } from '@/state/server';
-import { CloudUploadIcon } from '@heroicons/react/solid';
+import { CloudUploadIcon, XIcon } from '@heroicons/react/solid';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import { Button } from '@/components/elements/button/index';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import Code from '@/components/elements/Code';
+import { useSignal } from '@preact/signals-react';
 
 const svgProps = {
     cx: 16,
@@ -31,23 +32,34 @@ const Spinner = ({ progress, className }: { progress: number; className?: string
 
 const FileUploadList = () => {
     const { close } = useContext(DialogWrapperContext);
+    const cancelFileUpload = ServerContext.useStoreActions((actions) => actions.files.cancelFileUpload);
+    const clearFileUploads = ServerContext.useStoreActions((actions) => actions.files.clearFileUploads);
     const uploads = ServerContext.useStoreState((state) =>
-        state.files.uploads.sort((a, b) => a.name.localeCompare(b.name))
+        Object.entries(state.files.uploads).sort(([a], [b]) => a.localeCompare(b))
     );
 
     return (
         <div className={'space-y-2 mt-6'}>
-            {uploads.map((file) => (
-                <div key={file.name} className={'flex items-center space-x-3 bg-gray-700 p-3 rounded'}>
+            {uploads.map(([name, file]) => (
+                <div key={name} className={'flex items-center space-x-3 bg-gray-700 p-3 rounded'}>
                     <Tooltip content={`${Math.floor((file.loaded / file.total) * 100)}%`} placement={'left'}>
                         <div className={'flex-shrink-0'}>
                             <Spinner progress={(file.loaded / file.total) * 100} className={'w-6 h-6'} />
                         </div>
                     </Tooltip>
-                    <Code>{file.name}</Code>
+                    <Code className={'flex-1 truncate'}>{name}</Code>
+                    <button
+                        onClick={cancelFileUpload.bind(this, name)}
+                        className={'text-gray-500 hover:text-gray-200 transition-colors duration-75'}
+                    >
+                        <XIcon className={'w-5 h-5'} />
+                    </button>
                 </div>
             ))}
             <Dialog.Footer>
+                <Button.Danger variant={Button.Variants.Secondary} onClick={() => clearFileUploads()}>
+                    Cancel Uploads
+                </Button.Danger>
                 <Button.Text onClick={close}>Close</Button.Text>
             </Dialog.Footer>
         </div>
@@ -60,17 +72,17 @@ const FileUploadListDialog = asDialog({
 })(FileUploadList);
 
 export default () => {
-    const [open, setOpen] = useState(false);
+    const open = useSignal(false);
 
-    const count = ServerContext.useStoreState((state) => state.files.uploads.length);
+    const count = ServerContext.useStoreState((state) => Object.keys(state.files.uploads).length);
     const progress = ServerContext.useStoreState((state) => ({
-        uploaded: state.files.uploads.reduce((count, file) => count + file.loaded, 0),
-        total: state.files.uploads.reduce((count, file) => count + file.total, 0),
+        uploaded: Object.values(state.files.uploads).reduce((count, file) => count + file.loaded, 0),
+        total: Object.values(state.files.uploads).reduce((count, file) => count + file.total, 0),
     }));
 
     useEffect(() => {
         if (count === 0) {
-            setOpen(false);
+            open.value = false;
         }
     }, [count]);
 
@@ -78,13 +90,16 @@ export default () => {
         <>
             {count > 0 && (
                 <Tooltip content={`${count} files are uploading, click to view`}>
-                    <button className={'flex items-center justify-center w-10 h-10'} onClick={setOpen.bind(this, true)}>
+                    <button
+                        className={'flex items-center justify-center w-10 h-10'}
+                        onClick={() => (open.value = true)}
+                    >
                         <Spinner progress={(progress.uploaded / progress.total) * 100} className={'w-8 h-8'} />
                         <CloudUploadIcon className={'h-3 absolute mx-auto animate-pulse'} />
                     </button>
                 </Tooltip>
             )}
-            <FileUploadListDialog open={open} onClose={setOpen.bind(this, false)} />
+            <FileUploadListDialog open={open.value} onClose={() => (open.value = false)} />
         </>
     );
 };

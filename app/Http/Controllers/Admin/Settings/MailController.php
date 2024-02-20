@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Http\Controllers\Admin\Settings;
 
-use Exception;
 use Illuminate\View\View;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
@@ -57,8 +56,8 @@ class MailController extends Controller
         }
 
         $values = $request->normalize();
-        if (array_get($values, 'mail:password') === '!e') {
-            $values['mail:password'] = '';
+        if (array_get($values, 'mail:mailers:smtp:password') === '!e') {
+            $values['mail:mailers:smtp:password'] = '';
         }
 
         foreach ($values as $key => $value) {
@@ -82,7 +81,7 @@ class MailController extends Controller
         try {
             Notification::route('mail', $request->user()->email)
                 ->notify(new MailTested($request->user()));
-        } catch (Exception $exception) {
+        } catch (\Exception $exception) {
             return response($exception->getMessage(), 500);
         }
 

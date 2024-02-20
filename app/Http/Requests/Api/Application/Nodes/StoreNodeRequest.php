@@ -24,6 +24,7 @@ class StoreNodeRequest extends ApplicationApiRequest
             'fqdn',
             'scheme',
             'behind_proxy',
+            'maintenance_mode',
             'memory',
             'memory_overallocate',
             'disk',

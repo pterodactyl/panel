@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Extensions\Lcobucci\JWT\Encoding;
 
-use DateTimeImmutable;
 use Lcobucci\JWT\ClaimsFormatter;
 use Lcobucci\JWT\Token\RegisteredClaims;
 
@@ -21,7 +20,7 @@ final class TimestampDates implements ClaimsFormatter
                 continue;
             }
 
-            assert($claims[$claim] instanceof DateTimeImmutable);
+            assert($claims[$claim] instanceof \DateTimeImmutable);
             $claims[$claim] = $claims[$claim]->getTimestamp();
         }
 

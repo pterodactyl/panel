@@ -11,7 +11,7 @@ class HashidsServiceProvider extends ServiceProvider
     /**
      * Register the ability to use Hashids.
      */
-    public function register()
+    public function register(): void
     {
         $this->app->singleton(HashidsInterface::class, function () {
             /** @var \Illuminate\Contracts\Config\Repository $config */

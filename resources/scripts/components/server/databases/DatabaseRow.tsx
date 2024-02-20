@@ -35,7 +35,7 @@ export default ({ database, className }: Props) => {
     const removeDatabase = ServerContext.useStoreActions((actions) => actions.databases.removeDatabase);
 
     const jdbcConnectionString = `jdbc:mysql://${database.username}${
-        database.password ? `:${database.password}` : ''
+        database.password ? `:${encodeURIComponent(database.password)}` : ''
     }@${database.connectionString}/${database.name}`;
 
     const schema = object().shape({
@@ -119,14 +119,14 @@ export default ({ database, className }: Props) => {
                 <Can action={'database.view_password'}>
                     <div css={tw`mt-6`}>
                         <Label>Password</Label>
-                        <CopyOnClick text={database.password}>
+                        <CopyOnClick text={database.password} showInNotification={false}>
                             <Input type={'text'} readOnly value={database.password} />
                         </CopyOnClick>
                     </div>
                 </Can>
                 <div css={tw`mt-6`}>
                     <Label>JDBC Connection String</Label>
-                    <CopyOnClick text={jdbcConnectionString}>
+                    <CopyOnClick text={jdbcConnectionString} showInNotification={false}>
                         <Input type={'text'} readOnly value={jdbcConnectionString} />
                     </CopyOnClick>
                 </div>

@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Integration\Services\Servers;
 
-use Mockery;
 use Mockery\MockInterface;
 use Pterodactyl\Models\Egg;
 use GuzzleHttp\Psr7\Request;
@@ -42,7 +41,7 @@ class ServerCreationServiceTest extends IntegrationTestCase
             ->where('name', 'Bungeecord')
             ->firstOrFail();
 
-        $this->daemonServerRepository = Mockery::mock(DaemonServerRepository::class);
+        $this->daemonServerRepository = \Mockery::mock(DaemonServerRepository::class);
         $this->swap(DaemonServerRepository::class, $this->daemonServerRepository);
     }
 

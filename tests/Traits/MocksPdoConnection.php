@@ -23,7 +23,7 @@ trait MocksPdoConnection
 
         Model::unsetConnectionResolver();
 
-        $connection = new MySqlConnection($mock = Mockery::mock(PDO::class), 'testing_mock');
+        $connection = new MySqlConnection($mock = \Mockery::mock(\PDO::class), 'testing_mock');
         $resolver = new ConnectionResolver(['mocked' => $connection]);
         $resolver->setDefaultConnection('mocked');
 

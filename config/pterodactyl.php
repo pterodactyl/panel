@@ -177,4 +177,16 @@ return [
         // Should an email be sent to a server owner whenever their server is reinstalled?
         'send_reinstall_notification' => env('PTERODACTYL_SEND_REINSTALL_NOTIFICATION', true),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Telemetry Settings
+    |--------------------------------------------------------------------------
+    |
+    | This section controls the telemetry sent by Pterodactyl.
+    */
+
+    'telemetry' => [
+        'enabled' => env('PTERODACTYL_TELEMETRY_ENABLED', true),
+    ],
 ];

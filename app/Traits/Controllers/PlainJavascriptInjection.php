@@ -11,6 +11,6 @@ trait PlainJavascriptInjection
      */
     public function injectJavascript($data)
     {
-        JavaScript::put($data);
+        \JavaScript::put($data);
     }
 }

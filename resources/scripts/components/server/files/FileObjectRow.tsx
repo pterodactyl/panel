@@ -16,12 +16,13 @@ import { bytesToString } from '@/lib/formatters';
 import styles from './style.module.css';
 
 const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
+    const [canRead] = usePermissions(['file.read']);
     const [canReadContents] = usePermissions(['file.read-content']);
     const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     const match = useRouteMatch();
 
-    return !canReadContents || (file.isFile && !file.isEditable()) ? (
+    return (file.isFile && (!file.isEditable() || !canReadContents)) || (!file.isFile && !canRead) ? (
         <div className={styles.details}>{children}</div>
     ) : (
         <NavLink

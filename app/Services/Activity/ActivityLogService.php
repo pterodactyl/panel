@@ -99,7 +99,7 @@ class ActivityLogService
     }
 
     /**
-     * Sets a custom property on the activty log instance.
+     * Sets a custom property on the activity log instance.
      *
      * @param string|array $key
      * @param mixed $value
@@ -115,7 +115,7 @@ class ActivityLogService
     }
 
     /**
-     * Attachs the instance request metadata to the activity log event.
+     * Attaches the instance request metadata to the activity log event.
      */
     public function withRequestMetadata(): self
     {

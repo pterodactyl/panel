@@ -23,6 +23,7 @@ RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar un
     && chmod 777 -R bootstrap storage \
     && composer install --no-dev --optimize-autoloader \
     && rm -rf .env bootstrap/cache/*.php \
+    && mkdir -p /app/storage/logs/ \
     && chown -R nginx:nginx .
 
 RUN rm /usr/local/etc/php-fpm.conf \

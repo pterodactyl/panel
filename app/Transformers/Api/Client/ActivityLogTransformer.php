@@ -47,10 +47,10 @@ class ActivityLogTransformer extends BaseClientTransformer
      * Transforms any array values in the properties into a countable field for easier
      * use within the translation outputs.
      */
-    protected function properties(ActivityLog $model): array
+    protected function properties(ActivityLog $model): object
     {
         if (!$model->properties || $model->properties->isEmpty()) {
-            return [];
+            return (object) [];
         }
 
         $properties = $model->properties
@@ -76,7 +76,7 @@ class ActivityLogTransformer extends BaseClientTransformer
             $properties = $properties->merge(['count' => $properties->get($keys[0])])->except($keys[0]);
         }
 
-        return $properties->toArray();
+        return (object) $properties->toArray();
     }
 
     /**

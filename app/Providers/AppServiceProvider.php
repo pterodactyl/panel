@@ -2,12 +2,12 @@
 
 namespace Pterodactyl\Providers;
 
-use View;
-use Cache;
 use Pterodactyl\Models;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Extensions\Themes\Theme;
@@ -18,7 +18,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot()
+    public function boot(): void
     {
         Schema::defaultStringLength(191);
 
@@ -54,7 +54,7 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Register application service providers.
      */
-    public function register()
+    public function register(): void
     {
         // Only load the settings service provider if the environment
         // is configured to allow it.

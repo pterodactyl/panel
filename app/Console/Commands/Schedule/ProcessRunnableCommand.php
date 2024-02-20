@@ -3,7 +3,6 @@
 namespace Pterodactyl\Console\Commands\Schedule;
 
 use Exception;
-use Throwable;
 use Illuminate\Console\Command;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Facades\Log;
@@ -68,7 +67,7 @@ class ProcessRunnableCommand extends Command
                 'schedule' => $schedule->name,
                 'hash' => $schedule->hashid,
             ]));
-        } catch (Throwable|Exception $exception) {
+        } catch (\Throwable|\Exception $exception) {
             Log::error($exception, ['schedule_id' => $schedule->id]);
 
             $this->error("An error was encountered while processing Schedule #$schedule->id: " . $exception->getMessage());
