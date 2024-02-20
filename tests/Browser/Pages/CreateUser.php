@@ -2,8 +2,8 @@
 
 namespace Pterodactyl\Tests\Browser\Pages;
 
-use Laravel\Dusk\Browser;
 use Laravel\Dusk\Page;
+use Laravel\Dusk\Browser;
 
 class CreateUser extends Page
 {

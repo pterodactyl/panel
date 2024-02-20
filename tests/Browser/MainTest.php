@@ -8,8 +8,8 @@ use Pterodactyl\Models\Server;
 use Pterodactyl\Tests\DuskTestCase;
 use Illuminate\Support\Facades\Hash;
 use Pterodactyl\Tests\Browser\Pages\Login;
-use Pterodactyl\Tests\Traits\DatabaseMigrations;
 use Pterodactyl\Tests\Browser\Pages\CreateUser;
+use Pterodactyl\Tests\Traits\DatabaseMigrations;
 
 class MainTest extends DuskTestCase
 {
