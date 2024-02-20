@@ -8,6 +8,7 @@ jobs:
       APP_URL: "http://127.0.0.1:8000"
       APP_ENV: dusk
       APP_CORS_ALLOWED_ORIGINS: "*"
+      CACHE_DRIVER: file
       DB_USERNAME: root
       DB_PASSWORD: root
       MAIL_MAILER: log
