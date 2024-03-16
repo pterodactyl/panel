@@ -178,7 +178,7 @@ class Node extends Model
                 ],
             ],
             'allowed_mounts' => $this->mounts->pluck('source')->toArray(),
-            'remote' => route('index'),
+            'remote' => config('app.url', route('index')),
         ];
     }
 
