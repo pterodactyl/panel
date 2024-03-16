@@ -1,6 +1,6 @@
 {
   composer ? null,
-  php81WithExtensions ? null,
+  phpWithExtensions ? null,
   pkgs ? import <nixpkgs> {},
 }:
 with pkgs;
@@ -9,8 +9,9 @@ with pkgs;
       alejandra
       composer
       nodejs_18
+
       nodePackages.pnpm
-      php81WithExtensions
+      phpWithExtensions
 
       docker-compose
     ];
