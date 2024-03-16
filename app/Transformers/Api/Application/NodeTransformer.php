@@ -14,7 +14,7 @@ class NodeTransformer extends Transformer
     /**
      * List of resources that can be included.
      */
-    protected array $availableIncludes = ['allocations', 'location', 'servers'];
+    protected array $availableIncludes = ['allocations', 'location', 'servers', 'database_host'];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -43,6 +43,18 @@ class NodeTransformer extends Transformer
         ];
 
         return $response;
+    }
+
+    /**
+     * Return the database host associated with this node.
+     */
+    public function includeDatabaseHost(Node $node): Item|NullResource
+    {
+        if (!$this->authorize(AdminAcl::RESOURCE_DATABASE_HOSTS)) {
+            return $this->null();
+        }
+
+        return $this->item($node->databaseHost, new DatabaseHostTransformer());
     }
 
     /**
