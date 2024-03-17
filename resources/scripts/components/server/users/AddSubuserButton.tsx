@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 
 export default () => {
     const [visible, setVisible] = useState(false);

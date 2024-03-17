@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Middleware;
 
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
 use Pterodactyl\Models\User;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
 
@@ -17,6 +18,8 @@ class RequireTwoFactorAuthentication
      * The route to redirect a user to enable 2FA.
      */
     protected string $redirectRoute = '/account';
+
+    public function __construct(private readonly SettingsRepositoryInterface $settings) {}
 
     /**
      * Check the user state on the incoming request to determine if they should be allowed to
@@ -42,7 +45,7 @@ class RequireTwoFactorAuthentication
             return $next($request);
         }
 
-        $level = (int) config('pterodactyl.auth.2fa_required');
+        $level = (int) $this->settings->get('sfaEnabled', config('pterodactyl.auth.2fa_required'));
         // If this setting is not configured, or the user is already using 2FA then we can just
         // send them right through, nothing else needs to be checked.
         //

@@ -2,7 +2,7 @@ import { CloudUploadIcon, XIcon } from '@heroicons/react/solid';
 import { useSignal } from '@preact/signals-react';
 import { useContext, useEffect } from 'react';
 
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import Code from '@/components/elements/Code';

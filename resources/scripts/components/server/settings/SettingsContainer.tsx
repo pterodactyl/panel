@@ -12,7 +12,7 @@ import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import { ip } from '@/lib/formatters';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 
 export default () => {
     const username = useStoreState(state => state.user.data!.username);

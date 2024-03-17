@@ -18,7 +18,6 @@ import tw from 'twin.macro';
 
 import CollapsedIcon from '@/assets/images/pterodactyl.svg';
 import OverviewContainer from '@/components/admin/overview/OverviewContainer';
-import SettingsContainer from '@/components/admin/settings/SettingsContainer';
 import DatabasesContainer from '@/components/admin/databases/DatabasesContainer';
 import NewDatabaseContainer from '@/components/admin/databases/NewDatabaseContainer';
 import DatabaseEditContainer from '@/components/admin/databases/DatabaseEditContainer';
@@ -46,6 +45,7 @@ import type { ApplicationStore } from '@/state';
 import Sidebar from '@/components/admin/Sidebar';
 // import useUserPersistedState from '@/plugins/useUserPersistedState';
 import UsersContainer from '@/components/admin/users/UsersContainer';
+import SettingsRouter from '@/components/admin/settings/SettingsRouter';
 
 function AdminRouter() {
     const email = useStoreState((state: ApplicationStore) => state.user.data!.email);
@@ -145,7 +145,7 @@ function AdminRouter() {
                 <div css={tw`w-full flex flex-col mx-auto`} style={{ maxWidth: '86rem' }}>
                     <Routes>
                         <Route path="" element={<OverviewContainer />} />
-                        <Route path="settings/*" element={<SettingsContainer />} />
+                        <Route path="settings/*" element={<SettingsRouter />} />
                         <Route path="databases" element={<DatabasesContainer />} />
                         <Route path="databases/new" element={<NewDatabaseContainer />} />
                         <Route path="databases/:id" element={<DatabaseEditContainer />} />
