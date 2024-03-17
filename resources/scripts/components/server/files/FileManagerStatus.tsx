@@ -90,7 +90,7 @@ export default () => {
     return (
         <>
             {count > 0 && (
-                <Tooltip content={`${count} files are uploading, click to view`}>
+                <Tooltip content={`${count} file${count === 1 ? ' is' : 's are'} uploading, click to view`}>
                     <button
                         className={'flex h-10 w-10 items-center justify-center'}
                         onClick={() => (open.value = true)}
