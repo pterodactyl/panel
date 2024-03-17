@@ -9,6 +9,9 @@ import AdminBox from '@/components/admin/AdminBox';
 import { Context } from '@/components/admin/nodes/NodeRouter';
 import CopyOnClick from '@/components/elements/CopyOnClick';
 import type { ApplicationStore } from '@/state';
+import { Button } from '@/components/elements/button';
+import { Variant } from '@/components/elements/button/types';
+import getNodeToken, { NodeTokenResponse } from '@/api/admin/nodes/getNodeToken';
 
 export default () => {
     const { clearFlashes, clearAndAddHttpError } = useStoreActions(
@@ -16,8 +19,8 @@ export default () => {
     );
 
     const [configuration, setConfiguration] = useState('');
-
     const node = Context.useStoreState(state => state.node);
+    const [data, setData] = useState<NodeTokenResponse | null>(null);
 
     if (node === undefined) {
         return <></>;
@@ -33,6 +36,18 @@ export default () => {
                 clearAndAddHttpError({ key: 'node', error });
             });
     }, []);
+
+    function handleGenerate() {
+        clearFlashes('node');
+        if (!node) return;
+
+        getNodeToken(node!.id)
+            .then(res => setData(res))
+            .catch(error => {
+                console.log(error);
+                clearAndAddHttpError({ key: 'node', error });
+            });
+    }
 
     return (
         <>
@@ -63,7 +78,22 @@ export default () => {
             </AdminBox>
 
             <AdminBox title={'Auto Deploy'} icon={faDragon}>
-                Never&trade;
+                <p>
+                    Use the button below to generate a custom deployment command that can be used to configure wings on
+                    the target server with a single command.
+                </p>
+                {data ? (
+                    <pre className="mt-4 text-sm rounded font-mono bg-neutral-900 shadow-md px-4 py-3 overflow-x-auto">
+                        <small>
+                            cd /etc/pterodactyl && sudo wings configure --panel-url {data.remote} --token {data.token}{' '}
+                            --node {data.node} {data.debug && '--allow-insecure'}
+                        </small>
+                    </pre>
+                ) : (
+                    <Button.Text onClick={handleGenerate} variant={Variant.Primary} className="mt-4">
+                        Generate Token
+                    </Button.Text>
+                )}
             </AdminBox>
         </>
     );

@@ -128,6 +128,7 @@ Route::group(['prefix' => '/nodes'], function () {
     Route::post('/', [Application\Nodes\NodeController::class, 'store']);
 
     Route::patch('/{node:id}', [Application\Nodes\NodeController::class, 'update']);
+    Route::post('/{node:id}/token', [Application\Nodes\NodeAutoDeployController::class, '__invoke']);
 
     Route::delete('/{node:id}', [Application\Nodes\NodeController::class, 'delete']);
 
