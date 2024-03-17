@@ -10,7 +10,7 @@ import Can from '@/components/elements/Can';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { Link } from 'react-router-dom';
 

@@ -4,9 +4,10 @@ import { useState } from 'react';
 import tw from 'twin.macro';
 
 import deleteNode from '@/api/admin/nodes/deleteNode';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import ConfirmationModal from '@/components/elements/ConfirmationModal';
 import type { ApplicationStore } from '@/state';
+import { Size, Variant, Shape } from '@/components/elements/button/types';
 
 interface Props {
     nodeId: number;
@@ -52,7 +53,13 @@ export default ({ nodeId, onDeleted }: Props) => {
                 Are you sure you want to delete this node?
             </ConfirmationModal>
 
-            <Button type={'button'} size={'xsmall'} color={'red'} onClick={() => setVisible(true)}>
+            <Button
+                type={'button'}
+                shape={Shape.IconSquare}
+                size={Size.Small}
+                variant={Variant.Danger}
+                onClick={() => setVisible(true)}
+            >
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"

@@ -5,7 +5,7 @@ import { useEffect, useRef } from 'react';
 import tw from 'twin.macro';
 
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { ModalMask } from '@/components/elements/Modal';
 import Portal from '@/components/elements/Portal';
 import FadeTransition from '@/components/elements/transitions/FadeTransition';
