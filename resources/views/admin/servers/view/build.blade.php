@@ -129,6 +129,14 @@
                             <h3 class="box-title">Allocation Management</h3>
                         </div>
                         <div class="box-body">
+                            @if ($currentState === 'running')
+                                <div class="alert alert-warning">
+                                    Warning, your server is currently running.
+                                    If you remove allocations without restarting,
+                                    then you can run into issues using them elsewhere.
+                                </div>
+                            @endif
+
                             <div class="form-group">
                                 <label for="pAllocation" class="control-label">Game Port</label>
                                 <select id="pAllocation" name="allocation_id" class="form-control">
