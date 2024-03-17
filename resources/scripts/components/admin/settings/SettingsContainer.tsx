@@ -41,11 +41,11 @@ export default () => {
             </SubNavigation>
 
             <Routes>
-                <Route path="/admin/settings" element={<GeneralSettings />} />
-                <Route path="/admin/settings/mail" element={<MailSettings />} />
-                <Route path="/admin/settings/security" element={<p>Security</p>} />
-                <Route path="/admin/settings/features" element={<p>Features</p>} />
-                <Route path="/admin/settings/advanced" element={<p>Advanced</p>} />
+                <Route path="" element={<GeneralSettings />} />
+                <Route path="mail" element={<MailSettings />} />
+                <Route path="security" element={<p>Security</p>} />
+                <Route path="features" element={<p>Features</p>} />
+                <Route path="advanced" element={<p>Advanced</p>} />
             </Routes>
         </AdminContentBlock>
     );
