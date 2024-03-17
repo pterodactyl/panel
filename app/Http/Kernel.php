@@ -90,6 +90,7 @@ class Kernel extends HttpKernel
         'auth' => Authenticate::class,
         'auth.basic' => AuthenticateWithBasicAuth::class,
         'auth.session' => AuthenticateSession::class,
+        'cors' => HandleCors::class,
         'guest' => RedirectIfAuthenticated::class,
         'csrf' => VerifyCsrfToken::class,
         'throttle' => ThrottleRequests::class,

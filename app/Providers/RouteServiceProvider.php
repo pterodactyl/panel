@@ -62,6 +62,8 @@ class RouteServiceProvider extends ServiceProvider
                 ->prefix('/api/remote')
                 ->scopeBindings()
                 ->group(base_path('routes/api-remote.php'));
+
+            $this->duskBoot();
         });
     }
 
@@ -106,5 +108,26 @@ class RouteServiceProvider extends ServiceProvider
                 config('http.rate_limit.application')
             )->by($key);
         });
+    }
+
+    // Laravel Dusk Browser Testing Route Helpers for the Daemon
+    private function duskBoot()
+    {
+        // Make sure we're only running in the Dusk testing environment
+        if (!app()->environment('dusk')) {
+            return;
+        }
+
+        // Simulate Node Ping
+        Route::get('/api/system', fn () => [
+            'version' => '1.7.0',
+            'kernel_version' => '5.4.0-126-generic',
+            'architecture' => 'amd64',
+            'os' => 'linux',
+            'cpu_count' => 2,
+        ]);
+
+        // Simulate Successful Server Creation
+        Route::post('/api/servers', fn () => []);
     }
 }
