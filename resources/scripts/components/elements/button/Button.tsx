@@ -15,6 +15,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
                     styles.primary,
                     {
                         [styles.secondary]: variant === Options.Variant.Secondary,
+                        [styles.danger]: variant === Options.Variant.Danger,
                         [styles.square]: shape === Options.Shape.IconSquare,
                         [styles.small]: size === Options.Size.Small,
                         [styles.large]: size === Options.Size.Large,
