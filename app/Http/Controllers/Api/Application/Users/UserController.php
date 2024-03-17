@@ -20,6 +20,7 @@ use Pterodactyl\Http\Requests\Api\Application\Users\StoreUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\DeleteUserRequest;
 use Pterodactyl\Http\Requests\Api\Application\Users\UpdateUserRequest;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Pterodactyl\Models\Filters\ServerOwnerFilter;
 
 class UserController extends ApplicationApiController
 {
@@ -53,6 +54,7 @@ class UserController extends ApplicationApiController
                 AllowedFilter::exact('external_id'),
                 'username',
                 'email',
+                AllowedFilter::custom('owner', new ServerOwnerFilter()),
                 AllowedFilter::callback('*', function (Builder $builder, $value) {
                     foreach (Arr::wrap($value) as $datum) {
                         $datum = '%' . $datum . '%';
