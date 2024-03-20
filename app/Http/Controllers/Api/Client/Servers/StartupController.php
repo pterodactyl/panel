@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Services\Servers\StartupCommandService;
@@ -63,7 +64,7 @@ class StartupController extends ClientApiController
         }
 
         // Revalidate the variable value using the egg variable specific validation rules for it.
-        $this->validate($request, ['value' => $variable->rules]);
+        $this->validate($request, ['value' => Str::contains($variable->rules, ';;') ? explode(';;', $variable->rules) : $variable->rules]);
 
         $this->repository->updateOrCreate([
             'server_id' => $server->id,

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Servers;
 
+use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Illuminate\Support\Collection;
 use Pterodactyl\Models\EggVariable;
@@ -40,7 +41,7 @@ class VariableValidatorService
         $data = $rules = $customAttributes = [];
         foreach ($variables as $variable) {
             $data['environment'][$variable->env_variable] = array_get($fields, $variable->env_variable);
-            $rules['environment.' . $variable->env_variable] = $variable->rules;
+            $rules['environment.' . $variable->env_variable] = Str::contains($variable->rules, ';;') ? explode(';;', $variable->rules) : $variable->rules;
             $customAttributes['environment.' . $variable->env_variable] = trans('validation.internal.variable_value', ['env' => $variable->name]);
         }
 
