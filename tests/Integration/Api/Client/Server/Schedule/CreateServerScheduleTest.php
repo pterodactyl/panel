@@ -57,7 +57,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
         $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/schedules", []);
 
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        foreach (['name', 'minute', 'hour', 'day_of_month', 'day_of_week'] as $i => $field) {
+        foreach (['name', 'minute', 'hour', 'day_of_month', 'month', 'day_of_week'] as $i => $field) {
             $response->assertJsonPath("errors.$i.code", 'ValidationException');
             $response->assertJsonPath("errors.$i.meta.rule", 'required');
             $response->assertJsonPath("errors.$i.meta.source_field", $field);
@@ -67,6 +67,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
             ->postJson("/api/client/servers/$server->uuid/schedules", [
                 'name' => 'Testing',
                 'is_active' => 'no',
+                'only_when_online' => 'false',
                 'minute' => '*',
                 'hour' => '*',
                 'day_of_month' => '*',
