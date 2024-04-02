@@ -8,6 +8,8 @@ use Pterodactyl\Console\Kernel;
 class CreateApiKey extends Command
 {
     protected $signature = 'p:panel-api:create-key
+        {--username= : The username for which to create an API key for}
+        {--password= : The password for the user account.}
         {--description= : The description to assign to the API key.}
         {--file_output= : The location of the file output for the API key.}
         {--allocations=[r, rw]: API permissions for reading and writing allocations.}
