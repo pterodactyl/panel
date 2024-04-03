@@ -14,7 +14,7 @@ class CreateApiKey extends Command
     public function __construct(
         private KeyCreationService $apiKeyCreationService
     ) {
-        parent::__consrtuct();
+        parent::__construct();
     }
 
     protected $signature = 'p:panel-api:create-key
@@ -41,9 +41,9 @@ class CreateApiKey extends Command
      */
     public function handle(): void
     {
-        $username = $this->option('username') ?? $this->ask(trans('command/message.user.ask_username'));
-        $password = $this->option('password') ?? $this->secret(trans('command/message.user.ask_password'));
-        $description = $this->option('description') ?? $this->ask(trans('command/message.API_key.ask_API_key_description'));
+        $username = $this->option('username') ?? $this->ask(trans('command/messages.user.ask_username'));
+        $password = $this->option('password') ?? $this->secret(trans('command/messages.user.ask_password'));
+        $description = $this->option('description') ?? $this->ask(trans('command/messages.API_key.ask_API_key_description'));
 
         $permissions = [
             'r_allocations'         => $this->option('allocations')         === 'rw' ? 3 : ($this->option('allocations')         === 'r' ? 2 : 1),
@@ -60,17 +60,33 @@ class CreateApiKey extends Command
         try {
             $user = User::query()->where($this->getField($username), $username)->firstOrFail();
         } catch (ModelNotFoundException $e) {
-            $this->line(trans('command/message.user.error_user_auth_invalid'));
+            $this->line(trans('command/messages.user.error_user_auth_invalid'));
             throw $e;
         }
 
-        $apiKeyCreationService->setKeyType(ApiKey::TYPE_APPLICATION);
+        $this->apiKeyCreationService->setKeyType(ApiKey::TYPE_APPLICATION);
 
-        $apiKeyCreated = $apiKeyCreationService->handle(compact('username', 'password', 'description'), );
+        $dataToPush = [
+            'memo' => $description,
+            'user_id' => $user->id,
+        ];
+
+        $apiKeyCreated = $this->apiKeyCreationService->handle($dataToPush, $permissions);
 
         $this->table(['Field', 'Value'], [
-            ['Username', $apiKeyCreated->username],
-            ['']
+            ['user_id', $user->id],
+            ['identifier', $apiKeyCreated->identifier],
+            ['token', base64_decode($apiKeyCreated->token)],
+            ['memo', $apiKeyCreated->memo],
+            ['Permissions', $permissions['r_allocations']],
+            ['Permissions', $permissions['r_database_hosts']],
+            ['Permissions', $permissions['r_eggs']],
+            ['Permissions', $permissions['r_locations']],
+            ['Permissions', $permissions['r_nests']],
+            ['Permissions', $permissions['r_nodes']],
+            ['Permissions', $permissions['r_server_databases']],
+            ['Permissions', $permissions['r_servers']],
+            ['Permissions', $permissions['r_users']],
         ]);
     }
 
