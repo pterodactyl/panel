@@ -63,4 +63,8 @@ return [
             'ask_encryption' => 'Encryption method to use',
         ],
     ],
+    'API_key' => [
+        'ask_API_key_description' => 'Enter a description for the API key',
+        'error_user_auth_invalid' => 'Unable to authenticate the user',
+    ]
 ];
