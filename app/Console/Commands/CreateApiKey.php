@@ -113,7 +113,7 @@ class CreateApiKey extends Command
         if($this->option('file_output'))
         {
             $fileOutput = $this->option('file_output');
-            file_put_contents($fileOutput, $mostRecentApiKey->identifier . $this->encrypter->decrypt($mostRecentApiKey->token . '\n'));
+            file_put_contents($fileOutput, $mostRecentApiKey->identifier . $this->encrypter->decrypt($mostRecentApiKey->token . "\n"));
         }
     }
 
