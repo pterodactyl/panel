@@ -26,15 +26,15 @@ class CreateApiKey extends Command
         {--description= : The description to assign to the API key.}
         {--app_token : Generate an application token instead of a user token.}
         {--file_output= : The location of the file output for the API key (outputs the API key to stdout by default).}
-        {--allocations=[r, rw]: API permissions for reading and writing allocations.}
-        {--database_hosts=[r, rw]: API permissions for reading and writing database hosts.}
-        {--eggs=[r, rw]: API permissions for reading and writing eggs.}
-        {--locations=[r, rw]: API permissions for reading and writing locations.}
-        {--nests=[r, rw]: API permissions for reading and writing nests.}
-        {--nodes=[r, rw]: API permissions for reading and writing nodes.}
-        {--server_databases=[r, rw]: API permissions for reading and writing server databases.}
-        {--servers=[r, rw]: API permissions for reading and writing servers.}
-        {--users=[r, rw]: API permissions for reading and writing users.}';
+        {--allocations=0 [r, rw]: API permissions for reading and writing allocations.}
+        {--database_hosts=0 [r, rw]: API permissions for reading and writing database hosts.}
+        {--eggs=0 [r, rw]: API permissions for reading and writing eggs.}
+        {--locations=0 [r, rw]: API permissions for reading and writing locations.}
+        {--nests=0 [r, rw]: API permissions for reading and writing nests.}
+        {--nodes=0 [r, rw]: API permissions for reading and writing nodes.}
+        {--server_databases=0 [r, rw]: API permissions for reading and writing server databases.}
+        {--servers=0 [r, rw]: API permissions for reading and writing servers.}
+        {--users=0 [r, rw]: API permissions for reading and writing users.}';
 
     protected $description = 'Allows the creation of a new API key for the Panel.';
 
@@ -113,7 +113,7 @@ class CreateApiKey extends Command
         if($this->option('file_output'))
         {
             $fileOutput = $this->option('file_output');
-            file_put_contents($fileOutput, $this->encrypter->decrypt($mostRecentApiKey->identifier . $mostRecentApiKey->token));
+            file_put_contents($fileOutput, $mostRecentApiKey->identifier . $this->encrypter->decrypt($mostRecentApiKey->token . '\n'));
         }
     }
 
