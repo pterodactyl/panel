@@ -24,7 +24,6 @@ class CreateApiKey extends Command
         {--username= : The username for which to create an API key for}
         {--password= : The password for the user account.}
         {--description= : The description to assign to the API key.}
-        {--app_token : Generate an application token instead of a user token.}
         {--file_output= : The location of the file output for the API key (outputs the API key to stdout by default).}
         {--allocations=0 [r, rw]: API permissions for reading and writing allocations.}
         {--database_hosts=0 [r, rw]: API permissions for reading and writing database hosts.}
@@ -36,7 +35,7 @@ class CreateApiKey extends Command
         {--servers=0 [r, rw]: API permissions for reading and writing servers.}
         {--users=0 [r, rw]: API permissions for reading and writing users.}';
 
-    protected $description = 'Allows the creation of a new API key for the Panel.';
+    protected $description = 'Allows the creation of a new application API key for the Panel.';
 
     /**
      * Execute a command to create a new API key for the Panel for the specified user.
@@ -45,8 +44,6 @@ class CreateApiKey extends Command
      */
     public function handle(): void
     {
-        $appToken = $this->option('app_token');
-
         $username = $this->option('username') ?? $this->ask(trans('command/messages.user.ask_username'));
         $password = $this->option('password') ?? $this->secret(trans('command/messages.user.ask_password'));
         $description = $this->option('description') ?? $this->ask(trans('command/messages.API_key.ask_API_key_description'));
@@ -70,14 +67,7 @@ class CreateApiKey extends Command
             throw $e;
         }
 
-        if($appToken)
-        {
-            $this->apiKeyCreationService->setKeyType(ApiKey::TYPE_APPLICATION);
-        }
-        else
-        {
-            $this->apiKeyCreationService->setKeyType(ApiKey::TYPE_ACCOUNT);
-        }
+        $this->apiKeyCreationService->setKeyType(ApiKey::TYPE_APPLICATION);
 
         $dataToPush = [
             'memo' => $description,
