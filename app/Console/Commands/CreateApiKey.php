@@ -3,16 +3,19 @@
 namespace Pterodactyl\Console\Commands;
 
 use Illuminate\Console\Command;
+use Illuminate\Contracts\Encryption\Encrypter;
 use Pterodactyl\Console\Kernel;
 use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Models\User;
 use Pterodactyl\Services\Api\KeyCreationService;
 
+
 class CreateApiKey extends Command
 {
 
     public function __construct(
-        private KeyCreationService $apiKeyCreationService
+        private KeyCreationService $apiKeyCreationService,
+        private Encrypter $encrypter
     ) {
         parent::__construct();
     }
@@ -21,6 +24,7 @@ class CreateApiKey extends Command
         {--username= : The username for which to create an API key for}
         {--password= : The password for the user account.}
         {--description= : The description to assign to the API key.}
+        {--app_token : Generate an application token instead of a user token.}
         {--file_output= : The location of the file output for the API key (outputs the API key to stdout by default).}
         {--allocations=[r, rw]: API permissions for reading and writing allocations.}
         {--database_hosts=[r, rw]: API permissions for reading and writing database hosts.}
@@ -41,20 +45,22 @@ class CreateApiKey extends Command
      */
     public function handle(): void
     {
+        $appToken = $this->option('app_token');
+
         $username = $this->option('username') ?? $this->ask(trans('command/messages.user.ask_username'));
         $password = $this->option('password') ?? $this->secret(trans('command/messages.user.ask_password'));
         $description = $this->option('description') ?? $this->ask(trans('command/messages.API_key.ask_API_key_description'));
 
         $permissions = [
-            'r_allocations'         => $this->option('allocations')         === 'rw' ? 3 : ($this->option('allocations')         === 'r' ? 2 : 1),
-            'r_database_hosts'      => $this->option('database_hosts')      === 'rw' ? 3 : ($this->option('database_hosts')      === 'r' ? 2 : 1),
-            'r_eggs'                => $this->option('eggs')                === 'rw' ? 3 : ($this->option('eggs')                === 'r' ? 2 : 1),
-            'r_locations'           => $this->option('locations')           === 'rw' ? 3 : ($this->option('locations')           === 'r' ? 2 : 1),
-            'r_nests'               => $this->option('nests')               === 'rw' ? 3 : ($this->option('nests')               === 'r' ? 2 : 1),
-            'r_nodes'               => $this->option('nodes')               === 'rw' ? 3 : ($this->option('nodes')               === 'r' ? 2 : 1),
-            'r_server_databases'    => $this->option('server_databases')    === 'rw' ? 3 : ($this->option('server_databases')    === 'r' ? 2 : 1),
-            'r_servers'             => $this->option('servers')             === 'rw' ? 3 : ($this->option('servers')             === 'r' ? 2 : 1),
-            'r_users'               => $this->option('users')               === 'rw' ? 3 : ($this->option('users')               === 'r' ? 2 : 1)
+            'r_allocations'         => $this->option('allocations')         === 'rw' ? 3 : ($this->option('allocations')         === 'r' ? 1 : 0),
+            'r_database_hosts'      => $this->option('database_hosts')      === 'rw' ? 3 : ($this->option('database_hosts')      === 'r' ? 1 : 0),
+            'r_eggs'                => $this->option('eggs')                === 'rw' ? 3 : ($this->option('eggs')                === 'r' ? 1 : 0),
+            'r_locations'           => $this->option('locations')           === 'rw' ? 3 : ($this->option('locations')           === 'r' ? 1 : 0),
+            'r_nests'               => $this->option('nests')               === 'rw' ? 3 : ($this->option('nests')               === 'r' ? 1 : 0),
+            'r_nodes'               => $this->option('nodes')               === 'rw' ? 3 : ($this->option('nodes')               === 'r' ? 1 : 0),
+            'r_server_databases'    => $this->option('server_databases')    === 'rw' ? 3 : ($this->option('server_databases')    === 'r' ? 1 : 0),
+            'r_servers'             => $this->option('servers')             === 'rw' ? 3 : ($this->option('servers')             === 'r' ? 1 : 0),
+            'r_users'               => $this->option('users')               === 'rw' ? 3 : ($this->option('users')               === 'r' ? 1 : 0)
         ];
 
         try {
@@ -64,20 +70,35 @@ class CreateApiKey extends Command
             throw $e;
         }
 
-        $this->apiKeyCreationService->setKeyType(ApiKey::TYPE_APPLICATION);
+        if($appToken)
+        {
+            $this->apiKeyCreationService->setKeyType(ApiKey::TYPE_APPLICATION);
+        }
+        else
+        {
+            $this->apiKeyCreationService->setKeyType(ApiKey::TYPE_ACCOUNT);
+        }
 
         $dataToPush = [
             'memo' => $description,
             'user_id' => $user->id,
         ];
 
+        # Unused variable, could have validation for the key creation but kinda useless
         $apiKeyCreated = $this->apiKeyCreationService->handle($dataToPush, $permissions);
+
+        # Get the key from the database to ensure proper creation
+        try {
+            $mostRecentApiKey = ApiKey::query()->where('user_id', $user->id)->latest()->firstOrFail();
+        } catch (\Throwable $th) {
+            throw $th;
+        }
 
         $this->table(['Field', 'Value'], [
             ['user_id', $user->id],
-            ['identifier', $apiKeyCreated->identifier],
-            ['token', base64_decode($apiKeyCreated->token)],
-            ['memo', $apiKeyCreated->memo],
+            ['identifier', $mostRecentApiKey->identifier],
+            ['token', $this->encrypter->decrypt($mostRecentApiKey->token)],
+            ['memo', $mostRecentApiKey->memo],
             ['Permissions', $permissions['r_allocations']],
             ['Permissions', $permissions['r_database_hosts']],
             ['Permissions', $permissions['r_eggs']],
@@ -88,6 +109,12 @@ class CreateApiKey extends Command
             ['Permissions', $permissions['r_servers']],
             ['Permissions', $permissions['r_users']],
         ]);
+
+        if($this->option('file_output'))
+        {
+            $fileOutput = $this->option('file_output');
+            file_put_contents($fileOutput, $this->encrypter->decrypt($mostRecentApiKey->identifier . $mostRecentApiKey->token));
+        }
     }
 
     /**
