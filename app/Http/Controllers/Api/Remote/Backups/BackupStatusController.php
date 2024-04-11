@@ -34,8 +34,8 @@ class BackupStatusController extends Controller
         /** @var \Pterodactyl\Models\Node $node */
         $node = $request->attributes->get('node');
 
-        /** @var \Pterodactyl\Models\Backup $backup */
-        $backup = Backup::query()
+        /** @var \Pterodactyl\Models\Backup $model */
+        $model = Backup::query()
             ->where('node_id', $node->id)
             ->where('uuid', $backup)
             ->firstOrFail();
