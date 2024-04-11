@@ -123,7 +123,7 @@ class Egg extends Model
         'file_denylist' => 'array|nullable',
         'file_denylist.*' => 'string',
         'docker_images' => 'required|array|min:1',
-        'docker_images.*' => 'required|string',
+        'docker_images.*' => ['required', 'string', 'max:191', 'regex:/^[\w#\.\/\- ]*\|*[\w\.\/\-:@ ]*$/'],
         'startup' => 'required|nullable|string',
         'config_from' => 'sometimes|bail|nullable|numeric|exists:eggs,id',
         'config_stop' => 'required_without:config_from|nullable|string|max:191',

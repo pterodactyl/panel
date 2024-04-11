@@ -32,6 +32,10 @@ class BackupRemoteUploadController extends Controller
      */
     public function __invoke(Request $request, string $backup): JsonResponse
     {
+        // Get the node associated with the request.
+        /** @var \Pterodactyl\Models\Node $node */
+        $node = $request->attributes->get('node');
+
         // Get the size query parameter.
         $size = (int) $request->query('size');
         if (empty($size)) {
@@ -39,7 +43,10 @@ class BackupRemoteUploadController extends Controller
         }
 
         /** @var \Pterodactyl\Models\Backup $backup */
-        $backup = Backup::query()->where('uuid', $backup)->firstOrFail();
+        $backup = Backup::query()
+            ->where('node_id', $node->id)
+            ->where('uuid', $backup)
+            ->firstOrFail();
 
         // Prevent backups that have already been completed from trying to
         // be uploaded again.

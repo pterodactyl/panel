@@ -30,8 +30,15 @@ class BackupStatusController extends Controller
      */
     public function index(ReportBackupCompleteRequest $request, string $backup): JsonResponse
     {
-        /** @var \Pterodactyl\Models\Backup $model */
-        $model = Backup::query()->where('uuid', $backup)->firstOrFail();
+        // Get the node associated with the request.
+        /** @var \Pterodactyl\Models\Node $node */
+        $node = $request->attributes->get('node');
+
+        /** @var \Pterodactyl\Models\Backup $backup */
+        $backup = Backup::query()
+            ->where('node_id', $node->id)
+            ->where('uuid', $backup)
+            ->firstOrFail();
 
         if ($model->is_successful) {
             throw new BadRequestHttpException('Cannot update the status of a backup that is already marked as completed.');

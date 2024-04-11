@@ -164,7 +164,7 @@ class Server extends Model
         'egg_id' => 'required|exists:eggs,id',
         'startup' => 'nullable|string',
         'skip_scripts' => 'sometimes|boolean',
-        'image' => 'required|string|max:191',
+        'image' => ['required', 'string', 'max:191', 'regex:/^[\w\.\/\-:@ ]*$/'],
         'database_limit' => 'present|nullable|integer|min:0',
         'allocation_limit' => 'sometimes|nullable|integer|min:0',
         'backup_limit' => 'present|nullable|integer|min:0',
