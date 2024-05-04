@@ -56,7 +56,7 @@ class NestController extends Controller
     public function store(StoreNestFormRequest $request): RedirectResponse
     {
         $nest = $this->nestCreationService->handle($request->normalize());
-        $this->alert->success(trans('admin/nests.notices.created', ['name' => $nest->name]))->flash();
+        $this->alert->success(trans('admin/nests.notices.created', ['name' => htmlspecialchars($nest->name)]))->flash();
 
         return redirect()->route('admin.nests.view', $nest->id);
     }
