@@ -3,6 +3,21 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.7
+
+### Added
+
+* Java 21 to Minecraft eggs
+
+### Changed
+
+* Updated Minecraft EULA link
+
+### Fixed
+
+* Fixed backups not ever being marked as completed (#5088)
+* Fixed `.7z` files not being detected as a compressed file (#5016)
+
 ## v1.11.6
 
 ### Changed
