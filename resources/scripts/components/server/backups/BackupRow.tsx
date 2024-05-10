@@ -21,9 +21,13 @@ interface Props {
 export default ({ backup, className }: Props) => {
     const { mutate } = getServerBackups();
 
-    useWebsocketEvent(`${SocketEvent.BACKUP_COMPLETED}:${backup.uuid}` as SocketEvent, (data) => {
+    useWebsocketEvent(SocketEvent.BACKUP_COMPLETED, (data) => {
         try {
             const parsed = JSON.parse(data);
+
+            if (parsed.uuid != backup.uuid) {
+                return;
+            }
 
             mutate(
                 (data) => ({
