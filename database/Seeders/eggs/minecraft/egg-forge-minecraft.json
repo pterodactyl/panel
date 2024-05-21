@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-11-06T06:33:01-05:00",
+    "exported_at": "2024-05-07T12:55:56+00:00",
     "name": "Forge Minecraft",
     "author": "support@pterodactyl.io",
     "description": "Minecraft Forge Server. Minecraft Forge is a modding API (Application Programming Interface), which makes it easier to create mods, and also make sure mods are compatible with each other.",
@@ -14,6 +14,7 @@
         "pid_limit"
     ],
     "docker_images": {
+        "Java 21": "ghcr.io\/pterodactyl\/yolks:java_21",
         "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17",
         "Java 16": "ghcr.io\/pterodactyl\/yolks:java_16",
         "Java 11": "ghcr.io\/pterodactyl\/yolks:java_11",

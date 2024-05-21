@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-06-17T08:10:44+03:00",
+    "exported_at": "2024-05-07T12:55:57+00:00",
     "name": "Bungeecord",
     "author": "support@pterodactyl.io",
     "description": "For a long time, Minecraft server owners have had a dream that encompasses a free, easy, and reliable way to connect multiple Minecraft servers together. BungeeCord is the answer to said dream. Whether you are a small server wishing to string multiple game-modes together, or the owner of the ShotBow Network, BungeeCord is the ideal solution for you. With the help of BungeeCord, you will be able to unlock your community's full potential.",
@@ -14,6 +14,7 @@
         "pid_limit"
     ],
     "docker_images": {
+        "Java 21": "ghcr.io\/pterodactyl\/yolks:java_21",
         "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17",
         "Java 16": "ghcr.io\/pterodactyl\/yolks:java_16",
         "Java 11": "ghcr.io\/pterodactyl\/yolks:java_11",

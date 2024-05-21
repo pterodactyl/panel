@@ -131,7 +131,7 @@ class NodesController extends Controller
             ['ip', '=', $request->input('ip')],
         ]);
 
-        $this->alert->success(trans('admin/node.notices.unallocated_deleted', ['ip' => $request->input('ip')]))
+        $this->alert->success(trans('admin/node.notices.unallocated_deleted', ['ip' => htmlspecialchars($request->input('ip'))]))
             ->flash();
 
         return redirect()->route('admin.nodes.view.allocation', $node);

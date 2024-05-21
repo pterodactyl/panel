@@ -145,14 +145,20 @@
 @section('footer-scripts')
     @parent
     <script>
+    function escapeHtml(str) {
+        var div = document.createElement('div');
+        div.appendChild(document.createTextNode(str));
+        return div.innerHTML;
+    }
+
     (function getInformation() {
         $.ajax({
             method: 'GET',
             url: '/admin/nodes/view/{{ $node->id }}/system-information',
             timeout: 5000,
         }).done(function (data) {
-            $('[data-attr="info-version"]').html(data.version);
-            $('[data-attr="info-system"]').html(data.system.type + ' (' + data.system.arch + ') <code>' + data.system.release + '</code>');
+            $('[data-attr="info-version"]').html(escapeHtml(data.version));
+            $('[data-attr="info-system"]').html(escapeHtml(data.system.type) + ' (' + escapeHtml(data.system.arch) + ') <code>' + escapeHtml(data.system.release) + '</code>');
             $('[data-attr="info-cpus"]').html(data.system.cpus);
         }).fail(function (jqXHR) {
 
