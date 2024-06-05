@@ -69,7 +69,7 @@ class EggVariableController extends Controller
     {
         $this->updateService->handle($variable, $request->normalize());
         $this->alert->success(trans('admin/nests.variables.notices.variable_updated', [
-            'variable' => $variable->name,
+            'variable' => htmlspecialchars($variable->name),
         ]))->flash();
 
         return redirect()->route('admin.nests.egg.variables', $egg->id);
@@ -82,7 +82,7 @@ class EggVariableController extends Controller
     {
         $this->variableRepository->delete($variable->id);
         $this->alert->success(trans('admin/nests.variables.notices.variable_deleted', [
-            'variable' => $variable->name,
+            'variable' => htmlspecialchars($variable->name),
         ]))->flash();
 
         return redirect()->route('admin.nests.egg.variables', $egg);

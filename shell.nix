@@ -1,6 +1,6 @@
 {
   composer ? null,
-  php81WithExtensions ? null,
+  phpWithExtensions ? null,
   pkgs ? import <nixpkgs> {},
 }:
 with pkgs;
@@ -10,7 +10,7 @@ with pkgs;
       composer
       nodejs_18
       nodePackages.yarn
-      php81WithExtensions
+      phpWithExtensions
     ];
 
     shellHook = ''

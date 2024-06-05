@@ -72,7 +72,7 @@ const EulaModalFeature = () => {
                     target={'_blank'}
                     css={tw`text-primary-300 underline transition-colors duration-150 hover:text-primary-400`}
                     rel={'noreferrer noopener'}
-                    href='https://account.mojang.com/documents/minecraft_eula'
+                    href='https://www.minecraft.net/eula'
                 >
                     Minecraft&reg; EULA
                 </a>
