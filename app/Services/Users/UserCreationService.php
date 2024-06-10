@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Users;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
@@ -51,7 +52,14 @@ class UserCreationService
         }
 
         $this->connection->commit();
-        $user->notify(new AccountCreated($user, $token ?? null));
+        
+        try {
+            // Attempt email notification.
+            $user->notify(new AccountCreated($user, $token ?? null));
+        } catch (\Exception $exception) {
+            // Just log the error.
+            Log::error($exception);
+        }
 
         return $user;
     }
