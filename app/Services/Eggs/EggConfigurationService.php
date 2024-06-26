@@ -64,6 +64,7 @@ class EggConfigurationService
         }
 
         $signal = substr($stop, 1);
+
         return [
             'type' => 'signal',
             'value' => strtoupper($signal),
