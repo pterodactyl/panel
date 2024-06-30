@@ -11,7 +11,7 @@ import NewDirectoryButton from '@/components/server/files/NewDirectoryButton';
 import { NavLink, useLocation } from 'react-router-dom';
 import Can from '@/components/elements/Can';
 import { ServerError } from '@/components/elements/ScreenBlock';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { ServerContext } from '@/state/server';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 // import FileManagerStatus from '@/components/server/files/FileManagerStatus';

@@ -6,6 +6,7 @@ import * as Models from '@definitions/admin/models';
 import { Location } from '@/api/admin/location';
 import { Egg, EggVariable } from '@/api/admin/egg';
 import { Nest } from '@/api/admin/nest';
+import { Settings } from '@/api/admin/settings';
 
 const isList = (data: FractalResponseList | FractalResponseData): data is FractalResponseList => data.object === 'list';
 
@@ -224,5 +225,31 @@ export default class Transformers {
         relationships: {
             eggs: transform(attributes.relationships?.eggs as FractalResponseList, this.toEgg),
         },
+    });
+
+    static toSettings = ({ attributes }: FractalResponseData): Settings => ({
+        general: {
+            name: attributes.general.name,
+            language: attributes.general.language,
+            languages: attributes.general.languages,
+        },
+        mail: {
+            host: attributes.mail.host,
+            port: attributes.mail.port,
+            username: attributes.mail.username,
+            password: attributes.mail.password,
+            encryption: attributes.mail.encryption,
+            fromAddress: attributes.mail.from_address,
+            fromName: attributes.mail.from_name,
+        },
+        security: {
+            recaptcha: {
+                enabled: attributes.security.recaptcha.enabled,
+                siteKey: attributes.security.recaptcha.site_key,
+                secretKey: attributes.security.recaptcha.secret_key,
+            },
+            '2faEnabled': attributes.security['2fa_enabled'],
+        },
+        relationships: {},
     });
 }
