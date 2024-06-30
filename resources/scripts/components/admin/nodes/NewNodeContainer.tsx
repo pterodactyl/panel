@@ -12,7 +12,7 @@ import AdminContentBlock from '@/components/admin/AdminContentBlock';
 import NodeLimitContainer from '@/components/admin/nodes/NodeLimitContainer';
 import NodeListenContainer from '@/components/admin/nodes/NodeListenContainer';
 import NodeSettingsContainer from '@/components/admin/nodes/NodeSettingsContainer';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import type { ApplicationStore } from '@/state';
 
@@ -95,7 +95,7 @@ export default () => {
                 })}
             >
                 {({ isSubmitting, isValid }) => (
-                    <Form>
+                    <Form className="mt-4">
                         <div css={tw`flex flex-col lg:flex-row`}>
                             <div css={tw`w-full lg:w-1/2 flex flex-col mr-0 lg:mr-2`}>
                                 <NodeSettingsContainer />
