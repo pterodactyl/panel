@@ -95,6 +95,8 @@ return [
             'create-directory_other' => 'Created :count directories',
             'rename_one' => 'Renamed :files.0.from to :files.0.to',
             'rename_other' => 'Renamed or moved :count files',
+            'read_one' => 'Read :files.0',
+            'read_other' => 'Read :count files',
         ],
         'allocation' => [
             'create' => 'Added :allocation to the server',
