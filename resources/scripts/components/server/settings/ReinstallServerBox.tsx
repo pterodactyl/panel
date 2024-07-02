@@ -6,7 +6,7 @@ import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Dialog } from '@/components/elements/dialog';
 
 export default () => {
