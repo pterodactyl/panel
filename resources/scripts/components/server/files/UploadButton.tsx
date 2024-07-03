@@ -83,6 +83,7 @@ export default ({ className }: WithClassname) => {
                             url,
                             { files: file },
                             {
+                             	withCredentials: true,
                                 signal: controller.signal,
                                 headers: { 'Content-Type': 'multipart/form-data' },
                                 params: { directory },
