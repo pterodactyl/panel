@@ -1,4 +1,5 @@
 /vendor
+/coverage
 *.DS_Store*
 !.env.ci
 !.env.example
