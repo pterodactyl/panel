@@ -5,7 +5,7 @@
 .env*
 .vagrant/*
 .vscode/*
-storage/framework/*
+storage/framework/* 
 /.idea
 /nbproject
 /.direnv
