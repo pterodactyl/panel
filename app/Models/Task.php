@@ -88,7 +88,7 @@ class Task extends Model
         'sequence_id' => 'required|numeric|min:1',
         'action' => 'required|string',
         'payload' => 'required_unless:action,backup|string',
-        'time_offset' => 'required|numeric|between:0,900',
+        'time_offset' => 'required|numeric|between:0,3600',
         'is_queued' => 'boolean',
         'continue_on_failure' => 'boolean',
     ];

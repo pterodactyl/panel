@@ -41,10 +41,10 @@ const schema = object().shape({
     }),
     continueOnFailure: boolean(),
     timeOffset: number()
-        .typeError('The time offset must be a valid number between 0 and 900.')
+        .typeError('The time offset must be a valid number between 0 and 3600.')
         .required('A time offset value must be provided.')
         .min(0, 'The time offset must be at least 0 seconds.')
-        .max(900, 'The time offset must be less than 900 seconds.'),
+        .max(3600, 'The time offset must be less than or equal to 3600 seconds.'),
 });
 
 const ActionListener = () => {
