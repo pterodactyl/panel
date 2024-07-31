@@ -13,9 +13,9 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
     public function getAccountKeys(User $user): Collection;
 
     /**
-     * Get all the application API keys that exist for a specific user.
+     * Get all the application API keys that exist.
      */
-    public function getApplicationKeys(User $user): Collection;
+    public function getApplicationKeys(): Collection;
 
     /**
      * Delete an account API key from the panel for a specific user.
@@ -23,7 +23,7 @@ interface ApiKeyRepositoryInterface extends RepositoryInterface
     public function deleteAccountKey(User $user, string $identifier): int;
 
     /**
-     * Delete an application API key from the panel for a specific user.
+     * Delete an application API key from the panel.
      */
-    public function deleteApplicationKey(User $user, string $identifier): int;
+    public function deleteApplicationKey(string $identifier): int;
 }

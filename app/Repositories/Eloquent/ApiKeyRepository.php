@@ -28,12 +28,13 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     }
 
     /**
-     * Get all the application API keys that exist for a specific user.
+     * Get all the application API keys that exist.
      */
-    public function getApplicationKeys(User $user): Collection
+    public function getApplicationKeys(): Collection
     {
-        return $this->getBuilder()->where('user_id', $user->id)
+        return $this->getBuilder()
             ->where('key_type', ApiKey::TYPE_APPLICATION)
+            ->with('user')
             ->get($this->getColumns());
     }
 
@@ -49,11 +50,11 @@ class ApiKeyRepository extends EloquentRepository implements ApiKeyRepositoryInt
     }
 
     /**
-     * Delete an application API key from the panel for a specific user.
+     * Delete an application API key from the panel.
      */
-    public function deleteApplicationKey(User $user, string $identifier): int
+    public function deleteApplicationKey(string $identifier): int
     {
-        return $this->getBuilder()->where('user_id', $user->id)
+        return $this->getBuilder()
             ->where('key_type', ApiKey::TYPE_APPLICATION)
             ->where('identifier', $identifier)
             ->delete();
