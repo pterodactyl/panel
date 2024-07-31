@@ -32,8 +32,9 @@ class NodeAutoDeployController extends Controller
     public function __invoke(Request $request, Node $node): JsonResponse
     {
         /** @var \Pterodactyl\Models\ApiKey|null $key */
-        $key = $this->repository->getApplicationKeys($request->user())
+        $key = $this->repository->getApplicationKeys()
             ->filter(function (ApiKey $key) {
+                if ($key->user->id != $request->user()->id) return false;
                 foreach ($key->getAttributes() as $permission => $value) {
                     if ($permission === 'r_nodes' && $value === 1) {
                         return true;
