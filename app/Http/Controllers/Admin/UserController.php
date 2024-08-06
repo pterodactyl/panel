@@ -54,7 +54,6 @@ class UserController extends Controller
                 ->groupBy('users.id')
         )
             ->allowedFilters(['username', 'email', 'uuid'])
-            ->defaultSort('-root_admin')
             ->allowedSorts(['id', 'uuid'])
             ->paginate(50);
 
