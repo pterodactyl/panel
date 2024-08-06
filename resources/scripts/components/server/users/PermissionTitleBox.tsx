@@ -35,7 +35,7 @@ const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissio
                     {isEditable && (
                         <Input
                             type={'checkbox'}
-                            checked={editablePermissions.every((p) => value.includes(p))}
+                            checked={editablePermissions.every((p) => value.includes(p)) && value.find((p) => p.startsWith(title)) != null}
                             onChange={onCheckboxClicked}
                             disabled={editablePermissions.filter((p) => p.startsWith(title)).length === 0}
                         />
