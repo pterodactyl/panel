@@ -80,5 +80,4 @@ abstract class SubuserRequest extends ClientApiRequest
             throw new HttpForbiddenException('Cannot assign permissions to a subuser that your account does not actively possess.');
         }
     }
-    }
 }
