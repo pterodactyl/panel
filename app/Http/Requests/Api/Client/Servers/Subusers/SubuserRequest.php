@@ -68,10 +68,17 @@ abstract class SubuserRequest extends ClientApiRequest
         $service = $this->container->make(GetUserPermissionsService::class);
 
         $subuser = $this->route()->parameter('user');
-        $permissionDifference = array_diff($service->handle($server, $subuser), $permissions);
+        $currentPermissions = $service->handle($server, $subuser);
 
-        if (count(array_diff($permissionDifference, $service->handle($server, $user))) > 0) {
+        $addedPermissions = array_diff($permissions, $currentPermissions);
+        $removedPermissions = array_diff($currentPermissions, $permissions);
+
+        $modifiedPermissions = array_merge($addedPermissions, $removedPermissions);
+
+        // Checks if user has all the permissions they are modifying on the Subuser
+        if (count(array_intersect($service->handle($server, $user), $modifiedPermissions)) !== count($modifiedPermissions)) {
             throw new HttpForbiddenException('Cannot assign permissions to a subuser that your account does not actively possess.');
         }
+    }
     }
 }
