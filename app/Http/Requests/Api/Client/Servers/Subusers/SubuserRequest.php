@@ -67,7 +67,10 @@ abstract class SubuserRequest extends ClientApiRequest
         /** @var \Pterodactyl\Services\Servers\GetUserPermissionsService $service */
         $service = $this->container->make(GetUserPermissionsService::class);
 
-        if (count(array_diff($permissions, $service->handle($server, $user))) > 0) {
+        $subuser = $this->route()->parameter('user');
+        $permissionDifference = array_diff($service->handle($server, $subuser), $permissions);
+
+        if (count(array_diff($permissionDifference, $service->handle($server, $user))) > 0) {
             throw new HttpForbiddenException('Cannot assign permissions to a subuser that your account does not actively possess.');
         }
     }
