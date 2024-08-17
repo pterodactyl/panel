@@ -29,8 +29,30 @@ export default () => {
         () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined })
     );
 
+    const [sortedServers, setSortedServers] = useState<Server[]>([]);
+
     useEffect(() => {
         if (!servers) return;
+
+        const sorted = servers.items.slice().sort((a, b) => {
+            const aDescription = a.description || '';
+            const bDescription = b.description || '';
+
+            const aMatch = aDescription.match(/^\[(\d+)\]/);
+            const bMatch = bDescription.match(/^\[(\d+)\]/);
+
+            const aNumber = aMatch ? parseInt(aMatch[1], 10) : Number.MAX_SAFE_INTEGER;
+            const bNumber = bMatch ? parseInt(bMatch[1], 10) : Number.MAX_SAFE_INTEGER;
+
+            if (aNumber === bNumber) {
+                // Se i numeri sono uguali, ordina per nome
+                return a.name.localeCompare(b.name);
+            }
+
+            return aNumber - bNumber;
+        });
+        setSortedServers(sorted);
+
         if (servers.pagination.currentPage > 1 && !servers.items.length) {
             setPage(1);
         }
@@ -65,7 +87,7 @@ export default () => {
             {!servers ? (
                 <Spinner centered size={'large'} />
             ) : (
-                <Pagination data={servers} onPageSelect={setPage}>
+                <Pagination data={{ items: sortedServers, pagination: servers.pagination }} onPageSelect={setPage}>
                     {({ items }) =>
                         items.length > 0 ? (
                             items.map((server, index) => (
