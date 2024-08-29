@@ -34,3 +34,4 @@ resources/lang/locales.js
 /public/hot
 result
 docker-compose.yaml
+.phpunit.cache

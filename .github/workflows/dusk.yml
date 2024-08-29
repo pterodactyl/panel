@@ -1,0 +1,93 @@
+name: Dusk
+on: [push]
+jobs:
+
+  dusk-php:
+    runs-on: ubuntu-latest
+    env:
+      APP_URL: "http://127.0.0.1:8000"
+      APP_ENV: dusk
+      APP_CORS_ALLOWED_ORIGINS: "*"
+      DB_USERNAME: root
+      DB_PASSWORD: root
+      MAIL_MAILER: log
+      APP_KEY: "base64:8hOaU5CSjb45bxnFEToJwOsfhOpOvH/g4OWcoJPNyyE="
+      RECAPTCHA_ENABLED: false
+    steps:
+      - uses: actions/checkout@v3
+      - name: Prepare The Environment
+        run: cp .env.example .env
+      - name: Create Database
+        run: |
+          sudo systemctl start mysql
+          mysql --user="root" --password="root" -e "CREATE DATABASE \`panel\` character set UTF8mb4 collate utf8mb4_bin;"
+
+      - name: Get Cache Directory
+        id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - name: Cache Composer
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-8.1-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-8.1-
+
+      - name: Install Composer Dependencies
+        run: composer install --no-interaction --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Generate Application Key
+        run: php artisan key:generate --force --no-interaction
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Build
+        run: yarn build:production
+
+      - name: Install Redis
+        run: sudo apt-get install redis-server
+      - name: Start Redis Server
+        run: redis-server --daemonize yes
+      - name: Check Redis Server
+        run: redis-cli ping
+
+      - name: Run Laravel Server
+        run: php artisan serve --no-reload &
+
+      - name: Run Laravel Server Pseudo Daemon
+        run: php artisan serve --no-reload &
+
+      - name: Upgrade Chrome Driver
+        run: php artisan dusk:chrome-driver --detect
+      - name: Start Chrome Driver
+        run: ./vendor/laravel/dusk/bin/chromedriver-linux &
+
+      - name: Run Dusk Tests
+        run: php artisan dusk
+
+      - name: Upload Screenshots
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: browser-screenshots
+          path: tests/Browser/screenshots
+      - name: Upload Console Logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: browser-console
+          path: tests/Browser/console
+      - name: Upload Application Logs
+        if: failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: storage-logs
+          path: storage/logs
