@@ -34,7 +34,7 @@ class ApiController extends Controller
     public function index(Request $request): View
     {
         return $this->view->make('admin.api.index', [
-            'keys' => $this->repository->getApplicationKeys($request->user()),
+            'keys' => $this->repository->getApplicationKeys(),
         ]);
     }
 
@@ -80,7 +80,7 @@ class ApiController extends Controller
      */
     public function delete(Request $request, string $identifier): Response
     {
-        $this->repository->deleteApplicationKey($request->user(), $identifier);
+        $this->repository->deleteApplicationKey($identifier);
 
         return response('', 204);
     }
