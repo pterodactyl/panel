@@ -9,6 +9,8 @@ jobs:
   release:
     name: Release
     runs-on: ubuntu-20.04
+    permissions:
+      contents: write # write is required to create releases and push.
     steps:
       - name: Code checkout
         uses: actions/checkout@v3
@@ -41,7 +43,7 @@ jobs:
 
       - name: Create release archive
         run: |
-          rm -rf node_modules tests CODE_OF_CONDUCT.md CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix 
+          rm -rf node_modules tests CODE_OF_CONDUCT.md CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix
           tar -czf panel.tar.gz * .editorconfig .env.example .eslintignore .eslintrc.js .gitignore .prettierrc.json
 
       - name: Extract changelog

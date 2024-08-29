@@ -18,6 +18,9 @@ jobs:
     name: Push
     runs-on: ubuntu-20.04
     if: "!contains(github.ref, 'develop') || (!contains(github.event.head_commit.message, 'skip docker') && !contains(github.event.head_commit.message, 'docker skip'))"
+    permissions:
+      contents: read
+      packages: write
     steps:
       - name: Code checkout
         uses: actions/checkout@v3

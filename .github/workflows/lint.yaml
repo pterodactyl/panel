@@ -14,6 +14,8 @@ jobs:
   lint:
     name: Lint
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     steps:
       - name: Code Checkout
         uses: actions/checkout@v3

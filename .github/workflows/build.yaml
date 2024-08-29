@@ -14,6 +14,8 @@ jobs:
   ui:
     name: UI
     runs-on: ubuntu-20.04
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
