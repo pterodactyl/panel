@@ -110,7 +110,7 @@
                             <button class="btn btn-success" data-toggle="modal" data-target="#transferServerModal">Transfer Server</button>
                         @else
                             <button class="btn btn-success disabled">Transfer Server</button>
-                            <p style="padding-top: 1rem;">Transferring a server requires more than one node to be configured on your panel.</p>
+                            <p style="padding-top: 1rem; font-style: italic;">You currently can't transfer any servers because you don't have at least a second node that's configured in your panel.</p>
                         @endif
                     </div>
                 </div>
@@ -129,7 +129,11 @@
                     </div>
 
                     <div class="box-footer">
-                        <button class="btn btn-success disabled">Transfer Server</button>
+                        <button class="btn btn-success" data-toggle="modal" data-target="#cancelTransferModal">Cancel Transfer</button>
+                        <p style="padding-top: 1rem; font-style: italic;">
+                            <span style="font-weight: bold;">Warning</span>, only use this in cases of last resort such as a connection failure.
+                            This may allow you to successfully transfer your server again.
+                        </p>
                     </div>
                 </div>
             </div>
@@ -185,6 +189,36 @@
                         {!! csrf_field() !!}
                         <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
                         <button type="submit" class="btn btn-success btn-sm">Confirm</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="cancelTransferModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <form action="{{ route('admin.servers.view.manage.transfer.cancel', $server->id) }}" method="POST">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title">Cancel Transfer</h4>
+                    </div>
+
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="form-group col-md-12">
+                                This action will force the transfer to a successful state.
+                                However, please try to allow some time for your transfer to finish normally.
+                                This is a last resort action that can allow you to try to start the transfer again.
+                                You will most likely need to manually reset the allocations for these servers.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="modal-footer">
+                        {!! csrf_field() !!}
+                        <button type="button" class="btn btn-default btn-sm pull-left" data-dismiss="modal">Cancel</button>
+                        <button type="submit" class="btn btn-danger btn-sm">Confirm</button>
                     </div>
                 </form>
             </div>

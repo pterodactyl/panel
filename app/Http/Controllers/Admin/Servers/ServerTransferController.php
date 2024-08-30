@@ -92,6 +92,25 @@ class ServerTransferController extends Controller
     }
 
     /**
+     * Cancels the specified server's transfer.
+     */
+    public function cancel(Request $request, Server $server): RedirectResponse
+    {
+        if (!$transfer = $server->transfer) {
+            $this->alert->danger(trans('admin/server.alerts.transfer_does_not_exist'))->flash();
+
+            return redirect()->route('admin.servers.view.manage', $server->id);
+        }
+
+        $transfer->successful = true;
+        $transfer->save();
+
+        $this->alert->success(trans('admin/server.alerts.transfer_cancelled'))->flash();
+
+        return redirect()->route('admin.servers.view.manage', $server->id);
+    }
+
+    /**
      * Assigns the specified allocations to the specified server.
      */
     private function assignAllocationsToServer(Server $server, int $node_id, int $allocation_id, array $additional_allocations)

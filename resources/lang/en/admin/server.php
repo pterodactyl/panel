@@ -22,6 +22,8 @@ return [
         'node_required' => 'You must have at least one node configured before you can add a server to this panel.',
         'transfer_nodes_required' => 'You must have at least two nodes configured before you can transfer servers.',
         'transfer_started' => 'Server transfer has been started.',
+        'transfer_cancelled' => 'Server transfer has been cancelled.',
         'transfer_not_viable' => 'The node you selected does not have the required disk space or memory available to accommodate this server.',
+        'transfer_does_not_exist' => 'There is no current transfers for this server.',
     ],
 ];
