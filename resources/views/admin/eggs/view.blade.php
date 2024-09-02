@@ -118,7 +118,7 @@
                                 <label for="pConfigFeatures" class="control-label">Features</label>
                                 <div>
                                     <select class="form-control" name="features[]" id="pConfigFeatures" multiple>
-                                        @foreach($egg->features as $feature)
+                                        @foreach(($egg->features ?? []) as $feature)
                                             <option value="{{ $feature }}" selected>{{ $feature }}</option>
                                         @endforeach
                                     </select>
