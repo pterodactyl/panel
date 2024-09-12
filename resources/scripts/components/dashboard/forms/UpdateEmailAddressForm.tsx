@@ -51,7 +51,7 @@ export default () => {
     };
 
     return (
-        <Formik onSubmit={submit} validationSchema={schema} initialValues={{ email: user!.email, password: '' }}>
+        <Formik onSubmit={submit} validationSchema={schema} initialValues={{ email: user!.email, password: '' }} enableReinitialize>
             {({ isSubmitting, isValid }) => (
                 <React.Fragment>
                     <SpinnerOverlay size={'large'} visible={isSubmitting} />
