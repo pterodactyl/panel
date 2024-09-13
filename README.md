@@ -15,6 +15,60 @@ Stop settling for less. Make game servers a first class citizen on your platform
 
 ![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
 
+## Why I created this fork
+I created this fork because I wanted to have the possibility to initialize the pterodactyle panel with specified nests and eggs.
+
+### How does it work?
+You need to bind the /srv/pterodactyl/seeders directory to you local directory and inside the seeders folder you must have a nests.json containing all the nests you want to create in a json format.
+
+Example of nests.json
+`` 
+{
+    "nests": [
+        {
+            "name": "Counter Strike",
+            "description": "Counter Strike servers of various types"
+        },
+        {
+            "name": "Rust",
+            "description": "Rust servers of various types"
+        },
+        {
+            "name": "Grand Theft Auto",
+            "description": "Grand Theft Auto servers of various types"
+        },
+        {
+            "name": "Team Fortress",
+            "description": "Team Fortress servers of various types"
+        },
+        {
+            "name": "Minecraft",
+            "description": "Minecraft servers of various types"
+        },
+        {
+            "name": "The Duel",
+            "description": "The Duel servers of various types"
+        }
+    ]
+}
+``
+
+Along with the JSON you need to create a eggs directory, that will contain one folder for each egg you want to be added. And inside this folder will be the pterodactyle JSON file for that egg.
+
+So the directory structure will look something like this:
+
+/srv/pterodactyl/seeders/
+├── nests.json
+└── eggs/
+    ├── counter-strike/
+    │   └── egg-counter-strike-global-offensive.json
+    ├── minecraft/
+    │   └── egg-forge-minecraft.json
+    │   └── egg-vanilla-minecraft.json
+    └── ...
+
+
+
 ## Documentation
 
 * [Panel Documentation](https://pterodactyl.io/panel/1.0/getting_started.html)
