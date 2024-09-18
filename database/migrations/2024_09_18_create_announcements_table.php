@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateJobsTable extends Migration
+class CreateAnnouncementsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -23,6 +23,6 @@ class CreateJobsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('jobs');
+        Schema::dropIfExists('announcements');
     }
 }
