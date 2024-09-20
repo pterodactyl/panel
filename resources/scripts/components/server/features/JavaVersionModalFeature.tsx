@@ -12,10 +12,12 @@ import useWebsocketEvent from '@/plugins/useWebsocketEvent';
 import Can from '@/components/elements/Can';
 import getServerStartup from '@/api/swr/getServerStartup';
 import InputSpinner from '@/components/elements/InputSpinner';
+import { usePermissions } from '@/plugins/usePermissions';
 
 const MATCH_ERRORS = [
     'minecraft 1.17 requires running the server with java 16 or above',
     'minecraft 1.18 requires running the server with java 17 or above',
+    'minecraft 1.19 requires running the server with Java 17 or above',
     'java.lang.unsupportedclassversionerror',
     'unsupported major.minor version',
     'has been compiled by a more recent version of the java runtime',
@@ -31,14 +33,20 @@ const JavaVersionModalFeature = () => {
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { instance } = ServerContext.useStoreState(state => state.socket);
 
-    const { data, isValidating, mutate } = getServerStartup(uuid, undefined, { revalidateOnMount: false });
+    const hasPermission = usePermissions('startup.docker-image');
+
+    const { data, isValidating, mutate } = hasPermission
+        ? getServerStartup(uuid, undefined, { revalidateOnMount: false })
+        : { data: undefined, isValidating: false, mutate: undefined };
 
     useEffect(() => {
         if (!visible) return;
 
-        mutate().then(value => {
-            setSelectedVersion(Object.values(value?.dockerImages || [])[0] || '');
-        });
+        if (mutate) {
+            mutate().then((value) => {
+                setSelectedVersion(Object.values(value?.dockerImages || [])[0] || '');
+            });
+        }
     }, [visible]);
 
     useWebsocketEvent(SocketEvent.CONSOLE_OUTPUT, data => {
