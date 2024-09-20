@@ -4,7 +4,7 @@
         "version": "PTDL_v2",
         "update_url": null
     },
-    "exported_at": "2022-06-17T08:11:42+03:00",
+    "exported_at": "2024-05-07T12:55:54+00:00",
     "name": "Sponge (SpongeVanilla)",
     "author": "support@pterodactyl.io",
     "description": "SpongeVanilla is the SpongeAPI implementation for Vanilla Minecraft.",
@@ -14,6 +14,7 @@
         "pid_limit"
     ],
     "docker_images": {
+        "Java 21": "ghcr.io\/pterodactyl\/yolks:java_21",
         "Java 16": "ghcr.io\/pterodactyl\/yolks:java_16",
         "Java 11": "ghcr.io\/pterodactyl\/yolks:java_11",
         "Java 8": "ghcr.io\/pterodactyl\/yolks:java_8"

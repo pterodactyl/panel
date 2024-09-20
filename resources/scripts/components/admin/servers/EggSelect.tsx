@@ -11,16 +11,16 @@ import Select from '@/components/elements/Select';
 interface Props {
     nestId?: number;
     selectedEggId?: number;
-    onEggSelect: (egg: Egg | null) => void;
+    onEggSelect: (egg: WithRelationships<Egg, 'variables'> | undefined) => void;
 }
 
 export default ({ nestId, selectedEggId, onEggSelect }: Props) => {
     const [, , { setValue, setTouched }] = useField<Record<string, string | undefined>>('environment');
-    const [eggs, setEggs] = useState<WithRelationships<Egg, 'variables'>[] | null>(null);
+    const [eggs, setEggs] = useState<WithRelationships<Egg, 'variables'>[] | undefined>(undefined);
 
-    const selectEgg = (egg: Egg | null) => {
-        if (egg === null) {
-            onEggSelect(null);
+    const selectEgg = (egg: WithRelationships<Egg, 'variables'> | undefined) => {
+        if (egg === undefined) {
+            onEggSelect(undefined);
             return;
         }
 
@@ -40,26 +40,29 @@ export default ({ nestId, selectedEggId, onEggSelect }: Props) => {
 
     useEffect(() => {
         if (!nestId) {
-            setEggs(null);
+            setEggs(undefined);
             return;
         }
 
         searchEggs(nestId, {})
-            .then(eggs => {
-                setEggs(eggs);
-                selectEgg(eggs[0] || null);
+            .then(_eggs => {
+                setEggs(_eggs);
+
+                // If the currently selected egg is in the selected nest, use it instead of picking the first egg on the nest.
+                const egg = _eggs.find(egg => egg.id === selectedEggId) ?? _eggs[0];
+                selectEgg(egg);
             })
             .catch(error => console.error(error));
     }, [nestId]);
 
-    const onSelectChange = (e: ChangeEvent<HTMLSelectElement>) => {
-        selectEgg(eggs?.find(egg => egg.id.toString() === e.currentTarget.value) || null);
+    const onSelectChange = (event: ChangeEvent<HTMLSelectElement>) => {
+        selectEgg(eggs?.find(egg => egg.id.toString() === event.currentTarget.value) ?? undefined);
     };
 
     return (
         <>
             <Label>Egg</Label>
-            <Select id={'eggId'} name={'eggId'} defaultValue={selectedEggId} onChange={onSelectChange}>
+            <Select id={'eggId'} name={'eggId'} value={selectedEggId} onChange={onSelectChange}>
                 {!eggs ? (
                     <option disabled>Loading...</option>
                 ) : (

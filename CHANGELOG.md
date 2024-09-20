@@ -3,6 +3,54 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.7
+
+### Added
+
+* Java 21 to Minecraft eggs
+
+### Changed
+
+* Updated Minecraft EULA link
+
+### Fixed
+
+* Fixed backups not ever being marked as completed (#5088)
+* Fixed `.7z` files not being detected as a compressed file (#5016)
+
+## v1.11.6
+
+### Changed
+
+* Better node ownership checks for internal backup endpoints
+* Improved validation rules on `docker_image` fields to prevent invalid inputs
+
+### Fixed
+
+* Multiple XSS vulnerabilities in the admin area ([GHSA-384w-wffr-x63q](https://github.com/pterodactyl/panel/security/advisories/GHSA-384w-wffr-x63q))
+
+## v1.11.5
+### Fixed
+* Rust egg using the wrong Docker image, breaking Rust modding frameworks.
+
+## v1.11.4
+### Added
+* Added support for the `server.queryport` option on the Rust egg.
+* Added support for the Carbon modding framework to the Rust egg.
+
+### Changed
+* Upgraded to Laravel 10.
+* Sensitive data is no longer shown in the CopyOnClick toast notification.
+
+### Fixed
+* Allow SVGs to be edited in the server's file manager.
+* Properly validate the request body when creating a backup.
+* Fixed issue with schedules running at the wrong time when the panel utilized a timezone with non-hour offsets (such as `Australia/Darwin`).
+* Fixes the log directory when running the Panel in a container.
+* Fixes the permission name used to check if a user has permission to read files/folders.
+* Fixes the ability to unset a server's description through the client API.
+* Fixed the MassActionBar on the server's file manager blocking elements below it, preventing them from being interacted with.
+
 ## v1.11.3
 ### Changed
 * When updating a server's description through the client API, if no value is specified, the description will now remain unchanged.
