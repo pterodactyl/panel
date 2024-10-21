@@ -55,9 +55,8 @@ class ProcessScheduleServiceTest extends IntegrationTestCase
 
     /**
      * Test that a job is dispatched as expected using the initial delay.
-     *
-     * @dataProvider dispatchNowDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('dispatchNowDataProvider')]
     public function testJobCanBeDispatchedWithExpectedInitialDelay(bool $now)
     {
         Bus::fake();

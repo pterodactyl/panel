@@ -44,9 +44,8 @@ class ApiKeyControllerTest extends ClientApiIntegrationTestCase
      * Test that an API key can be created for the client account. This also checks that the
      * API key secret is returned as metadata in the response since it will not be returned
      * after that point.
-     *
-     * @dataProvider validIPAddressDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('validIPAddressDataProvider')]
     public function testApiKeyCanBeCreatedForAccount(array $data)
     {
         /** @var \Pterodactyl\Models\User $user */

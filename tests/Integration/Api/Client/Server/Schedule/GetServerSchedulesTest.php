@@ -22,9 +22,8 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that schedules for a server are returned.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testServerSchedulesAreReturned(array $permissions, bool $individual)
     {
         [$user, $server] = $this->generateTestAccount($permissions);

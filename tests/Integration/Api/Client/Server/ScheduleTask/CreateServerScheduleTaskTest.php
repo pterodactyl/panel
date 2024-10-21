@@ -12,9 +12,8 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
 {
     /**
      * Test that a task can be created.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testTaskCanBeCreated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);

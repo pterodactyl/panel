@@ -17,9 +17,8 @@ class UsernameTest extends TestCase
 
     /**
      * Test valid usernames.
-     *
-     * @dataProvider validUsernameDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('validUsernameDataProvider')]
     public function testValidUsernames(string $username)
     {
         $this->assertTrue((new Username())->passes('test', $username), 'Assert username is valid.');
@@ -27,9 +26,8 @@ class UsernameTest extends TestCase
 
     /**
      * Test invalid usernames return false.
-     *
-     * @dataProvider invalidUsernameDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidUsernameDataProvider')]
     public function testInvalidUsernames(string $username)
     {
         $this->assertFalse((new Username())->passes('test', $username), 'Assert username is not valid.');

@@ -41,9 +41,8 @@ class DeployServerDatabaseServiceTest extends IntegrationTestCase
 
     /**
      * Test that an error is thrown if either the database name or the remote host are empty.
-     *
-     * @dataProvider invalidDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('invalidDataProvider')]
     public function testErrorIsThrownIfDatabaseNameIsEmpty(array $data)
     {
         $server = $this->createServerModel();

@@ -24,9 +24,8 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that a schedule can be updated.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testScheduleCanBeUpdated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);

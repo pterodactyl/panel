@@ -11,9 +11,8 @@ class SubuserAuthorizationTest extends ClientApiIntegrationTestCase
 {
     /**
      * Test that mismatched subusers are not accessible to a server.
-     *
-     * @dataProvider methodDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('methodDataProvider')]
     public function testUserCannotAccessResourceBelongingToOtherServers(string $method)
     {
         // Generic subuser, the specific resource we're trying to access.

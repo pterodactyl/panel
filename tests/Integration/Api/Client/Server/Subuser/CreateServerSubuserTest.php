@@ -16,9 +16,8 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that a subuser can be created for a server.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testSubuserCanBeCreated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);

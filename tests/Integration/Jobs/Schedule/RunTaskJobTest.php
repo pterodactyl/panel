@@ -64,9 +64,7 @@ class RunTaskJobTest extends IntegrationTestCase
         Bus::dispatchSync($job);
     }
 
-    /**
-     * @dataProvider isManualRunDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('isManualRunDataProvider')]
     public function testJobIsExecuted(bool $isManualRun)
     {
         $server = $this->createServerModel();
@@ -105,9 +103,7 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->assertTrue(CarbonImmutable::now()->isSameAs(\DateTimeInterface::ATOM, $schedule->last_run_at));
     }
 
-    /**
-     * @dataProvider isManualRunDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('isManualRunDataProvider')]
     public function testExceptionDuringRunIsHandledCorrectly(bool $continueOnFailure)
     {
         $server = $this->createServerModel();

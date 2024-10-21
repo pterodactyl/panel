@@ -7,9 +7,7 @@ use Pterodactyl\Traits\Commands\EnvironmentWriterTrait;
 
 class EnvironmentWriterTraitTest extends TestCase
 {
-    /**
-     * @dataProvider variableDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('variableDataProvider')]
     public function testVariableIsEscapedProperly($input, $expected)
     {
         $output = (new FooClass())->escapeEnvironmentValue($input);

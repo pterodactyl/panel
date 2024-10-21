@@ -12,9 +12,8 @@ class DeleteAllocationTest extends ClientApiIntegrationTestCase
     /**
      * Test that an allocation is deleted from the server and the notes are properly reset
      * to an empty value on assignment.
-     *
-     * @dataProvider permissionDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionDataProvider')]
     public function testAllocationCanBeDeletedFromServer(array $permission)
     {
         /** @var \Pterodactyl\Models\Server $server */

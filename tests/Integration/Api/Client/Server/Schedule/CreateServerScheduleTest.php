@@ -11,9 +11,8 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
 {
     /**
      * Test that a schedule can be created for the server.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testScheduleCanBeCreatedForServer(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
