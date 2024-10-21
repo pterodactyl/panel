@@ -13,13 +13,13 @@ jobs:
       contents: write # write is required to create releases and push.
     steps:
       - name: Code checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: 16
-          cache: "yarn"
+          cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
@@ -60,7 +60,7 @@ jobs:
 
       - name: Create release
         id: create_release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
