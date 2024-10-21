@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * \Pterodactyl\Models\UserSSHKey.
@@ -39,6 +40,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserSSHKey extends Model
 {
+    /** @use HasFactory<\Database\Factories\UserSSHKeyFactory> */
+    use HasFactory;
     use SoftDeletes;
 
     public const RESOURCE_NAME = 'ssh_key';

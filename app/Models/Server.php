@@ -8,6 +8,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
@@ -104,6 +105,8 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  */
 class Server extends Model
 {
+    /** @use HasFactory<\Database\Factories\ServerFactory> */
+    use HasFactory;
     use BelongsToThrough;
     use Notifiable;
 

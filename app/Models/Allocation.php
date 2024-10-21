@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Pterodactyl\Models\Allocation.
@@ -40,6 +41,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class Allocation extends Model
 {
+    /** @use HasFactory<\Database\Factories\AllocationFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

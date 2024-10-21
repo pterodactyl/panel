@@ -9,6 +9,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Encryption\Encrypter;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
@@ -41,6 +42,8 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  */
 class Node extends Model
 {
+    /** @use HasFactory<\Database\Factories\NodeFactory> */
+    use HasFactory;
     use Notifiable;
 
     /**

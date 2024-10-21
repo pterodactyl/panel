@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
@@ -22,6 +23,9 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  */
 class Database extends Model
 {
+    /** @use HasFactory<\Database\Factories\DatabaseFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
