@@ -24,7 +24,7 @@ class SettingsRepository extends EloquentRepository implements SettingsRepositor
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function set(string $key, string $value = null)
+    public function set(string $key, ?string $value = null)
     {
         // Clear item from the cache.
         $this->clearCache($key);

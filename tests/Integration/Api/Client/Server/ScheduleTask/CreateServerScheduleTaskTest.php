@@ -18,7 +18,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         $this->assertEmpty($schedule->tasks);
 
@@ -30,7 +30,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         ]);
 
         $response->assertOk();
-        /** @var \Pterodactyl\Models\Task $task */
+        /** @var Task $task */
         $task = Task::query()->findOrFail($response->json('attributes.id'));
 
         $this->assertSame($schedule->id, $task->schedule_id);
@@ -48,7 +48,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $response = $this->actingAs($user)->postJson($this->link($schedule, '/tasks'))->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
@@ -93,7 +93,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)->postJson($this->link($schedule, '/tasks'), [
@@ -122,7 +122,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
 
         [$user, $server] = $this->generateTestAccount();
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         Task::factory()->times(2)->create(['schedule_id' => $schedule->id]);
 
@@ -145,7 +145,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
         [$user, $server] = $this->generateTestAccount();
         $server2 = $this->createServerModel(['owner_id' => $user->id]);
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
 
         $this->actingAs($user)
@@ -161,7 +161,7 @@ class CreateServerScheduleTaskTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_CREATE]);
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)

@@ -14,7 +14,7 @@ class EggParserService
      * Takes an uploaded file and parses out the egg configuration from within.
      *
      * @throws \JsonException
-     * @throws \Pterodactyl\Exceptions\Service\InvalidFileUploadException
+     * @throws InvalidFileUploadException
      */
     public function handle(UploadedFile $file): array
     {

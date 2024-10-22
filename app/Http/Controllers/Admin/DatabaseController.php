@@ -30,7 +30,7 @@ class DatabaseController extends Controller
         private HostDeletionService $deletionService,
         private HostUpdateService $updateService,
         private LocationRepositoryInterface $locationRepository,
-        private ViewFactory $view
+        private ViewFactory $view,
     ) {
     }
 

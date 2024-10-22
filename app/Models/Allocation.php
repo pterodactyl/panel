@@ -19,8 +19,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Carbon\Carbon|null $updated_at
  * @property string $alias
  * @property bool $has_alias
- * @property \Pterodactyl\Models\Server|null $server
- * @property \Pterodactyl\Models\Node $node
+ * @property Server|null $server
+ * @property Node $node
  * @property string $hashid
  *
  * @method static \Database\Factories\AllocationFactory factory(...$parameters)
@@ -78,9 +78,6 @@ class Allocation extends Model
         'notes' => 'nullable|string|max:256',
     ];
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRouteKeyName(): string
     {
         return $this->getKeyName();

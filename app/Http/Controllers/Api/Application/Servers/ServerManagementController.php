@@ -16,7 +16,7 @@ class ServerManagementController extends ApplicationApiController
      */
     public function __construct(
         private ReinstallServerService $reinstallServerService,
-        private SuspensionService $suspensionService
+        private SuspensionService $suspensionService,
     ) {
         parent::__construct();
     }

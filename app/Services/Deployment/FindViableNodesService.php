@@ -64,9 +64,9 @@ class FindViableNodesService
      *                       If "null" is provided as the value no pagination will
      *                       be used.
      *
-     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableNodeException
+     * @throws NoViableNodeException
      */
-    public function handle(int $perPage = null, int $page = null): LengthAwarePaginator|Collection
+    public function handle(?int $perPage = null, ?int $page = null): LengthAwarePaginator|Collection
     {
         Assert::integer($this->disk, 'Disk space must be an int, got %s');
         Assert::integer($this->memory, 'Memory usage must be an int, got %s');

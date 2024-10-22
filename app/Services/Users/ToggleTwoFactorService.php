@@ -22,7 +22,7 @@ class ToggleTwoFactorService
         private Encrypter $encrypter,
         private Google2FA $google2FA,
         private RecoveryTokenRepository $recoveryTokenRepository,
-        private UserRepositoryInterface $repository
+        private UserRepositoryInterface $repository,
     ) {
     }
 
@@ -33,9 +33,9 @@ class ToggleTwoFactorService
      * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
      * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
      * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
-     * @throws \Pterodactyl\Exceptions\Service\User\TwoFactorAuthenticationTokenInvalid
+     * @throws TwoFactorAuthenticationTokenInvalid
      */
-    public function handle(User $user, string $token, bool $toggleState = null): array
+    public function handle(User $user, string $token, ?bool $toggleState = null): array
     {
         $secret = $this->encrypter->decrypt($user->totp_secret);
 

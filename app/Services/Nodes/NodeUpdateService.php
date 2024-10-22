@@ -21,7 +21,7 @@ class NodeUpdateService
         private ConnectionInterface $connection,
         private DaemonConfigurationRepository $configurationRepository,
         private Encrypter $encrypter,
-        private NodeRepository $repository
+        private NodeRepository $repository,
     ) {
     }
 
@@ -38,7 +38,7 @@ class NodeUpdateService
         }
 
         [$updated, $exception] = $this->connection->transaction(function () use ($data, $node) {
-            /** @var \Pterodactyl\Models\Node $updated */
+            /** @var Node $updated */
             $updated = $this->repository->withFreshModel()->update($node->id, $data, true, true);
 
             try {

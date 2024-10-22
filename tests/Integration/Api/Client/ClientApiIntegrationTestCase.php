@@ -55,7 +55,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
     /**
      * Returns a link to the specific resource using the client API.
      */
-    protected function link(mixed $model, string $append = null): string
+    protected function link(mixed $model, ?string $append = null): string
     {
         switch (get_class($model)) {
             case Server::class:

@@ -26,7 +26,7 @@ class LocationController extends Controller
         protected LocationDeletionService $deletionService,
         protected LocationRepositoryInterface $repository,
         protected LocationUpdateService $updateService,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 
@@ -86,7 +86,7 @@ class LocationController extends Controller
      * Delete a location from the system.
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function delete(Location $location): RedirectResponse
     {

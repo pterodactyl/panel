@@ -10,7 +10,7 @@ interface SettingsRepositoryInterface extends RepositoryInterface
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function set(string $key, string $value = null);
+    public function set(string $key, ?string $value = null);
 
     /**
      * Retrieve a persistent setting from the database.

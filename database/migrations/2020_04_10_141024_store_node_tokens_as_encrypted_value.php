@@ -13,7 +13,7 @@ class StoreNodeTokensAsEncryptedValue extends Migration
     /**
      * Run the migrations.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function up(): void
     {
@@ -32,7 +32,7 @@ class StoreNodeTokensAsEncryptedValue extends Migration
             $table->text('daemon_token')->change();
         });
 
-        /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */
+        /** @var Encrypter $encrypter */
         $encrypter = Container::getInstance()->make(Encrypter::class);
 
         foreach (DB::select('SELECT id, daemon_token FROM nodes') as $datum) {
@@ -56,7 +56,7 @@ class StoreNodeTokensAsEncryptedValue extends Migration
     public function down(): void
     {
         DB::transaction(function () {
-            /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */
+            /** @var Encrypter $encrypter */
             $encrypter = Container::getInstance()->make(Encrypter::class);
 
             foreach (DB::select('SELECT id, daemon_token_id, daemon_token FROM nodes') as $datum) {

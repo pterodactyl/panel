@@ -31,7 +31,7 @@ class CreateServerScheduleTest extends ClientApiIntegrationTestCase
 
         $this->assertNotNull($id = $response->json('attributes.id'));
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::query()->findOrFail($id);
         $this->assertFalse($schedule->is_active);
         $this->assertFalse($schedule->is_processing);

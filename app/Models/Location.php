@@ -44,9 +44,6 @@ class Location extends Model
         'long' => 'string|nullable|between:1,191',
     ];
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRouteKeyName(): string
     {
         return $this->getKeyName();

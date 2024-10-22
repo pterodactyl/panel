@@ -18,7 +18,7 @@ class DatabasePasswordService
         private ConnectionInterface $connection,
         private DynamicDatabaseConnection $dynamic,
         private Encrypter $encrypter,
-        private DatabaseRepositoryInterface $repository
+        private DatabaseRepositoryInterface $repository,
     ) {
     }
 

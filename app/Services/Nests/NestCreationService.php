@@ -21,7 +21,7 @@ class NestCreationService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    public function handle(array $data, string $author = null): Nest
+    public function handle(array $data, ?string $author = null): Nest
     {
         return $this->repository->create([
             'uuid' => Uuid::uuid4()->toString(),

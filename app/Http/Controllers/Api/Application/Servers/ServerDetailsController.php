@@ -17,7 +17,7 @@ class ServerDetailsController extends ApplicationApiController
      */
     public function __construct(
         private BuildModificationService $buildModificationService,
-        private DetailsModificationService $detailsModificationService
+        private DetailsModificationService $detailsModificationService,
     ) {
         parent::__construct();
     }

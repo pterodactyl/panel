@@ -37,7 +37,7 @@ class StartupModificationServiceTest extends IntegrationTestCase
         } catch (\Exception $exception) {
             $this->assertInstanceOf(ValidationException::class, $exception);
 
-            /** @var \Illuminate\Validation\ValidationException $exception */
+            /** @var ValidationException $exception */
             $errors = $exception->validator->errors()->toArray();
 
             $this->assertCount(1, $errors);

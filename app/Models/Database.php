@@ -18,8 +18,8 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property int $max_connections
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\DatabaseHost $host
+ * @property Server $server
+ * @property DatabaseHost $host
  */
 class Database extends Model
 {
@@ -68,9 +68,6 @@ class Database extends Model
         'password' => 'string',
     ];
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRouteKeyName(): string
     {
         return $this->getKeyName();
@@ -80,7 +77,6 @@ class Database extends Model
      * Resolves the database using the ID by checking if the value provided is a HashID
      * string value, or just the ID to the database itself.
      *
-     * @param mixed $value
      * @param string|null $field
      *
      * @throws \Illuminate\Contracts\Container\BindingResolutionException
