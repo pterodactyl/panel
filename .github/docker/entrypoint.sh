@@ -5,29 +5,50 @@ mkdir -p /var/log/panel/logs/ /var/log/supervisord/ /var/log/nginx/ /var/log/php
   && chmod 777 /var/log/panel/logs/ \
   && ln -s /app/storage/logs/ /var/log/panel/
 
-## check for .env file and generate app keys if missing
-if [ -f /app/var/.env ]; then
-  echo "external vars exist."
-  rm -rf /app/.env
-  ln -s /app/var/.env /app/
-else
-  echo "external vars don't exist."
-  rm -rf /app/.env
-  touch /app/var/.env
-
-  ## manually generate a key because key generate --force fails
-  if [ -z $APP_KEY ]; then
-     echo -e "Generating key."
-     APP_KEY=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 32 | head -n 1)
-     echo -e "Generated app key: $APP_KEY"
-     echo -e "APP_KEY=$APP_KEY" > /app/var/.env
-  else
-    echo -e "APP_KEY exists in environment, using that."
-    echo -e "APP_KEY=$APP_KEY" > /app/var/.env
-  fi
-
-  ln -s /app/var/.env /app/
+# Check that user has mounted the /app/var directory
+if [ ! -d /app/var ]; then
+  echo "You must mount the /app/var directory to the container."
+  exit 1
 fi
+
+# Check the .env file exists and make a blank one if needed
+if [ ! -f /app/var/.env ]; then
+  echo "Creating .env file."
+  touch /app/var/.env
+fi
+
+# Replace .env in container with our external .env file
+rm -f /app/.env
+ln -s /app/var/.env /app/
+
+
+# Use a subshell to avoid polluting the global environment
+(
+    # Load in any existing environment variables in the .env file
+    source /app/.env
+
+    # Check if APP_KEY is set
+    if [ -z "$APP_KEY" ]; then
+        echo "Generating APP_KEY"
+        echo "APP_KEY=" >> /app/.env
+        APP_ENVIRONMENT_ONLY=true php artisan key:generate
+    fi
+
+    # Check if HASHIDS_LENGTH is set
+    if [ -z "$HASHIDS_LENGTH" ]; then
+        echo "Defaulting HASHIDS_LENGTH to 8"
+        echo "HASHIDS_LENGTH=8" >> /app/.env
+    fi
+
+
+    # Check if HASHID_SALT is set
+    if [ -z "$HASHIDS_SALT" ]; then
+        echo "Generating HASHIDS_SALT"
+        HASHIDS_SALT=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | fold -w 20 | head -n 1)
+        echo "HASHIDS_SALT=$HASHIDS_SALT" >> /app/.env
+    fi
+)
+
 
 echo "Checking if https is required."
 if [ -f /etc/nginx/http.d/panel.conf ]; then
