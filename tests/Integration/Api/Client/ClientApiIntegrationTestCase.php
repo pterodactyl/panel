@@ -43,18 +43,19 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * to keep re-assigning variables.
      *
      * @param \Illuminate\Http\Response $response
+     * @param \Illuminate\Http\Request $request
      *
      * @return \Illuminate\Testing\TestResponse
      */
-    protected function createTestResponse($response)
+    protected function createTestResponse($response, $request)
     {
-        return TestResponse::fromBaseResponse($response);
+        return TestResponse::fromBaseResponse($response, $request);
     }
 
     /**
      * Returns a link to the specific resource using the client API.
      */
-    protected function link(mixed $model, string $append = null): string
+    protected function link(mixed $model, ?string $append = null): string
     {
         switch (get_class($model)) {
             case Server::class:

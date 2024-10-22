@@ -12,9 +12,6 @@ class ScheduleTransformer extends BaseClientTransformer
 
     protected array $defaultIncludes = ['tasks'];
 
-    /**
-     * {@inheritdoc}
-     */
     public function getResourceName(): string
     {
         return Schedule::RESOURCE_NAME;

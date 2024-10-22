@@ -10,10 +10,10 @@ class RemoveDefaultNullValueOnTable extends Migration
     /**
      * Run the migrations.
      *
-     * @throws \Exception
-     * @throws \Throwable
+     * @throws Exception
+     * @throws Throwable
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('external_id')->default(null)->change();
@@ -28,10 +28,8 @@ class RemoveDefaultNullValueOnTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // This should not be rolled back.
     }

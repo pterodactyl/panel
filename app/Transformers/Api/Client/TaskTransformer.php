@@ -6,9 +6,6 @@ use Pterodactyl\Models\Task;
 
 class TaskTransformer extends BaseClientTransformer
 {
-    /**
-     * {@inheritdoc}
-     */
     public function getResourceName(): string
     {
         return Task::RESOURCE_NAME;

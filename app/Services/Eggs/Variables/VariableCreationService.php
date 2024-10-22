@@ -33,7 +33,7 @@ class VariableCreationService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @throws ReservedVariableNameException
      */
     public function handle(int $egg, array $data): EggVariable
     {

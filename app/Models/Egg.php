@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -40,14 +41,17 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property string|null $inherit_config_stop
  * @property string $inherit_file_denylist
  * @property array|null $inherit_features
- * @property \Pterodactyl\Models\Nest $nest
+ * @property Nest $nest
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
- * @property \Pterodactyl\Models\Egg|null $scriptFrom
- * @property \Pterodactyl\Models\Egg|null $configFrom
+ * @property Egg|null $scriptFrom
+ * @property Egg|null $configFrom
  */
 class Egg extends Model
 {
+    /** @use HasFactory<\Database\Factories\EggFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

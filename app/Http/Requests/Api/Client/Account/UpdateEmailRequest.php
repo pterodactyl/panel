@@ -11,7 +11,7 @@ use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 class UpdateEmailRequest extends ClientApiRequest
 {
     /**
-     * @throws \Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException
+     * @throws InvalidPasswordProvidedException
      */
     public function authorize(): bool
     {

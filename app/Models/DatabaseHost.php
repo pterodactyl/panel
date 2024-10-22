@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -19,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DatabaseHost extends Model
 {
+    /** @use HasFactory<\Database\Factories\DatabaseHostFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

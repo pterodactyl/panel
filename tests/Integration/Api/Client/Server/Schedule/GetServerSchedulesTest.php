@@ -22,16 +22,15 @@ class GetServerSchedulesTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that schedules for a server are returned.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testServerSchedulesAreReturned(array $permissions, bool $individual)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-        /** @var \Pterodactyl\Models\Task $task */
+        /** @var Task $task */
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'sequence_id' => 1, 'time_offset' => 0]);
 
         $response = $this->actingAs($user)

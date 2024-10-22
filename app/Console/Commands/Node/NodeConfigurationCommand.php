@@ -17,7 +17,7 @@ class NodeConfigurationCommand extends Command
     {
         $column = ctype_digit((string) $this->argument('node')) ? 'id' : 'uuid';
 
-        /** @var \Pterodactyl\Models\Node $node */
+        /** @var Node $node */
         $node = Node::query()->where($column, $this->argument('node'))->firstOr(function () {
             $this->error('The selected node does not exist.');
 

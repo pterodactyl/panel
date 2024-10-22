@@ -28,7 +28,7 @@ class MountController extends Controller
         protected NestRepositoryInterface $nestRepository,
         protected LocationRepositoryInterface $locationRepository,
         protected MountRepository $repository,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 

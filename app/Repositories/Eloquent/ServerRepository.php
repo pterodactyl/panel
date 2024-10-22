@@ -35,7 +35,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     /**
      * Return a collection of servers with their associated data for rebuild operations.
      */
-    public function getDataForRebuild(int $server = null, int $node = null): Collection
+    public function getDataForRebuild(?int $server = null, ?int $node = null): Collection
     {
         $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
@@ -51,7 +51,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     /**
      * Return a collection of servers with their associated data for reinstall operations.
      */
-    public function getDataForReinstall(int $server = null, int $node = null): Collection
+    public function getDataForReinstall(?int $server = null, ?int $node = null): Collection
     {
         $instance = $this->getBuilder()->with(['allocation', 'allocations', 'egg', 'node']);
 
@@ -67,7 +67,7 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     /**
      * Return a server model and all variables associated with the server.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws RecordNotFoundException
      */
     public function findWithVariables(int $id): Server
     {
@@ -139,12 +139,12 @@ class ServerRepository extends EloquentRepository implements ServerRepositoryInt
     /**
      * Return a server by UUID.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws RecordNotFoundException
      */
     public function getByUuid(string $uuid): Server
     {
         try {
-            /** @var \Pterodactyl\Models\Server $model */
+            /** @var Server $model */
             $model = $this->getBuilder()
                 ->with('nest', 'node')
                 ->where(function (Builder $query) use ($uuid) {

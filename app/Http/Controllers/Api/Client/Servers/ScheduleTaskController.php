@@ -26,7 +26,7 @@ class ScheduleTaskController extends ClientApiController
      */
     public function __construct(
         private ConnectionInterface $connection,
-        private TaskRepository $repository
+        private TaskRepository $repository,
     ) {
         parent::__construct();
     }
@@ -35,7 +35,7 @@ class ScheduleTaskController extends ClientApiController
      * Create a new task for a given schedule and store it in the database.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Service\ServiceLimitExceededException
+     * @throws ServiceLimitExceededException
      */
     public function store(StoreTaskRequest $request, Server $server, Schedule $schedule): array
     {
@@ -48,10 +48,10 @@ class ScheduleTaskController extends ClientApiController
             throw new HttpForbiddenException("A backup task cannot be created when the server's backup limit is set to 0.");
         }
 
-        /** @var \Pterodactyl\Models\Task|null $lastTask */
+        /** @var Task|null $lastTask */
         $lastTask = $schedule->tasks()->orderByDesc('sequence_id')->first();
 
-        /** @var \Pterodactyl\Models\Task $task */
+        /** @var Task $task */
         $task = $this->connection->transaction(function () use ($request, $schedule, $lastTask) {
             $sequenceId = ($lastTask->sequence_id ?? 0) + 1;
             $requestSequenceId = $request->integer('sequence_id', $sequenceId);

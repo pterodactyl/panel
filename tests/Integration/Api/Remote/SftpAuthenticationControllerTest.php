@@ -2,12 +2,12 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Remote;
 
+use phpseclib3\Crypt\EC;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Permission;
 use Pterodactyl\Models\UserSSHKey;
-use phpseclib3\Crypt\EC\PrivateKey;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
 class SftpAuthenticationControllerTest extends IntegrationTestCase
@@ -94,9 +94,8 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
     /**
      * Test that providing an invalid key and/or invalid username triggers the throttle on
      * the endpoint.
-     *
-     * @dataProvider authorizationTypeDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('authorizationTypeDataProvider')]
     public function testUserIsThrottledIfInvalidCredentialsAreProvided()
     {
         for ($i = 0; $i <= 10; ++$i) {
@@ -119,7 +118,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
             $this->postJson('/api/remote/sftp/auth', [
                 'type' => 'public_key',
                 'username' => $this->getUsername(),
-                'password' => PrivateKey::createKey('Ed25519')->getPublicKey()->toString('OpenSSH'),
+                'password' => EC::createKey('Ed25519')->getPublicKey()->toString('OpenSSH'),
             ])
                 ->assertForbidden();
         }
@@ -128,9 +127,8 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
     /**
      * Test that a request is rejected if the credentials are valid but the username indicates
      * a server on a different node.
-     *
-     * @dataProvider authorizationTypeDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('authorizationTypeDataProvider')]
     public function testRequestIsRejectedIfServerBelongsToDifferentNode(string $type)
     {
         $node2 = $this->createServerModel()->node;
@@ -165,9 +163,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
             ->assertJsonPath('errors.0.detail', 'You do not have permission to access SFTP for this server.');
     }
 
-    /**
-     * @dataProvider serverStateDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('serverStateDataProvider')]
     public function testInvalidServerStateReturnsConflictError(string $status)
     {
         $this->server->update(['status' => $status]);
@@ -241,7 +237,7 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
     /**
      * Sets the authorization header for the rest of the test.
      */
-    protected function setAuthorization(Node $node = null): void
+    protected function setAuthorization(?Node $node = null): void
     {
         $node = $node ?? $this->server->node;
 

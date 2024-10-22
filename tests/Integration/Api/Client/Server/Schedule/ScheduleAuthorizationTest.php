@@ -16,9 +16,8 @@ class ScheduleAuthorizationTest extends ClientApiIntegrationTestCase
      *
      * The comments within the test code itself are better at explaining exactly what is
      * being tested and protected against.
-     *
-     * @dataProvider methodDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('methodDataProvider')]
     public function testAccessToAServersSchedulesIsRestrictedProperly(string $method, string $endpoint)
     {
         // The API $user is the owner of $server1.

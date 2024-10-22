@@ -7,10 +7,14 @@ use Lcobucci\JWT\Token\Plain;
 use GuzzleHttp\Exception\GuzzleException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
+/**
+ * @method \Pterodactyl\Repositories\Wings\DaemonTransferRepository setNode(\Pterodactyl\Models\Node $node)
+ * @method \Pterodactyl\Repositories\Wings\DaemonTransferRepository setServer(\Pterodactyl\Models\Server $server)
+ */
 class DaemonTransferRepository extends DaemonRepository
 {
     /**
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function notify(Node $targetNode, Plain $token): void
     {

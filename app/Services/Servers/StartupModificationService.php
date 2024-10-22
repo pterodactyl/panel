@@ -70,7 +70,7 @@ class StartupModificationService
         $eggId = Arr::get($data, 'egg_id');
 
         if (is_digit($eggId) && $server->egg_id !== (int) $eggId) {
-            /** @var \Pterodactyl\Models\Egg $egg */
+            /** @var Egg $egg */
             $egg = Egg::query()->findOrFail($data['egg_id']);
 
             $server = $server->forceFill([

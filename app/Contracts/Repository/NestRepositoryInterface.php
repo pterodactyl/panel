@@ -12,14 +12,14 @@ interface NestRepositoryInterface extends RepositoryInterface
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithEggs(int $id = null): Collection|Nest;
+    public function getWithEggs(?int $id = null): Collection|Nest;
 
     /**
      * Return a nest or all nests and the count of eggs and servers for that nest.
      *
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function getWithCounts(int $id = null): Collection|Nest;
+    public function getWithCounts(?int $id = null): Collection|Nest;
 
     /**
      * Return a nest along with its associated eggs and the servers relation on those eggs.

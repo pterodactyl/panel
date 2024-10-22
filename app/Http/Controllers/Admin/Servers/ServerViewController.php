@@ -33,7 +33,7 @@ class ServerViewController extends Controller
         private NodeRepository $nodeRepository,
         private ServerRepository $repository,
         private EnvironmentService $environmentService,
-        private ViewFactory $view
+        private ViewFactory $view,
     ) {
     }
 
@@ -118,7 +118,7 @@ class ServerViewController extends Controller
      * Returns the base server management page, or an exception if the server
      * is in a state that cannot be recovered from.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function manage(Request $request, Server $server): View
     {

@@ -10,7 +10,7 @@ class HttpForbiddenException extends HttpException
     /**
      * HttpForbiddenException constructor.
      */
-    public function __construct(string $message = null, \Throwable $previous = null)
+    public function __construct(?string $message = null, ?\Throwable $previous = null)
     {
         parent::__construct(Response::HTTP_FORBIDDEN, $message, $previous);
     }

@@ -16,7 +16,7 @@ class SuspensionService
      * SuspensionService constructor.
      */
     public function __construct(
-        private DaemonServerRepository $daemonServerRepository
+        private DaemonServerRepository $daemonServerRepository,
     ) {
     }
 

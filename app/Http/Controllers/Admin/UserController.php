@@ -36,7 +36,7 @@ class UserController extends Controller
         protected Translator $translator,
         protected UserUpdateService $updateService,
         protected UserRepositoryInterface $repository,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 
@@ -85,7 +85,7 @@ class UserController extends Controller
      * Delete a user from the system.
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function delete(Request $request, User $user): RedirectResponse
     {

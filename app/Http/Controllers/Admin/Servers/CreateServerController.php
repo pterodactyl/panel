@@ -24,7 +24,7 @@ class CreateServerController extends Controller
         private NestRepository $nestRepository,
         private NodeRepository $nodeRepository,
         private ServerCreationService $creationService,
-        private ViewFactory $view
+        private ViewFactory $view,
     ) {
     }
 

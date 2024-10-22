@@ -48,9 +48,8 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
 
     /**
      * Tests that notes on an allocation can be set correctly.
-     *
-     * @dataProvider updatePermissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('updatePermissionsDataProvider')]
     public function testAllocationNotesCanBeUpdated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
@@ -96,9 +95,7 @@ class NetworkAllocationControllerTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->postJson($this->link($server->allocation))->assertForbidden();
     }
 
-    /**
-     * @dataProvider updatePermissionsDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('updatePermissionsDataProvider')]
     public function testPrimaryAllocationCanBeModified(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);

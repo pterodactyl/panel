@@ -44,7 +44,7 @@ class NodesController extends Controller
         protected ServerRepositoryInterface $serverRepository,
         protected NodeUpdateService $updateService,
         protected SoftwareVersionService $versionService,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 

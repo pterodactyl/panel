@@ -21,7 +21,7 @@ class EggShareController extends Controller
         protected AlertsMessageBag $alert,
         protected EggExporterService $exporterService,
         protected EggImporterService $importerService,
-        protected EggUpdateImporterService $updateImporterService
+        protected EggUpdateImporterService $updateImporterService,
     ) {
     }
 

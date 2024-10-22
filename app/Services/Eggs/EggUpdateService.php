@@ -20,7 +20,7 @@ class EggUpdateService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
+     * @throws NoParentConfigurationFoundException
      */
     public function handle(Egg $egg, array $data): void
     {

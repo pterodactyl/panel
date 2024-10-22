@@ -29,7 +29,7 @@ class NodeViewController extends Controller
         private NodeRepository $repository,
         private ServerRepository $serverRepository,
         private SoftwareVersionService $versionService,
-        private ViewFactory $view
+        private ViewFactory $view,
     ) {
     }
 

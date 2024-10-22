@@ -37,7 +37,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     /**
      * Return all the nodes and their respective count of servers for a location.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws RecordNotFoundException
      */
     public function getWithNodes(int $id): Location
     {
@@ -51,7 +51,7 @@ class LocationRepository extends EloquentRepository implements LocationRepositor
     /**
      * Return a location and the count of nodes in that location.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws RecordNotFoundException
      */
     public function getWithNodeCount(int $id): Location
     {
