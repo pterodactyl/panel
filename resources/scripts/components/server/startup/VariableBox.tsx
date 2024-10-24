@@ -60,15 +60,15 @@ const VariableBox = ({ variable }: Props) => {
     return (
         <TitledGreyBox
             title={
-                <p className="text-sm uppercase">
+                <p className='text-sm uppercase'>
                     {!variable.isEditable && (
-                        <span className="bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2 mb-1">Read Only</span>
+                        <span className='bg-neutral-700 text-xs py-1 px-2 rounded-full mr-2 mb-1'>Read Only</span>
                     )}
                     {variable.name}
                 </p>
             }
         >
-            <FlashMessageRender byKey={FLASH_KEY} className="mb-2 md:mb-4" />
+            <FlashMessageRender byKey={FLASH_KEY} className='mb-2 md:mb-4' />
             <InputSpinner visible={loading}>
                 {useSwitch ? (
                     <>
@@ -128,9 +128,7 @@ const VariableBox = ({ variable }: Props) => {
                 )}
             </InputSpinner>
 
-            <p className="mt-1 text-xs text-neutral-300">
-                {variable.description}
-            </p>
+            <p className='mt-1 text-xs text-neutral-300'>{variable.description}</p>
         </TitledGreyBox>
     );
 };
