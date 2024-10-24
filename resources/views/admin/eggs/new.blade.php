@@ -64,7 +64,7 @@
                         <div class="col-sm-6">
                             <div class="form-group">
                                 <label for="pDockerImage" class="control-label">Docker Images</label>
-                                <textarea id="pDockerImages" name="docker_images" rows="4" placeholder="quay.io/pterodactyl/service" class="form-control">{{ old('docker_images') }}</textarea>
+                                <textarea id="pDockerImages" name="docker_images" rows="4" placeholder="ghcr.io/pterodactyl/yolks" class="form-control">{{ old('docker_images') }}</textarea>
                                 <p class="text-muted small">The docker images available to servers using this egg. Enter one per line. Users will be able to select from this list of images if more than one value is provided.</p>
                             </div>
                             <div class="form-group">
