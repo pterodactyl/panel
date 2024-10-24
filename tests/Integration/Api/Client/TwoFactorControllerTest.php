@@ -132,7 +132,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         /** @var User $user */
         $user = User::factory()->create(['use_totp' => true]);
 
-        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor', [
+        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor/disable', [
             'password' => 'invalid',
         ]);
 
@@ -140,7 +140,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('errors.0.code', 'BadRequestHttpException');
         $response->assertJsonPath('errors.0.detail', 'The password provided was not valid.');
 
-        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor', [
+        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor/disable', [
             'password' => 'password',
         ]);
 
@@ -163,7 +163,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         /** @var User $user */
         $user = User::factory()->create(['use_totp' => false]);
 
-        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor', [
+        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor/disable', [
             'password' => 'password',
         ]);
 
@@ -196,7 +196,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         $user = User::factory()->create(['use_totp' => true]);
 
         $this->actingAs($user)
-            ->postJson('/api/client/account/two-factor', [
+            ->postJson('/api/client/account/two-factor/disable', [
                 'password' => 'foo',
             ])
             ->assertStatus(Response::HTTP_BAD_REQUEST)
