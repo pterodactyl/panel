@@ -60,8 +60,15 @@ class ServerViewController extends Controller
     {
         $allocations = $server->node->allocations->toBase();
 
+        try {
+            $stats = $server->getStats();
+        } catch (\Exception) {
+            // Can't connect to daemon
+        }
+
         return $this->view->make('admin.servers.view.build', [
             'server' => $server,
+            'currentState' => $stats['current_state'] ?? null,
             'assigned' => $allocations->where('server_id', $server->id)->sortBy('port')->sortBy('ip'),
             'unassigned' => $allocations->where('server_id', null)->sortBy('port')->sortBy('ip'),
         ]);
