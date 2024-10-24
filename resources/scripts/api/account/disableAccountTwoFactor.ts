@@ -1,9 +1,11 @@
 import http from '@/api/http';
 
-export default (password: string): Promise<void> => {
+function disableAccountTwoFactor(password: string): Promise<void> {
     return new Promise((resolve, reject) => {
-        http.delete('/api/client/account/two-factor', { params: { password } })
+        http.post('/api/client/account/two-factor/disable', { password })
             .then(() => resolve())
             .catch(reject);
     });
-};
+}
+
+export default disableAccountTwoFactor;
