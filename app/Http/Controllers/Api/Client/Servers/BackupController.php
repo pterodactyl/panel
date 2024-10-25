@@ -30,7 +30,7 @@ class BackupController extends ClientApiController
         private DeleteBackupService $deleteBackupService,
         private InitiateBackupService $initiateBackupService,
         private DownloadLinkService $downloadLinkService,
-        private BackupRepository $repository
+        private BackupRepository $repository,
     ) {
         parent::__construct();
     }
@@ -39,7 +39,7 @@ class BackupController extends ClientApiController
      * Returns all the backups for a given server instance in a paginated
      * result set.
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function index(Request $request, Server $server): array
     {
@@ -93,7 +93,7 @@ class BackupController extends ClientApiController
      * Toggles the lock status of a given backup for a server.
      *
      * @throws \Throwable
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function toggleLock(Request $request, Server $server, Backup $backup): array
     {
@@ -115,7 +115,7 @@ class BackupController extends ClientApiController
     /**
      * Returns information about a single backup.
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function view(Request $request, Server $server, Backup $backup): array
     {
@@ -156,7 +156,7 @@ class BackupController extends ClientApiController
      * which the user is redirected to.
      *
      * @throws \Throwable
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function download(Request $request, Server $server, Backup $backup): JsonResponse
     {

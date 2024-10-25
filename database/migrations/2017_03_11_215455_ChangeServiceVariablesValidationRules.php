@@ -9,7 +9,7 @@ class ChangeServiceVariablesValidationRules extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('service_variables', function (Blueprint $table) {
             $table->renameColumn('regex', 'rules');
@@ -30,7 +30,7 @@ class ChangeServiceVariablesValidationRules extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('service_variables', function (Blueprint $table) {
             $table->renameColumn('rules', 'regex');

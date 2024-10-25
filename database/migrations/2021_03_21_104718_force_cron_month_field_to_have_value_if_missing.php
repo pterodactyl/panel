@@ -1,30 +1,22 @@
 <?php
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
 class ForceCronMonthFieldToHaveValueIfMissing extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
-        Schema::table('schedules', function (Blueprint $table) {
-            DB::update("UPDATE `schedules` SET `cron_month` = '*' WHERE `cron_month` = ''");
-        });
+        DB::table('schedules')->where('cron_month', '')->update(['cron_month' => '*']);
     }
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         // No down function.
     }

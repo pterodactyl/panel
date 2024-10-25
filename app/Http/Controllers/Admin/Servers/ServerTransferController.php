@@ -26,7 +26,7 @@ class ServerTransferController extends Controller
         private ConnectionInterface $connection,
         private DaemonTransferRepository $daemonTransferRepository,
         private NodeJWTService $nodeJWTService,
-        private NodeRepository $nodeRepository
+        private NodeRepository $nodeRepository,
     ) {
     }
 

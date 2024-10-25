@@ -24,16 +24,13 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      *
      * @noinspection PhpParameterNameChangedDuringInheritanceInspection
      */
-    protected function authorize(string $ability, Server $server = null): bool
+    protected function authorize(string $ability, ?Server $server = null): bool
     {
         Assert::isInstanceOf($server, Server::class);
 
         return $this->request->user()->can($ability, [$server]);
     }
 
-    /**
-     * {@inheritDoc}
-     */
     protected function makeTransformer(string $abstract)
     {
         Assert::subclassOf($abstract, self::class);

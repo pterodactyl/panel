@@ -9,7 +9,7 @@ class CreateUserSshKeysTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('user_ssh_keys', function (Blueprint $table) {
             $table->increments('id');
@@ -27,7 +27,7 @@ class CreateUserSshKeysTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('user_ssh_keys');
     }

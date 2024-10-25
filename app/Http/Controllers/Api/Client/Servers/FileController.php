@@ -30,7 +30,7 @@ class FileController extends ClientApiController
      */
     public function __construct(
         private NodeJWTService $jwtService,
-        private DaemonFileRepository $fileRepository
+        private DaemonFileRepository $fileRepository,
     ) {
         parent::__construct();
     }

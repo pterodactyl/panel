@@ -30,7 +30,7 @@ class EggSeeder extends Seeder
      */
     public function __construct(
         EggImporterService $importerService,
-        EggUpdateImporterService $updateImporterService
+        EggUpdateImporterService $updateImporterService,
     ) {
         $this->importerService = $importerService;
         $this->updateImporterService = $updateImporterService;

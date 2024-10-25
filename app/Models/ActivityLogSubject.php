@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\Pivot;
  * @property int $activity_log_id
  * @property int $subject_id
  * @property string $subject_type
- * @property \Pterodactyl\Models\ActivityLog|null $activityLog
+ * @property ActivityLog|null $activityLog
  * @property \Illuminate\Database\Eloquent\Model|\Eloquent $subject
  *
  * @method static \Illuminate\Database\Eloquent\Builder|ActivityLogSubject newModelQuery()

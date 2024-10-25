@@ -8,10 +8,8 @@ class AddFeaturesColumnToEggs extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->json('features')->after('description')->nullable();
@@ -20,10 +18,8 @@ class AddFeaturesColumnToEggs extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->dropColumn('features');

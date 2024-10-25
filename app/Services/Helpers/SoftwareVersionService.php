@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Services\Helpers;
 
-use Exception;
 use GuzzleHttp\Client;
 use Carbon\CarbonImmutable;
 use Illuminate\Support\Arr;
@@ -20,7 +19,7 @@ class SoftwareVersionService
      */
     public function __construct(
         protected CacheRepository $cache,
-        protected Client $client
+        protected Client $client,
     ) {
         self::$result = $this->cacheVersionData();
     }
@@ -95,7 +94,7 @@ class SoftwareVersionService
                 }
 
                 throw new CdnVersionFetchingException();
-            } catch (Exception) {
+            } catch (\Exception) {
                 return [];
             }
         });

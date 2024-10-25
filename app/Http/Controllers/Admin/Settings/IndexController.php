@@ -25,7 +25,7 @@ class IndexController extends Controller
         private Kernel $kernel,
         private SettingsRepositoryInterface $settings,
         private SoftwareVersionService $versionService,
-        private ViewFactory $view
+        private ViewFactory $view,
     ) {
     }
 

@@ -10,7 +10,7 @@ class MountServer extends Model
 
     public $timestamps = false;
 
-    protected $primaryKey = null;
+    protected $primaryKey;
 
     public $incrementing = false;
 }
