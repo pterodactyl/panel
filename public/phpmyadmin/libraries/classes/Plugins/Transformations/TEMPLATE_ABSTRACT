@@ -1,0 +1,73 @@
+<?php
+/**
+ * This file contains the basic structure for an abstract class defining a
+ * transformation.
+ * For instructions, read the documentation
+ *
+ * @package    PhpMyAdmin-Transformations
+ * @subpackage [TransformationName]
+ */
+
+declare(strict_types=1);
+
+namespace PhpMyAdmin\Plugins\Transformations\Abs;
+
+use PhpMyAdmin\Plugins\IOTransformationsPlugin;
+use stdClass;
+
+/**
+ * Provides common methods for all of the [TransformationName] transformations plugins.
+ *
+ * @package PhpMyAdmin
+ */
+abstract class [TransformationName]TransformationsPlugin
+    extends IOTransformationsPlugin
+{
+    /**
+     * Gets the transformation description of the specific plugin
+     *
+     * @return string
+     */
+    public static function getInfo()
+    {
+        return __(
+            'Description of the transformation.'
+        );
+    }
+
+    /**
+     * Does the actual work of each specific transformations plugin.
+     *
+     * @param string             $buffer  text to be transformed
+     * @param array              $options transformation options
+     * @param FieldMetadata|null $meta    meta information
+     *
+     * @return string
+     */
+    public function applyTransformation($buffer, array $options = [], ?FieldMetadata $meta = null)
+    {
+        // possibly use a global transform and feed it with special options
+
+        // further operations on $buffer using the $options[] array.
+
+        // You can evaluate the propagated $meta Object. It's contained fields are described in https://www.php.net/mysql_fetch_field.
+        // This stored information can be used to get the field information about the transformed field.
+        // $meta->mimetype contains the original MimeType of the field (i.e. 'text/plain', 'image/jpeg' etc.)
+
+        return $buffer;
+    }
+
+    /* ~~~~~~~~~~~~~~~~~~~~ Getters and Setters ~~~~~~~~~~~~~~~~~~~~ */
+
+
+    /**
+     * Gets the TransformationName of the specific plugin
+     *
+     * @return string
+     */
+    public static function getName()
+    {
+        return '[TransformationName]';
+    }
+}
+?>

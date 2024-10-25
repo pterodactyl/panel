@@ -1,0 +1,291 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Charts &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Import and export" href="import_export.html" />
+    <link rel="prev" title="Relations" href="relations.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="import_export.html" title="Import and export"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="relations.html" title="Relations"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" accesskey="U">User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Charts</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="charts">
+<span id="id1"></span><h1>Charts<a class="headerlink" href="#charts" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 3.4.0.</span></p>
+</div>
+<p>Since phpMyAdmin version 3.4.0, you can easily generate charts from a SQL query
+by clicking the “Display chart” link in the “Query results operations” area.</p>
+<img alt="_images/query_result_operations.png" src="_images/query_result_operations.png" />
+<p>A window layer “Display chart” is shown in which you can customize the chart with the following options.</p>
+<ul class="simple">
+<li><p>Chart type: Allows you to choose the type of chart. Supported types are bar charts, column charts, line charts, spline charts, area charts, pie charts and timeline charts (only the chart types applicable for current series selection are offered).</p></li>
+<li><p>X-axis: Allows to choose the field for the main axis.</p></li>
+<li><p>Series: Allows to choose series for the chart. You can choose multiple series.</p></li>
+<li><p>Title: Allows specifying a title for the chart which is displayed above the chart.</p></li>
+<li><p>X-axis and Y-axis labels: Allows specifying labels for axes.</p></li>
+<li><p>Start row and a number of rows: Allows generating charts only for a specified number of rows of the results set.</p></li>
+</ul>
+<img alt="_images/chart.png" src="_images/chart.png" />
+<div class="section" id="chart-implementation">
+<h2>Chart implementation<a class="headerlink" href="#chart-implementation" title="Permalink to this headline">¶</a></h2>
+<p>Charts in phpMyAdmin are drawn using <a class="reference external" href="http://www.jqplot.com/">jqPlot</a> jQuery library.</p>
+</div>
+<div class="section" id="examples">
+<h2>Examples<a class="headerlink" href="#examples" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="pie-chart">
+<h3>Pie chart<a class="headerlink" href="#pie-chart" title="Permalink to this headline">¶</a></h3>
+<p>Query results for a simple pie chart can be generated with:</p>
+<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span> <span class="s1">&#39;Food&#39;</span> <span class="k">AS</span> <span class="s1">&#39;expense&#39;</span><span class="p">,</span>
+   <span class="mi">1250</span> <span class="k">AS</span> <span class="s1">&#39;amount&#39;</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="s1">&#39;Accommodation&#39;</span><span class="p">,</span> <span class="mi">500</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="s1">&#39;Travel&#39;</span><span class="p">,</span> <span class="mi">720</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="s1">&#39;Misc&#39;</span><span class="p">,</span> <span class="mi">220</span>
+</pre></div>
+</div>
+<p>And the result of this query is:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 65%" />
+<col style="width: 35%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>expense</p></th>
+<th class="head"><p>amount</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Food</p></td>
+<td><p>1250</p></td>
+</tr>
+<tr class="row-odd"><td><p>Accommodation</p></td>
+<td><p>500</p></td>
+</tr>
+<tr class="row-even"><td><p>Travel</p></td>
+<td><p>720</p></td>
+</tr>
+<tr class="row-odd"><td><p>Misc</p></td>
+<td><p>220</p></td>
+</tr>
+</tbody>
+</table>
+<p>Choosing expense as the X-axis and amount in series:</p>
+<img alt="_images/pie_chart.png" src="_images/pie_chart.png" />
+</div>
+<div class="section" id="bar-and-column-chart">
+<h3>Bar and column chart<a class="headerlink" href="#bar-and-column-chart" title="Permalink to this headline">¶</a></h3>
+<p>Both bar charts and column chats support stacking. Upon selecting one of these types a checkbox is displayed to select stacking.</p>
+<p>Query results for a simple bar or column chart can be generated with:</p>
+<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+   <span class="s1">&#39;ACADEMY DINOSAUR&#39;</span> <span class="k">AS</span> <span class="s1">&#39;title&#39;</span><span class="p">,</span>
+   <span class="mf">0.99</span> <span class="k">AS</span> <span class="s1">&#39;rental_rate&#39;</span><span class="p">,</span>
+   <span class="mf">20.99</span> <span class="k">AS</span> <span class="s1">&#39;replacement_cost&#39;</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="s1">&#39;ACE GOLDFINGER&#39;</span><span class="p">,</span> <span class="mf">4.99</span><span class="p">,</span> <span class="mf">12.99</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="s1">&#39;ADAPTATION HOLES&#39;</span><span class="p">,</span> <span class="mf">2.99</span><span class="p">,</span> <span class="mf">18.99</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="s1">&#39;AFFAIR PREJUDICE&#39;</span><span class="p">,</span> <span class="mf">2.99</span><span class="p">,</span> <span class="mf">26.99</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="s1">&#39;AFRICAN EGG&#39;</span><span class="p">,</span> <span class="mf">2.99</span><span class="p">,</span> <span class="mf">22.99</span>
+</pre></div>
+</div>
+<p>And the result of this query is:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 35%" />
+<col style="width: 27%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>title</p></th>
+<th class="head"><p>rental_rate</p></th>
+<th class="head"><p>replacement_cost</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ACADEMY DINOSAUR</p></td>
+<td><p>0.99</p></td>
+<td><p>20.99</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACE GOLDFINGER</p></td>
+<td><p>4.99</p></td>
+<td><p>12.99</p></td>
+</tr>
+<tr class="row-even"><td><p>ADAPTATION HOLES</p></td>
+<td><p>2.99</p></td>
+<td><p>18.99</p></td>
+</tr>
+<tr class="row-odd"><td><p>AFFAIR PREJUDICE</p></td>
+<td><p>2.99</p></td>
+<td><p>26.99</p></td>
+</tr>
+<tr class="row-even"><td><p>AFRICAN EGG</p></td>
+<td><p>2.99</p></td>
+<td><p>22.99</p></td>
+</tr>
+</tbody>
+</table>
+<p>Choosing title as the X-axis and rental_rate and replacement_cost as series:</p>
+<img alt="_images/column_chart.png" src="_images/column_chart.png" />
+</div>
+<div class="section" id="scatter-chart">
+<h3>Scatter chart<a class="headerlink" href="#scatter-chart" title="Permalink to this headline">¶</a></h3>
+<p>Scatter charts are useful in identifying the movement of one or more variable(s) compared to another variable.</p>
+<p>Using the same data set from bar and column charts section and choosing replacement_cost as the X-axis and rental_rate in series:</p>
+<img alt="_images/scatter_chart.png" src="_images/scatter_chart.png" />
+</div>
+<div class="section" id="line-spline-and-timeline-charts">
+<h3>Line, spline and timeline charts<a class="headerlink" href="#line-spline-and-timeline-charts" title="Permalink to this headline">¶</a></h3>
+<p>These charts can be used to illustrate trends in underlying data. Spline charts draw smooth lines while timeline charts draw X-axis taking the distances between the dates/time into consideration.</p>
+<p>Query results for a simple line, spline or timeline chart can be generated with:</p>
+<div class="highlight-mysql notranslate"><div class="highlight"><pre><span></span><span class="k">SELECT</span>
+   <span class="kt">DATE</span><span class="p">(</span><span class="s1">&#39;2006-01-08&#39;</span><span class="p">)</span> <span class="k">AS</span> <span class="s1">&#39;date&#39;</span><span class="p">,</span>
+   <span class="mi">2056</span> <span class="k">AS</span> <span class="s1">&#39;revenue&#39;</span><span class="p">,</span>
+   <span class="mi">1378</span> <span class="k">AS</span> <span class="s1">&#39;cost&#39;</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="kt">DATE</span><span class="p">(</span><span class="s1">&#39;2006-01-09&#39;</span><span class="p">),</span> <span class="mi">1898</span><span class="p">,</span> <span class="mi">2301</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="kt">DATE</span><span class="p">(</span><span class="s1">&#39;2006-01-15&#39;</span><span class="p">),</span> <span class="mi">1560</span><span class="p">,</span> <span class="mi">600</span> <span class="k">UNION</span>
+<span class="k">SELECT</span> <span class="kt">DATE</span><span class="p">(</span><span class="s1">&#39;2006-01-17&#39;</span><span class="p">),</span> <span class="mi">3457</span><span class="p">,</span> <span class="mi">1565</span>
+</pre></div>
+</div>
+<p>And the result of this query is:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 44%" />
+<col style="width: 33%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>date</p></th>
+<th class="head"><p>revenue</p></th>
+<th class="head"><p>cost</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>2016-01-08</p></td>
+<td><p>2056</p></td>
+<td><p>1378</p></td>
+</tr>
+<tr class="row-odd"><td><p>2006-01-09</p></td>
+<td><p>1898</p></td>
+<td><p>2301</p></td>
+</tr>
+<tr class="row-even"><td><p>2006-01-15</p></td>
+<td><p>1560</p></td>
+<td><p>600</p></td>
+</tr>
+<tr class="row-odd"><td><p>2006-01-17</p></td>
+<td><p>3457</p></td>
+<td><p>1565</p></td>
+</tr>
+</tbody>
+</table>
+<img alt="_images/line_chart.png" src="_images/line_chart.png" />
+<img alt="_images/spline_chart.png" src="_images/spline_chart.png" />
+<img alt="_images/timeline_chart.png" src="_images/timeline_chart.png" />
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Charts</a><ul>
+<li><a class="reference internal" href="#chart-implementation">Chart implementation</a></li>
+<li><a class="reference internal" href="#examples">Examples</a><ul>
+<li><a class="reference internal" href="#pie-chart">Pie chart</a></li>
+<li><a class="reference internal" href="#bar-and-column-chart">Bar and column chart</a></li>
+<li><a class="reference internal" href="#scatter-chart">Scatter chart</a></li>
+<li><a class="reference internal" href="#line-spline-and-timeline-charts">Line, spline and timeline charts</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="relations.html"
+                        title="previous chapter">Relations</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="import_export.html"
+                        title="next chapter">Import and export</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/charts.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="import_export.html" title="Import and export"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="relations.html" title="Relations"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" >User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Charts</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

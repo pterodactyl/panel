@@ -1,0 +1,60 @@
+{
+    "name": "psalm/plugin-phpunit",
+    "description": "Psalm plugin for PHPUnit",
+    "type": "psalm-plugin",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matt Brown",
+            "email": "github@muglug.com"
+        }
+    ],
+    "config": {
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "require": {
+        "php": "^7.1 || ^8.0",
+        "ext-simplexml": "*",
+        "composer/semver": "^1.4 || ^2.0 || ^3.0",
+        "composer/package-versions-deprecated": "^1.10",
+        "vimeo/psalm": "dev-master || dev-4.x || ^4.5"
+    },
+    "conflict": {
+        "phpunit/phpunit": "<7.5"
+    },
+    "require-dev": {
+        "php": "^7.3 || ^8.0",
+        "codeception/codeception": "^4.0.3",
+        "phpunit/phpunit": "^7.5 || ^8.0 || ^9.0",
+        "squizlabs/php_codesniffer": "^3.3.1",
+        "weirdan/codeception-psalm-module": "^0.11.0",
+        "weirdan/prophecy-shim": "^1.0 || ^2.0"
+    },
+    "extra": {
+        "psalm": {
+            "pluginClass": "Psalm\\PhpUnitPlugin\\Plugin"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Psalm\\PhpUnitPlugin\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Psalm\\PhpUnitPlugin\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@analyze",
+            "@test"
+        ],
+        "analyze": "psalm",
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "codecept run -v"
+    }
+}

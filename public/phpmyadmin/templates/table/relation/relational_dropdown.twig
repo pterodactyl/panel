@@ -1,0 +1,19 @@
+<select name="{{ name }}" title="{{ title }}">
+    <option value=""></option>
+    {% set seen_key = false %}
+    {% for value in values %}
+        <option value="{{ value }}"
+            {%- if (foreign is not same as(false) and value == foreign) or
+              (not foreign and db is defined and db is same as (value)) %}
+                selected="selected"
+                {%- set seen_key = true -%}
+            {%- endif %}>
+            {{ value }}
+        </option>
+    {% endfor %}
+    {% if foreign is not same as(false) and foreign != "" and not seen_key %}
+        <option value="{{ foreign }}" selected="selected">
+            {{ foreign }}
+        </option>
+    {% endif %}
+</select>

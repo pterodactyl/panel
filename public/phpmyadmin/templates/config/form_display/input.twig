@@ -1,0 +1,85 @@
+{% if option_is_disabled %}
+  {% set tr_class = tr_class ~ ' disabled-field' %}
+{% endif %}
+<tr{% if tr_class %} class="{{ tr_class }}"{% endif %}>
+  <th>
+    <label for="{{ path }}">{{ name|raw }}</label>
+
+    {% if doc is not empty %}
+      <span class="doc">
+        <a href="{{ doc }}" target="documentation">{{- get_image('b_help', 'Documentation'|trans) -}}</a>
+      </span>
+    {% endif %}
+
+    {% if option_is_disabled %}
+      <span class="disabled-notice" title="{% trans 'This setting is disabled, it will not be applied to your configuration.' %}">
+        {% trans 'Disabled' %}
+      </span>
+    {% endif %}
+
+    {% if description is not empty %}
+      <small>{{ description|raw }}</small>
+    {% endif %}
+  </th>
+
+  <td>
+    {% if type == 'text' %}
+      <input type="text" name="{{ path }}" id="{{ path }}" value="{{ value }}" class="w-75{{ not value_is_default ? (has_errors ? ' custom field-error' : ' custom') }}">
+    {% elseif type == 'password' %}
+      <input type="password" name="{{ path }}" id="{{ path }}" value="{{ value }}" class="w-75{{ not value_is_default ? (has_errors ? ' custom field-error' : ' custom') }}" spellcheck="false">
+    {% elseif type == 'short_text' and value is not iterable %}
+      {# https://github.com/phpmyadmin/phpmyadmin/issues/11505 #}
+      <input type="text" size="25" name="{{ path }}" id="{{ path }}" value="{{ value }}" class="{{ not value_is_default ? (has_errors ? 'custom field-error' : 'custom') }}">
+    {% elseif type == 'number_text' %}
+      <input type="number" name="{{ path }}" id="{{ path }}" value="{{ value }}" class="{{ not value_is_default ? (has_errors ? 'custom field-error' : 'custom') }}">
+    {% elseif type == 'checkbox' %}
+      <span class="checkbox{{ not value_is_default ? (has_errors ? ' custom field-error' : ' custom') }}">
+        <input type="checkbox" name="{{ path }}" id="{{ path }}"{{ value ? ' checked' }}>
+      </span>
+    {% elseif type == 'select' %}
+      <select name="{{ path }}" id="{{ path }}" class="w-75{{ not value_is_default ? (has_errors ? ' custom field-error' : ' custom') }}">
+        {% for key, val in select_values %}
+          {% if val is same as(true) %}{% set val = 'Yes'|trans %}{% elseif val is same as(false) %}{% set val = 'No'|trans %}{% endif %}
+          <option value="{{ key }}"{{ key is same as(value) or (value is same as(true) and key is same as(1)) or (value is same as(false) and key is same as(0)) ? ' selected' }}{{ key in select_values_disabled ? ' disabled' }}>{{ val }}</option>
+        {% endfor %}
+      </select>
+    {% elseif type == 'list' %}
+      <textarea cols="35" rows="5" name="{{ path }}" id="{{ path }}" class="{{ not value_is_default ? (has_errors ? 'custom field-error' : 'custom') }}">
+        {%- for key, val in value %}{% if key != 'wrapper_params' %}{{ val }}{{ not loop.last ? "\n" }}{% endif %}{% endfor -%}
+      </textarea>
+    {% endif %}
+
+    {% if is_setup and comment %}
+      <a class="userprefs-comment" title="{{ comment }}">{{ get_image('b_tblops', 'Comment'|trans) }}</a>
+    {% endif %}
+
+    {% if set_value %}
+      <a class="set-value hide" href="#{{ path }}={{ set_value }}" title="{{ 'Set value: %s'|trans|format(set_value) }}">
+        {{- get_image('b_edit', 'Set value: %s'|trans|format(set_value)) -}}
+      </a>
+    {% endif %}
+
+    {% if show_restore_default %}
+      <a class="restore-default hide" href="#{{ path }}" title="{% trans 'Restore default value' %}">
+        {{- get_image('s_reload', 'Restore default value'|trans) -}}
+      </a>
+    {% endif %}
+
+    {# This must match with displayErrors() in scripts/config.js. #}
+    {% if has_errors %}
+      <dl class="inline_errors">
+        {% for error in errors %}
+          <dd>{{ error|raw }}</dd>
+        {% endfor %}
+      </dl>
+    {% endif %}
+  </td>
+
+  {% if is_setup and allows_customization is not null %}
+    <td class="userprefs-allow" title="{% trans 'Allow users to customize this value' %}">
+      <input type="checkbox" name="{{ path }}-userprefs-allow"{{ allows_customization ? ' checked' }} aria-label="{% trans 'Allow users to customize this value' %}">
+    </td>
+  {% elseif is_setup %}
+    <td>&nbsp;</td>
+  {% endif %}
+</tr>

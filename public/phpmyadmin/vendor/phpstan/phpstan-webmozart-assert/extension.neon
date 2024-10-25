@@ -1,0 +1,9 @@
+parameters:
+	stubFiles:
+		- stubs/Assert.stub
+
+services:
+	-
+		class: PHPStan\Type\WebMozartAssert\AssertTypeSpecifyingExtension
+		tags:
+			- phpstan.typeSpecifier.staticMethodTypeSpecifyingExtension

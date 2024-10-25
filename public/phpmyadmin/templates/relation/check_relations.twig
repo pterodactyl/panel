@@ -1,0 +1,540 @@
+<div class="container">
+  <h1 class="my-3">
+    {% trans 'phpMyAdmin configuration storage' %}
+    {{ show_docu('setup', 'phpmyadmin-configuration-storage') }}
+  </h1>
+
+  {% if relation_parameters.db is null %}
+    <p>
+      {% trans 'Configuration of pmadb…' %}
+      <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+      {{ show_docu('setup', 'phpmyadmin-configuration-storage') }}
+    </p>
+    <p>
+      {% trans 'General relation features' %}
+      <span class="text-danger">{% trans 'Disabled' %}</span>
+    </p>
+    {% if zero_conf %}
+      {% if db == '' %}
+        {% apply format('<a href="' ~ url('/check-relations') ~ '" data-post="' ~ get_common({'db': db, 'create_pmadb': true, 'goto': url('/database/operations')}) ~ '">', '</a>', config_storage_database_name)|notice %}
+          {% trans '%sCreate%s a database named \'%s\' and setup the phpMyAdmin configuration storage there.' %}
+        {% endapply %}
+      {% else %}
+        {% apply format('<a href="' ~ url('/check-relations') ~ '" data-post="' ~ get_common({'db': db, 'fixall_pmadb': true, 'goto': url('/database/operations')}) ~ '">', '</a>')|notice %}
+          {% trans '%sCreate%s the phpMyAdmin configuration storage in the current database.' %}
+        {% endapply %}
+      {% endif %}
+    {% endif %}
+  {% else %}
+    {% if not relation_parameters.allworks and zero_conf and are_config_storage_tables_defined %}
+      {% apply format('<a href="' ~ url('/check-relations') ~ '" data-post="' ~ get_common({'db': db, 'fix_pmadb': true, 'goto': url('/database/operations')}) ~ '">', '</a>')|notice %}
+        {% trans '%sCreate%s missing phpMyAdmin configuration storage tables.' %}
+      {% endapply %}
+    {% endif %}
+
+    <table class="table table-striped">
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['pmadb']</code>
+          {{ show_docu('config', 'cfg_Servers_pmadb') }}
+        </th>
+        <td class="text-end">
+          <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['relation']</code>
+          {{ show_docu('config', 'cfg_Servers_relation') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.relation is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'General relation features:' %}
+          {% if relation_parameters.relwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['table_info']</code>
+          {{ show_docu('config', 'cfg_Servers_table_info') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.table_info is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Display features:' %}
+          {% if relation_parameters.displaywork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['table_coords']</code>
+          {{ show_docu('config', 'cfg_Servers_table_coords') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.table_coords is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['pdf_pages']</code>
+          {{ show_docu('config', 'cfg_Servers_pdf_pages') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.pdf_pages is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Designer and creation of PDFs:' %}
+          {% if relation_parameters.pdfwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['column_info']</code>
+          {{ show_docu('config', 'cfg_Servers_column_info') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.column_info is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Displaying column comments:' %}
+          {% if relation_parameters.commwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Browser transformation:' %}
+          {% if relation_parameters.mimework %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% if relation_parameters.commwork and not relation_parameters.mimework %}
+        <tr>
+          <td colspan="2" class="text-end">
+            <span class="text-danger">
+              {% trans 'Please see the documentation on how to update your column_info table.' %}
+              {{ show_docu('config', 'cfg_Servers_column_info') }}
+            </span>
+          </td>
+        </tr>
+      {% endif %}
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['bookmarktable']</code>
+          {{ show_docu('config', 'cfg_Servers_bookmarktable') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.bookmark is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Bookmarked SQL query:' %}
+          {% if relation_parameters.bookmarkwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['history']</code>
+          {{ show_docu('config', 'cfg_Servers_history') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.history is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'SQL history:' %}
+          {% if relation_parameters.historywork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['recent']</code>
+          {{ show_docu('config', 'cfg_Servers_recent') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.recent is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Persistent recently used tables:' %}
+          {% if relation_parameters.recentwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['favorite']</code>
+          {{ show_docu('config', 'cfg_Servers_favorite') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.favorite is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Persistent favorite tables:' %}
+          {% if relation_parameters.favoritework %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['table_uiprefs']</code>
+          {{ show_docu('config', 'cfg_Servers_table_uiprefs') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.table_uiprefs is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Persistent tables\' UI preferences:' %}
+          {% if relation_parameters.uiprefswork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['tracking']</code>
+          {{ show_docu('config', 'cfg_Servers_tracking') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.tracking is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Tracking:' %}
+          {% if relation_parameters.trackingwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['userconfig']</code>
+          {{ show_docu('config', 'cfg_Servers_userconfig') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.userconfig is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'User preferences:' %}
+          {% if relation_parameters.userconfigwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['users']</code>
+          {{ show_docu('config', 'cfg_Servers_users') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.users is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['usergroups']</code>
+          {{ show_docu('config', 'cfg_Servers_usergroups') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.usergroups is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Configurable menus:' %}
+          {% if relation_parameters.menuswork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['navigationhiding']</code>
+          {{ show_docu('config', 'cfg_Servers_navigationhiding') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.navigationhiding is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Hide/show navigation items:' %}
+          {% if relation_parameters.navwork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['savedsearches']</code>
+          {{ show_docu('config', 'cfg_Servers_savedsearches') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.savedsearches is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Saving Query-By-Example searches:' %}
+          {% if relation_parameters.savedsearcheswork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['central_columns']</code>
+          {{ show_docu('config', 'cfg_Servers_central_columns') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.central_columns is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Managing central list of columns:' %}
+          {% if relation_parameters.centralcolumnswork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['designer_settings']</code>
+          {{ show_docu('config', 'cfg_Servers_designer_settings') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.designer_settings is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Remembering designer settings:' %}
+          {% if relation_parameters.designersettingswork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr><td colspan="2">&nbsp;</td></tr>
+
+      <tr>
+        <th class="text-start" scope="row">
+          <code>$cfg['Servers'][$i]['export_templates']</code>
+          {{ show_docu('config', 'cfg_Servers_export_templates') }}
+        </th>
+        <td class="text-end">
+          {% if relation_parameters.export_templates is not null %}
+            <span class="text-success"><strong>{% trans %}OK{% context %}Correctly working{% endtrans %}</strong></span>
+          {% else %}
+            <span class="text-danger"><strong>{% trans 'not OK' %}</strong></span>
+          {% endif %}
+        </td>
+      </tr>
+      <tr>
+        <td colspan="2" class="text-end">
+          {% trans 'Saving export templates:' %}
+          {% if relation_parameters.exporttemplateswork %}
+            <span class="text-success">{% trans 'Enabled' %}</span>
+          {% else %}
+            <span class="text-danger">{% trans 'Disabled' %}</span>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    {% if not relation_parameters.allworks %}
+      <p>{% trans 'Quick steps to set up advanced features:' %}</p>
+
+      <ul>
+        <li>
+          {{ 'Create the needed tables with the <code>%screate_tables.sql</code>.'|trans|format(sql_dir|e)|raw }}
+          {{ show_docu('setup', 'linked-tables') }}
+        </li>
+        <li>
+          {% trans 'Create a pma user and give access to these tables.' %}
+          {{ show_docu('config', 'cfg_Servers_controluser') }}
+        </li>
+        <li>
+          {% trans 'Enable advanced features in configuration file (<code>config.inc.php</code>), for example by starting from <code>config.sample.inc.php</code>.' %}
+          {{ show_docu('setup', 'quick-install') }}
+        </li>
+        <li>
+          {% trans 'Re-login to phpMyAdmin to load the updated configuration file.' %}
+        </li>
+      </ul>
+    {% endif %}
+  {% endif %}
+</div>

@@ -35,3 +35,7 @@ resources/lang/locales.js
 /public/build
 /public/hot
 result
+docker-compose.yaml
+
+/public/phpmyadmin/tmp
+/public/phpmyadmin/config.inc.php

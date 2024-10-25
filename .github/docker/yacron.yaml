@@ -1,0 +1,8 @@
+jobs:
+  - name: scheduler
+    command:
+      - /usr/bin/php
+      - /var/www/pterodactyl/artisan
+      - schedule:run
+    schedule: "* * * * *"
+    utc: true

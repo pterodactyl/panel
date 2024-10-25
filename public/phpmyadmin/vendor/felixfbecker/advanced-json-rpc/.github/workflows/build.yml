@@ -1,0 +1,63 @@
+name: build
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 1
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        php:
+          - 7.1
+          - 7.2
+          - 7.3
+          - 7.4
+          - 8.0
+        deps:
+          - lowest
+          - highest
+        include:
+          - php: 8.1
+            deps: highest
+            composer-options: --ignore-platform-reqs
+        exclude:
+          # that config currently breaks as older PHPUnit cannot generate coverage on PHP 8
+          - php: 8
+            deps: lowest
+
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+
+      - uses: ramsey/composer-install@v1
+        with:
+          dependency-versions: ${{ matrix.deps }}
+          composer-options: ${{ matrix.composer-options }}
+
+      - run: vendor/bin/phpunit --coverage-clover=coverage.xml --whitelist lib --bootstrap vendor/autoload.php tests
+
+      - uses: codecov/codecov-action@v1
+
+  release:
+    needs: test
+    if: github.repository_owner == 'felixfbecker' && github.event_name == 'push' && github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+
+      - name: Install npm dependencies
+        run: npm ci
+
+      - name: Release
+        run: npm run semantic-release

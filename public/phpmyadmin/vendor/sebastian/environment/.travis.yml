@@ -1,0 +1,28 @@
+language: php
+
+php:
+  - 7.1
+  - 7.2
+  - 7.3
+  - 7.4snapshot
+
+env:
+  matrix:
+    - DRIVER="phpdbg"
+    - DRIVER="xdebug"
+
+before_install:
+  - composer clear-cache
+
+install:
+  - travis_retry composer update --no-interaction --no-ansi --no-progress --no-suggest
+
+script:
+  - if [[ "$DRIVER" = 'phpdbg' ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi
+  - if [[ "$DRIVER" != 'phpdbg' ]]; then vendor/bin/phpunit --coverage-clover=coverage.xml; fi
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false

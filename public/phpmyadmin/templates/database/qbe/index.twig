@@ -1,0 +1,23 @@
+<ul class="nav nav-pills m-2">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('/database/multi-table-query', url_params) }}">
+      {% trans 'Multi-table query' %}
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link active" href="{{ url('/database/qbe', url_params) }}">
+      {% trans 'Query by example' %}
+    </a>
+  </li>
+</ul>
+
+{% apply format('<a href="' ~ url('/database/designer', url_params|merge({query: true})) ~ '">', '</a>')|notice %}
+  {% trans 'Switch to %svisual builder%s' %}
+{% endapply %}
+
+{% if has_message_to_display %}
+  {{ 'You have to choose at least one column to display!'|trans|error }}
+{% endif %}
+
+{{ selection_form_html|raw }}

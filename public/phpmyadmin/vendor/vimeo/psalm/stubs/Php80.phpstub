@@ -1,0 +1,107 @@
+<?php
+
+interface Stringable
+{
+    /** @return string */
+    function __toString();
+}
+
+/**
+ * @template TClass as object
+ */
+class ReflectionAttribute
+{
+    const IS_INSTANCEOF = 2;
+
+    private function __construct()
+    {
+    }
+
+    public function getName() : string
+    {
+    }
+
+    public function getTarget() : int
+    {
+    }
+
+    public function isRepeated() : bool
+    {
+    }
+
+    public function getArguments() : array
+    {
+    }
+
+    /**
+     * @return TClass
+     */
+    public function newInstance() : object
+    {
+    }
+
+    /**
+     * @return never-return
+     */
+    private function __clone()
+    {
+    }
+}
+
+class ReflectionClassConstant
+{
+    public const IS_PUBLIC = 1;
+    public const IS_PROTECTED = 2;
+    public const IS_PRIVATE = 4;
+}
+
+class Attribute
+{
+    public int $flags;
+
+    public const TARGET_CLASS = 1;
+    public const TARGET_FUNCTION = 2;
+    public const TARGET_METHOD = 4;
+    public const TARGET_PROPERTY = 8;
+    public const TARGET_CLASS_CONSTANT = 16;
+    public const TARGET_PARAMETER = 32;
+    public const TARGET_ALL = 63;
+    public const IS_REPEATABLE = 64;
+
+    /**
+     * @param int-mask-of<self::*> $flags
+     */
+    public function __construct(int $flags = self::TARGET_ALL)
+    {
+    }
+}
+
+class ReflectionUnionType extends ReflectionType {
+    /**
+     * @return non-empty-list<ReflectionNamedType>
+     */
+    public function getTypes() {}
+}
+
+class UnhandledMatchError extends Error {}
+
+/**
+ * @psalm-immutable
+ *
+ * @template-covariant Start of string|DateTimeInterface
+ * @implements IteratorAggregate<int, DateTimeInterface>
+ */
+class DatePeriod implements IteratorAggregate
+{
+    const EXCLUDE_START_DATE = 1;
+    /**
+     * @param Start $start
+     * @param (Start is string ? 0|self::EXCLUDE_START_DATE : DateInterval) $interval
+     * @param (Start is string ? never : DateTimeInterface|positive-int) $end
+     * @param (Start is string ? never : 0|self::EXCLUDE_START_DATE) $options
+     */
+    public function __construct($start, $interval = 0, $end = 1, $options = 0) {}
+
+    /** @psalm-return (Start is string ? (Traversable<int, DateTime>&Iterator) : (Traversable<int, Start>&Iterator)) */
+    public function getIterator(): Iterator {}
+}

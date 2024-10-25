@@ -1,0 +1,15 @@
+<form id="ajax_form" action="{{ url('/database/structure/add-prefix-table') }}" method="post">
+  {{ get_hidden_inputs(url_params) }}
+
+  <fieldset class="pma-fieldset input">
+    <table>
+      <tr>
+        <td>{% trans 'Add prefix' %}</td>
+        <td>
+          <input type="text" name="add_prefix" id="txtPrefix" aria-label="{% trans 'Add prefix' %}">
+        </td>
+      </tr>
+      <tr>
+    </table>
+  </fieldset>
+</form>

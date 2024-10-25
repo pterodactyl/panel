@@ -1,0 +1,15 @@
+<div id="prefs_autoload" class="alert alert-primary d-print-none hide" role="alert">
+    <form action="{{ url('/preferences/manage') }}" method="post" class="disableAjax">
+        {{ hidden_inputs|raw }}
+        <input type="hidden" name="json" value="">
+        <input type="hidden" name="submit_import" value="1">
+        <input type="hidden" name="return_url" value="{{ return_url }}">
+        {% trans %}
+            Your browser has phpMyAdmin configuration for this domain. Would you like to import it for current session?
+        {% endtrans %}
+        <br>
+        <a href="#yes">{% trans "Yes" %}</a>
+        / <a href="#no">{% trans "No" %}</a>
+        / <a href="#delete">{% trans "Delete settings" %}</a>
+    </form>
+</div>

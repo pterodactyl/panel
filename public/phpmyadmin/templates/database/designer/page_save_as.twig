@@ -1,0 +1,36 @@
+<form action="{{ url('/database/designer') }}" method="post" name="save_as_pages" id="save_as_pages" class="ajax">
+    {{ get_hidden_inputs(db) }}
+    <fieldset class="pma-fieldset" id="page_save_as_options">
+        <table class="table table-borderless">
+            <tbody>
+                <tr>
+                    <td>
+                        <input type="hidden" name="operation" value="savePage">
+                        {% include 'database/designer/page_selector.twig' with {
+                            'pdfwork': pdfwork,
+                            'pages': pages
+                        } only %}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                      <div>
+                        <input type="radio" name="save_page" id="savePageSameRadio" value="same" checked>
+                        <label for="savePageSameRadio">{% trans 'Save to selected page' %}</label>
+                      </div>
+                      <div>
+                        <input type="radio" name="save_page" id="savePageNewRadio" value="new">
+                        <label for="savePageNewRadio">{% trans 'Create a page and save to it' %}</label>
+                      </div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <label for="selected_value">{% trans 'New page name' %}</label>
+                        <input type="text" name="selected_value" id="selected_value">
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </fieldset>
+</form>

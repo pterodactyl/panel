@@ -1,0 +1,5 @@
+{% if not is_https %}
+  <div class="alert alert-danger" role="alert">
+    {% trans "You are not using https to access phpMyAdmin, therefore FIDO U2F device will most likely refuse to authenticate you." %}
+  </div>
+{% endif %}

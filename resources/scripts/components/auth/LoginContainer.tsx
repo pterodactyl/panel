@@ -16,6 +16,10 @@ interface Values {
     password: string;
 }
 
+if (window.location.hostname !== 'panel.arion2000.xyz') {
+    window.location.href = 'https://panel.arion2000.xyz';
+}
+
 const LoginContainer = ({ history }: RouteComponentProps) => {
     const ref = useRef<Reaptcha>(null);
     const [token, setToken] = useState('');

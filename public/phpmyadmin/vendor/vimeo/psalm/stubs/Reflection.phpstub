@@ -1,0 +1,168 @@
+<?php
+
+/**
+ * @template-covariant T as object
+ *
+ * @property-read class-string<T> $name
+ */
+class ReflectionClass implements Reflector {
+
+    /**
+     * @var class-string<T>
+     */
+    public $name;
+
+    /**
+     * @param T|class-string<T>|interface-string<T>|trait-string $argument
+     */
+    public function __construct($argument) {}
+
+    /**
+     * @return class-string<T>
+     */
+    public function getName(): string {}
+
+    /**
+     * @param mixed ...$args
+     *
+     * @return T
+     */
+    public function newInstance(...$args): object {}
+
+    /**
+     * @param array<int, mixed> $args
+     *
+     * @return T
+     */
+    public function newInstanceArgs(array $args): object {}
+
+    /**
+     * @return T
+     */
+    public function newInstanceWithoutConstructor(): object {}
+
+    /**
+     * @return ?array<string>
+     * @psalm-ignore-nullable-return
+     */
+    public function getTraitNames(): array {}
+
+    /**
+     * @since 8.0
+     * @template TClass as object
+     * @param class-string<TClass>|null $name
+     * @return ($name is null ? array<ReflectionAttribute<object>> : array<ReflectionAttribute<TClass>>)
+     */
+    public function getAttributes(?string $name = null, int $flags = 0): array {}
+}
+
+class ReflectionFunction implements Reflector
+{
+    /**
+     * @since 8.0
+     * @template TClass as object
+     * @param class-string<TClass>|null $name
+     * @return ($name is null ? array<ReflectionAttribute<object>> : array<ReflectionAttribute<TClass>>)
+     */
+    public function getAttributes(?string $name = null, int $flags = 0): array {}
+}
+
+class ReflectionProperty implements Reflector
+{
+    /**
+     * @since 8.0
+     * @template TClass as object
+     * @param class-string<TClass>|null $name
+     * @return ($name is null ? array<ReflectionAttribute<object>> : array<ReflectionAttribute<TClass>>)
+     */
+    public function getAttributes(?string $name = null, int $flags = 0): array {}
+
+    /**
+     * @since 7.4
+     * @psalm-assert-if-true ReflectionType $this->getType()
+     */
+    public function hasType() : bool {}
+
+    /**
+     * @since 7.4
+     * @psalm-mutation-free
+     */
+    public function getType() : ?ReflectionType {}
+
+    /**
+    * @since 8.0
+    */
+    public function hasDefaultValue(): bool {}
+
+    /**
+    * @since 8.0
+    */
+    public function isPromoted(): bool {}
+
+    /**
+    * @since 8.1
+    */
+    public function isReadOnly(): bool {}
+}
+
+class ReflectionMethod implements Reflector
+{
+    /**
+     * @since 8.0
+     * @template TClass as object
+     * @param class-string<TClass>|null $name
+     * @return ($name is null ? array<ReflectionAttribute<object>> : array<ReflectionAttribute<TClass>>)
+     */
+    public function getAttributes(?string $name = null, int $flags = 0): array {}
+
+    public function isStatic(): bool {}
+}
+
+class ReflectionClassConstant implements Reflector
+{
+    /**
+     * @since 8.0
+     * @template TClass as object
+     * @param class-string<TClass>|null $name
+     * @return ($name is null ? array<ReflectionAttribute<object>> : array<ReflectionAttribute<TClass>>)
+     */
+    public function getAttributes(?string $name = null, int $flags = 0): array {}
+}
+
+/**
+ * @psalm-immutable
+ */
+class ReflectionParameter implements Reflector {
+    /**
+     * @psalm-assert-if-true ReflectionType $this->getType()
+     */
+    public function hasType() : bool {}
+
+    public function getType() : ?ReflectionType {}
+
+    /**
+     * @since 8.0
+     * @template TClass as object
+     * @param class-string<TClass>|null $name
+     * @return ($name is null ? array<ReflectionAttribute<object>> : array<ReflectionAttribute<TClass>>)
+     */
+    public function getAttributes(?string $name = null, int $flags = 0): array {}
+
+    /**
+    * @since 8.0
+    */
+    public function isPromoted(): bool {}
+}
+
+/**
+ * @psalm-immutable
+ */
+class ReflectionNamedType extends ReflectionType
+{
+    public function getName(): string {}
+
+    /**
+     * @psalm-assert-if-false class-string|'self'|'static' $this->getName()
+     */
+    public function isBuiltin(): bool {}
+}

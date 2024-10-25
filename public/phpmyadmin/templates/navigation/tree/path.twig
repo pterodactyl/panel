@@ -1,0 +1,12 @@
+<div class='list_container hide'>
+  <ul{{ has_search_results ? ' class="search_results"' }}>
+    {{ list_content|raw }}
+  </ul>
+
+  {% if not is_tree %}
+    <span class='hide loaded_db'>{{ parent_name|url_encode }}</span>
+    {% if list_content is empty %}
+      <div>{% trans 'No tables found in database.' %}</div>
+    {% endif %}
+  {% endif %}
+</div>

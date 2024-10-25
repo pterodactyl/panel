@@ -1,0 +1,314 @@
+{% if is_git_revision %}
+  <div id="is_git_revision"></div>
+{% endif %}
+
+{{ message|raw }}
+
+{{ partial_logout|raw }}
+
+<div id="maincontainer">
+  {{ sync_favorite_tables|raw }}
+  <div class="container-fluid">
+    <div class="row mb-3">
+      <div class="col-lg-7 col-12">
+        {% if has_server %}
+          {% if is_demo %}
+            <div class="card mt-4">
+              <div class="card-header">
+                {% trans 'phpMyAdmin Demo Server' %}
+              </div>
+              <div class="card-body">
+                {% apply format('<a href="url.php?url=https://demo.phpmyadmin.net/" target="_blank" rel="noopener noreferrer">demo.phpmyadmin.net</a>')|raw %}
+                  {% trans %}
+                    You are using the demo server. You can do anything here, but please do not change root, debian-sys-maint and pma users. More information is available at %s.
+                  {% endtrans %}
+                {% endapply %}
+              </div>
+            </div>
+          {% endif %}
+
+            <div class="card mt-4">
+              <div class="card-header">
+                {% trans 'General settings' %}
+              </div>
+              <ul class="list-group list-group-flush">
+                {% if has_server_selection %}
+                  <li id="li_select_server" class="list-group-item">
+                    {{ get_image('s_host') }}
+                    {{ server_selection|raw }}
+                  </li>
+                {% endif %}
+
+                {% if server > 0 %}
+                  {% if has_change_password_link %}
+                    <li id="li_change_password" class="list-group-item">
+                      <a href="{{ url('/user-password') }}" id="change_password_anchor" class="ajax">
+                        {{ get_icon('s_passwd', 'Change password'|trans, true) }}
+                      </a>
+                    </li>
+                  {% endif %}
+
+                  <li id="li_select_mysql_collation" class="list-group-item">
+                    <form method="post" action="{{ url('/collation-connection') }}" class="row row-cols-lg-auto align-items-center disableAjax">
+                      {{ get_hidden_inputs(null, null, 4, 'collation_connection') }}
+                      <div class="col-12">
+                        <label for="collationConnectionSelect" class="col-form-label">
+                          {{ get_image('s_asci') }}
+                          {% trans 'Server connection collation:' %}
+                          {{ show_mysql_docu('charset-connection') }}
+                        </label>
+                      </div>
+                      {% if charsets is not empty %}
+                      <div class="col-12">
+                        <select lang="en" dir="ltr" name="collation_connection" id="collationConnectionSelect" class="form-select autosubmit">
+                          <option value="">{% trans 'Collation' %}</option>
+                          <option value=""></option>
+                          {% for charset in charsets %}
+                            <optgroup label="{{ charset.name }}" title="{{ charset.description }}">
+                              {% for collation in charset.collations %}
+                                <option value="{{ collation.name }}" title="{{ collation.description }}"{{ collation.is_selected ? ' selected' }}>
+                                  {{- collation.name -}}
+                                </option>
+                              {% endfor %}
+                            </optgroup>
+                          {% endfor %}
+                        </select>
+                      </div>
+                      {% endif %}
+                    </form>
+                  </li>
+
+                  <li id="li_user_preferences" class="list-group-item">
+                    <a href="{{ url('/preferences/manage') }}">
+                      {{ get_icon('b_tblops', 'More settings'|trans, true) }}
+                    </a>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          {% endif %}
+
+            <div class="card mt-4">
+              <div class="card-header">
+                {% trans 'Appearance settings' %}
+              </div>
+              <ul class="list-group list-group-flush">
+                {% if available_languages is not empty %}
+                  <li id="li_select_lang" class="list-group-item">
+                    <form method="get" action="{{ url('/') }}" class="row row-cols-lg-auto align-items-center disableAjax">
+                      {{ get_hidden_inputs({'db': db, 'table': table}) }}
+                      <div class="col-12">
+                        <label for="languageSelect" class="col-form-label text-nowrap">
+                          {{ get_image('s_lang') }}
+                          {% trans 'Language' %}
+                          {% if 'Language'|trans != 'Language' %}
+                            {# For non-English, display "Language" with emphasis because it's not a proper word
+                               in the current language; we show it to help people recognize the dialog #}
+                            <i lang="en" dir="ltr">(Language)</i>
+                          {% endif %}
+                          {{ show_docu('faq', 'faq7-2') }}
+                        </label>
+                      </div>
+                      <div class="col-12">
+                        <select name="lang" class="form-select autosubmit w-auto" lang="en" dir="ltr" id="languageSelect">
+                          {% for language in available_languages %}
+                            <option value="{{ language.getCode()|lower }}"{{ language.isActive() ? ' selected' }}>
+                              {{- language.getName()|raw -}}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      </div>
+                    </form>
+                  </li>
+                {% endif %}
+
+                {% if has_theme_manager %}
+                  <li id="li_select_theme" class="list-group-item">
+                    <form method="post" action="{{ url('/themes/set') }}" class="row row-cols-lg-auto align-items-center disableAjax">
+                      {{ get_hidden_inputs() }}
+                      <div class="col-12">
+                        <label for="themeSelect" class="col-form-label">
+                          {{ get_icon('s_theme', 'Theme'|trans) }}
+                        </label>
+                      </div>
+                      <div class="col-12">
+                        <div class="input-group">
+                          <select name="set_theme" class="form-select autosubmit" lang="en" dir="ltr" id="themeSelect">
+                            {% for theme in themes %}
+                              <option value="{{ theme.id }}"{{ theme.is_active ? ' selected' }}>{{ theme.name }}</option>
+                            {% endfor %}
+                          </select>
+                          <button type="button" class="btn btn-outline-secondary" data-bs-toggle="modal" data-bs-target="#themesModal">
+                            {% trans %}View all{% context %}View all themes{% endtrans %}
+                          </button>
+                        </div>
+                      </div>
+                    </form>
+                  </li>
+                {% endif %}
+              </ul>
+            </div>
+          </div>
+
+      <div class="col-lg-5 col-12">
+        {% if database_server is not empty %}
+          <div class="card mt-4">
+            <div class="card-header">
+              {% trans 'Database server' %}
+            </div>
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item">
+                {% trans 'Server:' %}
+                {{ database_server.host }}
+              </li>
+              <li class="list-group-item">
+                {% trans 'Server type:' %}
+                {{ database_server.type }}
+              </li>
+              <li class="list-group-item">
+                {% trans 'Server connection:' %}
+                {{ database_server.connection|raw }}
+              </li>
+              <li class="list-group-item">
+                {% trans 'Server version:' %}
+                {{ database_server.version }}
+              </li>
+              <li class="list-group-item">
+                {% trans 'Protocol version:' %}
+                {{ database_server.protocol }}
+              </li>
+              <li class="list-group-item">
+                {% trans 'User:' %}
+                {{ database_server.user }}
+              </li>
+              <li class="list-group-item">
+                {% trans 'Server charset:' %}
+                <span lang="en" dir="ltr">
+                  {{ database_server.charset }}
+                </span>
+              </li>
+            </ul>
+          </div>
+        {% endif %}
+
+        {% if web_server is not empty or show_php_info %}
+          <div class="card mt-4">
+            <div class="card-header">
+              {% trans 'Web server' %}
+            </div>
+            <ul class="list-group list-group-flush">
+              {% if web_server is not empty %}
+                {% if web_server.software is not null %}
+                <li class="list-group-item">
+                  {{ web_server.software }}
+                </li>
+                {% endif %}
+                <li class="list-group-item" id="li_mysql_client_version">
+                  {% trans 'Database client version:' %}
+                  {{ web_server.database }}
+                </li>
+                <li class="list-group-item">
+                  {% trans 'PHP extension:' %}
+                  {% for extension in web_server.php_extensions %}
+                    {{ extension }}
+                    {{ show_php_docu('book.' ~ extension ~ '.php') }}
+                  {% endfor %}
+                </li>
+                <li class="list-group-item">
+                  {% trans 'PHP version:' %}
+                  {{ web_server.php_version }}
+                </li>
+              {% endif %}
+              {% if show_php_info %}
+                <li class="list-group-item">
+                  <a href="{{ url('/phpinfo') }}" target="_blank" rel="noopener noreferrer">
+                    {% trans 'Show PHP information' %}
+                  </a>
+                </li>
+              {% endif %}
+            </ul>
+          </div>
+        {% endif %}
+
+          <div class="card mt-4">
+            <div class="card-header">
+              phpMyAdmin
+            </div>
+            <ul class="list-group list-group-flush">
+              <li id="li_pma_version" class="list-group-item{{ is_version_checked ? ' jsversioncheck' }}">
+                {% trans 'Version information:' %}
+                <span class="version">{{ phpmyadmin_version }}</span>
+              </li>
+              <li class="list-group-item">
+                <a href="{{ get_docu_link('index') }}" target="_blank" rel="noopener noreferrer">
+                  {% trans 'Documentation' %}
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="{{ 'https://www.phpmyadmin.net/'|link }}" target="_blank" rel="noopener noreferrer">
+                  {% trans 'Official Homepage' %}
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="{{ 'https://www.phpmyadmin.net/contribute/'|link }}" target="_blank" rel="noopener noreferrer">
+                  {% trans 'Contribute' %}
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="{{ 'https://www.phpmyadmin.net/support/'|link }}" target="_blank" rel="noopener noreferrer">
+                  {% trans 'Get support' %}
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="{{ url('/changelog') }}" target="_blank">
+                  {% trans 'List of changes' %}
+                </a>
+              </li>
+              <li class="list-group-item">
+                <a href="{{ url('/license') }}" target="_blank">
+                  {% trans 'License' %}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      {% for error in errors %}
+        <div class="alert {{ error.severity == 'warning' ? 'alert-warning' : 'alert-info' }}" role="alert">
+          {% if error.severity == 'warning' %}
+            {{ get_image('s_attention', 'Warning'|trans) }}
+          {% else %}
+            {{ get_image('s_notice', 'Notice'|trans) }}
+          {% endif %}
+          {{ error.message|sanitize }}
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+{% if has_theme_manager %}
+  <div class="modal fade" id="themesModal" tabindex="-1" aria-labelledby="themesModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="themesModalLabel">{% trans 'phpMyAdmin Themes' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="modal-body">
+          <div class="spinner-border" role="status">
+            <span class="visually-hidden">{% trans 'Loading…' %}</span>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+          <a href="{{ 'https://www.phpmyadmin.net/themes/'|link }}#pma_{{ phpmyadmin_major_version|replace({'.': '_'}) }}" class="btn btn-primary" rel="noopener noreferrer" target="_blank">
+            {% trans 'Get more themes!' %}
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+{{ config_storage_message|raw }}

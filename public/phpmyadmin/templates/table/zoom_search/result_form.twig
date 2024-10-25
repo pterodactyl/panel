@@ -1,0 +1,102 @@
+<form method="post" action="{{ url('/table/zoom-search') }}" name="displayResultForm" id="zoom_display_form" class="ajax">
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="goto" value="{{ goto }}">
+  <input type="hidden" name="back" value="{{ url('/table/zoom-search') }}">
+
+  <div class="card">
+    <div class="card-header">{% trans 'Browse/Edit the points' %}</div>
+
+    <div class="card-body">
+      {# JSON encode the data(query result) #}
+      <div class="text-center">
+        {% if zoom_submit and data is not empty %}
+          <div id="resizer">
+            <a class="text-center" id="help_dialog" href="#">{% trans 'How to use' %}</a>
+            <div id="querydata" class="hide">{{ data_json }}</div>
+            <div id="querychart"></div>
+            <button class="btn btn-primary button-reset">{% trans 'Reset zoom' %}</button>
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="modal fade" id="dataPointModal" tabindex="-1" aria-labelledby="dataPointModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="dataPointModalLabel">{% trans 'Loading' %}</h5>
+              <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+            </div>
+            <div class="modal-body" style="overflow: auto;">
+              {# Displays rows in point edit form #}
+              <div id="dataDisplay">
+                <table class="table align-middle">
+                  <thead>
+                  <tr>
+                    <th>{% trans 'Column' %}</th>
+                    <th>{% trans 'Null' %}</th>
+                    <th>{% trans 'Value' %}</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  {% for column_index in 0..column_names|length - 1 %}
+                    {% set field_popup = column_names[column_index] %}
+                    {% set foreign_data = get_foreign_data(foreigners, field_popup, false, '', '') %}
+                    <tr class="noclick">
+                      <th>{{ column_names[column_index] }}</th>
+                      {# Null checkbox if column can be null #}
+                      <th>
+                        {% if column_null_flags[column_index] == 'YES' %}
+                          <input type="checkbox" class="checkbox_null" name="criteriaColumnNullFlags[{{ column_index }}]" id="edit_fields_null_id_{{ column_index }}">
+                        {% endif %}
+                      </th>
+                      {# Column's Input box #}
+                      <th>
+                        {% include 'table/search/input_box.twig' with {
+                          'str': '',
+                          'column_type': column_types[column_index],
+                          'column_id': column_types[column_index] ? 'edit_fieldID_' : 'fieldID_',
+                          'in_zoom_search_edit': true,
+                          'foreigners': foreigners,
+                          'column_name': field_popup,
+                          'column_name_hash': column_name_hashes[field_popup],
+                          'foreign_data': foreign_data,
+                          'table': table,
+                          'column_index': column_index,
+                          'foreign_max_limit': foreign_max_limit,
+                          'criteria_values': '',
+                          'db': db,
+                          'in_fbs': false
+                        } only %}
+                      </th>
+                    </tr>
+                  {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" id="dataPointSaveButton" data-bs-dismiss="modal">{% trans 'Save' %}</button>
+              <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <input type="hidden" id="queryID" name="sql_query">
+    </div>
+  </div>
+</form>
+
+<div class="modal fade" id="helpModal" tabindex="-1" aria-labelledby="helpModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="helpModalLabel">{% trans 'Loading' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+    </div>
+  </div>
+</div>

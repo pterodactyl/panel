@@ -1,0 +1,1094 @@
+<?php
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends Traversable<TKey, TValue>
+ */
+interface IteratorAggregate extends Traversable {
+
+    /**
+     * @return Traversable<TKey, TValue> An instance of an object implementing Iterator or Traversable
+     */
+    public function getIterator();
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends Traversable<TKey, TValue>
+ */
+interface Iterator extends Traversable {
+
+    /**
+     * @return TValue|null returns current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current();
+
+    /**
+     * @return void Any returned value is ignored.
+     */
+    public function next();
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key();
+
+    /**
+     * @return bool The return value will be casted to boolean and then evaluated.
+     *              Returns true on success or false on failure.
+     */
+    public function valid();
+
+    /**
+     * @return void Any returned value is ignored.
+     */
+    public function rewind();
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends Iterator<TKey, TValue>
+ */
+interface OuterIterator extends Iterator {
+    /**
+     * @return Iterator<TKey, TValue>
+     */
+    public function getInnerIterator();
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends Iterator<TKey, TValue>
+ */
+interface RecursiveIterator extends Iterator {
+
+    /**
+     * @return bool true if the current entry can be iterated over, otherwise returns false.
+     */
+    public function hasChildren();
+
+    /**
+     * @return RecursiveIterator<TKey, TValue> An iterator for the current entry.
+     */
+    public function getChildren();
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ * @template-extends Iterator<TKey, TValue>
+ */
+interface SeekableIterator extends Iterator {
+    /**
+     * Seeks to a position
+     * @link https://php.net/manual/en/seekableiterator.seek.php
+     *
+     * @param int $position The position to seek to.
+     * @return void
+     *
+     * @since 5.1.0
+     */
+    public function seek($position);
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ * @template TIterator as Traversable<TKey, TValue>
+ *
+ * @template-implements OuterIterator<TKey, TValue>
+ *
+ * @mixin TIterator
+ */
+class IteratorIterator implements OuterIterator {
+    /**
+     * @param TIterator $iterator
+     */
+    public function __construct(Traversable $iterator) {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ * @template TIterator as Traversable<TKey, TValue>
+ *
+ * @template-extends IteratorIterator<TKey, TValue>
+ */
+class AppendIterator extends IteratorIterator {
+    public function __construct(){}
+
+    /**
+     * @param TIterator $iterator
+     * @return void
+     */
+    public function append(Iterator $iterator) {}
+
+    /**
+     * @return ArrayIterator<TKey, TValue>
+     */
+    public function getArrayIterator() {}
+
+    /**
+     * @return int
+     */
+    public function getIteratorIndex() {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template TKey as array-key
+ * @template TValue
+ * @template-implements SeekableIterator<TKey, TValue>
+ * @template-implements ArrayAccess<TKey, TValue>
+ */
+class ArrayIterator implements SeekableIterator, ArrayAccess, Serializable, Countable {
+    const STD_PROP_LIST = 1;
+    const ARRAY_AS_PROPS = 2;
+
+    /**
+     * @param array<TKey, TValue> $array The array or object to be iterated on.
+     * @param int-mask-of<static::*> $flags Flags to control the behaviour of the ArrayObject object.
+     */
+    public function __construct($array = array(), $flags = 0) { }
+
+    /**
+     * @param TKey $index The offset being checked.
+     * @return bool true if the offset exists, otherwise false
+     */
+    public function offsetExists($index) { }
+
+    /**
+     * @param TKey $index The offset to get the value from.
+     * @return TValue|null The value at offset index, null when accessing invalid indexes
+     * @psalm-ignore-nullable-return
+     */
+    public function offsetGet($index) { }
+
+    /**
+     * @param TKey $index The index to set for.
+     * @param TValue $newval The new value to store at the index.
+     * @return void
+     */
+    public function offsetSet($index, $newval) { }
+
+    /**
+     * @param TKey $index The offset to unset.
+     * @return void
+     */
+    public function offsetUnset($index) { }
+
+    /**
+     * @param TValue $value The value to append.
+     * @return void
+     */
+    public function append($value) { }
+
+    /**
+     * @return array<TKey, TValue> A copy of the array, or array of public properties
+     *                             if ArrayIterator refers to an object.
+     */
+    public function getArrayCopy() { }
+
+    /**
+     * @return int The number of elements or public properties in the associated
+     *             array or object, respectively.
+     */
+    public function count() { }
+
+    /**
+     * @return int-mask-of<self::*> The current flags.
+     */
+    public function getFlags() { }
+
+    /**
+     * @param int-mask-of<self::*> $flags bitmask
+     * @return void
+     */
+    public function setFlags($flags) { }
+
+    /**
+     * @return void
+     */
+    public function asort() { }
+
+    /**
+     * @return void
+     */
+    public function ksort() { }
+
+    /**
+     * @param callable(TValue,TValue):int $cmp_function The compare function used for the sort.
+     * @return void
+     */
+    public function uasort($cmp_function) { }
+
+    /**
+     * @param callable(TKey,TKey):int $cmp_function The compare function used for the sort.
+     * @return void
+     */
+    public function uksort($cmp_function) { }
+
+    /**
+     * @return void
+     */
+    public function natsort() { }
+
+    /**
+     * @return void
+     */
+    public function natcasesort() { }
+
+    /**
+     * @param string $serialized The serialized ArrayIterator object to be unserialized.
+     * @return void
+     */
+    public function unserialize($serialized) { }
+
+    /**
+     * @return string The serialized ArrayIterator
+     */
+    public function serialize() { }
+
+    /**
+     * @return void
+     */
+    public function rewind() { }
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() { }
+
+    /**
+     * @return TKey|null The current array key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() { }
+
+    /**
+     * @return void
+     */
+    public function next() { }
+
+    /**
+     * @return bool
+     */
+    public function valid() { }
+
+    /**
+     * @param int $position The position to seek to.
+     * @return void
+     */
+    public function seek($position) { }
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends IteratorIterator<TKey, TValue>
+ */
+class FilterIterator extends IteratorIterator {
+    /** @return bool */
+    abstract public function accept();
+
+    /**
+     * @return TValue Can return any type.
+     */
+    public function current() {}
+
+    /**
+     * @return TKey scalar on success, or null on failure.
+     */
+    public function key() {}
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-implements OuterIterator<TKey, TValue>
+ * @template-implements ArrayAccess<TKey, TValue>
+ *
+ * @template-extends IteratorIterator<TKey, TValue>
+ */
+class CachingIterator extends IteratorIterator implements OuterIterator , ArrayAccess , Countable  {
+    const CALL_TOSTRING = 1 ;
+    const CATCH_GET_CHILD = 16 ;
+    const TOSTRING_USE_KEY = 2 ;
+    const TOSTRING_USE_CURRENT = 4 ;
+    const TOSTRING_USE_INNER = 8 ;
+    const FULL_CACHE = 256 ;
+
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     * @param int-mask-of<self::*> $flags
+     */
+    public function __construct(Iterator $iterator, int $flags = self::CALL_TOSTRING) {}
+
+    /** @return bool */
+    public function hasNext () {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-implements OuterIterator<TKey, TValue>
+ *
+ * @template-extends FilterIterator<TKey, TValue>
+ */
+class CallbackFilterIterator extends FilterIterator implements OuterIterator  {
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     * @param callable(TValue, TKey, Iterator<TKey, TValue>): bool $callback
+     */
+    public function __construct(Iterator $iterator, callable $callback) {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template-implements SeekableIterator<int, DirectoryIterator>
+ */
+class DirectoryIterator extends SplFileInfo implements SeekableIterator {
+
+    public function __construct(string $path){}
+
+    /**
+     * @return self
+     */
+    public function current() {}
+    /**
+     * @return int|false
+     * @psalm-ignore-falsable-return
+     */
+    public function key() {}
+
+    /**
+     * @return void
+     */
+    public function next(){}
+    /**
+     * @return void
+     */
+    public function rewind(){}
+
+    /**
+     * @param int $position
+     */
+    public function seek($position) {}
+
+    /**
+     * @return bool
+     */
+    public function valid(){}
+}
+
+/**
+ * @template-implements Iterator<empty, empty>
+ */
+class EmptyIterator implements Iterator {
+    /**
+     * @return empty
+     */
+    public function current() {}
+    /**
+     * @return empty
+     */
+    public function key() {}
+    /**
+     * @return void
+     */
+    public function next() {}
+    /**
+     * @return void
+     */
+    public function rewind() {}
+
+    /**
+     * @return false
+     */
+    public function valid() {}
+}
+
+/**
+ * @template-extends SeekableIterator<string, FilesystemIterator|SplFileInfo|string>
+ */
+class FilesystemIterator extends DirectoryIterator
+{
+    const CURRENT_AS_PATHNAME = 32;
+    const CURRENT_AS_FILEINFO = 0;
+    const CURRENT_AS_SELF = 16;
+    const CURRENT_MODE_MASK = 240;
+    const KEY_AS_PATHNAME = 0;
+    const KEY_AS_FILENAME = 256;
+    const FOLLOW_SYMLINKS = 512;
+    const KEY_MODE_MASK = 3840;
+    const NEW_CURRENT_AND_KEY = 256;
+    const SKIP_DOTS = 4096;
+    const UNIX_PATHS = 8192;
+
+    /**
+     * @param int-mask<self::CURRENT_AS_PATHNAME,self::CURRENT_AS_FILEINFO,self::CURRENT_AS_SELF,self::KEY_AS_PATHNAME,self::KEY_AS_FILENAME,self::FOLLOW_SYMLINKS,self::NEW_CURRENT_AND_KEY,self::SKIP_DOTS,self::UNIX_PATHS> $flags
+     */
+    public function __construct(string $path, int $flags = self::KEY_AS_PATHNAME|self::CURRENT_AS_FILEINFO|self::SKIP_DOTS) {}
+
+    /**
+     * @return FilesystemIterator|SplFileInfo|string|null
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+    /**
+     * @return int-mask<self::CURRENT_AS_PATHNAME,self::CURRENT_AS_FILEINFO,self::CURRENT_AS_SELF,self::KEY_AS_PATHNAME,self::KEY_AS_FILENAME,self::FOLLOW_SYMLINKS,self::NEW_CURRENT_AND_KEY,self::SKIP_DOTS,self::UNIX_PATH>
+     */
+    public function getFlags() {}
+
+    /**
+     * @param int-mask<self::CURRENT_AS_PATHNAME,self::CURRENT_AS_FILEINFO,self::CURRENT_AS_SELF,self::KEY_AS_PATHNAME,self::KEY_AS_FILENAME,self::FOLLOW_SYMLINKS,self::NEW_CURRENT_AND_KEY,self::SKIP_DOTS,self::UNIX_PATH> $flags
+     * @return void
+     */
+    public function setFlags($flags) {}
+    /**
+     * @return string|null
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+
+
+/**
+ * @template-extends SeekableIterator<string, GlobIterator|SplFileInfo|string>
+ */
+class GlobIterator extends FilesystemIterator implements Countable {
+    /**
+     * @return int
+     */
+    public function count() {}
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends IteratorIterator<TKey, TValue>
+ */
+class InfiniteIterator extends IteratorIterator {
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     */
+    public function __construct(Iterator $iterator) {}
+
+    /**
+     * @return TValue|null current value or null if iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-implements OuterIterator<TKey, TValue>
+ *
+ * @template-extends IteratorIterator<TKey, TValue>
+ */
+class LimitIterator extends IteratorIterator implements OuterIterator {
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     */
+    public function __construct(Iterator $iterator, int $offset = 0, int $limit = -1) {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends IteratorIterator<TKey, TValue>
+ */
+class NoRewindIterator extends IteratorIterator {
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     */
+    public function __construct(Iterator $iterator) {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ *
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-implements Iterator<TKey, TValue>
+ */
+class MultipleIterator implements Iterator {
+    const MIT_NEED_ANY = 0 ;
+    const MIT_NEED_ALL = 1 ;
+    const MIT_KEYS_NUMERIC = 0 ;
+    const MIT_KEYS_ASSOC = 2 ;
+
+    /**
+     * @param int-mask-of<self::MIT_*> $flags
+     */
+    public function __construct (int $flags = 0) {}
+    /**
+     * @param Iterator<TKey,TValue> $iterator
+     * @param string|int $infos
+     * @return void
+     */
+    public function attachIterator(Iterator $iterator, $infos = '') {}
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     * @return bool
+     */
+    public function containsIterator(Iterator $iterator) {}
+
+    /**
+     * @return int
+     */
+    public function countIterators() {}
+    /**
+     * nullable values are returned when MIT_NEED_ANY is set
+     * and one of the iterators is already drained.
+     * When MIT_NEED_ALL is set and one of the iterators
+     * is already drained, `current()` throws
+     *
+     * @return array<array-key, TValue|null>
+     */
+    public function current() {}
+    /**
+     * @param Iterator<TKey,TValue> $iterator
+     * @return void
+     */
+    public function detachIterator(Iterator $iterator) {}
+    /**
+     * @return int-mask-of<self::MIT_*>
+     */
+    public function getFlags() {}
+    /**
+     * @return array<array-key, TValue|null>
+     */
+    public function key() {}
+    /**
+     * @param int-mask-of<self::MIT_*> $flags
+     * @return void
+     */
+    public function setFlags( int $flags ) {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-extends FilterIterator<TKey, TValue>
+ * @template-implements RecursiveIterator<TKey, TValue>
+ */
+abstract class RecursiveFilterIterator extends FilterIterator implements RecursiveIterator {
+
+    /**
+     * @param RecursiveIterator<TKey, TValue> $iterator
+     */
+    public function __construct(RecursiveIterator $iterator) {}
+    /**
+     * @return RecursiveFilterIterator<TKey, TValue>
+     */
+    public function getChildren() {}
+
+    /**
+     * @return bool
+     */
+    public function hasChildren() {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-extends RecursiveFilterIterator<TKey, TValue>
+ */
+class ParentIterator extends RecursiveFilterIterator implements RecursiveIterator, OuterIterator {
+
+    /**
+     * @return bool
+     */
+    public function accept() {}
+    /**
+     * @param RecursiveIterator<TKey, TValue> $iterator
+     */
+    public function __construct(RecursiveIterator $iterator) {}
+    /**
+     * @return ParentIterator<TKey,TValue>
+     */
+    public function getChildren() {}
+
+    /**
+     * @return bool
+     */
+    public function hasChildren() {}
+    /**
+     * @return void
+     */
+    public function next() {}
+    /**
+     * @return void
+     */
+    public function rewind() {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-implements RecursiveIterator<TKey, TValue>
+ * @template-extends ArrayIterator<TKey, TValue>
+ */
+class RecursiveArrayIterator extends ArrayIterator implements RecursiveIterator {
+    const STD_PROP_LIST = 1 ;
+    const ARRAY_AS_PROPS = 2 ;
+    const CHILD_ARRAYS_ONLY = 4 ;
+
+    /**
+     * @return RecursiveArrayIterator<TKey, TValue>
+     */
+    public function getChildren() {}
+
+    /**
+     * @return bool
+     */
+    public function hasChildren() {}
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-implements RecursiveIterator<TKey, TValue>
+ * @template-extends ArrayIterator<TKey, TValue>
+ */
+class RecursiveCachingIterator extends CachingIterator implements RecursiveIterator {
+
+    const CALL_TOSTRING = 1 ;
+    const CATCH_GET_CHILD = 16 ;
+    const TOSTRING_USE_KEY = 2 ;
+    const TOSTRING_USE_CURRENT = 4 ;
+    const TOSTRING_USE_INNER = 8 ;
+    const FULL_CACHE = 256 ;
+
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     * @param int-mask-of<self::*> $flags
+     */
+    public function __construct(Iterator $iterator, int $flags = 0) {}
+    /**
+     * @return RecursiveCachingIterator<TKey,TValue>
+     */
+    public function getChildren() {}
+
+    /**
+     * @return bool
+     */
+    public function hasChildren() {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-implements RecursiveIterator<TKey, TValue>
+ * @template-extends CallbackFilterIterator<TKey, TValue>
+ */
+class RecursiveCallbackFilterIterator extends CallbackFilterIterator implements RecursiveIterator {
+
+    /**
+     * @param RecursiveIterator<TKey, TValue> $iterator
+     * @param callable(TValue, TKey, RecursiveIterator<TKey, TValue>): bool $callback
+     */
+    public function __construct(RecursiveIterator $iterator, callable $callback) {}
+    /**
+     * @return RecursiveCallbackFilterIterator<TKey, TValue>
+     */
+    public function getChildren() {}
+
+    /**
+     * @return bool
+     */
+    public function hasChildren() {}
+
+    /**
+     * @return TValue|null current value or null when iterator is drained
+     */
+    public function current() {}
+
+    /**
+     * @return TKey|null current value or null when iterator is drained
+     */
+    public function key() {}
+}
+
+/**
+ * @template-implements RecursiveIterator<string, RecursiveDirectoryIterator|string|SplFileInfo>
+ * @template-implements SeekableIterator<string, RecursiveDirectoryIterator|string|SplFileInfo>
+ */
+class RecursiveDirectoryIterator extends FilesystemIterator implements RecursiveIterator, SeekableIterator {
+
+    const CURRENT_AS_PATHNAME = 32 ;
+    const CURRENT_AS_FILEINFO = 0 ;
+    const CURRENT_AS_SELF = 16 ;
+    const CURRENT_MODE_MASK = 240 ;
+    const KEY_AS_PATHNAME = 0 ;
+    const KEY_AS_FILENAME = 256 ;
+    const FOLLOW_SYMLINKS = 512 ;
+    const KEY_MODE_MASK = 3840 ;
+    const NEW_CURRENT_AND_KEY = 256 ;
+    const SKIP_DOTS = 4096 ;
+    const UNIX_PATHS = 8192 ;
+
+    /**
+     * @param string $path
+     * @param int-mask<self::CURRENT_AS_PATHNAME,self::CURRENT_AS_FILEINFO,self::CURRENT_AS_SELF,self::KEY_AS_PATHNAME,self::KEY_AS_FILENAME,self::FOLLOW_SYMLINKS,self::NEW_CURRENT_AND_KEY,self::SKIP_DOTS,self::UNIX_PATHS> $flags
+     */
+    public function __construct(string $path, int $flags = self::KEY_AS_PATHNAME|self::CURRENT_AS_FILEINFO) {}
+
+    /**
+     * @return string
+     */
+    public function getSubPath() {}
+    /**
+     * @return string
+     */
+    public function getSubPathname() {}
+
+    /**
+     * @return RecursiveDirectoryIterator|string|SplFileInfo|null current value or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function current() {}
+
+    /**
+     * @return string|null current key or null when iterator is drained
+     * @psalm-ignore-nullable-return
+     */
+    public function key() {}
+}
+
+
+/**
+ * @template TIterator as RecursiveIterator|IteratorAggregate
+ * @mixin TIterator
+ */
+class RecursiveIteratorIterator implements OuterIterator {
+    /**
+     * @param TIterator $iterator
+     * @param int $mode
+     * @param int $flags
+     *
+     * @return void
+     */
+    public function __construct($iterator, $mode = 0, $flags = 0) {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-implements RecursiveIterator<TKey, TValue>
+ * @template-extends RegexIterator<TKey, TValue>
+ */
+class RecursiveRegexIterator extends RegexIterator implements RecursiveIterator {
+
+    const MATCH = 0 ;
+    const GET_MATCH = 1 ;
+    const ALL_MATCHES = 2 ;
+    const SPLIT = 3 ;
+    const REPLACE = 4 ;
+    const USE_KEY = 1 ;
+
+    /**
+     * @param RecursiveIterator<TKey, TValue> $iterator
+     * @param string $regex
+     * @param self::MATH|self::GET_MATCH|self::ALL_MATCHES|self::SPLIT|self::REPLACE $mode
+     * @param self::USE_KEY|0 $flags
+     * @param int $preg_flags
+     */
+    public function __construct(RecursiveIterator $iterator, string $regex, int $mode = self::MATCH, int $flags = 0, int $preg_flags = 0) {}
+
+    /**
+     * @return RecursiveRegexIterator<TKey, TValue>
+     */
+    public function getChildren() {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-extends RecursiveIteratorIterator<TKey, TValue>
+ * @template-implements OuterIterator<TKey, TValue>
+ */
+class RecursiveTreeIterator extends RecursiveIteratorIterator implements OuterIterator {
+
+    const LEAVES_ONLY = 0 ;
+    const SELF_FIRST = 1 ;
+    const CHILD_FIRST = 2 ;
+    const CATCH_GET_CHILD = 16 ;
+
+    const BYPASS_CURRENT = 4 ;
+    const BYPASS_KEY = 8 ;
+    const PREFIX_LEFT = 0 ;
+    const PREFIX_MID_HAS_NEXT = 1 ;
+    const PREFIX_MID_LAST = 2 ;
+    const PREFIX_END_HAS_NEXT = 3 ;
+    const PREFIX_END_LAST = 4 ;
+    const PREFIX_RIGHT = 5 ;
+
+    /**
+     * @return void
+     */
+    public function beginChildren() {}
+
+    /**
+     * @return RecursiveIterator
+     */
+    public function beginIteration() {}
+    /**
+     * @return RecursiveIterator
+     */
+    public function callGetChildren() {}
+    /**
+     * @return bool
+     */
+    public function callHasChildren() {}
+
+    /**
+     * @param RecursiveIterator<TKey, TValue>|IteratorAggregate<TKey, TValue> $it
+     * @param int-mask<self::BYPASS_CURRENT, self::BYPASS_KEY> $flags
+     * @param int-mask<self::CATCH_GET_CHILD> $cit_flags
+     * @param self::LEAVES_ONLY|self::SELF_FIRST|self::CHILD_FIRST $mode
+     */
+    public function __construct($it, int $flags = self::BYPASS_KEY, int $cit_flags = self::CATCH_GET_CHILD, int $mode = self::SELF_FIRST) {}
+
+    /**
+     * @return string
+     */
+    public function current() {}
+    /**
+     * @return void
+     */
+    public function endChildren() {}
+    /**
+     * @return void
+     */
+    public function endIteration() {}
+
+    /**
+     * @return string
+     */
+    public function getEntry() {}
+    /**
+     * @return string
+     */
+    public function getPostfix() {}
+    /**
+     * @return string
+     */
+    public function getPrefix() {}
+    /**
+     * @return string
+     */
+    public function key() {}
+    /**
+     * @return void
+     */
+    public function next() {}
+    /**
+     * @return void
+     */
+    public function nextElement() {}
+    /**
+     * @return void
+     */
+    public function rewind() {}
+    /**
+     * @return void
+     */
+    public function setPostfix(string $postfix ) {}
+    /**
+     * @param self::PREFIX_* $part
+     * @param string $value
+     * @return void
+     */
+    public function setPrefixPart(int $part , string $value ) {}
+    /**
+     * @return bool
+     */
+    public function valid() {}
+}
+
+/**
+ * @template TKey
+ * @template TValue
+ *
+ * @template-extends FilterIterator<TKey, TValue>
+ */
+class RegexIterator extends FilterIterator {
+    const MATCH = 0 ;
+    const GET_MATCH = 1 ;
+    const ALL_MATCHES = 2 ;
+    const SPLIT = 3 ;
+    const REPLACE = 4 ;
+    const USE_KEY = 1 ;
+
+    /**
+     * @param Iterator<TKey, TValue> $iterator
+     * @param string $regex
+     * @param self::MATCH|self::GET_MATCH|self::ALL_MATCHES|self::SPLIT|self::REPLACE $mode
+     * @param int-mask<self::USE_KEY> $flags
+     * @param int $preg_flags
+     */
+    public function __construct(Iterator $iterator, string $regex, int $mode = self::MATCH, int $flags = 0, int $preg_flags = 0) {}
+    /**
+     * @return TValue Can return any type.
+     */
+    public function current() {}
+
+    /**
+     * @return TKey scalar on success, or null on failure.
+     */
+    public function key() {}
+}

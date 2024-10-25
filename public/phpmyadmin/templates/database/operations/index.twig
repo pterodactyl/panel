@@ -1,0 +1,230 @@
+<div class="container-fluid">
+
+  {{ message|raw }}
+
+  {% if has_comment %}
+    <form method="post" action="{{ url('/database/operations') }}" id="formDatabaseComment">
+      {{ get_hidden_inputs(db) }}
+      <div class="card mb-2">
+        <div class="card-header">{{ get_icon('b_comment', 'Database comment'|trans, true) }}</div>
+        <div class="card-body">
+          <div class="row g-3">
+            <div class="col-auto">
+              <label class="visually-hidden" for="databaseCommentInput">{% trans 'Database comment' %}</label>
+              <input class="form-control textfield" id="databaseCommentInput" type="text" name="comment" value="{{ db_comment }}">
+            </div>
+          </div>
+        </div>
+        <div class="card-footer text-end">
+          <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+        </div>
+      </div>
+    </form>
+  {% endif %}
+
+  <form id="createTableMinimalForm" method="post" action="{{ url('/table/create') }}" class="card mb-2 lock-page">
+    {{ get_hidden_inputs(db) }}
+    <div class="card-header">{{ get_icon('b_table_add', 'Create new table'|trans, true) }}</div>
+    <div class="card-body row row-cols-lg-auto g-3">
+      <div class="col-md-6">
+        <label for="createTableNameInput" class="form-label">{% trans 'Table name' %}</label>
+        <input type="text" class="form-control" name="table" id="createTableNameInput" maxlength="64" required>
+      </div>
+      <div class="col-md-6">
+        <label for="createTableNumFieldsInput" class="form-label">{% trans 'Number of columns' %}</label>
+        <input type="number" class="form-control" name="num_fields" id="createTableNumFieldsInput" min="1" value="4" required>
+      </div>
+    </div>
+    <div class="card-footer text-end">
+      <input class="btn btn-primary" type="submit" value="{% trans 'Create' %}">
+    </div>
+  </form>
+
+  {% if db != 'mysql' %}
+    <form id="rename_db_form" class="ajax" method="post" action="{{ url('/database/operations') }}">
+      {{ get_hidden_inputs(db) }}
+      <input type="hidden" name="what" value="data">
+      <input type="hidden" name="db_rename" value="true">
+
+      {% if db_collation is not empty %}
+        <input type="hidden" name="db_collation" value="{{ db_collation }}">
+      {% endif %}
+
+      <div class="card mb-2">
+        <div class="card-header">{{ get_icon('b_edit', 'Rename database to'|trans, true) }}</div>
+        <div class="card-body">
+          <div class="mb-3 row g-3">
+            <div class="col-auto">
+              <label class="visually-hidden" for="new_db_name">{% trans 'New database name' %}</label>
+              <input class="form-control textfield" id="new_db_name" type="text" name="newname" maxlength="64" required>
+            </div>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="adjust_privileges" value="1" id="checkbox_adjust_privileges"
+              {%- if has_adjust_privileges %} checked{% else %} title="
+              {%- trans 'You don\'t have sufficient privileges to perform this operation; Please refer to the documentation for more details.' %}" disabled{% endif %}>
+            <label class="form-check-label" for="checkbox_adjust_privileges">
+              {% trans 'Adjust privileges' %}
+              {{ show_docu('faq', 'faq6-39') }}
+            </label>
+          </div>
+        </div>
+
+        <div class="card-footer text-end">
+          <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+        </div>
+      </div>
+    </form>
+  {% endif %}
+
+  {% if is_drop_database_allowed %}
+    <div class="card mb-2">
+      <div class="card-header">{{ get_icon('b_deltbl', 'Remove database'|trans, true) }}</div>
+      <div class="card-body">
+        <div class="card-text">
+          {{ link_or_button(
+            url('/sql'),
+            {
+              'sql_query': 'DROP DATABASE ' ~ backquote(db),
+              'back': url('/database/operations'),
+              'goto': url('/'),
+              'reload': true,
+              'purge': true,
+              'message_to_show': 'Database %s has been dropped.'|trans|format(backquote(db))|e,
+              'db': null
+            },
+            'Drop the database (DROP)'|trans,
+            {
+              'id': 'drop_db_anchor',
+              'class': 'ajax text-danger'
+            }
+          ) }}
+          {{ show_mysql_docu('DROP_DATABASE') }}
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  <form id="copy_db_form" class="ajax" method="post" action="{{ url('/database/operations') }}">
+    {{ get_hidden_inputs(db) }}
+    <input type="hidden" name="db_copy" value="true">
+
+    {% if db_collation is not empty %}
+      <input type="hidden" name="db_collation" value="{{ db_collation }}">
+    {% endif %}
+
+    <div class="card mb-2">
+      <div class="card-header">{{ get_icon('b_edit', 'Copy database to'|trans, true) }}</div>
+      <div class="card-body">
+        <div class="mb-3 row g-3">
+          <div class="col-auto">
+            <label class="visually-hidden" for="renameDbNameInput">{% trans 'Database name' %}</label>
+            <input class="form-control textfield" id="renameDbNameInput" type="text" maxlength="64" name="newname" required>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="what" id="whatRadio1" value="structure">
+            <label class="form-check-label" for="whatRadio1">
+              {% trans 'Structure only' %}
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="what" id="whatRadio2" value="data" checked>
+            <label class="form-check-label" for="whatRadio2">
+              {% trans 'Structure and data' %}
+            </label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="what" id="whatRadio3" value="dataonly">
+            <label class="form-check-label" for="whatRadio3">
+              {% trans 'Data only' %}
+            </label>
+          </div>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="create_database_before_copying" value="1" id="checkbox_create_database_before_copying" checked>
+          <label class="form-check-label" for="checkbox_create_database_before_copying">{% trans 'CREATE DATABASE before copying' %}</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="drop_if_exists" value="true" id="checkbox_drop">
+          <label class="form-check-label" for="checkbox_drop">{{ 'Add %s'|trans|format('DROP TABLE / DROP VIEW') }}</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="sql_auto_increment" value="1" id="checkbox_auto_increment" checked>
+          <label class="form-check-label" for="checkbox_auto_increment">{% trans 'Add AUTO_INCREMENT value' %}</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="add_constraints" value="1" id="checkbox_constraints" checked>
+          <label class="form-check-label" for="checkbox_constraints">{% trans 'Add constraints' %}</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="adjust_privileges" value="1" id="checkbox_privileges"
+            {%- if has_adjust_privileges %} checked{% else %} title="
+            {%- trans 'You don\'t have sufficient privileges to perform this operation; Please refer to the documentation for more details.' %}" disabled{% endif %}>
+          <label class="form-check-label" for="checkbox_privileges">
+            {% trans 'Adjust privileges' %}
+            {{ show_docu('faq', 'faq6-39') }}
+          </label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="switch_to_new" value="true" id="checkbox_switch"{{ switch_to_new ? ' checked' }}>
+          <label class="form-check-label" for="checkbox_switch">{% trans 'Switch to copied database' %}</label>
+        </div>
+      </div>
+
+      <div class="card-footer text-end">
+        <input class="btn btn-primary" type="submit" name="submit_copy" value="{% trans 'Go' %}">
+      </div>
+    </div>
+  </form>
+
+  <form id="change_db_charset_form" class="ajax" method="post" action="{{ url('/database/operations/collation') }}">
+    {{ get_hidden_inputs(db) }}
+
+    <div class="card mb-2">
+      <div class="card-header">{{ get_icon('s_asci', 'Collation'|trans, true) }}</div>
+      <div class="card-body">
+        <div class="mb-3 row g-3">
+          <div class="col-auto">
+            <label class="visually-hidden" for="select_db_collation">{% trans 'Collation' %}</label>
+            <select class="form-select" lang="en" dir="ltr" name="db_collation" id="select_db_collation">
+              <option value=""></option>
+              {% for charset in charsets %}
+                <optgroup label="{{ charset.getName() }}" title="{{ charset.getDescription() }}">
+                  {% for collation in collations[charset.getName()] %}
+                    <option value="{{ collation.getName() }}" title="{{ collation.getDescription() }}"{{ db_collation == collation.getName() ? ' selected' }}>
+                      {{ collation.getName() }}
+                    </option>
+                  {% endfor %}
+                </optgroup>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="change_all_tables_collations" id="checkbox_change_all_tables_collations">
+          <label class="form-check-label" for="checkbox_change_all_tables_collations">{% trans 'Change all tables collations' %}</label>
+        </div>
+        <div class="form-check" id="span_change_all_tables_columns_collations">
+          <input class="form-check-input" type="checkbox" name="change_all_tables_columns_collations" id="checkbox_change_all_tables_columns_collations">
+          <label class="form-check-label" for="checkbox_change_all_tables_columns_collations">{% trans 'Change all tables columns collations' %}</label>
+        </div>
+      </div>
+
+      <div class="card-footer text-end">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+      </div>
+    </div>
+  </form>
+
+</div>

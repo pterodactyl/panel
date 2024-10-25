@@ -1,0 +1,13 @@
+<fieldset class="pma-fieldset">
+    <legend>
+        {{ title }}
+    </legend>
+    {% for tab_detail in tab_details %}
+        <div class="item">
+            <input type="checkbox" class="checkall"{{ tab_detail.in_array|raw }} name="{{ level }}_{{ tab_detail.tab }}" value="Y">
+            <label for="{{ level }}_{{ tab_detail.tab }}">
+                <code>{{ tab_detail.tab_name }}</code>
+            </label>
+        </div>
+    {% endfor %}
+</fieldset>

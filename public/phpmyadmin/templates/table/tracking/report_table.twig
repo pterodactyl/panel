@@ -1,0 +1,27 @@
+<table id="{{ table_id }}" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>{% trans %}#{% context %}Number{% endtrans %}</th>
+            <th>{% trans 'Date' %}</th>
+            <th>{% trans 'Username' %}</th>
+            <th>{{ header_message }}</th>
+            <th>{% trans 'Action' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for entry in entries %}
+            <tr class="noclick">
+                <td class="text-end"><small>{{ entry.line_number }}</small></td>
+                <td><small>{{ entry.date }}</small></td>
+                <td><small>{{ entry.username }}</small></td>
+                <td>{{ entry.formated_statement|raw }}</td>
+                <td class="text-nowrap">
+                    <a class="delete_entry_anchor ajax" href="{{ url('/table/tracking') }}" data-post="
+                        {{- entry.url_params|raw }}">
+                        {{ drop_image_or_text|raw }}
+                    </a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

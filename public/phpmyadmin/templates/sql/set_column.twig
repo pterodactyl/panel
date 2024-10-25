@@ -1,0 +1,7 @@
+{% set values_amount = values|length %}
+{% set selected_values = current_values|split(',') %}
+<select class="resize-vertical" size="{{ values_amount < 10 ? values_amount : 10 }}" multiple>
+  {% for value in values %}
+    <option value="{{ value|raw }}"{{ value in selected_values ? ' selected' }}>{{ value|raw }}</option>
+  {% endfor %}
+</select>

@@ -1,0 +1,10 @@
+<td class="text-center">
+    <select name="criteriaSortOrder[{{ column_number }}]">
+        <option value="1000">&nbsp;</option>
+        {% for i in 1..total_column_count %}
+            <option value="{{ i }}"{{ i == sort_order ? ' selected="selected"' }}>
+                {{ i }}
+            </option>
+        {% endfor %}
+    </select>
+</td>

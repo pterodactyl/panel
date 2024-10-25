@@ -1,0 +1,17 @@
+<form id="createTableMinimalForm" method="post" action="{{ url('/table/create') }}" class="card d-print-none lock-page">
+  {{ get_hidden_inputs(db) }}
+  <div class="card-header">{{ get_icon('b_table_add', 'Create new table'|trans, true) }}</div>
+  <div class="card-body row row-cols-lg-auto g-3">
+    <div class="col-12">
+      <label for="createTableNameInput" class="form-label">{% trans 'Table name' %}</label>
+      <input type="text" class="form-control" name="table" id="createTableNameInput" maxlength="64" required>
+    </div>
+    <div class="col-12">
+      <label for="createTableNumFieldsInput" class="form-label">{% trans 'Number of columns' %}</label>
+      <input type="number" class="form-control" name="num_fields" id="createTableNumFieldsInput" min="1" value="4" required>
+    </div>
+    <div class="col-12 align-self-lg-end">
+      <input class="btn btn-primary" type="submit" value="{% trans 'Create' %}">
+    </div>
+  </div>
+</form>

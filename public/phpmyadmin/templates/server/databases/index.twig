@@ -1,0 +1,329 @@
+<div class="container-fluid my-3">
+  <h2>
+    {{ get_icon('s_db', has_statistics ? 'Databases statistics'|trans : 'Databases'|trans) }}
+  </h2>
+
+  {% if is_create_database_shown %}
+    <div class="card">
+      <div class="card-header">
+        {{ get_icon('b_newdb', 'Create database'|trans) }}
+        {{ show_mysql_docu('CREATE_DATABASE') }}
+      </div>
+      <div class="card-body">
+        {% if has_create_database_privileges %}
+          <form method="post" action="{{ url('/server/databases/create') }}" id="create_database_form" class="ajax row row-cols-md-auto g-3 align-items-center">
+            {{ get_hidden_inputs('', '') }}
+            <input type="hidden" name="reload" value="1">
+            {% if has_statistics %}
+              <input type="hidden" name="statistics" value="1">
+            {% endif %}
+
+            <div class="col-12">
+              <input type="text" name="new_db" maxlength="64" class="form-control" value="
+                {{- database_to_create }}" id="text_create_db" placeholder="
+                {%- trans 'Database name' %}" aria-label="{% trans 'Database name' %}" required>
+            </div>
+
+            {% if charsets is not empty %}
+              <div class="col-12">
+                <select lang="en" dir="ltr" name="db_collation" class="form-select" aria-label="{% trans 'Collation' %}">
+                  <option value="">{% trans 'Collation' %}</option>
+                  <option value=""></option>
+                  {% for charset in charsets %}
+                    <optgroup label="{{ charset.name }}" title="{{ charset.description }}">
+                      {% for collation in charset.collations %}
+                        <option value="{{ collation.name }}" title="{{ collation.description }}"{{ collation.is_selected ? ' selected' }}>
+                          {{- collation.name -}}
+                        </option>
+                      {% endfor %}
+                    </optgroup>
+                  {% endfor %}
+                </select>
+              </div>
+            {% endif %}
+
+            <div class="col-12">
+              <input id="buttonGo" class="btn btn-primary" type="submit" value="{% trans 'Create' %}">
+            </div>
+          </form>
+        {% else %}
+          <span class="text-danger">{{ get_icon('s_error', 'No privileges to create databases'|trans) }}</span>
+        {% endif %}
+      </div>
+    </div>
+  {% endif %}
+
+  {% if database_count > 0 %}
+    <div class="d-flex flex-wrap my-3">
+      {% if is_drop_allowed %}
+        <div>
+          <div class="input-group">
+            <div class="input-group-text">
+              <div class="form-check mb-0">
+                <input class="form-check-input checkall_box" type="checkbox" value="" id="checkAllCheckbox" form="dbStatsForm">
+                <label class="form-check-label" for="checkAllCheckbox">{% trans 'Check all' %}</label>
+              </div>
+            </div>
+            <button class="btn btn-outline-secondary" id="bulkActionDropButton" type="submit" name="submit_mult" value="Drop" form="dbStatsForm" title="{% trans 'Drop' %}">
+              {{ get_icon('db_drop', 'Drop'|trans) }}
+            </button>
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="ms-auto">
+        <div class="input-group">
+          <span class="input-group-text">{{ get_image('b_search', 'Search'|trans) }}</span>
+          <input class="form-control" name="filterText" type="text" id="filterText" value="" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}">
+        </div>
+      </div>
+    </div>
+
+    {{ get_list_navigator(
+      database_count,
+      pos,
+      url_params,
+      url('/server/databases'),
+      'frame_content',
+      max_db_list
+    ) }}
+
+    <form class="ajax" action="{{ url('/server/databases') }}" method="post" name="dbStatsForm" id="dbStatsForm">
+      {{ get_hidden_inputs(url_params) }}
+      <div class="table-responsive">
+        <table class="table table-striped table-hover w-auto">
+          <thead>
+            <tr>
+              {% if is_drop_allowed %}
+                <th></th>
+              {% endif %}
+              <th>
+                <a href="{{ url('/server/databases', url_params|merge({
+                  'sort_by': 'SCHEMA_NAME',
+                  'sort_order': url_params.sort_by == 'SCHEMA_NAME'
+                  and url_params.sort_order == 'asc' ? 'desc' : 'asc'
+                })) }}">
+                  {% trans 'Database' %}
+                  {% if url_params.sort_by == 'SCHEMA_NAME' %}
+                    {% if url_params.sort_order == 'asc' %}
+                      {{ get_image('s_asc', 'Ascending'|trans) }}
+                    {% else %}
+                      {{ get_image('s_desc', 'Descending'|trans) }}
+                    {% endif %}
+                  {% endif %}
+                </a>
+              </th>
+
+              <th>
+                <a href="{{ url('/server/databases', url_params|merge({
+                  'sort_by': 'DEFAULT_COLLATION_NAME',
+                  'sort_order': url_params.sort_by == 'DEFAULT_COLLATION_NAME'
+                    and url_params.sort_order == 'asc' ? 'desc' : 'asc'
+                })) }}">
+                  {% trans 'Collation' %}
+                  {% if url_params.sort_by == 'DEFAULT_COLLATION_NAME' %}
+                    {% if url_params.sort_order == 'asc' %}
+                      {{ get_image('s_asc', 'Ascending'|trans) }}
+                    {% else %}
+                      {{ get_image('s_desc', 'Descending'|trans) }}
+                    {% endif %}
+                  {% endif %}
+                </a>
+              </th>
+
+              {% if has_statistics %}
+                {% for name, statistic in header_statistics %}
+                  <th{{ statistic.format == 'byte' ? ' colspan="2"' }}>
+                    <a href="{{ url('/server/databases', url_params|merge({
+                      'sort_by': name,
+                      'sort_order': url_params.sort_by == name
+                      and url_params.sort_order == 'asc' ? 'desc' : 'asc'
+                    })) }}">
+                      {{ statistic.title }}
+                      {% if url_params.sort_by == name %}
+                        {% if url_params.sort_order == 'asc' %}
+                          {{ get_image('s_asc', 'Ascending'|trans) }}
+                        {% else %}
+                          {{ get_image('s_desc', 'Descending'|trans) }}
+                        {% endif %}
+                      {% endif %}
+                    </a>
+                  </th>
+                {% endfor %}
+              {% endif %}
+
+              {% if has_primary_replication %}
+                <th>{% trans 'Primary replication' %}</th>
+              {% endif %}
+
+              {% if has_replica_replication %}
+                <th>{% trans 'Replica replication' %}</th>
+              {% endif %}
+
+              <th>{% trans 'Action' %}</th>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for database in databases %}
+              <tr class="db-row{{ database.is_system_schema or database.is_pmadb ? ' noclick' }}" data-filter-row="{{ database.name|upper }}">
+                {% if is_drop_allowed %}
+                  <td class="tool">
+                    <input type="checkbox" name="selected_dbs[]" class="checkall" title="
+                      {{- database.name }}" value="
+                      {{- database.name }}"
+                      {{- database.is_system_schema or database.is_pmadb ? ' disabled' }}>
+                  </td>
+                {% endif %}
+
+                <td class="name">
+                  <a href="{{ database.url }}" title="
+                    {{- "Jump to database '%s'"|trans|format(database.name) }}">
+                    {{ database.name }}
+                  </a>
+                </td>
+
+                <td class="value">
+                  <dfn title="{{ database.collation.description }}">
+                    {{ database.collation.name }}
+                  </dfn>
+                </td>
+
+                {% if has_statistics %}
+                  {% for statistic in database.statistics %}
+                    {% if statistic.format is same as('byte') %}
+                      {% set value = format_byte_down(statistic.raw, 3, 1) %}
+                      <td class="value">
+                        <data value="{{ statistic.raw }}" title="{{ statistic.raw }}">
+                          {{ value[0] }}
+                        </data>
+                      </td>
+                      <td class="unit">{{ value[1] }}</td>
+                    {% else %}
+                      <td class="value">
+                        <data value="{{ statistic.raw }}" title="{{ statistic.raw }}">
+                          {{ format_number(statistic.raw, 0) }}
+                        </data>
+                      </td>
+                    {% endif %}
+                  {% endfor %}
+                {% endif %}
+
+                {% if database.replication.primary.status %}
+                  {% if database.replication.primary.is_replicated %}
+                    <td class="tool text-center">
+                      {{ get_icon('s_success', 'Replicated'|trans) }}
+                    </td>
+                  {% else %}
+                    <td class="tool text-center">
+                      {{ get_icon('s_cancel', 'Not replicated'|trans) }}
+                    </td>
+                  {% endif %}
+                {% endif %}
+
+                {% if database.replication.replica.status %}
+                  {% if database.replication.replica.is_replicated %}
+                    <td class="tool text-center">
+                      {{ get_icon('s_success', 'Replicated'|trans) }}
+                    </td>
+                  {% else %}
+                    <td class="tool text-center">
+                      {{ get_icon('s_cancel', 'Not replicated'|trans) }}
+                    </td>
+                  {% endif %}
+                {% endif %}
+
+                <td class="tool">
+                  <a class="server_databases" data="
+                    {{- database.name }}" href="{{ url('/server/privileges', {
+                      'db': database.name,
+                      'checkprivsdb': database.name
+                    }) }}" title="
+                    {{- 'Check privileges for database "%s".'|trans|format(database.name) }}">
+                    {{ get_icon('s_rights', 'Check privileges'|trans) }}
+                  </a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+
+          <tfoot>
+            <tr>
+              <th colspan="{{ is_drop_allowed ? '3' : '2' }}">
+                {% trans 'Total:' %}
+                <span id="filter-rows-count">
+                  {{- database_count -}}
+                </span>
+              </th>
+
+              {% if has_statistics %}
+                {% for statistic in total_statistics %}
+                  {% if statistic.format is same as('byte') %}
+                    {% set value = format_byte_down(statistic.raw, 3, 1) %}
+                    <th class="value">
+                      <data value="{{ statistic.raw }}" title="{{ statistic.raw }}">
+                        {{ value[0] }}
+                      </data>
+                    </th>
+                    <th class="unit">{{ value[1] }}</th>
+                  {% else %}
+                    <th class="value">
+                      <data value="{{ statistic.raw }}" title="{{ statistic.raw }}">
+                        {{ format_number(statistic.raw, 0) }}
+                      </data>
+                    </th>
+                  {% endif %}
+                {% endfor %}
+              {% endif %}
+
+              {% if has_primary_replication %}
+                <th></th>
+              {% endif %}
+
+              {% if has_replica_replication %}
+                <th></th>
+              {% endif %}
+
+              <th></th>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+    </form>
+
+    {% if not has_statistics %}
+      <div class="card">
+        <div class="card-body">
+          <div class="alert alert-info" role="alert">
+            {{ get_icon('s_notice', 'Note: Enabling the database statistics here might cause heavy traffic between the web server and the MySQL server.'|trans) }}
+          </div>
+          <a class="card-link" href="{{ url('/server/databases') }}" data-post="{{ get_common({'statistics': '1'}, '', false) }}" title="{% trans 'Enable statistics' %}">
+            {% trans 'Enable statistics' %}
+          </a>
+        </div>
+      </div>
+    {% endif %}
+  {% else %}
+    <div class="alert alert-primary my-3" role="alert">
+      {{ get_icon('s_notice', 'No databases'|trans) }}
+    </div>
+  {% endif %}
+</div>
+
+{% if is_drop_allowed %}
+  <div class="modal fade" id="dropDatabaseModal" tabindex="-1" aria-labelledby="dropDatabaseModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-scrollable">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="dropDatabaseModalLabel">{% trans 'Confirm' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Cancel' %}"></button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+          <button type="button" class="btn btn-danger" id="dropDatabaseModalDropButton">{% trans 'Drop' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

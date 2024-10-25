@@ -1,0 +1,11 @@
+<td>
+    <form action="{{ url('/sql') }}" method="post" {{ onsubmit|raw }}>
+        {{ get_hidden_inputs(db, table) }}
+        <input type="hidden" name="sql_query" value="{{ sql_query|raw }}">
+        <input type="hidden" name="pos" value="{{ pos }}">
+        <input type="hidden" name="is_browse_distinct" value="{{ is_browse_distinct }}">
+        <input type="hidden" name="goto" value="{{ goto }}">
+        {{ input_for_real_end|raw }}
+        <input type="submit" name="navig" class="btn btn-secondary ajax" value="{{ caption_output|raw }}" title="{{ title }}">
+    </form>
+</td>

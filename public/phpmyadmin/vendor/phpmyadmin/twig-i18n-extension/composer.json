@@ -1,0 +1,47 @@
+{
+    "name": "phpmyadmin/twig-i18n-extension",
+    "description": "Internationalization support for Twig via the gettext library",
+    "keywords": ["i18n","gettext"],
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Fabien Potencier",
+            "email": "fabien@symfony.com"
+        },
+        {
+            "name": "The phpMyAdmin Team",
+            "email": "developers@phpmyadmin.net",
+            "homepage": "https://www.phpmyadmin.net/team/"
+        }
+    ],
+    "support": {
+        "issues": "https://github.com/phpmyadmin/twig-i18n-extension/issues",
+        "source": "https://github.com/phpmyadmin/twig-i18n-extension"
+    },
+    "require": {
+        "php": "^7.1 || ^8.0",
+        "twig/twig": "^1.42.3|^2.0|^3.0"
+    },
+    "require-dev": {
+        "phpmyadmin/coding-standard": "^3.0.0",
+        "phpmyadmin/motranslator": "^5.2",
+        "phpstan/phpstan": "^0.12.66",
+        "phpunit/phpunit": "^7 || ^8 || ^9"
+    },
+    "scripts": {
+        "phpstan": "./vendor/bin/phpstan analyse",
+        "phpunit": "phpunit",
+        "phpcs": "phpcs",
+        "phpcbf": "phpcbf"
+    },
+    "autoload": {
+        "psr-4": { "PhpMyAdmin\\Twig\\Extensions\\": "src/" }
+    },
+    "autoload-dev": {
+        "psr-4": { "PhpMyAdmin\\Tests\\Twig\\Extensions\\": "test/" }
+    },
+    "config":{
+        "sort-packages": true
+    }
+}

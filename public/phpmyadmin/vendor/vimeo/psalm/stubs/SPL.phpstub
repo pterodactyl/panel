@@ -1,0 +1,972 @@
+<?php
+
+/**
+ * The SplDoublyLinkedList class provides the main functionalities of a doubly linked list.
+ * @link https://php.net/manual/en/class.spldoublylinkedlist.php
+ *
+ * @template TKey
+ * @template TValue
+ * @template-implements Iterator<TKey, TValue>
+ * @template-implements ArrayAccess<TKey, TValue>
+ */
+class SplDoublyLinkedList implements Iterator, Countable, ArrayAccess, Serializable
+{
+    public function __construct() {}
+
+    /**
+     * Add/insert a new value at the specified index
+     *
+     * @param TKey $index The index where the new value is to be inserted.
+     * @param TValue $newval The new value for the index.
+     * @return void
+     *
+     * @link https://php.net/spldoublylinkedlist.add
+     * @since 5.5.0
+     */
+    public function add($index, $newval) {}
+
+    /**
+     * Pops a node from the end of the doubly linked list
+     * @link https://php.net/manual/en/spldoublylinkedlist.pop.php
+     *
+     * @return TValue The value of the popped node.
+     *
+     * @since 5.3.0
+     */
+    public function pop() {}
+
+    /**
+     * Shifts a node from the beginning of the doubly linked list
+     * @link https://php.net/manual/en/spldoublylinkedlist.shift.php
+     *
+     * @return TValue The value of the shifted node.
+     *
+     * @since 5.3.0
+     */
+    public function shift() {}
+
+    /**
+     * Pushes an element at the end of the doubly linked list
+     * @link https://php.net/manual/en/spldoublylinkedlist.push.php
+     *
+     * @param TValue $value The value to push.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function push($value) {}
+
+    /**
+     * Prepends the doubly linked list with an element
+     * @link https://php.net/manual/en/spldoublylinkedlist.unshift.php
+     *
+     * @param TValue $value The value to unshift.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function unshift($value) {}
+
+    /**
+     * Peeks at the node from the end of the doubly linked list
+     * @link https://php.net/manual/en/spldoublylinkedlist.top.php
+     *
+     * @return TValue The value of the last node.
+     *
+     * @since 5.3.0
+     */
+    public function top() {}
+
+    /**
+     * Peeks at the node from the beginning of the doubly linked list
+     * @link https://php.net/manual/en/spldoublylinkedlist.bottom.php
+     *
+     * @return TValue The value of the first node.
+     *
+     * @since 5.3.0
+     */
+    public function bottom() {}
+
+    /**
+     * Counts the number of elements in the doubly linked list.
+     * @link https://php.net/manual/en/spldoublylinkedlist.count.php
+     *
+     * @return int the number of elements in the doubly linked list.
+     *
+     * @since 5.3.0
+     */
+    public function count() {}
+
+    /**
+     * Checks whether the doubly linked list is empty.
+     * @link https://php.net/manual/en/spldoublylinkedlist.isempty.php
+     *
+     * @return bool whether the doubly linked list is empty.
+     *
+     * @since 5.3.0
+     */
+    public function isEmpty() {}
+
+    /**
+     * Returns whether the requested $index exists
+     * @link https://php.net/manual/en/spldoublylinkedlist.offsetexists.php
+     *
+     * @param TKey $index The index being checked.
+     * @return bool true if the requested index exists, otherwise false
+     *
+     * @since 5.3.0
+     */
+    public function offsetExists($index) {}
+
+    /**
+     * Returns the value at the specified $index
+     * @link https://php.net/manual/en/spldoublylinkedlist.offsetget.php
+     *
+     * @param TKey $index The index with the value.
+     * @return TValue The value at the specified index.
+     *
+     * @since 5.3.0
+     */
+    public function offsetGet($index) {}
+
+    /**
+     * Sets the value at the specified $index to $newval
+     * @link https://php.net/manual/en/spldoublylinkedlist.offsetset.php
+     *
+     * @param TKey $index The index being set.
+     * @param TValue $newval The new value for the index.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function offsetSet($index, $newval) {}
+
+    /**
+     * Unsets the value at the specified $index
+     * @link https://php.net/manual/en/spldoublylinkedlist.offsetunset.php
+     *
+     * @param TKey $index The index being unset.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function offsetUnset($index) {}
+
+    /**
+     * Return current array entry
+     * @link https://php.net/manual/en/spldoublylinkedlist.current.php
+     *
+     * @return TValue The current node value.
+     *
+     * @since 5.3.0
+     */
+    public function current() {}
+
+    /**
+     * Return current node index
+     * @link https://php.net/manual/en/spldoublylinkedlist.key.php
+     *
+     * @return TKey The current node index.
+     *
+     * @since 5.3.0
+     */
+    public function key() {}
+}
+
+/**
+ * The SplFixedArray class provides the main functionalities of array.
+ * The main differences between a SplFixedArray and a normal PHP array is that
+ * the SplFixedArray is of fixed length and allows only integers within the range as indexes.
+ * The advantage is that it uses less memory than a standard array.
+ *
+ * @link https://php.net/manual/en/class.splfixedarray.php
+ *
+ * @template TValue
+ * @template-implements ArrayAccess<int, TValue>
+ * @template-implements Iterator<int, TValue>
+ */
+class SplFixedArray implements Iterator, ArrayAccess, Countable {
+    /**
+     * Constructs a new fixed array
+     *
+     * Initializes a fixed array with a number of NULL values equal to size.
+     * @link https://php.net/manual/en/splfixedarray.construct.php
+     *
+     * @param int $size The size of the fixed array. This expects a number between 0 and PHP_INT_MAX.
+
+     * @since 5.3.0
+     */
+    public function __construct(int $size = 0) {}
+
+    /**
+     * Import a PHP array in a new SplFixedArray instance
+     * @link https://php.net/manual/en/splfixedarray.fromarray.php
+     *
+     * @template TInValue
+     * @param array<int, TInValue> $array The array to import
+     * @param bool $save_indexes [optional] Try to save the numeric indexes used in the original array.
+     *
+     * @return SplFixedArray<TInValue> Instance of SplFixedArray containing the array content
+
+     * @since 5.3.0
+     */
+    public static function fromArray(array $array, bool $save_indexes = true): SplFixedArray {}
+
+    /**
+     * Returns a PHP array from the fixed array
+     * @link https://php.net/manual/en/splfixedarray.toarray.php
+     *
+     * @return array<int, TValue>
+
+     * @since 5.3.0
+     */
+    public function toArray(): array {}
+
+    /**
+     * Returns the size of the array.
+     * @link https://php.net/manual/en/splfixedarray.getsize.php
+     *
+     * @return int The size of the array
+
+     * @see SplFixedArray::count()
+     *
+     * @since 5.3.0
+     */
+    public function getSize(): int {}
+
+    /**
+     * Returns the size of the array.
+     * @link https://php.net/manual/en/splfixedarray.count.php
+     *
+     * @return int The size of the array
+     *
+     * @since 5.3.0
+     */
+    public function count(): int {}
+
+    /**
+     * Rewind the iterator back to the start
+     * @link https://php.net/manual/en/splfixedarray.rewind.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function rewind(): void {}
+
+    /**
+     * Check whether the array contains more elements
+     * @link https://php.net/manual/en/splfixedarray.valid.php
+     *
+     * @return bool true if the array contains any more elements, false otherwise.
+     *
+     * @since 5.3.0
+     */
+    public function valid(): bool {}
+
+    /**
+     * Returns current array index
+     * @link https://php.net/manual/en/splfixedarray.key.php
+     *
+     * @return int The current array index
+     *
+     * @since 5.3.0
+     */
+    public function key(): int {}
+
+    /**
+     * Returns the current array entry
+     * @link https://php.net/manual/en/splfixedarray.current.php
+     *
+     * @return TValue The current element value
+     *
+     * @since 5.3.0
+     */
+    public function current() {}
+
+    /**
+     * Move to the next entry
+     * @link https://php.net/manual/en/splfixedarray.next.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function next(): void {}
+
+    /**
+     * Returns whether the specified index exists
+     * @link https://php.net/manual/en/splfixedarray.offsetexists.php
+     *
+     * @param int $index The index being checked.
+     * @return bool true if the requested index exists, and false otherwise.
+     *
+     * @since 5.3.0
+     */
+    public function offsetExists(int $index): bool {}
+
+    /**
+     * Sets a new value at a specified index
+     * @link https://php.net/manual/en/splfixedarray.offsetset.php
+     *
+     * @param int $index The index being sent.
+     * @param TValue $newval The new value for the index
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function offsetSet(int $index, $newval): void {}
+
+    /**
+     * Unsets the value at the specified $index
+     * @link https://php.net/manual/en/splfixedarray.offsetunset.php
+     *
+     * @param int $index The index being unset
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function offsetUnset(int $index): void {}
+
+    /**
+     * Returns the value at the specified index
+     * @link https://php.net/manual/en/splfixedarray.offsetget.php
+     *
+     * @param int $index The index with the value
+     * @return TValue The value at the specified index
+     *
+     * @since 5.3.0
+     */
+    public function offsetGet(int $index) {}
+}
+
+
+/**
+ * The SplStack class provides the main functionalities of a stack implemented using a doubly linked list.
+ * @link https://php.net/manual/en/class.splstack.php
+ *
+ * @template TValue
+ * @template-extends SplDoublyLinkedList<int, TValue>
+ */
+class SplStack extends SplDoublyLinkedList {
+}
+
+/**
+ * The SplQueue class provides the main functionalities of a queue implemented using a doubly linked list.
+ * @link https://php.net/manual/en/class.splqueue.php
+ *
+ * @template TValue
+ * @template-extends SplDoublyLinkedList<int, TValue>
+ */
+class SplQueue extends SplDoublyLinkedList {
+    /**
+     * Adds an element to the queue.
+     * @link https://php.net/manual/en/splqueue.enqueue.php
+     *
+     * @param TValue $value The value to enqueue.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function enqueue($value) {}
+
+    /**
+     * Dequeues a node from the queue
+     * @link https://php.net/manual/en/splqueue.dequeue.php
+     *
+     * @return TValue The value of the dequeued node.
+     *
+     * @since 5.3.0
+     */
+    public function dequeue() {}
+}
+
+/**
+ * The SplHeap class provides the main functionalities of a Heap.
+ * @link https://php.net/manual/en/class.splheap.php
+ *
+ * @template TValue
+ * @template-implements Iterator<int, TValue>
+ */
+abstract class SplHeap implements Iterator, Countable {
+    public function __construct() {}
+
+    /**
+     * Compare elements in order to place them correctly in the heap while sifting up
+     * @link https://php.net/manual/en/splheap.compare.php
+     *
+     * @param TValue $value1 The value of the first node being compared.
+     * @param TValue $value2 The value of the second node being compared.
+     * @return int Positive integer if value1 is greater than value2, 0 if they are equal, negative integer otherwise.
+     *
+     * @since 5.3.0
+     */
+    protected abstract function compare($value1, $value2): int;
+
+    /**
+     * Counts the number of elements in the heap
+     * @link https://php.net/manual/en/splheap.count.php
+     *
+     * @return int The number of elements in the heap.
+     *
+     * @since 5.3.0
+     */
+    public function count(): int {}
+
+    /**
+     * Get the current datastructure node.
+     * @link https://php.net/manual/en/splheap.current.php
+     *
+     * @return TValue The current node value
+     *
+     * @since 5.3.0
+     */
+    public function current() {}
+
+    /**
+     * Extracts a node from top of the heap and sift up
+     * @link https://php.net/manual/en/splheap.extract.php
+     *
+     * @return TValue The current node value
+     *
+     * @since 5.3.0
+     */
+    public function extract() {}
+
+    /**
+     * Inserts an element in the heap by sifting it up
+     * @link https://php.net/manual/en/splheap.insert.php
+     *
+     * @param TValue $value The value to insert.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function insert($value): void {}
+
+    /**
+     * Tells if the heap is in a corrupted state
+     * @link https://php.net/manual/en/splheap.isCorrupted.php
+     *
+     * @return bool true if the heap is corrupted, false otherwise.
+     *
+     * @since 7.0.0
+     */
+    public function isCorrupted(): bool {}
+
+    /**
+     * Checks whether the heap is empty
+     * @link https://php.net/manual/en/splheap.isEmpty.php
+     *
+     * @return bool Whether the heap is empty
+     *
+     * @since 5.3.0
+     */
+    public function isEmpty(): bool {}
+
+    /**
+     * Return current node index
+     * @link https://php.net/manual/en/splheap.key.php
+     *
+     * @return int The current node index
+     *
+     * @since 5.3.0
+     */
+    public function key() {}
+
+    /**
+     * Move to the next node. This will delete the top node of the heap.
+     * @link https://php.net/manual/en/splheap.next.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function next(): void {}
+
+    /**
+     * Recover from the corrupted state and allow further actions on the heap
+     * @link https://php.net/manual/en/splheap.recoverFromCorruption.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function recoverFromCorruption(): void {}
+
+    /**
+     * Rewind iterator back to the start (no-op)
+     * @link https://php.net/manual/en/splheap.rewind.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function rewind(): void {}
+
+    /**
+     * Peeks at the node from the top of the heap
+     * @link https://php.net/manual/en/splheap.top.php
+     *
+     * @return TValue The value of the node on the top.
+     *
+     * @since 5.3.0
+     */
+    public function top() {}
+
+    /**
+     * Check whether the heap contains any more nodes
+     * @link https://php.net/manual/en/splheap.valid.php
+     *
+     * @return bool Returns true if the heap contains any more nodes, false otherwise.
+     *
+     * @since 5.3.0
+     */
+    public function valid(): bool {}
+}
+
+
+/**
+ * The SplMaxHeap class provides the main functionalities of a heap, keeping the maximum on the top.
+ * @link https://php.net/manual/en/class.splmaxheap.php
+ *
+ * @template TValue
+ * @template-extends SplHeap<TValue>
+ */
+class SplMaxHeap extends SplHeap {
+}
+
+/**
+ * The SplMinHeap class provides the main functionalities of a heap, keeping the maximum on the top.
+ * @link https://php.net/manual/en/class.splminheap.php
+ *
+ * @template TValue
+ * @template-extends SplHeap<TValue>
+ */
+class SplMinHeap extends SplHeap {
+}
+
+/**
+ * The SplPriorityQueue class provides the main functionalities of a prioritized queue, implemented using a max heap.
+ * @link https://php.net/manual/en/class.splpriorityqueue.php
+ *
+ * @template TPriority
+ * @template TValue
+ * @template-implements Iterator<int, TValue>
+ */
+class SplPriorityQueue implements Iterator, Countable {
+    /**
+     * Extract the data
+     */
+    const EXTR_DATA = 0x00000001;
+    /**
+     * Extract the priority
+     */
+    const EXTR_PRIORITY = 0x00000002;
+    /**
+     * Extract an array containing both
+     */
+    const EXTR_BOTH = 0x00000003;
+
+    public function __construct() {}
+
+    /**
+     * Compare priorities in order to place them correctly in the queue while sifting up
+     * @link https://php.net/manual/en/splpriorityqueue.compare.php
+     *
+     * @param TValue $priority1 The priority of the first node being compared.
+     * @param TValue $priority2 The priority of the second node being compared.
+     * @return int Positive integer if priority1 is greater than priority2, 0 if they are equal, negative integer otherwise.
+     *
+     * @since 5.3.0
+     */
+    public function compare($priority1, $priority2): int {}
+
+    /**
+     * Counts the number of elements in the queue
+     * @link https://php.net/manual/en/splpriorityqueue.count.php
+     *
+     * @return int The number of elements in the queue.
+     *
+     * @since 5.3.0
+     */
+    public function count(): int {}
+
+    /**
+     * Get the current datastructure node.
+     * @link https://php.net/manual/en/splpriorityqueue.current.php
+     *
+     * @return TValue The current node value
+     *
+     * @since 5.3.0
+     */
+    public function current() {}
+
+    /**
+     * Extracts a node from top of the queue and sift up
+     * @link https://php.net/manual/en/splpriorityqueue.extract.php
+     *
+     * @return TValue The current node value
+     *
+     * @since 5.3.0
+     */
+    public function extract() {}
+
+    /**
+     * Get the flags of extraction
+     * @link https://php.net/manual/en/splpriorityqueue.getextractflags.php
+     *
+     * @return SplPriorityQueue::EXTR_* Returns the current extraction mode
+     *
+     * @see SplPriorityQueue::setExtractFlags
+     *
+     * @since 5.3.0
+     */
+    public function getExtractFlags(): int {}
+
+    /**
+     * Inserts an element in the queue by sifting it up
+     * @link https://php.net/manual/en/splpriorityqueue.insert.php
+     *
+     * @param TValue $value The value to insert.
+     * @param TPriority $priority The associated priority.
+     * @return true
+     *
+     * @since 5.3.0
+     */
+    public function insert($value, $priority): bool {}
+
+    /**
+     * Tells if the queue is in a corrupted state
+     * @link https://php.net/manual/en/splpriorityqueue.isCorrupted.php
+     *
+     * @return bool true if the queue is corrupted, false otherwise.
+     *
+     * @since 7.0.0
+     */
+    public function isCorrupted(): bool {}
+
+    /**
+     * Checks whether the queue is empty
+     * @link https://php.net/manual/en/splpriorityqueue.isEmpty.php
+     *
+     * @return bool Whether the queue is empty
+     *
+     * @since 5.3.0
+     */
+    public function isEmpty(): bool {}
+
+    /**
+     * Return current node index
+     * @link https://php.net/manual/en/splpriorityqueue.key.php
+     *
+     * @return int The current node index
+     *
+     * @since 5.3.0
+     */
+    public function key() {}
+
+    /**
+     * Move to the next node.
+     * @link https://php.net/manual/en/splpriorityqueue.next.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function next(): void {}
+
+    /**
+     * Recover from the corrupted state and allow further actions on the queue
+     * @link https://php.net/manual/en/splpriorityqueue.recoverFromCorruption.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function recoverFromCorruption(): void {}
+
+    /**
+     * Rewind iterator back to the start (no-op)
+     * @link https://php.net/manual/en/splpriorityqueue.rewind.php
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function rewind(): void {}
+
+    /**
+     * Sets the mode of extraction
+     * @link https://php.net/manual/en/splpriorityqueue.setextractflags.php
+     *
+     * @param SplPriorityQueue::EXTR_* $flags Defines what is extracted by SplPriorityQueue::current(), SplPriorityQueue::top() and SplPriorityQueue::extract().
+     *
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function setExtractFlags(int $flags): void {}
+
+    /**
+     * Peeks at the node from the top of the queue
+     * @link https://php.net/manual/en/splpriorityqueue.top.php
+     *
+     * @return TValue The value of the node on the top.
+     *
+     * @since 5.3.0
+     */
+    public function top() {}
+
+    /**
+     * Check whether the queue contains any more nodes
+     * @link https://php.net/manual/en/splpriorityqueue.valid.php
+     *
+     * @return bool Returns true if the queue contains any more nodes, false otherwise.
+     *
+     * @since 5.3.0
+     */
+    public function valid(): bool {}
+}
+
+
+/**
+ * The SplObjectStorage class provides a map from objects to data or, by
+ * ignoring data, an object set. This dual purpose can be useful in many
+ * cases involving the need to uniquely identify objects.
+ * @link https://php.net/manual/en/class.splobjectstorage.php
+ *
+ * @template TObject as object
+ * @template TArrayValue
+ * @template-implements ArrayAccess<TObject, TArrayValue>
+ * @template-implements Iterator<int, TObject>
+ */
+class SplObjectStorage implements Countable, Iterator, Serializable, ArrayAccess {
+    public function __construct() {}
+
+    /**
+     * Adds an object in the storage
+     * @link https://php.net/manual/en/splobjectstorage.attach.php
+     *
+     * @param TObject $object The object to add.
+     * @param TArrayValue|null $data [optional] The data to associate with the object.
+     * @return void
+     *
+     * @since 5.1.0
+     */
+    public function attach($object, $data = null) {}
+
+    /**
+     * Removes an object from the storage
+     * @link https://php.net/manual/en/splobjectstorage.detach.php
+     *
+     * @param TObject $object The object to remove.
+     * @return void
+     *
+     * @since 5.1.0
+     */
+    public function detach($object) {}
+
+    /**
+     * Checks if the storage contains a specific object
+     * @link https://php.net/manual/en/splobjectstorage.contains.php
+     *
+     * @param TObject $object The object to look for.
+     * @return bool true if the object is in the storage, false otherwise.
+     *
+     * @since 5.1.0
+     */
+    public function contains($object) {}
+
+    /**
+     * Adds all objects from another storage
+     * @link https://php.net/manual/en/splobjectstorage.addall.php
+     *
+     * @param SplObjectStorage<TObject, TArrayValue> $storage The storage you want to import.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function addAll($storage) {}
+
+    /**
+     * Removes objects contained in another storage from the current storage
+     * @link https://php.net/manual/en/splobjectstorage.removeall.php
+     *
+     * @param SplObjectStorage<TObject, TArrayValue> $storage The storage containing the elements to remove.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function removeAll($storage) {}
+
+    /**
+     * Removes all objects except for those contained in another storage from the current storage
+     * @link https://php.net/manual/en/splobjectstorage.removeallexcept.php
+     *
+     * @param SplObjectStorage<TObject, TArrayValue> $storage The storage containing the elements to retain in the current storage.
+     * @return void
+     *
+     * @since 5.3.6
+     */
+    public function removeAllExcept($storage) {}
+
+    /**
+     * Returns the data associated with the current iterator entry
+     * @link https://php.net/manual/en/splobjectstorage.getinfo.php
+     *
+     * @return TArrayValue The data associated with the current iterator position.
+     *
+     * @since 5.3.0
+     */
+    public function getInfo() {}
+
+    /**
+     * Sets the data associated with the current iterator entry
+     * @link https://php.net/manual/en/splobjectstorage.setinfo.php
+     *
+     * @param TArrayValue $data The data to associate with the current iterator entry.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function setInfo($data) {}
+
+    /**
+     * Returns the number of objects in the storage
+     * @link https://php.net/manual/en/splobjectstorage.count.php
+     *
+     * @return int The number of objects in the storage.
+     *
+     * @since 5.1.0
+     */
+    public function count() {}
+
+    /**
+     * Rewind the iterator to the first storage element
+     * @link https://php.net/manual/en/splobjectstorage.rewind.php
+     *
+     * @return void
+     *
+     * @since 5.1.0
+     */
+    public function rewind() {}
+
+    /**
+     * Returns if the current iterator entry is valid
+     * @link https://php.net/manual/en/splobjectstorage.valid.php
+     *
+     * @return bool true if the iterator entry is valid, false otherwise.
+     *
+     * @since 5.1.0
+     */
+    public function valid() {}
+
+    /**
+     * Returns the index at which the iterator currently is
+     * @link https://php.net/manual/en/splobjectstorage.key.php
+     *
+     * @return int The index corresponding to the position of the iterator.
+     *
+     * @since 5.1.0
+     */
+    public function key() {}
+
+    /**
+     * Returns the current storage entry
+     * @link https://php.net/manual/en/splobjectstorage.current.php
+     *
+     * @return TObject The object at the current iterator position.
+     *
+     * @since 5.1.0
+     */
+    public function current() {}
+
+    /**
+     * Move to the next entry
+     * @link https://php.net/manual/en/splobjectstorage.next.php
+     *
+     * @return void
+     *
+     * @since 5.1.0
+     */
+    public function next() {}
+
+    /**
+     * Unserializes a storage from its string representation
+     * @link https://php.net/manual/en/splobjectstorage.unserialize.php
+     *
+     * @param string $serialized The serialized representation of a storage.
+     * @return void
+     *
+     * @since 5.2.2
+     */
+    public function unserialize($serialized) {}
+
+    /**
+     * Serializes the storage
+     * @link https://php.net/manual/en/splobjectstorage.serialize.php
+     *
+     * @return string A string representing the storage.
+     *
+     * @since 5.2.2
+     */
+    public function serialize() {}
+
+    /**
+     * Checks whether an object exists in the storage
+     * @link https://php.net/manual/en/splobjectstorage.offsetexists.php
+     *
+     * @param TObject $object The object to look for.
+     * @return bool true if the object exists in the storage, and false otherwise.
+     *
+     * @since 5.3.0
+     */
+    public function offsetExists($object) {}
+
+    /**
+     * Associates data to an object in the storage
+     * @link https://php.net/manual/en/splobjectstorage.offsetset.php
+     *
+     * @param TObject $object The object to associate data with.
+     * @param TArrayValue|null $data [optional] The data to associate with the object.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function offsetSet($object, $data = null) {}
+
+    /**
+     * Removes an object from the storage
+     * @link https://php.net/manual/en/splobjectstorage.offsetunset.php
+     *
+     * @param TObject $object The object to remove.
+     * @return void
+     *
+     * @since 5.3.0
+     */
+    public function offsetUnset($object) {}
+
+    /**
+     * Returns the data associated with an <type>object</type>
+     * @link https://php.net/manual/en/splobjectstorage.offsetget.php
+     *
+     * @param TObject $object The object to look for.
+     * @return TArrayValue The data previously associated with the object in the storage.
+     *
+     * @since 5.3.0
+     */
+    public function offsetGet($object) {}
+
+    /**
+     * Calculate a unique identifier for the contained objects
+     * @link https://php.net/manual/en/splobjectstorage.gethash.php
+     *
+     * @param object $object object whose identifier is to be calculated.
+     * @return string A string with the calculated identifier.
+     *
+     * @since 5.4.0
+     */
+    public function getHash($object) {}
+
+}

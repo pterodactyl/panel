@@ -1,0 +1,20 @@
+<ul>
+    <li>
+        <input type="radio" name="knjenc" value="" checked="checked" id="kj-none">
+        <label for="kj-none">
+            {# l10n: This is currently used only in Japanese locales #}
+            {% trans %}None{% context %}None encoding conversion{% endtrans %}
+        </label>
+        <input type="radio" name="knjenc" value="EUC-JP" id="kj-euc">
+        <label for="kj-euc">EUC</label>
+        <input type="radio" name="knjenc" value="SJIS" id="kj-sjis">
+        <label for="kj-sjis">SJIS</label>
+    </li>
+    <li>
+        <input type="checkbox" name="xkana" value="kana" id="kj-kana">
+        <label for="kj-kana">
+            {# l10n: This is currently used only in Japanese locales #}
+            {% trans 'Convert to Kana' %}
+        </label>
+    </li>
+</ul>

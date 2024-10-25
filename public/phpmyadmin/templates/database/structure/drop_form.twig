@@ -1,0 +1,23 @@
+<form action="{{ url('/database/structure/drop-table') }}" method="post">
+  {{ get_hidden_inputs(url_params) }}
+
+  <fieldset class="pma-fieldset confirmation">
+    <legend>
+      {% trans 'Do you really want to execute the following query?' %}
+    </legend>
+
+    <code>{{ full_query|raw }}</code>
+  </fieldset>
+
+  <fieldset class="pma-fieldset tblFooters">
+    <div id="foreignkeychk" class="float-start">
+      <input type="hidden" name="fk_checks" value="0">
+      <input type="checkbox" name="fk_checks" id="fk_checks" value="1"{{ is_foreign_key_check ? ' checked' }}>
+      <label for="fk_checks">{% trans 'Enable foreign key checks' %}</label>
+    </div>
+    <div class="float-end">
+      <input id="buttonYes" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'Yes' %}">
+      <input id="buttonNo" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'No' %}">
+    </div>
+  </fieldset>
+</form>

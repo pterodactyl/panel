@@ -1,0 +1,105 @@
+<div id="edit_user_dialog">
+  <h2>
+    {{ get_icon('b_usredit') }}
+    {% trans 'Edit privileges:' %}
+    {% trans 'User account' %}
+    <em>
+      <a class="edit_user_anchor" href="{{ url('/server/privileges', {
+        'username': username,
+        'hostname': hostname,
+        'dbname': '',
+        'tablename': ''
+      }) }}">
+        '{{ username }}'@'{{ hostname }}'
+      </a>
+    </em>
+    -
+    {% trans 'Database' %}
+    <em>
+      <a href="{{ url('/server/privileges', {
+        'username': username,
+        'hostname': hostname,
+        'dbname': dbname,
+        'routinename': ''
+      }) }}">
+        {{ database }}
+      </a>
+    </em>
+    -
+    {% trans 'Routine' %}
+    <em>{{ routine }}</em>
+  </h2>
+
+  {% if current_user == username ~ '@' ~ hostname %}
+    {{ 'Note: You are attempting to edit privileges of the user with which you are currently logged in.'|trans|notice }}
+  {% endif %}
+
+  <form class="submenu-item" name="usersForm" id="addUsersForm" action="{{ url('/server/privileges') }}" method="post">
+    {{ get_hidden_inputs() }}
+    <input type="hidden" name="username" value="{{ username }}">
+    <input type="hidden" name="hostname" value="{{ hostname }}">
+    <input type="hidden" name="dbname" value="{{ database }}">
+    <input type="hidden" name="routinename" value="{{ routine }}">
+    <input type="hidden" name="grant_count" value="{{ privileges|length }}">
+
+    <fieldset class="pma-fieldset" id="fieldset_user_global_rights">
+      <legend data-submenu-label="{% trans 'Routine' %}">
+        {% trans 'Routine-specific privileges' %}
+      </legend>
+      <p>
+        <small>
+          <em>{% trans 'Note: MySQL privilege names are expressed in English.' %}</em>
+        </small>
+      </p>
+
+      <fieldset class="pma-fieldset">
+        <legend>
+          <input type="checkbox" class="sub_checkall_box" id="checkall_Routine_priv" title="{% trans 'Check all' %}">
+          <label for="checkall_Routine_priv">{% trans 'Routine' %}</label>
+        </legend>
+
+        <div class="item">
+          <input type="checkbox" class="checkall" name="Grant_priv" id="checkbox_Grant_priv" value="Y" title="
+            {%- trans 'Allows user to give to other users or remove from other users privileges that user possess on this routine.' %}"
+            {{- privileges['Grant_priv'] == 'Y' ? ' checked' }}>
+          <label for="checkbox_Grant_priv">
+            <code>
+              <dfn title="{% trans 'Allows user to give to other users or remove from other users privileges that user possess on this routine.' %}">
+                GRANT
+              </dfn>
+            </code>
+          </label>
+        </div>
+
+        <div class="item">
+          <input type="checkbox" class="checkall" name="Alter_routine_priv" id="checkbox_Alter_routine_priv" value="Y" title="
+            {%- trans 'Allows altering and dropping this routine.' %}"{{ privileges['Alter_routine_priv'] == 'Y' ? ' checked' }}>
+          <label for="checkbox_Alter_routine_priv">
+            <code>
+              <dfn title="{% trans 'Allows altering and dropping this routine.' %}">
+                ALTER ROUTINE
+              </dfn>
+            </code>
+          </label>
+        </div>
+
+        <div class="item">
+          <input type="checkbox" class="checkall" name="Execute_priv" id="checkbox_Execute_priv" value="Y" title="
+            {%- trans 'Allows executing this routine.' %}"{{ privileges['Execute_priv'] == 'Y' ? ' checked' }}>
+          <label for="checkbox_Execute_priv">
+            <code>
+              <dfn title="{% trans 'Allows executing this routine.' %}">
+                EXECUTE
+              </dfn>
+            </code>
+          </label>
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <fieldset id="fieldset_user_privtable_footer" class="pma-fieldset tblFooters">
+      <input type="hidden" name="update_privs" value="1">
+      <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+    </fieldset>
+  </form>
+</div>

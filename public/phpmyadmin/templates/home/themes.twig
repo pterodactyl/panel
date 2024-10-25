@@ -1,0 +1,18 @@
+<form method="post" action="{{ url('/themes/set') }}" class="disableAjax">
+  {{ get_hidden_inputs() }}
+  <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 row-cols-xl-4 g-4">
+    {% for theme in themes %}
+      <div class="col">
+        <div class="card">
+          <img src="./themes/{{ theme.id }}/screen.png" class="card-img-top" alt="{{ 'Screenshot of the %s theme.'|trans|format(theme.name) }}">
+          <div class="card-body">
+            <h5 class="card-title">{{ theme.name }} <small>({{ theme.version }})</small></h5>
+          </div>
+          <div class="card-footer">
+            <button type="submit" class="btn btn-primary" name="set_theme" value="{{ theme.id }}">{% trans %}Take it{% notes %}Choose the theme button in the themes list modal{% endtrans %}</button>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</form>

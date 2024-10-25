@@ -1,0 +1,118 @@
+<form action="{{ url('/database/qbe') }}" method="post" id="formQBE" class="lock-page">
+  {{ get_hidden_inputs(url_params) }}
+
+  <div class="w-100">
+    <fieldset class="pma-fieldset">
+
+      {{ saved_searches_field|raw }}
+
+      <div class="table-responsive jsresponsive">
+        <table class="table table-borderless table-sm w-auto">
+          <tr class="noclick">
+            <th>{% trans 'Column:' %}</th>
+            {{ column_names_row|raw }}
+          </tr>
+
+          <tr class="noclick">
+            <th>{% trans 'Alias:' %}</th>
+            {{ column_alias_row|raw }}
+          </tr>
+
+          <tr class="noclick">
+            <th>{% trans 'Show:' %}</th>
+            {{ show_row|raw }}
+          </tr>
+
+          <tr class="noclick">
+            <th>{% trans 'Sort:' %}</th>
+            {{ sort_row|raw }}
+          </tr>
+
+          <tr class="noclick">
+            <th>{% trans 'Sort order:' %}</th>
+            {{ sort_order|raw }}
+          </tr>
+
+          <tr class="noclick">
+            <th>{% trans 'Criteria:' %}</th>
+            {{ criteria_input_box_row|raw }}
+          </tr>
+
+          {{ ins_del_and_or_criteria_rows|raw }}
+
+          <tr class="noclick">
+            <th>{% trans 'Modify:' %}</th>
+            {{ modify_columns_row|raw }}
+          </tr>
+        </table>
+      </div>
+    </fieldset>
+  </div>
+
+  <fieldset class="pma-fieldset tblFooters">
+    <div class="float-start">
+      <label for="criteriaRowAddSelect">{% trans 'Add/Delete criteria rows:' %}</label>
+      <select size="1" name="criteriaRowAdd" id="criteriaRowAddSelect">
+        <option value="-3">-3</option>
+        <option value="-2">-2</option>
+        <option value="-1">-1</option>
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+
+    <div class="float-start">
+      <label for="criteriaColumnAddSelect">{% trans 'Add/Delete columns:' %}</label>
+      <select size="1" name="criteriaColumnAdd" id="criteriaColumnAddSelect">
+        <option value="-3">-3</option>
+        <option value="-2">-2</option>
+        <option value="-1">-1</option>
+        <option value="0" selected>0</option>
+        <option value="1">1</option>
+        <option value="2">2</option>
+        <option value="3">3</option>
+      </select>
+    </div>
+
+    <div class="float-start">
+      <input class="btn btn-secondary" type="submit" name="modify" value="{% trans 'Update query' %}">
+    </div>
+  </fieldset>
+
+  <div class="float-start w-100">
+    <fieldset class="pma-fieldset">
+      <legend>{% trans 'Use tables' %}</legend>
+
+      <select class="resize-vertical" name="TableList[]" id="listTable" size="{{ criteria_tables|length > 30 ? '15' : '7' }}" aria-label="{% trans 'Use tables' %}" multiple>
+        {% for table, selected in criteria_tables %}
+          <option value="{{ table }}"{{ selected|raw }}>{{ table }}</option>
+        {% endfor %}
+      </select>
+    </fieldset>
+
+    <fieldset class="pma-fieldset tblFooters">
+      <input class="btn btn-secondary" type="submit" name="modify" value="{% trans 'Update query' %}">
+    </fieldset>
+  </div>
+</form>
+
+<form action="{{ url('/database/qbe') }}" method="post" class="lock-page">
+  {{ get_hidden_inputs(db) }}
+  <input type="hidden" name="submit_sql" value="1">
+
+  <div class="float-start w-50">
+    <fieldset class="pma-fieldset" id="tblQbe">
+      <legend>{{ 'SQL query on database <b>%s</b>:'|trans|format(db_link)|raw }}</legend>
+
+      <textarea cols="80" name="sql_query" id="textSqlquery" rows="{{ criteria_tables|length > 30 ? '15' : '7' }}" dir="ltr" aria-label="{% trans 'SQL query' %}">
+        {{- sql_query -}}
+      </textarea>
+    </fieldset>
+
+    <fieldset class="pma-fieldset tblFooters" id="tblQbeFooters">
+      <input class="btn btn-primary" type="submit" value="{% trans 'Submit query' %}">
+    </fieldset>
+  </div>
+</form>

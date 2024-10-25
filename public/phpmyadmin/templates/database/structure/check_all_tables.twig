@@ -1,0 +1,61 @@
+<div class="clearfloat d-print-none">
+    <img class="selectallarrow" src="{{ image('arrow_' ~ text_dir ~ '.png') }}" width="38" height="22" alt="{% trans 'With selected:' %}">
+    <input type="checkbox" id="tablesForm_checkall" class="checkall_box" title="{% trans 'Check all' %}">
+    <label for="tablesForm_checkall">{% trans 'Check all' %}</label>
+    {% if overhead_check != '' %}
+        / <a href="#" class="checkall-filter" data-checkall-selector=".tbl-overhead">{% trans 'Check tables having overhead' %}</a>
+    {% endif %}
+    <select name="submit_mult" style="margin: 0 3em 0 3em;">
+        <option value="{% trans 'With selected:' %}" selected="selected">{% trans 'With selected:' %}</option>
+        <option value="copy_tbl">{% trans 'Copy table' %}</option>
+        <option value="show_create">{% trans 'Show create' %}</option>
+        <option value="export">{% trans 'Export' %}</option>
+        {% if not db_is_system_schema and not disable_multi_table %}
+            <optgroup label="{% trans 'Delete data or table' %}">
+                <option value="empty_tbl">{% trans 'Empty' %}</option>
+                <option value="drop_tbl">{% trans 'Drop' %}</option>
+            </optgroup>
+            <optgroup label="{% trans 'Table maintenance' %}">
+                <option value="analyze_tbl">{% trans 'Analyze table' %}</option>
+                <option value="check_tbl">{% trans 'Check table' %}</option>
+                <option value="checksum_tbl">{% trans 'Checksum table' %}</option>
+                <option value="optimize_tbl">{% trans 'Optimize table' %}</option>
+                <option value="repair_tbl">{% trans 'Repair table' %}</option>
+            </optgroup>
+            <optgroup label="{% trans 'Prefix' %}">
+                <option value="add_prefix_tbl">{% trans 'Add prefix to table' %}</option>
+                <option value="replace_prefix_tbl">{% trans 'Replace table prefix' %}</option>
+                <option value="copy_tbl_change_prefix">{% trans 'Copy table with prefix' %}</option>
+            </optgroup>
+        {% endif %}
+        {% if central_columns_work is defined and central_columns_work %}
+            <optgroup label="{% trans 'Central columns' %}">
+                <option value="sync_unique_columns_central_list">{% trans 'Add columns to central list' %}</option>
+                <option value="delete_unique_columns_central_list">{% trans 'Remove columns from central list' %}</option>
+                <option value="make_consistent_with_central_list">{% trans 'Make consistent with central list' %}</option>
+            </optgroup>
+        {% endif %}
+    </select>
+    {{ hidden_fields|join('\n')|raw }}
+</div>
+
+{% if central_columns_work is defined and central_columns_work %}
+  <div class="modal fade" id="makeConsistentWithCentralListModal" data-bs-backdrop="static" data-bs-keyboard="false"
+       tabindex="-1" aria-labelledby="makeConsistentWithCentralListModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="makeConsistentWithCentralListModalLabel">{% trans 'Are you sure?' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Cancel' %}"></button>
+        </div>
+        <div class="modal-body">
+          {{ 'This action may change some of the columns definition.[br]Are you sure you want to continue?'|trans|sanitize }}
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+          <button type="button" class="btn btn-primary" id="makeConsistentWithCentralListContinue">{% trans 'Continue' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}

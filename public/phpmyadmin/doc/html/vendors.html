@@ -1,0 +1,158 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Distributing and packaging phpMyAdmin &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Copyright" href="copyright.html" />
+    <link rel="prev" title="Security policy" href="security.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="copyright.html" title="Copyright"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="security.html" title="Security policy"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Distributing and packaging phpMyAdmin</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="distributing-and-packaging-phpmyadmin">
+<h1>Distributing and packaging phpMyAdmin<a class="headerlink" href="#distributing-and-packaging-phpmyadmin" title="Permalink to this headline">¶</a></h1>
+<p>This document is intended to give pieces of advice to people who want to
+redistribute phpMyAdmin inside other software packages such as Linux
+distribution or some all in one package including web server and MySQL
+server.</p>
+<p>Generally, you can customize some basic aspects (paths to some files and
+behavior) in <code class="file docutils literal notranslate"><span class="pre">libraries/vendor_config.php</span></code>.</p>
+<p>For example, if you want setup script to generate a config file in var, change
+<code class="docutils literal notranslate"><span class="pre">SETUP_CONFIG_FILE</span></code> to <code class="file docutils literal notranslate"><span class="pre">/var/lib/phpmyadmin/config.inc.php</span></code> and you
+will also probably want to skip directory writable check, so set
+<code class="docutils literal notranslate"><span class="pre">SETUP_DIR_WRITABLE</span></code> to false.</p>
+<div class="section" id="external-libraries">
+<h2>External libraries<a class="headerlink" href="#external-libraries" title="Permalink to this headline">¶</a></h2>
+<p>phpMyAdmin includes several external libraries, you might want to
+replace them with system ones if they are available, but please note
+that you should test whether the version you provide is compatible with the
+one we ship.</p>
+<p>Currently known list of external libraries:</p>
+<dl class="simple">
+<dt>js/vendor</dt><dd><p>jQuery js framework libraries and various js libraries.</p>
+</dd>
+<dt>vendor/</dt><dd><p>The download kit includes various Composer packages as
+dependencies.</p>
+</dd>
+</dl>
+</div>
+<div class="section" id="specific-files-licenses">
+<h2>Specific files LICENSES<a class="headerlink" href="#specific-files-licenses" title="Permalink to this headline">¶</a></h2>
+<p>phpMyAdmin distributed themes contain some content that is under licenses.</p>
+<ul class="simple">
+<li><p>The icons of the <cite>Original</cite> and <cite>pmahomme</cite> themes are from the <a class="reference external" href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p></li>
+<li><p>Some icons of the <cite>Metro</cite> theme are from the <a class="reference external" href="http://www.famfamfam.com/lab/icons/silk/">Silk Icons</a>.</p></li>
+<li><p><cite>themes/*/img/b_rename.svg</cite> Is a <a class="reference external" href="https://thenounproject.com/Icons8/">Icons8</a>, icon from the <a class="reference external" href="https://thenounproject.com/Icons8/collection/android-l-icon-pack/">Android L Icon Pack Collection</a>. The icon <a class="reference external" href="https://thenounproject.com/term/rename/61456/">rename</a>.</p></li>
+<li><p><cite>themes/metro/img/user.svg</cite> Is a IcoMoon the <a class="reference external" href="https://github.com/Keyamoon/IcoMoon-Free/blob/master/SVG/114-user.svg">user</a></p></li>
+</ul>
+<p>CC BY 4.0 or GPL</p>
+</div>
+<div class="section" id="licenses-for-vendors">
+<h2>Licenses for vendors<a class="headerlink" href="#licenses-for-vendors" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>Silk Icons are under the <a class="reference external" href="http://www.famfamfam.com/lab/icons/silk/">CC BY 2.5 or CC BY 3.0</a> licenses.</p></li>
+<li><p><cite>rename</cite> from <cite>Icons8</cite> is under the <a class="reference external" href="https://creativecommons.org/publicdomain/zero/1.0/">“public domain”</a> (CC0 1.0) license.</p></li>
+<li><p>IcoMoon Free is under <a class="reference external" href="https://github.com/Keyamoon/IcoMoon-Free/blob/master/License.txt">“CC BY 4.0 or GPL”</a>.</p></li>
+</ul>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Distributing and packaging phpMyAdmin</a><ul>
+<li><a class="reference internal" href="#external-libraries">External libraries</a></li>
+<li><a class="reference internal" href="#specific-files-licenses">Specific files LICENSES</a></li>
+<li><a class="reference internal" href="#licenses-for-vendors">Licenses for vendors</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="security.html"
+                        title="previous chapter">Security policy</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="copyright.html"
+                        title="next chapter">Copyright</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/vendors.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="copyright.html" title="Copyright"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="security.html" title="Security policy"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Distributing and packaging phpMyAdmin</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

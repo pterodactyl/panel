@@ -1,0 +1,62 @@
+<div class="container-fluid my-3">
+  <h2>
+    {{ get_icon('b_routines', 'Routines'|trans) }}
+    {{ show_mysql_docu('STORED_ROUTINES') }}
+  </h2>
+
+  <div class="d-flex flex-wrap my-3">
+    <div>
+      <div class="input-group">
+        <div class="input-group-text">
+          <div class="form-check mb-0">
+            <input class="form-check-input checkall_box" type="checkbox" value="" id="checkAllCheckbox" form="rteListForm">
+            <label class="form-check-label" for="checkAllCheckbox">{% trans 'Check all' %}</label>
+          </div>
+        </div>
+        <button class="btn btn-outline-secondary" id="bulkActionExportButton" type="submit" name="submit_mult" value="export" form="rteListForm" title="{% trans 'Export' %}">
+          {{ get_icon('b_export', 'Export'|trans) }}
+        </button>
+        <button class="btn btn-outline-secondary" id="bulkActionDropButton" type="submit" name="submit_mult" value="drop" form="rteListForm" title="{% trans 'Drop' %}">
+          {{ get_icon('b_drop', 'Drop'|trans) }}
+        </button>
+      </div>
+    </div>
+
+    <div class="ms-auto">
+      <div class="input-group">
+        <span class="input-group-text">{{ get_image('b_search', 'Search'|trans) }}</span>
+        <input class="form-control" name="filterText" type="text" id="filterText" value="" placeholder="{% trans 'Search' %}" aria-label="{% trans 'Search' %}">
+      </div>
+    </div>
+    <div class="ms-2">
+      <a class="ajax add_anchor btn btn-primary{{ not has_privilege ? ' disabled' }}" href="{{ url('/database/routines', {'db': db, 'table': table, 'add_item': true}) }}" role="button"{{ not has_privilege ? ' tabindex="-1" aria-disabled="true"' }}>
+        {{ get_icon('b_routine_add', 'Create new routine'|trans) }}
+      </a>
+    </div>
+  </div>
+
+  <form id="rteListForm" class="ajax" action="{{ url('/database/routines') }}">
+    {{ get_hidden_inputs(db, table) }}
+
+    <div id="nothing2display"{{ items is not empty ? ' class="hide"' }}>
+      {% trans 'There are no routines to display.' %}
+    </div>
+
+    <table id="routinesTable" class="table table-striped table-hover{{ items is empty ? ' hide' }} data w-auto">
+      <thead>
+      <tr>
+        <th></th>
+        <th>{% trans 'Name' %}</th>
+        <th>{% trans 'Type' %}</th>
+        <th>{% trans 'Returns' %}</th>
+        <th colspan="4"></th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr class="hide">{% for i in 0..7 %}<td></td>{% endfor %}</tr>
+
+      {{ rows|raw }}
+      </tbody>
+    </table>
+  </form>
+</div>

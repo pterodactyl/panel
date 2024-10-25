@@ -1,0 +1,31 @@
+<div class="row">
+  <div class="col-12">
+    <h2>
+      {{ get_icon('b_usrlist') }}
+      {% trans 'User accounts overview' %}
+    </h2>
+  </div>
+</div>
+
+{{ error_messages|raw }}
+
+{{ empty_user_notice|raw }}
+
+{{ initials|raw }}
+
+{% if users_overview is not empty %}
+  {{ users_overview|raw }}
+{% elseif is_createuser %}
+  <div class="row">
+    <div class="col-12">
+      <fieldset class="pma-fieldset" id="fieldset_add_user">
+        <legend>{% trans %}New{% context %}Create new user{% endtrans %}</legend>
+        <a id="add_user_anchor" href="{{ url('/server/privileges', {'adduser': true}) }}">
+          {{ get_icon('b_usradd', 'Add user account'|trans) }}
+        </a>
+      </fieldset>
+    </div>
+  </div>
+{% endif %}
+
+{{ flush_notice|raw }}

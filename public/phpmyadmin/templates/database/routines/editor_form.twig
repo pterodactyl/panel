@@ -1,0 +1,184 @@
+<form class="rte_form{{ not is_ajax ? ' disableAjax' }}" action="{{ url('/database/routines') }}" method="post">
+  <input name="{{ is_edit_mode ? 'edit_item' : 'add_item' }}" type="hidden" value="1">
+  {% if is_edit_mode %}
+    <input name="item_original_name" type="hidden" value="{{ routine.item_original_name }}">
+    <input name="item_original_type" type="hidden" value="{{ routine.item_original_type }}">
+  {% endif %}
+  {{ get_hidden_inputs(db) }}
+
+  <div class="card">
+    <div class="card-header">
+      {% trans 'Details' %}
+      {% if not is_edit_mode %}
+        {{ show_mysql_docu('CREATE_PROCEDURE') }}
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <table class="rte_table table table-borderless table-sm">
+        <tr>
+          <td>{% trans 'Routine name' %}</td>
+          <td>
+            <input type="text" name="item_name" maxlength="64" value="{{ routine.item_name }}">
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Type' %}</td>
+          <td>
+            {% if is_ajax %}
+              <select name="item_type">
+                <option value="PROCEDURE"{{ routine.item_type == 'PROCEDURE' ? ' selected' }}>PROCEDURE</option>
+                <option value="FUNCTION"{{ routine.item_type == 'FUNCTION' ? ' selected' }}>FUNCTION</option>
+              </select>
+            {% else %}
+              <input name="item_type" type="hidden" value="{{ routine.item_type }}">
+              <div class="fw-bold text-center w-50">
+                {{ routine['item_type'] }}
+              </div>
+              <input type="submit" class="btn btn-secondary" name="routine_changetype" value="{{ 'Change to %s'|trans|format(routine.item_type_toggle) }}">
+            {% endif %}
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Parameters' %}</td>
+          <td>
+            <table class="routine_params_table table table-borderless table-sm">
+              <thead>
+                <tr>
+                  <td></td>
+                  <th class="routine_direction_cell{{ routine.item_type == 'FUNCTION' ? ' hide' }}">{% trans 'Direction' %}</th>
+                  <th>{% trans 'Name' %}</th>
+                  <th>{% trans 'Type' %}</th>
+                  <th>{% trans 'Length/Values' %}</th>
+                  <th colspan="2">{% trans 'Options' %}</th>
+                  <th class="routine_param_remove hide"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {{ parameter_rows|raw }}
+              </tbody>
+            </table>
+          </td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>
+            {% if is_ajax %}
+              <button type="button" class="btn btn-primary" id="addRoutineParameterButton">{% trans 'Add parameter' %}</button>
+            {% else %}
+              <input type="submit" class="btn btn-primary" name="routine_addparameter" value="{% trans 'Add parameter' %}">
+              <input type="submit" class="btn btn-secondary"  name="routine_removeparameter" value="{% trans 'Remove last parameter' %}"{{ not routine.item_num_params ? ' disabled' }}>
+            {% endif %}
+          </td>
+        </tr>
+        <tr class="routine_return_row{{ routine.item_type == 'PROCEDURE' ? ' hide' }}">
+          <td>{% trans 'Return type' %}</td>
+          <td>
+            <select name="item_returntype">
+              {{ get_supported_datatypes(true, routine.item_returntype) }}
+            </select>
+          </td>
+        </tr>
+        <tr class="routine_return_row{{ routine.item_type == 'PROCEDURE' ? ' hide' }}">
+          <td>{% trans 'Return length/values' %}</td>
+          <td>
+            <input type="text" name="item_returnlength" value="{{ routine.item_returnlength }}">
+          </td>
+          <td class="hide no_len">---</td>
+        </tr>
+        <tr class="routine_return_row{{ routine.item_type == 'PROCEDURE' ? ' hide' }}">
+          <td>{% trans 'Return options' %}</td>
+          <td>
+            <div>
+              <select lang="en" dir="ltr" name="item_returnopts_text">
+                <option value="">{% trans 'Charset' %}</option>
+                <option value=""></option>
+                {% for charset in charsets %}
+                  <option value="{{ charset.getName() }}" title="{{ charset.getDescription() }}"{{ routine.item_returnopts_text == charset.getName() ? ' selected' }}>{{ charset.getName() }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div>
+              <select name="item_returnopts_num">
+                <option value=""></option>
+                {% for numeric_option in numeric_options %}
+                  <option value="{{ numeric_option }}"{{ routine.item_returnopts_num == numeric_option ? ' selected' }}>{{ numeric_option }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="hide no_opts">---</div>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Definition' %}</td>
+          <td>
+            <textarea name="item_definition" rows="15" cols="40">{{ routine.item_definition }}</textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Is deterministic' %}</td>
+          <td>
+            <input type="checkbox" name="item_isdeterministic"{{ routine.item_isdeterministic|raw }}>
+          </td>
+        </tr>
+
+        {% if is_edit_mode %}
+          <tr>
+            <td>
+              {% trans 'Adjust privileges' %}
+              {{ show_docu('faq', 'faq6-39') }}
+            </td>
+            <td>
+              {% if has_privileges %}
+                <input type="checkbox" name="item_adjust_privileges" value="1" checked>
+              {% else %}
+                <input type="checkbox" name="item_adjust_privileges" value="1" title="{% trans 'You do not have sufficient privileges to perform this operation; Please refer to the documentation for more details.' %}" disabled>
+              {% endif %}
+            </td>
+          </tr>
+        {% endif %}
+
+        <tr>
+          <td>{% trans 'Definer' %}</td>
+          <td>
+            <input type="text" name="item_definer" value="{{ routine.item_definer }}">
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Security type' %}</td>
+          <td>
+            <select name="item_securitytype">
+              <option value="DEFINER"{{ routine.item_securitytype_definer|raw }}>DEFINER</option>
+              <option value="INVOKER"{{ routine.item_securitytype_invoker|raw }}>INVOKER</option>
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'SQL data access' %}</td>
+          <td>
+            <select name="item_sqldataaccess">
+              {% for value in sql_data_access %}
+                <option value="{{ value }}"{{ routine.item_sqldataaccess == value ? ' selected' }}>{{ value }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Comment' %}</td>
+          <td>
+            <input type="text" name="item_comment" maxlength="64" value="{{ routine.item_comment }}">
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    {% if is_ajax %}
+      <input type="hidden" name="{{ is_edit_mode ? 'editor_process_edit' : 'editor_process_add' }}" value="true">
+      <input type="hidden" name="ajax_request" value="true">
+    {% else %}
+      <div class="card-footer">
+        <input class="btn btn-primary" type="submit" name="{{ is_edit_mode ? 'editor_process_edit' : 'editor_process_add' }}" value="{% trans 'Go' %}">
+      </div>
+    {% endif %}
+  </div>
+</form>

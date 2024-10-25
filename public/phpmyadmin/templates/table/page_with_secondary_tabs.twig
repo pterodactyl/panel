@@ -1,0 +1,27 @@
+{% if relation_parameters.relationFeature is not null or is_foreign_key_supported %}
+  <ul class="nav nav-pills m-2 d-print-none">
+    <li class="nav-item">
+      <a href="{{ url('/table/structure', {'db': db, 'table': table}) }}" id="table_structure_id" class="nav-link{{ route == '/table/structure' ? ' active' }}">
+        {{ get_icon('b_props', 'Table structure'|trans, true) }}
+      </a>
+    </li>
+
+    <li class="nav-item">
+      <a href="{{ url('/table/relation', {'db': db, 'table': table}) }}" id="table_relation_id" class="nav-link{{ route == '/table/relation' ? ' active' }}">
+        {{ get_icon('b_relations', 'Relation view'|trans, true) }}
+      </a>
+    </li>
+  </ul>
+{% endif %}
+
+{% for flash_key, flash_messages in flash() %}
+  {% for flash_message in flash_messages %}
+    <div class="alert alert-{{ flash_key }}" role="alert">
+      {{ flash_message }}
+    </div>
+  {% endfor %}
+{% endfor %}
+
+<div id="structure_content">
+  {% block content %}{% endblock %}
+</div>

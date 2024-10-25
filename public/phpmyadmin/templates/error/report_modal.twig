@@ -1,0 +1,19 @@
+<div class="modal fade" id="errorReportModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="errorReportModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="errorReportModalLabel">{% trans 'Submit error report' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Cancel' %}"></button>
+      </div>
+      <div class="modal-body"></div>
+      <div class="modal-footer">
+        {% if allowed_to_send_error_reports %}
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+          <button type="button" class="btn btn-primary" id="errorReportModalConfirm">{% trans 'Send error report' %}</button>
+        {% else %}
+          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+</div>

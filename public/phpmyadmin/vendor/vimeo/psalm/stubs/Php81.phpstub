@@ -1,0 +1,91 @@
+<?php
+namespace {
+    interface UnitEnum {
+        /** @var non-empty-string $name */
+        public readonly string $name;
+
+        /**
+         * @psalm-pure
+         * @return list<static>
+         */
+        public static function cases(): array;
+    }
+
+    interface BackedEnum extends UnitEnum
+    {
+        public readonly int|string $value;
+
+        /**
+         * @psalm-pure
+         */
+        public static function from(string|int $value): static;
+
+        /**
+         * @psalm-pure
+         */
+        public static function tryFrom(string|int $value): ?static;
+    }
+
+    class ReflectionEnum extends ReflectionClass implements Reflector
+    {
+        public function getBackingType(): ?ReflectionType;
+        public function getCase(string $name): ReflectionEnumUnitCase;
+        /** @return list<ReflectionEnumUnitCase> */
+        public function getCases(): array;
+        public function hasCase(string $name): bool;
+        public function isBacked(): bool;
+    }
+
+    class ReflectionEnumUnitCase extends ReflectionClassConstant implements Reflector
+    {
+        /**
+         * @psalm-pure
+         */
+        public function getEnum(): ReflectionEnum;
+
+        /**
+         * @psalm-pure
+         */
+        public function getValue(): UnitEnum;
+    }
+
+    class ReflectionEnumBackedCase extends ReflectionEnumUnitCase implements Reflector
+    {
+        /**
+         * @psalm-pure
+         */
+        public function getBackingValue(): int|string;
+    }
+
+    class ReflectionIntersectionType extends ReflectionType {
+        /**
+         * @return non-empty-list<ReflectionType>
+         */
+        public function getTypes() {}
+    }
+}
+
+namespace FTP {
+    final class Connection {}
+}
+
+namespace IMAP {
+    final class Connection {}
+}
+
+namespace LDAP {
+   final class Connection {}
+   final class Result {}
+   final class ResultEntry {}
+}
+
+namespace PgSql {
+   final class Connection {}
+   final class Result {}
+   final class Lob {}
+}
+
+namespace PSpell {
+     final class Config {}
+     final class Dictionary {}
+}

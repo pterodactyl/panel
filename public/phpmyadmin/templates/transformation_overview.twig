@@ -1,0 +1,49 @@
+<h2>{% trans 'Available media types' %}</h2>
+
+<ul>
+  {% for mime_type in mime_types %}
+    <li>
+      {{ mime_type.is_empty ? '<em>' }}
+      {{ mime_type.name }}
+      {{ mime_type.is_empty ? '</em>' }}
+    </li>
+  {% endfor %}
+</ul>
+
+<h2 id="transformation">{% trans 'Available browser display transformations' %}</h2>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>{% trans 'Browser display transformation' %}</th>
+      <th>{% trans %}Description{% context %}for media type transformation{% endtrans %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for transformation in transformations.transformation %}
+      <tr>
+        <td>{{ transformation.name }}</td>
+        <td>{{ transformation.description }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+<h2 id="input_transformation">{% trans 'Available input transformations' %}</h2>
+
+<table class="table table-striped align-middle">
+  <thead>
+    <tr>
+      <th>{% trans 'Input transformation' %}</th>
+      <th>{% trans %}Description{% context %}for media type transformation{% endtrans %}</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for transformation in transformations.input_transformation %}
+      <tr>
+        <td>{{ transformation.name }}</td>
+        <td>{{ transformation.description }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>

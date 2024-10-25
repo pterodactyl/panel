@@ -1,0 +1,26 @@
+<?php
+
+namespace Webmozart\Assert;
+
+use InvalidArgumentException;
+
+class Assert
+{
+
+	/**
+	 * @param mixed $array
+	 * @param string $message
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	public static function isMap($array, $message = ''): void;
+
+	/**
+	 * @param mixed $array
+	 * @param string $message
+	 *
+	 * @throws InvalidArgumentException
+	 */
+	public static function isNonEmptyMap($array, $message = ''): void;
+
+}

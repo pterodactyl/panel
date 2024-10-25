@@ -1,0 +1,25 @@
+<div class="message welcome">
+    <span>{{ welcome_message }}</span>
+</div>
+{% for bookmark in bookmarks %}
+    <div class="message collapsed bookmark" bookmarkid="{{ bookmark.getId() }}"
+        targetdb="{{ bookmark.getDatabase() }}">
+        {% include 'console/query_action.twig' with {
+            'parent_div_classes': 'action_content',
+            'content_array': [
+                ['action collapse', 'Collapse'|trans],
+                ['action expand', 'Expand'|trans],
+                ['action requery', 'Requery'|trans],
+                ['action edit_bookmark', 'Edit'|trans],
+                ['action delete_bookmark', 'Delete'|trans],
+                {0: 'text targetdb', 1: 'Database'|trans, 'extraSpan': bookmark.getDatabase()}
+            ]
+        } only %}
+        <span class="bookmark_label{{ bookmark.getUser() is empty ? ' shared' }}">
+            {{ bookmark.getLabel() }}
+        </span>
+        <span class="query">
+            {{ bookmark.getQuery() }}
+        </span>
+    </div>
+{% endfor %}

@@ -1,0 +1,54 @@
+<form id="ajax_form" action="{{ url('/database/structure/copy-table') }}" method="post">
+  {{ get_hidden_inputs(url_params) }}
+
+  <fieldset class="pma-fieldset">
+    <strong><label for="db_name_dropdown">{% trans 'Database:' %}</label></strong>
+    <select id="db_name_dropdown" name="target_db">
+      {% for each_db in options %}
+        <option value="{{ each_db.name }}"{{ each_db.is_selected ? ' selected' }}>{{ each_db.name }}</option>
+      {% endfor %}
+    </select>
+
+    <br><br>
+
+    <strong><label>{% trans 'Options:' %}</label></strong>
+
+    <br>
+
+    <input type="radio" id="what_structure" value="structure" name="what">
+    <label for="what_structure">{% trans 'Structure only' %}</label>
+
+    <br>
+
+    <input type="radio" id="what_data" value="data" name="what" checked>
+    <label for="what_data">{% trans 'Structure and data' %}</label>
+
+    <br>
+
+    <input type="radio" id="what_dataonly" value="dataonly" name="what">
+    <label for="what_dataonly">{% trans 'Data only' %}</label>
+
+    <br><br>
+
+    <input type="checkbox" id="checkbox_drop" value="true" name="drop_if_exists">
+    <label for="checkbox_drop">{% trans 'Add DROP TABLE' %}</label>
+
+    <br>
+
+    <input type="checkbox" id="checkbox_auto_increment_cp" value="1" name="sql_auto_increment">
+    <label for="checkbox_auto_increment_cp">{% trans 'Add AUTO INCREMENT value' %}</label>
+
+    <br>
+
+    <input type="checkbox" id="checkbox_constraints" value="1" name="sql_auto_increment" checked>
+    <label for="checkbox_constraints">{% trans 'Add constraints' %}</label>
+
+    <br><br>
+
+    <input type="checkbox" name="adjust_privileges" value="1" id="checkbox_adjust_privileges" checked>
+    <label for="checkbox_adjust_privileges">
+      {% trans 'Adjust privileges' %}
+      {{ show_docu('faq', 'faq6-39') }}
+    </label>
+  </fieldset>
+</form>

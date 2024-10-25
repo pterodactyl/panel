@@ -1,0 +1,23 @@
+{% if user_group == null %}
+    <h2>{% trans 'Add user group' %}</h2>
+{% else %}
+    <h2>{{ 'Edit user group: \'%s\''|trans|format(edit_user_group_special_chars) }}</h2>
+{% endif %}
+<form name="userGroupForm" id="userGroupForm" action="{{ user_group_url|raw }}" method="post">
+    {{ hidden_inputs|raw }}
+    <fieldset class="pma-fieldset" id="fieldset_user_group_rights">
+        <legend>{% trans 'User group menu assignments' %} &nbsp;&nbsp;&nbsp;
+            <input type="checkbox" id="addUsersForm_checkall" class="checkall_box" title="Check all">
+            <label for="addUsersForm_checkall">{% trans 'Check all' %}</label>
+        </legend>
+        {% if user_group == null %}
+            <label for="userGroup">{% trans 'Group name:' %}</label>
+            <input type="text" name="userGroup" maxlength="64" autocomplete="off" required="required">
+            <div class="clearfloat"></div>
+        {% endif %}
+        {{ tab_list|raw }}
+    </fieldset>
+    <fieldset id="fieldset_user_group_rights_footer" class="pma-fieldset tblFooters">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+    </fieldset>
+</form>

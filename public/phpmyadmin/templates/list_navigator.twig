@@ -1,0 +1,52 @@
+{% if max_count < count %}
+<div class="{{ classes|join(' ') }}">
+  {% if frame != 'frame_navigation' %}
+    {% trans 'Page number:' %}
+  {% endif %}
+
+  {% if position > 0 %}
+    <a href="{{ script|raw }}" data-post="{{ get_common(url_params|merge({(param_name): 0}), '', false) }}"{{ frame == 'frame_navigation' ? ' class="ajax"' }} title="{% trans %}Begin{% context %}First page{% endtrans %}">
+      {% if show_icons('TableNavigationLinksMode') %}
+        &lt;&lt;
+      {% endif %}
+      {% if show_text('TableNavigationLinksMode') %}
+        {% trans %}Begin{% context %}First page{% endtrans %}
+      {% endif %}
+    </a>
+    <a href="{{ script|raw }}" data-post="{{ get_common(url_params|merge({(param_name): position - max_count}), '', false) }}"{{ frame == 'frame_navigation' ? ' class="ajax"' }} title="{% trans %}Previous{% context %}Previous page{% endtrans %}">
+      {% if show_icons('TableNavigationLinksMode') %}
+        &lt;
+      {% endif %}
+      {% if show_text('TableNavigationLinksMode') %}
+        {% trans %}Previous{% context %}Previous page{% endtrans %}
+      {% endif %}
+    </a>
+  {% endif %}
+
+  <form action="{{ script|raw }}" method="post">
+    {{ get_hidden_inputs(url_params) }}
+
+    {{ page_selector|raw }}
+  </form>
+
+  {% if position + max_count < count %}
+    <a href="{{ script|raw }}" data-post="{{ get_common(url_params|merge({(param_name): position + max_count}), '', false) }}"{{ frame == 'frame_navigation' ? ' class="ajax"' }} title="{% trans %}Next{% context %}Next page{% endtrans %}">
+      {% if show_text('TableNavigationLinksMode') %}
+        {% trans %}Next{% context %}Next page{% endtrans %}
+      {% endif %}
+      {% if show_icons('TableNavigationLinksMode') %}
+        &gt;
+      {% endif %}
+    </a>
+    {% set last_pos = (count // max_count) * max_count %}
+    <a href="{{ script|raw }}" data-post="{{ get_common(url_params|merge({(param_name): (last_pos == count ? count - max_count : last_pos)}), '', false) }}"{{ frame == 'frame_navigation' ? ' class="ajax"' }} title="{% trans %}End{% context %}Last page{% endtrans %}">
+      {% if show_text('TableNavigationLinksMode') %}
+        {% trans %}End{% context %}Last page{% endtrans %}
+      {% endif %}
+      {% if show_icons('TableNavigationLinksMode') %}
+        &gt;&gt;
+      {% endif %}
+    </a>
+  {% endif %}
+</div>
+{% endif %}

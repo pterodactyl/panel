@@ -1,0 +1,46 @@
+<h2>
+  {{ get_image('b_engine') }}
+  {% trans 'Storage engines' %}
+</h2>
+
+{% if engine is not empty %}
+  <h2>
+    {{ get_image('b_engine') }}
+    {{ engine.title }}
+    {{ show_mysql_docu(engine.help_page) }}
+  </h2>
+  <p><em>{{ engine.comment }}</em></p>
+
+  {% if engine.info_pages is not empty and engine.info_pages is iterable %}
+    <p>
+      <strong>[</strong>
+      {% if page is empty %}
+        <strong>{% trans 'Variables' %}</strong>
+      {% else %}
+        <a href="{{ url('/server/engines/' ~ engine.engine) }}">
+          {% trans 'Variables' %}
+        </a>
+      {% endif %}
+      {% for current, label in engine.info_pages %}
+        <strong>|</strong>
+        {% if page is defined and page == current %}
+          <strong>{{ label }}</strong>
+        {% else %}
+          <a href="{{ url('/server/engines/' ~ engine.engine ~ '/' ~ current) }}">
+            {{ label }}
+          </a>
+        {% endif %}
+      {% endfor %}
+      <strong>]</strong>
+    </p>
+  {% endif %}
+
+  {% if engine.page is not empty %}
+    {{ engine.page|raw }}
+  {% else %}
+    <p>{{ engine.support }}</p>
+    {{ engine.variables|raw }}
+  {% endif %}
+{% else %}
+  <p>{{ 'Unknown storage engine.'|trans|error }}</p>
+{% endif %}

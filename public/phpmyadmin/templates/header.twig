@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="{{ lang }}" dir="{{ text_dir }}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="referrer" content="no-referrer">
+  <meta name="robots" content="noindex,nofollow,notranslate">
+  <meta name="google" content="notranslate">
+  {% if not allow_third_party_framing -%}
+    <style id="cfs-style">html{display: none;}</style>
+  {%- endif %}
+
+  <link rel="icon" href="favicon.ico" type="image/x-icon">
+  <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
+  <link rel="stylesheet" type="text/css" href="{{ theme_path }}/jquery/jquery-ui.css">
+  <link rel="stylesheet" type="text/css" href="{{ base_dir }}js/vendor/codemirror/lib/codemirror.css?{{ version }}">
+  <link rel="stylesheet" type="text/css" href="{{ base_dir }}js/vendor/codemirror/addon/hint/show-hint.css?{{ version }}">
+  <link rel="stylesheet" type="text/css" href="{{ base_dir }}js/vendor/codemirror/addon/lint/lint.css?{{ version }}">
+  <link rel="stylesheet" type="text/css" href="{{ theme_path }}/css/theme{{ text_dir == 'rtl' ? '.rtl' }}.css?{{ version }}">
+  <title>{{ title }}</title>
+  {{ scripts|raw }}
+  <noscript><style>html{display:block}</style></noscript>
+</head>
+<body{{ body_id is not empty ? ' id=' ~ body_id }}>
+  {{ navigation|raw }}
+  {{ custom_header|raw }}
+  {{ load_user_preferences|raw }}
+
+  {% if not show_hint %}
+    <span id="no_hint" class="hide"></span>
+  {% endif %}
+
+  {% if is_warnings_enabled %}
+    <noscript>
+      {{ 'Javascript must be enabled past this point!'|trans|error }}
+    </noscript>
+  {% endif %}
+
+  {% if is_menu_enabled and server > 0 %}
+    {{ menu|raw }}
+    <span id="page_nav_icons" class="d-print-none">
+      <span id="lock_page_icon"></span>
+      <span id="page_settings_icon">
+        {{ get_image('s_cog', 'Page-related settings'|trans) }}
+      </span>
+      <a id="goto_pagetop" href="#">{{ get_image('s_top', 'Click on the bar to scroll to top of page'|trans) }}</a>
+    </span>
+  {% endif %}
+
+  {{ console|raw }}
+
+  <div id="page_content">
+    {{ messages|raw }}
+
+    {{ recent_table|raw }}
+    {%- if is_logged_in -%}
+    {{ include('modals/preview_sql_modal.twig') }}
+    {{ include('modals/enum_set_editor.twig') }}
+    {{ include('modals/create_view.twig') }}
+    {%- endif -%}

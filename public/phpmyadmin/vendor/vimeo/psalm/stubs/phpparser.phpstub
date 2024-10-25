@@ -1,0 +1,22 @@
+<?php declare(strict_types=1);
+
+namespace PhpParser\Node\Expr;
+
+use PhpParser\Node\Arg;
+use PhpParser\Node\Expr;
+use PhpParser\Node\VariadicPlaceholder;
+
+abstract class CallLike extends Expr {
+    /**
+     * @return list<Arg|VariadicPlaceholder>
+     */
+    abstract public function getRawArgs(): array;
+
+    public function isFirstClassCallable(): bool {}
+
+    /**
+     * @psalm-pure
+     * @return list<Arg>
+     */
+    public function getArgs(): array{}
+}

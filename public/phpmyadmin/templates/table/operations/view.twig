@@ -1,0 +1,49 @@
+<div class="container-fluid">
+  <form method="post" action="{{ url('/view/operations') }}">
+    {{ get_hidden_inputs(db, table) }}
+    <input type="hidden" name="reload" value="1">
+    <input type="hidden" name="submitoptions" value="1">
+
+    <div class="card mb-2">
+      <div class="card-header">{% trans 'Operations' %}</div>
+      <div class="card-body">
+        <div class="row row-cols-lg-auto g-3 align-items-center">
+          <div class="col-12">
+            <label for="newNameInput">{% trans 'Rename view to' %}</label>
+          </div>
+          <div class="col-12">
+            <input id="newNameInput" class="form-control" type="text" name="new_name" onfocus="this.select()" value="{{ table }}" required>
+          </div>
+        </div>
+      </div>
+      <div class="card-footer text-end">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+      </div>
+    </div>
+  </form>
+
+  <div class="card mb-2">
+    <div class="card-header">{% trans 'Delete data or table' %}</div>
+    <div class="card-body">
+      <div class="card-text">
+        {{ link_or_button(
+          url('/sql'),
+          url_params|merge({
+            'sql_query': 'DROP VIEW ' ~ backquote(table),
+            'goto': url('/table/structure'),
+            'reload': true,
+            'purge': true,
+            'message_to_show': 'View %s has been dropped.'|trans|format(table)|e,
+            'table': table
+          }),
+          'Delete the view (DROP)'|trans,
+          {
+            'id': 'drop_view_anchor',
+            'class': 'text-danger ajax'
+          }
+        ) }}
+        {{ show_mysql_docu('DROP VIEW') }}
+      </div>
+    </div>
+  </div>
+</div>

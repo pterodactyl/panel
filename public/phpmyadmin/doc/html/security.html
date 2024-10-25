@@ -1,0 +1,211 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Security policy &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Distributing and packaging phpMyAdmin" href="vendors.html" />
+    <link rel="prev" title="Developers Information" href="developers.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="vendors.html" title="Distributing and packaging phpMyAdmin"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="developers.html" title="Developers Information"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Security policy</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="security-policy">
+<h1>Security policy<a class="headerlink" href="#security-policy" title="Permalink to this headline">¶</a></h1>
+<p>The phpMyAdmin developer team is putting lot of effort to make phpMyAdmin as
+secure as possible. But still web application like phpMyAdmin can be vulnerable
+to a number of attacks and new ways to exploit are still being explored.</p>
+<p>For every reported vulnerability we issue a phpMyAdmin Security Announcement
+(PMASA) and it get’s assigned a CVE ID as well. We might group similar
+vulnerabilities to one PMASA (eg. multiple XSS vulnerabilities can be announced
+under one PMASA).</p>
+<p>If you think you’ve found a vulnerability, please see <a class="reference internal" href="#reporting-security"><span class="std std-ref">Reporting security issues</span></a>.</p>
+<div class="section" id="typical-vulnerabilities">
+<h2>Typical vulnerabilities<a class="headerlink" href="#typical-vulnerabilities" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we will describe typical vulnerabilities, which can appear in
+our code base. This list is by no means complete, it is intended to show
+typical attack surface.</p>
+<div class="section" id="cross-site-scripting-xss">
+<h3>Cross-site scripting (XSS)<a class="headerlink" href="#cross-site-scripting-xss" title="Permalink to this headline">¶</a></h3>
+<p>When phpMyAdmin shows a piece of user data, e.g. something inside a user’s
+database, all html special chars have to be escaped. When this escaping is
+missing somewhere a malicious user might fill a database with specially crafted
+content to trick an other user of that database into executing something. This
+could for example be a piece of JavaScript code that would do any number of
+nasty things.</p>
+<p>phpMyAdmin tries to escape all userdata before it is rendered into html for the
+browser.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Cross-site_scripting">Cross-site scripting on Wikipedia</a></p>
+</div>
+</div>
+<div class="section" id="cross-site-request-forgery-csrf">
+<h3>Cross-site request forgery (CSRF)<a class="headerlink" href="#cross-site-request-forgery-csrf" title="Permalink to this headline">¶</a></h3>
+<p>An attacker would trick a phpMyAdmin user into clicking on a link to provoke
+some action in phpMyAdmin. This link could either be sent via email or some
+random website. If successful this the attacker would be able to perform some
+action with the users privileges.</p>
+<p>To mitigate this phpMyAdmin requires a token to be sent on sensitive requests.
+The idea is that an attacker does not poses the currently valid token to
+include in the presented link.</p>
+<p>The token is regenerated for every login, so it’s generally valid only for
+limited time, what makes it harder for attacker to obtain valid one.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Cross-site_request_forgery">Cross-site request forgery on Wikipedia</a></p>
+</div>
+</div>
+<div class="section" id="sql-injection">
+<h3>SQL injection<a class="headerlink" href="#sql-injection" title="Permalink to this headline">¶</a></h3>
+<p>As the whole purpose of phpMyAdmin is to preform sql queries, this is not our
+first concern. SQL injection is sensitive to us though when it concerns the
+mysql control connection. This controlconnection can have additional privileges
+which the logged in user does not poses. E.g. access the <a class="reference internal" href="setup.html#linked-tables"><span class="std std-ref">phpMyAdmin configuration storage</span></a>.</p>
+<p>User data that is included in (administrative) queries should always be run
+through DatabaseInterface::escapeString().</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/SQL_injection">SQL injection on Wikipedia</a></p>
+</div>
+</div>
+<div class="section" id="brute-force-attack">
+<h3>Brute force attack<a class="headerlink" href="#brute-force-attack" title="Permalink to this headline">¶</a></h3>
+<p>phpMyAdmin on its own does not rate limit authentication attempts in any way.
+This is caused by need to work in stateless environment, where there is no way
+to protect against such kind of things.</p>
+<p>To mitigate this, you can use Captcha or utilize external tools such as
+fail2ban, this is more details described in <a class="reference internal" href="setup.html#securing"><span class="std std-ref">Securing your phpMyAdmin installation</span></a>.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/Brute-force_attack">Brute force attack on Wikipedia</a></p>
+</div>
+</div>
+</div>
+<div class="section" id="reporting-security-issues">
+<span id="reporting-security"></span><h2>Reporting security issues<a class="headerlink" href="#reporting-security-issues" title="Permalink to this headline">¶</a></h2>
+<p>Should you find a security issue in the phpMyAdmin programming code, please
+contact the <a class="reference external" href="mailto:security&#37;&#52;&#48;phpmyadmin&#46;net">phpMyAdmin security team</a> in
+advance before publishing it. This way we can prepare a fix and release the fix together with your
+announcement. You will be also given credit in our security announcement.
+You can optionally encrypt your report with PGP key ID
+<code class="docutils literal notranslate"><span class="pre">DA68AB39218AB947</span></code> with following fingerprint:</p>
+<div class="highlight-console notranslate"><div class="highlight"><pre><span></span><span class="go">pub   4096R/DA68AB39218AB947 2016-08-02</span>
+<span class="go">      Key fingerprint = 5BAD 38CF B980 50B9 4BD7  FB5B DA68 AB39 218A B947</span>
+<span class="go">uid                          phpMyAdmin Security Team &lt;security@phpmyadmin.net&gt;</span>
+<span class="go">sub   4096R/5E4176FB497A31F7 2016-08-02</span>
+</pre></div>
+</div>
+<p>The key can be either obtained from the keyserver or is available in
+<a class="reference external" href="https://files.phpmyadmin.net/phpmyadmin.keyring">phpMyAdmin keyring</a>
+available on our download server or using <a class="reference external" href="https://keybase.io/phpmyadmin_sec">Keybase</a>.</p>
+<p>Should you have suggestion on improving phpMyAdmin to make it more secure, please
+report that to our <a class="reference external" href="https://github.com/phpmyadmin/phpmyadmin/issues">issue tracker</a>.
+Existing improvement suggestions can be found by
+<a class="reference external" href="https://github.com/phpmyadmin/phpmyadmin/labels/hardening">hardening label</a>.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Security policy</a><ul>
+<li><a class="reference internal" href="#typical-vulnerabilities">Typical vulnerabilities</a><ul>
+<li><a class="reference internal" href="#cross-site-scripting-xss">Cross-site scripting (XSS)</a></li>
+<li><a class="reference internal" href="#cross-site-request-forgery-csrf">Cross-site request forgery (CSRF)</a></li>
+<li><a class="reference internal" href="#sql-injection">SQL injection</a></li>
+<li><a class="reference internal" href="#brute-force-attack">Brute force attack</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#reporting-security-issues">Reporting security issues</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="developers.html"
+                        title="previous chapter">Developers Information</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="vendors.html"
+                        title="next chapter">Distributing and packaging phpMyAdmin</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/security.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="vendors.html" title="Distributing and packaging phpMyAdmin"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="developers.html" title="Developers Information"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Security policy</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,30 @@
+<form action="{{ url('/table/indexes/rename') }}" method="post" name="index_frm" id="index_frm" class="ajax">
+
+  {{ get_hidden_inputs(form_params) }}
+
+  <fieldset class="pma-fieldset" id="index_edit_fields">
+    <div class="index_info">
+      <div>
+          <div class="label">
+              <strong>
+                  <label for="input_index_name">
+                      {% trans 'Index name:' %}
+                      {{ show_hint('"PRIMARY" <b>must</b> be the name of and <b>only of</b> a primary key!'|trans) }}
+                  </label>
+              </strong>
+          </div>
+
+          <input type="text"
+              name="index[Key_name]"
+              id="input_index_name"
+              size="25"
+              maxlength="64"
+              value="{{ index.getName() }}"
+              onfocus="this.select()">
+      </div>
+    </div>
+  </fieldset>
+  <fieldset class="pma-fieldset tblFooters">
+    <button class="btn btn-secondary" type="submit" id="preview_index_frm">{% trans 'Preview SQL' %}</button>
+  </fieldset>
+</form>

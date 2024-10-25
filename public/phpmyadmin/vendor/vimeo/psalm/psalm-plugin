@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+
+use Psalm\Internal\Cli\Plugin;
+
+require_once __DIR__ . '/src/Psalm/Internal/Cli/Plugin.php';
+Plugin::run();

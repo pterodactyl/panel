@@ -1,0 +1,43 @@
+{
+    "name": "pragmarx/google2fa",
+    "description": "A One Time Password Authentication package, compatible with Google Authenticator.",
+    "keywords": [
+        "authentication",
+        "two factor authentication",
+        "google2fa",
+        "2fa"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Antonio Carlos Ribeiro",
+            "email": "acr@antoniocarlosribeiro.com",
+            "role": "Creator & Designer"
+        }
+    ],
+    "require": {
+        "php": "^7.1|^8.0",
+        "paragonie/constant_time_encoding": "^1.0|^2.0"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^7.5.15|^8.5|^9.0",
+        "phpstan/phpstan": "^0.12.18"
+    },
+    "autoload": {
+        "psr-4": {
+            "PragmaRX\\Google2FA\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "PragmaRX\\Google2FA\\Tests\\": "tests/"
+        },
+        "files": ["tests/helpers.php"]
+    },
+    "scripts": {
+        "test": "bash ./tests/tools/test.sh",
+        "analyse": "bash ./tests/tools/analyse.sh"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": true
+}

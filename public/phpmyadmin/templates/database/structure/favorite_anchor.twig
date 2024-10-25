@@ -1,0 +1,7 @@
+<a id="{{ table_name_hash }}_favorite_anchor"
+    class="ajax favorite_table_anchor"
+    href="{{ url('/database/structure/favorite-table', fav_params) }}"
+    title="{{ already_favorite ? 'Remove from Favorites'|trans : 'Add to Favorites'|trans }}"
+    data-favtargets="{{ db_table_name_hash }}">
+    {{ already_favorite ? get_icon('b_favorite') : get_icon('b_no_favorite') }}
+</a>

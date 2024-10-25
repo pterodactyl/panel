@@ -1,0 +1,22 @@
+<form action="{{ url('/table/structure/drop') }}" method="post" class="disableAjax">
+  {{ get_hidden_inputs({'db': db, 'table': table, 'selected': fields}) }}
+
+  <fieldset class="pma-fieldset confirmation">
+    <legend>
+      {% trans 'Do you really want to execute the following query?' %}
+    </legend>
+
+    <code>
+      ALTER TABLE {{ backquote(table) }}<br>
+      {% for field in fields %}
+        &nbsp;&nbsp;DROP {{ backquote(field) }}
+        {%- if loop.last %};{% else %},<br>{% endif %}
+      {% endfor %}
+    </code>
+  </fieldset>
+
+  <fieldset class="pma-fieldset tblFooters">
+    <input id="buttonYes" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'Yes' %}">
+    <input id="buttonNo" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'No' %}">
+  </fieldset>
+</form>

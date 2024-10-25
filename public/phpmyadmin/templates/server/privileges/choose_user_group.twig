@@ -1,0 +1,12 @@
+<form class="ajax" id="changeUserGroupForm" action="{{ url('/server/privileges') }}" method="post">
+  {{ get_hidden_inputs(params) }}
+  <input type="hidden" name="changeUserGroup" value="1">
+
+  <label class="form-label" for="userGroupSelect">{% trans 'User group:' %}</label>
+  <select class="form-select" name="userGroup" id="userGroupSelect">
+    <option value=""></option>
+    {% for option in all_user_groups %}
+      <option value="{{ option }}"{{ user_group == option ? ' selected' }}>{{ option }}</option>
+    {% endfor %}
+  </select>
+</form>

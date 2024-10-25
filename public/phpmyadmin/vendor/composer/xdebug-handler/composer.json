@@ -1,0 +1,44 @@
+{
+    "name": "composer/xdebug-handler",
+    "description": "Restarts a process without Xdebug.",
+    "type": "library",
+    "license": "MIT",
+    "keywords": [
+        "xdebug",
+        "performance"
+    ],
+    "authors": [
+        {
+            "name": "John Stevenson",
+            "email": "john-stevenson@blueyonder.co.uk"
+        }
+    ],
+    "support": {
+        "irc": "irc://irc.freenode.org/composer",
+        "issues": "https://github.com/composer/xdebug-handler/issues"
+    },
+    "require": {
+        "php": "^7.2.5 || ^8.0",
+        "psr/log": "^1 || ^2 || ^3",
+        "composer/pcre": "^1 || ^2 || ^3"
+    },
+    "require-dev": {
+        "symfony/phpunit-bridge": "^6.0",
+        "phpstan/phpstan": "^1.0",
+        "phpstan/phpstan-strict-rules": "^1.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "Composer\\XdebugHandler\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Composer\\XdebugHandler\\Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "@php vendor/bin/simple-phpunit",
+        "phpstan": "@php vendor/bin/phpstan analyse"
+    }
+}

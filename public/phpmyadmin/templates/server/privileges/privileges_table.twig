@@ -1,0 +1,860 @@
+{% if columns is not empty %}
+
+  <input type="hidden" name="grant_count" value="{{ row|length }}">
+  <input type="hidden" name="column_count" value="{{ columns|length }}">
+  <fieldset class="pma-fieldset" id="fieldset_user_priv">
+    <legend data-submenu-label="{% trans 'Table' %}">
+      {% trans 'Table-specific privileges' %}
+    </legend>
+    <p>
+      <small><em>{% trans 'Note: MySQL privilege names are expressed in English.' %}</em></small>
+    </p>
+
+    <div class="item" id="div_item_select">
+      <label for="select_select_priv">
+        <code><dfn title="{% trans 'Allows reading data.' %}">SELECT</dfn></code>
+      </label>
+
+      <select class="resize-vertical" id="select_select_priv" name="Select_priv[]" size="8" multiple>
+        {% for curr_col, curr_col_privs in columns %}
+          <option value="{{ curr_col }}"{{ row['Select_priv'] == 'Y' or curr_col_privs['Select'] ? ' selected' }}>
+            {{ curr_col }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div>
+        <button class="btn btn-link p-0" id="select_priv_all" type="button" data-select-target="#select_select_priv">
+          {% trans 'Select all' %}
+        </button>
+      </div>
+
+      <em>{% trans 'Or' %}</em>
+      <label for="checkbox_Select_priv_none">
+        <input type="checkbox" name="Select_priv_none" id="checkbox_Select_priv_none" title="
+          {%- trans %}None{% context %}None privileges{% endtrans %}">
+        {% trans %}None{% context %}None privileges{% endtrans %}
+      </label>
+    </div>
+
+    <div class="item" id="div_item_insert">
+      <label for="select_insert_priv">
+        <code><dfn title="{% trans 'Allows inserting and replacing data.' %}">INSERT</dfn></code>
+      </label>
+
+      <select class="resize-vertical" id="select_insert_priv" name="Insert_priv[]" size="8" multiple>
+        {% for curr_col, curr_col_privs in columns %}
+          <option value="{{ curr_col }}"{{ row['Insert_priv'] == 'Y' or curr_col_privs['Insert'] ? ' selected' }}>
+            {{ curr_col }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div>
+        <button class="btn btn-link p-0" id="insert_priv_all" type="button" data-select-target="#select_insert_priv">
+          {% trans 'Select all' %}
+        </button>
+      </div>
+
+      <em>{% trans 'Or' %}</em>
+      <label for="checkbox_Insert_priv_none">
+        <input type="checkbox" name="Insert_priv_none" id="checkbox_Insert_priv_none" title="
+          {%- trans %}None{% context %}None privileges{% endtrans %}">
+        {% trans %}None{% context %}None privileges{% endtrans %}
+      </label>
+    </div>
+
+    <div class="item" id="div_item_update">
+      <label for="select_update_priv">
+        <code><dfn title="{% trans 'Allows changing data.' %}">UPDATE</dfn></code>
+      </label>
+
+      <select class="resize-vertical" id="select_update_priv" name="Update_priv[]" size="8" multiple>
+        {% for curr_col, curr_col_privs in columns %}
+          <option value="{{ curr_col }}"{{ row['Update_priv'] == 'Y' or curr_col_privs['Update'] ? ' selected' }}>
+            {{ curr_col }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div>
+        <button class="btn btn-link p-0" id="update_priv_all" type="button" data-select-target="#select_update_priv">
+          {% trans 'Select all' %}
+        </button>
+      </div>
+
+      <em>{% trans 'Or' %}</em>
+      <label for="checkbox_Update_priv_none">
+        <input type="checkbox" name="Update_priv_none" id="checkbox_Update_priv_none" title="
+          {%- trans %}None{% context %}None privileges{% endtrans %}">
+        {% trans %}None{% context %}None privileges{% endtrans %}
+      </label>
+    </div>
+
+    <div class="item" id="div_item_references">
+      <label for="select_references_priv">
+        <code><dfn title="{% trans 'Has no effect in this MySQL version.' %}">REFERENCES</dfn></code>
+      </label>
+
+      <select class="resize-vertical" id="select_references_priv" name="References_priv[]" size="8" multiple>
+        {% for curr_col, curr_col_privs in columns %}
+          <option value="{{ curr_col }}"{{ row['References_priv'] == 'Y' or curr_col_privs['References'] ? ' selected' }}>
+            {{ curr_col }}
+          </option>
+        {% endfor %}
+      </select>
+
+      <div>
+        <button class="btn btn-link p-0" id="references_priv_all" type="button" data-select-target="#select_references_priv">
+          {% trans 'Select all' %}
+        </button>
+      </div>
+
+      <em>{% trans 'Or' %}</em>
+      <label for="checkbox_References_priv_none">
+        <input type="checkbox" name="References_priv_none" id="checkbox_References_priv_none" title="
+          {%- trans %}None{% context %}None privileges{% endtrans %}">
+        {% trans %}None{% context %}None privileges{% endtrans %}
+      </label>
+    </div>
+
+    <div class="item">
+      <div class="item">
+        <input type="checkbox" name="Delete_priv" id="checkbox_Delete_priv" value="Y" title="
+          {%- trans 'Allows deleting data.' %}"{{ row['Delete_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Delete_priv">
+          <code>
+            <dfn title="{% trans 'Allows deleting data.' %}">
+              DELETE
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Create_priv" id="checkbox_Create_priv" value="Y" title="
+          {%- trans 'Allows creating new tables.' %}"{{ row['Create_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Create_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating new tables.' %}">
+              CREATE
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Drop_priv" id="checkbox_Drop_priv" value="Y" title="
+          {%- trans 'Allows dropping tables.' %}"{{ row['Drop_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Drop_priv">
+          <code>
+            <dfn title="{% trans 'Allows dropping tables.' %}">
+              DROP
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Grant_priv" id="checkbox_Grant_priv" value="Y" title="
+          {%- trans 'Allows user to give to other users or remove from other users the privileges that user possess yourself.' %}"
+          {{- row['Grant_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Grant_priv">
+          <code>
+            <dfn title="{% trans 'Allows user to give to other users or remove from other users the privileges that user possess yourself.' %}">
+              GRANT
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Index_priv" id="checkbox_Index_priv" value="Y" title="
+          {%- trans 'Allows creating and dropping indexes.' %}"{{ row['Index_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Index_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating and dropping indexes.' %}">
+              INDEX
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Alter_priv" id="checkbox_Alter_priv" value="Y" title="
+          {%- trans 'Allows altering the structure of existing tables.' %}"{{ row['Alter_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Alter_priv">
+          <code>
+            <dfn title="{% trans 'Allows altering the structure of existing tables.' %}">
+              ALTER
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Create_view_priv" id="checkbox_Create_view_priv" value="Y" title="
+          {%- trans 'Allows creating new views.' %}"{{ row['Create View_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Create_view_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating new views.' %}">
+              CREATE VIEW
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Show_view_priv" id="checkbox_Show_view_priv" value="Y" title="
+          {%- trans 'Allows performing SHOW CREATE VIEW queries.' %}"{{ row['Show view_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Show_view_priv">
+          <code>
+            <dfn title="{% trans 'Allows performing SHOW CREATE VIEW queries.' %}">
+              SHOW VIEW
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        <input type="checkbox" name="Trigger_priv" id="checkbox_Trigger_priv" value="Y" title="
+          {%- trans 'Allows creating and dropping triggers.' %}"{{ row['Trigger_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Trigger_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating and dropping triggers.' %}">
+              TRIGGER
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      {% if row['Delete versioning rows_priv'] is defined or row['Delete_history_priv'] is defined %}
+        <div class="item">
+          <input type="checkbox" name="Delete_history_priv" id="checkbox_Delete_history_priv" value="Y" title="
+            {%- trans 'Allows deleting historical rows.' %}"
+            {{- row['Delete versioning rows_priv'] == 'Y' or row['Delete_history_priv'] == 'Y' ? ' checked' }}>
+          <label for="checkbox_Delete_history_priv">
+            <code>
+              <dfn title="{% trans 'Allows deleting historical rows.' %}">
+                DELETE HISTORY
+              </dfn>
+            </code>
+          </label>
+        </div>
+      {% endif %}
+    </div>
+    <div class="clearfloat"></div>
+  </fieldset>
+
+{% else %}
+
+{% set grant_count = 0 %}
+<fieldset class="pma-fieldset" id="fieldset_user_global_rights">
+  <legend data-submenu-label="
+    {%- if is_global %}
+      {%- trans 'Global' -%}
+    {% elseif is_database %}
+      {%- trans 'Database' -%}
+    {% else %}
+      {%- trans 'Table' -%}
+    {% endif %}">
+    {% if is_global %}
+      {% trans 'Global privileges' %}
+    {% elseif is_database %}
+      {% trans 'Database-specific privileges' %}
+    {% else %}
+      {% trans 'Table-specific privileges' %}
+    {% endif %}
+    <input type="checkbox" id="addUsersForm_checkall" class="checkall_box" title="{% trans 'Check all' %}">
+    <label for="addUsersForm_checkall">{% trans 'Check all' %}</label>
+  </legend>
+  <p>
+    <small><em>{% trans 'Note: MySQL privilege names are expressed in English.' %}</em></small>
+  </p>
+
+  <fieldset class="pma-fieldset">
+    <legend>
+      <input type="checkbox" class="sub_checkall_box" id="checkall_Data_priv" title="{% trans 'Check all' %}">
+      <label for="checkall_Data_priv">{% trans 'Data' %}</label>
+    </legend>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Select_priv" id="checkbox_Select_priv" value="Y" title="
+        {%- trans 'Allows reading data.' %}"{{ row['Select_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Select_priv">
+        <code>
+          <dfn title="{% trans 'Allows reading data.' %}">
+            SELECT
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Insert_priv" id="checkbox_Insert_priv" value="Y" title="
+        {%- trans 'Allows inserting and replacing data.' %}"{{ row['Insert_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Insert_priv">
+        <code>
+          <dfn title="{% trans 'Allows inserting and replacing data.' %}">
+            INSERT
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Update_priv" id="checkbox_Update_priv" value="Y" title="
+        {%- trans 'Allows changing data.' %}"{{ row['Update_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Update_priv">
+        <code>
+          <dfn title="{% trans 'Allows changing data.' %}">
+            UPDATE
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Delete_priv" id="checkbox_Delete_priv" value="Y" title="
+        {%- trans 'Allows deleting data.' %}"{{ row['Delete_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Delete_priv">
+        <code>
+          <dfn title="{% trans 'Allows deleting data.' %}">
+            DELETE
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    {% if is_global %}
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="File_priv" id="checkbox_File_priv" value="Y" title="
+          {%- trans 'Allows importing data from and exporting data into files.' %}"{{ row['File_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_File_priv">
+          <code>
+            <dfn title="{% trans 'Allows importing data from and exporting data into files.' %}">
+              FILE
+            </dfn>
+          </code>
+        </label>
+      </div>
+    {% endif %}
+  </fieldset>
+
+  <fieldset class="pma-fieldset">
+    <legend>
+      <input type="checkbox" class="sub_checkall_box" id="checkall_Structure_priv" title="{% trans 'Check all' %}">
+      <label for="checkall_Structure_priv">{% trans 'Structure' %}</label>
+    </legend>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Create_priv" id="checkbox_Create_priv" value="Y" title="
+        {%- if is_database %}
+          {%- trans 'Allows creating new databases and tables.' -%}
+        {% else %}
+          {%- trans 'Allows creating new tables.' -%}
+        {% endif %}"{{ row['Create_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Create_priv">
+        <code>
+          <dfn title="
+            {%- if is_database %}
+              {%- trans 'Allows creating new databases and tables.' -%}
+            {% else %}
+              {%- trans 'Allows creating new tables.' -%}
+            {% endif %}">
+            CREATE
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Alter_priv" id="checkbox_Alter_priv" value="Y" title="
+        {%- trans 'Allows altering the structure of existing tables.' %}"{{ row['Alter_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Alter_priv">
+        <code>
+          <dfn title="{% trans 'Allows altering the structure of existing tables.' %}">
+            ALTER
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Index_priv" id="checkbox_Index_priv" value="Y" title="
+        {%- trans 'Allows creating and dropping indexes.' %}"{{ row['Index_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Index_priv">
+        <code>
+          <dfn title="{% trans 'Allows creating and dropping indexes.' %}">
+            INDEX
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Drop_priv" id="checkbox_Drop_priv" value="Y" title="
+        {%- if is_database %}
+          {%- trans 'Allows dropping databases and tables.' -%}
+        {% else %}
+          {%- trans 'Allows dropping tables.' -%}
+        {% endif %}"{{ row['Drop_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Drop_priv">
+        <code>
+          <dfn title="
+            {%- if is_database %}
+              {%- trans 'Allows dropping databases and tables.' -%}
+            {% else %}
+              {%- trans 'Allows dropping tables.' -%}
+            {% endif %}">
+            DROP
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Create_tmp_table_priv" id="checkbox_Create_tmp_table_priv" value="Y" title="
+        {%- trans 'Allows creating temporary tables.' %}"{{ row['Create_tmp_table_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Create_tmp_table_priv">
+        <code>
+          <dfn title="{% trans 'Allows creating temporary tables.' %}">
+            CREATE TEMPORARY TABLES
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Show_view_priv" id="checkbox_Show_view_priv" value="Y" title="
+        {%- trans 'Allows performing SHOW CREATE VIEW queries.' %}"{{ row['Show_view_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Show_view_priv">
+        <code>
+          <dfn title="{% trans 'Allows performing SHOW CREATE VIEW queries.' %}">
+            SHOW VIEW
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Create_routine_priv" id="checkbox_Create_routine_priv" value="Y" title="
+        {%- trans 'Allows creating stored routines.' %}"{{ row['Create_routine_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Create_routine_priv">
+        <code>
+          <dfn title="{% trans 'Allows creating stored routines.' %}">
+            CREATE ROUTINE
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Alter_routine_priv" id="checkbox_Alter_routine_priv" value="Y" title="
+        {%- trans 'Allows altering and dropping stored routines.' %}"{{ row['Alter_routine_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Alter_routine_priv">
+        <code>
+          <dfn title="{% trans 'Allows altering and dropping stored routines.' %}">
+            ALTER ROUTINE
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Execute_priv" id="checkbox_Execute_priv" value="Y" title="
+        {%- trans 'Allows executing stored routines.' %}"{{ row['Execute_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Execute_priv">
+        <code>
+          <dfn title="{% trans 'Allows executing stored routines.' %}">
+            EXECUTE
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    {% if row['Create_view_priv'] is defined %}
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Create_view_priv" id="checkbox_Create_view_priv" value="Y" title="
+          {%- trans 'Allows creating new views.' %}"{{ row['Create_view_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Create_view_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating new views.' %}">
+              CREATE VIEW
+            </dfn>
+          </code>
+        </label>
+      </div>
+    {% endif %}
+
+    {% if row['Create View_priv'] is defined %}
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Create View_priv" id="checkbox_Create View_priv" value="Y" title="
+          {%- trans 'Allows creating new views.' %}"{{ row['Create View_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Create View_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating new views.' %}">
+              CREATE VIEW
+            </dfn>
+          </code>
+        </label>
+      </div>
+    {% endif %}
+
+    {% if row['Event_priv'] is defined %}
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Event_priv" id="checkbox_Event_priv" value="Y" title="
+          {%- trans 'Allows to set up events for the event scheduler.' %}"{{ row['Event_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Event_priv">
+          <code>
+            <dfn title="{% trans 'Allows to set up events for the event scheduler.' %}">
+              EVENT
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Trigger_priv" id="checkbox_Trigger_priv" value="Y" title="
+          {%- trans 'Allows creating and dropping triggers.' %}"{{ row['Trigger_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Trigger_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating and dropping triggers.' %}">
+              TRIGGER
+            </dfn>
+          </code>
+        </label>
+      </div>
+    {% endif %}
+  </fieldset>
+
+  <fieldset class="pma-fieldset">
+    <legend>
+      <input type="checkbox" class="sub_checkall_box" id="checkall_Administration_priv" title="{% trans 'Check all' %}">
+      <label for="checkall_Administration_priv">{% trans 'Administration' %}</label>
+    </legend>
+
+    {% if is_global %}
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Grant_priv" id="checkbox_Grant_priv" value="Y" title="
+          {%- trans 'Allows adding users and privileges without reloading the privilege tables.' %}"{{ row['Grant_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Grant_priv">
+          <code>
+            <dfn title="{% trans 'Allows adding users and privileges without reloading the privilege tables.' %}">
+              GRANT
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Super_priv" id="checkbox_Super_priv" value="Y" title="
+          {%- trans 'Allows connecting, even if maximum number of connections is reached; required for most administrative operations like setting global variables or killing threads of other users.' %}"
+          {{- row['Super_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Super_priv">
+          <code>
+            <dfn title="{% trans 'Allows connecting, even if maximum number of connections is reached; required for most administrative operations like setting global variables or killing threads of other users.' %}">
+              SUPER
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Process_priv" id="checkbox_Process_priv" value="Y" title="
+          {%- trans 'Allows viewing processes of all users.' %}"{{ row['Process_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Process_priv">
+          <code>
+            <dfn title="{% trans 'Allows viewing processes of all users.' %}">
+              PROCESS
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Reload_priv" id="checkbox_Reload_priv" value="Y" title="
+          {%- trans 'Allows reloading server settings and flushing the server\'s caches.' %}"{{ row['Reload_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Reload_priv">
+          <code>
+            <dfn title="{% trans 'Allows reloading server settings and flushing the server\'s caches.' %}">
+              RELOAD
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Shutdown_priv" id="checkbox_Shutdown_priv" value="Y" title="
+          {%- trans 'Allows shutting down the server.' %}"{{ row['Shutdown_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Shutdown_priv">
+          <code>
+            <dfn title="{% trans 'Allows shutting down the server.' %}">
+              SHUTDOWN
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Show_db_priv" id="checkbox_Show_db_priv" value="Y" title="
+          {%- trans 'Gives access to the complete list of databases.' %}"{{ row['Show_db_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Show_db_priv">
+          <code>
+            <dfn title="{% trans 'Gives access to the complete list of databases.' %}">
+              SHOW DATABASES
+            </dfn>
+          </code>
+        </label>
+      </div>
+    {% else %}
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Grant_priv" id="checkbox_Grant_priv" value="Y" title="
+          {%- trans 'Allows user to give to other users or remove from other users the privileges that user possess yourself.' %}"
+          {{- row['Grant_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Grant_priv">
+          <code>
+            <dfn title="{% trans 'Allows user to give to other users or remove from other users the privileges that user possess yourself.' %}">
+              GRANT
+            </dfn>
+          </code>
+        </label>
+      </div>
+    {% endif %}
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="Lock_tables_priv" id="checkbox_Lock_tables_priv" value="Y" title="
+        {%- trans 'Allows locking tables for the current thread.' %}"{{ row['Lock_tables_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_Lock_tables_priv">
+        <code>
+          <dfn title="{% trans 'Allows locking tables for the current thread.' %}">
+            LOCK TABLES
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    <div class="item">
+      {% set grant_count = grant_count + 1 %}
+      <input type="checkbox" class="checkall" name="References_priv" id="checkbox_References_priv" value="Y" title="
+        {%- trans 'Has no effect in this MySQL version.' %}"{{ row['References_priv'] == 'Y' ? ' checked' }}>
+      <label for="checkbox_References_priv">
+        <code>
+          {# l10n: The "REFERENCES" privilege when granting privileges #}
+          <dfn title="{{ supports_references_privilege ? 'Allows creating foreign key relations.'|trans : (is_mariadb ? 'Not used on MariaDB.'|trans: 'Not used for this MySQL version.'|trans) }}">
+            REFERENCES
+          </dfn>
+        </code>
+      </label>
+    </div>
+
+    {% if is_global %}
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Repl_client_priv" id="checkbox_Repl_client_priv" value="Y" title="
+          {%- trans 'Allows the user to ask where the replicas / primaries are.' %}"{{ row['Repl_client_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Repl_client_priv">
+          <code>
+            <dfn title="{% trans 'Allows the user to ask where the replicas / primaries are.' %}">
+              REPLICATION CLIENT
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Repl_slave_priv" id="checkbox_Repl_slave_priv" value="Y" title="
+          {%- trans 'Needed for the replication replicas.' %}"{{ row['Repl_slave_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Repl_slave_priv">
+          <code>
+            <dfn title="{% trans 'Needed for the replication replicas.' %}">
+              REPLICATION SLAVE
+            </dfn>
+          </code>
+        </label>
+      </div>
+
+      <div class="item">
+        {% set grant_count = grant_count + 1 %}
+        <input type="checkbox" class="checkall" name="Create_user_priv" id="checkbox_Create_user_priv" value="Y" title="
+          {%- trans 'Allows creating, dropping and renaming user accounts.' %}"{{ row['Create_user_priv'] == 'Y' ? ' checked' }}>
+        <label for="checkbox_Create_user_priv">
+          <code>
+            <dfn title="{% trans 'Allows creating, dropping and renaming user accounts.' %}">
+              CREATE USER
+            </dfn>
+          </code>
+        </label>
+      </div>
+    {% endif %}
+  </fieldset>
+
+  {% if is_global %}
+    <fieldset class="pma-fieldset">
+      <legend>{% trans 'Resource limits' %}</legend>
+      <p>
+        <small><em>{% trans 'Note: Setting these options to 0 (zero) removes the limit.' %}</em></small>
+      </p>
+
+      <div class="item">
+        <label for="text_max_questions">
+          <code>
+            <dfn title="{% trans 'Limits the number of queries the user may send to the server per hour.' %}">
+              MAX QUERIES PER HOUR
+            </dfn>
+          </code>
+        </label>
+        <input type="number" name="max_questions" id="text_max_questions" value="
+          {{- row.max_questions ?? '0' }}" title="
+          {%- trans 'Limits the number of queries the user may send to the server per hour.' %}">
+      </div>
+
+      <div class="item">
+        <label for="text_max_updates">
+          <code>
+            <dfn title="{% trans 'Limits the number of commands that change any table or database the user may execute per hour.' %}">
+              MAX UPDATES PER HOUR
+            </dfn>
+          </code>
+        </label>
+        <input type="number" name="max_updates" id="text_max_updates" value="
+          {{- row.max_updates ?? '0' }}" title="
+          {%- trans 'Limits the number of commands that change any table or database the user may execute per hour.' %}">
+      </div>
+
+      <div class="item">
+        <label for="text_max_connections">
+          <code>
+            <dfn title="{% trans 'Limits the number of new connections the user may open per hour.' %}">
+              MAX CONNECTIONS PER HOUR
+            </dfn>
+          </code>
+        </label>
+        <input type="number" name="max_connections" id="text_max_connections" value="
+          {{- row.max_connections ?? '0' }}" title="
+          {%- trans 'Limits the number of new connections the user may open per hour.' %}">
+      </div>
+
+      <div class="item">
+        <label for="text_max_user_connections">
+          <code>
+            <dfn title="{% trans 'Limits the number of simultaneous connections the user may have.' %}">
+              MAX USER_CONNECTIONS
+            </dfn>
+          </code>
+        </label>
+        <input type="number" name="max_user_connections" id="text_max_user_connections" value="
+          {{- row.max_user_connections ?? '0' }}" title="
+          {%- trans 'Limits the number of simultaneous connections the user may have.' %}">
+      </div>
+    </fieldset>
+
+    <fieldset class="pma-fieldset">
+      <legend>SSL</legend>
+      <div id="require_ssl_div">
+        <div class="item">
+          <input type="radio" name="ssl_type" id="ssl_type_NONE" title="
+            {%- trans 'Does not require SSL-encrypted connections.' %}" value="NONE"
+            {{- row.ssl_type == 'NONE' or row.ssl_type == '' ? ' checked' }}>
+          <label for="ssl_type_NONE">
+            <code>REQUIRE NONE</code>
+          </label>
+        </div>
+
+        <div class="item">
+          <input type="radio" name="ssl_type" id="ssl_type_ANY" title="
+            {%- trans 'Requires SSL-encrypted connections.' %}" value="ANY"
+            {{- row.ssl_type == 'ANY' ? ' checked' }}>
+          <label for="ssl_type_ANY">
+            <code>REQUIRE SSL</code>
+          </label>
+        </div>
+
+        <div class="item">
+          <input type="radio" name="ssl_type" id="ssl_type_X509" title="
+            {%- trans 'Requires a valid X509 certificate.' %}" value="X509"
+            {{- row.ssl_type == 'X509' ? ' checked' }}>
+          <label for="ssl_type_X509">
+            <code>REQUIRE X509</code>
+          </label>
+        </div>
+
+        <div class="item">
+          <input type="radio" name="ssl_type" id="ssl_type_SPECIFIED" value="SPECIFIED"
+            {{- row.ssl_type == 'SPECIFIED' ? ' checked' }}>
+          <label for="ssl_type_SPECIFIED">
+            <code>SPECIFIED</code>
+          </label>
+        </div>
+
+        <div id="specified_div" style="padding-left:20px;">
+          <div class="item">
+            <label for="text_ssl_cipher">
+              <code>REQUIRE CIPHER</code>
+            </label>
+            <input type="text" name="ssl_cipher" id="text_ssl_cipher" value="{{ row.ssl_cipher }}" size="80" title="
+              {%- trans 'Requires that a specific cipher method be used for a connection.' %}"
+              {{- row.ssl_type != 'SPECIFIED' ? ' disabled' }}>
+          </div>
+
+          <div class="item">
+            <label for="text_x509_issuer">
+              <code>REQUIRE ISSUER</code>
+            </label>
+            <input type="text" name="x509_issuer" id="text_x509_issuer" value="{{ row.x509_issuer }}" size="80" title="
+              {%- trans 'Requires that a valid X509 certificate issued by this CA be presented.' %}"
+              {{- row.ssl_type != 'SPECIFIED' ? ' disabled' }}>
+          </div>
+
+          <div class="item">
+            <label for="text_x509_subject">
+              <code>REQUIRE SUBJECT</code>
+            </label>
+            <input type="text" name="x509_subject" id="text_x509_subject" value="{{ row.x509_subject }}" size="80" title="
+              {%- trans 'Requires that a valid X509 certificate with this subject be presented.' %}"
+              {{- row.ssl_type != 'SPECIFIED' ? ' disabled' }}>
+          </div>
+        </div>
+      </div>
+    </fieldset>
+  {% endif %}
+
+  <div class="clearfloat"></div>
+</fieldset>
+<input type="hidden" name="grant_count" value="{{ grant_count - (row['Grant_priv'] is defined ? 1 : 0) }}">
+
+{% endif %}
+
+{% if has_submit %}
+  <fieldset id="fieldset_user_privtable_footer" class="pma-fieldset tblFooters">
+    <input type="hidden" name="update_privs" value="1">
+    <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+  </fieldset>
+{% endif %}

@@ -1,0 +1,6 @@
+<select>
+  <option value="">&nbsp;</option>
+  {% for value in values %}
+    <option value="{{ value|raw }}"{{ value in selected_values ? " selected" }}>{{ value|raw }}</option>
+  {% endfor %}
+</select>

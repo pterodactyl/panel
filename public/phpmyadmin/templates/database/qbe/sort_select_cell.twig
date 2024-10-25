@@ -1,0 +1,9 @@
+<td class="text-center">
+    <select style="width:{{ real_width }}" name="criteriaSort[{{ column_number }}]" size="1">
+        <option value="">&nbsp;</option>
+        <option value="ASC"
+            {{- selected == 'ASC' ? ' selected="selected"' }}>{% trans 'Ascending' %}</option>
+        <option value="DESC"
+            {{- selected == 'DESC' ? ' selected="selected"' }}>{% trans 'Descending' %}</option>
+    </select>
+</td>

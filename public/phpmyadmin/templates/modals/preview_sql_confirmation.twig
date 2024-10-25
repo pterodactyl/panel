@@ -1,0 +1,19 @@
+<div class="modal fade" id="previewSqlConfirmModal" tabindex="-1" aria-labelledby="previewSqlConfirmModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewSqlConfirmModalLabel">{% trans 'Loading' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body preview_sql">
+        <code class="sql">
+          <pre id="previewSqlConfirmCode"></pre>
+        </code>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="previewSQLConfirmOkButton">{% trans 'OK' %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>

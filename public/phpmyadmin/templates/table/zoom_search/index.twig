@@ -1,0 +1,156 @@
+<ul class="nav nav-pills m-2">
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('/table/search', {'db': db, 'table': table, 'pos': 0}) }}">
+      {{ get_icon('b_search', 'Table search'|trans, false, false, 'TabsMode') }}
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link active" href="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}">
+      {{ get_icon('b_select', 'Zoom search'|trans, false, false, 'TabsMode') }}
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('/table/find-replace', {'db': db, 'table': table}) }}">
+      {{ get_icon('b_find_replace', 'Find and replace'|trans, false, false, 'TabsMode') }}
+    </a>
+  </li>
+</ul>
+
+<form method="post" action="{{ url('/table/zoom-search') }}" name="insertForm" id="zoom_search_form" class="ajax lock-page">
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="goto" value="{{ goto }}">
+  <input type="hidden" name="back" value="{{ url('/table/zoom-search') }}">
+
+  <div class="card mb-3">
+    <div class="card-header">{% trans 'Do a "query by example" (wildcard: "%") for two different columns' %}</div>
+
+    <div class="card-body" id="inputSection">
+      <table class="table table-striped table-hover table-sm w-auto" id="tableFieldsId">
+        <thead>
+          <tr>
+            {% if geom_column_flag %}
+              <th>{% trans 'Function' %}</th>
+            {% endif %}
+            <th>{% trans 'Column' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Collation' %}</th>
+            <th>{% trans 'Operator' %}</th>
+            <th>{% trans 'Value' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% set type = [] %}
+          {% set collation = [] %}
+          {% set func = [] %}
+          {% set value = [] %}
+
+          {% for i in 0..3 %}
+            {# After X-Axis and Y-Axis column rows, display additional criteria option #}
+            {% if i == 2 %}
+              <tr>
+                <th>
+                  {% trans 'Additional search criteria' %}
+                </th>
+              </tr>
+            {% endif %}
+            <tr class="noclick">
+              <th>
+                <select name="criteriaColumnNames[]" id="tableid_{{ i }}">
+                  <option value="pma_null">
+                    {% trans 'None' %}
+                  </option>
+                  {% for j in 0..column_names|length - 1 %}
+                    {% if criteria_column_names[i] is defined and criteria_column_names[i] == column_names[j] %}
+                      <option value="{{ column_names[j] }}" selected>
+                        {{ column_names[j] }}
+                      </option>
+                    {% else %}
+                      <option value="{{ column_names[j] }}">
+                        {{ column_names[j] }}
+                      </option>
+                    {% endif %}
+                  {% endfor %}
+                </select>
+              </th>
+              {% if criteria_column_names[i] is defined and criteria_column_names[i] != 'pma_null' %}
+                {% set key = keys[criteria_column_names[i]] %}
+                {% set properties = self.getColumnProperties(i, key) %}
+                {% set type = type|merge({(i): properties['type']}) %}
+                {% set collation = collation|merge({(i): properties['collation']}) %}
+                {% set func = func|merge({(i): properties['func']}) %}
+                {% set value = value|merge({(i): properties['value']}) %}
+              {% endif %}
+              {# Column type #}
+              <td dir="ltr">
+                {{ type[i] is defined ? type[i] }}
+              </td>
+              {# Column Collation #}
+              <td>
+                {{ collation[i] is defined ? collation[i] }}
+              </td>
+              {# Select options for column operators #}
+              <td>
+                {{ func[i] is defined ? func[i]|raw }}
+              </td>
+              {# Inputbox for search criteria value #}
+              <td>
+                {{ value[i] is defined ? value[i]|raw }}
+              </td>
+              <td>
+                {# Displays hidden fields #}
+                <input type="hidden" name="criteriaColumnTypes[{{ i }}]" id="types_{{ i }}"
+                  {%- if criteria_column_types[i] is defined %} value="{{ criteria_column_types[i] }}"{% endif %}>
+                <input type="hidden" name="criteriaColumnCollations[{{ i }}]" id="collations_{{ i }}">
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+
+      <table class="table table-borderless table-sm w-auto">
+        <tr>
+          <td>
+            <label for="dataLabel">
+              {% trans 'Use this column to label each point' %}
+            </label>
+          </td>
+          <td>
+            <select name="dataLabel" id="dataLabel">
+              <option value="">
+                {% trans 'None' %}
+              </option>
+              {% for i in 0..column_names|length - 1 %}
+                {% if data_label is defined and data_label == column_names[i]|e %}
+                  <option value="{{ column_names[i] }}" selected>
+                    {{ column_names[i] }}
+                  </option>
+                {% else %}
+                  <option value="{{ column_names[i] }}">
+                    {{ column_names[i] }}
+                  </option>
+                {% endif %}
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <label for="maxRowPlotLimit">
+              {% trans 'Maximum rows to plot' %}
+            </label>
+          </td>
+          <td>
+            <input type="number" name="maxPlotLimit" id="maxRowPlotLimit" required="required" value="{{ max_plot_limit }}">
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div class="card-footer">
+      <input class="btn btn-primary" type="submit" name="zoom_submit" id="inputFormSubmitId" value="{% trans 'Go' %}">
+    </div>
+  </div>
+</form>
+<div id="sqlqueryresultsouter"></div>

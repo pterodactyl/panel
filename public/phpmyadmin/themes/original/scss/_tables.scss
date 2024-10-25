@@ -1,0 +1,35 @@
+.table {
+  border-collapse: separate;
+  caption-side: top;
+
+  td {
+    touch-action: manipulation;
+    vertical-align: middle;
+  }
+
+  th {
+    background-color: $th-background;
+  }
+
+  thead th {
+    border-bottom: 0;
+  }
+
+  caption {
+    background-color: $table-head-bg;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+.table-striped {
+  > tbody > tr:nth-of-type(#{$table-striped-order}) > th {
+    --#{$variable-prefix}table-accent-bg: #d3dce3;
+  }
+}
+
+@media only screen and (min-width: 768px) {
+  .table th.position-sticky {
+    top: 49px;
+  }
+}

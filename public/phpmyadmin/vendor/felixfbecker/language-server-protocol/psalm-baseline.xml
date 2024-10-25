@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<files psalm-version="4.0.1@b1e2e30026936ef8d5bf6a354d1c3959b6231f44">
+  <file src="src/CodeLens.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$range</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/CompletionContext.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$triggerKind</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/CompletionItem.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$label</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/ContentChangeEvent.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$text</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Diagnostic.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$message</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/DocumentHighlight.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$range</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/DocumentOnTypeFormattingOptions.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$firstTriggerCharacter</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/FormattingOptions.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$insertSpaces</code>
+      <code>$tabSize</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Hover.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$contents</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Location.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$range</code>
+      <code>$uri</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/MarkedString.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$language</code>
+      <code>$value</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/MarkupContent.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$kind</code>
+      <code>$value</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/MessageActionItem.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$title</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/PackageDescriptor.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$name</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Position.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$character</code>
+      <code>$line</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/Range.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$end</code>
+      <code>$start</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/ReferenceContext.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$includeDeclaration</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/ReferenceInformation.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$reference</code>
+      <code>$symbol</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/SymbolDescriptor.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$fqsen</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/SymbolInformation.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="3">
+      <code>$kind</code>
+      <code>$location</code>
+      <code>$name</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/SymbolLocationInformation.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$symbol</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/TextDocumentContentChangeEvent.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$text</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/TextDocumentIdentifier.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$uri</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/TextDocumentItem.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="4">
+      <code>$languageId</code>
+      <code>$text</code>
+      <code>$uri</code>
+      <code>$version</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/TextEdit.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="2">
+      <code>$newText</code>
+      <code>$range</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+  <file src="src/VersionedTextDocumentIdentifier.php">
+    <PossiblyNullPropertyAssignmentValue occurrences="1">
+      <code>$version</code>
+    </PossiblyNullPropertyAssignmentValue>
+  </file>
+</files>

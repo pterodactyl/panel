@@ -1,0 +1,67 @@
+.alert {
+  text-align: left;
+
+  a {
+    text-decoration: underline;
+  }
+
+  h1 {
+    margin-bottom: 0.2em;
+  }
+}
+
+.alert-primary {
+  color: $button-color;
+  background-color: $blue-header;
+  background-image: none;
+
+  a {
+    color: $button-color;
+  }
+
+  h1 {
+    color: $navi-color;
+  }
+}
+
+.alert-info {
+  color: $button-color;
+  background-color: $navi-background-light;
+  background-image: none;
+
+  a {
+    color: $button-color;
+  }
+
+  h1 {
+    color: $navi-color;
+  }
+}
+
+.alert-success {
+  color: $button-color;
+  background-color: $browse-success-color;
+  background-image: none;
+
+  a {
+    color: $button-color;
+  }
+
+  h1 {
+    color: $navi-color;
+  }
+}
+
+.alert-danger {
+  color: $button-color;
+  background-color: $browse-warning-color;
+  background-image: none;
+
+  a {
+    color: $button-color;
+  }
+
+  h1 {
+    color: $navi-color;
+  }
+}

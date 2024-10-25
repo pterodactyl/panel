@@ -1,0 +1,6 @@
+<td>
+  <form action="{{ url('/sql') }}" method="post">
+    {{ get_hidden_inputs(url_params) }}
+    {{ page_selector|raw }}
+  </form>
+</td>

@@ -1,0 +1,34 @@
+.navbar-nav {
+  font-weight: bold;
+}
+
+.navbar-nav .icon {
+  vertical-align: middle;
+  margin-right: 0.1em;
+}
+
+.navbar-nav .nav-item {
+  border-bottom: 1pt solid black;
+
+  &.active .nav-link {
+    margin: 0;
+    background-color: $body-bg;
+    padding: 2px 4px;
+  }
+}
+
+.navbar-nav .nav-link {
+  margin: 2px 2px 0;
+  padding: 2px 2px 0;
+  background-color: $bg-one;
+  border-color: $bg-two;
+  border-style: solid;
+  border-width: 1pt 1pt 0 1pt;
+  border-radius: 0.4em 0.4em 0 0;
+
+  &:hover {
+    margin: 0;
+    background-color: $body-bg;
+    padding: 2px 4px;
+  }
+}

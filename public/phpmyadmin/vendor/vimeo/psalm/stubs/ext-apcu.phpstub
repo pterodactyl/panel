@@ -1,0 +1,92 @@
+<?php
+
+define('APC_LIST_ACTIVE', 1);
+define('APC_LIST_DELETED', 2);
+define('APC_ITER_TYPE', 1);
+define('APC_ITER_KEY', 2);
+define('APC_ITER_FILENAME', 4);
+define('APC_ITER_DEVICE', 8);
+define('APC_ITER_INODE', 16);
+define('APC_ITER_VALUE', 32);
+define('APC_ITER_MD5', 64);
+define('APC_ITER_NUM_HITS', 128);
+define('APC_ITER_MTIME', 256);
+define('APC_ITER_CTIME', 512);
+define('APC_ITER_DTIME', 1024);
+define('APC_ITER_ATIME', 2048);
+define('APC_ITER_REFCOUNT', 4096);
+define('APC_ITER_MEM_SIZE', 8192);
+define('APC_ITER_TTL', 16384);
+define('APC_ITER_NONE', 0);
+define('APC_ITER_ALL', -1);
+
+class APCUIterator implements Iterator
+{
+    /**
+     * @param array<string>|null|string $search
+     * @param int $format
+     * @param int $chunk_size
+     * @param int $list
+     *
+     * @return void
+     */
+    public function __construct($search, $format = APC_ITER_ALL, $chunk_size = 100, $list = APC_LIST_ACTIVE)
+    {
+    }
+
+    /**
+     * @return void
+     */
+    public function rewind()
+    {
+    }
+
+    /**
+     * @return void
+     */
+    public function next()
+    {
+    }
+
+    /**
+     * @return bool
+     */
+    public function valid()
+    {
+    }
+
+    /**
+     * @return string
+     */
+    public function key()
+    {
+    }
+
+    /**
+     * @return mixed
+     */
+    public function current()
+    {
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalHits()
+    {
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalSize()
+    {
+    }
+
+    /**
+     * @return int
+     */
+    public function getTotalCount()
+    {
+    }
+}

@@ -1,0 +1,38 @@
+<div class="container-fluid">
+  <div class="row">
+    <ul class="nav nav-pills m-2">
+      <li class="nav-item">
+        <a href="{{ url('/server/status') }}" class="nav-link{{ active == 'status' ? ' active' }}">
+          {% trans 'Server' %}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ url('/server/status/processes') }}" class="nav-link{{ active == 'processes' ? ' active' }}">
+          {% trans 'Processes' %}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ url('/server/status/queries') }}" class="nav-link{{ active == 'queries' ? ' active' }}">
+          {% trans 'Query statistics' %}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ url('/server/status/variables') }}" class="nav-link{{ active == 'variables' ? ' active' }}">
+          {% trans 'All status variables' %}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ url('/server/status/monitor') }}" class="nav-link{{ active == 'monitor' ? ' active' }}">
+          {% trans 'Monitor' %}
+        </a>
+      </li>
+      <li class="nav-item">
+        <a href="{{ url('/server/status/advisor') }}" class="nav-link{{ active == 'advisor' ? ' active' }}">
+          {% trans 'Advisor' %}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  {% block content %}{% endblock %}
+</div>

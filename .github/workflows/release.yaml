@@ -22,10 +22,10 @@ jobs:
           cache: yarn
 
       - name: Install dependencies
-        run: yarn install --frozen-lockfile
+        run: pnpm install
 
       - name: Build
-        run: yarn build:production
+        run: pnpm run build
 
       - name: Create release branch and bump version
         env:

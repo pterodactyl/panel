@@ -1,0 +1,83 @@
+<div class="container-fluid">
+<div class="row">
+  <h2>
+    {{ get_image('s_vars') }}
+    {% trans 'Server variables and settings' %}
+    {{ show_mysql_docu('server_system_variables') }}
+  </h2>
+</div>
+
+{% if variables is not empty %}
+  <a href="#" class="ajax saveLink hide">
+    {{ get_icon('b_save', 'Save'|trans) }}
+  </a>
+  <a href="#" class="cancelLink hide">
+    {{ get_icon('b_close', 'Cancel'|trans) }}
+  </a>
+  {{ get_image('b_help', 'Documentation'|trans, {
+    'class': 'hide',
+    'id': 'docImage'
+  }) }}
+
+  {% include 'filter.twig' with {
+    'filter_value': filter_value
+  } only %}
+
+  <div class="table-responsive">
+    <table id="serverVariables" class="table table-striped table-hover table-sm">
+      <thead>
+        <tr>
+          <th scope="col">{% trans 'Action' %}</th>
+          <th scope="col">{% trans 'Variable' %}</th>
+          <th scope="col" class="text-end">{% trans 'Value' %}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for variable in variables %}
+          <tr class="var-row" data-filter-row="{{ variable.name|upper }}">
+            <td>
+              {% if variable.is_editable %}
+                <a href="#" data-variable="{{ variable.name }}" class="editLink">{{ get_icon('b_edit', 'Edit'|trans) }}</a>
+              {% else %}
+                <span title="{% trans 'This is a read-only variable and can not be edited' %}" class="read_only_var">
+                  {{ get_icon('bd_edit', 'Edit'|trans) }}
+                </span>
+              {% endif %}
+            </td>
+            <td class="var-name fw-bold">
+              {% if variable.doc_link != null %}
+                <span title="{{ variable.name|replace({'_': ' '}) }}">
+                  {{ variable.doc_link|raw }}
+                </span>
+              {% else %}
+                {{ variable.name|replace({'_': ' '}) }}
+              {% endif %}
+            </td>
+            <td class="var-value text-end font-monospace{{ is_superuser ? ' editable' }}">
+              {% if variable.is_escaped %}
+                {{ variable.value|raw }}
+              {% else %}
+                {{ variable.value|e|replace({',': ',&#8203;'})|raw }}
+              {% endif %}
+            </td>
+          </tr>
+
+          {% if variable.has_session_value %}
+            <tr class="var-row" data-filter-row="{{ variable.name|upper }}">
+              <td></td>
+              <td class="var-name font-italic">{{ variable.name|replace({'_': ' '}) }} ({% trans 'Session value' %})</td>
+              <td class="var-value text-end font-monospace">{{ variable.session_value }}</td>
+            </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+
+{% else %}
+  {{ 'Not enough privilege to view server variables and settings. %s'|trans|format(
+    link_to_var_documentation('show_compatibility_56', is_mariadb)
+  )|error }}
+{% endif %}

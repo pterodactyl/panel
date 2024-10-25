@@ -1,0 +1,8 @@
+{
+    "name": "Bootstrap",
+    "version": "5.1",
+    "description": "Bootstrap theme for phpMyAdmin",
+    "author": "phpMyAdmin developers",
+    "url": "https://www.phpmyadmin.net/",
+    "supports": ["5.1", "5.2"]
+}

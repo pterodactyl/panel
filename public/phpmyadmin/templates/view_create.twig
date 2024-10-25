@@ -1,0 +1,120 @@
+<!-- CREATE VIEW options -->
+<div id="div_view_options">
+    <form method="post" action="{{ url('/view/create') }}">
+    {{ get_hidden_inputs(url_params) }}
+    <fieldset class="pma-fieldset">
+        <legend>
+            {% if ajax_dialog %}
+                {% trans 'Details' %}
+            {% else %}
+                {% if view['operation'] == 'create' %}
+                    {% trans 'Create view' %}
+                {% else %}
+                    {% trans 'Edit view' %}
+                {% endif %}
+            {% endif %}
+        </legend>
+        <table class="table align-middle rte_table">
+            {% if view['operation'] == 'create' %}
+                <tr>
+                    <td class="text-nowrap"><label for="or_replace">OR REPLACE</label></td>
+                    <td>
+                        <input type="checkbox" name="view[or_replace]" id="or_replace"
+                            {% if (view['or_replace']) %} checked="checked" {% endif %}
+                            value="1">
+                    </td>
+                </tr>
+            {% endif %}
+
+            <tr>
+                <td class="text-nowrap"><label for="algorithm">ALGORITHM</label></td>
+                <td>
+                    <select name="view[algorithm]" id="algorithm">
+                        {% for option in view_algorithm_options %}
+                            <option value="{{ option }}"
+                                {% if view['algorithm'] == option %}
+                                    selected="selected"
+                                {% endif %}
+                            >{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-nowrap">{% trans 'Definer' %}</td>
+                <td><input type="text" maxlength="100" size="50" name="view[definer]" value="{{ view['definer'] }}"></td>
+            </tr>
+
+            <tr>
+                <td class="text-nowrap">SQL SECURITY</td>
+                <td>
+                    <select name="view[sql_security]">
+                        <option value=""></option>
+                        {% for option in view_security_options %}
+                            <option value="{{ option }}"
+                                {% if option == view['sql_security'] %} selected="selected" {% endif %}
+                            >{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+
+            {% if view['operation'] == 'create' %}
+                <tr>
+                    <td class="text-nowrap">{% trans 'VIEW name' %}</td>
+                    <td>
+                        <input type="text" size="20" name="view[name]" onfocus="this.select()" maxlength="64" value="{{ view['name'] }}">
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td>
+                        <input type="hidden" name="view[name]" value="{{ view['name'] }}">
+                    </td>
+                </tr>
+            {% endif %}
+
+            <tr>
+                <td class="text-nowrap">{% trans 'Column names' %}</td>
+                <td>
+                    <input type="text" maxlength="100" size="50" name="view[column_names]" onfocus="this.select()"  value="{{ view['column_names'] }}">
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-nowrap">AS</td>
+                <td>
+                    <textarea name="view[as]" id="view_as" rows="15" cols="40" dir="{{ text_dir }}">{{ view['as'] }}</textarea><br>
+                    <input type="button" value="Format" id="format" class="btn btn-secondary button sqlbutton">
+                    <span id="querymessage"></span>
+                </td>
+            </tr>
+
+            <tr>
+                <td class="text-nowrap">WITH CHECK OPTION</td>
+                <td>
+                    <select name="view[with]">
+                        <option value=""></option>
+                        {% for option in view_with_options %}
+                            <option value="{{ option }}"
+                                {% if option == view['with'] %} selected="selected" {% endif %}
+                            >{{ option }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+
+        </table>
+    </fieldset>
+
+    <input type="hidden" name="ajax_request" value="1" />
+    <input type="hidden" name="{{ (view['operation'] == 'create') ? 'createview' : 'alterview' }}" value="1" />
+
+    {% if ajax_dialog == false %}
+        <input type="hidden" name="ajax_dialog" value="1" />
+        <input type="submit" class="btn btn-primary" name="" value="{% trans 'Go' %}" />
+    {% endif %}
+
+    </form>
+</div>

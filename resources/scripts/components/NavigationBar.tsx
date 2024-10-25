@@ -6,6 +6,7 @@ import { faCogs, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
+import MaintenanceContainer from './dashboard/maintenance/MaintenanceContainer';
 import tw, { theme } from 'twin.macro';
 import styled from 'styled-components/macro';
 import http from '@/api/http';
@@ -73,6 +74,7 @@ export default () => {
                             </a>
                         </Tooltip>
                     )}
+                    <MaintenanceContainer />
                     <Tooltip placement={'bottom'} content={'Account Settings'}>
                         <NavLink to={'/account'}>
                             <span className={'flex items-center w-5 h-5'}>

@@ -1,0 +1,98 @@
+{# Get inputbox based on different column types (Foreign key, geometrical, enum) #}
+{% if foreigners and search_column_in_foreigners(foreigners, column_name) %}
+    {% if foreign_data['disp_row'] is iterable %}
+        <select name="criteriaValues[{{ column_index }}]"
+            id="{{ column_id }}{{ column_index }}">
+            {{ foreign_dropdown(
+                foreign_data['disp_row'],
+                foreign_data['foreign_field'],
+                foreign_data['foreign_display'],
+                '',
+                foreign_max_limit
+            ) }}
+        </select>
+    {% elseif foreign_data['foreign_link'] == true %}
+        <input type="text"
+            id="{{ column_id }}{{ column_index }}"
+            name="criteriaValues[{{ column_index }}]"
+            id="field_{{ column_name_hash }}[{{ column_index }}]"
+            class="textfield"
+            {% if criteria_values[column_index] is defined %}
+                value="{{ criteria_values[column_index] }}"
+            {% endif %}>
+        <a class="ajax browse_foreign" href="{{ url('/browse-foreigners') }}" data-post="
+            {{- get_common({'db': db, 'table': table}, '', false) -}}
+            &amp;field={{ column_name|url_encode }}&amp;fieldkey=
+            {{- column_index }}&amp;fromsearch=1">
+            {{ get_icon('b_browse', 'Browse foreign values'|trans) }}
+        </a>
+    {% endif %}
+{% elseif column_type in get_gis_datatypes() %}
+    <input type="text"
+        name="criteriaValues[{{ column_index }}]"
+        size="40"
+        class="textfield"
+        id="field_{{ column_index }}">
+    {% if in_fbs %}
+        {% set edit_str = get_icon('b_edit', 'Edit/Insert'|trans) %}
+        <span class="open_search_gis_editor">
+            {{ link_or_button(url('/gis-data-editor'), [], edit_str, [], '_blank') }}
+        </span>
+    {% endif %}
+{% elseif column_type starts with 'enum'
+    or (column_type starts with 'set' and in_zoom_search_edit) %}
+    {% set in_zoom_search_edit = false %}
+    {% set value = parse_enum_set_values(column_type) %}
+    {% set cnt_value = value|length %}
+    {#
+    Enum in edit mode   --> dropdown
+    Enum in search mode --> multiselect
+    Set in edit mode    --> multiselect
+    Set in search mode  --> input (skipped here, so the 'else' section would handle it)
+    #}
+    {% if (column_type starts with 'enum' and not in_zoom_search_edit)
+        or (column_type starts with 'set' and in_zoom_search_edit) %}
+        <select name="criteriaValues[{{ column_index }}]"
+            id="{{ column_id }}{{ column_index }}">
+    {% else %}
+        <select name="criteriaValues[{{ column_index }}]"
+            id="{{ column_id }}{{ column_index }}"
+            multiple="multiple"
+            size="{{ min(3, cnt_value) }}">
+    {% endif %}
+    {# Add select options #}
+    <option value=""></option>
+    {% for i in 0..cnt_value - 1 %}
+        {% if criteria_values[column_index] is defined
+            and criteria_values[column_index] is iterable
+            and value[i] in criteria_values[column_index] %}
+            <option value="{{ value[i]|raw }}" selected>
+                {{ value[i]|raw }}
+            </option>
+        {% else %}
+            <option value="{{ value[i]|raw }}">
+                {{ value[i]|raw }}
+            </option>
+        {% endif %}
+    {% endfor %}
+    </select>
+{% else %}
+    {% set the_class = 'textfield' %}
+    {% if column_type == 'date' %}
+        {% set the_class = the_class ~ ' datefield' %}
+    {% elseif column_type == 'datetime' or column_type starts with 'timestamp' %}
+        {% set the_class = the_class ~ ' datetimefield' %}
+    {% elseif column_type starts with 'bit' %}
+        {% set the_class = the_class ~ ' bit' %}
+    {% endif %}
+    <input type="text"
+        name="criteriaValues[{{ column_index }}]"
+        data-type="{{ column_data_type }}"
+        {{ html_attributes|raw }}
+        size="40"
+        class="{{ the_class }}"
+        id="{{ column_id }}{{ column_index }}"
+        {% if criteria_values[column_index] is defined %}
+           value="{{ criteria_values[column_index] }}"
+        {%- endif %}>
+{% endif %}

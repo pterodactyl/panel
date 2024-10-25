@@ -1,0 +1,105 @@
+@media print {
+  .hide {
+    display: none;
+  }
+
+  // Standard CSS
+  body,
+  table,
+  th,
+  td {
+    color: #000;
+    background-color: #fff;
+    font-size: 12px;
+  }
+
+  // To remove link text decoration
+  a:link {
+    color: #000;
+    text-decoration: none;
+  }
+
+  // To remove any image borders
+  img {
+    border: 0;
+  }
+
+  // Table specific
+  table,
+  th,
+  td {
+    border: 0.1em solid #000;
+    background-color: #fff;
+  }
+
+  table {
+    border-collapse: collapse;
+    border-spacing: 0.2em;
+  }
+
+  thead {
+    border-collapse: collapse;
+    border-spacing: 0.2em;
+    border: 0.1em solid #000;
+    font-weight: 900;
+  }
+
+  th,
+  td {
+    padding: 0.2em;
+  }
+
+  thead th {
+    font-weight: bold;
+    background-color: #e5e5e5;
+    border: 0.1em solid #000;
+  }
+
+  // Position the main content
+  #page_content {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 95%;
+    float: none;
+  }
+
+  .sqlOuter {
+    color: black;
+    background-color: #000;
+  }
+
+  // For hiding 'Open a New phpMyAdmin Window' button
+  // Hide extra menu on /table/structure
+  .cDrop,
+  .cEdit,
+  .cList,
+  .cCpy,
+  .cPointer {
+    display: none;
+  }
+
+  table tbody:first-of-type tr {
+    // odd items 1,3,5,7...
+    &:nth-child(odd) {
+      background: #fff;
+
+      th {
+        background: #fff;
+      }
+    }
+
+    // even items 2,4,6,8...
+    &:nth-child(even) {
+      background: #dfdfdf;
+
+      th {
+        background: #dfdfdf;
+      }
+    }
+  }
+
+  .column_attribute {
+    font-size: 100%;
+  }
+}

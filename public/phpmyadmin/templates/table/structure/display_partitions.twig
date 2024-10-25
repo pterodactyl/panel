@@ -1,0 +1,211 @@
+<div id="partitions">
+    <fieldset class="pma-fieldset">
+        <legend>
+            {% trans 'Partitions' %}
+            {{ show_mysql_docu('partitioning') }}
+        </legend>
+        {% if partitions is empty %}
+            {{ 'No partitioning defined!'|trans|notice }}
+        {% else %}
+            <p>
+                {% trans 'Partitioned by:' %}
+                <code>{{ partition_method }}({{ partition_expression }})</code>
+            </p>
+            {% if has_sub_partitions %}
+                <p>
+                    {% trans 'Sub partitioned by:' %}
+                    <code>{{ sub_partition_method }}({{ sub_partition_expression }})</code>
+                <p>
+            {% endif %}
+            <table class="table table-striped table-hover table-sm">
+                <thead>
+                    <tr>
+                        <th colspan="2">#</th>
+                        <th>{% trans 'Partition' %}</th>
+                        {% if has_description %}
+                            <th>{% trans 'Expression' %}</th>
+                        {% endif %}
+                        <th>{% trans 'Rows' %}</th>
+                        <th>{% trans 'Data length' %}</th>
+                        <th>{% trans 'Index length' %}</th>
+                        <th>{% trans 'Comment' %}</th>
+                        <th colspan="{{ range_or_list ? '7' : '6' }}">
+                            {% trans 'Action' %}
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for partition in partitions %}
+                    <tr class="noclick{{ has_sub_partitions ? ' table-active' }}">
+                        {% if has_sub_partitions %}
+                            <td>{{ partition.getOrdinal() }}</td>
+                            <td></td>
+                        {% else %}
+                            <td colspan="2">{{ partition.getOrdinal() }}</td>
+                        {% endif %}
+                        <th>{{ partition.getName() }}</th>
+                        {% if has_description %}
+                            <td>
+                                <code>
+                                    {{- partition.getExpression() -}}
+                                    {{- partition.getMethod() == 'LIST' ? ' IN (' : ' < ' -}}
+                                    {{- partition.getDescription() -}}
+                                    {{- partition.getMethod() == 'LIST' ? ')' -}}
+                                </code>
+                            </td>
+                        {% endif %}
+                        <td class="value">{{ partition.getRows() }}</td>
+                        <td class="value">
+                            {% set data_length = format_byte_down(
+                                partition.getDataLength(),
+                                3,
+                                1
+                            ) %}
+                            <span>{{ data_length[0] }}</span>
+                            <span class="unit">{{ data_length[1] }}</span>
+                        </td>
+                        <td class="value">
+                            {% set index_length = format_byte_down(
+                                partition.getIndexLength(),
+                                3,
+                                1
+                            ) %}
+                            <span>{{ index_length[0] }}</span>
+                            <span class="unit">{{ index_length[1] }}</span>
+                        </td>
+                        <td>{{ partition.getComment() }}</td>
+
+                        <td>
+                          <a id="partition_action_ANALYZE" class="ajax" href="{{ url('/table/partition/analyze') }}" data-post="{{ get_common({
+                            'db': db,
+                            'table': table,
+                            'partition_name': partition.getName(),
+                          }, '', false) }}">
+                            {{ get_icon('b_search', 'Analyze'|trans) }}
+                          </a>
+                        </td>
+
+                        <td>
+                          <a id="partition_action_CHECK" class="ajax" href="{{ url('/table/partition/check') }}" data-post="{{ get_common({
+                            'db': db,
+                            'table': table,
+                            'partition_name': partition.getName(),
+                          }, '', false) }}">
+                            {{ get_icon('eye', 'Check'|trans) }}
+                          </a>
+                        </td>
+
+                        <td>
+                          <a id="partition_action_OPTIMIZE" class="ajax" href="{{ url('/table/partition/optimize') }}" data-post="{{ get_common({
+                            'db': db,
+                            'table': table,
+                            'partition_name': partition.getName(),
+                          }, '', false) }}">
+                            {{ get_icon('normalize', 'Optimize'|trans) }}
+                          </a>
+                        </td>
+
+                        <td>
+                          <a id="partition_action_REBUILD" class="ajax" href="{{ url('/table/partition/rebuild') }}" data-post="{{ get_common({
+                            'db': db,
+                            'table': table,
+                            'partition_name': partition.getName(),
+                          }, '', false) }}">
+                            {{ get_icon('s_tbl', 'Rebuild'|trans) }}
+                          </a>
+                        </td>
+
+                        <td>
+                          <a id="partition_action_REPAIR" class="ajax" href="{{ url('/table/partition/repair') }}" data-post="{{ get_common({
+                            'db': db,
+                            'table': table,
+                            'partition_name': partition.getName(),
+                          }, '', false) }}">
+                            {{ get_icon('b_tblops', 'Repair'|trans) }}
+                          </a>
+                        </td>
+
+                        <td>
+                          <a id="partition_action_TRUNCATE" class="ajax" href="{{ url('/table/partition/truncate') }}" data-post="{{ get_common({
+                            'db': db,
+                            'table': table,
+                            'partition_name': partition.getName(),
+                          }, '', false) }}">
+                            {{ get_icon('b_empty', 'Truncate'|trans) }}
+                          </a>
+                        </td>
+
+                        {% if range_or_list %}
+                          <td>
+                            <a id="partition_action_DROP" class="ajax" href="{{ url('/table/partition/drop') }}" data-post="{{ get_common({
+                              'db': db,
+                              'table': table,
+                              'partition_name': partition.getName(),
+                            }, '', false) }}">
+                              {{ get_icon('b_drop', 'Drop'|trans) }}
+                            </a>
+                          </td>
+                        {% endif %}
+
+                        {% if has_sub_partitions %}
+                            {% for sub_partition in partition.getSubPartitions() %}
+                                <tr class="noclick">
+                                    <td></td>
+                                    <td>{{ sub_partition.getOrdinal() }}</td>
+                                    <td>{{ sub_partition.getName() }}</td>
+                                    {% if has_description %}
+                                        <td></td>
+                                    {% endif %}
+                                    <td class="value">{{ sub_partition.getRows() }}</td>
+                                    <td class="value">
+                                        {% set data_length = format_byte_down(
+                                            sub_partition.getDataLength(),
+                                            3,
+                                            1
+                                        ) %}
+                                        <span>{{ data_length[0] }}</span>
+                                        <span class="unit">{{ data_length[1] }}</span>
+                                    </td>
+                                    <td class="value">
+                                        {% set index_length = format_byte_down(
+                                            sub_partition.getIndexLength(),
+                                            3,
+                                            1
+                                        ) %}
+                                        <span>{{ index_length[0] }}</span>
+                                        <span class="unit">{{ index_length[1] }}</span>
+                                    </td>
+                                    <td>{{ sub_partition.getComment() }}</td>
+                                    <td colspan="{{ range_or_list ? '7' : '6' }}"></td>
+                                </tr>
+                            {% endfor %}
+                        {% endif %}
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
+    </fieldset>
+    <fieldset class="pma-fieldset tblFooters d-print-none">
+        <form action="{{ url('/table/structure/partitioning') }}" method="post">
+            {{ get_hidden_inputs(db, table) }}
+
+            {% if partitions is empty %}
+                <input class="btn btn-secondary" type="submit" value="{% trans 'Partition table' %}">
+            {% else %}
+                {{ link_or_button(
+                  url('/sql'),
+                  {
+                    'db': db,
+                    'table': table,
+                    'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ ' REMOVE PARTITIONING'
+                  },
+                  'Remove partitioning'|trans, {
+                    'class': 'btn btn-secondary ajax',
+                    'id': 'remove_partitioning'
+                }) }}
+                <input class="btn btn-secondary" type="submit" value="{% trans 'Edit partitioning' %}">
+            {% endif %}
+        </form>
+    </fieldset>
+</div>

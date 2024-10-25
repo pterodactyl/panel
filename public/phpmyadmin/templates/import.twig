@@ -1,0 +1,203 @@
+<div class="container">
+  <h2 class="my-3">
+    {{ get_image('b_import', 'Import'|trans) }}
+    {% block title %}{% endblock %}
+  </h2>
+
+  {{ page_settings_error_html|raw }}
+  {{ page_settings_html|raw }}
+
+  <iframe id="import_upload_iframe" name="import_upload_iframe" width="1" height="1" class="hide"></iframe>
+  <div id="import_form_status" class="hide"></div>
+  <div id="importmain">
+    <img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock" class="hide">
+
+    <script type="text/javascript">
+//<![CDATA[
+{% include 'import/javascript.twig' with {'upload_id': upload_id, 'handler': handler} only %}
+//]]>
+    </script>
+
+    <form id="import_file_form" action="{{ url('/import') }}" method="post" enctype="multipart/form-data" name="import" class="ajax"
+      {%- if handler != 'PhpMyAdmin\\Plugins\\Import\\Upload\\UploadNoplugin' %} target="import_upload_iframe"{% endif %}>
+      {{ get_hidden_inputs(hidden_inputs) }}
+
+      <div class="card mb-3">
+        <div class="card-header">{% trans 'File to import:' %}</div>
+        <div class="card-body">
+          {# We don't have show anything about compression, when no supported #}
+          {% if compressions is not empty %}
+            <p class="card-text">
+              {{ 'File may be compressed (%s) or uncompressed.'|trans|format(compressions|join(', ')) }}<br>
+              {% trans 'A compressed file\'s name must end in <strong>.[format].[compression]</strong>. Example: <strong>.sql.zip</strong>' %}
+            </p>
+          {% endif %}
+
+          {% if is_upload and upload_dir is not empty %}
+            {% set use_local_file_import = timeout_passed_global is not empty and local_import_file is not empty %}
+            <ul class="nav nav-pills mb-3" id="importFileTab" role="tablist">
+              <li class="nav-item" role="presentation">
+                <button class="nav-link{{ not use_local_file_import ? ' active' }}" id="uploadFileTab" data-bs-toggle="tab" data-bs-target="#uploadFile" type="button" role="tab" aria-controls="uploadFile" aria-selected="{{ not use_local_file_import ? 'true' : 'false' }}">{% trans 'Upload a file' %}</button>
+              </li>
+              <li class="nav-item" role="presentation">
+                <button class="nav-link{{ use_local_file_import ? ' active' }}" id="localFileTab" data-bs-toggle="tab" data-bs-target="#localFile" type="button" role="tab" aria-controls="localFile" aria-selected="{{ use_local_file_import ? 'true' : 'false' }}">{% trans 'Select file to import' %}</button>
+              </li>
+            </ul>
+            <div class="tab-content mb-3" id="importFileTabContent">
+              <div class="tab-pane fade{{ not use_local_file_import ? ' show active' }}" id="uploadFile" role="tabpanel" aria-labelledby="uploadFileTab">
+                <input type="hidden" name="MAX_FILE_SIZE" value="{{ max_upload_size }}">
+                <div class="mb-3">
+                  <label class="form-label" for="input_import_file">{% trans 'Browse your computer:' %} <small>{{ formatted_maximum_upload_size }}</small></label>
+                  <input class="form-control" type="file" name="import_file" id="input_import_file">
+                </div>
+                <div id="upload_form_status" class="hide"></div>
+                <div id="upload_form_status_info" class="hide"></div>
+                <p class="card-text">{% trans 'You may also drag and drop a file on any page.' %}</p>
+              </div>
+
+              <div class="tab-pane fade{{ use_local_file_import ? ' show active' }}" id="localFile" role="tabpanel" aria-labelledby="localFileTab">
+                {% if local_files is same as(false) %}
+                  {{ 'The directory you set for upload work cannot be reached.'|trans|error }}
+                {% elseif local_files is not empty %}
+                  <label class="form-label" for="select_local_import_file">{{ 'Select from the web server upload directory [strong]%s[/strong]:'|trans|format(user_upload_dir)|sanitize }}</label>
+                  <select class="form-select" size="1" name="local_import_file" id="select_local_import_file">
+                    <option value=""></option>
+                    {{ local_files|raw }}
+                  </select>
+                {% else %}
+                  <div class="alert alert-info" role="alert">
+                    {% trans 'There are no files to import!' %}
+                  </div>
+                {% endif %}
+              </div>
+            </div>
+          {% elseif is_upload %}
+            <input type="hidden" name="MAX_FILE_SIZE" value="{{ max_upload_size }}">
+            <div class="mb-3">
+              <label class="form-label" for="input_import_file">{% trans 'Browse your computer:' %} <small>{{ formatted_maximum_upload_size }}</small></label>
+              <input class="form-control" type="file" name="import_file" id="input_import_file">
+            </div>
+            <div id="upload_form_status" class="hide"></div>
+            <div id="upload_form_status_info" class="hide"></div>
+            <p class="card-text">{% trans 'You may also drag and drop a file on any page.' %}</p>
+          {% elseif upload_dir is not empty %}
+            {% if local_files is same as(false) %}
+              {{ 'The directory you set for upload work cannot be reached.'|trans|error }}
+            {% elseif local_files is not empty %}
+              <div class="mb-3">
+                <label class="form-label" for="select_local_import_file">{{ 'Select from the web server upload directory [strong]%s[/strong]:'|trans|format(user_upload_dir)|sanitize }}</label>
+                <select class="form-select" size="1" name="local_import_file" id="select_local_import_file">
+                  <option value=""></option>
+                  {{ local_files|raw }}
+                </select>
+              </div>
+            {% else %}
+              <div class="alert alert-info" role="alert">
+                {% trans 'There are no files to import!' %}
+              </div>
+            {% endif %}
+          {% else %}
+            {{ 'File uploads are not allowed on this server.'|trans|notice }}
+          {% endif %}
+
+          <label class="form-label" for="charset_of_file">{% trans 'Character set of the file:' %}</label>
+          {% if is_encoding_supported %}
+            <select class="form-select" id="charset_of_file" name="charset_of_file" size="1">
+              {% for charset in encodings %}
+                <option value="{{ charset }}"{% if (import_charset is empty and charset == 'utf-8') or charset == import_charset %} selected{% endif %}>
+                  {{- charset -}}
+                </option>
+              {% endfor %}
+            </select>
+          {% else %}
+            <select class="form-select" lang="en" dir="ltr" name="charset_of_file" id="charset_of_file">
+              <option value=""></option>
+              {% for charset in charsets %}
+                <option value="{{ charset.getName() }}" title="{{ charset.getDescription() }}"{{ charset.getName() == 'utf8' ? ' selected' }}>
+                  {{- charset.getName() -}}
+                </option>
+              {% endfor %}
+            </select>
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">{% trans 'Partial import:' %}</div>
+        <div class="card-body">
+          {% if timeout_passed is defined and timeout_passed %}
+            <input type="hidden" name="skip" value="{{ offset }}">
+            <div class="alert alert-info" role="alert">
+              {{ 'Previous import timed out, after resubmitting will continue from position %d.'|trans|format(offset) }}
+            </div>
+          {% endif %}
+
+          <div class="form-check form-switch mb-3">
+            <input class="form-check-input" type="checkbox" role="switch" name="allow_interrupt" value="yes" id="checkbox_allow_interrupt"{{ is_allow_interrupt_checked|raw }} aria-describedby="allowInterruptHelp">
+            <label class="form-check-label" for="checkbox_allow_interrupt">
+              {% trans 'Allow the interruption of an import in case the script detects it is close to the PHP timeout limit.' %}
+            </label>
+            <div id="allowInterruptHelp" class="form-text">{% trans 'This might be a good way to import large files, however it can break transactions.' %}</div>
+          </div>
+
+          {% if not (timeout_passed is defined and timeout_passed) %}
+            <label class="form-label" for="text_skip_queries">{% trans 'Skip this number of queries (for SQL) starting from the first one:' %}</label>
+            <input class="form-control" type="number" name="skip_queries" value="{{ skip_queries_default|raw }}" id="text_skip_queries" min="0">
+          {% else %}
+            {# If timeout has passed, do not show the Skip dialog to avoid the risk of someone entering a value here that would interfere with "skip" #}
+            <input type="hidden" name="skip_queries" value="{{ skip_queries_default|raw }}" id="text_skip_queries">
+          {% endif %}
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">{% trans 'Other options' %}</div>
+        <div class="card-body">
+          <input type="hidden" name="fk_checks" value="0">
+          <div class="form-check form-switch">
+            <input class="form-check-input" type="checkbox" role="switch" name="fk_checks" id="fk_checks" value="1"{{ is_foreign_key_check ? ' checked' }}>
+            <label class="form-check-label" for="fk_checks">{% trans 'Enable foreign key checks' %}</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-3">
+        <div class="card-header">{% trans 'Format' %}</div>
+        <div class="card-body">
+          <select class="form-select" id="plugins" name="format" aria-label="{% trans 'Format' %}">
+            {% for option in plugins_choice %}
+              <option value="{{ option.name }}"{{ option.is_selected ? ' selected' }}>{{ option.text }}</option>
+            {% endfor %}
+          </select>
+
+          {% for option in plugins_choice %}
+            <input type="hidden" id="force_file_{{ option.name }}" value="true">
+          {% endfor %}
+
+          <div id="import_notification"></div>
+        </div>
+      </div>
+
+      <div class="card mb-3" id="format_specific_opts">
+        <div class="card-header">{% trans 'Format-specific options:' %}</div>
+        <div class="card-body">
+          {{ options|raw }}
+        </div>
+      </div>
+
+      {# Japanese encoding setting #}
+      {% if can_convert_kanji %}
+        <div class="card mb-3" id="kanji_encoding">
+          <div class="card-header">{% trans 'Encoding Conversion:' %}</div>
+          <div class="card-body">
+            {% include 'encoding/kanji_encoding_form.twig' %}
+          </div>
+        </div>
+      {% endif %}
+
+      <div id="submit">
+        <input id="buttonGo" class="btn btn-primary" type="submit" value="{% trans 'Import' %}">
+      </div>
+    </form>
+  </div>
+</div>

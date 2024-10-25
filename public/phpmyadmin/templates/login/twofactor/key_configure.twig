@@ -1,0 +1,12 @@
+{% include 'login/twofactor/key-https-warning.twig' %}
+<div class="alert alert-danger" role="alert">
+  <h4 class="alert-heading">{{ 'Deprecated!'|trans }}</h4>
+  <p>{{ 'The FIDO U2F API has been deprecated in favor of the Web Authentication API (WebAuthn).'|trans }}</p>
+  <p class="mb-0">
+    {{ 'You can still use Firefox to authenticate your account using the FIDO U2F API, however it\'s recommended that you use the WebAuthn authentication instead.'|trans }}
+  </p>
+</div>
+<p>
+{% trans "Please connect your FIDO U2F device into your computer's USB port. Then confirm registration on the device." %}
+</p>
+<input id="u2f_registration_response" name="u2f_registration_response" value="" type="hidden" data-request="{{ request }}" data-signatures="{{ signatures }}">

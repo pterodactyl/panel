@@ -1,0 +1,135 @@
+name: Continuous Integration
+
+on:
+  push: null
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  unit_tests:
+    strategy:
+      matrix:
+        include:
+          - operating-system: 'ubuntu-latest'
+            php-version: '7.1'
+
+          - operating-system: 'ubuntu-latest'
+            php-version: '7.2'
+
+          - operating-system: 'ubuntu-latest'
+            php-version: '7.3'
+
+          - operating-system: 'ubuntu-latest'
+            php-version: '7.4'
+
+          - operating-system: 'ubuntu-latest'
+            php-version: '8.0'
+            composer-flags: '--ignore-platform-req=php'
+
+          - operating-system: 'windows-latest'
+            php-version: '8.0'
+            composer-flags: '--ignore-platform-req=php'
+
+          - operating-system: 'macos-latest'
+            php-version: '8.0'
+            composer-flags: '--ignore-platform-req=php'
+
+    name: PHP ${{ matrix.php-version }} on ${{ matrix.operating-system }}
+
+    runs-on: ${{ matrix.operating-system }}
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Use LF line ends
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-${{ matrix.composer-flags }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-
+            composer-${{ runner.os }}-${{ matrix.php-version }}-
+
+      - name: Install dependencies
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 30
+          command: |
+            php_version=$(php -v)
+            composer update --optimize-autoloader --no-interaction --no-progress ${{ matrix.composer-flags }}
+            composer info -D
+
+      - name: Run unit tests
+        run: vendor/bin/phpunit --verbose
+
+  coding_standards:
+    strategy:
+      matrix:
+        include:
+          - operating-system: 'ubuntu-latest'
+            php-version: '8.0'
+            composer-flags: '--ignore-platform-req=php'
+
+    name: Coding standards
+    runs-on: ${{ matrix.operating-system }}
+
+    steps:
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+
+      - name: Use LF line ends
+        run: |
+          git config --global core.autocrlf false
+          git config --global core.eol lf
+
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Get Composer cache directory
+        id: composer-cache
+        run: echo "::set-output name=dir::$(composer config cache-dir)"
+
+      - name: Cache dependencies
+        uses: actions/cache@v2
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-${{ matrix.composer-flags }}
+          restore-keys: |
+            composer-${{ runner.os }}-${{ matrix.php-version }}-${{ hashFiles('**/composer.*') }}-
+            composer-${{ runner.os }}-${{ matrix.php-version }}-
+
+      - name: Install dependencies
+        uses: nick-invision/retry@v2
+        with:
+          timeout_minutes: 5
+          max_attempts: 5
+          retry_wait_seconds: 30
+          command: |
+            php_version=$(php -v)
+            composer update --optimize-autoloader --no-interaction --no-progress ${{ matrix.composer-flags }}
+            composer info -D
+
+      - name: Run style fixer
+        env:
+          PHP_CS_FIXER_IGNORE_ENV: 1
+        run: vendor/bin/php-cs-fixer --diff --dry-run -v fix

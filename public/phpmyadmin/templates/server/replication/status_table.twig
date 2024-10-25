@@ -1,0 +1,34 @@
+<div id="replication_{{ type }}_section"{{ is_hidden ? ' style="display: none;"' }}>
+  {% if has_title %}
+    <h4>
+      <a id="replication_{{ type }}"></a>
+      {% if type == 'primary' %}
+        {% trans 'Primary status' %}
+      {% else %}
+        {% trans 'Replica status' %}
+      {% endif %}
+    </h4>
+  {% endif %}
+
+  <table id="server{{ type }}replicationsummary" class="table w-auto">
+    <thead>
+      <tr>
+        <th>{% trans 'Variable' %}</th>
+        <th>{% trans 'Value' %}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for variable in variables %}
+        <tr>
+          <td>{{ variable.name }}</td>
+          <td class="text-end font-monospace">
+            <span{% if variable.status == 'text-danger' %} class="text-danger"{% elseif variable.status == 'text-success' %} class="text-success"{% endif %}>
+              {{ variable.value }}
+            </span>
+          </td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

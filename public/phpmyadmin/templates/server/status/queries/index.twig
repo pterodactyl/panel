@@ -1,0 +1,62 @@
+{% extends 'server/status/base.twig' %}
+{% set active = 'queries' %}
+{% block content %}
+
+{% if is_data_loaded %}
+<div class="row">
+  <h3 id="serverstatusqueries">
+    {% trans %}
+      Questions since startup:
+    {% notes %}
+      Questions is the name of a MySQL Status variable
+    {% endtrans %}
+    {{ format_number(stats.total, 0) }}
+    {{ show_mysql_docu('server-status-variables', false, null, null, 'statvar_Questions') }}
+  </h3>
+</div>
+
+<div class="row">
+  <ul>
+    <li>ø {% trans 'per hour:' %} {{ format_number(stats.per_hour, 0) }}</li>
+    <li>ø {% trans 'per minute:' %} {{ format_number(stats.per_minute, 0) }}</li>
+    {% if stats.per_second >= 1 %}
+      <li>ø {% trans 'per second:' %} {{ format_number(stats.per_second, 0) }}</li>
+    {% endif %}
+  </ul>
+</div>
+
+<div class="row">
+  <table id="serverStatusQueriesDetails" class="table table-striped table-hover sortable col-md-4 col-12 w-auto">
+    <colgroup>
+      <col class="namecol">
+      <col class="valuecol" span="3">
+    </colgroup>
+
+    <thead>
+      <tr>
+        <th scope="col">{% trans 'Statements' %}</th>
+        <th class="text-end" scope="col">{% trans %}#{% notes %}# = Amount of queries{% endtrans %}</th>
+        <th class="text-end" scope="col">{% trans 'ø per hour' %}</th>
+        <th class="text-end" scope="col">%</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for query in queries %}
+        <tr>
+          <th scope="row">{{ query.name }}</th>
+          <td class="font-monospace text-end">{{ format_number(query.value, 5, 0, true) }}</td>
+          <td class="font-monospace text-end">{{ format_number(query.per_hour, 4, 1, true) }}</td>
+          <td class="font-monospace text-end">{{ format_number(query.percentage, 0, 2) }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <div id="serverstatusquerieschart" class="w-100 col-12 col-md-6" data-chart="{{ chart|json_encode }}"></div>
+</div>
+{% else %}
+  {{ 'Not enough privilege to view query statistics.'|trans|error }}
+{% endif %}
+
+{% endblock %}

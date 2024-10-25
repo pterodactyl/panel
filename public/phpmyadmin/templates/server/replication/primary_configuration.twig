@@ -1,0 +1,32 @@
+<fieldset class="pma-fieldset">
+  <legend>{% trans 'Primary configuration' %}</legend>
+  <p>
+    {% trans %}
+      This server is not configured as a primary server in a replication process. You can choose from either replicating all databases and ignoring some of them (useful if you want to replicate a majority of the databases) or you can choose to ignore all databases by default and allow only certain databases to be replicated. Please select the mode:
+    {% endtrans %}
+  </p>
+  <select name="db_type" id="db_type">
+    <option value="all">{% trans 'Replicate all databases; Ignore:' %}</option>
+    <option value="ign">{% trans 'Ignore all databases; Replicate:' %}</option>
+  </select>
+  <p>{% trans 'Please select databases:' %}</p>
+  {{ database_multibox|raw }}
+  <p>
+    {% trans %}
+      Now, add the following lines at the end of [mysqld] section in your my.cnf and please restart the MySQL server afterwards.
+    {% endtrans %}
+  </p>
+  <pre id="rep"></pre>
+  <p>
+    {% trans %}
+      Once you restarted MySQL server, please click on Go button. Afterwards, you should see a message informing you, that this server <strong>is</strong> configured as primary.
+    {% endtrans %}
+  </p>
+</fieldset>
+
+<fieldset class="pma-fieldset tblFooters">
+  <form method="post" action="{{ url('/server/replication') }}">
+    {{ get_hidden_inputs('', '') }}
+    <input id="goButton" class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+  </form>
+</fieldset>

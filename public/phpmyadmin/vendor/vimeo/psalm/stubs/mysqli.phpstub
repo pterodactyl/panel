@@ -1,0 +1,33 @@
+<?php
+
+/**
+ * @template TValue
+ *
+ * @template-implements Traversable<int, TValue>
+ */
+class mysqli_result implements Traversable
+{
+    /**
+     * @psalm-taint-sink callable $class
+     *
+     * @template T of object
+     * @param class-string<T> $class
+     * @param array $constructor_args
+     * @return T|null|false
+     */
+    function fetch_object(string $class = stdClass::class, array $constructor_args = []): object|false|null {}
+}
+
+
+/**
+ * @psalm-taint-sink callable $class
+ *
+ * @template T of object
+ * @template TValue
+ *
+ * @param mysqli_result<TValue> $result
+ * @param class-string<T> $class
+ * @param array $constructor_args
+ * @return T|null|false
+ */
+function mysqli_fetch_object(mysqli_result $result, string $class = stdClass::class, array $constructor_args = []): object|false|null {}

@@ -1,0 +1,140 @@
+{{ login_header|raw }}
+
+{% if is_demo %}
+  <div class="card mb-4">
+    <div class="card-header">{% trans 'phpMyAdmin Demo Server' %}</div>
+    <div class="card-body">
+      {% apply format('<a href="url.php?url=https://demo.phpmyadmin.net/" target="_blank" rel="noopener noreferrer">demo.phpmyadmin.net</a>')|raw %}
+        {% trans %}
+          You are using the demo server. You can do anything here, but please do not change root, debian-sys-maint and pma users. More information is available at %s.
+        {% endtrans %}
+      {% endapply %}
+    </div>
+  </div>
+{% endif %}
+
+{{ error_messages|raw }}
+
+{% if available_languages is not empty %}
+  <div class='hide js-show'>
+    <div class="card mb-4">
+      <div class="card-header">
+        <span id="languageSelectLabel">
+          {% trans 'Language' %}
+          {% if 'Language'|trans != 'Language' %}
+            {# For non-English, display "Language" with emphasis because it's not a proper word
+               in the current language; we show it to help people recognize the dialog #}
+            <i lang="en" dir="ltr">(Language)</i>
+          {% endif %}
+        </span>
+      </div>
+      <div class="card-body">
+        <form method="get" action="{{ url('/') }}" class="disableAjax">
+          {{ get_hidden_inputs(form_params) }}
+          <select name="lang" class="form-select autosubmit" lang="en" dir="ltr" id="languageSelect" aria-labelledby="languageSelectLabel">
+            {% for language in available_languages %}
+              <option value="{{ language.getCode()|lower }}"{{ language.isActive() ? ' selected' }}>
+                {{- language.getName()|raw -}}
+              </option>
+            {% endfor %}
+          </select>
+        </form>
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+<form method="post" id="login_form" action="index.php?route=/" name="login_form" class="
+  {{- not is_session_expired ? 'disableAjax hide ' }}js-show"{{ not has_autocomplete ? ' autocomplete="off"' }}>
+  {# Do not generate a "server" hidden field as we want the "server" drop-down to have priority. #}
+  {{ get_hidden_inputs(form_params, '', 0, 'server') }}
+  <input type="hidden" name="set_session" value="{{ session_id }}">
+  {% if is_session_expired %}
+    <input type="hidden" name="session_timedout" value="1">
+  {% endif %}
+
+  <div class="card mb-4">
+    <div class="card-header">
+      {% trans 'Log in' %}
+      {{ show_docu('index') }}
+    </div>
+    <div class="card-body">
+      {% if is_arbitrary_server_allowed %}
+        <div class="row mb-3">
+          <label for="serverNameInput" class="col-sm-4 col-form-label" title="{% trans 'You can enter hostname/IP address and port separated by space.' %}">
+            {% trans 'Server:' %}
+          </label>
+          <div class="col-sm-8">
+            <input type="text" name="pma_servername" id="serverNameInput" value="{{ default_server }}" class="form-control" title="
+              {%- trans 'You can enter hostname/IP address and port separated by space.' %}">
+          </div>
+        </div>
+      {% endif %}
+
+      <div class="row mb-3">
+        <label for="input_username" class="col-sm-4 col-form-label">
+          {% trans 'Username:' %}
+        </label>
+        <div class="col-sm-8">
+          <input type="text" name="pma_username" id="input_username" value="{{ default_user }}" class="form-control" autocomplete="username" spellcheck="false">
+        </div>
+      </div>
+
+      <div class="row">
+        <label for="input_password" class="col-sm-4 col-form-label">
+          {% trans 'Password:' %}
+        </label>
+        <div class="col-sm-8">
+          <input type="password" name="pma_password" id="input_password" value="" class="form-control" autocomplete="current-password" spellcheck="false">
+        </div>
+      </div>
+
+      {% if has_servers %}
+        <div class="row mt-3">
+          <label for="select_server" class="col-sm-4 col-form-label">
+            {% trans 'Server choice:' %}
+          </label>
+          <div class="col-sm-8">
+            <select name="server" id="select_server" class="form-select"
+              {%- if is_arbitrary_server_allowed %} onchange="document.forms['login_form'].elements['pma_servername'].value = ''"{% endif %}>
+              {{ server_options|raw }}
+            </select>
+          </div>
+        </div>
+      {% else %}
+        <input type="hidden" name="server" value="{{ server }}">
+      {% endif %}
+    </div>
+    <div class="card-footer">
+      {% if has_captcha %}
+        <script src="{{ captcha_api }}?hl={{ lang }}" async defer></script>
+        {% if use_captcha_checkbox %}
+          <div class="row g-3">
+            <div class="col">
+              <div class="{{ captcha_req }}" data-sitekey="{{ captcha_key }}"></div>
+            </div>
+            <div class="col align-self-center text-end">
+              <input class="btn btn-primary" value="{% trans 'Log in' %}" type="submit" id="input_go">
+            </div>
+          </div>
+        {% else %}
+          <input class="btn btn-primary {{ captcha_req }}" data-sitekey="{{ captcha_key }}" data-callback="Functions_recaptchaCallback" value="{% trans 'Log in' %}" type="submit" id="input_go">
+        {% endif %}
+      {% else %}
+        <input class="btn btn-primary" value="{% trans 'Log in' %}" type="submit" id="input_go">
+      {% endif %}
+    </div>
+  </div>
+</form>
+
+{% if errors is not empty %}
+  <div id="pma_errors">
+    {{ errors|raw }}
+  </div>
+  </div>
+  </div>
+{% endif %}
+
+{{ login_footer|raw }}
+
+{{ config_footer|raw }}

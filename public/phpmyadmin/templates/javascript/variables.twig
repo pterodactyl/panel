@@ -1,0 +1,112 @@
+{% autoescape 'js' %}
+var firstDayOfCalendar = '{{ first_day_of_calendar }}';
+var themeImagePath = '{{ image() }}';
+var mysqlDocTemplate = '{{ get_mysql_docu_url('%s') }}';
+var maxInputVars = {{ max_input_vars }};
+
+{% set show_month_after_year -%}
+  {% trans %}calendar-month-year{% notes %}Month-year order for calendar, use either "calendar-month-year" or "calendar-year-month".{% endtrans %}
+{%- endset -%}
+{% set year_suffix -%}
+  {% trans %}none{% notes %}Year suffix for calendar, "none" is empty.{% endtrans %}
+{%- endset -%}
+
+if ($.datepicker) {
+  $.datepicker.regional[''].closeText = '{% apply escape('js') %}{% trans %}Done{% notes %}Display text for calendar close link{% endtrans %}{% endapply %}';
+  $.datepicker.regional[''].prevText = '{% apply escape('js') %}{% trans %}Prev{% notes %}Previous month. Display text for previous month link in calendar{% endtrans %}{% endapply %}';
+  $.datepicker.regional[''].nextText = '{% apply escape('js') %}{% trans %}Next{% notes %}Next month. Display text for next month link in calendar{% endtrans %}{% endapply %}';
+  $.datepicker.regional[''].currentText = '{% apply escape('js') %}{% trans %}Today{% notes %}Display text for current month link in calendar{% endtrans %}{% endapply %}';
+  $.datepicker.regional[''].monthNames = [
+    '{{ 'January'|trans }}',
+    '{{ 'February'|trans }}',
+    '{{ 'March'|trans }}',
+    '{{ 'April'|trans }}',
+    '{{ 'May'|trans }}',
+    '{{ 'June'|trans }}',
+    '{{ 'July'|trans }}',
+    '{{ 'August'|trans }}',
+    '{{ 'September'|trans }}',
+    '{{ 'October'|trans }}',
+    '{{ 'November'|trans }}',
+    '{{ 'December'|trans }}',
+  ];
+  $.datepicker.regional[''].monthNamesShort = [
+    '{% apply escape('js') %}{% trans %}Jan{% notes %}Short month name for January{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Feb{% notes %}Short month name for February{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Mar{% notes %}Short month name for March{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Apr{% notes %}Short month name for April{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}May{% notes %}Short month name for May{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Jun{% notes %}Short month name for June{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Jul{% notes %}Short month name for July{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Aug{% notes %}Short month name for August{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Sep{% notes %}Short month name for September{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Oct{% notes %}Short month name for October{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Nov{% notes %}Short month name for November{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Dec{% notes %}Short month name for December{% endtrans %}{% endapply %}',
+  ];
+  $.datepicker.regional[''].dayNames = [
+    '{{ 'Sunday'|trans }}',
+    '{{ 'Monday'|trans }}',
+    '{{ 'Tuesday'|trans }}',
+    '{{ 'Wednesday'|trans }}',
+    '{{ 'Thursday'|trans }}',
+    '{{ 'Friday'|trans }}',
+    '{{ 'Saturday'|trans }}',
+  ];
+  $.datepicker.regional[''].dayNamesShort = [
+    '{% apply escape('js') %}{% trans %}Sun{% notes %}Short week day name for Sunday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Mon{% notes %}Short week day name for Monday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Tue{% notes %}Short week day name for Tuesday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Wed{% notes %}Short week day name for Wednesday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Thu{% notes %}Short week day name for Thursday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Fri{% notes %}Short week day name for Friday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Sat{% notes %}Short week day name for Saturday{% endtrans %}{% endapply %}',
+  ];
+  $.datepicker.regional[''].dayNamesMin = [
+    '{% apply escape('js') %}{% trans %}Su{% notes %}Minimal week day name for Sunday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Mo{% notes %}Minimal week day name for Monday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Tu{% notes %}Minimal week day name for Tuesday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}We{% notes %}Minimal week day name for Wednesday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Th{% notes %}Minimal week day name for Thursday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Fr{% notes %}Minimal week day name for Friday{% endtrans %}{% endapply %}',
+    '{% apply escape('js') %}{% trans %}Sa{% notes %}Minimal week day name for Saturday{% endtrans %}{% endapply %}',
+  ];
+  $.datepicker.regional[''].weekHeader = '{% apply escape('js') %}{% trans %}Wk{% notes %}Column header for week of the year in calendar{% endtrans %}{% endapply %}';
+  $.datepicker.regional[''].showMonthAfterYear = {{ show_month_after_year == 'calendar-year-month' ? 'true' : 'false' }};
+  $.datepicker.regional[''].yearSuffix = '{{ year_suffix != 'none' ? year_suffix|e('js') }}';
+  $.extend($.datepicker._defaults, $.datepicker.regional['']);
+}
+
+if ($.timepicker) {
+  $.timepicker.regional[''].timeText = '{{ 'Time'|trans }}';
+  $.timepicker.regional[''].hourText = '{{ 'Hour'|trans }}';
+  $.timepicker.regional[''].minuteText = '{{ 'Minute'|trans }}';
+  $.timepicker.regional[''].secondText = '{{ 'Second'|trans }}';
+  $.extend($.timepicker._defaults, $.timepicker.regional['']);
+}
+
+function extendingValidatorMessages () {
+  $.extend($.validator.messages, {
+    required: '{{ 'This field is required'|trans }}',
+    remote: '{{ 'Please fix this field'|trans }}',
+    email: '{{ 'Please enter a valid email address'|trans }}',
+    url: '{{ 'Please enter a valid URL'|trans }}',
+    date: '{{ 'Please enter a valid date'|trans }}',
+    dateISO: '{{ 'Please enter a valid date ( ISO )'|trans }}',
+    number: '{{ 'Please enter a valid number'|trans }}',
+    creditcard: '{{ 'Please enter a valid credit card number'|trans }}',
+    digits: '{{ 'Please enter only digits'|trans }}',
+    equalTo: '{{ 'Please enter the same value again'|trans }}',
+    maxlength: $.validator.format('{{ 'Please enter no more than {0} characters'|trans }}'),
+    minlength: $.validator.format('{{ 'Please enter at least {0} characters'|trans }}'),
+    rangelength: $.validator.format('{{ 'Please enter a value between {0} and {1} characters long'|trans }}'),
+    range: $.validator.format('{{ 'Please enter a value between {0} and {1}'|trans }}'),
+    max: $.validator.format('{{ 'Please enter a value less than or equal to {0}'|trans }}'),
+    min: $.validator.format('{{ 'Please enter a value greater than or equal to {0}'|trans }}'),
+    validationFunctionForDateTime: $.validator.format('{{ 'Please enter a valid date or time'|trans }}'),
+    validationFunctionForHex: $.validator.format('{{ 'Please enter a valid HEX input'|trans }}'),
+    validationFunctionForMd5: $.validator.format('{% apply escape('js') %}{% trans %}This column can not contain a 32 chars value{% notes %}To validate the usage of a MD5 function on the column{% endtrans %}{% endapply %}'),
+    validationFunctionForAesDesEncrypt: $.validator.format('{% apply escape('js') %}{% trans %}These functions are meant to return a binary result; to avoid inconsistent results you should store it in a BINARY, VARBINARY, or BLOB column.{% notes %}To validate the usage of a AES_ENCRYPT/DES_ENCRYPT function on the column{% endtrans %}{% endapply %}')
+  });
+}
+{% endautoescape %}

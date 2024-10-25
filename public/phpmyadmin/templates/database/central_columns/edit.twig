@@ -1,0 +1,25 @@
+<form id="multi_edit_central_columns">
+  <div class="card">
+    <div class="card-header">{% trans 'Structure' %}</div>
+    <div class="card-body">
+  <table id="table_columns" class="table align-middle mb-0 noclick">
+    <thead>
+      <tr>
+        <th>{% trans 'Name' %}</th>
+        <th>{% trans 'Type' %}</th>
+        <th>{% trans 'Length/Values' %}</th>
+        <th>{% trans 'Default' %}</th>
+        <th>{% trans 'Collation' %}</th>
+        <th>{% trans 'Attributes' %}</th>
+        <th>{% trans 'Null' %}</th>
+        <th>{% trans %}A_I{% context %}Auto Increment{% endtrans %}</th>
+      </tr>
+    </thead>
+    {{ rows|raw }}
+  </table>
+    </div>
+    <div class="card-footer">
+      <input class="btn btn-primary" type="submit" name="save_multi_central_column_edit" value="{% trans 'Save' %}">
+    </div>
+  </div>
+</form>

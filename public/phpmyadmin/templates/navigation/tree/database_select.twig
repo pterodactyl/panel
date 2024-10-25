@@ -1,0 +1,29 @@
+{{ quick_warp|raw }}
+
+<div id="pma_navigation_select_database">
+  {{ list_navigator|raw }}
+
+  <div id="pma_navigation_db_select">
+    <form action="{{ database_url }}" method="get">
+      {{ get_hidden_fields({'server': server}) }}
+
+      <select name="db" class="hide" id="navi_db_select" aria-label="{% trans 'Databases' %}">
+        {% for option in options %}
+          <option value="{{ option.name }}" title="{{ option.title }}"
+            data-apath="{{ option.data.apath }}"
+            data-vpath="{{ option.data.vpath }}"
+            data-pos="{{ option.data.pos }}"
+            {{ option.isSelected ? " selected" : "" }}>
+              {{- option.name -}}
+            </option>
+        {% endfor %}
+      </select>
+    </form>
+  </div>
+</div>
+
+<div id="pma_navigation_tree_content">
+  <ul>
+    {{ nodes|raw }}
+  </ul>
+</div>

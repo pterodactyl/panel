@@ -1,0 +1,25 @@
+{% for file in files %}
+  <script data-cfasync="false" type="text/javascript" src="{{ base_dir }}js/
+    {{- file.filename starts with 'vendor/' or file.filename starts with 'messages.php' ? file.filename : 'dist/' ~ file.filename -}}
+    {{- '.php' in file.filename ? get_common(file.params|merge({'v': version})) : '?v=' ~ version|url_encode }}"></script>
+{% endfor %}
+
+<script data-cfasync="false" type="text/javascript">
+// <![CDATA[
+{{ code|raw }}
+{% if files is not empty %}
+AJAX.scriptHandler
+{% for file in files %}
+  .add('{{ file.filename|escape_js_string }}', {{ file.has_onload ? 1 : 0 }})
+{% endfor %}
+;
+$(function() {
+{% for file in files %}
+  {% if file.has_onload %}
+  AJAX.fireOnload('{{ file.filename|escape_js_string }}');
+  {% endif %}
+{% endfor %}
+});
+{% endif %}
+// ]]>
+</script>

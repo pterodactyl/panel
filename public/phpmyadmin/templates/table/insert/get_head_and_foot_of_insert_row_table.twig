@@ -1,0 +1,18 @@
+<div class="table-responsive-lg">
+  <table class="table table-striped align-middle my-3 insertRowTable w-auto">
+    <thead>
+    <tr>
+      <th>{% trans 'Column' %}</th>
+      {{ type|raw }}
+      {{ function|raw }}
+      <th>{% trans 'Null' %}</th>
+      <th class="w-50">{% trans 'Value' %}</th>
+    </tr>
+    </thead>
+     <tfoot>
+    <tr>
+      <th colspan="5" class="tblFooters text-end">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+        </th>
+      </tr>
+    </tfoot>

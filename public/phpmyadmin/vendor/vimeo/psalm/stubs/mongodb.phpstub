@@ -1,0 +1,59 @@
+<?php
+
+namespace MongoDB\Driver;
+
+use Iterator;
+use Traversable;
+
+/**
+ * @template-covariant TKey
+ * @template-covariant TValue
+ *
+ * @template-extends Traversable<TKey, TValue>
+ */
+interface CursorInterface extends Traversable
+{
+    /**
+     * @return array<TValue>
+     */
+    public function toArray();
+}
+
+/**
+ * @template-covariant TValue of array|object
+ *
+ * @template-implements Iterator<int, TValue>
+ * @template-implements CursorInterface<int, TValue>
+ */
+final class Cursor implements CursorInterface, Iterator
+{
+    /**
+     * @return TValue
+     */
+    public function current() {}
+
+    /**
+     * @return void
+     */
+    public function next() {}
+
+    /**
+     * @return int
+     */
+    public function key() {}
+
+    /**
+     * @return bool
+     */
+    public function valid() {}
+
+    /**
+     * @return void
+     */
+    public function rewind() {}
+
+    /**
+     * @return array<TValue>
+     */
+    public function toArray() {}
+}

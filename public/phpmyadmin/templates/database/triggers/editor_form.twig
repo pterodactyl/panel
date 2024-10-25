@@ -1,0 +1,73 @@
+<form class="rte_form" action="{{ url('/database/triggers') }}" method="post">
+  {{ get_hidden_inputs(db, table) }}
+  <input name="{{ is_edit ? 'edit_item' : 'add_item' }}" type="hidden" value="1">
+  {% if is_edit %}
+    <input name="item_original_name" type="hidden" value="{{ item.item_original_name }}">
+  {% endif %}
+  {% if is_ajax %}
+    <input type="hidden" name="{{ is_edit ? 'editor_process_edit' : 'editor_process_add' }}" value="true">
+    <input type="hidden" name="ajax_request" value="true">
+  {% endif %}
+
+  <div class="card">
+    <div class="card-header">
+      {% trans 'Details' %}
+      {% if not is_edit %}
+        {{ show_mysql_docu('CREATE_TRIGGER') }}
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <table class="rte_table table table-borderless table-sm">
+        <tr>
+          <td>{% trans 'Trigger name' %}</td>
+          <td><input type="text" name="item_name" maxlength="64" value="{{ item.item_name }}"></td>
+        </tr>
+        <tr>
+          <td>{% trans 'Table' %}</td>
+          <td>
+            <select name="item_table">
+              {% for item_table in tables %}
+                <option value="{{ item_table }}"{{ (is_edit and item_table == item.item_table) or (not is_edit and item_table == table) ? ' selected' }}>{{ item_table }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans %}Time{% context %}Trigger action time{% endtrans %}</td>
+          <td>
+            <select name="item_timing">
+              {% for item_time in time %}
+                <option value="{{ item_time }}"{{ item.item_action_timing == item_time ? ' selected' }}>{{ item_time }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Event' %}</td>
+          <td>
+            <select name="item_event">
+              {% for event in events %}
+                <option value="{{ event }}"{{ item.item_event_manipulation == event ? ' selected' }}>{{ event }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Definition' %}</td>
+          <td><textarea name="item_definition" rows="15" cols="40">{{ item.item_definition }}</textarea></td>
+        </tr>
+        <tr>
+          <td>{% trans 'Definer' %}</td>
+          <td><input type="text" name="item_definer" value="{{ item.item_definer }}"></td>
+        </tr>
+      </table>
+    </div>
+
+  {% if not is_ajax %}
+    <div class="card-footer">
+      <input class="btn btn-primary" type="submit" name="{{ is_edit ? 'editor_process_edit' : 'editor_process_add' }}" value="{% trans 'Go' %}">
+    </div>
+  {% endif %}
+  </div>
+</form>

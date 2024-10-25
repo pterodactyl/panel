@@ -1,0 +1,56 @@
+<fieldset class="pma-fieldset" id="actions_panel">
+  <table class="table table-borderless w-auto tdblock">
+    <tr>
+      <td class="text-nowrap align-middle">
+        <select name="submit_type" class="control_at_footer">
+          {% if where_clause is not empty %}
+            <option value="save">{% trans 'Save' %}</option>
+          {% endif %}
+          <option value="insert">{% trans 'Insert as new row' %}</option>
+          <option value="insertignore">{% trans 'Insert as new row and ignore errors' %}</option>
+          <option value="showinsert">{% trans 'Show insert query' %}</option>
+        </select>
+      </td>
+      <td class="align-middle">
+        <strong>{% trans 'and then' %}</strong>
+      </td>
+      <td class="text-nowrap align-middle">
+        <select name="after_insert" class="control_at_footer">
+          <option value="back"{{ after_insert == 'back' ? ' selected' }}>{% trans 'Go back to previous page' %}</option>
+          <option value="new_insert"{{ after_insert == 'new_insert' ? ' selected' }}>{% trans 'Insert another new row' %}</option>
+          {% if where_clause is not empty %}
+            <option value="same_insert"{{ after_insert == 'same_insert' ? ' selected' }}>{% trans 'Go back to this page' %}</option>
+            {% if found_unique_key and is_numeric %}
+              <option value="edit_next"{{ after_insert == 'edit_next' ? ' selected' }}>{% trans 'Edit next row' %}</option>
+            {% endif %}
+          {% endif %}
+        </select>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        {{ show_hint('Use TAB key to move from value to value, or CTRL+arrows to move anywhere.'|trans) }}
+      </td>
+      <td colspan="3" class="text-end align-middle">
+        <input type="button" class="btn btn-secondary preview_sql control_at_footer" value="{% trans 'Preview SQL' %}">
+        <input type="reset" class="btn btn-secondary control_at_footer" value="{% trans 'Reset' %}">
+        <input type="submit" class="btn btn-primary control_at_footer" value="{% trans 'Go' %}" id="buttonYes">
+      </td>
+    </tr>
+  </table>
+</fieldset>
+<div class="modal fade" id="previewSqlModal" tabindex="-1" aria-labelledby="previewSqlModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewSqlModalLabel">{% trans 'Loading' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="previewSQLCloseButton" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>

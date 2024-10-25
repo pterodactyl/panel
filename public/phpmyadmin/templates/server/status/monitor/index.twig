@@ -1,0 +1,283 @@
+{% extends 'server/status/base.twig' %}
+{% set active = 'monitor' %}
+{% block content %}
+
+<div class="tabLinks row">
+  <a href="#pauseCharts">
+    {{ get_image('play') }}
+    {%- trans 'Start Monitor' -%}
+  </a>
+  <a href="#settingsPopup" class="popupLink">
+    {{ get_image('s_cog') }}
+    {%- trans 'Settings' -%}
+  </a>
+  <a href="#monitorInstructionsDialog">
+    {{ get_image('b_help') }}
+    {%- trans 'Instructions/Setup' -%}
+  </a>
+  <a href="#endChartEditMode" class="hide">
+    {{ get_image('s_okay') }}
+    {%- trans 'Done dragging (rearranging) charts' -%}
+  </a>
+</div>
+
+<div class="popupContent settingsPopup">
+  <a href="#addNewChart">
+    {{ get_image('b_chart') }}
+    {% trans 'Add chart' %}
+  </a>
+  <a href="#rearrangeCharts">
+    {{ get_image('b_tblops') }}
+    {% trans 'Enable charts dragging' %}
+  </a>
+  <div class="clearfloat paddingtop"></div>
+
+  <div class="float-start">
+    {% trans 'Refresh rate' %}
+    <br>
+    <select id="id_gridChartRefresh" class="refreshRate" name="gridChartRefresh">
+      {% for rate in [2, 3, 4, 5, 10, 20, 40, 60, 120, 300, 600, 1200] %}
+        <option value="{{ rate }}"{{ rate == 5 ? ' selected' }}>
+          {% if rate < 60 %}
+            {% if rate == 1 %}
+              {{ '%d second'|trans|format(rate) }}
+            {% else %}
+              {{ '%d seconds'|trans|format(rate) }}
+            {% endif %}
+          {% else %}
+            {% if rate / 60 == 1 %}
+              {{ '%d minute'|trans|format(rate / 60) }}
+            {% else %}
+              {{ '%d minutes'|trans|format(rate / 60) }}
+            {% endif %}
+          {% endif %}
+        </option>
+      {% endfor %}
+    </select>
+    <br>
+  </div>
+
+  <div class="float-start">
+    {% trans 'Chart columns' %}
+    <br>
+    <select name="chartColumns">
+      <option>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+    </select>
+  </div>
+
+  <div class="clearfloat paddingtop">
+    <strong>{% trans 'Chart arrangement' %}</strong>
+    {{ show_hint('The arrangement of the charts is stored to the browsers local storage. You may want to export it if you have a complicated set up.'|trans) }}
+    <br>
+    <a class="ajax" href="#importMonitorConfig">
+      {% trans 'Import' %}
+    </a> -
+    <a class="disableAjax" href="#exportMonitorConfig">
+      {% trans 'Export' %}
+    </a> -
+    <a href="#clearMonitorConfig">
+      {% trans 'Reset to default' %}
+    </a>
+  </div>
+</div>
+
+<div id="monitorInstructionsDialog" title="{% trans 'Monitor Instructions' %}" class="hide">
+  <p>
+    {% trans %}
+      The phpMyAdmin Monitor can assist you in optimizing the server configuration and track down time intensive queries. For the latter you will need to set log_output to 'TABLE' and have either the slow_query_log or general_log enabled. Note however, that the general_log produces a lot of data and increases server load by up to 15%.
+    {% endtrans %}
+  </p>
+  <img class="ajaxIcon" src="{{ image('ajax_clock_small.gif') }}" alt="{% trans 'Loading…' %}">
+
+  <div class="ajaxContent"></div>
+  <br>
+
+  <div class="monitorUse hide">
+    <p><strong>{% trans 'Using the monitor:' %}</strong></p>
+    <p>
+      {% trans %}
+        Your browser will refresh all displayed charts in a regular interval. You may add charts and change the refresh rate under 'Settings', or remove any chart using the cog icon on each respective chart.
+      {% endtrans %}
+    </p>
+    <p>
+      {% trans %}
+        To display queries from the logs, select the relevant time span on any chart by holding down the left mouse button and panning over the chart. Once confirmed, this will load a table of grouped queries, there you may click on any occurring SELECT statements to further analyze them.
+      {% endtrans %}
+    </p>
+    <p>
+      {{ get_image('s_attention') }}
+      <strong>{% trans 'Please note:' %}</strong>
+    </p>
+    <p>
+      {% trans %}
+        Enabling the general_log may increase the server load by 5-15%. Also be aware that generating statistics from the logs is a load intensive task, so it is advisable to select only a small time span and to disable the general_log and empty its table once monitoring is not required any more.
+      {% endtrans %}
+    </p>
+  </div>
+</div>
+
+<div class="modal fade" id="addChartModal" tabindex="-1" aria-labelledby="addChartModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="addChartModalLabel">{% trans 'Chart Title' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <div id="tabGridVariables">
+          <p>
+            <input type="text" name="chartTitle" value="{% trans 'Chart Title' %}">
+          </p>
+          <input type="radio" name="chartType" value="preset" id="chartPreset">
+
+          <label for="chartPreset">{% trans 'Preset chart' %}</label>
+          <select name="presetCharts"></select>
+          <br>
+
+          <input type="radio" name="chartType" value="variable" id="chartStatusVar" checked="checked">
+          <label for="chartStatusVar">
+            {% trans 'Status variable(s)' %}
+          </label>
+          <br>
+
+          <div id="chartVariableSettings">
+            <label for="chartSeries">{% trans 'Select series:' %}</label>
+            <br>
+            <select id="chartSeries" name="varChartList" size="1">
+              <option>{% trans 'Commonly monitored' %}</option>
+              <option>Processes</option>
+              <option>Questions</option>
+              <option>Connections</option>
+              <option>Bytes_sent</option>
+              <option>Bytes_received</option>
+              <option>Threads_connected</option>
+              <option>Created_tmp_disk_tables</option>
+              <option>Handler_read_first</option>
+              <option>Innodb_buffer_pool_wait_free</option>
+              <option>Key_reads</option>
+              <option>Open_tables</option>
+              <option>Select_full_join</option>
+              <option>Slow_queries</option>
+            </select>
+            <br>
+
+            <label for="variableInput">
+              {% trans 'or type variable name:' %}
+            </label>
+            <input type="text" name="variableInput" id="variableInput">
+            <br>
+
+            <input type="checkbox" name="differentialValue" id="differentialValue" value="differential" checked="checked">
+            <label for="differentialValue">
+              {% trans 'Display as differential value' %}
+            </label>
+            <br>
+
+            <input type="checkbox" id="useDivisor" name="useDivisor" value="1">
+            <label for="useDivisor">{% trans 'Apply a divisor' %}</label>
+
+            <span class="divisorInput hide">
+              <input type="text" name="valueDivisor" size="4" value="1">
+              (<a href="#kibDivisor">{% trans 'KiB' %}</a>,
+              <a href="#mibDivisor">{% trans 'MiB' %}</a>)
+            </span>
+            <br>
+
+            <input type="checkbox" id="useUnit" name="useUnit" value="1">
+            <label for="useUnit">
+              {% trans 'Append unit to data values' %}
+            </label>
+            <span class="unitInput hide">
+              <input type="text" name="valueUnit" size="4" value="">
+            </span>
+
+            <p>
+              <a href="#submitAddSeries">
+                <strong>{% trans 'Add this series' %}</strong>
+              </a>
+              <span id="clearSeriesLink" class="hide">
+                | <a href="#submitClearSeries">{% trans 'Clear series' %}</a>
+              </span>
+            </p>
+
+            {% trans 'Series in chart:' %}
+            <br>
+            <span id="seriesPreview">
+              <em>{% trans 'None' %}</em>
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="addChartButton" data-bs-dismiss="modal">{% trans 'Add chart to grid' %}</button>
+        <button type="button" class="btn btn-secondary" id="closeModalButton" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="logAnalyseDialog" title="{% trans 'Log statistics' %}" class="hide">
+  <p>
+    {% trans 'Selected time range:' %}
+    <input type="text" name="dateStart" class="datetimefield" value="">
+    -
+    <input type="text" name="dateEnd" class="datetimefield" value="">
+  </p>
+
+  <input type="checkbox" id="limitTypes" value="1" checked="checked">
+  <label for="limitTypes">
+    {% trans 'Only retrieve SELECT,INSERT,UPDATE and DELETE Statements' %}
+  </label>
+  <br>
+
+  <input type="checkbox" id="removeVariables" value="1" checked="checked">
+  <label for="removeVariables">
+    {% trans 'Remove variable data in INSERT statements for better grouping' %}
+  </label>
+
+  <p>
+    {% trans 'Choose from which log you want the statistics to be generated from.' %}
+  </p>
+  <p>
+    {% trans 'Results are grouped by query text.' %}
+  </p>
+</div>
+
+<div id="queryAnalyzerDialog" title="{% trans 'Query analyzer' %}" class="hide">
+  <textarea id="sqlquery"></textarea>
+  <br>
+  <div class="placeHolder"></div>
+</div>
+
+<div class="clearfloat"></div>
+<div class="row"><table class="clearfloat tdblock" id="chartGrid"></table></div>
+<div id="logTable"><br></div>
+
+<script type="text/javascript">
+  var variableNames = [
+    {% for variable_name in javascript_variable_names %}
+      "{{ variable_name|e('js') }}",
+    {% endfor %}
+  ];
+</script>
+
+<form id="js_data" class="hide">
+  {% for name, value in form %}
+    <input type="hidden" name="{{ name }}" value="{{ value }}">
+  {% endfor %}
+</form>
+
+<div id="profiling_docu" class="hide">
+  {{ show_mysql_docu('general-thread-states') }}
+</div>
+
+<div id="explain_docu" class="hide">
+  {{ show_mysql_docu('explain-output') }}
+</div>
+
+{% endblock %}

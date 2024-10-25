@@ -1,0 +1,91 @@
+{% if position == 'left' %}
+  {% if has_checkbox %}
+    <td class="text-center d-print-none">
+      <input type="checkbox" class="multi_checkbox checkall" id="id_rows_to_delete
+        {{- row_number }}_left" name="rows_to_delete[{{ row_number }}]" value="{{ where_clause }}">
+      <input type="hidden" class="condition_array" value="{{ condition }}">
+    </td>
+  {% endif %}
+
+  {% if edit.url is not empty %}
+    <td class="text-center d-print-none edit_row_anchor{{ not edit.clause_is_unique ? ' nonunique' }}">
+      <span class="text-nowrap">
+        {{ link_or_button(edit.url, edit.params, edit.string) }}
+        {% if where_clause is not empty %}
+          <input type="hidden" class="where_clause" value="{{ where_clause }}">
+        {% endif %}
+      </span>
+    </td>
+  {% endif %}
+
+  {% if copy.url is not empty %}
+    <td class="text-center d-print-none">
+      <span class="text-nowrap">
+        {{ link_or_button(copy.url, copy.params, copy.string) }}
+        {% if where_clause is not empty %}
+          <input type="hidden" class="where_clause" value="{{ where_clause }}">
+        {% endif %}
+      </span>
+    </td>
+  {% endif %}
+
+  {% if delete.url is not empty %}
+    <td class="text-center d-print-none{{ is_ajax ? ' ajax' }}">
+      <span class="text-nowrap">
+        {{ link_or_button(delete.url, delete.params, delete.string, {'class': 'delete_row requireConfirm' ~ (is_ajax ? ' ajax') }) }}
+        {% if js_conf is not empty %}
+          <div class="hide">{{ js_conf }}</div>
+        {% endif %}
+      </span>
+    </td>
+  {% endif %}
+{% elseif position == 'right' %}
+  {% if delete.url is not empty %}
+    <td class="text-center d-print-none{{ is_ajax ? ' ajax' }}">
+      <span class="text-nowrap">
+        {{ link_or_button(delete.url, delete.params, delete.string, {'class': 'delete_row requireConfirm' ~ (is_ajax ? ' ajax') }) }}
+        {% if js_conf is not empty %}
+          <div class="hide">{{ js_conf }}</div>
+        {% endif %}
+      </span>
+    </td>
+  {% endif %}
+
+  {% if copy.url is not empty %}
+    <td class="text-center d-print-none">
+      <span class="text-nowrap">
+        {{ link_or_button(copy.url, copy.params, copy.string) }}
+        {% if where_clause is not empty %}
+          <input type="hidden" class="where_clause" value="{{ where_clause }}">
+        {% endif %}
+      </span>
+    </td>
+  {% endif %}
+
+  {% if edit.url is not empty %}
+    <td class="text-center d-print-none edit_row_anchor{{ not edit.clause_is_unique ? ' nonunique' }}">
+      <span class="text-nowrap">
+        {{ link_or_button(edit.url, edit.params, edit.string) }}
+        {% if where_clause is not empty %}
+          <input type="hidden" class="where_clause" value="{{ where_clause }}">
+        {% endif %}
+      </span>
+    </td>
+  {% endif %}
+
+  {% if has_checkbox %}
+    <td class="text-center d-print-none">
+      <input type="checkbox" class="multi_checkbox checkall" id="id_rows_to_delete
+        {{- row_number }}_right" name="rows_to_delete[{{ row_number }}]" value="{{ where_clause }}">
+      <input type="hidden" class="condition_array" value="{{ condition }}">
+    </td>
+  {% endif %}
+{% else %}
+  {% if has_checkbox %}
+    <td class="text-center d-print-none">
+      <input type="checkbox" class="multi_checkbox checkall" id="id_rows_to_delete
+        {{- row_number }}_left" name="rows_to_delete[{{ row_number }}]" value="{{ where_clause }}">
+      <input type="hidden" class="condition_array" value="{{ condition }}">
+    </td>
+  {% endif %}
+{% endif %}

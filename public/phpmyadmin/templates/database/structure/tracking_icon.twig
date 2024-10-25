@@ -1,0 +1,7 @@
+<a href="{{ url('/table/tracking', {'table': table, 'db': db}) }}">
+    {% if is_tracked -%}
+        {{ get_image('eye', 'Tracking is active.'|trans) }}
+    {%- else -%}
+        {{ get_image('eye_grey', 'Tracking is not active.'|trans) }}
+    {%- endif %}
+</a>

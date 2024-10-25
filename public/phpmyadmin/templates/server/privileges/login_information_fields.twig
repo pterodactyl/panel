@@ -1,0 +1,91 @@
+<fieldset class="pma-fieldset" id="fieldset_add_user_login">
+  <legend>{% trans 'Login Information' %}</legend>
+  <div class="item">
+    <label for="select_pred_username">{% trans 'User name:' %}</label>
+    <span class="options">
+      <select name="pred_username" id="select_pred_username" title="{% trans 'User name' %}">
+        <option value="any"{{ pred_username == 'any' ? ' selected' }}>{% trans 'Any user' %}</option>
+        <option value="userdefined"{{ pred_username is null or pred_username == 'userdefined' ? ' selected' }}>{% trans 'Use text field' %}</option>
+      </select>
+    </span>
+    <input type="text" name="username" id="pma_username" class="autofocus" spellcheck="false" maxlength="{{ username_length }}" title="{% trans 'User name' %}"
+      {%- if username is not empty %} value="{{ new_username is not null ? new_username : username }}"{% endif -%}
+      {{- pred_username is null or pred_username == 'userdefined' ? ' required' }}>
+
+    <div id="user_exists_warning" class="hide">
+      {{ 'An account already exists with the same username but possibly a different hostname.'|trans|notice }}
+    </div>
+  </div>
+
+  <div class="item">
+    <label for="select_pred_hostname">
+      {% trans 'Host name:' %}
+    </label>
+    <span class="options">
+      <select name="pred_hostname" id="select_pred_hostname" title="{% trans 'Host name' %}"
+        {{- this_host is not null and this_host != 'localhost' and this_host != '127.0.0.1' ? ' data-thishost="' ~ this_host ~ '"' }}>
+        <option value="any"{{ pred_hostname == 'any' ? ' selected' }}>{% trans 'Any host' %}</option>
+        <option value="localhost"{{ pred_hostname == 'localhost' ? ' selected' }}>{% trans 'Local' %}</option>
+        {% if this_host is not empty %}
+          <option value="thishost"{{ pred_hostname == 'thishost' ? ' selected' }}>{% trans 'This host' %}</option>
+        {% endif %}
+        <option value="hosttable"{{ pred_hostname == 'hosttable' ? ' selected' }}>{% trans 'Use host table' %}</option>
+        <option value="userdefined"{{ pred_hostname == 'userdefined' ? ' selected' }}>{% trans 'Use text field' %}</option>
+      </select>
+    </span>
+    <input type="text" name="hostname" id="pma_hostname" maxlength="{{ hostname_length }}" value="{{ hostname|default('%') }}" title="
+      {%- trans 'Host name' %}"{{ pred_hostname == 'userdefined' ? ' required' }}>
+
+    {{ show_hint('When Host table is used, this field is ignored and values stored in Host table are used instead.'|trans) }}
+  </div>
+
+  <div class="item">
+    <label for="select_pred_password">{% trans 'Password:' %}</label>
+    <span class="options">
+      <select name="pred_password" id="select_pred_password" title="{% trans 'Password' %}">
+        {% if is_change %}
+          <option value="keep" selected>{% trans 'Do not change the password' %}</option>
+        {% endif %}
+        <option value="none"{{ username is not null and not is_change ? ' selected' }}>{% trans 'No password' %}</option>
+        <option value="userdefined"{{ username is null ? ' selected' }}>{% trans 'Use text field' %}</option>
+      </select>
+    </span>
+    <input type="password" spellcheck="false" id="text_pma_pw" name="pma_pw" title="{% trans 'Password' %}"{{ username is null ? ' required' }}>
+    <span>{% trans %}Strength:{% context %}Password strength{% endtrans %}</span>
+    <meter max="4" id="password_strength_meter" name="pw_meter"></meter>
+    <span id="password_strength" name="pw_strength"></span>
+  </div>
+
+  <div class="item" id="div_element_before_generate_password">
+    <label for="text_pma_pw2">{% trans 'Re-type:' %}</label>
+    <span class="options">&nbsp;</span>
+    <input type="password" spellcheck="false" name="pma_pw2" id="text_pma_pw2" title="{% trans 'Re-type' %}"{{ username is null ? ' required' }}>
+  </div>
+
+  <div class="item" id="authentication_plugin_div">
+    <label for="select_authentication_plugin">
+      {% if is_new %}
+        {% trans 'Authentication plugin' %}
+      {% else %}
+        {% trans 'Password hashing method' %}
+      {% endif %}
+    </label>
+    <span class="options">&nbsp;</span>
+
+    <select name="authentication_plugin" id="select_authentication_plugin">
+      {% for plugin_name, plugin_description in active_auth_plugins %}
+        <option value="{{ plugin_name }}"{{ plugin_name == auth_plugin ? ' selected' }}>{{ plugin_description }}</option>
+      {% endfor %}
+    </select>
+
+    <div id="ssl_reqd_warning"{{ auth_plugin != 'sha256_password' ? ' class="hide"' }}>
+      {% apply notice %}
+        {% trans %}
+          This method requires using an '<em>SSL connection</em>' or an '<em>unencrypted connection that encrypts the password using RSA</em>'; while connecting to the server.
+        {% endtrans %}
+        {{ show_mysql_docu('sha256-authentication-plugin') }}
+      {% endapply %}
+    </div>
+  </div>
+  {# Generate password added here via jQuery #}
+</fieldset>

@@ -1,0 +1,131 @@
+{{ error|raw }}
+<script type="text/javascript">
+    {{ get_js_value("Messages.strSavedOn", 'Saved on: @DATE@'|trans) }}
+</script>
+<div class="row">
+<div id="maincontainer" class="container-fluid">
+<div class="row">
+    <div class="col-12 col-md-7">
+        <div class="card mt-4">
+          <div class="card-header">
+            {% trans 'Import' %}
+          </div>
+          <div class="card-body">
+            <form class="prefs-form disableAjax" name="prefs_import" action="{{ url('/preferences/manage') }}" method="post"
+                  enctype="multipart/form-data">
+                {{ get_hidden_inputs() }}
+                <input type="hidden" name="MAX_FILE_SIZE" value="{{ max_upload_size }}">
+                <input type="hidden" name="json" value="">
+                <input type="radio" id="import_text_file" name="import_type" value="text_file" checked="checked">
+                <label for="import_text_file"> {% trans 'Import from file' %} </label>
+                <div id="opts_import_text_file" class="prefsmanage_opts">
+                    <label for="input_import_file"> {% trans 'Browse your computer:' %} </label>
+                    <input type="file" name="import_file" id="input_import_file">
+                </div>
+                <input type="radio" id="import_local_storage" name="import_type" value="local_storage"
+                       disabled="disabled">
+                <label for="import_local_storage"> {% trans 'Import from browser\'s storage' %} </label>
+                <div id="opts_import_local_storage" class="prefsmanage_opts disabled">
+                    <div class="localStorage-supported">
+                        {% trans 'Settings will be imported from your browser\'s local storage.' %}
+                        <br>
+                        <div class="localStorage-exists">
+                            {% trans 'Saved on: @DATE@' %}
+                        </div>
+                        <div class="localStorage-empty">
+                            {{ 'You have no saved settings!'|trans|notice }}
+                        </div>
+                    </div>
+                    <div class="localStorage-unsupported">
+                        {{ 'This feature is not supported by your web browser'|trans|notice }}
+                    </div>
+                </div>
+                <input type="checkbox" id="import_merge" name="import_merge">
+                <label for="import_merge"> {% trans 'Merge with current configuration' %} </label>
+                <br><br>
+                <input class="btn btn-primary" type="submit" name="submit_import" value="{{ 'Go'|trans }}">
+            </form>
+          </div>
+        </div>
+        {% if exists_setup_and_not_exists_config %}
+            {# show only if setup script is available, allows to disable this message #}
+            {# by simply removing setup directory #}
+            {# Also do not show in config exists (and setup would refuse to work) #}
+            <div class="card mt-4">
+              <div class="card-header">
+                {% trans 'More settings' %}
+              </div>
+              <div class="card-body">
+                {{ 'You can set more settings by modifying config.inc.php, eg. by using %sSetup script%s.'|trans|format('<a href="setup/index.php" target="_blank">','</a>')|raw }}
+                {{ show_docu('setup', 'setup-script') }}
+              </div>
+            </div>
+        {% endif %}
+    </div>
+    <div class="col-12 col-md-5">
+        <div class="card mt-4">
+          <div class="card-header">
+            {% trans 'Export' %}
+          </div>
+          <div class="card-body">
+            <div class="click-hide-message hide">
+                {{ 'Configuration has been saved.'|trans|raw_success }}
+            </div>
+            <form class="prefs-form disableAjax" name="prefs_export"
+                  action="{{ url('/preferences/manage') }}" method="post">
+                {{ get_hidden_inputs() }}
+                <div>
+                    <input type="radio" id="export_text_file" name="export_type"
+                           value="text_file" checked="checked">
+                    <label for="export_text_file">
+                        {% trans 'Save as JSON file' %}
+                    </label><br>
+                    <input type="radio" id="export_php_file" name="export_type" value="php_file">
+                    <label for="export_php_file">
+                        {% trans 'Save as PHP file' %}
+                    </label><br>
+                    <input type="radio" id="export_local_storage" name="export_type" value="local_storage"
+                           disabled="disabled">
+                    <label for="export_local_storage">
+                        {% trans 'Save to browser\'s storage' %}
+                    </label>
+                </div>
+                <div id="opts_export_local_storage"
+                     class="prefsmanage_opts disabled">
+                    <span class="localStorage-supported">
+                        {% trans 'Settings will be saved in your browser\'s local storage.' %}
+                      <div class="localStorage-exists">
+                            <b>
+                                {% trans 'Existing settings will be overwritten!' %}
+                            </b>
+                        </div>
+                    </span>
+                    <div class="localStorage-unsupported">
+                        {{ 'This feature is not supported by your web browser'|trans|notice }}
+                    </div>
+                </div>
+                <br>
+                <input class="btn btn-primary" type="submit" name="submit_export" value="{% trans 'Go' %}">
+            </form>
+          </div>
+        </div>
+        <div class="card mt-4">
+          <div class="card-header">
+            {% trans 'Reset' %}
+          </div>
+          <div class="card-body">
+            <form class="prefs-form disableAjax" name="prefs_reset"
+                  action="{{ url('/preferences/manage') }}" method="post">
+                {{ get_hidden_inputs() }}
+                {% trans 'You can reset all your settings and restore them to default values.' %}
+                <br><br>
+                <input class="btn btn-secondary" type="submit" name="submit_clear" value="{% trans 'Reset' %}">
+            </form>
+          </div>
+        </div>
+    </div>
+</div>
+    <br class="clearfloat">
+</div>
+</div>
+</div>

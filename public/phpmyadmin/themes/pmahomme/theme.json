@@ -1,0 +1,8 @@
+{
+    "name": "pmahomme",
+    "version": "5.0",
+    "description": "Default phpMyAdmin theme",
+    "author": "phpMyAdmin developers",
+    "url": "https://www.phpmyadmin.net/",
+    "supports": ["5.0", "5.1", "5.2"]
+}

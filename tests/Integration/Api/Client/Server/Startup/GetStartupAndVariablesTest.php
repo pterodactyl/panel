@@ -41,7 +41,7 @@ class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('object', 'list');
         $response->assertJsonCount(1, 'data');
         $response->assertJsonPath('data.0.object', EggVariable::RESOURCE_NAME);
-        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $egg->variables[1]);
+        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $egg->variables()->orderBy('id', 'desc')->first());
     }
 
     /**

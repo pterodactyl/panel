@@ -1,0 +1,84 @@
+<div id="primary_addreplicauser_gui">
+  <form action="{{ url('/server/privileges') }}" method="post" autocomplete="off" id="addUsersForm">
+    {{ get_hidden_inputs('', '') }}
+
+    <fieldset class="pma-fieldset" id="fieldset_add_user_login">
+      <legend>{% trans 'Add replica replication user' %}</legend>
+
+      <input type="hidden" name="grant_count" value="25">
+      <input type="hidden" name="createdb" id="createdb_0" value="0">
+      {# Needed for the replication replicas. #}
+      <input type="hidden" name="Repl_slave_priv" id="checkbox_Repl_slave_priv" value="Y">
+      <input type="hidden" name="sr_take_action" value="true">
+
+      <div class="item">
+        <label for="select_pred_username">
+          {% trans 'User name:' %}
+        </label>
+        <span class="options">
+          <select name="pred_username" id="select_pred_username" title="{% trans 'User name' %}">
+            <option value="any"{{ predefined_username == 'any' ? ' selected' }}>{% trans 'Any user' %}</option>
+            <option value="userdefined"{{ predefined_username == 'userdefined' ? ' selected' }}>{% trans 'Use text field:' %}</option>
+          </select>
+        </span>
+        <input type="text" name="username" id="pma_username" maxlength="{{ username_length }}" title="{% trans 'User name' %}" value="{{ username }}" spellcheck="false">
+      </div>
+
+      <div class="item">
+        <label for="select_pred_hostname">
+          {% trans 'Host:' %}
+        </label>
+        <span class="options">
+          <select name="pred_hostname" id="select_pred_hostname" title="{% trans 'Host' %}"
+            {%- if this_host is not null %} data-thishost="{{ this_host }}"{% endif %}>
+            <option value="any"{{ predefined_hostname == 'any' ? ' selected' }}>{% trans 'Any host' %}</option>
+            <option value="localhost"{{ predefined_hostname == 'localhost' ? ' selected' }}>{% trans 'Local' %}</option>
+            {% if this_host is not null %}
+              <option value="thishost"{{ predefined_hostname == 'thishost' ? ' selected' }}>{% trans 'This host' %}</option>
+            {% endif %}
+            <option value="hosttable"{{ predefined_hostname == 'hosttable' ? ' selected' }}>{% trans 'Use host table' %}</option>
+            <option value="userdefined"{{ predefined_hostname == 'userdefined' ? ' selected' }}>{% trans 'Use text field:' %}</option>
+          </select>
+        </span>
+        <input type="text" name="hostname" id="pma_hostname" maxlength="{{ hostname_length }}" title="{% trans 'Host' %}" value="{{ hostname }}">
+        {{ show_hint('When Host table is used, this field is ignored and values stored in Host table are used instead.'|trans) }}
+      </div>
+
+      <div class="item">
+        <label for="select_pred_password">
+          {% trans 'Password:' %}
+        </label>
+        <span class="options">
+          <select name="pred_password" id="select_pred_password" title="{% trans 'Password' %}">
+            <option value="none"{{ has_username ? ' selected' }}>{% trans 'No password' %}</option>
+            <option value="userdefined"{{ not has_username ? ' selected' }}>{% trans 'Use text field:' %}</option>
+          </select>
+        </span>
+        <input type="password" id="text_pma_pw" name="pma_pw" title="{% trans 'Password' %}" spellcheck="false">
+      </div>
+
+      <div class="item">
+        <label for="text_pma_pw2">
+          {% trans 'Re-type:' %}
+        </label>
+        <span class="options"></span>
+        <input type="password" id="text_pma_pw2" name="pma_pw2" title="{% trans 'Re-type' %}" spellcheck="false">
+      </div>
+
+      <div class="item">
+        <label for="button_generate_password">
+          {% trans 'Generate password:' %}
+        </label>
+        <span class="options">
+          <input type="button" class="btn btn-secondary button" id="button_generate_password" value="{% trans 'Generate' %}">
+        </span>
+        <input type="text" name="generated_pw" id="generated_pw">
+      </div>
+    </fieldset>
+
+    <fieldset id="fieldset_user_privtable_footer" class="pma-fieldset tblFooters">
+      <input type="hidden" name="adduser_submit" value="1">
+      <input class="btn btn-primary" type="submit" id="adduser_submit" value="{% trans 'Go' %}">
+    </fieldset>
+  </form>
+</div>

@@ -1,0 +1,21 @@
+.btn-primary,
+.btn-outline-primary {
+  font-weight: $font-weight-bold;
+}
+
+.btn-primary,
+.btn-secondary {
+  border-color: #aaa;
+  text-shadow: 0 1px 0 #fff;
+  background-image: linear-gradient(#f8f8f8, #d8d8d8);
+
+  &:hover {
+    background-image: linear-gradient(#fff, #ddd);
+  }
+}
+
+.btn-outline-primary,
+.btn-outline-secondary {
+  color: $body-color;
+  border-color: #aaa;
+}

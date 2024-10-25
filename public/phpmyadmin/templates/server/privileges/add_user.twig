@@ -1,0 +1,38 @@
+<h2>
+  {{ get_icon('b_usradd') }}
+  {% trans 'Add user account' %}
+</h2>
+
+<form name="usersForm" id="addUsersForm" action="{{ url('/server/privileges') }}" method="post" autocomplete="off">
+  {{ get_hidden_inputs() }}
+
+  {{ login_information_fields_new|raw }}
+
+  <fieldset class="pma-fieldset" id="fieldset_add_user_database">
+    <legend>{% trans 'Database for user account' %}</legend>
+
+    <input type="checkbox" name="createdb-1" id="createdb-1">
+    <label for="createdb-1">{% trans 'Create database with same name and grant all privileges.' %}</label>
+    <br>
+
+    <input type="checkbox" name="createdb-2" id="createdb-2">
+    <label for="createdb-2">{% trans 'Grant all privileges on wildcard name (username\\_%).' %}</label>
+    <br>
+
+    {% if database is not empty %}
+      <input type="checkbox" name="createdb-3" id="createdb-3" checked>
+      <label for="createdb-3">{{ 'Grant all privileges on database %s.'|trans|format(database) }}</label>
+      <input type="hidden" name="dbname" value="{{ database }}">
+      <br>
+    {% endif %}
+  </fieldset>
+
+  {% if is_grant_user %}
+    {{ privileges_table|raw }}
+  {% endif %}
+
+  <fieldset id="fieldset_add_user_footer" class="pma-fieldset tblFooters">
+    <input type="hidden" name="adduser_submit" value="1">
+    <input class="btn btn-primary" type="submit" id="adduser_submit" value="{% trans 'Go' %}">
+  </fieldset>
+</form>

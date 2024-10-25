@@ -1,0 +1,62 @@
+<table class="table table-striped caption-top w-auto">
+    <caption class="tblHeaders">
+        {{ 'Search results for "<em>%s</em>" %s:'|format(
+            criteria_search_string,
+            search_type_description
+        )|raw }}
+    </caption>
+    {% for row in rows %}
+        <tr class="noclick">
+            <td>
+                {% set result_message %}
+                    {% trans %}
+                        %1$s match in <strong>%2$s</strong>
+                    {% plural row.result_count %}
+                        %1$s matches in <strong>%2$s</strong>
+                    {% endtrans %}
+                {% endset %}
+                {{ result_message|format(row.result_count, row.table)|raw }}
+            </td>
+            {% if row.result_count > 0 %}
+                {% set url_params = {
+                    'db': db,
+                    'table': row.table,
+                    'goto': url('/database/sql'),
+                    'pos': 0,
+                    'is_js_confirmed': 0
+                } %}
+                <td>
+                    <a name="browse_search"
+                        class="ajax browse_results"
+                        href="{{ url('/sql', url_params) }}"
+                        data-browse-sql="{{ row.new_search_sqls.select_columns }}"
+                        data-table-name="{{ row.table }}">
+                        {% trans 'Browse' %}
+                    </a>
+                </td>
+                <td>
+                    <a name="delete_search"
+                        class="ajax delete_results"
+                        href="{{ url('/sql', url_params) }}"
+                        data-delete-sql="{{ row.new_search_sqls.delete }}"
+                        data-table-name="{{ row.table }}">
+                        {% trans 'Delete' %}
+                    </a>
+                </td>
+            {% else %}
+                <td></td>
+                <td></td>
+            {% endif %}
+        </tr>
+    {% endfor %}
+</table>
+
+{% if criteria_tables|length > 1 %}
+    <p>
+        {% trans %}
+            <strong>Total:</strong> <em>{{ count }}</em> match
+        {% plural result_total %}
+            <strong>Total:</strong> <em>{{ count }}</em> matches
+        {% endtrans %}
+    </p>
+{% endif %}

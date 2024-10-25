@@ -1,0 +1,33 @@
+<h3>{% trans 'Indexes' %}</h3>
+<table id="tablestructure_indexes" class="table table-striped table-hover">
+    <thead>
+        <tr>
+            <th>{% trans 'Keyname' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Unique' %}</th>
+            <th>{% trans 'Packed' %}</th>
+            <th>{% trans 'Column' %}</th>
+            <th>{% trans 'Cardinality' %}</th>
+            <th>{% trans 'Collation' %}</th>
+            <th>{% trans 'Null' %}</th>
+            <th>{% trans 'Comment' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for index in indexes %}
+            <tr class="noclick">
+                <td>
+                    <strong>{{ index['Key_name'] }}</strong>
+                </td>
+                <td>{{ index['Index_type'] }}</td>
+                <td>{{ index['Non_unique'] == 0 ? 'Yes'|trans : 'No'|trans }}</td>
+                <td>{{ index['Packed'] != '' ? 'Yes'|trans : 'No'|trans }}</td>
+                <td>{{ index['Column_name'] }}</td>
+                <td>{{ index['Cardinality'] }}</td>
+                <td>{{ index['Collation'] }}</td>
+                <td>{{ index['Null'] }}</td>
+                <td>{{ index['Comment'] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

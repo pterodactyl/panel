@@ -1,0 +1,24 @@
+#maincontainer {
+  .list-group {
+    padding-left: 40px;
+    margin: 1rem 0;
+  }
+
+  .list-group-item {
+    padding: 0;
+    display: list-item;
+    border: none;
+  }
+}
+
+#li_select_server,
+#li_change_password,
+#li_select_mysql_collation,
+#li_user_preferences,
+#li_select_lang,
+#li_select_theme {
+  &.list-group-item {
+    display: block;
+    margin-left: -20px;
+  }
+}

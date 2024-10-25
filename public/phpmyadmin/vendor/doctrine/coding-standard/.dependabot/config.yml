@@ -1,0 +1,11 @@
+# To learn more about this config file, visit: https://dependabot.com/docs/config-file/
+version: 1
+update_configs:
+  - package_manager: "php:composer"
+    directory: "/"
+    update_schedule: "daily"
+    default_reviewers:
+      - "doctrine/coding-standard-approvers"
+    default_labels:
+      - "Dependencies"
+    version_requirement_updates: "increase_versions"

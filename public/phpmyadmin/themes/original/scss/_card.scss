@@ -1,0 +1,54 @@
+.card {
+  margin-top: 2rem;
+  margin-bottom: 0.5rem;
+
+  > .card-header + .card-body {
+    padding-top: 0;
+  }
+}
+
+.card-header {
+  background: $bg-one;
+  position: relative;
+  top: -1rem;
+  margin: 0 5px;
+  width: max-content;
+  border: $card-border-width solid $card-border-color;
+  font-weight: bold;
+  color: #444;
+}
+
+#maincontainer .card-header {
+  position: static;
+  width: auto;
+  margin: 0;
+  border: 0;
+}
+
+#maincontainer {
+  .card {
+    background: none;
+    border-top: none;
+    border-bottom: none;
+    border-right: none;
+    border-left: 0.3em solid $th-background;
+
+    > .card-header + .card-body {
+      padding-top: 1rem;
+    }
+  }
+
+  .card-header {
+    color: inherit;
+    background-color: $th-background;
+    padding-top: 0.1em;
+    padding-bottom: 0.1em;
+    font-weight: bold;
+    font-size: 120%;
+  }
+
+  .card-body {
+    padding: 1rem;
+    padding-bottom: 0;
+  }
+}

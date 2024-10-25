@@ -1,0 +1,23 @@
+{{ message|raw }}
+
+{{ sql_query_results_table|raw }}
+
+{{ profiling_chart|raw }}
+
+{% if not is_procedure %}
+  <fieldset class="pma-fieldset d-print-none">
+    <legend>{% trans 'Query results operations' %}</legend>
+    <span>
+      {{ link_or_button(
+        url('/view/create'),
+        {'db': db, 'table': table, 'printview': '1', 'sql_query': sql_query},
+        get_icon('b_view_add', 'Create view'|trans, true),
+        {'class': 'create_view ajax btn'}
+      ) }}
+    </span>
+  </fieldset>
+{% endif %}
+
+{{ bookmark|raw }}
+
+{{ include('modals/create_view.twig') }}

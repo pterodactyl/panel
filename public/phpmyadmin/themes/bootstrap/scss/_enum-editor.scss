@@ -1,0 +1,71 @@
+/**
+ * ENUM/SET editor styles
+ */
+p.enum_notice {
+  margin: 5px 2px;
+  font-size: 80%;
+}
+
+#enum_editor {
+  p {
+    margin-top: 0;
+    font-style: italic;
+  }
+
+  .values {
+    width: 100%;
+  }
+
+  .add {
+    width: 100%;
+
+    td {
+      vertical-align: middle;
+      width: 50%;
+      padding: 0 0 0;
+      padding-left: 1em;
+    }
+  }
+
+  .values {
+    td.drop {
+      width: 1.8em;
+      cursor: pointer;
+      vertical-align: middle;
+    }
+
+    input {
+      margin: 0.1em 0;
+      padding-right: 2em;
+      width: 100%;
+    }
+
+    img {
+      vertical-align: middle;
+    }
+  }
+
+  input.add_value {
+    margin: 0;
+    margin-right: 0.4em;
+  }
+}
+
+#enum_editor_output textarea {
+  width: 100%;
+  float: right;
+  margin: 1em 0 0 0;
+}
+
+/**
+ * ENUM/SET editor integration for the routines editor
+ */
+.enum_hint {
+  position: relative;
+
+  a {
+    position: absolute;
+    left: 81%;
+    bottom: 0.35em;
+  }
+}

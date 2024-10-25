@@ -1,0 +1,471 @@
+// Navigation styles for the pmahomme theme
+#pma_navigation {
+  width: $navigation-width;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  background-color: $gray-100;
+  z-index: 800;
+
+  ul {
+    margin: 0;
+  }
+
+  form {
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
+
+  select {
+    &#select_server,
+    &#lightm_db {
+      width: 100%;
+    }
+  }
+
+  div {
+    &.pageselector {
+      text-align: center;
+      margin: 0;
+      margin-left: 0.75em;
+      border-left: 1px solid #666;
+    }
+  }
+
+  #pmalogo,
+  #serverChoice,
+  #navipanellinks,
+  #recentTableList,
+  #favoriteTableList,
+  #databaseList,
+  div.pageselector.dbselector {
+    text-align: center;
+    padding: 5px 10px 0;
+    border: 0;
+  }
+
+  #pmalogo {
+    background-color: $gray-200;
+    padding: 6px 10px;
+  }
+
+  #navipanellinks {
+    padding: 8px 10px;
+    background-color: rgba($black, 0.03);
+
+    a {
+      display: inline-block;
+      padding: 8px;
+    }
+  }
+
+  #navipanellinks .icon {
+    margin: 0;
+  }
+
+  #recentTable,
+  #favoriteTable {
+    width: 200px;
+  }
+
+  #favoriteTableList select,
+  #serverChoice select {
+    width: 80%;
+  }
+}
+
+#pma_navigation_header {
+  overflow: hidden;
+}
+
+#pma_navigation_content {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+
+  > img.throbber {
+    display: none;
+    margin: 0.3em auto 0;
+  }
+}
+
+#pma_navigation_select_database {
+  text-align: left;
+  padding: 0 0 0;
+  border: 0;
+  margin: 0;
+}
+
+#pma_navigation_db_select {
+  margin-top: 0.5em;
+  margin-left: 0.75em;
+
+  select {
+    background: linear-gradient($white, #f1f1f1, $white);
+    -webkit-border-radius: 2px;
+    border-radius: 2px;
+    border: 1px solid #bbb;
+    border-top: 1px solid #bbb;
+    color: #333;
+    padding: 4px 6px;
+    margin: 0 0 0;
+    width: 92%;
+    font-size: 1.11em;
+  }
+}
+
+#pma_navigation_tree_content {
+  width: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  position: absolute;
+  height: 100%;
+
+  a.hover_show_full {
+    position: relative;
+    z-index: 100;
+    vertical-align: sub;
+  }
+}
+
+#pma_navigation_tree {
+  margin: 0;
+  margin-left: 5px;
+  overflow: hidden;
+  color: #444;
+  height: 74%;
+  position: relative;
+
+  a {
+    color: $black;
+    padding-left: 0;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  ul {
+    clear: both;
+    padding: 0;
+    list-style-type: none;
+    margin: 0;
+
+    ul {
+      position: relative;
+    }
+  }
+
+  li {
+    margin-bottom: 0;
+
+    &.activePointer,
+    &.selected {
+      color: $black;
+      background-color: #ddd;
+    }
+
+    .dbItemControls {
+      padding-right: 4px;
+      float: right;
+    }
+
+    .navItemControls {
+      display: none;
+      padding-right: 4px;
+      float: right;
+    }
+
+    &.activePointer .navItemControls {
+      display: block;
+      opacity: 0.5;
+
+      &:hover {
+        opacity: 1;
+      }
+    }
+  }
+
+  li {
+    white-space: nowrap;
+    clear: both;
+    min-height: 16px;
+
+    &.fast_filter {
+      white-space: nowrap;
+      clear: both;
+      min-height: 16px;
+    }
+  }
+
+  img {
+    margin: 0;
+  }
+
+  i {
+    display: block;
+  }
+
+  div {
+    &.block {
+      position: relative;
+      width: 1.5em;
+      height: 1.5em;
+      min-width: 16px;
+      min-height: 16px;
+      float: left;
+
+      &.double {
+        width: 2.5em;
+      }
+
+      i,
+      b {
+        width: 1.5em;
+        height: 1.7em;
+        min-width: 16px;
+        min-height: 8px;
+        position: absolute;
+        bottom: 0.7em;
+        left: 0.75em;
+        z-index: 0;
+      }
+
+      // Top and right segments for the tree element connections
+      i {
+        display: block;
+        border-left: 1px solid #666;
+        border-bottom: 1px solid #666;
+        position: relative;
+        z-index: 0;
+
+        // Removes top segment
+        &.first {
+          border-left: 0;
+        }
+      }
+
+      // Bottom segment for the tree element connections
+      b {
+        display: block;
+        height: 0.75em;
+        bottom: -0.5rem;// Compensate for vertical-align: sub; of hover_show_full
+        left: 0.75em;
+        border-left: 1px solid #666;
+      }
+
+      a,
+      u {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 10;
+      }
+
+      a + a {
+        left: 100%;
+      }
+
+      &.double {
+        a,
+        u {
+          left: 33%;
+        }
+
+        a + a {
+          left: 85%;
+        }
+      }
+
+      img {
+        position: relative;
+        top: -0.6em;
+        left: 0;
+        margin-left: -7px;
+      }
+    }
+
+    &.throbber img {
+      top: 2px;
+      left: 2px;
+    }
+  }
+
+  li {
+    &.last > ul {
+      background: none;
+    }
+
+    > {
+      a,
+      i {
+        line-height: 1.5em;
+        height: 1.5em;
+        padding-left: 0.3em;
+      }
+    }
+  }
+
+  .list_container {
+    border-left: 1px solid #666;
+    margin-left: 0.75em;
+    padding-left: 0.75em;
+
+    li.last.database {
+      // Revert the effect of the rule that is applied on all the tree
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .last > .list_container {
+    border-left: 0 solid #666;
+  }
+}
+
+// Fast filter
+li.fast_filter {
+  padding-left: 0.75em;
+  margin-left: 0.75em;
+  padding-right: 35px;
+  border-left: 1px solid #666;
+  list-style: none;
+
+  input {
+    font-size: 0.7em;
+  }
+
+  .searchClauseClear {
+    font-weight: bold;
+    color: #800;
+    font-size: 0.7em;
+  }
+
+  &.db_fast_filter {
+    border: 0;
+    margin-left: 0;
+  }
+}
+
+#navigation_controls_outer {
+  min-height: 21px !important;
+
+  &.activePointer {
+    background-color: transparent !important;
+  }
+}
+
+#navigation_controls {
+  float: right;
+  padding-right: 23px;
+}
+
+// Resize handler
+#pma_navigation_resizer {
+  width: 1px !important;
+  height: 100%;
+  background-color: rgba($black, 0.125);
+  cursor: col-resize;
+  position: fixed;
+  top: 0;
+  left: 240px;
+  z-index: 801;
+}
+
+#pma_navigation_collapser {
+  width: 20px;
+  height: 22px;
+  line-height: 22px;
+  background: #eee;
+  color: #555;
+  font-weight: bold;
+  position: fixed;
+  top: 0;
+  left: $navigation-width;
+  text-align: center;
+  cursor: pointer;
+  z-index: 800;
+  text-shadow: 0 1px 0 $white;
+  filter: dropshadow(color = $white, offx = 0, offy = 1);
+  border: 1px solid rgba($black, 0.125);
+}
+
+// Quick warp links
+.pma_quick_warp {
+  margin-top: 5px;
+  margin-left: 2px;
+  position: relative;
+
+  .drop_list {
+    float: left;
+    margin-left: 3px;
+    padding: 2px 0;
+
+    &:hover {
+      .drop_button {
+        background: $white;
+      }
+
+      ul {
+        display: block;
+      }
+    }
+
+    ul {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      overflow-y: auto;
+      list-style: none;
+      background: $white;
+      border: 1px solid #ddd;
+      border-radius: 0.3em;
+      border-top-right-radius: 0;
+      border-bottom-right-radius: 0;
+      box-shadow: 0 0 5px #ccc;
+      top: 100%;
+      left: 3px;
+      right: 0;
+      display: none;
+      z-index: 802;
+    }
+
+    li {
+      white-space: nowrap;
+      padding: 0;
+      border-radius: 0;
+
+      img {
+        vertical-align: sub;
+      }
+
+      &:hover {
+        background: #f2f2f2;
+      }
+    }
+
+    a {
+      display: block;
+      padding: 0.2em 0.3em;
+
+      &.favorite_table_anchor {
+        clear: left;
+        float: left;
+        padding: 0.1em 0.3em 0;
+      }
+    }
+  }
+
+  .drop_button {
+    padding: 0.3em;
+    border: 1px solid #ddd;
+    border-radius: 0.3em;
+    background: #f2f2f2;
+    cursor: pointer;
+  }
+}

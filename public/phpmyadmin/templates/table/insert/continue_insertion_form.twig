@@ -1,0 +1,19 @@
+<form id="continueForm" method="post" action="{{ url('/table/replace') }}" name="continueForm">
+    {{ get_hidden_inputs(db, table) }}
+    <input type="hidden" name="goto" value="{{ goto }}">
+    <input type="hidden" name="err_url" value="{{ err_url }}">
+    <input type="hidden" name="sql_query" value="{{ sql_query }}">
+
+    {% if has_where_clause %}
+        {% for key_id, where_clause in where_clause_array %}
+            <input type="hidden" name="where_clause[{{ key_id }}]" value="
+                {{- where_clause|trim }}">
+        {% endfor %}
+    {% endif %}
+
+    {% set insert_rows %}
+        <input type="number" name="insert_rows" id="insert_rows" value="
+            {{- insert_rows_default }}" min="1">
+    {% endset %}
+    {{ 'Continue insertion with %s rows'|trans|format(insert_rows)|raw }}
+</form>

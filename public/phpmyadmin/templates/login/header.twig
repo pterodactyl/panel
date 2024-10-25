@@ -1,0 +1,18 @@
+{% if session_expired == true %}
+    <div id="modalOverlay">
+{% endif %}
+<div class="container{{ add_class }}">
+<div class="row">
+<div class="col-12">
+<a href="{{ 'https://www.phpmyadmin.net/'|link }}" target="_blank" rel="noopener noreferrer" class="logo">
+<img src="{{ image('logo_right.png', 'pma_logo.png') }}" id="imLogo" name="imLogo" alt="phpMyAdmin" border="0">
+</a>
+<h1>{{ 'Welcome to %s'|trans|format('<bdo dir="ltr" lang="en">phpMyAdmin</bdo>')|raw }}</h1>
+
+<noscript>
+{{ "Javascript must be enabled past this point!"|trans|error }}
+</noscript>
+
+<div class="hide" id="js-https-mismatch">
+{{ "There is a mismatch between HTTPS indicated on the server and client. This can lead to a non working phpMyAdmin or a security risk. Please fix your server configuration to indicate HTTPS properly."|trans|error }}
+</div>

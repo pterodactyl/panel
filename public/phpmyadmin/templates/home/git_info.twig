@@ -1,0 +1,37 @@
+<li id="li_pma_version_git" class="list-group-item">
+  {% trans 'Git revision:' %}
+
+  {% if is_remote_commit %}
+    <a href="{{ 'https://github.com/phpmyadmin/phpmyadmin/commit/%s'|format(hash|e)|link }}" rel="noopener noreferrer" target="_blank">
+      <strong title="{{ message }}">{{ hash|slice(0, 7) }}</strong>
+    </a>
+  {% else %}
+    <strong title="{{ message }}">{{ hash|slice(0, 7) }}</strong>
+  {% endif %}
+
+  {% if branch is same as(false) %}
+    ({% trans 'no branch' %})
+  {% elseif is_remote_branch %}
+    {{ 'from %s branch'|trans|format(
+      '<a href="%s" rel="noopener noreferrer" target="_blank">%s</a>'|format(
+        'https://github.com/phpmyadmin/phpmyadmin/tree/%s'|format(branch|e)|link,
+        branch|e
+      )
+    )|raw }},<br>
+  {% else %}
+    {{ 'from %s branch'|trans|format(branch) }},<br>
+  {% endif %}
+
+  {{ 'committed on %s by %s'|trans|format(
+    committer.date,
+    '<a href="mailto:%s">%s</a>'|format(committer.email|e, committer.name|e)
+  )|raw }}
+
+  {%- if committer is not same as(author) -%}
+    ,<br>
+    {{ 'authored on %s by %s'|trans|format(
+      author.date,
+      '<a href="mailto:%s">%s</a>'|format(author.email|e, author.name|e)
+    )|raw }}
+  {% endif %}
+</li>

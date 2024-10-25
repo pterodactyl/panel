@@ -1,0 +1,460 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Import and export &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Custom Themes" href="themes.html" />
+    <link rel="prev" title="Charts" href="charts.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="themes.html" title="Custom Themes"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="charts.html" title="Charts"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" accesskey="U">User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Import and export</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="import-and-export">
+<h1>Import and export<a class="headerlink" href="#import-and-export" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="import">
+<h2>Import<a class="headerlink" href="#import" title="Permalink to this headline">¶</a></h2>
+<p>To import data, go to the “Import” tab in phpMyAdmin. To import data into a
+specific database or table, open the database or table before going to the
+“Import” tab.</p>
+<p>In addition to the standard Import and Export tab, you can also import an SQL
+file directly by dragging and dropping it from your local file manager to the
+phpMyAdmin interface in your web browser.</p>
+<p>If you are having troubles importing big files, please consult <a class="reference internal" href="faq.html#faq1-16"><span class="std std-ref">1.16 I cannot upload big dump files (memory, HTTP or timeout problems).</span></a>.</p>
+<p>You can import using following methods:</p>
+<p>Form based upload</p>
+<blockquote>
+<div><p>Can be used with any supported format, also (b|g)zipped files, e.g., mydump.sql.gz .</p>
+</div></blockquote>
+<p>Form based SQL Query</p>
+<blockquote>
+<div><p>Can be used with valid SQL dumps.</p>
+</div></blockquote>
+<p>Using upload directory</p>
+<blockquote>
+<div><p>You can specify an upload directory on your web server where phpMyAdmin is installed, after uploading your file into this directory you can select this file in the import dialog of phpMyAdmin, see <span class="target" id="index-0"></span><a class="reference internal" href="config.html#cfg_UploadDir"><code class="xref config config-option docutils literal notranslate"><span class="pre">$cfg['UploadDir']</span></code></a>.</p>
+</div></blockquote>
+<p>phpMyAdmin can import from several various commonly used formats.</p>
+<div class="section" id="csv">
+<h3>CSV<a class="headerlink" href="#csv" title="Permalink to this headline">¶</a></h3>
+<p>Comma separated values format which is often used by spreadsheets or various other programs for export/import.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>When importing data into a table from a CSV file where the table has an
+‘auto_increment’ field, make the ‘auto_increment’ value for each record in
+the CSV field to be ‘0’ (zero). This allows the ‘auto_increment’ field to
+populate correctly.</p>
+</div>
+<p>It is now possible to import a CSV file at the server or database level.
+Instead of having to create a table to import the CSV file into, a best-fit
+structure will be determined for you and the data imported into it, instead.
+All other features, requirements, and limitations are as before.</p>
+</div>
+<div class="section" id="csv-using-load-data">
+<h3>CSV using LOAD DATA<a class="headerlink" href="#csv-using-load-data" title="Permalink to this headline">¶</a></h3>
+<p>Similar to CSV, only using the internal MySQL parser and not the phpMyAdmin one.</p>
+</div>
+<div class="section" id="esri-shape-file">
+<h3>ESRI Shape File<a class="headerlink" href="#esri-shape-file" title="Permalink to this headline">¶</a></h3>
+<p>The ESRI shapefile or simply a shapefile is a popular geospatial vector data
+format for geographic information systems software. It is developed and
+regulated by Esri as a (mostly) open specification for data interoperability
+among Esri and other software products.</p>
+</div>
+<div class="section" id="mediawiki">
+<h3>MediaWiki<a class="headerlink" href="#mediawiki" title="Permalink to this headline">¶</a></h3>
+<p>MediaWiki files, which can be exported by phpMyAdmin (version 4.0 or later),
+can now also be imported. This is the format used by Wikipedia to display
+tables.</p>
+</div>
+<div class="section" id="open-document-spreadsheet-ods">
+<h3>Open Document Spreadsheet (ODS)<a class="headerlink" href="#open-document-spreadsheet-ods" title="Permalink to this headline">¶</a></h3>
+<p>OpenDocument workbooks containing one or more spreadsheets can now be directly imported.</p>
+<p>When importing an ODS spreadsheet, the spreadsheet must be named in a specific way in order to make the
+import as simple as possible.</p>
+<div class="section" id="table-name">
+<h4>Table name<a class="headerlink" href="#table-name" title="Permalink to this headline">¶</a></h4>
+<p>During import, phpMyAdmin uses the sheet name as the table name; you should rename the
+sheet in your spreadsheet program in order to match your existing table name (or the table you wish to create,
+though this is less of a concern since you could quickly rename the new table from the Operations tab).</p>
+</div>
+<div class="section" id="column-names">
+<h4>Column names<a class="headerlink" href="#column-names" title="Permalink to this headline">¶</a></h4>
+<p>You should also make the first row of your spreadsheet a header with the names of the columns (this can be
+accomplished by inserting a new row at the top of your spreadsheet). When on the Import screen, select the
+checkbox for “The first line of the file contains the table column names;” this way your newly imported
+data will go to the proper columns.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Formulas and calculations will NOT be evaluated, rather, their value from
+the most recent save will be loaded. Please ensure that all values in the
+spreadsheet are as needed before importing it.</p>
+</div>
+</div>
+</div>
+<div class="section" id="sql">
+<h3>SQL<a class="headerlink" href="#sql" title="Permalink to this headline">¶</a></h3>
+<p>SQL can be used to make any manipulation on data, it is also useful for restoring backed up data.</p>
+</div>
+<div class="section" id="xml">
+<h3>XML<a class="headerlink" href="#xml" title="Permalink to this headline">¶</a></h3>
+<p>XML files exported by phpMyAdmin (version 3.3.0 or later) can now be imported.
+Structures (databases, tables, views, triggers, etc.) and/or data will be
+created depending on the contents of the file.</p>
+<p>The supported xml schemas are not yet documented in this wiki.</p>
+</div>
+</div>
+<div class="section" id="export">
+<h2>Export<a class="headerlink" href="#export" title="Permalink to this headline">¶</a></h2>
+<p>phpMyAdmin can export into text files (even compressed) on your local disk (or
+a special the webserver <span class="target" id="index-1"></span><a class="reference internal" href="config.html#cfg_SaveDir"><code class="xref config config-option docutils literal notranslate"><span class="pre">$cfg['SaveDir']</span></code></a> folder) in various
+commonly used formats:</p>
+<div class="section" id="codegen">
+<h3>CodeGen<a class="headerlink" href="#codegen" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://en.wikipedia.org/wiki/NHibernate">NHibernate</a> file format. Planned
+versions: Java, Hibernate, PHP PDO, JSON, etc. So the preliminary name is
+codegen.</p>
+</div>
+<div class="section" id="id1">
+<h3>CSV<a class="headerlink" href="#id1" title="Permalink to this headline">¶</a></h3>
+<p>Comma separated values format which is often used by spreadsheets or various
+other programs for export/import.</p>
+</div>
+<div class="section" id="csv-for-microsoft-excel">
+<h3>CSV for Microsoft Excel<a class="headerlink" href="#csv-for-microsoft-excel" title="Permalink to this headline">¶</a></h3>
+<p>This is just preconfigured version of CSV export which can be imported into
+most English versions of Microsoft Excel. Some localised versions (like
+“Danish”) are expecting “;” instead of “,” as field separator.</p>
+</div>
+<div class="section" id="microsoft-word-2000">
+<h3>Microsoft Word 2000<a class="headerlink" href="#microsoft-word-2000" title="Permalink to this headline">¶</a></h3>
+<p>If you’re using Microsoft Word 2000 or newer (or compatible such as
+OpenOffice.org), you can use this export.</p>
+</div>
+<div class="section" id="json">
+<h3>JSON<a class="headerlink" href="#json" title="Permalink to this headline">¶</a></h3>
+<p>JSON (JavaScript Object Notation) is a lightweight data-interchange format. It
+is easy for humans to read and write and it is easy for machines to parse and
+generate.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 4.7.0: </span>The generated JSON structure has been changed in phpMyAdmin 4.7.0 to
+produce valid JSON data.</p>
+</div>
+<p>The generated JSON is list of objects with following attributes:</p>
+<dl class="js data">
+<dt id="type">
+<code class="sig-name descname">type</code><a class="headerlink" href="#type" title="Permalink to this definition">¶</a></dt>
+<dd><p>Type of given object, can be one of:</p>
+<dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">header</span></code></dt><dd><p>Export header containing comment and phpMyAdmin version.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">database</span></code></dt><dd><p>Start of a database marker, containing name of database.</p>
+</dd>
+<dt><code class="docutils literal notranslate"><span class="pre">table</span></code></dt><dd><p>Table data export.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="js data">
+<dt id="version">
+<code class="sig-name descname">version</code><a class="headerlink" href="#version" title="Permalink to this definition">¶</a></dt>
+<dd><p>Used in <code class="docutils literal notranslate"><span class="pre">header</span></code> <a class="reference internal" href="#type" title="type"><code class="xref js js-data docutils literal notranslate"><span class="pre">type</span></code></a> and indicates phpMyAdmin version.</p>
+</dd></dl>
+
+<dl class="js data">
+<dt id="comment">
+<code class="sig-name descname">comment</code><a class="headerlink" href="#comment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Optional textual comment.</p>
+</dd></dl>
+
+<dl class="js data">
+<dt id="name">
+<code class="sig-name descname">name</code><a class="headerlink" href="#name" title="Permalink to this definition">¶</a></dt>
+<dd><p>Object name - either table or database based on <a class="reference internal" href="#type" title="type"><code class="xref js js-data docutils literal notranslate"><span class="pre">type</span></code></a>.</p>
+</dd></dl>
+
+<dl class="js data">
+<dt id="database">
+<code class="sig-name descname">database</code><a class="headerlink" href="#database" title="Permalink to this definition">¶</a></dt>
+<dd><p>Database name for <code class="docutils literal notranslate"><span class="pre">table</span></code> <a class="reference internal" href="#type" title="type"><code class="xref js js-data docutils literal notranslate"><span class="pre">type</span></code></a>.</p>
+</dd></dl>
+
+<dl class="js data">
+<dt id="data">
+<code class="sig-name descname">data</code><a class="headerlink" href="#data" title="Permalink to this definition">¶</a></dt>
+<dd><p>Table content for <code class="docutils literal notranslate"><span class="pre">table</span></code> <a class="reference internal" href="#type" title="type"><code class="xref js js-data docutils literal notranslate"><span class="pre">type</span></code></a>.</p>
+</dd></dl>
+
+<p>Sample output:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">[</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;comment&quot;</span><span class="p">:</span> <span class="s2">&quot;Export to JSON plugin for PHPMyAdmin&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;header&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;4.7.0-dev&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cars&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;database&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;car_id&quot;</span><span class="p">:</span> <span class="s2">&quot;1&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;description&quot;</span><span class="p">:</span> <span class="s2">&quot;Green Chrysler 300&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;make_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;mileage&quot;</span><span class="p">:</span> <span class="s2">&quot;113688&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;price&quot;</span><span class="p">:</span> <span class="s2">&quot;13545.00&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;transmission&quot;</span><span class="p">:</span> <span class="s2">&quot;automatic&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;yearmade&quot;</span><span class="p">:</span> <span class="s2">&quot;2007&quot;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="nt">&quot;database&quot;</span><span class="p">:</span> <span class="s2">&quot;cars&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;cars&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;table&quot;</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="nt">&quot;data&quot;</span><span class="p">:</span> <span class="p">[</span>
+            <span class="p">{</span>
+                <span class="nt">&quot;make&quot;</span><span class="p">:</span> <span class="s2">&quot;Chrysler&quot;</span><span class="p">,</span>
+                <span class="nt">&quot;make_id&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span>
+            <span class="p">}</span>
+        <span class="p">],</span>
+        <span class="nt">&quot;database&quot;</span><span class="p">:</span> <span class="s2">&quot;cars&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;name&quot;</span><span class="p">:</span> <span class="s2">&quot;makes&quot;</span><span class="p">,</span>
+        <span class="nt">&quot;type&quot;</span><span class="p">:</span> <span class="s2">&quot;table&quot;</span>
+    <span class="p">}</span>
+<span class="p">]</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="latex">
+<h3>LaTeX<a class="headerlink" href="#latex" title="Permalink to this headline">¶</a></h3>
+<p>If you want to embed table data or structure in LaTeX, this is right choice for you.</p>
+<p>LaTeX is a typesetting system that is very suitable for producing scientific
+and mathematical documents of high typographical quality. It is also suitable
+for producing all sorts of other documents, from simple letters to complete
+books. LaTeX uses TeX as its formatting engine. Learn more about TeX and
+LaTeX on <a class="reference external" href="https://www.ctan.org/">the Comprehensive TeX Archive Network</a>
+also see the <a class="reference external" href="https://www.ctan.org/tex/">short description od TeX</a>.</p>
+<p>The output needs to be embedded into a LaTeX document before it can be
+rendered, for example in following document:</p>
+<div class="highlight-latex notranslate"><div class="highlight"><pre><span></span><span class="k">\documentclass</span><span class="nb">{</span>article<span class="nb">}</span>
+<span class="k">\title</span><span class="nb">{</span>phpMyAdmin SQL output<span class="nb">}</span>
+<span class="k">\author</span><span class="nb">{}</span>
+<span class="k">\usepackage</span><span class="nb">{</span>longtable,lscape<span class="nb">}</span>
+<span class="k">\date</span><span class="nb">{}</span>
+<span class="k">\setlength</span><span class="nb">{</span><span class="k">\parindent</span><span class="nb">}{</span>0pt<span class="nb">}</span>
+<span class="k">\usepackage</span><span class="na">[left=2cm,top=2cm,right=2cm,nohead,nofoot]</span><span class="nb">{</span>geometry<span class="nb">}</span>
+<span class="k">\pdfpagewidth</span> 210mm
+<span class="k">\pdfpageheight</span> 297mm
+<span class="k">\begin</span><span class="nb">{</span>document<span class="nb">}</span>
+<span class="k">\maketitle</span>
+
+<span class="c">% insert phpMyAdmin LaTeX Dump here</span>
+
+<span class="k">\end</span><span class="nb">{</span>document<span class="nb">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>MediaWiki<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>Both tables and databases can be exported in the MediaWiki format, which is
+used by Wikipedia to display tables. It can export structure, data or both,
+including table names or headers.</p>
+</div>
+<div class="section" id="opendocument-spreadsheet">
+<h3>OpenDocument Spreadsheet<a class="headerlink" href="#opendocument-spreadsheet" title="Permalink to this headline">¶</a></h3>
+<p>Open standard for spreadsheet data, which is being widely adopted. Many recent
+spreadsheet programs, such as LibreOffice, OpenOffice, Microsoft Office or
+Google Docs can handle this format.</p>
+</div>
+<div class="section" id="opendocument-text">
+<h3>OpenDocument Text<a class="headerlink" href="#opendocument-text" title="Permalink to this headline">¶</a></h3>
+<p>New standard for text data which is being widely adopted. Most recent word
+processors (such as LibreOffice, OpenOffice, Microsoft Word, AbiWord or KWord)
+can handle this.</p>
+</div>
+<div class="section" id="pdf">
+<h3>PDF<a class="headerlink" href="#pdf" title="Permalink to this headline">¶</a></h3>
+<p>For presentation purposes, non editable PDF might be best choice for you.</p>
+</div>
+<div class="section" id="php-array">
+<h3>PHP Array<a class="headerlink" href="#php-array" title="Permalink to this headline">¶</a></h3>
+<p>You can generate a php file which will declare a multidimensional array with
+the contents of the selected table or database.</p>
+</div>
+<div class="section" id="id3">
+<h3>SQL<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h3>
+<p>Export in SQL can be used to restore your database, thus it is useful for
+backing up.</p>
+<p>The option ‘Maximal length of created query’ seems to be undocumented. But
+experiments has shown that it splits large extended INSERTS so each one is no
+bigger than the given number of bytes (or characters?). Thus when importing the
+file, for large tables you avoid the error “Got a packet bigger than
+‘max_allowed_packet’ bytes”.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference external" href="https://dev.mysql.com/doc/refman/5.7/en/packet-too-large.html">https://dev.mysql.com/doc/refman/5.7/en/packet-too-large.html</a></p>
+</div>
+<div class="section" id="data-options">
+<h4>Data Options<a class="headerlink" href="#data-options" title="Permalink to this headline">¶</a></h4>
+<p><strong>Complete inserts</strong> adds the column names to the SQL dump. This parameter
+improves the readability and reliability of the dump. Adding the column names
+increases the size of the dump, but when combined with Extended inserts it’s
+negligible.</p>
+<p><strong>Extended inserts</strong> combines multiple rows of data into a single INSERT query.
+This will significantly decrease filesize for large SQL dumps, increases the
+INSERT speed when imported, and is generally recommended.</p>
+</div>
+</div>
+<div class="section" id="texy">
+<h3>Texy!<a class="headerlink" href="#texy" title="Permalink to this headline">¶</a></h3>
+<p><a class="reference external" href="https://texy.info/">Texy!</a> markup format. You can see example on <a class="reference external" href="https://texy.info/en/try/4q5we">Texy! demo</a>.</p>
+</div>
+<div class="section" id="id5">
+<h3>XML<a class="headerlink" href="#id5" title="Permalink to this headline">¶</a></h3>
+<p>Easily parsable export for use with custom scripts.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 3.3.0: </span>The XML schema used has changed as of version 3.3.0</p>
+</div>
+</div>
+<div class="section" id="yaml">
+<h3>YAML<a class="headerlink" href="#yaml" title="Permalink to this headline">¶</a></h3>
+<p>YAML is a data serialization format which is both human readable and
+computationally powerful ( &lt;<a class="reference external" href="https://yaml.org">https://yaml.org</a>&gt; ).</p>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Import and export</a><ul>
+<li><a class="reference internal" href="#import">Import</a><ul>
+<li><a class="reference internal" href="#csv">CSV</a></li>
+<li><a class="reference internal" href="#csv-using-load-data">CSV using LOAD DATA</a></li>
+<li><a class="reference internal" href="#esri-shape-file">ESRI Shape File</a></li>
+<li><a class="reference internal" href="#mediawiki">MediaWiki</a></li>
+<li><a class="reference internal" href="#open-document-spreadsheet-ods">Open Document Spreadsheet (ODS)</a><ul>
+<li><a class="reference internal" href="#table-name">Table name</a></li>
+<li><a class="reference internal" href="#column-names">Column names</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#sql">SQL</a></li>
+<li><a class="reference internal" href="#xml">XML</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#export">Export</a><ul>
+<li><a class="reference internal" href="#codegen">CodeGen</a></li>
+<li><a class="reference internal" href="#id1">CSV</a></li>
+<li><a class="reference internal" href="#csv-for-microsoft-excel">CSV for Microsoft Excel</a></li>
+<li><a class="reference internal" href="#microsoft-word-2000">Microsoft Word 2000</a></li>
+<li><a class="reference internal" href="#json">JSON</a></li>
+<li><a class="reference internal" href="#latex">LaTeX</a></li>
+<li><a class="reference internal" href="#id2">MediaWiki</a></li>
+<li><a class="reference internal" href="#opendocument-spreadsheet">OpenDocument Spreadsheet</a></li>
+<li><a class="reference internal" href="#opendocument-text">OpenDocument Text</a></li>
+<li><a class="reference internal" href="#pdf">PDF</a></li>
+<li><a class="reference internal" href="#php-array">PHP Array</a></li>
+<li><a class="reference internal" href="#id3">SQL</a><ul>
+<li><a class="reference internal" href="#data-options">Data Options</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#texy">Texy!</a></li>
+<li><a class="reference internal" href="#id5">XML</a></li>
+<li><a class="reference internal" href="#yaml">YAML</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="charts.html"
+                        title="previous chapter">Charts</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="themes.html"
+                        title="next chapter">Custom Themes</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/import_export.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="themes.html" title="Custom Themes"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="charts.html" title="Charts"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" >User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Import and export</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,78 @@
+<form method="post" action="{{ action|e('html_attr') }}" class="config-form disableAjax">
+  <input type="hidden" name="tab_hash" value="">
+  {% if has_check_page_refresh %}
+    <input type="hidden" name="check_page_refresh" id="check_page_refresh" value="">
+  {% endif %}
+  {{ get_hidden_inputs('', '', 0, 'server') }}
+  {{ get_hidden_fields(hidden_fields, '', true) }}
+
+  <ul class="nav nav-tabs" id="configFormDisplayTab" role="tablist">
+    {% for id, name in tabs %}
+      <li class="nav-item" role="presentation">
+        <a class="nav-link{{ loop.first ? ' active' }}" id="{{ id }}-tab" href="#{{ id }}" data-bs-toggle="tab" role="tab" aria-controls="{{ id }}" aria-selected="{{ loop.first ? 'true' : 'false' }}">{{ name }}</a>
+      </li>
+    {% endfor %}
+  </ul>
+  <div class="tab-content">
+    {% for form in forms %}
+      <div class="tab-pane fade{{ loop.first ? ' show active' }}" id="{{ form.name }}" role="tabpanel" aria-labelledby="{{ form.name }}-tab">
+        <div class="card border-top-0">
+          <div class="card-body">
+            <h5 class="card-title visually-hidden">{{ form.descriptions.name }}</h5>
+            {% if form.descriptions.desc is not empty %}
+              <h6 class="card-subtitle mb-2 text-muted">{{ form.descriptions.desc|raw }}</h6>
+            {% endif %}
+
+            <fieldset class="optbox">
+              <legend>{{ form.descriptions.name }}</legend>
+
+              {# This must match with displayErrors() in scripts.js #}
+              {% if form.errors is iterable and form.errors|length > 0 %}
+                <dl class="errors">
+                  {% for error in form.errors %}
+                    <dd>{{ error }}</dd>
+                  {% endfor %}
+                </dl>
+              {% endif %}
+
+              <table class="table table-borderless">
+                {{ form.fields_html|raw }}
+              </table>
+            </fieldset>
+          </div>
+
+          {% if show_buttons %}
+            <div class="card-footer">
+              <input class="btn btn-primary" type="submit" name="submit_save" value="{% trans 'Apply' %}">
+              <input class="btn btn-secondary" type="button" name="submit_reset" value="{% trans 'Reset' %}">
+            </div>
+          {% endif %}
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</form>
+
+<script type="text/javascript">
+  if (typeof configInlineParams === 'undefined' || !Array.isArray(configInlineParams)) {
+    configInlineParams = [];
+  }
+  configInlineParams.push(function () {
+    {{ js_array|join(';\n')|raw }};
+
+    $.extend(Messages, {
+      'error_nan_p': '{{ 'Not a positive number!'|trans|e('js') }}',
+      'error_nan_nneg': '{{ 'Not a non-negative number!'|trans|e('js') }}',
+      'error_incorrect_port': '{{ 'Not a valid port number!'|trans|e('js') }}',
+      'error_invalid_value': '{{ 'Incorrect value!'|trans|e('js') }}',
+      'error_value_lte': '{{ 'Value must be less than or equal to %s!'|trans|e('js') }}',
+    });
+
+    $.extend(defaultValues, {
+      {{ js_default|join(",\n      ")|raw }}
+    });
+  });
+  if (typeof configScriptLoaded !== 'undefined' && configInlineParams) {
+    loadInlineConfig();
+  }
+</script>

@@ -1,0 +1,104 @@
+<form class="submenu-item" action="{{ url('/server/privileges') }}" id="{{ form_id }}" method="post">
+    {{ get_hidden_inputs() }}
+    <input type="hidden" name="username" value="{{ username }}">
+    <input type="hidden" name="hostname" value="{{ hostname }}">
+
+    <fieldset class="pma-fieldset">
+        <legend data-submenu-label="{{ sub_menu_label }}">
+            {{ legend }}
+        </legend>
+
+        <table class="table table-striped table-hover w-auto">
+            <thead>
+                <tr>
+                    <th scope="col">{{ type_label }}</th>
+                    <th scope="col">{% trans 'Privileges' %}</th>
+                    <th scope="col">{% trans 'Grant' %}</th>
+                    {% if type == 'database' %}
+                        <th scope="col">{% trans 'Table-specific privileges' %}</th>
+                    {% elseif type == 'table' %}
+                        <th scope="col">{% trans 'Column-specific privileges' %}</th>
+                    {% endif %}
+                    <th scope="col" colspan="2">{% trans 'Action' %}</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% if privileges|length == 0 %}
+                    {% set colspan = type == 'database' ? 7 : (type == 'table' ? 6 : 5) %}
+                    <tr>
+                        <td class="text-center" colspan="{{ colspan }}"><em>{% trans 'None' %}</em></td>
+                    </tr>
+                {% else %}
+                    {% for privilege in privileges %}
+                        <tr>
+                            <td>{{ privilege['name'] }}</td>
+                            <td><code>{{ privilege['privileges']|raw }}</code></td>
+                            <td>{{ privilege['grant'] ? 'Yes'|trans : 'No'|trans }}</td>
+
+                            {% if type == 'database' %}
+                                <td>{{ privilege['table_privs'] ? 'Yes'|trans : 'No'|trans }}</td>
+                            {% elseif type == 'table' %}
+                                <td>{{ privilege['column_privs'] ? 'Yes'|trans : 'No'|trans }}</td>
+                            {% endif %}
+
+                            <td>{{ privilege['edit_link']|raw }}</td>
+                            <td>{{ privilege['revoke_link']|raw }}</td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+
+        {% if type == 'database' %}
+            <label for="text_dbname">{% trans 'Add privileges on the following database(s):' %}</label>
+
+            {%- if databases is not empty %}
+                <select class="resize-vertical" name="pred_dbname[]" multiple="multiple">
+                    {% for database in databases %}
+                        <option value="{{ escaped_databases[loop.index0] }}">
+                            {{ database }}
+                        </option>
+                    {% endfor %}
+                </select>
+            {% endif -%}
+
+            <input type="text" id="text_dbname" name="dbname">
+            {{ show_hint("Wildcards % and _ should be escaped with a \\ to use them literally."|trans) }}
+        {% elseif type == 'table' %}
+            <input type="hidden" name="dbname" value="{{ database|escape_mysql_wildcards }}">
+
+            <label for="text_tablename">{% trans 'Add privileges on the following table:' %}</label>
+
+            {%- if tables is not empty %}
+                <select name="pred_tablename" class="autosubmit">
+                    <option value="" selected="selected">{% trans 'Use text field' %}:</option>
+                    {% for table in tables %}
+                        <option value="{{ table }}">{{ table }}</option>
+                    {% endfor %}
+                </select>
+            {% endif -%}
+
+            <input type="text" id="text_tablename" name="tablename">
+        {% else %}
+            <input type="hidden" name="dbname" value="{{ database|escape_mysql_wildcards }}">
+
+            <label for="text_routinename">{% trans 'Add privileges on the following routine:' %}</label>
+
+            {%- if routines is not empty %}
+                <select name="pred_routinename" class="autosubmit">
+                    <option value="" selected="selected">{% trans 'Use text field' %}:</option>
+                    {% for routine in routines %}
+                        <option value="{{ routine }}">{{ routine }}</option>
+                    {% endfor %}
+                </select>
+            {% endif -%}
+
+            <input type="text" id="text_routinename" name="routinename">
+        {% endif %}
+    </fieldset>
+
+    <fieldset class="pma-fieldset tblFooters">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+    </fieldset>
+</form>

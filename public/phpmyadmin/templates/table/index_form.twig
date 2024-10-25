@@ -1,0 +1,252 @@
+<form action="{{ url('/table/indexes') }}"
+    method="post"
+    name="index_frm"
+    id="index_frm"
+    class="ajax">
+
+    {{ get_hidden_inputs(form_params) }}
+    {% if is_from_nav %}
+      <input type="hidden" name="do_save_data" value="1">
+    {% endif %}
+
+    <fieldset class="pma-fieldset" id="index_edit_fields">
+        <div class="index_info">
+            <div>
+                <div class="label">
+                    <strong>
+                        <label for="input_index_name">
+                            {% trans 'Index name:' %}
+                            {{ show_hint('"PRIMARY" <b>must</b> be the name of and <b>only of</b> a primary key!'|trans) }}
+                        </label>
+                    </strong>
+                </div>
+
+                <input type="text"
+                    name="index[Key_name]"
+                    id="input_index_name"
+                    size="25"
+                    maxlength="64"
+                    value="{{ index.getName() }}"
+                    onfocus="this.select()">
+            </div>
+
+            <div>
+                <div class="label">
+                    <strong>
+                        <label for="select_index_choice">
+                            {% trans 'Index choice:' %}
+                            {{ show_mysql_docu('ALTER_TABLE') }}
+                        </label>
+                    </strong>
+                </div>
+
+              <select name="index[Index_choice]" id="select_index_choice"{{ create_edit_table ? ' disabled' }}>
+                {% if index.getChoice() == 'PRIMARY' or not index.hasPrimary() %}
+                  <option value="PRIMARY"{{ index.getChoice() == 'PRIMARY' ? ' selected' }}>PRIMARY</option>
+                {% endif %}
+                <option value="INDEX"{{ index.getChoice() == 'INDEX' ? ' selected' }}>INDEX</option>
+                <option value="UNIQUE"{{ index.getChoice() == 'UNIQUE' ? ' selected' }}>UNIQUE</option>
+                <option value="SPATIAL"{{ index.getChoice() == 'SPATIAL' ? ' selected' }}>SPATIAL</option>
+                <option value="FULLTEXT"{{ index.getChoice() == 'FULLTEXT' ? ' selected' }}>FULLTEXT</option>
+              </select>
+            </div>
+
+            {% if default_sliders_state != 'disabled' %}
+            <div class="mb-3">
+              <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#advancedOptions" aria-expanded="{{ default_sliders_state == 'open' ? 'true' : 'false' }}" aria-controls="advancedOptions">
+                {% trans 'Advanced options' %}
+              </button>
+            </div>
+            <div class="collapse mb-3{{ default_sliders_state == 'open' ? ' show' }}" id="advancedOptions">
+            {% endif %}
+
+            <div>
+                <div class="label">
+                    <strong>
+                        <label for="input_key_block_size">
+                            {% trans 'Key block size:' %}
+                        </label>
+                    </strong>
+                </div>
+
+                <input type="text"
+                    name="index[Key_block_size]"
+                    id="input_key_block_size"
+                    size="30"
+                    value="{{ index.getKeyBlockSize() }}">
+            </div>
+
+            <div>
+
+                <div class="label">
+                    <strong>
+                        <label for="select_index_type">
+                            {% trans 'Index type:' %}
+                            {{ show_mysql_docu('ALTER_TABLE') }}
+                        </label>
+                    </strong>
+                </div>
+
+              <select name="index[Index_type]" id="select_index_type">
+                {% for index_type in ['', 'BTREE', 'HASH'] %}
+                  <option value="{{ index_type }}"{{ index.getType() == index_type ? ' selected' }}>{{ index_type }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div>
+                <div class="label">
+                    <strong>
+                        <label for="input_parser">
+                            {% trans 'Parser:' %}
+                        </label>
+                    </strong>
+                </div>
+
+                <input type="text"
+                    name="index[Parser]"
+                    id="input_parse"
+                    size="30"
+                    value="{{ index.getParser() }}">
+            </div>
+
+            <div>
+                <div class="label">
+                    <strong>
+                        <label for="input_index_comment">
+                            {% trans 'Comment:' %}
+                        </label>
+                    </strong>
+                </div>
+
+                <input type="text"
+                    name="index[Index_comment]"
+                    id="input_index_comment"
+                    size="30"
+                    maxlength="1024"
+                    value="{{ index.getComment() }}">
+            </div>
+
+            {% if default_sliders_state != 'disabled' %}
+            </div>
+            {% endif %}
+
+        <div class="clearfloat"></div>
+
+        <table class="table align-middle" id="index_columns">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>
+                        {% trans 'Column' %}
+                    </th>
+                    <th>
+                        {% trans 'Size' %}
+                    </th>
+                </tr>
+            </thead>
+            {% set spatial_types = [
+                'geometry',
+                'point',
+                'linestring',
+                'polygon',
+                'multipoint',
+                'multilinestring',
+                'multipolygon',
+                'geomtrycollection'
+            ] %}
+            <tbody>
+                {% for column in index.getColumns() %}
+                    <tr class="noclick">
+                        <td>
+                            <span class="drag_icon" title="{% trans 'Drag to reorder' %}"></span>
+                        </td>
+                        <td>
+                            <select name="index[columns][names][]">
+                                <option value="">
+                                    -- {% trans 'Ignore' %} --
+                                </option>
+                                {% for field_name, field_type in fields %}
+                                    {% if (index.getChoice() != 'FULLTEXT'
+                                            or field_type matches '/(char|text)/i')
+                                        and (index.getChoice() != 'SPATIAL'
+                                            or field_type in spatial_types) %}
+
+                                        <option value="{{ field_name }}"
+                                            {%- if field_name == column.getName() %}
+                                                selected="selected"
+                                            {%- endif %}>
+                                            {{ field_name }} [{{ field_type }}]
+                                        </option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td>
+                            <input type="text"
+                                size="5"
+                                onfocus="this.select()"
+                                name="index[columns][sub_parts][]"
+                                value="{{ index.getChoice() != 'SPATIAL' ?
+                                    column.getSubPart() }}">
+                        </td>
+                    </tr>
+                {% endfor %}
+                {% if add_fields > 0 %}
+                    {% for i in range(1, add_fields) %}
+                        <tr class="noclick">
+                            <td>
+                                <span class="drag_icon" title="{% trans 'Drag to reorder' %}"></span>
+                            </td>
+                            <td>
+                                <select name="index[columns][names][]">
+                                    <option value="">-- {% trans 'Ignore' %} --</option>
+                                    {% set j = 0 %}
+                                    {% for field_name, field_type in fields %}
+                                        {% if create_edit_table %}
+                                            {% set col_index = field_type[1] %}
+                                            {% set field_type = field_type[0] %}
+                                        {% endif %}
+                                        {% set j = j + 1 %}
+                                        <option value="{{ col_index is defined ?
+                                            col_index : field_name }}"
+                                            {{- j == i ? ' selected="selected"' }}>
+                                            {{ field_name }} [{{ field_type }}]
+                                        </option>
+                                    {% endfor %}
+                                </select>
+                            </td>
+                            <td>
+                                <input type="text"
+                                    size="5"
+                                    onfocus="this.select()"
+                                    name="index[columns][sub_parts][]"
+                                    value="">
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+        <div class="add_more">
+
+            <div class="slider"></div>
+            <div class="add_fields hide">
+                <input class="btn btn-secondary" type="submit"
+                    id="add_fields"
+                    value="{{ 'Add %s column(s) to index'|trans|format(1) }}">
+            </div>
+        </div>
+        </div>
+    </fieldset>
+    {# The modal already has buttons to execute and preview SQL #}
+    {%- if not create_edit_table -%}
+    <fieldset class="pma-fieldset tblFooters">
+        <button class="btn btn-primary" type="submit">{% trans 'Go' %}</button>
+        <button class="btn btn-secondary" type="submit" id="preview_index_frm">{% trans 'Preview SQL' %}</button>
+    </fieldset>
+    {%- endif -%}
+</form>
+{% if is_from_nav %}
+  {{ include('modals/preview_sql_modal.twig') }}
+{% endif %}

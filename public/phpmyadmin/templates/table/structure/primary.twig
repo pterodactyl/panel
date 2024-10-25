@@ -1,0 +1,25 @@
+<form action="{{ url('/table/structure/primary') }}" method="post">
+  {{ get_hidden_inputs({'db': db, 'table': table, 'selected': selected}) }}
+
+  <fieldset class="pma-fieldset confirmation">
+    <legend>
+      {% trans 'Do you really want to execute the following query?' %}
+    </legend>
+
+    <code>
+      ALTER TABLE {{ backquote(table) }}<br>
+      &nbsp;&nbsp;DROP PRIMARY KEY,<br>
+      &nbsp;&nbsp;&nbsp;ADD PRIMARY KEY(<br>
+      {% for field in selected %}
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;{{ backquote(field) }}
+        {%- if not loop.last %},{% endif %}<br>
+      {% endfor %}
+      &nbsp;&nbsp;&nbsp;);
+    </code>
+  </fieldset>
+
+  <fieldset class="pma-fieldset tblFooters">
+    <input id="buttonYes" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'Yes' %}">
+    <input id="buttonNo" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'No' %}">
+  </fieldset>
+</form>

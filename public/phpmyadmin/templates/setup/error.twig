@@ -1,0 +1,19 @@
+<div class="error">
+  <h4>{% trans 'Warning' %}</h4>
+  <p>{% trans 'Submitted form contains errors' %}</p>
+  <p>
+    <a href="{{ get_common(url_params|merge({'mode': 'revert'})) }}">
+      {% trans 'Try to revert erroneous fields to their default values' %}
+    </a>
+  </p>
+</div>
+
+{{ errors|raw }}
+
+<a class="btn" href="index.php{{ get_common() }}">
+  {% trans 'Ignore errors' %}
+</a>
+
+<a class="btn" href="{{ get_common(url_params|merge({'mode': 'edit'})) }}">
+  {% trans 'Show form' %}
+</a>

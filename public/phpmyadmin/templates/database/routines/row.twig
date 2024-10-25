@@ -1,0 +1,83 @@
+<tr{% if row_class is not empty %} class="{{ row_class }}"{% endif %} data-filter-row="{{ routine.name|upper }}">
+  <td>
+    <input type="checkbox" class="checkall" name="item_name[]" value="{{ routine.name }}">
+  </td>
+  <td>
+    <span class="drop_sql hide">{{ sql_drop }}</span>
+    <strong>{{ routine.name }}</strong>
+  </td>
+  <td>
+    {{ routine.type }}
+  </td>
+  <td dir="ltr">
+    {{ routine.returns }}
+  </td>
+  <td>
+    {% if has_edit_privilege %}
+      <a class="ajax edit_anchor" href="{{ url('/database/routines', {
+        'db': db,
+        'table': table,
+        'edit_item': true,
+        'item_name': routine.name,
+        'item_type': routine.type
+      }) }}">
+        {{ get_icon('b_edit', 'Edit'|trans) }}
+      </a>
+    {% else %}
+      {{ get_icon('bd_edit', 'Edit'|trans) }}
+    {% endif %}
+  </td>
+  <td>
+    {% if has_execute_privilege and execute_action is not empty %}
+      {% if execute_action == 'execute_routine' %}
+        <a class="ajax exec_anchor" href="{{ url('/database/routines', {'db': db, 'table': table}) }}" data-post="{{ get_common({
+          'execute_routine': true,
+          'item_name': routine.name,
+          'item_type': routine.type
+        }, '') }}">
+          {{ get_icon('b_nextpage', 'Execute'|trans) }}
+        </a>
+      {% else %}
+        <a class="ajax exec_anchor" href="{{ url('/database/routines', {
+          'db': db,
+          'table': table,
+          'execute_dialog': true,
+          'item_name': routine.name,
+          'item_type': routine.type
+        }) }}">
+          {{ get_icon('b_nextpage', 'Execute'|trans) }}
+        </a>
+      {% endif %}
+    {% else %}
+      {{ get_icon('bd_nextpage', 'Execute'|trans) }}
+    {% endif %}
+  </td>
+  <td>
+    {% if has_export_privilege %}
+      <a class="ajax export_anchor" href="{{ url('/database/routines', {
+        'db': db,
+        'table': table,
+        'export_item': true,
+        'item_name': routine.name,
+        'item_type': routine.type
+      }) }}">
+        {{ get_icon('b_export', 'Export'|trans) }}
+      </a>
+    {% else %}
+      {{ get_icon('bd_export', 'Export'|trans) }}
+    {% endif %}
+  </td>
+  <td>
+    {{ link_or_button(
+      url('/sql'),
+      {
+        'db': db,
+        'table': table,
+        'sql_query': sql_drop,
+        'goto': url('/database/routines', {'db': db})
+      },
+      get_icon('b_drop', 'Drop'|trans),
+      {'class': 'ajax drop_anchor'}
+    ) }}
+  </td>
+</tr>

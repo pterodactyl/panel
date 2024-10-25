@@ -1,0 +1,9 @@
+<select class="width96 resize-vertical" id="db_select" name="db_select[]" size="6" multiple>
+  {% for database in databases %}
+    <option value="{{ database }}">{{ database }}</option>
+  {% endfor %}
+</select>
+<p>
+  <a href="#" id="db_select_href">{% trans 'Select all' %}</a> /
+  <a href="#" id="db_reset_href">{% trans 'Unselect all' %}</a>
+</p>

@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+
+use Psalm\Internal\Cli\LanguageServer;
+
+require_once __DIR__ . '/src/Psalm/Internal/Cli/LanguageServer.php';
+LanguageServer::run($argv);

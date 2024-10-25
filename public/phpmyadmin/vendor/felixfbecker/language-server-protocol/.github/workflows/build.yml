@@ -1,0 +1,67 @@
+name: build
+
+on: [push, pull_request]
+
+env:
+  FORCE_COLOR: 3
+
+jobs:
+  test:
+    if: github.event_name == 'pull_request' || github.ref == 'refs/heads/master'
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        include:
+          - php: '7.4'
+            os: ubuntu-18.04
+          - php: '8.0'
+            os: ubuntu-18.04
+          - php: '8.1'
+            os: ubuntu-18.04
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14.15.3' # renovate:keep-up-to-date
+      - name: Install npm dependencies
+        run: npm ci
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php }}
+          extensions: ${{ matrix.xdebug }}, ast
+          tools: composer
+      - name: Composer Install
+        run: COMPOSER_ROOT_VERSION=dev-master composer install --prefer-dist --no-interaction
+      - name: phpcs
+        run: ./vendor/bin/phpcs -n
+      - name: phpstan
+        run: ./vendor/bin/phpstan
+      - name: psalm
+        run: ./vendor/bin/psalm
+#      - name: phan
+#        run: ./vendor/bin/phan
+#      - name: phpunit
+#        run: vendor/bin/phpunit --coverage-clover=coverage.xml --colors=always
+#      - name: Upload coverage to Codecov
+#        uses: codecov/codecov-action@v2
+#  release:
+#    runs-on: ubuntu-18.04
+#    needs: test
+#    if: github.repository_owner == 'xdebug' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+#    steps:
+#      - uses: actions/checkout@v2
+#      - name: Setup Node.js
+#        uses: actions/setup-node@v2
+#        with:
+#          node-version: '14.15.3' # renovate:keep-up-to-date
+#      - name: Install npm dependencies
+#        run: npm ci
+#      - name: Build VS Code extension
+#        run: npm run build
+#      - name: Release
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#          VSCE_TOKEN: ${{ secrets.VSCE_TOKEN }}
+#        run: npm run semantic-release

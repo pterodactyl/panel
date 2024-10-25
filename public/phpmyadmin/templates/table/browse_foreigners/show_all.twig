@@ -1,0 +1,5 @@
+{% if foreign_data.disp_row is iterable and
+    (show_all and foreign_data.the_total > max_rows) %}
+    <input class="btn btn-secondary" type="submit" id="foreign_showAll" name="foreign_showAll" value="
+        {%- trans 'Show all' %}">
+{% endif %}

@@ -1,0 +1,36 @@
+{% if allowed_to_send_error_reports %}
+<p>
+  {% trans %}
+    This report automatically includes data about the error and information about relevant configuration settings. It will be sent to the phpMyAdmin team for debugging the error.
+  {% endtrans %}
+</p>
+<form action="{{ url('/error-report') }}" method="post" id="errorReportForm" class="ajax">
+  <div class="mb-3">
+    <label for="errorReportDescription">
+      <strong>
+        {% trans "Can you tell us the steps leading to this error? It decisively helps in debugging:" %}
+      </strong>
+    </label>
+    <textarea class="form-control" name="description" id="errorReportDescription"></textarea>
+  </div>
+
+  <div class="mb-3">
+    {% trans "You may examine the data in the error report:" %}
+    <pre class="pre-scrollable">{{ report_data|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES')) }}</pre>
+  </div>
+
+  <div class="form-check">
+    <input class="form-check-input" type="checkbox" name="always_send" id="errorReportAlwaysSendCheckbox">
+    <label class="form-check-label" for="errorReportAlwaysSendCheckbox">
+      {% trans "Automatically send report next time" %}
+    </label>
+  </div>
+
+  {{ hidden_inputs|raw }}
+  {{ hidden_fields|raw }}
+</form>
+{% else %}
+<div class="mb-3">
+  <pre class="pre-scrollable">{{ report_data|json_encode(constant('JSON_PRETTY_PRINT') b-or constant('JSON_UNESCAPED_SLASHES')) }}</pre>
+</div>
+{% endif %}

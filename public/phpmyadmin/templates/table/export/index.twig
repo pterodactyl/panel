@@ -1,0 +1,13 @@
+{% extends 'export.twig' %}
+
+{% block title %}
+  {% if export_type == 'raw' %}
+    {% trans %}Exporting a raw query{% notes %}A query that the user has written freely{% endtrans %}
+  {% else %}
+    {{ 'Exporting rows from "%s" table'|trans|format(table) }}
+  {% endif %}
+{% endblock %}
+
+{% set filename_hint %}
+  {% trans '@SERVER@ will become the server name, @DATABASE@ will become the database name and @TABLE@ will become the table name.' %}
+{% endset %}

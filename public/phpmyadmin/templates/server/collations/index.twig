@@ -1,0 +1,32 @@
+<div class=container-fluid>
+  <h2>
+    {{ get_image('s_asci') }}
+    {% trans 'Character sets and collations' %}
+  </h2>
+
+  {% for charset in charsets %}
+    <div class="card mb-3">
+      <div class="card-header">
+        <div><strong>{{ charset.name }}</strong></div>
+        <div>{{ charset.description }}</div>
+      </div>
+      <ul class="list-group list-group-flush">
+        {% for collation in charset.collations %}
+          <li class="list-group-item">
+            <div class="row">
+              <div class="col">
+                <div><strong>{{ collation.name }}</strong></div>
+                <div>{{ collation.description }}</div>
+              </div>
+              <div class="col align-self-center text-end">
+                {% if collation.is_default %}
+                  <span class="badge bg-secondary text-dark">{% trans %}default{% context %}The collation is the default one{% endtrans %}</span>
+                {% endif %}
+              </div>
+            </div>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  {% endfor %}
+</div>

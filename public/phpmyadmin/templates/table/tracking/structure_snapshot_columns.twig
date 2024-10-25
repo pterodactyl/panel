@@ -1,0 +1,56 @@
+<h3>{% trans 'Structure' %}</h3>
+<table id="tablestructure" class="table table-striped table-hover w-auto">
+    <thead>
+        <tr>
+            <th>{% trans %}#{% context %}Number{% endtrans %}</th>
+            <th>{% trans 'Column' %}</th>
+            <th>{% trans 'Type' %}</th>
+            <th>{% trans 'Collation' %}</th>
+            <th>{% trans 'Null' %}</th>
+            <th>{% trans 'Default' %}</th>
+            <th>{% trans 'Extra' %}</th>
+            <th>{% trans 'Comment' %}</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set index = 1 %}
+        {% for field in columns %}
+            <tr class="noclick">
+                <td>{{ index }}</td>
+                {% set index = index + 1 %}
+                <td>
+                    <strong>
+                        {{ field['Field'] }}
+                        {% if field['Key'] == 'PRI' %}
+                            {{ get_image('b_primary', 'Primary'|trans) }}
+                        {% elseif field['Key'] is not empty %}
+                            {{ get_image('bd_primary', 'Index'|trans) }}
+                        {% endif %}
+                    </strong>
+                </td>
+                <td>{{ field['Type'] }}</td>
+                <td>{{ field['Collation'] }}</td>
+                <td>{{ field['Null'] == 'YES' ? 'Yes'|trans : 'No'|trans }}</td>
+                <td>
+                    {% if field['Default'] is defined %}
+                        {% set extracted_columnspec = extract_column_spec(field['Type']) %}
+                        {% if extracted_columnspec['type'] == 'bit' %}
+                            {# here, $field['Default'] contains something like b'010' #}
+                            {{ field['Default']|convert_bit_default_value }}
+                        {% else %}
+                            {{ field['Default'] }}
+                        {% endif %}
+                    {% else %}
+                        {% if field['Null'] == 'YES' %}
+                            <em>NULL</em>
+                        {% else %}
+                            <em>{% trans %}None{% context %}None for default{% endtrans %}</em>
+                        {% endif %}
+                    {% endif %}
+                </td>
+                <td>{{ field['Extra'] }}</td>
+                <td>{{ field['Comment'] }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>

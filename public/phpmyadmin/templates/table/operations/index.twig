@@ -1,0 +1,526 @@
+<div class="container-fluid">
+
+{% if not hide_order_table %}
+  <form method="post" id="alterTableOrderby" action="{{ url('/table/operations') }}">
+    {{ get_hidden_inputs(db, table) }}
+    <input type="hidden" name="submitorderby" value="1">
+
+    <div class="card mb-2">
+      <div class="card-header">{% trans 'Alter table order by' %}</div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-auto">
+            <label class="visually-hidden" for="tableOrderFieldSelect">{% trans 'Column' %}</label>
+            <select id="tableOrderFieldSelect" class="form-select" name="order_field" aria-describedby="tableOrderFieldSelectHelp">
+              {% for column in columns %}
+                <option value="{{ column.Field }}">{{ column.Field }}</option>
+              {% endfor %}
+            </select>
+            <small id="tableOrderFieldSelectHelp" class="form-text text-muted">
+              {% trans %}(singly){% context %}Alter table order by a single field.{% endtrans %}
+            </small>
+          </div>
+
+          <div class="col-auto">
+            <div class="form-check">
+              <input class="form-check-input" id="tableOrderAscRadio" name="order_order" type="radio" value="asc" checked>
+              <label class="form-check-label" for="tableOrderAscRadio">{% trans 'Ascending' %}</label>
+            </div>
+            <div class="form-check">
+              <input class="form-check-input" id="tableOrderDescRadio" name="order_order" type="radio" value="desc">
+              <label class="form-check-label" for="tableOrderDescRadio">{% trans 'Descending' %}</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer text-end">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+      </div>
+    </div>
+  </form>
+{% endif %}
+
+<form method="post" action="{{ url('/table/operations') }}" id="moveTableForm" class="ajax" onsubmit="return Functions.emptyCheckTheField(this, 'new_name')">
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="reload" value="1">
+  <input type="hidden" name="what" value="data">
+
+  <div class="card mb-2">
+    <div class="card-header">{% trans 'Move table to (database.table)' %}</div>
+    <div class="card-body">
+      <div class="mb-3 row g-3">
+        <div class="col-auto">
+          <div class="input-group">
+            {% if database_list is not empty %}
+              <select id="moveTableDatabaseInput" class="form-select" name="target_db" aria-label="{% trans 'Database' %}">
+                {% for each_db in database_list %}
+                  <option value="{{ each_db.name }}"{{ each_db.is_selected ? ' selected' }}>{{ each_db.name }}</option>
+                {% endfor %}
+              </select>
+            {% else %}
+              <input id="moveTableDatabaseInput" class="form-control" type="text" maxlength="100" name="target_db" value="{{ db }}" aria-label="{% trans 'Database' %}">
+            {% endif %}
+            <span class="input-group-text">.</span>
+            <input class="form-control" type="text" required="required" name="new_name" maxlength="64" value="{{ table }}" aria-label="{% trans 'Table' %}">
+          </div>
+        </div>
+      </div>
+
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="sql_auto_increment" value="1" id="checkbox_auto_increment_mv">
+        <label class="form-check-label" for="checkbox_auto_increment_mv">{% trans 'Add AUTO_INCREMENT value' %}</label>
+      </div>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" name="adjust_privileges" value="1" id="checkbox_privileges_tables_move"
+          {%- if has_privileges %} checked{% else %} title="
+          {%- trans 'You don\'t have sufficient privileges to perform this operation; Please refer to the documentation for more details.' %}" disabled{% endif %}>
+        <label class="form-check-label" for="checkbox_privileges_tables_move">
+          {% trans 'Adjust privileges' %}
+          {{ show_docu('faq', 'faq6-39') }}
+        </label>
+      </div>
+    </div>
+
+    <div class="card-footer text-end">
+      <input class="btn btn-primary" type="submit" name="submit_move" value="{% trans 'Go' %}">
+    </div>
+  </div>
+</form>
+
+<form method="post" action="{{ url('/table/operations') }}" id="tableOptionsForm" class="ajax">
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="reload" value="1">
+  <input type="hidden" name="submitoptions" value="1">
+  <input type="hidden" name="prev_comment" value="{{ table_comment }}">
+  {% if has_auto_increment %}
+    <input type="hidden" name="hidden_auto_increment" value="{{ auto_increment }}">
+  {% endif %}
+
+  <div class="card mb-2">
+    <div class="card-header">{% trans 'Table options' %}</div>
+    <div class="card-body">
+      <div class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-6">
+          <label for="renameTableInput">{% trans 'Rename table to' %}</label>
+        </div>
+        <div class="col-6">
+          <input class="form-control" id="renameTableInput" type="text" name="new_name" maxlength="64" value="{{ table }}" required>
+        </div>
+        <div class="form-check col-12">
+          <input class="form-check-input" type="checkbox" name="adjust_privileges" value="1" id="checkbox_privileges_table_options"
+            {%- if has_privileges %} checked{% else %} title="
+            {%- trans 'You don\'t have sufficient privileges to perform this operation; Please refer to the documentation for more details.' %}" disabled{% endif %}>
+          <label class="form-check-label" for="checkbox_privileges_table_options">
+            {% trans 'Adjust privileges' %}
+            {{ show_docu('faq', 'faq6-39') }}
+          </label>
+        </div>
+      </div>
+
+      <div class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-6">
+          <label for="tableCommentsInput">{% trans 'Table comments' %}</label>
+        </div>
+        <div class="col-6">
+          <input class="form-control" id="tableCommentsInput" type="text" name="comment" maxlength="2048" value="{{ table_comment }}">
+        </div>
+      </div>
+
+      <div class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-6">
+          <label class="text-nowrap" for="newTableStorageEngineSelect">
+            {% trans 'Storage engine' %}
+            {{ show_mysql_docu('Storage_engines') }}
+          </label>
+        </div>
+        <div class="col-6">
+          <select class="form-select" name="new_tbl_storage_engine" id="newTableStorageEngineSelect">
+            {% for engine in storage_engines %}
+              <option value="{{ engine.name }}"{% if engine.comment is not empty %} title="{{ engine.comment }}"{% endif %}
+                {{- engine.name|lower == storage_engine|lower or (storage_engine is empty and engine.is_default) ? ' selected' }}>
+                {{- engine.name -}}
+              </option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+
+      <div class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+        <div class="col-6">
+          <label for="collationSelect">{% trans 'Collation' %}</label>
+        </div>
+        <div class="col-6">
+          <select class="form-select" id="collationSelect" lang="en" dir="ltr" name="tbl_collation">
+            <option value=""></option>
+            {% for charset in charsets %}
+              <optgroup label="{{ charset.getName() }}" title="{{ charset.getDescription() }}">
+                {% for collation in collations[charset.getName()] %}
+                  <option value="{{ collation.getName() }}" title="{{ collation.getDescription() }}"{{ tbl_collation == collation.getName() ? ' selected' }}>
+                    {{ collation.getName() }}
+                  </option>
+                {% endfor %}
+              </optgroup>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="form-check col-12 ms-3">
+          <input class="form-check-input" type="checkbox" name="change_all_collations" value="1" id="checkbox_change_all_collations">
+          <label class="form-check-label" for="checkbox_change_all_collations">{% trans 'Change all column collations' %}</label>
+        </div>
+      </div>
+
+      {% if has_pack_keys %}
+        <div class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+          <div class="col-6">
+            <label for="new_pack_keys">PACK_KEYS</label>
+          </div>
+          <div class="col-6">
+            <select class="form-select" name="new_pack_keys" id="new_pack_keys">
+              <option value="DEFAULT"{{ pack_keys == 'DEFAULT' ? ' selected' }}>DEFAULT</option>
+              <option value="0"{{ pack_keys == '0' ? ' selected' }}>0</option>
+              <option value="1"{{ pack_keys == '1' ? ' selected' }}>1</option>
+            </select>
+          </div>
+        </div>
+      {% endif %}
+
+      {% if has_checksum_and_delay_key_write %}
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="checkbox" name="new_checksum" id="new_checksum" value="1"{{ checksum == '1' ? ' checked' }}>
+          <label class="form-check-label" for="new_checksum">CHECKSUM</label>
+        </div>
+
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="checkbox" name="new_delay_key_write" id="new_delay_key_write" value="1"{{ delay_key_write == '1' ? ' checked' }}>
+          <label class="form-check-label" for="new_delay_key_write">DELAY_KEY_WRITE</label>
+        </div>
+      {% endif %}
+
+      {% if has_transactional_and_page_checksum %}
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="checkbox" name="new_transactional" id="new_transactional" value="1"{{ transactional == '1' ? ' checked' }}>
+          <label class="form-check-label" for="new_transactional">TRANSACTIONAL</label>
+        </div>
+
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="checkbox" name="new_page_checksum" id="new_page_checksum" value="1"{{ page_checksum == '1' ? ' checked' }}>
+          <label class="form-check-label" for="new_page_checksum">PAGE_CHECKSUM</label>
+        </div>
+      {% endif %}
+
+      {% if has_auto_increment %}
+        <div class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+          <div class="col-12">
+            <label for="auto_increment_opt">AUTO_INCREMENT</label>
+          </div>
+          <div class="col-12">
+            <input class="form-control" id="auto_increment_opt" type="number" name="new_auto_increment" value="{{ auto_increment }}">
+          </div>
+        </div>
+      {% endif %}
+
+      {% if row_formats is not empty %}
+        <div class="mb-3 row row-cols-lg-auto g-3 align-items-center">
+          <div class="col-12">
+            <label for="new_row_format">ROW_FORMAT</label>
+          </div>
+          <div class="col-12">
+            <select class="form-select" id="new_row_format" name="new_row_format">
+              {% for row_format in row_formats %}
+                <option value="{{ row_format }}"{{ row_format == row_format_current|upper ? ' selected' }}>{{ row_format }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+
+    <div class="card-footer text-end">
+      <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+    </div>
+  </div>
+</form>
+
+<form method="post" action="{{ url('/table/operations') }}" name="copyTable" id="copyTable" class="ajax" onsubmit="return Functions.emptyCheckTheField(this, 'new_name')">
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="reload" value="1">
+
+  <div class="card mb-2">
+    <div class="card-header">{% trans 'Copy table to (database.table)' %}</div>
+    <div class="card-body">
+      <div class="mb-3 row g-3">
+        <div class="col-auto">
+          <div class="input-group">
+            {% if database_list is not empty %}
+              <select class="form-select" name="target_db" aria-label="{% trans 'Database' %}">
+                {% for each_db in database_list %}
+                  <option value="{{ each_db.name }}"{{ each_db.is_selected ? ' selected' }}>{{ each_db.name }}</option>
+                {% endfor %}
+              </select>
+            {% else %}
+              <input class="form-control" type="text" maxlength="100" name="target_db" value="{{ db }}" aria-label="{% trans 'Database' %}">
+            {% endif %}
+            <span class="input-group-text">.</span>
+            <input class="form-control" type="text" name="new_name" maxlength="64" value="{{ table }}" aria-label="{% trans 'Table' %}" required>
+          </div>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="what" id="whatRadio1" value="structure">
+          <label class="form-check-label" for="whatRadio1">
+            {% trans 'Structure only' %}
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="what" id="whatRadio2" value="data" checked>
+          <label class="form-check-label" for="whatRadio2">
+            {% trans 'Structure and data' %}
+          </label>
+        </div>
+        <div class="form-check">
+          <input class="form-check-input" type="radio" name="what" id="whatRadio3" value="dataonly">
+          <label class="form-check-label" for="whatRadio3">
+            {% trans 'Data only' %}
+          </label>
+        </div>
+      </div>
+
+      <div class="mb-3">
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="drop_if_exists" value="true" id="checkbox_drop">
+          <label class="form-check-label" for="checkbox_drop">{{ 'Add %s'|trans|format('DROP TABLE') }}</label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="sql_auto_increment" value="1" id="checkbox_auto_increment_cp">
+          <label class="form-check-label" for="checkbox_auto_increment_cp">{% trans 'Add AUTO_INCREMENT value' %}</label>
+        </div>
+
+        {% if has_foreign_keys %}
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" name="add_constraints" value="1" id="checkbox_constraints" checked>
+            <label class="form-check-label" for="checkbox_constraints">{% trans 'Add constraints' %}</label>
+          </div>
+        {% endif %}
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="adjust_privileges" value="1" id="checkbox_adjust_privileges"
+            {%- if has_privileges %} checked{% else %} title="
+          {%- trans 'You don\'t have sufficient privileges to perform this operation; Please refer to the documentation for more details.' %}" disabled{% endif %}>
+          <label class="form-check-label" for="checkbox_adjust_privileges">
+            {% trans 'Adjust privileges' %}
+            {{ show_docu('faq', 'faq6-39') }}
+          </label>
+        </div>
+
+        <div class="form-check">
+          <input class="form-check-input" type="checkbox" name="switch_to_new" value="true" id="checkbox_switch"{{ switch_to_new ? ' checked' }}>
+          <label class="form-check-label" for="checkbox_switch">{% trans 'Switch to copied table' %}</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="card-footer text-end">
+      <input class="btn btn-primary" type="submit" name="submit_copy" value="{% trans 'Go' %}">
+    </div>
+  </div>
+</form>
+
+<div class="card mb-2">
+  <div class="card-header">{% trans 'Table maintenance' %}</div>
+  <ul class="list-group list-group-flush" id="tbl_maintenance">
+    {% if storage_engine in ['MYISAM', 'ARIA', 'INNODB', 'BERKELEYDB', 'TOKUDB'] %}
+      <li class="list-group-item">
+        <a href="{{ url('/table/maintenance/analyze') }}" data-post="{{ get_common({'db': db, 'table': table, 'selected_tbl': [table]}, '', false) }}">
+          {% trans 'Analyze table' %}
+        </a>
+        {{ show_mysql_docu('ANALYZE_TABLE') }}
+      </li>
+    {% endif %}
+
+    {% if storage_engine in ['MYISAM', 'ARIA', 'INNODB', 'TOKUDB'] %}
+      <li class="list-group-item">
+        <a href="{{ url('/table/maintenance/check') }}" data-post="{{ get_common({'db': db, 'table': table, 'selected_tbl': [table]}, '', false) }}">
+          {% trans 'Check table' %}
+        </a>
+        {{ show_mysql_docu('CHECK_TABLE') }}
+      </li>
+    {% endif %}
+
+    <li class="list-group-item">
+      <a href="{{ url('/table/maintenance/checksum') }}" data-post="{{ get_common({'db': db, 'table': table, 'selected_tbl': [table]}, '', false) }}">
+        {% trans 'Checksum table' %}
+      </a>
+      {{ show_mysql_docu('CHECKSUM_TABLE') }}
+    </li>
+
+    {% if storage_engine == 'INNODB' %}
+      <li class="list-group-item">
+        <a class="maintain_action ajax" href="{{ url('/sql') }}" data-post="{{ get_common(url_params|merge({'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ ' ENGINE = InnoDB;'}), '', false) }}">
+          {% trans 'Defragment table' %}
+        </a>
+        {{ show_mysql_docu('InnoDB_File_Defragmenting') }}
+      </li>
+    {% endif %}
+
+    <li class="list-group-item">
+      <a class="maintain_action ajax" href="{{ url('/sql') }}" data-post="{{ get_common(url_params|merge({
+        'sql_query': 'FLUSH TABLE ' ~ backquote(table),
+        'message_to_show': 'Table %s has been flushed.'|trans|format(table|e),
+        'reload': true
+      }), '', false) }}">
+        {% trans 'Flush the table (FLUSH)' %}
+      </a>
+      {{ show_mysql_docu('FLUSH') }}
+    </li>
+
+    {% if storage_engine in ['MYISAM', 'ARIA', 'INNODB', 'BERKELEYDB', 'TOKUDB'] %}
+      <li class="list-group-item">
+        <a href="{{ url('/table/maintenance/optimize') }}" data-post="{{ get_common({'db': db, 'table': table, 'selected_tbl': [table]}, '', false) }}">
+          {% trans 'Optimize table' %}
+        </a>
+        {{ show_mysql_docu('OPTIMIZE_TABLE') }}
+      </li>
+    {% endif %}
+
+    {% if storage_engine in ['MYISAM', 'ARIA'] %}
+      <li class="list-group-item">
+        <a href="{{ url('/table/maintenance/repair') }}" data-post="{{ get_common({'db': db, 'table': table, 'selected_tbl': [table]}, '', false) }}">
+          {% trans 'Repair table' %}
+        </a>
+        {{ show_mysql_docu('REPAIR_TABLE') }}
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+{% if not is_system_schema %}
+  <div class="card mb-2">
+    <div class="card-header">{% trans 'Delete data or table' %}</div>
+    <ul class="list-group list-group-flush">
+      {% if not is_view %}
+        <li class="list-group-item">
+          {{ link_or_button(
+            url('/sql'),
+            url_params|merge({
+              'sql_query': 'TRUNCATE TABLE ' ~ backquote(db) ~ '.' ~ backquote(table),
+              'goto': url('/table/structure'),
+              'reload': true,
+              'message_to_show': 'Table %s has been emptied.'|trans|format(table)|e
+            }),
+            'Empty the table (TRUNCATE)'|trans,
+            {
+              'id': 'truncate_tbl_anchor',
+              'class': 'text-danger ajax',
+              'data-query': 'TRUNCATE TABLE ' ~ backquote(db) ~ '.' ~ backquote(table)
+            }
+          ) }}
+          {{ show_mysql_docu('TRUNCATE_TABLE') }}
+        </li>
+        <li class="list-group-item">
+          {{ link_or_button(
+            url('/sql'),
+            url_params|merge({
+              'sql_query': 'DELETE FROM ' ~ backquote(db) ~ '.' ~ backquote(table),
+              'goto': url('/table/structure'),
+              'reload': true,
+              'message_to_show': 'Table %s has been emptied.'|trans|format(table)|e
+            }),
+            'Empty the table (DELETE FROM)'|trans,
+            {
+              'id': 'delete_tbl_anchor',
+              'class': 'text-danger ajax',
+              'data-query': 'DELETE FROM ' ~ backquote(db) ~ '.' ~ backquote(table)
+            }
+          ) }}
+          {{ show_mysql_docu('DELETE') }}
+        </li>
+      {% endif %}
+      <li class="list-group-item">
+        {{ link_or_button(
+          url('/sql'),
+          url_params|merge({
+            'sql_query': 'DROP TABLE ' ~ backquote(db) ~ '.' ~ backquote(table),
+            'goto': url('/database/operations'),
+            'reload': true,
+            'purge': true,
+            'message_to_show': is_view ? 'View %s has been dropped.'|trans|format(table)|e : 'Table %s has been dropped.'|trans|format(table)|e,
+            'table': table
+          }),
+          'Delete the table (DROP)'|trans,
+          {
+            'id': 'drop_tbl_anchor',
+            'class': 'text-danger ajax',
+            'data-query': 'DROP TABLE ' ~ backquote(db) ~ '.' ~ backquote(table)
+          }
+        ) }}
+        {{ show_mysql_docu('DROP_TABLE') }}
+      </li>
+    </ul>
+  </div>
+{% endif %}
+
+{% if partitions is not empty %}
+  <form id="partitionsForm" class="ajax" method="post" action="{{ url('/table/operations') }}">
+    {{ get_hidden_inputs(db, table) }}
+    <input type="hidden" name="submit_partition" value="1">
+
+    <div class="card mb-2">
+      <div class="card-header">
+        {% trans 'Partition maintenance' %}
+        {{ show_mysql_docu('partitioning_maintenance') }}
+      </div>
+
+      <div class="card-body">
+        <div class="mb-3">
+          <label for="partition_name">{% trans 'Partition' %}</label>
+          <select class="form-select resize-vertical" id="partition_name" name="partition_name[]" multiple required>
+            {% for partition in partitions %}
+              <option value="{{ partition }}"{{ loop.first ? ' selected' }}>{{ partition }}</option>
+            {% endfor %}
+          </select>
+        </div>
+
+        <div class="mb-3 form-check-inline">
+          {% for value, description in partitions_choices %}
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="partition_operation" id="partitionOperationRadio{{ value|capitalize }}" value="{{ value }}"{{ value == 'ANALYZE' ? ' checked' }}>
+              <label class="form-check-label" for="partitionOperationRadio{{ value|capitalize }}">{{ description }}</label>
+            </div>
+          {% endfor %}
+        </div>
+
+        <div class="form-text">
+          <a href="{{ url('/sql', url_params|merge({
+            'sql_query': 'ALTER TABLE ' ~ backquote(table) ~ ' REMOVE PARTITIONING;'
+          })) }}">{% trans 'Remove partitioning' %}</a>
+        </div>
+      </div>
+
+      <div class="card-footer text-end">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+      </div>
+    </div>
+  </form>
+{% endif %}
+
+{% if foreigners is not empty %}
+  <div class="card mb-2">
+    <div class="card-header">{% trans 'Check referential integrity' %}</div>
+    <ul class="list-group list-group-flush">
+      {% for foreign in foreigners %}
+        <li class="list-group-item">
+          <a class="text-nowrap" href="{{ url('/sql', foreign.params) }}">
+            {{ foreign.master }} -> {{ foreign.db }}.{{ foreign.table }}.{{ foreign.field }}
+          </a>
+        </li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endif %}
+
+</div>

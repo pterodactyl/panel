@@ -1,0 +1,22 @@
+<div id="topmenucontainer" class="menucontainer">
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-label="
+      {%- trans %}Toggle navigation{% notes %}Show or hide the menu using the hamburger style button{% endtrans %}" aria-controls="navbarNav" aria-expanded="false">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul id="topmenu" class="navbar-nav">
+        {% for tab in tabs %}
+          <li class="nav-item{{ tab.active ? ' active' }}">
+            <a class="nav-link text-nowrap" href="{{ url(tab.route, url_params|merge(tab.args ?? [])) }}">
+              {{ get_icon(tab.icon, tab.text, false, true, 'TabsMode') }}
+              {% if tab.active %}
+                <span class="visually-hidden">{% trans %}(current){% notes %}Current page{% endtrans %}</span>
+              {% endif %}
+            </a>
+          </li>
+        {% endfor %}
+      </ul>
+    </div>
+  </nav>
+</div>

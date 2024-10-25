@@ -1,0 +1,106 @@
+$textarea-cols: 40;
+$textarea-rows: 15;
+
+.CodeMirror {
+  height: 20rem;
+  direction: ltr;
+  border: $card-border-width solid $card-border-color;
+
+  @include border-radius($card-border-radius);
+}
+
+// Code mirror default style (do not affect the console style)
+.CodeMirror.cm-s-default {
+  // @see: issue #17705
+  div.CodeMirror-scroll {
+    margin-right: 0;
+    padding-bottom: 0;
+  }
+}
+
+#inline_editor_outer .CodeMirror {
+  height: ceil($textarea-rows * 0.4em);
+}
+
+.insertRowTable .CodeMirror {
+  min-height: ceil($textarea-rows * 0.6em);
+  min-width: ceil($textarea-cols * 0.6em);
+  border: 1px solid #a9a9a9;
+}
+
+#pma_console .CodeMirror-gutters {
+  background-color: initial;
+  border: none;
+}
+
+span {
+  &.cm-keyword,
+  &.cm-statement-verb {
+    color: #909;
+  }
+
+  &.cm-variable {
+    color: black;
+  }
+
+  &.cm-comment {
+    color: #808000;
+  }
+
+  &.cm-mysql-string {
+    color: #008000;
+  }
+
+  &.cm-operator {
+    color: fuchsia;
+  }
+
+  &.cm-mysql-word {
+    color: black;
+  }
+
+  &.cm-builtin {
+    color: #f00;
+  }
+
+  &.cm-variable-2 {
+    color: #f90;
+  }
+
+  &.cm-variable-3 {
+    color: #00f;
+  }
+
+  &.cm-separator {
+    color: fuchsia;
+  }
+
+  &.cm-number {
+    color: teal;
+  }
+}
+
+.autocomplete-column-name {
+  display: inline-block;
+}
+
+.autocomplete-column-hint {
+  display: inline-block;
+  float: right;
+  color: #666;
+  margin-left: 1em;
+}
+
+.CodeMirror-hints {
+  z-index: 1999;
+}
+
+.CodeMirror-lint-tooltip {
+  z-index: 200;
+  font-family: inherit;
+
+  code {
+    font-family: monospace;
+    font-weight: bold;
+  }
+}

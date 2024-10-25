@@ -1,0 +1,78 @@
+{% extends 'server/status/base.twig' %}
+{% set active = 'status' %}
+{% block content %}
+
+{% if is_data_loaded %}
+  <div class="row"><h3>{{ 'Network traffic since startup: %s'|trans|format(network_traffic) }}</h3></div>
+  <div class="row"><p>{{ 'This MySQL server has been running for %1$s. It started up on %2$s.'|trans|format(uptime, start_time) }}</p></div>
+
+<div class="row align-items-start">
+  <table class="table table-striped table-hover col-12 col-md-5 w-auto">
+    <thead>
+      <tr>
+        <th scope="col">
+          {% trans 'Traffic' %}
+          {{ show_hint('On a busy server, the byte counters may overrun, so those statistics as reported by the MySQL server may be incorrect.'|trans) }}
+        </th>
+        <th class="text-end" scope="col">#</th>
+        <th class="text-end" scope="col">{% trans 'ø per hour' %}</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for each_traffic in traffic %}
+        <tr>
+          <th scope="row">{{ each_traffic.name }}</th>
+          <td class="font-monospace text-end">{{ each_traffic.number }}</td>
+          <td class="font-monospace text-end">{{ each_traffic.per_hour }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <table class="table table-striped table-hover col-12 col-md-6 w-auto">
+    <thead>
+      <tr>
+        <th scope="col">{% trans 'Connections' %}</th>
+        <th class="text-end" scope="col">#</th>
+        <th class="text-end" scope="col">{% trans 'ø per hour' %}</th>
+        <th class="text-end" scope="col">%</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for connection in connections %}
+        <tr>
+          <th>{{ connection.name }}</th>
+          <td class="font-monospace text-end">{{ connection.number }}</td>
+          <td class="font-monospace text-end">{{ connection.per_hour }}</td>
+          <td class="font-monospace text-end">{{ connection.percentage }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>
+
+  {% if is_primary or is_replica %}
+    <p class="alert alert-primary clearfloat" role="alert">
+      {% if is_primary and is_replica %}
+        {% trans 'This MySQL server works as <b>primary</b> and <b>replica</b> in <b>replication</b> process.' %}
+      {% elseif is_primary %}
+        {% trans 'This MySQL server works as <b>primary</b> in <b>replication</b> process.' %}
+      {% elseif is_replica %}
+        {% trans 'This MySQL server works as <b>replica</b> in <b>replication</b> process.' %}
+      {% endif %}
+    </p>
+
+    <hr class="clearfloat">
+
+    <h3>{% trans 'Replication status' %}</h3>
+
+    {{ replication|raw }}
+  {% endif %}
+
+{% else %}
+  {{ 'Not enough privilege to view server status.'|trans|error }}
+{% endif %}
+
+{% endblock %}

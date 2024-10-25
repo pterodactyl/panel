@@ -1,0 +1,307 @@
+{% set navigation_html %}
+  {% if navigation is not empty %}
+    <table class="navigation d-print-none">
+      <tr>
+        <td class="navigation_separator"></td>
+
+        {{ navigation.move_backward_buttons|raw }}
+        {{ navigation.page_selector|raw }}
+        {{ navigation.move_forward_buttons|raw }}
+
+        {% if navigation.number_total_page != 1 %}
+          <td><div class="navigation_separator">|</div></td>
+        {% endif %}
+
+        {% if navigation.has_show_all %}
+          <td>
+            <form action="{{ url('/sql') }}" method="post">
+              {{ get_hidden_fields(navigation.hidden_fields|merge({
+                'session_max_rows': navigation.session_max_rows,
+                'pos': '0'
+              })) }}
+              <input type="checkbox" name="navig" id="showAll_{{ unique_id }}" class="showAllRows" value="all"
+                {{- navigation.is_showing_all ? ' checked' }}>
+              <label for="showAll_{{ unique_id }}">{% trans 'Show all' %}</label>
+            </form>
+          </td>
+          <td><div class="navigation_separator">|</div></td>
+        {% endif %}
+
+        <td>
+          <div class="save_edited hide">
+            <input class="btn btn-link" type="submit" value="{% trans 'Save edited data' %}">
+            <div class="navigation_separator">|</div>
+          </div>
+        </td>
+        <td>
+          <div class="restore_column hide">
+            <input class="btn btn-link" type="submit" value="{% trans 'Restore column order' %}">
+            <div class="navigation_separator">|</div>
+          </div>
+        </td>
+        <td class="navigation_goto">
+          <form action="{{ url('/sql') }}" method="post" class="maxRowsForm">
+            {{ get_hidden_fields(navigation.hidden_fields|merge({
+              'pos': navigation.pos,
+              'unlim_num_rows': unlim_num_rows
+            })) }}
+
+            <label for="sessionMaxRowsSelect">{% trans 'Number of rows:' %}</label>
+            <select class="autosubmit" name="session_max_rows" id="sessionMaxRowsSelect">
+              {% if navigation.is_showing_all %}
+                <option value="" disabled selected>{% trans 'All' %}</option>
+              {% endif %}
+              {% for option in ['25', '50', '100', '250', '500'] %}
+                <option value="{{ option }}"{{ navigation.max_rows == option ? ' selected' }}>{{ option }}</option>
+              {% endfor %}
+            </select>
+          </form>
+        </td>
+        <td class="navigation_separator"></td>
+        <td class="largescreenonly">
+          <span>{% trans 'Filter rows' %}:</span>
+          <input type="text" class="filter_rows" placeholder="
+          {%- trans 'Search this table' %}" data-for="{{ unique_id }}">
+        </td>
+        <td class="largescreenonly">
+          {% if navigation.sort_by_key is not empty %}
+            <form action="{{ url('/sql') }}" method="post" class="d-print-none">
+              {{ get_hidden_fields(navigation.sort_by_key.hidden_fields) }}
+              {% trans 'Sort by key:' %}
+              <select name="sql_query" class="autosubmit">
+                {% for option in navigation.sort_by_key.options %}
+                  <option value="{{ option.value }}"{{ option.is_selected ? ' selected' }}>{{ option.content }}</option>
+                {% endfor %}
+              </select>
+            </form>
+          {% endif %}
+        </td>
+        <td class="navigation_separator"></td>
+      </tr>
+    </table>
+  {% endif %}
+{% endset %}
+
+{{ sql_query_message|raw }}
+
+{{ navigation_html }}
+
+<input class="save_cells_at_once" type="hidden" value="{{ save_cells_at_once }}">
+<div class="common_hidden_inputs">
+  {{ get_hidden_inputs(db, table) }}
+</div>
+
+{% if headers.column_order is not empty %}
+  {% if headers.column_order.order %}
+    <input class="col_order" type="hidden" value="{{ headers.column_order.order|join(',') }}">
+  {% endif %}
+  {% if headers.column_order.visibility %}
+    <input class="col_visib" type="hidden" value="{{ headers.column_order.visibility|join(',') }}">
+  {% endif %}
+  {% if not headers.column_order.is_view %}
+    <input class="table_create_time" type="hidden" value="{{ headers.column_order.table_create_time }}">
+  {% endif %}
+{% endif %}
+
+{% if headers.options is not empty %}
+  <form method="post" action="{{ url('/sql') }}" name="displayOptionsForm" class="ajax d-print-none">
+    {{ get_hidden_inputs({
+      'db': db,
+      'table': table,
+      'sql_query': sql_query,
+      'goto': goto,
+      'display_options_form': 1
+    }) }}
+
+    {% if default_sliders_state != 'disabled' %}
+    <div class="mb-3">
+      <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#extraOptions" aria-expanded="{{ default_sliders_state == 'open' ? 'true' : 'false' }}" aria-controls="extraOptions">
+        {% trans 'Extra options' %}
+      </button>
+    </div>
+    <div class="collapse mb-3{{ default_sliders_state == 'open' ? ' show' }}" id="extraOptions">
+    {% endif %}
+
+      <fieldset class="pma-fieldset">
+        <div class="formelement">
+          <div>
+            <input type="radio" name="pftext" id="partialFulltextRadioP{{ unique_id }}" value="P"{{ headers.options.pftext == 'P' ? ' checked' }}>
+            <label for="partialFulltextRadioP{{ unique_id }}">{% trans 'Partial texts' %}</label>
+          </div>
+          <div>
+            <input type="radio" name="pftext" id="partialFulltextRadioF{{ unique_id }}" value="F"{{ headers.options.pftext == 'F' ? ' checked' }}>
+            <label for="partialFulltextRadioF{{ unique_id }}">{% trans 'Full texts' %}</label>
+          </div>
+        </div>
+
+        {% if relwork and displaywork %}
+          <div class="formelement">
+            <div>
+              <input type="radio" name="relational_display" id="relationalDisplayRadioK{{ unique_id }}" value="K"{{ headers.options.relational_display == 'K' ? ' checked' }}>
+              <label for="relationalDisplayRadioK{{ unique_id }}">{% trans 'Relational key' %}</label>
+            </div>
+            <div>
+              <input type="radio" name="relational_display" id="relationalDisplayRadioD{{ unique_id }}" value="D"{{ headers.options.relational_display == 'D' ? ' checked' }}>
+              <label for="relationalDisplayRadioD{{ unique_id }}">{% trans 'Display column for relationships' %}</label>
+            </div>
+          </div>
+        {% endif %}
+
+        <div class="formelement">
+          <input type="checkbox" name="display_binary" id="display_binary_{{ unique_id }}"
+            {{- headers.options.display_binary is not empty ? ' checked' }}>
+          <label for="display_binary_{{ unique_id }}">{% trans 'Show binary contents' %}</label>
+
+          <input type="checkbox" name="display_blob" id="display_blob_{{ unique_id }}"
+            {{- headers.options.display_blob is not empty ? ' checked' }}>
+          <label for="display_blob_{{ unique_id }}">{% trans 'Show BLOB contents' %}</label>
+        </div>
+
+        {# I would have preferred to name this "display_transformation".
+           This is the only way I found to be able to keep this setting sticky
+           per SQL query, and at the same time have a default that displays
+           the transformations. #}
+        <div class="formelement">
+          <input type="checkbox" name="hide_transformation" id="hide_transformation_{{ unique_id }}"
+            {{- headers.options.hide_transformation is not empty ? ' checked' }}>
+          <label for="hide_transformation_{{ unique_id }}">{% trans 'Hide browser transformation' %}</label>
+        </div>
+
+        <div class="formelement">
+          {% if headers.options.possible_as_geometry %}
+            <div>
+              <input type="radio" name="geoOption" id="geoOptionRadioGeom{{ unique_id }}" value="GEOM"{{ headers.options.geo_option == 'GEOM' ? ' checked' }}>
+              <label for="geoOptionRadioGeom{{ unique_id }}">{% trans 'Geometry' %}</label>
+            </div>
+          {% endif %}
+          <div>
+            <input type="radio" name="geoOption" id="geoOptionRadioWkt{{ unique_id }}" value="WKT"{{ headers.options.geo_option == 'WKT' ? ' checked' }}>
+            <label for="geoOptionRadioWkt{{ unique_id }}">{% trans 'Well Known Text' %}</label>
+          </div>
+          <div>
+            <input type="radio" name="geoOption" id="geoOptionRadioWkb{{ unique_id }}" value="WKB"{{ headers.options.geo_option == 'WKB' ? ' checked' }}>
+            <label for="geoOptionRadioWkb{{ unique_id }}">{% trans 'Well Known Binary' %}</label>
+          </div>
+        </div>
+        <div class="clearfloat"></div>
+      </fieldset>
+
+      <fieldset class="pma-fieldset tblFooters">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+      </fieldset>
+    {% if default_sliders_state != 'disabled' %}
+    </div>
+    {% endif %}
+  </form>
+{% endif %}
+
+{% if headers.has_bulk_actions_form %}
+  <form method="post" name="resultsForm" id="resultsForm_{{ unique_id }}" class="ajax">
+    {{ get_hidden_inputs(db, table, 1) }}
+    <input type="hidden" name="goto" value="{{ url('/sql') }}">
+{% endif %}
+
+  <div class="table-responsive-md">
+    <table class="table table-striped table-hover table-sm table_results data ajax w-auto" data-uniqueId="{{ unique_id }}">
+
+      {{ headers.button|raw }}
+      {{ headers.table_headers_for_columns|raw }}
+      {{ headers.column_at_right_side|raw }}
+
+        </tr>
+      </thead>
+
+      <tbody>
+        {{ body|raw }}
+      </tbody>
+    </table>
+  </div>
+
+{% if bulk_links is not empty %}
+    <div class="d-print-none">
+      <img class="selectallarrow" src="{{ image('arrow_' ~ text_dir ~ '.png') }}" width="38" height="22" alt="{% trans 'With selected:' %}">
+      <input type="checkbox" id="resultsForm_{{ unique_id }}_checkall" class="checkall_box" title="{% trans 'Check all' %}">
+      <label for="resultsForm_{{ unique_id }}_checkall">{% trans 'Check all' %}</label>
+      <em class="with-selected">{% trans 'With selected:' %}</em>
+
+      <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="edit" title="{% trans 'Edit' %}">
+        {{ get_icon('b_edit', 'Edit'|trans) }}
+      </button>
+
+      <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="copy" title="{% trans 'Copy' %}">
+        {{ get_icon('b_insrow', 'Copy'|trans) }}
+      </button>
+
+      <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="delete" title="{% trans 'Delete' %}">
+        {{ get_icon('b_drop', 'Delete'|trans) }}
+      </button>
+
+      {% if bulk_links.has_export_button %}
+        <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="export" title="{% trans 'Export' %}">
+          {{ get_icon('b_tblexport', 'Export'|trans) }}
+        </button>
+      {% endif %}
+    </div>
+
+    <input type="hidden" name="clause_is_unique" value="{{ bulk_links.clause_is_unique }}">
+    <input type="hidden" name="sql_query" value="{{ sql_query }}">
+  </form>
+{% endif %}
+
+{{ navigation_html }}
+
+{% if operations is not empty %}
+  <fieldset class="pma-fieldset d-print-none">
+    <legend>{% trans 'Query results operations' %}</legend>
+
+    {% if operations.has_print_link %}
+      <button type="button" class="btn btn-link jsPrintButton">{{ get_icon('b_print', 'Print'|trans, true) }}</button>
+
+      {{ link_or_button(
+        '#',
+        null,
+        get_icon('b_insrow', 'Copy to clipboard'|trans, true),
+        {'id': 'copyToClipBoard', 'class': 'btn'}
+      ) }}
+    {% endif %}
+
+    {% if not operations.has_procedure %}
+      {% if operations.has_export_link %}
+        {{ link_or_button(
+          url('/table/export'),
+          operations.url_params,
+          get_icon('b_tblexport', 'Export'|trans, true),
+          {'class': 'btn'}
+        ) }}
+
+        {{ link_or_button(
+          url('/table/chart'),
+          operations.url_params,
+          get_icon('b_chart', 'Display chart'|trans, true),
+          {'class': 'btn'}
+        ) }}
+
+        {% if operations.has_geometry %}
+          {{ link_or_button(
+            url('/table/gis-visualization'),
+            operations.url_params,
+            get_icon('b_globe', 'Visualize GIS data'|trans, true),
+            {'class': 'btn'}
+          ) }}
+        {% endif %}
+      {% endif %}
+
+      <span>
+        {{ link_or_button(
+          url('/view/create'),
+          {'db': db, 'table': table, 'sql_query': sql_query, 'printview': true},
+          get_icon('b_view_add', 'Create view'|trans, true),
+          {'class': 'btn create_view ajax'}
+        ) }}
+      </span>
+    {% endif %}
+  </fieldset>
+{% endif %}
+{% if operations is not empty and not operations.has_procedure %}
+{{ include('modals/create_view.twig') }}
+{% endif %}

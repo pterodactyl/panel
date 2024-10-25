@@ -1,0 +1,180 @@
+{% extends 'setup/base.twig' %}
+{% block content %}
+
+<form id="select_lang" method="post">
+  {{ get_hidden_inputs() }}
+  <bdo lang="en" dir="ltr">
+    <label for="lang">
+      {% trans 'Language' %}
+      {{ 'Language'|trans != 'Language' ? ' - Language' }}
+    </label>
+  </bdo>
+  <br>
+  <select id="lang" name="lang" class="autosubmit" lang="en" dir="ltr">
+    {% for language in languages %}
+      <option value="{{ language.code }}"{{ language.is_active ? ' selected' }}>{{ language.name|raw }}</option>
+    {% endfor %}
+  </select>
+</form>
+
+<h2>{% trans 'Overview' %}</h2>
+
+<a href="#" id="show_hidden_messages" class="hide">
+  {% trans 'Show hidden messages' %} (#MSG_COUNT)
+</a>
+
+{% for message in messages %}
+  <div class="{{ message.type }}{{ message.is_hidden ? ' hiddenmessage' }}" id="{{ message.id }}">
+    <h4 class="fs-6">{{ message.title }}</h4>
+    {{ message.message|raw }}
+  </div>
+{% endfor %}
+
+<fieldset class="pma-fieldset simple">
+  <legend>{% trans 'Servers' %}</legend>
+
+  <form method="get" action="index.php" class="config-form disableAjax">
+    <input type="hidden" name="tab_hash" value="">
+    {% if has_check_page_refresh %}
+      <input type="hidden" name="check_page_refresh" id="check_page_refresh" value="">
+    {% endif %}
+    {{ get_hidden_inputs('', '', 0, 'server') }}
+    {{ get_hidden_fields({'page': 'servers', 'mode': 'add'}, '', true) }}
+
+  <div class="form">
+    {% if server_count > 0 %}
+      <table class="table w-auto datatable">
+        <tr>
+          <th>#</th>
+          <th>{% trans 'Name' %}</th>
+          <th>{% trans 'Authentication type' %}</th>
+          <th colspan="2">DSN</th>
+        </tr>
+
+        {% for server in servers %}
+          <tr>
+            <td>{{ server.id }}</td>
+            <td>{{ server.name }}</td>
+            <td>{{ server.auth_type }}</td>
+            <td>{{ server.dsn }}</td>
+            <td class="text-nowrap">
+              <small>
+                <a href="{{ get_common(server.params.edit) }}">
+                  {% trans 'Edit' %}
+                </a>
+                |
+                <a class="delete-server" href="{{ get_common(server.params.remove) }}" data-post="
+                  {{- get_common({ token: server.params.token }, '', false) }}">
+                  {% trans 'Delete' %}
+                </a>
+              </small>
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    {% else %}
+      <table class="table mb-0">
+        <tr>
+          <td>
+            <em>{% trans 'There are no configured servers' %}</em>
+          </td>
+        </tr>
+      </table>
+    {% endif %}
+
+    <table class="table mb-0">
+      <tr>
+        <td class="lastrow text-start">
+          <input type="submit" name="submit" value="{% trans 'New server' %}">
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  </form>
+</fieldset>
+
+<fieldset class="pma-fieldset simple">
+  <legend>{% trans 'Configuration file' %}</legend>
+
+  <form method="post" action="config.php" class="config-form disableAjax">
+    <input type="hidden" name="tab_hash" value="">
+    {% if has_check_page_refresh %}
+      <input type="hidden" name="check_page_refresh" id="check_page_refresh" value="">
+    {% endif %}
+    {{ get_hidden_inputs('', '', 0, 'server') }}
+
+  <table class="table table-borderless">
+    <tr>
+      <th>
+        <label for="DefaultLang">{% trans 'Default language' %}</label>
+        <span class="doc">
+          <a href="{{ get_docu_link('config', 'cfg_DefaultLang', '../') }}" target="_blank" rel="noreferrer noopener">
+            {{- get_image('b_help', 'Documentation'|trans) -}}
+          </a>
+        </span>
+      </th>
+      <td>
+        <select name="DefaultLang" id="DefaultLang" class="w-75">
+          {% for language in languages %}
+            <option value="{{ language.code }}"{{ language.is_active ? ' selected' }}>{{ language.name|raw }}</option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <th>
+        <label for="ServerDefault">{% trans 'Default server' %}</label>
+        <span class="doc">
+          <a href="{{ get_docu_link('config', 'cfg_ServerDefault', '../') }}" target="_blank" rel="noreferrer noopener">
+            {{- get_image('b_help', 'Documentation'|trans) -}}
+          </a>
+        </span>
+      </th>
+      <td>
+        <select name="ServerDefault" id="ServerDefault" class="w-75">
+          {% if server_count > 0 %}
+            {% if server_count > 1 %}
+              <option value="0">{% trans 'let the user choose' %}</option>
+              <option value="" disabled>------------------------------</option>
+            {% endif %}
+            {% for server in servers %}
+              <option value="{{ server.id }}"{{ server.id == 1 ? ' selected' }}>{{ server.name }} [{{ server.id }}]</option>
+            {% endfor %}
+          {% else %}
+            <option value="1">{% trans '- none -' %}</option>
+          {% endif %}
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <th><label for="eol">{% trans 'End of line' %}</label></th>
+      <td>
+        <select name="eol" id="eol" class="w-75">
+          <option value="unix"{{ eol == 'unix' ? ' selected' }}>UNIX / Linux (\n)</option>
+          <option value="win"{{ eol == 'win' ? ' selected' }}>Windows (\r\n)</option>
+        </select>
+      </td>
+    </tr>
+
+    <tr>
+      <td colspan="2" class="lastrow text-start">
+        <input type="submit" name="submit_display" value="{% trans 'Display' %}">
+        <input type="submit" name="submit_download" value="{% trans 'Download' %}">
+        <input class="red" type="submit" name="submit_clear" value="{% trans 'Clear' %}">
+      </td>
+    </tr>
+  </table>
+
+  </form>
+</fieldset>
+
+<div id="footer">
+  <a href="../url.php?url=https://www.phpmyadmin.net/">{% trans 'phpMyAdmin homepage' %}</a>
+  <a href="../url.php?url=https://www.phpmyadmin.net/donate/">{% trans 'Donate' %}</a>
+  <a href="{{ get_common({'version_check': '1'}) }}">{% trans 'Check for latest version' %}</a>
+</div>
+
+{% endblock %}

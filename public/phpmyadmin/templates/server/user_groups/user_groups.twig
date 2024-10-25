@@ -1,0 +1,66 @@
+<div class="row"><h2>{% trans 'User groups' %}</h2></div>
+{% if  has_rows %}
+    <form name="userGroupsForm" id="userGroupsForm" action="{{ action|raw }}" method="post">
+        {{ hidden_inputs|raw  }}
+        <table class="table table-striped table-hover">
+            <thead>
+                <tr class="text-nowrap">
+                    <th scope="col">
+                        {% trans 'User groups' %}
+                    </th>
+                    <th scope="col">
+                        {% trans 'Server level tabs' %}
+                    </th>
+                    <th scope="col">
+                        {% trans 'Database level tabs' %}
+                    </th>
+                    <th scope="col">
+                        {% trans 'Table level tabs' %}
+                    </th>
+                    <th scope="col">
+                        {% trans 'Action' %}
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for groupName in user_groups_values %}
+                    <tr>
+                        <td>{{ groupName.name }}</td>
+                        <td>{{ groupName.serverTab }}</td>
+                        <td>{{ groupName.dbTab }}</td>
+                        <td>{{ groupName.tableTab }}</td>
+                        <td class="text-nowrap">
+                            <a class="" href="{{ groupName.userGroupUrl|raw }}" data-post="{{ groupName.viewUsersUrl|raw }}">{{ groupName.viewUsersIcon|raw }}</a>
+                            &nbsp;&nbsp;
+                            <a class="" href="{{ groupName.userGroupUrl|raw }}" data-post="{{ groupName.editUsersUrl|raw }}">{{ groupName.editUsersIcon|raw }}</a>
+                          <button type="button" class="btn btn-link" data-bs-toggle="modal" data-bs-target="#deleteUserGroupModal" data-user-group="{{ groupName.name }}">
+                            {{ get_icon('b_drop', 'Delete'|trans) }}
+                          </button>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </form>
+
+  <div class="modal fade" id="deleteUserGroupModal" tabindex="-1" aria-labelledby="deleteUserGroupModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteUserGroupModalLabel">{% trans 'Delete user group' %}</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+        </div>
+        <div class="modal-body"></div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+          <button type="button" class="btn btn-danger" id="deleteUserGroupConfirm">{% trans 'Delete' %}</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endif %}
+<div class="row">
+    <fieldset class="pma-fieldset" id="fieldset_add_user_group">
+        <a href="{{ add_user_url|raw }}">{{ add_user_icon|raw }}{% trans 'Add user group' %}</a>
+    </fieldset>
+</div>

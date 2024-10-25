@@ -1,0 +1,176 @@
+<?php
+
+/**
+ * The DOMElement class
+ * @link http://php.net/manual/en/class.domelement.php
+ */
+class DOMDocument extends DOMNode {
+    /**
+     * @return DOMNodeList<DOMElement>
+     */
+    public function getElementsByTagName($name) {}
+
+    /**
+     * @return DOMNodeList<DOMElement>
+     */
+    public function getElementsByTagNameNS($namespaceURI, $localName) {}
+}
+
+/**
+ * The DOMElement class
+ * @link http://php.net/manual/en/class.domelement.php
+ */
+class DOMElement extends DOMNode  {
+    public function __construct(string $name, string $value = '', string $namespaceURI = '') {}
+
+    /**
+     * @return DOMNodeList<DOMElement>
+     */
+    public function getElementsByTagName($name) {}
+    /**
+     * @return DOMNodeList<DOMElement>
+     */
+    public function getElementsByTagNameNS($namespaceURI, $localName) {}
+}
+
+/**
+ * @template-covariant TNode as DOMNode
+ * @template-implements Traversable<int, TNode>
+ */
+class DOMNodeList implements Traversable, Countable {
+    /**
+     * The number of nodes in the list. The range of valid child node indices is 0 to length - 1 inclusive.
+     *
+     * @var int
+     *
+     * @since 5.0
+     * @link http://php.net/manual/en/class.domnodelist.php#domnodelist.props.length
+     */
+    public $length;
+
+    /**
+     * @param int $index
+     * @return TNode|null
+     * @psalm-ignore-nullable-return
+     */
+    public function item($index) {}
+}
+
+/**
+ * @template-covariant TNode as DOMNode
+ * @template-implements Traversable<string, TNode>
+ */
+class DOMNamedNodeMap implements Traversable, Countable {
+    /**
+     * @var int
+     */
+    public $length;
+
+    /**
+     * @return TNode|null
+     */
+    public function getNamedItem(string $name): ?DOMNode {}
+
+    /**
+     * @return TNode|null
+     */
+    public function getNamedItemNS(string $namespaceURI, string $localName): ?DOMNode {}
+
+    /**
+     * @return TNode|null
+     * @psalm-ignore-nullable-return
+     */
+    public function item(int $index): ?DOMNode {}
+}
+
+class SimpleXMLElement implements \Countable, \RecursiveIterator, \ArrayAccess
+{
+    /** @return array */
+    public function getNamespaces(bool $recursive = false)
+    {
+    }
+    /** @return array|false */
+    public function getDocNamespaces(bool $recursive = false, bool $fromRoot = true)
+    {
+    }
+    /** @return SimpleXMLIterator */
+    public function children(?string $namespaceOrPrefix = null, bool $isPrefix = false)
+    {
+    }
+    /** @return SimpleXMLIterator */
+    public function attributes(?string $namespaceOrPrefix = null, bool $isPrefix = false)
+    {
+    }
+    public function __construct(string $data, int $options = 0, bool $dataIsURL = false, string $namespaceOrPrefix = "", bool $isPrefix = false)
+    {
+    }
+    /** @return SimpleXMLElement */
+    public function addChild(string $qualifiedName, ?string $value = null, ?string $namespace = null)
+    {
+    }
+    /** @return SimpleXMLElement */
+    public function addAttribute(string $qualifiedName, ?string $value = null, ?string $namespace = null)
+    {
+    }
+    /** @return string */
+    public function getName()
+    {
+    }
+    public function __toString() : string
+    {
+    }
+    /** @return int */
+    public function count()
+    {
+    }
+    /** @return void */
+    public function rewind()
+    {
+    }
+    /** @return bool */
+    public function valid()
+    {
+    }
+
+    /** @return SimpleXMLElement */
+    public function current()
+    {
+    }
+    /** @return string|false */
+    public function key()
+    {
+    }
+    /** @return void */
+    public function next()
+    {
+    }
+    /** @return bool */
+    public function hasChildren()
+    {
+    }
+    /** @return SimpleXMLElement|null */
+    public function getChildren()
+    {
+    }
+
+    public function offsetExists($offset)
+    {
+    }
+
+    public function offsetGet($offset)
+    {
+    }
+
+    public function offsetSet($offset, $value)
+    {
+    }
+
+    public function offsetUnset($offset)
+    {
+    }
+}
+
+class SimpleXMLIterator extends SimpleXMLElement
+{
+
+}

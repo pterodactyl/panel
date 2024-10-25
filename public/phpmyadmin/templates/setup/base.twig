@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>phpMyAdmin setup</title>
+  <link href="../favicon.ico" rel="icon" type="image/x-icon">
+  <link href="../favicon.ico" rel="shortcut icon" type="image/x-icon">
+  <link href="../setup/styles.css" rel="stylesheet" type="text/css">
+  <script type="text/javascript" src="../js/vendor/jquery/jquery.min.js"></script>
+  <script type="text/javascript" src="../js/vendor/jquery/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="../js/vendor/bootstrap/bootstrap.bundle.min.js"></script>
+  <script type="text/javascript" src="../js/dist/setup/ajax.js"></script>
+  <script type="text/javascript" src="../js/dist/config.js"></script>
+  <script type="text/javascript" src="../js/dist/setup/scripts.js"></script>
+  <script type="text/javascript" src="../js/messages.php"></script>
+</head>
+<body>
+
+<h1>
+  <span class="blue">php</span><span class="orange">MyAdmin</span>
+  setup
+</h1>
+
+<div id="menu">
+  <ul>
+    <li>
+      <a href="index.php{{ get_common() }}"{{ formset is empty ? ' class="active"' }}>
+        {% trans 'Overview' %}
+      </a>
+    </li>
+    {% for page in pages %}
+      <li>
+        <a href="index.php{{ get_common({
+          'page': 'form',
+          'formset': page.formset
+        }) }}"{{ formset == page.formset ? ' class="active"' }}>
+          {{ page.name }}
+        </a>
+      </li>
+    {% endfor %}
+  </ul>
+</div>
+
+<div id="page" class="setup-page">
+  {% block content %}{% endblock %}
+</div>
+
+</body>
+</html>

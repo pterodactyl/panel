@@ -1,0 +1,8 @@
+{% for server in select %}
+    <option
+        value="{{ server.value }}"
+        {% if server.selected %}selected="selected"{% endif %}
+    >
+        {{- server.label -}}
+    </option>
+{% endfor %}

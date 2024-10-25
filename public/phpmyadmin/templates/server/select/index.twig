@@ -1,0 +1,37 @@
+{% if not_only_options %}
+    <form class="disableAjax" method="post" action="{{ form_action|raw }}">
+        {% if omit_fieldset == false %}
+            <fieldset class="pma-fieldset">
+        {% endif %}
+        {{ get_hidden_fields([]) }}
+        <label for="select_server">{% trans 'Current server:' %}</label>
+        <select id="select_server" class="autosubmit" name="server">
+            <option value="">({% trans 'Servers' %}) ...</option>
+            {% include 'server/select/server_options.twig' with {
+                'select': servers.select
+            } only %}
+        </select>
+        {% if omit_fieldset == false %}
+            </fieldset>
+        {% endif %}
+    </form>
+{% elseif servers.list %}
+    {% trans 'Current server:' %}<br>
+    <ul id="list_server">
+        <li>
+            {% for server in servers.list %}
+                {% if server.selected %}
+                    <strong>{{ server.label }}</strong>
+                {% else %}
+                    <a class="disableAjax item" href="{{ server.href }}">
+                        {{- server.label -}}
+                    </a>
+                {% endif %}
+            {% endfor %}
+        </li>
+    </ul>
+{% else %}
+    {% include 'server/select/server_options.twig' with {
+        'select': servers.select
+    } only %}
+{% endif %}

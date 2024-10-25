@@ -1,0 +1,121 @@
+<div class="responsivetable">
+<table id="table_columns" class="table table-striped caption-top align-middle mb-0 noclick">
+    <caption class="tblHeaders">
+        {% trans 'Structure' %}
+        {{ show_mysql_docu('CREATE_TABLE') }}
+    </caption>
+    <tr>
+        <th>
+            {% trans 'Name' %}
+        </th>
+        <th>
+            {% trans 'Type' %}
+            {{ show_mysql_docu('data-types') }}
+        </th>
+        <th>
+            {% trans 'Length/Values' %}
+            {{ show_hint('If column type is "enum" or "set", please enter the values using this format: \'a\',\'b\',\'c\'…<br>If you ever need to put a backslash ("\\") or a single quote ("\'") amongst those values, precede it with a backslash (for example \'\\\\xyz\' or \'a\\\'b\').'|trans) }}
+        </th>
+        <th>
+            {% trans 'Default' %}
+            {{ show_hint('For default values, please enter just a single value, without backslash escaping or quotes, using this format: a'|trans) }}
+        </th>
+        <th>
+            {% trans 'Collation' %}
+        </th>
+        <th>
+            {% trans 'Attributes' %}
+        </th>
+        <th>
+            {% trans 'Null' %}
+        </th>
+
+        {# Only for 'Edit' Column(s) #}
+        {% if change_column is defined and change_column is not empty %}
+            <th>
+                {% trans 'Adjust privileges' %}
+                {{ show_docu('faq', 'faq6-39') }}
+            </th>
+        {% endif %}
+
+        {# We could remove this 'if' and let the key information be shown and
+           editable. However, for this to work, structure.lib.php must be
+           modified to use the key fields, as tbl_addfield does. #}
+        {% if not is_backup %}
+            <th>
+                {% trans 'Index' %}
+            </th>
+        {% endif %}
+
+        <th>
+            <abbr title="AUTO_INCREMENT">A_I</abbr>
+        </th>
+        <th>
+            {% trans 'Comments' %}
+        </th>
+
+        {% if is_virtual_columns_supported %}
+            <th>
+                {% trans 'Virtuality' %}
+            </th>
+        {% endif %}
+
+        {% if fields_meta is defined %}
+            <th>
+                {% trans 'Move column' %}
+            </th>
+        {% endif %}
+
+        {% if relation_parameters.browserTransformationFeature is not null and browse_mime %}
+            <th>
+                {% trans 'Media type' %}
+            </th>
+            <th>
+                <a href="{{ url('/transformation/overview') }}#transformation" title="
+                    {%- trans 'List of available transformations and their options' -%}
+                    " target="_blank">
+                    {% trans 'Browser display transformation' %}
+                </a>
+            </th>
+            <th>
+                {% trans 'Browser display transformation options' %}
+                {{ show_hint('Please enter the values for transformation options using this format: \'a\', 100, b,\'c\'…<br>If you ever need to put a backslash ("\\") or a single quote ("\'") amongst those values, precede it with a backslash (for example \'\\\\xyz\' or \'a\\\'b\').'|trans) }}
+            </th>
+            <th>
+                <a href="{{ url('/transformation/overview') }}#input_transformation"
+                   title="{% trans 'List of available transformations and their options' %}"
+                   target="_blank">
+                    {% trans 'Input transformation' %}
+                </a>
+            </th>
+            <th>
+                {% trans 'Input transformation options' %}
+                {{ show_hint('Please enter the values for transformation options using this format: \'a\', 100, b,\'c\'…<br>If you ever need to put a backslash ("\\") or a single quote ("\'") amongst those values, precede it with a backslash (for example \'\\\\xyz\' or \'a\\\'b\').'|trans) }}
+            </th>
+        {% endif %}
+    </tr>
+    {% set options = {'': '', 'VIRTUAL': 'VIRTUAL'} %}
+    {% if supports_stored_keyword %}
+        {% set options = options|merge({'STORED': 'STORED'}) %}
+    {% else %}
+        {% set options = options|merge({'PERSISTENT': 'PERSISTENT'}) %}
+    {% endif %}
+    {% for content_row in content_cells %}
+        <tr>
+            {% include 'columns_definitions/column_attributes.twig' with content_row|merge({
+                'options': options,
+                'change_column': change_column,
+                'is_virtual_columns_supported': is_virtual_columns_supported,
+                'browse_mime': browse_mime,
+                'max_rows': max_rows,
+                'char_editing': char_editing,
+                'attribute_types': attribute_types,
+                'privs_available': privs_available,
+                'max_length': max_length,
+                'charsets': charsets,
+                'relation_parameters': relation_parameters
+            }) only %}
+        </tr>
+    {% endfor %}
+</table>
+</div>

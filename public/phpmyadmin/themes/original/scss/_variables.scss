@@ -1,0 +1,181 @@
+// configures general layout for detailed layout configuration please refer to the css files
+
+// navi frame
+
+// navi frame width
+$navi-width: 240px;
+
+// foreground (text) color for the navi frame
+$navi-color: #000;
+
+// background for the navi frame
+$navi-background: #d0dce0;
+
+// foreground (text) color of the pointer in navi frame
+$navi-pointer-color: #000;
+
+// background of the pointer in navi frame
+$navi-pointer-background: #99c;
+
+// main frame
+
+// foreground (text) color for the main frame
+$main-color: #000;
+
+// foreground (text) color of the pointer in browse mode
+$browse-pointer-color: #000;
+
+// background of the pointer in browse mode
+$browse-pointer-background: #cfc;
+
+// foreground (text) color of the marker (visually marks row by clicking on it)
+// in browse mode
+$browse-marker-color: #000;
+
+// background of the marker (visually marks row by clicking on it) in browse mode
+$browse-marker-background: #fc9;
+
+// tables
+
+// border
+$border: 0;
+// table header and footer color
+$th-background: #d3dce3;
+// table header and footer background
+$th-color: #000;
+// table data row background
+$bg-one: #e5e5e5;
+// table data row background, alternate
+$bg-two: #d5d5d5;
+
+// Bootstrap
+// ---------
+
+// Body
+
+$body-bg: #f5f5f5;
+$body-color: $main-color;
+$primary: $navi-pointer-background;
+
+// Links
+
+$link-color: #00f;
+$link-decoration: none;
+$link-hover-color: #f00;
+$link-hover-decoration: underline;
+
+// Buttons
+
+$btn-border-color: black;
+
+// Components
+
+$border-radius: 0;
+
+// Typography
+
+$font-family-base: sans-serif;
+$font-family-monospace: monospace;
+
+$font-size-base: 0.82rem;
+
+$h1-font-size: 140%;
+$h2-font-size: 120%;
+$h3-font-size: 1rem;
+
+$headings-font-weight: bold;
+
+// Tables
+
+$table-cell-padding-y: 0.1em;
+$table-cell-padding-x: 0.5em;
+$table-cell-padding-y-sm: $table-cell-padding-y;
+$table-cell-padding-x-sm: $table-cell-padding-x;
+$table-bg: $bg-one;
+$table-striped-order: even;
+$table-striped-bg: $bg-two;
+$table-hover-bg: $browse-pointer-background;
+$table-hover-color: $browse-pointer-color;
+$table-head-color: $th-color;
+$table-head-bg: $th-background;
+$table-caption-color: $table-head-color;
+
+// Dropdowns
+
+$dropdown-padding-y: 0;
+$dropdown-item-padding-y: 0;
+$dropdown-item-padding-x: 0;
+
+// Navs
+
+$nav-tabs-border-color: transparent;
+$nav-tabs-link-active-border-color: $bg-two $bg-two #f5f5f5;
+$nav-tabs-link-hover-border-color: $bg-two $bg-two #f5f5f5;
+$nav-tabs-link-active-color: #00f;
+$nav-tabs-link-active-bg: $bg-one;
+
+// Navbar
+
+$enable-transitions: false;
+$enable-caret: false;
+$navbar-padding-y: 0;
+$navbar-padding-x: 0;
+$navbar-nav-link-padding-x: 2px;
+$navbar-nav-link-padding-y: 2px;
+$navbar-light-color: #00f;
+$navbar-light-hover-color: #f00;
+$navbar-light-active-color: #00f;
+$navbar-light-disabled-color: #00f;
+
+// Pagination
+
+$pagination-border-color: $main-color;
+$pagination-hover-border-color: $main-color;
+$pagination-active-border-color: $main-color;
+$pagination-disabled-border-color: $main-color;
+
+// Card
+
+$card-border-radius: 0;
+$card-border-color: $main-color;
+$card-cap-bg: $th-background;
+$card-bg: $bg-one;
+$card-spacer-y: 0.5em;
+$card-spacer-x: 0.5em;
+
+// Accordion
+
+$accordion-button-padding-y: 0.375rem;
+$accordion-button-padding-x: 0.75rem;
+$accordion-button-color: #00f;
+$accordion-button-active-color: #00f;
+$accordion-button-active-bg: $bg-one;
+
+// Breadcrumbs
+
+$breadcrumb-navbar-padding-y: 0.1rem;
+$breadcrumb-navbar-padding-x: 2.2em;
+$breadcrumb-navbar-margin-bottom: 0;
+$breadcrumb-navbar-bg: white;
+$breadcrumb-divider-color: inherit;
+$breadcrumb-divider: quote("»");
+
+// Alert
+
+$alert-margin-bottom: 0.2em;
+$alert-border-radius: 0;
+$alert-border-width: 2px;
+
+// List group
+
+$list-group-bg: inherit;
+$list-group-item-padding-x: 0.75rem;
+$list-group-item-padding-y: 0.375rem;
+
+// Modals
+
+$modal-content-border-radius: 0;
+$modal-header-border-color: #000;
+$modal-inner-padding: 0.75rem;
+$modal-footer-margin-between: 0.1rem;
+$modal-header-padding-y: 0.4rem;

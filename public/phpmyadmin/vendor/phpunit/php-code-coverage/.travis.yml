@@ -1,0 +1,60 @@
+language: php
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4snapshot
+
+matrix:
+  fast_finish: true
+
+env:
+  matrix:
+    - DRIVER="xdebug" DEPENDENCIES="high"
+    - DRIVER="phpdbg" DEPENDENCIES="high"
+    - DRIVER="pcov"   DEPENDENCIES="high"
+    - DRIVER="xdebug" DEPENDENCIES="low"
+    - DRIVER="phpdbg" DEPENDENCIES="low"
+    - DRIVER="pcov"   DEPENDENCIES="low"
+  global:
+    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+
+before_install:
+  - ./tools/composer clear-cache
+
+install:
+  - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry ./tools/composer update $DEFAULT_COMPOSER_FLAGS; fi
+  - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry ./tools/composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
+
+before_script:
+  - |
+     if [[ "$DRIVER" = 'pcov' ]]; then
+       echo > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/xdebug.ini
+       git clone --single-branch --branch=v1.0.6 --depth=1 https://github.com/krakjoe/pcov
+       cd pcov
+       phpize
+       ./configure
+       make clean install
+       echo "extension=pcov.so" > $HOME/.phpenv/versions/$TRAVIS_PHP_VERSION/etc/conf.d/pcov.ini
+       cd $TRAVIS_BUILD_DIR
+     fi
+
+script:
+  - if [[ "$DRIVER" = 'phpdbg' ]]; then phpdbg -qrr vendor/bin/phpunit --coverage-clover=coverage.xml; fi
+  - if [[ "$DRIVER" != 'phpdbg' ]]; then vendor/bin/phpunit --coverage-clover=coverage.xml; fi
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false
+
+jobs:
+  include:
+    - stage: Static Code Analysis
+      php: 7.3
+      env: php-cs-fixer
+      install:
+        - phpenv config-rm xdebug.ini
+      script:
+        - ./tools/php-cs-fixer fix --dry-run -v --show-progress=dots --diff-format=udiff

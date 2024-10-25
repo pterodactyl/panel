@@ -1,0 +1,111 @@
+<div class="card">
+  <div class="card-header">{% trans 'Replica replication' %}</div>
+  <div class="card-body">
+  {% if server_replica_multi_replication %}
+    {% trans 'Primary connection:' %}
+    <form method="get" action="{{ url('/server/replication') }}">
+      {{ get_hidden_inputs(url_params) }}
+      <select name="primary_connection">
+        <option value="">{% trans 'Default' %}</option>
+        {% for server in server_replica_multi_replication %}
+          <option value="{{ server['Connection_name'] }}"{{ primary_connection == server['Connection_name'] ? ' selected' }}>
+            {{ server['Connection_name'] }}
+          </option>
+        {% endfor %}
+      </select>
+      <input id="goButton" class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+    </form>
+    <br>
+    <br>
+  {% endif %}
+
+  {% if server_replica_status %}
+    <div id="replica_configuration_gui">
+      {% if not replica_sql_running %}
+        {{ 'Replica SQL Thread not running!'|trans|error }}
+      {% endif %}
+      {% if not replica_io_running %}
+        {{ 'Replica IO Thread not running!'|trans|error }}
+      {% endif %}
+
+      <p>{% trans 'Server is configured as replica in a replication process. Would you like to:' %}</p>
+      <ul>
+        <li>
+          <a href="#replica_status_href" id="replica_status_href">{% trans 'See replica status table' %}</a>
+          {{ replica_status_table|raw }}
+        </li>
+        <li>
+          <a href="#replica_control_href" id="replica_control_href">{% trans 'Control replica:' %}</a>
+          <div id="replica_control_gui" class="hide">
+            <ul>
+              <li>
+                <a href="{{ url('/server/replication') }}" data-post="{{ replica_control_full_link|raw }}">
+                  {{ not replica_io_running or not replica_sql_running ? 'Full start' : 'Full stop' }}
+                </a>
+              </li>
+              <li>
+                <a class="ajax" id="reset_replica" href="{{ url('/server/replication') }}" data-post="{{ replica_control_reset_link|raw }}">
+                  {% trans 'Reset replica' %}
+                </a>
+              </li>
+              <li>
+                <a href="{{ url('/server/replication') }}" data-post="{{ replica_control_sql_link|raw }}">
+                  {% if not replica_sql_running %}
+                    {% trans 'Start SQL Thread only' %}
+                  {% else %}
+                    {% trans 'Stop SQL Thread only' %}
+                  {% endif %}
+                </a>
+              </li>
+              <li>
+                <a href="{{ url('/server/replication') }}" data-post="{{ replica_control_io_link|raw }}">
+                  {% if not replica_io_running %}
+                    {% trans 'Start IO Thread only' %}
+                  {% else %}
+                    {% trans 'Stop IO Thread only' %}
+                  {% endif %}
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a href="#replica_errormanagement_href" id="replica_errormanagement_href">
+            {% trans 'Error management:' %}
+          </a>
+          <div id="replica_errormanagement_gui" class="hide">
+            {{ 'Skipping errors might lead into unsynchronized primary and replica!'|trans|error }}
+            <ul>
+              <li>
+                <a href="{{ url('/server/replication') }}" data-post="{{ replica_skip_error_link|raw }}">
+                  {% trans 'Skip current error' %}
+                </a>
+              </li>
+              <li>
+                <form method="post" action="{{ url('/server/replication') }}">
+                  {{ get_hidden_inputs('', '') }}
+                  {{ 'Skip next %s errors.'|trans|format('<input type="text" name="sr_skip_errors_count" value="1" class="repl_gui_skip_err_cnt">')|raw }}
+                  <input class="btn btn-primary" type="submit" name="sr_replica_skip_error" value="{% trans 'Go' %}">
+                  <input type="hidden" name="sr_take_action" value="1">
+                </form>
+              </li>
+            </ul>
+          </div>
+        </li>
+        <li>
+          <a href="{{ url('/server/replication') }}" data-post="{{ reconfigure_primary_link|raw }}">
+            {% trans 'Change or reconfigure primary server' %}
+          </a>
+        </li>
+      </ul>
+    </div>
+  {% elseif not has_replica_configure %}
+    {% apply format('<a href="' ~ url('/server/replication') ~ '" data-post="' ~ get_common(url_params|merge({
+      'replica_configure': true,
+      'repl_clear_scr': true
+    })) ~ '">', '</a>')|raw %}
+      {% trans 'This server is not configured as replica in a replication process. Would you like to %sconfigure%s it?' %}
+    {% endapply %}
+  {% endif %}
+  </div>
+</div>

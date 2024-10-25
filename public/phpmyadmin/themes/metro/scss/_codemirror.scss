@@ -1,0 +1,105 @@
+// Styles for CodeMirror editor for the Metro theme
+
+$textarea-cols: 40 !default;
+$textarea-rows: 15 !default;
+
+.CodeMirror {
+  font-family: $font-family-monospace !important;
+  height: 20rem;
+  border: 1px solid #ccc;
+  direction: ltr;
+}
+
+// Code mirror default style (do not affect the console style)
+.CodeMirror.cm-s-default {
+  // @see: issue #17705
+  div.CodeMirror-scroll {
+    margin-right: 0;
+    padding-bottom: 0;
+  }
+}
+
+#pma_console .CodeMirror {
+  border: none;
+}
+
+.CodeMirror * {
+  font-family: $font-family-monospace;
+}
+
+#inline_editor_outer .CodeMirror {
+  height: ceil($textarea-rows * 0.4em);
+  margin-bottom: 10px;
+}
+
+.insertRowTable .CodeMirror {
+  min-height: ceil($textarea-rows * 0.6em);
+  min-width: ceil($textarea-cols * 0.6em);
+}
+
+#pma_console .CodeMirror-gutters {
+  background-color: initial;
+  border: none;
+}
+
+span {
+  &.cm-keyword,
+  &.cm-statement-verb {
+    color: #909;
+  }
+
+  &.cm-variable {
+    color: black;
+  }
+
+  &.cm-comment {
+    color: #808000;
+  }
+
+  &.cm-mysql-string {
+    color: #008000;
+  }
+
+  &.cm-operator {
+    color: fuchsia;
+  }
+
+  &.cm-mysql-word {
+    color: black;
+  }
+
+  &.cm-builtin {
+    color: #f00;
+  }
+
+  &.cm-variable-2 {
+    color: #f90;
+  }
+
+  &.cm-variable-3 {
+    color: #00f;
+  }
+
+  &.cm-separator {
+    color: fuchsia;
+  }
+
+  &.cm-number {
+    color: teal;
+  }
+}
+
+.autocomplete-column-name {
+  display: inline-block;
+}
+
+.autocomplete-column-hint {
+  display: inline-block;
+  float: right;
+  color: #666;
+  margin-left: 1em;
+}
+
+.CodeMirror-hints {
+  z-index: 1999;
+}

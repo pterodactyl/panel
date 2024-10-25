@@ -1,0 +1,39 @@
+{
+    "name": "google/recaptcha",
+    "description": "Client library for reCAPTCHA, a free service that protects websites from spam and abuse.",
+    "type": "library",
+    "keywords": ["recaptcha", "captcha", "spam", "abuse"],
+    "homepage": "https://www.google.com/recaptcha/",
+    "license": "BSD-3-Clause",
+    "support": {
+        "forum": "https://groups.google.com/forum/#!forum/recaptcha",
+        "source": "https://github.com/google/recaptcha"
+    },
+    "require": {
+        "php": ">=5.5"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^4.8.36|^5.7.27|^6.59|^7.5.11",
+        "friendsofphp/php-cs-fixer": "^2.2.20|^2.15",
+        "php-coveralls/php-coveralls": "^2.1"
+    },
+    "autoload": {
+        "psr-4": {
+            "ReCaptcha\\": "src/ReCaptcha"
+        }
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "1.2.x-dev"
+        }
+    },
+    "scripts": {
+        "lint": "vendor/bin/php-cs-fixer -vvv fix --using-cache=no --dry-run .",
+        "lint-fix": "vendor/bin/php-cs-fixer -vvv fix --using-cache=no .",
+        "test": "vendor/bin/phpunit --colors=always",
+        "serve-examples": "@php -S localhost:8080 -t examples"
+    },
+    "config": {
+        "process-timeout": 0
+    }
+}

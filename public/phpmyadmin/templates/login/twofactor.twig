@@ -1,0 +1,14 @@
+<form method="post" class="disableAjax">
+  {{ get_hidden_inputs() }}
+
+  <div class="card">
+    <div class="card-body">
+      {{ form|raw }}
+    </div>
+    <div class="card-footer">
+      {% if show_submit %}
+        <input class="btn btn-primary" type="submit" value="{% trans "Verify" %}">
+      {% endif %}
+    </div>
+  </div>
+</form>

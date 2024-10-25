@@ -1,0 +1,47 @@
+<div class="show_create_results">
+  <h2>{% trans 'Showing create queries' %}</h2>
+
+  {% if tables.tables is not empty %}
+    <fieldset class="pma-fieldset">
+      <legend>{% trans 'Tables' %}</legend>
+      <table class="table table-striped show_create">
+        <thead>
+          <tr>
+            <th>{% trans 'Table' %}</th>
+            <th>{% trans 'Create table' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for table in tables.tables %}
+            <tr>
+              <td><strong>{{ table.name|raw }}</strong></td>
+              <td>{{ table.show_create|raw }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </fieldset>
+  {% endif %}
+
+  {% if tables.views is not empty %}
+    <fieldset class="pma-fieldset">
+      <legend>{% trans 'Views' %}</legend>
+      <table class="table table-striped show_create">
+        <thead>
+          <tr>
+            <th>{% trans 'View' %}</th>
+            <th>{% trans 'Create view' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for view in tables.views %}
+            <tr>
+              <td><strong>{{ view.name }}</strong></td>
+              <td>{{ view.show_create|raw }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </fieldset>
+  {% endif %}
+</div>

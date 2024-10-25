@@ -1,0 +1,35 @@
+<form method="post" action="{{ url('/server/replication') }}">
+  {{ get_hidden_inputs('', '') }}
+  <fieldset class="pma-fieldset" id="fieldset_add_user_login">
+    <legend>
+      {% trans 'Replica configuration' %} -
+      {% trans 'Change or reconfigure primary server' %}
+    </legend>
+    <p>
+      {% trans 'Make sure you have a unique server-id in your configuration file (my.cnf). If not, please add the following line into [mysqld] section:' %}
+    </p>
+    <pre>server-id={{ server_id }}</pre>
+
+    <div class="item">
+      <label for="text_username">{% trans 'User name:' %}</label>
+      <input id="text_username" name="username" type="text" maxlength="{{ username_length }}" title="{% trans 'User name' %}" required>
+    </div>
+    <div class="item">
+      <label for="text_pma_pw">{% trans 'Password:' %}</label>
+      <input id="text_pma_pw" name="pma_pw" type="password" spellcheck="false" title="{% trans 'Password' %}" required>
+    </div>
+    <div class="item">
+      <label for="text_hostname">{% trans 'Host:' %}</label>
+      <input id="text_hostname" name="hostname" type="text" maxlength="{{ hostname_length }}" value="" required>
+    </div>
+    <div class="item">
+      <label for="text_port">{% trans 'Port:' %}</label>
+      <input id="text_port" name="text_port" type="number" maxlength="6" value="3306" required>
+    </div>
+  </fieldset>
+  <fieldset id="fieldset_user_privtable_footer" class="pma-fieldset tblFooters">
+    <input type="hidden" name="sr_take_action" value="true">
+    <input type="hidden" name="{{ submit_name }}" value="1">
+    <input class="btn btn-primary" type="submit" id="confreplica_submit" value="{% trans 'Go' %}">
+  </fieldset>
+</form>

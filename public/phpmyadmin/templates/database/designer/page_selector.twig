@@ -1,0 +1,10 @@
+<select name="selected_page" id="selected_page">
+    <option value="0">-- {% trans 'Select page' %} --</option>
+    {% if pdfwork %}
+        {% for nr, desc in pages %}
+            <option value="{{ nr }}">
+                {{ desc }}
+            </option>
+        {% endfor %}
+    {% endif %}
+</select>

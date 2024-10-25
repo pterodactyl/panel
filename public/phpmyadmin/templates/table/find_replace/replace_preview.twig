@@ -1,0 +1,39 @@
+<form method="post" action="{{ url('/table/find-replace') }}">
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="replace" value="true">
+  <input type="hidden" name="columnIndex" value="{{ column_index }}">
+  <input type="hidden" name="findString" value="{{ find }}">
+  <input type="hidden" name="replaceWith" value="{{ replace_with }}">
+  <input type="hidden" name="useRegex" value="{{ use_regex }}">
+
+  <div class="card">
+    <div class="card-header">{% trans 'Find and replace - preview' %}</div>
+
+    <div class="card-body">
+      <table class="table table-striped w-auto">
+        <thead>
+          <tr>
+            <th>{% trans 'Count' %}</th>
+            <th>{% trans 'Original string' %}</th>
+            <th>{% trans 'Replaced string' %}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% if result is iterable %}
+            {% for row in result %}
+              <tr>
+                <td class="text-end">{{ row[2] }}</td>
+                <td>{{ row[0] }}</td>
+                <td>{{ row[1] }}</td>
+              </tr>
+            {% endfor %}
+          {% endif %}
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card-footer">
+      <input class="btn btn-secondary" type="submit" name="replace" value="{% trans 'Replace' %}">
+    </div>
+  </div>
+</form>

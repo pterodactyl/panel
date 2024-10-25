@@ -1,0 +1,180 @@
+{% set partition_options = [
+    '',
+    'HASH',
+    'LINEAR HASH',
+    'KEY',
+    'LINEAR KEY',
+    'RANGE',
+    'RANGE COLUMNS',
+    'LIST',
+    'LIST COLUMNS'
+] %}
+{% set sub_partition_options = ['', 'HASH', 'LINEAR HASH', 'KEY', 'LINEAR KEY'] %}
+{% set value_type_options = ['', 'LESS THAN', 'LESS THAN MAXVALUE', 'IN'] %}
+
+<table class="table table-borderless w-auto align-middle mb-0" id="partition_table">
+    <tr class="align-middle">
+        <td><label for="partition_by">{% trans 'Partition by:' %}</label></td>
+        <td>
+            <select name="partition_by" id="partition_by">
+                {% for option in partition_options %}
+                    <option value="{{ option }}"
+                        {%- if partition_details['partition_by'] == option %}
+                            selected="selected"
+                        {%- endif %}>
+                        {{ option }}
+                    </option>
+                {% endfor %}
+            </select>
+        </td>
+        <td>
+            (<input name="partition_expr" type="text"
+                placeholder="{% trans 'Expression or column list' %}"
+                value="{{ partition_details['partition_expr'] }}">)
+        </td>
+    </tr>
+    <tr class="align-middle">
+        <td><label for="partition_count">{% trans 'Partitions:' %}</label></td>
+        <td colspan="2">
+            <input name="partition_count" type="number" min="2"
+                value="{{ partition_details['partition_count'] ?: '' }}">
+        </td>
+    </tr>
+    {% if partition_details['can_have_subpartitions'] %}
+        <tr class="align-middle">
+            <td><label for="subpartition_by">{% trans 'Subpartition by:' %}</label></td>
+            <td>
+                <select name="subpartition_by" id="subpartition_by">
+                    {% for option in sub_partition_options %}
+                    <option value="{{ option }}"
+                        {%- if partition_details['subpartition_by'] == option %}
+                            selected="selected"
+                        {%- endif %}>
+                        {{ option }}
+                    </option>
+                {% endfor %}
+                </select>
+            </td>
+            <td>
+                (<input name="subpartition_expr" type="text"
+                    placeholder="{% trans 'Expression or column list' %}"
+                    value="{{ partition_details['subpartition_expr'] }}">)
+            </td>
+        </tr>
+        <tr class="align-middle">
+            <td><label for="subpartition_count">{% trans 'Subpartitions:' %}</label></td>
+            <td colspan="2">
+                <input name="subpartition_count" type="number" min="2"
+                    value="{{ partition_details['subpartition_count'] ?: '' }}">
+            </td>
+        </tr>
+    {% endif %}
+</table>
+{% if partition_details['partition_count'] > 1 %}
+    <table class="table align-middle" id="partition_definition_table">
+        <thead><tr>
+            <th>{% trans 'Partition' %}</th>
+            {% if partition_details['value_enabled'] %}
+                <th>{% trans 'Values' %}</th>
+            {% endif %}
+            {% if partition_details['can_have_subpartitions']
+                and partition_details['subpartition_count'] > 1 %}
+                <th>{% trans 'Subpartition' %}</th>
+            {% endif %}
+            <th>{% trans 'Engine' %}</th>
+            <th>{% trans 'Comment' %}</th>
+            <th>{% trans 'Data directory' %}</th>
+            <th>{% trans 'Index directory' %}</th>
+            <th>{% trans 'Max rows' %}</th>
+            <th>{% trans 'Min rows' %}</th>
+            <th>{% trans 'Table space' %}</th>
+            <th>{% trans 'Node group' %}</th>
+        </tr></thead>
+        {% for partition in partition_details['partitions'] %}
+            {% set rowspan = partition['subpartition_count'] is not empty
+                ? partition['subpartition_count'] + 1 : 2 %}
+            <tr>
+                <td rowspan="{{ rowspan }}">
+                    <input type="text" name="{{ partition['prefix'] }}[name]"
+                        value="{{ partition['name'] }}">
+                </td>
+                {% if partition_details['value_enabled'] %}
+                    <td rowspan="{{ rowspan }}" class="align-middle">
+                        <select class="partition_value"
+                            name="{{ partition['prefix'] }}[value_type]">
+                            {% for option in value_type_options %}
+                                <option value="{{ option }}"
+                                    {%- if partition['value_type'] == option %}
+                                        selected="selected"
+                                    {%- endif %}>
+                                    {{ option }}
+                                </option>
+                            {% endfor %}
+                        </select>
+                        <input type="text" class="partition_value"
+                            name="{{ partition['prefix'] }}[value]"
+                            value="{{ partition['value'] }}">
+                    </td>
+                {% endif %}
+            </tr>
+
+            {% if partition['subpartitions'] is defined %}
+                {% set subpartitions = partition['subpartitions'] %}
+            {% else %}
+                {% set subpartitions = [partition] %}
+            {% endif %}
+
+            {% for subpartition in subpartitions %}
+                <tr>
+                    {% if partition_details['can_have_subpartitions']
+                        and partition_details['subpartition_count'] > 1 %}
+                        <td>
+                            <input type="text" name="{{ subpartition['prefix'] }}[name]"
+                                value="{{ subpartition['name'] }}">
+                        </td>
+                    {% endif %}
+                    <td>
+                      <select name="{{ subpartition['prefix'] }}[engine]" aria-label="{% trans 'Storage engine' %}">
+                        <option value=""></option>
+                        {% for engine in storage_engines %}
+                          <option value="{{ engine.name }}"{% if engine.comment is not empty %} title="{{ engine.comment }}"{% endif %}
+                            {{- engine.name|lower == subpartition['engine']|lower ? ' selected' }}>
+                            {{- engine.name -}}
+                          </option>
+                        {% endfor %}
+                      </select>
+                    </td>
+                    <td>
+                        <textarea name="{{ subpartition['prefix'] }}[comment]">
+                            {{- subpartition['comment'] -}}
+                        </textarea>
+                    </td>
+                    <td>
+                        <input type="text" name="{{ subpartition['prefix'] }}[data_directory]"
+                            value="{{ subpartition['data_directory'] }}">
+                    </td>
+                    <td>
+                        <input type="text" name="{{ subpartition['prefix'] }}[index_directory]"
+                            value="{{ subpartition['index_directory'] }}">
+                    </td>
+                    <td>
+                        <input type="number" name="{{ subpartition['prefix'] }}[max_rows]"
+                            value="{{ subpartition['max_rows'] }}">
+                    </td>
+                    <td>
+                        <input type="number" min="0" name="{{ subpartition['prefix'] }}[min_rows]"
+                            value="{{ subpartition['min_rows'] }}">
+                    </td>
+                    <td>
+                        <input type="text" min="0" name="{{ subpartition['prefix'] }}[tablespace]"
+                            value="{{ subpartition['tablespace'] }}">
+                    </td>
+                    <td>
+                        <input type="text" name="{{ subpartition['prefix'] }}[node_group]"
+                            value="{{ subpartition['node_group'] }}">
+                    </td>
+                </tr>
+            {% endfor %}
+        {% endfor %}
+    </table>
+{% endif %}

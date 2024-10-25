@@ -1,0 +1,269 @@
+<?php
+namespace PHPUnit\Framework;
+
+abstract class Assert
+{
+    /**
+     * @param mixed $actual
+     * @psalm-assert array $actual
+     * @return void
+     */
+    public static function assertIsArray($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert bool $actual
+     * @return void
+     */
+    public static function assertIsBool($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert float $actual
+     * @return void
+     */
+    public static function assertIsFloat($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert int $actual
+     * @return void
+     */
+    public static function assertIsInt($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert numeric $actual
+     * @return void
+     */
+    public static function assertIsNumeric($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert object $actual
+     * @return void
+     */
+    public static function assertIsObject($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert resource $actual
+     * @return void
+     */
+    public static function assertIsResource($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert string $actual
+     * @return void
+     */
+    public static function assertIsString($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert scalar $actual
+     * @return void
+     */
+    public static function assertIsScalar($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert callable $actual
+     * @return void
+     */
+    public static function assertIsCallable($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert iterable $actual
+     * @return void
+     */
+    public static function assertIsIterable($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !array $actual
+     * @return void
+     */
+    public static function assertIsNotArray($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !bool $actual
+     * @return void
+     */
+    public static function assertIsNotBool($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !float $actual
+     * @return void
+     */
+    public static function assertIsNotFloat($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !int $actual
+     * @return void
+     */
+    public static function assertIsNotInt($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !numeric $actual
+     * @return void
+     */
+    public static function assertIsNotNumeric($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !object $actual
+     * @return void
+     */
+    public static function assertIsNotObject($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !resource $actual
+     * @return void
+     */
+    public static function assertIsNotResource($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !string $actual
+     * @return void
+     */
+    public static function assertIsNotString($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !scalar $actual
+     * @return void
+     */
+    public static function assertIsNotScalar($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !callable $actual
+     * @return void
+     */
+    public static function assertIsNotCallable($actual, string $message = '') {}
+
+    /**
+     * @param mixed $actual
+     * @psalm-assert !iterable $actual
+     * @return void
+     */
+    public static function assertIsNotIterable($actual, string $message = '') {}
+
+    /**
+     * Asserts that a variable is of a given type.
+     * @template T
+     *
+     * @param class-string<T> $expected
+     * @param mixed  $actual
+     * @param string $message
+     *
+     * @psalm-assert T $actual
+     */
+    public static function assertInstanceOf($expected, $actual, $message = '') {}
+
+    /**
+     * Asserts that a variable is of a given type.
+     * @template T
+     *
+     * @param class-string<T> $expected
+     * @param mixed  $actual
+     * @param string $message
+     *
+     * @psalm-assert !T $actual
+     */
+    public static function assertNotInstanceOf($expected, $actual, $message = '') {}
+
+    /**
+     * Asserts that a condition is true.
+     *
+     * @param mixed  $condition
+     * @param string $message
+     *
+     * @throws AssertionFailedError
+     * @psalm-assert true $condition
+     */
+    public static function assertTrue($condition, $message = '') {}
+
+    /**
+     * Asserts that a condition is not true.
+     *
+     * @param mixed  $condition
+     * @param string $message
+     *
+     * @throws AssertionFailedError
+     * @psalm-assert !true $condition
+     */
+    public static function assertNotTrue($condition, $message = '') {}
+
+    /**
+     * Asserts that a condition is false.
+     *
+     * @param mixed  $condition
+     * @param string $message
+     *
+     * @throws AssertionFailedError
+     * @psalm-assert false $condition
+     */
+    public static function assertFalse($condition, $message = '') {}
+
+    /**
+     * Asserts that a condition is not false.
+     *
+     * @param mixed  $condition
+     * @param string $message
+     *
+     * @throws AssertionFailedError
+     * @psalm-assert !false $condition
+     */
+    public static function assertNotFalse($condition, $message = '') {}
+
+    /**
+     * Asserts that a variable is null.
+     *
+     * @param mixed  $actual
+     * @param string $message
+     * @psalm-assert null $actual
+     */
+    public static function assertNull($actual, $message = '') {}
+
+    /**
+     * Asserts that a variable is not null.
+     *
+     * @param mixed  $actual
+     * @param string $message
+     * @psalm-assert !null $actual
+     */
+    public static function assertNotNull($actual, $message = '') {}
+
+    /**
+     * Asserts that two variables are the same.
+     *
+     * @template T
+     * @param T      $expected
+     * @param mixed  $actual
+     * @param string $message
+     * @psalm-assert =T $actual
+     * @return void
+     */
+    public static function assertSame($expected, $actual, $message = '') {}
+
+    /**
+     * Asserts that two variables are not the same.
+     *
+     * @template T
+     * @param T      $expected
+     * @param mixed  $actual
+     * @param string $message
+     * @psalm-assert !=T $actual
+     * @return void
+     */
+    public static function assertNotSame($expected, $actual, $message = '') {}
+}

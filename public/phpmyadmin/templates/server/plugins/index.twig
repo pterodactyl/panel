@@ -1,0 +1,64 @@
+<div class="container-fluid">
+<h2>
+  {{ get_image('b_plugin') }}
+  {% trans 'Plugins' %}
+</h2>
+
+<div id="plugins_plugins">
+  <div class="card">
+    <div class="card-body">
+      {% for type in plugins|keys %}
+        <a class="btn btn-primary" href="#plugins-{{ clean_types[type] }}">
+          {{ type }}
+        </a>
+      {% endfor %}
+    </div>
+  </div>
+  {% for type, list in plugins %}
+    <div class="row">
+      <div class="table-responsive col-12">
+        <table class="table table-striped table-hover caption-top w-auto" id="plugins-{{ clean_types[type] }}">
+          <caption>
+            {{ type }}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">{% trans 'Plugin' %}</th>
+              <th scope="col">{% trans 'Description' %}</th>
+              <th scope="col">{% trans 'Version' %}</th>
+              <th scope="col">{% trans 'Author' %}</th>
+              <th scope="col">{% trans 'License' %}</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for plugin in list %}
+              <tr class="noclick">
+                <th>
+                  {{ plugin.name }}
+                  {% if plugin.status != 'ACTIVE' %}
+                    <span class="badge bg-danger">
+                      {% if plugin.status == 'INACTIVE' %}
+                        {% trans 'inactive' %}
+                      {% elseif plugin.status == 'DISABLED' %}
+                        {% trans 'disabled' %}
+                      {% elseif plugin.status == 'DELETING' %}
+                        {% trans 'deleting' %}
+                      {% elseif plugin.status == 'DELETED' %}
+                        {% trans 'deleted' %}
+                      {% endif %}
+                    </span>
+                  {% endif %}
+                </th>
+                <td>{{ plugin.description }}</td>
+                <td>{{ plugin.version }}</td>
+                <td>{{ plugin.author }}</td>
+                <td>{{ plugin.license }}</td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+</div>

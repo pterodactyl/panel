@@ -1,0 +1,192 @@
+<div id="pma_console_container" class="d-print-none">
+    <div id="pma_console">
+        {# Console toolbar #}
+        {% include 'console/toolbar.twig' with {
+            'parent_div_classes': 'collapsed',
+            'content_array': [
+                {0: 'switch_button console_switch', 1: 'Console'|trans, 'image': image},
+                ['button clear', 'Clear'|trans],
+                ['button history', 'History'|trans],
+                ['button options', 'Options'|trans],
+                has_bookmark_feature ? ['button bookmarks', 'Bookmarks'|trans] : null,
+                ['button debug hide', 'Debug SQL'|trans]
+            ]
+        } only %}
+        {# Console messages #}
+        <div class="content">
+            <div class="console_message_container">
+                <div class="message welcome">
+                    <span id="instructions-0">
+                        {% trans 'Press Ctrl+Enter to execute query' %}
+                    </span>
+                    <span class="hide" id="instructions-1">
+                        {% trans 'Press Enter to execute query' %}
+                    </span>
+                </div>
+                {% if sql_history is not empty %}
+                    {% for record in sql_history|reverse %}
+                        <div class="message history collapsed hide
+                            {{- record['sqlquery'] matches '@^SELECT[[:space:]]+@i' ? ' select' }}"
+                            targetdb="{{ record['db'] }}" targettable="{{ record['table'] }}">
+                            {% include 'console/query_action.twig' with {
+                                'parent_div_classes': 'action_content',
+                                'content_array': [
+                                    ['action collapse', 'Collapse'|trans],
+                                    ['action expand', 'Expand'|trans],
+                                    ['action requery', 'Requery'|trans],
+                                    ['action edit', 'Edit'|trans],
+                                    ['action explain', 'Explain'|trans],
+                                    ['action profiling', 'Profiling'|trans],
+                                    has_bookmark_feature ? ['action bookmark', 'Bookmark'|trans] : null,
+                                    ['text failed', 'Query failed'|trans],
+                                    {0: 'text targetdb', 1: 'Database'|trans, 'extraSpan': record['db']},
+                                    {
+                                        0: 'text query_time',
+                                        1: 'Queried time'|trans,
+                                        'extraSpan': record['timevalue'] is defined ?
+                                            record['timevalue'] : 'During current session'|trans
+                                    }
+                                ]
+                            } only %}
+                            <span class="query">{{ record['sqlquery'] }}</span>
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            </div><!-- console_message_container -->
+            <div class="query_input">
+                <span class="console_query_input"></span>
+            </div>
+        </div><!-- message end -->
+        {# Drak the console with other cards over it #}
+        <div class="mid_layer"></div>
+        {# Debug SQL card #}
+        <div class="card" id="debug_console">
+            {% include 'console/toolbar.twig' with {
+                'parent_div_classes': '',
+                'content_array': [
+                    ['button order order_asc', 'ascending'|trans],
+                    ['button order order_desc', 'descending'|trans],
+                    ['text', 'Order:'|trans],
+                    ['switch_button', 'Debug SQL'|trans],
+                    ['button order_by sort_count', 'Count'|trans],
+                    ['button order_by sort_exec', 'Execution order'|trans],
+                    ['button order_by sort_time', 'Time taken'|trans],
+                    ['text', 'Order by:'|trans],
+                    ['button group_queries', 'Group queries'|trans],
+                    ['button ungroup_queries', 'Ungroup queries'|trans]
+                ]
+            } only %}
+            <div class="content debug">
+                <div class="message welcome"></div>
+                <div class="debugLog"></div>
+            </div> <!-- Content -->
+            <div class="templates">
+                {% include 'console/query_action.twig' with {
+                    'parent_div_classes': 'debug_query action_content',
+                    'content_array': [
+                        ['action collapse', 'Collapse'|trans],
+                        ['action expand', 'Expand'|trans],
+                        ['action dbg_show_trace', 'Show trace'|trans],
+                        ['action dbg_hide_trace', 'Hide trace'|trans],
+                        {0: 'text count hide', 1: 'Count'|trans, 'extraSpan': ''},
+                        {0: 'text time', 1: 'Time taken'|trans, 'extraSpan': ''},
+                    ]
+                } only %}
+            </div> <!-- Template -->
+        </div> <!-- Debug SQL card -->
+        {% if has_bookmark_feature %}
+            <div class="card" id="pma_bookmarks">
+                {% include 'console/toolbar.twig' with {
+                    'parent_div_classes': '',
+                    'content_array': [
+                        ['switch_button', 'Bookmarks'|trans],
+                        ['button refresh', 'Refresh'|trans],
+                        ['button add', 'Add'|trans]
+                    ]
+                } only %}
+                <div class="content bookmark">
+                    {{ bookmark_content|raw }}
+                </div>
+                <div class="mid_layer"></div>
+                <div class="card add">
+                    {% include 'console/toolbar.twig' with {
+                        'parent_div_classes': '',
+                        'content_array': [
+                            ['switch_button', 'Add bookmark'|trans]
+                        ]
+                    } only %}
+                    <div class="content add_bookmark">
+                        <div class="options">
+                            <label>
+                                {% trans 'Label' %}: <input type="text" name="label">
+                            </label>
+                            <label>
+                                {% trans 'Target database' %}: <input type="text" name="targetdb">
+                            </label>
+                            <label>
+                                <input type="checkbox" name="shared">{% trans 'Share this bookmark' %}
+                            </label>
+                            <button class="btn btn-primary" type="submit" name="submit">{% trans 'OK' %}</button>
+                        </div> <!-- options -->
+                        <div class="query_input">
+                            <span class="bookmark_add_input"></span>
+                        </div>
+                    </div>
+                </div> <!-- Add bookmark card -->
+            </div> <!-- Bookmarks card -->
+        {% endif %}
+        {# Options card #}
+        <div class="card" id="pma_console_options">
+            {% include 'console/toolbar.twig' with {
+                'parent_div_classes': '',
+                'content_array': [
+                    ['switch_button', 'Options'|trans],
+                    ['button default', 'Set default'|trans]
+                ]
+            } only %}
+            <div class="content">
+                <label>
+                    <input type="checkbox" name="always_expand">{% trans 'Always expand query messages' %}
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="start_history">{% trans 'Show query history at start' %}
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="current_query">{% trans 'Show current browsing query' %}
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="enter_executes">
+                        {% trans %}
+                            Execute queries on Enter and insert new line with Shift+Enter. To make this permanent, view settings.
+                        {% endtrans %}
+                </label>
+                <br>
+                <label>
+                    <input type="checkbox" name="dark_theme">{% trans 'Switch to dark theme' %}
+                </label>
+                <br>
+            </div>
+        </div> <!-- Options card -->
+        <div class="templates">
+            {# Templates for console message actions #}
+            {% include 'console/query_action.twig' with {
+                'parent_div_classes': 'query_actions',
+                'content_array': [
+                    ['action collapse', 'Collapse'|trans],
+                    ['action expand', 'Expand'|trans],
+                    ['action requery', 'Requery'|trans],
+                    ['action edit', 'Edit'|trans],
+                    ['action explain', 'Explain'|trans],
+                    ['action profiling', 'Profiling'|trans],
+                    has_bookmark_feature ? ['action bookmark', 'Bookmark'|trans] : null,
+                    ['text failed', 'Query failed'|trans],
+                    {0: 'text targetdb', 1: 'Database'|trans, 'extraSpan': ''},
+                    {0: 'text query_time', 1: 'Queried time'|trans, 'extraSpan': ''}
+                ]
+            } only %}
+        </div>
+    </div> <!-- #console end -->
+</div> <!-- #console_container end -->

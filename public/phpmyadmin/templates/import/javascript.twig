@@ -1,0 +1,159 @@
+$( function() {
+    {# Add event when user click on "Go" button #}
+    $("#buttonGo").on("click", function() {
+        {# Hide form #}
+        $("#upload_form_form").css("display", "none");
+
+        {% if handler != 'PhpMyAdmin\\Plugins\\Import\\Upload\\UploadNoplugin' %}
+            {# Some variable for javascript #}
+            {% set ajax_url = 'index.php?route=/import-status&id=' ~ upload_id ~ get_common_raw({
+                'import_status': 1
+            }, '&') %}
+            {% set promot_str = 'The file being uploaded is probably larger than the maximum allowed size or this is a known bug in webkit based (Safari, Google Chrome, Arora etc.) browsers.'|trans|js_format(false) %}
+            {% set statustext_str = '%s of %s'|trans|escape_js_string %}
+            {% set second_str = '%s/sec.'|trans|js_format(false) %}
+            {% set remaining_min = 'About %MIN min. %SEC sec. remaining.'|trans|js_format(false) %}
+            {% set remaining_second = 'About %SEC sec. remaining.'|trans|js_format(false) %}
+            {% set processed_str = 'The file is being processed, please be patient.'|trans|js_format(false) %}
+            {% set import_url = get_common_raw({'import_status': 1}, '&') %}
+
+            {% set upload_html %}
+                    <div class="upload_progress">
+                        <div class="upload_progress_bar_outer">
+                            <div class="percentage"></div>
+                            <div id="status" class="upload_progress_bar_inner">
+                                <div class="percentage"></div>
+                            </div>
+                        </div>
+                        <div>
+                            <img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock"> {{ 'Uploading your import file…'|trans|js_format(false) -}}
+                        </div>
+                        <div id="statustext"></div>
+                    </div>
+            {% endset %}
+
+            {# Start output #}
+            var finished = false;
+            var percent  = 0.0;
+            var total    = 0;
+            var complete = 0;
+            var original_title = parent && parent.document ? parent.document.title : false;
+            var import_start;
+
+            var perform_upload = function () {
+            new $.getJSON(
+                "{{ ajax_url|raw }}",
+                {},
+                function(response) {
+                    finished = response.finished;
+                    percent = response.percent;
+                    total = response.total;
+                    complete = response.complete;
+
+                    if (total==0 && complete==0 && percent==0) {
+                        $("#upload_form_status_info").html('<img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock"> {{ promot_str|raw }}');
+                        $("#upload_form_status").css("display", "none");
+                    } else {
+                        var now = new Date();
+                        now = Date.UTC(
+                            now.getFullYear(),
+                            now.getMonth(),
+                            now.getDate(),
+                            now.getHours(),
+                            now.getMinutes(),
+                            now.getSeconds())
+                            + now.getMilliseconds() - 1000;
+                        var statustext = Functions.sprintf(
+                            "{{ statustext_str|raw }}",
+                            Functions.formatBytes(
+                                complete, 1, Messages.strDecimalSeparator
+                            ),
+                            Functions.formatBytes(
+                                total, 1, Messages.strDecimalSeparator
+                            )
+                        );
+
+                        if ($("#importmain").is(":visible")) {
+                            {# Show progress UI #}
+                            $("#importmain").hide();
+                            $("#import_form_status")
+                            .html('{{ upload_html|spaceless|raw }}')
+                            .show();
+                            import_start = now;
+                        }
+                        else if (percent > 9 || complete > 2000000) {
+                            {# Calculate estimated time #}
+                            var used_time = now - import_start;
+                            var seconds = parseInt(((total - complete) / complete) * used_time / 1000);
+                            var speed = Functions.sprintf(
+                                "{{ second_str|raw }}",
+                                Functions.formatBytes(complete / used_time * 1000, 1, Messages.strDecimalSeparator)
+                            );
+
+                            var minutes = parseInt(seconds / 60);
+                            seconds %= 60;
+                            var estimated_time;
+                            if (minutes > 0) {
+                                estimated_time = "{{ remaining_min|raw }}"
+                                    .replace("%MIN", minutes)
+                                    .replace("%SEC", seconds);
+                            }
+                            else {
+                                estimated_time = "{{ remaining_second|raw }}"
+                                .replace("%SEC", seconds);
+                            }
+
+                            statustext += "<br>" + speed + "<br><br>" + estimated_time;
+                        }
+
+                        var percent_str = Math.round(percent) + "%";
+                        $("#status").animate({width: percent_str}, 150);
+                        $(".percentage").text(percent_str);
+
+                        {# Show percent in window title #}
+                        if (original_title !== false) {
+                            parent.document.title
+                                = percent_str + " - " + original_title;
+                        }
+                        else {
+                            document.title
+                                = percent_str + " - " + original_title;
+                        }
+                        $("#statustext").html(statustext);
+                    }
+
+                    if (finished == true) {
+                        if (original_title !== false) {
+                            parent.document.title = original_title;
+                        }
+                        else {
+                            document.title = original_title;
+                        }
+                        $("#importmain").hide();
+                        {# Loads the message, either success or mysql error #}
+                        $("#import_form_status")
+                        .html('<img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock"> {{ processed_str|raw }}')
+                        .show();
+                        $("#import_form_status").load("index.php?route=/import-status&message=true&{{ import_url|raw }}");
+                        Navigation.reload();
+
+                        {# If finished #}
+                    }
+                    else {
+                        setTimeout(perform_upload, 1000);
+                    }
+                });
+            };
+            setTimeout(perform_upload, 1000);
+        {% else %}
+            {# No plugin available #}
+            {% set image_tag -%}
+                <img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock">
+                {{- 'Please be patient, the file is being uploaded. Details about the upload are not available.'|trans|js_format(false) -}}
+                {{- show_docu('faq', 'faq2-9') -}}
+            {%- endset %}
+            $('#upload_form_status_info').html('{{ image_tag|raw }}');
+            $("#upload_form_status").css("display", "none");
+        {% endif %}
+    });
+});

@@ -1,0 +1,119 @@
+<form class="rte_form" action="{{ url('/database/events') }}" method="post">
+  {{ get_hidden_inputs(db) }}
+  <input name="{{ mode }}_item" type="hidden" value="1">
+  {% if mode == 'edit' %}
+    <input name="item_original_name" type="hidden" value="{{ event.item_original_name }}">
+  {% endif %}
+
+  <div class="card">
+    <div class="card-header">
+      {% trans 'Details' %}
+      {% if mode != 'edit' %}
+        {{ show_mysql_docu('CREATE_EVENT') }}
+      {% endif %}
+    </div>
+
+    <div class="card-body">
+      <table class="rte_table table table-borderless table-sm">
+        <tr>
+          <td>{% trans 'Event name' %}</td>
+          <td>
+            <input type="text" name="item_name" value="{{ event.item_name }}" maxlength="64">
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Status' %}</td>
+          <td>
+            <select name="item_status">
+              {% for status in status_display %}
+                <option value="{{ status }}"{{ status == event.item_status ? ' selected' }}>{{ status }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Event type' %}</td>
+          <td>
+            {% if is_ajax %}
+              <select name="item_type">
+                {% for type in event_type %}
+                  <option value="{{ type }}"{{ type == event.item_type ? ' selected' }}>{{ type }}</option>
+                {% endfor %}
+              </select>
+            {% else %}
+              <input name="item_type" type="hidden" value="{{ event.item_type }}">
+              <div class="fw-bold text-center w-50">
+                {{ event.item_type }}
+              </div>
+              <input type="submit" name="item_changetype" class="w-50" value="{{ 'Change to %s'|trans|format(event.item_type_toggle) }}">
+            {% endif %}
+          </td>
+        </tr>
+        <tr class="onetime_event_row{{ event.item_type != 'ONE TIME' ? ' hide' }}">
+          <td>{% trans 'Execute at' %}</td>
+          <td class="text-nowrap">
+            <input type="text" name="item_execute_at" value="{{ event.item_execute_at }}" class="datetimefield">
+          </td>
+        </tr>
+        <tr class="recurring_event_row{{ event.item_type != 'RECURRING' ? ' hide' }}">
+          <td>{% trans 'Execute every' %}</td>
+          <td>
+            <input class="w-50" type="text" name="item_interval_value" value="{{ event.item_interval_value }}">
+            <select class="w-50" name="item_interval_field">
+              {% for interval in event_interval %}
+                <option value="{{ interval }}"{{ interval == event.item_interval_field ? ' selected' }}>{{ interval }}</option>
+              {% endfor %}
+            </select>
+          </td>
+        </tr>
+        <tr class="recurring_event_row{{ event.item_type != 'RECURRING' ? ' hide' }}">
+          <td>{% trans %}Start{% context %}Start of recurring event{% endtrans %}</td>
+          <td class="text-nowrap">
+            <input type="text" name="item_starts" value="{{ event.item_starts }}" class="datetimefield">
+          </td>
+        </tr>
+        <tr class="recurring_event_row{{ event.item_type != 'RECURRING' ? ' hide' }}">
+          <td>{% trans %}End{% context %}End of recurring event{% endtrans %}</td>
+          <td class="text-nowrap">
+            <input type="text" name="item_ends" value="{{ event.item_ends }}" class="datetimefield">
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Definition' %}</td>
+          <td>
+            <textarea name="item_definition" rows="15" cols="40">
+              {{- event.item_definition -}}
+            </textarea>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'On completion preserve' %}</td>
+          <td>
+            <input type="checkbox" name="item_preserve"{{ event.item_preserve|raw }}>
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Definer' %}</td>
+          <td>
+            <input type="text" name="item_definer" value="{{ event.item_definer }}">
+          </td>
+        </tr>
+        <tr>
+          <td>{% trans 'Comment' %}</td>
+          <td>
+            <input type="text" name="item_comment" value="{{ event.item_comment }}" maxlength="64">
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    {% if is_ajax %}
+      <input type="hidden" name="editor_process_{{ mode }}" value="true">
+      <input type="hidden" name="ajax_request" value="true">
+    {% else %}
+      <div class="card-footer">
+        <input class="btn btn-primary" type="submit" name="editor_process_{{ mode }}" value="{% trans 'Go' %}">
+      </div>
+    {% endif %}
+  </div>
+</form>

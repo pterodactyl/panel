@@ -91,6 +91,7 @@ export default () => {
                                             </NavLink>
                                         )
                                     )}
+                                    <a href='/phpmyadmin' target='_blank'><FontAwesomeIcon icon={faExternalLinkAlt} /> phpMyAdmin</a>
                                 {rootAdmin && (
                                     // eslint-disable-next-line react/jsx-no-target-blank
                                     <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>

@@ -1,0 +1,12 @@
+<td{{ nowrap ? ' class="text-nowrap"' }}>
+    {{ is_selected ? '<strong>' }}
+        <a class="foreign_value" data-key="{{ keyname }}" href="#" title="
+            {%- trans 'Use this value' %}{{ title is not empty ? ': ' ~ title }}">
+            {% if nowrap %}
+                {{ keyname }}
+            {% else %}
+                {{ description }}
+            {% endif %}
+        </a>
+    {{ is_selected ? '</strong>' }}
+</td>

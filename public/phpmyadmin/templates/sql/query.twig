@@ -1,0 +1,228 @@
+<form method="post" action="{{ url('/import') }}" class="ajax lock-page" id="sqlqueryform" name="sqlform"
+  {{- is_upload ? ' enctype="multipart/form-data"' }}>
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="is_js_confirmed" value="0">
+  <input type="hidden" name="pos" value="0">
+  <input type="hidden" name="goto" value="{{ goto }}">
+  <input type="hidden" name="message_to_show" value="{% trans 'Your SQL query has been executed successfully.' %}">
+  <input type="hidden" name="prev_sql_query" value="{{ query }}">
+
+  {% if display_tab == 'full' or display_tab == 'sql' %}
+    <a id="querybox"></a>
+
+    <div class="card mb-3">
+      <div class="card-header">{{ legend|raw }}</div>
+      <div class="card-body">
+        <div id="queryfieldscontainer">
+          <div class="row">
+            <div class="col">
+              <div class="mb-3">
+                <textarea class="form-control" tabindex="100" name="sql_query" id="sqlquery" cols="{{ textarea_cols }}" rows="{{ textarea_rows }}" data-textarea-auto-select="{{ textarea_auto_select ? "true" : "false"}}" aria-label="{% trans 'SQL query' %}">
+                  {{- query -}}
+                </textarea>
+              </div>
+              <div id="querymessage"></div>
+
+              <div class="btn-toolbar" role="toolbar">
+                {% if columns_list is not empty %}
+                  <div class="btn-group me-2" role="group">
+                    <input type="button" value="SELECT *" id="selectall" class="btn btn-secondary button sqlbutton">
+                    <input type="button" value="SELECT" id="select" class="btn btn-secondary button sqlbutton">
+                    <input type="button" value="INSERT" id="insert" class="btn btn-secondary button sqlbutton">
+                    <input type="button" value="UPDATE" id="update" class="btn btn-secondary button sqlbutton">
+                    <input type="button" value="DELETE" id="delete" class="btn btn-secondary button sqlbutton">
+                  </div>
+                {% endif %}
+
+                <div class="btn-group me-2" role="group">
+                  <input type="button" value="{% trans 'Clear' %}" id="clear" class="btn btn-secondary button sqlbutton">
+                  {% if codemirror_enable %}
+                    <input type="button" value="{% trans 'Format' %}" id="format" class="btn btn-secondary button sqlbutton">
+                  {% endif %}
+                </div>
+
+                <input type="button" value="{% trans 'Get auto-saved query' %}" id="saved" class="btn btn-secondary button sqlbutton">
+              </div>
+
+              <div class="my-3">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox" name="parameterized" id="parameterized">
+                  <label class="form-check-label" for="parameterized">
+                    {% trans %}Bind parameters{% notes %}Bind parameters in the SQL query using :parameterName format{% endtrans %}
+                    {{ show_docu('faq', 'faq6-40') }}
+                  </label>
+                </div>
+              </div>
+              <div class="mb-3" id="parametersDiv"></div>
+            </div>
+
+            {% if columns_list is not empty %}
+              <div class="col-xl-2 col-lg-3">
+                <div class="mb-3">
+                  <label class="visually-hidden" for="fieldsSelect">{% trans 'Columns' %}</label>
+                  <select class="form-select resize-vertical" id="fieldsSelect" name="dummy" size="{{ textarea_rows }}" ondblclick="Functions.insertValueQuery()" multiple>
+                    {% for field in columns_list %}
+                      <option value="{{ backquote(field['Field']) }}"
+                        {{- field['Field'] is not null and field['Comment'] is not null and field['Field']|length > 0 ? ' title="' ~ field['Comment'] ~ '"' }}>
+                        {{ field['Field'] }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+
+                <input type="button" class="btn btn-secondary button" id="insertBtn" name="insert" value="
+                    {%- if show_icons('ActionLinksMode') %}{{ '<<' }}" title="{% endif -%}
+                    {%- trans 'Insert' %}">
+              </div>
+            {% endif %}
+          </div>
+        </div>
+
+        {% if has_bookmark %}
+          <div class="row row-cols-lg-auto g-3 align-items-center">
+            <div class="col-6">
+              <label class="form-label" for="bkm_label">{% trans 'Bookmark this SQL query:' %}</label>
+            </div>
+            <div class="col-6">
+              <input class="form-control" type="text" name="bkm_label" id="bkm_label" tabindex="110" value="">
+            </div>
+
+            <div class="col-12">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="bkm_all_users" tabindex="111" id="id_bkm_all_users" value="true">
+                <label class="form-check-label" for="id_bkm_all_users">{% trans 'Let every user access this bookmark' %}</label>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="checkbox" name="bkm_replace" tabindex="112" id="id_bkm_replace" value="true">
+                <label class="form-check-label" for="id_bkm_replace">{% trans 'Replace existing bookmark of same name' %}</label>
+              </div>
+            </div>
+          </div>
+        {% endif %}
+      </div>
+      <div class="card-footer">
+        <div class="row row-cols-lg-auto g-3 align-items-center">
+          <div class="col-12">
+            <div class="input-group me-2">
+              <span class="input-group-text">{% trans 'Delimiter' %}</span>
+              <label class="visually-hidden" for="id_sql_delimiter">{% trans 'Delimiter' %}</label>
+              <input class="form-control" type="text" name="sql_delimiter" tabindex="131" size="3" value="{{ delimiter }}" id="id_sql_delimiter">
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" name="show_query" value="1" id="checkbox_show_query" tabindex="132">
+              <label class="form-check-label" for="checkbox_show_query">{% trans 'Show this query here again' %}</label>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" name="retain_query_box" value="1" id="retain_query_box" tabindex="133"
+                {{- retain_query_box ? ' checked' }}>
+              <label class="form-check-label" for="retain_query_box">{% trans 'Retain query box' %}</label>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="checkbox" name="rollback_query" value="1" id="rollback_query" tabindex="134">
+              <label class="form-check-label" for="rollback_query">{% trans 'Rollback when finished' %}</label>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="form-check">
+              <input type="hidden" name="fk_checks" value="0">
+              <input class="form-check-input" type="checkbox" name="fk_checks" id="fk_checks" value="1"{{ is_foreign_key_check ? ' checked' }}>
+              <label class="form-check-label" for="fk_checks">{% trans 'Enable foreign key checks' %}</label>
+            </div>
+          </div>
+
+          <div class="col-12">
+            <input class="btn btn-primary ms-1" type="submit" id="button_submit_query" name="SQL" tabindex="200" value="{% trans 'Go' %}">
+          </div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
+  {% if display_tab == 'full' and bookmarks is not empty %}
+    <div class="card mb-3">
+      <div class="card-header">{% trans 'Bookmarked SQL query' %}</div>
+      <div class="card-body">
+        <div class="row row-cols-lg-auto g-3 align-items-center">
+          <div class="col-6">
+            <label class="form-label" for="id_bookmark">{% trans 'Bookmark:' %}</label>
+          </div>
+          <div class="col-6">
+            <select class="form-select" name="id_bookmark" id="id_bookmark">
+              <option value="">&nbsp;</option>
+              {% for bookmark in bookmarks %}
+                <option value="{{ bookmark.id }}" data-varcount="{{ bookmark.variable_count }}">
+                  {{ bookmark.label }}
+                  {% if bookmark.is_shared %}
+                    ({% trans 'shared' %})
+                  {% endif %}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-check form-check-inline col-12">
+            <input class="form-check-input" type="radio" name="action_bookmark" value="0" id="radio_bookmark_exe" checked>
+            <label class="form-check-label" for="radio_bookmark_exe">{% trans 'Submit' %}</label>
+          </div>
+          <div class="form-check form-check-inline col-12">
+            <input class="form-check-input" type="radio" name="action_bookmark" value="1" id="radio_bookmark_view">
+            <label class="form-check-label" for="radio_bookmark_view">{% trans 'View only' %}</label>
+          </div>
+          <div class="form-check form-check-inline col-12">
+            <input class="form-check-input" type="radio" name="action_bookmark" value="2" id="radio_bookmark_del">
+            <label class="form-check-label" for="radio_bookmark_del">{% trans 'Delete' %}</label>
+          </div>
+        </div>
+
+        <div class="hide">
+          {% trans 'Variables' %}
+          {{ show_docu('faq', 'faqbookmark') }}
+          <div class="row row-cols-auto" id="bookmarkVariables"></div>
+        </div>
+      </div>
+
+      <div class="card-footer text-end">
+        <input class="btn btn-secondary" type="submit" name="SQL" id="button_submit_bookmark" value="{% trans 'Go' %}">
+      </div>
+    </div>
+  {% endif %}
+
+  {% if can_convert_kanji %}
+    <div class="card mb-3">
+      <div class="card-body">
+        {% include 'encoding/kanji_encoding_form.twig' %}
+      </div>
+    </div>
+  {% endif %}
+</form>
+
+<div id="sqlqueryresultsouter"></div>
+
+<div class="modal fade" id="simulateDmlModal" tabindex="-1" aria-labelledby="simulateDmlModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="simulateDmlModalLabel">{% trans 'Simulate query' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>

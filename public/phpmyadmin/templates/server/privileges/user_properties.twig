@@ -1,0 +1,152 @@
+<div id="edit_user_dialog">
+  <h2>
+    {{ get_icon('b_usredit') }}
+    {% trans 'Edit privileges:' %}
+    {% trans 'User account' %}
+
+    {% if database is not empty %}
+      <em>
+        <a class="edit_user_anchor" href="{{ url('/server/privileges', {
+          'username': username,
+          'hostname': hostname,
+          'dbname': '',
+          'tablename': ''
+        }) }}">
+          '{{ username }}'@'{{ hostname }}'
+        </a>
+      </em>
+      -
+      {% if is_databases %}
+        {% trans 'Databases' %}
+      {% else %}
+        {% trans 'Database' %}
+      {% endif %}
+
+      {% if table is not empty %}
+        <em>
+          <a href="{{ url('/server/privileges', {
+            'username': username,
+            'hostname': hostname,
+            'dbname': dbname,
+            'tablename': ''
+          }) }}">
+            {{ database }}
+          </a>
+        </em>
+        -
+        {% trans 'Table' %}
+        <em>{{ table }}</em>
+      {% else %}
+        {% if database is not iterable %}
+          {% set database = [database] %}
+        {% endif %}
+        <em>
+          {{ database|join(', ') }}
+        </em>
+      {% endif %}
+    {% else %}
+      <em>'{{ username }}'@'{{ hostname }}'</em>
+    {% endif %}
+  </h2>
+
+  {% if current_user == username ~ '@' ~ hostname %}
+    {{ 'Note: You are attempting to edit privileges of the user with which you are currently logged in.'|trans|notice }}
+  {% endif %}
+
+  {% if user_does_not_exists %}
+    {{ 'The selected user was not found in the privilege table.'|trans|error }}
+    {{ login_information_fields|raw }}
+  {% endif %}
+
+  <form class="submenu-item" name="usersForm" id="addUsersForm" action="{{ url('/server/privileges') }}" method="post">
+    {{ get_hidden_inputs(params) }}
+
+    {{ privileges_table|raw }}
+  </form>
+
+  {{ table_specific_rights|raw }}
+
+  {% if database is not iterable and database|length > 0 and not is_wildcard %}
+    [
+    {% trans 'Database' %}
+    <a href="{{ database_url|raw }}{{ get_common({
+      'db': database|replace({'\\_': '_', '\\%': '%'}),
+      'reload': true
+    }, '&') }}">
+      {{ database|replace({'\\_': '_', '\\%': '%'}) }}:
+      {{ database_url_title }}
+    </a>
+    ]
+    {% if table|length > 0 %}
+      [
+      {% trans 'Table' %}
+      <a href="{{ table_url|raw }}{{ get_common({
+        'db': database|replace({'\\_': '_', '\\%': '%'}),
+        'table': table,
+        'reload': true
+      }, '&') }}">
+        {{ table }}:
+        {{ table_url_title }}
+      </a>
+      ]
+    {% endif %}
+  {% endif %}
+
+  {{ change_password|raw }}
+
+  <form action="{{ url('/server/privileges') }}" id="copyUserForm" method="post" class="copyUserForm submenu-item" autocomplete="off">
+    {{ get_hidden_inputs() }}
+    <input type="hidden" name="old_username" value="{{ username }}">
+    <input type="hidden" name="old_hostname" value="{{ hostname }}">
+    {% if user_group is not empty %}
+      <input type="hidden" name="old_usergroup" value="{{ user_group }}">
+    {% endif %}
+
+    <fieldset class="pma-fieldset" id="fieldset_change_copy_user">
+      <legend data-submenu-label="{% trans 'Login Information' %}">
+        {% trans 'Change login information / Copy user account' %}
+      </legend>
+
+      {{ change_login_info_fields|raw }}
+
+      <fieldset class="pma-fieldset" id="fieldset_mode">
+        <legend>
+          {% trans 'Create a new user account with the same privileges and …' %}
+        </legend>
+
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="radio" name="mode" id="mode_4" value="4" checked>
+          <label class="form-check-label" for="mode_4">
+            {% trans '… keep the old one.' %}
+          </label>
+        </div>
+
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="radio" name="mode" id="mode_1" value="1">
+          <label class="form-check-label" for="mode_1">
+            {% trans '… delete the old one from the user tables.' %}
+          </label>
+        </div>
+
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="radio" name="mode" id="mode_2" value="2">
+          <label class="form-check-label" for="mode_2">
+            {% trans '… revoke all active privileges from the old one and delete it afterwards.' %}
+          </label>
+        </div>
+
+        <div class="mb-3 form-check">
+          <input class="form-check-input" type="radio" name="mode" id="mode_3" value="3">
+          <label class="form-check-label" for="mode_3">
+            {% trans '… delete the old one from the user tables and reload the privileges afterwards.' %}
+          </label>
+        </div>
+      </fieldset>
+    </fieldset>
+
+    <fieldset id="fieldset_change_copy_user_footer" class="pma-fieldset tblFooters">
+      <input type="hidden" name="change_copy" value="1">
+      <input class="btn btn-primary" type="submit" value="{% trans 'Go' %}">
+    </fieldset>
+  </form>
+</div>

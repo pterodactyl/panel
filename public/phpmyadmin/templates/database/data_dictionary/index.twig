@@ -1,0 +1,126 @@
+<div class="container-fluid">
+  <h1>{{ database }}</h1>
+  {% if comment is not empty %}
+    <p>{% trans 'Database comment:' %} <em>{{ comment }}</em></p>
+  {% endif %}
+
+  <p class="d-print-none">
+    <button type="button" class="btn btn-secondary jsPrintButton">{{ get_icon('b_print', 'Print'|trans, true) }}</button>
+  </p>
+
+  <div>
+    {% for table in tables %}
+      <div>
+        <h2>{{ table.name }}</h2>
+        {% if table.comment is not empty %}
+          <p>{% trans 'Table comments:' %} <em>{{ table.comment }}</em></p>
+        {% endif %}
+
+        <table class="table table-striped align-middle">
+          <thead>
+            <tr>
+              <th>{% trans 'Column' %}</th>
+              <th>{% trans 'Type' %}</th>
+              <th>{% trans 'Null' %}</th>
+              <th>{% trans 'Default' %}</th>
+              {% if table.has_relation %}
+                <th>{% trans 'Links to' %}</th>
+              {% endif %}
+              <th>{% trans 'Comments' %}</th>
+              {% if table.has_mime %}
+                <th>{% trans 'Media type' %}</th>
+              {% endif %}
+            </tr>
+          </thead>
+          <tbody>
+            {% for column in table.columns %}
+              <tr>
+                <td class="text-nowrap">
+                  {{ column.name }}
+                  {% if column.has_primary_key %}
+                    <em>({% trans 'Primary' %})</em>
+                  {% endif %}
+                </td>
+                <td lang="en" dir="ltr"{{ 'set' != column.type and 'enum' != column.type ? ' class="text-nowrap"' }}>
+                  {{ column.print_type }}
+                </td>
+                <td>{{ column.is_nullable ? 'Yes'|trans : 'No'|trans }}</td>
+                <td class="text-nowrap">
+                  {% if column.default is null and column.is_nullable %}
+                    <em>NULL</em>
+                  {% else %}
+                    {{ column.default }}
+                  {% endif %}
+                </td>
+                {% if table.has_relation %}
+                  <td>{{ column.relation }}</td>
+                {% endif %}
+                <td>{{ column.comment }}</td>
+                {% if table.has_mime %}
+                  <td>{{ column.mime }}</td>
+                {% endif %}
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        {% if table.indexes is not empty %}
+          <h3>{% trans 'Indexes' %}</h3>
+
+          <table class="table table-striped align-middle">
+            <thead>
+              <tr>
+                <th>{% trans 'Keyname' %}</th>
+                <th>{% trans 'Type' %}</th>
+                <th>{% trans 'Unique' %}</th>
+                <th>{% trans 'Packed' %}</th>
+                <th>{% trans 'Column' %}</th>
+                <th>{% trans 'Cardinality' %}</th>
+                <th>{% trans 'Collation' %}</th>
+                <th>{% trans 'Null' %}</th>
+                <th>{% trans 'Comment' %}</th>
+              </tr>
+            </thead>
+
+            <tbody>
+              {% for index in table.indexes %}
+                {% set columns_count = index.getColumnCount() %}
+                <tr>
+                <td rowspan="{{ columns_count }}">{{ index.getName() }}</td>
+                <td rowspan="{{ columns_count }}">{{ index.getType()|default(index.getChoice()) }}</td>
+                <td rowspan="{{ columns_count }}">{{ index.isUnique() ? 'Yes'|trans : 'No'|trans }}</td>
+                <td rowspan="{{ columns_count }}">{{ index.isPacked()|raw }}</td>
+
+                {% for column in index.getColumns() %}
+                  {% if column.getSeqInIndex() > 1 %}
+                    <tr>
+                  {% endif %}
+                  <td>
+                    {{ column.getName() }}
+                    {% if column.getSubPart() is not empty %}
+                      ({{ column.getSubPart() }})
+                    {% endif %}
+                  </td>
+                  <td>{{ column.getCardinality() }}</td>
+                  <td>{{ column.getCollation() }}</td>
+                  <td>{{ column.getNull(true) }}</td>
+
+                  {% if column.getSeqInIndex() == 1 %}
+                    <td rowspan="{{ columns_count }}">{{ index.getComments() }}</td>
+                  {% endif %}
+                  </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        {% else %}
+          <p>{% trans 'No index defined!' %}</p>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+
+  <p class="d-print-none">
+    <button type="button" class="btn btn-secondary jsPrintButton">{{ get_icon('b_print', 'Print'|trans, true) }}</button>
+  </p>
+</div>

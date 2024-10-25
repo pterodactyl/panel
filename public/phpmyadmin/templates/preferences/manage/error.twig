@@ -1,0 +1,20 @@
+{{ 'Configuration contains incorrect data for some fields.'|trans|error }}
+<div class="config-form">
+    {{ form_errors|raw }}
+</div>
+<form action="{{ url('/preferences/manage') }}" method="post" class="disableAjax">
+    {{ get_hidden_inputs() }}
+    <input type="hidden" name="json" value="{{ json }}">
+    <input type="hidden" name="fix_errors" value="1">
+    {% if import_merge is not empty %}
+        <input type="hidden" name="import_merge" value="1">
+    {% endif %}
+    {% if return_url %}
+        <input type="hidden" name="return_url" value="{{ return_url }}">
+    {% endif %}
+    <p>
+        {% trans 'Do you want to import remaining settings?' %}
+    </p>
+    <input class="btn btn-secondary" type="submit" name="submit_import" value="{{ 'Yes'|trans }}">
+    <input class="btn btn-secondary" type="submit" name="submit_ignore" value="{{ 'No'|trans }}">
+</form>

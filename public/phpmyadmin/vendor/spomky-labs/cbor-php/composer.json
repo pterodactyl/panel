@@ -1,0 +1,45 @@
+{
+    "name": "spomky-labs/cbor-php",
+    "type": "library",
+    "license": "MIT",
+    "keywords": ["CBOR", "Concise Binary Object Representation", "RFC7049"],
+    "description": "CBOR Encoder/Decoder for PHP",
+    "authors": [
+        {
+            "name": "Florent Morselli",
+            "homepage": "https://github.com/Spomky"
+        },{
+            "name": "All contributors",
+            "homepage": "https://github.com/Spomky-Labs/cbor-php/contributors"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CBOR\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "CBOR\\Test\\": "tests/"
+        }
+    },
+    "require": {
+        "php": ">=7.1",
+        "spomky-labs/base64url": "^1.0|^2.0",
+        "beberlei/assert": "^3.2",
+        "brick/math": "^0.8.15"
+    },
+    "require-dev": {
+        "php-coveralls/php-coveralls": "^2.0",
+        "phpstan/phpstan": "^0.12",
+        "phpstan/phpstan-beberlei-assert": "^0.12",
+        "phpstan/phpstan-deprecation-rules": "^0.12",
+        "phpstan/phpstan-phpunit": "^0.12",
+        "phpstan/phpstan-strict-rules": "^0.12",
+        "phpunit/phpunit": "^7.5|^8.0"
+    },
+    "suggest": {
+        "ext-gmp": "GMP or BCMath extensions will drastically improve the library performance",
+        "ext-bcmath": "GMP or BCMath extensions will drastically improve the library performance. BCMath extension needed to handle the Big Float and Decimal Fraction Tags"
+    }
+}

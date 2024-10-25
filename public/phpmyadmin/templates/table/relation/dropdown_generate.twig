@@ -1,0 +1,9 @@
+{{ dropdown_question is not empty ? dropdown_question -}}
+<select name="{{ select_name }}">
+{% for one_value, one_label in choices %}
+    <option value="{{ one_value }}"
+        {%- if selected_value == one_value %} selected="selected"{% endif %}>
+        {{ one_label }}
+    </option>
+{% endfor %}
+</select>

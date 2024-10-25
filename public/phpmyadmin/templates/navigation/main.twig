@@ -1,0 +1,99 @@
+{% if not is_ajax %}
+  <div id="pma_navigation" class="d-print-none" data-config-navigation-width="{{ config_navigation_width }}">
+    <div id="pma_navigation_resizer"></div>
+    <div id="pma_navigation_collapser"></div>
+    <div id="pma_navigation_content">
+      <div id="pma_navigation_header">
+
+        {% if logo.is_displayed %}
+          <div id="pmalogo">
+            {% if logo.has_link %}
+              <a href="{{ logo.link|default('#') }}"{{ logo.attributes|raw }}>
+            {% endif %}
+            {% if logo.source is not empty %}
+              <img id="imgpmalogo" src="{{ logo.source }}" alt="phpMyAdmin">
+            {% else %}
+              <h1>phpMyAdmin</h1>
+            {% endif %}
+            {% if logo.has_link %}
+              </a>
+            {% endif %}
+          </div>
+        {% endif %}
+
+        <div id="navipanellinks">
+          <a href="{{ url('/') }}" title="{% trans 'Home' %}">
+            {{- get_image('b_home', 'Home'|trans) -}}
+          </a>
+
+          {% if server != 0 %}
+            <a class="logout disableAjax" href="{{ url('/logout') }}" title="{{ auth_type == 'config' ? 'Empty session data'|trans : 'Log out'|trans }}">
+              {{- get_image('s_loggoff', auth_type == 'config' ? 'Empty session data'|trans : 'Log out'|trans) -}}
+            </a>
+          {% endif %}
+
+          <a href="{{ get_docu_link('index') }}" title="{% trans 'phpMyAdmin documentation' %}" target="_blank" rel="noopener noreferrer">
+            {{- get_image('b_docs', 'phpMyAdmin documentation'|trans) -}}
+          </a>
+
+          <a href="{{ get_docu_url(is_mariadb) }}" title="{{ is_mariadb ? 'MariaDB Documentation'|trans : 'MySQL Documentation'|trans }}" target="_blank" rel="noopener noreferrer">
+            {{- get_image('b_sqlhelp', is_mariadb ? 'MariaDB Documentation'|trans : 'MySQL Documentation'|trans) -}}
+          </a>
+
+          <a id="pma_navigation_settings_icon"{{ not is_navigation_settings_enabled ? ' class="hide"' }} href="#" title="{% trans 'Navigation panel settings' %}">
+            {{- get_image('s_cog', 'Navigation panel settings'|trans) -}}
+          </a>
+
+          <a id="pma_navigation_reload" href="#" title="{% trans 'Reload navigation panel' %}">
+            {{- get_image('s_reload', 'Reload navigation panel'|trans) -}}
+          </a>
+        </div>
+
+        {% if is_servers_displayed and servers|length > 1 %}
+          <div id="serverChoice">
+            {{ server_select|raw }}
+          </div>
+        {% endif %}
+
+        {{ get_image('ajax_clock_small', 'Loading…'|trans, {
+          'style': 'visibility: hidden; display:none',
+          'class': 'throbber'
+        }) }}
+      </div>
+      <div id="pma_navigation_tree" class="list_container{{ is_synced ? ' synced' }}{{ is_highlighted ? ' highlight' }}{{ is_autoexpanded ? ' autoexpand' }}">
+{% endif %}
+
+{% if not navigation_tree %}
+  {{ 'An error has occurred while loading the navigation display'|trans|error }}
+{% else %}
+  {{ navigation_tree|raw }}
+{% endif %}
+
+{% if not is_ajax %}
+      </div>
+
+      <div id="pma_navi_settings_container">
+        {% if is_navigation_settings_enabled %}
+          {{ navigation_settings|raw }}
+        {% endif %}
+      </div>
+    </div>
+
+    {% if is_drag_drop_import_enabled %}
+      <div class="pma_drop_handler">
+        {% trans 'Drop files here' %}
+      </div>
+      <div class="pma_sql_import_status">
+        <h2>
+          {% trans 'SQL upload' %}
+          ( <span class="pma_import_count">0</span> )
+          <span class="close">x</span>
+          <span class="minimize">-</span>
+        </h2>
+        <div></div>
+      </div>
+    {% endif %}
+  </div>
+  {{ include('modals/unhide_nav_item.twig') }}
+  {{ include('modals/create_view.twig') }}
+{% endif %}

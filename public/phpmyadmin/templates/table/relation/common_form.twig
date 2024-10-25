@@ -1,0 +1,244 @@
+{% extends 'table/page_with_secondary_tabs.twig' %}
+
+{% block content %}
+<form method="post" action="{{ url('/table/relation') }}">
+    {{ get_hidden_inputs(db, table) }}
+    {# InnoDB #}
+    {% if is_foreign_key_supported(tbl_storage_engine) %}
+        <fieldset class="pma-fieldset mb-3">
+            <legend>{% trans 'Foreign key constraints' %}</legend>
+            <div class="table-responsive-md jsresponsive">
+            <table class="relationalTable table table-striped w-auto">
+                <thead>
+                <tr>
+                    <th>{% trans 'Actions' %}</th>
+                    <th>{% trans 'Constraint properties' %}</th>
+                    {% if tbl_storage_engine|upper == 'INNODB' %}
+                        <th>
+                            {% trans 'Column' %}
+                            {{ show_hint('Creating a foreign key over a non-indexed column would automatically create an index on it. Alternatively, you can define an index below, before creating the foreign key.'|trans) }}
+                        </th>
+                    {% else %}
+                        <th>
+                            {% trans 'Column' %}
+                            {{ show_hint('Only columns with index will be displayed. You can define an index below.'|trans) }}
+                        </th>
+                    {% endif %}
+                    <th colspan="3">
+                        {% trans 'Foreign key constraint' %}
+                        ({{ tbl_storage_engine }})
+                    </th>
+                </tr>
+                <tr>
+                    <th></th>
+                    <th></th>
+                    <th></th>
+                    <th>{% trans 'Database' %}</th>
+                    <th>{% trans 'Table' %}</th>
+                    <th>{% trans 'Column' %}</th>
+                </tr></thead>
+                {% set i = 0 %}
+                {% if existrel_foreign is not empty %}
+                    {% for key, one_key in existrel_foreign %}
+                        {# Foreign database dropdown #}
+                        {% set foreign_db = one_key['ref_db_name'] is defined
+                            and one_key['ref_db_name'] is not null
+                            ? one_key['ref_db_name'] : db %}
+                        {% set foreign_table = false %}
+                        {% if foreign_db %}
+                            {% set foreign_table = one_key['ref_table_name'] is defined
+                                and one_key['ref_table_name'] is not null
+                                ? one_key['ref_table_name'] : false %}
+                        {% endif %}
+                        {% set unique_columns = [] %}
+                        {% if foreign_db and foreign_table %}
+                            {% set table_obj = table_get(foreign_table, foreign_db) %}
+                            {% set unique_columns = table_obj.getUniqueColumns(false, false) %}
+                        {% endif %}
+                        {% include 'table/relation/foreign_key_row.twig' with {
+                            'i': i,
+                            'one_key': one_key,
+                            'column_array': column_array,
+                            'options_array': options_array,
+                            'tbl_storage_engine': tbl_storage_engine,
+                            'db': db,
+                            'table': table,
+                            'url_params': url_params,
+                            'databases': databases,
+                            'foreign_db': foreign_db,
+                            'foreign_table': foreign_table,
+                            'unique_columns': unique_columns
+                        } only %}
+                        {% set i = i + 1 %}
+                    {% endfor %}
+                {% endif %}
+                {% include 'table/relation/foreign_key_row.twig' with {
+                    'i': i,
+                    'one_key': [],
+                    'column_array': column_array,
+                    'options_array': options_array,
+                    'tbl_storage_engine': tbl_storage_engine,
+                    'db': db,
+                    'table': table,
+                    'url_params': url_params,
+                    'databases': databases,
+                    'foreign_db': foreign_db,
+                    'foreign_table': foreign_table,
+                    'unique_columns': unique_columns
+                } only %}
+                {% set i = i + 1 %}
+                <tr>
+                    <th colspan="6">
+                        <a class="formelement clearfloat add_foreign_key" href="">
+                            {% trans '+ Add constraint' %}
+                        </a>
+                    </th>
+                </tr>
+            </table>
+            </div>
+        </fieldset>
+    {% endif %}
+
+    {% if relation_parameters.relationFeature is not null %}
+        {% if default_sliders_state != 'disabled' and is_foreign_key_supported(tbl_storage_engine) %}
+        <div class="mb-3">
+          <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#internalRelationships" aria-expanded="{{ default_sliders_state == 'open' ? 'true' : 'false' }}" aria-controls="internalRelationships">
+            {% trans 'Internal relationships' %}
+          </button>
+        </div>
+        <div class="collapse mb-3{{ default_sliders_state == 'open' ? ' show' }}" id="internalRelationships">
+        {% endif %}
+
+        <fieldset class="pma-fieldset">
+            <legend>
+                {% trans 'Internal relationships' %}
+                {{ show_docu('config', 'cfg_Servers_relation') }}
+            </legend>
+            <table class="relationalTable table table-striped table-hover table-sm w-auto">
+                <thead>
+                  <tr>
+                    <th>{% trans 'Column' %}</th>
+                    <th>
+                      {% trans 'Internal relation' %}
+                      {% if is_foreign_key_supported(tbl_storage_engine) %}
+                        {{ show_hint('An internal relation is not necessary when a corresponding FOREIGN KEY relation exists.'|trans) }}
+                      {% endif %}
+                    </th>
+                  </tr>
+                </thead>
+                <tbody>
+                    {% set saved_row_cnt = save_row|length - 1 %}
+                    {% for i in 0..saved_row_cnt %}
+                        {% set myfield = save_row[i]['Field'] %}
+                        {# Use an md5 as array index to avoid having special characters
+                           in the name attribute (see bug #1746964 ) #}
+                        {% set myfield_md5 = column_hash_array[myfield] %}
+
+                        {% set foreign_table = false %}
+                        {% set foreign_column = false %}
+
+                        {# Database dropdown #}
+                        {% if existrel[myfield] is defined %}
+                            {% set foreign_db = existrel[myfield]['foreign_db'] %}
+                        {% else %}
+                            {% set foreign_db = db %}
+                        {% endif %}
+
+                        {# Table dropdown #}
+                        {% set tables = [] %}
+                        {% if foreign_db %}
+                            {% if existrel[myfield] is defined %}
+                                {% set foreign_table = existrel[myfield]['foreign_table'] %}
+                            {% endif %}
+                            {% set tables = dbi.getTables(foreign_db) %}
+                        {% endif %}
+
+                        {# Column dropdown #}
+                        {% set unique_columns = [] %}
+                        {% if foreign_db and foreign_table %}
+                            {% if existrel[myfield] is defined %}
+                                {% set foreign_column = existrel[myfield]['foreign_field'] %}
+                            {% endif %}
+                            {% set table_obj = table_get(foreign_table, foreign_db) %}
+                            {% set unique_columns = table_obj.getUniqueColumns(false, false) %}
+                        {% endif %}
+
+                        <tr>
+                            <td class="align-middle">
+                                <strong>{{ myfield }}</strong>
+                                <input type="hidden" name="fields_name[{{ myfield_md5 }}]"
+                                    value="{{ myfield }}">
+                            </td>
+
+                            <td>
+                                {% include 'table/relation/relational_dropdown.twig' with {
+                                    'name': 'destination_db[' ~ myfield_md5 ~ ']',
+                                    'title': 'Database'|trans,
+                                    'values': databases,
+                                    'foreign': foreign_db
+                                } only %}
+
+                                {% include 'table/relation/relational_dropdown.twig' with {
+                                    'name': 'destination_table[' ~ myfield_md5 ~ ']',
+                                    'title': 'Table'|trans,
+                                    'values': tables,
+                                    'foreign': foreign_table
+                                } only %}
+
+                                {% include 'table/relation/relational_dropdown.twig' with {
+                                    'name': 'destination_column[' ~ myfield_md5 ~ ']',
+                                    'title': 'Column'|trans,
+                                    'values': unique_columns,
+                                    'foreign': foreign_column
+                                } only %}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </fieldset>
+        {% if default_sliders_state != 'disabled' and is_foreign_key_supported(tbl_storage_engine) %}
+        </div>
+        {% endif %}
+    {% endif %}
+
+    {% if relation_parameters.displayFeature is not null %}
+        {% set disp = get_display_field(db, table) %}
+        <fieldset class="pma-fieldset">
+            <label>{% trans 'Choose column to display:' %}</label>
+            <select name="display_field">
+                <option value="">---</option>
+                {% for row in save_row %}
+                    <option value="{{ row['Field'] }}"
+                        {%- if disp is defined and row['Field'] == disp %}
+                            selected="selected"
+                        {%- endif %}>
+                        {{ row['Field'] }}
+                    </option>
+                {% endfor %}
+            </select>
+        </fieldset>
+    {% endif %}
+
+    <fieldset class="pma-fieldset tblFooters">
+        <input class="btn btn-secondary preview_sql" type="button" value="{% trans 'Preview SQL' %}">
+        <input class="btn btn-primary" type="submit" value="{% trans 'Save' %}">
+    </fieldset>
+</form>
+
+<div class="modal fade" id="previewSqlModal" tabindex="-1" aria-labelledby="previewSqlModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewSqlModalLabel">{% trans 'Loading' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="previewSQLCloseButton" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

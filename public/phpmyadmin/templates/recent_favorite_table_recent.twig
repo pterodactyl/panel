@@ -1,0 +1,7 @@
+{% for table in tables %}
+<li class="warp_link">
+  <a href="{{ url('/table/recent-favorite', table)  }}">
+    `{{ table.db }}`.`{{ table.table }}`
+  </a>
+</li>
+{% endfor %}

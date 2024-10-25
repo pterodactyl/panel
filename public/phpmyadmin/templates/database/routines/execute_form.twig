@@ -1,0 +1,62 @@
+<form action="{{ url('/database/routines') }}" method="post" class="rte_form ajax" onsubmit="return false">
+  <input type="hidden" name="item_name" value="{{ routine['item_name'] }}">
+  <input type="hidden" name="item_type" value="{{ routine['item_type'] }}">
+  {{ get_hidden_inputs(db) }}
+
+  <div class="card">
+    <div class="card-header">{{ ajax ? 'Routine parameters'|trans : routine['item_name'] }}</div>
+
+    <div class="card-body">
+      <table class="table w-auto rte_table{{ not ajax ? ' caption-top' }}">
+        {% if not ajax %}
+          <caption class="tblHeaders">{% trans 'Routine parameters' %}</caption>
+        {% endif %}
+        <tr>
+          <th>{% trans 'Name' %}</th>
+          <th>{% trans 'Type' %}</th>
+          {% if show_function_fields %}
+            <th>{% trans 'Function' %}</th>
+          {% endif %}
+          <th>{% trans 'Value' %}</th>
+        </tr>
+        {% for i in 0..routine['item_num_params'] - 1 %}
+          <tr>
+            <td>{{ routine['item_param_name'][loop.index0] }}</td>
+            <td>{{ routine['item_param_type'][loop.index0] }}</td>
+            {% if show_function_fields %}
+              <td>
+                {% if params[loop.index0]['generator'] is not null %}
+                  <select name="funcs[{{ routine['item_param_name'][loop.index0] }}]">
+                    {{ params[loop.index0]['generator']|raw }}</select>
+                {% else %}
+                  --
+                {% endif %}
+              </td>
+            {% endif %}
+            <td class="nowrap">
+              {% if routine['item_param_type'][loop.index0] in ['ENUM', 'SET'] %}
+                {% for value in routine['item_param_length_arr'][loop.index0] %}
+                  <input name="params[{{ routine['item_param_name'][loop.parent.loop.index0] }}][]" value="{{ params[loop.parent.loop.index0]['htmlentities'][loop.index0] }}" type="{{ params[loop.parent.loop.index0]['input_type'] }}">
+                  {{ params[loop.parent.loop.index0]['htmlentities'][loop.index0] }}
+                  <br>
+                {% endfor %}
+              {% elseif routine['item_param_type'][loop.index0]|lower in params['no_support_types'] %}
+              {% else %}
+                <input class="{{ params[loop.index0]['class'] }}" type="text" name="params[{{ routine['item_param_name'][loop.index0] }}]">
+              {% endif %}
+            </td>
+          </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    {% if not ajax %}
+      <div class="card-footer">
+        <input class="btn btn-primary" type="submit" name="execute_routine" value="{% trans 'Go' %}">
+      </div>
+    {% else %}
+      <input type="hidden" name="execute_routine" value="true">
+      <input type="hidden" name="ajax_request" value="true">
+    {% endif %}
+  </div>
+</form>

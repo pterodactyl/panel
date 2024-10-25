@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Requirements &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Installation" href="setup.html" />
+    <link rel="prev" title="Introduction" href="intro.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="setup.html" title="Installation"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Requirements</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="requirements">
+<span id="require"></span><h1>Requirements<a class="headerlink" href="#requirements" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="web-server">
+<h2>Web server<a class="headerlink" href="#web-server" title="Permalink to this headline">¶</a></h2>
+<p>Since phpMyAdmin’s interface is based entirely in your browser, you’ll need a
+web server (such as Apache, nginx, <a class="reference internal" href="glossary.html#term-IIS"><span class="xref std std-term">IIS</span></a>) to install phpMyAdmin’s files into.</p>
+</div>
+<div class="section" id="php">
+<h2>PHP<a class="headerlink" href="#php" title="Permalink to this headline">¶</a></h2>
+<ul class="simple">
+<li><p>You need PHP 7.2.5 or newer, with <code class="docutils literal notranslate"><span class="pre">session</span></code> support, the Standard PHP Library
+(SPL) extension, hash, ctype, and JSON support.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">mbstring</span></code> extension (see <a class="reference internal" href="glossary.html#term-mbstring"><span class="xref std std-term">mbstring</span></a>) is strongly recommended
+for performance reasons.</p></li>
+<li><p>To support uploading of ZIP files, you need the PHP <code class="docutils literal notranslate"><span class="pre">zip</span></code> extension.</p></li>
+<li><p>You need GD2 support in PHP to display inline thumbnails of JPEGs
+(“image/jpeg: inline”) with their original aspect ratio.</p></li>
+<li><p>When using the cookie authentication (the default), the <a class="reference external" href="https://www.php.net/openssl">openssl</a> extension is strongly suggested.</p></li>
+<li><p>To support upload progress bars, see <a class="reference internal" href="faq.html#faq2-9"><span class="std std-ref">2.9 Seeing an upload progress bar</span></a>.</p></li>
+<li><p>To support XML and Open Document Spreadsheet importing, you need the
+<a class="reference external" href="https://www.php.net/libxml">libxml</a> extension.</p></li>
+<li><p>To support reCAPTCHA on the login page, you need the
+<a class="reference external" href="https://www.php.net/openssl">openssl</a> extension.</p></li>
+<li><p>To support displaying phpMyAdmin’s latest version, you need to enable
+<code class="docutils literal notranslate"><span class="pre">allow_url_open</span></code> in your <code class="file docutils literal notranslate"><span class="pre">php.ini</span></code> or to have the
+<a class="reference external" href="https://www.php.net/curl">curl</a> extension.</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="faq.html#faq1-31"><span class="std std-ref">1.31 Which PHP versions does phpMyAdmin support?</span></a>, <a class="reference internal" href="setup.html#authentication-modes"><span class="std std-ref">Using authentication modes</span></a></p>
+</div>
+</div>
+<div class="section" id="database">
+<h2>Database<a class="headerlink" href="#database" title="Permalink to this headline">¶</a></h2>
+<p>phpMyAdmin supports MySQL-compatible databases.</p>
+<ul class="simple">
+<li><p>MySQL 5.5 or newer</p></li>
+<li><p>MariaDB 5.5 or newer</p></li>
+</ul>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="faq.html#faq1-17"><span class="std std-ref">1.17 Which Database versions does phpMyAdmin support?</span></a></p>
+</div>
+</div>
+<div class="section" id="web-browser">
+<h2>Web browser<a class="headerlink" href="#web-browser" title="Permalink to this headline">¶</a></h2>
+<p>To access phpMyAdmin you need a web browser with cookies and JavaScript
+enabled.</p>
+<p>You need a browser which is supported by Bootstrap 4.5, see
+&lt;<a class="reference external" href="https://getbootstrap.com/docs/4.5/getting-started/browsers-devices/">https://getbootstrap.com/docs/4.5/getting-started/browsers-devices/</a>&gt;.</p>
+<div class="versionchanged">
+<p><span class="versionmodified changed">Changed in version 5.2.0: </span>You need a browser which is supported by Bootstrap 5.0, see
+&lt;<a class="reference external" href="https://getbootstrap.com/docs/5.0/getting-started/browsers-devices/">https://getbootstrap.com/docs/5.0/getting-started/browsers-devices/</a>&gt;.</p>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Requirements</a><ul>
+<li><a class="reference internal" href="#web-server">Web server</a></li>
+<li><a class="reference internal" href="#php">PHP</a></li>
+<li><a class="reference internal" href="#database">Database</a></li>
+<li><a class="reference internal" href="#web-browser">Web browser</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="intro.html"
+                        title="previous chapter">Introduction</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="setup.html"
+                        title="next chapter">Installation</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/require.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="setup.html" title="Installation"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="intro.html" title="Introduction"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Requirements</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

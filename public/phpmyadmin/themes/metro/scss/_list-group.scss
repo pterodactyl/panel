@@ -1,0 +1,36 @@
+#maincontainer {
+  .list-group {
+    margin: 1rem 0 0;
+    padding-bottom: 10px;
+  }
+
+  .list-group-item {
+    border: none;
+    display: list-item;
+    padding: 0;
+  }
+}
+
+#li_select_server,
+#li_change_password,
+#li_select_mysql_collation,
+#li_user_preferences,
+#li_select_lang,
+#li_select_theme {
+  &.list-group-item {
+    display: block;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    padding-right: 10px;
+    padding-left: 20px;
+
+    &:hover {
+      background: #f6f6f6;
+    }
+  }
+}
+
+#li_select_theme::after {
+  content: "Scheme: #{$color-scheme}";
+  margin-left: 10px;
+}

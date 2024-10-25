@@ -1,0 +1,21 @@
+<div class="modal fade" id="buildQueryModal" tabindex="-1" aria-labelledby="buildQueryModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="buildQueryModalLabel">{% trans 'Loading' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div id="box" class="modal-body">
+        <form method="post" action="{{ url('/database/qbe') }}" id="vqb_form">
+          <textarea cols="80" name="sql_query" id="textSqlquery" rows="15"></textarea>
+          <input type="hidden" name="submit_sql" value="true">
+          {{ get_hidden_inputs(get_db) }}
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-secondary" id="buildQuerySubmitButton">{% trans 'Submit' %}</button>
+      </div>
+    </div>
+  </div>
+</div>

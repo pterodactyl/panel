@@ -1,0 +1,171 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Two-factor authentication &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Transformations" href="transformations.html" />
+    <link rel="prev" title="Configuring phpMyAdmin" href="settings.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="transformations.html" title="Transformations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="settings.html" title="Configuring phpMyAdmin"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" accesskey="U">User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Two-factor authentication</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="two-factor-authentication">
+<span id="fa"></span><h1>Two-factor authentication<a class="headerlink" href="#two-factor-authentication" title="Permalink to this headline">¶</a></h1>
+<div class="versionadded">
+<p><span class="versionmodified added">New in version 4.8.0.</span></p>
+</div>
+<p>Since phpMyAdmin 4.8.0 you can configure two-factor authentication to be
+used when logging in. To use this, you first need to configure the
+<a class="reference internal" href="setup.html#linked-tables"><span class="std std-ref">phpMyAdmin configuration storage</span></a>. Once this is done, every user can opt-in for the second
+authentication factor in the <span class="guilabel">Settings</span>.</p>
+<p>When running phpMyAdmin from the Git source repository, the dependencies must be installed
+manually; the typical way of doing so is with the command:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>composer require pragmarx/google2fa-qrcode bacon/bacon-qr-code
+</pre></div>
+</div>
+<p>Or when using a hardware security key with FIDO U2F:</p>
+<div class="highlight-sh notranslate"><div class="highlight"><pre><span></span>composer require code-lts/u2f-php-server
+</pre></div>
+</div>
+<div class="section" id="authentication-application-2fa">
+<h2>Authentication Application (2FA)<a class="headerlink" href="#authentication-application-2fa" title="Permalink to this headline">¶</a></h2>
+<p>Using an application for authentication is a quite common approach based on HOTP and
+<a class="reference external" href="https://en.wikipedia.org/wiki/Time-based_One-time_Password_Algorithm">TOTP</a>.
+It is based on transmitting a private key from phpMyAdmin to the authentication
+application and the application is then able to generate one time codes based
+on this key. The easiest way to enter the key in to the application from phpMyAdmin is
+through scanning a QR code.</p>
+<p>There are dozens of applications available for mobile phones to implement these
+standards, the most widely used include:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://freeotp.github.io/">FreeOTP for iOS, Android and Pebble</a></p></li>
+<li><p><a class="reference external" href="https://authy.com/">Authy for iOS, Android, Chrome, OS X</a></p></li>
+<li><p><a class="reference external" href="https://apps.apple.com/us/app/google-authenticator/id388497605">Google Authenticator for iOS</a></p></li>
+<li><p><a class="reference external" href="https://play.google.com/store/apps/details?id=com.google.android.apps.authenticator2">Google Authenticator for Android</a></p></li>
+<li><p><a class="reference external" href="https://lastpass.com/auth/">LastPass Authenticator for iOS, Android, OS X, Windows</a></p></li>
+</ul>
+</div>
+<div class="section" id="hardware-security-key-fido-u2f">
+<h2>Hardware Security Key (FIDO U2F)<a class="headerlink" href="#hardware-security-key-fido-u2f" title="Permalink to this headline">¶</a></h2>
+<p>Using hardware tokens is considered to be more secure than a software based
+solution. phpMyAdmin supports <a class="reference external" href="https://en.wikipedia.org/wiki/Universal_2nd_Factor">FIDO U2F</a>
+tokens.</p>
+<p>There are several manufacturers of these tokens, for example:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://www.yubico.com/fido-u2f/">youbico FIDO U2F Security Key</a></p></li>
+<li><p><a class="reference external" href="https://www.hypersecu.com/hyperfido">HyperFIDO</a></p></li>
+<li><p><a class="reference external" href="https://trezor.io/?offer_id=12&amp;aff_id=1592&amp;source=phpmyadmin">Trezor Hardware Wallet</a> can act as an <a class="reference external" href="https://wiki.trezor.io/User_manual:Two-factor_Authentication_with_U2F">U2F token</a></p></li>
+<li><p><a class="reference external" href="https://www.dongleauth.info/dongles/">List of Two Factor Auth (2FA) Dongles</a></p></li>
+</ul>
+</div>
+<div class="section" id="simple-two-factor-authentication">
+<span id="simple2fa"></span><h2>Simple two-factor authentication<a class="headerlink" href="#simple-two-factor-authentication" title="Permalink to this headline">¶</a></h2>
+<p>This authentication is included for testing and demonstration purposes only as
+it really does not provide two-factor authentication, it just asks the user to confirm login by
+clicking on the button.</p>
+<p>It should not be used in the production and is disabled unless
+<span class="target" id="index-0"></span><a class="reference internal" href="config.html#cfg_DBG_simple2fa"><code class="xref config config-option docutils literal notranslate"><span class="pre">$cfg['DBG']['simple2fa']</span></code></a> is set.</p>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Two-factor authentication</a><ul>
+<li><a class="reference internal" href="#authentication-application-2fa">Authentication Application (2FA)</a></li>
+<li><a class="reference internal" href="#hardware-security-key-fido-u2f">Hardware Security Key (FIDO U2F)</a></li>
+<li><a class="reference internal" href="#simple-two-factor-authentication">Simple two-factor authentication</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="settings.html"
+                        title="previous chapter">Configuring phpMyAdmin</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="transformations.html"
+                        title="next chapter">Transformations</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/two_factor.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="transformations.html" title="Transformations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="settings.html" title="Configuring phpMyAdmin"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" >User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Two-factor authentication</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

@@ -1,0 +1,22 @@
+{# Manage HTML redirection #}
+<html>
+<head>
+    <title>- - -</title>
+    <meta http-equiv="expires" content="0">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Cache-Control" content="no-cache">
+    <meta http-equiv="Refresh" content="0;url={{ uri }}">
+    <script type="text/javascript">
+        //<![CDATA[
+        setTimeout(function() { window.location = decodeURI('{{ uri|escape_js_string }}'); }, 2000);
+        //]]>
+    </script>
+</head>
+<body>
+<script type="text/javascript">
+    //<![CDATA[
+    document.write('<p><a href="{{ uri|e|escape_js_string }}">{% trans 'Go' %}</a></p>');
+    //]]>
+</script>
+</body>
+</html>

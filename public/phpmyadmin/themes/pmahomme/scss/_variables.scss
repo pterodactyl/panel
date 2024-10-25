@@ -1,0 +1,186 @@
+// configures general layout for detailed layout configuration please refer to the css files
+
+// navi frame
+
+// navi frame width
+$navi-width: 240px;
+
+// foreground (text) color for the navi frame
+$navi-color: #000;
+
+// background for the navi frame
+$navi-background: #f3f3f3;
+$navi-right-gradient: #dadcde;
+
+// foreground (text) color of the pointer in navi frame
+$navi-pointer-color: #000;
+
+// background of the pointer in navi frame
+$navi-pointer-background: #ddd;
+
+// main frame
+
+// foreground (text) color for the main frame
+$main-color: #444;
+
+// foreground (text) color of the pointer in browse mode
+$browse-pointer-color: #000;
+
+// background of the pointer in browse mode
+$browse-pointer-background: #cfc;
+
+// foreground (text) color of the marker (visually marks row by clicking on it)
+// in browse mode
+$browse-marker-color: #000;
+
+// background of the marker (visually marks row by clicking on it) in browse mode
+$browse-marker-background: #fc9;
+
+// tables
+
+// border
+$border: 0;
+// table header and footer color
+$th-background: #d3dce3;
+// table header and footer background
+$th-color: #000;
+// table data row background
+$bg-one: #e5e5e5;
+// table data row background, alternate
+$bg-two: #d5d5d5;
+
+// Bootstrap
+// ---------
+
+// Body
+
+$body-color: $main-color;
+
+// Links
+
+$link-color: #235a81;
+$link-decoration: none;
+$link-hover-color: #235a81;
+$link-hover-decoration: underline;
+
+// Components
+
+$border-radius: 0.25rem;
+
+// Typography
+
+$font-family-base: sans-serif;
+$font-family-monospace: monospace;
+
+$font-size-base: 0.82rem;
+
+$h1-font-size: 140%;
+$h2-font-size: 2em;
+$h3-font-size: 1rem;
+
+// Tables
+
+$table-cell-padding-y: 0.1em;
+$table-cell-padding-x: 0.3em;
+$table-cell-padding-y-sm: $table-cell-padding-y;
+$table-cell-padding-x-sm: $table-cell-padding-x;
+$table-bg: #fff;
+$table-head-bg: #fff;
+$table-head-color: $th-color;
+$table-striped-order: even;
+$table-striped-bg: #dfdfdf;
+$table-hover-color: $browse-pointer-color;
+$table-border-color: #fff;
+$table-border-width: 0;
+$table-caption-color: $table-head-color;
+
+// Buttons
+
+$enable-gradients: true;
+$enable-shadows: true;
+$enable-transitions: false;
+
+$primary: #ddd;
+$secondary: #ddd;
+
+$btn-border-radius: 0.85rem;
+$btn-line-height: 1.15;
+
+// Dropdowns
+
+$dropdown-padding-y: 0;
+$dropdown-item-padding-y: 0;
+$dropdown-item-padding-x: 0;
+
+// Forms
+
+$form-check-input-margin-y: 0.1rem;
+$form-check-input-checked-bg-color: #0075ff;
+
+// Navs
+
+$nav-tabs-border-color: #aaa;
+$nav-tabs-link-active-border-color: #aaa #aaa #fff;
+$nav-tabs-link-hover-border-color: $bg-two $bg-two #aaa;
+$nav-tabs-link-active-color: #000;
+
+// Navbar
+
+$enable-caret: false;
+$navbar-padding-y: 0;
+$navbar-padding-x: 0;
+$navbar-light-color: #235a81;
+$navbar-light-hover-color: #235a81;
+$navbar-light-active-color: #235a81;
+$navbar-light-disabled-color: #235a81;
+
+// Pagination
+
+$pagination-active-color: #235a81;
+$pagination-border-color: #aaa;
+$pagination-hover-border-color: #aaa;
+$pagination-active-border-color: #aaa;
+$pagination-disabled-border-color: #aaa;
+
+// Card
+
+$card-border-color: #aaa;
+$card-bg: #eee;
+$card-cap-bg: #fff;
+
+// Accordion
+
+$accordion-button-padding-y: 0.375rem;
+$accordion-button-padding-x: 0.75rem;
+$accordion-button-active-color: #235a81;
+$accordion-button-active-bg: $navi-background;
+
+// Breadcrumbs
+
+$breadcrumb-navbar-padding-y: 0.1rem;
+$breadcrumb-navbar-padding-x: 2.2em;
+$breadcrumb-navbar-margin-bottom: 0;
+$breadcrumb-navbar-bg: #888;
+$breadcrumb-divider-color: #fff;
+$breadcrumb-divider: quote("»");
+
+// Modals
+
+$modal-inner-padding: 0.75rem;
+$modal-footer-margin-between: 0.1rem;
+$modal-header-padding-y: 0.4rem;
+
+// Alert
+
+$alert-margin-bottom: 0.5em;
+$alert-border-radius: 5px;
+
+// List group
+
+$list-group-bg: inherit;
+$list-group-item-padding-x: 0.75rem;
+$list-group-item-padding-y: 0.375rem;
+
+// Forms
+
+$label-margin-bottom: 0;

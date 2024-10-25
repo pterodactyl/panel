@@ -1,0 +1,32 @@
+<form action="{{ url('/table/delete/rows') }}" method="post">
+  {{ get_hidden_inputs({
+    'db': db,
+    'table': table,
+    'selected': selected,
+    'original_sql_query': sql_query,
+    'fk_checks': '0'
+  }) }}
+
+  <fieldset class="pma-fieldset confirmation">
+    <legend>
+      {% trans 'Do you really want to execute the following query?' %}
+    </legend>
+
+    <ul>
+      {% for row in selected %}
+        <li><code>DELETE FROM {{ backquote(table) }} WHERE {{ row }};</code></li>
+      {% endfor %}
+    </ul>
+  </fieldset>
+
+  <fieldset class="pma-fieldset tblFooters">
+    <div id="foreignkeychk" class="float-start">
+      <input type="checkbox" name="fk_checks" id="fk_checks" value="1"{{ is_foreign_key_check ? ' checked' }}>
+      <label for="fk_checks">{% trans 'Enable foreign key checks' %}</label>
+    </div>
+    <div class="float-end">
+      <input id="buttonYes" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'Yes' %}">
+      <input id="buttonNo" class="btn btn-secondary" type="submit" name="mult_btn" value="{% trans 'No' %}">
+    </div>
+  </fieldset>
+</form>

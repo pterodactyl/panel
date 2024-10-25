@@ -36,6 +36,10 @@ class BackupRemoteUploadController extends Controller
         /** @var \Pterodactyl\Models\Node $node */
         $node = $request->attributes->get('node');
 
+        // Get the node associated with the request.
+        /** @var \Pterodactyl\Models\Node $node */
+        $node = $request->attributes->get('node');
+
         // Get the size query parameter.
         $size = (int) $request->query('size');
         if (empty($size)) {
@@ -58,6 +62,7 @@ class BackupRemoteUploadController extends Controller
         // Prevent backups that have already been completed from trying to
         // be uploaded again.
         if (!is_null($model->completed_at)) {
+        if (!is_null($model->completed_at)) {
             throw new ConflictHttpException('This backup is already in a completed state.');
         }
 
@@ -68,6 +73,7 @@ class BackupRemoteUploadController extends Controller
         }
 
         // The path where backup will be uploaded to
+        $path = sprintf('%s/%s.tar.gz', $model->server->uuid, $model->uuid);
         $path = sprintf('%s/%s.tar.gz', $model->server->uuid, $model->uuid);
 
         // Get the S3 client
@@ -106,6 +112,7 @@ class BackupRemoteUploadController extends Controller
         }
 
         // Set the upload_id on the backup in the database.
+        $model->update(['upload_id' => $params['UploadId']]);
         $model->update(['upload_id' => $params['UploadId']]);
 
         return new JsonResponse([

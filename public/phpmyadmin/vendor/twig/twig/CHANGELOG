@@ -1,0 +1,161 @@
+# 3.5.0 (2022-12-27)
+
+ * Make Twig\ExpressionParser non internal
+ * Add "some" and "every" filters
+ * Add Compile::reset(
+ * Throw a better runtime error when the "matches" regexp is not valid
+ * Add "twig *_names" intl functions
+ * Fix optimizing closures callbacks
+ * Add a better exception when getting an undefined constant via `constant`
+ * Fix `if` nodes when outside of a block and with an empty body
+
+# 3.4.3 (2022-09-28)
+
+ * Fix a security issue on filesystem loader (possibility to load a template outside a configured directory)
+
+# 3.4.2 (2022-08-12)
+
+ * Allow inherited magic method to still run with calling class
+ * Fix CallExpression::reflectCallable() throwing TypeError
+ * Fix typo in naming (currency_code)
+
+# 3.4.1 (2022-05-17)
+
+* Fix optimizing non-public named closures
+
+# 3.4.0 (2022-05-22)
+
+ * Add support for named closures
+
+# 3.3.10 (2022-04-06)
+
+ * Enable bytecode invalidation when auto_reload is enabled
+
+# 3.3.9 (2022-03-25)
+
+ * Fix custom escapers when using multiple Twig environments
+ * Add support for "constant('class', object)"
+ * Do not reuse internally generated variable names during parsing
+
+# 3.3.8 (2022-02-04)
+
+ * Fix a security issue when in a sandbox: the `sort` filter must require a Closure for the `arrow` parameter
+ * Fix deprecation notice on `round`
+ * Fix call to deprecated `convertToHtml` method
+
+# 3.3.7 (2022-01-03)
+
+* Allow more null support when Twig expects a string (for better 8.1 support)
+* Only use Commonmark extensions if markdown enabled
+
+# 3.3.6 (2022-01-03)
+
+* Only use Commonmark extensions if markdown enabled
+
+# 3.3.5 (2022-01-03)
+
+* Allow CommonMark extensions to easily be added
+* Allow null when Twig expects a string (for better 8.1 support)
+* Make some performance optimizations
+* Allow Symfony translation contract v3+
+
+# 3.3.4 (2021-11-25)
+
+ * Bump minimum supported Symfony component versions
+ * Fix a deprecated message
+
+# 3.3.3 (2021-09-17)
+
+ * Allow Symfony 6
+ * Improve compatibility with PHP 8.1
+ * Explicitly specify the encoding for mb_ord in JS escaper
+
+# 3.3.2 (2021-05-16)
+
+ * Revert "Throw a proper exception when a template name is an absolute path (as it has never been supported)"
+
+# 3.3.1 (2021-05-12)
+
+ * Fix PHP 8.1 compatibility
+ * Throw a proper exception when a template name is an absolute path (as it has never been supported)
+
+# 3.3.0 (2021-02-08)
+
+ * Fix macro calls in a "cache" tag
+ * Add the slug filter
+ * Allow extra bundle to be compatible with Twig 2
+
+# 3.2.1 (2021-01-05)
+
+ * Fix extra bundle compat with older versions of Symfony
+
+# 3.2.0 (2021-01-05)
+
+ * Add the Cache extension in the "extra" repositories: "cache" tag
+ * Add "registerUndefinedTokenParserCallback"
+ * Mark built-in node visitors as @internal
+ * Fix "odd" not working for negative numbers
+
+# 3.1.1 (2020-10-27)
+
+ * Fix "include(template_from_string())"
+
+# 3.1.0 (2020-10-21)
+
+ * Fix sandbox support when using "include(template_from_string())"
+ * Make round brackets optional for one argument tests like "same as" or "divisible by"
+ * Add support for ES2015 style object initialisation shortcut { a } is the same as { 'a': a }
+
+# 3.0.5 (2020-08-05)
+
+ * Fix twig_compare w.r.t. whitespace trimming
+ * Fix sandbox not disabled if syntax error occurs within {% sandbox %} tag
+ * Fix a regression when not using a space before an operator
+ * Restrict callables to closures in filters
+ * Allow trailing commas in argument lists (in calls as well as definitions)
+
+# 3.0.4 (2020-07-05)
+
+ * Fix comparison operators
+ * Fix options not taken into account when using "Michelf\MarkdownExtra"
+ * Fix "Twig\Extra\Intl\IntlExtension::getCountryName()" to accept "null" as a first argument
+ * Throw exception in case non-Traversable data is passed to "filter"
+ * Fix context optimization on PHP 7.4
+ * Fix PHP 8 compatibility
+ * Fix ambiguous syntax parsing
+
+# 3.0.3 (2020-02-11)
+
+ * Add a check to ensure that iconv() is defined
+
+# 3.0.2 (2020-02-11)
+
+ * Avoid exceptions when an intl resource is not found
+ * Fix implementation of case-insensitivity for method names
+
+# 3.0.1 (2019-12-28)
+
+ * fixed Symfony 5.0 support for the HTML extra extension
+
+# 3.0.0 (2019-11-15)
+
+ * fixed number formatter in Intl extra extension when using a formatter prototype
+
+# 3.0.0-BETA1 (2019-11-11)
+
+ * removed the "if" condition support on the "for" tag
+ * made the in, <, >, <=, >=, ==, and != operators more strict when comparing strings and integers/floats
+ * removed the "filter" tag
+ * added type hints everywhere
+ * changed Environment::resolveTemplate() to always return a TemplateWrapper instance
+ * removed Template::__toString()
+ * removed Parser::isReservedMacroName()
+ * removed SanboxedPrintNode
+ * removed Node::setTemplateName()
+ * made classes maked as "@final" final
+ * removed InitRuntimeInterface, ExistsLoaderInterface, and SourceContextLoaderInterface
+ * removed the "spaceless" tag
+ * removed Twig\Environment::getBaseTemplateClass() and Twig\Environment::setBaseTemplateClass()
+ * removed the "base_template_class" option on Twig\Environment
+ * bumped minimum PHP version to 7.2
+ * removed PSR-0 classes

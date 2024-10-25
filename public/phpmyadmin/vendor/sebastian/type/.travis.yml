@@ -1,0 +1,53 @@
+language: php
+
+php:
+  - 7.2
+  - 7.3
+  - 7.4snapshot
+  - nightly
+
+matrix:
+  allow_failures:
+    - php: master
+  fast_finish: true
+
+env:
+  matrix:
+    - DEPENDENCIES="high"
+    - DEPENDENCIES="low"
+  global:
+    - DEFAULT_COMPOSER_FLAGS="--no-interaction --no-ansi --no-progress --no-suggest"
+
+before_install:
+  - ./tools/composer clear-cache
+
+install:
+  - if [[ "$DEPENDENCIES" = 'high' ]]; then travis_retry ./tools/composer update $DEFAULT_COMPOSER_FLAGS; fi
+  - if [[ "$DEPENDENCIES" = 'low' ]]; then travis_retry ./tools/composer update $DEFAULT_COMPOSER_FLAGS --prefer-lowest; fi
+
+script:
+  - ./vendor/bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+
+notifications:
+  email: false
+
+jobs:
+  include:
+    - stage: "Static Code Analysis"
+      php: 7.3
+      env: php-cs-fixer
+      install:
+        - phpenv config-rm xdebug.ini
+      script:
+        - ./tools/php-cs-fixer fix --dry-run -v --show-progress=dots --diff-format=udiff
+    - stage: "Static Code Analysis"
+      php: 7.3
+      env: psalm
+      install:
+        - phpenv config-rm xdebug.ini
+      script:
+        - travis_retry ./tools/composer update $DEFAULT_COMPOSER_FLAGS
+        - ./tools/psalm --shepherd --stats

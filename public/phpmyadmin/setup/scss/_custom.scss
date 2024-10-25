@@ -1,0 +1,548 @@
+/* global styles */
+
+body {
+  margin-right: auto;
+  min-width: 960px;
+  padding-bottom: 1em;
+  color: #444;
+  font: 0.8em sans-serif;
+  background-image: linear-gradient(to right, #f3f3f3, #dadcde);
+  background-position: 180px 0;
+  background-repeat: repeat-y;
+  background-color: #f3f3f3;
+  background-size: 25px auto;
+}
+
+input,
+button,
+select,
+textarea,
+th,
+td {
+  font: 1em sans-serif;
+}
+
+img {
+  border: 0;
+}
+
+a {
+  &,
+  &:link,
+  &:visited,
+  &:active {
+    text-decoration: none;
+    color: #235a81;
+    cursor: pointer;
+    outline: none;
+  }
+
+  &:hover {
+    text-decoration: underline;
+    color: #235a81;
+  }
+}
+
+h1 {
+  font-size: 1.5em;
+}
+
+/* language selection box */
+
+#select_lang {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+}
+
+/* menu */
+
+#menu {
+  float: left;
+  width: 220px;
+  font-size: 1.1em;
+
+  ul {
+    margin: 1em 1em 1em 0.5em;
+    padding: 0;
+    list-style: none;
+  }
+
+  li a {
+    padding: 0.5em 0.6em;
+    margin-right: 0.6em;
+    display: block;
+    color: #333;
+    text-decoration: none;
+
+    &:hover,
+    &:active,
+    &.active {
+      background-color: #e4e4e4;
+    }
+  }
+}
+
+/* page contents and footer layout */
+
+#page {
+  margin-left: 220px;
+  margin-right: 25px;
+}
+
+#footer {
+  margin-top: 1em;
+
+  a {
+    margin-right: 0.5em;
+    text-decoration: none;
+    font-size: small;
+  }
+}
+
+/* phpMyAdmin logo colors */
+
+.blue {
+  color: #669;
+}
+
+.orange {
+  color: #f90;
+}
+
+.red {
+  color: #c00;
+}
+
+/* main page messages */
+
+/* message boxes: error, confirmation */
+.success h4,
+.notice h4,
+div.error h4 {
+  border-bottom: 1px solid;
+  font-weight: bold;
+  margin: 0 0 0.2em 0;
+}
+
+div.success,
+div.notice,
+div.error {
+  margin: 0.5em 0 1.3em 0;
+  border: 1px solid;
+  background: no-repeat 10px 10px;
+  padding: 10px 10px 10px 25px;
+  border-radius: 5px;
+  box-shadow: 0 1px 1px #fff inset;
+}
+
+.success a,
+.notice a,
+.error a {
+  text-decoration: underline;
+}
+
+.success {
+  color: #000;
+  background-color: #ebf8a4;
+}
+
+h1.success,
+div.success {
+  border-color: #a2d246;
+  background: url(../themes/pmahomme/img/s_success.png) no-repeat 5px 10px;
+}
+
+.success h4 {
+  border-color: #0f0;
+}
+
+.notice {
+  color: #000;
+  background-color: #e8eef1;
+}
+
+h1.notice,
+div.notice {
+  border-color: #3a6c7e;
+  background: url(../themes/pmahomme/img/s_notice.png) no-repeat 5px 10px;
+}
+
+.notice h4 {
+  border-color: #ffb10a;
+}
+
+.error {
+  border: 1px solid maroon !important;
+  color: #000;
+  background: pink;
+}
+
+h1.error,
+div.error {
+  border-color: #333;
+  background: url(../themes/pmahomme/img/s_error.png) no-repeat 5px 10px;
+}
+
+div.error h4 {
+  border-color: #f00;
+}
+
+div.notice[id^=version_check] {
+  border-color: #002dff;
+  background-color: #eef;
+}
+
+div.notice[id^=version_check] h4 {
+  border-color: #002dff;
+}
+
+/* "restore default value" and "set value: foo" buttons */
+
+.restore-default img,
+.set-value img {
+  margin-bottom: -3px;
+}
+
+.userprefs-comment {
+  cursor: help;
+  float: right;
+}
+
+.form {
+  border: 2px #dee1ff solid;
+}
+
+table caption,
+table th,
+table td {
+  text-shadow: 0 1px 0 #fff;
+}
+
+fieldset {
+  margin-top: 1em;
+  border-radius: 4px 4px 0 0;
+  border: #aaa solid 1px;
+  padding: 1.5em;
+  background: #eee;
+  text-shadow: 0 1px 0 #fff;
+  box-shadow: 1px 1px 2px #fff inset;
+
+  &.optbox {
+    padding: 0;
+  }
+
+  fieldset {
+    margin: 0.8em;
+    border: 1px solid #aaa;
+    background: #e8e8e8;
+  }
+
+  legend {
+    float: none;
+    width: auto;
+    font-size: 0.8rem;
+    font-weight: bold;
+    color: #444;
+    padding: 5px 10px;
+    border-radius: 2px;
+    border: 1px solid #aaa;
+    background-color: #fff;
+    box-shadow: 3px 3px 15px #bbb;
+  }
+
+  p {
+    margin: 0;
+    padding: 0.5em;
+    background: #fff;
+    border-top: 0;
+  }
+
+  .errors { /* form error list */
+    margin: 0 -2px 1em -2px;
+    padding: 0.5em 1.5em;
+    background: #fbead9;
+    border-color: #c83838;
+    border-style: solid;
+    border-width: 1px 0;
+    list-style: none;
+    font-family: sans-serif;
+    font-size: small;
+  }
+
+  .inline_errors { /* field error list */
+    margin: 0.3em 0.3em 0.3em 0;
+    padding: 0;
+    list-style: none;
+    color: #9a0000;
+    font-size: small;
+  }
+
+  th {
+    width: 40%;
+    min-width: 350px;
+    padding: 0.3em 0.3em 0.3em 0.5em;
+    text-align: left;
+    font-weight: bold;
+    vertical-align: top;
+  }
+
+  &.simple {
+    th {
+      width: auto;
+      min-width: 0;
+    }
+
+    th,
+    td {
+      border-top: none;
+      border-bottom: 1px #555 dotted;
+    }
+
+    .lastrow {
+      border: 0;
+    }
+  }
+
+  .doc {
+    margin-left: 1em;
+  }
+
+  td {
+    padding-top: 0.3em;
+    vertical-align: top;
+  }
+
+  td.userprefs-allow {
+    padding: 0;
+    vertical-align: middle;
+    text-align: center;
+    width: 3em;
+
+    &:hover {
+      cursor: pointer;
+      background-color: #eee;
+    }
+  }
+
+  th small {
+    display: block;
+    font-weight: normal;
+    font-family: sans-serif;
+    font-size: x-small;
+    color: #666;
+  }
+
+  .group-header th {
+    background: #eaedff;
+    border: none;
+  }
+
+  .group-field-1 th,
+  .group-header-2 th {
+    padding-left: 1em;
+  }
+
+  .group-field-2 th,
+  .group-header-3 th {
+    padding-left: 2em;
+  }
+
+  .group-field-3 th {
+    padding-left: 3em;
+  }
+}
+
+fieldset th,
+fieldset td,
+.form .lastrow {
+  border-top: 1px solid #d5d5d5;
+}
+
+fieldset .lastrow,
+.form .lastrow {
+  border-top: 1px #000 solid;
+  background: #d3dce3;
+  padding: 0.5em;
+  text-align: center;
+}
+
+input[type=text],
+input[type=password],
+input[type=number] {
+  border-radius: 2px;
+  box-shadow: 0 1px 2px #ddd;
+  background: white;
+  border: 1px solid #aaa;
+  color: #555;
+  padding: 4px;
+  margin: 6px;
+}
+
+input[type=submit],
+button[type=submit]:not(.mult_submit) {
+  font-weight: bold !important;
+}
+
+input[type=submit],
+button[type=submit]:not(.mult_submit),
+input[type=reset],
+input[name=submit_reset],
+input.button {
+  margin-left: 14px;
+  border: 1px solid #aaa;
+  padding: 3px 7px;
+  color: #111;
+  text-decoration: none;
+  background-color: #ddd;
+  border-radius: 12px;
+  text-shadow: 0 1px 0 #fff;
+  background-size: 100% 100%;
+  background-image: linear-gradient(to top, #fff, #ccc);
+
+  &:hover {
+    position: relative;
+    background-size: 100% 100%;
+    background-image: linear-gradient(to top, #ccc, #ddd);
+    cursor: pointer;
+  }
+
+  &:active {
+    position: relative;
+    top: 1px;
+    left: 1px;
+  }
+}
+
+input[type="checkbox"],
+input[type="radio"] {
+  vertical-align: -11%;
+}
+
+select {
+  border-radius: 2px;
+  box-shadow: 0 1px 2px #ddd;
+  border: 1px solid #aaa;
+  color: #333;
+  padding: 3px;
+  background: white;
+  margin: 6px;
+}
+
+/* form elements */
+
+span.checkbox {
+  padding: 2px;
+  display: inline-block;
+}
+
+.custom { /* customized field */
+  background: #ffc;
+}
+
+.checkbox.custom {
+  padding: 1px;
+  border: 1px #edec90 solid;
+}
+
+.field-error {
+  border-color: #c11 !important;
+}
+
+.field-comment {
+  position: relative;
+}
+
+.field-comment-mark {
+  cursor: help;
+  padding: 0 0.2em;
+  font-weight: bold;
+  font-style: italic;
+}
+
+.field-comment-warning {
+  color: #a00;
+}
+
+.green { /* default form button */
+  color: #080 !important;
+}
+
+table.datatable {
+  margin: 0.5em 0 1em;
+
+  th {
+    padding: 0 1em 0 0.5em;
+    border-bottom: 1px #999 solid;
+    text-align: left;
+  }
+
+  td {
+    padding: 1px 0.5em;
+    border-bottom: 1px #dee1ff solid;
+  }
+}
+
+/* textarea with config file's contents */
+
+#textconfig {
+  width: 100%;
+  border: 0;
+}
+
+/* error list */
+
+dd {
+  margin-left: 0.5em;
+
+  &::before {
+    content: "▸ ";
+  }
+}
+
+/* links on failed validation page, when saving a form */
+
+a.btn {
+  padding: 1px 5px;
+  text-decoration: none;
+  background: #e2e8ff;
+  border: 1px #a6c8ff solid;
+  border-top-color: #afd0ff;
+  border-left-color: #afd0ff;
+  font-weight: bold;
+
+  &:hover,
+  &:active {
+    background: #e6f5ff;
+    color: #004c96;
+  }
+}
+
+.hide {
+  display: none;
+}
+
+// Icons
+
+.icon {
+  margin: 0 0 0 0.3em;
+  padding: 0;
+  width: 16px;
+  height: 16px;
+}
+
+.ic_b_edit {
+  background-image: url('../themes/pmahomme/img/b_edit.png');
+}
+
+.ic_b_help {
+  background-image: url('../themes/pmahomme/img/b_help.png');
+}
+
+.ic_b_tblops {
+  background-image: url('../themes/pmahomme/img/b_tblops.png');
+}
+
+.ic_s_reload {
+  background-image: url('../themes/pmahomme/img/s_reload.png');
+}

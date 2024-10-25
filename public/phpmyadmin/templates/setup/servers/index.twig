@@ -1,0 +1,20 @@
+{% extends 'setup/base.twig' %}
+{% block content %}
+
+{% if mode == 'edit' and has_server %}
+  <h2>
+    {% trans 'Edit server' %}
+    {{ server_id }}
+    <small>({{ server_dsn }})</small>
+  </h2>
+{% elseif mode != 'revert' or not has_server %}
+  <h2>{% trans 'Add a new server' %}</h2>
+{% endif %}
+
+{% if mode == 'add' or mode == 'edit' or mode == 'revert' %}
+  {{ page|raw }}
+{% else %}
+  <p>{% trans 'Something went wrong.' %}</p>
+{% endif %}
+
+{% endblock %}

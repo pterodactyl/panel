@@ -1,0 +1,20 @@
+<nav aria-label="{% trans 'Pagination of user accounts' %}">
+  <ul id="userAccountsPagination" class="pagination">
+    {% for tmp_initial, initial_was_found in array_initials %}
+      {% if tmp_initial is not same as(null) %}
+        {% if initial_was_found %}
+          <li class="page-item{{ initial is same as(tmp_initial) ? ' active' }}"{{ initial is same as(tmp_initial) ? ' aria-current="page"' }}>
+            <a class="page-link" href="{{ url('/server/privileges', {'viewing_mode': viewing_mode, 'initial': tmp_initial}) }}">{{ tmp_initial }}</a>
+          </li>
+        {% else %}
+          <li class="page-item disabled">
+            <a class="page-link" href="#" tabindex="-1" aria-disabled="true">{{ tmp_initial }}</a>
+          </li>
+        {% endif %}
+      {% endif %}
+    {% endfor %}
+    <li class="page-item">
+      <a class="page-link text-nowrap" href="{{ url('/server/privileges', {'viewing_mode': viewing_mode, 'showall': true}) }}">{% trans 'Show all' %}</a>
+    </li>
+  </ul>
+</nav>

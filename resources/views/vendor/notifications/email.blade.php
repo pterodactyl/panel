@@ -88,9 +88,9 @@ $style = [
                                                 {{ $greeting }}
                                             @else
                                                 @if ($level == 'error')
-                                                    Whoops!
+                                                    Ups!
                                                 @else
-                                                    Hello!
+                                                    Hallo!
                                                 @endif
                                             @endif
                                         </h1>
@@ -140,7 +140,7 @@ $style = [
 
                                         <!-- Salutation -->
                                         <p style="{{ $style['paragraph'] }}">
-                                            Regards,<br>{{ config('app.name') }}
+                                            Viel Spaß beim Spielen!<br>{{ config('app.name') }}
                                         </p>
 
                                         <!-- Sub Copy -->
@@ -149,8 +149,8 @@ $style = [
                                                 <tr>
                                                     <td style="{{ $fontFamily }}">
                                                         <p style="{{ $style['paragraph-sub'] }}">
-                                                            If you’re having trouble clicking the "{{ $actionText }}" button,
-                                                            copy and paste the URL below into your web browser:
+                                                        Wenn du Probleme beim Klicken auf die Schaltfläche "{{ $actionText }}" hast,
+                                                        kopiere die folgende URL und füge sie in deinem Webbrowser ein:
                                                         </p>
 
                                                         <p style="{{ $style['paragraph-sub'] }}">

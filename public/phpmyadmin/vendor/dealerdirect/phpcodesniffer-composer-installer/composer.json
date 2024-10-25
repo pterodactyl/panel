@@ -1,0 +1,57 @@
+{
+  "name": "dealerdirect/phpcodesniffer-composer-installer",
+  "description": "PHP_CodeSniffer Standards Composer Installer Plugin",
+  "type": "composer-plugin",
+  "keywords": [
+    "composer", "installer", "plugin",
+    "phpcs", "phpcbf", "codesniffer", "phpcodesniffer", "php_codesniffer",
+    "standard", "standards", "style guide", "stylecheck",
+    "qa", "quality", "code quality", "tests"
+  ],
+  "homepage": "http://www.dealerdirect.com",
+  "license": "MIT",
+  "authors": [
+    {
+      "name": "Franck Nijhof",
+      "email": "franck.nijhof@dealerdirect.com",
+      "homepage": "http://www.frenck.nl",
+      "role": "Developer / IT Manager"
+    },
+    {
+      "name" : "Contributors",
+      "homepage" : "https://github.com/Dealerdirect/phpcodesniffer-composer-installer/graphs/contributors"
+    }
+  ],
+  "support": {
+    "issues": "https://github.com/dealerdirect/phpcodesniffer-composer-installer/issues",
+    "source": "https://github.com/dealerdirect/phpcodesniffer-composer-installer"
+  },
+  "require": {
+    "php": ">=5.3",
+    "composer-plugin-api": "^1.0 || ^2.0",
+    "squizlabs/php_codesniffer": "^2.0 || ^3.1.0 || ^4.0"
+  },
+  "require-dev": {
+    "composer/composer": "*",
+    "phpcompatibility/php-compatibility": "^9.0",
+    "php-parallel-lint/php-parallel-lint": "^1.3.1"
+  },
+  "minimum-stability": "dev",
+  "prefer-stable": true,
+  "autoload": {
+    "psr-4": {
+      "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\": "src/"
+    }
+  },
+  "extra": {
+    "class": "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin"
+  },
+  "scripts": {
+    "install-codestandards": [
+      "Dealerdirect\\Composer\\Plugin\\Installers\\PHPCodeSniffer\\Plugin::run"
+    ],
+    "lint": [
+      "@php ./vendor/php-parallel-lint/php-parallel-lint/parallel-lint . -e php --exclude vendor --exclude .git"
+    ]
+  }
+}

@@ -1,0 +1,85 @@
+<div class="responsivetable row">
+  <table id="tableprocesslist" class="table table-striped table-hover sortable w-auto">
+    <thead>
+      <tr>
+        <th>{% trans 'Processes' %}</th>
+        {% for column in columns %}
+          <th scope="col">
+            <a href="{{ url('/server/status/processes') }}" data-post="{{ get_common(column.params, '', false) }}" class="sortlink">
+              {{ column.name }}
+              {% if column.is_sorted %}
+                <img class="icon ic_s_desc soimg" alt="
+                  {%- trans 'Descending' %}" src="themes/dot.gif" style="display: {{ column.sort_order == 'DESC' ? 'none' : 'inline' }}">
+                <img class="icon ic_s_asc soimg hide" alt="
+                  {%- trans 'Ascending' %}" src="themes/dot.gif" style="display: {{ column.sort_order == 'DESC' ? 'inline' : 'none' }}">
+              {% endif %}
+            </a>
+            {% if column.has_full_query %}
+              <a href="{{ url('/server/status/processes') }}" data-post="{{ get_common(refresh_params, '', false) }}">
+                {% if column.is_full %}
+                  {{ get_image(
+                    's_partialtext',
+                    'Truncate shown queries'|trans,
+                    {'class': 'icon_fulltext'}
+                  ) }}
+                {% else %}
+                  {{ get_image(
+                    's_fulltext',
+                    'Show full queries'|trans,
+                    {'class': 'icon_fulltext'}
+                  ) }}
+                {% endif %}
+              </a>
+            {% endif %}
+          </th>
+        {% endfor %}
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for row in rows %}
+        <tr>
+          <td>
+            <a class="ajax kill_process" href="{{ url('/server/status/processes/kill/' ~ row.id) }}" data-post="{{ get_common({'kill': row.id}, '', false) }}">
+              {% trans 'Kill' %}
+            </a>
+          </td>
+          <td class="font-monospace text-end">{{ row.id }}</td>
+          <td>
+            {% if row.user != 'system user' %}
+              <a href="{{ url('/server/privileges', {
+                  'username': row.user,
+                  'hostname': row.host,
+                  'dbname': row.db,
+                  'tablename': '',
+                  'routinename': '',
+                }) }}">
+                {{ row.user }}
+              </a>
+            {% else %}
+              {{ row.user }}
+            {% endif %}
+          </td>
+          <td>{{ row.host }}</td>
+          <td>
+            {% if row.db != '' %}
+              <a href="{{ url('/database/structure', {
+                  'db': row.db,
+                }) }}">
+                {{ row.db }}
+              </a>
+            {% else %}
+              <em>{% trans 'None' %}</em>
+            {% endif %}
+          </td>
+          <td>{{ row.command }}</td>
+          <td class="font-monospace text-end">{{ row.time }}</td>
+          <td>{{ row.state }}</td>
+          {% if is_mariadb %}
+            <td>{{ row.progress }}</td>
+          {% endif %}
+          <td>{{ row.info|raw }}</td>
+      {% endfor %}
+    </tbody>
+  </table>
+</div>

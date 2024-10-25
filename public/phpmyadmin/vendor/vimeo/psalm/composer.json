@@ -1,0 +1,135 @@
+{
+    "name": "vimeo/psalm",
+    "type": "library",
+    "description": "A static analysis tool for finding errors in PHP applications",
+    "keywords": [
+        "php",
+        "code",
+        "inspection"
+    ],
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Matthew Brown"
+        }
+    ],
+    "require": {
+        "php": "^7.1|^8",
+        "ext-SimpleXML": "*",
+        "ext-ctype": "*",
+        "ext-dom": "*",
+        "ext-json": "*",
+        "ext-libxml": "*",
+        "ext-mbstring": "*",
+        "ext-tokenizer": "*",
+        "amphp/amp": "^2.4.2",
+        "amphp/byte-stream": "^1.5",
+        "composer/package-versions-deprecated": "^1.8.0",
+        "composer/semver": "^1.4 || ^2.0 || ^3.0",
+        "composer/xdebug-handler": "^1.1 || ^2.0 || ^3.0",
+        "dnoegel/php-xdg-base-dir": "^0.1.1",
+        "felixfbecker/advanced-json-rpc": "^3.0.3",
+        "felixfbecker/language-server-protocol": "^1.5",
+        "netresearch/jsonmapper": "^1.0 || ^2.0 || ^3.0 || ^4.0",
+        "nikic/php-parser": "^4.13",
+        "openlss/lib-array2xml": "^1.0",
+        "sebastian/diff": "^3.0 || ^4.0",
+        "symfony/console": "^3.4.17 || ^4.1.6 || ^5.0 || ^6.0",
+        "symfony/polyfill-php80": "^1.25",
+        "webmozart/path-util": "^2.3"
+    },
+    "provide": {
+        "psalm/psalm": "self.version"
+    },
+    "require-dev": {
+        "ext-curl": "*",
+        "bamarni/composer-bin-plugin": "^1.2",
+        "brianium/paratest": "^4.0||^6.0",
+        "php-parallel-lint/php-parallel-lint": "^1.2",
+        "phpdocumentor/reflection-docblock": "^5",
+        "phpmyadmin/sql-parser": "5.1.0||dev-master",
+        "phpspec/prophecy": ">=1.9.0",
+        "phpunit/phpunit": "^9.0",
+        "psalm/plugin-phpunit": "^0.16",
+        "slevomat/coding-standard": "^7.0",
+        "phpstan/phpdoc-parser": "1.2.* || 1.6.4",
+        "squizlabs/php_codesniffer": "^3.5",
+        "symfony/process": "^4.3 || ^5.0 || ^6.0",
+        "weirdan/prophecy-shim": "^1.0 || ^2.0"
+    },
+    "suggest": {
+        "ext-igbinary": "^2.0.5 is required, used to serialize caching data",
+        "ext-curl": "In order to send data to shepherd"
+    },
+    "config": {
+        "allow-plugins": {
+            "bamarni/composer-bin-plugin": true,
+            "composer/package-versions-deprecated": true,
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true,
+        "platform-check": false
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "4.x-dev",
+            "dev-3.x": "3.x-dev",
+            "dev-2.x": "2.x-dev",
+            "dev-1.x": "1.x-dev"
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Psalm\\": "src/Psalm/"
+        },
+        "files": [
+            "src/functions.php",
+            "src/spl_object_id.php"
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Psalm\\Tests\\": "tests/"
+        }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "examples/plugins/composer-based/echo-checker"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": true,
+    "bin": [
+        "psalm",
+        "psalm-language-server",
+        "psalm-plugin",
+        "psalm-refactor",
+        "psalter"
+    ],
+    "scripts": {
+        "cs": "phpcs -p",
+        "cs-fix": "phpcbf -p",
+        "lint": "parallel-lint ./src ./tests",
+        "phpunit": "paratest --runner=WrapperRunner",
+        "phpunit-std": "phpunit",
+        "verify-callmap": "phpunit tests/Internal/Codebase/InternalCallMapHandlerTest.php",
+        "psalm": "@php ./psalm --find-dead-code",
+        "tests": [
+            "@lint",
+            "@cs",
+            "@psalm",
+            "@phpunit"
+        ]
+    },
+    "scripts-descriptions": {
+        "cs": "Checks that the code conforms to the coding standard.",
+        "cs-fix": "Automatically correct coding standard violations.",
+        "lint": "Runs unit tests.",
+        "phpunit": "Runs unit tests in parallel.",
+        "phpunit-std": "Runs unit tests.",
+        "psalm": "Runs static analysis.",
+        "tests": "Runs all available tests."
+    }
+}

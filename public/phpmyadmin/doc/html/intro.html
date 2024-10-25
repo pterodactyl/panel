@@ -1,0 +1,186 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Introduction &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Requirements" href="require.html" />
+    <link rel="prev" title="Welcome to phpMyAdmin’s documentation!" href="index.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="require.html" title="Requirements"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to phpMyAdmin’s documentation!"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Introduction</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="introduction">
+<span id="intro"></span><h1>Introduction<a class="headerlink" href="#introduction" title="Permalink to this headline">¶</a></h1>
+<p>phpMyAdmin is a free software tool written in PHP that is intended to handle the
+administration of a MySQL or MariaDB database server. You can use phpMyAdmin to
+perform most administration tasks, including creating a database, running queries,
+and adding user accounts.</p>
+<div class="section" id="supported-features">
+<h2>Supported features<a class="headerlink" href="#supported-features" title="Permalink to this headline">¶</a></h2>
+<p>Currently phpMyAdmin can:</p>
+<ul class="simple">
+<li><p>create, browse, edit, and drop databases, tables, views, columns, and indexes</p></li>
+<li><p>display multiple results sets through stored procedures or queries</p></li>
+<li><p>create, copy, drop, rename and alter databases, tables, columns and
+indexes</p></li>
+<li><p>maintenance server, databases and tables, with proposals on server
+configuration</p></li>
+<li><p>execute, edit and bookmark any <a class="reference internal" href="glossary.html#term-SQL"><span class="xref std std-term">SQL</span></a>-statement, even batch-queries</p></li>
+<li><p>load text files into tables</p></li>
+<li><p>create <a class="footnote-reference brackets" href="#f1" id="id1">1</a> and read dumps of tables</p></li>
+<li><p>export <a class="footnote-reference brackets" href="#f1" id="id2">1</a> data to various formats: <a class="reference internal" href="glossary.html#term-CSV"><span class="xref std std-term">CSV</span></a>, <a class="reference internal" href="glossary.html#term-XML"><span class="xref std std-term">XML</span></a>, <a class="reference internal" href="glossary.html#term-PDF"><span class="xref std std-term">PDF</span></a>,
+<a class="reference internal" href="glossary.html#term-ISO"><span class="xref std std-term">ISO</span></a>/<a class="reference internal" href="glossary.html#term-IEC"><span class="xref std std-term">IEC</span></a> 26300 - <a class="reference internal" href="glossary.html#term-OpenDocument"><span class="xref std std-term">OpenDocument</span></a> Text and Spreadsheet, Microsoft
+Word 2000, and LATEX formats</p></li>
+<li><p>import data and <a class="reference internal" href="glossary.html#term-MySQL"><span class="xref std std-term">MySQL</span></a> structures from <a class="reference internal" href="glossary.html#term-OpenDocument"><span class="xref std std-term">OpenDocument</span></a> spreadsheets, as
+well as <a class="reference internal" href="glossary.html#term-XML"><span class="xref std std-term">XML</span></a>, <a class="reference internal" href="glossary.html#term-CSV"><span class="xref std std-term">CSV</span></a>, and <a class="reference internal" href="glossary.html#term-SQL"><span class="xref std std-term">SQL</span></a> files</p></li>
+<li><p>administer multiple servers</p></li>
+<li><p>add, edit, and remove MySQL user accounts and privileges</p></li>
+<li><p>check referential integrity in MyISAM tables</p></li>
+<li><p>using Query-by-example (QBE), create complex queries automatically
+connecting required tables</p></li>
+<li><p>create <a class="reference internal" href="glossary.html#term-PDF"><span class="xref std std-term">PDF</span></a> graphics of your
+database layout</p></li>
+<li><p>search globally in a database or a subset of it</p></li>
+<li><p>transform stored data into any format using a set of predefined
+functions, like displaying BLOB-data as image or download-link</p></li>
+<li><p>track changes on databases, tables and views</p></li>
+<li><p>support InnoDB tables and foreign keys</p></li>
+<li><p>support mysqli, the improved MySQL extension see <a class="reference internal" href="faq.html#faq1-17"><span class="std std-ref">1.17 Which Database versions does phpMyAdmin support?</span></a></p></li>
+<li><p>create, edit, call, export and drop stored procedures and functions</p></li>
+<li><p>create, edit, export and drop events and triggers</p></li>
+<li><p>communicate in <a class="reference external" href="https://www.phpmyadmin.net/translations/">80 different languages</a></p></li>
+</ul>
+</div>
+<div class="section" id="shortcut-keys">
+<h2>Shortcut keys<a class="headerlink" href="#shortcut-keys" title="Permalink to this headline">¶</a></h2>
+<p>Currently phpMyAdmin supports following shortcuts:</p>
+<ul class="simple">
+<li><p>k - Toggle console</p></li>
+<li><p>h - Go to home page</p></li>
+<li><p>s - Open settings</p></li>
+<li><p>d + s - Go to database structure (Provided you are in database related page)</p></li>
+<li><p>d + f - Search database (Provided you are in database related page)</p></li>
+<li><p>t + s - Go to table structure (Provided you are in table related page)</p></li>
+<li><p>t + f - Search table (Provided you are in table related page)</p></li>
+<li><p>backspace - Takes you to older page.</p></li>
+</ul>
+</div>
+<div class="section" id="a-word-about-users">
+<h2>A word about users<a class="headerlink" href="#a-word-about-users" title="Permalink to this headline">¶</a></h2>
+<p>Many people have difficulty understanding the concept of user
+management with regards to phpMyAdmin. When a user logs in to
+phpMyAdmin, that username and password are passed directly to MySQL.
+phpMyAdmin does no account management on its own (other than allowing
+one to manipulate the MySQL user account information); all users must
+be valid MySQL users.</p>
+<p class="rubric">Footnotes</p>
+<dl class="footnote brackets">
+<dt class="label" id="f1"><span class="brackets">1</span><span class="fn-backref">(<a href="#id1">1</a>,<a href="#id2">2</a>)</span></dt>
+<dd><p>phpMyAdmin can compress (<a class="reference internal" href="glossary.html#term-ZIP"><span class="xref std std-term">ZIP</span></a>, <a class="reference internal" href="glossary.html#term-GZip"><span class="xref std std-term">GZip</span></a> or <a class="reference internal" href="glossary.html#term-RFC-1952"><span class="xref std std-term">RFC 1952</span></a>
+formats) dumps and <a class="reference internal" href="glossary.html#term-CSV"><span class="xref std std-term">CSV</span></a> exports if you use PHP with
+<a class="reference internal" href="glossary.html#term-Zlib"><span class="xref std std-term">Zlib</span></a> support (<code class="docutils literal notranslate"><span class="pre">--with-zlib</span></code>).
+Proper support may also need changes in <code class="file docutils literal notranslate"><span class="pre">php.ini</span></code>.</p>
+</dd>
+</dl>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Introduction</a><ul>
+<li><a class="reference internal" href="#supported-features">Supported features</a></li>
+<li><a class="reference internal" href="#shortcut-keys">Shortcut keys</a></li>
+<li><a class="reference internal" href="#a-word-about-users">A word about users</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">Welcome to phpMyAdmin’s documentation!</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="require.html"
+                        title="next chapter">Requirements</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/intro.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="require.html" title="Requirements"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="index.html" title="Welcome to phpMyAdmin’s documentation!"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Introduction</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

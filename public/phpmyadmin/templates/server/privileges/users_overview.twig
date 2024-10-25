@@ -1,0 +1,182 @@
+<form name="usersForm" id="usersForm" action="{{ url('/server/privileges') }}" method="post">
+  {{ get_hidden_inputs() }}
+  <div class="table-responsive">
+    <table id="userRightsTable" class="table table-striped table-hover w-auto">
+      <thead>
+        <tr>
+          <th></th>
+          <th scope="col">{% trans 'User name' %}</th>
+          <th scope="col">{% trans 'Host name' %}</th>
+          <th scope="col">{% trans 'Password' %}</th>
+          <th scope="col">
+            {% trans 'Global privileges' %}
+            {{ show_hint('Note: MySQL privilege names are expressed in English.') }}
+          </th>
+          {% if menus_work %}
+            <th scope="col">{% trans 'User group' %}</th>
+          {% endif %}
+          <th scope="col">{% trans 'Grant' %}</th>
+          {%- set action_colspan = 2 %}
+          {%- if user_group_count > 0 %}{% set action_colspan = action_colspan + 1 %}{% endif %}
+          {%- if has_account_locking %}{% set action_colspan = action_colspan + 1 %}{% endif %}
+          <th scope="col" colspan="{{ action_colspan }}">{% trans 'Action' %}</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for host in hosts %}
+          <tr>
+            <td>
+              <input type="checkbox" class="checkall" id="checkbox_sel_users_{{ loop.index }}" value="
+                {{- host.user ~ '&amp;#27;' ~ host.host }}" name="selected_usr[]">
+            </td>
+            <td>
+              <label for="checkbox_sel_users_{{ loop.index }}">
+                {% if host.user is empty %}
+                  <span class="text-danger">{% trans 'Any' %}</span>
+                {% else %}
+                 <a class="edit_user_anchor" href="{{ url('/server/privileges', {
+                  'username': host.user,
+                  'hostname': host.host,
+                  'dbname': '',
+                  'tablename': '',
+                  'routinename': '',
+                }) }}">
+                 {{ host.user }}
+                 </a>
+                {% endif %}
+              </label>
+            </td>
+            <td>{{ host.host }}</td>
+            <td>
+              {% if host.has_password %}
+                {% trans 'Yes' %}
+              {% else %}
+                <span class="text-danger">{% trans 'No' %}</span>
+              {% endif %}
+              {{ not host.has_select_priv ? show_hint('The selected user was not found in the privilege table.'|trans) }}
+            </td>
+            <td>
+              <code>{{ host.privileges|join(', ')|raw }}</code>
+            </td>
+            {% if menus_work %}
+              <td class="usrGroup">{{ host.group }}</td>
+            {% endif %}
+            <td>{{ host.has_grant ? 'Yes'|trans : 'No'|trans }}</td>
+            {% if is_grantuser %}
+              <td class="text-center">
+                <a class="edit_user_anchor" href="{{ url('/server/privileges', {
+                  'username': host.user,
+                  'hostname': host.host,
+                  'dbname': '',
+                  'tablename': '',
+                  'routinename': '',
+                }) }}">
+                  {{ get_icon('b_usredit', 'Edit privileges'|trans) }}
+                </a>
+              </td>
+            {% endif %}
+            {% if menus_work and user_group_count > 0 %}
+              <td class="text-center">
+                {% if host.user is not empty %}
+                  <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#editUserGroupModal" data-username="{{ host.user }}">
+                    {{ get_icon('b_usrlist', 'Edit user group'|trans) }}
+                  </button>
+                {% endif %}
+              </td>
+            {% endif %}
+            <td class="text-center">
+              <a class="export_user_anchor ajax" href="{{ url('/server/privileges', {
+                'username': host.user,
+                'hostname': host.host,
+                'initial': initial,
+                'export': true,
+              }) }}">
+                {{ get_icon('b_tblexport', 'Export'|trans) }}
+              </a>
+            </td>
+            {% if has_account_locking %}
+              <td>
+                <button type="button" class="btn btn-link p-0 jsAccountLocking" title="{{ host.is_account_locked ? 'Unlock this account.'|trans : 'Lock this account.'|trans }}" data-is-locked="{{ host.is_account_locked ? 'true' : 'false' }}" data-user-name="{{ host.user }}" data-host-name="{{ host.host }}">
+                  {% if host.is_account_locked %}
+                    {% set unlock_text %}{% trans %}Unlock{% context %}Unlock the account.{% endtrans %}{% endset %}
+                    {{ get_icon('s_unlock', unlock_text|e) }}
+                  {% else %}
+                    {% set lock_text %}{% trans %}Lock{% context %}Lock the account.{% endtrans %}{% endset %}
+                    {{ get_icon('s_lock', lock_text|e) }}
+                  {% endif %}
+                </button>
+              </td>
+            {% endif %}
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="float-start row">
+    <div class="col-12">
+      <img class="selectallarrow" width="38" height="22" src="
+        {{- image('arrow_' ~ text_dir ~ '.png') }}" alt="{% trans 'With selected:' %}">
+      <input type="checkbox" id="usersForm_checkall" class="checkall_box" title="{% trans 'Check all' %}">
+      <label for="usersForm_checkall">{% trans 'Check all' %}</label>
+      <em class="with-selected">{% trans 'With selected:' %}</em>
+
+      <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="export" title="{% trans 'Export' %}">
+        {{ get_icon('b_tblexport', 'Export'|trans) }}
+      </button>
+
+      <input type="hidden" name="initial" value="{{ initial }}">
+    </div>
+  </div>
+
+  <div class="clearfloat"></div>
+
+  {% if is_createuser %}
+    <div class="card mb-3">
+      <div class="card-header">{% trans %}New{% context %}Create new user{% endtrans %}</div>
+      <div class="card-body">
+        <a id="add_user_anchor" href="{{ url('/server/privileges', {'adduser': true}) }}">
+          {{ get_icon('b_usradd', 'Add user account'|trans) }}
+        </a>
+      </div>
+    </div>
+  {% endif %}
+
+  <div id="deleteUserCard" class="card mb-3">
+    <div class="card-header">{{ get_icon('b_usrdrop', 'Remove selected user accounts'|trans) }}</div>
+    <div class="card-body">
+      <p class="card-text">{% trans 'Revoke all active privileges from the users and delete them afterwards.' %}</p>
+      <div class="form-check">
+        <input class="form-check-input" type="checkbox" id="dropUsersDbCheckbox" name="drop_users_db">
+        <label class="form-check-label" for="dropUsersDbCheckbox">
+          {% trans 'Drop the databases that have the same names as the users.' %}
+        </label>
+      </div>
+    </div>
+    <div class="card-footer text-end">
+      <input type="hidden" name="mode" value="2">
+      <input id="buttonGo" class="btn btn-primary ajax" type="submit" name="delete" value="{% trans 'Go' %}">
+    </div>
+  </div>
+</form>
+
+<div class="modal fade" id="editUserGroupModal" tabindex="-1" aria-labelledby="editUserGroupModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="editUserGroupModalLabel">{% trans 'Edit user group' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">{% trans 'Loading…' %}</span>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+        <button type="button" class="btn btn-primary" id="editUserGroupModalSaveButton">{% trans 'Save changes' %}</button>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,62 @@
+{
+  "name": "phpmyadmin",
+  "version": "5.2.1",
+  "description": "A web interface for MySQL and MariaDB",
+  "repository": "https://github.com/phpmyadmin/phpmyadmin.git",
+  "author": "The phpMyAdmin Team <developers@phpmyadmin.net> (https://www.phpmyadmin.net/team/)",
+  "license": "GPL-2.0",
+  "private": true,
+  "engines": {
+    "node": ">=10"
+  },
+  "dependencies": {
+    "@babel/cli": "^7.18.9",
+    "@babel/core": "^7.18.9",
+    "@babel/preset-env": "^7.18.9",
+    "@popperjs/core": "^2.11.5",
+    "@zxcvbn-ts/core": "^2.0.1",
+    "autoprefixer": "^10.4.7",
+    "bootstrap": "5.2.3",
+    "codemirror": "5.65.10",
+    "jquery": "3.6.3",
+    "jquery-debounce-throttle": "^1.0.6-rc.0",
+    "jquery-migrate": "3.4.0",
+    "jquery-ui-dist": "1.13.2",
+    "jquery-ui-timepicker-addon": "1.6.3",
+    "jquery-uitablefilter": "^1.0.0",
+    "jquery-validation": "1.19.5",
+    "js-cookie": "2.2.1",
+    "locutus.sprintf": "^2.0.14-code-lts.2",
+    "ol": "6.15.1",
+    "postcss": "^8.4.14",
+    "postcss-cli": "^9.1.0",
+    "rtlcss": "^3.5.0",
+    "sass": "^1.53.0",
+    "tablesorter": "^2.31.3",
+    "tracekit": "0.4.6",
+    "u2f-api-polyfill": "0.4.4",
+    "updated-jqplot": "1.0.9"
+  },
+  "devDependencies": {
+    "babel-jest": "^27.3.1",
+    "eslint": "^7.32.0",
+    "eslint-plugin-compat": "^3.13.0",
+    "eslint-plugin-no-jquery": "^2.7.0",
+    "jest": "^27.3.1",
+    "stylelint": "^13.13.1",
+    "stylelint-config-recommended-scss": "^4.3.0",
+    "stylelint-config-standard": "^22.0.0",
+    "stylelint-scss": "^3.21.0"
+  },
+  "scripts": {
+    "postinstall": "yarn run build",
+    "build": "yarn run css-compile --style=compressed && yarn run css-prefix && yarn run css-rtl && yarn run js-compile",
+    "css-compile": "sass themes/pmahomme/scss:themes/pmahomme/css themes/original/scss:themes/original/css themes/metro/scss:themes/metro/css themes/bootstrap/scss:themes/bootstrap/css setup/scss:setup",
+    "css-lint": "stylelint -s scss \"themes/**/scss/*.scss\" \"setup/scss/*.scss\"",
+    "css-prefix": "postcss themes/*/css/*.css setup/styles.css --use autoprefixer --replace",
+    "css-rtl": "yarn run rtlcss -c .rtlcssrc.json themes/bootstrap/css/theme.css && yarn run rtlcss -c .rtlcssrc.json themes/pmahomme/css/theme.css && yarn run rtlcss -c .rtlcssrc.json themes/original/css/theme.css && yarn run rtlcss -c .rtlcssrc.json themes/metro/css/theme.css && yarn run rtlcss -c .rtlcssrc.json themes/metro/css/blueeyes-theme.css && yarn run rtlcss -c .rtlcssrc.json themes/metro/css/mono-theme.css && yarn run rtlcss -c .rtlcssrc.json themes/metro/css/redmond-theme.css && yarn run rtlcss -c .rtlcssrc.json themes/metro/css/teal-theme.css",
+    "js-lint": "eslint js/src test/javascript test/jest jest.config.js",
+    "js-compile": "babel js/src -d js/dist",
+    "test": "jest"
+  }
+}

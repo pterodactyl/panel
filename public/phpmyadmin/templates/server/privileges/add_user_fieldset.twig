@@ -1,0 +1,12 @@
+<div class="row">
+<div class="col-12">
+    <fieldset class="pma-fieldset" id="fieldset_add_user">
+        <legend>{% trans %}New{% context %}Create new user{% endtrans %}</legend>
+        <a id="add_user_anchor" href="{{ url('/server/privileges', url_params) }}"
+            {% if rel_params is not empty %}
+                rel="{{ get_common(rel_params) }}"
+            {% endif %}>
+            {{ get_icon('b_usradd') }}{% trans 'Add user account' %}</a>
+    </fieldset>
+</div>
+</div>

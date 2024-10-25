@@ -1,0 +1,47 @@
+// Document
+
+*:focus {
+  outline: none;
+}
+
+// Body
+
+body {
+  text-align: left;
+}
+
+// Typography
+
+h1 {
+  font-family: $font-family-light;
+  color: $navi-background;
+  margin: 0;
+  letter-spacing: -1px;
+  line-height: 1;
+}
+
+h2 {
+  color: $navi-background;
+  font-family: $font-family-light;
+  margin-top: 10px;
+  margin-bottom: 0;
+  line-height: 1;
+  letter-spacing: -1px;
+}
+
+h3 {
+  font-family: $font-family-extra-bold;
+  text-transform: uppercase;
+}
+
+// Forms
+
+input,
+select {
+  font-size: 1em;
+}
+
+textarea {
+  font-family: $font-family-monospace;
+  font-size: 1.2em;
+}

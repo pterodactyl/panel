@@ -1,0 +1,10 @@
+{% if comments_map[table_name] is defined
+    and comments_map[table_name][column_name] is defined %}
+    <br><span class="tblcomment" title="{{ comments_map[table_name][column_name] }}">
+        {% if comments_map[table_name][column_name]|length > limit_chars %}
+            {{ comments_map[table_name][column_name]|slice(0, limit_chars) }}…
+        {% else %}
+            {{ comments_map[table_name][column_name] }}
+        {% endif %}
+    </span>
+{% endif %}

@@ -1,0 +1,12 @@
+@import "../../bootstrap/scss/breadcrumb";
+
+.breadcrumb-navbar {
+  font-weight: bold;
+
+  .breadcrumb-comment {
+    color: #d6d6d6;
+    font-weight: bold;
+    font-style: italic;
+    text-shadow: none;
+  }
+}

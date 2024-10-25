@@ -1,0 +1,138 @@
+<tr>
+    {# Drop key anchor #}
+    <td>
+        {% set js_msg = '' %}
+        {% set this_params = null %}
+        {% if one_key['constraint'] is defined %}
+            {% set drop_fk_query = 'ALTER TABLE ' ~ backquote(db) ~ '.' ~ backquote(table)
+                ~ ' DROP FOREIGN KEY '
+                ~ backquote(one_key['constraint']) ~ ';'
+            %}
+            {% set this_params = url_params %}
+            {% set this_params = {
+                'goto': url('/table/relation'),
+                'back': url('/table/relation'),
+                'sql_query': drop_fk_query,
+                'message_to_show': 'Foreign key constraint %s has been dropped'|trans|format(
+                    one_key['constraint']
+                )
+            } %}
+            {% set js_msg = 'ALTER TABLE ' ~ db ~ '.' ~ table ~ ' DROP FOREIGN KEY ' ~ one_key['constraint'] ~ ';' %}
+        {% endif %}
+        {% if one_key['constraint'] is defined %}
+            <input type="hidden" class="drop_foreign_key_msg" value="
+                {{- js_msg }}">
+            {% set drop_str = get_icon('b_drop', 'Drop'|trans) %}
+            {{ link_or_button(url('/sql'), this_params, drop_str, {'class': 'drop_foreign_key_anchor ajax'}) }}
+        {% endif %}
+    </td>
+    <td>
+        <span class="formelement clearfloat">
+            <input type="text" name="constraint_name[{{ i }}]" value="
+                {{- one_key['constraint'] is defined ? one_key['constraint'] -}}
+                " placeholder="{% trans 'Constraint name' %}" maxlength="64">
+        </span>
+        <div class="float-start">
+            {# For ON DELETE and ON UPDATE, the default action
+               is RESTRICT as per MySQL doc; however, a SHOW CREATE TABLE
+               won't display the clause if it's set as RESTRICT. #}
+            {% set on_delete = one_key['on_delete'] is defined
+                ? one_key['on_delete'] : 'RESTRICT' %}
+            {% set on_update = one_key['on_update'] is defined
+                ? one_key['on_update'] : 'RESTRICT' %}
+            <span class="formelement">
+                {% include 'table/relation/dropdown_generate.twig' with {
+                    'dropdown_question': 'ON DELETE',
+                    'select_name': 'on_delete[' ~ i ~ ']',
+                    'choices': options_array,
+                    'selected_value': on_delete
+                } only %}
+            </span>
+            <span class="formelement">
+                {% include 'table/relation/dropdown_generate.twig' with {
+                    'dropdown_question': 'ON UPDATE',
+                    'select_name': 'on_update[' ~ i ~ ']',
+                    'choices': options_array,
+                    'selected_value': on_update
+                } only %}
+            </span>
+        </div>
+    </td>
+    <td>
+        {% if one_key['index_list'] is defined %}
+            {% for key, column in one_key['index_list'] %}
+                <span class="formelement clearfloat">
+                    {% include 'table/relation/dropdown_generate.twig' with {
+                        'dropdown_question': '',
+                        'select_name': 'foreign_key_fields_name[' ~ i ~ '][]',
+                        'choices': column_array,
+                        'selected_value': column
+                    } only %}
+                </span>
+            {% endfor %}
+        {% else %}
+            <span class="formelement clearfloat">
+                {% include 'table/relation/dropdown_generate.twig' with {
+                    'dropdown_question': '',
+                    'select_name': 'foreign_key_fields_name[' ~ i ~ '][]',
+                    'choices': column_array,
+                    'selected_value': ''
+                } only %}
+            </span>
+        {% endif %}
+        <a class="formelement clearfloat add_foreign_key_field" data-index="
+            {{- i }}" href="">
+            {% trans '+ Add column' %}
+        </a>
+    </td>
+    {% set tables = [] %}
+    {% if foreign_db %}
+        {% set tables = get_tables(foreign_db, tbl_storage_engine) %}
+    {% else %}
+        {% set tables = get_tables(db, tbl_storage_engine) %}
+    {% endif %}
+    <td>
+        <span class="formelement clearfloat">
+            {% include 'table/relation/relational_dropdown.twig' with {
+                'name': 'destination_foreign_db[' ~ i ~ ']',
+                'title': 'Database'|trans,
+                'values': databases,
+                'foreign': foreign_db,
+                'db': db
+            } only %}
+        </span>
+    </td>
+    <td>
+        <span class="formelement clearfloat">
+            {% include 'table/relation/relational_dropdown.twig' with {
+                'name': 'destination_foreign_table[' ~ i ~ ']',
+                'title': 'Table'|trans,
+                'values': tables,
+                'foreign': foreign_table
+            } only %}
+        </span>
+    </td>
+    <td>
+        {% if foreign_db and foreign_table %}
+            {% for foreign_column in one_key['ref_index_list'] %}
+                <span class="formelement clearfloat">
+                    {% include 'table/relation/relational_dropdown.twig' with {
+                        'name': 'destination_foreign_column[' ~ i ~ '][]',
+                        'title': 'Column'|trans,
+                        'values': unique_columns,
+                        'foreign': foreign_column
+                    } only %}
+                </span>
+            {% endfor %}
+        {% else %}
+            <span class="formelement clearfloat">
+                {% include 'table/relation/relational_dropdown.twig' with {
+                    'name': 'destination_foreign_column[' ~ i ~ '][]',
+                    'title': 'Column'|trans,
+                    'values': [],
+                    'foreign': ''
+                } only %}
+            </span>
+        {% endif %}
+    </td>
+</tr>

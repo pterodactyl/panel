@@ -1,0 +1,13 @@
+<form action="{{ url('/database/designer') }}" method="post" name="edit_delete_pages" id="edit_delete_pages" class="ajax">
+    {{ get_hidden_inputs(db) }}
+    <fieldset class="pma-fieldset" id="page_edit_delete_options">
+        <input type="hidden" name="operation" value="{{ operation }}">
+        <label for="selected_page">
+            {{ operation == 'editPage' ? 'Page to open'|trans : 'Page to delete'|trans }}:
+        </label>
+        {% include 'database/designer/page_selector.twig' with {
+            'pdfwork': pdfwork,
+            'pages': pages
+        } only %}
+    </fieldset>
+</form>

@@ -1,0 +1,7 @@
+#!/usr/bin/env php
+<?php
+
+use Psalm\Internal\Cli\Refactor;
+
+require_once __DIR__ . '/src/Psalm/Internal/Cli/Refactor.php';
+Refactor::run($argv);

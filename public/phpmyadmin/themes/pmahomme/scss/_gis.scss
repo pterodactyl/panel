@@ -1,0 +1,36 @@
+/**
+ * GIS data editor styles
+ */
+a.close_gis_editor {
+  float: right;
+}
+
+#gis_editor {
+  display: none;
+  position: fixed;
+  z-index: 1001;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#gis_data {
+  min-height: 230px;
+}
+
+#gis_data_textarea {
+  height: 6em;
+}
+
+#gis_data_editor {
+  background: #d0dce0;
+  padding: 15px;
+  min-height: 500px;
+
+  .choice {
+    display: none;
+  }
+
+  input[type="text"] {
+    width: 75px;
+  }
+}

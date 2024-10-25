@@ -1,0 +1,19 @@
+<?php
+
+/**
+ * @template TValue
+ *
+ * @template-implements Traversable<int, TValue>
+ */
+class PDOStatement implements Traversable
+{
+    /**
+     * @psalm-taint-sink callable $class
+     *
+     * @template T of object
+     * @param class-string<T> $class
+     * @param array $ctorArgs
+     * @return false|T
+     */
+    public function fetchObject($class = \stdclass::class, array $ctorArgs = array()) {}
+}

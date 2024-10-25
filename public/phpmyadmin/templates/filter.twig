@@ -1,0 +1,9 @@
+<div class="card mb-3" id="tableFilter">
+  <div class="card-header">{% trans 'Filters' %}</div>
+  <div class="card-body row row-cols-lg-auto gy-1 gx-3 align-items-center">
+    <label class="col-12 col-form-label" for="filterText">{% trans 'Containing the word:' %}</label>
+    <div class="col-12">
+      <input class="form-control" name="filterText" type="text" id="filterText" value="{{ filter_value }}">
+    </div>
+  </div>
+</div>

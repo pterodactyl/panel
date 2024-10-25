@@ -1,0 +1,66 @@
+<tr>
+  <td>
+    <input type="checkbox" name="selected_usr[]" id="checkbox_sel_users_" value="
+      {{- user.name ~ '&amp;#27;' ~ user.host }}">
+  </td>
+  <td>
+    <label for="checkbox_sel_users_">
+      {% if user.name is empty %}
+        <span class="text-danger">{% trans 'Any' %}</span>
+      {% else %}
+        {{ user.name }}
+      {% endif %}
+    </label>
+  </td>
+  <td>
+    {{ user.host }}
+  </td>
+  <td>
+    {% if user.has_password %}
+      {% trans 'Yes' %}
+    {% else %}
+      <span class="text-danger">{% trans 'No' %}</span>
+    {% endif %}
+  </td>
+  <td>
+    <code>
+      {{ user.privileges|raw }}
+    </code>
+  </td>
+  {% if user.has_group %}
+    <td class="usrGroup"></td>
+  {% endif %}
+  <td>
+    {{ user.has_grant ? 'Yes'|trans : 'No'|trans }}
+  </td>
+  {% if is_grantuser %}
+    <td>
+      <a class="edit_user_anchor" href="{{ url('/server/privileges', {
+        'username': user.name,
+        'hostname': user.host,
+        'dbname': '',
+        'tablename': '',
+        'routinename': ''
+      }) }}">
+        {{ get_icon('b_usredit', 'Edit privileges'|trans) }}
+      </a>
+    </td>
+  {% endif %}
+  {% if user.has_group_edit %}
+    <td>
+      <button type="button" class="btn btn-link p-0" data-bs-toggle="modal" data-bs-target="#editUserGroupModal" data-username="{{ user.name }}">
+        {{ get_icon('b_usrlist', 'Edit user group'|trans) }}
+      </button>
+    </td>
+  {% endif %}
+  <td>
+    <a class="export_user_anchor ajax" href="{{ url('/server/privileges', {
+      'username': user.name,
+      'hostname': user.host,
+      'export': true,
+      'initial': initial
+    }) }}">
+      {{ get_icon('b_tblexport', 'Export'|trans) }}
+    </a>
+  </td>
+</tr>

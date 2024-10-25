@@ -1,0 +1,80 @@
+<div class="card mt-3">
+    <form method="post" action="{{ url(route, url_params) }}">
+        {{ get_hidden_inputs(db) }}
+        {% for selected_table in selected %}
+            <input type="hidden" name="selected[]" value="{{ selected_table }}">
+        {% endfor %}
+
+        <div class="card-header">
+                {% if selected|length == 1 %}
+                    {{ 'Create version %1$s of %2$s'|trans|format(
+                        last_version + 1,
+                        db ~ '.' ~ selected[0]
+                    ) }}
+                {% else %}
+                    {{ 'Create version %1$s'|trans|format(last_version + 1) }}
+                {% endif %}
+        </div>
+
+        <div class="card-body">
+            <input type="hidden" name="version" value="{{ last_version + 1 }}">
+            <p>{% trans 'Track these data definition statements:' %}</p>
+
+            {% if type == 'both' or type == 'table' %}
+                <input type="checkbox" name="alter_table" value="true"
+                    {{- 'ALTER TABLE' in default_statements ? ' checked="checked"' }}>
+                ALTER TABLE<br>
+                <input type="checkbox" name="rename_table" value="true"
+                    {{- 'RENAME TABLE' in default_statements ? ' checked="checked"' }}>
+                RENAME TABLE<br>
+                <input type="checkbox" name="create_table" value="true"
+                    {{- 'CREATE TABLE' in default_statements ? ' checked="checked"' }}>
+                CREATE TABLE<br>
+                <input type="checkbox" name="drop_table" value="true"
+                    {{- 'DROP TABLE' in default_statements ? ' checked="checked"' }}>
+                DROP TABLE<br>
+            {% endif %}
+            {% if type == 'both' %}
+                <br>
+            {% endif %}
+            {% if type == 'both' or type == 'view' %}
+                <input type="checkbox" name="alter_view" value="true"
+                    {{- 'ALTER VIEW' in default_statements ? ' checked="checked"' }}>
+                ALTER VIEW<br>
+                <input type="checkbox" name="create_view" value="true"
+                    {{- 'CREATE VIEW' in default_statements ? ' checked="checked"' }}>
+                CREATE VIEW<br>
+                <input type="checkbox" name="drop_view" value="true"
+                    {{- 'DROP VIEW' in default_statements ? ' checked="checked"' }}>
+                DROP VIEW<br>
+            {% endif %}
+            <br>
+
+            <input type="checkbox" name="create_index" value="true"
+                {{- 'CREATE INDEX' in default_statements ? ' checked="checked"' }}>
+            CREATE INDEX<br>
+            <input type="checkbox" name="drop_index" value="true"
+                {{- 'DROP INDEX' in default_statements ? ' checked="checked"' }}>
+            DROP INDEX<br>
+
+            <p>{% trans 'Track these data manipulation statements:' %}</p>
+            <input type="checkbox" name="insert" value="true"
+                {{- 'INSERT' in default_statements ? ' checked="checked"' }}>
+            INSERT<br>
+            <input type="checkbox" name="update" value="true"
+                {{- 'UPDATE' in default_statements ? ' checked="checked"' }}>
+            UPDATE<br>
+            <input type="checkbox" name="delete" value="true"
+                {{- 'DELETE' in default_statements ? ' checked="checked"' }}>
+            DELETE<br>
+            <input type="checkbox" name="truncate" value="true"
+                {{- 'TRUNCATE' in default_statements ? ' checked="checked"' }}>
+            TRUNCATE<br>
+        </div>
+
+        <div class="card-footer">
+            <input type="hidden" name="submit_create_version" value="1">
+            <input class="btn btn-primary" type="submit" value="{% trans 'Create version' %}">
+        </div>
+    </form>
+</div>

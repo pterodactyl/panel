@@ -1,0 +1,6 @@
+<img class="selectallarrow" src="{{ image('arrow_' ~ text_dir ~ '.png') }}"
+    width="38" height="22" alt="{% trans 'With selected:' %}">
+<input type="checkbox" id="{{ form_name }}_checkall" class="checkall_box"
+    title="{% trans 'Check all' %}">
+<label for="{{ form_name }}_checkall">{% trans 'Check all' %}</label>
+<em class="with-selected">{% trans 'With selected:' %}</em>

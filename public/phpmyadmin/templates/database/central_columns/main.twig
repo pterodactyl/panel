@@ -1,0 +1,385 @@
+{# getHtmlForAddNewColumn #}
+<div id="add_col_div" class="topmargin">
+    <a href="#">
+        <span>{{ (total_rows > 0) ? '+' : '-' }}</span>{% trans 'Add new column' %}
+    </a>
+    <form id="add_new" class="new_central_col{{ (total_rows != 0) ? ' hide' : ''}}"
+        method="post" action="{{ url('/database/central-columns') }}">
+        {{ get_hidden_inputs(db) }}
+        <input type="hidden" name="add_new_column" value="add_new_column">
+        <div class="table-responsive">
+            <table class="table w-auto">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="" title="" data-column="name">
+                            {% trans 'Name' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="" title="" data-column="type">
+                            {% trans 'Type' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="" title="" data-column="length">
+                            {% trans 'Length/Value' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="" title="" data-column="default">
+                            {% trans 'Default' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="" title="" data-column="collation">
+                            {% trans 'Collation' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="" title="" data-column="attribute">
+                            {% trans 'Attribute' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="" title="" data-column="isnull">
+                            {% trans 'Null' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="" title="" data-column="extra">
+                            {% trans 'A_I' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td></td>
+                        <td name="col_name" class="text-nowrap">
+                            {% include 'columns_definitions/column_name.twig' with {
+                                'column_number': 0,
+                                'ci': 0,
+                                'ci_offset': 0,
+                                'column_meta': {},
+                                'has_central_columns_feature': false,
+                                'max_rows': max_rows,
+                            } only %}
+                        </td>
+                        <td name="col_type" class="text-nowrap">
+                          <select class="column_type" name="field_type[0]" id="field_0_1">
+                            {{ get_supported_datatypes(true) }}
+                          </select>
+                        </td>
+                        <td class="text-nowrap" name="col_length">
+                          <input id="field_0_2" type="text" name="field_length[0]" size="8" value="" class="textfield">
+                          <p class="enum_notice" id="enum_notice_0_2">
+                            <a href="#" class="open_enum_editor">{% trans 'Edit ENUM/SET values' %}</a>
+                          </p>
+                        </td>
+                        <td class="text-nowrap" name="col_default">
+                          <select name="field_default_type[0]" id="field_0_3" class="default_type">
+                            <option value="NONE">{% trans %}None{% context %}for default{% endtrans %}</option>
+                            <option value="USER_DEFINED">{% trans 'As defined:' %}</option>
+                            <option value="NULL">NULL</option>
+                            <option value="CURRENT_TIMESTAMP">CURRENT_TIMESTAMP</option>
+                          </select>
+                          {% if char_editing == 'textarea' %}
+                            <textarea name="field_default_value[0]" cols="15" class="textfield default_value"></textarea>
+                          {% else %}
+                            <input type="text" name="field_default_value[0]" size="12" value="" class="textfield default_value">
+                          {% endif %}
+                        </td>
+                        <td name="collation" class="text-nowrap">
+                          <select lang="en" dir="ltr" name="field_collation[0]" id="field_0_4">
+                            <option value=""></option>
+                            {% for charset in charsets %}
+                              <optgroup label="{{ charset.name }}" title="{{ charset.description }}">
+                                {% for collation in charset.collations %}
+                                  <option value="{{ collation.name }}" title="{{ collation.description }}">
+                                    {{- collation.name -}}
+                                  </option>
+                                {% endfor %}
+                              </optgroup>
+                            {% endfor %}
+                          </select>
+                        </td>
+                        <td class="text-nowrap" name="col_attribute">
+                            {% include 'columns_definitions/column_attribute.twig' with {
+                                'column_number': 0,
+                                'ci': 5,
+                                'ci_offset': 0,
+                                'extracted_columnspec': {},
+                                'column_meta': {},
+                                'submit_attribute': false,
+                                'attribute_types': attribute_types,
+                            } only %}
+                        </td>
+                        <td class="text-nowrap" name="col_isNull">
+                          <input name="field_null[0]" id="field_0_6" type="checkbox" value="YES" class="allow_null">
+                        </td>
+                        <td class="text-nowrap" name="col_extra">
+                          <input name="col_extra[0]" id="field_0_7" type="checkbox" value="auto_increment">
+                        </td>
+                        <td>
+                            <input id="add_column_save" class="btn btn-primary" type="submit" value="{% trans 'Save' %}">
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </form>
+</div>
+{% if total_rows <= 0 %}
+  <div class="alert alert-info" role="alert">
+    {% trans 'The central list of columns for the current database is empty' %}
+  </div>
+{% else %}
+    <table class="table table-borderless table-sm w-auto d-inline-block navigation">
+        <tr>
+            <td class="navigation_separator"></td>
+            {% if pos - max_rows >= 0 %}
+                <td>
+                    <form action="{{ url('/database/central-columns') }}" method="post">
+                        {{ get_hidden_inputs(db) }}
+                        <input type="hidden" name="pos" value="{{ pos - max_rows }}">
+                        <input type="hidden" name="total_rows" value="{{ total_rows }}">
+                        <input class="btn btn-secondary ajax" type="submit" name="navig" value="&lt">
+                    </form>
+                </td>
+            {% endif %}
+            {% if tn_nbTotalPage > 1 %}
+                <td>
+                    <form action="{{ url('/database/central-columns') }}" method="post">
+                        {{ get_hidden_inputs(db) }}
+                        <input type="hidden" name="total_rows" value="{{ total_rows }}">
+                        {{ tn_page_selector | raw }}
+                    </form>
+                </td>
+            {% endif %}
+            {% if pos + max_rows < total_rows %}
+                <td>
+                    <form action="{{ url('/database/central-columns') }}" method="post">
+                        {{ get_hidden_inputs(db) }}
+                        <input type="hidden" name="pos" value="{{ pos + max_rows }}">
+                        <input type="hidden" name="total_rows" value="{{ total_rows }}">
+                        <input class="btn btn-secondary ajax" type="submit" name="navig" value="&gt">
+                    </form>
+                </td>
+            {% endif %}
+            <td class="navigation_separator"></td>
+            <td>
+                <span>{% trans 'Filter rows' %}:</span>
+                <input type="text" class="filter_rows" placeholder="{% trans 'Search this table' %}">
+            </td>
+            <td class="navigation_separator"></td>
+        </tr>
+    </table>
+{% endif %}
+
+<table class="table table-borderless table-sm w-auto d-inline-block">
+    <tr>
+        <td class="navigation_separator largescreenonly"></td>
+        <td class="central_columns_navigation">
+            {{ get_icon('centralColumns_add', 'Add column' | trans)|raw }}
+            <form id="add_column" action="{{ url('/database/central-columns') }}" method="post">
+                {{ get_hidden_inputs(db) | raw }}
+                <input type="hidden" name="add_column" value="add">
+                <input type="hidden" name="pos" value="{{ pos }}">
+                <input type="hidden" name="total_rows" value="{{ total_rows }}">
+                {# getHtmlForTableDropdown #}
+                <select name="table-select" id="table-select">
+                    <option value="" disabled="disabled" selected="selected">
+                        {% trans 'Select a table' %}
+                    </option>
+                    {% for table in tables %}
+                        <option value="{{ table|e }}">{{ table|e }}</option>
+                    {% endfor %}
+                </select>
+                <select name="column-select" id="column-select">
+                    <option value="" selected="selected">{% trans 'Select a column.' %}</option>
+                </select>
+                <input class="btn btn-primary" type="submit" value="{% trans 'Add' %}">
+            </form>
+        </td>
+        <td class="navigation_separator largescreenonly"></td>
+    </tr>
+</table>
+{% if total_rows > 0 %}
+    <form method="post" id="del_form" action="{{ url('/database/central-columns') }}">
+        {{ get_hidden_inputs(db) }}
+        <input id="del_col_name" type="hidden" name="col_name" value="">
+        <input type="hidden" name="pos" value="{{ pos }}">
+        <input type="hidden" name="delete_save" value="delete">
+    </form>
+    <div id="tableslistcontainer">
+        <form name="tableslistcontainer">
+            <table id="table_columns" class="table table-striped table-hover tablesorter w-auto">
+                {% set class = 'column_heading' %}
+                {% set title = 'Click to sort.' | trans %}
+                <thead>
+                    <tr>
+                        <th class="{{ class }}"></th>
+                        <th class="hide"></th>
+                        <th class="column_action" colspan="2">{% trans 'Action' %}</th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="name">
+                            {% trans 'Name' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="type">
+                            {% trans 'Type' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="length">
+                            {% trans 'Length/Value' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="default">
+                            {% trans 'Default' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="collation">
+                            {% trans 'Collation' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="attribute">
+                            {% trans 'Attribute' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="isnull">
+                            {% trans 'Null' %}
+                            <div class="sorticon"></div>
+                        </th>
+                        <th class="{{ class }}" title="{{ title }}" data-column="extra">
+                            {% trans 'A_I' %}
+                            <div class="sorticon"></div>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% set row_num = 0 %}
+                    {% for row in rows_list %}
+                        {# getHtmlForTableRow #}
+                        <tr data-rownum="{{ row_num }}" id="{{ 'f_' ~ row_num }}">
+                            {{ get_hidden_inputs(db) }}
+                            <input type="hidden" name="edit_save" value="save">
+                            <td class="text-nowrap">
+                                <input type="checkbox" class="checkall" name="selected_fld[]"
+                                value="{{ row['col_name'] }}" id="{{ 'checkbox_row_' ~ row_num }}">
+                            </td>
+                            <td id="{{ 'edit_' ~ row_num }}" class="edit text-center">
+                                <a href="#"> {{ get_icon('b_edit', 'Edit' | trans) | raw }}</a>
+                            </td>
+                            <td class="del_row" data-rownum = "{{ row_num }}">
+                                <a hrf="#">{{ get_icon('b_drop', 'Delete' | trans) }}</a>
+                                <input type="submit" data-rownum = "{{ row_num }}" class="btn btn-secondary edit_cancel_form" value="{{ 'Cancel'|trans }}">
+                            </td>
+                            <td id="{{ 'save_' ~ row_num  }}" class="hide">
+                                <input type="submit" data-rownum="{{ row_num }}" class="btn btn-primary edit_save_form" value="{{ 'Save'|trans }}">
+                            </td>
+                            <td name="col_name" class="text-nowrap">
+                                <span>{{ row['col_name'] }}</span>
+                                <input name="orig_col_name" type="hidden" value="{{ row['col_name'] }}">
+                                {% include 'columns_definitions/column_name.twig' with {
+                                    'column_number': row_num,
+                                    'ci': 0,
+                                    'ci_offset': 0,
+                                    'column_meta': {
+                                        'Field': row['col_name']
+                                    },
+                                    'has_central_columns_feature': false,
+                                    'max_rows': max_rows
+                                } only %}
+                            </td>
+                            <td name="col_type" class="text-nowrap">
+                              <span>{{ row['col_type'] }}</span>
+                              <select class="column_type" name="field_type[{{ row_num }}]" id="field_{{ row_num }}_1">
+                                {{ get_supported_datatypes(true, types_upper[row_num]) }}
+                              </select>
+                            </td>
+                            <td class="text-nowrap" name="col_length">
+                              <span>{{ (row['col_length']?(row['col_length']):'') }}</span>
+                              <input id="field_{{ row_num }}_2" type="text" name="field_length[{{ row_num }}]" size="8" value="{{ row['col_length'] }}" class="textfield">
+                              <p class="enum_notice" id="enum_notice_{{ row_num }}_2">
+                                <a href="#" class="open_enum_editor">{% trans 'Edit ENUM/SET values' %}</a>
+                              </p>
+                            </td>
+                            <td class="text-nowrap" name="col_default">
+                              {% if row['col_default'] is defined %}
+                                <span>{{ row['col_default'] }}</span>
+                              {% else %}
+                                <span>{% trans 'None' %}</span>
+                              {% endif %}
+                              <select name="field_default_type[{{ row_num }}]" id="field_{{ row_num }}_3" class="default_type">
+                                <option value="NONE"{{ rows_meta[row_num]['DefaultType'] is defined and rows_meta[row_num]['DefaultType'] == 'NONE' ? ' selected' }}>
+                                  {% trans %}None{% context %}for default{% endtrans %}
+                                </option>
+                                <option value="USER_DEFINED"{{ rows_meta[row_num]['DefaultType'] is defined and rows_meta[row_num]['DefaultType'] == 'USER_DEFINED' ? ' selected' }}>
+                                  {% trans 'As defined:' %}
+                                </option>
+                                <option value="NULL"{{ rows_meta[row_num]['DefaultType'] is defined and rows_meta[row_num]['DefaultType'] == 'NULL' ? ' selected' }}>
+                                  NULL
+                                </option>
+                                <option value="CURRENT_TIMESTAMP"{{ rows_meta[row_num]['DefaultType'] is defined and rows_meta[row_num]['DefaultType'] == 'CURRENT_TIMESTAMP' ? ' selected' }}>
+                                  CURRENT_TIMESTAMP
+                                </option>
+                              </select>
+                              {% if char_editing == 'textarea' %}
+                                <textarea name="field_default_value[{{ row_num }}]" cols="15" class="textfield default_value">{{ default_values[row_num] }}</textarea>
+                              {% else %}
+                                <input type="text" name="field_default_value[{{ row_num }}]" size="12" value="{{ default_values[row_num] }}" class="textfield default_value">
+                              {% endif %}
+                            </td>
+                            <td name="collation" class="text-nowrap">
+                                <span>{{ row['col_collation'] }}</span>
+                                <select lang="en" dir="ltr" name="field_collation[{{ row_num }}]" id="field_{{ row_num }}_4">
+                                  <option value=""></option>
+                                  {% for charset in charsets %}
+                                    <optgroup label="{{ charset.name }}" title="{{ charset.description }}">
+                                      {% for collation in charset.collations %}
+                                        <option value="{{ collation.name }}" title="{{ collation.description }}"
+                                          {{- collation.name == row['col_collation'] ? ' selected' }}>
+                                          {{- collation.name -}}
+                                        </option>
+                                      {% endfor %}
+                                    </optgroup>
+                                  {% endfor %}
+                                </select>
+                            </td>
+                            <td class="text-nowrap" name="col_attribute">
+                                <span>{{ row['col_attribute']?(row['col_attribute']):"" }}</span>
+                                {% include 'columns_definitions/column_attribute.twig' with {
+                                    'column_number': row_num,
+                                    'ci': 5,
+                                    'ci_offset': 0,
+                                    'extracted_columnspec': {},
+                                    'column_meta': row['col_attribute'],
+                                    'submit_attribute': false,
+                                    'attribute_types': attribute_types,
+                                } only %}
+                            </td>
+                            <td class="text-nowrap" name="col_isNull">
+                                <span>{{ row['col_isNull'] ? 'Yes' | trans : 'No' | trans }}</span>
+                                <input name="field_null[{{ row_num }}]" id="field_{{ row_num }}_6" type="checkbox" value="YES" class="allow_null"
+                                  {{- row['col_isNull'] is not empty and row['col_isNull'] != 'NO' and row['col_isNull'] != 'NOT NULL' ? ' checked' }}>
+                            </td>
+                            <td class="text-nowrap" name="col_extra">
+                              <span>{{ row['col_extra'] }}</span>
+                              <input name="col_extra[{{ row_num }}]" id="field_{{ row_num }}_7" type="checkbox" value="auto_increment"
+                                {{- row['col_extra'] is not empty and row['col_extra'] == 'auto_increment' ? ' checked' }}>
+                            </td>
+                        </tr>
+                        {% set row_num = row_num + 1 %}
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% include 'select_all.twig' with {
+                'text_dir': text_dir,
+                'form_name': 'tableslistcontainer',
+            } only %}
+            <button class="btn btn-link mult_submit change_central_columns" type="submit" name="edit_central_columns"
+                    value="edit central columns" title="{% trans 'Edit' %}">
+                {{ get_icon('b_edit', 'Edit'|trans) }}
+            </button>
+            <button class="btn btn-link mult_submit" type="submit" name="delete_central_columns"
+                    value="remove_from_central_columns" title="{% trans 'Delete' %}">
+                {{ get_icon('b_drop', 'Delete'|trans) }}
+            </button>
+        </form>
+    </div>
+{% endif %}

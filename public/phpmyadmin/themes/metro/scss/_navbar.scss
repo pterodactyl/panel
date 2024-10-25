@@ -1,0 +1,24 @@
+.navbar {
+  background-color: $th-background;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.navbar-nav .icon {
+  margin-right: 0.5em;
+  vertical-align: -3px;
+}
+
+.navbar-nav .nav-item {
+  padding: 8px 10px;
+
+  &.active {
+    background: #fff;
+  }
+}
+
+.navbar-nav .nav-link {
+  text-transform: uppercase;
+  font-family: $font-family-extra-bold;
+  font-weight: normal;
+}

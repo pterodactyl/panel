@@ -1,0 +1,16 @@
+{# array contains Sub page icon and text #}
+{% set header = {
+    'privileges': {
+        'image': 'b_usrlist',
+        'text': 'Privileges'|trans
+    }
+} %}
+<h2>
+    {% if is_image|default(true) %}
+        {{ get_image(header[type]['image']) }}
+    {% else %}
+        {{ get_icon(header[type]['image']) }}
+    {% endif %}
+    {{ header[type]['text'] }}
+    {{ link is defined ? show_mysql_docu(link) }}
+</h2>

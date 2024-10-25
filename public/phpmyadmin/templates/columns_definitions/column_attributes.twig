@@ -1,0 +1,259 @@
+{# Cell index: If certain fields get left out, the counter shouldn't change. #}
+{% set ci = 0 %}
+
+{# Every time a cell shall be left out the STRG-jumping feature, $ci_offset has
+   to be incremented ($ci_offset++) #}
+{% set ci_offset = -1 %}
+
+<td class="text-center">
+    {# column name #}
+    {% include 'columns_definitions/column_name.twig' with {
+        'column_number': column_number,
+        'ci': ci,
+        'ci_offset': ci_offset,
+        'column_meta': column_meta,
+        'has_central_columns_feature': relation_parameters.centralColumnsFeature is not null,
+        'max_rows': max_rows
+    } only %}
+    {% set ci = ci + 1 %}
+</td>
+<td class="text-center">
+  <select class="column_type" name="field_type[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}"
+    {{- column_meta['column_status'] is defined and not column_meta['column_status']['isEditable'] ? ' disabled' }}>
+    {{ get_supported_datatypes(true, type_upper) }}
+  </select>
+  {% set ci = ci + 1 %}
+</td>
+<td class="text-center">
+  <input id="field_{{ column_number }}_{{ ci - ci_offset }}" type="text" name="field_length[{{ column_number }}]" size="
+    {{- length_values_input_size }}" value="{{ length }}" class="textfield">
+  <p class="enum_notice" id="enum_notice_{{ column_number }}_{{ ci - ci_offset }}">
+    <a href="#" class="open_enum_editor">{% trans 'Edit ENUM/SET values' %}</a>
+  </p>
+  {% set ci = ci + 1 %}
+</td>
+<td class="text-center">
+  <select name="field_default_type[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}" class="default_type">
+    <option value="NONE"{{ column_meta['DefaultType'] is defined and column_meta['DefaultType'] == 'NONE' ? ' selected' }}>
+      {% trans %}None{% context %}for default{% endtrans %}
+    </option>
+    <option value="USER_DEFINED"{{ column_meta['DefaultType'] is defined and column_meta['DefaultType'] == 'USER_DEFINED' ? ' selected' }}>
+      {% trans 'As defined:' %}
+    </option>
+    <option value="NULL"{{ column_meta['DefaultType'] is defined and column_meta['DefaultType'] == 'NULL' ? ' selected' }}>
+      NULL
+    </option>
+    <option value="CURRENT_TIMESTAMP"{{ column_meta['DefaultType'] is defined and column_meta['DefaultType'] == 'CURRENT_TIMESTAMP' ? ' selected' }}>
+      CURRENT_TIMESTAMP
+    </option>
+    {% if is_uuid_supported() %}
+    <option value="UUID"{{ column_meta['DefaultType'] is defined and column_meta['DefaultType'] == 'UUID' ? ' selected' }}>
+      UUID
+    </option>
+    {% endif %}
+  </select>
+  {% if char_editing == 'textarea' %}
+    <textarea name="field_default_value[{{ column_number }}]" cols="15" class="textfield default_value">{{ default_value }}</textarea>
+  {% else %}
+    <input type="text" name="field_default_value[{{ column_number }}]" size="12" value="{{ default_value }}" class="textfield default_value">
+  {% endif %}
+  {% set ci = ci + 1 %}
+</td>
+<td class="text-center">
+  {# column collation #}
+  <select lang="en" dir="ltr" name="field_collation[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}">
+    <option value=""></option>
+    {% for charset in charsets %}
+      <optgroup label="{{ charset.name }}" title="{{ charset.description }}">
+        {% for collation in charset.collations %}
+          <option value="{{ collation.name }}" title="{{ collation.description }}"
+            {{- collation.name == column_meta['Collation'] ? ' selected' }}>
+            {{- collation.name -}}
+          </option>
+        {% endfor %}
+      </optgroup>
+    {% endfor %}
+  </select>
+  {% set ci = ci + 1 %}
+</td>
+<td class="text-center">
+    {# column attribute #}
+    {% include 'columns_definitions/column_attribute.twig' with {
+        'column_number': column_number,
+        'ci': ci,
+        'ci_offset': ci_offset,
+        'column_meta': column_meta,
+        'extracted_columnspec': extracted_columnspec,
+        'submit_attribute': submit_attribute,
+        'attribute_types': attribute_types
+    } only %}
+    {% set ci = ci + 1 %}
+</td>
+<td class="text-center">
+    <input name="field_null[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}" type="checkbox" value="YES" class="allow_null"
+      {{- column_meta['Null'] is not empty and column_meta['Null'] != 'NO' and column_meta['Null'] != 'NOT NULL' ? ' checked' }}>
+    {% set ci = ci + 1 %}
+</td>
+{% if change_column is defined and change_column is not empty %}
+    {# column Adjust privileges, Only for 'Edit' Column(s) #}
+    <td class="text-center">
+      <input name="field_adjust_privileges[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}" type="checkbox" value="NULL" class="allow_null"
+        {%- if privs_available %} checked>
+        {%- else %} title="{% trans "You don't have sufficient privileges to perform this operation; Please refer to the documentation for more details" %}" disabled>
+        {%- endif %}
+      {% set ci = ci + 1 %}
+    </td>
+{% endif %}
+{% if not is_backup %}
+    {# column indexes, See my other comment about  this 'if'. #}
+    <td class="text-center">
+      <select name="field_key[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}" data-index="">
+        <option value="none_{{ column_number }}">---</option>
+        <option value="primary_{{ column_number }}" title="{% trans "Primary" %}"
+          {{- column_meta['Key'] is defined and column_meta['Key'] == 'PRI' ? ' selected' }}>
+          PRIMARY
+        </option>
+        <option value="unique_{{ column_number }}" title="{% trans "Unique" %}"
+          {{- column_meta['Key'] is defined and column_meta['Key'] == 'UNI' ? ' selected' }}>
+          UNIQUE
+        </option>
+        <option value="index_{{ column_number }}" title="{% trans "Index" %}"
+          {{- column_meta['Key'] is defined and column_meta['Key'] == 'MUL' ? ' selected' }}>
+          INDEX
+        </option>
+        <option value="fulltext_{{ column_number }}" title="{% trans "Fulltext" %}"
+          {{- column_meta['Key'] is defined and column_meta['Key'] == 'FULLTEXT' ? ' selected' }}>
+          FULLTEXT
+        </option>
+        <option value="spatial_{{ column_number }}" title="{% trans "Spatial" %}"
+          {{- column_meta['Key'] is defined and column_meta['Key'] == 'SPATIAL' ? ' selected' }}>
+          SPATIAL
+        </option>
+      </select>
+      {% set ci = ci + 1 %}
+    </td>
+{% endif %}
+<td class="text-center">
+  <input name="field_extra[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}" type="checkbox" value="AUTO_INCREMENT"
+    {{- column_meta['Extra'] is defined and column_meta['Extra']|lower == 'auto_increment' ? ' checked' }}>
+  {% set ci = ci + 1 %}
+</td>
+<td class="text-center">
+  <textarea id="field_{{ column_number }}_{{ ci - ci_offset }}" rows="1" name="field_comments[{{ column_number }}]" maxlength="{{ max_length }}">
+    {{- column_meta['Field'] is defined and comments_map is iterable and comments_map[column_meta['Field']] is defined ? comments_map[column_meta['Field']] -}}
+  </textarea>
+  {% set ci = ci + 1 %}
+</td>
+ {# column virtuality #}
+{% if is_virtual_columns_supported %}
+    <td class="text-center">
+      <select name="field_virtuality[{{ column_number }}]" id="field_{{ column_number }}_{{ ci - ci_offset }}" class="virtuality">
+        {% for key, value in options %}
+          {% set virtuality = column_meta['Extra'] is defined ? column_meta['Extra'] : null %}
+          {# Creating a new row on create table sends a Virtuality field #}
+          {% set virtuality = column_meta['Virtuality'] is defined ? column_meta['Virtuality'] : virtuality %}
+
+          <option value="{{ key }}"{{ virtuality is not null and key != '' and virtuality|slice(0, key|length) is same as (key) ? ' selected' }}>
+            {{ value }}
+          </option>
+        {% endfor %}
+      </select>
+
+      {% if char_editing == 'textarea' %}
+        <textarea name="field_expression[{{ column_number }}]" cols="15" class="textfield expression">{{ column_meta['Expression'] is defined ? column_meta['Expression'] }}</textarea>
+      {% else %}
+        <input type="text" name="field_expression[{{ column_number }}]" size="12" value="{{ column_meta['Expression'] is defined ? column_meta['Expression'] }}" placeholder="{% trans 'Expression' %}" class="textfield expression">
+      {% endif %}
+      {% set ci = ci + 1 %}
+    </td>
+{% endif %}
+{# move column #}
+{% if fields_meta is defined %}
+    {% set current_index = 0 %}
+    {% set cols = move_columns|length - 1 %}
+    {% set break = false %}
+    {% for mi in 0..cols %}
+      {% if move_columns[mi].name == column_meta['Field'] and not break %}
+        {% set current_index = mi %}
+        {% set break = true %}
+      {% endif %}
+    {% endfor %}
+
+    <td class="text-center">
+      <select id="field_{{ column_number }}_{{ ci - ci_offset }}" name="field_move_to[{{ column_number }}]" size="1" width="5em">
+        <option value="" selected="selected">&nbsp;</option>
+        <option value="-first"{{ current_index == 0 ? ' disabled="disabled"' }}>
+          {% trans 'first' %}
+        </option>
+        {% for mi in 0..move_columns|length - 1 %}
+          <option value="{{ move_columns[mi].name }}"
+            {{- current_index == mi or current_index == mi + 1 ? ' disabled' }}>
+            {{ 'after %s'|trans|format(backquote(move_columns[mi].name|e)) }}
+          </option>
+        {% endfor %}
+      </select>
+      {% set ci = ci + 1 %}
+    </td>
+{% endif %}
+
+{% if relation_parameters.browserTransformationFeature is not null and relation_parameters.columnCommentsFeature is not null and browse_mime %}
+    <td class="text-center">
+      <select id="field_{{ column_number }}_{{ ci - ci_offset }}" size="1" name="field_mimetype[{{ column_number }}]">
+        <option value="">&nbsp;</option>
+        {% if available_mime['mimetype'] is defined and available_mime['mimetype'] is iterable %}
+          {% for media_type in available_mime['mimetype'] %}
+            <option value="{{ media_type|replace({'/': '_'}) }}"
+              {{- column_meta['Field'] is defined and mime_map[column_meta['Field']]['mimetype'] is defined
+                and mime_map[column_meta['Field']]['mimetype'] == media_type|replace({'/': '_'}) ? ' selected' }}>
+              {{ media_type|lower }}
+            </option>
+          {% endfor %}
+        {% endif %}
+      </select>
+      {% set ci = ci + 1 %}
+    </td>
+    <td class="text-center">
+      <select id="field_{{ column_number }}_{{ ci - ci_offset }}" size="1" name="field_transformation[{{ column_number }}]">
+        <option value="" title="{% trans 'None' %}"></option>
+        {% if available_mime['transformation'] is defined and available_mime['transformation'] is iterable %}
+          {% for mimekey, transform in available_mime['transformation'] %}
+            {% set parts = transform|split(':') %}
+            <option value="{{ available_mime['transformation_file'][mimekey] }}" title="{{ get_description(available_mime['transformation_file'][mimekey]) }}"
+              {{- column_meta['Field'] is defined
+                and mime_map[column_meta['Field']]['transformation'] is defined
+                and mime_map[column_meta['Field']]['transformation'] is not null
+                and mime_map[column_meta['Field']]['transformation'] matches '@' ~ available_mime['transformation_file_quoted'][mimekey] ~ '3?@i' ? ' selected'}}>
+              {{ get_name(available_mime['transformation_file'][mimekey]) ~ ' (' ~ parts[0]|lower ~ ':' ~ parts[1] ~ ')' }}
+            </option>
+          {% endfor %}
+        {% endif %}
+      </select>
+      {% set ci = ci + 1 %}
+    </td>
+    <td class="text-center">
+      <input id="field_{{ column_number }}_{{ ci - ci_offset }}" type="text" name="field_transformation_options[{{ column_number }}]" size="16" class="textfield" value="
+        {{- column_meta['Field'] is defined and mime_map[column_meta['Field']]['transformation_options'] is defined ? mime_map[column_meta['Field']]['transformation_options'] }}">
+      {% set ci = ci + 1 %}
+    </td>
+    <td class="text-center">
+      <select id="field_{{ column_number }}_{{ ci - ci_offset }}" size="1" name="field_input_transformation[{{ column_number }}]">
+        <option value="" title="{% trans 'None' %}"></option>
+        {% if available_mime['input_transformation'] is defined and available_mime['input_transformation'] is iterable %}
+          {% for mimekey, transform in available_mime['input_transformation'] %}
+            {% set parts = transform|split(':') %}
+            <option value="{{ available_mime['input_transformation_file'][mimekey] }}" title="{{ get_description(available_mime['input_transformation_file'][mimekey]) }}"
+              {{- column_meta['Field'] is defined and mime_map[column_meta['Field']]['input_transformation'] is defined
+                and mime_map[column_meta['Field']]['input_transformation'] matches '@' ~ available_mime['input_transformation_file_quoted'][mimekey] ~ '3?@i' ? ' selected' }}>
+              {{ get_name(available_mime['input_transformation_file'][mimekey]) ~ ' (' ~ parts[0]|lower ~ ':' ~ parts[1] ~ ')' }}
+            </option>
+          {% endfor %}
+        {% endif %}
+      </select>
+      {% set ci = ci + 1 %}
+    </td>
+    <td class="text-center">
+      <input id="field_{{ column_number }}_{{ ci - ci_offset }}" type="text" name="field_input_transformation_options[{{ column_number }}]" size="16" class="textfield" value="
+        {{- column_meta['Field'] is defined and mime_map[column_meta['Field']]['input_transformation_options'] is defined ? mime_map[column_meta['Field']]['input_transformation_options'] }}">
+      {% set ci = ci + 1 %}
+    </td>
+{% endif %}

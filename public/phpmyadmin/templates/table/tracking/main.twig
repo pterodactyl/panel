@@ -1,0 +1,128 @@
+{% if selectable_tables_num_rows > 0 %}
+    <form method="post" action="{{ url('/table/tracking', url_params) }}">
+        {{ get_hidden_inputs(db, table) }}
+        <select name="table" class="autosubmit">
+            {% for entry in selectable_tables_entries %}
+                <option value="{{ entry.table_name }}"
+                    {{- entry.table_name == selected_table ? ' selected' }}>
+                    {{ entry.db_name }}.{{ entry.table_name }}
+                    {% if entry.is_tracked %}
+                        ({% trans 'active' %})
+                    {% else %}
+                        ({% trans 'not active' %})
+                    {% endif %}
+                </option>
+            {% endfor %}
+        </select>
+        <input type="hidden" name="show_versions_submit" value="1">
+    </form>
+{% endif %}
+<br>
+{% if last_version > 0 %}
+    <form method="post" action="{{ url('/table/tracking') }}" name="versionsForm" id="versionsForm" class="ajax">
+        {{ get_hidden_inputs(db, table) }}
+        <table id="versions" class="table table-striped table-hover table-sm w-auto">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Version' %}</th>
+                    <th>{% trans 'Created' %}</th>
+                    <th>{% trans 'Updated' %}</th>
+                    <th>{% trans 'Status' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                    <th>{% trans 'Show' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for version in versions %}
+                    <tr>
+                        <td class="text-center">
+                            <input type="checkbox" name="selected_versions[]"
+                                class="checkall" id="selected_versions_{{- version['version']|escape }}"
+                                value="{{- version['version']|escape }}">
+                        </td>
+                        <td class="float-end">
+                            <label for="selected_versions_{{- version['version']|escape }}">
+                                <b>{{ version['version']|escape }}</b>
+                            </label>
+                        </td>
+                        <td>{{ version['date_created']|escape }}</td>
+                        <td>{{ version['date_updated']|escape }}</td>
+                        {% if version['tracking_active'] == 1 %}
+                            {% set last_version_status = 1 %}
+                            <td>{% trans 'active' %}</td>
+                        {% else %}
+                            {% set last_version_status = 0 %}
+                            <td>{% trans 'not active' %}</td>
+                        {% endif %}
+                        <td>
+                            <a class="delete_version_anchor ajax" href="{{ url('/table/tracking') }}" data-post="
+                                {{- get_common(url_params|merge({
+                                    'version': version['version'],
+                                    'submit_delete_version': true
+                                }), '', false) }}">
+                                {{ get_icon('b_drop', 'Delete version'|trans) }}
+                            </a>
+                        </td>
+                        <td>
+                            <a href="{{ url('/table/tracking') }}" data-post="
+                                {{- get_common(url_params|merge({
+                                    'version': version['version'],
+                                    'report': 'true'
+                                }), '', false) }}">
+                                {{ get_icon('b_report', 'Tracking report'|trans) }}
+                            </a>
+                            <a href="{{ url('/table/tracking') }}" data-post="
+                                {{- get_common(url_params|merge({
+                                    'version': version['version'],
+                                    'snapshot': 'true'
+                                }), '', false) }}">
+                                {{ get_icon('b_props', 'Structure snapshot'|trans) }}
+                            </a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% include 'select_all.twig' with {
+            'text_dir': text_dir,
+            'form_name': 'versionsForm',
+        } only %}
+        <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="delete_version" title="{% trans 'Delete version' %}">
+            {{ get_icon('b_drop', 'Delete version'|trans) }}
+        </button>
+    </form>
+    {% set last_version_element = versions|first %}
+    <div>
+        <form method="post" action="{{ url('/table/tracking', url_params) }}">
+            {{ get_hidden_inputs(db, table) }}
+            <fieldset class="pma-fieldset">
+                <legend>
+                    {% if last_version_element['tracking_active'] == 0 %}
+                        {% set legend = 'Activate tracking for %s'|trans %}
+                        {% set value = 'activate_now' %}
+                        {% set button = 'Activate now'|trans %}
+                    {% else %}
+                        {% set legend = 'Deactivate tracking for %s'|trans %}
+                        {% set value = 'deactivate_now' %}
+                        {% set button = 'Deactivate now'|trans %}
+                    {% endif %}
+
+                    {{ legend|format(db ~ '.' ~ table) }}
+                </legend>
+                <input type="hidden" name="version" value="{{ last_version }}">
+                <input type="hidden" name="toggle_activation" value="{{ value }}">
+                <input class="btn btn-secondary" type="submit" value="{{ button }}">
+            </fieldset>
+        </form>
+    </div>
+{% endif %}
+{% include 'create_tracking_version.twig' with {
+    'route': '/table/tracking',
+    'url_params': url_params,
+    'last_version': last_version,
+    'db': db,
+    'selected': [table],
+    'type': type,
+    'default_statements': default_statements,
+} only %}

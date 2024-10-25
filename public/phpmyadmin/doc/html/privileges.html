@@ -1,0 +1,179 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>User management &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Relations" href="relations.html" />
+    <link rel="prev" title="Bookmarks" href="bookmarks.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="relations.html" title="Relations"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="bookmarks.html" title="Bookmarks"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" accesskey="U">User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">User management</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="user-management">
+<h1>User management<a class="headerlink" href="#user-management" title="Permalink to this headline">¶</a></h1>
+<p>User management is the process of controlling which users are allowed to
+connect to the MySQL server and what permissions they have on each database.
+phpMyAdmin does not handle user management, rather it passes the username and
+password on to MySQL, which then determines whether a user is permitted to
+perform a particular action. Within phpMyAdmin, administrators have full
+control over creating users, viewing and editing privileges for existing users,
+and removing users.</p>
+<p>Within phpMyAdmin, user management is controlled via the <span class="guilabel">User accounts</span> tab
+from the main page. Users can be created, edited, and removed.</p>
+<div class="section" id="creating-a-new-user">
+<h2>Creating a new user<a class="headerlink" href="#creating-a-new-user" title="Permalink to this headline">¶</a></h2>
+<p>To create a new user, click the <span class="guilabel">Add user account</span> link near the bottom
+of the <span class="guilabel">User accounts</span> page (you must be a “superuser”, e.g., user “root”).
+Use the textboxes and drop-downs to configure the user to your particular
+needs. You can then select whether to create a database for that user and grant
+specific global privileges. Once you’ve created the user (by clicking Go), you
+can define that user’s permissions on a specific database (don’t grant global
+privileges in that case). In general, users do not need any global privileges
+(other than USAGE), only permissions for their specific database.</p>
+</div>
+<div class="section" id="editing-an-existing-user">
+<h2>Editing an existing user<a class="headerlink" href="#editing-an-existing-user" title="Permalink to this headline">¶</a></h2>
+<p>To edit an existing user, simply click the pencil icon to the right of that
+user in the <span class="guilabel">User accounts</span> page. You can then edit their global- and
+database-specific privileges, change their password, or even copy those
+privileges to a new user.</p>
+</div>
+<div class="section" id="deleting-a-user">
+<h2>Deleting a user<a class="headerlink" href="#deleting-a-user" title="Permalink to this headline">¶</a></h2>
+<p>From the <span class="guilabel">User accounts</span> page, check the checkbox for the user you wish to
+remove, select whether or not to also remove any databases of the same name (if
+they exist), and click Go.</p>
+</div>
+<div class="section" id="assigning-privileges-to-user-for-a-specific-database">
+<h2>Assigning privileges to user for a specific database<a class="headerlink" href="#assigning-privileges-to-user-for-a-specific-database" title="Permalink to this headline">¶</a></h2>
+<p>Users are assigned to databases by editing the user record (from the
+<span class="guilabel">User accounts</span> link on the home page).
+If you are creating a user specifically for a given table
+you will have to create the user first (with no global privileges) and then go
+back and edit that user to add the table and privileges for the individual
+table.</p>
+</div>
+<div class="section" id="configurable-menus-and-user-groups">
+<span id="configurablemenus"></span><h2>Configurable menus and user groups<a class="headerlink" href="#configurable-menus-and-user-groups" title="Permalink to this headline">¶</a></h2>
+<p>By enabling <span class="target" id="index-0"></span><a class="reference internal" href="config.html#cfg_Servers_users"><code class="xref config config-option docutils literal notranslate"><span class="pre">$cfg['Servers'][$i]['users']</span></code></a> and
+<span class="target" id="index-1"></span><a class="reference internal" href="config.html#cfg_Servers_usergroups"><code class="xref config config-option docutils literal notranslate"><span class="pre">$cfg['Servers'][$i]['usergroups']</span></code></a> you can customize what users
+will see in the phpMyAdmin navigation.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This feature only limits what a user sees, they are still able to use all the
+functions. So this can not be considered as a security limitation. Should
+you want to limit what users can do, use MySQL privileges to achieve that.</p>
+</div>
+<p>With this feature enabled, the <span class="guilabel">User accounts</span> management interface gains
+a second tab for managing <span class="guilabel">User groups</span>, where you can define what each
+group will view (see image below) and you can then assign each user to one of
+these groups. Users will be presented with a simplified user interface, which might be
+useful for inexperienced users who could be overwhelmed by all the features
+phpMyAdmin provides.</p>
+<img alt="_images/usergroups.png" src="_images/usergroups.png" />
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">User management</a><ul>
+<li><a class="reference internal" href="#creating-a-new-user">Creating a new user</a></li>
+<li><a class="reference internal" href="#editing-an-existing-user">Editing an existing user</a></li>
+<li><a class="reference internal" href="#deleting-a-user">Deleting a user</a></li>
+<li><a class="reference internal" href="#assigning-privileges-to-user-for-a-specific-database">Assigning privileges to user for a specific database</a></li>
+<li><a class="reference internal" href="#configurable-menus-and-user-groups">Configurable menus and user groups</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="bookmarks.html"
+                        title="previous chapter">Bookmarks</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="relations.html"
+                        title="next chapter">Relations</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/privileges.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="relations.html" title="Relations"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="bookmarks.html" title="Bookmarks"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" >User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">User management</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

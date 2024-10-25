@@ -1,0 +1,54 @@
+{% if not clear_screen %}
+  <div class="card mb-2">
+    <div class="card-header">{% trans 'Primary replication' %}</div>
+    <div class="card-body">
+    {% trans 'This server is configured as primary in a replication process.' %}
+    <ul>
+      <li>
+        <a href="#primary_status_href" id="primary_status_href">
+          {% trans 'Show primary status' %}
+        </a>
+        {{ primary_status_table|raw }}
+      </li>
+      <li>
+        <p>
+          <a href="#primary_replicas_href" id="primary_replicas_href">
+            {% trans 'Show connected replicas' %}
+          </a>
+        </p>
+
+        <div id="replication_replicas_section" style="display: none;">
+          <table class="table w-auto">
+            <thead>
+              <tr>
+                <th>{% trans 'Server ID' %}</th>
+                <th>{% trans 'Host' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for replica in replicas %}
+                <tr>
+                  <td class="text-end font-monospace">{{ replica['Server_id'] }}</td>
+                  <td class="text-end font-monospace">{{ replica['Host'] }}</td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+          <br>
+          {{ 'Only replicas started with the --report-host=host_name option are visible in this list.'|trans|notice }}
+          <br>
+        </div>
+      </li>
+      <li>
+        <a href="{{ url('/server/replication') }}" data-post="{{ get_common(url_params, '') }}" id="primary_addreplicauser_href">
+          {% trans 'Add replica replication user' %}
+        </a>
+      </li>
+{% endif %}
+{% if primary_add_user %}
+    {{ primary_add_replica_user|raw }}
+{% elseif not clear_screen %}
+    </ul>
+    </div>
+  </div>
+{% endif %}

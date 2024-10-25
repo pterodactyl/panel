@@ -1,0 +1,33 @@
+{
+    "name": "sebastian/resource-operations",
+    "description": "Provides a list of PHP built-in functions that operate on resources",
+    "homepage": "https://www.github.com/sebastianbergmann/resource-operations",
+    "license": "BSD-3-Clause",
+    "authors": [
+        {
+            "name": "Sebastian Bergmann",
+            "email": "sebastian@phpunit.de"
+        }
+    ],
+    "require": {
+        "php": ">=7.1"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ]
+    },
+    "config": {
+        "platform": {
+            "php": "7.1.0"
+        },
+        "optimize-autoloader": true,
+        "sort-packages": true
+    },
+    "extra": {
+        "branch-alias": {
+            "dev-master": "2.0-dev"
+        }
+    }
+}
+

@@ -1,0 +1,56 @@
+<tr{% if row_class is not empty %} class="{{ row_class }}"{% endif %}>
+  <td>
+    <input type="checkbox" class="checkall" name="item_name[]" value="{{ event.name }}">
+  </td>
+  <td>
+    <span class='drop_sql hide'>{{ sql_drop }}</span>
+    <strong>{{ event.name }}</strong>
+  </td>
+  <td>
+    {{ event.status }}
+  </td>
+  <td>
+    {{ event.type }}
+  </td>
+  <td>
+    {% if has_privilege %}
+      <a class="ajax edit_anchor" href="{{ url('/database/events', {
+        'db': db,
+        'table': table,
+        'edit_item': true,
+        'item_name': event.name
+      }) }}">
+        {{ get_icon('b_edit', 'Edit'|trans) }}
+      </a>
+    {% else %}
+      {{ get_icon('bd_edit', 'Edit'|trans) }}
+    {% endif %}
+  </td>
+  <td>
+    <a class="ajax export_anchor" href="{{ url('/database/events', {
+      'db': db,
+      'table': table,
+      'export_item': true,
+      'item_name': event.name
+    }) }}">
+      {{ get_icon('b_export', 'Export'|trans) }}
+    </a>
+  </td>
+  <td>
+    {% if has_privilege %}
+      {{ link_or_button(
+        url('/sql'),
+        {
+          'db': db,
+          'table': table,
+          'sql_query': sql_drop,
+          'goto': url('/database/events', {'db': db})
+        },
+        get_icon('b_drop', 'Drop'|trans),
+        {'class': 'ajax drop_anchor'}
+      ) }}
+    {% else %}
+      {{ get_icon('bd_drop', 'Drop'|trans) }}
+    {% endif %}
+  </td>
+</tr>

@@ -1,0 +1,6 @@
+<dl>
+    <dt>{{ name }}</dt>
+    {% for error in error_list %}
+        <dd>{{ error|raw }}</dd>
+    {% endfor %}
+</dl>

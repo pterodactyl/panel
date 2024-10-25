@@ -1,0 +1,104 @@
+<div class="row">
+  <div class="col">
+    <div class="card mt-4">
+      <div class="card-header">
+        {% trans "Two-factor authentication status" %}
+        {{ show_docu('two_factor') }}
+      </div>
+      <div class="card-body">
+    {% if enabled %}
+      {% if num_backends == 0 %}
+        <p>{% trans "Two-factor authentication is not available, please install optional dependencies to enable authentication backends." %}</p>
+        <p>{% trans "Following composer packages are missing:" %}</p>
+        <ul>
+          {% for item in missing %}
+            <li><code>{{ item.dep }}</code> ({{ item.class }})</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        {% if backend_id %}
+          <p>{% trans "Two-factor authentication is available and configured for this account." %}</p>
+        {% else %}
+          <p>{% trans "Two-factor authentication is available, but not configured for this account." %}</p>
+        {% endif %}
+        {% if missing|length > 0 %}
+          <p>
+            {{ 'Please install optional dependencies to enable more authentication backends.'|trans }}
+            {{ 'Following composer packages are missing:'|trans }}
+          </p>
+          <ul>
+            {% for item in missing %}
+              <li><code>{{ item.dep }}</code> ({{ item.class }})</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+      {% endif %}
+    {% else %}
+      <p>{% trans "Two-factor authentication is not available, enable phpMyAdmin configuration storage to use it." %}</p>
+    {% endif %}
+      </div>
+    </div>
+  </div>
+</div>
+
+{% if backend_id %}
+<div class="row">
+  <div class="col">
+    <div class="card mt-4">
+      <div class="card-header">
+        {{ backend_name }}
+      </div>
+      <div class="card-body">
+      <p>{% trans "You have enabled two factor authentication." %}</p>
+      <p>{{ backend_description }}</p>
+      {% if backend_id == 'key' %}
+        <div class="alert alert-danger" role="alert">
+          <h4 class="alert-heading">{{ 'Deprecated!'|trans }}</h4>
+          <p>{{ 'The FIDO U2F API has been deprecated in favor of the Web Authentication API (WebAuthn).'|trans }}</p>
+          <p class="mb-0">
+            {{ 'You can still use Firefox to authenticate your account using the FIDO U2F API, however it\'s recommended that you use the WebAuthn authentication instead.'|trans }}
+          </p>
+        </div>
+      {% endif %}
+      <form method="post" action="{{ url('/preferences/two-factor') }}">
+        {{ get_hidden_inputs() }}
+        <input class="btn btn-secondary" type="submit" name="2fa_remove" value="
+          {%- trans "Disable two-factor authentication" %}">
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% elseif num_backends > 0 %}
+<div class="row">
+  <div class="col">
+    <div class="card mt-4">
+      <div class="card-header">
+        {% trans "Configure two-factor authentication" %}
+      </div>
+      <div class="card-body">
+      <form method="post" action="{{ url('/preferences/two-factor') }}">
+        {{ get_hidden_inputs() }}
+        {% for backend in backends %}
+          <label class="d-block">
+            <input type="radio" name="2fa_configure" value="{{ backend["id"] }}"
+              {{- backend["id"] == "" ? ' checked' }}>
+            <strong>{{ backend["name"] }}</strong>
+            <p>
+              {%- if backend['id'] == 'key' -%}
+                <span class="text-danger">
+                  {{ 'The FIDO U2F API has been deprecated in favor of the Web Authentication API (WebAuthn).'|trans }}
+                </span>
+                <br>
+              {%- endif -%}
+              {{ backend["description"] }}
+            </p>
+          </label>
+        {% endfor %}
+        <input class="btn btn-secondary" type="submit" value="{% trans "Configure two-factor authentication" %}">
+      </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endif %}

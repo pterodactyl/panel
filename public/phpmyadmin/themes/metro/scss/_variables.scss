@@ -1,0 +1,283 @@
+// configures general layout for detailed layout configuration please refer to the css files
+
+$navi-width: 250px;
+
+// Theme color scheme
+// Values: "teal", "redmond", "blueeyes", "mono", "win"
+// Default: "win"
+// Set this value for the desired color scheme
+$color-scheme: win !default;
+
+$navi-color: #eee;
+$navi-background: #377796;
+$navi-background-light: #428eb4;
+$navi-pointer-color: #333;
+$navi-pointer-background: #377796;
+$navi-database-name-color: #333;
+$navi-hover-background: #428eb4;
+$main-color: #444;
+$body-bg: #fff;
+$browse-pointer-color: #377796;
+$browse-marker-color: #000;
+$browse-warning-color: #d44a26;
+$browse-success-color: #01a31c;
+$browse-gray-color: #ccc;
+$browse-marker-background: #eee;
+$border-color: #ddd;
+$button-color: #fff;
+$button-background: #377796;
+$button-hover: #428eb4;
+$th-background: #f7f7f7;
+$th-disabled-background: #f3f3f3;
+$th-color: #666;
+$th-pointer-color: #000;
+$bg-one: #f7f7f7;
+$bg-two: #fff;
+$blue-header: #3a7ead;
+
+@if $color-scheme == teal {
+  $navi-color: #fff;
+  $navi-background: #004d60;
+  $navi-background-light: #04627c;
+  $navi-pointer-color: #666;
+  $navi-pointer-background: #004d60;
+  $navi-database-name-color: #fff;
+  $navi-hover-background: #216475;
+  $main-color: #444;
+  $body-bg: #fff;
+  $browse-pointer-color: #004d60;
+  $browse-marker-color: #000;
+  $browse-warning-color: #d44a26;
+  $browse-success-color: #01a31c;
+  $browse-gray-color: #ccc;
+  $browse-marker-background: #eee;
+  $border-color: #ddd;
+  $button-color: #fff;
+  $button-background: #aaa;
+  $button-hover: #000;
+  $th-background: #f7f7f7;
+  $th-disabled-background: #f3f3f3;
+  $th-color: #666;
+  $th-pointer-color: #000;
+  $bg-one: #f7f7f7;
+  $bg-two: #fff;
+  $blue-header: #3a7ead;
+} @else if $color-scheme == redmond {
+  $navi-color: #fff;
+  $navi-background: #780505;
+  $navi-background-light: #a10707;
+  $navi-pointer-color: #666;
+  $navi-pointer-background: #780505;
+  $navi-database-name-color: #fff;
+  $navi-hover-background: #a10707;
+  $main-color: #444;
+  $body-bg: #fff;
+  $browse-pointer-color: #780505;
+  $browse-marker-color: #000;
+  $browse-warning-color: #d44a26;
+  $browse-success-color: #01a31c;
+  $browse-gray-color: #ccc;
+  $browse-marker-background: #eee;
+  $border-color: #ddd;
+  $button-color: #fff;
+  $button-background: #aaa;
+  $button-hover: #000;
+  $th-background: #f7f7f7;
+  $th-disabled-background: #f3f3f3;
+  $th-color: #666;
+  $th-pointer-color: #000;
+  $bg-one: #f7f7f7;
+  $bg-two: #fff;
+  $blue-header: #3a7ead;
+} @else if $color-scheme == blueeyes {
+  $navi-color: #fff;
+  $navi-background: #377796;
+  $navi-background-light: #428eb4;
+  $navi-pointer-color: #666;
+  $navi-pointer-background: #377796;
+  $navi-database-name-color: #fff;
+  $navi-hover-background: #428eb4;
+  $main-color: #444;
+  $body-bg: #fff;
+  $browse-pointer-color: #377796;
+  $browse-marker-color: #000;
+  $browse-warning-color: #d44a26;
+  $browse-success-color: #01a31c;
+  $browse-gray-color: #ccc;
+  $browse-marker-background: #eee;
+  $border-color: #ddd;
+  $button-color: #fff;
+  $button-background: #377796;
+  $button-hover: #000;
+  $th-background: #f7f7f7;
+  $th-disabled-background: #f3f3f3;
+  $th-color: #666;
+  $th-pointer-color: #000;
+  $bg-one: #f7f7f7;
+  $bg-two: #fff;
+  $blue-header: #3a7ead;
+} @else if $color-scheme == mono {
+  $navi-color: #fff;
+  $navi-background: #666;
+  $navi-background-light: #999;
+  $navi-pointer-color: #666;
+  $navi-pointer-background: #666;
+  $navi-database-name-color: #fff;
+  $navi-hover-background: #999;
+  $main-color: #444;
+  $body-bg: #fff;
+  $browse-pointer-color: #666;
+  $browse-marker-color: #000;
+  $browse-warning-color: #666;
+  $browse-success-color: #888;
+  $browse-gray-color: #ccc;
+  $browse-marker-background: #eee;
+  $border-color: #ddd;
+  $button-color: #fff;
+  $button-background: #aaa;
+  $button-hover: #000;
+  $th-background: #f7f7f7;
+  $th-disabled-background: #f3f3f3;
+  $th-color: #666;
+  $th-pointer-color: #000;
+  $bg-one: #f7f7f7;
+  $bg-two: #fff;
+  $blue-header: #555;
+}
+
+// Bootstrap
+// ---------
+
+// Body
+
+$body-color: $main-color;
+
+// Links
+
+$link-color: $browse-pointer-color;
+$link-decoration: none;
+$link-hover-color: $browse-pointer-color;
+$link-hover-decoration: underline;
+
+// Components
+
+$border-radius: 0;
+
+// Typography
+
+$font-family-base: "Open Sans", "Segoe UI", sans-serif;
+$font-family-monospace: "Consolas", "Lucida Grande", monospace;
+
+$font-family-light: "Open Sans Light", "Segoe UI Light", "Segoe UI", sans-serif;
+$font-family-bold: "Open Sans Bold", sans-serif;
+$font-family-extra-bold: "Open Sans Extrabold", "Segoe Black", sans-serif;
+
+$font-size-base: 0.6875rem; // 11px
+$line-height-base: 1;
+
+$h1-font-size: 3em;
+$h2-font-size: 3.6em;
+$h3-font-size: 1rem;
+
+$headings-font-weight: normal;
+
+// Tables
+
+$table-cell-padding-y: 0.6em;
+$table-cell-padding-x: 0.6em;
+$table-cell-padding-y-sm: $table-cell-padding-y;
+$table-cell-padding-x-sm: $table-cell-padding-x;
+$table-bg: $bg-two;
+$table-head-bg: #fff;
+$table-head-color: $th-color;
+$table-striped-order: even;
+$table-hover-color: $th-pointer-color;
+$table-hover-bg: $browse-marker-background;
+$table-border-width: 0;
+$table-caption-color: $table-head-color;
+
+// Buttons
+
+$enable-transitions: false;
+
+$primary: $browse-pointer-color;
+$secondary: $browse-gray-color;
+
+$btn-border-radius: 0;
+$btn-line-height: 1;
+$btn-padding-x: 0.5rem;
+
+// Dropdowns
+
+$dropdown-border-radius: 0;
+
+// Forms
+
+$input-border-radius: 0;
+$form-check-input-margin-y: 0;
+$label-margin-bottom: 0;
+
+// Navs
+
+$nav-tabs-border-color: #ddd;
+$nav-tabs-link-active-border-color: #ddd #ddd #fff;
+$nav-tabs-link-hover-border-color: $bg-two $bg-two #ddd;
+$nav-tabs-link-active-color: #000;
+
+// Navbar
+
+$enable-caret: false;
+$navbar-padding-y: 0;
+$navbar-padding-x: 0;
+$navbar-nav-link-padding-x: 0;
+$navbar-nav-link-padding-y: 0;
+$navbar-light-color: #666;
+$navbar-light-hover-color: #333;
+$navbar-light-active-color: #666;
+$navbar-light-disabled-color: #666;
+
+// Pagination
+
+$pagination-bg: $th-background;
+$pagination-hover-bg: $browse-marker-background;
+$pagination-border-color: $border-color;
+$pagination-hover-border-color: $border-color;
+$pagination-active-border-color: $border-color;
+$pagination-disabled-border-color: $border-color;
+
+// Card
+
+$card-border-radius: 0;
+$card-cap-bg: $th-background;
+$card-bg: $th-background;
+
+// Accordion
+
+$accordion-button-padding-y: 0.375rem;
+$accordion-button-padding-x: 1rem;
+$accordion-button-active-color: $button-color;
+$accordion-button-active-bg: $button-background;
+
+// Breadcrumbs
+
+$breadcrumb-navbar-padding-y: 0.89rem;
+$breadcrumb-navbar-padding-x: 2rem;
+$breadcrumb-navbar-margin-bottom: 0;
+$breadcrumb-navbar-bg: $navi-background;
+$breadcrumb-divider-color: $button-color;
+$breadcrumb-divider: none;
+
+// Alert
+
+$alert-margin-bottom: 1em;
+$alert-border-radius: 0;
+$alert-border-width: 0;
+
+// List group
+
+$list-group-bg: inherit;
+
+// Modals
+
+$modal-content-border-radius: 0;
+$modal-header-padding-y: 0.5rem;

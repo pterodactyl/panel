@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="phpMyAdmin coding standard" xsi:noNamespaceSchemaLocation="../vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <description>The phpMyAdmin coding standard.</description>
+
+    <!-- Import Doctrine coding standard (base) -->
+    <rule ref="Doctrine">
+        <!-- Do not require multiple assignment alignment -->
+        <exclude name="Generic.Formatting.MultipleStatementAlignment"/>
+
+        <!-- Allow the 'global' keyword -->
+        <exclude name="Squiz.PHP.GlobalKeyword"/>
+
+        <!-- Disable the superfluous class naming rules -->
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousAbstractClassNaming"/>
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousExceptionNaming"/>
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousInterfaceNaming"/>
+        <exclude name="SlevomatCodingStandard.Classes.SuperfluousTraitNaming"/>
+
+        <!-- Do not replace /* @var type $foo */ and similar simple inline annotations with assert() -->
+        <exclude name="SlevomatCodingStandard.PHP.RequireExplicitAssertion"/>
+    </rule>
+
+    <!-- Disable modern class name reference on objects (PHP 8.0+) -->
+    <rule ref="SlevomatCodingStandard.Classes.ModernClassNameReference">
+        <properties>
+            <property name="enableOnObjects" value="false"/>
+        </properties>
+    </rule>
+
+    <!-- Do not require usage of null coalesce operator equal operator (PHP 7.4+) -->
+    <rule ref="SlevomatCodingStandard.ControlStructures.RequireNullCoalesceEqualOperator">
+        <properties>
+            <property name="enable" value="false"/>
+        </properties>
+    </rule>
+
+    <!-- Disable native type hints for properties (PHP 7.4+) -->
+    <rule ref="SlevomatCodingStandard.TypeHints.PropertyTypeHint">
+        <properties>
+            <property name="enableNativeTypeHint" value="false"/>
+        </properties>
+    </rule>
+</ruleset>

@@ -1,0 +1,192 @@
+{# Tracked tables exists#}
+{% if head_version_exists %}
+    <div id="tracked_tables">
+        <h3>{% trans 'Tracked tables' %}</h3>
+
+        <form method="post" action="{{ url('/database/tracking') }}" name="trackedForm"
+            id="trackedForm" class="ajax">
+            {{ get_hidden_inputs(db) }}
+            <table id="versions" class="table table-striped table-hover w-auto">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>{% trans 'Table' %}</th>
+                        <th>{% trans 'Last version' %}</th>
+                        <th>{% trans 'Created' %}</th>
+                        <th>{% trans 'Updated' %}</th>
+                        <th>{% trans 'Status' %}</th>
+                        <th>{% trans 'Action' %}</th>
+                        <th>{% trans 'Show' %}</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for version in versions %}
+                        <tr>
+                            <td class="text-center">
+                                <input type="checkbox" name="selected_tbl[]"
+                                    class="checkall" id="selected_tbl_{{ version.table_name }}"
+                                    value="{{ version.table_name }}">
+                            </td>
+                            <th>
+                                <label for="selected_tbl_{{ version.table_name }}">
+                                    {{ version.table_name }}
+                                </label>
+                            </th>
+                            <td class="text-end">
+                                {{ version.version }}
+                            </td>
+                            <td>
+                                {{ version.date_created }}
+                            </td>
+                            <td>
+                                {{ version.date_updated }}
+                            </td>
+                            <td>
+                              <div class="wrapper toggleAjax hide">
+                                <div class="toggleButton">
+                                  <div title="{% trans 'Click to toggle' %}" class="toggle-container {{ version.tracking_active == 1 ? 'on' : 'off' }}">
+                                    <img src="{{ image('toggle-' ~ text_dir ~ '.png') }}">
+                                    <table>
+                                      <tbody>
+                                      <tr>
+                                        <td class="toggleOn">
+                                          <span class="hide">
+                                            {{- url('/table/tracking', {
+                                              'db': version.db_name,
+                                              'table': version.table_name,
+                                              'version': version.version,
+                                              'toggle_activation': 'activate_now',
+                                            }) -}}
+                                          </span>
+                                          <div>{% trans 'active' %}</div>
+                                        </td>
+                                        <td><div>&nbsp;</div></td>
+                                        <td class="toggleOff">
+                                          <span class="hide">
+                                            {{- url('/table/tracking', {
+                                              'db': version.db_name,
+                                              'table': version.table_name,
+                                              'version': version.version,
+                                              'toggle_activation': 'deactivate_now',
+                                            }) -}}
+                                          </span>
+                                          <div>{% trans 'not active' %}</div>
+                                        </td>
+                                      </tr>
+                                      </tbody>
+                                    </table>
+                                    <span class="hide callback"></span>
+                                    <span class="hide text_direction">{{ text_dir }}</span>
+                                  </div>
+                                </div>
+                              </div>
+                            </td>
+                            <td>
+                                <a class="delete_tracking_anchor ajax" href="{{ url('/database/tracking') }}" data-post="
+                                    {{- get_common({
+                                        'db': db,
+                                        'goto': url('/table/tracking'),
+                                        'back': url('/database/tracking'),
+                                        'table': version.table_name,
+                                        'delete_tracking': true
+                                    }, '', false) }}">
+                                    {{ get_icon('b_drop', 'Delete tracking'|trans) }}
+                                </a>
+                            </td>
+                            <td>
+                                <a href="{{ url('/table/tracking') }}" data-post="
+                                    {{- get_common({
+                                        'db': db,
+                                        'goto': url('/table/tracking'),
+                                        'back': url('/database/tracking'),
+                                        'table': version.table_name
+                                    }, '', false) }}">
+                                    {{ get_icon('b_versions', 'Versions'|trans) }}
+                                </a>
+                                <a href="{{ url('/table/tracking') }}" data-post="
+                                    {{- get_common({
+                                        'db': db,
+                                        'goto': url('/table/tracking'),
+                                        'back': url('/database/tracking'),
+                                        'table': version.table_name,
+                                        'report': true,
+                                        'version': version.version
+                                    }, '', false) }}">
+                                    {{ get_icon('b_report', 'Tracking report'|trans) }}
+                                </a>
+                                <a href="{{ url('/table/tracking') }}" data-post="
+                                    {{- get_common({
+                                        'db': db,
+                                        'goto': url('/table/tracking'),
+                                        'back': url('/database/tracking'),
+                                        'table': version.table_name,
+                                        'snapshot': true,
+                                        'version': version.version
+                                    }, '', false) }}">
+                                    {{ get_icon('b_props', 'Structure snapshot'|trans) }}
+                                </a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% include 'select_all.twig' with {
+                'text_dir': text_dir,
+                'form_name': 'trackedForm'
+            } only %}
+            <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="delete_tracking"
+                    title="{% trans 'Delete tracking' %}">
+                {{ get_icon('b_drop', 'Delete tracking'|trans) }}
+            </button>
+        </form>
+    </div>
+{% endif %}
+{% if untracked_tables_exists %}
+    <h3>{% trans 'Untracked tables' %}</h3>
+    <form method="post" action="{{ url('/database/tracking') }}" name="untrackedForm"
+        id="untrackedForm" class="ajax">
+        {{ get_hidden_inputs(db) }}
+        <table id="noversions" class="table table-striped table-hover w-auto">
+            <thead>
+                <tr>
+                    <th></th>
+                    <th>{% trans 'Table' %}</th>
+                    <th>{% trans 'Action' %}</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for table_name in untracked_tables %}
+                  {% if get_tracker_version(db, table_name) == -1 %}
+                    <tr>
+                        <td class="text-center">
+                            <input type="checkbox" name="selected_tbl[]"
+                                class="checkall" id="selected_tbl_{{ table_name }}"
+                                value="{{ table_name }}">
+                        </td>
+                        <th>
+                            <label for="selected_tbl_{{ table_name }}">
+                                {{ table_name }}
+                            </label>
+                        </th>
+                        <td>
+                            <a href="{{ url('/table/tracking', url_params|merge({
+                              'db': db,
+                              'table': table_name
+                            })) }}">
+                                {{ get_icon('eye', 'Track table'|trans) }}
+                            </a>
+                        </td>
+                    </tr>
+                  {% endif %}
+                {% endfor %}
+            </tbody>
+        </table>
+        {% include 'select_all.twig' with {
+            'text_dir': text_dir,
+            'form_name': 'untrackedForm'
+        } only %}
+        <button class="btn btn-link mult_submit" type="submit" name="submit_mult" value="track" title="{% trans 'Track table' %}">
+            {{ get_icon('eye', 'Track table'|trans) }}
+        </button>
+    </form>
+{% endif %}

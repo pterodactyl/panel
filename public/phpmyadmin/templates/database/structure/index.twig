@@ -1,0 +1,30 @@
+{% for flash_key, flash_messages in flash() %}
+  {% for flash_message in flash_messages %}
+    <div class="alert alert-{{ flash_key }}" role="alert">
+      {{ flash_message }}
+    </div>
+  {% endfor %}
+{% endfor %}
+
+{% if has_tables %}
+  <div id="tableslistcontainer">
+    {{ list_navigator_html|raw }}
+
+    {{ table_list_html|raw }}
+
+    {{ list_navigator_html|raw }}
+  </div>
+  <hr>
+  <p class="d-print-none">
+    <button type="button" class="btn btn-link p-0 jsPrintButton">{{ get_icon('b_print', 'Print'|trans, true) }}</button>
+    <a href="{{ url('/database/data-dictionary', {'db': database, 'goto': url('/database/structure')}) }}">
+      {{ get_icon('b_tblanalyse', 'Data dictionary'|trans, true) }}
+    </a>
+  </p>
+{% else %}
+  {{ 'No tables found in database.'|trans|notice }}
+{% endif %}
+
+{% if not is_system_schema %}
+  {{ create_table_html|raw }}
+{% endif %}

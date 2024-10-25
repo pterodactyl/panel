@@ -1,0 +1,531 @@
+// Navigation styles for the Metro theme
+#pma_navigation {
+  width: $navi-width;
+  overflow: hidden;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  background: $navi-color;
+  color: $main-color;
+  z-index: 800;
+
+  input[type="text"] {
+    background-color: $body-bg;
+    font-family: $font-family-base;
+  }
+
+  a {
+    &:link,
+    &:visited,
+    &:active {
+      text-decoration: none;
+      color: $navi-pointer-color;
+    }
+
+    img {
+      border: 0;
+    }
+  }
+
+  select {
+    &#select_server,
+    &#lightm_db {
+      width: 100%;
+    }
+  }
+
+  // buttons in some browsers (eg. Konqueror) are block elements, this breaks design
+  button {
+    display: inline;
+  }
+}
+
+#pma_navigation_content {
+  width: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+#pma_navigation {
+  ul {
+    margin: 0;
+  }
+
+  form {
+    margin: 0;
+    padding: 0;
+    display: inline;
+  }
+
+  div.pageselector {
+    text-align: center;
+    margin: 0;
+    margin-left: 0.75em;
+    border-left: 1px solid #666;
+  }
+
+  #pmalogo {
+    margin: 0;
+    padding: 12px;
+    background: $navi-background;
+    color: $button-color;
+    font-size: 14px;
+    cursor: default;
+    height: 15px;
+    line-height: 100%;
+    box-sizing: content-box;
+
+    &::after {
+      font-family: $font-family-extra-bold;
+      text-transform: uppercase;
+      margin-left: 5px;
+      content: "phpMyAdmin";
+    }
+  }
+
+  #imgpmalogo {
+    display: none;
+  }
+
+  #recentTableList {
+    text-align: center;
+    padding: 10px;
+
+    select {
+      min-width: 100%;
+    }
+  }
+
+  #databaseList {
+    text-align: center;
+    margin: 10px;
+  }
+
+  #navipanellinks {
+    padding-top: 1em;
+    padding-bottom: 1em;
+    text-align: center;
+    background-color: $border-color;
+
+    a {
+      box-sizing: content-box;
+    }
+
+    .icon {
+      margin: 0;
+    }
+  }
+}
+
+img {
+  &.ic_b_home,
+  &.ic_s_loggoff,
+  &.ic_b_docs,
+  &.ic_b_sqlhelp,
+  &.ic_s_reload {
+    filter: invert(70%);
+  }
+}
+
+#navipanellinks a {
+  height: 16px;
+  width: 16px;
+  color: $main-color;
+  margin-right: 5px;
+  padding: 5px;
+  font-size: 15px;
+
+  &:hover {
+    color: $th-color;
+  }
+}
+
+#pma_navigation {
+  #serverChoice,
+  #databaseList,
+  div.pageselector.dbselector {
+    text-align: center;
+    padding: 5px 10px 0;
+    border: 0;
+  }
+}
+
+#pma_navigation_content > img.throbber {
+  display: none;
+  margin: 0.3em auto 0;
+}
+
+/* Navigation tree */
+#pma_navigation_tree {
+  margin: 0;
+  margin-left: 10px;
+  overflow: hidden;
+  height: 74%;
+  position: relative;
+}
+
+#pma_navigation_select_database {
+  text-align: left;
+  padding: 0 0 0;
+  border: 0;
+  margin: 0;
+}
+
+#pma_navigation_db_select {
+  margin-top: 0.5em;
+  margin-left: 0.75em;
+
+  select {
+    border: 1px solid #bbb;
+    border-top: 1px solid #bbb;
+    color: #333;
+    padding: 4px 6px;
+    margin: 0 0 0;
+    width: 92%;
+  }
+}
+
+#pma_navigation_tree_content {
+  width: 100%;
+  overflow: hidden;
+  overflow-y: auto;
+  position: absolute;
+  height: 100%;
+}
+
+#pma_navigation_tree li {
+  .dbItemControls {
+    padding-right: 4px;
+    float: right;
+  }
+
+  .navItemControls {
+    display: none;
+    padding-right: 4px;
+    float: right;
+  }
+
+  &.activePointer .navItemControls {
+    display: block;
+    opacity: 0.5;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+}
+
+#pma_navigation_tree_content a.hover_show_full {
+  position: relative;
+  z-index: 100;
+}
+
+#pma_navigation_tree {
+  a {
+    color: $navi-color;
+    padding-left: 0;
+
+    &:hover {
+      text-decoration: none;
+      color: $th-color;
+    }
+  }
+
+  li {
+    margin-bottom: 0;
+
+    &.activePointer,
+    &.selected {
+      color: $th-color;
+    }
+  }
+
+  ul {
+    clear: both;
+    padding: 0;
+    list-style-type: none;
+    margin: 0;
+
+    ul {
+      position: relative;
+    }
+  }
+
+  li {
+    white-space: nowrap;
+    clear: both;
+    min-height: 17px;
+  }
+
+  img {
+    margin: 0;
+  }
+
+  i {
+    display: block;
+  }
+
+  div {
+    &.block {
+      position: relative;
+      width: 1.5em;
+      height: 2em;
+      min-width: 16px;
+      min-height: 16px;
+      float: left;
+
+      &.double {
+        width: 2.5em;
+      }
+
+      i,
+      b {
+        width: 1.5em;
+        height: 2em;
+        min-width: 16px;
+        min-height: 8px;
+        position: absolute;
+        bottom: 0.7em;
+        left: 0.75em;
+        z-index: 0;
+        margin-top: -4px;
+      }
+
+      /* Top and right segments for the tree element connections */
+      i {
+        display: block;
+        border-left: 1px solid #616161;
+        border-bottom: 1px solid #616161;
+        position: relative;
+        z-index: 0;
+
+        /* Removes top segment */
+        &.first {
+          border-left: 0;
+        }
+      }
+
+      /* Bottom segment for the tree element connections */
+      b {
+        display: block;
+        height: 0.75em;
+        bottom: -0.5rem;// Compensate for vertical-align: sub; of hover_show_full
+        left: 0.75em;
+        border-left: 1px solid #616161;
+      }
+
+      a,
+      u {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        z-index: 10;
+      }
+
+      a + a {
+        left: 100%;
+      }
+
+      &.double {
+        a,
+        u {
+          left: 33%;
+        }
+
+        a + a {
+          left: 85%;
+        }
+      }
+
+      img {
+        position: relative;
+        top: -0.6em;
+        left: 0;
+        margin-left: -7px;
+      }
+    }
+
+    &.throbber img {
+      top: 2px;
+      left: 2px;
+    }
+  }
+
+  li {
+    &.last > ul {
+      background: none;
+    }
+
+    > {
+      a,
+      i {
+        line-height: 1.5em;
+        height: 1.5em;
+        padding-left: 0.3em;
+      }
+    }
+  }
+
+  .list_container {
+    border-left: 1px solid #616161;
+    margin-left: 0.75em;
+    padding-left: 0.75em;
+
+    li.last.database {
+      // Revert the effect of the rule that is applied on all the tree
+      margin-bottom: 0 !important;
+    }
+  }
+
+  .last > .list_container {
+    border-left: 0 solid #616161;
+  }
+}
+
+/* Fast filter */
+li.fast_filter {
+  padding-left: 0.75em;
+  margin-left: 0.75em;
+  padding-right: 15px;
+  border-left: 1px solid #616161;
+
+  input {
+    font-size: 0.7em;
+  }
+
+  .searchClauseClear {
+    background-color: transparent;
+    font-weight: bold;
+    color: #800;
+    font-size: 0.7em;
+  }
+
+  .searchClauseClear:hover {
+    background-color: transparent;
+  }
+
+  &.db_fast_filter {
+    border: 0;
+    margin-left: 0;
+  }
+}
+
+#navigation_controls_outer {
+  min-height: 21px !important;
+}
+
+#pma_navigation_collapse {
+  padding-right: 2px;
+}
+
+#navigation_controls_outer.activePointer {
+  background-color: transparent !important;
+}
+
+#navigation_controls {
+  float: right;
+  padding-right: 23px;
+}
+
+/* Resize handler */
+#pma_navigation_resizer {
+  width: 1px;
+  height: 100%;
+  background-color: #aaa;
+  cursor: col-resize;
+  position: fixed;
+  top: 0;
+  left: $navi-width;
+  z-index: 801;
+}
+
+#pma_navigation_collapser {
+  width: 20px;
+  padding-top: 4px;
+  padding-bottom: 12px;
+  background: $navi-background;
+  border-bottom: 1px solid $navi-background;
+  line-height: 22px;
+  color: #fff;
+  position: fixed;
+  top: 0;
+  left: $navi-width;
+  text-align: center;
+  cursor: pointer;
+  z-index: 801;
+}
+
+/* Quick warp links */
+.pma_quick_warp {
+  margin-top: 5px;
+  margin-left: 10px;
+  position: relative;
+
+  .drop_list {
+    float: left;
+    margin-left: 3px;
+    padding: 2px 0;
+  }
+
+  .drop_button {
+    padding: 0.2em 0.5em;
+    border: 1px solid #ddd;
+    background: #f2f2f2;
+    cursor: pointer;
+    color: #333;
+  }
+
+  .drop_list {
+    &:hover .drop_button {
+      background: #fff;
+      color: #333;
+    }
+
+    ul {
+      position: absolute;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+      overflow-y: auto;
+      list-style: none;
+      background: #fff;
+      border: 1px solid #ddd;
+      top: 100%;
+      left: 3px;
+      right: 0;
+      display: none;
+      z-index: 802;
+    }
+
+    &:hover ul {
+      display: block;
+    }
+
+    li {
+      white-space: nowrap;
+      padding: 0;
+
+      img {
+        vertical-align: sub;
+      }
+
+      &:hover {
+        background: #f2f2f2;
+      }
+    }
+
+    a {
+      display: block;
+      padding: 0.2em 0.3em;
+
+      &.favorite_table_anchor {
+        clear: left;
+        float: left;
+        padding: 0.1em 0.3em 0;
+      }
+    }
+  }
+}

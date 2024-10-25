@@ -1,0 +1,31 @@
+{
+    "name": "dasprid/enum",
+    "description": "PHP 7.1 enum implementation",
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Ben Scholzen 'DASPRiD'",
+            "email": "mail@dasprids.de",
+            "homepage": "https://dasprids.de/",
+            "role": "Developer"
+        }
+    ],
+    "keywords": [
+        "enum",
+        "map"
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^7 | ^8 | ^9",
+        "squizlabs/php_codesniffer": "^3.4"
+    },
+    "autoload": {
+        "psr-4": {
+            "DASPRiD\\Enum\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DASPRiD\\EnumTest\\": "test/"
+        }
+    }
+}

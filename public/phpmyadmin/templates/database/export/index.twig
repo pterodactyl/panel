@@ -1,0 +1,62 @@
+{% extends 'export.twig' %}
+
+{% block title %}
+  {% if export_type == 'raw' %}
+    {% trans %}Exporting a raw query{% notes %}A query that the user has written freely{% endtrans %}
+  {% else %}
+    {{ 'Exporting tables from "%s" database'|trans|format(db) }}
+  {% endif %}
+{% endblock %}
+
+{% block selection_options %}
+  {% if export_type != 'raw' %}
+    <div class="card mb-3" id="databases_and_tables">
+      <div class="card-header">{% trans 'Tables:' %}</div>
+      <div class="card-body" style="overflow-y: scroll; max-height: 20em;">
+        <input type="hidden" name="structure_or_data_forced" value="{{ structure_or_data_forced }}">
+
+        <table class="table table-sm table-striped table-hover export_table_select">
+          <thead>
+            <tr>
+              <th></th>
+              <th>{% trans 'Tables' %}</th>
+              <th class="export_structure text-center">{% trans 'Structure' %}</th>
+              <th class="export_data text-center">{% trans 'Data' %}</th>
+            </tr>
+            <tr>
+              <td></td>
+              <td class="align-middle">{% trans 'Select all' %}</td>
+              <td class="export_structure text-center">
+                <input type="checkbox" id="table_structure_all" aria-label="{% trans 'Export the structure of all tables.' %}">
+              </td>
+              <td class="export_data text-center">
+                <input type="checkbox" id="table_data_all" aria-label="{% trans 'Export the data of all tables.' %}">
+              </td>
+            </tr>
+          </thead>
+
+          <tbody>
+            {% for each_table in tables %}
+              <tr class="marked">
+                <td>
+                  <input class="checkall" type="checkbox" name="table_select[]" value="{{ each_table.name }}"{{ each_table.is_checked_select ? ' checked' }}>
+                </td>
+                <td class="align-middle text-nowrap">{{ each_table.name }}</td>
+                <td class="export_structure text-center">
+                  <input type="checkbox" name="table_structure[]" value="{{ each_table.name }}"{{ each_table.is_checked_structure ? ' checked' }}>
+                </td>
+                <td class="export_data text-center">
+                  <input type="checkbox" name="table_data[]" value="{{ each_table.name }}"{{ each_table.is_checked_data ? ' checked' }}>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  {% endif %}
+{% endblock %}
+
+{% set filename_hint %}
+  {% trans '@SERVER@ will become the server name and @DATABASE@ will become the database name.' %}
+{% endset %}

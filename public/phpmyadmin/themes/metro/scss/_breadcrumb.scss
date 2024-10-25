@@ -1,0 +1,32 @@
+@import "../../bootstrap/scss/breadcrumb";
+
+.breadcrumb-navbar {
+  color: $button-color;
+
+  a {
+    color: inherit;
+
+    &:hover {
+      text-decoration: none;
+    }
+  }
+
+  .breadcrumb-item {
+    + .breadcrumb-item::before,
+    &::before {
+      width: 10px;
+      color: #eee;
+
+      /* The arrow "U+0203A" (SINGLE RIGHT-POINTING ANGLE QUOTATION MARK) */
+      content: "\203A";
+    }
+
+    .icon {
+      display: none;
+    }
+  }
+
+  .breadcrumb-comment {
+    font-style: italic;
+  }
+}

@@ -1,0 +1,62 @@
+<div class="container-fluid">
+  <div class="row">
+    <ul id="user_prefs_tabs" class="nav nav-pills m-2">
+      <li class="nav-item">
+        <a href="{{ url('/preferences/manage') }}" class="nav-link{{ route == '/preferences/manage' ? ' active' }}">
+          {% trans 'Manage your settings' %}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ url('/preferences/two-factor') }}" class="nav-link{{ route == '/preferences/two-factor' ? ' active' }}">
+          {% trans 'Two-factor authentication' %}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ url('/preferences/features') }}" class="nav-link{{ route == '/preferences/features' ? ' active' }}">
+          {{ get_icon('b_tblops', 'Features'|trans, false, false, 'TabsMode') }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ url('/preferences/sql') }}" class="nav-link{{ route == '/preferences/sql' ? ' active' }}">
+          {{ get_icon('b_sql', 'SQL queries'|trans, false, false, 'TabsMode') }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ url('/preferences/navigation') }}" class="nav-link{{ route == '/preferences/navigation' ? ' active' }}">
+          {{ get_icon('b_select', 'Navigation panel'|trans, false, false, 'TabsMode') }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ url('/preferences/main-panel') }}" class="nav-link{{ route == '/preferences/main-panel' ? ' active' }}">
+          {{ get_icon('b_props', 'Main panel'|trans, false, false, 'TabsMode') }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ url('/preferences/export') }}" class="nav-link{{ route == '/preferences/export' ? ' active' }}">
+          {{ get_icon('b_export', 'Export'|trans, false, false, 'TabsMode') }}
+        </a>
+      </li>
+
+      <li class="nav-item">
+        <a href="{{ url('/preferences/import') }}" class="nav-link{{ route == '/preferences/import' ? ' active' }}">
+          {{ get_icon('b_import', 'Import'|trans, false, false, 'TabsMode') }}
+        </a>
+      </li>
+    </ul>
+  </div>
+
+  {% if is_saved %}
+    {{ 'Configuration has been saved.'|trans|raw_success }}
+  {% endif %}
+
+  {% if not has_config_storage %}
+    {% apply format('<a href="' ~ get_docu_link('setup', 'linked-tables') ~ '" target="_blank" rel="noopener noreferrer">', '</a>')|notice %}
+      {% trans 'Your preferences will be saved for current session only. Storing them permanently requires %sphpMyAdmin configuration storage%s.' %}
+    {% endapply %}
+  {% endif %}

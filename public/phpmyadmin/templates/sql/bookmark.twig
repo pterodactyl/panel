@@ -1,0 +1,31 @@
+<form action="{{ url('/sql') }}" method="post" class="bookmarkQueryForm d-print-none"
+    onsubmit="return ! Functions.emptyCheckTheField(this, 'bkm_fields[bkm_label]');">
+    {{ get_hidden_inputs() }}
+    <input type="hidden" name="db" value="{{ db }}">
+    <input type="hidden" name="goto" value="{{ goto }}">
+    <input type="hidden" name="bkm_fields[bkm_database]" value="{{ db }}">
+    <input type="hidden" name="bkm_fields[bkm_user]" value="{{ user }}">
+    <input type="hidden" name="bkm_fields[bkm_sql_query]" value="{{ sql_query }}">
+    <fieldset class="pma-fieldset">
+        <legend>
+            {{ get_icon('b_bookmark', 'Bookmark this SQL query'|trans, true) }}
+        </legend>
+        <div class="formelement">
+            <label>
+                {% trans 'Label:' %}
+                <input type="text" name="bkm_fields[bkm_label]" value="">
+            </label>
+        </div>
+        <div class="formelement">
+            <label>
+                <input type="checkbox" name="bkm_all_users" value="true">
+                {% trans 'Let every user access this bookmark' %}
+            </label>
+        </div>
+        <div class="clearfloat"></div>
+    </fieldset>
+    <fieldset class="pma-fieldset tblFooters">
+        <input type="hidden" name="store_bkm" value="1">
+        <input class="btn btn-secondary" type="submit" value="{% trans 'Bookmark this SQL query' %}">
+    </fieldset>
+</form>

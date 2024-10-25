@@ -1,0 +1,20 @@
+{% if url_params %}
+    <li class="fast_filter{% if is_root_node %} db_fast_filter{% endif %}">
+        <form class="ajax fast_filter">
+            {{ get_hidden_inputs(url_params) }}
+            <div class="input-group">
+              <input
+                  class="searchClause form-control"
+                  type="text"
+                  name="{{ is_root_node ? 'searchClause' : 'searchClause2' }}"
+                  accesskey="q"
+                  aria-label="{% trans 'Type to filter these, Enter to search all' %}"
+                  placeholder="{% trans 'Type to filter these, Enter to search all' %}"
+              >
+              <button
+                class="btn btn-outline-secondary searchClauseClear"
+                type="button" aria-label="{% trans 'Clear fast filter' %}">X</button>
+            </div>
+        </form>
+    </li>
+{% endif %}

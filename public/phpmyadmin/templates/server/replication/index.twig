@@ -1,0 +1,44 @@
+<div class="container-fluid">
+<div class="row">
+<h2>
+  {{ get_image('s_replication') }}
+  {% trans 'Replication' %}
+</h2>
+</div>
+
+{% if is_super_user %}
+<div class="row">
+  <div id="replication" class="container-fluid">
+    {{ error_messages|raw }}
+
+    {% if is_primary %}
+      {{ primary_replication_html|raw }}
+    {% elseif primary_configure is null and clear_screen is null %}
+      <div class="card mb-2">
+        <div class="card-header">{% trans 'Primary replication' %}</div>
+        <div class="card-body">
+        {% apply format('<a href="' ~ url('/server/replication') ~ '" data-post="' ~ get_common(url_params|merge({'primary_configure': true}), '', false) ~ '">', '</a>')|raw %}
+          {% trans %}
+            This server is not configured as primary in a replication process. Would you like to %sconfigure%s it?
+          {% endtrans %}
+        {% endapply %}
+        </div>
+      </div>
+    {% endif %}
+
+    {% if primary_configure is not null %}
+      {{ primary_configuration_html|raw }}
+    {% else %}
+      {% if clear_screen is null %}
+        {{ replica_configuration_html|raw }}
+      {% endif %}
+      {% if replica_configure is not null %}
+        {{ change_primary_html|raw }}
+      {% endif %}
+    {% endif %}
+  </div>
+</div>
+</div>
+{% else %}
+  {{ 'No privileges'|trans|error }}
+{% endif %}

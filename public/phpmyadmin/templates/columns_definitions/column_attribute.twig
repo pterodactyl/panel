@@ -1,0 +1,22 @@
+{% if submit_attribute is defined and submit_attribute != false %}
+    {% set attribute = submit_attribute %}
+    {# MariaDB has additional parentheses #}
+{% elseif column_meta['Extra'] is defined
+    and ('on update current_timestamp' in column_meta['Extra'] or 'on update current_timestamp()' in column_meta['Extra']|lower) %}
+    {% set attribute = 'on update CURRENT_TIMESTAMP' %}
+{% elseif extracted_columnspec['attribute'] is defined %}
+    {% set attribute = extracted_columnspec['attribute'] %}
+{% else %}
+    {% set attribute = '' %}
+{% endif %}
+{% set attribute = attribute|upper %}
+<select name="field_attribute[{{ column_number }}]"
+    id="field_{{ column_number }}_{{ ci - ci_offset }}">
+    {% set cnt_attribute_types = attribute_types|length - 1 %}
+    {% for i in 0..cnt_attribute_types %}
+        <option value="{{ attribute_types[i] }}"
+            {{- attribute == attribute_types[i]|upper ? ' selected="selected"' }}>
+            {{ attribute_types[i] }}
+        </option>
+    {% endfor %}
+</select>

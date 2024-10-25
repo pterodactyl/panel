@@ -1,0 +1,12 @@
+{% for column in columns %}
+  <th class="draggable position-sticky{{ column.is_column_numeric ? ' text-end' }}{{ column.is_column_hidden ? ' hide' -}}
+    {{- is_sortable ? ' column_heading' }}{{ is_sortable and column.is_browse_marker_enabled ? ' marker' }}{{ is_sortable and column.is_browse_pointer_enabled ? ' pointer' -}}
+    {{- not is_sortable and column.has_condition ? ' condition' }}" data-column="{{ column.column_name }}">
+    {% if is_sortable %}
+      {{ column.order_link|raw }}
+    {% else %}
+      {{ column.column_name }}
+    {% endif %}
+    {{ column.comments|raw }}
+  </th>
+{% endfor %}

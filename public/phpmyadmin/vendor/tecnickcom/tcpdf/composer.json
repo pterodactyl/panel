@@ -1,0 +1,52 @@
+{
+    "name": "tecnickcom/tcpdf",
+    "type": "library",
+    "description": "TCPDF is a PHP class for generating PDF documents and barcodes.",
+    "keywords": [
+        "PDF",
+        "tcpdf",
+        "PDFD32000-2008",
+        "qrcode",
+        "datamatrix",
+        "pdf417",
+        "barcodes"
+    ],
+    "homepage": "http://www.tcpdf.org/",
+    "version": "6.6.2",
+    "license": "LGPL-3.0-only",
+    "authors": [
+        {
+            "name": "Nicola Asuni",
+            "email": "info@tecnick.com",
+            "role": "lead"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "classmap": [
+            "config",
+            "include",
+            "tcpdf.php",
+            "tcpdf_parser.php",
+            "tcpdf_import.php",
+            "tcpdf_barcodes_1d.php",
+            "tcpdf_barcodes_2d.php",
+            "include/tcpdf_colors.php",
+            "include/tcpdf_filters.php",
+            "include/tcpdf_font_data.php",
+            "include/tcpdf_fonts.php",
+            "include/tcpdf_images.php",
+            "include/tcpdf_static.php",
+            "include/barcodes/datamatrix.php",
+            "include/barcodes/pdf417.php",
+            "include/barcodes/qrcode.php"
+        ]
+    },
+    "archive": {
+        "exclude": [
+            "/examples"
+        ]
+    }
+}

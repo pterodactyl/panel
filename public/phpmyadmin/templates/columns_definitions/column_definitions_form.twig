@@ -1,0 +1,188 @@
+<form method="post" action="{{ action }}" class="
+    {{- action == url('/table/create') ? 'create_table' : 'append_fields' -}}
+    _form ajax lock-page">
+    {{ get_hidden_inputs(form_params) }}
+    {# happens when an index has been set on a column #}
+    {# and a column is added to the table creation dialog #}
+    {# This contains a JSON-encoded string #}
+    <input type="hidden" name="primary_indexes" value="
+        {{- primary_indexes is not empty ? primary_indexes : '[]' }}">
+    <input type="hidden" name="unique_indexes" value="
+        {{- unique_indexes is not empty ? unique_indexes : '[]' }}">
+    <input type="hidden" name="indexes" value="
+        {{- indexes is not empty ? indexes : '[]' }}">
+    <input type="hidden" name="fulltext_indexes" value="
+        {{- fulltext_indexes is not empty ? fulltext_indexes : '[]' }}">
+    <input type="hidden" name="spatial_indexes" value="
+        {{- spatial_indexes is not empty ? spatial_indexes : '[]' }}">
+
+    {% if action == url('/table/create') %}
+        <div id="table_name_col_no_outer">
+            <table id="table_name_col_no" class="table table-borderless tdblock">
+                <tr class="align-middle float-start">
+                    <td>{% trans 'Table name' %}:
+                    <input type="text"
+                        name="table"
+                        size="40"
+                        maxlength="64"
+                        value="{{ table is defined ? table }}"
+                        class="textfield" autofocus required>
+                    </td>
+                    <td>
+                        {% trans 'Add' %}
+                        <input type="number"
+                            id="added_fields"
+                            name="added_fields"
+                            size="2"
+                            value="1"
+                            min="1"
+                            onfocus="this.select()">
+                        {% trans 'column(s)' %}
+                        <input class="btn btn-secondary" type="button"
+                            name="submit_num_fields"
+                            value="{% trans 'Go' %}">
+                    </td>
+                </tr>
+            </table>
+        </div>
+    {% endif %}
+    {% if content_cells is iterable %}
+        {% include 'columns_definitions/table_fields_definitions.twig' with {
+            'is_backup': is_backup,
+            'fields_meta': fields_meta,
+            'relation_parameters': relation_parameters,
+            'content_cells': content_cells,
+            'change_column': change_column,
+            'is_virtual_columns_supported': is_virtual_columns_supported,
+            'server_version' : server_version,
+            'browse_mime': browse_mime,
+            'supports_stored_keyword': supports_stored_keyword,
+            'max_rows': max_rows,
+            'char_editing': char_editing,
+            'attribute_types': attribute_types,
+            'privs_available': privs_available,
+            'max_length': max_length,
+            'charsets': charsets
+        } only %}
+    {% endif %}
+    {% if action == url('/table/create') %}
+        <div class="responsivetable">
+        <table class="table table-borderless w-auto align-middle mb-0">
+            <tr class="align-top">
+                <th>{% trans 'Table comments:' %}</th>
+                <td width="25">&nbsp;</td>
+                <th>{% trans 'Collation:' %}</th>
+                <td width="25">&nbsp;</td>
+                <th>
+                    {% trans 'Storage Engine:' %}
+                    {{ show_mysql_docu('Storage_engines') }}
+                </th>
+                <td width="25">&nbsp;</td>
+                <th id="storage-engine-connection">
+                    {% trans 'Connection:' %}
+                    {{ show_mysql_docu('federated-create-connection') }}
+                </th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text"
+                        name="comment"
+                        size="40"
+                        maxlength="60"
+                        value="{{ comment is defined ? comment }}"
+                        class="textfield">
+                </td>
+                <td width="25">&nbsp;</td>
+                <td>
+                  <select lang="en" dir="ltr" name="tbl_collation">
+                    <option value=""></option>
+                    {% for charset in charsets %}
+                      <optgroup label="{{ charset.name }}" title="{{ charset.description }}">
+                        {% for collation in charset.collations %}
+                          <option value="{{ collation.name }}" title="{{ collation.description }}"
+                            {{- collation.name == tbl_collation ? ' selected' }}>
+                            {{- collation.name -}}
+                          </option>
+                        {% endfor %}
+                      </optgroup>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td width="25">&nbsp;</td>
+                <td>
+                  <select class="form-select" name="tbl_storage_engine" aria-label="{% trans 'Storage engine' %}">
+                    {% for engine in storage_engines %}
+                      <option value="{{ engine.name }}"{% if engine.comment is not empty %} title="{{ engine.comment }}"{% endif %}
+                        {{- engine.name|lower == tbl_storage_engine|lower or (tbl_storage_engine is empty and engine.is_default) ? ' selected' }}>
+                        {{- engine.name -}}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </td>
+                <td width="25">&nbsp;</td>
+                <td>
+                    <input type="text"
+                        name="connection"
+                        size="40"
+                        value="{{ connection is defined ? connection }}"
+                        placeholder="scheme://user_name[:password]@host_name[:port_num]/db_name/tbl_name"
+                        class="textfield"
+                        required="required">
+                </td>
+            </tr>
+            {% if have_partitioning %}
+                <tr class="align-top">
+                    <th colspan="5">
+                        {% trans 'PARTITION definition:' %}
+                        {{ show_mysql_docu('Partitioning') }}
+                    </th>
+                </tr>
+                <tr>
+                    <td colspan="5">
+                        {% include 'columns_definitions/partitions.twig' with {
+                          'partition_details': partition_details,
+                          'storage_engines': storage_engines
+                        } only %}
+                    </td>
+                </tr>
+            {% endif %}
+        </table>
+        </div>
+    {% endif %}
+    <fieldset class="pma-fieldset tblFooters">
+        {% if action == url('/table/add-field') or action == url('/table/structure/save') %}
+            <input type="checkbox" name="online_transaction" value="ONLINE_TRANSACTION_ENABLED" />{% trans %}Online transaction{% context %}Online transaction part of the SQL DDL for InnoDB{% endtrans %}{{ show_mysql_docu('innodb-online-ddl') }}
+        {% endif %}
+        <input class="btn btn-secondary preview_sql" type="button"
+            value="{% trans 'Preview SQL' %}">
+        <input class="btn btn-primary" type="submit"
+            name="do_save_data"
+            value="{% trans 'Save' %}">
+    </fieldset>
+    <div id="properties_message"></div>
+     {% if is_integers_length_restricted %}
+        <div class="alert alert-primary" id="length_not_allowed" role="alert">
+            {{ get_image('s_notice') }}
+            {% trans %}The column width of integer types is ignored in your MySQL version unless defining a TINYINT(1) column{% endtrans %}
+            {{ show_mysql_docu('', false, 'https://dev.mysql.com/doc/relnotes/mysql/8.0/en/news-8-0-19.html') }}
+        </div>
+     {% endif %}
+</form>
+<div class="modal fade" id="previewSqlModal" tabindex="-1" aria-labelledby="previewSqlModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="previewSqlModalLabel">{% trans 'Loading' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="previewSQLCloseButton" data-bs-dismiss="modal">{% trans 'Close' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{# Used by add new column of type ENUM/SET #}
+{{ include('modals/enum_set_editor.twig') }}

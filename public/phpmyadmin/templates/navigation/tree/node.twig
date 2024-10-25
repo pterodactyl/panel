@@ -1,0 +1,72 @@
+{% if show_node %}
+  <li class="{{ li_classes }}">
+    <div class="block">
+      <i{{ class == 'first' ? ' class="first"' }}></i>
+      {% if node_is_group %}
+        {{ 'last' not in class ? '<b></b>' }}
+        <a class="{{ link_classes }}" href="#">
+          <span class="hide paths_nav" data-apath="{{ paths.a_path }}" data-vpath="{{ paths.v_path }}" data-pos="{{ paths.pos }}"></span>
+          {% if pagination_params is not empty %}
+            <span class="hide {{ pagination_params.position }}" data-name="{{ pagination_params.data_name }}" data-value="{{ pagination_params.data_value }}"></span>
+          {% endif %}
+          {{ node_icon|raw }}
+        </a>
+      {% elseif pagination_params is not empty %}
+        <span class="hide {{ pagination_params.position }}" data-name="{{ pagination_params.data_name }}" data-value="{{ pagination_params.data_value }}"></span>
+      {% endif %}
+    </div>
+    {% if node_is_container %}
+      <div class="fst-italic">
+    {% endif %}
+
+    {% if node.isGroup %}
+      <div class="block second{{ has_second_icon ? ' double' }}">
+        <u>{{ get_image(node.icon['image'], node.icon['title']) }}</u>
+      </div>
+      &nbsp;{{ node.name }}
+    {% else %}
+      <div class="block second{{ has_second_icon ? ' double' }}">
+        {% for link in icon_links %}
+          <a href="{{ url(link.route, link.params) }}"{{ link.is_ajax ? ' class="ajax"' }}>
+            {{- get_image(link.image, link.title) -}}
+          </a>
+        {% endfor %}
+      </div>
+
+      {% if node_is_container %}
+        &nbsp;<a class="hover_show_full" href="{{ url(text_link.route, text_link.params) }}">{{ node.name }}</a>
+      {% elseif 'index' in node.classes %}
+        <a class="hover_show_full" href="{{ url(text_link.route) }}" data-post="{{ get_common(text_link.params|merge({'is_from_nav': true})) }}" title="{{ text_link.title }}">
+          {{- node.displayName ?? node.realName -}}
+        </a>
+      {% else %}
+        <a class="hover_show_full{{ text_link.is_ajax ? ' ajax' }}" href="{{ url(text_link.route, text_link.params) }}" title="{{ text_link.title }}">
+          {{- node.displayName ?? node.realName -}}
+        </a>
+      {% endif %}
+    {% endif %}
+
+    {{ control_buttons|raw }}
+
+    {% if node_is_container %}
+      </div>
+    {% endif %}
+
+    <div class="clearfloat"></div>
+{% elseif pagination_params is not empty %}
+  <span class="hide {{ pagination_params.position }}" data-name="{{ pagination_params.data_name }}" data-value="{{ pagination_params.data_value }}"></span>
+{% endif %}
+
+{% if recursive.html is not empty and recursive.has_wrapper %}
+  <div class="list_container"{{ recursive.is_hidden ? ' style="display: none;"' }}>
+    <ul>
+{% endif %}
+{{ recursive.html|raw }}
+{% if recursive.html is not empty and recursive.has_wrapper %}
+    </ul>
+  </div>
+{% endif %}
+
+{% if has_siblings %}
+  </li>
+{% endif %}

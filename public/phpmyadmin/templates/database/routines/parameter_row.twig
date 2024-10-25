@@ -1,0 +1,54 @@
+<tr>
+  <td class="dragHandle">
+    <span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+  </td>
+  <td class="routine_direction_cell{{ class }}">
+    <select name="item_param_dir[{{ index }}]">
+      {% for value in param_directions %}
+        <option value="{{ value }}"{{ item_param_dir == value ? ' selected' }}>{{ value }}</option>
+      {% endfor %}
+    </select>
+  </td>
+  <td>
+    <input name="item_param_name[{{ index }}]" type="text" value="{{ item_param_name|raw }}">
+  </td>
+  <td>
+    <select name="item_param_type[{{ index }}]">
+      {{ supported_datatypes|raw }}
+    </select>
+  </td>
+  <td>
+    <input id="item_param_length_{{ index }}" name="item_param_length[{{ index }}]" type="text" value="{{ item_param_length|raw }}">
+    <div class="enum_hint">
+      <a href="#" class="open_enum_editor">
+        {{ get_image('b_edit', '', {'title': 'ENUM/SET editor'|trans}) }}
+      </a>
+    </div>
+  </td>
+  <td class="hide no_len">---</td>
+  <td class="routine_param_opts_text">
+    <select lang="en" dir="ltr" name="item_param_opts_text[{{ index }}]">
+      <option value="">{% trans 'Charset' %}</option>
+      <option value=""></option>
+      {% for charset in charsets %}
+        <option value="{{ charset.name }}" title="{{ charset.description }}"{{ charset.is_selected ? ' selected' }}>
+          {{- charset.name -}}
+        </option>
+      {% endfor %}
+    </select>
+  </td>
+  <td class="hide no_opts">---</td>
+  <td class="routine_param_opts_num">
+    <select name="item_param_opts_num[{{ index }}]">
+      <option value=""></option>
+      {% for value in param_opts_num %}
+        <option value="{{ value }}"{{ item_param_opts_num == value ? ' selected' }}>{{ value }}</option>
+      {% endfor %}
+    </select>
+  </td>
+  <td class="routine_param_remove{{ drop_class }}">
+    <a href="#" class="routine_param_remove_anchor">
+      {{ get_icon('b_drop', 'Drop'|trans) }}
+    </a>
+  </td>
+</tr>

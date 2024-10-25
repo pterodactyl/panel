@@ -1,0 +1,185 @@
+
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Relations &#8212; phpMyAdmin 5.2.1 documentation</title>
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    <link rel="stylesheet" href="_static/classic.css" type="text/css" />
+    
+    <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="copyright" title="Copyright" href="copyright.html" />
+    <link rel="next" title="Charts" href="charts.html" />
+    <link rel="prev" title="User management" href="privileges.html" /> 
+  </head><body>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="charts.html" title="Charts"
+             accesskey="N">next</a> |</li>
+        <li class="right" >
+          <a href="privileges.html" title="User management"
+             accesskey="P">previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" accesskey="U">User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Relations</a></li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body" role="main">
+            
+  <div class="section" id="relations">
+<span id="id1"></span><h1>Relations<a class="headerlink" href="#relations" title="Permalink to this headline">¶</a></h1>
+<p>phpMyAdmin allows relationships (similar to foreign keys) using MySQL-native
+(InnoDB) methods when available and falling back on special phpMyAdmin-only
+features when needed. There are two ways of editing these relations, with the
+<em>relation view</em> and the drag-and-drop <em>designer</em> – both of which are explained
+on this page.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>You need to have configured the <a class="reference internal" href="setup.html#linked-tables"><span class="std std-ref">phpMyAdmin configuration storage</span></a> for using phpMyAdmin
+only relations.</p>
+</div>
+<div class="section" id="technical-info">
+<h2>Technical info<a class="headerlink" href="#technical-info" title="Permalink to this headline">¶</a></h2>
+<p>Currently the only MySQL table type that natively supports relationships is
+InnoDB. When using an InnoDB table, phpMyAdmin will create real InnoDB
+relations which will be enforced by MySQL no matter which application accesses
+the database. In the case of any other table type, phpMyAdmin enforces the
+relations internally and those relations are not applied to any other
+application.</p>
+</div>
+<div class="section" id="relation-view">
+<h2>Relation view<a class="headerlink" href="#relation-view" title="Permalink to this headline">¶</a></h2>
+<p>In order to get it working, you first have to properly create the
+[[pmadb|pmadb]]. Once that is setup, select a table’s “Structure” page. Below
+the table definition, a link called “Relation view” is shown. If you click that
+link, a page will be shown that offers you to create a link to another table
+for any (most) fields. Only PRIMARY KEYS are shown there, so if the field you
+are referring to is not shown, you most likely are doing something wrong.  The
+drop-down at the bottom is the field which will be used as the name for a
+record.</p>
+<div class="section" id="relation-view-example">
+<h3>Relation view example<a class="headerlink" href="#relation-view-example" title="Permalink to this headline">¶</a></h3>
+<img alt="_images/pma-relations-relation-view-link.png" src="_images/pma-relations-relation-view-link.png" />
+<img alt="_images/pma-relations-relation-link.png" src="_images/pma-relations-relation-link.png" />
+<p>Let’s say you have categories and links and one category can contain several links. Your table structure would be something like this:</p>
+<ul class="simple">
+<li><p><cite>category.category_id</cite> (must be unique)</p></li>
+<li><p><cite>category.name</cite></p></li>
+<li><p><cite>link.link_id</cite></p></li>
+<li><p><cite>link.category_id</cite></p></li>
+<li><p><cite>link.uri</cite>.</p></li>
+</ul>
+<p>Open the relation view (below the table structure) page for the <cite>link</cite> table and for <cite>category_id</cite> field, you select <cite>category.category_id</cite> as master record.</p>
+<p>If you now browse the link table, the <cite>category_id</cite> field will be a clickable hyperlink to the proper category record. But all you see is just the <cite>category_id</cite>, not the name of the category.</p>
+<img alt="_images/pma-relations-relation-name.png" src="_images/pma-relations-relation-name.png" />
+<p>To fix this, open the relation view of the <cite>category</cite> table and in the drop down at the bottom, select “name”. If you now browse the link table again and hover the mouse over the <cite>category_id</cite> hyperlink, the value from the related category will be shown as tooltip.</p>
+<img alt="_images/pma-relations-links.png" src="_images/pma-relations-links.png" />
+</div>
+</div>
+<div class="section" id="designer">
+<h2>Designer<a class="headerlink" href="#designer" title="Permalink to this headline">¶</a></h2>
+<p>The Designer feature is a graphical way of creating, editing, and displaying
+phpMyAdmin relations. These relations are compatible with those created in
+phpMyAdmin’s relation view.</p>
+<p>To use this feature, you need a properly configured <a class="reference internal" href="setup.html#linked-tables"><span class="std std-ref">phpMyAdmin configuration storage</span></a> and
+must have the <span class="target" id="index-0"></span><a class="reference internal" href="config.html#cfg_Servers_table_coords"><code class="xref config config-option docutils literal notranslate"><span class="pre">$cfg['Servers'][$i]['table_coords']</span></code></a> configured.</p>
+<p>To use the designer, select a database’s structure page, then look for the
+<span class="guilabel">Designer</span> tab.</p>
+<p>To export the view into PDF, you have to create PDF pages first. The Designer
+creates the layout, how the tables shall be displayed. To finally export the
+view, you have to create this with a PDF page and select your layout, which you
+have created with the designer.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p><a class="reference internal" href="faq.html#faqpdf"><span class="std std-ref">6.8 How can I produce a PDF schema of my database?</span></a></p>
+</div>
+</div>
+</div>
+
+
+            <div class="clearer"></div>
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar" role="navigation" aria-label="main navigation">
+        <div class="sphinxsidebarwrapper">
+  <h3><a href="index.html">Table of Contents</a></h3>
+  <ul>
+<li><a class="reference internal" href="#">Relations</a><ul>
+<li><a class="reference internal" href="#technical-info">Technical info</a></li>
+<li><a class="reference internal" href="#relation-view">Relation view</a><ul>
+<li><a class="reference internal" href="#relation-view-example">Relation view example</a></li>
+</ul>
+</li>
+<li><a class="reference internal" href="#designer">Designer</a></li>
+</ul>
+</li>
+</ul>
+
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="privileges.html"
+                        title="previous chapter">User management</a></p>
+  <h4>Next topic</h4>
+  <p class="topless"><a href="charts.html"
+                        title="next chapter">Charts</a></p>
+  <div role="note" aria-label="source link">
+    <h3>This Page</h3>
+    <ul class="this-page-menu">
+      <li><a href="_sources/relations.rst.txt"
+            rel="nofollow">Show Source</a></li>
+    </ul>
+   </div>
+<div id="searchbox" style="display: none" role="search">
+  <h3 id="searchlabel">Quick search</h3>
+    <div class="searchformwrapper">
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" aria-labelledby="searchlabel" />
+      <input type="submit" value="Go" />
+    </form>
+    </div>
+</div>
+<script>$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related" role="navigation" aria-label="related navigation">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="charts.html" title="Charts"
+             >next</a> |</li>
+        <li class="right" >
+          <a href="privileges.html" title="User management"
+             >previous</a> |</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.1 documentation</a> &#187;</li>
+          <li class="nav-item nav-item-1"><a href="user.html" >User Guide</a> &#187;</li>
+        <li class="nav-item nav-item-this"><a href="">Relations</a></li> 
+      </ul>
+    </div>
+    <div class="footer" role="contentinfo">
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2021, The phpMyAdmin devel team.
+      Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 3.4.3.
+    </div>
+  </body>
+</html>

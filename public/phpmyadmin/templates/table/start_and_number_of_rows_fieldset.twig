@@ -1,0 +1,19 @@
+<fieldset class="row g-3 align-items-center my-3">
+  <div class="col-auto">
+    <label class="col-form-label" for="startRowInput">{% trans 'Start row:' %}</label>
+  </div>
+  <div class="col-auto">
+    <input class="form-control" id="startRowInput" type="number" name="pos" min="0" value="{{ pos }}"{% if unlim_num_rows > 0 %} max="{{ unlim_num_rows - 1 }}"{% endif %} required>
+  </div>
+  <div class="col-auto">
+    <label class="col-form-label" for="maxRowsInput">{% trans 'Number of rows:' %}</label>
+  </div>
+  <div class="col-auto">
+    <input class="form-control" id="maxRowsInput" type="number" name="session_max_rows" min="1" value="{{ rows }}" required>
+  </div>
+  <div class="col-auto">
+    <input class="btn btn-primary" type="submit" name="submit" value="{% trans 'Go' %}">
+  </div>
+  <input type="hidden" name="sql_query" value="{{ sql_query }}">
+  <input type="hidden" name="unlim_num_rows" value="{{ unlim_num_rows }}">
+</fieldset>

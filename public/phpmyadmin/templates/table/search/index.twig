@@ -1,0 +1,203 @@
+<ul class="nav nav-pills m-2">
+  <li class="nav-item">
+    <a class="nav-link active" href="{{ url('/table/search', {'db': db, 'table': table, 'pos': 0}) }}">
+      {{ get_icon('b_search', 'Table search'|trans, false, false, 'TabsMode') }}
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}">
+      {{ get_icon('b_select', 'Zoom search'|trans, false, false, 'TabsMode') }}
+    </a>
+  </li>
+
+  <li class="nav-item">
+    <a class="nav-link" href="{{ url('/table/find-replace', {'db': db, 'table': table}) }}">
+      {{ get_icon('b_find_replace', 'Find and replace'|trans, false, false, 'TabsMode') }}
+    </a>
+  </li>
+</ul>
+
+<form method="post" action="{{ url('/table/search') }}" name="insertForm" id="tbl_search_form" class="ajax lock-page">
+  {{ get_hidden_inputs(db, table) }}
+  <input type="hidden" name="goto" value="{{ goto }}">
+  <input type="hidden" name="back" value="{{ url('/table/search') }}">
+
+  <div class="card">
+    <div class="card-header">{% trans 'Do a "query by example" (wildcard: "%")' %}</div>
+
+    <div class="card-body">
+      <div id="fieldset_table_qbe">
+        <div class="table-responsive-md jsresponsive">
+          <table class="table table-striped table-hover table-sm w-auto">
+            <thead>
+              <tr>
+                {% if geom_column_flag %}
+                  <th>{% trans 'Function' %}</th>
+                {% endif %}
+                <th>{% trans 'Column' %}</th>
+                <th>{% trans 'Type' %}</th>
+                <th>{% trans 'Collation' %}</th>
+                <th>{% trans 'Operator' %}</th>
+                <th>{% trans 'Value' %}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for column_index in 0..column_names|length - 1 %}
+                <tr class="noclick">
+                  {# If 'Function' column is present trying to change comment #}
+                  {% if geom_column_flag %}
+                    {# Displays 'Function' column if it is present #}
+                    <td>
+                      {% set geom_types = get_gis_datatypes() %}
+                      {% if column_types[column_index] in geom_types %}
+                        <select class="geom_func" name="geom_func[{{ column_index }}]">
+                          {# get the relevant list of GIS functions #}
+                          {% set funcs = get_gis_functions(column_types[column_index], true, true) %}
+                          {% for func_name, func in funcs %}
+                            {% set name = func['display'] is defined ? func['display'] : func_name %}
+                            <option value="{{ name }}">
+                              {{ name }}
+                            </option>
+                          {% endfor %}
+                        </select>
+                      {% endif %}
+                    </td>
+                  {% endif %}
+                  {# Displays column's name, type, collation and value #}
+                  <th>
+                    {#- Keep this without extra spaces because it is used for a request to build the BETWEEN modal -#}
+                    {{- column_names[column_index] -}}
+                  </th>
+                  {% set properties = self.getColumnProperties(column_index, column_index) %}
+                  <td dir="ltr">
+                    {{ properties['type'] }}
+                  </td>
+                  <td>
+                    {{ properties['collation'] }}
+                  </td>
+                  <td>
+                    {{ properties['func']|raw }}
+                  </td>
+                  {# here, the data-type attribute is needed for a date/time picker #}
+                  <td data-type="{{ properties['type'] }}">
+                    {{ properties['value']|raw }}
+                    {# Displays hidden fields #}
+                    <input type="hidden" name="criteriaColumnNames[{{ column_index }}]" value="{{ column_names[column_index] }}">
+                    <input type="hidden" name="criteriaColumnTypes[{{ column_index }}]" value="{{ column_types[column_index] }}">
+                    <input type="hidden" name="criteriaColumnCollations[{{ column_index }}]" value="{{ column_collations[column_index] }}">
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <div id="gis_editor"></div>
+        <div id="popup_background"></div>
+      </div>
+
+      {% if default_sliders_state != 'disabled' %}
+      <div>
+        <button class="btn btn-sm btn-secondary" type="button" data-bs-toggle="collapse" data-bs-target="#searchExtraOptions" aria-expanded="{{ default_sliders_state == 'open' ? 'true' : 'false' }}" aria-controls="searchExtraOptions">
+          {% trans 'Extra options' %}
+        </button>
+      </div>
+      <div class="collapse mt-3{{ default_sliders_state == 'open' ? ' show' }}" id="searchExtraOptions">
+      {% endif %}
+
+        {# Displays columns select list for selecting distinct columns in the search #}
+        <fieldset>
+          <div class="mb-3">
+            <label class="form-label" for="columnsToDisplaySelect">{% trans 'Select columns (at least one):' %}</label>
+            <select class="form-select resize-vertical" id="columnsToDisplaySelect" name="columnsToDisplay[]" size="{{ min(column_names|length, 10) }}" multiple>
+              {% for each_field in column_names %}
+                <option value="{{ each_field }}" selected>
+                  {{ each_field }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="form-check mb-3">
+            <input class="form-check-input" type="checkbox" name="distinct" value="DISTINCT" id="oDistinct">
+            <label class="form-check-label" for="oDistinct" dir="ltr" lang="en">DISTINCT</label>
+          </div>
+        </fieldset>
+
+        {# Displays input box for custom 'Where' clause to be used in the search #}
+        <div class="mb-3">
+          <label class="form-label" for="customWhereClauseInput">
+            <em>{% trans 'Or' %}</em>
+            {% trans 'Add search conditions (body of the "where" clause):' %}
+            {{ show_mysql_docu('Functions') }}
+          </label>
+          <input class="form-control" id="customWhereClauseInput" type="text" name="customWhereClause" size="64">
+        </div>
+
+        {# Displays option of changing default number of rows displayed per page #}
+        <div class="mb-3">
+          <label class="form-label" for="maxRowsInput">{% trans 'Number of rows per page' %}</label>
+          <input class="form-control" id="maxRowsInput" type="number" name="session_max_rows" min="1" value="{{ max_rows }}" required>
+        </div>
+
+        {# Displays option for ordering search results by a column value (Asc or Desc) #}
+        <fieldset>
+          <legend class="visually-hidden">{% trans 'Display order:' %}</legend>
+          <div class="mb-3">
+            <label class="form-label" for="orderByColumnSelect">{% trans 'Order by:' %}</label>
+            <select class="form-select" id="orderByColumnSelect" name="orderByColumn">
+              <option value="--nil--" selected></option>
+              {% for each_field in column_names %}
+                <option value="{{ each_field }}">
+                  {{ each_field }}
+                </option>
+              {% endfor %}
+            </select>
+          </div>
+
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="order" id="orderByAscRadio" value="ASC" checked>
+            <label class="form-check-label" for="orderByAscRadio">{% trans 'Ascending' %}</label>
+          </div>
+          <div class="form-check">
+            <input class="form-check-input" type="radio" name="order" id="orderByDescRadio" value="DESC">
+            <label class="form-check-label" for="orderByDescRadio">{% trans 'Descending' %}</label>
+          </div>
+        </fieldset>
+      {% if default_sliders_state != 'disabled' %}
+      </div>
+      {% endif %}
+    </div>
+
+    <div class="card-footer">
+      <input class="btn btn-primary" type="submit" name="submit" value="{% trans 'Go' %}">
+    </div>
+  </div>
+</form>
+
+<div class="modal fade" id="rangeSearchModal" tabindex="-1" aria-labelledby="rangeSearchModalLabel" aria-hidden="false">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="rangeSearchModalLabel">{% trans 'Range search' %}</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{% trans 'Close' %}"></button>
+      </div>
+      <div class="modal-body">
+        <fieldset class="pma-fieldset">
+          <legend id="rangeSearchLegend"></legend>
+          <label for="min_value">{% trans 'Minimum value:' %}</label>
+          <input type="text" id="min_value"><br>
+          <span class="small_font" id="rangeSearchMin"></span><br>
+          <label for="max_value">{% trans 'Maximum value:' %}</label>
+          <input type="text" id="max_value"><br>
+          <span class="small_font" id="rangeSearchMax"></span>
+        </fieldset>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" id="rangeSearchModalGo">{% trans 'Go' %}</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">{% trans 'Cancel' %}</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="sqlqueryresultsouter"></div>

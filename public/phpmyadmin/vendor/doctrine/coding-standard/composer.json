@@ -1,0 +1,32 @@
+{
+    "name": "doctrine/coding-standard",
+    "type": "phpcodesniffer-standard",
+    "description": "The Doctrine Coding Standard is a set of PHPCS rules applied to all Doctrine projects.",
+    "keywords": [
+        "doctrine",
+        "coding",
+        "standard",
+        "cs",
+        "code",
+        "style",
+        "sniffer",
+        "rules",
+        "sniffs",
+        "checks"
+    ],
+    "homepage": "https://www.doctrine-project.org/projects/coding-standard.html",
+    "license": "MIT",
+    "authors": [
+        {"name": "Benjamin Eberlei", "email": "kontakt@beberlei.de"},
+        {"name": "Steve Müller", "email": "st.mueller@dzh-online.de"}
+    ],
+    "require": {
+        "php": "^7.1 || ^8.0",
+        "dealerdirect/phpcodesniffer-composer-installer": "^0.6.2 || ^0.7",
+        "slevomat/coding-standard": "^7.0.0",
+        "squizlabs/php_codesniffer": "^3.6.0"
+    },
+    "config": {
+        "sort-packages": true
+    }
+}

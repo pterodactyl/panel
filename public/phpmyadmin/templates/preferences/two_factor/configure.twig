@@ -1,0 +1,17 @@
+<div class="row">
+  <div class="col">
+    <div class="card mt-4">
+      <div class="card-header">
+        {% trans "Configure two-factor authentication" %}
+      </div>
+      <div class="card-body">
+        <form method="post" action="{{ url('/preferences/two-factor') }}">
+          {{ get_hidden_inputs() }}
+          <input type="hidden" name="2fa_configure" value="{{ configure }}">
+          {{ form|raw }}
+          <input class="btn btn-secondary" type="submit" value="{% trans "Enable two-factor authentication" %}">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
