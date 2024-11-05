@@ -23,7 +23,7 @@ trait EnvironmentWriterTrait
     /**
      * Update the .env file for the application using the passed in values.
      *
-     * @throws PterodactylException
+     * @throws \Pterodactyl\Exceptions\PterodactylException
      */
     public function writeToEnvironment(array $values = []): void
     {

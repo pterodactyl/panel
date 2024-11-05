@@ -8,8 +8,10 @@ class MakeSftpPortUnsignedInt extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->unsignedSmallInteger('daemonSFTP')->default(2022)->change();
@@ -18,8 +20,10 @@ class MakeSftpPortUnsignedInt extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->smallInteger('daemonSFTP')->default(2022)->change();

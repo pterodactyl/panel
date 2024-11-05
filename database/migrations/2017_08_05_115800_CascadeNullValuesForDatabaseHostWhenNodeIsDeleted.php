@@ -9,7 +9,7 @@ class CascadeNullValuesForDatabaseHostWhenNodeIsDeleted extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('database_hosts', function (Blueprint $table) {
             $table->dropForeign(['node_id']);
@@ -20,7 +20,7 @@ class CascadeNullValuesForDatabaseHostWhenNodeIsDeleted extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('database_hosts', function (Blueprint $table) {
             $table->dropForeign(['node_id']);

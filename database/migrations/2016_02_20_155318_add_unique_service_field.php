@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -9,7 +8,7 @@ class AddUniqueServiceField extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('services', function (Blueprint $table) {
             $table->string('file')->unique()->change();
@@ -19,10 +18,10 @@ class AddUniqueServiceField extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('services', function (Blueprint $table) {
-            $table->dropUnique(['file']);
+            $table->dropUnique('services_file_unique');
         });
     }
 }

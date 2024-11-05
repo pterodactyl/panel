@@ -9,7 +9,7 @@ class DropAllocationsWhenNodeIsDeleted extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign(['node_id']);
@@ -21,7 +21,7 @@ class DropAllocationsWhenNodeIsDeleted extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign(['node_id']);

@@ -6,7 +6,7 @@ use Pterodactyl\Models\ApiKey;
 use Laravel\Sanctum\NewAccessToken as SanctumAccessToken;
 
 /**
- * @property ApiKey $accessToken
+ * @property \Pterodactyl\Models\ApiKey $accessToken
  */
 class NewAccessToken extends SanctumAccessToken
 {

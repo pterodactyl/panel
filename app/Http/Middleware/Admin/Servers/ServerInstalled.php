@@ -15,7 +15,7 @@ class ServerInstalled
      */
     public function handle(Request $request, \Closure $next): mixed
     {
-        /** @var Server|null $server */
+        /** @var \Pterodactyl\Models\Server|null $server */
         $server = $request->route()->parameter('server');
 
         if (!$server instanceof Server) {

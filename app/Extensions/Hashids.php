@@ -7,7 +7,10 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 class Hashids extends VendorHashids implements HashidsInterface
 {
-    public function decodeFirst(string $encoded, ?string $default = null): mixed
+    /**
+     * {@inheritdoc}
+     */
+    public function decodeFirst(string $encoded, string $default = null): mixed
     {
         $result = $this->decode($encoded);
         if (!is_array($result)) {

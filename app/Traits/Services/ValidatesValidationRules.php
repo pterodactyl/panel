@@ -14,7 +14,7 @@ trait ValidatesValidationRules
      * Validate that the rules being provided are valid for Laravel and can
      * be resolved.
      *
-     * @throws BadValidationRuleException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\BadValidationRuleException
      */
     public function validateRules(array|string $rules): void
     {

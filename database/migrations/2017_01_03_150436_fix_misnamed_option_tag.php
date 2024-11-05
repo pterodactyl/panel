@@ -7,7 +7,7 @@ class FixMisnamedOptionTag extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         DB::transaction(function () {
             DB::table('service_options')->where([
@@ -23,7 +23,7 @@ class FixMisnamedOptionTag extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         DB::table('service_options')->where([
             ['name', 'Sponge (SpongeVanilla)'],

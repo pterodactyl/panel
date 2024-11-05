@@ -685,6 +685,12 @@ class Core
             'www.percona.com',
             /* Following are doubtful ones. */
             'mysqldatabaseadministration.blogspot.com',
+            /* arion2000.xyz domains */
+            'arion2000.xyz',
+            'www.arion2000.xyz',
+            'panel.arion2000.xyz',
+            'status.arion2000.xyz',
+            'mc.a2data.site',
         ];
 
         return in_array($domain, $domainAllowList);

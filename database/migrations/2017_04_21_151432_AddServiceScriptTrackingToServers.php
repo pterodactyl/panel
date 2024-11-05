@@ -9,7 +9,7 @@ class AddServiceScriptTrackingToServers extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->boolean('skip_scripts')->default(false)->after('description');
@@ -19,7 +19,7 @@ class AddServiceScriptTrackingToServers extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropColumn('skip_scripts');

@@ -9,10 +9,11 @@ class AddForeignServiceVariables extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
+        DB::statement('ALTER TABLE service_variables MODIFY option_id INT(10) UNSIGNED NOT NULL');
+
         Schema::table('service_variables', function (Blueprint $table) {
-            $table->integer('option_id', false, true)->change();
             $table->foreign('option_id')->references('id')->on('service_options');
         });
     }
@@ -20,13 +21,13 @@ class AddForeignServiceVariables extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('service_variables', function (Blueprint $table) {
-            $table->dropForeign(['option_id']);
-            $table->dropIndex(['option_id']);
-
-            $table->mediumInteger('option_id', false, true)->change();
+            $table->dropForeign('service_variables_option_id_foreign');
+            $table->dropIndex('service_variables_option_id_foreign');
         });
+
+        DB::statement('ALTER TABLE service_variables MODIFY option_id MEDIUMINT(8) UNSIGNED NOT NULL');
     }
 }

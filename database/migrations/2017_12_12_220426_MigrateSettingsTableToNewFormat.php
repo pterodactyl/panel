@@ -10,7 +10,7 @@ class MigrateSettingsTableToNewFormat extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         DB::table('settings')->truncate();
         Schema::table('settings', function (Blueprint $table) {
@@ -21,7 +21,7 @@ class MigrateSettingsTableToNewFormat extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('settings', function (Blueprint $table) {
             $table->dropColumn('id');

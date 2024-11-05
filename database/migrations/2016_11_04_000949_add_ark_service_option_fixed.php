@@ -7,7 +7,7 @@ class AddArkServiceOptionFixed extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         DB::transaction(function () {
             $service = DB::table('services')->select('id')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('name', 'Source Engine')->first();
@@ -73,7 +73,7 @@ class AddArkServiceOptionFixed extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         DB::transaction(function () {
             $service = DB::table('services')->select('id')->where('author', 'ptrdctyl-v040-11e6-8b77-86f30ca893d3')->where('name', 'Source Engine')->first();

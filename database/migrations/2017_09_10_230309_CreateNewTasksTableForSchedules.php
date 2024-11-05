@@ -9,7 +9,7 @@ class CreateNewTasksTableForSchedules extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('tasks', function (Blueprint $table) {
             $table->increments('id');
@@ -29,7 +29,7 @@ class CreateNewTasksTableForSchedules extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('tasks');
     }

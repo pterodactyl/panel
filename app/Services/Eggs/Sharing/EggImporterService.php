@@ -26,7 +26,7 @@ class EggImporterService
     {
         $parsed = $this->parser->handle($file);
 
-        /** @var Nest $nest */
+        /** @var \Pterodactyl\Models\Nest $nest */
         $nest = Nest::query()->with('eggs', 'eggs.variables')->findOrFail($nest);
 
         return $this->connection->transaction(function () use ($nest, $parsed) {
