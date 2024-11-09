@@ -113,18 +113,4 @@ return [
             resource_path('views/vendor/mail'),
         ],
     ],
-
-    /*
-    |--------------------------------------------------------------------------
-    | Reply-To Address
-    |--------------------------------------------------------------------------
-    |
-    | Set the default "reply to" address for your application's emails.
-    |
-    */
-
-    'reply_to' => [
-        'address' => 'tickets@arion2000.xyz',
-        'name' => 'arion2000.xyz Support',
-    ],
 ];

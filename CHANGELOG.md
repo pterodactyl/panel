@@ -3,6 +3,18 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.9
+
+### Fixed
+
+* Fixed issue with CI not pushing Docker image
+
+## v1.11.8
+
+### Fixed
+
+* Fixed an issue where a `DELETE` request was used instead of a `POST`, potentially logging user passwords in plain text if they disable 2FA.
+
 ## v1.11.7
 
 ### Added
