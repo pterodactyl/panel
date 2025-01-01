@@ -1,5 +1,5 @@
 /*Design for Terminal*/
-@import url('https://fonts.googleapis.com/css?family=Source+Code+Pro');
+@import url('/assets/fonts/SourceCodePro.css');
 
 #terminal-body {
     background: rgb(26, 26, 26);
