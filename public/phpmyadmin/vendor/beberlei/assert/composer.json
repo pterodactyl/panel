@@ -23,7 +23,7 @@
     "sort-packages": true
   },
   "require": {
-    "php": "^7.0 || ^8.0",
+    "php": "^7.1 || ^8.0",
     "ext-simplexml": "*",
     "ext-mbstring": "*",
     "ext-ctype": "*",

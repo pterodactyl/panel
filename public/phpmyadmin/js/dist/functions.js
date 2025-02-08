@@ -412,7 +412,7 @@ Functions.escapeJsString = function (unsafe) {
  * @return {string}
  */
 Functions.escapeBacktick = function (s) {
-  return s.replace('`', '``');
+  return s.replaceAll('`', '``');
 };
 
 /**
@@ -420,7 +420,7 @@ Functions.escapeBacktick = function (s) {
  * @return {string}
  */
 Functions.escapeSingleQuote = function (s) {
-  return s.replace('\\', '\\\\').replace('\'', '\\\'');
+  return s.replaceAll('\\', '\\\\').replaceAll('\'', '\\\'');
 };
 Functions.sprintf = function () {
   return sprintf.apply(this, arguments);
@@ -489,7 +489,7 @@ Functions.prepareForAjaxRequest = function ($form) {
 Functions.checkPasswordStrength = function (value, meterObject, meterObjectLabel, username) {
   // List of words we don't want to appear in the password
   var customDict = ['phpmyadmin', 'mariadb', 'mysql', 'php', 'my', 'admin'];
-  if (username !== null) {
+  if (username) {
     customDict.push(username);
   }
   zxcvbnts.core.zxcvbnOptions.setOptions({
@@ -560,7 +560,11 @@ Functions.suggestPassword = function (passwordForm) {
   passwordForm.elements.pma_pw2.value = passwd.value;
   var meterObj = $jQueryPasswordForm.find('meter[name="pw_meter"]').first();
   var meterObjLabel = $jQueryPasswordForm.find('span[name="pw_strength"]').first();
-  Functions.checkPasswordStrength(passwd.value, meterObj, meterObjLabel);
+  var username = '';
+  if (passwordForm.elements.username) {
+    username = passwordForm.elements.username.value;
+  }
+  Functions.checkPasswordStrength(passwd.value, meterObj, meterObjLabel, username);
   return true;
 };
 
@@ -906,7 +910,7 @@ AJAX.registerOnload('functions.js', function () {
             /* There is other active window, let's reset counter */
             idleSecondsCounter = 0;
           }
-          var remaining = Math.min( /* Remaining login validity */
+          var remaining = Math.min(/* Remaining login validity */
           CommonParams.get('LoginCookieValidity') - idleSecondsCounter, /* Remaining time till session GC */
           CommonParams.get('session_gc_maxlifetime'));
           var interval = 1000;
@@ -1064,14 +1068,9 @@ Functions.setQuery = function (query) {
  * @return {void}
  */
 Functions.handleSimulateQueryButton = function () {
-  var updateRegExp = new RegExp('^\\s*UPDATE\\s+((`[^`]+`)|([A-Za-z0-9_$]+))\\s+SET\\s', 'i');
-  var deleteRegExp = new RegExp('^\\s*DELETE\\s+FROM\\s', 'i');
-  var query = '';
-  if (codeMirrorEditor) {
-    query = codeMirrorEditor.getValue();
-  } else {
-    query = $('#sqlquery').val();
-  }
+  var updateRegExp = /^\s*UPDATE\b\s*(((`([^`]|``)+`)|([a-z0-9_$]+))\s*\.\s*)?((`([^`]|``)+`)|([a-z0-9_$]+))\s*\bSET\b/i;
+  var deleteRegExp = /^\s*DELETE\b\s*((((`([^`]|``)+`)|([a-z0-9_$]+))\s*\.\s*)?((`([^`]|``)+`)|([a-z0-9_$]+))\s*)?\bFROM\b/i;
+  var query = codeMirrorEditor ? codeMirrorEditor.getValue() : $('#sqlquery').val();
   var $simulateDml = $('#simulate_dml');
   if (updateRegExp.test(query) || deleteRegExp.test(query)) {
     if (!$simulateDml.length) {
@@ -1138,7 +1137,7 @@ Functions.insertQuery = function (queryType) {
   }
   var query = '';
   var myListBox = document.sqlform.dummy;
-  table = document.sqlform.table.value;
+  table = Functions.escapeBacktick(document.sqlform.table.value);
   if (myListBox.options.length > 0) {
     sqlBoxLocked = true;
     var columnsList = '';
@@ -1974,6 +1973,16 @@ $(function () {
       $('#copyStatus').remove();
     }, 2000);
   });
+  $(document).on('mouseover mouseleave', '.ajax_notification a', function (event) {
+    let message = Messages.strDismiss;
+    if (event.type === 'mouseover') {
+      message = $(this).hasClass('copyQueryBtn') ? Messages.strCopyToClipboard : Messages.strEditQuery;
+    }
+    Functions.tooltip($('.ajax_notification'), 'span', message);
+  });
+  $(document).on('mouseup', '.ajax_notification a', function (event) {
+    event.stopPropagation();
+  });
 });
 
 /**
@@ -2225,7 +2234,6 @@ Functions.sqlPrettyPrint = function (string) {
       //   output += ...
     }
   }
-
   return output;
 };
 
@@ -2671,7 +2679,6 @@ AJAX.registerOnload('functions.js', function () {
         Functions.ajaxRemoveMessage($msgbox);
       }); // end $.post()
     };
-
     buttonOptions[Messages.strCancel].click = function () {
       $(this).dialog('close');
     };
@@ -3213,7 +3220,6 @@ Functions.indexDialogModal = function (routeUrl, url, title, callbackSuccess, ca
       }
     }); // end $.post()
   });
-
   var $msgbox = Functions.ajaxShowMessage();
   $.post(routeUrl, url, function (data) {
     if (typeof data !== 'undefined' && data.success === false) {
@@ -3231,7 +3237,6 @@ Functions.indexDialogModal = function (routeUrl, url, title, callbackSuccess, ca
     }
   }); // end $.get()
 };
-
 Functions.indexEditorDialog = function (url, title, callbackSuccess, callbackFailure) {
   Functions.indexDialogModal('index.php?route=/table/indexes', url, title, callbackSuccess, callbackFailure);
 };
@@ -3242,13 +3247,27 @@ Functions.showIndexEditDialog = function ($outer) {
   Indexes.checkIndexType();
   Functions.checkIndexName('index_frm');
   var $indexColumns = $('#index_columns');
-  $indexColumns.find('td').each(function () {
-    $(this).css('width', $(this).width() + 'px');
-  });
   $indexColumns.find('tbody').sortable({
     axis: 'y',
     containment: $indexColumns.find('tbody'),
-    tolerance: 'pointer'
+    tolerance: 'pointer',
+    forcePlaceholderSize: true,
+    // Add custom dragged row
+    helper: function (event, tr) {
+      var $originalCells = tr.children();
+      var $helper = tr.clone();
+      $helper.children().each(function (index) {
+        // Set cell width in dragged row
+        $(this).width($originalCells.eq(index).outerWidth());
+        var $childrenSelect = $originalCells.eq(index).children('select');
+        if ($childrenSelect.length) {
+          var selectedIndex = $childrenSelect.prop('selectedIndex');
+          // Set correct select value in dragged row
+          $(this).children('select').prop('selectedIndex', selectedIndex);
+        }
+      });
+      return $helper;
+    }
   });
   Functions.showHints($outer);
   // Add a slider for selecting how many columns to add to the index
@@ -3506,12 +3525,20 @@ AJAX.registerOnload('functions.js', function () {
 
   // Sync favorite tables from localStorage to pmadb.
   if ($('#sync_favorite_tables').length) {
+    var favoriteTables = '';
+    if (isStorageSupported('localStorage') && typeof window.localStorage.favoriteTables !== 'undefined' && window.localStorage.favoriteTables !== 'undefined') {
+      favoriteTables = window.localStorage.favoriteTables;
+      if (favoriteTables === 'undefined') {
+        // Do not send an invalid value
+        return;
+      }
+    }
     $.ajax({
       url: $('#sync_favorite_tables').attr('href'),
       cache: false,
       type: 'POST',
       data: {
-        'favoriteTables': isStorageSupported('localStorage') && typeof window.localStorage.favoriteTables !== 'undefined' ? window.localStorage.favoriteTables : '',
+        'favoriteTables': favoriteTables,
         'server': CommonParams.get('server'),
         'no_debug': true
       },
@@ -3746,7 +3773,6 @@ AJAX.registerOnload('functions.js', function () {
       }
     }); // end $(document).on()
   }
-
   if ($('textarea[name="view[as]"]').length !== 0) {
     codeMirrorEditor = Functions.getSqlEditor($('textarea[name="view[as]"]'));
   }
@@ -3811,9 +3837,14 @@ $(function () {
 
 /**
  * Scrolls the page to the top if clicking the server-breadcrumb bar
+ * If the user holds the Ctrl (or Meta on macOS) key, it prevents the scroll
+ * so they can open the link in a new tab.
  */
 $(function () {
   $(document).on('click', '#server-breadcrumb, #goto_pagetop', function (event) {
+    if (event.ctrlKey || event.metaKey) {
+      return;
+    }
     event.preventDefault();
     $('html, body').animate({
       scrollTop: 0
@@ -4064,17 +4095,20 @@ Functions.ignorePhpErrors = function (clearPrevErrors) {
  * @param $inputField
  */
 Functions.toggleDatepickerIfInvalid = function ($td, $inputField) {
-  // Regex allowed by the Datetimepicker UI
-  var dtexpDate = new RegExp(['^([0-9]{4})', '-(((01|03|05|07|08|10|12)-((0[1-9])|([1-2][0-9])|(3[0-1])))|((02|04|06|09|11)', '-((0[1-9])|([1-2][0-9])|30)))$'].join(''));
-  var dtexpTime = new RegExp(['^(([0-1][0-9])|(2[0-3]))', ':((0[0-9])|([1-5][0-9]))', ':((0[0-9])|([1-5][0-9]))(.[0-9]{1,6}){0,1}$'].join(''));
+  // If the Datetimepicker UI is not present, return
+  if ($inputField.hasClass('hasDatepicker')) {
+    // Regex allowed by the Datetimepicker UI
+    var dtexpDate = new RegExp(['^([0-9]{4})', '-(((01|03|05|07|08|10|12)-((0[1-9])|([1-2][0-9])|(3[0-1])))|((02|04|06|09|11)', '-((0[1-9])|([1-2][0-9])|30)))$'].join(''));
+    var dtexpTime = new RegExp(['^(([0-1][0-9])|(2[0-3]))', ':((0[0-9])|([1-5][0-9]))', ':((0[0-9])|([1-5][0-9]))(.[0-9]{1,6}){0,1}$'].join(''));
 
-  // If key-ed in Time or Date values are unsupported by the UI, close it
-  if ($td.attr('data-type') === 'date' && !dtexpDate.test($inputField.val())) {
-    $inputField.datepicker('hide');
-  } else if ($td.attr('data-type') === 'time' && !dtexpTime.test($inputField.val())) {
-    $inputField.datepicker('hide');
-  } else {
-    $inputField.datepicker('show');
+    // If key-ed in Time or Date values are unsupported by the UI, close it
+    if ($td.attr('data-type') === 'date' && !dtexpDate.test($inputField.val())) {
+      $inputField.datepicker('hide');
+    } else if ($td.attr('data-type') === 'time' && !dtexpTime.test($inputField.val())) {
+      $inputField.datepicker('hide');
+    } else {
+      $inputField.datepicker('show');
+    }
   }
 };
 

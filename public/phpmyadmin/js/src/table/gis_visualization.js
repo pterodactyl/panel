@@ -338,7 +338,7 @@ AJAX.registerOnload('table/gis_visualization.js', function () {
      * Detect the mousemove event and show tooltips.
      */
     $('.vector').on('mousemove', function (event) {
-        var contents = Functions.escapeHtml($(this).attr('name')).trim();
+        var contents = Functions.escapeHtml($(this).attr('data-label')).trim();
         $('#tooltip').remove();
         if (contents !== '') {
             $('<div id="tooltip">' + contents + '</div>').css({

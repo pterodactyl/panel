@@ -175,9 +175,9 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
     }
 
     /**
-     * @throws RuntimeException
-     *
      * @return \ReflectionFunctionAbstract
+     *
+     * @throws RuntimeException
      */
     protected function getReflectionMethod(Definition $definition, string $method)
     {
@@ -199,6 +199,10 @@ abstract class AbstractRecursivePass implements CompilerPassInterface
 
         if (!$r->hasMethod($method)) {
             if ($r->hasMethod('__call') && ($r = $r->getMethod('__call')) && $r->isPublic()) {
+                return new \ReflectionMethod(static function (...$arguments) {}, '__invoke');
+            }
+
+            if ($r->hasMethod('__callStatic') && ($r = $r->getMethod('__callStatic')) && $r->isPublic()) {
                 return new \ReflectionMethod(static function (...$arguments) {}, '__invoke');
             }
 

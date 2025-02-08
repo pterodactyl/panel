@@ -530,7 +530,7 @@ final class ImportController extends AbstractController
 
         // Convert the file's charset if necessary
         if (Encoding::isSupported() && isset($charset_of_file)) {
-            if ($charset_of_file !== 'utf-8') {
+            if ($charset_of_file !== 'utf-8' && in_array($charset_of_file, Encoding::listEncodings(), true)) {
                 $charset_conversion = true;
             }
         } elseif (isset($charset_of_file) && $charset_of_file !== 'utf-8') {

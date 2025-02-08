@@ -50,10 +50,10 @@ final class MacroAutoImportNodeVisitor implements NodeVisitorInterface
             }
         } elseif ($this->inAModule) {
             if (
-                $node instanceof GetAttrExpression &&
-                $node->getNode('node') instanceof NameExpression &&
-                '_self' === $node->getNode('node')->getAttribute('name') &&
-                $node->getNode('attribute') instanceof ConstantExpression
+                $node instanceof GetAttrExpression
+                && $node->getNode('node') instanceof NameExpression
+                && '_self' === $node->getNode('node')->getAttribute('name')
+                && $node->getNode('attribute') instanceof ConstantExpression
             ) {
                 $this->hasMacroCalls = true;
 

@@ -134,12 +134,12 @@ final class RelationController extends AbstractController
         $column_hash_array = [];
         $column_array[''] = '';
         foreach ($columns as $column) {
+            $column_hash_array[$column['Field']] = md5($column['Field']);
             if (strtoupper($storageEngine) !== 'INNODB' && empty($column['Key'])) {
                 continue;
             }
 
             $column_array[$column['Field']] = $column['Field'];
-            $column_hash_array[$column['Field']] = md5($column['Field']);
         }
 
         if ($GLOBALS['cfg']['NaturalOrder']) {

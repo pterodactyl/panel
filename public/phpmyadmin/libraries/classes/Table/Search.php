@@ -50,7 +50,7 @@ final class Search
         // (more efficient and this helps prevent a problem in IE
         // if one of the rows is edited and we come back to the Select results)
         if (isset($_POST['zoom_submit']) || ! empty($_POST['displayAllColumns'])) {
-            $sql_query .= '* ';
+            $sql_query .= '*';
         } else {
             $columnsToDisplay = $_POST['columnsToDisplay'];
             $quotedColumns = [];
@@ -90,9 +90,12 @@ final class Search
         // If there are no search criteria set or no unary criteria operators,
         // return
         if (
-            ! isset($_POST['criteriaValues'])
-            && ! isset($_POST['criteriaColumnOperators'])
-            && ! isset($_POST['geom_func'])
+            ! isset($_POST['criteriaColumnOperators'])
+            || (
+                ! isset($_POST['criteriaValues'])
+                && ! isset($_POST['criteriaColumnOperators'])
+                && ! isset($_POST['geom_func'])
+            )
         ) {
             return '';
         }

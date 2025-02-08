@@ -672,11 +672,11 @@ class Table implements Stringable
         if (! $virtuality && ! empty($extra)) {
             if ($oldColumnName === null) {
                 if (is_array($columnsWithIndex) && ! in_array($name, $columnsWithIndex)) {
-                    $query .= ', add PRIMARY KEY (' . Util::backquote($name) . ')';
+                    $query .= ', ADD PRIMARY KEY (' . Util::backquote($name) . ')';
                 }
             } else {
                 if (is_array($columnsWithIndex) && ! in_array($oldColumnName, $columnsWithIndex)) {
-                    $query .= ', add PRIMARY KEY (' . Util::backquote($name) . ')';
+                    $query .= ', ADD PRIMARY KEY (' . Util::backquote($name) . ')';
                 }
             }
         }
@@ -1071,10 +1071,19 @@ class Table implements Stringable
                 $GLOBALS['sql_auto_increment'] = $_POST['sql_auto_increment'];
             }
 
+            $isView = (new Table($sourceTable, $sourceDb, $GLOBALS['dbi']))->isView();
             /**
              * The old structure of the table..
              */
-            $sqlStructure = $exportSqlPlugin->getTableDef($sourceDb, $sourceTable, "\n", $errorUrl, false, false);
+            $sqlStructure = $exportSqlPlugin->getTableDef(
+                $sourceDb,
+                $sourceTable,
+                "\n",
+                $errorUrl,
+                false,
+                false,
+                $isView
+            );
 
             unset($noConstraintsComments);
 
@@ -1101,7 +1110,7 @@ class Table implements Stringable
                  */
                 $statement = new DropStatement();
 
-                $tbl = new Table($targetDb, $targetTable);
+                $tbl = new Table($targetTable, $targetDb);
 
                 $statement->options = new OptionsArray(
                     [
@@ -1522,8 +1531,9 @@ class Table implements Stringable
             RENAME TABLE ' . $this->getFullName(true) . '
                   TO ' . $newTable->getFullName(true) . ';';
         // I don't think a specific error message for views is necessary
-        if (! $this->dbi->query($GLOBALS['sql_query'])) {
-            // TODO: this is dead code, should it be removed?
+        if ($this->dbi->tryQuery($GLOBALS['sql_query']) === false) {
+            $this->errors[] = $this->dbi->getError();
+
             // Restore triggers in the old database
             if ($handleTriggers) {
                 $this->dbi->selectDb($this->getDbName());
@@ -1531,12 +1541,6 @@ class Table implements Stringable
                     $this->dbi->query($trigger['create']);
                 }
             }
-
-            $this->errors[] = sprintf(
-                __('Failed to rename table %1$s to %2$s!'),
-                $this->getFullName(),
-                $newTable->getFullName()
-            );
 
             return false;
         }
@@ -2123,7 +2127,7 @@ class Table implements Stringable
                     ' ADD %s ',
                     $index->getChoice()
                 );
-                if ($index->getName()) {
+                if ($index->getName() !== '') {
                     $sqlQuery .= Util::backquote($index->getName());
                 }
 
@@ -2156,7 +2160,7 @@ class Table implements Stringable
 
         // specifying index type is allowed only for primary, unique and index only
         // TokuDB is using Fractal Tree, Using Type is not useless
-        // Ref: https://mariadb.com/kb/en/mariadb/storage-engine-index-types/
+        // Ref: https://mariadb.com/kb/en/storage-engine-index-types/
         $type = $index->getType();
         if (
             $index->getChoice() !== 'SPATIAL'
@@ -2575,7 +2579,7 @@ class Table implements Stringable
         }
 
         $createTable = $this->showCreate();
-        if (! $createTable) {
+        if ($createTable === '') {
             return false;
         }
 
@@ -2607,12 +2611,10 @@ class Table implements Stringable
 
     /**
      * Returns the CREATE statement for this table
-     *
-     * @return mixed
      */
-    public function showCreate()
+    public function showCreate(): string
     {
-        return $this->dbi->fetchValue(
+        return (string) $this->dbi->fetchValue(
             'SHOW CREATE TABLE ' . Util::backquote($this->dbName) . '.'
             . Util::backquote($this->name),
             1

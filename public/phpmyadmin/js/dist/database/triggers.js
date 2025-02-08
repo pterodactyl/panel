@@ -144,7 +144,6 @@ const DatabaseTriggers = {
       }
     } // end showExport()
   },
-
   // end exportDialog()
   editorDialog: function (isNew, $this) {
     var that = this;
@@ -296,7 +295,7 @@ const DatabaseTriggers = {
           classes: {
             'ui-dialog-titlebar-close': 'btn-close'
           },
-          width: 700,
+          width: '70%',
           minWidth: 500,
           buttons: buttonOptions,
           // Issue #15810 - use button titles for modals (eg: new procedure)
@@ -335,15 +334,15 @@ const DatabaseTriggers = {
          *                 the Definition textarea.
          */
         var $elm = $('textarea[name=item_definition]').last();
-        var linterOptions = {};
-        linterOptions.triggerEditor = true;
+        var linterOptions = {
+          editorType: 'trigger'
+        };
         that.syntaxHiglighter = Functions.getSqlEditor($elm, {}, 'both', linterOptions);
       } else {
         Functions.ajaxShowMessage(data.error, false);
       }
     }); // end $.get()
   },
-
   dropDialog: function ($this) {
     /**
      * @var $curr_row Object containing reference to the current row
@@ -413,7 +412,6 @@ const DatabaseTriggers = {
       }); // end $.post()
     });
   },
-
   dropMultipleDialog: function ($this) {
     // We ask for confirmation here
     $this.confirm(Messages.strDropRTEitems, '', function () {
@@ -499,7 +497,6 @@ const DatabaseTriggers = {
     });
   }
 };
-
 AJAX.registerOnload('database/triggers.js', function () {
   /**
    * Attach Ajax event handlers for the Add/Edit functionality.

@@ -60,6 +60,12 @@ class Pdf extends TCPDF
         $this->AddFont('DejaVuSans', 'B', 'dejavusansb.php');
         $this->setFont(self::PMA_PDF_FONT, '', 14);
         $this->setFooterFont([self::PMA_PDF_FONT, '', 14]);
+        $this->setLanguageArray([
+            'a_meta_charset' => 'UTF-8',
+            'a_meta_dir' => $GLOBALS['text_dir'],
+            'a_meta_language' => $GLOBALS['lang'],
+            'w_page' => __('Page number:'),
+        ]);
     }
 
     /**

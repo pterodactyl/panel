@@ -302,8 +302,10 @@ class ImportMediawiki extends ImportPlugin
             // Set the table name
             $this->setTableName($table[0]);
 
-            // Set generic names for table headers if they don't exist
-            $this->setTableHeaders($table[1], $table[2][0]);
+            // Set generic names for table headers if they don't exist and the table has some data
+            if ($table[2] !== []) {
+                $this->setTableHeaders($table[1], $table[2][0]);
+            }
 
             // Create the tables array to be used in Import::buildSql()
             $tables = [];

@@ -147,9 +147,9 @@ DatabaseStructure.fetchRealRowCount = function ($target) {
       if (response.success) {
         // If to update all row counts for a DB.
         if (response.real_row_count_all) {
-          $.each(JSON.parse(response.real_row_count_all), function (index, table) {
+          $.each(response.real_row_count_all, function (index, table) {
             // Update each table row count.
-            $('table.data td[data-table*="' + table.table + '"]').text(table.row_count);
+            $('table.data td[data-table*="' + Functions.escapeJsString(table.table) + '"]').text(table.row_count);
           });
         }
         // If to update a particular table's row count.

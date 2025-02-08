@@ -1,27 +1,27 @@
 <ul class="nav nav-pills m-2">
   <li class="nav-item">
-    <a class="nav-link" href="{{ url('/table/search', {'db': db, 'table': table, 'pos': 0}) }}">
+    <a class="nav-link disableAjax" href="{{ url('/table/search', {'db': db, 'table': table, 'pos': 0}) }}">
       {{ get_icon('b_search', 'Table search'|trans, false, false, 'TabsMode') }}
     </a>
   </li>
 
   <li class="nav-item">
-    <a class="nav-link active" href="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}">
+    <a class="nav-link active disableAjax" href="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}">
       {{ get_icon('b_select', 'Zoom search'|trans, false, false, 'TabsMode') }}
     </a>
   </li>
 
   <li class="nav-item">
-    <a class="nav-link" href="{{ url('/table/find-replace', {'db': db, 'table': table}) }}">
+    <a class="nav-link disableAjax" href="{{ url('/table/find-replace', {'db': db, 'table': table}) }}">
       {{ get_icon('b_find_replace', 'Find and replace'|trans, false, false, 'TabsMode') }}
     </a>
   </li>
 </ul>
 
-<form method="post" action="{{ url('/table/zoom-search') }}" name="insertForm" id="zoom_search_form" class="ajax lock-page">
+<form method="post" action="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}" name="insertForm" id="zoom_search_form" class="ajax lock-page">
   {{ get_hidden_inputs(db, table) }}
   <input type="hidden" name="goto" value="{{ goto }}">
-  <input type="hidden" name="back" value="{{ url('/table/zoom-search') }}">
+  <input type="hidden" name="back" value="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}">
 
   <div class="card mb-3">
     <div class="card-header">{% trans 'Do a "query by example" (wildcard: "%") for two different columns' %}</div>
@@ -146,6 +146,9 @@
           </td>
         </tr>
       </table>
+
+      <div id="gis_editor"></div>
+      <div id="popup_background"></div>
     </div>
 
     <div class="card-footer">

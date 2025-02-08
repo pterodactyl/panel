@@ -88,6 +88,7 @@
             </div>
           {% endif %}
 
+            {% if available_languages is not empty or has_theme_manager %}
             <div class="card mt-4">
               <div class="card-header">
                 {% trans 'Appearance settings' %}
@@ -148,6 +149,7 @@
                 {% endif %}
               </ul>
             </div>
+            {% endif %}
           </div>
 
       <div class="col-lg-5 col-12">

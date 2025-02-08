@@ -132,7 +132,6 @@ const DatabaseEvents = {
       }
     } // end showExport()
   },
-
   // end exportDialog()
   editorDialog: function (isNew, $this) {
     var that = this;
@@ -288,7 +287,7 @@ const DatabaseEvents = {
           classes: {
             'ui-dialog-titlebar-close': 'btn-close'
           },
-          width: 700,
+          width: '70%',
           minWidth: 500,
           buttons: buttonOptions,
           // Issue #15810 - use button titles for modals (eg: new procedure)
@@ -327,15 +326,15 @@ const DatabaseEvents = {
          *                 the Definition textarea.
          */
         var $elm = $('textarea[name=item_definition]').last();
-        var linterOptions = {};
-        linterOptions.eventEditor = true;
+        var linterOptions = {
+          editorType: 'event'
+        };
         that.syntaxHiglighter = Functions.getSqlEditor($elm, {}, 'both', linterOptions);
       } else {
         Functions.ajaxShowMessage(data.error, false);
       }
     }); // end $.get()
   },
-
   dropDialog: function ($this) {
     /**
      * @var $curr_row Object containing reference to the current row
@@ -405,7 +404,6 @@ const DatabaseEvents = {
       }); // end $.post()
     });
   },
-
   dropMultipleDialog: function ($this) {
     // We ask for confirmation here
     $this.confirm(Messages.strDropRTEitems, '', function () {
@@ -490,7 +488,6 @@ const DatabaseEvents = {
       }); // end drop_anchors.each()
     });
   },
-
   /**
    * Validate custom editor form fields.
    *

@@ -29,7 +29,8 @@ class Linter
      *
      * @param string|UtfString $str String to be analyzed.
      *
-     * @return array
+     * @return array<int,int>
+     * @psalm-return list<int>
      */
     public static function getLines($str)
     {
@@ -72,8 +73,10 @@ class Linter
      *
      * @param array $lines The starting position of each line.
      * @param int   $pos   The absolute position
+     * @psalm-param list<int> $lines
      *
      * @return array
+     * @psalm-return array{int, int}
      */
     public static function findLineNumberAndColumn(array $lines, $pos)
     {
@@ -98,6 +101,14 @@ class Linter
      * @param string $query The query to be checked.
      *
      * @return array
+     * @psalm-return list<array{
+     *   message: string,
+     *   fromLine: int,
+     *   fromColumn: int,
+     *   toLine: int,
+     *   toColumn: int,
+     *   severity: string,
+     * }>
      */
     public static function lint($query)
     {
@@ -132,8 +143,6 @@ class Linter
 
         /**
          * The response containing of all errors.
-         *
-         * @var array
          */
         $response = [];
 

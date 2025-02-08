@@ -44,18 +44,18 @@
       {% if is_value_foreign_link %}
         {{ backup_field|raw }}
         <input type="hidden" name="fields_type[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" value="foreign">
-        <input type="text" name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" class="textfield" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')" id="field_{{ id_index }}_3" value="{{ data }}">
+        <input type="text" name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" class="textfield" tabindex="{{ tab_index + tab_index_for_value }}" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')" id="field_{{ id_index }}_3" value="{{ data }}">
         <a class="ajax browse_foreign" href="{{ url('/browse-foreigners') }}" data-post="{{ get_common({'db': db, 'table': table, 'field': column.Field, 'rownumber': row_id, 'data': data}) }}">{{ get_icon('b_browse', 'Browse foreign values'|trans) }}</a>
       {% elseif foreign_dropdown is not empty %}
         {{ backup_field|raw }}
         <input type="hidden" name="fields_type[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" value="{{ column.is_binary ? 'hex' : 'foreign' }}">
-        <select name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" class="textfield" id="field_{{ id_index }}_3" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
+        <select name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" class="textfield" tabindex="{{ tab_index + tab_index_for_value }}" id="field_{{ id_index }}_3" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
           {{ foreign_dropdown|raw }}
         </select>
       {% elseif (longtext_double_textarea and 'longtext' in column.pma_type) or 'json' in column.pma_type or 'text' in column.pma_type %}
         {{ backup_field|raw }}
-        <textarea name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" id="field_{{ id_index }}_3" data-type="{{ data_type }}" dir="{{ text_dir }}" rows="{{ textarea_rows }}" cols="{{ textarea_cols }}"
-          {{- max_length ? ' data-maxlength="' ~  max_length ~ '"' }}{{ column.is_char ? ' class="char charField"' }} onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
+        <textarea name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" id="field_{{ id_index }}_3" data-type="{{ data_type }}" dir="{{ text_dir }}" rows="{{ textarea_rows }}" cols="{{ textarea_cols }}" tabindex="{{ tab_index + tab_index_for_value }}"
+          {{- max_length ? ' data-maxlength="' ~  max_length ~ '"' }}{{ column.is_char ? ' class="charField"' }} onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
           {#- We need to duplicate the first \n or otherwise we will lose the first newline entered in a VARCHAR or TEXT column -#}
           {{- special_chars starts with "\r\n" ? "\n" }}{{ special_chars|raw -}}
         </textarea>
@@ -68,7 +68,7 @@
         {{ backup_field|raw }}
         <input type="hidden" name="fields_type[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" value="enum">
         {% if column.Type|length > 20 %}
-          <select name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" class="textfield" id="field_{{ id_index }}_3" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
+          <select name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" class="textfield" tabindex="{{ tab_index + tab_index_for_value }}" id="field_{{ id_index }}_3" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
             <option value=""></option>
             {% for enum_value in column.values %}
               <option value="{{ enum_value.plain }}"{{ enum_value.plain == enum_selected_value ? ' selected' }}>{{ enum_value.plain }}</option>
@@ -76,14 +76,14 @@
           </select>
         {% else %}
           {% for enum_value in column.values %}
-            <input type="radio" name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" value="{{ enum_value.plain }}" class="textfield" id="field_{{ id_index }}_3_{{ loop.index0 }}" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')"{{ enum_value.plain == enum_selected_value ? ' checked' }}>
+            <input type="radio" name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" value="{{ enum_value.plain }}" class="textfield" tabindex="{{ tab_index + tab_index_for_value }}" id="field_{{ id_index }}_3_{{ loop.index0 }}" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')"{{ enum_value.plain == enum_selected_value ? ' checked' }}>
             <label for="field_{{ id_index }}_3_{{ loop.index0 }}">{{ enum_value.plain }}</label>
           {% endfor %}
         {% endif %}
       {% elseif column.pma_type == 'set' %}
         {{ backup_field|raw }}
         <input type="hidden" name="fields_type[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" value="set">
-        <select name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}][]" class="textfield" size="{{ set_select_size }}" id="field_{{ id_index }}_3" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')" multiple>
+        <select name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}][]" class="textfield" tabindex="{{ tab_index + tab_index_for_value }}" size="{{ set_select_size }}" id="field_{{ id_index }}_3" onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')" multiple>
           {% for set_value in set_values %}
             <option value="{{ set_value.plain }}"{{ set_value.plain in data|split(',') ? ' selected' }}>{{ set_value.plain }}</option>
           {% endfor %}
@@ -97,8 +97,8 @@
         {% elseif column.is_blob or (column.len > limit_chars) %}
           {{ backup_field|raw }}
           <input type="hidden" name="fields_type[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" value="hex">
-          <textarea name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" id="field_{{ id_index }}_3" data-type="HEX" dir="{{ text_dir }}" rows="{{ textarea_rows }}" cols="{{ textarea_cols }}"
-            {{- max_length ? ' data-maxlength="' ~  max_length ~ '"' }}{{ column.is_char ? ' class="char charField"' }} onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
+          <textarea name="fields[multi_edit][{{ row_id }}][{{ column.Field_md5 }}]" id="field_{{ id_index }}_3" data-type="HEX" dir="{{ text_dir }}" rows="{{ textarea_rows }}" cols="{{ textarea_cols }}" tabindex="{{ tab_index + tab_index_for_value }}"
+            {{- max_length ? ' data-maxlength="' ~  max_length ~ '"' }}{{ column.is_char ? ' class="charField"' }} onchange="return verificationsAfterFieldChange('{{ column.Field_md5|escape_js_string }}', '{{ row_id|escape_js_string }}', '{{ column.pma_type }}')">
             {#- We need to duplicate the first \n or otherwise we will lose the first newline entered in a VARCHAR or TEXT column -#}
             {{- special_chars starts with "\r\n" ? "\n" }}{{ special_chars|raw -}}
           </textarea>
@@ -119,7 +119,9 @@
       {% endif %}
 
       {% if column.pma_type in gis_data_types %}
-        <span class="open_gis_editor" data-row-id="{{ row_id }}">{{ link_or_button('#', null, get_icon('b_edit', 'Edit/Insert'|trans), [], '_blank') }}</span>
+        <span class="open_gis_editor" data-row-id="{{ row_id }}">
+          {{ link_or_button('#', null, get_icon('b_edit', 'Edit/Insert'|trans)) }}
+        </span>
       {% endif %}
     {% endif %}
   </td>

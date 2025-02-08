@@ -295,7 +295,7 @@ class HttpRequest
         $content = null,
         $header = ''
     ) {
-        if (function_exists('curl_init')) {
+        if (function_exists('curl_init') && function_exists('curl_exec')) {
             return $this->curl($url, $method, $returnOnlyStatus, $content, $header);
         }
 

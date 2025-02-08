@@ -14,7 +14,7 @@
         {% for row in table %}
           <li class="list-group-item">
             {% if row.operation|lower != 'analyze' %}
-              <span class="badge bg-secondary text-dark">{{ row.operation|title }}</span>
+              <span class="badge bg-secondary">{{ row.operation|title }}</span>
             {% endif %}
 
             {% set badge_variation %}
@@ -28,7 +28,7 @@
                 bg-secondary
               {%- endif -%}
             {% endset %}
-            <span class="badge {{ badge_variation }} text-dark">{{ row.type|title }}</span>
+            <span class="badge {{ badge_variation }}">{{ row.type|title }}</span>
 
             {{ row.text }}
           </li>

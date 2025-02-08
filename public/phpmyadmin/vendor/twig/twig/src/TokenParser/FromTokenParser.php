@@ -32,7 +32,7 @@ final class FromTokenParser extends AbstractTokenParser
         $stream->expect(/* Token::NAME_TYPE */ 5, 'import');
 
         $targets = [];
-        do {
+        while (true) {
             $name = $stream->expect(/* Token::NAME_TYPE */ 5)->getValue();
 
             $alias = $name;
@@ -45,7 +45,7 @@ final class FromTokenParser extends AbstractTokenParser
             if (!$stream->nextIf(/* Token::PUNCTUATION_TYPE */ 9, ',')) {
                 break;
             }
-        } while (true);
+        }
 
         $stream->expect(/* Token::BLOCK_END_TYPE */ 3);
 

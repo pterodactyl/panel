@@ -313,6 +313,13 @@ final class Common
         }
 
         /**
+         * Warning about mysqlnd. This does not apply to PMA >= 6.0
+         */
+        if (! function_exists('mysqli_stmt_get_result')) {
+            Core::warnMissingExtension('mysqlnd');
+        }
+
+        /**
          * We really need this one!
          */
         if (! function_exists('preg_replace')) {

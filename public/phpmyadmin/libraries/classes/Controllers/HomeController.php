@@ -27,6 +27,7 @@ use function count;
 use function extension_loaded;
 use function file_exists;
 use function ini_get;
+use function is_string;
 use function mb_strlen;
 use function preg_match;
 use function sprintf;
@@ -107,9 +108,13 @@ class HomeController extends AbstractController
         $hasServer = $server > 0 || count($cfg['Servers']) > 1;
         if ($hasServer) {
             $hasServerSelection = $cfg['ServerDefault'] == 0
-                || (! $cfg['NavigationDisplayServers']
-                && (count($cfg['Servers']) > 1
-                || ($server == 0 && count($cfg['Servers']) === 1)));
+                || (
+                    $cfg['NavigationDisplayServers']
+                    && (
+                        count($cfg['Servers']) > 1
+                        || ($server == 0 && count($cfg['Servers']) === 1)
+                    )
+                );
             if ($hasServerSelection) {
                 $serverSelection = Select::render(true, true);
             }
@@ -188,7 +193,7 @@ class HomeController extends AbstractController
         }
 
         $relation = new Relation($this->dbi);
-        if ($server > 0) {
+        if ($server > 0 && $relation->arePmadbTablesAllDisabled() === false) {
             $relationParameters = $relation->getRelationParameters();
             if (! $relationParameters->hasAllFeatures() && $cfg['PmaNoRelation_DisableWarning'] == false) {
                 $messageText = __(
@@ -311,7 +316,12 @@ class HomeController extends AbstractController
          * Check if user does not have defined blowfish secret and it is being used.
          */
         if (! empty($_SESSION['encryption_key'])) {
-            $encryptionKeyLength = mb_strlen($cfg['blowfish_secret'], '8bit');
+            $encryptionKeyLength = 0;
+            // This can happen if the user did use getenv() to set blowfish_secret
+            if (is_string($cfg['blowfish_secret'])) {
+                $encryptionKeyLength = mb_strlen($cfg['blowfish_secret'], '8bit');
+            }
+
             if ($encryptionKeyLength < SODIUM_CRYPTO_SECRETBOX_KEYBYTES) {
                 $this->errors[] = [
                     'message' => __(

@@ -38,7 +38,6 @@ use const E_ERROR;
 use const E_NOTICE;
 use const E_PARSE;
 use const E_RECOVERABLE_ERROR;
-use const E_STRICT;
 use const E_USER_DEPRECATED;
 use const E_USER_ERROR;
 use const E_USER_NOTICE;
@@ -54,7 +53,7 @@ class Error extends Message
     /**
      * Error types
      *
-     * @var array
+     * @var array<int, string>
      */
     public static $errortype = [
         0 => 'Internal error',
@@ -69,7 +68,7 @@ class Error extends Message
         E_USER_ERROR => 'User Error',
         E_USER_WARNING => 'User Warning',
         E_USER_NOTICE => 'User Notice',
-        E_STRICT => 'Runtime Notice',
+        2048 => 'Runtime Notice', // E_STRICT
         E_DEPRECATED => 'Deprecation Notice',
         E_USER_DEPRECATED => 'Deprecation Notice',
         E_RECOVERABLE_ERROR => 'Catchable Fatal Error',
@@ -78,7 +77,7 @@ class Error extends Message
     /**
      * Error levels
      *
-     * @var array
+     * @var array<int, string>
      */
     public static $errorlevel = [
         0 => 'error',
@@ -93,7 +92,7 @@ class Error extends Message
         E_USER_ERROR => 'error',
         E_USER_WARNING => 'error',
         E_USER_NOTICE => 'notice',
-        E_STRICT => 'notice',
+        2048 => 'notice', // E_STRICT
         E_DEPRECATED => 'notice',
         E_USER_DEPRECATED => 'notice',
         E_RECOVERABLE_ERROR => 'error',
@@ -316,7 +315,7 @@ class Error extends Message
      */
     public function getType(): string
     {
-        return self::$errortype[$this->getNumber()];
+        return self::$errortype[$this->getNumber()] ?? 'Internal error';
     }
 
     /**
@@ -326,7 +325,7 @@ class Error extends Message
      */
     public function getLevel(): string
     {
-        return self::$errorlevel[$this->getNumber()];
+        return self::$errorlevel[$this->getNumber()] ?? 'error';
     }
 
     /**
@@ -448,7 +447,7 @@ class Error extends Message
             '_realConnect',
         ];
 
-        if (in_array($function, $includeFunctions)) {
+        if (in_array($function, $includeFunctions) && is_string($arg)) {
             $retval .= self::relPath($arg);
         } elseif (in_array($function, $connectFunctions) && is_string($arg)) {
             $retval .= gettype($arg) . ' ********';

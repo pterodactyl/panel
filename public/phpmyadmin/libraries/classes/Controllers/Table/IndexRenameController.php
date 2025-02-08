@@ -53,7 +53,9 @@ final class IndexRenameController extends AbstractController
         if (isset($_POST['index'])) {
             if (is_array($_POST['index'])) {
                 // coming already from form
-                $index = new Index($_POST['index']);
+                $oldIndex = is_array($_POST['old_index']) ? $_POST['old_index']['Key_name'] : $_POST['old_index'];
+                $index = clone $this->dbi->getTable($this->db, $this->table)->getIndex($oldIndex);
+                $index->setName($_POST['index']['Key_name']);
             } else {
                 $index = $this->dbi->getTable($this->db, $this->table)->getIndex($_POST['index']);
             }

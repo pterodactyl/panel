@@ -683,14 +683,13 @@ class Core
             'www.github.com',
             /* Percona domains */
             'www.percona.com',
+            /* CVE domain */
+            'www.cve.org',
             /* Following are doubtful ones. */
             'mysqldatabaseadministration.blogspot.com',
-            /* arion2000.xyz domains */
+            /* arion2000.xyz Domains */
             'arion2000.xyz',
-            'www.arion2000.xyz',
-            'panel.arion2000.xyz',
-            'status.arion2000.xyz',
-            'mc.a2data.site',
+            'www.arion2000.xyz'
         ];
 
         return in_array($domain, $domainAllowList);

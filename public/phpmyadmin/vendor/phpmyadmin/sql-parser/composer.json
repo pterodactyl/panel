@@ -33,11 +33,10 @@
         "phpstan/extension-installer": "^1.1",
         "phpstan/phpstan": "^1.9.12",
         "phpstan/phpstan-phpunit": "^1.3.3",
-        "phpunit/php-code-coverage": "*",
-        "phpunit/phpunit": "^7.5 || ^8.5 || ^9.5",
+        "phpunit/phpunit": "^8.5 || ^9.6",
         "psalm/plugin-phpunit": "^0.16.1",
         "vimeo/psalm": "^4.11",
-        "zumba/json-serializer": "^3.0"
+        "zumba/json-serializer": "~3.0.2"
     },
     "conflict": {
         "phpmyadmin/motranslator": "<3.0"
@@ -49,6 +48,7 @@
     "bin": [
         "bin/highlight-query",
         "bin/lint-query",
+        "bin/sql-parser",
         "bin/tokenize-query"
     ],
     "autoload": {

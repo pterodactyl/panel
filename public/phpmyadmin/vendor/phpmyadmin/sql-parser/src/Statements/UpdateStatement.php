@@ -6,15 +6,21 @@ namespace PhpMyAdmin\SqlParser\Statements;
 
 use PhpMyAdmin\SqlParser\Components\Condition;
 use PhpMyAdmin\SqlParser\Components\Expression;
+use PhpMyAdmin\SqlParser\Components\JoinKeyword;
 use PhpMyAdmin\SqlParser\Components\Limit;
 use PhpMyAdmin\SqlParser\Components\OrderKeyword;
 use PhpMyAdmin\SqlParser\Components\SetOperation;
+use PhpMyAdmin\SqlParser\Exceptions\ParserException;
+use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statement;
+use PhpMyAdmin\SqlParser\Token;
+use PhpMyAdmin\SqlParser\TokensList;
 
 /**
  * `UPDATE` statement.
  *
  * UPDATE [LOW_PRIORITY] [IGNORE] table_reference
+ *     [INNER JOIN | LEFT JOIN | JOIN] T1 ON T1.C1 = T2.C1
  *     SET col_name1={expr1|DEFAULT} [, col_name2={expr2|DEFAULT}] ...
  *     [WHERE where_condition]
  *     [ORDER BY ...]
@@ -60,6 +66,18 @@ class UpdateStatement extends Statement
         // Used for updated tables.
         '_UPDATE' => [
             'UPDATE',
+            1,
+        ],
+        'JOIN' => [
+            'JOIN',
+            1,
+        ],
+        'LEFT JOIN' => [
+            'LEFT JOIN',
+            1,
+        ],
+        'INNER JOIN' => [
+            'INNER JOIN',
             1,
         ],
         'SET' => [
@@ -114,4 +132,32 @@ class UpdateStatement extends Statement
      * @var Limit|null
      */
     public $limit;
+
+    /**
+     * Joins.
+     *
+     * @var JoinKeyword[]|null
+     */
+    public $join;
+
+    /**
+     * Function called after the token was processed.
+     * In the update statement, this is used to check that at least one assignment has been set to throw an error if a
+     * query like `UPDATE acme SET WHERE 1;` is parsed.
+     *
+     * @return void
+     *
+     * @throws ParserException throws the exception, if strict mode is enabled.
+     */
+    public function after(Parser $parser, TokensList $list, Token $token)
+    {
+        /** @psalm-var string $tokenValue */
+        $tokenValue = $token->value;
+        // Ensure we finished to parse the "SET" token, and if yes, ensure that assignments are defined.
+        if ($this->set !== [] || (Parser::$KEYWORD_PARSERS[$tokenValue]['field'] ?? null) !== 'set') {
+            return;
+        }
+
+        $parser->error('Missing assignment in SET operation.', $list->tokens[$list->idx]);
+    }
 }

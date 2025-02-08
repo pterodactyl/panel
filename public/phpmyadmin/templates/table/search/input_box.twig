@@ -34,9 +34,8 @@
         class="textfield"
         id="field_{{ column_index }}">
     {% if in_fbs %}
-        {% set edit_str = get_icon('b_edit', 'Edit/Insert'|trans) %}
         <span class="open_search_gis_editor">
-            {{ link_or_button(url('/gis-data-editor'), [], edit_str, [], '_blank') }}
+            {{ link_or_button('#', null, get_icon('b_edit', 'Edit/Insert'|trans)) }}
         </span>
     {% endif %}
 {% elseif column_type starts with 'enum'

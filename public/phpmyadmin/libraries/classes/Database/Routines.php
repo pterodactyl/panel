@@ -405,8 +405,7 @@ class Routines
     {
         if ($flushPrivileges) {
             // Flush the Privileges
-            $flushPrivQuery = 'FLUSH PRIVILEGES;';
-            $this->dbi->query($flushPrivQuery);
+            $this->dbi->tryQuery('FLUSH PRIVILEGES;');
 
             $message = Message::success(
                 __(
@@ -584,7 +583,7 @@ class Routines
             return null;
         }
 
-        $parser = new Parser($definition);
+        $parser = new Parser('DELIMITER $$' . "\n" . $definition);
 
         /**
          * @var CreateStatement $stmt
@@ -700,7 +699,7 @@ class Routines
             $charsets[] = [
                 'name' => $charset->getName(),
                 'description' => $charset->getDescription(),
-                'is_selected' => $charset->getName() === $routine['item_param_opts_text'][$i],
+                'is_selected' => $charset->getName() === mb_strtolower($routine['item_param_opts_text'][$i]),
             ];
         }
 
@@ -713,9 +712,8 @@ class Routines
             'item_param_name' => $routine['item_param_name'][$i] ?? '',
             'item_param_length' => $routine['item_param_length'][$i] ?? '',
             'item_param_opts_num' => $routine['item_param_opts_num'][$i] ?? '',
-            'supported_datatypes' => Util::getSupportedDatatypes(
-                true,
-                $routine['item_param_type'][$i]
+            'supported_datatypes' => Generator::getSupportedDatatypes(
+                $this->dbi->types->mapAliasToMysqlType($routine['item_param_type'][$i])
             ),
             'charsets' => $charsets,
             'drop_class' => $drop_class,
@@ -1486,7 +1484,7 @@ class Routines
         $executeAction = '';
 
         if ($definition !== null) {
-            $parser = new Parser($definition);
+            $parser = new Parser('DELIMITER $$' . "\n" . $definition);
 
             /**
              * @var CreateStatement $stmt

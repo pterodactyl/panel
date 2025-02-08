@@ -28,7 +28,7 @@ final class TwigTest
     private $arguments = [];
 
     /**
-     * @param callable|null $callable A callable implementing the test. If null, you need to overwrite the "node_class" option to customize compilation.
+     * @param callable|array{class-string, string}|null $callable A callable implementing the test. If null, you need to overwrite the "node_class" option to customize compilation.
      */
     public function __construct(string $name, $callable = null, array $options = [])
     {
@@ -38,6 +38,7 @@ final class TwigTest
             'is_variadic' => false,
             'node_class' => TestExpression::class,
             'deprecated' => false,
+            'deprecating_package' => '',
             'alternative' => null,
             'one_mandatory_argument' => false,
         ], $options);
@@ -51,7 +52,7 @@ final class TwigTest
     /**
      * Returns the callable to execute for this test.
      *
-     * @return callable|null
+     * @return callable|array{class-string, string}|null
      */
     public function getCallable()
     {
@@ -81,6 +82,11 @@ final class TwigTest
     public function isDeprecated(): bool
     {
         return (bool) $this->options['deprecated'];
+    }
+
+    public function getDeprecatingPackage(): string
+    {
+        return $this->options['deprecating_package'];
     }
 
     public function getDeprecatedVersion(): string

@@ -82,7 +82,7 @@ class SetStatement extends Statement
     /**
      * Options used in current statement.
      *
-     * @var OptionsArray[]|null
+     * @var OptionsArray|null
      */
     public $options;
 

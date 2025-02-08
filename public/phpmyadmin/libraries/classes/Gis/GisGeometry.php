@@ -21,11 +21,20 @@ use function sprintf;
 use function str_replace;
 use function trim;
 
+use const INF;
+
 /**
  * Base class for all GIS data type classes.
  */
 abstract class GisGeometry
 {
+    public const EMPTY_EXTENT = [
+        'minX' => +INF,
+        'minY' => +INF,
+        'maxX' => -INF,
+        'maxY' => -INF,
+    ];
+
     /**
      * Prepares and returns the code related to a row in the GIS dataset as SVG.
      *
@@ -143,8 +152,10 @@ abstract class GisGeometry
      *
      * @param string $point_set point set
      * @param array  $min_max   existing min, max values
+     * @psalm-param array{minX:float,minY:float,maxX:float,maxY:float} $min_max     *
      *
      * @return array the updated min, max values
+     * @psalm-return array{minX:float,minY:float,maxX:float,maxY:float}
      */
     protected function setMinMax($point_set, array $min_max)
     {
@@ -230,13 +241,12 @@ abstract class GisGeometry
             $coordinates = explode(' ', $point);
 
             if (isset($coordinates[0], $coordinates[1]) && trim($coordinates[0]) != '' && trim($coordinates[1]) != '') {
+                $x = floatval(trim($coordinates[0]));
+                $y = floatval(trim($coordinates[1]));
+
                 if ($scale_data != null) {
-                    $x = ($coordinates[0] - $scale_data['x']) * $scale_data['scale'];
-                    $y = $scale_data['height']
-                        - ($coordinates[1] - $scale_data['y']) * $scale_data['scale'];
-                } else {
-                    $x = floatval(trim($coordinates[0]));
-                    $y = floatval(trim($coordinates[1]));
+                    $x = floatval(($x - $scale_data['x']) * $scale_data['scale']);
+                    $y = floatval($scale_data['height'] - ($y - $scale_data['y']) * $scale_data['scale']);
                 }
             } else {
                 $x = 0;

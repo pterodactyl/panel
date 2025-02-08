@@ -23,7 +23,7 @@ export default () => {
         return (
             <>
                 <Tooltip placement={'bottom'} content={'Hilfe'}>
-                    <div className={'navigation-link'} onClick={() => window.open('https://docs.arion2000.xyz', '_blank')}>
+                    <div className={'navigation-link'} onClick={() => window.open('https://wiki.arion2000.xyz', '_blank')}>
                         <FontAwesomeIcon icon={faQuestionCircle} />
                     </div>
                 </Tooltip>

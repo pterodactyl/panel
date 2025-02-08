@@ -455,49 +455,6 @@ class Generator
     }
 
     /**
-     * Execute an EXPLAIN query and formats results similar to MySQL command line
-     * utility.
-     *
-     * @param string $sqlQuery EXPLAIN query
-     *
-     * @return string query results
-     */
-    private static function generateRowQueryOutput($sqlQuery): string
-    {
-        global $dbi;
-
-        $ret = '';
-        $result = $dbi->query($sqlQuery);
-        $devider = '+';
-        $columnNames = '|';
-        $fieldsMeta = $dbi->getFieldsMeta($result);
-        foreach ($fieldsMeta as $meta) {
-            $devider .= '---+';
-            $columnNames .= ' ' . $meta->name . ' |';
-        }
-
-        $devider .= "\n";
-
-        $ret .= $devider . $columnNames . "\n" . $devider;
-        while ($row = $result->fetchRow()) {
-            $values = '|';
-            foreach ($row as $value) {
-                if ($value === null) {
-                    $value = 'NULL';
-                }
-
-                $values .= ' ' . $value . ' |';
-            }
-
-            $ret .= $values . "\n";
-        }
-
-        $ret .= $devider;
-
-        return $ret;
-    }
-
-    /**
      * Prepare the message and the query
      * usually the message is the result of the query executed
      *
@@ -588,11 +545,11 @@ class Generator
                 $newLine = '\\n"<br>' . "\n" . '&nbsp;&nbsp;&nbsp;&nbsp;. "';
                 $queryBase = htmlspecialchars(addslashes($queryBase));
                 $queryBase = preg_replace('/((\015\012)|(\015)|(\012))/', $newLine, $queryBase);
-                $queryBase = '<code class="php"><pre>' . "\n"
+                $queryBase = '<code class="php" dir="ltr"><pre>' . "\n"
                     . '$sql = "' . $queryBase . '";' . "\n"
                     . '</pre></code>';
             } elseif ($queryTooBig) {
-                $queryBase = '<code class="sql"><pre>' . "\n" .
+                $queryBase = '<code class="sql" dir="ltr"><pre>' . "\n" .
                     htmlspecialchars($queryBase, ENT_COMPAT) .
                     '</pre></code>';
             } else {
@@ -613,12 +570,12 @@ class Generator
                 $urlParams['db'] = $GLOBALS['db'];
                 if (strlen($GLOBALS['table']) > 0) {
                     $urlParams['table'] = $GLOBALS['table'];
-                    $editLink = Url::getFromRoute('/table/sql');
+                    $editLinkRoute = '/table/sql';
                 } else {
-                    $editLink = Url::getFromRoute('/database/sql');
+                    $editLinkRoute = '/database/sql';
                 }
             } else {
-                $editLink = Url::getFromRoute('/server/sql');
+                $editLinkRoute = '/server/sql';
             }
 
             // Want to have the query explained
@@ -632,16 +589,16 @@ class Generator
                     $explainParams['sql_query'] = 'EXPLAIN ' . $sqlQuery;
                     $explainLink = ' [&nbsp;'
                         . self::linkOrButton(
-                            Url::getFromRoute('/import'),
-                            $explainParams,
+                            Url::getFromRoute('/import', $explainParams),
+                            null,
                             __('Explain SQL')
                         ) . '&nbsp;]';
                 } elseif (preg_match('@^EXPLAIN[[:space:]]+SELECT[[:space:]]+@i', $sqlQuery)) {
                     $explainParams['sql_query'] = mb_substr($sqlQuery, 8);
                     $explainLink = ' [&nbsp;'
                         . self::linkOrButton(
-                            Url::getFromRoute('/import'),
-                            $explainParams,
+                            Url::getFromRoute('/import', $explainParams),
+                            null,
                             __('Skip Explain SQL')
                         ) . ']';
                 }
@@ -654,7 +611,7 @@ class Generator
             // to edit it (unless it's enormous, see linkOrButton() )
             if (! empty($cfg['SQLQuery']['Edit']) && empty($GLOBALS['show_as_php'])) {
                 $editLink = ' [&nbsp;'
-                    . self::linkOrButton($editLink, $urlParams, __('Edit'))
+                    . self::linkOrButton(Url::getFromRoute($editLinkRoute, $urlParams), null, __('Edit'))
                     . '&nbsp;]';
             } else {
                 $editLink = '';
@@ -666,16 +623,16 @@ class Generator
                 if (! empty($GLOBALS['show_as_php'])) {
                     $phpLink = ' [&nbsp;'
                         . self::linkOrButton(
-                            Url::getFromRoute('/import'),
-                            $urlParams,
+                            Url::getFromRoute('/import', $urlParams),
+                            null,
                             __('Without PHP code')
                         )
                         . '&nbsp;]';
 
                     $phpLink .= ' [&nbsp;'
                         . self::linkOrButton(
-                            Url::getFromRoute('/import'),
-                            $urlParams,
+                            Url::getFromRoute('/import', $urlParams),
+                            null,
                             __('Submit query')
                         )
                         . '&nbsp;]';
@@ -684,8 +641,8 @@ class Generator
                     $phpParams['show_as_php'] = 1;
                     $phpLink = ' [&nbsp;'
                         . self::linkOrButton(
-                            Url::getFromRoute('/import'),
-                            $phpParams,
+                            Url::getFromRoute('/import', $phpParams),
+                            null,
                             __('Create PHP code')
                         )
                         . '&nbsp;]';
@@ -702,7 +659,7 @@ class Generator
             ) {
                 $refreshLink = Url::getFromRoute('/sql', $urlParams);
                 $refreshLink = ' [&nbsp;'
-                    . self::linkOrButton($refreshLink, $urlParams, __('Refresh')) . '&nbsp;]';
+                    . self::linkOrButton($refreshLink, null, __('Refresh')) . '&nbsp;]';
             } else {
                 $refreshLink = '';
             }
@@ -712,7 +669,10 @@ class Generator
             $retval .= '</div>';
 
             $retval .= '<div class="tools d-print-none">';
-            $retval .= '<form action="' . Url::getFromRoute('/sql') . '" method="post">';
+            $retval .= '<form action="' . Url::getFromRoute(
+                '/sql',
+                ['db' => $GLOBALS['db'], 'table' => $GLOBALS['table']]
+            ) . '" method="post" class="disableAjax">';
             $retval .= Url::getHiddenInputs($GLOBALS['db'], $GLOBALS['table']);
             $retval .= '<input type="hidden" name="sql_query" value="'
                 . htmlspecialchars($sqlQuery) . '">';
@@ -1214,7 +1174,7 @@ class Generator
             $sqlQuery = mb_substr($sqlQuery, 0, $cfg['MaxCharactersInDisplayedSQL']) . '[...]';
         }
 
-        return '<code class="sql"><pre>' . "\n"
+        return '<code class="sql" dir="ltr"><pre>' . "\n"
             . htmlspecialchars($sqlQuery, ENT_COMPAT) . "\n"
             . '</pre></code>';
     }

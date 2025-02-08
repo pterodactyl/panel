@@ -4,7 +4,13 @@
       {% if tmp_initial is not same as(null) %}
         {% if initial_was_found %}
           <li class="page-item{{ initial is same as(tmp_initial) ? ' active' }}"{{ initial is same as(tmp_initial) ? ' aria-current="page"' }}>
-            <a class="page-link" href="{{ url('/server/privileges', {'viewing_mode': viewing_mode, 'initial': tmp_initial}) }}">{{ tmp_initial }}</a>
+            <a class="page-link" href="{{ url('/server/privileges', {'viewing_mode': viewing_mode, 'initial': tmp_initial}) }}">
+            {% if tmp_initial is same as('') %}
+              <span class="text-danger text-nowrap">{{ 'Any' |trans }}</span>
+            {% else %}
+              {{ tmp_initial }}
+            {% endif %}
+            </a>
           </li>
         {% else %}
           <li class="page-item disabled">

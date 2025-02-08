@@ -7,8 +7,11 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\Controllers;
 
+use PhpMyAdmin\Core;
+
 use function __;
 use function array_keys;
+use function basename;
 use function file_get_contents;
 use function htmlspecialchars;
 use function is_readable;
@@ -37,8 +40,9 @@ class ChangeLogController extends AbstractController
                 __(
                     'The %s file is not available on this system, please visit %s for more information.'
                 ),
-                $filename,
-                '<a href="https://www.phpmyadmin.net/">phpmyadmin.net</a>'
+                basename($filename),
+                '<a href="' . Core::linkURL('https://www.phpmyadmin.net/')
+                . '" rel="noopener noreferrer" target="_blank">phpmyadmin.net</a>'
             );
 
             return;
@@ -75,7 +79,7 @@ class ChangeLogController extends AbstractController
 
             // CVE/CAN entries
             '/((CAN|CVE)-[0-9]+-[0-9]+)/' => '<a href="url.php?url='
-                . 'https://cve.mitre.org/cgi-bin/cvename.cgi?name=\\1">\\1</a>',
+                . 'https://www.cve.org/CVERecord?id=\\1">\\1</a>',
 
             // PMASAentries
             '/(PMASA-[0-9]+-[0-9]+)/' => '<a href="url.php?url=https://www.phpmyadmin.net/security/\\1/">\\1</a>',

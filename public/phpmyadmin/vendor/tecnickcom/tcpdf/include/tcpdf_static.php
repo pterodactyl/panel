@@ -1,13 +1,13 @@
 <?php
 //============================================================+
 // File name   : tcpdf_static.php
-// Version     : 1.1.4
+// Version     : 1.1.5
 // Begin       : 2002-08-03
-// Last Update : 2022-08-12
+// Last Update : 2024-12-23
 // Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
-// Copyright (C) 2002-2022 Nicola Asuni - Tecnick.com LTD
+// Copyright (C) 2002-2024 Nicola Asuni - Tecnick.com LTD
 //
 // This file is part of TCPDF software library.
 //
@@ -38,7 +38,7 @@
  * This is a PHP class that contains static methods for the TCPDF class.<br>
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
- * @version 1.1.2
+ * @version 1.1.5
  */
 
 /**
@@ -46,7 +46,7 @@
  * Static methods used by the TCPDF class.
  * @package com.tecnick.tcpdf
  * @brief PHP class for generating PDF documents without requiring external extensions.
- * @version 1.1.1
+ * @version 1.1.5
  * @author Nicola Asuni - info@tecnick.com
  */
 class TCPDF_STATIC {
@@ -55,7 +55,7 @@ class TCPDF_STATIC {
 	 * Current TCPDF version.
 	 * @private static
 	 */
-	private static $tcpdf_version = '6.6.2';
+	private static $tcpdf_version = '6.8.0';
 
 	/**
 	 * String alias for total number of pages.
@@ -105,6 +105,31 @@ class TCPDF_STATIC {
 	 * @public static
 	 */
 	public static $pageboxes = array('MediaBox', 'CropBox', 'BleedBox', 'TrimBox', 'ArtBox');
+
+	/**
+     * Array of default cURL options for curl_setopt_array.
+     *
+     * @var array<int, bool|int|string> cURL options.
+     */
+    protected const CURLOPT_DEFAULT = [
+        CURLOPT_CONNECTTIMEOUT => 5,
+        CURLOPT_MAXREDIRS => 5,
+        CURLOPT_PROTOCOLS => CURLPROTO_HTTPS | CURLPROTO_HTTP | CURLPROTO_FTP | CURLPROTO_FTPS,
+        CURLOPT_SSL_VERIFYHOST => 2,
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_TIMEOUT => 30,
+        CURLOPT_USERAGENT => 'tcpdf',
+    ];
+
+    /**
+     * Array of fixed cURL options for curl_setopt_array.
+     *
+     * @var array<int, bool|int|string> cURL options.
+     */
+    protected const CURLOPT_FIXED = [
+        CURLOPT_FAILONERROR => true,
+        CURLOPT_RETURNTRANSFER => true,
+    ];
 
 	// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 
@@ -379,7 +404,10 @@ class TCPDF_STATIC {
 		if (function_exists('posix_getpid')) {
 			$rnd .= posix_getpid();
 		}
-		if (function_exists('openssl_random_pseudo_bytes') AND (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')) {
+
+		if (function_exists('random_bytes')) {
+			$rnd .= random_bytes(512);
+		} elseif (function_exists('openssl_random_pseudo_bytes') AND (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN')) {
 			// this is not used on windows systems because it is very slow for a know bug
 			$rnd .= openssl_random_pseudo_bytes(512);
 		} else {
@@ -387,7 +415,7 @@ class TCPDF_STATIC {
 				$rnd .= uniqid('', true);
 			}
 		}
-		return $rnd.$seed.__FILE__.serialize($_SERVER).microtime(true);
+		return $rnd.$seed.__FILE__.microtime(true);
 	}
 
 	/**
@@ -1780,7 +1808,7 @@ class TCPDF_STATIC {
 			if ($ret === false) {
 				return array();
 			}
-			return $ret;
+			return is_array($ret) ? $ret : array();
 		}
 		// preg_split is bugged - try alternative solution
 		$ret = array();
@@ -1820,23 +1848,19 @@ class TCPDF_STATIC {
 	 */
 	public static function url_exists($url) {
 		$crs = curl_init();
-		// encode query params in URL to get right response form the server
-		$url = self::encodeUrlQuery($url);
-		curl_setopt($crs, CURLOPT_URL, $url);
-		curl_setopt($crs, CURLOPT_NOBODY, true);
-		curl_setopt($crs, CURLOPT_FAILONERROR, true);
-		if ((ini_get('open_basedir') == '') && (!ini_get('safe_mode'))) {
-			curl_setopt($crs, CURLOPT_FOLLOWLOCATION, true);
-		}
-		curl_setopt($crs, CURLOPT_CONNECTTIMEOUT, 5);
-		curl_setopt($crs, CURLOPT_TIMEOUT, 30);
-		curl_setopt($crs, CURLOPT_SSL_VERIFYPEER, false);
-		curl_setopt($crs, CURLOPT_SSL_VERIFYHOST, false);
-		curl_setopt($crs, CURLOPT_USERAGENT, 'tc-lib-file');
-		curl_setopt($crs, CURLOPT_MAXREDIRS, 5);
-		if (defined('CURLOPT_PROTOCOLS')) {
-		    curl_setopt($crs, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS | CURLPROTO_HTTP |  CURLPROTO_FTP | CURLPROTO_FTPS);
-		}
+        $curlopts = [];
+        if (
+            (ini_get('open_basedir') == '')
+            && (ini_get('safe_mode') === ''
+            || ini_get('safe_mode') === false)
+        ) {
+            $curlopts[CURLOPT_FOLLOWLOCATION] = true;
+        }
+        $curlopts = array_replace($curlopts, self::CURLOPT_DEFAULT);
+        $curlopts = array_replace($curlopts, K_CURLOPTS);
+        $curlopts = array_replace($curlopts, self::CURLOPT_FIXED);
+        $curlopts[CURLOPT_URL] = $url;
+        curl_setopt_array($crs, $curlopts);
 		curl_exec($crs);
 		$code = curl_getinfo($crs, CURLINFO_HTTP_CODE);
 		curl_close($crs);
@@ -1957,22 +1981,19 @@ class TCPDF_STATIC {
 			) {
 				// try to get remote file data using cURL
 				$crs = curl_init();
-				curl_setopt($crs, CURLOPT_URL, $path);
-				curl_setopt($crs, CURLOPT_BINARYTRANSFER, true);
-				curl_setopt($crs, CURLOPT_FAILONERROR, true);
-				curl_setopt($crs, CURLOPT_RETURNTRANSFER, true);
-				if ((ini_get('open_basedir') == '') && (!ini_get('safe_mode'))) {
-				    curl_setopt($crs, CURLOPT_FOLLOWLOCATION, true);
+				$curlopts = [];
+				if (
+					(ini_get('open_basedir') == '')
+					&& (ini_get('safe_mode') === ''
+					|| ini_get('safe_mode') === false)
+				) {
+					$curlopts[CURLOPT_FOLLOWLOCATION] = true;
 				}
-				curl_setopt($crs, CURLOPT_CONNECTTIMEOUT, 5);
-				curl_setopt($crs, CURLOPT_TIMEOUT, 30);
-				curl_setopt($crs, CURLOPT_SSL_VERIFYPEER, false);
-				curl_setopt($crs, CURLOPT_SSL_VERIFYHOST, false);
-				curl_setopt($crs, CURLOPT_USERAGENT, 'tc-lib-file');
-				curl_setopt($crs, CURLOPT_MAXREDIRS, 5);
-				if (defined('CURLOPT_PROTOCOLS')) {
-				    curl_setopt($crs, CURLOPT_PROTOCOLS, CURLPROTO_HTTPS | CURLPROTO_HTTP |  CURLPROTO_FTP | CURLPROTO_FTPS);
-				}
+				$curlopts = array_replace($curlopts, self::CURLOPT_DEFAULT);
+				$curlopts = array_replace($curlopts, K_CURLOPTS);
+				$curlopts = array_replace($curlopts, self::CURLOPT_FIXED);
+				$curlopts[CURLOPT_URL] = $url;
+				curl_setopt_array($crs, $curlopts);
 				$ret = curl_exec($crs);
 				curl_close($crs);
 				if ($ret !== false) {
@@ -2124,7 +2145,7 @@ class TCPDF_STATIC {
 	 * Array of page formats
 	 * measures are calculated in this way: (inches * 72) or (millimeters * 72 / 25.4)
 	 * @public static
-	 * 
+	 *
      * @var array<string,float[]>
 	 */
 	public static $page_formats = array(

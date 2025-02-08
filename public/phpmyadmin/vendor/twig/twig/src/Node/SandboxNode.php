@@ -11,6 +11,7 @@
 
 namespace Twig\Node;
 
+use Twig\Attribute\YieldReady;
 use Twig\Compiler;
 
 /**
@@ -18,9 +19,10 @@ use Twig\Compiler;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
+#[YieldReady]
 class SandboxNode extends Node
 {
-    public function __construct(Node $body, int $lineno, string $tag = null)
+    public function __construct(Node $body, int $lineno, ?string $tag = null)
     {
         parent::__construct(['body' => $body], [], $lineno, $tag);
     }

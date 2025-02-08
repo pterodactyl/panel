@@ -956,7 +956,6 @@ DesignerMove.saveAs = function () {
     }
   }); // end $.post()
 };
-
 DesignerMove.promptToSaveCurrentPage = function (callback) {
   if (change === 1 || selectedPage === -1) {
     var modal = DesignerMove.displayModal('<div>' + Messages.strLeavingPage + '</div>', Messages.strSavePage, '#designerPromptModal');
@@ -1014,7 +1013,6 @@ DesignerMove.exportPages = function () {
     }
   }); // end $.post()
 };
-
 DesignerMove.loadPage = function (page) {
   if (designerTablesEnabled) {
     var paramPage = '';
@@ -1318,7 +1316,6 @@ DesignerMove.canvasClick = function (id, event) {
           if (!document.getElementById('check_vis_' + key2).checked || !document.getElementById('check_vis_' + contr[K][key][key2][key3][0]).checked) {
             continue; // if hide
           }
-
           var x1Left = document.getElementById(key2).offsetLeft + 1; // document.getElementById(key2+"."+key3).offsetLeft;
           var x1Right = x1Left + document.getElementById(key2).offsetWidth;
           var x2Left = document.getElementById(contr[K][key][key2][key3][0]).offsetLeft; // +document.getElementById(contr[K][key2][key3][0]+"."+contr[K][key2][key3][1]).offsetLeft
@@ -1401,7 +1398,6 @@ DesignerMove.updRelation = function () {
     }
   }); // end $.post()
 };
-
 DesignerMove.visibleTab = function (id, tN) {
   if (id.checked) {
     document.getElementById(tN).style.display = 'block';
@@ -1464,7 +1460,6 @@ DesignerMove.noHaveConstr = function (idThis) {
       }
     }
   }
-
   if (idThis.alt === 'v') {
     idThis.alt = '>';
     idThis.src = idThis.dataset.right;
@@ -1739,13 +1734,11 @@ DesignerMove.addObject = function (dbName, tableName, colName, dbTableNameUrl) {
     sum = sum + 1;
     // make aggregate operator
   }
-
   if (document.getElementById('groupby').checked === true) {
     historyArray.push(new DesignerHistory.HistoryObj(colName, 'GroupBy', tableName, hTabs[dbTableNameUrl], 'GroupBy'));
     sum = sum + 1;
     // make groupby
   }
-
   if (document.getElementById('h_rel_opt').value !== '--') {
     if (document.getElementById('having').value === '') {
       return;
@@ -1755,14 +1748,12 @@ DesignerMove.addObject = function (dbName, tableName, colName, dbTableNameUrl) {
     sum = sum + 1;
     // make having
   }
-
   if (document.getElementById('orderby').value !== '---') {
     var orderByObj = new DesignerHistory.OrderBy(document.getElementById('orderby').value);
     historyArray.push(new DesignerHistory.HistoryObj(colName, orderByObj, tableName, hTabs[dbTableNameUrl], 'OrderBy'));
     sum = sum + 1;
     // make orderby
   }
-
   Functions.ajaxShowMessage(Functions.sprintf(Messages.strObjectsCreated, sum));
   // output sum new objects created
   var existingDiv = document.getElementById('ab');
@@ -1771,16 +1762,16 @@ DesignerMove.addObject = function (dbName, tableName, colName, dbTableNameUrl) {
   $('#ab').accordion('refresh');
 };
 DesignerMove.enablePageContentEvents = function () {
-  $('#page_content').off('mousedown');
-  $('#page_content').off('mouseup');
-  $('#page_content').off('mousemove');
-  $('#page_content').on('mousedown', function (e) {
+  $(document).off('mousedown');
+  $(document).off('mouseup');
+  $(document).off('mousemove');
+  $(document).on('mousedown', function (e) {
     DesignerMove.mouseDown(e);
   });
-  $('#page_content').on('mouseup', function (e) {
+  $(document).on('mouseup', function (e) {
     DesignerMove.mouseUp(e);
   });
-  $('#page_content').on('mousemove', function (e) {
+  $(document).on('mousemove', function (e) {
     DesignerMove.mouseMove(e);
   });
 };
@@ -1870,9 +1861,9 @@ AJAX.registerTeardown('designer/move.js', function () {
   $('#cancel_close_option').off('click');
   $('#ok_new_rel_panel').off('click');
   $('#cancel_new_rel_panel').off('click');
-  $('#page_content').off('mouseup');
-  $('#page_content').off('mousedown');
-  $('#page_content').off('mousemove');
+  $(document).off('mouseup');
+  $(document).off('mousedown');
+  $(document).off('mousemove');
 });
 AJAX.registerOnload('designer/move.js', function () {
   $('#key_Show_left_menu').on('click', function () {

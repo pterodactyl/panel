@@ -1,5 +1,11 @@
 ## Change Log
 
+## [8.0.1] - 2020-05-05
+### Added
+- Test using GitHub Actions
+### Fixed
+- Improve PHP 8.1 compatibility
+
 ## [8.0.0] - 2020-05-05
 ### Added
 - PHP 8 Support
@@ -8,7 +14,7 @@
 - PHPStan checks
 ### Changed
 - PHP required version bumped to >= 7.1
-- Exception interfaces extending Throwable  
+- Exception interfaces extending Throwable
 
 ## [7.0.0] - 2019-09-21
 ### Added
@@ -19,8 +25,8 @@
 ## [6.1.3] - 2019-09-21
 ### Drafted
 - To fix inserted BC break
- 
-## [6.1.2] - 2019-09-21 
+
+## [6.1.2] - 2019-09-21
 ### DELETED
 - To fix inserted BC break
 
@@ -30,13 +36,13 @@
 
 ## [6.0.0] - 2019-09-11
 ### Added
-- Base exception class and interfaces 
+- Base exception class and interfaces
 ### Removed
-- Support for PHP 5.4 to 7.0, will keep supporting PHP 7.1, 7.2, 7.3 & 7.4 
+- Support for PHP 5.4 to 7.0, will keep supporting PHP 7.1, 7.2, 7.3 & 7.4
 
 ## [5.0.0] - 2019-05-19
 ### Changed
-- Remove dead Google Charts API 
+- Remove dead Google Charts API
 
 ## [4.0.0] - 2018-10-06
 ### Changed
@@ -63,7 +69,7 @@
 ## [2.0.0] - 2017-06-20
 ### Changed
 - Drop the Laravel support in favor of a bridge package (https://github.com/antonioribeiro/google2fa-laravel).
-- Using a more secure Base 32 algorithm, to prevent cache-timing attacks.  
+- Using a more secure Base 32 algorithm, to prevent cache-timing attacks.
 - Added verifyKeyNewer() method to prevent reuse of keys.
 - Refactored to remove complexity, by extracting support methods.
 - Created a package playground page (https://pragmarx.com/google2fa)
@@ -71,19 +77,19 @@
 ## [2.0.0] - 2017-06-20
 ### Changed
 - Drop the Laravel support in favor of a bridge package (https://github.com/antonioribeiro/google2fa-laravel).
-- Using a more secure Base 32 algorithm, to prevent cache-timing attacks.  
+- Using a more secure Base 32 algorithm, to prevent cache-timing attacks.
 - Added verifyKeyNewer() method to prevent reuse of keys.
 - Refactored to remove complexity, by extracting support methods.
 - Created a package playground page (https://pragmarx.com/google2fa)
 
 ## [1.0.1] - 2016-07-18
 ### Changed
-- Drop support for PHP 5.3.7, require PHP 5.4+. 
+- Drop support for PHP 5.3.7, require PHP 5.4+.
 - Coding style is now PSR-2 automatically enforced by StyleCI.
 
 ## [1.0.0] - 2016-07-17
 ### Changed
-- Package bacon/bacon-qr-code was moved to "suggest". 
+- Package bacon/bacon-qr-code was moved to "suggest".
 
 ## [0.8.1] - 2016-07-17
 ### Fixed
@@ -94,7 +100,7 @@
 - Bumped christian-riesen/base32 to ~1.3
 - Use paragonie/random_compat to generate cryptographically secure random secret keys
 - Readme improvements
-- Drop simple-qrcode in favor of bacon/bacon-qr-code 
+- Drop simple-qrcode in favor of bacon/bacon-qr-code
 - Fix tavis setup for phpspec, PHP 7, hhvm and improve cache
 
 ## [0.7.0] - 2015-11-07

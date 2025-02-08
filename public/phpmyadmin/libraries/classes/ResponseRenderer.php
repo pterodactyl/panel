@@ -290,9 +290,16 @@ class ResponseRenderer
         // if its content was already rendered
         // and, in this case, the header will be
         // in the content part of the request
-        $retval = $this->header->getDisplay();
+        $retval = '';
+        if ($this->header !== null) {
+            $retval .= $this->header->getDisplay();
+        }
+
         $retval .= $this->HTML;
-        $retval .= $this->footer->getDisplay();
+
+        if ($this->footer !== null) {
+            $retval .= $this->footer->getDisplay();
+        }
 
         return $retval;
     }

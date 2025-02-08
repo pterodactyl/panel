@@ -58,5 +58,4 @@ const ol = {
   Map: _ol.Map,
   View: _ol.View
 };
-var _default = ol;
-exports.default = _default;
+var _default = exports.default = ol;

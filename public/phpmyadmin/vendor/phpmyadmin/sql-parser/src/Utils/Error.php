@@ -50,8 +50,8 @@ class Error
                     $ret[] = [
                         $err->getMessage(),
                         $err->getCode(),
-                        $err->token->token,
-                        $err->token->position,
+                        $err->token !== null ? $err->token->token : '',
+                        $err->token !== null ? $err->token->position : null,
                     ];
                 }
             }

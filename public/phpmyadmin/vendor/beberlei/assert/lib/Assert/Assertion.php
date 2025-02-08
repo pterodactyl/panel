@@ -307,7 +307,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function eq($value, $value2, $message = null, string $propertyPath = null): bool
+    public static function eq($value, $value2, $message = null, ?string $propertyPath = null): bool
     {
         if ($value != $value2) {
             $message = \sprintf(
@@ -331,7 +331,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function eqArraySubset($value, $value2, $message = null, string $propertyPath = null): bool
+    public static function eqArraySubset($value, $value2, $message = null, ?string $propertyPath = null): bool
     {
         static::isArray($value, $message, $propertyPath);
         static::isArray($value2, $message, $propertyPath);
@@ -358,7 +358,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function same($value, $value2, $message = null, string $propertyPath = null): bool
+    public static function same($value, $value2, $message = null, ?string $propertyPath = null): bool
     {
         if ($value !== $value2) {
             $message = \sprintf(
@@ -382,7 +382,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notEq($value1, $value2, $message = null, string $propertyPath = null): bool
+    public static function notEq($value1, $value2, $message = null, ?string $propertyPath = null): bool
     {
         if ($value1 == $value2) {
             $message = \sprintf(
@@ -412,7 +412,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notSame($value1, $value2, $message = null, string $propertyPath = null): bool
+    public static function notSame($value1, $value2, $message = null, ?string $propertyPath = null): bool
     {
         if ($value1 === $value2) {
             $message = \sprintf(
@@ -434,7 +434,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notInArray($value, array $choices, $message = null, string $propertyPath = null): bool
+    public static function notInArray($value, array $choices, $message = null, ?string $propertyPath = null): bool
     {
         if (true === \in_array($value, $choices)) {
             $message = \sprintf(
@@ -461,7 +461,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function integer($value, $message = null, string $propertyPath = null): bool
+    public static function integer($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_int($value)) {
             $message = \sprintf(
@@ -488,7 +488,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function float($value, $message = null, string $propertyPath = null): bool
+    public static function float($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_float($value)) {
             $message = \sprintf(
@@ -515,7 +515,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function digit($value, $message = null, string $propertyPath = null): bool
+    public static function digit($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\ctype_digit((string)$value)) {
             $message = \sprintf(
@@ -537,7 +537,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function integerish($value, $message = null, string $propertyPath = null): bool
+    public static function integerish($value, $message = null, ?string $propertyPath = null): bool
     {
         if (
             \is_resource($value) ||
@@ -577,7 +577,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function boolean($value, $message = null, string $propertyPath = null): bool
+    public static function boolean($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_bool($value)) {
             $message = \sprintf(
@@ -604,7 +604,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function scalar($value, $message = null, string $propertyPath = null): bool
+    public static function scalar($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_scalar($value)) {
             $message = \sprintf(
@@ -631,7 +631,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notEmpty($value, $message = null, string $propertyPath = null): bool
+    public static function notEmpty($value, $message = null, ?string $propertyPath = null): bool
     {
         if (empty($value)) {
             $message = \sprintf(
@@ -658,7 +658,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function noContent($value, $message = null, string $propertyPath = null): bool
+    public static function noContent($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!empty($value)) {
             $message = \sprintf(
@@ -683,7 +683,7 @@ class Assertion
      *
      * @return bool
      */
-    public static function null($value, $message = null, string $propertyPath = null): bool
+    public static function null($value, $message = null, ?string $propertyPath = null): bool
     {
         if (null !== $value) {
             $message = \sprintf(
@@ -710,7 +710,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notNull($value, $message = null, string $propertyPath = null): bool
+    public static function notNull($value, $message = null, ?string $propertyPath = null): bool
     {
         if (null === $value) {
             $message = \sprintf(
@@ -737,7 +737,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function string($value, $message = null, string $propertyPath = null)
+    public static function string($value, $message = null, ?string $propertyPath = null)
     {
         if (!\is_string($value)) {
             $message = \sprintf(
@@ -766,7 +766,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function regex($value, $pattern, $message = null, string $propertyPath = null): bool
+    public static function regex($value, $pattern, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -794,7 +794,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notRegex($value, $pattern, $message = null, string $propertyPath = null): bool
+    public static function notRegex($value, $pattern, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -825,7 +825,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function length($value, $length, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function length($value, $length, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -858,7 +858,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function minLength($value, $minLength, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function minLength($value, $minLength, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -891,7 +891,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function maxLength($value, $maxLength, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function maxLength($value, $maxLength, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -925,7 +925,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function betweenLength($value, $minLength, $maxLength, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function betweenLength($value, $minLength, $maxLength, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($value, $message, $propertyPath);
         static::minLength($value, $minLength, $message, $propertyPath, $encoding);
@@ -949,7 +949,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function startsWith($string, $needle, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function startsWith($string, $needle, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($string, $message, $propertyPath);
 
@@ -981,7 +981,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function endsWith($string, $needle, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function endsWith($string, $needle, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($string, $message, $propertyPath);
 
@@ -1015,7 +1015,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function contains($string, $needle, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function contains($string, $needle, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($string, $message, $propertyPath);
 
@@ -1047,7 +1047,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notContains($string, $needle, $message = null, string $propertyPath = null, $encoding = 'utf8'): bool
+    public static function notContains($string, $needle, $message = null, ?string $propertyPath = null, $encoding = 'utf8'): bool
     {
         static::string($string, $message, $propertyPath);
 
@@ -1072,7 +1072,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function choice($value, array $choices, $message = null, string $propertyPath = null): bool
+    public static function choice($value, array $choices, $message = null, ?string $propertyPath = null): bool
     {
         if (!\in_array($value, $choices, true)) {
             $message = \sprintf(
@@ -1097,7 +1097,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function inArray($value, array $choices, $message = null, string $propertyPath = null): bool
+    public static function inArray($value, array $choices, $message = null, ?string $propertyPath = null): bool
     {
         return static::choice($value, $choices, $message, $propertyPath);
     }
@@ -1115,7 +1115,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function numeric($value, $message = null, string $propertyPath = null): bool
+    public static function numeric($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_numeric($value)) {
             $message = \sprintf(
@@ -1140,7 +1140,7 @@ class Assertion
      *
      * @return bool
      */
-    public static function isResource($value, $message = null, string $propertyPath = null): bool
+    public static function isResource($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_resource($value)) {
             $message = \sprintf(
@@ -1167,7 +1167,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isArray($value, $message = null, string $propertyPath = null): bool
+    public static function isArray($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_array($value)) {
             $message = \sprintf(
@@ -1194,7 +1194,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isTraversable($value, $message = null, string $propertyPath = null): bool
+    public static function isTraversable($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_array($value) && !$value instanceof Traversable) {
             $message = \sprintf(
@@ -1216,7 +1216,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isArrayAccessible($value, $message = null, string $propertyPath = null): bool
+    public static function isArrayAccessible($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_array($value) && !$value instanceof ArrayAccess) {
             $message = \sprintf(
@@ -1233,7 +1233,7 @@ class Assertion
     /**
      * Assert that value is countable.
      *
-     * @param array|Countable|ResourceBundle|SimpleXMLElement $value
+     * @param mixed $value
      * @param string|callable|null $message
      * @param string|null $propertyPath
      *
@@ -1243,7 +1243,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isCountable($value, $message = null, string $propertyPath = null): bool
+    public static function isCountable($value, $message = null, ?string $propertyPath = null): bool
     {
         if (\function_exists('is_countable')) {
             $assert = \is_countable($value);
@@ -1272,7 +1272,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function keyExists($value, $key, $message = null, string $propertyPath = null): bool
+    public static function keyExists($value, $key, $message = null, ?string $propertyPath = null): bool
     {
         static::isArray($value, $message, $propertyPath);
 
@@ -1297,7 +1297,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function keyNotExists($value, $key, $message = null, string $propertyPath = null): bool
+    public static function keyNotExists($value, $key, $message = null, ?string $propertyPath = null): bool
     {
         static::isArray($value, $message, $propertyPath);
 
@@ -1321,7 +1321,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function uniqueValues(array $values, $message = null, string $propertyPath = null): bool
+    public static function uniqueValues(array $values, $message = null, ?string $propertyPath = null): bool
     {
         foreach ($values as $key => $value) {
             if (\array_search($value, $values, true) !== $key) {
@@ -1346,7 +1346,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function keyIsset($value, $key, $message = null, string $propertyPath = null): bool
+    public static function keyIsset($value, $key, $message = null, ?string $propertyPath = null): bool
     {
         static::isArrayAccessible($value, $message, $propertyPath);
 
@@ -1371,7 +1371,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notEmptyKey($value, $key, $message = null, string $propertyPath = null): bool
+    public static function notEmptyKey($value, $key, $message = null, ?string $propertyPath = null): bool
     {
         static::keyIsset($value, $key, $message, $propertyPath);
         static::notEmpty($value[$key], $message, $propertyPath);
@@ -1387,7 +1387,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notBlank($value, $message = null, string $propertyPath = null): bool
+    public static function notBlank($value, $message = null, ?string $propertyPath = null): bool
     {
         if (false === $value || (empty($value) && '0' != $value) || (\is_string($value) && '' === \trim($value))) {
             $message = \sprintf(
@@ -1417,7 +1417,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isInstanceOf($value, $className, $message = null, string $propertyPath = null): bool
+    public static function isInstanceOf($value, $className, $message = null, ?string $propertyPath = null): bool
     {
         if (!($value instanceof $className)) {
             $message = \sprintf(
@@ -1448,7 +1448,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function notIsInstanceOf($value, $className, $message = null, string $propertyPath = null): bool
+    public static function notIsInstanceOf($value, $className, $message = null, ?string $propertyPath = null): bool
     {
         if ($value instanceof $className) {
             $message = \sprintf(
@@ -1472,7 +1472,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function subclassOf($value, $className, $message = null, string $propertyPath = null): bool
+    public static function subclassOf($value, $className, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_subclass_of($value, $className)) {
             $message = \sprintf(
@@ -1502,7 +1502,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function range($value, $minValue, $maxValue, $message = null, string $propertyPath = null): bool
+    public static function range($value, $minValue, $maxValue, $message = null, ?string $propertyPath = null): bool
     {
         static::numeric($value, $message, $propertyPath);
 
@@ -1534,7 +1534,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function min($value, $minValue, $message = null, string $propertyPath = null): bool
+    public static function min($value, $minValue, $message = null, ?string $propertyPath = null): bool
     {
         static::numeric($value, $message, $propertyPath);
 
@@ -1565,7 +1565,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function max($value, $maxValue, $message = null, string $propertyPath = null): bool
+    public static function max($value, $maxValue, $message = null, ?string $propertyPath = null): bool
     {
         static::numeric($value, $message, $propertyPath);
 
@@ -1590,7 +1590,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function file($value, $message = null, string $propertyPath = null): bool
+    public static function file($value, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
         static::notEmpty($value, $message, $propertyPath);
@@ -1615,7 +1615,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function directory($value, $message = null, string $propertyPath = null): bool
+    public static function directory($value, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -1639,7 +1639,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function readable($value, $message = null, string $propertyPath = null): bool
+    public static function readable($value, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -1663,7 +1663,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function writeable($value, $message = null, string $propertyPath = null): bool
+    public static function writeable($value, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -1692,7 +1692,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function email($value, $message = null, string $propertyPath = null): bool
+    public static function email($value, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -1726,7 +1726,7 @@ class Assertion
      * @see https://github.com/symfony/Validator/blob/master/Constraints/UrlValidator.php
      * @see https://github.com/symfony/Validator/blob/master/Constraints/Url.php
      */
-    public static function url($value, $message = null, string $propertyPath = null): bool
+    public static function url($value, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
 
@@ -1772,7 +1772,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function alnum($value, $message = null, string $propertyPath = null): bool
+    public static function alnum($value, $message = null, ?string $propertyPath = null): bool
     {
         try {
             static::regex($value, '(^([a-zA-Z]{1}[a-zA-Z0-9]*)$)', $message, $propertyPath);
@@ -1801,7 +1801,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function true($value, $message = null, string $propertyPath = null): bool
+    public static function true($value, $message = null, ?string $propertyPath = null): bool
     {
         if (true !== $value) {
             $message = \sprintf(
@@ -1828,7 +1828,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function false($value, $message = null, string $propertyPath = null): bool
+    public static function false($value, $message = null, ?string $propertyPath = null): bool
     {
         if (false !== $value) {
             $message = \sprintf(
@@ -1855,7 +1855,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function classExists($value, $message = null, string $propertyPath = null): bool
+    public static function classExists($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\class_exists($value)) {
             $message = \sprintf(
@@ -1882,7 +1882,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function interfaceExists($value, $message = null, string $propertyPath = null): bool
+    public static function interfaceExists($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\interface_exists($value)) {
             $message = \sprintf(
@@ -1905,7 +1905,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function implementsInterface($class, $interfaceName, $message = null, string $propertyPath = null): bool
+    public static function implementsInterface($class, $interfaceName, $message = null, ?string $propertyPath = null): bool
     {
         try {
             $reflection = new ReflectionClass($class);
@@ -1948,7 +1948,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isJsonString($value, $message = null, string $propertyPath = null): bool
+    public static function isJsonString($value, $message = null, ?string $propertyPath = null): bool
     {
         if (null === \json_decode($value) && JSON_ERROR_NONE !== \json_last_error()) {
             $message = \sprintf(
@@ -1972,7 +1972,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function uuid($value, $message = null, string $propertyPath = null): bool
+    public static function uuid($value, $message = null, ?string $propertyPath = null): bool
     {
         $value = \str_replace(['urn:', 'uuid:', '{', '}'], '', $value);
 
@@ -2002,7 +2002,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function e164($value, $message = null, string $propertyPath = null): bool
+    public static function e164($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\preg_match('/^\+?[1-9]\d{1,14}$/', $value)) {
             $message = \sprintf(
@@ -2028,7 +2028,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function count($countable, $count, $message = null, string $propertyPath = null): bool
+    public static function count($countable, $count, $message = null, ?string $propertyPath = null): bool
     {
         if ($count !== \count($countable)) {
             $message = \sprintf(
@@ -2052,7 +2052,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function minCount($countable, $count, $message = null, string $propertyPath = null): bool
+    public static function minCount($countable, $count, $message = null, ?string $propertyPath = null): bool
     {
         if ($count > \count($countable)) {
             $message = \sprintf(
@@ -2076,7 +2076,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function maxCount($countable, $count, $message = null, string $propertyPath = null): bool
+    public static function maxCount($countable, $count, $message = null, ?string $propertyPath = null): bool
     {
         if ($count < \count($countable)) {
             $message = \sprintf(
@@ -2147,7 +2147,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function choicesNotEmpty(array $values, array $choices, $message = null, string $propertyPath = null): bool
+    public static function choicesNotEmpty(array $values, array $choices, $message = null, ?string $propertyPath = null): bool
     {
         static::notEmpty($values, $message, $propertyPath);
 
@@ -2167,7 +2167,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function methodExists($value, $object, $message = null, string $propertyPath = null): bool
+    public static function methodExists($value, $object, $message = null, ?string $propertyPath = null): bool
     {
         static::isObject($object, $message, $propertyPath);
 
@@ -2196,7 +2196,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isObject($value, $message = null, string $propertyPath = null): bool
+    public static function isObject($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_object($value)) {
             $message = \sprintf(
@@ -2219,7 +2219,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function lessThan($value, $limit, $message = null, string $propertyPath = null): bool
+    public static function lessThan($value, $limit, $message = null, ?string $propertyPath = null): bool
     {
         if ($value >= $limit) {
             $message = \sprintf(
@@ -2243,7 +2243,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function lessOrEqualThan($value, $limit, $message = null, string $propertyPath = null): bool
+    public static function lessOrEqualThan($value, $limit, $message = null, ?string $propertyPath = null): bool
     {
         if ($value > $limit) {
             $message = \sprintf(
@@ -2267,7 +2267,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function greaterThan($value, $limit, $message = null, string $propertyPath = null): bool
+    public static function greaterThan($value, $limit, $message = null, ?string $propertyPath = null): bool
     {
         if ($value <= $limit) {
             $message = \sprintf(
@@ -2291,7 +2291,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function greaterOrEqualThan($value, $limit, $message = null, string $propertyPath = null): bool
+    public static function greaterOrEqualThan($value, $limit, $message = null, ?string $propertyPath = null): bool
     {
         if ($value < $limit) {
             $message = \sprintf(
@@ -2317,7 +2317,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function between($value, $lowerLimit, $upperLimit, $message = null, string $propertyPath = null): bool
+    public static function between($value, $lowerLimit, $upperLimit, $message = null, ?string $propertyPath = null): bool
     {
         if ($lowerLimit > $value || $value > $upperLimit) {
             $message = \sprintf(
@@ -2344,7 +2344,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function betweenExclusive($value, $lowerLimit, $upperLimit, $message = null, string $propertyPath = null): bool
+    public static function betweenExclusive($value, $lowerLimit, $upperLimit, $message = null, ?string $propertyPath = null): bool
     {
         if ($lowerLimit >= $value || $value >= $upperLimit) {
             $message = \sprintf(
@@ -2368,7 +2368,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function extensionLoaded($value, $message = null, string $propertyPath = null): bool
+    public static function extensionLoaded($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\extension_loaded($value)) {
             $message = \sprintf(
@@ -2394,7 +2394,7 @@ class Assertion
      *
      * @see http://php.net/manual/function.date.php#refsect1-function.date-parameters
      */
-    public static function date($value, $format, $message = null, string $propertyPath = null): bool
+    public static function date($value, $format, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
         static::string($format, $message, $propertyPath);
@@ -2422,7 +2422,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function objectOrClass($value, $message = null, string $propertyPath = null): bool
+    public static function objectOrClass($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_object($value)) {
             static::classExists($value, $message, $propertyPath);
@@ -2440,7 +2440,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function propertyExists($value, $property, $message = null, string $propertyPath = null): bool
+    public static function propertyExists($value, $property, $message = null, ?string $propertyPath = null): bool
     {
         static::objectOrClass($value);
 
@@ -2465,7 +2465,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function propertiesExist($value, array $properties, $message = null, string $propertyPath = null): bool
+    public static function propertiesExist($value, array $properties, $message = null, ?string $propertyPath = null): bool
     {
         static::objectOrClass($value);
         static::allString($properties, $message, $propertyPath);
@@ -2500,7 +2500,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function version($version1, $operator, $version2, $message = null, string $propertyPath = null): bool
+    public static function version($version1, $operator, $version2, $message = null, ?string $propertyPath = null): bool
     {
         static::notEmpty($operator, 'versionCompare operator is required and cannot be empty.');
 
@@ -2527,7 +2527,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function phpVersion($operator, $version, $message = null, string $propertyPath = null): bool
+    public static function phpVersion($operator, $version, $message = null, ?string $propertyPath = null): bool
     {
         static::defined('PHP_VERSION');
 
@@ -2544,7 +2544,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function extensionVersion($extension, $operator, $version, $message = null, string $propertyPath = null): bool
+    public static function extensionVersion($extension, $operator, $version, $message = null, ?string $propertyPath = null): bool
     {
         static::extensionLoaded($extension, $message, $propertyPath);
 
@@ -2564,7 +2564,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function isCallable($value, $message = null, string $propertyPath = null): bool
+    public static function isCallable($value, $message = null, ?string $propertyPath = null): bool
     {
         if (!\is_callable($value)) {
             $message = \sprintf(
@@ -2589,7 +2589,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function satisfy($value, $callback, $message = null, string $propertyPath = null): bool
+    public static function satisfy($value, $callback, $message = null, ?string $propertyPath = null): bool
     {
         static::isCallable($callback);
 
@@ -2617,7 +2617,7 @@ class Assertion
      *
      * @see http://php.net/manual/filter.filters.flags.php
      */
-    public static function ip($value, $flag = null, $message = null, string $propertyPath = null): bool
+    public static function ip($value, $flag = null, $message = null, ?string $propertyPath = null): bool
     {
         static::string($value, $message, $propertyPath);
         if ($flag === null) {
@@ -2648,7 +2648,7 @@ class Assertion
      *
      * @see http://php.net/manual/filter.filters.flags.php
      */
-    public static function ipv4($value, $flag = null, $message = null, string $propertyPath = null): bool
+    public static function ipv4($value, $flag = null, $message = null, ?string $propertyPath = null): bool
     {
         static::ip($value, $flag | FILTER_FLAG_IPV4, static::generateMessage($message ?: 'Value "%s" was expected to be a valid IPv4 address.'), $propertyPath);
 
@@ -2667,7 +2667,7 @@ class Assertion
      *
      * @see http://php.net/manual/filter.filters.flags.php
      */
-    public static function ipv6($value, $flag = null, $message = null, string $propertyPath = null): bool
+    public static function ipv6($value, $flag = null, $message = null, ?string $propertyPath = null): bool
     {
         static::ip($value, $flag | FILTER_FLAG_IPV6, static::generateMessage($message ?: 'Value "%s" was expected to be a valid IPv6 address.'), $propertyPath);
 
@@ -2680,7 +2680,7 @@ class Assertion
      * @param mixed $constant
      * @param string|callable|null $message
      */
-    public static function defined($constant, $message = null, string $propertyPath = null): bool
+    public static function defined($constant, $message = null, ?string $propertyPath = null): bool
     {
         if (!\defined($constant)) {
             $message = \sprintf(static::generateMessage($message ?: 'Value "%s" expected to be a defined constant.'), $constant);
@@ -2699,7 +2699,7 @@ class Assertion
      *
      * @throws AssertionFailedException
      */
-    public static function base64($value, $message = null, string $propertyPath = null): bool
+    public static function base64($value, $message = null, ?string $propertyPath = null): bool
     {
         if (false === \base64_decode($value, true)) {
             $message = \sprintf(static::generateMessage($message ?: 'Value "%s" is not a valid base64 string.'), $value);

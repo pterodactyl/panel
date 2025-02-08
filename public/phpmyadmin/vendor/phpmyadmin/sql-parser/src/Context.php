@@ -599,8 +599,13 @@ abstract class Context
         }
 
         if ($context[0] !== '\\') {
-            // Short context name (must be formatted into class name).
-            $context = self::$contextPrefix . $context;
+            // Could be the fully qualified class name was given, like `ContextDBMS::class`.
+            if (class_exists('\\' . $context)) {
+                $context = '\\' . $context;
+            } else {
+                // Short context name (must be formatted into class name).
+                $context = self::$contextPrefix . $context;
+            }
         }
 
         if (! class_exists($context)) {

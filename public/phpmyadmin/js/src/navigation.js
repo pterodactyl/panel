@@ -185,7 +185,7 @@ Navigation.loadChildNodes = function (isNode, $expandElem, callback) {
             if (data.errors) {
                 var $errors = $(data.errors);
                 if ($errors.children().length > 0) {
-                    $('#pma_errors').replaceWith(data.errors);
+                    $('#pma_errors').append(data.errors);
                 }
             }
             if (callback && typeof callback === 'function') {

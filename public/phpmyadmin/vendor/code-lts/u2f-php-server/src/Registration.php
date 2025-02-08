@@ -4,17 +4,18 @@ namespace CodeLts\U2F\U2FServer;
 
 class Registration
 {
-    /** The key handle of the registered authenticator */
+    /** @var string The key handle of the registered authenticator */
     protected $keyHandle;
-/** The public key of the registered authenticator */
+    /** @var string The public key of the registered authenticator */
     protected $publicKey;
-/** The attestation certificate of the registered authenticator */
+    /** @var string The attestation certificate of the registered authenticator */
     protected $certificate;
-/** The counter associated with this registration */
+    /** @var int The counter associated with this registration */
     protected $counter = -1;
 
-/**
+    /**
      * @param string $keyHandle
+     * @return void
      */
     public function setKeyHandle($keyHandle)
     {
@@ -23,6 +24,7 @@ class Registration
 
     /**
      * @param string $publicKey
+     * @return void
      */
     public function setPublicKey($publicKey)
     {
@@ -31,6 +33,7 @@ class Registration
 
     /**
      * @param string $certificate
+     * @return void
      */
     public function setCertificate($certificate)
     {
@@ -62,7 +65,7 @@ class Registration
     }
 
     /**
-     * @return string
+     * @return int
      */
     public function getCounter()
     {

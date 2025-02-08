@@ -1,7 +1,7 @@
 {% if user_group == null %}
     <h2>{% trans 'Add user group' %}</h2>
 {% else %}
-    <h2>{{ 'Edit user group: \'%s\''|trans|format(edit_user_group_special_chars) }}</h2>
+    <h2>{{ 'Edit user group: \'%s\''|trans|format(edit_user_group_special_chars)|raw }}</h2>
 {% endif %}
 <form name="userGroupForm" id="userGroupForm" action="{{ user_group_url|raw }}" method="post">
     {{ hidden_inputs|raw }}

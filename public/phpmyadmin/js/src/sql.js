@@ -189,7 +189,7 @@ AJAX.registerTeardown('sql.js', function () {
     $(document).off('click', 'a.delete_row.ajax');
     $(document).off('submit', '.bookmarkQueryForm');
     $('input#bkm_label').off('input');
-    $(document).off('makegrid', '.sqlqueryresults');
+    $(document).off('makeGrid', '.sqlqueryresults');
     $('#togglequerybox').off('click');
     $(document).off('click', '#button_submit_query');
     $(document).off('change', '#id_bookmark');
@@ -377,6 +377,9 @@ AJAX.registerOnload('sql.js', function () {
 
         textArea.value += '\n';
         $('.table_results tbody tr').each(function () {
+            if ($(this).hasClass('repeating_header_row')) {
+                return;
+            }
             $(this).find('.data span').each(function () {
                 // Extract <em> tag for NULL values before converting to string to not mess up formatting
                 var data = $(this).find('em').length !== 0 ? $(this).find('em')[0] : this;
@@ -401,11 +404,11 @@ AJAX.registerOnload('sql.js', function () {
     }); // end of Copy to Clipboard action
 
     /**
-     * Attach the {@link makegrid} function to a custom event, which will be
+     * Attach the {@link makeGrid} function to a custom event, which will be
      * triggered manually everytime the table of results is reloaded
      * @memberOf    jQuery
      */
-    $(document).on('makegrid', '.sqlqueryresults', function () {
+    $(document).on('makeGrid', '.sqlqueryresults', function () {
         $('.table_results').each(function () {
             makeGrid(this);
         });
@@ -625,7 +628,7 @@ AJAX.registerOnload('sql.js', function () {
                     });
                 }
 
-                $('.sqlqueryresults').trigger('makegrid');
+                $('.sqlqueryresults').trigger('makeGrid');
                 $('#togglequerybox').show();
 
                 if (typeof data.action_bookmark === 'undefined') {
@@ -663,7 +666,7 @@ AJAX.registerOnload('sql.js', function () {
             var $sqlqueryresults = $form.parents('.sqlqueryresults');
             $sqlqueryresults
                 .html(data.message)
-                .trigger('makegrid');
+                .trigger('makeGrid');
             Functions.highlightSql($sqlqueryresults);
         }); // end $.post()
     }); // end displayOptionsForm handler
@@ -761,7 +764,7 @@ AJAX.registerOnload('sql.js', function () {
                         for (var i = 0; i < len; i++) {
                             dialogContent += '<strong>' + Messages.strSQLQuery +
                                 '</strong>' + response.sql_data[i].sql_query +
-                                Messages.strMatchedRows +
+                                Messages.strAffectedRows +
                                 ' <a href="' + response.sql_data[i].matched_rows_url +
                                 '">' + response.sql_data[i].matched_rows + '</a><br>';
                             if (i < len - 1) {
@@ -1014,7 +1017,7 @@ AJAX.registerOnload('sql.js', function () {
     /**
      * create resizable table
      */
-    $('.sqlqueryresults').trigger('makegrid');
+    $('.sqlqueryresults').trigger('makeGrid');
 
     /**
      * Check if there is any saved query

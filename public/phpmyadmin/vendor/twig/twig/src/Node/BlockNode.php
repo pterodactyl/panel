@@ -12,6 +12,7 @@
 
 namespace Twig\Node;
 
+use Twig\Attribute\YieldReady;
 use Twig\Compiler;
 
 /**
@@ -19,9 +20,10 @@ use Twig\Compiler;
  *
  * @author Fabien Potencier <fabien@symfony.com>
  */
+#[YieldReady]
 class BlockNode extends Node
 {
-    public function __construct(string $name, Node $body, int $lineno, string $tag = null)
+    public function __construct(string $name, Node $body, int $lineno, ?string $tag = null)
     {
         parent::__construct(['body' => $body], ['name' => $name], $lineno, $tag);
     }
@@ -30,13 +32,14 @@ class BlockNode extends Node
     {
         $compiler
             ->addDebugInfo($this)
-            ->write(sprintf("public function block_%s(\$context, array \$blocks = [])\n", $this->getAttribute('name')), "{\n")
+            ->write(\sprintf("public function block_%s(\$context, array \$blocks = [])\n", $this->getAttribute('name')), "{\n")
             ->indent()
             ->write("\$macros = \$this->macros;\n")
         ;
 
         $compiler
             ->subcompile($this->getNode('body'))
+            ->write("return; yield '';\n") // needed when body doesn't yield anything
             ->outdent()
             ->write("}\n\n")
         ;

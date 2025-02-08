@@ -77,7 +77,7 @@ $( function() {
                             {# Show progress UI #}
                             $("#importmain").hide();
                             $("#import_form_status")
-                            .html('{{ upload_html|spaceless|raw }}')
+                            .html('{{ upload_html|raw }}')
                             .show();
                             import_start = now;
                         }

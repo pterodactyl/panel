@@ -77,8 +77,8 @@
                       <a class="edit_user_anchor" href="{{ url('/server/privileges', {
                         'username': privilege.user,
                         'hostname': privilege.host,
-                        'dbname': priv.database != '*' ? priv.database,
-                        'tablename': priv.table is defined and priv.table != '*' ? priv.table,
+                        'dbname': priv.database != '*' ? priv.database : db,
+                        'tablename': priv.table is defined and priv.table != '*' ? priv.table : table,
                         'routinename': priv.routine ?? ''
                       }) }}">
                         {{ get_icon('b_usredit', 'Edit privileges'|trans) }}

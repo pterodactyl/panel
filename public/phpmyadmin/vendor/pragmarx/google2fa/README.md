@@ -1,4 +1,4 @@
-# Google2FA 
+# Google2FA
 ## Google Two-Factor Authentication for PHP
 
 Google2FA is a PHP implementation of the Google Two-Factor Authentication Module, supporting the HMAC-Based One-time Password (HOTP) algorithm specified in [RFC 4226](https://tools.ietf.org/html/rfc4226) and the Time-based One-time Password (TOTP) algorithm specified in [RFC 6238](https://tools.ietf.org/html/rfc6238).
@@ -49,32 +49,32 @@ Google2FA is a PHP implementation of the Google Two-Factor Authentication Module
 
  PHP     | Google2FA
 :--------|:----------
- 5.4     | 7.x LTS 
- 5.5     | 7.x LTS 
- 5.6     | 7.x LTS 
+ 5.4     | 7.x LTS
+ 5.5     | 7.x LTS
+ 5.6     | 7.x LTS
  7.1     | 8.x
  7.2     | 8.x
  7.3     | 8.x
  7.4     | 8.x
  8.0 (β) | 8.x
- 
+
 ## Laravel bridge
 
 This package is agnostic, but there's a [Laravel bridge](https://github.com/antonioribeiro/google2fa-laravel).
-  
+
 ## About QRCode generation
 
 This package does not generate QRCodes for 2FA.
 
-If you are looking for Google Two-Factor Authentication, but also need to generate QRCode for it, you can use the [Google2FA QRCode package](https://github.com/antonioribeiro/google2fa-qrcode), which integrates this package and also generates QRCodes using the BaconQRCode library, or check options on how to do it yourself [here in the docs](#qr-code-packages). 
+If you are looking for Google Two-Factor Authentication, but also need to generate QRCode for it, you can use the [Google2FA QRCode package](https://github.com/antonioribeiro/google2fa-qrcode), which integrates this package and also generates QRCodes using the BaconQRCode library, or check options on how to do it yourself [here in the docs](#qr-code-packages).
 
 ## Demos, Example & Playground
 
-Please check the [Google2FA Package Playground](http://pragmarx.com/playground/google2fa). 
+Please check the [Google2FA Package Playground](http://pragmarx.com/playground/google2fa).
 
 ![playground](docs/playground.jpg)
 
-Here's an demo app showing how to use Google2FA: [google2fa-example](https://github.com/antonioribeiro/google2fa-example).
+Here's a demo app showing how to use Google2FA: [google2fa-example](https://github.com/antonioribeiro/google2fa-example).
 
 You can scan the QR code on [this (old) demo page](https://antoniocarlosribeiro.com/technology/google2fa) with a Google Authenticator app and view the code changing (almost) in real time.
 
@@ -89,7 +89,7 @@ Use Composer to install it:
     composer require pragmarx/google2fa
 
 To generate inline QRCodes, you'll need to install a QR code generator, e.g. [BaconQrCode](https://github.com/Bacon/BaconQrCode):
-  
+
     composer require bacon/bacon-qr-code
 
 ## Usage
@@ -98,9 +98,9 @@ To generate inline QRCodes, you'll need to install a QR code generator, e.g. [Ba
 
 ```php
 use PragmaRX\Google2FA\Google2FA;
-    
+
 $google2fa = new Google2FA();
-    
+
 return $google2fa->generateSecretKey();
 ```
 
@@ -114,8 +114,8 @@ $user->google2fa_secret = $google2fa->generateSecretKey();
 
 ## Generating QRCodes
 
-The securer way of creating QRCode is to do it yourself or using a library. First you have to install a QR code generator e.g. BaconQrCode, as stated above, then you just have to generate the QR code url using:
- 
+The more secure way of creating QRCode is to do it yourself or using a library. First you have to install a QR code generator e.g. BaconQrCode, as stated above, then you just have to generate the QR code url using:
+
 ```php
 $qrCodeUrl = $google2fa->getQRCodeUrl(
     $companyName,
@@ -143,13 +143,13 @@ $secret = $request->input('secret');
 $valid = $google2fa->verifyKey($user->google2fa_secret, $secret);
 ```
 
-## QR Code Packages  
+## QR Code Packages
 
-This package suggests the use of [Bacon/QRCode](https://github.com/Bacon/BaconQrCode) because 
-it is known as a good QR Code package, but you can use it with any other package, for 
-instance [Google2FA QRCode](https://github.com/antonioribeiro/google2fa-qrcode), 
-[Simple QrCode](https://www.simplesoftware.io/docs/simple-qrcode) 
-or [Endroid QR Code](https://github.com/endroid/qr-code), all of them use 
+This package suggests the use of [Bacon/QRCode](https://github.com/Bacon/BaconQrCode) because
+it is known as a good QR Code package, but you can use it with any other package, for
+instance [Google2FA QRCode](https://github.com/antonioribeiro/google2fa-qrcode),
+[Simple QrCode](https://www.simplesoftware.io/docs/simple-qrcode)
+or [Endroid QR Code](https://github.com/endroid/qr-code), all of them use
 [Bacon/QRCode](https://github.com/Bacon/BaconQrCode) to produce QR Codes.
 
 Usually you'll need a 2FA URL, so you just have to use the URL generator:
@@ -163,7 +163,7 @@ $google2fa->getQRCodeUrl($companyName, $companyEmail, $secretKey)
 ### [Google2FA QRCode](https://github.com/antonioribeiro/google2fa-qrcode)
 
 Get a QRCode to be used inline:
- 
+
 ```php
 $google2fa = (new \PragmaRX\Google2FAQRCode\Google2FA());
 
@@ -174,7 +174,7 @@ $inlineUrl = $google2fa->getQRCodeInline(
 );
 ```
 
-And use in your template: 
+And use in your template:
 
 ```php
 <img src="{{ $inlineUrl }}">
@@ -199,7 +199,7 @@ $qrCode = new \Endroid\QrCode\QrCode($value);
 $qrCode->setSize(100);
 $google2fa_url = $qrCode->writeDataUri();
 ```
-   
+
 And in your view
 
 ```php
@@ -244,9 +244,9 @@ And show it as an image:
 <img src="data:image/png;base64, <?php echo $qrcode_image; ?> "/>
 ```
 
-## HMAC Algorithms 
+## HMAC Algorithms
 
-To comply with [RFC6238](https://tools.ietf.org/html/rfc6238), this package supports SHA1, SHA256 and SHA512. It defaults to SHA1, so to use a different algorithm you just have to use the method `setAlgorith()`:
+To comply with [RFC6238](https://tools.ietf.org/html/rfc6238), this package supports SHA1, SHA256 and SHA512. It defaults to SHA1, so to use a different algorithm you just have to use the method `setAlgorithm()`:
 
 ``` php
 
@@ -293,12 +293,12 @@ if ($timestamp !== false) {
 }
 ```
 
-Note that `$timestamp` either `false` (if the key is invalid or has been used before) or the provided key's unix timestamp divided by the key regeneration period of 30 seconds.
+Note that `$timestamp` is either `false` (if the key is invalid or has been used before) or the provided key's unix timestamp divided by the key regeneration period of 30 seconds.
 
 ## Using a Bigger and Prefixing the Secret Key
 
 Although the probability of collision of a 16 bytes (128 bits) random string is very low, you can harden it by:
- 
+
 #### Use a bigger key
 
 ```php
@@ -307,7 +307,7 @@ $secretKey = $google2fa->generateSecretKey(32); // defaults to 16 bytes
 
 #### You can prefix your secret keys
 
-You may prefix your secret keys, but you have to understand that, as your secret key must have length in power of 2, your prefix will have to have a complementary size. So if your key is 16 bytes long, if you add a prefix it must be also 16 bytes long, but as your prefixes will be converted to base 32, the max length of your prefix is 10 bytes. So, those are the sizes you can use in your prefixes:
+You may prefix your secret keys, but you have to understand that, as your secret key must have length in power of 2, your prefix will have to have a complementary size. So if your key is 16 bytes long, if you add a prefix it must also be 16 bytes long, but as your prefixes will be converted to base 32, the max length of your prefix is 10 bytes. So, those are the sizes you can use in your prefixes:
 
 ```
 1, 2, 5, 10, 20, 40, 80...
@@ -323,13 +323,13 @@ $secretKey = $google2fa->generateSecretKey(16, $prefix);
 
 #### Window
 
-The Window property defines how long a OTP will work, or how many cycles it will last. A key has a 30 seconds cycle, setting the window to 0 will make the key lasts for those 30 seconds, setting it to 2 will make it last for 120 seconds. This is how you set the window:
+The Window property defines how long a OTP will work, or how many cycles it will last. A key has a 30 seconds cycle, setting the window to 0 will make the key last for those 30 seconds, setting it to 2 will make it last for 120 seconds. This is how you set the window:
 
 ```php
 $secretKey = $google2fa->setWindow(4);
 ```
 
-But you can also set the window while checking the key. If you need to set a window of 4 during key verification, this is how you do: 
+But you can also set the window while checking the key. If you need to set a window of 4 during key verification, this is how you do:
 
 ```php
 $isValid = $google2fa->verifyKey($seed, $key, 4);
@@ -346,12 +346,12 @@ $google2fa->setKeyRegeneration(40);
 ## Google Authenticator secret key compatibility
 
 To be compatible with Google Authenticator, your (converted to base 32) secret key length must be at least 8 chars and be a power of 2: 8, 16, 32, 64...
-  
+
 So, to prevent errors, you can do something like this while generating it:
-  
+
 ```php
 $secretKey = '123456789';
-  
+
 $secretKey = str_pad($secretKey, pow(2,ceil(log(strlen($secretKey),2))), 'X');
 ```
 
@@ -361,7 +361,7 @@ And it will generate
 123456789XXXXXXX
 ```
 
-By default, this package will enforce compatibility, but, if Google Authenticator is not a target, you can disable it by doing  
+By default, this package will enforce compatibility, but, if Google Authenticator is not a target, you can disable it by doing
 
 ```php
 $google2fa->setEnforceGoogleAuthenticatorCompatibility(false);
@@ -382,7 +382,7 @@ To use the two factor authentication, your user will have to install a Google Au
 
 ## Deprecation Warning
 
-Google API for QR generator is turned off. All version of that package prior to 5.0.0 are deprecated. Please upgrade and check documentation regarding [QRCode generation](https://github.com/antonioribeiro/google2fa#generating-qrcodes).
+Google API for QR generator is turned off. All versions of that package prior to 5.0.0 are deprecated. Please upgrade and check documentation regarding [QRCode generation](https://github.com/antonioribeiro/google2fa#generating-qrcodes).
 
 ## Testing
 
@@ -413,3 +413,14 @@ Google2FA is licensed under the MIT License - see the [LICENSE](LICENSE.md) file
 ## Contributing
 
 Pull requests and issues are more than welcome.
+
+## Sponsorships
+
+### Direct
+
+None.
+
+### Indirect
+
+- JetBrains - [Open Source License](https://www.jetbrains.com/community/opensource/#support) (since 2020)
+- Blackfire - [Open Source License](https://www.blackfire.io/open-source/) (since 2022)

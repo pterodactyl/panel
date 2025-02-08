@@ -99,7 +99,7 @@ class AuthenticationConfig extends AuthenticationPlugin
     <table class="table table-borderless text-start w-75 mx-auto">
         <tr>
             <td>';
-        if (isset($GLOBALS['allowDeny_forbidden']) && $GLOBALS['allowDeny_forbidden']) {
+        if ($failure === 'allow-denied') {
             trigger_error(__('Access denied!'), E_USER_NOTICE);
         } else {
             // Check whether user has configured something

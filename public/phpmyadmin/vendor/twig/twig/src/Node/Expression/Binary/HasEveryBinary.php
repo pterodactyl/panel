@@ -18,7 +18,7 @@ class HasEveryBinary extends AbstractBinary
     public function compile(Compiler $compiler): void
     {
         $compiler
-            ->raw('twig_array_every($this->env, ')
+            ->raw('CoreExtension::arrayEvery($this->env, ')
             ->subcompile($this->getNode('left'))
             ->raw(', ')
             ->subcompile($this->getNode('right'))

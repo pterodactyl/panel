@@ -1,6 +1,6 @@
 # PHP 7.1 enums
 
-[![Build Status](https://travis-ci.org/DASPRiD/Enum.svg?branch=master)](https://travis-ci.org/DASPRiD/Enum)
+[![Build Status](https://github.com/DASPRiD/Enum/actions/workflows/tests.yml/badge.svg)](https://github.com/DASPRiD/Enum/actions?query=workflow%3Atests)
 [![Coverage Status](https://coveralls.io/repos/github/DASPRiD/Enum/badge.svg?branch=master)](https://coveralls.io/github/DASPRiD/Enum?branch=master)
 [![Latest Stable Version](https://poser.pugx.org/dasprid/enum/v/stable)](https://packagist.org/packages/dasprid/enum)
 [![Total Downloads](https://poser.pugx.org/dasprid/enum/downloads)](https://packagist.org/packages/dasprid/enum)
@@ -41,7 +41,7 @@ final class WeekDay extends AbstractEnum
     protected const SATURDAY = null;
     protected const SUNDAY = null;
 }
-``` 
+```
 
 If you need to provide constants for either internal use or public use, you can mark them as either private or public,
 in which case they will be ignored by the enum, which only considers protected constants as valid values. As you can
@@ -56,16 +56,16 @@ function tellItLikeItIs(WeekDay $weekDay)
         case WeekDay::MONDAY():
             echo 'Mondays are bad.';
             break;
-            
+
         case WeekDay::FRIDAY():
             echo 'Fridays are better.';
             break;
-            
+
         case WeekDay::SATURDAY():
         case WeekDay::SUNDAY():
             echo 'Weekends are best.';
             break;
-            
+
         default:
             echo 'Midweek days are so-so.';
     }
@@ -107,14 +107,14 @@ final class Planet extends AbstractEnum
     protected const SATURN = [5.688e+26, 6.0268e7];
     protected const URANUS = [8.686e+25, 2.5559e7];
     protected const NEPTUNE = [1.024e+26, 2.4746e7];
-    
+
     /**
      * Universal gravitational constant.
      *
      * @var float
      */
     private const G = 6.67300E-11;
-    
+
     /**
      * Mass in kilograms.
      *
@@ -124,32 +124,32 @@ final class Planet extends AbstractEnum
 
     /**
      * Radius in meters.
-     *    
+     *
      * @var float
-     */    
+     */
     private $radius;
-    
+
     protected function __construct(float $mass, float $radius)
     {
         $this->mass = $mass;
         $this->radius = $radius;
     }
-    
+
     public function mass() : float
     {
         return $this->mass;
     }
-    
+
     public function radius() : float
     {
-        return $this->radius; 
+        return $this->radius;
     }
-    
+
     public function surfaceGravity() : float
     {
         return self::G * $this->mass / ($this->radius * $this->radius);
     }
-    
+
     public function surfaceWeight(float $otherMass) : float
     {
         return $otherMass * $this->surfaceGravity();

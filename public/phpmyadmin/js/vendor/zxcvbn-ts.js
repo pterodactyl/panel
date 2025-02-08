@@ -3,18 +3,18 @@ this.zxcvbnts.core = (function (exports) {
     'use strict';
 
     const empty = obj => Object.keys(obj).length === 0;
-    const extend = (listToExtend, list) => // eslint-disable-next-line prefer-spread
+    const extend = (listToExtend, list) =>
+    // eslint-disable-next-line prefer-spread
     listToExtend.push.apply(listToExtend, list);
     const translate = (string, chrMap) => {
       const tempArray = string.split('');
       return tempArray.map(char => chrMap[char] || char).join('');
-    }; // mod implementation that works for negative numbers
-
+    };
+    // sort on i primary, j secondary
     const sorted = matches => matches.sort((m1, m2) => m1.i - m2.i || m1.j - m2.j);
     const buildRankedDictionary = orderedList => {
       const result = {};
       let counter = 1; // rank starts at 1, not 0
-
       orderedList.forEach(word => {
         result[word] = counter;
         counter += 1;
@@ -23,17 +23,23 @@ this.zxcvbnts.core = (function (exports) {
     };
 
     var dateSplits = {
-      4: [// for length-4 strings, eg 1191 or 9111, two ways to split:
+      4: [
+      // for length-4 strings, eg 1191 or 9111, two ways to split:
       [1, 2], [2, 3] // 91 1 1
       ],
-      5: [[1, 3], [2, 3], //  [2, 3], // 91 1 11    <- duplicate previous one
+
+      5: [[1, 3], [2, 3],
+      //  [2, 3], // 91 1 11    <- duplicate previous one
       [2, 4] // 91 11 1    <- New and must be added as bug fix
       ],
+
       6: [[1, 2], [2, 4], [4, 5] // 1991 1 1
       ],
+
       //  1111991
       7: [[1, 3], [2, 3], [4, 5], [4, 6] // 1991 11 1
       ],
+
       8: [[2, 4], [4, 6] // 1991 11 11
       ]
     };
@@ -45,11 +51,11 @@ this.zxcvbnts.core = (function (exports) {
     const MIN_GUESSES_BEFORE_GROWING_SEQUENCE = 10000;
     const MIN_SUBMATCH_GUESSES_SINGLE_CHAR = 10;
     const MIN_SUBMATCH_GUESSES_MULTI_CHAR = 50;
-    const MIN_YEAR_SPACE = 20; // \xbf-\xdf is a range for almost all special uppercase letter like Ä and so on
-
+    const MIN_YEAR_SPACE = 20;
+    // \xbf-\xdf is a range for almost all special uppercase letter like Ä and so on
     const START_UPPER = /^[A-Z\xbf-\xdf][^A-Z\xbf-\xdf]+$/;
-    const END_UPPER = /^[^A-Z\xbf-\xdf]+[A-Z\xbf-\xdf]$/; // \xdf-\xff is a range for almost all special lowercase letter like ä and so on
-
+    const END_UPPER = /^[^A-Z\xbf-\xdf]+[A-Z\xbf-\xdf]$/;
+    // \xdf-\xff is a range for almost all special lowercase letter like ä and so on
     const ALL_UPPER = /^[A-Z\xbf-\xdf]+$/;
     const ALL_UPPER_INVERTED = /^[^a-z\xdf-\xff]+$/;
     const ALL_LOWER = /^[a-z\xdf-\xff]+$/;
@@ -68,7 +74,6 @@ this.zxcvbnts.core = (function (exports) {
      *  date matching ----------------------------------------------------------------
      * -------------------------------------------------------------------------------
      */
-
     class MatchDate {
       /*
        * a "date" is recognized as:
@@ -97,23 +102,19 @@ this.zxcvbnts.core = (function (exports) {
         const filteredMatches = this.filterNoise(matches);
         return sorted(filteredMatches);
       }
-
       getMatchesWithSeparator(password) {
         const matches = [];
-        const maybeDateWithSeparator = /^(\d{1,4})([\s/\\_.-])(\d{1,2})\2(\d{1,4})$/; // # dates with separators are between length 6 '1/1/91' and 10 '11/11/1991'
-
+        const maybeDateWithSeparator = /^(\d{1,4})([\s/\\_.-])(\d{1,2})\2(\d{1,4})$/;
+        // # dates with separators are between length 6 '1/1/91' and 10 '11/11/1991'
         for (let i = 0; i <= Math.abs(password.length - 6); i += 1) {
           for (let j = i + 5; j <= i + 9; j += 1) {
             if (j >= password.length) {
               break;
             }
-
             const token = password.slice(i, +j + 1 || 9e9);
             const regexMatch = maybeDateWithSeparator.exec(token);
-
             if (regexMatch != null) {
               const dmy = this.mapIntegersToDayMonthYear([parseInt(regexMatch[1], 10), parseInt(regexMatch[3], 10), parseInt(regexMatch[4], 10)]);
-
               if (dmy != null) {
                 matches.push({
                   pattern: 'date',
@@ -129,38 +130,30 @@ this.zxcvbnts.core = (function (exports) {
             }
           }
         }
-
         return matches;
-      } // eslint-disable-next-line max-statements
-
-
+      }
+      // eslint-disable-next-line max-statements
       getMatchesWithoutSeparator(password) {
         const matches = [];
         const maybeDateNoSeparator = /^\d{4,8}$/;
-
-        const metric = candidate => Math.abs(candidate.year - REFERENCE_YEAR); // # dates without separators are between length 4 '1191' and 8 '11111991'
-
-
+        const metric = candidate => Math.abs(candidate.year - REFERENCE_YEAR);
+        // # dates without separators are between length 4 '1191' and 8 '11111991'
         for (let i = 0; i <= Math.abs(password.length - 4); i += 1) {
           for (let j = i + 3; j <= i + 7; j += 1) {
             if (j >= password.length) {
               break;
             }
-
             const token = password.slice(i, +j + 1 || 9e9);
-
             if (maybeDateNoSeparator.exec(token)) {
               const candidates = [];
               const index = token.length;
               const splittedDates = DATE_SPLITS[index];
               splittedDates.forEach(([k, l]) => {
                 const dmy = this.mapIntegersToDayMonthYear([parseInt(token.slice(0, k), 10), parseInt(token.slice(k, l), 10), parseInt(token.slice(l), 10)]);
-
                 if (dmy != null) {
                   candidates.push(dmy);
                 }
               });
-
               if (candidates.length > 0) {
                 /*
                  * at this point: different possible dmy mappings for the same i,j substring.
@@ -175,7 +168,6 @@ this.zxcvbnts.core = (function (exports) {
                 let minDistance = metric(candidates[0]);
                 candidates.slice(1).forEach(candidate => {
                   const distance = metric(candidate);
-
                   if (distance < minDistance) {
                     bestCandidate = candidate;
                     minDistance = distance;
@@ -195,7 +187,6 @@ this.zxcvbnts.core = (function (exports) {
             }
           }
         }
-
         return matches;
       }
       /*
@@ -207,16 +198,12 @@ this.zxcvbnts.core = (function (exports) {
        *
        * to reduce noise, remove date matches that are strict substrings of others
        */
-
-
       filterNoise(matches) {
         return matches.filter(match => {
           let isSubmatch = false;
           const matchesLength = matches.length;
-
           for (let o = 0; o < matchesLength; o += 1) {
             const otherMatch = matches[o];
-
             if (match !== otherMatch) {
               if (otherMatch.i <= match.i && otherMatch.j >= match.j) {
                 isSubmatch = true;
@@ -224,7 +211,6 @@ this.zxcvbnts.core = (function (exports) {
               }
             }
           }
-
           return !isSubmatch;
         });
       }
@@ -239,57 +225,44 @@ this.zxcvbnts.core = (function (exports) {
        *   all integers are over 12, the max allowable month
        */
       // eslint-disable-next-line complexity, max-statements
-
-
       mapIntegersToDayMonthYear(integers) {
         if (integers[1] > 31 || integers[1] <= 0) {
           return null;
         }
-
         let over12 = 0;
         let over31 = 0;
         let under1 = 0;
-
         for (let o = 0, len1 = integers.length; o < len1; o += 1) {
           const int = integers[o];
-
           if (int > 99 && int < DATE_MIN_YEAR || int > DATE_MAX_YEAR) {
             return null;
           }
-
           if (int > 31) {
             over31 += 1;
           }
-
           if (int > 12) {
             over12 += 1;
           }
-
           if (int <= 0) {
             under1 += 1;
           }
         }
-
         if (over31 >= 2 || over12 === 3 || under1 >= 2) {
           return null;
         }
-
         return this.getDayMonth(integers);
-      } // eslint-disable-next-line max-statements
-
-
+      }
+      // eslint-disable-next-line max-statements
       getDayMonth(integers) {
         // first look for a four digit year: yyyy + daymonth or daymonth + yyyy
         const possibleYearSplits = [[integers[2], integers.slice(0, 2)], [integers[0], integers.slice(1, 3)] // year first
         ];
-        const possibleYearSplitsLength = possibleYearSplits.length;
 
+        const possibleYearSplitsLength = possibleYearSplits.length;
         for (let j = 0; j < possibleYearSplitsLength; j += 1) {
           const [y, rest] = possibleYearSplits[j];
-
           if (DATE_MIN_YEAR <= y && y <= DATE_MAX_YEAR) {
             const dm = this.mapIntegersToDayMonth(rest);
-
             if (dm != null) {
               return {
                 year: y,
@@ -302,18 +275,14 @@ this.zxcvbnts.core = (function (exports) {
              * when the remaining integers don't match to a day and month,
              * it is not a date.
              */
-
-
             return null;
           }
-        } // given no four-digit year, two digit years are the most flexible int to match, so
+        }
+        // given no four-digit year, two digit years are the most flexible int to match, so
         // try to parse a day-month out of integers[0..1] or integers[1..0]
-
-
         for (let k = 0; k < possibleYearSplitsLength; k += 1) {
           const [y, rest] = possibleYearSplits[k];
           const dm = this.mapIntegersToDayMonth(rest);
-
           if (dm != null) {
             return {
               year: this.twoToFourDigitYear(y),
@@ -322,18 +291,14 @@ this.zxcvbnts.core = (function (exports) {
             };
           }
         }
-
         return null;
       }
-
       mapIntegersToDayMonth(integers) {
         const temp = [integers, integers.slice().reverse()];
-
         for (let i = 0; i < temp.length; i += 1) {
           const data = temp[i];
           const day = data[0];
           const month = data[1];
-
           if (day >= 1 && day <= 31 && month >= 1 && month <= 12) {
             return {
               day,
@@ -341,219 +306,171 @@ this.zxcvbnts.core = (function (exports) {
             };
           }
         }
-
         return null;
       }
-
       twoToFourDigitYear(year) {
         if (year > 99) {
           return year;
         }
-
         if (year > 50) {
           // 87 -> 1987
           return year + 1900;
-        } // 15 -> 2015
-
-
+        }
+        // 15 -> 2015
         return year + 2000;
       }
-
     }
 
-    /**
-     * This code is from https://github.com/ka-weihe/fastest-levenshtein
-     * It was copied into this repo because it doesn't have an esm build which results in error for esm only project
-     * TODO if sometimes in the future it will get a esm build we can remove this file and use the original again
-     * https://github.com/ka-weihe/fastest-levenshtein/pull/18
-     */
     const peq = new Uint32Array(0x10000);
-
     const myers_32 = (a, b) => {
-      const n = a.length;
-      const m = b.length;
-      const lst = 1 << n - 1;
-      let pv = -1;
-      let mv = 0;
-      let sc = n;
-      let i = n;
-
-      while (i--) {
-        peq[a.charCodeAt(i)] |= 1 << i;
-      }
-
-      for (i = 0; i < m; i++) {
-        let eq = peq[b.charCodeAt(i)];
-        const xv = eq | mv;
-        eq |= (eq & pv) + pv ^ pv;
-        mv |= ~(eq | pv);
-        pv &= eq;
-
-        if (mv & lst) {
-          sc++;
+        const n = a.length;
+        const m = b.length;
+        const lst = 1 << (n - 1);
+        let pv = -1;
+        let mv = 0;
+        let sc = n;
+        let i = n;
+        while (i--) {
+            peq[a.charCodeAt(i)] |= 1 << i;
         }
-
-        if (pv & lst) {
-          sc--;
+        for (i = 0; i < m; i++) {
+            let eq = peq[b.charCodeAt(i)];
+            const xv = eq | mv;
+            eq |= ((eq & pv) + pv) ^ pv;
+            mv |= ~(eq | pv);
+            pv &= eq;
+            if (mv & lst) {
+                sc++;
+            }
+            if (pv & lst) {
+                sc--;
+            }
+            mv = (mv << 1) | 1;
+            pv = (pv << 1) | ~(xv | mv);
+            mv &= xv;
         }
-
-        mv = mv << 1 | 1;
-        pv = pv << 1 | ~(xv | mv);
-        mv &= xv;
-      }
-
-      i = n;
-
-      while (i--) {
-        peq[a.charCodeAt(i)] = 0;
-      }
-
-      return sc;
+        i = n;
+        while (i--) {
+            peq[a.charCodeAt(i)] = 0;
+        }
+        return sc;
     };
-
     const myers_x = (b, a) => {
-      const n = a.length;
-      const m = b.length;
-      const mhc = [];
-      const phc = [];
-      const hsize = Math.ceil(n / 32);
-      const vsize = Math.ceil(m / 32);
-
-      for (let i = 0; i < hsize; i++) {
-        phc[i] = -1;
-        mhc[i] = 0;
-      }
-
-      let j = 0;
-
-      for (; j < vsize - 1; j++) {
+        const n = a.length;
+        const m = b.length;
+        const mhc = [];
+        const phc = [];
+        const hsize = Math.ceil(n / 32);
+        const vsize = Math.ceil(m / 32);
+        for (let i = 0; i < hsize; i++) {
+            phc[i] = -1;
+            mhc[i] = 0;
+        }
+        let j = 0;
+        for (; j < vsize - 1; j++) {
+            let mv = 0;
+            let pv = -1;
+            const start = j * 32;
+            const vlen = Math.min(32, m) + start;
+            for (let k = start; k < vlen; k++) {
+                peq[b.charCodeAt(k)] |= 1 << k;
+            }
+            for (let i = 0; i < n; i++) {
+                const eq = peq[a.charCodeAt(i)];
+                const pb = (phc[(i / 32) | 0] >>> i) & 1;
+                const mb = (mhc[(i / 32) | 0] >>> i) & 1;
+                const xv = eq | mv;
+                const xh = ((((eq | mb) & pv) + pv) ^ pv) | eq | mb;
+                let ph = mv | ~(xh | pv);
+                let mh = pv & xh;
+                if ((ph >>> 31) ^ pb) {
+                    phc[(i / 32) | 0] ^= 1 << i;
+                }
+                if ((mh >>> 31) ^ mb) {
+                    mhc[(i / 32) | 0] ^= 1 << i;
+                }
+                ph = (ph << 1) | pb;
+                mh = (mh << 1) | mb;
+                pv = mh | ~(xv | ph);
+                mv = ph & xv;
+            }
+            for (let k = start; k < vlen; k++) {
+                peq[b.charCodeAt(k)] = 0;
+            }
+        }
         let mv = 0;
         let pv = -1;
         const start = j * 32;
-        const vlen = Math.min(32, m) + start;
-
+        const vlen = Math.min(32, m - start) + start;
         for (let k = start; k < vlen; k++) {
-          peq[b.charCodeAt(k)] |= 1 << k;
+            peq[b.charCodeAt(k)] |= 1 << k;
         }
-
+        let score = m;
         for (let i = 0; i < n; i++) {
-          const eq = peq[a.charCodeAt(i)];
-          const pb = phc[i / 32 | 0] >>> i % 32 & 1;
-          const mb = mhc[i / 32 | 0] >>> i % 32 & 1;
-          const xv = eq | mv;
-          const xh = ((eq | mb) & pv) + pv ^ pv | eq | mb;
-          let ph = mv | ~(xh | pv);
-          let mh = pv & xh;
-
-          if (ph >>> 31 ^ pb) {
-            phc[i / 32 | 0] ^= 1 << i % 32;
-          }
-
-          if (mh >>> 31 ^ mb) {
-            mhc[i / 32 | 0] ^= 1 << i % 32;
-          }
-
-          ph = ph << 1 | pb;
-          mh = mh << 1 | mb;
-          pv = mh | ~(xv | ph);
-          mv = ph & xv;
+            const eq = peq[a.charCodeAt(i)];
+            const pb = (phc[(i / 32) | 0] >>> i) & 1;
+            const mb = (mhc[(i / 32) | 0] >>> i) & 1;
+            const xv = eq | mv;
+            const xh = ((((eq | mb) & pv) + pv) ^ pv) | eq | mb;
+            let ph = mv | ~(xh | pv);
+            let mh = pv & xh;
+            score += (ph >>> (m - 1)) & 1;
+            score -= (mh >>> (m - 1)) & 1;
+            if ((ph >>> 31) ^ pb) {
+                phc[(i / 32) | 0] ^= 1 << i;
+            }
+            if ((mh >>> 31) ^ mb) {
+                mhc[(i / 32) | 0] ^= 1 << i;
+            }
+            ph = (ph << 1) | pb;
+            mh = (mh << 1) | mb;
+            pv = mh | ~(xv | ph);
+            mv = ph & xv;
         }
-
         for (let k = start; k < vlen; k++) {
-          peq[b.charCodeAt(k)] = 0;
+            peq[b.charCodeAt(k)] = 0;
         }
-      }
-
-      let mv = 0;
-      let pv = -1;
-      const start = j * 32;
-      const vlen = Math.min(32, m - start) + start;
-
-      for (let k = start; k < vlen; k++) {
-        peq[b.charCodeAt(k)] |= 1 << k;
-      }
-
-      let score = m;
-
-      for (let i = 0; i < n; i++) {
-        const eq = peq[a.charCodeAt(i)];
-        const pb = phc[i / 32 | 0] >>> i % 32 & 1;
-        const mb = mhc[i / 32 | 0] >>> i % 32 & 1;
-        const xv = eq | mv;
-        const xh = ((eq | mb) & pv) + pv ^ pv | eq | mb;
-        let ph = mv | ~(xh | pv);
-        let mh = pv & xh;
-        score += ph >>> m % 32 - 1 & 1;
-        score -= mh >>> m % 32 - 1 & 1;
-
-        if (ph >>> 31 ^ pb) {
-          phc[i / 32 | 0] ^= 1 << i % 32;
-        }
-
-        if (mh >>> 31 ^ mb) {
-          mhc[i / 32 | 0] ^= 1 << i % 32;
-        }
-
-        ph = ph << 1 | pb;
-        mh = mh << 1 | mb;
-        pv = mh | ~(xv | ph);
-        mv = ph & xv;
-      }
-
-      for (let k = start; k < vlen; k++) {
-        peq[b.charCodeAt(k)] = 0;
-      }
-
-      return score;
+        return score;
     };
-
     const distance = (a, b) => {
-      if (a.length < b.length) {
-        const tmp = b;
-        b = a;
-        a = tmp;
-      }
-
-      if (b.length === 0) {
-        return a.length;
-      }
-
-      if (a.length <= 32) {
-        return myers_32(a, b);
-      }
-
-      return myers_x(a, b);
+        if (a.length < b.length) {
+            const tmp = b;
+            b = a;
+            a = tmp;
+        }
+        if (b.length === 0) {
+            return a.length;
+        }
+        if (a.length <= 32) {
+            return myers_32(a, b);
+        }
+        return myers_x(a, b);
     };
 
     const getUsedThreshold = (password, entry, threshold) => {
       const isPasswordToShort = password.length <= entry.length;
       const isThresholdLongerThanPassword = password.length <= threshold;
-      const shouldUsePasswordLength = isPasswordToShort || isThresholdLongerThanPassword; // if password is too small use the password length divided by 4 while the threshold needs to be at least 1
-
+      const shouldUsePasswordLength = isPasswordToShort || isThresholdLongerThanPassword;
+      // if password is too small use the password length divided by 4 while the threshold needs to be at least 1
       return shouldUsePasswordLength ? Math.ceil(password.length / 4) : threshold;
     };
-
     const findLevenshteinDistance = (password, rankedDictionary, threshold) => {
       let foundDistance = 0;
       const found = Object.keys(rankedDictionary).find(entry => {
         const usedThreshold = getUsedThreshold(password, entry, threshold);
         const foundEntryDistance = distance(password, entry);
         const isInThreshold = foundEntryDistance <= usedThreshold;
-
         if (isInThreshold) {
           foundDistance = foundEntryDistance;
         }
-
         return isInThreshold;
       });
-
       if (found) {
         return {
           levenshteinDistance: foundDistance,
           levenshteinDistanceEntry: found
         };
       }
-
       return {};
     };
 
@@ -633,41 +550,43 @@ this.zxcvbnts.core = (function (exports) {
           userInputs: []
         };
         this.rankedDictionaries = {};
+        this.rankedDictionariesMaxWordSize = {};
         this.translations = translationKeys;
         this.graphs = {};
-        this.availableGraphs = [];
         this.useLevenshteinDistance = false;
         this.levenshteinThreshold = 2;
+        this.l33tMaxSubstitutions = 100;
+        this.maxLength = 256;
         this.setRankedDictionaries();
       }
-
+      // eslint-disable-next-line max-statements,complexity
       setOptions(options = {}) {
         if (options.l33tTable) {
           this.l33tTable = options.l33tTable;
         }
-
         if (options.dictionary) {
           this.dictionary = options.dictionary;
           this.setRankedDictionaries();
         }
-
         if (options.translations) {
           this.setTranslations(options.translations);
         }
-
         if (options.graphs) {
           this.graphs = options.graphs;
         }
-
         if (options.useLevenshteinDistance !== undefined) {
           this.useLevenshteinDistance = options.useLevenshteinDistance;
         }
-
         if (options.levenshteinThreshold !== undefined) {
           this.levenshteinThreshold = options.levenshteinThreshold;
         }
+        if (options.l33tMaxSubstitutions !== undefined) {
+          this.l33tMaxSubstitutions = options.l33tMaxSubstitutions;
+        }
+        if (options.maxLength !== undefined) {
+          this.maxLength = options.maxLength;
+        }
       }
-
       setTranslations(translations) {
         if (this.checkCustomTranslations(translations)) {
           this.translations = translations;
@@ -675,7 +594,6 @@ this.zxcvbnts.core = (function (exports) {
           throw new Error('Invalid translations object fallback to keys');
         }
       }
-
       checkCustomTranslations(translations) {
         let valid = true;
         Object.keys(translationKeys).forEach(type => {
@@ -692,43 +610,52 @@ this.zxcvbnts.core = (function (exports) {
         });
         return valid;
       }
-
       setRankedDictionaries() {
         const rankedDictionaries = {};
+        const rankedDictionariesMaxWorkSize = {};
         Object.keys(this.dictionary).forEach(name => {
           rankedDictionaries[name] = this.getRankedDictionary(name);
+          rankedDictionariesMaxWorkSize[name] = this.getRankedDictionariesMaxWordSize(name);
         });
         this.rankedDictionaries = rankedDictionaries;
+        this.rankedDictionariesMaxWordSize = rankedDictionariesMaxWorkSize;
       }
-
+      getRankedDictionariesMaxWordSize(name) {
+        const data = this.dictionary[name].map(el => {
+          if (typeof el !== 'string') {
+            return el.toString().length;
+          }
+          return el.length;
+        });
+        // do not use Math.max(...data) because it can result in max stack size error because every entry will be used as an argument
+        if (data.length === 0) {
+          return 0;
+        }
+        return data.reduce((a, b) => Math.max(a, b), -Infinity);
+      }
       getRankedDictionary(name) {
         const list = this.dictionary[name];
-
         if (name === 'userInputs') {
           const sanitizedInputs = [];
           list.forEach(input => {
             const inputType = typeof input;
-
             if (inputType === 'string' || inputType === 'number' || inputType === 'boolean') {
               sanitizedInputs.push(input.toString().toLowerCase());
             }
           });
           return buildRankedDictionary(sanitizedInputs);
         }
-
         return buildRankedDictionary(list);
       }
-
       extendUserInputsDictionary(dictionary) {
         if (this.dictionary.userInputs) {
           this.dictionary.userInputs = [...this.dictionary.userInputs, ...dictionary];
         } else {
           this.dictionary.userInputs = dictionary;
         }
-
         this.rankedDictionaries.userInputs = this.getRankedDictionary('userInputs');
+        this.rankedDictionariesMaxWordSize.userInputs = this.getRankedDictionariesMaxWordSize('userInputs');
       }
-
       addMatcher(name, matcher) {
         if (this.matchers[name]) {
           console.info(`Matcher ${name} already exists`);
@@ -736,7 +663,6 @@ this.zxcvbnts.core = (function (exports) {
           this.matchers[name] = matcher;
         }
       }
-
     }
     const zxcvbnOptions = new Options();
 
@@ -745,18 +671,18 @@ this.zxcvbnts.core = (function (exports) {
      *  Dictionary reverse matching --------------------------------------------------
      * -------------------------------------------------------------------------------
      */
-    class MatchL33t$1 {
+    class MatchReverse {
       constructor(defaultMatch) {
         this.defaultMatch = defaultMatch;
       }
-
       match({
         password
       }) {
         const passwordReversed = password.split('').reverse().join('');
         return this.defaultMatch({
           password: passwordReversed
-        }).map(match => ({ ...match,
+        }).map(match => ({
+          ...match,
           token: match.token.split('').reverse().join(''),
           reversed: true,
           // map coordinates back to original string
@@ -764,7 +690,6 @@ this.zxcvbnts.core = (function (exports) {
           j: password.length - 1 - match.i
         }));
       }
-
     }
 
     /*
@@ -772,44 +697,41 @@ this.zxcvbnts.core = (function (exports) {
      *  Dictionary l33t matching -----------------------------------------------------
      * -------------------------------------------------------------------------------
      */
-
     class MatchL33t {
       constructor(defaultMatch) {
         this.defaultMatch = defaultMatch;
       }
-
       match({
         password
       }) {
         const matches = [];
         const enumeratedSubs = this.enumerateL33tSubs(this.relevantL33tSubtable(password, zxcvbnOptions.l33tTable));
-
-        for (let i = 0; i < enumeratedSubs.length; i += 1) {
-          const sub = enumeratedSubs[i]; // corner case: password has no relevant subs.
-
+        const length = Math.min(enumeratedSubs.length, zxcvbnOptions.l33tMaxSubstitutions);
+        for (let i = 0; i < length; i += 1) {
+          const sub = enumeratedSubs[i];
+          // corner case: password has no relevant subs.
           if (empty(sub)) {
             break;
           }
-
           const subbedPassword = translate(password, sub);
           const matchedDictionary = this.defaultMatch({
             password: subbedPassword
           });
           matchedDictionary.forEach(match => {
-            const token = password.slice(match.i, +match.j + 1 || 9e9); // only return the matches that contain an actual substitution
-
+            const token = password.slice(match.i, +match.j + 1 || 9e9);
+            // only return the matches that contain an actual substitution
             if (token.toLowerCase() !== match.matchedWord) {
               // subset of mappings in sub that are in use for this match
               const matchSub = {};
               Object.keys(sub).forEach(subbedChr => {
                 const chr = sub[subbedChr];
-
                 if (token.indexOf(subbedChr) !== -1) {
                   matchSub[subbedChr] = chr;
                 }
               });
               const subDisplay = Object.keys(matchSub).map(k => `${k} -> ${matchSub[k]}`).join(', ');
-              matches.push({ ...match,
+              matches.push({
+                ...match,
                 l33t: true,
                 token,
                 sub: matchSub,
@@ -817,15 +739,13 @@ this.zxcvbnts.core = (function (exports) {
               });
             }
           });
-        } // filter single-character l33t matches to reduce noise.
+        }
+        // filter single-character l33t matches to reduce noise.
         // otherwise '1' matches 'i', '4' matches 'a', both very common English words
         // with low dictionary rank.
-
-
         return matches.filter(match => match.token.length > 1);
-      } // makes a pruned copy of l33t_table that only includes password's possible substitutions
-
-
+      }
+      // makes a pruned copy of l33t_table that only includes password's possible substitutions
       relevantL33tSubtable(password, table) {
         const passwordChars = {};
         const subTable = {};
@@ -835,19 +755,17 @@ this.zxcvbnts.core = (function (exports) {
         Object.keys(table).forEach(letter => {
           const subs = table[letter];
           const relevantSubs = subs.filter(sub => sub in passwordChars);
-
           if (relevantSubs.length > 0) {
             subTable[letter] = relevantSubs;
           }
         });
         return subTable;
-      } // returns the list of possible 1337 replacement dictionaries for a given password
-
-
+      }
+      // returns the list of possible 1337 replacement dictionaries for a given password
       enumerateL33tSubs(table) {
         const tableKeys = Object.keys(table);
-        const subs = this.getSubs(tableKeys, [[]], table); // convert from assoc lists to dicts
-
+        const subs = this.getSubs(tableKeys, [[]], table);
+        // convert from assoc lists to dicts
         return subs.map(sub => {
           const subDict = {};
           sub.forEach(([l33tChr, chr]) => {
@@ -856,26 +774,22 @@ this.zxcvbnts.core = (function (exports) {
           return subDict;
         });
       }
-
       getSubs(keys, subs, table) {
         if (!keys.length) {
           return subs;
         }
-
         const firstKey = keys[0];
         const restKeys = keys.slice(1);
         const nextSubs = [];
         table[firstKey].forEach(l33tChr => {
           subs.forEach(sub => {
             let dupL33tIndex = -1;
-
             for (let i = 0; i < sub.length; i += 1) {
               if (sub[i][0] === l33tChr) {
                 dupL33tIndex = i;
                 break;
               }
             }
-
             if (dupL33tIndex === -1) {
               const subExtension = sub.concat([[l33tChr, firstKey]]);
               nextSubs.push(subExtension);
@@ -889,14 +803,11 @@ this.zxcvbnts.core = (function (exports) {
           });
         });
         const newSubs = this.dedup(nextSubs);
-
         if (restKeys.length) {
           return this.getSubs(restKeys, newSubs, table);
         }
-
         return newSubs;
       }
-
       dedup(subs) {
         const deduped = [];
         const members = {};
@@ -904,7 +815,6 @@ this.zxcvbnts.core = (function (exports) {
           const assoc = sub.map((k, index) => [k, index]);
           assoc.sort();
           const label = assoc.map(([k, v]) => `${k},${v}`).join('-');
-
           if (!(label in members)) {
             members[label] = true;
             deduped.push(sub);
@@ -912,15 +822,13 @@ this.zxcvbnts.core = (function (exports) {
         });
         return deduped;
       }
-
     }
 
     class MatchDictionary {
       constructor() {
         this.l33t = new MatchL33t(this.defaultMatch);
-        this.reverse = new MatchL33t$1(this.defaultMatch);
+        this.reverse = new MatchReverse(this.defaultMatch);
       }
-
       match({
         password
       }) {
@@ -933,32 +841,30 @@ this.zxcvbnts.core = (function (exports) {
         })];
         return sorted(matches);
       }
-
       defaultMatch({
         password
       }) {
         const matches = [];
         const passwordLength = password.length;
-        const passwordLower = password.toLowerCase(); // eslint-disable-next-line complexity
-
+        const passwordLower = password.toLowerCase();
+        // eslint-disable-next-line complexity,max-statements
         Object.keys(zxcvbnOptions.rankedDictionaries).forEach(dictionaryName => {
           const rankedDict = zxcvbnOptions.rankedDictionaries[dictionaryName];
-
+          const longestDictionaryWordSize = zxcvbnOptions.rankedDictionariesMaxWordSize[dictionaryName];
+          const searchWidth = Math.min(longestDictionaryWordSize, passwordLength);
           for (let i = 0; i < passwordLength; i += 1) {
-            for (let j = i; j < passwordLength; j += 1) {
+            const searchEnd = Math.min(i + searchWidth, passwordLength);
+            for (let j = i; j < searchEnd; j += 1) {
               const usedPassword = passwordLower.slice(i, +j + 1 || 9e9);
               const isInDictionary = (usedPassword in rankedDict);
-              let foundLevenshteinDistance = {}; // only use levenshtein distance on full password to minimize the performance drop
+              let foundLevenshteinDistance = {};
+              // only use levenshtein distance on full password to minimize the performance drop
               // and because otherwise there would be to many false positives
-
               const isFullPassword = i === 0 && j === passwordLength - 1;
-
               if (zxcvbnOptions.useLevenshteinDistance && isFullPassword && !isInDictionary) {
                 foundLevenshteinDistance = findLevenshteinDistance(usedPassword, rankedDict, zxcvbnOptions.levenshteinThreshold);
               }
-
               const isLevenshteinMatch = Object.keys(foundLevenshteinDistance).length !== 0;
-
               if (isInDictionary || isLevenshteinMatch) {
                 const usedRankPassword = isLevenshteinMatch ? foundLevenshteinDistance.levenshteinDistanceEntry : usedPassword;
                 const rank = rankedDict[usedRankPassword];
@@ -980,7 +886,6 @@ this.zxcvbnts.core = (function (exports) {
         });
         return matches;
       }
-
     }
 
     /*
@@ -988,7 +893,6 @@ this.zxcvbnts.core = (function (exports) {
      *  regex matching ---------------------------------------------------------------
      * -------------------------------------------------------------------------------
      */
-
     class MatchRegex {
       match({
         password,
@@ -998,9 +902,7 @@ this.zxcvbnts.core = (function (exports) {
         Object.keys(regexes).forEach(name => {
           const regex = regexes[name];
           regex.lastIndex = 0; // keeps regexMatch stateless
-
           const regexMatch = regex.exec(password);
-
           if (regexMatch) {
             const token = regexMatch[0];
             matches.push({
@@ -1015,7 +917,6 @@ this.zxcvbnts.core = (function (exports) {
         });
         return sorted(matches);
       }
-
     }
 
     var utils = {
@@ -1023,26 +924,20 @@ this.zxcvbnts.core = (function (exports) {
       // src: http://blog.plover.com/math/choose.html
       nCk(n, k) {
         let count = n;
-
         if (k > count) {
           return 0;
         }
-
         if (k === 0) {
           return 1;
         }
-
         let coEff = 1;
-
         for (let i = 1; i <= k; i += 1) {
           coEff *= count;
           coEff /= i;
           count -= 1;
         }
-
         return coEff;
       },
-
       log10(n) {
         return Math.log(n) / Math.log(10); // IE doesn't support Math.log10 :(
       },
@@ -1050,35 +945,28 @@ this.zxcvbnts.core = (function (exports) {
       log2(n) {
         return Math.log(n) / Math.log(2);
       },
-
       factorial(num) {
         let rval = 1;
-
         for (let i = 2; i <= num; i += 1) rval *= i;
-
         return rval;
       }
-
     };
 
     var bruteforceMatcher$1 = (({
       token
     }) => {
       let guesses = BRUTEFORCE_CARDINALITY ** token.length;
-
       if (guesses === Number.POSITIVE_INFINITY) {
         guesses = Number.MAX_VALUE;
       }
-
-      let minGuesses; // small detail: make bruteforce matches at minimum one guess bigger than smallest allowed
+      let minGuesses;
+      // small detail: make bruteforce matches at minimum one guess bigger than smallest allowed
       // submatch guesses, such that non-bruteforce submatches over the same [i..j] take precedence.
-
       if (token.length === 1) {
         minGuesses = MIN_SUBMATCH_GUESSES_SINGLE_CHAR + 1;
       } else {
         minGuesses = MIN_SUBMATCH_GUESSES_MULTI_CHAR + 1;
       }
-
       return Math.max(guesses, minGuesses);
     });
 
@@ -1088,12 +976,11 @@ this.zxcvbnts.core = (function (exports) {
     }) => {
       // base guesses: (year distance from REFERENCE_YEAR) * num_days * num_years
       const yearSpace = Math.max(Math.abs(year - REFERENCE_YEAR), MIN_YEAR_SPACE);
-      let guesses = yearSpace * 365; // add factor of 4 for separator selection (one of ~4 choices)
-
+      let guesses = yearSpace * 365;
+      // add factor of 4 for separator selection (one of ~4 choices)
       if (separator) {
         guesses *= 4;
       }
-
       return guesses;
     });
 
@@ -1103,39 +990,31 @@ this.zxcvbnts.core = (function (exports) {
       const lowerCaseCount = wordArray.filter(char => char.match(ONE_LOWER)).length;
       let variations = 0;
       const variationLength = Math.min(upperCaseCount, lowerCaseCount);
-
       for (let i = 1; i <= variationLength; i += 1) {
         variations += utils.nCk(upperCaseCount + lowerCaseCount, i);
       }
-
       return variations;
     };
-
     var uppercaseVariant = (word => {
       // clean words of non alpha characters to remove the reward effekt to capitalize the first letter https://github.com/dropbox/zxcvbn/issues/232
       const cleanedWord = word.replace(ALPHA_INVERTED, '');
-
       if (cleanedWord.match(ALL_LOWER_INVERTED) || cleanedWord.toLowerCase() === cleanedWord) {
         return 1;
-      } // a capitalized word is the most common capitalization scheme,
+      }
+      // a capitalized word is the most common capitalization scheme,
       // so it only doubles the search space (uncapitalized + capitalized).
       // all caps and end-capitalized are common enough too, underestimate as 2x factor to be safe.
-
-
       const commonCases = [START_UPPER, END_UPPER, ALL_UPPER_INVERTED];
       const commonCasesLength = commonCases.length;
-
       for (let i = 0; i < commonCasesLength; i += 1) {
         const regex = commonCases[i];
-
         if (cleanedWord.match(regex)) {
           return 2;
         }
-      } // otherwise calculate the number of ways to capitalize U+L uppercase+lowercase letters
+      }
+      // otherwise calculate the number of ways to capitalize U+L uppercase+lowercase letters
       // with U uppercase letters or less. or, if there's more uppercase than lower (for eg. PASSwORD),
       // the number of ways to lowercase U+L letters with L lowercase letters or less.
-
-
       return getVariations(cleanedWord);
     });
 
@@ -1144,19 +1023,18 @@ this.zxcvbnts.core = (function (exports) {
       subbed,
       token
     }) => {
-      const unsubbed = subs[subbed]; // lower-case match.token before calculating: capitalization shouldn't affect l33t calc.
-
-      const chrs = token.toLowerCase().split(''); // num of subbed chars
-
-      const subbedCount = chrs.filter(char => char === subbed).length; // num of unsubbed chars
-
+      const unsubbed = subs[subbed];
+      // lower-case match.token before calculating: capitalization shouldn't affect l33t calc.
+      const chrs = token.toLowerCase().split('');
+      // num of subbed chars
+      const subbedCount = chrs.filter(char => char === subbed).length;
+      // num of unsubbed chars
       const unsubbedCount = chrs.filter(char => char === unsubbed).length;
       return {
         subbedCount,
         unsubbedCount
       };
     };
-
     var l33tVariant = (({
       l33t,
       sub,
@@ -1165,7 +1043,6 @@ this.zxcvbnts.core = (function (exports) {
       if (!l33t) {
         return 1;
       }
-
       let variations = 1;
       const subs = sub;
       Object.keys(subs).forEach(subbed => {
@@ -1177,7 +1054,6 @@ this.zxcvbnts.core = (function (exports) {
           subbed,
           token
         });
-
         if (subbedCount === 0 || unsubbedCount === 0) {
           // for this sub, password is either fully subbed (444) or fully unsubbed (aaa)
           // treat that as doubling the space (attacker needs to try fully subbed chars in addition to
@@ -1188,11 +1064,9 @@ this.zxcvbnts.core = (function (exports) {
           // with aa44a, U = 3, S = 2, attacker needs to try unsubbed + one sub + two subs
           const p = Math.min(unsubbedCount, subbedCount);
           let possibilities = 0;
-
           for (let i = 1; i <= p; i += 1) {
             possibilities += utils.nCk(unsubbedCount + subbedCount, i);
           }
-
           variations *= possibilities;
         }
       });
@@ -1207,7 +1081,6 @@ this.zxcvbnts.core = (function (exports) {
       token
     }) => {
       const baseGuesses = rank; // keep these as properties for display purposes
-
       const uppercaseVariations = uppercaseVariant(token);
       const l33tVariations = l33tVariant({
         l33t,
@@ -1237,20 +1110,17 @@ this.zxcvbnts.core = (function (exports) {
         digits: 10,
         symbols: 33
       };
-
       if (regexName in charClassBases) {
         return charClassBases[regexName] ** token.length;
-      } // TODO add more regex types for example special dates like 09.11
+      }
+      // TODO add more regex types for example special dates like 09.11
       // eslint-disable-next-line default-case
-
-
       switch (regexName) {
         case 'recentYear':
           // conservative estimate of year space: num years from REFERENCE_YEAR.
           // if year is close to REFERENCE_YEAR, estimate a year space of MIN_YEAR_SPACE.
           return Math.max(Math.abs(parseInt(regexMatch[0], 10) - REFERENCE_YEAR), MIN_YEAR_SPACE);
       }
-
       return 0;
     });
 
@@ -1265,8 +1135,8 @@ this.zxcvbnts.core = (function (exports) {
     }) => {
       const firstChr = token.charAt(0);
       let baseGuesses = 0;
-      const startingPoints = ['a', 'A', 'z', 'Z', '0', '1', '9']; // lower guesses for obvious starting points
-
+      const startingPoints = ['a', 'A', 'z', 'Z', '0', '1', '9'];
+      // lower guesses for obvious starting points
       if (startingPoints.includes(firstChr)) {
         baseGuesses = 4;
       } else if (firstChr.match(/\d/)) {
@@ -1275,14 +1145,12 @@ this.zxcvbnts.core = (function (exports) {
         // could give a higher base for uppercase,
         // assigning 26 to both upper and lower sequences is more conservative.
         baseGuesses = 26;
-      } // need to try a descending sequence in addition to every ascending sequence ->
+      }
+      // need to try a descending sequence in addition to every ascending sequence ->
       // 2x guesses
-
-
       if (!ascending) {
         baseGuesses *= 2;
       }
-
       return baseGuesses * token.length;
     });
 
@@ -1295,7 +1163,6 @@ this.zxcvbnts.core = (function (exports) {
       average /= Object.entries(graph).length;
       return average;
     };
-
     const estimatePossiblePatterns = ({
       token,
       graph,
@@ -1304,19 +1171,16 @@ this.zxcvbnts.core = (function (exports) {
       const startingPosition = Object.keys(zxcvbnOptions.graphs[graph]).length;
       const averageDegree = calcAverageDegree(zxcvbnOptions.graphs[graph]);
       let guesses = 0;
-      const tokenLength = token.length; // # estimate the number of possible patterns w/ tokenLength or less with turns or less.
-
+      const tokenLength = token.length;
+      // # estimate the number of possible patterns w/ tokenLength or less with turns or less.
       for (let i = 2; i <= tokenLength; i += 1) {
         const possibleTurns = Math.min(turns, i - 1);
-
         for (let j = 1; j <= possibleTurns; j += 1) {
           guesses += utils.nCk(i - 1, j - 1) * startingPosition * averageDegree ** j;
         }
       }
-
       return guesses;
     };
-
     var spatialMatcher$1 = (({
       graph,
       token,
@@ -1327,31 +1191,26 @@ this.zxcvbnts.core = (function (exports) {
         token,
         graph,
         turns
-      }); // add extra guesses for shifted keys. (% instead of 5, A instead of a.)
+      });
+      // add extra guesses for shifted keys. (% instead of 5, A instead of a.)
       // math is similar to extra guesses of l33t substitutions in dictionary matches.
-
       if (shiftedCount) {
         const unShiftedCount = token.length - shiftedCount;
-
         if (shiftedCount === 0 || unShiftedCount === 0) {
           guesses *= 2;
         } else {
           let shiftedVariations = 0;
-
           for (let i = 1; i <= Math.min(shiftedCount, unShiftedCount); i += 1) {
             shiftedVariations += utils.nCk(shiftedCount + unShiftedCount, i);
           }
-
           guesses *= shiftedVariations;
         }
       }
-
       return Math.round(guesses);
     });
 
     const getMinGuesses = (match, password) => {
       let minGuesses = 1;
-
       if (match.token.length < password.length) {
         if (match.token.length === 1) {
           minGuesses = MIN_SUBMATCH_GUESSES_SINGLE_CHAR;
@@ -1359,10 +1218,8 @@ this.zxcvbnts.core = (function (exports) {
           minGuesses = MIN_SUBMATCH_GUESSES_MULTI_CHAR;
         }
       }
-
       return minGuesses;
     };
-
     const matchers = {
       bruteforce: bruteforceMatcher$1,
       date: dateMatcher$1,
@@ -1372,33 +1229,27 @@ this.zxcvbnts.core = (function (exports) {
       sequence: sequenceMatcher$1,
       spatial: spatialMatcher$1
     };
-
     const getScoring = (name, match) => {
       if (matchers[name]) {
         return matchers[name](match);
       }
-
       if (zxcvbnOptions.matchers[name] && 'scoring' in zxcvbnOptions.matchers[name]) {
         return zxcvbnOptions.matchers[name].scoring(match);
       }
-
       return 0;
-    }; // ------------------------------------------------------------------------------
+    };
+    // ------------------------------------------------------------------------------
     // guess estimation -- one function per match pattern ---------------------------
     // ------------------------------------------------------------------------------
-
-
     var estimateGuesses = ((match, password) => {
-      const extraData = {}; // a match's guess estimate doesn't change. cache it.
-
+      const extraData = {};
+      // a match's guess estimate doesn't change. cache it.
       if ('guesses' in match && match.guesses != null) {
         return match;
       }
-
       const minGuesses = getMinGuesses(match, password);
       const estimationResult = getScoring(match.pattern, match);
       let guesses = 0;
-
       if (typeof estimationResult === 'number') {
         guesses = estimationResult;
       } else if (match.pattern === 'dictionary') {
@@ -1407,9 +1258,9 @@ this.zxcvbnts.core = (function (exports) {
         extraData.uppercaseVariations = estimationResult.uppercaseVariations;
         extraData.l33tVariations = estimationResult.l33tVariations;
       }
-
       const matchGuesses = Math.max(guesses, minGuesses);
-      return { ...match,
+      return {
+        ...match,
         ...extraData,
         guesses: matchGuesses,
         guessesLog10: utils.log10(matchGuesses)
@@ -1420,23 +1271,17 @@ this.zxcvbnts.core = (function (exports) {
       password: '',
       optimal: {},
       excludeAdditive: false,
-
       fillArray(size, valueType) {
         const result = [];
-
         for (let i = 0; i < size; i += 1) {
           let value = [];
-
           if (valueType === 'object') {
             value = {};
           }
-
           result.push(value);
         }
-
         return result;
       },
-
       // helper: make bruteforce match objects spanning i to j, inclusive.
       makeBruteforceMatch(i, j) {
         return {
@@ -1446,7 +1291,6 @@ this.zxcvbnts.core = (function (exports) {
           j
         };
       },
-
       // helper: considers whether a length-sequenceLength
       // sequence ending at match m is better (fewer guesses)
       // than previously encountered sequences, updating state if so.
@@ -1454,37 +1298,31 @@ this.zxcvbnts.core = (function (exports) {
         const k = match.j;
         const estimatedMatch = estimateGuesses(match, this.password);
         let pi = estimatedMatch.guesses;
-
         if (sequenceLength > 1) {
           // we're considering a length-sequenceLength sequence ending with match m:
           // obtain the product term in the minimization function by multiplying m's guesses
           // by the product of the length-(sequenceLength-1)
           // sequence ending just before m, at m.i - 1.
           pi *= this.optimal.pi[estimatedMatch.i - 1][sequenceLength - 1];
-        } // calculate the minimization func
-
-
+        }
+        // calculate the minimization func
         let g = utils.factorial(sequenceLength) * pi;
-
         if (!this.excludeAdditive) {
           g += MIN_GUESSES_BEFORE_GROWING_SEQUENCE ** (sequenceLength - 1);
-        } // update state if new best.
+        }
+        // update state if new best.
         // first see if any competing sequences covering this prefix,
         // with sequenceLength or fewer matches,
         // fare better than this sequence. if so, skip it and return.
-
-
         let shouldSkip = false;
         Object.keys(this.optimal.g[k]).forEach(competingPatternLength => {
           const competingMetricMatch = this.optimal.g[k][competingPatternLength];
-
           if (parseInt(competingPatternLength, 10) <= sequenceLength) {
             if (competingMetricMatch <= g) {
               shouldSkip = true;
             }
           }
         });
-
         if (!shouldSkip) {
           // this sequence might be part of the final optimal sequence.
           this.optimal.g[k][sequenceLength] = g;
@@ -1492,26 +1330,24 @@ this.zxcvbnts.core = (function (exports) {
           this.optimal.pi[k][sequenceLength] = pi;
         }
       },
-
       // helper: evaluate bruteforce matches ending at passwordCharIndex.
       bruteforceUpdate(passwordCharIndex) {
         // see if a single bruteforce match spanning the passwordCharIndex-prefix is optimal.
         let match = this.makeBruteforceMatch(0, passwordCharIndex);
         this.update(match, 1);
-
         for (let i = 1; i <= passwordCharIndex; i += 1) {
           // generate passwordCharIndex bruteforce matches, spanning from (i=1, j=passwordCharIndex) up to (i=passwordCharIndex, j=passwordCharIndex).
           // see if adding these new matches to any of the sequences in optimal[i-1]
           // leads to new bests.
           match = this.makeBruteforceMatch(i, passwordCharIndex);
-          const tmp = this.optimal.m[i - 1]; // eslint-disable-next-line no-loop-func
-
+          const tmp = this.optimal.m[i - 1];
+          // eslint-disable-next-line no-loop-func
           Object.keys(tmp).forEach(sequenceLength => {
-            const lastMatch = tmp[sequenceLength]; // corner: an optimal sequence will never have two adjacent bruteforce matches.
+            const lastMatch = tmp[sequenceLength];
+            // corner: an optimal sequence will never have two adjacent bruteforce matches.
             // it is strictly better to have a single bruteforce match spanning the same region:
             // same contribution to the guess product with a lower length.
             // --> safe to skip those cases.
-
             if (lastMatch.pattern !== 'bruteforce') {
               // try adding m to this length-sequenceLength sequence.
               this.update(match, parseInt(sequenceLength, 10) + 1);
@@ -1519,39 +1355,34 @@ this.zxcvbnts.core = (function (exports) {
           });
         }
       },
-
       // helper: step backwards through optimal.m starting at the end,
       // constructing the final optimal match sequence.
       unwind(passwordLength) {
         const optimalMatchSequence = [];
-        let k = passwordLength - 1; // find the final best sequence length and score
-
-        let sequenceLength = 0; // eslint-disable-next-line no-loss-of-precision
-
+        let k = passwordLength - 1;
+        // find the final best sequence length and score
+        let sequenceLength = 0;
+        // eslint-disable-next-line no-loss-of-precision
         let g = 2e308;
-        const temp = this.optimal.g[k]; // safety check for empty passwords
-
+        const temp = this.optimal.g[k];
+        // safety check for empty passwords
         if (temp) {
           Object.keys(temp).forEach(candidateSequenceLength => {
             const candidateMetricMatch = temp[candidateSequenceLength];
-
             if (candidateMetricMatch < g) {
               sequenceLength = parseInt(candidateSequenceLength, 10);
               g = candidateMetricMatch;
             }
           });
         }
-
         while (k >= 0) {
           const match = this.optimal.m[k][sequenceLength];
           optimalMatchSequence.unshift(match);
           k = match.i - 1;
           sequenceLength -= 1;
         }
-
         return optimalMatchSequence;
       }
-
     };
     var scoring = {
       // ------------------------------------------------------------------------------
@@ -1589,13 +1420,13 @@ this.zxcvbnts.core = (function (exports) {
       mostGuessableMatchSequence(password, matches, excludeAdditive = false) {
         scoringHelper.password = password;
         scoringHelper.excludeAdditive = excludeAdditive;
-        const passwordLength = password.length; // partition matches into sublists according to ending index j
-
+        const passwordLength = password.length;
+        // partition matches into sublists according to ending index j
         let matchesByCoordinateJ = scoringHelper.fillArray(passwordLength, 'array');
         matches.forEach(match => {
           matchesByCoordinateJ[match.j].push(match);
-        }); // small detail: for deterministic output, sort each sublist by i.
-
+        });
+        // small detail: for deterministic output, sort each sublist by i.
         matchesByCoordinateJ = matchesByCoordinateJ.map(match => match.sort((m1, m2) => m1.i - m2.i));
         scoringHelper.optimal = {
           // optimal.m[k][sequenceLength] holds final match in the best length-sequenceLength
@@ -1611,7 +1442,6 @@ this.zxcvbnts.core = (function (exports) {
           // same structure as optimal.m -- holds the overall metric.
           g: scoringHelper.fillArray(passwordLength, 'object')
         };
-
         for (let k = 0; k < passwordLength; k += 1) {
           matchesByCoordinateJ[k].forEach(match => {
             if (match.i > 0) {
@@ -1624,7 +1454,6 @@ this.zxcvbnts.core = (function (exports) {
           });
           scoringHelper.bruteforceUpdate(k);
         }
-
         const optimalMatchSequence = scoringHelper.unwind(passwordLength);
         const optimalSequenceLength = optimalMatchSequence.length;
         const guesses = this.getGuesses(password, optimalSequenceLength);
@@ -1635,20 +1464,16 @@ this.zxcvbnts.core = (function (exports) {
           sequence: optimalMatchSequence
         };
       },
-
       getGuesses(password, optimalSequenceLength) {
         const passwordLength = password.length;
         let guesses = 0;
-
         if (password.length === 0) {
           guesses = 1;
         } else {
           guesses = scoringHelper.optimal.g[passwordLength - 1][optimalSequenceLength];
         }
-
         return guesses;
       }
-
     };
 
     /*
@@ -1656,7 +1481,6 @@ this.zxcvbnts.core = (function (exports) {
      * repeats (aaa, abcabcabc) ------------------------------
      *-------------------------------------------------------------------------------
      */
-
     class MatchRepeat {
       // eslint-disable-next-line max-statements
       match({
@@ -1665,20 +1489,16 @@ this.zxcvbnts.core = (function (exports) {
       }) {
         const matches = [];
         let lastIndex = 0;
-
         while (lastIndex < password.length) {
           const greedyMatch = this.getGreedyMatch(password, lastIndex);
           const lazyMatch = this.getLazyMatch(password, lastIndex);
-
           if (greedyMatch == null) {
             break;
           }
-
           const {
             match,
             baseToken
           } = this.setMatchToken(greedyMatch, lazyMatch);
-
           if (match) {
             const j = match.index + match[0].length - 1;
             const baseGuesses = this.getBaseGuesses(baseToken, omniMatch);
@@ -1686,19 +1506,15 @@ this.zxcvbnts.core = (function (exports) {
             lastIndex = j + 1;
           }
         }
-
         const hasPromises = matches.some(match => {
           return match instanceof Promise;
         });
-
         if (hasPromises) {
           return Promise.all(matches);
         }
-
         return matches;
-      } // eslint-disable-next-line max-params
-
-
+      }
+      // eslint-disable-next-line max-params
       normalizeMatch(baseToken, j, match, baseGuesses) {
         const baseMatch = {
           pattern: 'repeat',
@@ -1709,48 +1525,43 @@ this.zxcvbnts.core = (function (exports) {
           baseGuesses: 0,
           repeatCount: match[0].length / baseToken.length
         };
-
         if (baseGuesses instanceof Promise) {
           return baseGuesses.then(resolvedBaseGuesses => {
-            return { ...baseMatch,
+            return {
+              ...baseMatch,
               baseGuesses: resolvedBaseGuesses
             };
           });
         }
-
-        return { ...baseMatch,
+        return {
+          ...baseMatch,
           baseGuesses
         };
       }
-
       getGreedyMatch(password, lastIndex) {
         const greedy = /(.+)\1+/g;
         greedy.lastIndex = lastIndex;
         return greedy.exec(password);
       }
-
       getLazyMatch(password, lastIndex) {
         const lazy = /(.+?)\1+/g;
         lazy.lastIndex = lastIndex;
         return lazy.exec(password);
       }
-
       setMatchToken(greedyMatch, lazyMatch) {
         const lazyAnchored = /^(.+?)\1+$/;
         let match;
         let baseToken = '';
-
         if (lazyMatch && greedyMatch[0].length > lazyMatch[0].length) {
           // greedy beats lazy for 'aabaab'
           // greedy: [aabaab, aab]
           // lazy:   [aa,     a]
-          match = greedyMatch; // greedy's repeated string might itself be repeated, eg.
+          match = greedyMatch;
+          // greedy's repeated string might itself be repeated, eg.
           // aabaab in aabaabaabaab.
           // run an anchored lazy match on greedy's repeated string
           // to find the shortest repeated string
-
           const temp = lazyAnchored.exec(match[0]);
-
           if (temp) {
             baseToken = temp[1];
           }
@@ -1759,32 +1570,26 @@ this.zxcvbnts.core = (function (exports) {
           // greedy: [aaaa,  aa]
           // lazy:   [aaaaa, a]
           match = lazyMatch;
-
           if (match) {
             baseToken = match[1];
           }
         }
-
         return {
           match,
           baseToken
         };
       }
-
       getBaseGuesses(baseToken, omniMatch) {
         const matches = omniMatch.match(baseToken);
-
         if (matches instanceof Promise) {
           return matches.then(resolvedMatches => {
             const baseAnalysis = scoring.mostGuessableMatchSequence(baseToken, resolvedMatches);
             return baseAnalysis.guesses;
           });
         }
-
         const baseAnalysis = scoring.mostGuessableMatchSequence(baseToken, matches);
         return baseAnalysis.guesses;
       }
-
     }
 
     /*
@@ -1792,13 +1597,11 @@ this.zxcvbnts.core = (function (exports) {
      * sequences (abcdef) ------------------------------
      *-------------------------------------------------------------------------------
      */
-
     class MatchSequence {
       constructor() {
         this.MAX_DELTA = 5;
-      } // eslint-disable-next-line max-statements
-
-
+      }
+      // eslint-disable-next-line max-statements
       match({
         password
       }) {
@@ -1817,22 +1620,17 @@ this.zxcvbnts.core = (function (exports) {
          * [(i, j, delta), ...] = [(0, 3, 1), (5, 7, -2), (8, 9, 1)]
          */
         const result = [];
-
         if (password.length === 1) {
           return [];
         }
-
         let i = 0;
         let lastDelta = null;
         const passwordLength = password.length;
-
         for (let k = 1; k < passwordLength; k += 1) {
           const delta = password.charCodeAt(k) - password.charCodeAt(k - 1);
-
           if (lastDelta == null) {
             lastDelta = delta;
           }
-
           if (delta !== lastDelta) {
             const j = k - 1;
             this.update({
@@ -1846,7 +1644,6 @@ this.zxcvbnts.core = (function (exports) {
             lastDelta = delta;
           }
         }
-
         this.update({
           i,
           j: passwordLength - 1,
@@ -1856,7 +1653,6 @@ this.zxcvbnts.core = (function (exports) {
         });
         return result;
       }
-
       update({
         i,
         j,
@@ -1866,7 +1662,6 @@ this.zxcvbnts.core = (function (exports) {
       }) {
         if (j - i > 1 || Math.abs(delta) === 1) {
           const absoluteDelta = Math.abs(delta);
-
           if (absoluteDelta > 0 && absoluteDelta <= this.MAX_DELTA) {
             const token = password.slice(i, +j + 1 || 9e9);
             const {
@@ -1884,16 +1679,13 @@ this.zxcvbnts.core = (function (exports) {
             });
           }
         }
-
         return null;
       }
-
       getSequence(token) {
         // TODO conservatively stick with roman alphabet size.
         //  (this could be improved)
         let sequenceName = 'unicode';
         let sequenceSpace = 26;
-
         if (ALL_LOWER.test(token)) {
           sequenceName = 'lower';
           sequenceSpace = 26;
@@ -1904,13 +1696,11 @@ this.zxcvbnts.core = (function (exports) {
           sequenceName = 'digits';
           sequenceSpace = 10;
         }
-
         return {
           sequenceName,
           sequenceSpace
         };
       }
-
     }
 
     /*
@@ -1918,12 +1708,10 @@ this.zxcvbnts.core = (function (exports) {
      * spatial match (qwerty/dvorak/keypad and so on) -----------------------------------------
      * ------------------------------------------------------------------------------
      */
-
     class MatchSpatial {
       constructor() {
         this.SHIFTED_RX = /[~!@#$%^&*()_+QWERTYUIOP{}|ASDFGHJKL:"ZXCVBNM<>?]/;
       }
-
       match({
         password
       }) {
@@ -1934,60 +1722,55 @@ this.zxcvbnts.core = (function (exports) {
         });
         return sorted(matches);
       }
-
       checkIfShifted(graphName, password, index) {
-        if (!graphName.includes('keypad') && // initial character is shifted
+        if (!graphName.includes('keypad') &&
+        // initial character is shifted
         this.SHIFTED_RX.test(password.charAt(index))) {
           return 1;
         }
-
         return 0;
-      } // eslint-disable-next-line complexity, max-statements
-
-
+      }
+      // eslint-disable-next-line complexity, max-statements
       helper(password, graph, graphName) {
         let shiftedCount;
         const matches = [];
         let i = 0;
         const passwordLength = password.length;
-
         while (i < passwordLength - 1) {
           let j = i + 1;
           let lastDirection = 0;
           let turns = 0;
-          shiftedCount = this.checkIfShifted(graphName, password, i); // eslint-disable-next-line no-constant-condition
-
+          shiftedCount = this.checkIfShifted(graphName, password, i);
+          // eslint-disable-next-line no-constant-condition
           while (true) {
             const prevChar = password.charAt(j - 1);
             const adjacents = graph[prevChar] || [];
             let found = false;
             let foundDirection = -1;
-            let curDirection = -1; // consider growing pattern by one character if j hasn't gone over the edge.
-
+            let curDirection = -1;
+            // consider growing pattern by one character if j hasn't gone over the edge.
             if (j < passwordLength) {
               const curChar = password.charAt(j);
               const adjacentsLength = adjacents.length;
-
               for (let k = 0; k < adjacentsLength; k += 1) {
                 const adjacent = adjacents[k];
-                curDirection += 1; // eslint-disable-next-line max-depth
-
+                curDirection += 1;
+                // eslint-disable-next-line max-depth
                 if (adjacent) {
-                  const adjacentIndex = adjacent.indexOf(curChar); // eslint-disable-next-line max-depth
-
+                  const adjacentIndex = adjacent.indexOf(curChar);
+                  // eslint-disable-next-line max-depth
                   if (adjacentIndex !== -1) {
                     found = true;
-                    foundDirection = curDirection; // eslint-disable-next-line max-depth
-
+                    foundDirection = curDirection;
+                    // eslint-disable-next-line max-depth
                     if (adjacentIndex === 1) {
                       // # index 1 in the adjacency means the key is shifted,
                       // # 0 means unshifted: A vs a, % vs 5, etc.
                       // # for example, 'q' is adjacent to the entry '2@'.
                       // # @ is shifted w/ index 1, 2 is unshifted.
                       shiftedCount += 1;
-                    } // eslint-disable-next-line max-depth
-
-
+                    }
+                    // eslint-disable-next-line max-depth
                     if (lastDirection !== foundDirection) {
                       // # adding a turn is correct even in the initial
                       // case when last_direction is null:
@@ -1995,16 +1778,15 @@ this.zxcvbnts.core = (function (exports) {
                       turns += 1;
                       lastDirection = foundDirection;
                     }
-
                     break;
                   }
                 }
               }
-            } // if the current pattern continued, extend j and try to grow again
-
-
+            }
+            // if the current pattern continued, extend j and try to grow again
             if (found) {
-              j += 1; // otherwise push the pattern discovered so far, if any...
+              j += 1;
+              // otherwise push the pattern discovered so far, if any...
             } else {
               // don't consider length 1 or 2 chains.
               if (j - i > 2) {
@@ -2017,18 +1799,15 @@ this.zxcvbnts.core = (function (exports) {
                   turns,
                   shiftedCount
                 });
-              } // ...and then start a new search for the rest of the password.
-
-
+              }
+              // ...and then start a new search for the rest of the password.
               i = j;
               break;
             }
           }
         }
-
         return matches;
       }
-
     }
 
     class Matching {
@@ -2043,7 +1822,6 @@ this.zxcvbnts.core = (function (exports) {
           spatial: MatchSpatial
         };
       }
-
       match(password) {
         const matches = [];
         const promises = [];
@@ -2052,14 +1830,12 @@ this.zxcvbnts.core = (function (exports) {
           if (!this.matchers[key] && !zxcvbnOptions.matchers[key]) {
             return;
           }
-
           const Matcher = this.matchers[key] ? this.matchers[key] : zxcvbnOptions.matchers[key].Matching;
           const usedMatcher = new Matcher();
           const result = usedMatcher.match({
             password,
             omniMatch: this
           });
-
           if (result instanceof Promise) {
             result.then(response => {
               extend(matches, response);
@@ -2069,7 +1845,6 @@ this.zxcvbnts.core = (function (exports) {
             extend(matches, result);
           }
         });
-
         if (promises.length > 0) {
           return new Promise(resolve => {
             Promise.all(promises).then(() => {
@@ -2077,10 +1852,8 @@ this.zxcvbnts.core = (function (exports) {
             });
           });
         }
-
         return sorted(matches);
       }
-
     }
 
     const SECOND = 1;
@@ -2104,21 +1877,17 @@ this.zxcvbnts.core = (function (exports) {
      *  Estimates time for an attacker ---------------------------------------------------------------
      * -------------------------------------------------------------------------------
      */
-
     class TimeEstimates {
       translate(displayStr, value) {
         let key = displayStr;
-
         if (value !== undefined && value !== 1) {
           key += 's';
         }
-
         const {
           timeEstimation
         } = zxcvbnOptions.translations;
         return timeEstimation[key].replace('{base}', `${value}`);
       }
-
       estimateAttackTimes(guesses) {
         const crackTimesSeconds = {
           onlineThrottling100PerHour: guesses / (100 / 3600),
@@ -2142,54 +1911,43 @@ this.zxcvbnts.core = (function (exports) {
           score: this.guessesToScore(guesses)
         };
       }
-
       guessesToScore(guesses) {
         const DELTA = 5;
-
         if (guesses < 1e3 + DELTA) {
           // risky password: "too guessable"
           return 0;
         }
-
         if (guesses < 1e6 + DELTA) {
           // modest protection from throttled online attacks: "very guessable"
           return 1;
         }
-
         if (guesses < 1e8 + DELTA) {
           // modest protection from unthrottled online attacks: "somewhat guessable"
           return 2;
         }
-
         if (guesses < 1e10 + DELTA) {
           // modest protection from offline attacks: "safely unguessable"
           // assuming a salted, slow hash function like bcrypt, scrypt, PBKDF2, argon, etc
           return 3;
-        } // strong protection from offline attacks under same scenario: "very unguessable"
-
-
+        }
+        // strong protection from offline attacks under same scenario: "very unguessable"
         return 4;
       }
-
       displayTime(seconds) {
         let displayStr = 'centuries';
         let base;
         const timeKeys = Object.keys(times);
         const foundIndex = timeKeys.findIndex(time => seconds < times[time]);
-
         if (foundIndex > -1) {
           displayStr = timeKeys[foundIndex - 1];
-
           if (foundIndex !== 0) {
             base = Math.round(seconds / times[displayStr]);
           } else {
             displayStr = 'ltSecond';
           }
         }
-
         return this.translate(displayStr, base);
       }
-
     }
 
     var bruteforceMatcher = (() => {
@@ -2205,7 +1963,6 @@ this.zxcvbnts.core = (function (exports) {
 
     const getDictionaryWarningPassword = (match, isSoleMatch) => {
       let warning = '';
-
       if (isSoleMatch && !match.l33t && !match.reversed) {
         if (match.rank <= 10) {
           warning = zxcvbnOptions.translations.warnings.topTen;
@@ -2217,33 +1974,25 @@ this.zxcvbnts.core = (function (exports) {
       } else if (match.guessesLog10 <= 4) {
         warning = zxcvbnOptions.translations.warnings.similarToCommon;
       }
-
       return warning;
     };
-
     const getDictionaryWarningWikipedia = (match, isSoleMatch) => {
       let warning = '';
-
       if (isSoleMatch) {
         warning = zxcvbnOptions.translations.warnings.wordByItself;
       }
-
       return warning;
     };
-
     const getDictionaryWarningNames = (match, isSoleMatch) => {
       if (isSoleMatch) {
         return zxcvbnOptions.translations.warnings.namesByThemselves;
       }
-
       return zxcvbnOptions.translations.warnings.commonNames;
     };
-
     const getDictionaryWarning = (match, isSoleMatch) => {
       let warning = '';
       const dictName = match.dictionaryName;
       const isAName = dictName === 'lastnames' || dictName.toLowerCase().includes('firstnames');
-
       if (dictName === 'passwords') {
         warning = getDictionaryWarningPassword(match, isSoleMatch);
       } else if (dictName.includes('wikipedia')) {
@@ -2253,29 +2002,23 @@ this.zxcvbnts.core = (function (exports) {
       } else if (dictName === 'userInputs') {
         warning = zxcvbnOptions.translations.warnings.userInputs;
       }
-
       return warning;
     };
-
     var dictionaryMatcher = ((match, isSoleMatch) => {
       const warning = getDictionaryWarning(match, isSoleMatch);
       const suggestions = [];
       const word = match.token;
-
       if (word.match(START_UPPER)) {
         suggestions.push(zxcvbnOptions.translations.suggestions.capitalization);
       } else if (word.match(ALL_UPPER_INVERTED) && word.toLowerCase() !== word) {
         suggestions.push(zxcvbnOptions.translations.suggestions.allUppercase);
       }
-
       if (match.reversed && match.token.length >= 4) {
         suggestions.push(zxcvbnOptions.translations.suggestions.reverseWords);
       }
-
       if (match.l33t) {
         suggestions.push(zxcvbnOptions.translations.suggestions.l33t);
       }
-
       return {
         warning,
         suggestions
@@ -2289,7 +2032,6 @@ this.zxcvbnts.core = (function (exports) {
           suggestions: [zxcvbnOptions.translations.suggestions.recentYears, zxcvbnOptions.translations.suggestions.associatedYears]
         };
       }
-
       return {
         warning: '',
         suggestions: []
@@ -2298,11 +2040,9 @@ this.zxcvbnts.core = (function (exports) {
 
     var repeatMatcher = (match => {
       let warning = zxcvbnOptions.translations.warnings.extendedRepeat;
-
       if (match.baseToken.length === 1) {
         warning = zxcvbnOptions.translations.warnings.simpleRepeat;
       }
-
       return {
         warning,
         suggestions: [zxcvbnOptions.translations.suggestions.repeated]
@@ -2318,11 +2058,9 @@ this.zxcvbnts.core = (function (exports) {
 
     var spatialMatcher = (match => {
       let warning = zxcvbnOptions.translations.warnings.keyPattern;
-
       if (match.turns === 1) {
         warning = zxcvbnOptions.translations.warnings.straightRow;
       }
-
       return {
         warning,
         suggestions: [zxcvbnOptions.translations.suggestions.longerKeyboardPattern]
@@ -2338,7 +2076,6 @@ this.zxcvbnts.core = (function (exports) {
      *  Generate feedback ---------------------------------------------------------------
      * -------------------------------------------------------------------------------
      */
-
     class Feedback {
       constructor() {
         this.matchers = {
@@ -2356,27 +2093,21 @@ this.zxcvbnts.core = (function (exports) {
         };
         this.setDefaultSuggestions();
       }
-
       setDefaultSuggestions() {
         this.defaultFeedback.suggestions.push(zxcvbnOptions.translations.suggestions.useWords, zxcvbnOptions.translations.suggestions.noNeed);
       }
-
       getFeedback(score, sequence) {
         if (sequence.length === 0) {
           return this.defaultFeedback;
         }
-
         if (score > 2) {
           return defaultFeedback;
         }
-
         const extraFeedback = zxcvbnOptions.translations.suggestions.anotherWord;
         const longestMatch = this.getLongestMatch(sequence);
         let feedback = this.getMatchFeedback(longestMatch, sequence.length === 1);
-
         if (feedback !== null && feedback !== undefined) {
           feedback.suggestions.unshift(extraFeedback);
-
           if (feedback.warning == null) {
             feedback.warning = '';
           }
@@ -2386,10 +2117,8 @@ this.zxcvbnts.core = (function (exports) {
             suggestions: [extraFeedback]
           };
         }
-
         return feedback;
       }
-
       getLongestMatch(sequence) {
         let longestMatch = sequence[0];
         const slicedSequence = sequence.slice(1);
@@ -2400,55 +2129,46 @@ this.zxcvbnts.core = (function (exports) {
         });
         return longestMatch;
       }
-
       getMatchFeedback(match, isSoleMatch) {
         if (this.matchers[match.pattern]) {
           return this.matchers[match.pattern](match, isSoleMatch);
         }
-
         if (zxcvbnOptions.matchers[match.pattern] && 'feedback' in zxcvbnOptions.matchers[match.pattern]) {
           return zxcvbnOptions.matchers[match.pattern].feedback(match, isSoleMatch);
         }
-
         return defaultFeedback;
       }
-
     }
 
     /**
      * @link https://davidwalsh.name/javascript-debounce-function
+     * @param func needs to implement a function which is debounced
+     * @param wait how long do you want to wait till the previous declared function is executed
+     * @param isImmediate defines if you want to execute the function on the first execution or the last execution inside the time window. `true` for first and `false` for last.
      */
     var debounce = ((func, wait, isImmediate) => {
       let timeout;
       return function debounce(...args) {
         const context = this;
-
         const later = () => {
           timeout = undefined;
-
           if (!isImmediate) {
             func.apply(context, args);
           }
         };
-
         const shouldCallNow = isImmediate && !timeout;
-
         if (timeout !== undefined) {
           clearTimeout(timeout);
         }
-
         timeout = setTimeout(later, wait);
-
         if (shouldCallNow) {
           return func.apply(context, args);
         }
-
         return undefined;
       };
     });
 
     const time = () => new Date().getTime();
-
     const createReturnValue = (resolvedMatches, password, start) => {
       const feedback = new Feedback();
       const timeEstimates = new TimeEstimates();
@@ -2462,38 +2182,33 @@ this.zxcvbnts.core = (function (exports) {
         feedback: feedback.getFeedback(attackTimes.score, matchSequence.sequence)
       };
     };
-
     const main = (password, userInputs) => {
       if (userInputs) {
         zxcvbnOptions.extendUserInputsDictionary(userInputs);
       }
-
       const matching = new Matching();
       return matching.match(password);
     };
-
     const zxcvbn = (password, userInputs) => {
       const start = time();
       const matches = main(password, userInputs);
-
       if (matches instanceof Promise) {
         throw new Error('You are using a Promised matcher, please use `zxcvbnAsync` for it.');
       }
-
       return createReturnValue(matches, password, start);
     };
     const zxcvbnAsync = async (password, userInputs) => {
+      const usedPassword = password.substring(0, zxcvbnOptions.maxLength);
       const start = time();
-      const matches = await main(password, userInputs);
-      return createReturnValue(matches, password, start);
+      const matches = await main(usedPassword, userInputs);
+      return createReturnValue(matches, usedPassword, start);
     };
 
+    exports.Options = Options;
     exports.debounce = debounce;
     exports.zxcvbn = zxcvbn;
     exports.zxcvbnAsync = zxcvbnAsync;
     exports.zxcvbnOptions = zxcvbnOptions;
-
-    Object.defineProperty(exports, '__esModule', { value: true });
 
     return exports;
 

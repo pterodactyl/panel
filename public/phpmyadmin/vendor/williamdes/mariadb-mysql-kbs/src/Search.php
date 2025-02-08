@@ -22,10 +22,11 @@ class Search
      */
     public static $loaded = false;
 
-    public const ANY     = -1;
-    public const MYSQL   = 1;
-    public const MARIADB = 2;
-    public const DS      = DIRECTORY_SEPARATOR;
+    public const ANY          = -1;
+    public const MYSQL        = 1;
+    public const MARIADB      = 2;
+    public const AURORA_MYSQL = 3;
+    public const DS           = DIRECTORY_SEPARATOR;
 
     /**
      * The directory where the data is located
@@ -90,15 +91,24 @@ class Search
         $kbEntries = self::getVariable($name);
         if (isset($kbEntries->a)) {
             foreach ($kbEntries->a as $kbEntry) {
+                $urlEnd = isset($kbEntry->a) ? '#' . $kbEntry->a : '';
+
                 if ($type === Search::ANY) {
-                    return Search::$data->urls[$kbEntry->u] . '#' . $kbEntry->a;
+                    return Search::$data->urls[$kbEntry->u] . $urlEnd;
                 } elseif ($type === Search::MYSQL) {
                     if ($kbEntry->t === Search::MYSQL) {
-                        return Search::$data->urls[$kbEntry->u] . '#' . $kbEntry->a;
+                        return Search::$data->urls[$kbEntry->u] . $urlEnd;
+                    }
+                    if ($kbEntry->t === Search::AURORA_MYSQL) {
+                        return Search::$data->urls[$kbEntry->u] . $urlEnd;
                     }
                 } elseif ($type === Search::MARIADB) {
                     if ($kbEntry->t === Search::MARIADB) {
-                        return Search::$data->urls[$kbEntry->u] . '#' . $kbEntry->a;
+                        return Search::$data->urls[$kbEntry->u] . $urlEnd;
+                    }
+                } elseif ($type === Search::AURORA_MYSQL) {
+                    if ($kbEntry->t === Search::AURORA_MYSQL) {
+                        return Search::$data->urls[$kbEntry->u] . $urlEnd;
                     }
                 }
             }

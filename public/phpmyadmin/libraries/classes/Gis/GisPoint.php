@@ -51,13 +51,14 @@ class GisPoint extends GisGeometry
      * @param string $spatial spatial data of a row
      *
      * @return array an array containing the min, max values for x and y coordinates
+     * @psalm-return array{minX:float,minY:float,maxX:float,maxY:float}
      */
     public function scaleRow($spatial)
     {
         // Trim to remove leading 'POINT(' and trailing ')'
         $point = mb_substr($spatial, 6, -1);
 
-        return $this->setMinMax($point, []);
+        return $this->setMinMax($point, GisGeometry::EMPTY_EXTENT);
     }
 
     /**
@@ -178,7 +179,7 @@ class GisPoint extends GisGeometry
     public function prepareRowAsSvg($spatial, $label, $point_color, array $scale_data)
     {
         $point_options = [
-            'name' => $label,
+            'data-label' => $label,
             'id' => $label . $this->getRandomId(),
             'class' => 'point vector',
             'fill' => 'white',

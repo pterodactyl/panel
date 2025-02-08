@@ -305,7 +305,12 @@ class Bookmark
 
         $query = 'SELECT * FROM ' . Util::backquote($bookmarkFeature->database)
             . '.' . Util::backquote($bookmarkFeature->bookmark)
-            . " WHERE dbase = '" . $dbi->escapeString($db) . "'";
+            . ' WHERE ' . Util::backquote($id_field)
+            . " = '" . $dbi->escapeString((string) $id) . "'";
+        if ($db !== '') {
+            $query .= " AND dbase = '" . $dbi->escapeString($db) . "'";
+        }
+
         if (! $action_bookmark_all) {
             $query .= " AND (user = '"
                 . $dbi->escapeString($user) . "'";
@@ -316,8 +321,7 @@ class Bookmark
             $query .= ')';
         }
 
-        $query .= ' AND ' . Util::backquote($id_field)
-            . " = '" . $dbi->escapeString((string) $id) . "' LIMIT 1";
+        $query .= ' LIMIT 1';
 
         $result = $dbi->fetchSingleRow($query, DatabaseInterface::FETCH_ASSOC, DatabaseInterface::CONNECT_CONTROL);
         if (! empty($result)) {

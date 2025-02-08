@@ -13,6 +13,7 @@ use PhpMyAdmin\Html\Generator;
 use PhpMyAdmin\Html\MySQLDocumentation;
 use PhpMyAdmin\Query\Generator as QueryGenerator;
 use PhpMyAdmin\Query\Utilities;
+use PhpMyAdmin\SqlParser\Components\Expression;
 use PhpMyAdmin\SqlParser\Statements\AlterStatement;
 use PhpMyAdmin\SqlParser\Statements\DropStatement;
 use PhpMyAdmin\SqlParser\Statements\SelectStatement;
@@ -20,6 +21,7 @@ use PhpMyAdmin\SqlParser\Utils\Query;
 use PhpMyAdmin\Utils\ForeignKey;
 
 use function __;
+use function array_key_exists;
 use function array_keys;
 use function array_map;
 use function bin2hex;
@@ -181,6 +183,10 @@ class Sql
      */
     private function resultSetContainsUniqueKey(string $db, string $table, array $fieldsMeta): bool
     {
+        if ($table === '') {
+            return false;
+        }
+
         $columns = $this->dbi->getColumns($db, $table);
         $resultSetColumnNames = [];
         foreach ($fieldsMeta as $oneMeta) {
@@ -197,7 +203,7 @@ class Sql
             foreach (array_keys($indexColumns) as $indexColumnName) {
                 if (
                     ! in_array($indexColumnName, $resultSetColumnNames)
-                    && in_array($indexColumnName, $columns)
+                    && array_key_exists($indexColumnName, $columns)
                     && ! str_contains($columns[$indexColumnName]['Extra'], 'INVISIBLE')
                 ) {
                     continue;
@@ -286,6 +292,7 @@ class Sql
                 $profiling['chart'][$status] = $oneResult['Duration'];
             } else {
                 $profiling['states'][$status]['calls']++;
+                $profiling['states'][$status]['total_time'] += $oneResult['Duration'];
                 $profiling['chart'][$status] += $oneResult['Duration'];
             }
         }
@@ -336,7 +343,7 @@ class Sql
             return null;
         }
 
-        return Util::parseEnumSetValues($fieldInfoResult[0]['Type']);
+        return Util::parseEnumSetValues($fieldInfoResult[0]['Type'], false);
     }
 
     /**
@@ -735,25 +742,33 @@ class Sql
                         ->countRecords(true);
                 }
             } else {
+                /** @var SelectStatement $statement */
                 $statement = $analyzedSqlResults['statement'];
-                $tokenList = $analyzedSqlResults['parser']->list;
-                $replaces = [
-                    // Remove ORDER BY to decrease unnecessary sorting time
-                    [
-                        'ORDER BY',
-                        '',
-                    ],
-                    // Removes LIMIT clause that might have been added
-                    [
-                        'LIMIT',
-                        '',
-                    ],
-                ];
-                $countQuery = 'SELECT COUNT(*) FROM (' . Query::replaceClauses(
-                    $statement,
-                    $tokenList,
-                    $replaces
-                ) . ') as cnt';
+
+                $changeOrder = $analyzedSqlResults['order'] !== false;
+                $changeLimit = $analyzedSqlResults['limit'] !== false;
+                $changeExpression = $analyzedSqlResults['is_group'] === false
+                    && $analyzedSqlResults['distinct'] === false
+                    && $analyzedSqlResults['union'] === false
+                    && count($statement->expr) === 1;
+
+                if ($changeOrder || $changeLimit || $changeExpression) {
+                    $statement = clone $statement;
+                }
+
+                // Remove ORDER BY to decrease unnecessary sorting time
+                $statement->order = null;
+
+                // Removes LIMIT clause that might have been added
+                $statement->limit = null;
+
+                if ($changeExpression) {
+                    $statement->expr[0] = new Expression();
+                    $statement->expr[0]->expr = '1';
+                }
+
+                $countQuery = 'SELECT COUNT(*) FROM (' . $statement->build() . ' ) as cnt';
+
                 $unlimNumRows = $this->dbi->fetchValue($countQuery);
                 if ($unlimNumRows === false) {
                     $unlimNumRows = 0;
@@ -1033,7 +1048,7 @@ class Sql
             $message = $this->getMessageForNoRowsReturned($messageToShow, $analyzedSqlResults, $numRows);
         }
 
-        $queryMessage = Generator::getMessage($message, $GLOBALS['sql_query'], 'success');
+        $queryMessage = Generator::getMessage($message, $sqlQuery, 'success');
 
         if (isset($GLOBALS['show_as_php'])) {
             return $queryMessage;
@@ -1055,7 +1070,7 @@ class Sql
         $response = ResponseRenderer::getInstance();
         $response->addJSON($extraData ?? []);
 
-        if (empty($analyzedSqlResults['is_select']) || isset($extraData['error'])) {
+        if (($result instanceof ResultInterface && $result->numFields() === 0) || isset($extraData['error'])) {
             return $queryMessage;
         }
 
@@ -1119,7 +1134,7 @@ class Sql
             'db' => $db,
             'table' => $table,
             'sql_query' => $sqlQuery,
-            'is_procedure' => ! empty($analyzedSqlResults['procedure']),
+            'is_procedure' => ! empty($analyzedSqlResults['is_procedure']),
         ]);
     }
 
@@ -1717,10 +1732,6 @@ class Sql
             $sqlQueryForBookmark,
             $extraData
         );
-
-        if ($this->dbi->moreResults()) {
-            $this->dbi->nextResult();
-        }
 
         $warningMessages = $this->operations->getWarningMessagesArray();
 

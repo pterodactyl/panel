@@ -34,6 +34,7 @@ CodeMirror.sqlLint = function (text, updateLinting, options, cm) {
             'server': CommonParams.get('server'),
             'options': options.lintOptions,
             'no_history': true,
+            'ajax_request': true,
         },
         success: handleResponse
     });

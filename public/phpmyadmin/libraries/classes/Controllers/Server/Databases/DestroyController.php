@@ -8,6 +8,7 @@ use PhpMyAdmin\ConfigStorage\RelationCleanup;
 use PhpMyAdmin\Controllers\AbstractController;
 use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Message;
+use PhpMyAdmin\Query\Utilities;
 use PhpMyAdmin\ResponseRenderer;
 use PhpMyAdmin\Template;
 use PhpMyAdmin\Transformations;
@@ -16,8 +17,10 @@ use PhpMyAdmin\Util;
 
 use function __;
 use function _ngettext;
+use function array_filter;
 use function count;
 use function is_array;
+use function is_string;
 
 final class DestroyController extends AbstractController
 {
@@ -47,8 +50,6 @@ final class DestroyController extends AbstractController
     {
         global $selected, $errorUrl, $cfg, $dblist, $reload;
 
-        $selected_dbs = $_POST['selected_dbs'] ?? null;
-
         if (
             ! $this->response->isAjax()
             || (! $this->dbi->isSuperUser() && ! $cfg['AllowUserDropDatabase'])
@@ -61,10 +62,14 @@ final class DestroyController extends AbstractController
             return;
         }
 
-        if (
-            ! is_array($selected_dbs)
-            || $selected_dbs === []
-        ) {
+        $selected_dbs = isset($_POST['selected_dbs']) && is_array($_POST['selected_dbs']) ? $_POST['selected_dbs'] : [];
+        $selected_dbs = array_filter($selected_dbs, static function ($database): bool {
+            return is_string($database)
+                && ! Utilities::isSystemSchema($database, true)
+                && $database !== ($GLOBALS['cfg']['Server']['pmadb'] ?? '');
+        });
+
+        if ($selected_dbs === []) {
             $message = Message::error(__('No databases selected.'));
             $json = ['message' => $message];
             $this->response->setRequestStatus($message->isSuccess());

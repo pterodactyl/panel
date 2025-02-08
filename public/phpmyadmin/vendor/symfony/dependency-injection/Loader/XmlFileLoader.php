@@ -43,7 +43,7 @@ class XmlFileLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function load($resource, string $type = null)
+    public function load($resource, ?string $type = null)
     {
         $path = $this->locator->locate($resource);
 
@@ -70,7 +70,7 @@ class XmlFileLoader extends FileLoader
         return null;
     }
 
-    private function loadXml(\DOMDocument $xml, string $path, \DOMNode $root = null): void
+    private function loadXml(\DOMDocument $xml, string $path, ?\DOMNode $root = null): void
     {
         $defaults = $this->getServiceDefaults($xml, $path, $root);
 
@@ -98,7 +98,7 @@ class XmlFileLoader extends FileLoader
     /**
      * {@inheritdoc}
      */
-    public function supports($resource, string $type = null)
+    public function supports($resource, ?string $type = null)
     {
         if (!\is_string($resource)) {
             return false;
@@ -111,19 +111,19 @@ class XmlFileLoader extends FileLoader
         return 'xml' === $type;
     }
 
-    private function parseParameters(\DOMDocument $xml, string $file, \DOMNode $root = null)
+    private function parseParameters(\DOMDocument $xml, string $file, ?\DOMNode $root = null)
     {
         if ($parameters = $this->getChildren($root ?? $xml->documentElement, 'parameters')) {
             $this->container->getParameterBag()->add($this->getArgumentsAsPhp($parameters[0], 'parameter', $file));
         }
     }
 
-    private function parseImports(\DOMDocument $xml, string $file, \DOMNode $root = null)
+    private function parseImports(\DOMDocument $xml, string $file, ?\DOMNode $root = null)
     {
         $xpath = new \DOMXPath($xml);
         $xpath->registerNamespace('container', self::NS);
 
-        if (false === $imports = $xpath->query('.//container:imports/container:import', $root)) {
+        if (false === $imports = $xpath->query('./container:imports/container:import', $root)) {
             return;
         }
 
@@ -134,19 +134,19 @@ class XmlFileLoader extends FileLoader
         }
     }
 
-    private function parseDefinitions(\DOMDocument $xml, string $file, Definition $defaults, \DOMNode $root = null)
+    private function parseDefinitions(\DOMDocument $xml, string $file, Definition $defaults, ?\DOMNode $root = null)
     {
         $xpath = new \DOMXPath($xml);
         $xpath->registerNamespace('container', self::NS);
 
-        if (false === $services = $xpath->query('.//container:services/container:service|.//container:services/container:prototype|.//container:services/container:stack', $root)) {
+        if (false === $services = $xpath->query('./container:services/container:service|./container:services/container:prototype|./container:services/container:stack', $root)) {
             return;
         }
         $this->setCurrentDir(\dirname($file));
 
         $this->instanceof = [];
         $this->isLoadingInstanceof = true;
-        $instanceof = $xpath->query('.//container:services/container:instanceof', $root);
+        $instanceof = $xpath->query('./container:services/container:instanceof', $root);
         foreach ($instanceof as $service) {
             $this->setDefinition((string) $service->getAttribute('id'), $this->parseDefinition($service, $file, new Definition()));
         }
@@ -192,12 +192,12 @@ class XmlFileLoader extends FileLoader
         }
     }
 
-    private function getServiceDefaults(\DOMDocument $xml, string $file, \DOMNode $root = null): Definition
+    private function getServiceDefaults(\DOMDocument $xml, string $file, ?\DOMNode $root = null): Definition
     {
         $xpath = new \DOMXPath($xml);
         $xpath->registerNamespace('container', self::NS);
 
-        if (null === $defaultsNode = $xpath->query('.//container:services/container:defaults', $root)->item(0)) {
+        if (null === $defaultsNode = $xpath->query('./container:services/container:defaults', $root)->item(0)) {
             return new Definition();
         }
 
@@ -404,7 +404,33 @@ class XmlFileLoader extends FileLoader
         try {
             $dom = XmlUtils::loadFile($file, [$this, 'validateSchema']);
         } catch (\InvalidArgumentException $e) {
-            throw new InvalidArgumentException(sprintf('Unable to parse file "%s": ', $file).$e->getMessage(), $e->getCode(), $e);
+            $invalidSecurityElements = [];
+            $errors = explode("\n", $e->getMessage());
+            foreach ($errors as $i => $error) {
+                if (preg_match("#^\[ERROR 1871] Element '\{http://symfony\.com/schema/dic/security}([^']+)'#", $error, $matches)) {
+                    $invalidSecurityElements[$i] = $matches[1];
+                }
+            }
+            if ($invalidSecurityElements) {
+                $dom = XmlUtils::loadFile($file);
+
+                foreach ($invalidSecurityElements as $errorIndex => $tagName) {
+                    foreach ($dom->getElementsByTagNameNS('http://symfony.com/schema/dic/security', $tagName) as $element) {
+                        if (!$parent = $element->parentNode) {
+                            continue;
+                        }
+                        if ('http://symfony.com/schema/dic/security' !== $parent->namespaceURI) {
+                            continue;
+                        }
+                        if ('provider' === $parent->localName || 'firewall' === $parent->localName) {
+                            unset($errors[$errorIndex]);
+                        }
+                    }
+                }
+            }
+            if ($errors) {
+                throw new InvalidArgumentException(sprintf('Unable to parse file "%s": ', $file).implode("\n", $errors), $e->getCode(), $e);
+            }
         }
 
         $this->validateExtensions($dom, $file);
@@ -415,7 +441,7 @@ class XmlFileLoader extends FileLoader
     /**
      * Processes anonymous services.
      */
-    private function processAnonymousServices(\DOMDocument $xml, string $file, \DOMNode $root = null)
+    private function processAnonymousServices(\DOMDocument $xml, string $file, ?\DOMNode $root = null)
     {
         $definitions = [];
         $count = 0;
@@ -777,6 +803,6 @@ EOF
      */
     public static function convertDomElementToArray(\DOMElement $element)
     {
-        return XmlUtils::convertDomElementToArray($element);
+        return XmlUtils::convertDomElementToArray($element, false);
     }
 }

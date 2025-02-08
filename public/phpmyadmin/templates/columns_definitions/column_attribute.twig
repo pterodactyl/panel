@@ -2,7 +2,7 @@
     {% set attribute = submit_attribute %}
     {# MariaDB has additional parentheses #}
 {% elseif column_meta['Extra'] is defined
-    and ('on update current_timestamp' in column_meta['Extra'] or 'on update current_timestamp()' in column_meta['Extra']|lower) %}
+    and ('on update current_timestamp' in column_meta['Extra']|lower or 'on update current_timestamp()' in column_meta['Extra']|lower) %}
     {% set attribute = 'on update CURRENT_TIMESTAMP' %}
 {% elseif extracted_columnspec['attribute'] is defined %}
     {% set attribute = extracted_columnspec['attribute'] %}

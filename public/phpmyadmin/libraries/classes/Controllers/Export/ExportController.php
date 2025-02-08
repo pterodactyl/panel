@@ -379,7 +379,8 @@ final class ExportController extends AbstractController
         // Do we need to convert charset?
         $output_charset_conversion = $asfile
             && Encoding::isSupported()
-            && isset($charset) && $charset !== 'utf-8';
+            && isset($charset) && $charset !== 'utf-8'
+            && in_array($charset, Encoding::listEncodings(), true);
 
         // Use on the fly compression?
         $GLOBALS['onfly_compression'] = $GLOBALS['cfg']['CompressOnFly']
@@ -478,7 +479,17 @@ final class ExportController extends AbstractController
             // Include dates in export?
             $do_dates = isset($GLOBALS[$what . '_dates']);
 
-            $whatStrucOrData = $GLOBALS[$what . '_structure_or_data'];
+            $whatStrucOrData = $GLOBALS[$what . '_structure_or_data'] ?? null;
+            if (! in_array($whatStrucOrData, ['structure', 'data', 'structure_and_data'], true)) {
+                $whatStrucOrData = 'data';
+                /** @var mixed $whatStrucOrDataDefaultValue */
+                $whatStrucOrDataDefaultValue = $cfg['Export'][$what . '_structure_or_data'] ?? null;
+                if (in_array($whatStrucOrDataDefaultValue, ['structure', 'data', 'structure_and_data'], true)) {
+                    $whatStrucOrData = $whatStrucOrDataDefaultValue;
+                }
+
+                $GLOBALS[$what . '_structure_or_data'] = $whatStrucOrData;
+            }
 
             if ($export_type === 'raw') {
                 $whatStrucOrData = 'raw';

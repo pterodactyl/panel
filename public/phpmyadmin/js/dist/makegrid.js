@@ -803,7 +803,9 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
             });
           } else {
             $(g.cEdit).on('keypress change paste', '.edit_box', function () {
-              $checkbox.prop('checked', false);
+              if ($(this).val() !== '') {
+                $checkbox.prop('checked', false);
+              }
             });
             // Capture ctrl+v (on IE and Chrome)
             $(g.cEdit).on('keydown', '.edit_box', function (e) {
@@ -837,6 +839,8 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
               if ($editArea.find('select').length > 0) {
                 $editArea.find('select').val('');
               }
+            } else if ($td.is('.datefield')) {
+              $('.ui-datepicker-trigger').trigger('click');
             } else {
               $editArea.find('textarea').val('');
             }
@@ -1015,7 +1019,6 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
               }
             }); // end $.post()
           }
-
           g.isEditCellTextEditable = true;
         } else if ($td.is('.timefield, .datefield, .datetimefield, .timestampfield')) {
           var $inputField = $(g.cEdit).find('.edit_box');
@@ -1170,7 +1173,11 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
           whereClause = '';
         }
         fullWhereClause.push(whereClause);
-        var conditionArray = JSON.parse($tr.find('.condition_array').val());
+        var conditionArrayContent = $tr.find('.condition_array').val();
+        if (typeof conditionArrayContent === 'undefined') {
+          conditionArrayContent = '{}';
+        }
+        var conditionArray = JSON.parse(conditionArrayContent);
 
         /**
          * multi edit variables, for current row
@@ -1294,7 +1301,6 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
       } else {
         $(g.o).find('div.save_edited').addClass('saving_edited_data').find('input').prop('disabled', true); // disable the save button
       }
-
       $.ajax({
         type: 'POST',
         url: 'index.php?route=/table/replace',
@@ -1307,7 +1313,6 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
           } else {
             $(g.o).find('div.save_edited').removeClass('saving_edited_data').find('input').prop('disabled', false); // enable the save button back
           }
-
           if (typeof data !== 'undefined' && data.success === true) {
             if (typeof options === 'undefined' || !options.move) {
               Functions.ajaxShowMessage(data.message);
@@ -1382,7 +1387,6 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
         }
       }); // end $.ajax()
     },
-
     /**
      * Save edited cell, so it can be posted later.
      *
@@ -1449,7 +1453,7 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
           isValueUpdated = thisFieldParams[fieldName] !== Functions.getCellValue(g.currentEditCell);
         } else {
           const JSONString = Functions.stringifyJSON(thisFieldParams[fieldName]);
-          isValueUpdated = JSONString !== JSON.stringify(JSON.parse(Functions.getCellValue(g.currentEditCell)));
+          isValueUpdated = JSONString !== Functions.stringifyJSON(Functions.getCellValue(g.currentEditCell));
         }
         if (g.wasEditedCellNull || isValueUpdated) {
           needToPost = true;
@@ -1952,7 +1956,7 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
           e.preventDefault();
         }
       });
-      $(g.t).find('td.data.click2').on('click', function (e) {
+      $(g.t).on('click', 'td.data.click2', function (e) {
         var $cell = $(this);
         // In the case of relational link, We want single click on the link
         // to goto the link and double click to start grid-editing.
@@ -1985,7 +1989,7 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
             startGridEditing(e, this);
           }
         }
-      }).on('dblclick', function (e) {
+      }).on('dblclick', 'td.data.click2', function (e) {
         if ($(e.target).is('.grid_edit a')) {
           e.preventDefault();
         } else {
@@ -2064,12 +2068,14 @@ var makeGrid = function (t, enableResize, enableReorder, enableVisib, enableGrid
 
   // wrap all truncated data cells with span indicating the original length
   // todo update the original length after a grid edit
-  $(t).find('td.data.truncated:not(:has(span))').wrapInner(function () {
+  $(t).find('td.data.truncated:not(:has(>span))').filter(function () {
+    return $(this).data('originallength') !== undefined;
+  }).wrapInner(function () {
     return '<span title="' + Messages.strOriginalLength + ' ' + $(this).data('originallength') + '"></span>';
   });
 
   // wrap remaining cells, except actions cell, with span
-  $(t).find('th, td:not(:has(span))').wrapInner('<span></span>');
+  $(t).find('th, td:not(:has(>span))').wrapInner('<span></span>');
 
   // create grid elements
   g.gDiv = document.createElement('div'); // create global div

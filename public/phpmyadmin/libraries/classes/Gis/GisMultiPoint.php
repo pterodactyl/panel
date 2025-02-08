@@ -52,13 +52,14 @@ class GisMultiPoint extends GisGeometry
      * @param string $spatial spatial data of a row
      *
      * @return array an array containing the min, max values for x and y coordinates
+     * @psalm-return array{minX:float,minY:float,maxX:float,maxY:float}
      */
     public function scaleRow($spatial)
     {
         // Trim to remove leading 'MULTIPOINT(' and trailing ')'
         $multipoint = mb_substr($spatial, 11, -1);
 
-        return $this->setMinMax($multipoint, []);
+        return $this->setMinMax($multipoint, GisGeometry::EMPTY_EXTENT);
     }
 
     /**
@@ -185,7 +186,7 @@ class GisMultiPoint extends GisGeometry
     public function prepareRowAsSvg($spatial, $label, $point_color, array $scale_data)
     {
         $point_options = [
-            'name' => $label,
+            'data-label' => $label,
             'class' => 'multipoint vector',
             'fill' => 'white',
             'stroke' => $point_color,

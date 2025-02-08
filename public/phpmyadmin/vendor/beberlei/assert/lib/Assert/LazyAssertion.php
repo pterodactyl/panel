@@ -133,7 +133,7 @@ class LazyAssertion
      *
      * @return static
      */
-    public function that($value, string $propertyPath = null, $defaultMessage = null)
+    public function that($value, ?string $propertyPath = null, $defaultMessage = null)
     {
         $this->currentChainFailed = false;
         $this->thisChainTryAll = false;

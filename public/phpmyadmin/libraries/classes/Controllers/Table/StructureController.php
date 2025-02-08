@@ -130,15 +130,11 @@ class StructureController extends AbstractController
         $columns_with_index = $this->dbi
             ->getTable($this->db, $this->table)
             ->getColumnsWithIndex(Index::UNIQUE | Index::INDEX | Index::SPATIAL | Index::FULLTEXT);
-        $columns_with_unique_index = $this->dbi
-            ->getTable($this->db, $this->table)
-            ->getColumnsWithIndex(Index::UNIQUE);
 
         $fields = $this->dbi->getColumns($this->db, $this->table, true);
 
         $this->response->addHTML($this->displayStructure(
             $relationParameters,
-            $columns_with_unique_index,
             $primary,
             $fields,
             $columns_with_index,
@@ -149,16 +145,14 @@ class StructureController extends AbstractController
     /**
      * Displays the table structure ('show table' works correct since 3.23.03)
      *
-     * @param array       $columns_with_unique_index Columns with unique index
-     * @param Index|false $primary_index             primary index or false if no one exists
-     * @param array       $fields                    Fields
-     * @param array       $columns_with_index        Columns with index
+     * @param Index|false $primary_index      primary index or false if no one exists
+     * @param array       $fields             Fields
+     * @param array       $columns_with_index Columns with index
      *
      * @return string
      */
     protected function displayStructure(
         RelationParameters $relationParameters,
-        array $columns_with_unique_index,
         $primary_index,
         array $fields,
         array $columns_with_index,
@@ -261,7 +255,6 @@ class StructureController extends AbstractController
             'mime_map' => $mime_map,
             'tbl_storage_engine' => $tbl_storage_engine,
             'primary' => $primary_index,
-            'columns_with_unique_index' => $columns_with_unique_index,
             'columns_list' => $columns_list,
             'table_stats' => $tablestats ?? null,
             'fields' => $fields,

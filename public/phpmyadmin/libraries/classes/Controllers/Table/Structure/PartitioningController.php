@@ -93,7 +93,7 @@ final class PartitioningController extends AbstractController
     private function extractPartitionDetails(): ?array
     {
         $createTable = (new Table($this->table, $this->db))->showCreate();
-        if (! $createTable) {
+        if ($createTable === '') {
             return null;
         }
 

@@ -139,11 +139,17 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
         $envPlaceholderUniquePrefix = $this->container->getParameterBag() instanceof EnvPlaceholderParameterBag ? $this->container->getParameterBag()->getEnvPlaceholderUniquePrefix() : null;
 
         for ($i = 0; $i < $checksCount; ++$i) {
-            if (!$reflectionParameters[$i]->hasType() || $reflectionParameters[$i]->isVariadic()) {
+            $p = $reflectionParameters[$i];
+            if (!$p->hasType() || $p->isVariadic()) {
+                continue;
+            }
+            if (\array_key_exists($p->name, $values)) {
+                $i = $p->name;
+            } elseif (!\array_key_exists($i, $values)) {
                 continue;
             }
 
-            $this->checkType($checkedDefinition, $values[$i], $reflectionParameters[$i], $envPlaceholderUniquePrefix);
+            $this->checkType($checkedDefinition, $values[$i], $p, $envPlaceholderUniquePrefix);
         }
 
         if ($reflectionFunction->isVariadic() && ($lastParameter = end($reflectionParameters))->hasType()) {
@@ -158,7 +164,7 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
     /**
      * @throws InvalidParameterTypeException When a parameter is not compatible with the declared type
      */
-    private function checkType(Definition $checkedDefinition, $value, \ReflectionParameter $parameter, ?string $envPlaceholderUniquePrefix, \ReflectionType $reflectionType = null): void
+    private function checkType(Definition $checkedDefinition, $value, \ReflectionParameter $parameter, ?string $envPlaceholderUniquePrefix, ?\ReflectionType $reflectionType = null): void
     {
         $reflectionType = $reflectionType ?? $parameter->getType();
 
@@ -210,7 +216,7 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
         $class = null;
 
         if ($value instanceof Definition) {
-            if ($value->getFactory()) {
+            if ($value->hasErrors() || $value->getFactory()) {
                 return;
             }
 
@@ -306,6 +312,10 @@ final class CheckTypeDeclarationsPass extends AbstractRecursivePass
 
         if ('false' === $type) {
             if (false === $value) {
+                return;
+            }
+        } elseif ('true' === $type) {
+            if (true === $value) {
                 return;
             }
         } elseif ($reflectionType->isBuiltin()) {

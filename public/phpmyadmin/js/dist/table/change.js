@@ -171,11 +171,23 @@ function verifyAfterSearchFieldChange(index, searchFormId) {
       });
       // validator method for IN(...), NOT IN(...)
       // BETWEEN and NOT BETWEEN
+      // See all possible syntaxes in tests of https://regexr.com/7h1eq
       jQuery.validator.addMethod('validationFunctionForMultipleInt', function (value) {
-        return value.match(/^(?:(?:\d\s*)|\s*)+(?:,\s*\d+)*$/i) !== null;
+        if (value === '') {
+          return true;
+        }
+        return value.replace(/ /g, '').match(/^(((0x[0-9a-f]+)|([+-]?([0-9]*\.?[0-9]+|[0-9]+\.?[0-9]*)(e[+-]?[0-9]+)?))(,|$))+$/i) !== null;
       }, Messages.strEnterValidNumber);
       validateMultipleIntField($thisInput, true);
     } else {
+      // validator method for INTs
+      // See all possible syntaxes in tests of https://regexr.com/7h1ci
+      jQuery.validator.addMethod('validationFunctionForInt', function (value) {
+        if (value === '') {
+          return true;
+        }
+        return value.match(/^(0x[0-9a-f]+$)|([+-]?([0-9]*\.?[0-9]+|[0-9]+\.?[0-9]*)(e[+-]?[0-9]+)?)$/i) !== null;
+      }, Messages.strEnterValidNumber);
       $(searchFormId).validate({
         // update errors as we write
         onkeyup: function (element) {
@@ -220,8 +232,8 @@ function validateIntField(jqueryInput, returnValueIfIsNumber) {
   // removing previous rules
   jqueryInput.rules('remove');
   jqueryInput.rules('add', {
-    number: {
-      param: true,
+    validationFunctionForInt: {
+      param: jqueryInput.value,
       depends: function () {
         return returnValueIfIsNumber;
       }
@@ -272,29 +284,39 @@ function verificationsAfterFieldChange(urlField, multiEdit, theType) {
     $('#salt_' + target.id).prev('br').remove();
     $('#salt_' + target.id).remove();
   }
-
-  // Remove possible blocking rules if the user changed functions
-  $('#' + target.id).rules('remove', 'validationFunctionForMd5');
-  $('#' + target.id).rules('remove', 'validationFunctionForAesDesEncrypt');
-  if (target.value === 'MD5') {
-    $('#' + target.id).rules('add', {
-      validationFunctionForMd5: {
-        param: $thisInput,
-        depends: function () {
-          return checkForCheckbox(multiEdit);
-        }
-      }
-    });
+  var couldFetchRules = false;
+  try {
+    // See: issue #18792 - In some weird cases the input goes away before it validates
+    // And it breaks jquery, this is a well known jquery bug with different trigger schemes
+    $('#' + target.id).rules();
+    couldFetchRules = true;
+  } catch (error) {
+    console.log(error);
   }
-  if (target.value === 'DES_ENCRYPT' || target.value === 'AES_ENCRYPT') {
-    $('#' + target.id).rules('add', {
-      validationFunctionForAesDesEncrypt: {
-        param: $thisInput,
-        depends: function () {
-          return checkForCheckbox(multiEdit);
+  if (couldFetchRules) {
+    // Remove possible blocking rules if the user changed functions
+    $('#' + target.id).rules('remove', 'validationFunctionForMd5');
+    $('#' + target.id).rules('remove', 'validationFunctionForAesDesEncrypt');
+    if (target.value === 'MD5') {
+      $('#' + target.id).rules('add', {
+        validationFunctionForMd5: {
+          param: $thisInput,
+          depends: function () {
+            return checkForCheckbox(multiEdit);
+          }
         }
-      }
-    });
+      });
+    }
+    if (target.value === 'DES_ENCRYPT' || target.value === 'AES_ENCRYPT') {
+      $('#' + target.id).rules('add', {
+        validationFunctionForAesDesEncrypt: {
+          param: $thisInput,
+          depends: function () {
+            return checkForCheckbox(multiEdit);
+          }
+        }
+      });
+    }
   }
   if (target.value === 'HEX' && theType.substring(0, 3) === 'int') {
     // Add note when HEX function is selected on a int
@@ -322,7 +344,6 @@ function verificationsAfterFieldChange(urlField, multiEdit, theType) {
     $thisInput.removeAttr('max');
     // @todo: put back attributes if corresponding function is deselected
   }
-
   if ($thisInput.data('rulesadded') === null && !functionSelected) {
     // call validate before adding rules
     $($thisInput[0].form).validate();

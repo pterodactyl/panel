@@ -11,9 +11,7 @@ use PhpMyAdmin\Sql;
 use PhpMyAdmin\Template;
 
 use function __;
-use function htmlentities;
-
-use const ENT_COMPAT;
+use function explode;
 
 final class SetValuesController extends AbstractController
 {
@@ -62,12 +60,9 @@ final class SetValuesController extends AbstractController
             $currentValue = $this->sql->getFullValuesForSetColumn($db, $table, $column, $whereClause);
         }
 
-        // Converts characters of $currentValue to HTML entities.
-        $convertedCurrentValue = htmlentities($currentValue, ENT_COMPAT, 'UTF-8');
-
         $select = $this->template->render('sql/set_column', [
             'values' => $values,
-            'current_values' => $convertedCurrentValue,
+            'current_values' => explode(',', $currentValue),
         ]);
 
         $this->response->addJSON('select', $select);

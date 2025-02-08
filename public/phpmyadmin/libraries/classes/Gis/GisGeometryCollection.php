@@ -54,7 +54,7 @@ class GisGeometryCollection extends GisGeometry
      */
     public function scaleRow($spatial)
     {
-        $min_max = [];
+        $min_max = GisGeometry::EMPTY_EXTENT;
 
         // Trim to remove leading 'GEOMETRYCOLLECTION(' and trailing ')'
         $goem_col = mb_substr($spatial, 19, -1);

@@ -222,7 +222,8 @@ class Expression extends Component
 
             // Skipping whitespaces and comments.
             if (($token->type === Token::TYPE_WHITESPACE) || ($token->type === Token::TYPE_COMMENT)) {
-                if ($isExpr) {
+                // If the token is a closing C comment from a MySQL command, it must be ignored.
+                if ($isExpr && $token->token !== '*/') {
                     $ret->expr .= $token->token;
                 }
 
@@ -272,7 +273,10 @@ class Expression extends Component
                     }
 
                     $isExpr = true;
-                } elseif ($brackets === 0 && strlen((string) $ret->expr) > 0 && ! $alias) {
+                } elseif (
+                    $brackets === 0 && strlen((string) $ret->expr) > 0 && ! $alias
+                    && ($ret->table === null || $ret->table === '')
+                ) {
                     /* End of expression */
                     break;
                 }
@@ -365,8 +369,10 @@ class Expression extends Component
                                 || ! ($prev[0]->flags & Token::FLAG_KEYWORD_RESERVED))))
                     && (($prev[1]->type === Token::TYPE_STRING)
                         || ($prev[1]->type === Token::TYPE_SYMBOL
-                            && ! ($prev[1]->flags & Token::FLAG_SYMBOL_VARIABLE))
-                        || ($prev[1]->type === Token::TYPE_NONE))
+                            && ! ($prev[1]->flags & Token::FLAG_SYMBOL_VARIABLE)
+                            && ! ($prev[1]->flags & Token::FLAG_SYMBOL_PARAMETER))
+                        || ($prev[1]->type === Token::TYPE_NONE
+                            && $prev[1]->token !== 'OVER'))
                 ) {
                     if (! empty($ret->alias)) {
                         $parser->error('An alias was previously found.', $token);

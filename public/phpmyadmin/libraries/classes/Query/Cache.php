@@ -15,37 +15,27 @@ use function is_array;
  */
 class Cache
 {
-    /** @var array Table data cache */
+    /** @var array[] Table data cache */
     private $tableCache = [];
 
     /**
      * Caches table data so Table does not require to issue
      * SHOW TABLE STATUS again
      *
-     * @param array       $tables information for tables of some databases
-     * @param string|bool $table  table name
+     * @param mixed[][] $tables information for tables of some databases
      */
-    public function cacheTableData(array $tables, $table): void
+    public function cacheTableData(string $database, array $tables): void
     {
-        // Note: I don't see why we would need array_merge_recursive() here,
-        // as it creates double entries for the same table (for example a double
-        // entry for Comment when changing the storage engine in Operations)
-        // Note 2: Instead of array_merge(), simply use the + operator because
-        //  array_merge() renumbers numeric keys starting with 0, therefore
-        //  we would lose a db name that consists only of numbers
+        // Note: This function must not use array_merge because numerical indices must be preserved.
+        // When an entry already exists for the database in cache, we merge the incoming data with existing data.
+        // The union operator appends elements from right to left unless they exists on the left already.
+        // Doing the union with incoming data on the left ensures that when we reread table status from DB,
+        // we overwrite whatever was in cache with the new data.
 
-        foreach ($tables as $one_database => $_) {
-            if (isset($this->tableCache[$one_database])) {
-                // the + operator does not do the intended effect
-                // when the cache for one table already exists
-                if ($table && isset($this->tableCache[$one_database][$table])) {
-                    unset($this->tableCache[$one_database][$table]);
-                }
-
-                $this->tableCache[$one_database] += $tables[$one_database];
-            } else {
-                $this->tableCache[$one_database] = $tables[$one_database];
-            }
+        if (isset($this->tableCache[$database])) {
+            $this->tableCache[$database] = $tables + $this->tableCache[$database];
+        } else {
+            $this->tableCache[$database] = $tables;
         }
     }
 

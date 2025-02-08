@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpMyAdmin\Query;
 
 use PhpMyAdmin\DatabaseInterface;
+use PhpMyAdmin\Dbal\DbalInterface;
 use PhpMyAdmin\Util;
 
 use function in_array;
@@ -19,6 +20,7 @@ use function substr;
  */
 class Compatibility
 {
+    /** @return mixed[][] */
     public static function getISCompatForGetTablesFull(array $eachTables, string $eachDatabase): array
     {
         foreach ($eachTables as $table_name => $_) {
@@ -252,5 +254,19 @@ class Compatibility
     public static function hasAccountLocking(bool $isMariaDb, int $version): bool
     {
         return $isMariaDb && $version >= 100402 || ! $isMariaDb && $version >= 50706;
+    }
+
+    /** @return non-empty-string */
+    public static function getShowBinLogStatusStmt(DbalInterface $dbal): string
+    {
+        if ($dbal->isMySql() && $dbal->getVersion() >= 80200) {
+            return 'SHOW BINARY LOG STATUS';
+        }
+
+        if ($dbal->isMariaDB() && $dbal->getVersion() >= 100502) {
+            return 'SHOW BINLOG STATUS';
+        }
+
+        return 'SHOW MASTER STATUS';
     }
 }

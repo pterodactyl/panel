@@ -47,8 +47,10 @@ abstract class Base64 implements EncoderInterface
      *
      * @throws TypeError
      */
-    public static function encode(string $binString): string
-    {
+    public static function encode(
+        #[\SensitiveParameter]
+        string $binString
+    ): string {
         return static::doEncode($binString, true);
     }
 
@@ -62,8 +64,10 @@ abstract class Base64 implements EncoderInterface
      *
      * @throws TypeError
      */
-    public static function encodeUnpadded(string $src): string
-    {
+    public static function encodeUnpadded(
+        #[\SensitiveParameter]
+        string $src
+    ): string {
         return static::doEncode($src, false);
     }
 
@@ -74,8 +78,11 @@ abstract class Base64 implements EncoderInterface
      *
      * @throws TypeError
      */
-    protected static function doEncode(string $src, bool $pad = true): string
-    {
+    protected static function doEncode(
+        #[\SensitiveParameter]
+        string $src,
+        bool $pad = true
+    ): string {
         $dest = '';
         $srcLen = Binary::safeStrlen($src);
         // Main loop (no padding):
@@ -129,10 +136,12 @@ abstract class Base64 implements EncoderInterface
      *
      * @throws RangeException
      * @throws TypeError
-     * @psalm-suppress RedundantCondition
      */
-    public static function decode(string $encodedString, bool $strictPadding = false): string
-    {
+    public static function decode(
+        #[\SensitiveParameter]
+        string $encodedString,
+        bool $strictPadding = false
+    ): string {
         // Remove padding
         $srcLen = Binary::safeStrlen($encodedString);
         if ($srcLen === 0) {
@@ -227,24 +236,20 @@ abstract class Base64 implements EncoderInterface
      * @param string $encodedString
      * @return string
      */
-    public static function decodeNoPadding(string $encodedString): string
-    {
+    public static function decodeNoPadding(
+        #[\SensitiveParameter]
+        string $encodedString
+    ): string {
         $srcLen = Binary::safeStrlen($encodedString);
         if ($srcLen === 0) {
             return '';
         }
         if (($srcLen & 3) === 0) {
-            if ($encodedString[$srcLen - 1] === '=') {
+            // If $strLen is not zero, and it is divisible by 4, then it's at least 4.
+            if ($encodedString[$srcLen - 1] === '=' || $encodedString[$srcLen - 2] === '=') {
                 throw new InvalidArgumentException(
                     "decodeNoPadding() doesn't tolerate padding"
                 );
-            }
-            if (($srcLen & 3) > 1) {
-                if ($encodedString[$srcLen - 2] === '=') {
-                    throw new InvalidArgumentException(
-                        "decodeNoPadding() doesn't tolerate padding"
-                    );
-                }
             }
         }
         return static::decode(

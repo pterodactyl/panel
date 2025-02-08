@@ -11,13 +11,14 @@ use PhpMyAdmin\Crypto\Crypto;
 
 use function base64_decode;
 use function base64_encode;
-use function htmlentities;
 use function htmlspecialchars;
 use function http_build_query;
 use function in_array;
 use function ini_get;
 use function is_array;
+use function is_string;
 use function json_encode;
+use function method_exists;
 use function str_contains;
 use function strlen;
 use function strtr;
@@ -27,6 +28,9 @@ use function strtr;
  */
 class Url
 {
+    /** @var string|null */
+    private static $inputArgSeparator = null;
+
     /**
      * Generates text with hidden inputs.
      *
@@ -230,7 +234,7 @@ class Url
 
         $query = self::buildHttpQuery($params, $encrypt);
 
-        if (($divider !== '?' && $divider !== '&') || strlen($query) > 0) {
+        if (($divider !== '?' && $divider !== self::getArgSeparator()) || strlen($query) > 0) {
             return $divider . $query;
         }
 
@@ -249,7 +253,7 @@ class Url
 
         $separator = self::getArgSeparator();
 
-        if (! $encrypt || ! $config->get('URLQueryEncryption')) {
+        if (! $encrypt || $config === null || ! $config->get('URLQueryEncryption')) {
             return http_build_query($params, '', $separator);
         }
 
@@ -303,55 +307,50 @@ class Url
     }
 
     /**
-     * Returns url separator
+     * Returns url separator character used for separating url parts.
      *
-     * extracted from arg_separator.input as set in php.ini
-     * we do not use arg_separator.output to avoid problems with & and &
+     * Extracted from 'arg_separator.input' as set in php.ini, but prefers '&' and ';'.
      *
-     * @param string $encode whether to encode separator or not,
-     *                       currently 'none' or 'html'
-     *
-     * @return string  character used for separating url parts usually ; or &
+     * @see https://www.php.net/manual/en/ini.core.php#ini.arg-separator.input
+     * @see https://www.w3.org/TR/1999/REC-html401-19991224/appendix/notes.html#h-B.2.2
      */
-    public static function getArgSeparator($encode = 'none')
+    public static function getArgSeparator(): string
     {
-        static $separator = null;
-        static $html_separator = null;
-
-        if ($separator === null) {
-            // use separators defined by php, but prefer ';'
-            // as recommended by W3C
-            // (see https://www.w3.org/TR/1999/REC-html401-19991224/appendix
-            // /notes.html#h-B.2.2)
-            $arg_separator = (string) ini_get('arg_separator.input');
-            if (str_contains($arg_separator, ';')) {
-                $separator = ';';
-            } elseif (strlen($arg_separator) > 0) {
-                $separator = $arg_separator[0];
-            } else {
-                $separator = '&';
-            }
-
-            $html_separator = htmlentities($separator);
+        if (is_string(self::$inputArgSeparator)) {
+            return self::$inputArgSeparator;
         }
 
-        switch ($encode) {
-            case 'html':
-                return $html_separator;
-
-            case 'text':
-            case 'none':
-            default:
-                return $separator;
+        $separator = self::getArgSeparatorValueFromIni();
+        if (! is_string($separator) || $separator === '' || str_contains($separator, '&')) {
+            return self::$inputArgSeparator = '&';
         }
+
+        if (str_contains($separator, ';')) {
+            return self::$inputArgSeparator = ';';
+        }
+
+        // uses first character
+        return self::$inputArgSeparator = $separator[0];
+    }
+
+    /** @return string|false */
+    private static function getArgSeparatorValueFromIni()
+    {
+        /** @psalm-suppress ArgumentTypeCoercion */
+        if (method_exists('PhpMyAdmin\Tests\UrlTest', 'getInputArgSeparator')) {
+            // phpcs:ignore SlevomatCodingStandard.Namespaces.ReferenceUsedNamesOnly.ReferenceViaFullyQualifiedName
+            return \PhpMyAdmin\Tests\UrlTest::getInputArgSeparator();
+        }
+
+        return ini_get('arg_separator.input');
     }
 
     /**
      * @param string $route                Route to use
      * @param array  $additionalParameters Additional URL parameters
      */
-    public static function getFromRoute(string $route, array $additionalParameters = []): string
+    public static function getFromRoute(string $route, array $additionalParameters = [], bool $encrypt = true): string
     {
-        return 'index.php?route=' . $route . self::getCommon($additionalParameters, '&');
+        return 'index.php?route=' . $route . self::getCommon($additionalParameters, self::getArgSeparator(), $encrypt);
     }
 }

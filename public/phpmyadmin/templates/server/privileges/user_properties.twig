@@ -55,7 +55,6 @@
 
   {% if user_does_not_exists %}
     {{ 'The selected user was not found in the privilege table.'|trans|error }}
-    {{ login_information_fields|raw }}
   {% endif %}
 
   <form class="submenu-item" name="usersForm" id="addUsersForm" action="{{ url('/server/privileges') }}" method="post">

@@ -43,7 +43,7 @@ class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
      *
      * @throws CacheException if OPcache is not enabled
      */
-    public function __construct(string $namespace = '', int $defaultLifetime = 0, string $directory = null, bool $appendOnly = false)
+    public function __construct(string $namespace = '', int $defaultLifetime = 0, ?string $directory = null, bool $appendOnly = false)
     {
         $this->appendOnly = $appendOnly;
         self::$startTime = self::$startTime ?? $_SERVER['REQUEST_TIME'] ?? time();
@@ -82,7 +82,7 @@ class PhpFilesAdapter extends AbstractAdapter implements PruneableInterface
                 }
 
                 if ($time >= $expiresAt) {
-                    $pruned = $this->doUnlink($file) && !file_exists($file) && $pruned;
+                    $pruned = ($this->doUnlink($file) || !file_exists($file)) && $pruned;
                 }
             }
         } finally {

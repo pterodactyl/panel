@@ -61,7 +61,7 @@ class ReplaceStatement extends Statement
     /**
      * Values to be replaced.
      *
-     * @var Array2d|null
+     * @var Array2d[]|null
      */
     public $values;
 

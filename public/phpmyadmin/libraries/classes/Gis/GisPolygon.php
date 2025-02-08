@@ -59,6 +59,7 @@ class GisPolygon extends GisGeometry
      * @param string $spatial spatial data of a row
      *
      * @return array an array containing the min, max values for x and y coordinates
+     * @psalm-return array{minX:float,minY:float,maxX:float,maxY:float}
      */
     public function scaleRow($spatial)
     {
@@ -74,7 +75,7 @@ class GisPolygon extends GisGeometry
             $ring = $parts[0];
         }
 
-        return $this->setMinMax($ring, []);
+        return $this->setMinMax($ring, GisGeometry::EMPTY_EXTENT);
     }
 
     /**
@@ -211,7 +212,7 @@ class GisPolygon extends GisGeometry
     public function prepareRowAsSvg($spatial, $label, $fill_color, array $scale_data)
     {
         $polygon_options = [
-            'name' => $label,
+            'data-label' => $label,
             'id' => $label . $this->getRandomId(),
             'class' => 'polygon vector',
             'stroke' => 'black',
