@@ -198,7 +198,7 @@ class LockExpression extends Component
 
         // Only  two possible end states
         if ($state !== 1 && $state !== 3) {
-            $parser->error('Unexpected end of Lock expression.', $prevToken);
+            $parser->error('Unexpected end of LOCK expression.', $prevToken);
         }
 
         return $lockType;

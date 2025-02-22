@@ -1,7 +1,7 @@
-<form method="post" action="{{ url('/table/zoom-search') }}" name="displayResultForm" id="zoom_display_form" class="ajax">
+<form method="post" action="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}" name="displayResultForm" id="zoom_display_form" class="ajax">
   {{ get_hidden_inputs(db, table) }}
   <input type="hidden" name="goto" value="{{ goto }}">
-  <input type="hidden" name="back" value="{{ url('/table/zoom-search') }}">
+  <input type="hidden" name="back" value="{{ url('/table/zoom-search', {'db': db, 'table': table}) }}">
 
   <div class="card">
     <div class="card-header">{% trans 'Browse/Edit the points' %}</div>
@@ -19,8 +19,8 @@
         {% endif %}
       </div>
 
-      <div class="modal fade" id="dataPointModal" tabindex="-1" aria-labelledby="dataPointModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+      <div class="modal fade" id="dataPointModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="dataPointModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg modal-dialog-scrollable">
           <div class="modal-content">
             <div class="modal-header">
               <h5 class="modal-title" id="dataPointModalLabel">{% trans 'Loading' %}</h5>
@@ -54,11 +54,13 @@
                         {% include 'table/search/input_box.twig' with {
                           'str': '',
                           'column_type': column_types[column_index],
+                          'column_data_type': column_data_types[column_index],
+                          'html_attributes': '',
                           'column_id': column_types[column_index] ? 'edit_fieldID_' : 'fieldID_',
                           'in_zoom_search_edit': true,
                           'foreigners': foreigners,
                           'column_name': field_popup,
-                          'column_name_hash': column_name_hashes[field_popup],
+                          'column_name_hash': column_names_hashes[field_popup],
                           'foreign_data': foreign_data,
                           'table': table,
                           'column_index': column_index,

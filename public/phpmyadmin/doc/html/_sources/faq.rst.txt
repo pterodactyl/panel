@@ -552,41 +552,41 @@ The default values for most Suhosin configuration options will work in
 most scenarios, however you might want to adjust at least following
 parameters:
 
-* `suhosin.request.max\_vars <https://suhosin.org/stories/configuration.html#suhosin-request-max-vars>`_ should
+* `suhosin.request.max\_vars <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-request-max-vars>`_ should
   be increased (eg. 2048)
-* `suhosin.post.max\_vars <https://suhosin.org/stories/configuration.html#suhosin-post-max-vars>`_ should be
+* `suhosin.post.max\_vars <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-post-max-vars>`_ should be
   increased (eg. 2048)
-* `suhosin.request.max\_array\_index\_length <https://suhosin.org/stories/configuration.html#suhosin-request-max-array-index-length>`_
+* `suhosin.request.max\_array\_index\_length <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-request-max-array-index-length>`_
   should be increased (eg. 256)
-* `suhosin.post.max\_array\_index\_length <https://suhosin.org/stories/configuration.html#suhosin-post-max-array-index-length>`_
+* `suhosin.post.max\_array\_index\_length <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-post-max-array-index-length>`_
   should be increased (eg. 256)
-* `suhosin.request.max\_totalname\_length <https://suhosin.org/stories/configuration.html#suhosin-request-max-totalname-length>`_
+* `suhosin.request.max\_totalname\_length <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-request-max-totalname-length>`_
   should be increased (eg. 8192)
-* `suhosin.post.max\_totalname\_length <https://suhosin.org/stories/configuration.html#suhosin-post-max-totalname-length>`_ should be
+* `suhosin.post.max\_totalname\_length <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-post-max-totalname-length>`_ should be
   increased (eg. 8192)
-* `suhosin.get.max\_value\_length <https://suhosin.org/stories/configuration.html#suhosin-get-max-value-length>`_
+* `suhosin.get.max\_value\_length <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-get-max-value-length>`_
   should be increased (eg. 1024)
-* `suhosin.sql.bailout\_on\_error <https://suhosin.org/stories/configuration.html#suhosin-sql-bailout-on-error>`_
+* `suhosin.sql.bailout\_on\_error <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-sql-bailout-on-error>`_
   needs to be disabled (the default)
-* `suhosin.log.\* <https://suhosin.org/stories/configuration.html#logging-configuration>`_ should not
+* `suhosin.log.\* <https://suhosin5.suhosin.org/stories/configuration.html#logging-configuration>`_ should not
   include :term:`SQL`, otherwise you get big
   slowdown
-* `suhosin.sql.union <https://suhosin.org/stories/configuration.html#suhosin-
+* `suhosin.sql.union <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-
   sql-union>`_ must be disabled (which is the default).
-* `suhosin.sql.multiselect <https://suhosin.org/stories/configuration.html#
+* `suhosin.sql.multiselect <https://suhosin5.suhosin.org/stories/configuration.html#
   suhosin-sql-multiselect>`_ must be disabled (which is the default).
-* `suhosin.sql.comment <https://suhosin.org/stories/configuration.html#suhosin-
+* `suhosin.sql.comment <https://suhosin5.suhosin.org/stories/configuration.html#suhosin-
   sql-comment>`_ must be disabled (which is the default).
 
 To further improve security, we also recommend these modifications:
 
-* `suhosin.executor.include.max\_traversal <https://suhosin.org/stories/
+* `suhosin.executor.include.max\_traversal <https://suhosin5.suhosin.org/stories/
   configuration.html#suhosin-executor-include-max-traversal>`_ should be
   enabled as a mitigation against local file inclusion attacks. We suggest
   setting this to 2 as ``../`` is used with the ReCaptcha library.
-* `suhosin.cookie.encrypt <https://suhosin.org/stories/configuration.html#
+* `suhosin.cookie.encrypt <https://suhosin5.suhosin.org/stories/configuration.html#
   suhosin-cookie-encrypt>`_ should be enabled.
-* `suhosin.executor.disable_emodifier <https://suhosin.org/stories/config
+* `suhosin.executor.disable_emodifier <https://suhosin5.suhosin.org/stories/config
   uration.html#suhosin-executor-disable-emodifier>`_ should be enabled.
 
 You can also disable the warning using the :config:option:`$cfg['SuhosinDisableWarning']`.
@@ -850,8 +850,8 @@ Here are a few points to check:
   Dorninger for the hint).
 * In the :file:`php.ini` directive ``arg_separator.input``, a value of ";"
   will cause this error. Replace it with "&;".
-* If you are using `Suhosin <https://suhosin.org/stories/index.html>`_, you
-  might want to increase `request limits <https://suhosin.org/stories/faq.html>`_.
+* If you are using `Suhosin <https://suhosin5.suhosin.org/stories/index.html>`_, you
+  might want to increase `request limits <https://suhosin5.suhosin.org/stories/faq.html>`_.
 * The directory specified in the :file:`php.ini` directive
   ``session.save_path`` does not exist or is read-only (this can be caused
   by `bug in the PHP installer <https://bugs.php.net/bug.php?id=39842>`_).

@@ -208,7 +208,7 @@ class Pdf extends PdfLib
             $l = $this->lMargin;
             foreach ($this->colTitles as $col => $txt) {
                 $this->setXY($l, $this->tMargin);
-                $this->MultiCell($this->tablewidths[$col], $this->FontSizePt, $txt);
+                $this->MultiCell($this->tablewidths[$col], $this->FontSizePt, $txt ?? 'NULL');
                 $l += $this->tablewidths[$col];
                 $maxY = $maxY < $this->GetY() ? $this->GetY() : $maxY;
             }
@@ -220,7 +220,7 @@ class Pdf extends PdfLib
                 $this->setXY($l, $this->tMargin);
                 $this->Cell($this->tablewidths[$col], $maxY - $this->tMargin, '', 1, 0, 'L', true);
                 $this->setXY($l, $this->tMargin);
-                $this->MultiCell($this->tablewidths[$col], $this->FontSizePt, $txt, 0, 'C');
+                $this->MultiCell($this->tablewidths[$col], $this->FontSizePt, $txt ?? 'NULL', 0, 'C');
                 $l += $this->tablewidths[$col];
             }
 
@@ -267,7 +267,7 @@ class Pdf extends PdfLib
                 $this->page = $currpage;
                 $this->setXY($l, $h);
                 if ($this->tablewidths[$col] > 0) {
-                    $this->MultiCell($this->tablewidths[$col], $lineheight, $txt, 0, $this->colAlign[$col]);
+                    $this->MultiCell($this->tablewidths[$col], $lineheight, $txt ?? 'NULL', 0, $this->colAlign[$col]);
                     $l += $this->tablewidths[$col];
                 }
 
@@ -408,7 +408,7 @@ class Pdf extends PdfLib
                         $this->tablewidths[$col],
                         // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
                         $this->FontSizePt,
-                        $txt,
+                        $txt ?? 'NULL',
                         0,
                         $this->colAlign[$col]
                     );
@@ -646,7 +646,7 @@ class Pdf extends PdfLib
                         $this->tablewidths[$col],
                         // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps
                         $this->FontSizePt,
-                        $txt,
+                        $txt ?? 'NULL',
                         0,
                         $this->colAlign[$col]
                     );
@@ -801,7 +801,7 @@ class Pdf extends PdfLib
         while ($row = $this->results->fetchRow()) {
             foreach ($colFits as $key => $val) {
                 /** @var float $stringWidth */
-                $stringWidth = $this->GetStringWidth($row[$key]);
+                $stringWidth = $this->GetStringWidth($row[$key] ?? 'NULL');
                 $stringWidth += 6;
                 if ($adjustingMode && ($stringWidth > $this->sColWidth)) {
                     // any column whose data's width is bigger than

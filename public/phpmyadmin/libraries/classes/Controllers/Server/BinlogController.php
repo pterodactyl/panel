@@ -35,10 +35,7 @@ class BinlogController extends AbstractController
         parent::__construct($response, $template);
         $this->dbi = $dbi;
 
-        $this->binaryLogs = $this->dbi->fetchResult(
-            'SHOW MASTER LOGS',
-            'Log_name'
-        );
+        $this->binaryLogs = $this->dbi->fetchResult('SHOW BINARY LOGS', 'Log_name');
     }
 
     public function __invoke(): void

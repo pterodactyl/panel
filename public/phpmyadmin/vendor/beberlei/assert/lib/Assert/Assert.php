@@ -42,7 +42,7 @@ abstract class Assert
      * The assertion chain can be stateful, that means be careful when you reuse
      * it. You should never pass around the chain.
      */
-    public static function that($value, $defaultMessage = null, string $defaultPropertyPath = null): AssertionChain
+    public static function that($value, $defaultMessage = null, ?string $defaultPropertyPath = null): AssertionChain
     {
         $assertionChain = new AssertionChain($value, $defaultMessage, $defaultPropertyPath);
 
@@ -55,7 +55,7 @@ abstract class Assert
      * @param mixed $values
      * @param string|callable|null $defaultMessage
      */
-    public static function thatAll($values, $defaultMessage = null, string $defaultPropertyPath = null): AssertionChain
+    public static function thatAll($values, $defaultMessage = null, ?string $defaultPropertyPath = null): AssertionChain
     {
         return static::that($values, $defaultMessage, $defaultPropertyPath)->all();
     }
@@ -66,7 +66,7 @@ abstract class Assert
      * @param mixed $value
      * @param string|callable|null $defaultMessage
      */
-    public static function thatNullOr($value, $defaultMessage = null, string $defaultPropertyPath = null): AssertionChain
+    public static function thatNullOr($value, $defaultMessage = null, ?string $defaultPropertyPath = null): AssertionChain
     {
         return static::that($value, $defaultMessage, $defaultPropertyPath)->nullOr();
     }

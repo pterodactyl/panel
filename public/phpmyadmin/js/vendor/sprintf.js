@@ -1,5 +1,5 @@
 /**
- * Copyright (c) 2007-2016 Kevin van Zonneveld (https://kvz.io)
+ * Copyright (c) 2007-2024 Kevin van Zonneveld (https://kvz.io)
  * and Contributors (https://locutus.io/authors)
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of
@@ -61,7 +61,7 @@ function sprintf () {
     if (!chr) {
       chr = ' '
     }
-    var padding = (str.length >= len) ? '' : new Array(1 + len - str.length >>> 0).join(chr)
+    const padding = str.length >= len ? '' : new Array((1 + len - str.length) >>> 0).join(chr)
     return leftJustify ? str + padding : padding + str
   }
 
@@ -72,11 +72,7 @@ function sprintf () {
       // on the left side
       // keep sign (+ or -) in front
       if (!leftJustify && padChar === '0') {
-        value = [
-          value.slice(0, prefix.length),
-          _pad('', diff, '0', true),
-          value.slice(prefix.length)
-        ].join('')
+        value = [value.slice(0, prefix.length), _pad('', diff, '0', true), value.slice(prefix.length)].join('')
       } else {
         value = _pad(value, minWidth, padChar, leftJustify)
       }
@@ -145,7 +141,7 @@ function sprintf () {
     }
 
     if (!precision) {
-      precision = (specifier === 'd') ? 0 : 'fFeE'.indexOf(specifier) > -1 ? 6 : undefined
+      precision = specifier === 'd' ? 0 : 'fFeE'.indexOf(specifier) > -1 ? 6 : undefined
     } else {
       precision = +precision
     }
@@ -174,15 +170,14 @@ function sprintf () {
       case 'x':
         return _formatBaseX(value, 16, leftJustify, minWidth, precision, padChar)
       case 'X':
-        return _formatBaseX(value, 16, leftJustify, minWidth, precision, padChar)
-          .toUpperCase()
+        return _formatBaseX(value, 16, leftJustify, minWidth, precision, padChar).toUpperCase()
       case 'u':
         return _formatBaseX(value, 10, leftJustify, minWidth, precision, padChar)
       case 'i':
       case 'd':
         number = +value || 0
         // Plain Math.round doesn't just truncate
-        number = Math.round(number - number % 1)
+        number = Math.round(number - (number % 1))
         prefix = number < 0 ? '-' : positiveNumberPrefix
         value = prefix + _pad(String(Math.abs(number)), precision, '0', false)
 

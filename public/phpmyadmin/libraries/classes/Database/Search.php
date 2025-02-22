@@ -179,7 +179,7 @@ class Search
         $where_clause = $this->getWhereClause($table);
         // Builds complete queries
         $sql = [];
-        $sql['select_columns'] = $sqlstr_select . ' * ' . $sqlstr_from
+        $sql['select_columns'] = $sqlstr_select . ' *' . $sqlstr_from
             . $where_clause;
         // here, I think we need to still use the COUNT clause, even for
         // VIEWs, anyway we have a WHERE clause that should limit results

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpMyAdmin\SqlParser\Statements;
 
 use PhpMyAdmin\SqlParser\Components\ArrayObj;
+use PhpMyAdmin\SqlParser\Components\CaseExpression;
 use PhpMyAdmin\SqlParser\Components\Condition;
 use PhpMyAdmin\SqlParser\Components\Expression;
 use PhpMyAdmin\SqlParser\Components\FunctionCall;
@@ -70,6 +71,12 @@ class SelectStatement extends Statement
         'SQL_NO_CACHE' => 8,
         'SQL_CALC_FOUND_ROWS' => 9,
     ];
+
+    /**
+     * @var array<string, int|array<int, int|string>>
+     * @psalm-var array<string, (positive-int|array{positive-int, ('var'|'var='|'expr'|'expr=')})>
+     */
+    public static $GROUP_OPTIONS = ['WITH ROLLUP' => 1];
 
     /**
      * @var array<string, int|array<int, int|string>>
@@ -176,7 +183,6 @@ class SelectStatement extends Statement
             'NATURAL RIGHT JOIN',
             1,
         ],
-
         'WHERE' => [
             'WHERE',
             3,
@@ -184,6 +190,10 @@ class SelectStatement extends Statement
         'GROUP BY' => [
             'GROUP BY',
             3,
+        ],
+        '_GROUP_OPTIONS' => [
+            '_GROUP_OPTIONS',
+            1,
         ],
         'HAVING' => [
             'HAVING',
@@ -225,7 +235,7 @@ class SelectStatement extends Statement
     /**
      * Expressions that are being selected by this statement.
      *
-     * @var Expression[]
+     * @var (CaseExpression|Expression)[]
      */
     public $expr = [];
 
@@ -263,6 +273,13 @@ class SelectStatement extends Statement
      * @var GroupKeyword[]|null
      */
     public $group;
+
+    /**
+     * List of options available for the GROUP BY component.
+     *
+     * @var OptionsArray|null
+     */
+    public $group_options;
 
     /**
      * Conditions used for filtering the result set.

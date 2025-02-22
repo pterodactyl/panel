@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\Command;
 
+use PhpMyAdmin\Git;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+use function addcslashes;
+use function explode;
 use function file_put_contents;
 use function is_string;
 use function shell_exec;
@@ -34,9 +37,21 @@ declare(strict_types=1);
  */
 return [
     'revision' => '%s',
+    'revisionHash' => '%s',
     'revisionUrl' => '%s',
     'branch' => '%s',
     'branchUrl' => '%s',
+    'message' => '%s',
+    'author' => [
+        'name' => '%s',
+        'email' => '%s',
+        'date' => '%s',
+    ],
+    'committer' => [
+        'name' => '%s',
+        'email' => '%s',
+        'date' => '%s',
+    ],
 ];
 
 PHP;
@@ -101,14 +116,31 @@ PHP;
             return null;
         }
 
-        $branchName = trim(str_replace('refs/heads/', '', $branchName));
+        $commitDetails = $this->gitCli(
+            'show -s --pretty="tree %T%nparent %P%nauthor %an <%ae> %at%ncommitter %cn <%ce> %ct%n%n%B"'
+        );
+        if ($commitDetails === null) {
+            return null;
+        }
+
+        $branchName = addcslashes(trim(str_replace('refs/heads/', '', $branchName)), "'");
+
+        [$author, $committer, $message] = Git::extractDataFormTextBody(explode("\n", $commitDetails));
 
         return sprintf(
             self::$generatedClassTemplate,
             trim($revisionText),
+            trim($commitHash),
             sprintf($commitUrlFormat, trim($commitHash)),
-            trim($branchName),
-            sprintf($branchUrlFormat, $branchName)
+            $branchName,
+            sprintf($branchUrlFormat, $branchName),
+            addcslashes(trim($message), "'"), // Commit message
+            addcslashes($author['name'], "'"), // Author name
+            addcslashes($author['email'], "'"), // Author email
+            $author['date'], // Author date
+            addcslashes($committer['name'], "'"), // Committer name
+            addcslashes($committer['email'], "'"), // Committer email
+            $committer['date'] // Committer date
         );
     }
 

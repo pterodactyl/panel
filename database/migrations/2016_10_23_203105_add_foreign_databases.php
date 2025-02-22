@@ -9,7 +9,7 @@ class AddForeignDatabases extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('databases', function (Blueprint $table) {
             $table->foreign('server_id')->references('id')->on('servers');
@@ -20,14 +20,14 @@ class AddForeignDatabases extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('databases', function (Blueprint $table) {
-            $table->dropForeign(['server_id']);
-            $table->dropIndex(['server_id']);
+            $table->dropForeign('databases_server_id_foreign');
+            $table->dropForeign('databases_db_server_foreign');
 
-            $table->dropForeign(['db_server']);
-            $table->dropIndex(['db_server']);
+            $table->dropIndex('databases_server_id_foreign');
+            $table->dropIndex('databases_db_server_foreign');
         });
     }
 }

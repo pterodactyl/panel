@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
+use function array_filter;
 use function array_intersect;
 use function array_map;
 use function explode;
@@ -14,11 +15,16 @@ use function fopen;
 use function function_exists;
 use function fwrite;
 use function iconv;
+use function is_string;
 use function mb_convert_encoding;
 use function mb_convert_kana;
 use function mb_detect_encoding;
 use function mb_list_encodings;
+use function preg_replace;
 use function recode_string;
+use function str_contains;
+use function str_starts_with;
+use function strtoupper;
 use function tempnam;
 use function unlink;
 
@@ -190,7 +196,16 @@ class Encoding
                 return recode_string($src_charset . '..' . $dest_charset, $what);
 
             case self::ENGINE_ICONV:
-                return iconv($src_charset, $dest_charset . ($GLOBALS['cfg']['IconvExtraParams'] ?? ''), $what);
+                $iconvExtraParams = '';
+                if (
+                    isset($GLOBALS['cfg']['IconvExtraParams'])
+                    && is_string($GLOBALS['cfg']['IconvExtraParams'])
+                    && str_starts_with($GLOBALS['cfg']['IconvExtraParams'], '//')
+                ) {
+                    $iconvExtraParams = $GLOBALS['cfg']['IconvExtraParams'];
+                }
+
+                return iconv($src_charset, $dest_charset . $iconvExtraParams, $what);
 
             case self::ENGINE_MB:
                 return mb_convert_encoding($what, $dest_charset, $src_charset);
@@ -343,7 +358,14 @@ class Encoding
 
         /* Most engines do not support listing */
         if (self::$engine != self::ENGINE_MB) {
-            return $GLOBALS['cfg']['AvailableCharsets'];
+            return array_filter($GLOBALS['cfg']['AvailableCharsets'], static function (string $charset): bool {
+                // Removes any ignored character
+                $normalizedCharset = strtoupper((string) preg_replace(['/[^A-Za-z0-9\-\/]/'], '', $charset));
+
+                // The character set ISO-2022-CN-EXT can be vulnerable (CVE-2024-2961).
+                return ! str_contains($normalizedCharset, 'ISO-2022-CN-EXT')
+                    && ! str_contains($normalizedCharset, 'ISO2022CNEXT');
+            });
         }
 
         return array_intersect(

@@ -31,6 +31,7 @@ class GetAttrExpression extends AbstractExpression
     public function compile(Compiler $compiler): void
     {
         $env = $compiler->getEnvironment();
+        $arrayAccessSandbox = false;
 
         // optimize array calls
         if (
@@ -44,20 +45,38 @@ class GetAttrExpression extends AbstractExpression
                 ->raw('(('.$var.' = ')
                 ->subcompile($this->getNode('node'))
                 ->raw(') && is_array(')
-                ->raw($var)
+                ->raw($var);
+
+            if (!$env->hasExtension(SandboxExtension::class)) {
+                $compiler
+                    ->raw(') || ')
+                    ->raw($var)
+                    ->raw(' instanceof ArrayAccess ? (')
+                    ->raw($var)
+                    ->raw('[')
+                    ->subcompile($this->getNode('attribute'))
+                    ->raw('] ?? null) : null)')
+                ;
+
+                return;
+            }
+
+            $arrayAccessSandbox = true;
+
+            $compiler
                 ->raw(') || ')
                 ->raw($var)
-                ->raw(' instanceof ArrayAccess ? (')
+                ->raw(' instanceof ArrayAccess && in_array(')
+                ->raw('get_class('.$var.')')
+                ->raw(', CoreExtension::ARRAY_LIKE_CLASSES, true) ? (')
                 ->raw($var)
                 ->raw('[')
                 ->subcompile($this->getNode('attribute'))
-                ->raw('] ?? null) : null)')
+                ->raw('] ?? null) : ')
             ;
-
-            return;
         }
 
-        $compiler->raw('twig_get_attribute($this->env, $this->source, ');
+        $compiler->raw('CoreExtension::getAttribute($this->env, $this->source, ');
 
         if ($this->getAttribute('ignore_strict_check')) {
             $this->getNode('node')->setAttribute('ignore_strict_check', true);
@@ -83,5 +102,9 @@ class GetAttrExpression extends AbstractExpression
             ->raw(', ')->repr($this->getNode('node')->getTemplateLine())
             ->raw(')')
         ;
+
+        if ($arrayAccessSandbox) {
+            $compiler->raw(')');
+        }
     }
 }

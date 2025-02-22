@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace PhpMyAdmin;
 
 use PhpMyAdmin\Dbal\ResultInterface;
+use PhpMyAdmin\Query\Compatibility;
 
 use function explode;
 use function mb_strtoupper;
@@ -62,6 +63,10 @@ class Replication
             return -1;
         }
 
+        if ($dbi->isMySql() && $dbi->getVersion() >= 80022 || $dbi->isMariaDB() && $dbi->getVersion() >= 100501) {
+            return $dbi->tryQuery($action . ' REPLICA ' . $control . ';', $link);
+        }
+
         return $dbi->tryQuery($action . ' SLAVE ' . $control . ';', $link);
     }
 
@@ -95,16 +100,29 @@ class Replication
             $this->replicaControl('STOP', null, $link);
         }
 
-        $out = $dbi->tryQuery(
-            'CHANGE MASTER TO ' .
-            'MASTER_HOST=\'' . $host . '\',' .
-            'MASTER_PORT=' . ($port * 1) . ',' .
-            'MASTER_USER=\'' . $user . '\',' .
-            'MASTER_PASSWORD=\'' . $password . '\',' .
-            'MASTER_LOG_FILE=\'' . $pos['File'] . '\',' .
-            'MASTER_LOG_POS=' . $pos['Position'] . ';',
-            $link
-        );
+        if ($dbi->isMySql() && $dbi->getVersion() >= 80023) {
+            $out = $dbi->tryQuery(
+                'CHANGE REPLICATION SOURCE TO ' .
+                'SOURCE_HOST=\'' . $host . '\',' .
+                'SOURCE_PORT=' . ($port * 1) . ',' .
+                'SOURCE_USER=\'' . $user . '\',' .
+                'SOURCE_PASSWORD=\'' . $password . '\',' .
+                'SOURCE_LOG_FILE=\'' . $pos['File'] . '\',' .
+                'SOURCE_LOG_POS=' . $pos['Position'] . ';',
+                $link
+            );
+        } else {
+            $out = $dbi->tryQuery(
+                'CHANGE MASTER TO ' .
+                'MASTER_HOST=\'' . $host . '\',' .
+                'MASTER_PORT=' . ($port * 1) . ',' .
+                'MASTER_USER=\'' . $user . '\',' .
+                'MASTER_PASSWORD=\'' . $password . '\',' .
+                'MASTER_LOG_FILE=\'' . $pos['File'] . '\',' .
+                'MASTER_LOG_POS=' . $pos['Position'] . ';',
+                $link
+            );
+        }
 
         if ($start) {
             $this->replicaControl('START', null, $link);
@@ -158,7 +176,8 @@ class Replication
     {
         global $dbi;
 
-        $data = $dbi->fetchResult('SHOW MASTER STATUS', null, null, $link);
+        $data = $dbi->fetchResult(Compatibility::getShowBinLogStatusStmt($dbi), null, null, $link);
+
         $output = [];
 
         if (! empty($data)) {

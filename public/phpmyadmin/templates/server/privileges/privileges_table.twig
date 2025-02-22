@@ -228,11 +228,11 @@
         </label>
       </div>
 
-      {% if row['Delete versioning rows_priv'] is defined or row['Delete_history_priv'] is defined %}
+      {% if row['Delete versioning rows_priv'] is defined %}
         <div class="item">
           <input type="checkbox" name="Delete_history_priv" id="checkbox_Delete_history_priv" value="Y" title="
             {%- trans 'Allows deleting historical rows.' %}"
-            {{- row['Delete versioning rows_priv'] == 'Y' or row['Delete_history_priv'] == 'Y' ? ' checked' }}>
+            {{- row['Delete versioning rows_priv'] == 'Y' ? ' checked' }}>
           <label for="checkbox_Delete_history_priv">
             <code>
               <dfn title="{% trans 'Allows deleting historical rows.' %}">

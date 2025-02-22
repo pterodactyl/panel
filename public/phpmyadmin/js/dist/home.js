@@ -97,10 +97,13 @@ const GitInfo = {
       'server': CommonParams.get('server'),
       'ajax_request': true,
       'no_debug': true
-    }, function (data) {
+    }).done(function (data) {
       if (typeof data !== 'undefined' && data.success === true) {
         $(data.message).insertAfter('#li_pma_version');
       }
+    }).fail(function () {
+      const gitHashInfoLi = '<li id="li_pma_version_git" class="list-group-item">' + window.Messages.errorLoadingGitInformation + '</li>';
+      $(gitHashInfoLi).insertAfter('#li_pma_version');
     });
   }
 };
@@ -109,7 +112,9 @@ AJAX.registerTeardown('home.js', function () {
 });
 AJAX.registerOnload('home.js', function () {
   $('#themesModal').on('show.bs.modal', function () {
-    $.get('index.php?route=/themes', function (data) {
+    $.get('index.php?route=/themes', {
+      'server': CommonParams.get('server')
+    }, function (data) {
       $('#themesModal .modal-body').html(data.themes);
     });
   });

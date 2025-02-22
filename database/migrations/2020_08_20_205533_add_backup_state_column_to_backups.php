@@ -8,8 +8,10 @@ class AddBackupStateColumnToBackups extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->boolean('is_successful')->after('uuid')->default(true);
@@ -18,8 +20,10 @@ class AddBackupStateColumnToBackups extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->dropColumn('is_successful');

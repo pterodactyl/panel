@@ -308,8 +308,7 @@ const DatabaseRoutines = {
                     classes: {
                         'ui-dialog-titlebar-close': 'btn-close'
                     },
-                    height: 400,
-                    width: 700,
+                    width: '70%',
                     minWidth: 500,
                     buttons: buttonOptions,
                     // Issue #15810 - use button titles for modals (eg: new procedure)
@@ -348,8 +347,7 @@ const DatabaseRoutines = {
                  *                 the Definition textarea.
                  */
                 var $elm = $('textarea[name=item_definition]').last();
-                var linterOptions = {};
-                linterOptions.routineEditor = true;
+                var linterOptions = { editorType: 'routine' };
                 that.syntaxHiglighter = Functions.getSqlEditor($elm, {}, 'both', linterOptions);
 
                 // Execute item-specific code

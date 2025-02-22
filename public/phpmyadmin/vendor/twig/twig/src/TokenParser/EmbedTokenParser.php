@@ -30,7 +30,7 @@ final class EmbedTokenParser extends IncludeTokenParser
 
         $parent = $this->parser->getExpressionParser()->parseExpression();
 
-        list($variables, $only, $ignoreMissing) = $this->parseArguments();
+        [$variables, $only, $ignoreMissing] = $this->parseArguments();
 
         $parentToken = $fakeParentToken = new Token(/* Token::STRING_TYPE */ 7, '__parent__', $token->getLine());
         if ($parent instanceof ConstantExpression) {

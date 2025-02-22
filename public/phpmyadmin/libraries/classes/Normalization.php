@@ -201,7 +201,7 @@ class Normalization
             'max_rows' => intval($GLOBALS['cfg']['MaxRows']),
             'char_editing' => $GLOBALS['cfg']['CharEditing'],
             'attribute_types' => $this->dbi->types->getAttributes(),
-            'privs_available' => $GLOBALS['col_priv'] && $GLOBALS['is_reload_priv'],
+            'privs_available' => ($GLOBALS['col_priv'] ?? false) && ($GLOBALS['is_reload_priv'] ?? false),
             'max_length' => $this->dbi->getVersion() >= 50503 ? 1024 : 255,
             'charsets' => $charsetsList,
         ]);

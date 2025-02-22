@@ -31,7 +31,7 @@ class Console
      *
      * @var bool
      */
-    private $isAjax;
+    private $isAjax = false;
 
     /** @var Relation */
     private $relation;

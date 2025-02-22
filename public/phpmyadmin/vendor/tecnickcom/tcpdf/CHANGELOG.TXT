@@ -1,3 +1,60 @@
+6.8.0 (2024-12-23)
+	- Requires PHP 7.1+ and curl extension.
+	- Escape error message.
+	- Use strict time-constant function to compare TCPDF-tag hashes.
+	- Add K_CURLOPTS config array to set custom cURL options (NOTE: some defaults have changed).
+	- Add some addTTFfont fixes from tc-lib-pdf-font.
+
+6.7.8 (2024-12-13)
+	- Improve SVG detection by checking for (mandatory) namespace.
+	- Use late state binding now that minimum PHP version is 5.5.
+
+6.7.7 (2024-10-26)
+	- Update regular expression to avoid ReDoS (CVE-2024-22641)
+	- [PHP 8.4] Fix: Curl CURLOPT_BINARYTRANSFER deprecated #675
+	- SVG detection fix for inline data images #646
+	- Fix count svg #647
+	- Since the version 6.7.4, the "0" is considered like empty string and not displayed
+	- Fixed handling of transparency in PDF/A mode in addExtGState method
+	- Encrypt /DA string when document is encrypted
+	- Improve quality of generated seed, avoid potential security pitfall
+	- Try to use random_bytes() first if it's available
+	- Do not include the server parameters in the generated seed, as they might contain sensitive data
+	- Fix bug on _getannotsrefs when there are empty signature appearances but not other annot on a page
+	- Fix SVG coordinate parser that caused drawing artifacts
+	- Remove usage of xml_set_object() function
+
+6.7.6 (2024-10-06)
+	- Forbid access to parent folder in HTML images.
+
+6.7.5 (2024-04-20)
+	- Update GitHub actions
+	- fix: CSV-2024-22640 (#712)
+
+6.7.4 (2024-03-24)
+	- Upgrade tcpdf tag encryption algorithm.
+	- Fix regression issue #699.
+	- Fix security issue.
+	- [BREAKING CHANGE] The tcpdf HTML tag syntax has changed, see example_049.php.
+	- New K_ALLOWED_TCPDF_TAGS configuration constant to set the allowed methods for the tcdpf HTML tag.
+	- Raised minimum PHP version to PHP 5.5.0.
+
+6.6.5 (2023-09-02)
+	- Fix corrupted file.
+	- Fix GitHub automation tests.
+	- Fix SPDX license ID (#591)
+	- Fix warning "array offset on value of type null" (#620)
+	- Improve the README about the status of this library (#589)
+	- Fix deprecation warning with PHP 8.1 (#614)
+	- Fixes for PHP 8.2 in tcpdf_fonts.php (#632)
+	- Fix some php 8+ edge cases (#630)
+	- Fix composite glyph output (#581)
+	- Fix "access array offset on value of type bool" with PDF/A (#583)
+	- Fix non-numeric value warning (#627)
+	- Fix issues with S25 barcode (#611)
+	- Fix return type annotations (#613)
+	- Fix some inconsistencies in type hints (#598)
+
 6.6.2 (2022-12-17)
 	- Ensure pregSplit return type is always array.
 	- Add ability to run tests on various operating systems (#566)

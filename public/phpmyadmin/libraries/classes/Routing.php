@@ -9,7 +9,6 @@ use FastRoute\Dispatcher;
 use FastRoute\Dispatcher\GroupCountBased as DispatcherGroupCountBased;
 use FastRoute\RouteCollector;
 use FastRoute\RouteParser\Std as RouteParserStd;
-use PhpMyAdmin\Controllers\HomeController;
 use PhpMyAdmin\Http\ServerRequest;
 use Psr\Container\ContainerInterface;
 
@@ -17,7 +16,6 @@ use function __;
 use function file_exists;
 use function file_put_contents;
 use function htmlspecialchars;
-use function is_array;
 use function is_readable;
 use function is_string;
 use function is_writable;
@@ -73,12 +71,16 @@ class Routing
 
         // If skip cache is enabled, do not try to read the file
         // If no cache skipping then read it and use it
-        if (! $skipCache && file_exists(self::ROUTES_CACHE_FILE)) {
+        if (
+            ! $skipCache
+            && file_exists(self::ROUTES_CACHE_FILE)
+            && isset($_SESSION['isRoutesCacheFileValid'])
+            && $_SESSION['isRoutesCacheFileValid']
+        ) {
             /** @psalm-suppress MissingFile, UnresolvableInclude, MixedAssignment */
             $dispatchData = require self::ROUTES_CACHE_FILE;
-            if (self::isRoutesCacheFileValid($dispatchData)) {
-                return new DispatcherGroupCountBased($dispatchData);
-            }
+
+            return new DispatcherGroupCountBased($dispatchData);
         }
 
         $routeCollector = new RouteCollector(
@@ -93,10 +95,14 @@ class Routing
         // If skip cache is enabled, do not try to write it
         // If no skip cache then try to write if write is possible
         if (! $skipCache && $canWriteCache) {
-            $writeWorks = self::writeCache(
-                '<?php return ' . var_export($dispatchData, true) . ';'
-            );
-            if (! $writeWorks) {
+            /** @psalm-suppress MissingFile, UnresolvableInclude, MixedAssignment */
+            $cachedDispatchData = file_exists(self::ROUTES_CACHE_FILE) ? require self::ROUTES_CACHE_FILE : [];
+            $_SESSION['isRoutesCacheFileValid'] = $dispatchData === $cachedDispatchData;
+            if (
+                ! $_SESSION['isRoutesCacheFileValid']
+                && ! self::writeCache(sprintf('<?php return %s;', var_export($dispatchData, true)))
+            ) {
+                $_SESSION['isRoutesCacheFileValid'] = false;
                 trigger_error(
                     sprintf(
                         __(
@@ -189,20 +195,5 @@ class Routing
          */
         $controller = $container->get($controllerName);
         $controller($request, $vars);
-    }
-
-    /**
-     * @param mixed $dispatchData
-     *
-     * @psalm-assert-if-true array[] $dispatchData
-     */
-    private static function isRoutesCacheFileValid($dispatchData): bool
-    {
-        return is_array($dispatchData)
-            && isset($dispatchData[0], $dispatchData[1])
-            && is_array($dispatchData[0]) && is_array($dispatchData[1])
-            && isset($dispatchData[0]['GET']) && is_array($dispatchData[0]['GET'])
-            && isset($dispatchData[0]['GET']['/']) && is_string($dispatchData[0]['GET']['/'])
-            && $dispatchData[0]['GET']['/'] === HomeController::class;
     }
 }

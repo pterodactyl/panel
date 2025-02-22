@@ -51,7 +51,7 @@ class AllocationSelectionService
      * empty, all ports will be considered when finding an allocation. If set, only ports appearing
      * in the array or range will be used.
      *
-     * @throws DisplayException
+     * @throws \Pterodactyl\Exceptions\DisplayException
      */
     public function setPorts(array $ports): self
     {
@@ -80,7 +80,7 @@ class AllocationSelectionService
     /**
      * Return a single allocation that should be used as the default allocation for a server.
      *
-     * @throws NoViableAllocationException
+     * @throws \Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException
      */
     public function handle(): Allocation
     {

@@ -114,16 +114,31 @@ class Charsets
             return;
         }
 
-        $sql = 'SELECT `COLLATION_NAME` AS `Collation`,'
-            . ' `CHARACTER_SET_NAME` AS `Charset`,'
-            . ' `ID` AS `Id`,'
-            . ' `IS_DEFAULT` AS `Default`,'
-            . ' `IS_COMPILED` AS `Compiled`,'
-            . ' `SORTLEN` AS `Sortlen`'
-            . ' FROM `information_schema`.`COLLATIONS`';
+        if ($dbi->isMariaDB() && $dbi->getVersion() >= 101000) {
+            /* Use query to accommodate new structure of MariaDB collations.
+            Note, that SHOW COLLATION command is not applicable at the time of writing.
+            Refer https://jira.mariadb.org/browse/MDEV-27009 */
+            $sql = 'SELECT `collapp`.`FULL_COLLATION_NAME` AS `Collation`,'
+                . ' `collapp`.`CHARACTER_SET_NAME` AS `Charset`,'
+                . ' `collapp`.`ID` AS `Id`,'
+                . ' `collapp`.`IS_DEFAULT` AS `Default`,'
+                . ' `coll`.`IS_COMPILED` AS `Compiled`,'
+                . ' `coll`.`SORTLEN` AS `Sortlen`'
+                . ' FROM `information_schema`.`COLLATION_CHARACTER_SET_APPLICABILITY` `collapp`'
+                . ' LEFT JOIN `information_schema`.`COLLATIONS` `coll`'
+                . ' ON `collapp`.`COLLATION_NAME`=`coll`.`COLLATION_NAME`';
+        } else {
+            $sql = 'SELECT `COLLATION_NAME` AS `Collation`,'
+                . ' `CHARACTER_SET_NAME` AS `Charset`,'
+                . ' `ID` AS `Id`,'
+                . ' `IS_DEFAULT` AS `Default`,'
+                . ' `IS_COMPILED` AS `Compiled`,'
+                . ' `SORTLEN` AS `Sortlen`'
+                . ' FROM `information_schema`.`COLLATIONS`';
 
-        if ($disableIs) {
-            $sql = 'SHOW COLLATION';
+            if ($disableIs) {
+                $sql = 'SHOW COLLATION';
+            }
         }
 
         $res = $dbi->query($sql);

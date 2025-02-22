@@ -6,12 +6,8 @@
     <span class="drop_sql hide">{{ sql_drop }}</span>
     <strong>{{ routine.name }}</strong>
   </td>
-  <td>
-    {{ routine.type }}
-  </td>
-  <td dir="ltr">
-    {{ routine.returns }}
-  </td>
+  <td>{{ routine.type }}</td>
+  <td dir="ltr">{{ routine.returns }}</td>
   <td>
     {% if has_edit_privilege %}
       <a class="ajax edit_anchor" href="{{ url('/database/routines', {

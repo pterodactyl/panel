@@ -8,7 +8,7 @@ class MountNode extends Model
 {
     protected $table = 'mount_node';
 
-    protected $primaryKey;
+    protected $primaryKey = null;
 
     public $incrementing = false;
 }

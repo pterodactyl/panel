@@ -48,10 +48,13 @@
 
             <label for="sessionMaxRowsSelect">{% trans 'Number of rows:' %}</label>
             <select class="autosubmit" name="session_max_rows" id="sessionMaxRowsSelect">
+              {% set rows_options = [25, 50, 100, 250, 500] %}
               {% if navigation.is_showing_all %}
                 <option value="" disabled selected>{% trans 'All' %}</option>
+              {% elseif navigation.max_rows not in rows_options %}
+                {% set rows_options = rows_options|merge([navigation.max_rows])|sort((a, b) => a <=> b) %}
               {% endif %}
-              {% for option in ['25', '50', '100', '250', '500'] %}
+              {% for option in rows_options %}
                 <option value="{{ option }}"{{ navigation.max_rows == option ? ' selected' }}>{{ option }}</option>
               {% endfor %}
             </select>

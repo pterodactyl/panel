@@ -67,7 +67,7 @@ Red Hat Enterprise Linux
 
 Red Hat Enterprise Linux itself and thus derivatives like CentOS don't
 ship phpMyAdmin, but the Fedora-driven repository
-`Extra Packages for Enterprise Linux (EPEL) <https://fedoraproject.org/wiki/EPEL>`_
+`Extra Packages for Enterprise Linux (EPEL) <https://docs.fedoraproject.org/en-US/epel/>`_
 is doing so, if it's
 `enabled <https://fedoraproject.org/wiki/EPEL/FAQ#howtouse>`_.
 But be aware that the configuration file is maintained in
@@ -90,7 +90,7 @@ In order to install from Git, you'll need a few supporting applications:
 
 * `Git <https://git-scm.com/downloads>`_ to download the source, or you can download the most recent source directly from `Github <https://codeload.github.com/phpmyadmin/phpmyadmin/zip/QA_5_2>`_
 * `Composer <https://getcomposer.org/download/>`__
-* `Node.js <https://nodejs.org/en/download/>`_ (version 10 or higher)
+* `Node.js <https://nodejs.org/en/download/>`_ (version 12 or higher)
 * `Yarn <https://classic.yarnpkg.com/en/docs/install>`_
 
 You can clone current phpMyAdmin source from
@@ -222,6 +222,16 @@ You can configure several phpMyAdmin features using environment variables:
 
     .. note:: Used only if :envvar:`PMA_PORT` is empty.
 
+.. envvar:: PMA_SOCKET
+
+    Socket file for the database connection.
+
+.. envvar:: PMA_SOCKETS
+
+    Comma-separated list of socket files for the database connections.
+
+    .. note:: Used only if :envvar:`PMA_SOCKET` is empty.
+
 .. envvar:: PMA_ABSOLUTE_URI
 
     The fully-qualified path (``https://pma.example.net/``) where the reverse
@@ -318,6 +328,98 @@ You can configure several phpMyAdmin features using environment variables:
 .. envvar:: APACHE_PORT
 
     If set, this option will change the default Apache port from `80` in case you want it to run on a different port like an unprivileged port. Set to any port value (such as `APACHE_PORT=8090`).
+
+.. envvar:: PMA_SSL_DIR
+
+    Define the path used for SSL files generated from environment variables, default value is `/etc/phpmyadmin/ssl`.
+
+.. envvar:: PMA_SSL
+
+    When set to `1`, defines SSL usage for the MySQL connection.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl']`
+
+.. envvar:: PMA_SSLS
+
+    Comma-separated list of `0` and `1` defining SSL usage for the corresponding MySQL connections.
+
+.. envvar:: PMA_SSL_VERIFY
+
+    When set to `1`, enables SSL certificate verification for the MySQL connection.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_verify']`
+
+.. envvar:: PMA_SSL_VERIFIES
+
+    Comma-separated list of `0` and `1` to enable or disable SSL certificate verification for multiple MySQL connections.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_verify']`
+
+.. envvar:: PMA_SSL_CA
+
+    In the context of mutual TLS security, allows setting your CA file as a string inside the default `config.inc.php`.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_ca']`
+
+.. envvar:: PMA_SSL_CAS
+
+    In the context of mutual TLS security, allows setting multiple CA files as a comma-separated list of strings inside the default `config.inc.php`.
+
+.. envvar:: PMA_SSL_CA_BASE64
+
+    In the context of mutual TLS security, allows setting your CA file as a base64 string inside the default `config.inc.php`.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_ca']`
+
+.. envvar:: PMA_SSL_CAS_BASE64
+
+    In the context of mutual TLS security, allows setting multiple CA files as a comma-separated list of base64 strings inside the default `config.inc.php`.
+
+.. envvar:: PMA_SSL_CERT
+
+    In the context of mutual TLS security, allows setting your CERT file as a string inside the default `config.inc.php`.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_cert']`
+
+.. envvar:: PMA_SSL_CERTS
+
+    In the context of mutual TLS security, allows setting multiple CERT files as a comma-separated list of strings inside the default `config.inc.php`.
+
+.. envvar:: PMA_SSL_CERT_BASE64
+
+    In the context of mutual TLS security, allows setting your CERT file as a base64 string inside the default `config.inc.php`.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_cert']`
+
+.. envvar:: PMA_SSL_CERTS_BASE64
+
+    In the context of mutual TLS security, allows setting multiple CERT files as a comma-separated list of base64 strings inside the default `config.inc.php`.
+
+.. envvar:: PMA_SSL_KEY
+
+    In the context of mutual TLS security, allows setting your KEY file as a string inside the default `config.inc.php`.
+
+.. envvar:: PMA_SSL_KEYS
+
+    In the context of mutual TLS security, allows setting multiple KEY files as a comma-separated list of strings inside the default `config.inc.php`.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_key']`
+
+.. envvar:: PMA_SSL_KEY_BASE64
+
+    In the context of mutual TLS security, allows setting your KEY file as a base64 string inside the default `config.inc.php`.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['ssl_key']`
+
+.. envvar:: PMA_SSL_KEYS_BASE64
+
+    In the context of mutual TLS security, allows setting multiple KEY files as a comma-separated list of base64 strings inside the default `config.inc.php`.
+
+.. envvar:: TZ
+
+    If defined, this option will change the default PHP `date.timezone` from `UTC`.
+
+    .. seealso:: :config:option:`$cfg['Servers'][$i]['SessionTimeZone']`
 
 By default, :ref:`cookie` is used, but if :envvar:`PMA_USER` and
 :envvar:`PMA_PASSWORD` are set, it is switched to :ref:`auth_config`.
@@ -446,7 +548,7 @@ arbitrary server - allowing you to specify MySQL/MariaDB server on the login pag
 
 .. code-block:: sh
 
-    docker-compose up -d
+    docker compose up -d
 
 Customizing configuration file using docker-compose
 ---------------------------------------------------
@@ -563,7 +665,7 @@ Quick Install
 #. Choose an appropriate distribution kit from the phpmyadmin.net
    Downloads page. Some kits contain only the English messages, others
    contain all languages. We'll assume you chose a kit whose name
-   looks like ``phpMyAdmin-x.x.x -all-languages.tar.gz``.
+   looks like ``phpMyAdmin-x.x.x-all-languages.tar.gz``.
 #. Ensure you have downloaded a genuine archive, see :ref:`verify`.
 #. Untar or unzip the distribution (be sure to unzip the subdirectories):
    ``tar -xzvf phpMyAdmin_x.x.x-all-languages.tar.gz`` in your

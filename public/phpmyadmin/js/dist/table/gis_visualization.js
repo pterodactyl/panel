@@ -223,7 +223,6 @@ AJAX.registerOnload('table/gis_visualization.js', function () {
       return $('<div>'); // Give a fake element to be used for dragging display
     }
   });
-
   $(document).on('dragstart', 'svg', function (event, dd) {
     $('#placeholder').addClass('placeholderDrag');
     dragX = Math.round(dd.offset.left);
@@ -306,7 +305,7 @@ AJAX.registerOnload('table/gis_visualization.js', function () {
    * Detect the mousemove event and show tooltips.
    */
   $('.vector').on('mousemove', function (event) {
-    var contents = Functions.escapeHtml($(this).attr('name')).trim();
+    var contents = Functions.escapeHtml($(this).attr('data-label')).trim();
     $('#tooltip').remove();
     if (contents !== '') {
       $('<div id="tooltip">' + contents + '</div>').css({

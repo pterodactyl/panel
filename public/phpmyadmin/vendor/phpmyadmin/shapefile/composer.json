@@ -16,14 +16,17 @@
         "source": "https://github.com/phpmyadmin/shapefile"
     },
     "scripts": {
-        "phpcbf": "phpcbf",
-        "phpcs": "phpcs",
-        "phpstan": "phpstan analyse",
-        "phpunit": "phpunit --color=always",
+        "phpcbf": "@php phpcbf",
+        "phpcs": "@php phpcs",
+        "phpstan": "@php phpstan analyse",
+        "phpunit": "@php phpunit --color=always",
         "test": [
             "@phpcs",
             "@phpstan",
             "@phpunit"
+        ],
+        "update:baselines": [
+            "@php phpstan analyse --generate-baseline"
         ]
     },
     "require": {
@@ -33,17 +36,25 @@
         "ext-dbase": "For dbf files parsing"
     },
     "require-dev": {
-        "phpstan/phpstan": "^0.12.37",
-        "phpmyadmin/coding-standard": "^2.1.1",
-        "phpstan/phpstan-phpunit": "^0.12.6",
-        "phpunit/phpunit": "^7.4 || ^8 || ^9"
+        "phpmyadmin/coding-standard": "^3.0.0",
+        "phpstan/phpstan": "^1.4.10",
+        "phpstan/phpstan-phpunit": "^1.0",
+        "phpunit/phpunit": "^7.5 || ^8.5 || ^9.6 || ^10.3"
     },
     "autoload": {
         "psr-4": {
             "PhpMyAdmin\\ShapeFile\\": "src"
         }
     },
+    "autoload-dev": {
+        "psr-4": {
+            "PhpMyAdminTest\\ShapeFile\\": "tests"
+        }
+    },
     "config":{
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
     }
 }

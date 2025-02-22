@@ -1,5 +1,91 @@
 # Change Log
 
+## [5.10.3] - 2024-01-18
+
+### Fixed
+
+- Add "RECURSIVE" on build() for "WITH RECURSIVE" on the WithStatement class (#605)
+- Fix for quadratic complexity in certain queries, which could have caused long execution times. Thanks to Maximilian Krög (GitHub user MoonE) for this fix to help improve security.
+
+## [5.10.2] - 2024-12-05
+
+### Added
+
+- Add MariaDb 11.6 and 11.7 contexts (#601)
+- Add context files for MySQL 9.1 (#603)
+
+## [5.10.1] - 2024-11-10
+
+### Fixed
+
+- Fix parsing of ALTER TABLE … RENAME KEY (#580)
+- Fix parsing table names that start with "e1" (#578)
+- Improve handling of negative and overflowed offsets on TokensList (#582)
+- Fix parsing of queries with 'AND' (#590)
+- Fix C style comments with two asterisks (#597)
+- Fix parsing of SRID in column definition (#595)
+
+## [5.10.0] - 2024-08-29
+
+- Fix parsing of UPDATE ... SET (#577)
+- Fix parsing of WITH PARSER (#563)
+- Fix context files for MySQL and MariaDB (#572) (#576)
+- Allow using `::class` keyword to load a context (#571)
+- Fix query flags for lower-case functions (#564)
+- Improve context files by using constants (#570)
+- Fix case when a condition is not parsed correctly (#560)
+- Support parsing KILL statements (#556)
+- Fix replace clause of select statement with FOR UPDATE (#555)
+- Add support for ALTER FUNCTION and ALTER PROCEDURE statements (#553)
+
+## [5.9.1] - 2024-08-13
+
+- Allow parsing ALTER TABLE statement with column check constraint (#554)
+- Add support for PHPUnit 10 (#573)
+
+## [5.9.0] - 2024-01-20
+
+- Fix keywords not being recognized as table alias (#496)
+- Add `bin/sql-parser` executable file (#517)
+- Fix bind parameter in LIMIT OFFSET (#498)
+- Fix using ? as a parameter (#515)
+
+## [5.8.2] - 2023-09-19
+
+- Fix a regression with the ALTER operation (#511)
+
+## [5.8.1] - 2023-09-15
+
+- Fix `:=` was not recognized as an operator just like `=` (#306)
+- Fix `ALTER TABLE … MODIFY … ENUM('<reserved_keyword>')` is being wrongly parsed (#234)
+- Fix `ALTER TABLE … MODIFY … ENUM('<reserved_keyword>')` is being wrongly parsed (#478)
+- Fix MariaDB window function with alias gives bad linting errors (#283)
+- Fix unrecognized keyword `COLLATE` in `WHERE` clauses (#491)
+- Fix invalid hexadecimal prefix 0X (#508)
+
+## [5.8.0] - 2023-06-05
+
+- Fix `ALTER EVENT RENAME TO` to use expression instead of var (#419)
+- Fix incorrect order of operations to parse table/db called `` (#422)
+- Fix ALTER EVENT statement with DEFINER=user modifier fails to be parsed (#418)
+- Fix GROUP BY modifier WITH ROLLUP is treated as a syntax error and prevents export of SQL query results
+- Fix `TokensList::getPrevious` was not able to reach very first token (#428)
+- Fix `TransactionStatement::build()` "Call to a member function build() on null" when the transaction has no end
+- Fix MySQL-specific commands parsing (#226)
+- Fix `ALTER TABLE … RENAME COLUMN … TO …` is not understood by the parser/linter (#430)
+- Fix `PARTITION` syntax errors (#377)
+- Fix `ALTER USER` when used with `IDENTIFIED WITH/VIA/BY` option (#431)
+- Fix `COALESCE PARTITION` in `ALTER TABLE`, rather than `COALESCE` (#323)
+- Support `ALGORITHM` and `LOCK` options in `ALTER TABLE` statements (#319)
+- Fix way end of functions, procedures and triggers' bodies is identified (#438)
+- Fix `enclosed by` is not recognized by the parser when `fields` is in lower case (#236)
+- Support `KEY` on `CreateDefinition` (#330)
+- Fix `CALL` statements parsing (#372)
+- Implement support for `LEFT JOIN`, `JOIN`, `INNER JOIN` on `UpdateStatement` (#260)
+- Implement support for `TABLE` and `REPLACE` statements on `DESCRIBE` statements
+- Fix `DESCRIBE` to allow a schema.table syntax (#445)
+- Fix parsing insert queries with functions trims commas (#450)
+
 ## [5.7.0] - 2023-01-25
 
 * Performance improvement to use less the `nextToken()` function (#397)
@@ -517,3 +603,10 @@ __Breaking changes:__
 ## [1.0.0] - 2015-08-20
 
 * First release of this library.
+
+[5.10.3]: https://github.com/phpmyadmin/sql-parser/compare/5.10.2...5.10.3
+[5.10.2]: https://github.com/phpmyadmin/sql-parser/compare/5.10.1...5.10.2
+[5.10.1]: https://github.com/phpmyadmin/sql-parser/compare/5.10.0...5.10.1
+[5.10.0]: https://github.com/phpmyadmin/sql-parser/compare/5.9.1...5.10.0
+[5.9.1]: https://github.com/phpmyadmin/sql-parser/compare/5.9.0...5.9.1
+[5.9.0]: https://github.com/phpmyadmin/sql-parser/compare/5.8.2...5.9.0

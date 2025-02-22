@@ -10,6 +10,7 @@ use PhpMyAdmin\SqlParser\Token;
 use PhpMyAdmin\SqlParser\TokensList;
 
 use function implode;
+use function in_array;
 use function is_array;
 use function trim;
 
@@ -63,7 +64,7 @@ class SetOperation extends Component
          * Below are the states of the parser.
          *
          *      0 ---------------------[ col_name ]--------------------> 0
-         *      0 ------------------------[ = ]------------------------> 1
+         *      0 ---------------------[ = or := ]---------------------> 1
          *      1 -----------------------[ value ]---------------------> 1
          *      1 ------------------------[ , ]------------------------> 0
          *
@@ -104,7 +105,7 @@ class SetOperation extends Component
             }
 
             if ($state === 0) {
-                if ($token->token === '=') {
+                if (in_array($token->token, ['=', ':='], true)) {
                     $state = 1;
                 } elseif ($token->value !== ',') {
                     $expr->column .= $token->token;

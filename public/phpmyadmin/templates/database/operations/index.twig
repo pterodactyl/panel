@@ -56,7 +56,7 @@
           <div class="mb-3 row g-3">
             <div class="col-auto">
               <label class="visually-hidden" for="new_db_name">{% trans 'New database name' %}</label>
-              <input class="form-control textfield" id="new_db_name" type="text" name="newname" maxlength="64" required>
+              <input class="form-control textfield" id="new_db_name" type="text" name="newname" maxlength="64" value="{{ db }}" required>
             </div>
           </div>
 
@@ -120,7 +120,7 @@
         <div class="mb-3 row g-3">
           <div class="col-auto">
             <label class="visually-hidden" for="renameDbNameInput">{% trans 'Database name' %}</label>
-            <input class="form-control textfield" id="renameDbNameInput" type="text" maxlength="64" name="newname" required>
+            <input class="form-control textfield" id="renameDbNameInput" type="text" name="newname" maxlength="64" value="{{ db }}" required>
           </div>
         </div>
 

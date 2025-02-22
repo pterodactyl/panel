@@ -76,7 +76,13 @@ class ReplicationGui
 
         if (! isset($_POST['repl_clear_scr'])) {
             $primaryStatusTable = $this->getHtmlForReplicationStatusTable('primary', true, false);
-            $replicas = $dbi->fetchResult('SHOW SLAVE HOSTS', null, null);
+            if ($dbi->isMySql() && $dbi->getVersion() >= 80022) {
+                $replicas = $dbi->fetchResult('SHOW REPLICAS', null, null);
+            } elseif ($dbi->isMariaDB() && $dbi->getVersion() >= 100501) {
+                $replicas = $dbi->fetchResult('SHOW REPLICA HOSTS', null, null);
+            } else {
+                $replicas = $dbi->fetchResult('SHOW SLAVE HOSTS', null, null);
+            }
 
             $urlParams = $GLOBALS['urlParams'];
             $urlParams['primary_add_user'] = true;
@@ -126,13 +132,32 @@ class ReplicationGui
     ): string {
         global $dbi;
 
-        $serverReplicaMultiReplication = $dbi->fetchResult('SHOW ALL SLAVES STATUS');
+        $serverReplicaMultiReplication = [];
+        if ($dbi->isMariaDB() && $dbi->getVersion() >= 100501) {
+            $serverReplicaMultiReplication = $dbi->fetchResult('SHOW ALL REPLICAS STATUS');
+        } elseif ($dbi->isMariaDB()) {
+            $serverReplicaMultiReplication = $dbi->fetchResult('SHOW ALL SLAVES STATUS');
+        }
+
+        $isReplicaIoRunning = false;
+        $isReplicaSqlRunning = false;
+
         if ($serverReplicaStatus) {
             $urlParams = $GLOBALS['urlParams'];
             $urlParams['sr_take_action'] = true;
             $urlParams['sr_replica_server_control'] = true;
 
-            if ($serverReplicaReplication[0]['Slave_IO_Running'] === 'No') {
+            $isReplicaIoRunning = isset($serverReplicaReplication[0]['Slave_IO_Running'])
+                && $serverReplicaReplication[0]['Slave_IO_Running'] !== 'No'
+                || isset($serverReplicaReplication[0]['Replica_IO_Running'])
+                && $serverReplicaReplication[0]['Replica_SQL_Running'] !== 'No';
+
+            $isReplicaSqlRunning = isset($serverReplicaReplication[0]['Slave_SQL_Running'])
+                && $serverReplicaReplication[0]['Slave_SQL_Running'] !== 'No'
+                || isset($serverReplicaReplication[0]['Replica_SQL_Running'])
+                && $serverReplicaReplication[0]['Replica_SQL_Running'] !== 'No';
+
+            if (! $isReplicaIoRunning) {
                 $urlParams['sr_replica_action'] = 'start';
             } else {
                 $urlParams['sr_replica_action'] = 'stop';
@@ -141,7 +166,7 @@ class ReplicationGui
             $urlParams['sr_replica_control_param'] = 'IO_THREAD';
             $replicaControlIoLink = Url::getCommon($urlParams, '', false);
 
-            if ($serverReplicaReplication[0]['Slave_SQL_Running'] === 'No') {
+            if (! $isReplicaSqlRunning) {
                 $urlParams['sr_replica_action'] = 'start';
             } else {
                 $urlParams['sr_replica_action'] = 'stop';
@@ -150,10 +175,7 @@ class ReplicationGui
             $urlParams['sr_replica_control_param'] = 'SQL_THREAD';
             $replicaControlSqlLink = Url::getCommon($urlParams, '', false);
 
-            if (
-                $serverReplicaReplication[0]['Slave_IO_Running'] === 'No'
-                || $serverReplicaReplication[0]['Slave_SQL_Running'] === 'No'
-            ) {
+            if (! $isReplicaIoRunning || ! $isReplicaSqlRunning) {
                 $urlParams['sr_replica_action'] = 'start';
             } else {
                 $urlParams['sr_replica_action'] = 'stop';
@@ -177,9 +199,6 @@ class ReplicationGui
             $reconfigurePrimaryLink = Url::getCommon($urlParams, '', false);
 
             $replicaStatusTable = $this->getHtmlForReplicationStatusTable('replica', true, false);
-
-            $replicaIoRunning = $serverReplicaReplication[0]['Slave_IO_Running'] !== 'No';
-            $replicaSqlRunning = $serverReplicaReplication[0]['Slave_SQL_Running'] !== 'No';
         }
 
         return $this->template->render('server/replication/replica_configuration', [
@@ -188,8 +207,8 @@ class ReplicationGui
             'primary_connection' => $_POST['primary_connection'] ?? '',
             'server_replica_status' => $serverReplicaStatus,
             'replica_status_table' => $replicaStatusTable ?? '',
-            'replica_sql_running' => $replicaSqlRunning ?? false,
-            'replica_io_running' => $replicaIoRunning ?? false,
+            'replica_sql_running' => $isReplicaIoRunning,
+            'replica_io_running' => $isReplicaSqlRunning,
             'replica_control_full_link' => $replicaControlFullLink ?? '',
             'replica_control_reset_link' => $replicaControlResetLink ?? '',
             'replica_control_sql_link' => $replicaControlSqlLink ?? '',
@@ -261,27 +280,33 @@ class ReplicationGui
         $replicationInfo->load($_POST['primary_connection'] ?? null);
 
         $replicationVariables = $replicationInfo->primaryVariables;
-        $variablesAlerts = null;
-        $variablesOks = null;
+        $variablesAlerts = [];
+        $variablesOks = [];
         $serverReplication = $replicationInfo->getPrimaryStatus();
         if ($type === 'replica') {
             $replicationVariables = $replicationInfo->replicaVariables;
             $variablesAlerts = [
                 'Slave_IO_Running' => 'No',
                 'Slave_SQL_Running' => 'No',
+                'Replica_IO_Running' => 'No',
+                'Replica_SQL_Running' => 'No',
             ];
             $variablesOks = [
                 'Slave_IO_Running' => 'Yes',
                 'Slave_SQL_Running' => 'Yes',
+                'Replica_IO_Running' => 'Yes',
+                'Replica_SQL_Running' => 'Yes',
             ];
             $serverReplication = $replicationInfo->getReplicaStatus();
         }
 
         $variables = [];
         foreach ($replicationVariables as $variable) {
-            $serverReplicationVariable = isset($serverReplication[0])
-                ? $serverReplication[0][$variable]
-                : '';
+            if (! isset($serverReplication[0], $serverReplication[0][$variable])) {
+                continue;
+            }
+
+            $serverReplicationVariable = $serverReplication[0][$variable];
 
             $variables[$variable] = [
                 'name' => $variable,
@@ -568,7 +593,12 @@ class ReplicationGui
 
         if ($_POST['sr_replica_action'] === 'reset') {
             $qStop = $this->replication->replicaControl('STOP', null, DatabaseInterface::CONNECT_USER);
-            $qReset = $dbi->tryQuery('RESET SLAVE;');
+            if ($dbi->isMySql() && $dbi->getVersion() >= 80022 || $dbi->isMariaDB() && $dbi->getVersion() >= 100501) {
+                $qReset = $dbi->tryQuery('RESET REPLICA;');
+            } else {
+                $qReset = $dbi->tryQuery('RESET SLAVE;');
+            }
+
             $qStart = $this->replication->replicaControl('START', null, DatabaseInterface::CONNECT_USER);
 
             $result = $qStop !== false && $qStop !== -1 &&
@@ -597,7 +627,12 @@ class ReplicationGui
         }
 
         $qStop = $this->replication->replicaControl('STOP', null, DatabaseInterface::CONNECT_USER);
-        $qSkip = $dbi->tryQuery('SET GLOBAL SQL_SLAVE_SKIP_COUNTER = ' . $count . ';');
+        if ($dbi->isMySql() && $dbi->getVersion() >= 80400) {
+            $qSkip = $dbi->tryQuery('SET GLOBAL SQL_REPLICA_SKIP_COUNTER = ' . $count . ';');
+        } else {
+            $qSkip = $dbi->tryQuery('SET GLOBAL SQL_SLAVE_SKIP_COUNTER = ' . $count . ';');
+        }
+
         $qStart = $this->replication->replicaControl('START', null, DatabaseInterface::CONNECT_USER);
 
         return $qStop !== false && $qStop !== -1 &&

@@ -124,7 +124,6 @@ var DragDropImport = {
       }
     });
   },
-
   /**
    * Triggered when an object is dragged into the PMA UI
    *

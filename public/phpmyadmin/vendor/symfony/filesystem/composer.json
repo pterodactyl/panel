@@ -21,6 +21,9 @@
         "symfony/polyfill-mbstring": "~1.8",
         "symfony/polyfill-php80": "^1.16"
     },
+    "require-dev": {
+        "symfony/process": "^5.4|^6.4"
+    },
     "autoload": {
         "psr-4": { "Symfony\\Component\\Filesystem\\": "" },
         "exclude-from-classmap": [

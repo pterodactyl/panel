@@ -50,7 +50,8 @@ Shortcut keys
 
 Currently phpMyAdmin supports following shortcuts:
 
-* k - Toggle console
+* k and CTRL+k - Toggle console
+* CTRL+ALT+c   - Toggle console
 * h - Go to home page
 * s - Open settings
 * d + s - Go to database structure (Provided you are in database related page)

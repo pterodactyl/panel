@@ -161,7 +161,7 @@ AJAX.registerOnload('table/select.js', function () {
                     $('#sqlqueryresultsouter').html(data.sql_query);
                 } else { // results found
                     $('#sqlqueryresultsouter').html(data.message);
-                    $('.sqlqueryresults').trigger('makegrid');
+                    $('.sqlqueryresults').trigger('makeGrid');
                 }
                 $('#tbl_search_form')
                     // workaround for bug #3168569 - Issue on toggling the "Hide search criteria" in chrome.
@@ -182,7 +182,7 @@ AJAX.registerOnload('table/select.js', function () {
     });
 
     // Following section is related to the 'function based search' for geometry data types.
-    // Initially hide all the open_gis_editor spans
+    // Initially hide all the open_search_gis_editor spans
     $('span.open_search_gis_editor').hide();
 
     $('select.geom_func').on('change', function () {
@@ -251,13 +251,15 @@ AJAX.registerOnload('table/select.js', function () {
         var field = 'Parameter';
         // Column type
         var geomFunc = $span.parents('tr').find('.geom_func').val();
-        var type;
-        if (geomFunc === 'Envelope') {
-            type = 'polygon';
-        } else if (geomFunc === 'ExteriorRing') {
-            type = 'linestring';
-        } else {
-            type = 'point';
+        var type = 'GEOMETRY';
+        if (!value) {
+            if (geomFunc === 'Envelope') {
+                value = 'POLYGON()';
+            } else if (geomFunc === 'ExteriorRing') {
+                value = 'LINESTRING()';
+            } else {
+                value = 'POINT()';
+            }
         }
         // Names of input field and null checkbox
         var inputName = $span.parent('td').children('input[type=\'text\']').attr('name');

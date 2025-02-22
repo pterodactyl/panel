@@ -44,8 +44,11 @@ abstract class Base32 implements EncoderInterface
      * @param bool $strictPadding
      * @return string
      */
-    public static function decode(string $encodedString, bool $strictPadding = false): string
-    {
+    public static function decode(
+        #[\SensitiveParameter]
+        string $encodedString,
+        bool $strictPadding = false
+    ): string {
         return static::doDecode($encodedString, false, $strictPadding);
     }
 
@@ -56,8 +59,11 @@ abstract class Base32 implements EncoderInterface
      * @param bool $strictPadding
      * @return string
      */
-    public static function decodeUpper(string $src, bool $strictPadding = false): string
-    {
+    public static function decodeUpper(
+        #[\SensitiveParameter]
+        string $src,
+        bool $strictPadding = false
+    ): string {
         return static::doDecode($src, true, $strictPadding);
     }
 
@@ -68,10 +74,13 @@ abstract class Base32 implements EncoderInterface
      * @return string
      * @throws TypeError
      */
-    public static function encode(string $binString): string
-    {
+    public static function encode(
+        #[\SensitiveParameter]
+        string $binString
+    ): string {
         return static::doEncode($binString, false, true);
     }
+
     /**
      * Encode into Base32 (RFC 4648)
      *
@@ -79,8 +88,10 @@ abstract class Base32 implements EncoderInterface
      * @return string
      * @throws TypeError
      */
-    public static function encodeUnpadded(string $src): string
-    {
+    public static function encodeUnpadded(
+        #[\SensitiveParameter]
+        string $src
+    ): string {
         return static::doEncode($src, false, false);
     }
 
@@ -91,8 +102,10 @@ abstract class Base32 implements EncoderInterface
      * @return string
      * @throws TypeError
      */
-    public static function encodeUpper(string $src): string
-    {
+    public static function encodeUpper(
+        #[\SensitiveParameter]
+        string $src
+    ): string {
         return static::doEncode($src, true, true);
     }
 
@@ -103,8 +116,10 @@ abstract class Base32 implements EncoderInterface
      * @return string
      * @throws TypeError
      */
-    public static function encodeUpperUnpadded(string $src): string
-    {
+    public static function encodeUpperUnpadded(
+        #[\SensitiveParameter]
+        string $src
+    ): string {
         return static::doEncode($src, true, false);
     }
 
@@ -191,8 +206,11 @@ abstract class Base32 implements EncoderInterface
      * @param bool $upper
      * @return string
      */
-    public static function decodeNoPadding(string $encodedString, bool $upper = false): string
-    {
+    public static function decodeNoPadding(
+        #[\SensitiveParameter]
+        string $encodedString,
+        bool $upper = false
+    ): string {
         $srcLen = Binary::safeStrlen($encodedString);
         if ($srcLen === 0) {
             return '';
@@ -222,9 +240,9 @@ abstract class Base32 implements EncoderInterface
      * @return string
      *
      * @throws TypeError
-     * @psalm-suppress RedundantCondition
      */
     protected static function doDecode(
+        #[\SensitiveParameter]
         string $src,
         bool $upper = false,
         bool $strictPadding = false
@@ -434,8 +452,12 @@ abstract class Base32 implements EncoderInterface
      * @return string
      * @throws TypeError
      */
-    protected static function doEncode(string $src, bool $upper = false, $pad = true): string
-    {
+    protected static function doEncode(
+        #[\SensitiveParameter]
+        string $src,
+        bool $upper = false,
+        $pad = true
+    ): string {
         // We do this to reduce code duplication:
         $method = $upper
             ? 'encode5BitsUpper'

@@ -29,7 +29,7 @@ class DaemonAuthenticate
     /**
      * Check if a request from the daemon can be properly attributed back to a single node instance.
      *
-     * @throws HttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\HttpException
      */
     public function handle(Request $request, \Closure $next): mixed
     {

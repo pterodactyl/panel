@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\Schema;
@@ -13,13 +12,13 @@ class MigratePubPrivFormatToSingleKey extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         DB::transaction(function () {
             DB::table('api_keys')->get()->each(function ($item) {
                 try {
                     $decrypted = Crypt::decrypt($item->secret);
-                } catch (DecryptException) {
+                } catch (DecryptException $exception) {
                     $decrypted = str_random(32);
                 } finally {
                     DB::table('api_keys')->where('id', $item->id)->update([
@@ -31,41 +30,27 @@ class MigratePubPrivFormatToSingleKey extends Migration
 
         Schema::table('api_keys', function (Blueprint $table) {
             $table->dropColumn('public');
-            $table->renameColumn('secret', 'token');
+            $table->string('secret', 32)->change();
         });
 
-        Schema::table('api_keys', function (Blueprint $table) {
-            $table->char('token', 32)->change();
-            $table->unique('token');
-        });
+        DB::statement('ALTER TABLE `api_keys` CHANGE `secret` `token` CHAR(32) NOT NULL, ADD UNIQUE INDEX `api_keys_token_unique` (`token`(32))');
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::table('api_keys', function (Blueprint $table) {
-            $table->dropUnique(['token']);
-            $table->renameColumn('token', 'secret');
-        });
+        DB::statement('ALTER TABLE `api_keys` CHANGE `token` `secret` TEXT, DROP INDEX `api_keys_token_unique`');
 
         Schema::table('api_keys', function (Blueprint $table) {
-            $table->dropUnique('token');
-            $table->text('token')->change();
-        });
-
-        Schema::table('api_keys', function (Blueprint $table) {
-            $table->renameColumn('token', 'secret');
-
-            $table->text('secret')->nullable()->change();
             $table->char('public', 16)->after('user_id');
         });
 
         DB::transaction(function () {
             DB::table('api_keys')->get()->each(function ($item) {
                 DB::table('api_keys')->where('id', $item->id)->update([
-                    'public' => Str::random(16),
+                    'public' => str_random(16),
                     'secret' => Crypt::encrypt($item->secret),
                 ]);
             });

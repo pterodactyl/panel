@@ -91,5 +91,5 @@ return [
     'enable' => 'Enable',
     'disable' => 'Disable',
     'save' => 'Save',
-    'copyright' => 'a2data - :year',
+    'copyright' => 'arion2000.xyz Services - :year',
 ];

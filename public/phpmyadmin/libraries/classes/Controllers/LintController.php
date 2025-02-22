@@ -10,6 +10,8 @@ namespace PhpMyAdmin\Controllers;
 use PhpMyAdmin\Core;
 use PhpMyAdmin\Linter;
 
+use function is_array;
+use function is_string;
 use function json_encode;
 
 /**
@@ -17,45 +19,48 @@ use function json_encode;
  */
 class LintController extends AbstractController
 {
+    public const EDITOR_SQL_PREFIX = [
+        'event' => "DELIMITER $$ CREATE EVENT `a` ON SCHEDULE EVERY MINUTE DO\n",
+        'routine' => "DELIMITER $$ CREATE PROCEDURE `a`()\n",
+        'trigger' => "DELIMITER $$ CREATE TRIGGER `a` AFTER INSERT ON `b` FOR EACH ROW\n",
+    ];
+
     public function __invoke(): void
     {
-        $params = [
-            'sql_query' => $_POST['sql_query'] ?? null,
-            'options' => $_POST['options'] ?? null,
-        ];
+        $sqlQueryParam = $_POST['sql_query'] ?? null;
+        $options = $_POST['options'] ?? null;
 
         /**
          * The SQL query to be analyzed.
          *
-         * This does not need to be checked again XSS or MySQL injections because it is
+         * This does not need to be checked against XSS or MySQL injections because it is
          * never executed, just parsed.
          *
          * The client, which will receive the JSON response will decode the message and
          * and any HTML fragments that are displayed to the user will be encoded anyway.
-         *
-         * @var string
          */
-        $sqlQuery = ! empty($params['sql_query']) ? $params['sql_query'] : '';
+        $sqlQuery = is_string($sqlQueryParam) ? $sqlQueryParam : '';
 
-        $this->response->setAjax(true);
+        $editorType = is_array($options) ? ($options['editorType'] ?? null) : null;
+        $prefix = is_string($editorType) ? self::EDITOR_SQL_PREFIX[$editorType] ?? '' : '';
 
-        // Disabling standard response.
-        $this->response->disable();
+        $lints = Linter::lint($prefix . $sqlQuery);
+        if ($prefix !== '') {
+            // Adjust positions to account for prefix
+            foreach ($lints as $i => $lint) {
+                if ($lint['fromLine'] === 0) {
+                    continue;
+                }
 
-        Core::headerJSON();
-
-        if (! empty($params['options'])) {
-            $options = $params['options'];
-
-            if (! empty($options['routineEditor'])) {
-                $sqlQuery = 'CREATE PROCEDURE `a`() ' . $sqlQuery;
-            } elseif (! empty($options['triggerEditor'])) {
-                $sqlQuery = 'CREATE TRIGGER `a` AFTER INSERT ON `b` FOR EACH ROW ' . $sqlQuery;
-            } elseif (! empty($options['eventEditor'])) {
-                $sqlQuery = 'CREATE EVENT `a` ON SCHEDULE EVERY MINUTE DO ' . $sqlQuery;
+                $lints[$i]['fromLine'] -= 1;
+                $lints[$i]['toLine'] -= 1;
             }
         }
 
-        echo json_encode(Linter::lint($sqlQuery));
+        $this->response->setAjax(true);
+        // Disabling standard response.
+        $this->response->disable();
+        Core::headerJSON();
+        echo json_encode($lints);
     }
 }

@@ -30,7 +30,7 @@ final class ForeignKey
                 $dbi->fetchValue('SELECT @@ndb_version_string') ?: ''
             );
             if (substr($ndbver, 0, 4) === 'ndb-') {
-                $ndbver = substr($ndbver, 4);
+                $ndbver = (string) substr($ndbver, 4);
             }
 
             return version_compare($ndbver, '7.3', '>=');

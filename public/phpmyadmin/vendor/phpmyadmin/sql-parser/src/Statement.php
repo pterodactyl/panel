@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin\SqlParser;
 
-use PhpMyAdmin\SqlParser\Components\FunctionCall;
 use PhpMyAdmin\SqlParser\Components\OptionsArray;
 use Stringable;
 
 use function array_flip;
 use function array_keys;
+use function array_push;
 use function count;
 use function in_array;
 use function stripos;
@@ -61,6 +61,14 @@ abstract class Statement implements Stringable
      * @psalm-var array<string, array{non-empty-string, (1|2|3)}>
      */
     public static $CLAUSES = [];
+
+    /**
+     * Options that can be given to GROUP BY component.
+     *
+     * @var array<string, int|array<int, int|string>>
+     * @psalm-var array<string, (positive-int|array{positive-int, ('var'|'var='|'expr'|'expr=')})>
+     */
+    public static $GROUP_OPTIONS = [];
 
     /**
      * @var array<string, int|array<int, int|string>>
@@ -364,7 +372,11 @@ abstract class Statement implements Stringable
                     $parsedOptions = true;
                 }
             } elseif ($class === null) {
-                if (
+                if ($this instanceof Statements\SelectStatement && $token->value === 'WITH ROLLUP') {
+                    // Handle group options in Select statement
+                    // See Statements\SelectStatement::$GROUP_OPTIONS
+                    $this->group_options = OptionsArray::parse($parser, $list, static::$GROUP_OPTIONS);
+                } elseif (
                     $this instanceof Statements\SelectStatement
                     && ($token->value === 'FOR UPDATE'
                         || $token->value === 'LOCK IN SHARE MODE')
@@ -403,13 +415,6 @@ abstract class Statement implements Stringable
             }
 
             $this->after($parser, $list, $token);
-
-            // #223 Here may make a patch, if last is delimiter, back one
-            if ($class !== FunctionCall::class || $list->offsetGet($list->idx)->type !== Token::TYPE_DELIMITER) {
-                continue;
-            }
-
-            --$list->idx;
         }
 
         // This may be corrected by the parser.
@@ -451,6 +456,28 @@ abstract class Statement implements Stringable
     public function getClauses()
     {
         return static::$CLAUSES;
+    }
+
+    /**
+     * Gets the clause order of this statement as an array
+     * with clause as key and index as value.
+     *
+     * @return array<string, int>
+     */
+    public function getClauseOrder(): array
+    {
+        $clauses = [];
+        foreach (array_keys($this->getClauses()) as $key) {
+            if ($key === '_END_OPTIONS') {
+                if (static::$END_OPTIONS !== []) {
+                    array_push($clauses, ...array_keys(static::$END_OPTIONS));
+                }
+            } else {
+                $clauses[] = $key;
+            }
+        }
+
+        return array_flip($clauses);
     }
 
     /**

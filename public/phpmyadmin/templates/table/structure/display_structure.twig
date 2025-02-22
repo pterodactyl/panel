@@ -148,7 +148,7 @@
                         </li>
 
                         <li class="{{ not hide_structure_actions ? 'nav-item ' }}add_unique unique text-nowrap">
-                          {% if type == 'text' or type == 'blob' or tbl_storage_engine == 'ARCHIVE' or field_name in columns_with_unique_index %}
+                          {% if type == 'text' or type == 'blob' or tbl_storage_engine == 'ARCHIVE' %}
                             <span class="{{ hide_structure_actions ? 'dropdown-item-text' : 'nav-link px-1' }} disabled">{{ get_icon('bd_unique', 'Unique'|trans) }}</span>
                           {% else %}
                             <a rel="samepage" class="{{ hide_structure_actions ? 'dropdown-item' : 'nav-link px-1' }} ajax add_key d-print-none add_unique_anchor" href="{{ url('/table/structure/add-key') }}" data-post="{{ get_common({

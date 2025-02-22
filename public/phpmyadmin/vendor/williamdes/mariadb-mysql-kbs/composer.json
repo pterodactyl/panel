@@ -47,13 +47,13 @@
         "phpcbf": "@php phpcbf"
     },
     "require": {
-        "php": "^7.1 || ^8.0"
+        "php": "^7.2 || ^8.0"
     },
     "require-dev": {
-        "phpunit/phpunit": "^7 || ^8 || ^9",
-        "phpstan/phpstan": "^1.2",
-        "wdes/coding-standard": "^3.2.1",
-        "swaggest/json-schema": "^0.12.29"
+        "phpunit/phpunit": "^8 || ^9 || ^10 || ^11",
+        "phpstan/phpstan": "^1.10",
+        "wdes/coding-standard": "^3.3.2",
+        "swaggest/json-schema": "^0.12.42"
     },
     "autoload": {
         "psr-4": {
@@ -72,11 +72,5 @@
         "allow-plugins": {
             "dealerdirect/phpcodesniffer-composer-installer": true
         }
-    },
-    "archive": {
-        "exclude": [
-            "/test",
-            "/phpunit.xml"
-        ]
     }
 }

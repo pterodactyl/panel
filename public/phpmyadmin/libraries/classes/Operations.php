@@ -10,7 +10,6 @@ use PhpMyAdmin\Partitioning\Partition;
 use PhpMyAdmin\Plugins\Export\ExportSql;
 
 use function __;
-use function array_keys;
 use function array_merge;
 use function count;
 use function explode;
@@ -124,23 +123,23 @@ class Operations
     /**
      * Get views as an array and create SQL view stand-in
      *
-     * @param array     $tables_full       array of all tables in given db or dbs
+     * @param string[]  $tables            array of all tables in given db or dbs
      * @param ExportSql $export_sql_plugin export plugin instance
      * @param string    $db                database name
      *
      * @return array
      */
     public function getViewsAndCreateSqlViewStandIn(
-        array $tables_full,
+        array $tables,
         $export_sql_plugin,
         $db
     ) {
         $views = [];
-        foreach (array_keys($tables_full) as $each_table) {
+        foreach ($tables as $table) {
             // to be able to rename a db containing views,
             // first all the views are collected and a stand-in is created
             // the real views are created after the tables
-            if (! $this->dbi->getTable($db, (string) $each_table)->isView()) {
+            if (! $this->dbi->getTable($db, $table)->isView()) {
                 continue;
             }
 
@@ -148,15 +147,15 @@ class Operations
             if ($_POST['what'] !== 'nocopy' && isset($_POST['drop_if_exists']) && $_POST['drop_if_exists'] === 'true') {
                 $drop_query = 'DROP VIEW IF EXISTS '
                     . Util::backquote($_POST['newname']) . '.'
-                    . Util::backquote($each_table);
+                    . Util::backquote($table);
                 $this->dbi->query($drop_query);
 
                 $GLOBALS['sql_query'] .= "\n" . $drop_query . ';';
             }
 
-            $views[] = $each_table;
+            $views[] = $table;
             // Create stand-in definition to resolve view dependencies
-            $sql_view_standin = $export_sql_plugin->getTableDefStandIn($db, $each_table, "\n");
+            $sql_view_standin = $export_sql_plugin->getTableDefStandIn($db, $table, "\n");
             $this->dbi->selectDb($_POST['newname']);
             $this->dbi->query($sql_view_standin);
             $GLOBALS['sql_query'] .= "\n" . $sql_view_standin;
@@ -168,18 +167,18 @@ class Operations
     /**
      * Get sql query for copy/rename table and boolean for whether copy/rename or not
      *
-     * @param array  $tables_full array of all tables in given db or dbs
-     * @param bool   $move        whether database name is empty or not
-     * @param string $db          database name
+     * @param string[] $tables array of all tables in given db or dbs
+     * @param bool     $move   whether database name is empty or not
+     * @param string   $db     database name
      *
      * @return array SQL queries for the constraints
      */
-    public function copyTables(array $tables_full, $move, $db)
+    public function copyTables(array $tables, $move, $db)
     {
         $sqlContraints = [];
-        foreach (array_keys($tables_full) as $each_table) {
+        foreach ($tables as $table) {
             // skip the views; we have created stand-in definitions
-            if ($this->dbi->getTable($db, (string) $each_table)->isView()) {
+            if ($this->dbi->getTable($db, $table)->isView()) {
                 continue;
             }
 
@@ -188,7 +187,7 @@ class Operations
 
             // do not copy the data from a Merge table
             // note: on the calling FORM, 'data' means 'structure and data'
-            if ($this->dbi->getTable($db, (string) $each_table)->isMerge()) {
+            if ($this->dbi->getTable($db, $table)->isMerge()) {
                 if ($this_what === 'data') {
                     $this_what = 'structure';
                 }
@@ -205,14 +204,14 @@ class Operations
             // keep the triggers from the original db+table
             // (third param is empty because delimiters are only intended
             //  for importing via the mysql client or our Import feature)
-            $triggers = $this->dbi->getTriggers($db, (string) $each_table, '');
+            $triggers = $this->dbi->getTriggers($db, $table, '');
 
             if (
                 ! Table::moveCopy(
                     $db,
-                    $each_table,
+                    $table,
                     $_POST['newname'],
-                    $each_table,
+                    $table,
                     ($this_what ?? 'data'),
                     $move,
                     'db_copy',
@@ -346,8 +345,7 @@ class Operations
         $this->dbi->query($query_proc_specific);
 
         // Finally FLUSH the new privileges
-        $flush_query = 'FLUSH PRIVILEGES;';
-        $this->dbi->query($flush_query);
+        $this->dbi->tryQuery('FLUSH PRIVILEGES;');
     }
 
     /**
@@ -443,8 +441,7 @@ class Operations
         }
 
         // Finally FLUSH the new privileges
-        $flush_query = 'FLUSH PRIVILEGES;';
-        $this->dbi->query($flush_query);
+        $this->dbi->tryQuery('FLUSH PRIVILEGES;');
     }
 
     /**
@@ -817,8 +814,7 @@ class Operations
         $this->dbi->query($query_col_specific);
 
         // Finally FLUSH the new privileges
-        $flush_query = 'FLUSH PRIVILEGES;';
-        $this->dbi->query($flush_query);
+        $this->dbi->tryQuery('FLUSH PRIVILEGES;');
     }
 
     /**
@@ -872,8 +868,7 @@ class Operations
         }
 
         // Finally FLUSH the new privileges
-        $flush_query = 'FLUSH PRIVILEGES;';
-        $this->dbi->query($flush_query);
+        $this->dbi->tryQuery('FLUSH PRIVILEGES;');
     }
 
     /**

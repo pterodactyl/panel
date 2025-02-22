@@ -65,7 +65,7 @@ class OperationsController extends AbstractController
 
     public function __invoke(): void
     {
-        global $cfg, $db, $server, $sql_query, $move, $message, $tables_full, $errorUrl;
+        global $cfg, $db, $server, $sql_query, $move, $message, $errorUrl;
         global $export_sql_plugin, $views, $sqlConstratints, $local_query, $reload, $urlParams, $tables;
         global $total_num_tables, $sub_part, $tooltip_truename;
         global $db_collation, $tooltip_aliasname, $pos, $is_information_schema, $single_table, $num_tables;
@@ -115,7 +115,7 @@ class OperationsController extends AbstractController
                     // go back to current db, just in case
                     $this->dbi->selectDb($db);
 
-                    $tables_full = $this->dbi->getTablesFull($db);
+                    $tableNames = $this->dbi->getTables($db);
 
                     // remove all foreign key constraints, otherwise we can get errors
                     /** @var ExportSql $export_sql_plugin */
@@ -125,10 +125,10 @@ class OperationsController extends AbstractController
                     ]);
 
                     // create stand-in tables for views
-                    $views = $this->operations->getViewsAndCreateSqlViewStandIn($tables_full, $export_sql_plugin, $db);
+                    $views = $this->operations->getViewsAndCreateSqlViewStandIn($tableNames, $export_sql_plugin, $db);
 
                     // copy tables
-                    $sqlConstratints = $this->operations->copyTables($tables_full, $move, $db);
+                    $sqlConstratints = $this->operations->copyTables($tableNames, $move, $db);
 
                     // handle the views
                     if (! $_error) {

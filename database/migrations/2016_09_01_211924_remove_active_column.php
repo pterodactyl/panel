@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -9,7 +8,7 @@ class RemoveActiveColumn extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropColumn('active');
@@ -19,7 +18,7 @@ class RemoveActiveColumn extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->tinyInteger('active')->after('name')->unsigned()->default(0);

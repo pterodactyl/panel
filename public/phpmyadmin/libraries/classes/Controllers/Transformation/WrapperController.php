@@ -143,6 +143,8 @@ class WrapperController extends AbstractController
             }
         }
 
+        // Disabling standard response, we are sending binary here
+        $this->response->disable();
         $this->response->getHeader()->sendHttpHeaders();
 
         // [MIME]

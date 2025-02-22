@@ -317,7 +317,6 @@ AJAX.registerOnload('table/zoom_plot_jqplot.js', function () {
           series[0][searchedDataKey][0] = '';
           // TODO: text values
         }
-
         currentChart.series[0].data = series[0];
         // TODO: axis changing
         currentChart.replot();
@@ -333,7 +332,6 @@ AJAX.registerOnload('table/zoom_plot_jqplot.js', function () {
           series[0][searchedDataKey][1] = '';
           // TODO: text values
         }
-
         currentChart.series[0].data = series[0];
         // TODO: axis changing
         currentChart.replot();
@@ -391,7 +389,6 @@ AJAX.registerOnload('table/zoom_plot_jqplot.js', function () {
       }); // End $.post
     } // End database update
   };
-
   $('#dataPointSaveButton').on('click', function () {
     dataPointSave();
   });

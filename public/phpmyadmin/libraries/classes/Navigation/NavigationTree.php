@@ -682,12 +682,12 @@ class NavigationTree
             foreach ($node->children as $child) {
                 $prefixPos = false;
                 foreach ($separators as $separator) {
-                    $sepPos = mb_strpos((string) $child->name, $separator);
+                    $sepPos = mb_strpos($child->name, $separator);
                     if (
-                        $sepPos == false
-                        || $sepPos == mb_strlen($child->name)
-                        || $sepPos == 0
+                        $sepPos === false
+                        || $sepPos === 0
                         || ($prefixPos !== false && $sepPos >= $prefixPos)
+                        || $sepPos === mb_strlen($child->name)
                     ) {
                         continue;
                     }
@@ -823,7 +823,7 @@ class NavigationTree
                 }
             } else {
                 $groups[$key] = new Node(
-                    htmlspecialchars((string) $key),
+                    (string) $key,
                     Node::CONTAINER,
                     true
                 );

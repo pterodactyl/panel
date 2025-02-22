@@ -25,6 +25,7 @@ use PhpMyAdmin\Utils\SessionCache;
 
 use function __;
 use function array_column;
+use function array_combine;
 use function array_diff;
 use function array_keys;
 use function array_map;
@@ -49,6 +50,7 @@ use function openlog;
 use function reset;
 use function sprintf;
 use function str_contains;
+use function str_replace;
 use function str_starts_with;
 use function stripos;
 use function strlen;
@@ -119,6 +121,9 @@ class DatabaseInterface implements DbalInterface
 
     /** @var array Current user and host cache */
     private $currentUser;
+
+    /** @var array<int, array<int, string>>|null Current role and host cache */
+    private $currentRoleAndHost = null;
 
     /** @var string|null lower_case_table_names value cache */
     private $lowerCaseTableNames = null;
@@ -218,11 +223,14 @@ class DatabaseInterface implements DbalInterface
 
         $result = $this->extension->realQuery($query, $this->links[$link], $options);
 
+        if ($link === self::CONNECT_USER) {
+            $this->lastQueryExecutionTime = microtime(true) - $time;
+        }
+
         if ($cache_affected_rows) {
             $GLOBALS['cached_affected_rows'] = $this->affectedRows($link, false);
         }
 
-        $this->lastQueryExecutionTime = microtime(true) - $time;
         if ($debug) {
             $errorMessage = $this->getError($link);
             Utilities::debugLogQueryIntoSession(
@@ -385,6 +393,16 @@ class DatabaseInterface implements DbalInterface
         }
 
         $tables = [];
+        $paging_applied = false;
+
+        if ($limit_count && is_array($table) && $sort_by === 'Name') {
+            if ($sort_order === 'DESC') {
+                $table = array_reverse($table);
+            }
+
+            $table = array_slice($table, $limit_offset, $limit_count);
+            $paging_applied = true;
+        }
 
         if (! $GLOBALS['cfg']['Server']['DisableIS']) {
             $sql_where_table = QueryGenerator::getTableCondition(
@@ -412,10 +430,11 @@ class DatabaseInterface implements DbalInterface
             // Sort the tables
             $sql .= ' ORDER BY ' . $sort_by . ' ' . $sort_order;
 
-            if ($limit_count) {
+            if ($limit_count && ! $paging_applied) {
                 $sql .= ' LIMIT ' . $limit_count . ' OFFSET ' . $limit_offset;
             }
 
+            /** @var mixed[][][] $tables */
             $tables = $this->fetchResult(
                 $sql,
                 [
@@ -441,7 +460,7 @@ class DatabaseInterface implements DbalInterface
                     [
                         $tables[$one_database_name][$one_table_name]['Data_length'],
                         $tables[$one_database_name][$one_table_name]['Index_length'],
-                    ] = StorageEngine::getMroongaLengths($one_database_name, $one_table_name);
+                    ] = StorageEngine::getMroongaLengths($one_database_name, (string) $one_table_name);
                 }
             }
 
@@ -480,6 +499,15 @@ class DatabaseInterface implements DbalInterface
                     $tables[$one_database_name] = $one_database_tables;
                 }
             }
+
+            // on windows with lower_case_table_names = 1
+            // MySQL returns
+            // with SHOW DATABASES or information_schema.SCHEMATA: `Test`
+            // but information_schema.TABLES gives `test`
+            // see https://github.com/phpmyadmin/phpmyadmin/issues/8402
+            $tables = $tables[$database]
+                ?? $tables[mb_strtolower($database)]
+                ?? [];
         }
 
         // If permissions are wrong on even one database directory,
@@ -487,10 +515,10 @@ class DatabaseInterface implements DbalInterface
         // this is why we fall back to SHOW TABLE STATUS even for MySQL >= 50002
         if ($tables === []) {
             $sql = 'SHOW TABLE STATUS FROM ' . Util::backquote($database);
-            if ($table || ($tbl_is_group === true) || $table_type) {
+            if (($table !== '' && $table !== []) || ($tbl_is_group === true) || $table_type) {
                 $sql .= ' WHERE';
                 $needAnd = false;
-                if ($table || ($tbl_is_group === true)) {
+                if (($table !== '' && $table !== []) || ($tbl_is_group === true)) {
                     if (is_array($table)) {
                         $sql .= ' `Name` IN (\''
                             . implode(
@@ -500,8 +528,7 @@ class DatabaseInterface implements DbalInterface
                                         $this,
                                         'escapeString',
                                     ],
-                                    $table,
-                                    $link
+                                    $table
                                 )
                             ) . '\')';
                     } else {
@@ -573,39 +600,31 @@ class DatabaseInterface implements DbalInterface
                 }
 
                 if ($sortValues) {
+                    // See https://stackoverflow.com/a/32461188 for the explanation of below hack
+                    $keys = array_keys($each_tables);
                     if ($sort_order === 'DESC') {
-                        array_multisort($sortValues, SORT_DESC, $each_tables);
+                        array_multisort($sortValues, SORT_DESC, $each_tables, $keys);
                     } else {
-                        array_multisort($sortValues, SORT_ASC, $each_tables);
+                        array_multisort($sortValues, SORT_ASC, $each_tables, $keys);
                     }
+
+                    $each_tables = array_combine($keys, $each_tables);
                 }
 
                 // cleanup the temporary sort array
                 unset($sortValues);
             }
 
-            if ($limit_count) {
-                $each_tables = array_slice($each_tables, $limit_offset, $limit_count);
+            if ($limit_count && ! $paging_applied) {
+                $each_tables = array_slice($each_tables, $limit_offset, $limit_count, true);
             }
 
-            $tables[$database] = Compatibility::getISCompatForGetTablesFull($each_tables, $database);
+            $tables = Compatibility::getISCompatForGetTablesFull($each_tables, $database);
         }
 
-        // cache table data
-        // so Table does not require to issue SHOW TABLE STATUS again
-        $this->cache->cacheTableData($tables, $table);
-
-        if (isset($tables[$database])) {
-            return $tables[$database];
-        }
-
-        if (isset($tables[mb_strtolower($database)])) {
-            // on windows with lower_case_table_names = 1
-            // MySQL returns
-            // with SHOW DATABASES or information_schema.SCHEMATA: `Test`
-            // but information_schema.TABLES gives `test`
-            // see https://github.com/phpmyadmin/phpmyadmin/issues/8402
-            return $tables[mb_strtolower($database)];
+        if ($tables !== []) {
+            // cache table data, so Table does not require to issue SHOW TABLE STATUS again
+            $this->cache->cacheTableData($database, $tables);
         }
 
         return $tables;
@@ -620,11 +639,12 @@ class DatabaseInterface implements DbalInterface
      */
     public function getVirtualTables(string $db): array
     {
-        $tables_full = array_keys($this->getTablesFull($db));
+        /** @var string[] $tables_full */
+        $tables_full = array_column($this->getTablesFull($db), 'TABLE_NAME');
         $views = [];
 
         foreach ($tables_full as $table) {
-            $table = $this->getTable($db, (string) $table);
+            $table = $this->getTable($db, $table);
             if (! $table->isView()) {
                 continue;
             }
@@ -811,7 +831,7 @@ class DatabaseInterface implements DbalInterface
                 'refering_column' => $field->name,
             ];
 
-            if ($nbColumns >= $i) {
+            if ($nbColumns >= $i && isset($view_columns[$i])) {
                 $map['real_column'] = $view_columns[$i];
             }
 
@@ -1691,6 +1711,38 @@ class DatabaseInterface implements DbalInterface
         return '@';
     }
 
+    /**
+     * gets the current role with host. Role maybe multiple separated by comma
+     * Support start from MySQL 8.x / MariaDB 10.0.5
+     *
+     * @see https://dev.mysql.com/doc/refman/8.0/en/roles.html
+     * @see https://dev.mysql.com/doc/refman/8.0/en/information-functions.html#function_current-role
+     * @see https://mariadb.com/kb/en/mariadb-1005-release-notes/#newly-implemented-features
+     * @see https://mariadb.com/kb/en/roles_overview/
+     *
+     * @return array<int, array<int, string>> the current roles i.e. array of role@host
+     */
+    public function getCurrentRoles(): array
+    {
+        if (($this->isMariaDB() && $this->getVersion() < 100500) || $this->getVersion() < 80000) {
+            return [];
+        }
+
+        if (SessionCache::has('mysql_cur_role')) {
+            return SessionCache::get('mysql_cur_role');
+        }
+
+        $role = $this->fetchValue('SELECT CURRENT_ROLE();');
+        if ($role === false || $role === null || $role === 'NONE') {
+            return [];
+        }
+
+        $role = array_map('trim', explode(',', str_replace('`', '', $role)));
+        SessionCache::set('mysql_cur_role', $role);
+
+        return $role;
+    }
+
     public function isSuperUser(): bool
     {
         if (SessionCache::has('is_superuser')) {
@@ -1750,6 +1802,21 @@ class DatabaseInterface implements DbalInterface
             $hasGrantPrivilege = (bool) $result->numRows();
         }
 
+        if (! $hasGrantPrivilege) {
+            foreach ($this->getCurrentRolesAndHost() as [$role, $roleHost]) {
+                $query = QueryGenerator::getInformationSchemaDataForGranteeRequest($role, $roleHost ?? '');
+                $result = $this->tryQuery($query);
+
+                if ($result) {
+                    $hasGrantPrivilege = (bool) $result->numRows();
+                }
+
+                if ($hasGrantPrivilege) {
+                    break;
+                }
+            }
+        }
+
         SessionCache::set('is_grantuser', $hasGrantPrivilege);
 
         return $hasGrantPrivilege;
@@ -1792,6 +1859,21 @@ class DatabaseInterface implements DbalInterface
             $hasCreatePrivilege = (bool) $result->numRows();
         }
 
+        if (! $hasCreatePrivilege) {
+            foreach ($this->getCurrentRolesAndHost() as [$role, $roleHost]) {
+                $query = QueryGenerator::getInformationSchemaDataForCreateRequest($role, $roleHost ?? '');
+                $result = $this->tryQuery($query);
+
+                if ($result) {
+                    $hasCreatePrivilege = (bool) $result->numRows();
+                }
+
+                if ($hasCreatePrivilege) {
+                    break;
+                }
+            }
+        }
+
         SessionCache::set('is_createuser', $hasCreatePrivilege);
 
         return $hasCreatePrivilege;
@@ -1820,6 +1902,24 @@ class DatabaseInterface implements DbalInterface
         }
 
         return $this->currentUser;
+    }
+
+    /**
+     * Get the current role and host.
+     *
+     * @return array<int, array<int, string>> array of role and hostname
+     */
+    public function getCurrentRolesAndHost(): array
+    {
+        if ($this->currentRoleAndHost === null) {
+            $roles = $this->getCurrentRoles();
+
+            $this->currentRoleAndHost = array_map(static function (string $role) {
+                return explode('@', $role);
+            }, $roles);
+        }
+
+        return $this->currentRoleAndHost;
     }
 
     /**
@@ -2164,7 +2264,7 @@ class DatabaseInterface implements DbalInterface
      */
     public function getKillQuery(int $process): string
     {
-        if ($this->isAmazonRds()) {
+        if ($this->isAmazonRds() && $this->isSuperUser()) {
             return 'CALL mysql.rds_kill(' . $process . ');';
         }
 
@@ -2199,12 +2299,6 @@ class DatabaseInterface implements DbalInterface
      */
     public function getDbCollation(string $db): string
     {
-        if (Utilities::isSystemSchema($db)) {
-            // We don't have to check the collation of the virtual
-            // information_schema database: We know it!
-            return 'utf8_general_ci';
-        }
-
         if (! $GLOBALS['cfg']['Server']['DisableIS']) {
             // this is slow with thousands of databases
             $sql = 'SELECT DEFAULT_COLLATION_NAME FROM information_schema.SCHEMATA'
@@ -2255,6 +2349,12 @@ class DatabaseInterface implements DbalInterface
     public function getVersionComment(): string
     {
         return $this->versionComment;
+    }
+
+    /** Whether connection is MySQL */
+    public function isMySql(): bool
+    {
+        return ! $this->isMariaDb;
     }
 
     /**

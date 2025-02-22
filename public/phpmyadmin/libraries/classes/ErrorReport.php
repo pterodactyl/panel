@@ -246,12 +246,14 @@ class ErrorReport
     private function translateStacktrace(array $stack): array
     {
         foreach ($stack as &$level) {
-            foreach ($level['context'] as &$line) {
-                if (mb_strlen($line) <= 80) {
-                    continue;
-                }
+            if (is_array($level['context'])) {
+                foreach ($level['context'] as &$line) {
+                    if (mb_strlen($line) <= 80) {
+                        continue;
+                    }
 
-                $line = mb_substr($line, 0, 75) . '//...';
+                    $line = mb_substr($line, 0, 75) . '//...';
+                }
             }
 
             [$uri, $scriptName] = $this->sanitizeUrl($level['url']);

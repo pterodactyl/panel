@@ -462,7 +462,7 @@ var ConsoleResizer = {
    * @return {void}
    */
   mouseUp: function () {
-    Console.setConfig('Height', ConsoleResizer.resultHeight);
+    Console.setConfig('Height', Math.round(ConsoleResizer.resultHeight));
     Console.show();
     $(document).off('mousemove');
     $(document).off('mouseup');
@@ -1107,7 +1107,6 @@ var ConsoleDebug = {
     // Possible 'exec' => Execution order, 'time' => Time taken, 'count'
     order: 'asc' // Possible 'asc', 'desc'
   },
-
   lastDebugInfo: {
     debugInfo: null,
     url: null
@@ -1347,7 +1346,8 @@ var ConsoleDebug = {
     // Show summary
     $('#debug_console').find('.debug>.welcome').append($('<span class="debug_summary">').text(Functions.sprintf(Messages.strConsoleDebugSummary, totalUnique, totalExec, totalTime)));
     if (url) {
-      $('#debug_console').find('.debug>.welcome').append($('<span class="script_name">').text(url.split('?')[0]));
+      var decodedUrl = new URLSearchParams(url.split('?')[1]);
+      $('#debug_console').find('.debug>.welcome').append($('<span class="script_name">').text(decodedUrl.has('route') ? decodedUrl.get('route') : url));
     }
 
     // For sorting queries

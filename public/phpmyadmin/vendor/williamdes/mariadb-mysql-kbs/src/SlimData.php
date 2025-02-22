@@ -21,7 +21,7 @@ class SlimData extends stdClass implements JsonSerializable
      *
      * @var float
      */
-    private $version = 1;
+    private $version = 2;
 
     /**
      * Urls
@@ -35,7 +35,7 @@ class SlimData extends stdClass implements JsonSerializable
      *
      * @var array<string,int>
      */
-    private $types = ['MYSQL' => 1, 'MARIADB' => 2];
+    private $types = ['MYSQL' => 1, 'MARIADB' => 2, 'AURORA-MYSQL' => 3];
 
     /**
      * Types of variables
@@ -129,10 +129,12 @@ class SlimData extends stdClass implements JsonSerializable
                         if ($entry->a === null) {
                             unset($entry->a);
                         }
-                        if (preg_match('!^(https|http)://mariadb.com!', $kbd->getUrl())) {
+                        if (preg_match('!^https://mariadb.com!', $kbd->getUrl())) {
                             $entry->t = $this->types['MARIADB'];
-                        } elseif (preg_match('!^(https|http)://dev.mysql.com!', $kbd->getUrl())) {
+                        } elseif (preg_match('!^https://dev.mysql.com!', $kbd->getUrl())) {
                             $entry->t = $this->types['MYSQL'];
+                        } elseif (preg_match('!^https://docs.aws.amazon.com!', $kbd->getUrl())) {
+                            $entry->t = $this->types['AURORA-MYSQL'];
                         }
                         if (isset($entry->t)) {// If has no valid type, skip.
                             //Do not allow other urls.

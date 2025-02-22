@@ -380,7 +380,8 @@ final class FieldMetadata
     {
         return $this->isType(self::TYPE_DATE)
             || $this->isType(self::TYPE_TIME)
-            || $this->isType(self::TYPE_DATETIME);
+            || $this->isType(self::TYPE_DATETIME)
+            || $this->isType(self::TYPE_TIMESTAMP);
     }
 
     /**

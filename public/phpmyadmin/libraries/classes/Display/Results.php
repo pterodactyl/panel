@@ -982,7 +982,6 @@ class Results
      * @param array              $sortDirection             sort direction
      * @param bool               $isLimitedDisplay          with limited operations
      *                                                        or not
-     * @param string             $unsortedSqlQuery          query without the sort part
      *
      * @return string html content
      */
@@ -992,8 +991,7 @@ class Results
         array $sortExpression,
         array $sortExpressionNoDirection,
         array $sortDirection,
-        $isLimitedDisplay,
-        $unsortedSqlQuery
+        $isLimitedDisplay
     ) {
         // required to generate sort links that will remember whether the
         // "Show all" button has been clicked
@@ -1040,7 +1038,7 @@ class Results
                     $fieldsMeta[$i],
                     $sortExpression,
                     $sortExpressionNoDirection,
-                    $unsortedSqlQuery,
+                    $analyzedSqlResults,
                     $sessionMaxRows,
                     $comments,
                     $sortDirection,
@@ -1092,7 +1090,6 @@ class Results
      *
      * @param array              $displayParts              which elements to display
      * @param array              $analyzedSqlResults        analyzed sql results
-     * @param string             $unsortedSqlQuery          the unsorted sql query
      * @param array              $sortExpression            sort expression
      * @param array<int, string> $sortExpressionNoDirection sort expression without direction
      * @param array              $sortDirection             sort direction
@@ -1110,7 +1107,6 @@ class Results
     private function getTableHeaders(
         array $displayParts,
         array $analyzedSqlResults,
-        $unsortedSqlQuery,
         array $sortExpression = [],
         array $sortExpressionNoDirection = [],
         array $sortDirection = [],
@@ -1161,8 +1157,7 @@ class Results
             $sortExpression,
             $sortExpressionNoDirection,
             $sortDirection,
-            $isLimitedDisplay,
-            $unsortedSqlQuery
+            $isLimitedDisplay
         );
 
         // Display column at rightside - checkboxes or empty column
@@ -1482,7 +1477,7 @@ class Results
             . ($theme instanceof Theme ? $theme->getImgPath($tmpImageFile) : '')
             . '" alt="' . $tmpTxt . '" title="' . $tmpTxt . '">';
 
-        return Generator::linkOrButton(Url::getFromRoute('/sql'), $urlParamsFullText, $tmpImage);
+        return Generator::linkOrButton(Url::getFromRoute('/sql', $urlParamsFullText, false), null, $tmpImage);
     }
 
     /**
@@ -1513,7 +1508,7 @@ class Results
      * @param FieldMetadata      $fieldsMeta                set of field properties
      * @param array              $sortExpression            sort expression
      * @param array<int, string> $sortExpressionNoDirection sort expression without direction
-     * @param string             $unsortedSqlQuery          the unsorted sql query
+     * @param array              $analyzedSqlResults        analyzed sql results
      * @param int                $sessionMaxRows            maximum rows resulted by sql
      * @param string             $comments                  comment for row
      * @param array              $sortDirection             sort direction
@@ -1536,7 +1531,7 @@ class Results
         FieldMetadata $fieldsMeta,
         array $sortExpression,
         array $sortExpressionNoDirection,
-        $unsortedSqlQuery,
+        array $analyzedSqlResults,
         $sessionMaxRows,
         string $comments,
         array $sortDirection,
@@ -1565,19 +1560,16 @@ class Results
             $fieldsMeta
         );
 
-        if (
-            preg_match(
-                '@(.*)([[:space:]](LIMIT (.*)|PROCEDURE (.*)|FOR UPDATE|LOCK IN SHARE MODE))@is',
-                $unsortedSqlQuery,
-                $regs3
-            )
-        ) {
-            $singleSortedSqlQuery = $regs3[1] . $singleSortOrder . $regs3[2];
-            $multiSortedSqlQuery = $regs3[1] . $multiSortOrder . $regs3[2];
-        } else {
-            $singleSortedSqlQuery = $unsortedSqlQuery . $singleSortOrder;
-            $multiSortedSqlQuery = $unsortedSqlQuery . $multiSortOrder;
-        }
+        $singleSortedSqlQuery = Query::replaceClause(
+            $analyzedSqlResults['statement'],
+            $analyzedSqlResults['parser']->list,
+            $singleSortOrder
+        );
+        $multiSortedSqlQuery = Query::replaceClause(
+            $analyzedSqlResults['statement'],
+            $analyzedSqlResults['parser']->list,
+            $multiSortOrder
+        );
 
         $singleUrlParams = [
             'db' => $this->properties['db'],
@@ -1644,11 +1636,16 @@ class Results
                 ? 0
                 : count($sortExpressionNoDirection);
             $sortExpressionNoDirection[$specialIndex] = Util::backquote($currentName);
-            $isTimeOrDate = $fieldsMeta->isType(FieldMetadata::TYPE_TIME)
-                || $fieldsMeta->isType(FieldMetadata::TYPE_DATE)
-                || $fieldsMeta->isType(FieldMetadata::TYPE_DATETIME)
-                || $fieldsMeta->isType(FieldMetadata::TYPE_TIMESTAMP);
-            $sortDirection[$specialIndex] = $isTimeOrDate ? self::DESCENDING_SORT_DIR : self::ASCENDING_SORT_DIR;
+            // Set the direction to the config value
+            $sortDirection[$specialIndex] = $GLOBALS['cfg']['Order'];
+            // Or perform SMART mode
+            if ($GLOBALS['cfg']['Order'] === self::SMART_SORT_ORDER) {
+                $isTimeOrDate = $fieldsMeta->isType(FieldMetadata::TYPE_TIME)
+                    || $fieldsMeta->isType(FieldMetadata::TYPE_DATE)
+                    || $fieldsMeta->isType(FieldMetadata::TYPE_DATETIME)
+                    || $fieldsMeta->isType(FieldMetadata::TYPE_TIMESTAMP);
+                $sortDirection[$specialIndex] = $isTimeOrDate ? self::DESCENDING_SORT_DIR : self::ASCENDING_SORT_DIR;
+            }
         }
 
         $sortExpressionNoDirection = array_filter($sortExpressionNoDirection);
@@ -1873,16 +1870,15 @@ class Results
         array $orderUrlParams,
         array $multiOrderUrlParams
     ): string {
-        $urlPath = Url::getFromRoute('/sql');
+        $urlPath = Url::getFromRoute('/sql', $multiOrderUrlParams, false);
         $innerLinkContent = htmlspecialchars($fieldsMeta->name) . $orderImg
             . '<input type="hidden" value="'
             . $urlPath
-            . Url::getCommon($multiOrderUrlParams, str_contains($urlPath, '?') ? '&' : '?', false)
             . '">';
 
         return Generator::linkOrButton(
-            Url::getFromRoute('/sql'),
-            $orderUrlParams,
+            Url::getFromRoute('/sql', $orderUrlParams, false),
+            null,
             $innerLinkContent,
             ['class' => 'sortlink']
         );
@@ -2910,7 +2906,7 @@ class Results
         array $descriptions,
         int $numEmptyColumnsAfter
     ): string {
-        $headerHtml = '<tr>' . "\n";
+        $headerHtml = '<tr class="repeating_header_row">' . "\n";
 
         if ($numEmptyColumnsBefore > 0) {
             $headerHtml .= '    <th colspan="'
@@ -2953,8 +2949,10 @@ class Results
             'db' => $this->properties['db'],
             'table' => $this->properties['table'],
             'where_clause' => $whereClause,
+            'where_clause_signature' => Core::signSqlQuery($whereClause),
             'clause_is_unique' => $clauseIsUnique,
             'sql_query' => $urlSqlQuery,
+            'sql_signature' => Core::signSqlQuery($urlSqlQuery),
             'goto' => Url::getFromRoute('/sql'),
         ];
 
@@ -3704,7 +3702,6 @@ class Results
             $this->properties['table'] = $fieldsMeta[0]->table;
         }
 
-        $unsortedSqlQuery = '';
         $sortByKeyData = [];
         // can the result be sorted?
         if ($displayParts['sort_lnk'] == '1' && isset($analyzedSqlResults['statement'])) {
@@ -3757,7 +3754,6 @@ class Results
         $headers = $this->getTableHeaders(
             $displayParts,
             $analyzedSqlResults,
-            $unsortedSqlQuery,
             $sortExpression,
             $sortExpressionNoDirection,
             $sortDirection,
@@ -4184,7 +4180,7 @@ class Results
         // display the Export link).
         if (
             ($analyzedSqlResults['querytype'] === self::QUERY_TYPE_SELECT)
-            && empty($analyzedSqlResults['procedure'])
+            && empty($analyzedSqlResults['is_procedure'])
         ) {
             if (count($analyzedSqlResults['select_tables']) === 1) {
                 $urlParams['single_table'] = 'true';
@@ -4220,7 +4216,7 @@ class Results
         }
 
         return [
-            'has_procedure' => ! empty($analyzedSqlResults['procedure']),
+            'has_procedure' => ! empty($analyzedSqlResults['is_procedure']),
             'has_geometry' => $geometryFound,
             'has_print_link' => $printLink == '1',
             'has_export_link' => $analyzedSqlResults['querytype'] === self::QUERY_TYPE_SELECT,
@@ -4477,9 +4473,9 @@ class Results
                 if ($relationalDisplay === self::RELATIONAL_KEY) {
                     // user chose "relational key" in the display options, so
                     // the title contains the display field
-                    $title = htmlspecialchars($dispval ?? '');
+                    $title = $dispval ?? '';
                 } else {
-                    $title = htmlspecialchars($data);
+                    $title = $data;
                 }
 
                 $tagParams = ['title' => $title];
@@ -4488,8 +4484,8 @@ class Results
                 }
 
                 $value .= Generator::linkOrButton(
-                    Url::getFromRoute('/sql'),
-                    $urlParams,
+                    Url::getFromRoute('/sql', $urlParams, false),
+                    null,
                     $displayedData,
                     $tagParams
                 );

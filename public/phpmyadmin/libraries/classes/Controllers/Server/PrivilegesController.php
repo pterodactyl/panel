@@ -234,8 +234,9 @@ class PrivilegesController extends AbstractController
          */
         if (! empty($_POST['update_privs'])) {
             if (is_array($dbname)) {
+                $statements = [];
                 foreach ($dbname as $key => $db_name) {
-                    [$sql_query[$key], $message] = $serverPrivileges->updatePrivileges(
+                    [$statements[$key], $message] = $serverPrivileges->updatePrivileges(
                         ($username ?? ''),
                         ($hostname ?? ''),
                         ($tablename ?? ($routinename ?? '')),
@@ -244,7 +245,7 @@ class PrivilegesController extends AbstractController
                     );
                 }
 
-                $sql_query = implode("\n", $sql_query);
+                $sql_query = implode("\n", $statements);
             } else {
                 [$sql_query, $message] = $serverPrivileges->updatePrivileges(
                     ($username ?? ''),

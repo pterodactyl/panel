@@ -15,6 +15,7 @@ use PhpMyAdmin\Url;
 use PhpMyAdmin\Util;
 use PhpMyAdmin\Utils\Gis;
 
+use function array_map;
 use function array_search;
 use function array_values;
 use function count;
@@ -115,7 +116,9 @@ class ZoomSearchController extends AbstractController
             'vendor/jqplot/plugins/jqplot.highlighter.js',
             'vendor/jqplot/plugins/jqplot.cursor.js',
             'table/zoom_plot_jqplot.js',
+            'table/select.js',
             'table/change.js',
+            'gis_data_editor.js',
         ]);
 
         /**
@@ -375,6 +378,10 @@ class ZoomSearchController extends AbstractController
             $column_names_hashes[$columnName] = md5($columnName);
         }
 
+        $columnDataTypes = array_map(static function (string $type): string {
+            return strtoupper((string) preg_replace('@\(.*@s', '', $type));
+        }, $this->columnTypes);
+
         $this->render('table/zoom_search/result_form', [
             'db' => $this->db,
             'table' => $this->table,
@@ -383,6 +390,7 @@ class ZoomSearchController extends AbstractController
             'foreigners' => $this->foreigners,
             'column_null_flags' => $this->columnNullFlags,
             'column_types' => $this->columnTypes,
+            'column_data_types' => $columnDataTypes,
             'goto' => $goto,
             'data' => $data,
             'data_json' => json_encode($data),

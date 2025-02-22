@@ -34,8 +34,8 @@ class PdoAdapter extends AbstractAdapter implements PruneableInterface
     private $dataCol = 'item_data';
     private $lifetimeCol = 'item_lifetime';
     private $timeCol = 'item_time';
-    private $username = '';
-    private $password = '';
+    private $username = null;
+    private $password = null;
     private $connectionOptions = [];
     private $namespace;
 
@@ -62,7 +62,7 @@ class PdoAdapter extends AbstractAdapter implements PruneableInterface
      * @throws InvalidArgumentException When PDO error mode is not PDO::ERRMODE_EXCEPTION
      * @throws InvalidArgumentException When namespace contains invalid characters
      */
-    public function __construct($connOrDsn, string $namespace = '', int $defaultLifetime = 0, array $options = [], MarshallerInterface $marshaller = null)
+    public function __construct($connOrDsn, string $namespace = '', int $defaultLifetime = 0, array $options = [], ?MarshallerInterface $marshaller = null)
     {
         if ($connOrDsn instanceof Connection || (\is_string($connOrDsn) && str_contains($connOrDsn, '://'))) {
             trigger_deprecation('symfony/cache', '5.4', 'Usage of a DBAL Connection with "%s" is deprecated and will be removed in symfony 6.0. Use "%s" instead.', __CLASS__, DoctrineDbalAdapter::class);
@@ -176,7 +176,7 @@ class PdoAdapter extends AbstractAdapter implements PruneableInterface
     /**
      * {@inheritDoc}
      */
-    public function get(string $key, callable $callback, float $beta = null, array &$metadata = null)
+    public function get(string $key, callable $callback, ?float $beta = null, ?array &$metadata = null)
     {
         if (isset($this->dbalAdapter)) {
             return $this->dbalAdapter->get($key, $callback, $beta, $metadata);
@@ -507,7 +507,7 @@ class PdoAdapter extends AbstractAdapter implements PruneableInterface
         try {
             $stmt = $conn->prepare($sql);
         } catch (\PDOException $e) {
-            if (!$conn->inTransaction() || \in_array($this->driver, ['pgsql', 'sqlite', 'sqlsrv'], true)) {
+            if ($this->isTableMissing($e) && (!$conn->inTransaction() || \in_array($this->driver, ['pgsql', 'sqlite', 'sqlsrv'], true))) {
                 $this->createTable();
             }
             $stmt = $conn->prepare($sql);
@@ -542,7 +542,7 @@ class PdoAdapter extends AbstractAdapter implements PruneableInterface
             try {
                 $stmt->execute();
             } catch (\PDOException $e) {
-                if (!$conn->inTransaction() || \in_array($this->driver, ['pgsql', 'sqlite', 'sqlsrv'], true)) {
+                if ($this->isTableMissing($e) && (!$conn->inTransaction() || \in_array($this->driver, ['pgsql', 'sqlite', 'sqlsrv'], true))) {
                     $this->createTable();
                 }
                 $stmt->execute();
@@ -557,6 +557,22 @@ class PdoAdapter extends AbstractAdapter implements PruneableInterface
         }
 
         return $failed;
+    }
+
+    /**
+     * @internal
+     */
+    protected function getId($key)
+    {
+        if ('pgsql' !== $this->driver ?? ($this->getConnection() ? $this->driver : null)) {
+            return parent::getId($key);
+        }
+
+        if (str_contains($key, "\0") || str_contains($key, '%') || !preg_match('//u', $key)) {
+            $key = rawurlencode($key);
+        }
+
+        return parent::getId($key);
     }
 
     private function getConnection(): \PDO
@@ -579,5 +595,22 @@ class PdoAdapter extends AbstractAdapter implements PruneableInterface
         }
 
         return $this->serverVersion;
+    }
+
+    private function isTableMissing(\PDOException $exception): bool
+    {
+        $driver = $this->driver;
+        [$sqlState, $code] = $exception->errorInfo ?? [null, $exception->getCode()];
+
+        switch (true) {
+            case 'pgsql' === $driver && '42P01' === $sqlState:
+            case 'sqlite' === $driver && str_contains($exception->getMessage(), 'no such table:'):
+            case 'oci' === $driver && 942 === $code:
+            case 'sqlsrv' === $driver && 208 === $code:
+            case 'mysql' === $driver && 1146 === $code:
+                return true;
+            default:
+                return false;
+        }
     }
 }

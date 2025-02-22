@@ -466,10 +466,7 @@ class Menu
         if (SessionCache::has('binary_logs')) {
             $binaryLogs = SessionCache::get('binary_logs');
         } else {
-            $binaryLogs = $this->dbi->fetchResult(
-                'SHOW MASTER LOGS',
-                'Log_name'
-            );
+            $binaryLogs = $this->dbi->fetchResult('SHOW BINARY LOGS', 'Log_name');
             SessionCache::set('binary_logs', $binaryLogs);
         }
 

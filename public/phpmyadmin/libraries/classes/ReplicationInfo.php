@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
+use PhpMyAdmin\Query\Compatibility;
+
 use function count;
 use function explode;
 use function sprintf;
@@ -21,17 +23,26 @@ final class ReplicationInfo
     /** @var string[] */
     public $replicaVariables = [
         'Slave_IO_State',
+        'Replica_IO_State',
         'Master_Host',
+        'Source_Host',
         'Master_User',
+        'Source_User',
         'Master_Port',
+        'Source_Port',
         'Connect_Retry',
         'Master_Log_File',
+        'Source_Log_File',
         'Read_Master_Log_Pos',
+        'Read_Source_Log_Pos',
         'Relay_Log_File',
         'Relay_Log_Pos',
         'Relay_Master_Log_File',
+        'Relay_Source_Log_File',
         'Slave_IO_Running',
+        'Replica_IO_Running',
         'Slave_SQL_Running',
+        'Replica_SQL_Running',
         'Replicate_Do_DB',
         'Replicate_Ignore_DB',
         'Replicate_Do_Table',
@@ -42,17 +53,25 @@ final class ReplicationInfo
         'Last_Error',
         'Skip_Counter',
         'Exec_Master_Log_Pos',
+        'Exec_Source_Log_Pos',
         'Relay_Log_Space',
         'Until_Condition',
         'Until_Log_File',
         'Until_Log_Pos',
         'Master_SSL_Allowed',
+        'Source_SSL_Allowed',
         'Master_SSL_CA_File',
+        'Source_SSL_CA_File',
         'Master_SSL_CA_Path',
+        'Source_SSL_CA_Path',
         'Master_SSL_Cert',
+        'Source_SSL_Cert',
         'Master_SSL_Cipher',
+        'Source_SSL_Cipher',
         'Master_SSL_Key',
+        'Source_SSL_Key',
         'Seconds_Behind_Master',
+        'Seconds_Behind_Source',
     ];
 
     /** @var array */
@@ -100,7 +119,7 @@ final class ReplicationInfo
 
     private function setPrimaryStatus(): void
     {
-        $this->primaryStatus = $this->dbi->fetchResult('SHOW MASTER STATUS');
+        $this->primaryStatus = $this->dbi->fetchResult(Compatibility::getShowBinLogStatusStmt($this->dbi));
     }
 
     public function getPrimaryStatus(): array
@@ -110,7 +129,14 @@ final class ReplicationInfo
 
     private function setReplicaStatus(): void
     {
-        $this->replicaStatus = $this->dbi->fetchResult('SHOW SLAVE STATUS');
+        if (
+            $this->dbi->isMySql() && $this->dbi->getVersion() >= 80022
+            || $this->dbi->isMariaDB() && $this->dbi->getVersion() >= 100501
+        ) {
+            $this->replicaStatus = $this->dbi->fetchResult('SHOW REPLICA STATUS');
+        } else {
+            $this->replicaStatus = $this->dbi->fetchResult('SHOW SLAVE STATUS');
+        }
     }
 
     public function getReplicaStatus(): array
@@ -120,7 +146,12 @@ final class ReplicationInfo
 
     private function setMultiPrimaryStatus(): void
     {
-        $this->multiPrimaryStatus = $this->dbi->fetchResult('SHOW ALL SLAVES STATUS');
+        $this->multiPrimaryStatus = [];
+        if ($this->dbi->isMariaDB() && $this->dbi->getVersion() >= 100501) {
+            $this->multiPrimaryStatus = $this->dbi->fetchResult('SHOW ALL REPLICAS STATUS');
+        } elseif ($this->dbi->isMariaDB()) {
+            $this->multiPrimaryStatus = $this->dbi->fetchResult('SHOW ALL SLAVES STATUS');
+        }
     }
 
     private function setDefaultPrimaryConnection(string $connection): void

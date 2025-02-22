@@ -1,5 +1,5 @@
-<h2>{{ 'Users of \'%s\' user group'|trans|format(user_group_special_chars) }}</h2>
-{% if num_rows == 0 %}
+<h2>{{ 'Users of \'%s\' user group'|trans|format(user_group_special_chars)|raw }}</h2>
+{% if users|length == 0 %}
     <p>{% trans 'No users were found belonging to this user group.' %}</p>
 {% else %}
 <table class="table table-striped w-auto">

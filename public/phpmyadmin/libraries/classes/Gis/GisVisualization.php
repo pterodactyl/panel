@@ -16,7 +16,9 @@ use TCPDF;
 use function array_merge;
 use function base64_encode;
 use function count;
+use function htmlspecialchars;
 use function intval;
+use function is_finite;
 use function is_numeric;
 use function is_string;
 use function mb_strlen;
@@ -543,12 +545,7 @@ class GisVisualization
      */
     private function scaleDataSet(array $data)
     {
-        $min_max = [
-            'maxX' => 0.0,
-            'maxY' => 0.0,
-            'minX' => 0.0,
-            'minY' => 0.0,
-        ];
+        $min_max = GisGeometry::EMPTY_EXTENT;
         $border = 15;
         // effective width and height of the plot
         $plot_width = $this->settings['width'] - 2 * $border;
@@ -577,26 +574,33 @@ class GisVisualization
 
             // Update minimum/maximum values for x and y coordinates.
             $c_maxX = (float) $scale_data['maxX'];
-            if ($min_max['maxX'] === 0.0 || $c_maxX > $min_max['maxX']) {
+            if ($c_maxX > $min_max['maxX']) {
                 $min_max['maxX'] = $c_maxX;
             }
 
             $c_minX = (float) $scale_data['minX'];
-            if ($min_max['minX'] === 0.0 || $c_minX < $min_max['minX']) {
+            if ($c_minX < $min_max['minX']) {
                 $min_max['minX'] = $c_minX;
             }
 
             $c_maxY = (float) $scale_data['maxY'];
-            if ($min_max['maxY'] === 0.0 || $c_maxY > $min_max['maxY']) {
+            if ($c_maxY > $min_max['maxY']) {
                 $min_max['maxY'] = $c_maxY;
             }
 
             $c_minY = (float) $scale_data['minY'];
-            if ($min_max['minY'] !== 0.0 && $c_minY >= $min_max['minY']) {
+            if ($c_minY >= $min_max['minY']) {
                 continue;
             }
 
             $min_max['minY'] = $c_minY;
+        }
+
+        if (! is_finite($min_max['minX']) || ! is_finite($min_max['minY'])) {
+            $min_max['maxX'] = 0.0;
+            $min_max['maxY'] = 0.0;
+            $min_max['minX'] = 0.0;
+            $min_max['minY'] = 0.0;
         }
 
         // scale the visualization
@@ -671,7 +675,7 @@ class GisVisualization
             if ($format === 'svg') {
                 $results .= $gis_obj->prepareRowAsSvg(
                     $row[$this->settings['spatialColumn']],
-                    $label,
+                    htmlspecialchars($label),
                     $this->settings['colors'][$index],
                     $scale_data
                 );

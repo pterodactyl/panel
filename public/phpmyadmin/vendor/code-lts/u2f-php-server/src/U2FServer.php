@@ -36,6 +36,7 @@ class U2FServer
 
     /**
      * @throws U2FException If OpenSSL older than 1.0.0 is used
+     * @return true
      */
     public static function checkOpenSSLVersion()
     {

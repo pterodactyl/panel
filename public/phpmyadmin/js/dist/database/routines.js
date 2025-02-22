@@ -147,7 +147,6 @@ const DatabaseRoutines = {
       }
     } // end showExport()
   },
-
   // end exportDialog()
   editorDialog: function (isNew, $this) {
     var that = this;
@@ -300,8 +299,7 @@ const DatabaseRoutines = {
           classes: {
             'ui-dialog-titlebar-close': 'btn-close'
           },
-          height: 400,
-          width: 700,
+          width: '70%',
           minWidth: 500,
           buttons: buttonOptions,
           // Issue #15810 - use button titles for modals (eg: new procedure)
@@ -340,8 +338,9 @@ const DatabaseRoutines = {
          *                 the Definition textarea.
          */
         var $elm = $('textarea[name=item_definition]').last();
-        var linterOptions = {};
-        linterOptions.routineEditor = true;
+        var linterOptions = {
+          editorType: 'routine'
+        };
         that.syntaxHiglighter = Functions.getSqlEditor($elm, {}, 'both', linterOptions);
 
         // Execute item-specific code
@@ -351,7 +350,6 @@ const DatabaseRoutines = {
       }
     }); // end $.get()
   },
-
   dropDialog: function ($this) {
     /**
      * @var $curr_row Object containing reference to the current row
@@ -421,7 +419,6 @@ const DatabaseRoutines = {
       }); // end $.post()
     });
   },
-
   dropMultipleDialog: function ($this) {
     // We ask for confirmation here
     $this.confirm(Messages.strDropRTEitems, '', function () {
@@ -506,7 +503,6 @@ const DatabaseRoutines = {
       }); // end drop_anchors.each()
     });
   },
-
   /**
    * Execute some code after the ajax dialog for the editor is shown.
    *
@@ -835,7 +831,6 @@ const DatabaseRoutines = {
     }); // end $.post()
   }
 };
-
 AJAX.registerOnload('database/routines.js', function () {
   $(document).on('click', 'a.ajax.add_anchor', function (event) {
     event.preventDefault();

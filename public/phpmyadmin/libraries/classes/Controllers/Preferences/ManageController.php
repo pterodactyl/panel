@@ -237,7 +237,6 @@ class ManageController extends AbstractController
             $result = $this->userPreferences->save([]);
             if ($result === true) {
                 $params = [];
-                $this->config->removeCookie('pma_collaction_connection');
                 $this->config->removeCookie('pma_lang');
                 $this->userPreferences->redirect('index.php?route=/preferences/manage', $params);
 

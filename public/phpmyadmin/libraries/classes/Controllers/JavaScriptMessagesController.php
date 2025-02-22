@@ -40,7 +40,7 @@ final class JavaScriptMessagesController
             'strDoYouReally' => __('Do you really want to execute "%s"?'),
             'strDropDatabaseStrongWarning' => __('You are about to DESTROY a complete database!'),
             'strDatabaseRenameToSameName' => __(
-                'Cannot rename database to the same name. Change the name and try again'
+                'Cannot rename database to the same name. Change the name and try again.'
             ),
             'strDropTableStrongWarning' => __('You are about to DESTROY a complete table!'),
             'strTruncateTableStrongWarning' => __('You are about to TRUNCATE a complete table!'),
@@ -118,7 +118,6 @@ final class JavaScriptMessagesController
 
             /* For Simulate DML*/
             'strSimulateDML' => __('Simulate query'),
-            'strMatchedRows' => __('Matched rows:'),
             'strSQLQuery' => __('SQL query:'),
 
             /* Charts */
@@ -386,6 +385,7 @@ final class JavaScriptMessagesController
             'strHideQueryBox' => __('Hide query box'),
             'strShowQueryBox' => __('Show query box'),
             'strEdit' => __('Edit'),
+            'strEditQuery' => __('Edit query'),
             'strDelete' => __('Delete'),
             'strNotValidRowNumber' => __('%d is not valid row number.'),
             'strBrowseForeignValues' => __('Browse foreign values'),
@@ -473,6 +473,7 @@ final class JavaScriptMessagesController
 
             /* For table/change.js */
             'strIgnore' => __('Ignore'),
+            'strCopyToClipboard' => __('Copy to clipboard'),
             'strCopy' => __('Copy'),
             'strX' => __('X'),
             'strY' => __('Y'),
@@ -609,6 +610,7 @@ final class JavaScriptMessagesController
             /* l10n: Latest available phpMyAdmin version */
             'strLatestAvailable' => __(', latest stable version:'),
             'strUpToDate' => __('up to date'),
+            'errorLoadingGitInformation' => __('There was an error in loading the Git information.'),
 
             /* Error Reporting */
             'strErrorOccurred' => __('A fatal JavaScript error has occurred. Would you like to send an error report?'),

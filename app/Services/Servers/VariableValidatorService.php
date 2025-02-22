@@ -23,7 +23,7 @@ class VariableValidatorService
     /**
      * Validate all of the passed data against the given service option variables.
      *
-     * @throws ValidationException
+     * @throws \Illuminate\Validation\ValidationException
      */
     public function handle(int $egg, array $fields = []): Collection
     {

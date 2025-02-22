@@ -92,6 +92,7 @@ class PhpDumper extends Dumper
     private $locatedIds = [];
     private $serviceLocatorTag;
     private $exportedVariables = [];
+    private $dynamicParameters = [];
     private $baseClass;
 
     /**
@@ -141,6 +142,7 @@ class PhpDumper extends Dumper
         $this->targetDirRegex = null;
         $this->inlinedRequires = [];
         $this->exportedVariables = [];
+        $this->dynamicParameters = [];
         $options = array_merge([
             'class' => 'ProjectServiceContainer',
             'base_class' => 'Container',
@@ -223,11 +225,12 @@ class PhpDumper extends Dumper
             $this->preload = array_combine($options['preload_classes'], $options['preload_classes']);
         }
 
+        $code = $this->addDefaultParametersMethod();
         $code =
             $this->startClass($options['class'], $baseClass, $this->inlineFactories && $proxyClasses).
             $this->addServices($services).
             $this->addDeprecatedAliases().
-            $this->addDefaultParametersMethod()
+            $code
         ;
 
         $proxyClasses = $proxyClasses ?? $this->generateProxyClasses();
@@ -391,6 +394,7 @@ EOF;
         $this->circularReferences = [];
         $this->locatedIds = [];
         $this->exportedVariables = [];
+        $this->dynamicParameters = [];
         $this->preload = [];
 
         $unusedEnvs = [];
@@ -1027,7 +1031,7 @@ EOTXT
         return $code;
     }
 
-    private function addInlineService(string $id, Definition $definition, Definition $inlineDef = null, bool $forConstructor = true): string
+    private function addInlineService(string $id, Definition $definition, ?Definition $inlineDef = null, bool $forConstructor = true): string
     {
         $code = '';
 
@@ -1084,7 +1088,7 @@ EOTXT
         return $code;
     }
 
-    private function addServices(array &$services = null): string
+    private function addServices(?array &$services = null): string
     {
         $publicServices = $privateServices = '';
         $definitions = $this->container->getDefinitions();
@@ -1126,7 +1130,7 @@ EOTXT
         }
     }
 
-    private function addNewInstance(Definition $definition, string $return = '', string $id = null): string
+    private function addNewInstance(Definition $definition, string $return = '', ?string $id = null): string
     {
         $tail = $return ? ";\n" : '';
 
@@ -1512,6 +1516,7 @@ EOF;
 
             if ($hasEnum || preg_match("/\\\$this->(?:getEnv\('(?:[-.\w]*+:)*+\w++'\)|targetDir\.'')/", $export[1])) {
                 $dynamicPhp[$key] = sprintf('%scase %s: $value = %s; break;', $export[0], $this->export($key), $export[1]);
+                $this->dynamicParameters[$key] = true;
             } else {
                 $php[] = sprintf('%s%s => %s,', $export[0], $this->export($key), $export[1]);
             }
@@ -1699,7 +1704,7 @@ EOF;
         return implode(' && ', $conditions);
     }
 
-    private function getDefinitionsFromArguments(array $arguments, \SplObjectStorage $definitions = null, array &$calls = [], bool $byConstructor = null): \SplObjectStorage
+    private function getDefinitionsFromArguments(array $arguments, ?\SplObjectStorage $definitions = null, array &$calls = [], ?bool $byConstructor = null): \SplObjectStorage
     {
         if (null === $definitions) {
             $definitions = new \SplObjectStorage();
@@ -1916,23 +1921,21 @@ EOF;
 
     private function dumpParameter(string $name): string
     {
-        if ($this->container->hasParameter($name)) {
-            $value = $this->container->getParameter($name);
-            $dumpedValue = $this->dumpValue($value, false);
-
-            if (!$value || !\is_array($value)) {
-                return $dumpedValue;
-            }
-
-            if (!preg_match("/\\\$this->(?:getEnv\('(?:[-.\w]*+:)*+\w++'\)|targetDir\.'')/", $dumpedValue)) {
-                return sprintf('$this->parameters[%s]', $this->doExport($name));
-            }
+        if (!$this->container->hasParameter($name) || ($this->dynamicParameters[$name] ?? false)) {
+            return sprintf('$this->getParameter(%s)', $this->doExport($name));
         }
 
-        return sprintf('$this->getParameter(%s)', $this->doExport($name));
+        $value = $this->container->getParameter($name);
+        $dumpedValue = $this->dumpValue($value, false);
+
+        if (!$value || !\is_array($value)) {
+            return $dumpedValue;
+        }
+
+        return sprintf('$this->parameters[%s]', $this->doExport($name));
     }
 
-    private function getServiceCall(string $id, Reference $reference = null): string
+    private function getServiceCall(string $id, ?Reference $reference = null): string
     {
         while ($this->container->hasAlias($id)) {
             $id = (string) $this->container->getAlias($id);

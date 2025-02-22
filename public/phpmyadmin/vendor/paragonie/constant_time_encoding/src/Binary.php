@@ -45,8 +45,10 @@ abstract class Binary
      * @param string $str
      * @return int
      */
-    public static function safeStrlen(string $str): int
-    {
+    public static function safeStrlen(
+        #[\SensitiveParameter]
+        string $str
+    ): int {
         if (\function_exists('mb_strlen')) {
             // mb_strlen in PHP 7.x can return false.
             /** @psalm-suppress RedundantCast */
@@ -70,6 +72,7 @@ abstract class Binary
      * @throws TypeError
      */
     public static function safeSubstr(
+        #[\SensitiveParameter]
         string $str,
         int $start = 0,
         $length = null

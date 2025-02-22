@@ -157,7 +157,7 @@ class CreateController extends AbstractController
 
             // If different column names defined for VIEW
             $view_columns = [];
-            if (isset($_POST['view']['column_names'])) {
+            if (isset($_POST['view']['column_names']) && $_POST['view']['column_names'] !== '') {
                 $view_columns = explode(',', $_POST['view']['column_names']);
             }
 

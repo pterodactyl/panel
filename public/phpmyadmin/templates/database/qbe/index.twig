@@ -1,12 +1,12 @@
 <ul class="nav nav-pills m-2">
   <li class="nav-item">
-    <a class="nav-link" href="{{ url('/database/multi-table-query', url_params) }}">
+    <a class="nav-link disableAjax" href="{{ url('/database/multi-table-query', url_params) }}">
       {% trans 'Multi-table query' %}
     </a>
   </li>
 
   <li class="nav-item">
-    <a class="nav-link active" href="{{ url('/database/qbe', url_params) }}">
+    <a class="nav-link active disableAjax" href="{{ url('/database/qbe', url_params) }}">
       {% trans 'Query by example' %}
     </a>
   </li>

@@ -16,7 +16,7 @@
  * @return {bool} whether the form is validated or not
  */
 function checkAddUser (theForm) {
-    if (theForm.elements.hostname.value === '') {
+    if (theForm.elements.hostname && theForm.elements.hostname.value === '') {
         alert(Messages.strHostEmpty);
         theForm.elements.hostname.focus();
         return false;

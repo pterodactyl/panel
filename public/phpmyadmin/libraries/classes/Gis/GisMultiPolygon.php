@@ -56,10 +56,11 @@ class GisMultiPolygon extends GisGeometry
      * @param string $spatial spatial data of a row
      *
      * @return array an array containing the min, max values for x and y coordinates
+     * @psalm-return array{minX:float,minY:float,maxX:float,maxY:float}
      */
     public function scaleRow($spatial)
     {
-        $min_max = [];
+        $min_max = GisGeometry::EMPTY_EXTENT;
 
         // Trim to remove leading 'MULTIPOLYGON(((' and trailing ')))'
         $multipolygon = mb_substr($spatial, 15, -3);
@@ -246,7 +247,7 @@ class GisMultiPolygon extends GisGeometry
     public function prepareRowAsSvg($spatial, $label, $fill_color, array $scale_data)
     {
         $polygon_options = [
-            'name' => $label,
+            'data-label' => $label,
             'class' => 'multipolygon vector',
             'stroke' => 'black',
             'stroke-width' => 0.5,
@@ -376,7 +377,7 @@ class GisMultiPolygon extends GisGeometry
      */
     public function generateWkt(array $gis_data, $index, $empty = '')
     {
-        $data_row = $gis_data[$index]['MULTIPOLYGON'];
+        $data_row = $gis_data[$index]['MULTIPOLYGON'] ?? null;
 
         $no_of_polygons = $data_row['no_of_polygons'] ?? 1;
         if ($no_of_polygons < 1) {

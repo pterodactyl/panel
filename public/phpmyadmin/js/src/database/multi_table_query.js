@@ -22,17 +22,30 @@ AJAX.registerTeardown('database/multi_table_query.js', function () {
     $('.tableNameSelect').each(function () {
         $(this).off('change');
     });
+    $('.columnNameSelect').each(function () {
+        $(this).off('change');
+    });
+    $('.criteria_op').each(function () {
+        $(this).off('change');
+    });
     $('#update_query_button').off('click');
     $('#add_column_button').off('click');
 });
 
 AJAX.registerOnload('database/multi_table_query.js', function () {
-    var editor = Functions.getSqlEditor($('#MultiSqlquery'), {}, 'both');
+    var editor = Functions.getSqlEditor($('#MultiSqlquery'), {}, 'vertical');
     $('.CodeMirror-line').css('text-align', 'left');
-    editor.setSize(-1, 50);
+    editor.setSize(-1, -1);
 
     var columnCount = 3;
     addNewColumnCallbacks();
+
+    function theHints () {
+        return {
+            'IN (...)': 'Separate the values by commas',
+            'NOT IN (...)': 'Separate the values by commas',
+        };
+    }
 
     $('#update_query_button').on('click', function () {
         var columns = [];
@@ -162,14 +175,47 @@ AJAX.registerOnload('database/multi_table_query.js', function () {
         addNewColumnCallbacks();
     });
 
+    $('.columnNameSelect').each(function () {
+        $(this).on('change', function () {
+            const colIsStar = $(this).val() === '*';
+
+            colIsStar && $(this).siblings('.col_alias').val('');
+            $(this).siblings('.col_alias').prop('disabled', colIsStar);
+        });
+    });
+
+    $('.criteria_op').each(function () {
+        $(this).on('change', function () {
+            showHint($(this));
+        });
+    });
+
+    function showHint (opSelect) {
+        const hints = theHints();
+        const value = opSelect.val();
+        const criteriaInputCol = opSelect.closest('table').find('.rhs_text_val').parent();
+
+        criteriaInputCol.find('.rhs_hint').remove();
+
+        Object.keys(hints).includes(value) && criteriaInputCol.append(`<p class="rhs_hint">${hints[value]}</p>`);
+    }
+
     function addNewColumnCallbacks () {
         $('.tableNameSelect').each(function () {
             $(this).on('change', function () {
-                var $sibs = $(this).siblings('.columnNameSelect');
-                if ($sibs.length === 0) {
-                    $sibs = $(this).parent().parent().find('.columnNameSelect');
-                }
-                $sibs.first().html($('#' + $(this).find(':selected').data('hash')).html());
+                const $table = $(this);
+                const $alias = $table.siblings('.col_alias');
+                const $colsSelect = $table.parent().find('.columnNameSelect');
+
+                $alias.prop('disabled', true);
+
+                $colsSelect.each(function () {
+                    $(this).show();
+                    $(this).first().html($('#' + $table.find(':selected').data('hash')).html());
+                    if ($(this).hasClass('opColumn')) {
+                        $(this).find('option[value="*"]').remove();
+                    }
+                });
             });
         });
 
@@ -195,7 +241,10 @@ AJAX.registerOnload('database/multi_table_query.js', function () {
         $('.criteria_col').each(function () {
             $(this).on('change', function () {
                 var $anchor = $(this).siblings('.jsCriteriaButton').first();
-                if ($(this).is(':checked') && ! $anchor.hasClass('collapsed')) {
+                if (
+                    ($(this).is(':checked') && ! $anchor.hasClass('collapsed'))
+                    || (! $(this).is(':checked') && $anchor.hasClass('collapsed'))
+                ) {
                     // Do not collapse on checkbox tick as it does not make sense
                     // The user has it open and wants to tick the box
                     return;

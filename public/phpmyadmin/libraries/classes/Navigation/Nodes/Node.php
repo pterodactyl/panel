@@ -178,13 +178,13 @@ class Node
     {
         if ($realName) {
             foreach ($this->children as $child) {
-                if ($child->realName == $name) {
+                if ($child->realName === $name) {
                     return $child;
                 }
             }
         } else {
             foreach ($this->children as $child) {
-                if ($child->name == $name && $child->isNew === false) {
+                if ($child->name === $name && $child->isNew === false) {
                     return $child;
                 }
             }

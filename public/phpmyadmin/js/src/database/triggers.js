@@ -300,7 +300,7 @@ const DatabaseTriggers = {
                     classes: {
                         'ui-dialog-titlebar-close': 'btn-close'
                     },
-                    width: 700,
+                    width: '70%',
                     minWidth: 500,
                     buttons: buttonOptions,
                     // Issue #15810 - use button titles for modals (eg: new procedure)
@@ -339,8 +339,7 @@ const DatabaseTriggers = {
                  *                 the Definition textarea.
                  */
                 var $elm = $('textarea[name=item_definition]').last();
-                var linterOptions = {};
-                linterOptions.triggerEditor = true;
+                var linterOptions = { editorType: 'trigger' };
                 that.syntaxHiglighter = Functions.getSqlEditor($elm, {}, 'both', linterOptions);
             } else {
                 Functions.ajaxShowMessage(data.error, false);

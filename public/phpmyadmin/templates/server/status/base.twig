@@ -2,32 +2,32 @@
   <div class="row">
     <ul class="nav nav-pills m-2">
       <li class="nav-item">
-        <a href="{{ url('/server/status') }}" class="nav-link{{ active == 'status' ? ' active' }}">
+        <a href="{{ url('/server/status') }}" class="nav-link{{ active == 'status' ? ' active' }} disableAjax">
           {% trans 'Server' %}
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ url('/server/status/processes') }}" class="nav-link{{ active == 'processes' ? ' active' }}">
+        <a href="{{ url('/server/status/processes') }}" class="nav-link{{ active == 'processes' ? ' active' }} disableAjax">
           {% trans 'Processes' %}
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ url('/server/status/queries') }}" class="nav-link{{ active == 'queries' ? ' active' }}">
+        <a href="{{ url('/server/status/queries') }}" class="nav-link{{ active == 'queries' ? ' active' }} disableAjax">
           {% trans 'Query statistics' %}
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ url('/server/status/variables') }}" class="nav-link{{ active == 'variables' ? ' active' }}">
+        <a href="{{ url('/server/status/variables') }}" class="nav-link{{ active == 'variables' ? ' active' }} disableAjax">
           {% trans 'All status variables' %}
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ url('/server/status/monitor') }}" class="nav-link{{ active == 'monitor' ? ' active' }}">
+        <a href="{{ url('/server/status/monitor') }}" class="nav-link{{ active == 'monitor' ? ' active' }} disableAjax">
           {% trans 'Monitor' %}
         </a>
       </li>
       <li class="nav-item">
-        <a href="{{ url('/server/status/advisor') }}" class="nav-link{{ active == 'advisor' ? ' active' }}">
+        <a href="{{ url('/server/status/advisor') }}" class="nav-link{{ active == 'advisor' ? ' active' }} disableAjax">
           {% trans 'Advisor' %}
         </a>
       </li>

@@ -9,7 +9,6 @@ use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Dbal\DatabaseName;
 use PhpMyAdmin\Dbal\TableName;
 use PhpMyAdmin\InternalRelations;
-use PhpMyAdmin\RecentFavoriteTable;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statements\CreateStatement;
 use PhpMyAdmin\SqlParser\Utils\Table as TableUtils;
@@ -163,6 +162,10 @@ class Relation
      */
     private function fillRelationParamsWithTableNames(array $relationParams): ?array
     {
+        if ($this->arePmadbTablesAllDisabled()) {
+            return null;
+        }
+
         $tabQuery = 'SHOW TABLES FROM '
         . Util::backquote($GLOBALS['cfg']['Server']['pmadb']);
         $tableRes = $this->dbi->tryQueryAsControlUser($tabQuery);
@@ -441,7 +444,7 @@ class Relation
         if (($source === 'both' || $source === 'foreign') && strlen($table) > 0) {
             $tableObj = new Table($table, $db);
             $show_create_table = $tableObj->showCreate();
-            if ($show_create_table) {
+            if ($show_create_table !== '') {
                 $parser = new Parser($show_create_table);
                 $stmt = $parser->statements[0];
                 $foreign['foreign_keys_data'] = [];
@@ -1580,6 +1583,10 @@ class Relation
      */
     public function fixPmaTables($db, $create = true): void
     {
+        if ($this->arePmadbTablesAllDisabled()) {
+            return;
+        }
+
         $tablesToFeatures = [
             'pma__bookmark' => 'bookmarktable',
             'pma__relation' => 'relation',
@@ -1626,6 +1633,11 @@ class Relation
         $createQueries = null;
         $foundOne = false;
         foreach ($tablesToFeatures as $table => $feature) {
+            if (($GLOBALS['cfg']['Server'][$feature] ?? null) === false) {
+                // The feature is disabled by the user in config
+                continue;
+            }
+
             // Check if the table already exists
             // use the possible replaced name first and fallback on the table name
             // if no replacement exists
@@ -1669,31 +1681,12 @@ class Relation
         }
 
         $GLOBALS['cfg']['Server']['pmadb'] = $db;
+
+        //NOTE: I am unsure why we do that, as it defeats the purpose of the session cache
+        // Unset the cache
         unset($_SESSION['relation'][$GLOBALS['server']]);
-
-        $relationParameters = $this->getRelationParameters();
-        if (
-            $relationParameters->recentlyUsedTablesFeature === null
-            && $relationParameters->favoriteTablesFeature === null
-        ) {
-            return;
-        }
-
-        // Since configuration storage is updated, we need to
-        // re-initialize the favorite and recent tables stored in the
-        // session from the current configuration storage.
-        if ($relationParameters->favoriteTablesFeature !== null) {
-            $fav_tables = RecentFavoriteTable::getInstance('favorite');
-            $_SESSION['tmpval']['favoriteTables'][$GLOBALS['server']] = $fav_tables->getFromDb();
-        }
-
-        if ($relationParameters->recentlyUsedTablesFeature !== null) {
-            $recent_tables = RecentFavoriteTable::getInstance('recent');
-            $_SESSION['tmpval']['recentTables'][$GLOBALS['server']] = $recent_tables->getFromDb();
-        }
-
-        // Reload navi panel to update the recent/favorite lists.
-        $GLOBALS['reload'] = true;
+        // Fill back the cache
+        $this->getRelationParameters();
     }
 
     /**
@@ -1722,6 +1715,32 @@ class Relation
             $res_rel,
             $have_rel,
         ];
+    }
+
+    /**
+     * Verifies that all pmadb features are disabled
+     */
+    public function arePmadbTablesAllDisabled(): bool
+    {
+        return ($GLOBALS['cfg']['Server']['bookmarktable'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['relation'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['table_info'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['table_coords'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['column_info'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['pdf_pages'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['history'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['recent'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['favorite'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['table_uiprefs'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['tracking'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['userconfig'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['users'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['usergroups'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['navigationhiding'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['savedsearches'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['central_columns'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['designer_settings'] ?? null) === false
+            && ($GLOBALS['cfg']['Server']['export_templates'] ?? null) === false;
     }
 
     /**

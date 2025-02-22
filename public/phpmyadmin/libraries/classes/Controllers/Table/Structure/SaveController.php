@@ -178,17 +178,25 @@ final class SaveController extends AbstractController
 
             $changedToBlob = [];
             // While changing the Column Collation
-            // First change to BLOB
+            // First change to BLOB, MEDIUMBLOB, or LONGBLOB (depending on the original field type)
             for ($i = 0; $i < $field_cnt; $i++) {
                 if (
                     isset($_POST['field_collation'][$i], $_POST['field_collation_orig'][$i])
                     && $_POST['field_collation'][$i] !== $_POST['field_collation_orig'][$i]
                     && ! in_array($_POST['field_orig'][$i], $columns_with_index)
                 ) {
+                    if ($_POST['field_type_orig'][$i] === 'MEDIUMTEXT') {
+                        $blob_type = 'MEDIUMBLOB';
+                    } elseif ($_POST['field_type_orig'][$i] === 'LONGTEXT') {
+                        $blob_type = 'LONGBLOB';
+                    } else {
+                        $blob_type = 'BLOB';
+                    }
+
                     $secondary_query = 'ALTER TABLE ' . Util::backquote($this->table)
                         . ' CHANGE ' . Util::backquote($_POST['field_orig'][$i])
                         . ' ' . Util::backquote($_POST['field_orig'][$i])
-                        . ' BLOB';
+                        . ' ' . $blob_type;
 
                     if (isset($_POST['field_virtuality'][$i], $_POST['field_expression'][$i])) {
                         if ($_POST['field_virtuality'][$i]) {
@@ -345,6 +353,7 @@ final class SaveController extends AbstractController
             'field_length',
             'field_null',
             'field_type',
+            'field_virtuality',
         ];
         foreach ($fields as $field) {
             if ($_POST[$field][$i] != $_POST[$field . '_orig'][$i]) {

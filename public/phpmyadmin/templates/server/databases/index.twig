@@ -19,7 +19,7 @@
             {% endif %}
 
             <div class="col-12">
-              <input type="text" name="new_db" maxlength="64" class="form-control" value="
+              <input autocomplete="off" type="text" name="new_db" maxlength="64" class="form-control" value="
                 {{- database_to_create }}" id="text_create_db" placeholder="
                 {%- trans 'Database name' %}" aria-label="{% trans 'Database name' %}" required>
             </div>

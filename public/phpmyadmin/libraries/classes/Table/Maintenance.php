@@ -13,6 +13,7 @@ use PhpMyAdmin\Table\Maintenance\Message;
 use PhpMyAdmin\Util;
 
 use function __;
+use function htmlspecialchars;
 use function implode;
 use function sprintf;
 
@@ -119,7 +120,7 @@ final class Maintenance
                 continue;
             }
 
-            $indexesProblems .= sprintf(__('Problems with indexes of table `%s`'), $table->getName());
+            $indexesProblems .= htmlspecialchars(sprintf(__('Problems with indexes of table `%s`'), $table->getName()));
             $indexesProblems .= $check;
         }
 

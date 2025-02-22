@@ -1023,7 +1023,7 @@ class Config
      */
     public function getCookieName(string $cookieName): string
     {
-        return $cookieName . ( $this->isHttps() ? '_https' : '' );
+        return ($this->isHttps() ? '__Secure-' : '') . $cookieName . ($this->isHttps() ? '_https' : '');
     }
 
     /**

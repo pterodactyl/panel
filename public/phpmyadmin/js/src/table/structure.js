@@ -322,9 +322,15 @@ AJAX.registerOnload('table/structure.js', function () {
         designerModalPreviewModal.addEventListener('shown.bs.modal', () => {
             const modalBody = designerModalPreviewModal.querySelector('.modal-body');
             const $form = $('#move_column_form');
+            const serialized = $form.serialize();
+            if (serialized === $form.data('serialized-unmoved')) {
+                modalBody.innerHTML = '';
+                return;
+            }
+
             const formUrl = $form.attr('action');
             const sep = CommonParams.get('arg_separator');
-            const formData = $form.serialize() +
+            const formData = serialized +
                 sep + 'preview_sql=1' +
                 sep + 'ajax_request=1';
             $.post({

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace PhpMyAdmin;
 
+use DateTimeImmutable;
+use DateTimeZone;
 use DirectoryIterator;
 use PhpMyAdmin\Utils\HttpRequest;
 use stdClass;
@@ -13,7 +15,6 @@ use function array_shift;
 use function basename;
 use function bin2hex;
 use function count;
-use function date;
 use function explode;
 use function fclose;
 use function file_exists;
@@ -26,6 +27,7 @@ use function gzuncompress;
 use function implode;
 use function in_array;
 use function intval;
+use function is_array;
 use function is_bool;
 use function is_dir;
 use function is_file;
@@ -57,15 +59,23 @@ class Git
     private $showGitRevision;
 
     /**
+     * The path where the to search for .git folders
+     *
+     * @var string
+     */
+    private $baseDir;
+
+    /**
      * Git has been found and the data fetched
      *
      * @var bool
      */
     private $hasGit = false;
 
-    public function __construct(bool $showGitRevision)
+    public function __construct(bool $showGitRevision, ?string $baseDir = null)
     {
         $this->showGitRevision = $showGitRevision;
+        $this->baseDir = $baseDir ?? ROOT_PATH;
     }
 
     public function hasGitInformation(): bool
@@ -94,8 +104,10 @@ class Git
 
         // find out if there is a .git folder
         // or a .git file (--separate-git-dir)
-        $git = '.git';
-        if (is_dir($git)) {
+        $git = $this->baseDir . '.git';
+        if (file_exists($this->baseDir . 'revision-info.php')) {
+            $git_location = 'revision-info.php';
+        } elseif (is_dir($git)) {
             if (! @is_file($git . '/config')) {
                 $_SESSION['git_location'] = null;
                 $_SESSION['is_git_revision'] = false;
@@ -358,11 +370,11 @@ class Git
     /**
      * Extract committer, author and message from commit body
      *
-     * @param array $commit The commit body
+     * @param string[] $commit The commit body
      *
      * @return array<int,array<string,string>|string>
      */
-    private function extractDataFormTextBody(array $commit): array
+    public static function extractDataFormTextBody(array $commit): array
     {
         $author = [
             'name' => '',
@@ -385,14 +397,14 @@ class Git
 
             $user = $datalinearr[1];
             preg_match('/([^<]+)<([^>]+)> ([0-9]+)( [^ ]+)?/', $user, $user);
+            $timezone = new DateTimeZone($user[4] ?? '+0000');
+            $date = (new DateTimeImmutable())->setTimestamp((int) $user[3])->setTimezone($timezone);
+
             $user2 = [
                 'name' => trim($user[1]),
                 'email' => trim($user[2]),
-                'date' => date('Y-m-d H:i:s', (int) $user[3]),
+                'date' => $date->format('Y-m-d H:i:s O'),
             ];
-            if (isset($user[4])) {
-                $user2['date'] .= $user[4];
-            }
 
             if ($linetype === 'author') {
                 $author = $user2;
@@ -536,6 +548,44 @@ class Git
     }
 
     /**
+     * @return array<string, string|array<string, string>>|null
+     * @psalm-return array{
+     *        revision: string,
+     *        revisionHash: string,
+     *        revisionUrl: string,
+     *        branch: string,
+     *        branchUrl: string,
+     *        message: string,
+     *        author: array{
+     *            name: string,
+     *            email: string,
+     *            date: string
+     *        },
+     *        committer: array{
+     *            name: string,
+     *            email: string,
+     *            date: string
+     *        }
+     * }|null
+     */
+    public function getGitRevisionInfo(): ?array
+    {
+        if (@file_exists($this->baseDir . 'revision-info.php')) {
+            /** @var array{ revision: string, revisionHash: string, revisionUrl: string, branch: string, branchUrl: string, message: string, author: array{ name: string, email: string, date: string }, committer: array{ name: string, email: string, date: string }}|null $info */
+            /** @psalm-suppress MissingFile,UnresolvableInclude */
+            $info = include $this->baseDir . 'revision-info.php';
+
+            if (! is_array($info)) {
+                return null;
+            }
+
+            return $info;
+        }
+
+        return null;
+    }
+
+    /**
      * detects Git revision, if running inside repo
      */
     public function checkGitRevision(): ?array
@@ -546,6 +596,37 @@ class Git
             $this->hasGit = false;
 
             return null;
+        }
+
+        // Special name to indicate the use of the config file
+        if ($gitFolder === 'revision-info.php') {
+            $info = $this->getGitRevisionInfo();
+
+            if ($info === null) {
+                return null;
+            }
+
+            $this->hasGit = true;
+
+            return [
+                'hash' => $info['revisionHash'],
+                'branch' => $info['branch'],
+                'message' => $info['message'],
+                'author' => [
+                    'name' => $info['author']['name'],
+                    'email' => $info['author']['email'],
+                    'date' => $info['author']['date'],
+                ],
+                'committer' => [
+                    'name' => $info['committer']['name'],
+                    'email' => $info['committer']['email'],
+                    'date' => $info['committer']['date'],
+                ],
+                // Let's make the guess that the data is remote
+                // The write script builds a remote commit url without checking that it exists
+                'is_remote_commit' => true,
+                'is_remote_branch' => true,
+            ];
         }
 
         $ref_head = @file_get_contents($gitFolder . '/HEAD');
@@ -607,7 +688,7 @@ class Git
         }
 
         if ($commit !== false) {
-            [$author, $committer, $message] = $this->extractDataFormTextBody($commit);
+            [$author, $committer, $message] = self::extractDataFormTextBody($commit);
         } elseif (isset($commit_json->author, $commit_json->committer, $commit_json->message)) {
             $author = [
                 'name' => $commit_json->author->name,

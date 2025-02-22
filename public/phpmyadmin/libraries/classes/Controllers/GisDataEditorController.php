@@ -15,10 +15,8 @@ use function array_merge;
 use function in_array;
 use function intval;
 use function is_array;
-use function mb_strpos;
 use function mb_strtoupper;
-use function mb_substr;
-use function substr;
+use function preg_match;
 use function trim;
 
 /**
@@ -26,9 +24,19 @@ use function trim;
  */
 class GisDataEditorController extends AbstractController
 {
+    private const GIS_TYPES = [
+        'POINT',
+        'MULTIPOINT',
+        'LINESTRING',
+        'MULTILINESTRING',
+        'POLYGON',
+        'MULTIPOLYGON',
+        'GEOMETRYCOLLECTION',
+    ];
+
     public function __invoke(ServerRequest $request): void
     {
-        global $gis_data, $gis_types, $start, $geom_type, $gis_obj, $srid, $wkt, $wkt_with_zero;
+        global $gis_data, $geom_type, $gis_obj, $srid, $wkt, $wkt_with_zero;
         global $result, $visualizationSettings, $data, $visualization, $open_layers, $geom_count, $dbi;
 
         /** @var string|null $field */
@@ -36,7 +44,7 @@ class GisDataEditorController extends AbstractController
         /** @var array|null $gisDataParam */
         $gisDataParam = $request->getParsedBodyParam('gis_data');
         /** @var string $type */
-        $type = $request->getParsedBodyParam('type', '');
+        $type = $request->getParsedBodyParam('type', 'GEOMETRY');
         /** @var string|null $value */
         $value = $request->getParsedBodyParam('value');
         /** @var string|null $generate */
@@ -54,33 +62,7 @@ class GisDataEditorController extends AbstractController
             $gis_data = $gisDataParam;
         }
 
-        $gis_types = [
-            'POINT',
-            'MULTIPOINT',
-            'LINESTRING',
-            'MULTILINESTRING',
-            'POLYGON',
-            'MULTIPOLYGON',
-            'GEOMETRYCOLLECTION',
-        ];
-
-        // Extract type from the initial call and make sure that it's a valid one.
-        // Extract from field's values if available, if not use the column type passed.
-        if (! isset($gis_data['gis_type'])) {
-            if ($type !== '') {
-                $gis_data['gis_type'] = mb_strtoupper($type);
-            }
-
-            if (isset($value) && trim($value) !== '') {
-                $start = substr($value, 0, 1) == "'" ? 1 : 0;
-                $gis_data['gis_type'] = mb_substr($value, $start, (int) mb_strpos($value, '(') - $start);
-            }
-
-            if (! isset($gis_data['gis_type']) || (! in_array($gis_data['gis_type'], $gis_types))) {
-                $gis_data['gis_type'] = $gis_types[0];
-            }
-        }
-
+        $gis_data = $this->validateGisData($gis_data, $type, $value);
         $geom_type = $gis_data['gis_type'];
 
         // Generate parameters from value passed.
@@ -150,7 +132,8 @@ class GisDataEditorController extends AbstractController
             'srid' => $srid,
             'visualization' => $visualization,
             'open_layers' => $open_layers,
-            'gis_types' => $gis_types,
+            'column_type' => mb_strtoupper($type),
+            'gis_types' => self::GIS_TYPES,
             'geom_type' => $geom_type,
             'geom_count' => $geom_count,
             'gis_data' => $gis_data,
@@ -158,5 +141,33 @@ class GisDataEditorController extends AbstractController
         ]);
 
         $this->response->addJSON(['gis_editor' => $templateOutput]);
+    }
+
+    /**
+     * Extract type from the initial call and make sure that it's a valid one.
+     * Extract from field's values if available, if not use the column type passed.
+     *
+     * @param mixed[] $gis_data
+     *
+     * @return mixed[]
+     * @psalm-return array{gis_type:value-of<self::GIS_TYPES>}&mixed[]
+     */
+    private function validateGisData(array $gis_data, string $type, ?string $value): array
+    {
+        if (! isset($gis_data['gis_type']) || ! in_array($gis_data['gis_type'], self::GIS_TYPES, true)) {
+            if ($type !== '') {
+                $gis_data['gis_type'] = mb_strtoupper($type);
+            }
+
+            if (isset($value) && trim($value) !== '' && preg_match('/^\'?(\w+)\b/', $value, $matches)) {
+                $gis_data['gis_type'] = $matches[1];
+            }
+
+            if (! isset($gis_data['gis_type']) || (! in_array($gis_data['gis_type'], self::GIS_TYPES, true))) {
+                $gis_data['gis_type'] = self::GIS_TYPES[0];
+            }
+        }
+
+        return $gis_data;
     }
 }

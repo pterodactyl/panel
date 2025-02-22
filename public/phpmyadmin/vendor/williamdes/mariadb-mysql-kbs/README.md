@@ -9,6 +9,7 @@
 [![npm version](https://badge.fury.io/js/mariadb-mysql-kbs.svg)](https://badge.fury.io/js/mariadb-mysql-kbs)
 [![Known Vulnerabilities](https://snyk.io/test/github/williamdes/mariadb-mysql-kbs/badge.svg)](https://snyk.io/test/github/williamdes/mariadb-mysql-kbs)
 [![Rust Report Card](https://rust-reportcard.xuri.me/badge/github.com/williamdes/mariadb-mysql-kbs)](https://rust-reportcard.xuri.me/report/github.com/williamdes/mariadb-mysql-kbs)
+![maintenance-status](https://img.shields.io/badge/maintenance-passively--maintained-yellowgreen.svg)
 
 [API doc](https://williamdes.github.io/mariadb-mysql-kbs/Williamdes/MariaDBMySQLKBS.html)
 

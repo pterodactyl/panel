@@ -7,7 +7,7 @@ class UpdateMisnamedBungee extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         DB::table('service_variables')->select('env_variable')->where('env_variable', 'BUNGE_VERSION')->update([
             'env_variable' => 'BUNGEE_VERSION',
@@ -17,7 +17,7 @@ class UpdateMisnamedBungee extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
     }
 }

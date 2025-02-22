@@ -9,7 +9,7 @@ class AddConfigurableUploadLimit extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->unsignedInteger('upload_size')->after('disk_overallocate')->default(100);
@@ -19,7 +19,7 @@ class AddConfigurableUploadLimit extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->dropColumn('upload_size');

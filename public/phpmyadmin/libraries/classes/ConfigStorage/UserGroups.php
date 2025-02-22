@@ -40,7 +40,6 @@ class UserGroups
         global $dbi;
 
         $users = [];
-        $numRows = 0;
 
         $userGroupSpecialChars = htmlspecialchars($userGroup);
         $usersTable = Util::backquote($configurableMenusFeature->database)
@@ -63,7 +62,6 @@ class UserGroups
 
         return $template->render('server/user_groups/user_listings', [
             'user_group_special_chars' => $userGroupSpecialChars,
-            'num_rows' => $numRows,
             'users' => $users,
         ]);
     }
@@ -98,7 +96,7 @@ class UserGroups
 
             foreach ($userGroups as $groupName => $tabs) {
                 $userGroupVal = [];
-                $userGroupVal['name'] = htmlspecialchars((string) $groupName);
+                $userGroupVal['name'] = $groupName;
                 $userGroupVal['serverTab'] = self::getAllowedTabNames($tabs, 'server');
                 $userGroupVal['dbTab'] = self::getAllowedTabNames($tabs, 'db');
                 $userGroupVal['tableTab'] = self::getAllowedTabNames($tabs, 'table');

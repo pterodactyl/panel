@@ -14,6 +14,7 @@ use PhpMyAdmin\Util;
 
 use function __;
 use function count;
+use function is_array;
 use function json_decode;
 use function json_encode;
 use function md5;
@@ -45,13 +46,16 @@ final class FavoriteTableController extends AbstractController
         $errorUrl = Util::getScriptNameForOption($cfg['DefaultTabDatabase'], 'database');
         $errorUrl .= Url::getCommon(['db' => $db], '&');
 
-        if (! $this->hasDatabase() || ! $this->response->isAjax()) {
+        if (! $this->response->isAjax()) {
             return;
         }
 
         $favoriteInstance = RecentFavoriteTable::getInstance('favorite');
         if (isset($parameters['favoriteTables'])) {
             $favoriteTables = json_decode($parameters['favoriteTables'], true);
+            if (! is_array($favoriteTables)) {
+                $favoriteTables = [];
+            }
         } else {
             $favoriteTables = [];
         }
@@ -70,6 +74,10 @@ final class FavoriteTableController extends AbstractController
                 ));
             }
 
+            return;
+        }
+
+        if (! $this->hasDatabase()) {
             return;
         }
 
@@ -170,10 +178,8 @@ final class FavoriteTableController extends AbstractController
      */
     private function checkFavoriteTable(string $currentTable): bool
     {
-        // ensure $_SESSION['tmpval']['favoriteTables'] is initialized
-        RecentFavoriteTable::getInstance('favorite');
-        $favoriteTables = $_SESSION['tmpval']['favoriteTables'][$GLOBALS['server']] ?? [];
-        foreach ($favoriteTables as $value) {
+        $recentFavoriteTables = RecentFavoriteTable::getInstance('favorite');
+        foreach ($recentFavoriteTables->getTables() as $value) {
             if ($value['db'] == $this->db && $value['table'] == $currentTable) {
                 return true;
             }

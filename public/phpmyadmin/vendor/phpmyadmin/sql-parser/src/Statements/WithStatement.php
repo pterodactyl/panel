@@ -16,6 +16,7 @@ use PhpMyAdmin\SqlParser\Translator;
 
 use function array_slice;
 use function count;
+use function preg_match;
 
 /**
  * `WITH` statement.
@@ -114,7 +115,7 @@ final class WithStatement extends Statement
             }
 
             if ($state === 0) {
-                if ($token->type !== Token::TYPE_NONE) {
+                if ($token->type !== Token::TYPE_NONE || ! preg_match('/^[a-zA-Z0-9_$]+$/', $token->token)) {
                     $parser->error('The name of the CTE was expected.', $token);
                     break;
                 }
@@ -124,7 +125,12 @@ final class WithStatement extends Statement
                 $state = 1;
             } elseif ($state === 1) {
                 if ($token->type === Token::TYPE_OPERATOR && $token->value === '(') {
-                    $this->withers[$wither]->columns = Array2d::parse($parser, $list);
+                    $columns = Array2d::parse($parser, $list);
+                    if ($parser->errors !== []) {
+                        break;
+                    }
+
+                    $this->withers[$wither]->columns = $columns;
                     $state = 2;
                 } elseif ($token->type === Token::TYPE_KEYWORD && $token->keyword === 'AS') {
                     $state = 3;
@@ -274,11 +280,17 @@ final class WithStatement extends Statement
      */
     public function build()
     {
-        $str = 'WITH ';
+        $initial = true;
+        $str = 'WITH';
+
+        if ($this->options !== null && $this->options->options !== []) {
+            $str .= ' ' . OptionsArray::build($this->options);
+        }
 
         foreach ($this->withers as $wither) {
-            $str .= $str === 'WITH ' ? '' : ', ';
+            $str .= $initial ? ' ' : ', ';
             $str .= WithKeyword::build($wither);
+            $initial = false;
         }
 
         $str .= ' ';

@@ -62,10 +62,14 @@ function prepareJSVersion () {
 function addDataPoint (pointNumber, prefix) {
     return '<br>' +
         Functions.sprintf(Messages.strPointN, (pointNumber + 1)) + ': ' +
-        '<label for="x">' + Messages.strX + '</label>' +
-        '<input type="text" name="' + prefix + '[' + pointNumber + '][x]" value="">' +
-        '<label for="y">' + Messages.strY + '</label>' +
-        '<input type="text" name="' + prefix + '[' + pointNumber + '][y]" value="">';
+        '<label>' +
+        Messages.strX +
+        ' <input type="text" name="' + prefix + '[' + pointNumber + '][x]" value="">' +
+        '</label>' +
+        ' <label>' +
+        Messages.strY +
+        ' <input type="text" name="' + prefix + '[' + pointNumber + '][y]" value="">' +
+        '</label> ';
 }
 
 /**
@@ -158,30 +162,15 @@ function loadGISEditor (value, field, type, inputName) {
  */
 // eslint-disable-next-line no-unused-vars
 function openGISEditor () {
-    // Center the popup
-    var windowWidth = document.documentElement.clientWidth;
-    var windowHeight = document.documentElement.clientHeight;
-    var popupWidth = windowWidth * 0.9;
-    var popupHeight = windowHeight * 0.9;
-    var popupOffsetTop = windowHeight / 2 - popupHeight / 2;
-    var popupOffsetLeft = windowWidth / 2 - popupWidth / 2;
-
-    var $gisEditor = $('#gis_editor');
-    var $background = $('#popup_background');
-
-    $gisEditor.css({ 'top': popupOffsetTop, 'left': popupOffsetLeft, 'width': popupWidth, 'height': popupHeight });
-    $background.css({ 'opacity' : '0.7' });
-
-    $gisEditor.append(
-        '<div id="gis_data_editor">' +
-        '<img class="ajaxIcon" id="loadingMonitorIcon" src="' +
-        themeImagePath + 'ajax_clock_small.gif" alt="">' +
-        '</div>'
-    );
-
-    // Make it appear
-    $background.fadeIn('fast');
-    $gisEditor.fadeIn('fast');
+    $('#popup_background').fadeIn('fast');
+    $('#gis_editor')
+        .append(
+            '<div id="gis_data_editor">' +
+            '<img class="ajaxIcon" id="loadingMonitorIcon" src="' +
+            themeImagePath + 'ajax_clock_small.gif" alt="">' +
+            '</div>'
+        )
+        .fadeIn('fast');
 }
 
 /**
@@ -213,7 +202,7 @@ AJAX.registerTeardown('gis_data_editor.js', function () {
     $(document).off('change', '#gis_editor select.gis_type');
     $(document).off('click', '#gis_editor a.close_gis_editor, #gis_editor a.cancel_gis_editor');
     $(document).off('click', '#gis_editor a.addJs.addPoint');
-    $(document).off('click', '#gis_editor a.addLine.addJs');
+    $(document).off('click', '#gis_editor a.addJs.addLine');
     $(document).off('click', '#gis_editor a.addJs.addPolygon');
     $(document).off('click', '#gis_editor a.addJs.addGeom');
 });
@@ -302,7 +291,7 @@ AJAX.registerOnload('gis_data_editor.js', function () {
     /**
      * Handles adding linestrings and inner rings
      */
-    $(document).on('click', '#gis_editor a.addLine.addJs', function () {
+    $(document).on('click', '#gis_editor a.addJs.addLine', function () {
         var $a = $(this);
         var name = $a.attr('name');
 
@@ -328,7 +317,7 @@ AJAX.registerOnload('gis_data_editor.js', function () {
         for (var i = 0; i < noOfPoints; i++) {
             html += addDataPoint(i, (prefix + '[' + noOfLines + ']'));
         }
-        html += '<a class="addPoint addJs" name="' + prefix + '[' + noOfLines + '][add_point]" href="#">+ ' +
+        html += '<a class="btn btn-secondary addPoint addJs" name="' + prefix + '[' + noOfLines + '][add_point]" href="#">+ ' +
             Messages.strAddPoint + '</a><br>';
 
         $a.before(html);
@@ -355,9 +344,9 @@ AJAX.registerOnload('gis_data_editor.js', function () {
         for (var i = 0; i < 4; i++) {
             html += addDataPoint(i, (prefix + '[' + noOfPolygons + '][0]'));
         }
-        html += '<a class="addPoint addJs" name="' + prefix + '[' + noOfPolygons + '][0][add_point]" href="#">+ ' +
+        html += '<a class="btn btn-secondary addPoint addJs" name="' + prefix + '[' + noOfPolygons + '][0][add_point]" href="#">+ ' +
             Messages.strAddPoint + '</a><br>' +
-            '<a class="addLine addJs" name="' + prefix + '[' + noOfPolygons + '][add_line]" href="#">+ ' +
+            '<a class="btn btn-secondary addLine addJs" name="' + prefix + '[' + noOfPolygons + '][add_line]" href="#">+ ' +
             Messages.strAddInnerRing + '</a><br><br>';
 
         $a.before(html);
@@ -375,18 +364,20 @@ AJAX.registerOnload('gis_data_editor.js', function () {
         var noOfGeoms = parseInt($noOfGeomsInput.val(), 10);
 
         var html1 = Messages.strGeometry + ' ' + (noOfGeoms + 1) + ':<br>';
-        var $geomType = $('select[name=\'gis_data[' + (noOfGeoms - 1) + '][gis_type]\']').clone();
+        var $geomType = $('#gis_type_template').contents().filter('select').clone();
         $geomType.attr('name', 'gis_data[' + noOfGeoms + '][gis_type]').val('POINT');
-        var html2 = '<br>' + Messages.strPoint + ' :' +
-            '<label for="x"> ' + Messages.strX + ' </label>' +
-            '<input type="text" name="gis_data[' + noOfGeoms + '][POINT][x]" value="">' +
-            '<label for="y"> ' + Messages.strY + ' </label>' +
-            '<input type="text" name="gis_data[' + noOfGeoms + '][POINT][y]" value="">' +
+        var html2 = '<br>' + Messages.strPoint + ': ' +
+            '<label>' +
+            Messages.strX +
+            ' <input type="text" name="gis_data[' + noOfGeoms + '][POINT][x]" value="">' +
+            '</label>' +
+            ' <label>' +
+            Messages.strY +
+            ' <input type="text" name="gis_data[' + noOfGeoms + '][POINT][y]" value="">' +
+            '</label>' +
             '<br><br>';
 
-        $a.before(html1);
-        $geomType.insertBefore($a);
-        $a.before(html2);
+        $a.before(html1, $geomType, html2);
         $noOfGeomsInput.val(noOfGeoms + 1);
     });
 });

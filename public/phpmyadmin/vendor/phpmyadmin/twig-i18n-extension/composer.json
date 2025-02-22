@@ -20,13 +20,13 @@
         "source": "https://github.com/phpmyadmin/twig-i18n-extension"
     },
     "require": {
-        "php": "^7.1 || ^8.0",
+        "php": "^7.2 || ^8.0",
         "twig/twig": "^1.42.3|^2.0|^3.0"
     },
     "require-dev": {
         "phpmyadmin/coding-standard": "^3.0.0",
         "phpmyadmin/motranslator": "^5.2",
-        "phpstan/phpstan": "^0.12.66",
+        "phpstan/phpstan": "^1.9.4",
         "phpunit/phpunit": "^7 || ^8 || ^9"
     },
     "scripts": {
@@ -42,6 +42,10 @@
         "psr-4": { "PhpMyAdmin\\Tests\\Twig\\Extensions\\": "test/" }
     },
     "config":{
-        "sort-packages": true
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true,
+            "phpstan/extension-installer": true
+        }
     }
 }

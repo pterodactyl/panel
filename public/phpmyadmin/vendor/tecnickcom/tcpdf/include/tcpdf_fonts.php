@@ -1,13 +1,13 @@
 <?php
 //============================================================+
 // File name   : tcpdf_fonts.php
-// Version     : 1.1.0
+// Version     : 1.1.1
 // Begin       : 2008-01-01
-// Last Update : 2014-12-10
+// Last Update : 2024-12-23
 // Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
-// Copyright (C) 2008-2014 Nicola Asuni - Tecnick.com LTD
+// Copyright (C) 2008-2024 Nicola Asuni - Tecnick.com LTD
 //
 // This file is part of TCPDF software library.
 //
@@ -42,7 +42,7 @@
  * @class TCPDF_FONTS
  * Font methods for TCPDF library.
  * @package com.tecnick.tcpdf
- * @version 1.1.0
+ * @version 1.1.1
  * @author Nicola Asuni - info@tecnick.com
  */
 class TCPDF_FONTS {
@@ -191,29 +191,30 @@ class TCPDF_FONTS {
 			fclose($fp);
 			// get font info
 			$fmetric['Flags'] = $flags;
-			preg_match ('#/FullName[\s]*\(([^\)]*)#', $font, $matches);
+			preg_match ('#/FullName[\s]*+\(([^\)]*+)#', $font, $matches);
 			$fmetric['name'] = preg_replace('/[^a-zA-Z0-9_\-]/', '', $matches[1]);
-			preg_match('#/FontBBox[\s]*{([^}]*)#', $font, $matches);
-			$fmetric['bbox'] = trim($matches[1]);
-			$bv = explode(' ', $fmetric['bbox']);
-			$fmetric['Ascent'] = intval($bv[3]);
-			$fmetric['Descent'] = intval($bv[1]);
-			preg_match('#/ItalicAngle[\s]*([0-9\+\-]*)#', $font, $matches);
+			preg_match('#/FontBBox[\s]*+{([^}]*+)#', $font, $matches);
+			$rawbvl = explode(' ', trim($matches[1]));
+			$bvl = [(int) $rawbvl[0], (int) $rawbvl[1], (int) $rawbvl[2], (int) $rawbvl[3]];
+			$fmetric['bbox'] = implode(' ', $bvl);
+			$fmetric['Ascent'] = $bvl[3];
+			$fmetric['Descent'] = $bvl[1];
+			preg_match('#/ItalicAngle[\s]*+([0-9\+\-]*+)#', $font, $matches);
 			$fmetric['italicAngle'] = intval($matches[1]);
 			if ($fmetric['italicAngle'] != 0) {
 				$fmetric['Flags'] |= 64;
 			}
-			preg_match('#/UnderlinePosition[\s]*([0-9\+\-]*)#', $font, $matches);
+			preg_match('#/UnderlinePosition[\s]*+([0-9\+\-]*+)#', $font, $matches);
 			$fmetric['underlinePosition'] = intval($matches[1]);
-			preg_match('#/UnderlineThickness[\s]*([0-9\+\-]*)#', $font, $matches);
+			preg_match('#/UnderlineThickness[\s]*+([0-9\+\-]*+)#', $font, $matches);
 			$fmetric['underlineThickness'] = intval($matches[1]);
-			preg_match('#/isFixedPitch[\s]*([^\s]*)#', $font, $matches);
+			preg_match('#/isFixedPitch[\s]*+([^\s]*+)#', $font, $matches);
 			if ($matches[1] == 'true') {
 				$fmetric['Flags'] |= 1;
 			}
 			// get internal map
 			$imap = array();
-			if (preg_match_all('#dup[\s]([0-9]+)[\s]*/([^\s]*)[\s]put#sU', $font, $fmap, PREG_SET_ORDER) > 0) {
+			if (preg_match_all('#dup[\s]([0-9]+)[\s]*+/([^\s]*+)[\s]put#sU', $font, $fmap, PREG_SET_ORDER) > 0) {
 				foreach ($fmap as $v) {
 					$imap[$v[2]] = $v[1];
 				}
@@ -229,22 +230,22 @@ class TCPDF_FONTS {
 				$eplain .= chr($chr ^ ($r >> 8));
 				$r = ((($chr + $r) * $c1 + $c2) % 65536);
 			}
-			if (preg_match('#/ForceBold[\s]*([^\s]*)#', $eplain, $matches) > 0) {
+			if (preg_match('#/ForceBold[\s]*+([^\s]*+)#', $eplain, $matches) > 0) {
 				if ($matches[1] == 'true') {
 					$fmetric['Flags'] |= 0x40000;
 				}
 			}
-			if (preg_match('#/StdVW[\s]*\[([^\]]*)#', $eplain, $matches) > 0) {
+			if (preg_match('#/StdVW[\s]*+\[([^\]]*+)#', $eplain, $matches) > 0) {
 				$fmetric['StemV'] = intval($matches[1]);
 			} else {
 				$fmetric['StemV'] = 70;
 			}
-			if (preg_match('#/StdHW[\s]*\[([^\]]*)#', $eplain, $matches) > 0) {
+			if (preg_match('#/StdHW[\s]*+\[([^\]]*+)#', $eplain, $matches) > 0) {
 				$fmetric['StemH'] = intval($matches[1]);
 			} else {
 				$fmetric['StemH'] = 30;
 			}
-			if (preg_match('#/BlueValues[\s]*\[([^\]]*)#', $eplain, $matches) > 0) {
+			if (preg_match('#/BlueValues[\s]*+\[([^\]]*+)#', $eplain, $matches) > 0) {
 				$bv = explode(' ', $matches[1]);
 				if (count($bv) >= 6) {
 					$v1 = intval($bv[2]);
@@ -265,7 +266,7 @@ class TCPDF_FONTS {
 				$fmetric['CapHeight'] = 700;
 			}
 			// get the number of random bytes at the beginning of charstrings
-			if (preg_match('#/lenIV[\s]*([0-9]*)#', $eplain, $matches) > 0) {
+			if (preg_match('#/lenIV[\s]*+([\d]*+)#', $eplain, $matches) > 0) {
 				$lenIV = intval($matches[1]);
 			} else {
 				$lenIV = 4;
@@ -273,7 +274,7 @@ class TCPDF_FONTS {
 			$fmetric['Leading'] = 0;
 			// get charstring data
 			$eplain = substr($eplain, (strpos($eplain, '/CharStrings') + 1));
-			preg_match_all('#/([A-Za-z0-9\.]*)[\s][0-9]+[\s]RD[\s](.*)[\s]ND#sU', $eplain, $matches, PREG_SET_ORDER);
+			preg_match_all('#/([A-Za-z0-9\.]*+)[\s][0-9]+[\s]RD[\s](.*)[\s]ND#sU', $eplain, $matches, PREG_SET_ORDER);
 			if (!empty($enc) AND isset(TCPDF_FONT_DATA::$encmap[$enc])) {
 				$enc_map = TCPDF_FONT_DATA::$encmap[$enc];
 			} else {
@@ -1323,43 +1324,43 @@ class TCPDF_FONTS {
 					// set the checkSumAdjustment to 0
 					$table[$tag]['data'] = substr($table[$tag]['data'], 0, 8)."\x0\x0\x0\x0".substr($table[$tag]['data'], 12);
 				}
-				$pad = 4 - ($table[$tag]['length'] % 4);
-				if ($pad != 4) {
-					// the length of a table must be a multiple of four bytes
-					$table[$tag]['length'] += $pad;
-					$table[$tag]['data'] .= str_repeat("\x0", $pad);
-				}
 				$table[$tag]['offset'] = $offset;
 				$offset += $table[$tag]['length'];
+				$numPad = ($offset + 3 & ~3) - $offset;
+				if($numPad > 0) {
+					$table[$tag]['data'] .= str_repeat("\x0", $numPad);
+					$offset += $numPad;
+				}
 				// check sum is not changed (so keep the following line commented)
-				//$table[$tag]['checkSum'] = self::_getTTFtableChecksum($table[$tag]['data'], $table[$tag]['length']);
+				//$table[$tag]['checkSum'] = self::_getTTFtableChecksum($table[$tag]['data'], $table[$tag]['length'] + $numPad);
 			} else {
 				unset($table[$tag]);
 			}
 		}
 		// add loca
+		$table['loca'] = array();
 		$table['loca']['data'] = $loca;
 		$table['loca']['length'] = strlen($loca);
-		$pad = 4 - ($table['loca']['length'] % 4);
-		if ($pad != 4) {
-			// the length of a table must be a multiple of four bytes
-			$table['loca']['length'] += $pad;
-			$table['loca']['data'] .= str_repeat("\x0", $pad);
-		}
 		$table['loca']['offset'] = $offset;
-		$table['loca']['checkSum'] = self::_getTTFtableChecksum($table['loca']['data'], $table['loca']['length']);
 		$offset += $table['loca']['length'];
+		$numPad = ($offset + 3 & ~3) - $offset;
+		if($numPad > 0) {
+			$table['loca']['data'] .= str_repeat("\x0", $numPad);
+			$offset += $numPad;
+		}
+		$table['loca']['checkSum'] = self::_getTTFtableChecksum($table['loca']['data'], $table['loca']['length'] + $numPad);
 		// add glyf
+		$table['glyf'] = array();
 		$table['glyf']['data'] = $glyf;
 		$table['glyf']['length'] = strlen($glyf);
-		$pad = 4 - ($table['glyf']['length'] % 4);
-		if ($pad != 4) {
-			// the length of a table must be a multiple of four bytes
-			$table['glyf']['length'] += $pad;
-			$table['glyf']['data'] .= str_repeat("\x0", $pad);
-		}
 		$table['glyf']['offset'] = $offset;
-		$table['glyf']['checkSum'] = self::_getTTFtableChecksum($table['glyf']['data'], $table['glyf']['length']);
+		$offset += $table['glyf']['length'];
+		$numPad = ($offset + 3 & ~3) - $offset;
+		if($numPad > 0) {
+			$table['glyf']['data'] .= str_repeat("\x0", $numPad);
+			$offset += $numPad;
+		}
+		$table['glyf']['checkSum'] = self::_getTTFtableChecksum($table['glyf']['data'], $table['glyf']['length'] + $numPad);
 		// rebuild font
 		$font = '';
 		$font .= pack('N', 0x10000); // sfnt version
@@ -1383,7 +1384,7 @@ class TCPDF_FONTS {
 		}
 		// set checkSumAdjustment on head table
 		$checkSumAdjustment = 0xB1B0AFBA - self::_getTTFtableChecksum($font, strlen($font));
-		$font = substr($font, 0, $table['head']['offset'] + 8).pack('N', $checkSumAdjustment).substr($font, $table['head']['offset'] + 12);
+		$font = substr($font, 0, $table['head']['offset'] + $offset + 8).pack('N', $checkSumAdjustment).substr($font, $table['head']['offset'] + $offset + 12);
 		return $font;
 	}
 
@@ -1780,9 +1781,9 @@ class TCPDF_FONTS {
 	 */
 	public static function UTF8ArrayToUniArray($ta, $isunicode=true) {
 		if ($isunicode) {
-			return array_map(array('TCPDF_FONTS', 'unichrUnicode'), $ta);
+			return array_map(static::class.'::unichrUnicode', $ta);
 		}
-		return array_map(array('TCPDF_FONTS', 'unichrASCII'), $ta);
+		return array_map(static::class.'::unichrASCII', $ta);
 	}
 
 	/**
@@ -2002,7 +2003,7 @@ class TCPDF_FONTS {
 		if ($isunicode) {
 			// requires PCRE unicode support turned on
 			$chars = TCPDF_STATIC::pregSplit('//','u', $str, -1, PREG_SPLIT_NO_EMPTY);
-			$carr = array_map(array('TCPDF_FONTS', 'uniord'), $chars);
+			$carr = array_map(static::class.'::uniord', $chars);
 		} else {
 			$chars = str_split($str);
 			$carr = array_map('ord', $chars);

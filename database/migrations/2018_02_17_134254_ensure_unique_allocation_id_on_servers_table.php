@@ -8,8 +8,10 @@ class EnsureUniqueAllocationIdOnServersTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->unique(['allocation_id']);
@@ -18,8 +20,10 @@ class EnsureUniqueAllocationIdOnServersTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropForeign(['allocation_id']);

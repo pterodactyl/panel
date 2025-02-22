@@ -8,8 +8,10 @@ class AllowEggVariablesToHaveLongerValues extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('egg_variables', function (Blueprint $table) {
             $table->text('default_value')->change();
@@ -18,8 +20,10 @@ class AllowEggVariablesToHaveLongerValues extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('egg_variables', function (Blueprint $table) {
             $table->string('default_value')->change();

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace PhpMyAdmin\SqlParser\Statements;
 
 use PhpMyAdmin\SqlParser\Components\OptionsArray;
+use PhpMyAdmin\SqlParser\Context;
 use PhpMyAdmin\SqlParser\Parser;
 use PhpMyAdmin\SqlParser\Statement;
 use PhpMyAdmin\SqlParser\Token;
@@ -59,11 +60,25 @@ class ExplainStatement extends Statement
     public $connectionId = null;
 
     /**
+     * The explained database for the table's name, if used.
+     *
+     * @var string|null
+     */
+    public $explainedDatabase = null;
+
+    /**
      * The explained table's name, if used.
      *
      * @var string|null
      */
     public $explainedTable = null;
+
+    /**
+     * The explained column's name, if used.
+     *
+     * @var string|null
+     */
+    public $explainedColumn = null;
 
     /**
      * @param Parser     $parser the instance that requests parsing
@@ -78,9 +93,13 @@ class ExplainStatement extends Statement
          *
          *      0 -------------------[ EXPLAIN/EXPLAIN ANALYZE/ANALYZE ]-----------------------> 1
          *
+         *      0 ------------------------[ EXPLAIN/DESC/DESCRIBE ]----------------------------> 3
+         *
          *      1 ------------------------------[ OPTIONS ]------------------------------------> 2
          *
          *      2 --------------[ tablename / STATEMENT / FOR CONNECTION ]---------------------> 2
+         *
+         *      3 -----------------------------[ tablename ]-----------------------------------> 3
          *
          * @var int
          */
@@ -100,6 +119,12 @@ class ExplainStatement extends Statement
              */
             $token = $list->tokens[$list->idx];
 
+            // End of statement.
+            if ($token->type === Token::TYPE_DELIMITER) {
+                --$list->idx; // Back up one token, no real reasons to document
+                break;
+            }
+
             // Skipping whitespaces and comments.
             if ($token->type === Token::TYPE_WHITESPACE || $token->type === Token::TYPE_COMMENT) {
                 continue;
@@ -114,8 +139,20 @@ class ExplainStatement extends Statement
                     || $token->keyword === 'DESC'
                     || $token->keyword === 'DESCRIBE'
                 ) {
-                    $miniState = 1;
                     $this->statementAlias = $token->keyword;
+
+                    $lastIdx = $list->idx;
+                    $list->idx++; // Ignore the current token
+                    $nextKeyword = $list->getNextOfType(Token::TYPE_KEYWORD);
+                    $list->idx = $lastIdx;
+
+                    // There is no other keyword, we must be describing a table
+                    if ($nextKeyword === null) {
+                        $state = 3;
+                        continue;
+                    }
+
+                    $miniState = 1;
 
                     $lastIdx = $list->idx;
                     $nextKeyword = $list->getNextOfTypeAndValue(Token::TYPE_KEYWORD, 'ANALYZE');
@@ -146,15 +183,11 @@ class ExplainStatement extends Statement
                     break;
                 }
 
-                // To support EXPLAIN tablename
-                if ($token->type === Token::TYPE_NONE) {
-                    $this->explainedTable = $token->value;
-                    break;
-                }
-
                 if (
                     $token->keyword !== 'SELECT'
+                    && $token->keyword !== 'TABLE'
                     && $token->keyword !== 'INSERT'
+                    && $token->keyword !== 'REPLACE'
                     && $token->keyword !== 'UPDATE'
                     && $token->keyword !== 'DELETE'
                 ) {
@@ -178,19 +211,57 @@ class ExplainStatement extends Statement
 
                 $list->idx = $idxOfLastParsedToken;
                 break;
+            } elseif ($state === 3) {
+                if (($token->type === Token::TYPE_OPERATOR) && ($token->value === '.')) {
+                    continue;
+                }
+
+                if ($this->explainedDatabase === null) {
+                    $lastIdx = $list->idx;
+                    $nextDot = $list->getNextOfTypeAndValue(Token::TYPE_OPERATOR, '.');
+                    $list->idx = $lastIdx;
+                    if ($nextDot !== null) {// We found a dot, so it must be a db.table name format
+                        $this->explainedDatabase = $token->value;
+                        continue;
+                    }
+                }
+
+                if ($this->explainedTable === null) {
+                    $this->explainedTable = $token->value;
+                    continue;
+                }
+
+                if ($this->explainedColumn === null) {
+                    $this->explainedColumn = $token->value;
+                }
             }
         }
+
+        if ($state !== 3 || $this->explainedTable !== null) {
+            return;
+        }
+
+        // We reached end of the state 3 and no table name was found
+        /** Token parsed at this moment. */
+        $token = $list->tokens[$list->idx];
+        $parser->error('Expected a table name.', $token);
     }
 
     public function build(): string
     {
         $str = $this->statementAlias;
 
-        if (count($this->options->options)) {
-            $str .= ' ';
+        if ($this->options !== null) {
+            if (count($this->options->options)) {
+                $str .= ' ';
+            }
+
+            $str .= OptionsArray::build($this->options) . ' ';
         }
 
-        $str .= OptionsArray::build($this->options) . ' ';
+        if ($this->options === null) {
+            $str .= ' ';
+        }
 
         if ($this->bodyParser) {
             foreach ($this->bodyParser->statements as $statement) {
@@ -198,8 +269,16 @@ class ExplainStatement extends Statement
             }
         } elseif ($this->connectionId) {
             $str .= 'FOR CONNECTION ' . $this->connectionId;
-        } elseif ($this->explainedTable) {
-            $str .= $this->explainedTable;
+        }
+
+        if ($this->explainedDatabase !== null && $this->explainedTable !== null) {
+            $str .= Context::escape($this->explainedDatabase) . '.' . Context::escape($this->explainedTable);
+        } elseif ($this->explainedTable !== null) {
+            $str .= Context::escape($this->explainedTable);
+        }
+
+        if ($this->explainedColumn !== null) {
+            $str .= ' ' . Context::escape($this->explainedColumn);
         }
 
         return $str;

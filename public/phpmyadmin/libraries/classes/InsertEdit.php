@@ -114,6 +114,13 @@ class InsertEdit
             'err_url' => $errorUrl,
             'sql_query' => $_POST['sql_query'] ?? '',
         ];
+
+        if ($formParams['sql_query'] === '' && isset($_GET['sql_query'], $_GET['sql_signature'])) {
+            if (Core::checkSqlQuerySignature($_GET['sql_query'], $_GET['sql_signature'])) {
+                $formParams['sql_query'] = $_GET['sql_query'];
+            }
+        }
+
         if (isset($whereClauses)) {
             foreach ($whereClauseArray as $keyId => $whereClause) {
                 $formParams['where_clause[' . $keyId . ']'] = trim($whereClause);
@@ -122,6 +129,8 @@ class InsertEdit
 
         if (isset($_POST['clause_is_unique'])) {
             $formParams['clause_is_unique'] = $_POST['clause_is_unique'];
+        } elseif (isset($_GET['clause_is_unique'])) {
+            $formParams['clause_is_unique'] = $_GET['clause_is_unique'];
         }
 
         return $formParams;
@@ -364,7 +373,7 @@ class InsertEdit
     ) {
         $column['Field_md5'] = md5($column['Field']);
         // True_Type contains only the type (stops at first bracket)
-        $column['True_Type'] = preg_replace('@\(.*@s', '', $column['Type']);
+        $column['True_Type'] = preg_replace('@(\(.*)|(\s/.*)@s', '', $column['Type']);
         $column['len'] = preg_match('@float|double@', $column['Type']) ? 100 : -1;
         $column['Field_title'] = $this->getColumnTitle($column, $commentsMap);
         $column['is_binary'] = $this->isColumn(
@@ -554,7 +563,7 @@ class InsertEdit
              * @todo clarify the meaning of the "textfield" class and explain
              *       why character columns have the "char" class instead
              */
-            $theClass = 'char charField';
+            $theClass = 'charField';
             $textAreaRows = $GLOBALS['cfg']['CharTextareaRows'];
             $textareaCols = $GLOBALS['cfg']['CharTextareaCols'];
             $extractedColumnspec = Util::extractColumnSpec($column['Type']);
@@ -1069,12 +1078,15 @@ class InsertEdit
             $data = $currentRow[$column['Field']];
         }
 
-        //when copying row, it is useful to empty auto-increment column
-        // to prevent duplicate key error
-        if (isset($_POST['default_action']) && $_POST['default_action'] === 'insert') {
-            if ($column['Key'] === 'PRI' && str_contains($column['Extra'], 'auto_increment')) {
-                $data = $specialCharsEncoded = $specialChars = null;
-            }
+        /** @var string $defaultAction */
+        $defaultAction = $_POST['default_action'] ?? $_GET['default_action'] ?? '';
+        if (
+            $defaultAction === 'insert'
+            && $column['Key'] === 'PRI'
+            && str_contains($column['Extra'], 'auto_increment')
+        ) {
+            // When copying row, it is useful to empty auto-increment column to prevent duplicate key error.
+            $data = $specialCharsEncoded = $specialChars = null;
         }
 
         // If a timestamp field value is not included in an update
@@ -1124,8 +1136,8 @@ class InsertEdit
         } elseif ($trueType === 'binary' || $trueType === 'varbinary') {
             $specialChars = bin2hex($column['Default']);
         } elseif (substr($trueType, -4) === 'text') {
-            $textDefault = substr($column['Default'], 1, -1);
-            $specialChars = stripcslashes($textDefault !== false ? $textDefault : $column['Default']);
+            $textDefault = (string) substr($column['Default'], 1, -1);
+            $specialChars = htmlspecialchars(stripcslashes($textDefault !== '' ? $textDefault : $column['Default']));
         } else {
             $specialChars = htmlspecialchars($column['Default']);
         }
@@ -1233,7 +1245,7 @@ class InsertEdit
             if (! preg_match('@^[a-z_]+\.php$@', $GLOBALS['goto'])) {
                 // this should NOT happen
                 //$GLOBALS['goto'] = false;
-                if ($GLOBALS['goto'] === 'index.php?route=/sql') {
+                if (str_contains($GLOBALS['goto'], 'index.php?route=/sql')) {
                     $gotoInclude = '/sql';
                 } else {
                     $gotoInclude = false;
@@ -1593,12 +1605,16 @@ class InsertEdit
             in_array($multiEditFuncs[$key], $gisFromTextFunctions)
             || in_array($multiEditFuncs[$key], $gisFromWkbFunctions)
         ) {
-            return $multiEditFuncs[$key] . "('" . $this->dbi->escapeString($currentValue) . "')";
+            preg_match('/^(\'?)(.*?)\1(?:,(\d+))?$/', $currentValue, $matches);
+            $escapedParams = "'" . $this->dbi->escapeString($matches[2])
+                . (isset($matches[3]) ? "'," . $matches[3] : "'");
+
+            return $multiEditFuncs[$key] . '(' . $escapedParams . ')';
         }
 
         if (
             ! in_array($multiEditFuncs[$key], $funcNoParam)
-            || ($currentValue != "''"
+            || ($currentValue !== ''
                 && in_array($multiEditFuncs[$key], $funcOptionalParam))
         ) {
             if (
@@ -1785,8 +1801,7 @@ class InsertEdit
             $currentValue = "b'" . $this->dbi->escapeString($currentValue) . "'";
         } elseif (
             ! ($type === 'datetime' || $type === 'timestamp' || $type === 'date')
-            || ($currentValue !== 'CURRENT_TIMESTAMP'
-                && $currentValue !== 'current_timestamp()')
+            || ! preg_match('/^current_timestamp(\([0-6]?\))?$/i', $currentValue)
         ) {
             $currentValue = "'" . $this->dbi->escapeString($currentValue)
                 . "'";
@@ -1937,9 +1952,10 @@ class InsertEdit
             $foundUniqueKey = false;
         }
 
-        // Copying a row - fetched data will be inserted as a new row,
-        // therefore the where clause is needless.
-        if (isset($_POST['default_action']) && $_POST['default_action'] === 'insert') {
+        /** @var string $defaultAction */
+        $defaultAction = $_POST['default_action'] ?? $_GET['default_action'] ?? '';
+        if ($defaultAction === 'insert') {
+            // Copying a row - fetched data will be inserted as a new row, therefore the where clause is needless.
             $whereClause = $whereClauses = null;
         }
 
@@ -2296,7 +2312,7 @@ class InsertEdit
                 }
 
                 if ($isUpload && $column['is_blob']) {
-                    [$maxUploadSize] = $this->getMaxUploadSize($column['pma_type'], $biggestMaxFileSize);
+                    [$maxUploadSize] = $this->getMaxUploadSize($column['True_Type'], $biggestMaxFileSize);
                 }
 
                 if (! empty($GLOBALS['cfg']['UploadDir'])) {
@@ -2311,7 +2327,7 @@ class InsertEdit
                         $column,
                         $columnNameAppendix,
                         $specialChars,
-                        min(max($column['len'], 4), $GLOBALS['cfg']['LimitChars']),
+                        min(max($column['len'] * 2, 4), $GLOBALS['cfg']['LimitChars']),
                         $onChangeClause,
                         $tabindex,
                         $tabindexForValue,
@@ -2380,6 +2396,8 @@ class InsertEdit
             'select_option_for_upload' => $selectOptionForUpload,
             'limit_chars' => $GLOBALS['cfg']['LimitChars'],
             'input_field_html' => $inputFieldHtml,
+            'tab_index' => $tabindex,
+            'tab_index_for_value' => $tabindexForValue,
         ]);
     }
 

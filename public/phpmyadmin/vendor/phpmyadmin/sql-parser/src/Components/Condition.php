@@ -43,6 +43,7 @@ class Condition extends Component
         'ALL' => 1,
         'AND' => 1,
         'BETWEEN' => 1,
+        'COLLATE' => 1,
         'EXISTS' => 1,
         'IF' => 1,
         'IN' => 1,
@@ -145,14 +146,17 @@ class Condition extends Component
             }
 
             // Conditions are delimited by logical operators.
-            if (in_array($token->value, static::$DELIMITERS, true)) {
+            if (
+                ($token->type === Token::TYPE_KEYWORD || $token->type === Token::TYPE_OPERATOR)
+                && in_array($token->value, static::$DELIMITERS, true)
+            ) {
                 if ($betweenBefore && ($token->value === 'AND')) {
                     // The syntax of keyword `BETWEEN` is hard-coded.
                     $betweenBefore = false;
                 } else {
                     // The expression ended.
                     $expr->expr = trim($expr->expr);
-                    if (! empty($expr->expr)) {
+                    if ($expr->expr !== '') {
                         $ret[] = $expr;
                     }
 
@@ -199,7 +203,7 @@ class Condition extends Component
                 && (($token->type !== Token::TYPE_KEYWORD)
                 || ($token->flags & Token::FLAG_KEYWORD_RESERVED))
                 && ($token->type !== Token::TYPE_STRING)
-                && ($token->type !== Token::TYPE_SYMBOL)
+                && ($token->type !== Token::TYPE_SYMBOL || ($token->flags & Token::FLAG_SYMBOL_PARAMETER))
             ) {
                 continue;
             }
@@ -213,7 +217,7 @@ class Condition extends Component
 
         // Last iteration was not processed.
         $expr->expr = trim($expr->expr);
-        if (! empty($expr->expr)) {
+        if ($expr->expr !== '') {
             $ret[] = $expr;
         }
 

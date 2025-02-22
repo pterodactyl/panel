@@ -8,8 +8,10 @@ class UpdateBytesToUnsignedBigint extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->unsignedBigInteger('bytes')->default(0)->change();
@@ -18,8 +20,10 @@ class UpdateBytesToUnsignedBigint extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->integer('bytes')->default(0)->change();

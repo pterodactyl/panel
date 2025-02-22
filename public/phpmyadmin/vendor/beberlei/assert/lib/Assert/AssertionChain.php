@@ -151,7 +151,7 @@ class AssertionChain
      * @param mixed $value
      * @param string|callable|null $defaultMessage
      */
-    public function __construct($value, $defaultMessage = null, string $defaultPropertyPath = null)
+    public function __construct($value, $defaultMessage = null, ?string $defaultPropertyPath = null)
     {
         $this->value = $value;
         $this->defaultMessage = $defaultMessage;

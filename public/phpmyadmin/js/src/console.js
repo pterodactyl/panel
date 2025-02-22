@@ -487,7 +487,7 @@ var ConsoleResizer = {
      * @return {void}
      */
     mouseUp: function () {
-        Console.setConfig('Height', ConsoleResizer.resultHeight);
+        Console.setConfig('Height', Math.round(ConsoleResizer.resultHeight));
         Console.show();
         $(document).off('mousemove');
         $(document).off('mouseup');
@@ -1466,8 +1466,9 @@ var ConsoleDebug = {
             )
         );
         if (url) {
+            var decodedUrl = new URLSearchParams(url.split('?')[1]);
             $('#debug_console').find('.debug>.welcome').append(
-                $('<span class="script_name">').text(url.split('?')[0])
+                $('<span class="script_name">').text(decodedUrl.has('route') ? decodedUrl.get('route') : url)
             );
         }
 

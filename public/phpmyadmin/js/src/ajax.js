@@ -894,11 +894,16 @@ $(document).on('submit', 'form', AJAX.requestHandler);
  * Gracefully handle fatal server errors
  * (e.g: 500 - Internal server error)
  */
-$(document).on('ajaxError', function (event, request) {
+$(document).on('ajaxError', function (event, request, settings) {
     if (AJAX.debug) {
         // eslint-disable-next-line no-console
         console.log('AJAX error: status=' + request.status + ', text=' + request.statusText);
     }
+
+    if (settings.url.includes('/git-revision')) {
+        return;
+    }
+
     // Don't handle aborted requests
     if (request.status !== 0 || request.statusText !== 'abort') {
         var details = '';

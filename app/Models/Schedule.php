@@ -7,7 +7,6 @@ use Carbon\CarbonImmutable;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
@@ -27,14 +26,11 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $hashid
- * @property Server $server
+ * @property \Pterodactyl\Models\Server $server
  * @property \Pterodactyl\Models\Task[]|\Illuminate\Support\Collection $tasks
  */
 class Schedule extends Model
 {
-    /** @use HasFactory<\Database\Factories\ScheduleFactory> */
-    use HasFactory;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -106,6 +102,9 @@ class Schedule extends Model
         'next_run_at' => 'nullable|date',
     ];
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRouteKeyName(): string
     {
         return $this->getKeyName();

@@ -88,8 +88,9 @@ trait FilesystemCommonTrait
         return @unlink($file);
     }
 
-    private function write(string $file, string $data, int $expiresAt = null)
+    private function write(string $file, string $data, ?int $expiresAt = null)
     {
+        $unlink = false;
         set_error_handler(__CLASS__.'::throwError');
         try {
             if (null === $this->tmp) {
@@ -107,18 +108,31 @@ trait FilesystemCommonTrait
             }
             fwrite($h, $data);
             fclose($h);
+            $unlink = true;
 
             if (null !== $expiresAt) {
                 touch($this->tmp, $expiresAt ?: time() + 31556952); // 1 year in seconds
             }
 
-            return rename($this->tmp, $file);
+            if ('\\' === \DIRECTORY_SEPARATOR) {
+                $success = copy($this->tmp, $file);
+                $unlink = true;
+            } else {
+                $success = rename($this->tmp, $file);
+                $unlink = !$success;
+            }
+
+            return $success;
         } finally {
             restore_error_handler();
+
+            if ($unlink) {
+                @unlink($this->tmp);
+            }
         }
     }
 
-    private function getFile(string $id, bool $mkdir = false, string $directory = null)
+    private function getFile(string $id, bool $mkdir = false, ?string $directory = null)
     {
         // Use MD5 to favor speed over security, which is not an issue here
         $hash = str_replace('/', '-', base64_encode(hash('md5', static::class.$id, true)));

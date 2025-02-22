@@ -5,6 +5,7 @@
   </h2>
 
   <div class="d-flex flex-wrap my-3">
+    {%- if items is not empty %}
     <div>
       <div class="input-group">
         <div class="input-group-text">
@@ -21,8 +22,9 @@
         </button>
       </div>
     </div>
+    {%- endif %}
 
-    <div class="ms-auto">
+    <div{{ items is not empty ? ' class="ms-auto"' }}>
       <a class="ajax add_anchor btn btn-primary{{ not has_privilege ? ' disabled' }}" href="{{ url('/database/events', {'db': db, 'add_item': true}) }}" role="button"{{ not has_privilege ? ' tabindex="-1" aria-disabled="true"' }}>
         {{ get_icon('b_event_add', 'Create new event'|trans) }}
       </a>
@@ -33,7 +35,7 @@
     {{ get_hidden_inputs(db) }}
 
     <div id="nothing2display"{{ items is not empty ? ' class="hide"' }}>
-      {% trans 'There are no events to display.' %}
+      {{ 'There are no events to display.'|trans|notice }}
     </div>
 
     <table id="eventsTable" class="table table-striped table-hover{{ items is empty ? ' hide' }} w-auto data">

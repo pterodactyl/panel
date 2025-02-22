@@ -8,7 +8,7 @@
       <ul id="topmenu" class="navbar-nav">
         {% for tab in tabs %}
           <li class="nav-item{{ tab.active ? ' active' }}">
-            <a class="nav-link text-nowrap" href="{{ url(tab.route, url_params|merge(tab.args ?? [])) }}">
+            <a class="nav-link text-nowrap disableAjax" href="{{ url(tab.route, url_params|merge(tab.args ?? [])) }}">
               {{ get_icon(tab.icon, tab.text, false, true, 'TabsMode') }}
               {% if tab.active %}
                 <span class="visually-hidden">{% trans %}(current){% notes %}Current page{% endtrans %}</span>
