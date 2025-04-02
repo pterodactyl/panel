@@ -63,7 +63,7 @@ and there are plenty more games available provided by the community. Some of the
 * Xonotic
 * Starmade
 * Discord ATLBot, and most other Node.js/Python discord bots
-* [and many more...](https://github.com/parkervcp/eggs)
+* [and many more...](https://pterodactyleggs.com)
 
 ## License
 

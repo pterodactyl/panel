@@ -1,4 +1,3 @@
-/*M!999999\- enable the sandbox mode */ 
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -683,7 +682,6 @@ CREATE TABLE `users` (
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
-/*M!999999\- enable the sandbox mode */ 
 INSERT INTO `migrations` VALUES (1,'2016_01_23_195641_add_allocations_table',1);
 INSERT INTO `migrations` VALUES (2,'2016_01_23_195851_add_api_keys',1);
 INSERT INTO `migrations` VALUES (3,'2016_01_23_200044_add_api_permissions',1);
