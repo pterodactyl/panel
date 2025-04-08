@@ -14,15 +14,15 @@ class EggDeletionService
      */
     public function __construct(
         protected ServerRepositoryInterface $serverRepository,
-        protected EggRepositoryInterface $repository
+        protected EggRepositoryInterface $repository,
     ) {
     }
 
     /**
      * Delete an Egg from the database if it has no active servers attached to it.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\HasChildrenException
+     * @throws HasActiveServersException
+     * @throws HasChildrenException
      */
     public function handle(int $egg): int
     {

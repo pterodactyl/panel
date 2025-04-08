@@ -1,7 +1,7 @@
 @extends('layouts.admin')
 
 @section('title')
-    Manager User: {{ $user->username }}
+    Manage User: {{ $user->username }}
 @endsection
 
 @section('content-header')

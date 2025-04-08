@@ -24,7 +24,7 @@ class NodeController extends ApplicationApiController
     public function __construct(
         private NodeCreationService $creationService,
         private NodeDeletionService $deletionService,
-        private NodeUpdateService $updateService
+        private NodeUpdateService $updateService,
     ) {
         parent::__construct();
     }

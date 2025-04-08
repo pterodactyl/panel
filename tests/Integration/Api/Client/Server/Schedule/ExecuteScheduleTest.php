@@ -14,16 +14,15 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
 {
     /**
      * Test that a schedule can be executed and is updated in the database correctly.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testScheduleIsExecutedRightAway(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
         Bus::fake();
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
         ]);
@@ -33,7 +32,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('errors.0.code', 'DisplayException');
         $response->assertJsonPath('errors.0.detail', 'Cannot process schedule for task execution: no tasks are registered.');
 
-        /** @var \Pterodactyl\Models\Task $task */
+        /** @var Task $task */
         $task = Task::factory()->create([
             'schedule_id' => $schedule->id,
             'sequence_id' => 1,
@@ -58,7 +57,7 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_CREATE]);
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
 
         $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertForbidden();

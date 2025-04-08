@@ -24,7 +24,7 @@ class DatabaseController extends ClientApiController
     public function __construct(
         private DeployServerDatabaseService $deployDatabaseService,
         private DatabaseManagementService $managementService,
-        private DatabasePasswordService $passwordService
+        private DatabasePasswordService $passwordService,
     ) {
         parent::__construct();
     }

@@ -27,7 +27,7 @@ trait RequestMockHelpers
     /**
      * Configure the user model that the request mock should return with.
      */
-    public function setRequestUserModel(User $user = null): void
+    public function setRequestUserModel(?User $user = null): void
     {
         $this->request->shouldReceive('user')->andReturn($user);
     }
@@ -37,7 +37,7 @@ trait RequestMockHelpers
      */
     public function generateRequestUserModel(array $args = []): User
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->make($args);
         $this->setRequestUserModel($user);
 
@@ -79,7 +79,7 @@ trait RequestMockHelpers
      *
      * @deprecated
      */
-    protected function setRequestUser(User $user = null): User
+    protected function setRequestUser(?User $user = null): User
     {
         $user = $user instanceof User ? $user : User::factory()->make();
         $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);

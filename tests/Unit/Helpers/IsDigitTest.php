@@ -8,9 +8,8 @@ class IsDigitTest extends TestCase
 {
     /**
      * Test the is_digit helper.
-     *
-     * @dataProvider helperDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('helperDataProvider')]
     public function testHelper($value, $response)
     {
         $this->assertSame($response, is_digit($value));

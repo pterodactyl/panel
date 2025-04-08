@@ -7,7 +7,7 @@ class MigrateToNewServiceSystem extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         DB::transaction(function () {
             $service = DB::table('services')->where('author', config('pterodactyl.service.core'))->where('folder', 'srcds')->first();
@@ -32,7 +32,7 @@ class MigrateToNewServiceSystem extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         // Not doing reversals right now...
     }

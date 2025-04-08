@@ -9,7 +9,7 @@ class AllowNegativeValuesForOverallocation extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->integer('disk_overallocate')->default(0)->nullable(false)->change();
@@ -20,10 +20,10 @@ class AllowNegativeValuesForOverallocation extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('nodes', function (Blueprint $table) {
-            DB::statement('ALTER TABLE nodes MODIFY disk_overallocate MEDIUMINT UNSIGNED NULL, 
+            DB::statement('ALTER TABLE nodes MODIFY disk_overallocate MEDIUMINT UNSIGNED NULL,
                                              MODIFY memory_overallocate MEDIUMINT UNSIGNED NULL');
         });
     }
