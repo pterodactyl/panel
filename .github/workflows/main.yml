@@ -1,0 +1,11 @@
+audit2allow -a -M redis_t
+semodule -i redis_t.pp audit2allow -a -M http_port_t
+semodule -i http_port_t.pp# Network Manager (This will show both your IPV4 DNS and IPV6 DNS Servers in case you want to add the IPV6 DNS Server(s) from your host to your Wings Config as well.
+nmcli -g ip4.dns,ip6.dns dev show
+# Systemd-Resolve (Ubuntu 18.04 and 20.04)
+systemd-resolve --status
+# Resolve-CTL (Newer Versions of Ubuntu)
+resolvectl status
+# Raw file locations that may have your host system's DNS Servers for various distributions
+/etc/resolv.conf
+/etc/network/interfaces
