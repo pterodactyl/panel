@@ -139,4 +139,10 @@ Route::group([
         Route::post('/reinstall', [Client\Servers\SettingsController::class, 'reinstall']);
         Route::put('/docker-image', [Client\Servers\SettingsController::class, 'dockerImage']);
     });
+
+    Route::group(['prefix' => '/properties', 'middleware' => \Pterodactyl\Http\Middleware\Api\Client\Server\IsMinecraft::class], function () {
+        Route::get('/', [Client\Servers\ServerPropertiesController::class, 'index']);
+        Route::post('/save', [Client\Servers\ServerPropertiesController::class, 'save']);
+    });  
+    
 });
