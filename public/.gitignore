@@ -1,4 +1,5 @@
-assets
 assets/*
-!assets/svgs
+!assets/svgs/
 !assets/svgs/*.svg
+!assets/fonts/
+!assets/fonts/**
