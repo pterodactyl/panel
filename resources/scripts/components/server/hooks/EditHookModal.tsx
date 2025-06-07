@@ -1,9 +1,10 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Hook } from '@/api/server/hooks/getServerHooks';
 import Field from '@/components/elements/Field';
 import { Form, Formik, FormikHelpers } from 'formik';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import createOrUpdateHook from '@/api/server/hooks/createOrUpdateHook';
+import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -31,7 +32,8 @@ const EditHookModal = ({ hook }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendHook = ServerContext.useStoreActions((actions) => actions.hooks!.appendHook);
     const triggerDefinitions = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
-
+    const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
+    console.log(triggerDefinitions);
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
@@ -81,15 +83,44 @@ const EditHookModal = ({ hook }: Props) => {
                         <Label htmlFor={'trigger'} isLight={false}>
                             Trigger Event
                         </Label>
-                        <Select className={'trigger'}>
+                        <Select
+                            className={'trigger'}
+                            onChange={(e) => {
+                                const selected = triggerDefinitions.find((t) => t.key === e.target.value);
+                                setSelectedTrigger(selected || null);
+                            }}
+                        >
                             {triggerDefinitions.map((trigger) => (
                                 <option value={trigger.key} key={trigger.key}>
                                     {trigger.name}
                                 </option>
                             ))}
                         </Select>
-                        <p className={'input-help'}>Choose the event that will cause this hook to activate.</p>
+                        <p className={'input-help mt-1 text-xs'}>
+                            Choose the event that will cause this hook to activate.
+                        </p>
                     </div>
+                    {selectedTrigger &&
+                        selectedTrigger.config_schema.map((trigger, key) =>
+                            trigger.input === 'dropdown' ? (
+                                <div css={tw`mt-6`} key={key}>
+                                    <Select
+                                        className={trigger.label.toLowerCase().replace(' ', '')}
+                                        onChange={(e) => {
+                                            const selected = triggerDefinitions.find((t) => t.key === e.target.value);
+                                            setSelectedTrigger(selected || null);
+                                        }}
+                                    >
+                                        {trigger!.options!.map((opt, key) => (
+                                            <option value={key} key={key}>
+                                                {opt}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                    <p className={'input-help mt-1 text-xs'}>{selectedTrigger.description}</p>
+                                </div>
+                            ) : null
+                        )}
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'enabled'}
