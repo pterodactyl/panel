@@ -24,7 +24,6 @@ class StoreHookRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-            'server_id' => 'required|uuid|exists:servers,id',
             'name' => 'required|string',
             'enabled' => 'nullable|boolean',
             'triggers' => 'required|array',

@@ -33,7 +33,7 @@ const EditHookModal = ({ hook }: Props) => {
     const appendHook = ServerContext.useStoreActions((actions) => actions.hooks!.appendHook);
     const triggerDefinitions = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
-    console.log(triggerDefinitions);
+
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
@@ -104,20 +104,37 @@ const EditHookModal = ({ hook }: Props) => {
                         selectedTrigger.config_schema.map((trigger, key) =>
                             trigger.input === 'dropdown' ? (
                                 <div css={tw`mt-6`} key={key}>
+                                    <Label htmlFor={trigger.label.toLowerCase().replace(' ', '')} isLight={false}>
+                                        Trigger Event
+                                    </Label>
                                     <Select
+                                        name={trigger.label.toLowerCase().replace(' ', '')}
                                         className={trigger.label.toLowerCase().replace(' ', '')}
-                                        onChange={(e) => {
-                                            const selected = triggerDefinitions.find((t) => t.key === e.target.value);
-                                            setSelectedTrigger(selected || null);
-                                        }}
                                     >
-                                        {trigger!.options!.map((opt, key) => (
+                                        {Object.entries(trigger.options || {}).map(([key, label]) => (
                                             <option value={key} key={key}>
-                                                {opt}
+                                                {label}
                                             </option>
                                         ))}
                                     </Select>
                                     <p className={'input-help mt-1 text-xs'}>{selectedTrigger.description}</p>
+                                </div>
+                            ) : trigger.input === 'text' ? (
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        name={trigger.label.toLowerCase().replace(' ', '')}
+                                        label={trigger.label}
+                                        description={''}
+                                    />
+                                </div>
+                            ) : trigger.input === 'number' ? (
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        type={'number'}
+                                        name={trigger.label.toLowerCase().replace(' ', '')}
+                                        label={trigger.label}
+                                        description={''}
+                                    />
                                 </div>
                             ) : null
                         )}
