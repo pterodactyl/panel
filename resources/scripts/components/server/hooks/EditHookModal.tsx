@@ -25,8 +25,8 @@ interface Props {
 interface Values {
     name: string;
     enabled: boolean;
-    trigger: Trigger;
-    action: Action;
+    trigger: Trigger[];
+    action: Action[];
 }
 
 const EditHookModal = ({ hook }: Props) => {
