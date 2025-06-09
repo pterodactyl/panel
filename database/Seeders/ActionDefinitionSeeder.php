@@ -52,7 +52,7 @@ class ActionDefinitionSeeder extends Seeder
                         'type' => 'string',
                         'required' => true,
                         'label' => 'Message',
-                        'input' => 'textarea',
+                        'input' => 'text',
                     ],
                 ],
             ],

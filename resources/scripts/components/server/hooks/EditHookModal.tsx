@@ -206,14 +206,6 @@ const EditHookModal = ({ hook }: Props) => {
                                         description={''}
                                     />
                                 </div>
-                            ) : action.input === 'textarea' ? (
-                                <div css={tw`mt-6`} key={key}>
-                                    <input
-                                        name={action.label.toLowerCase().replace(' ', '')}
-                                        label={action.label}
-                                        description={''}
-                                    />
-                                </div>
                             ) : null
                         )}
 
