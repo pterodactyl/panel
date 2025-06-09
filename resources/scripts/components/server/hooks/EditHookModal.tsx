@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { Hook, Trigger } from '@/api/server/hooks/getServerHooks';
+import { Hook, Trigger, Action } from '@/api/server/hooks/getServerHooks';
 import Field from '@/components/elements/Field';
 import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
 import FormikSwitch from '@/components/elements/FormikSwitch';
@@ -26,9 +26,7 @@ interface Values {
     name: string;
     enabled: boolean;
     trigger: Trigger;
-    trigger_config: Record<string, any>;
     action: Action;
-    action_config: Record<string, any>;
 }
 
 const EditHookModal = ({ hook }: Props) => {
@@ -53,9 +51,7 @@ const EditHookModal = ({ hook }: Props) => {
             name: values.name,
             enabled: values.enabled,
             trigger: values.trigger,
-            trigger_config: values.trigger_config,
             action: values.action,
-            action_config: values.action_config,
             id: hook?.id,
         })
             .then((hook) => {
@@ -79,9 +75,7 @@ const EditHookModal = ({ hook }: Props) => {
                     name: hook?.name || '',
                     enabled: hook?.enabled ?? true,
                     trigger: hook?.trigger || [],
-                    trigger_config: hook?.trigger_config || [],
                     action: hook?.action || [],
-                    action_config: hook?.action_config || [],
                 } as Values
             }
         >
@@ -105,6 +99,7 @@ const EditHookModal = ({ hook }: Props) => {
                                 if (!selected) {
                                     addError({ key: 'hook:edit', message: 'You must select a valid trigger.' });
                                 }
+
                                 setFieldValue('trigger', selected);
                                 setSelectedTrigger(selected || null);
                             }}

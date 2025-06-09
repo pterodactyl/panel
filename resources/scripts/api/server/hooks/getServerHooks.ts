@@ -7,27 +7,19 @@ export interface Hook {
     updatedAt: Date;
 
     trigger: Trigger;
-    trigger_config: Record<string, any>;
     action: Action;
-    action_config: Record<string, any>;
 }
 export interface Trigger {
     type: string;
     config: string;
 }
 export interface Action {
-    id: number;
     type: string;
-    data: string;
-    createdAt: Date;
-    updatedAt: Date;
+    config: string;
 }
 export const rawDataToServerAction = (data: any): Action => ({
-    id: data.id,
     type: data.type,
-    data: data.data,
-    createdAt: new Date(data.created_at),
-    updatedAt: new Date(data.updated_at),
+    config: data.config,
 });
 export const rawDataToServerTrigger = (data: any): Trigger => ({
     type: data.type,
