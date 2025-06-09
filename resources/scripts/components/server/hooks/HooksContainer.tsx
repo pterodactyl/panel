@@ -28,7 +28,8 @@ export default () => {
     const hooks = ServerContext.useStoreState((state) => state.hooks.data);
     const setHooks = ServerContext.useStoreActions((actions) => actions.hooks.setHooks);
     const setTriggerDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.setTriggerDefinitions);
-    const setActionDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.getActionDefinitions);
+    const setActionDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.setActionDefinitions);
+    
     useEffect(() => {
         clearFlashes('hooks');
         getServerHooks(uuid)
