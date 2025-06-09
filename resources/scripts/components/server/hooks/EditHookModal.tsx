@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Hook } from '@/api/server/hooks/getServerHooks';
 import Field from '@/components/elements/Field';
-import { Form, Formik, FormikHelpers } from 'formik';
+import { Form, Formik, FormikHelpers, useFormikContext} from 'formik';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import createOrUpdateHook from '@/api/server/hooks/createOrUpdateHook';
 import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
@@ -36,6 +36,8 @@ const EditHookModal = ({ hook }: Props) => {
     const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
+    const { setFieldValue, values } = useFormikContext<any>();
+
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
@@ -44,6 +46,7 @@ const EditHookModal = ({ hook }: Props) => {
 
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('hook:edit');
+        console.log(values);
         createOrUpdateHook(uuid, {
             name: values.name,
             enabled: values.enabled,
@@ -94,6 +97,7 @@ const EditHookModal = ({ hook }: Props) => {
                                 if (!selected) {
                                     addError({ key: 'hook:edit', message: 'You must select a valid trigger.' });
                                 }
+                                setFieldValue('trigger', selected!.key);
                                 setSelectedTrigger(selected || null);
                             }}
                         >
