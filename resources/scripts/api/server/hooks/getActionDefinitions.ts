@@ -25,5 +25,7 @@ export const rawDataToActionDefinition = (data: any): ActionDefinition => ({
 
 export default async (uuid: string): Promise<ActionDefinition[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/hooks/action-definitions`, {});
+    console.log(data.data);
+    console.log('Received From Actions');
     return (data.data || []).map((row: any) => rawDataToActionDefinition(row));
 };
