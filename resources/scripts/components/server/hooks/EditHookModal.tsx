@@ -87,8 +87,7 @@ const EditHookModal = ({ hook }: Props) => {
                         <Label htmlFor={'trigger'} isLight={false}>
                             Trigger Event
                         </Label>
-                        <select
-                            name={'trigger'}
+                        <Select
                             className={'trigger'}
                             onChange={(e) => {
                                 const selected = triggerDefinitions.find((t) => t.key === e.target.value);
@@ -104,7 +103,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     {trigger.name}
                                 </option>
                             ))}
-                        </select>
+                        </Select>
                         <p className={'input-help mt-1 text-xs'}>
                             Choose the event that will cause this hook to activate.
                         </p>
