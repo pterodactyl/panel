@@ -150,9 +150,13 @@ const EditHookModal = ({ hook }: Props) => {
                             className={'action'}
                             onChange={(e) => {
                                 const selected = actionDefinitions.find((t) => t.key === e.target.value);
+                                if (!selected) {
+                                    addError({ key: 'hook:edit', message: 'You must select a valid action.' });
+                                }
                                 setSelectedAction(selected || null);
                             }}
                         >
+                            <option value={0}></option>
                             {actionDefinitions.map((action, key) => (
                                 <option value={action.key} key={key}>
                                     {action.name}
