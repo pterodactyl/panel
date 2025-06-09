@@ -36,6 +36,8 @@ const EditHookModal = ({ hook }: Props) => {
     const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
+    console.log('Action Definitions');
+    console.log(actionDefinitions);
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
@@ -149,7 +151,7 @@ const EditHookModal = ({ hook }: Props) => {
                             name={'action'}
                             className={'action'}
                             onChange={(e) => {
-                                const selected = triggerDefinitions.find((t) => t.key === e.target.value);
+                                const selected = actionDefinitions.find((t) => t.key === e.target.value);
                                 setSelectedAction(selected || null);
                             }}
                         >
