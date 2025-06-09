@@ -25,8 +25,8 @@ interface Props {
 interface Values {
     name: string;
     enabled: boolean;
-    trigger: Trigger[];
-    action: Action[];
+    trigger: Trigger;
+    action: Action;
 }
 
 const EditHookModal = ({ hook }: Props) => {
@@ -100,8 +100,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     addError({ key: 'hook:edit', message: 'You must select a valid trigger.' });
                                 }
                                 const config: Record<string, any> = {};
-                                selected!.config_schema.forEach((field) => {
-                                    const key = field.label.toLowerCase().replace(/\s+/g, '');
+                                selected!.config_schema.forEach((field, key) => {
                                     config[key] = field.input === 'dropdown' ? Object.keys(field.options || {})[0] : '';
                                 });
 
@@ -164,7 +163,15 @@ const EditHookModal = ({ hook }: Props) => {
                                 if (!selected) {
                                     addError({ key: 'hook:edit', message: 'You must select a valid action.' });
                                 }
-                                setFieldValue('action', selected);
+                                const config: Record<string, any> = {};
+                                selected!.config_schema.forEach((field, key) => {
+                                    config[key] = field.input === 'dropdown' ? Object.keys(field.options || {})[0] : '';
+                                });
+
+                                setFieldValue('action', {
+                                    type: selected!.key,
+                                    config,
+                                });
                                 setSelectedAction(selected || null);
                             }}
                         >

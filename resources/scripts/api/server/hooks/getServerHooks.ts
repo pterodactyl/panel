@@ -6,8 +6,8 @@ export interface Hook {
     createdAt: Date;
     updatedAt: Date;
 
-    trigger: Trigger[];
-    action: Action[];
+    trigger: Trigger;
+    action: Action;
 }
 export interface Trigger {
     type: string;
