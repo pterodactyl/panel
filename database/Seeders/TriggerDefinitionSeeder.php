@@ -69,7 +69,7 @@ class TriggerDefinitionSeeder extends Seeder
                         'type' => 'numeric',
                         'required' => true,
                         'label' => 'Server Stat',
-                        'input' => 'number',
+                        'input' => 'text',
                     ],
                 ],
             ],

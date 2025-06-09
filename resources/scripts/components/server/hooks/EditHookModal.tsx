@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react';
 import { Hook, Trigger, Action } from '@/api/server/hooks/getServerHooks';
 import Field from '@/components/elements/Field';
-import { Form, Formik, FormikHelpers, useFormikContext } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import createOrUpdateHook from '@/api/server/hooks/createOrUpdateHook';
 import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
@@ -38,7 +38,7 @@ const EditHookModal = ({ hook }: Props) => {
     const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
-    const { setFieldValue } = useFormikContext<any>();
+    //const { setFieldValue } = useFormikContext<any>();
 
     useEffect(() => {
         return () => {
@@ -79,7 +79,7 @@ const EditHookModal = ({ hook }: Props) => {
                 } as Values
             }
         >
-            {({ isSubmitting }) => (
+            {({ isSubmitting, setFieldValue }) => (
                 <Form>
                     <h3 css={tw`text-2xl mb-6`}>{hook ? 'Edit hook' : 'Create new hook'}</h3>
                     <FlashMessageRender byKey={'hook:edit'} css={tw`mb-6`} />
@@ -99,19 +99,16 @@ const EditHookModal = ({ hook }: Props) => {
                                 if (!selected) {
                                     addError({ key: 'hook:edit', message: 'You must select a valid trigger.' });
                                 }
-                                const initialConfig: Record<string, any> = {};
+                                const config: Record<string, any> = {};
                                 selected!.config_schema.forEach((field) => {
-                                    if (field.input === 'dropdown' && field.options) {
-                                        initialConfig[field.label] = Object.keys(field.options)[0];
-                                    } else if (field.input === 'text' || field.input === 'number') {
-                                        initialConfig[field.label] = '';
-                                    }
+                                    const key = field.label.toLowerCase().replace(/\s+/g, '');
+                                    config[key] = field.input === 'dropdown' ? Object.keys(field.options || {})[0] : '';
                                 });
-                                const trigger: Trigger = {
+
+                                setFieldValue('trigger', {
                                     type: selected!.key,
-                                    config: JSON.stringify(initialConfig),
-                                };
-                                setFieldValue('trigger', trigger);
+                                    config,
+                                });
                                 setSelectedTrigger(selected || null);
                             }}
                         >
@@ -151,15 +148,6 @@ const EditHookModal = ({ hook }: Props) => {
                             ) : trigger.input === 'text' ? (
                                 <div css={tw`mt-6`} key={key}>
                                     <Field name={`trigger.config.${key}`} label={trigger.label} description={''} />
-                                </div>
-                            ) : trigger.input === 'number' ? (
-                                <div css={tw`mt-6`} key={key}>
-                                    <Field
-                                        type={'number'}
-                                        name={`trigger.config.${key}`}
-                                        label={trigger.label}
-                                        description={''}
-                                    />
                                 </div>
                             ) : null
                         )}
@@ -215,15 +203,6 @@ const EditHookModal = ({ hook }: Props) => {
                             ) : action.input === 'text' ? (
                                 <div css={tw`mt-6`} key={key}>
                                     <Field name={`action.config.${key}`} label={action.label} description={''} />
-                                </div>
-                            ) : action.input === 'number' ? (
-                                <div css={tw`mt-6`} key={key}>
-                                    <Field
-                                        type={'number'}
-                                        name={`action.config.${key}`}
-                                        label={action.label}
-                                        description={''}
-                                    />
                                 </div>
                             ) : null
                         )}
