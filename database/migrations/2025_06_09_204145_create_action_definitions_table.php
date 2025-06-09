@@ -19,6 +19,10 @@ return new class extends Migration
             $table->string('description')->nullable();
             $table->json('config_schema')->nullable();
         });
+
+        Schema::table('hook_actions', function (Blueprint $table) {
+            $table->foreignId('action_definition_id')->constrained('action_definitions')->onDelete('cascade');
+        });
     }
 
     /**
@@ -26,6 +30,10 @@ return new class extends Migration
      */
     public function down(): void
     {
+        Schema::table('hook_actions', function (Blueprint $table) {
+            $table->dropForeign(['action_definition_id']);
+            $table->dropColumn('action_definition_id');
+        });
         Schema::dropIfExists('action_definitions');
     }
 };

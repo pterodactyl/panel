@@ -16,7 +16,7 @@ return new class extends Migration
             $table->timestamps();
             $table->foreignId('hook_id')->constrained()->onDelete('cascade');
             $table->string('type');
-            $table->string('value');
+            $table->json('config');
         });
     }
 

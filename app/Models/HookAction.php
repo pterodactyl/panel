@@ -10,7 +10,7 @@ class HookAction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'config' => 'array',
+        'hook_id', 'action', 'config',
     ];
     protected $casts = [
         'config' => 'array',
