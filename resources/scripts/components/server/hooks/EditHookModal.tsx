@@ -89,9 +89,13 @@ const EditHookModal = ({ hook }: Props) => {
                             className={'trigger'}
                             onChange={(e) => {
                                 const selected = triggerDefinitions.find((t) => t.key === e.target.value);
+                                if (!selected) {
+                                    addError({ key: 'hook:edit', message: 'You must select a valid trigger.' });
+                                }
                                 setSelectedTrigger(selected || null);
                             }}
                         >
+                            <option value=''>-- Select an Trigger --</option>
                             {triggerDefinitions.map((trigger, key) => (
                                 <option value={trigger.key} key={key}>
                                     {trigger.name}
@@ -156,7 +160,7 @@ const EditHookModal = ({ hook }: Props) => {
                                 setSelectedAction(selected || null);
                             }}
                         >
-                            <option value={0}></option>
+                            <option value=''>-- Select an Action --</option>
                             {actionDefinitions.map((action, key) => (
                                 <option value={action.key} key={key}>
                                     {action.name}
