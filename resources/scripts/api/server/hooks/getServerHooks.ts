@@ -6,8 +6,8 @@ export interface Hook {
     createdAt: Date;
     updatedAt: Date;
 
-    triggers: Trigger[];
-    actions: Action[];
+    trigger: Trigger[];
+    action: Action[];
 }
 export interface Trigger {
     type: string;
@@ -38,13 +38,11 @@ export const rawDataToServerHook = (data: any): Hook => ({
     createdAt: new Date(data.created_at),
     updatedAt: new Date(data.updated_at),
 
-    actions: (data.relationships?.actions || []).map((row: any) => rawDataToServerAction(row.attributes)),
-    triggers: (data.relationships?.triggers || []).map((row: any) => rawDataToServerTrigger(row.attributes)),
+    action: (data.relationships?.actions || []).map((row: any) => rawDataToServerAction(row.attributes)),
+    trigger: (data.relationships?.triggers || []).map((row: any) => rawDataToServerTrigger(row.attributes)),
 });
 
 export default async (uuid: string): Promise<Hook[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/hooks`, {});
-    console.log('Retrieved Backend');
-    console.log(data);
     return (data.data || []).map((row: any) => rawDataToServerHook(row.attributes));
 };
