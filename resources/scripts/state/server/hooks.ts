@@ -1,10 +1,13 @@
 import { action, Action } from 'easy-peasy';
 import { Hook } from '@/api/server/hooks/getServerHooks';
 import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
+import { ActionDefinition } from '@/api/server/hooks/getHookDefinitions';
 
 export interface ServerHookStore {
     data: Hook[];
     trigger_definitions: TriggerDefinition[];
+    action_definitions: ActionDefinition[];
+    setActionDefinitions: Action<ServerHookStore, ActionDefinition[]>;
     setTriggerDefinitions: Action<ServerHookStore, TriggerDefinition[]>;
     setHooks: Action<ServerHookStore, Hook[]>;
     appendHook: Action<ServerHookStore, Hook>;
@@ -14,6 +17,10 @@ export interface ServerHookStore {
 const hooks: ServerHookStore = {
     data: [],
     trigger_definitions: [],
+    action_definitions: [],
+    setActionDefinitions: action((state, payload) => {
+        state.action_definitions = payload;
+    }),
     setTriggerDefinitions: action((state, payload) => {
         state.trigger_definitions = payload;
     }),
