@@ -36,10 +36,6 @@ const EditHookModal = ({ hook }: Props) => {
     const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
-    console.log('Action Definitions');
-    console.log(actionDefinitions);
-    console.log('event');
-    console.log(triggerDefinitions);
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
@@ -96,8 +92,8 @@ const EditHookModal = ({ hook }: Props) => {
                                 setSelectedTrigger(selected || null);
                             }}
                         >
-                            {triggerDefinitions.map((trigger) => (
-                                <option value={trigger.key} key={trigger.key}>
+                            {triggerDefinitions.map((trigger, key) => (
+                                <option value={trigger.key} key={key}>
                                     {trigger.name}
                                 </option>
                             ))}
@@ -126,7 +122,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     <p className={'input-help mt-1 text-xs'}>{selectedTrigger.description}</p>
                                 </div>
                             ) : trigger.input === 'text' ? (
-                                <div css={tw`mt-6`}>
+                                <div css={tw`mt-6`} key={key}>
                                     <Field
                                         name={trigger.label.toLowerCase().replace(' ', '')}
                                         label={trigger.label}
@@ -134,7 +130,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     />
                                 </div>
                             ) : trigger.input === 'number' ? (
-                                <div css={tw`mt-6`}>
+                                <div css={tw`mt-6`} key={key}>
                                     <Field
                                         type={'number'}
                                         name={trigger.label.toLowerCase().replace(' ', '')}
@@ -154,13 +150,11 @@ const EditHookModal = ({ hook }: Props) => {
                             className={'action'}
                             onChange={(e) => {
                                 const selected = actionDefinitions.find((t) => t.key === e.target.value);
-                                console.log('Selected Below');
-                                console.log(selected);
                                 setSelectedAction(selected || null);
                             }}
                         >
-                            {actionDefinitions.map((action) => (
-                                <option value={action.key} key={action.key}>
+                            {actionDefinitions.map((action, key) => (
+                                <option value={action.key} key={key}>
                                     {action.name}
                                 </option>
                             ))}
@@ -188,7 +182,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     <p className={'input-help mt-1 text-xs'}>{selectedAction.description}</p>
                                 </div>
                             ) : action.input === 'text' ? (
-                                <div css={tw`mt-6`}>
+                                <div css={tw`mt-6`} key={key}>
                                     <Field
                                         name={action.label.toLowerCase().replace(' ', '')}
                                         label={action.label}
@@ -196,7 +190,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     />
                                 </div>
                             ) : action.input === 'number' ? (
-                                <div css={tw`mt-6`}>
+                                <div css={tw`mt-6`} key={key}>
                                     <Field
                                         type={'number'}
                                         name={action.label.toLowerCase().replace(' ', '')}
