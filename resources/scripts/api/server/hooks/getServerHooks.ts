@@ -6,8 +6,10 @@ export interface Hook {
     createdAt: Date;
     updatedAt: Date;
 
-    trigger: Trigger[];
-    action: Action[];
+    trigger: Trigger;
+    trigger_config: Record<string, any>;
+    action: Action;
+    action_config: Record<string, any>;
 }
 export interface Trigger {
     type: string;
