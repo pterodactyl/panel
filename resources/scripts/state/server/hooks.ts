@@ -1,7 +1,7 @@
 import { action, Action } from 'easy-peasy';
 import { Hook } from '@/api/server/hooks/getServerHooks';
 import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
-import { ActionDefinition } from '@/api/server/hooks/getHookDefinitions';
+import { ActionDefinition } from '@/api/server/hooks/getActionDefinitions';
 
 export interface ServerHookStore {
     data: Hook[];

@@ -43,6 +43,7 @@ export default () => {
             .catch((error) => {
                 addError({ message: httpErrorToHuman(error), key: 'hooks' });
             });
+
     }, []);
     return (
         <ServerContentBlock title={'Hooks'}>
