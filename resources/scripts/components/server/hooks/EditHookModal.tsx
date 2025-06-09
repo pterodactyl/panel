@@ -5,6 +5,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import FormikSwitch from '@/components/elements/FormikSwitch';
 import createOrUpdateHook from '@/api/server/hooks/createOrUpdateHook';
 import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
+import { ActionDefinition } from '@/api/server/hooks/getActionDefinitions';
 import { ServerContext } from '@/state/server';
 import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
@@ -32,8 +33,9 @@ const EditHookModal = ({ hook }: Props) => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendHook = ServerContext.useStoreActions((actions) => actions.hooks!.appendHook);
     const triggerDefinitions = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
+    const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
-
+    const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
@@ -138,6 +140,67 @@ const EditHookModal = ({ hook }: Props) => {
                                 </div>
                             ) : null
                         )}
+
+                    <div css={tw`mt-6`}>
+                        <Label htmlFor={'action'} isLight={false}>
+                            Action
+                        </Label>
+                        <Select
+                            name={'action'}
+                            className={'action'}
+                            onChange={(e) => {
+                                const selected = triggerDefinitions.find((t) => t.key === e.target.value);
+                                setSelectedAction(selected || null);
+                            }}
+                        >
+                            {actionDefinitions.map((action) => (
+                                <option value={action.key} key={action.key}>
+                                    {action.name}
+                                </option>
+                            ))}
+                        </Select>
+                        <p className={'input-help mt-1 text-xs'}>Choose the action that will run.</p>
+                    </div>
+
+                    {selectedAction &&
+                        selectedAction.config_schema.map((action, key) =>
+                            action.input === 'dropdown' ? (
+                                <div css={tw`mt-6`} key={key}>
+                                    <Label htmlFor={action.label.toLowerCase().replace(' ', '')} isLight={false}>
+                                        Action
+                                    </Label>
+                                    <Select
+                                        name={action.label.toLowerCase().replace(' ', '')}
+                                        className={action.label.toLowerCase().replace(' ', '')}
+                                    >
+                                        {Object.entries(action.options || {}).map(([key, label]) => (
+                                            <option value={key} key={key}>
+                                                {label}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                    <p className={'input-help mt-1 text-xs'}>{selectedAction.description}</p>
+                                </div>
+                            ) : action.input === 'text' ? (
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        name={action.label.toLowerCase().replace(' ', '')}
+                                        label={action.label}
+                                        description={''}
+                                    />
+                                </div>
+                            ) : action.input === 'number' ? (
+                                <div css={tw`mt-6`}>
+                                    <Field
+                                        type={'number'}
+                                        name={action.label.toLowerCase().replace(' ', '')}
+                                        label={action.label}
+                                        description={''}
+                                    />
+                                </div>
+                            ) : null
+                        )}
+
                     <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
                         <FormikSwitch
                             name={'enabled'}
