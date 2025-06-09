@@ -10,6 +10,7 @@ export default async (uuid: string, hook: Data): Promise<Hook> => {
         trigger: hook.trigger,
         action: hook.action,
     });
-
+    console.log("SENT BELOW");
+    console.log(data);
     return rawDataToServerHook(data.attributes);
 };

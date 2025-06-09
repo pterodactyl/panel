@@ -150,11 +150,7 @@ const EditHookModal = ({ hook }: Props) => {
                                 </div>
                             ) : trigger.input === 'text' ? (
                                 <div css={tw`mt-6`} key={key}>
-                                    <Field
-                                        name={`trigger.config.${key}`}
-                                        label={trigger.label}
-                                        description={''}
-                                    />
+                                    <Field name={`trigger.config.${key}`} label={trigger.label} description={''} />
                                 </div>
                             ) : trigger.input === 'number' ? (
                                 <div css={tw`mt-6`} key={key}>
@@ -202,7 +198,7 @@ const EditHookModal = ({ hook }: Props) => {
                                         Action
                                     </Label>
                                     <Select
-                                        name={action.label.toLowerCase().replace(' ', '')}
+                                        name={`action.config.${key}`}
                                         className={action.label.toLowerCase().replace(' ', '')}
                                         onChange={(e) => {
                                             setFieldValue(action.label.toLowerCase().replace(' ', ''), e.target.value);
@@ -218,11 +214,7 @@ const EditHookModal = ({ hook }: Props) => {
                                 </div>
                             ) : action.input === 'text' ? (
                                 <div css={tw`mt-6`} key={key}>
-                                    <Field
-                                        name={`action.config.${key}`}
-                                        label={action.label}
-                                        description={''}
-                                    />
+                                    <Field name={`action.config.${key}`} label={action.label} description={''} />
                                 </div>
                             ) : action.input === 'number' ? (
                                 <div css={tw`mt-6`} key={key}>
