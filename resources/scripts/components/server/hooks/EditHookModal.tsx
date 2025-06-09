@@ -91,6 +91,8 @@ const EditHookModal = ({ hook }: Props) => {
                             className={'trigger'}
                             onChange={(e) => {
                                 const selected = triggerDefinitions.find((t) => t.key === e.target.value);
+                                console.log('Selected Below');
+                                console.log(selected);
                                 setSelectedTrigger(selected || null);
                             }}
                         >
