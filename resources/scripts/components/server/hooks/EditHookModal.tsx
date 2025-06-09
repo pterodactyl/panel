@@ -38,6 +38,8 @@ const EditHookModal = ({ hook }: Props) => {
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
     console.log('Action Definitions');
     console.log(actionDefinitions);
+    console.log('event');
+    console.log(triggerDefinitions);
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
@@ -91,8 +93,6 @@ const EditHookModal = ({ hook }: Props) => {
                             className={'trigger'}
                             onChange={(e) => {
                                 const selected = triggerDefinitions.find((t) => t.key === e.target.value);
-                                console.log('Selected Below');
-                                console.log(selected);
                                 setSelectedTrigger(selected || null);
                             }}
                         >
@@ -154,6 +154,8 @@ const EditHookModal = ({ hook }: Props) => {
                             className={'action'}
                             onChange={(e) => {
                                 const selected = actionDefinitions.find((t) => t.key === e.target.value);
+                                console.log('Selected Below');
+                                console.log(selected);
                                 setSelectedAction(selected || null);
                             }}
                         >

@@ -23,7 +23,7 @@ class ActionDefinitionSeeder extends Seeder
                 'name' => 'Run Schedule',
                 'description' => 'Execute a selected schedule for this server.',
                 'config_schema' => [
-                    'schedule_id' => [
+                    [
                         'type' => 'integer',
                         'required' => true,
                         'label' => 'Schedule ID',
@@ -36,19 +36,19 @@ class ActionDefinitionSeeder extends Seeder
                 'name' => 'Send Email',
                 'description' => 'Send an email to the server owner or a specified address.',
                 'config_schema' => [
-                    'to' => [
+                    [
                         'type' => 'string',
                         'required' => false,
                         'label' => 'Email Address',
                         'input' => 'text',
                     ],
-                    'subject' => [
+                    [
                         'type' => 'string',
                         'required' => true,
                         'label' => 'Subject',
                         'input' => 'text',
                     ],
-                    'message' => [
+                    [
                         'type' => 'string',
                         'required' => true,
                         'label' => 'Message',
@@ -61,13 +61,13 @@ class ActionDefinitionSeeder extends Seeder
                 'name' => 'Discord Webhook',
                 'description' => 'Send a message to a Discord channel using a webhook.',
                 'config_schema' => [
-                    'url' => [
+                    [
                         'type' => 'string',
                         'required' => true,
                         'label' => 'Webhook URL',
                         'input' => 'text',
                     ],
-                    'content' => [
+                    [
                         'type' => 'string',
                         'required' => true,
                         'label' => 'Message Content',
