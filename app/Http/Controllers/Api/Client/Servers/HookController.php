@@ -49,8 +49,9 @@ class HookController extends Controller
     }
 
     public function store(StoreHookRequest $request, Server $server) {
-        $validated = $request->validated();
-
+        //$validated = $request->validated();
+        return response()->json($request->all());
+// redo the hookstorerquest-validator
         try {
             $this->creationService->handle($server, $validated);
         } catch (HookTriggerValidationException $hookTriggerValidationException) {

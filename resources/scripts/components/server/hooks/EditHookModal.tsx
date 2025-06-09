@@ -48,6 +48,8 @@ const EditHookModal = ({ hook }: Props) => {
         createOrUpdateHook(uuid, {
             name: values.name,
             enabled: values.enabled,
+            trigger: values.trigger,
+            action: values.action,
             id: hook?.id,
         })
             .then((hook) => {
@@ -71,7 +73,9 @@ const EditHookModal = ({ hook }: Props) => {
                     name: hook?.name || '',
                     enabled: hook?.enabled ?? true,
                     trigger: hook?.trigger || [],
+                    trigger_config: hook?.trigger_config || [],
                     action: hook?.action || [],
+                    action_config: hook?.action_config || [],
                 } as Values
             }
         >
@@ -188,6 +192,9 @@ const EditHookModal = ({ hook }: Props) => {
                                     <Select
                                         name={action.label.toLowerCase().replace(' ', '')}
                                         className={action.label.toLowerCase().replace(' ', '')}
+                                        onChange={(e) => {
+                                            setFieldValue(action.label.toLowerCase().replace(' ', ''), e.target.value);
+                                        }}
                                     >
                                         {Object.entries(action.options || {}).map(([key, label]) => (
                                             <option value={key} key={key}>
