@@ -74,8 +74,8 @@ const EditHookModal = ({ hook }: Props) => {
                 {
                     name: hook?.name || '',
                     enabled: hook?.enabled ?? true,
-                    trigger: hook?.trigger || [],
-                    action: hook?.action || [],
+                    trigger: hook?.trigger || [{ type: '', config: {} }],
+                    action: hook?.action || [{ type: '', config: {} }],
                 } as Values
             }
         >
@@ -99,8 +99,19 @@ const EditHookModal = ({ hook }: Props) => {
                                 if (!selected) {
                                     addError({ key: 'hook:edit', message: 'You must select a valid trigger.' });
                                 }
-
-                                setFieldValue('trigger', selected);
+                                const initialConfig: Record<string, any> = {};
+                                selected!.config_schema.forEach((field) => {
+                                    if (field.input === 'dropdown' && field.options) {
+                                        initialConfig[field.label] = Object.keys(field.options)[0];
+                                    } else if (field.input === 'text' || field.input === 'number') {
+                                        initialConfig[field.label] = '';
+                                    }
+                                });
+                                const trigger: Trigger = {
+                                    type: selected!.key,
+                                    config: JSON.stringify(initialConfig),
+                                };
+                                setFieldValue('trigger', trigger);
                                 setSelectedTrigger(selected || null);
                             }}
                         >
@@ -125,7 +136,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     <Select
                                         name={trigger.label.toLowerCase().replace(' ', '')}
                                         onChange={(e) => {
-                                            setFieldValue(trigger.label.toLowerCase().replace(' ', ''), e.target.value);
+                                            setFieldValue(`trigger.config.${key}`, e.target.value);
                                         }}
                                         className={trigger.label.toLowerCase().replace(' ', '')}
                                     >
@@ -140,7 +151,7 @@ const EditHookModal = ({ hook }: Props) => {
                             ) : trigger.input === 'text' ? (
                                 <div css={tw`mt-6`} key={key}>
                                     <Field
-                                        name={trigger.label.toLowerCase().replace(' ', '')}
+                                        name={`trigger.config.${key}`}
                                         label={trigger.label}
                                         description={''}
                                     />
@@ -149,7 +160,7 @@ const EditHookModal = ({ hook }: Props) => {
                                 <div css={tw`mt-6`} key={key}>
                                     <Field
                                         type={'number'}
-                                        name={trigger.label.toLowerCase().replace(' ', '')}
+                                        name={`trigger.config.${key}`}
                                         label={trigger.label}
                                         description={''}
                                     />
@@ -208,7 +219,7 @@ const EditHookModal = ({ hook }: Props) => {
                             ) : action.input === 'text' ? (
                                 <div css={tw`mt-6`} key={key}>
                                     <Field
-                                        name={action.label.toLowerCase().replace(' ', '')}
+                                        name={`action.config.${key}`}
                                         label={action.label}
                                         description={''}
                                     />
@@ -217,7 +228,7 @@ const EditHookModal = ({ hook }: Props) => {
                                 <div css={tw`mt-6`} key={key}>
                                     <Field
                                         type={'number'}
-                                        name={action.label.toLowerCase().replace(' ', '')}
+                                        name={`action.config.${key}`}
                                         label={action.label}
                                         description={''}
                                     />
