@@ -5,31 +5,31 @@ namespace Pterodactyl\Services\Hooks;
 use Closure;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
-use Pterodactyl\Models\TriggerDefinition;
+use Pterodactyl\Models\ActionDefinition;
 use Illuminate\Support\Collection;
 
-class TriggerDefinitionService
+class ActionDefinitionService
 {
     /**
-     * TriggerDefinitionService constructor.
+     * ActionDefinitionService constructor.
      */
     public function __construct() {}
 
     public function getAll(): Collection
     {
-        return TriggerDefinition::all();
+        return ActionDefinition::all();
     }
 
-    public function findByKey(string $key): ?TriggerDefinition
+    public function findByKey(string $key): ?ActionDefinition
     {
-        return TriggerDefinition::where('key', $key)->first();
+        return ActionDefinition::where('key', $key)->first();
     }
 
     /**
      *
      * @throws \Illuminate\Validation\ValidationException
      */
-    public function validateConfig(TriggerDefinition $definition, array $config): void
+    public function validateConfig(ActionDefinition $definition, array $config): void
     {
         $schema = $definition->config_schema ?? [];
         $rules = $this->convertSchemaToRules($schema);
@@ -85,15 +85,15 @@ class TriggerDefinitionService
     }
 
     /**
-     * Create a new TriggerDefinition.
+     * Create a new ActionDefinition.
      *
      * @throws ValidationException
      */
 
-    public function create(array $data): TriggerDefinition
+    public function create(array $data): ActionDefinition
     {
         $validator = Validator::make($data, [
-            'key' => 'required|string|unique:trigger_definitions,key',
+            'key' => 'required|string|unique:action_definitions,key',
             'name' => 'required|string',
             'description' => 'nullable|string',
             'config_schema' => 'nullable|array',
@@ -103,7 +103,7 @@ class TriggerDefinitionService
             throw new ValidationException($validator);
         }
 
-        return TriggerDefinition::create([
+        return ActionDefinition::create([
             'key' => $data['key'],
             'name' => $data['name'],
             'description' => $data['description'],
