@@ -10,7 +10,7 @@ class HookAction extends Model
     use HasFactory;
 
     protected $fillable = [
-        'hook_id', 'action', 'config', 'action_definition_id'
+        'hook_id', 'type', 'config', 'action_definition_id'
     ];
 
     public const RESOURCE_NAME = 'hook_action';

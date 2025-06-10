@@ -29,6 +29,9 @@ export default () => {
     const setHooks = ServerContext.useStoreActions((actions) => actions.hooks.setHooks);
     const setTriggerDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.setTriggerDefinitions);
     const setActionDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.setActionDefinitions);
+    const triggerDefinitions = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
+    const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
+
     useEffect(() => {
         clearFlashes('hooks');
         getServerHooks(uuid)
@@ -73,7 +76,11 @@ export default () => {
                                     history.push(`${match.url}/${hook.id}`);
                                 }}
                             >
-                                <HookRow hook={hook} />
+                                <HookRow
+                                    hook={hook}
+                                    triggerDefinition={triggerDefinitions.find((t) => t.key === hook.trigger!.type)}
+                                    actionDefinition={actionDefinitions.find((t) => t.key === hook.action!.type)}
+                                />
                             </GreyRowBox>
                         ))
                     )}

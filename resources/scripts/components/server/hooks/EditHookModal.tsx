@@ -46,11 +46,11 @@ const EditHookModal = ({ hook }: Props) => {
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('hook:edit');
         createOrUpdateHook(uuid, {
+            id: hook?.id,
             name: values.name,
             enabled: values.enabled,
             trigger: values.trigger,
             action: values.action,
-            id: hook?.id,
         })
             .then((hook) => {
                 setSubmitting(false);
@@ -165,7 +165,6 @@ const EditHookModal = ({ hook }: Props) => {
                                 selected!.config_schema.forEach((field, key) => {
                                     config[key] = field.input === 'dropdown' ? Object.keys(field.options || {})[0] : '';
                                 });
-
                                 setFieldValue('action', {
                                     type: selected!.key,
                                     config,

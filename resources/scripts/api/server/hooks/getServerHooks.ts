@@ -1,6 +1,6 @@
 import http from '@/api/http';
 export interface Hook {
-    id: number;
+    id?: number;
     name: string;
     enabled: boolean;
     createdAt: Date;
@@ -37,6 +37,5 @@ export const rawDataToServerHook = (data: any): Hook => ({
 
 export default async (uuid: string): Promise<Hook[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/hooks`, {});
-    console.log(data.data);
     return (data.data || []).map((row: any) => rawDataToServerHook(row.attributes));
 };

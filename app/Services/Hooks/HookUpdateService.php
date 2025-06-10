@@ -79,6 +79,7 @@ class HookUpdateService
             return;
         }
 
+
         try {
             $this->actionDefinitionService->validateConfig($definition, $action['config']);
             $action['action_definition_id'] = $definition->id;
