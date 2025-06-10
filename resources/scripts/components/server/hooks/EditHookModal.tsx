@@ -19,7 +19,7 @@ import Label from '@/components/elements/Label';
 //import Switch from '@/components/elements/Switch';
 
 interface Props {
-    hook?: Hook;
+    hook?: Hook | null;
 }
 
 interface Values {
@@ -36,9 +36,15 @@ const EditHookModal = ({ hook }: Props) => {
     const appendHook = ServerContext.useStoreActions((actions) => actions.hooks!.appendHook);
     const triggerDefinitions = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
     const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
-    const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
-    const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
+    const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null | undefined>(null);
+    const [selectedAction, setSelectedAction] = useState<ActionDefinition | null | undefined>(null);
     useEffect(() => {
+        if (hook?.action) {
+            setSelectedAction(actionDefinitions.find((t) => t.key === hook?.action.type));
+        }
+        if (hook?.trigger) {
+            setSelectedTrigger(triggerDefinitions.find((t) => t.key === hook?.trigger.type));
+        }
         return () => {
             clearFlashes('hook:edit');
         };
@@ -92,6 +98,7 @@ const EditHookModal = ({ hook }: Props) => {
                         </Label>
                         <Select
                             className={'trigger'}
+                            value={selectedTrigger?.key}
                             onChange={(e) => {
                                 const selected = triggerDefinitions.find((t) => t.key === e.target.value);
                                 if (!selected) {
@@ -155,6 +162,7 @@ const EditHookModal = ({ hook }: Props) => {
                         </Label>
                         <Select
                             name={'action'}
+                            value={selectedAction?.key}
                             className={'action'}
                             onChange={(e) => {
                                 const selected = actionDefinitions.find((t) => t.key === e.target.value);
@@ -219,7 +227,18 @@ const EditHookModal = ({ hook }: Props) => {
                         />
                     </div>
                     <div css={tw`mt-6 text-right`}>
-                        <Button className={'w-full sm:w-auto'} type={'submit'} disabled={isSubmitting}>
+                        {hook && (
+                            <>
+                                <Button className={'w-full sm:w-auto md:mx-2 lg:mx-2'} disabled={isSubmitting}>
+                                    Delete Hook
+                                </Button>
+
+                                <Button className={'w-full sm:w-auto md:mx-2 lg:mx-2'} disabled={isSubmitting}>
+                                    Test Hook
+                                </Button>
+                            </>
+                        )}
+                        <Button className={'w-full sm:w-auto md:ml-2 lg:ml-2'} type={'submit'} disabled={isSubmitting}>
                             {hook ? 'Save changes' : 'Create hook'}
                         </Button>
                     </div>

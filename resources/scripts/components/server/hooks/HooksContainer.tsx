@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import getServerHooks from '@/api/server/hooks/getServerHooks';
+import getServerHooks, { Hook } from '@/api/server/hooks/getServerHooks';
 import getTriggerDefinitions from '@/api/server/hooks/getTriggerDefinitions';
 import getActionDefinitions from '@/api/server/hooks/getActionDefinitions';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
-import { useHistory, useRouteMatch } from 'react-router-dom';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import HookRow from '@/components/server/hooks/HookRow';
 import { httpErrorToHuman } from '@/api/http';
@@ -17,13 +16,11 @@ import { Button } from '@/components/elements/button/index';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 
 export default () => {
-    const match = useRouteMatch();
-    const history = useHistory();
-
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const { clearFlashes, addError } = useFlash();
     const [loading, setLoading] = useState(true);
     const [visible, setVisible] = useState(false);
+    const [selectedHook, setSelectedHook] = useState<Hook | null>(null);
 
     const hooks = ServerContext.useStoreState((state) => state.hooks.data);
     const setHooks = ServerContext.useStoreActions((actions) => actions.hooks.setHooks);
@@ -32,7 +29,6 @@ export default () => {
 
     const triggerDefinition = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
     const actionDefinition = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
-
     useEffect(() => {
         clearFlashes('hooks');
         getServerHooks(uuid)
@@ -57,6 +53,14 @@ export default () => {
     return (
         <ServerContentBlock title={'Hooks'}>
             <FlashMessageRender byKey={'hooks'} css={tw`mb-4`} />
+            <EditHookModal
+                visible={visible}
+                onModalDismissed={() => {
+                    setVisible(false);
+                    setSelectedHook(null);
+                }}
+                hook={selectedHook}
+            />
             {!hooks.length && loading ? (
                 <Spinner size={'large'} centered />
             ) : (
@@ -70,11 +74,11 @@ export default () => {
                             <GreyRowBox
                                 as={'a'}
                                 key={hook.id}
-                                href={`${match.url}/${hook.id}`}
                                 css={tw`cursor-pointer mb-2 flex-wrap`}
                                 onClick={(e: any) => {
                                     e.preventDefault();
-                                    history.push(`${match.url}/${hook.id}`);
+                                    setVisible(true);
+                                    setSelectedHook(hook);
                                 }}
                             >
                                 <HookRow
@@ -87,7 +91,6 @@ export default () => {
                     )}
                     <Can action={'hooks.create'}>
                         <div css={tw`mt-8 flex justify-end`}>
-                            <EditHookModal visible={visible} onModalDismissed={() => setVisible(false)} />
                             <Button type={'button'} onClick={() => setVisible(true)}>
                                 Create hook
                             </Button>

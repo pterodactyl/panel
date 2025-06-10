@@ -13,32 +13,20 @@ export default ({
     actionDefinition: ActionDefinition | undefined;
 }) => {
     const triggerType = hook.trigger?.type || 'Unknown';
-    const triggerConfig = hook.trigger?.config ? Object.values(hook.action.config).join(', ') : '';
-    const actionType = hook.action?.type || 'Unknown';
     const actionConfig = hook.action?.config ? Object.values(hook.action.config).join(', ') : '';
-    console.log(actionDefinition, triggerDefinition);
     return (
         <>
             <div css={tw`flex-1 md: ml-4`}>
                 <p>{hook.name}</p>
                 {hook.trigger && (
                     <p css={tw`text-xs text-neutral-300`}>
-                        Trigger: <span css={tw`font-medium`}>{triggerType}</span>
-                        {triggerConfig && (
-                            <>
-                                {' '}
-                                → <span>{triggerConfig}</span>
-                            </>
-                        )}
-                    </p>
-                )}
-                {hook.action && (
-                    <p css={tw`text-xs text-neutral-300`}>
-                        Action: <span css={tw`font-medium`}>{actionType}</span>
+                        <span css={tw`font-medium`}>
+                            {triggerDefinition!.name ? triggerDefinition!.name : triggerType}
+                        </span>
                         {actionConfig && (
                             <>
-                                {' '}
-                                → <span>{actionConfig}</span>
+                                {' → '}
+                                <span>{actionDefinition!.name ?? `No Action`}</span>
                             </>
                         )}
                     </p>

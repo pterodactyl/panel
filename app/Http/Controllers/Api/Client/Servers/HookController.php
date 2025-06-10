@@ -52,7 +52,9 @@ class HookController extends ClientApiController
         $validated = $request->validated();
         try {
             $hook = $this->creationService->handle($server, $validated);
-            return $hook;
+            return $this->fractal->item(
+                $hook
+            )->transformWith($this->getTransformer(HookTransformer::class))->toArray();
         } catch (HookTriggerValidationException | HookActionValidationException $e) {
             return response()->json([
                 'message' => $e instanceof HookTriggerValidationException
