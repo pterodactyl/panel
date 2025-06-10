@@ -233,12 +233,19 @@ const EditHookModal = ({ hook }: Props) => {
                                     Delete Hook
                                 </Button>
 
-                                <Button className={'w-full sm:w-auto md:mx-2 lg:mx-2'} disabled={isSubmitting}>
+                                <Button
+                                    className={'w-full sm:w-auto md:mx-2 lg:mx-2 mt-2 md:mt-0 lg:mt-0'}
+                                    disabled={isSubmitting}
+                                >
                                     Test Hook
                                 </Button>
                             </>
                         )}
-                        <Button className={'w-full sm:w-auto md:ml-2 lg:ml-2'} type={'submit'} disabled={isSubmitting}>
+                        <Button
+                            className={'w-full sm:w-auto md:ml-2 lg:ml-2  mt-2 md:mt-0 lg:mt-0'}
+                            type={'submit'}
+                            disabled={isSubmitting}
+                        >
                             {hook ? 'Save changes' : 'Create hook'}
                         </Button>
                     </div>
