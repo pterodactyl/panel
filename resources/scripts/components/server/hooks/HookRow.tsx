@@ -3,12 +3,20 @@ import { Hook } from '@/api/server/hooks/getServerHooks';
 import tw from 'twin.macro';
 import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
 import { ActionDefinition } from '@/api/server/hooks/getActionDefinitions';
-
-export default ({ hook }: { hook: Hook; triggerDefinition: TriggerDefinition; actionDefinition: ActionDefinition }) => {
+export default ({
+    hook,
+    triggerDefinition,
+    actionDefinition,
+}: {
+    hook: Hook;
+    triggerDefinition: TriggerDefinition | undefined;
+    actionDefinition: ActionDefinition | undefined;
+}) => {
     const triggerType = hook.trigger?.type || 'Unknown';
     const triggerConfig = hook.trigger?.config ? Object.values(hook.action.config).join(', ') : '';
     const actionType = hook.action?.type || 'Unknown';
     const actionConfig = hook.action?.config ? Object.values(hook.action.config).join(', ') : '';
+    console.log(actionDefinition, triggerDefinition);
     return (
         <>
             <div css={tw`flex-1 md: ml-4`}>
