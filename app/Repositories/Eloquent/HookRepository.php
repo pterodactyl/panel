@@ -2,13 +2,14 @@
 
 namespace Pterodactyl\Repositories\Eloquent;
 
+use Pterodactyl\Contracts\Repository\HookRepositoryInterface;
 use Pterodactyl\Models\Hook;
 use Pterodactyl\Models\Schedule;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Pterodactyl\Exceptions\Repository\RecordNotFoundException;
 
-class HookRepository extends EloquentRepository
+class HookRepository extends EloquentRepository implements HookRepositoryInterface
 {
     /**
      * Return the model backing this repository.

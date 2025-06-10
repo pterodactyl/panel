@@ -12,6 +12,7 @@ use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\UpdateHookRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\ViewHooksRequest;
 use Pterodactyl\Models\Hook;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Repositories\Eloquent\HookRepository;
 use Pterodactyl\Services\Hooks\HookCreationService;
 use Pterodactyl\Services\Hooks\HookDeletionService;
 use Pterodactyl\Services\Hooks\HookExecutionService;
@@ -24,13 +25,14 @@ class HookController extends ClientApiController
         private HookCreationService $creationService,
         private HookDeletionService $deletionService,
         private HookUpdateService $updateService,
-        private HookExecutionService $executionService
+        private HookExecutionService $executionService,
+        private HookRepository $repository,
     ) {
         parent::__construct();
     }
     public function index(ViewHooksRequest $request, Server $server): array {
         return $this->fractal->collection(
-            Hook::with(['action', 'trigger'])->where('server_id', $server->id)->get()
+            $this->repository->findServerHooks($server->id)
         )->transformWith($this->getTransformer(HookTransformer::class))->toArray();
     }
 
