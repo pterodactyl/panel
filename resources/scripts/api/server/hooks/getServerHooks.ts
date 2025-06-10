@@ -31,12 +31,12 @@ export const rawDataToServerHook = (data: any): Hook => ({
     enabled: data.enabled,
     createdAt: new Date(data.created_at),
     updatedAt: new Date(data.updated_at),
-
     action: (data.relationships?.actions || []).map((row: any) => rawDataToServerAction(row.attributes)),
     trigger: (data.relationships?.triggers || []).map((row: any) => rawDataToServerTrigger(row.attributes)),
 });
 
 export default async (uuid: string): Promise<Hook[]> => {
     const { data } = await http.get(`/api/client/servers/${uuid}/hooks`, {});
+    console.log(data.data);
     return (data.data || []).map((row: any) => rawDataToServerHook(row.attributes));
 };

@@ -30,7 +30,6 @@ class HookUpdateService
      */
     public function handle(Hook $hook, $params): Hook
     {
-        Log::info("Updating", ["Params" => $params]);
         $hook->update(Arr::only($params, ["name", "enabled"]));
         $this->updateTrigger($hook, $params['trigger'] ?? []);
         $this->updateAction($hook, $params['action'] ?? []);
@@ -54,6 +53,7 @@ class HookUpdateService
 
         try {
             $this->triggerDefinitionService->validateConfig($definition, $trigger['config']);
+            $trigger['trigger_definition_id'] = $definition->id;
             $hook->trigger()->create($trigger);
         } catch (ValidationException $e) {
             $errors = array_merge($errors, $e->getErrors());
@@ -81,6 +81,7 @@ class HookUpdateService
 
         try {
             $this->actionDefinitionService->validateConfig($definition, $action['config']);
+            $action['action_definition_id'] = $definition->id;
             $hook->action()->create($action);
         } catch (ValidationException $e) {
             $errors = array_merge($errors, $e->getErrors());

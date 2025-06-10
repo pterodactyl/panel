@@ -27,7 +27,6 @@ class HookCreationService
      */
     public function handle(Server $server, array $data): Hook
     {
-        Log::info('Data:', ['data' => $data]);
         return DB::transaction(function () use ($server, $data) {
             $hook = Hook::create([
                 "server_id" => $server->id,

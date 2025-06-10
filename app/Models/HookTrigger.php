@@ -14,7 +14,7 @@ class HookTrigger extends Model
     ];
 
     protected $fillable = [
-        'hook_id', 'type', 'config'
+        'hook_id', 'type', 'config', 'trigger_definition_id'
     ];
 
     public function hook() {

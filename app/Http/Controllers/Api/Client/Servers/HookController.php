@@ -33,7 +33,9 @@ class HookController extends Controller
 
     public function index(ViewHooksRequest $request, Server $server) {
         return response()->json([
-            "data"=> Hook::where('server_id', $server->id)->get()
+            "data"=> Hook::with(['action', 'trigger'])
+                ->where('server_id', $server->id)
+                ->get(),
         ]);
     }
 
@@ -52,7 +54,8 @@ class HookController extends Controller
     public function store(StoreHookRequest $request, Server $server) {
         $validated = $request->validated();
         try {
-            $this->creationService->handle($server, $validated);
+            $hook = $this->creationService->handle($server, $validated);
+            return $hook;
         } catch (HookTriggerValidationException | HookActionValidationException $e) {
             return response()->json([
                 'message' => $e instanceof HookTriggerValidationException
@@ -61,10 +64,6 @@ class HookController extends Controller
                 'errors' => $e->getErrors(),
             ], 422);
         }
-
-        return response()->json([
-            'success' => true
-        ]);
     }
 
     public function update(UpdateHookRequest $request, Server $server, Hook $hook) {
