@@ -17,14 +17,14 @@ class Hook extends Model
         'enabled' => 'boolean',
     ];
 
-    public function triggers()
+    public function trigger()
     {
-        return $this->hasMany(HookTrigger::class);
+        return $this->hasOne(HookTrigger::class);
     }
 
-    public function actions()
+    public function action()
     {
-        return $this->hasMany(HookAction::class);
+        return $this->hasOne(HookAction::class);
     }
 
     public function server()

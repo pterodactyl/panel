@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Pterodactyl\Exceptions\HookActionValidationException;
 use Pterodactyl\Exceptions\HookTriggerValidationException;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\DeleteHookRequest;
@@ -49,16 +50,15 @@ class HookController extends Controller
     }
 
     public function store(StoreHookRequest $request, Server $server) {
-        //$validated = $request->validated();
-
-        return response()->json($request->all());
-// redo the hookstorerquest-validator
+        $validated = $request->validated();
         try {
             $this->creationService->handle($server, $validated);
-        } catch (HookTriggerValidationException $hookTriggerValidationException) {
+        } catch (HookTriggerValidationException | HookActionValidationException $e) {
             return response()->json([
-                'message' => 'One or more triggers are invalid',
-                'errors' => $hookTriggerValidationException->getErrors(),
+                'message' => $e instanceof HookTriggerValidationException
+                    ? 'One or more triggers are invalid'
+                    : 'One or more actions are invalid',
+                'errors' => $e->getErrors(),
             ], 422);
         }
 

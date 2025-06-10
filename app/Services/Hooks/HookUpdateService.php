@@ -3,54 +3,60 @@
 namespace Pterodactyl\Services\Hooks;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
+use Pterodactyl\Exceptions\HookActionValidationException;
 use Pterodactyl\Exceptions\HookTriggerValidationException;
 use Pterodactyl\Models\Hook;
 
 class HookUpdateService
 {
     protected TriggerDefinitionService $triggerDefinitionService;
+    protected ActionDefinitionService $actionDefinitionService;
+
     /**
      * HookUpdateService constructor.
      */
-    public function __construct(TriggerDefinitionService $triggerDefinitionService) {
+    public function __construct(TriggerDefinitionService $triggerDefinitionService, ActionDefinitionService $actionDefinitionService) {
         $this->triggerDefinitionService = $triggerDefinitionService;
+        $this->actionDefinitionService = $actionDefinitionService;
     }
 
     /**
      * Updates a hook.
      *
      * @throws HookTriggerValidationException
+     * @throws HookActionValidationException
      */
     public function handle(Hook $hook, $params): Hook
     {
+        Log::info("Updating", ["Params" => $params]);
         $hook->update(Arr::only($params, ["name", "enabled"]));
-        $this->updateTriggers($hook, $params['triggers'] ?? []);
-        $this->updateActions($hook, $params['actions'] ?? []);
+        $this->updateTrigger($hook, $params['trigger'] ?? []);
+        $this->updateAction($hook, $params['action'] ?? []);
         return $hook;
     }
 
     /**
      * @throws HookTriggerValidationException
      */
-    protected function updateTriggers(Hook $hook, array $triggers): void
+    protected function updateTrigger(Hook $hook, array $trigger): void
     {
         $errors = [];
-        $hook->triggers()->delete();
-        foreach ($triggers as $trigger) {
-            $definition = $this->triggerDefinitionService->findByKey($trigger['type']);
+        $hook->trigger()->delete();
 
-            if ($definition === null) {
-                $errors[] = "Trigger '{$trigger['type']}' not found.";
-                continue;
-            }
+        $definition = $this->triggerDefinitionService->findByKey($trigger['type']);
 
-            try {
-                $this->triggerDefinitionService->validateConfig($definition, $trigger['config']);
-                $hook->triggers()->create($trigger);
-            } catch (ValidationException $e) {
-                $errors = array_merge($errors, $e->getErrors());
-            }
+        if ($definition === null) {
+            $errors[] = "Trigger '{$trigger['type']}' not found.";
+            return;
+        }
+
+        try {
+            $this->triggerDefinitionService->validateConfig($definition, $trigger['config']);
+            $hook->trigger()->create($trigger);
+        } catch (ValidationException $e) {
+            $errors = array_merge($errors, $e->getErrors());
         }
 
         if (!empty($errors)) {
@@ -58,12 +64,30 @@ class HookUpdateService
         }
 
     }
-    protected function updateActions(Hook $hook, array $actions): void
-    {
-        $hook->actions()->delete();
 
-        foreach ($actions as $action) {
-            $hook->actions()->create($action);
+    /**
+     * @throws HookActionValidationException
+     */
+    protected function updateAction(Hook $hook, array $action): void
+    {
+        $errors = [];
+        $hook->action()->delete();
+        $definition = $this->actionDefinitionService->findByKey($action['type']);
+
+        if ($definition === null) {
+            $errors[] = "Action '{$action['type']}' not found.";
+            return;
         }
+
+        try {
+            $this->actionDefinitionService->validateConfig($definition, $action['config']);
+            $hook->action()->create($action);
+        } catch (ValidationException $e) {
+            $errors = array_merge($errors, $e->getErrors());
+        }
+        if (!empty($errors)) {
+            throw new HookActionValidationException("One or more actions are invalid.", $errors);
+        }
+
     }
 }

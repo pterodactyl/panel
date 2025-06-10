@@ -24,10 +24,10 @@ class StoreHookRequest extends ClientApiRequest
     public function rules(): array
     {
         return [
-//            'name' => 'required|string',
-//            'enabled' => 'nullable|boolean',
-//            'triggers' => 'required|array',
-//            'actions' => 'required|array',
+            'name' => 'required|string',
+            'enabled' => 'nullable|boolean',
+            'trigger' => 'required|array',
+            'action' => 'required|array',
         ];
     }
 }

@@ -38,8 +38,6 @@ const EditHookModal = ({ hook }: Props) => {
     const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null>(null);
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null>(null);
-    //const { setFieldValue } = useFormikContext<any>();
-
     useEffect(() => {
         return () => {
             clearFlashes('hook:edit');
