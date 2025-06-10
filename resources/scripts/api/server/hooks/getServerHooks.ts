@@ -31,8 +31,8 @@ export const rawDataToServerHook = (data: any): Hook => ({
     enabled: data.enabled,
     createdAt: new Date(data.created_at),
     updatedAt: new Date(data.updated_at),
-    action: (data.relationships?.actions || []).map((row: any) => rawDataToServerAction(row.attributes)),
-    trigger: (data.relationships?.triggers || []).map((row: any) => rawDataToServerTrigger(row.attributes)),
+    action: rawDataToServerAction(data.relationships?.action?.attributes ?? []),
+    trigger: rawDataToServerTrigger(data.relationships?.trigger?.attributes ?? []),
 });
 
 export default async (uuid: string): Promise<Hook[]> => {
