@@ -9,6 +9,9 @@ class Hook extends Model
 {
     use HasFactory;
 
+    public const RESOURCE_NAME = 'server_hook';
+
+
     protected $fillable = [
         'server_id', 'name', 'enabled',
     ];

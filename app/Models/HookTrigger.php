@@ -17,6 +17,9 @@ class HookTrigger extends Model
         'hook_id', 'type', 'config', 'trigger_definition_id'
     ];
 
+    public const RESOURCE_NAME = 'hook_trigger';
+
+
     public function hook() {
         return $this->belongsTo(Hook::class);
     }

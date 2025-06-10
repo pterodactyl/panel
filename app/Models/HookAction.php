@@ -12,6 +12,10 @@ class HookAction extends Model
     protected $fillable = [
         'hook_id', 'action', 'config', 'action_definition_id'
     ];
+
+    public const RESOURCE_NAME = 'hook_action';
+
+
     protected $casts = [
         'config' => 'array',
     ];
