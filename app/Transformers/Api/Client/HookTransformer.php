@@ -2,16 +2,15 @@
 
 namespace Pterodactyl\Transformers\Api\Client;
 
+use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Hook;
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\Schedule;
 use League\Fractal\Resource\Collection;
 
 class HookTransformer extends BaseClientTransformer
 {
-    protected array $availableIncludes = ['tasks'];
+    protected array $availableIncludes = ['trigger', 'action'];
 
-    protected array $defaultIncludes = ['tasks'];
+    protected array $defaultIncludes = ['trigger', 'action'];
 
     /**
      * {@inheritdoc}
@@ -29,18 +28,7 @@ class HookTransformer extends BaseClientTransformer
         return [
             'id' => $model->id,
             'name' => $model->name,
-            'cron' => [
-                'day_of_week' => $model->cron_day_of_week,
-                'day_of_month' => $model->cron_day_of_month,
-                'month' => $model->cron_month,
-                'hour' => $model->cron_hour,
-                'minute' => $model->cron_minute,
-            ],
-            'is_active' => $model->is_active,
-            'is_processing' => $model->is_processing,
-            'only_when_online' => $model->only_when_online,
-            'last_run_at' => $model->last_run_at?->toAtomString(),
-            'next_run_at' => $model->next_run_at?->toAtomString(),
+            'enabled' => $model->enabled,
             'created_at' => $model->created_at->toAtomString(),
             'updated_at' => $model->updated_at->toAtomString(),
         ];
@@ -51,12 +39,26 @@ class HookTransformer extends BaseClientTransformer
      *
      * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
      */
-    public function includeTasks(Schedule $model): Collection
+    public function includeTrigger(Hook $model): ?Item
     {
-        return $this->collection(
-            $model->tasks,
-            $this->makeTransformer(TaskTransformer::class),
-            Task::RESOURCE_NAME
+        if (!$model->trigger) {
+            return null;
+        }
+        return $this->item(
+            $model->trigger,
+            $this->makeTransformer(TriggerTransformer::class),
+            Hook::RESOURCE_NAME
+        );
+    }
+    public function includeAction(Hook $model): ?Item
+    {
+        if (!$model->action) {
+            return null;
+        }
+        return $this->item(
+            $model->action,
+            $this->makeTransformer(ActionTransformer::class),
+            Hook::RESOURCE_NAME
         );
     }
 }

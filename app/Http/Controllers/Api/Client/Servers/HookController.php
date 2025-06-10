@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Pterodactyl\Exceptions\HookActionValidationException;
 use Pterodactyl\Exceptions\HookTriggerValidationException;
+use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\DeleteHookRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\StoreHookRequest;
@@ -15,28 +16,25 @@ use Pterodactyl\Services\Hooks\HookCreationService;
 use Pterodactyl\Services\Hooks\HookDeletionService;
 use Pterodactyl\Services\Hooks\HookExecutionService;
 use Pterodactyl\Services\Hooks\HookUpdateService;
+use Pterodactyl\Transformers\Api\Client\HookTransformer;
 
-class HookController extends Controller
+class HookController extends ClientApiController
 {
-    protected HookCreationService $creationService;
-    protected HookDeletionService $deletionService;
-    protected HookUpdateService $updateService;
-    protected HookExecutionService $executionService;
 
 
-    public function __construct(HookCreationService $creationService, HookDeletionService $deletionService, HookUpdateService $updateService, HookExecutionService $executionService) {
-        $this->creationService = $creationService;
-        $this->deletionService = $deletionService;
-        $this->updateService = $updateService;
-        $this->executionService = $executionService;
+
+    public function __construct(
+        private HookCreationService $creationService,
+        private HookDeletionService $deletionService,
+        private HookUpdateService $updateService,
+        private HookExecutionService $executionService
+    ) {
+        parent::__construct();
     }
-
     public function index(ViewHooksRequest $request, Server $server) {
-        return response()->json([
-            "data"=> Hook::with(['action', 'trigger'])
-                ->where('server_id', $server->id)
-                ->get(),
-        ]);
+        return $this->fractal->collection(
+            Hook::with(['action', 'trigger'])->where('server_id', $server->id)->get()
+        )->transformWith(HookTransformer::class)->toArray();
     }
 
     public function view(ViewHooksRequest $request, Server $server) {
