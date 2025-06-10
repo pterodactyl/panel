@@ -20,9 +20,6 @@ use Pterodactyl\Transformers\Api\Client\HookTransformer;
 
 class HookController extends ClientApiController
 {
-
-
-
     public function __construct(
         private HookCreationService $creationService,
         private HookDeletionService $deletionService,
@@ -31,10 +28,10 @@ class HookController extends ClientApiController
     ) {
         parent::__construct();
     }
-    public function index(ViewHooksRequest $request, Server $server) {
+    public function index(ViewHooksRequest $request, Server $server): array {
         return $this->fractal->collection(
             Hook::with(['action', 'trigger'])->where('server_id', $server->id)->get()
-        )->transformWith(HookTransformer::class)->toArray();
+        )->transformWith($this->getTransformer(HookTransformer::class))->toArray();
     }
 
     public function view(ViewHooksRequest $request, Server $server) {
