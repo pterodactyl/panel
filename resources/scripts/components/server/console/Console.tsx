@@ -15,15 +15,15 @@ import { usePersistedState } from '@/plugins/usePersistedState';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import classNames from 'classnames';
 import { ChevronDoubleRightIcon } from '@heroicons/react/solid';
-import NookConfig from '@/config';
+import FBGConfig from '@/config';
 
 import 'xterm/css/xterm.css';
 import styles from './style.module.css';
 
 const theme = {
-    background: th`colors.black`.toString(),
+    background: '#000000',
     cursor: 'transparent',
-    black: th`colors.black`.toString(),
+    black: '#000000',
     red: '#E54B4B',
     green: '#9ECE58',
     yellow: '#FAED70',
@@ -53,7 +53,7 @@ const terminalProps: ITerminalOptions = {
 };
 
 export default () => {
-    const TERMINAL_PRELUDE = `\u001b[1m\u001b[33m${NookConfig.TERMINAL_PRELUDE} \u001b[0m`;
+    const TERMINAL_PREFIX = `\u001b[1m\u001b[33m${FBGConfig.TERMINAL_PREFIX} \u001b[0m`;
     const ref = useRef<HTMLDivElement>(null);
     const terminal = useMemo(() => new Terminal({ ...terminalProps }), []);
     const fitAddon = new FitAddon();
@@ -73,25 +73,25 @@ export default () => {
         z-index: 10;
     }`;
 
-    const handleConsoleOutput = (line: string, prelude = false) =>
-        terminal.writeln((prelude ? TERMINAL_PRELUDE : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
+    const handleConsoleOutput = (line: string, PREFIX = false) =>
+        terminal.writeln((PREFIX ? TERMINAL_PREFIX : '') + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m');
 
     const handleTransferStatus = (status: string) => {
         switch (status) {
             // Sent by either the source or target node if a failure occurs.
             case 'failure':
-                terminal.writeln(TERMINAL_PRELUDE + 'Transfer has failed.\u001b[0m');
+                terminal.writeln(TERMINAL_PREFIX + 'Transfer has failed.\u001b[0m');
                 return;
         }
     };
 
     const handleDaemonErrorOutput = (line: string) =>
         terminal.writeln(
-            TERMINAL_PRELUDE + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
+            TERMINAL_PREFIX + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
         );
 
     const handlePowerChangeEvent = (state: string) =>
-        terminal.writeln(TERMINAL_PRELUDE + 'Server marked as ' + state + '...\u001b[0m');
+        terminal.writeln(TERMINAL_PREFIX + '\u001b[34mServer marked as \u001b[36m' + state.toUpperCase() + '\u001b[34m...\u001b[0m');
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {

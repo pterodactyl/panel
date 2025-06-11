@@ -23,7 +23,8 @@ module.exports = {
                 header: ['"IBM Plex Sans"', '"Roboto"', 'system-ui', 'sans-serif'],
             },
             colors: {
-                black: '#131a20',
+                // black: '#131a20',
+                black: '#000000',
                 // "primary" and "neutral" are deprecated, prefer the use of "blue" and "gray"
                 // in new code.
                 primary: colors.blue,
