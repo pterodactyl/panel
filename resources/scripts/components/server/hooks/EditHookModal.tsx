@@ -17,6 +17,7 @@ import Select from '@/components/elements/Select';
 import Label from '@/components/elements/Label';
 import triggerHookExecution from '@/api/server/hooks/triggerHookExecution';
 import deleteHook from '@/api/server/hooks/deleteHook';
+import ConfirmationModal from '@/components/elements/ConfirmationModal';
 //import Switch from '@/components/elements/Switch';
 
 interface Props {
@@ -33,6 +34,7 @@ interface Values {
 const EditHookModal = ({ hook }: Props) => {
     const { addError, clearFlashes } = useFlash();
     const { dismiss } = useContext(ModalContext);
+    const [confirmation, setConfirmation] = useState<boolean>(false);
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const appendHook = ServerContext.useStoreActions((actions) => actions.hooks!.appendHook);
     const triggerDefinitions = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
@@ -59,7 +61,6 @@ const EditHookModal = ({ hook }: Props) => {
     };
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('hook:edit');
-        console.log(values);
         createOrUpdateHook(uuid, {
             id: hook?.id,
             name: values.name,
@@ -69,13 +70,11 @@ const EditHookModal = ({ hook }: Props) => {
         })
             .then((hook) => {
                 setSubmitting(false);
-                console.log('appending', hook);
                 appendHook(hook);
                 dismiss();
             })
             .catch((error) => {
                 setSubmitting(false);
-
                 const response = error?.response?.data;
 
                 if (response?.errors) {
@@ -111,6 +110,25 @@ const EditHookModal = ({ hook }: Props) => {
                 <Form>
                     <h3 css={tw`text-2xl mb-6`}>{hook ? 'Edit hook' : 'Create new hook'}</h3>
                     <FlashMessageRender byKey={'hook:edit'} css={tw`mb-6`} />
+                    {hook && confirmation ? (
+                        <ConfirmationModal
+                            title={'Hook Deletion'}
+                            buttonText={'Delete Hook'}
+                            visible={true}
+                            onConfirmed={() => {
+                                deleteHook(uuid, hook!.id!).then(() => {
+                                    dismiss();
+                                    removeHook(hook!.id!);
+                                    setConfirmation(false);
+                                });
+                            }}
+                        >
+                            <p>
+                                Are you sure you want to delete the hook <strong>{hook?.name}</strong>? This action
+                                cannot be undone.
+                            </p>
+                        </ConfirmationModal>
+                    ) : null}
                     <Field
                         name={'name'}
                         label={'Hook name'}
@@ -281,10 +299,7 @@ const EditHookModal = ({ hook }: Props) => {
                                     disabled={isSubmitting}
                                     onClick={(e) => {
                                         e.preventDefault();
-                                        deleteHook(uuid, hook!.id!).then(() => {
-                                            dismiss();
-                                            removeHook(hook!.id!);
-                                        });
+                                        setConfirmation(true);
                                     }}
                                 >
                                     Delete Hook

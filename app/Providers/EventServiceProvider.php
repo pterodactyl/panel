@@ -2,6 +2,12 @@
 
 namespace Pterodactyl\Providers;
 
+use Pterodactyl\Events\Server\Console;
+use Pterodactyl\Events\Server\Power;
+use Pterodactyl\Events\Server\Stats;
+use Pterodactyl\Listeners\HandleServerConsoleEvent;
+use Pterodactyl\Listeners\HandleServerPowerEvent;
+use Pterodactyl\Listeners\HandleServerStatsEvent;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
@@ -22,6 +28,9 @@ class EventServiceProvider extends ServiceProvider
      */
     protected $listen = [
         ServerInstalledEvent::class => [ServerInstalledNotification::class],
+        Power::class => [HandleServerPowerEvent::class],
+        Console::class => [HandleServerConsoleEvent::class],
+        Stats::class => [HandleServerStatsEvent::class],
     ];
 
     protected $subscribe = [

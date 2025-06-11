@@ -26,7 +26,7 @@ export const rawDataToServerTrigger = (data: any): Trigger => ({
     config: data.config,
 });
 export const rawDataToServerHook = (data: any): Hook => ({
-    id: data!.id,
+    id: data?.id,
     name: data.name,
     enabled: data.enabled,
     createdAt: new Date(data.created_at),

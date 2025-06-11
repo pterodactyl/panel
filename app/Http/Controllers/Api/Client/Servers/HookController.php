@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
+use Illuminate\Support\Facades\Log;
 use Pterodactyl\Exceptions\HookActionValidationException;
 use Pterodactyl\Exceptions\HookTriggerValidationException;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
@@ -71,17 +72,21 @@ class HookController extends ClientApiController
     public function update(UpdateHookRequest $request, Server $server, Hook $hook) {
         $validated = $request->validated();
         try {
-            $this->updateService->handle($hook, $validated);
-        } catch (HookTriggerValidationException $hookTriggerValidationException) {
+            $hook = $this->updateService->handle($hook, $validated);
+            return $this->fractal->item(
+                $hook->fresh(['trigger', 'action'])
+            )->transformWith($this->getTransformer(HookTransformer::class))->toArray();
+        } catch (HookTriggerValidationException $e) {
             return response()->json([
                 'message' => 'One or more triggers are invalid',
-                'errors' => $hookTriggerValidationException->getErrors(),
+                'errors' => $e->getErrors(),
+            ], 422);
+        } catch (HookActionValidationException $e) {
+            return response()->json([
+                'message' => 'One or more actions are invalid',
+                'errors' => $e->getErrors(),
             ], 422);
         }
-
-        return response()->json([
-            'success' => true
-        ]);
     }
 
     public function delete(DeleteHookRequest $request, Server $server, Hook $hook) {

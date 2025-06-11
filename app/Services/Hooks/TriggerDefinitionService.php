@@ -69,8 +69,10 @@ class TriggerDefinitionService
 
             if ($validate === 'regex') {
                 $fieldRules[] = function(string $attribute, $value, Closure $fail) {
+                    $pattern = '/' . str_replace('/', '\/', $value) . '/';
+
                     try {
-                        preg_match($value, '');
+                        preg_match($pattern, '');
                     } catch (\Throwable $e) {
                         $fail("The regex field must be a valid regex expression.");
                     }
