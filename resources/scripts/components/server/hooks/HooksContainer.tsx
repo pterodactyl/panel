@@ -77,24 +77,26 @@ export default () => {
                             There are no hooks configured for this server.
                         </p>
                     ) : (
-                        hooks.map((hook) => (
-                            <GreyRowBox
-                                as={'a'}
-                                key={hook.id}
-                                css={tw`cursor-pointer mb-2 flex-wrap`}
-                                onClick={(e: any) => {
-                                    e.preventDefault();
-                                    setVisible(true);
-                                    setSelectedHook(hook);
-                                }}
-                            >
-                                <HookRow
-                                    hook={hook}
-                                    triggerDefinition={triggerDefinition.find((t) => t.key === hook.trigger!.type)}
-                                    actionDefinition={actionDefinition.find((t) => t.key === hook.action!.type)}
-                                />
-                            </GreyRowBox>
-                        ))
+                        hooks.map((hook) =>
+                            hook && hook.id ? (
+                                <GreyRowBox
+                                    as={'a'}
+                                    key={hook.id}
+                                    css={tw`cursor-pointer mb-2 flex-wrap`}
+                                    onClick={(e: any) => {
+                                        e.preventDefault();
+                                        setVisible(true);
+                                        setSelectedHook(hook);
+                                    }}
+                                >
+                                    <HookRow
+                                        hook={hook}
+                                        triggerDefinition={triggerDefinition.find((t) => t.key === hook.trigger!.type)}
+                                        actionDefinition={actionDefinition.find((t) => t.key === hook.action!.type)}
+                                    />
+                                </GreyRowBox>
+                            ) : null
+                        )
                     )}
                     <Can action={'hooks.create'}>
                         <div css={tw`mt-8 flex justify-end`}>

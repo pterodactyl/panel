@@ -10,5 +10,5 @@ export default async (uuid: string, hook: Data): Promise<Hook> => {
         trigger: hook.trigger,
         action: hook.action,
     });
-    return rawDataToServerHook(data);
+    return rawDataToServerHook(data.attributes);
 };

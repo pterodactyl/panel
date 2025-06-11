@@ -15,6 +15,8 @@ import ModalContext from '@/context/ModalContext';
 import asModal from '@/hoc/asModal';
 import Select from '@/components/elements/Select';
 import Label from '@/components/elements/Label';
+import triggerHookExecution from '@/api/server/hooks/triggerHookExecution';
+import deleteHook from '@/api/server/hooks/deleteHook';
 //import Switch from '@/components/elements/Switch';
 
 interface Props {
@@ -38,6 +40,7 @@ const EditHookModal = ({ hook }: Props) => {
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null | undefined>(null);
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null | undefined>(null);
     const schedules = ServerContext.useStoreState((state) => state.schedules.data);
+    const removeHook = ServerContext.useStoreActions((actions) => actions.hooks!.removeHook);
 
     useEffect(() => {
         if (hook?.action) {
@@ -50,6 +53,10 @@ const EditHookModal = ({ hook }: Props) => {
             clearFlashes('hook:edit');
         };
     }, []);
+
+    const executeHook = (hook: number) => {
+        triggerHookExecution(uuid, hook);
+    };
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('hook:edit');
         console.log(values);
@@ -62,6 +69,7 @@ const EditHookModal = ({ hook }: Props) => {
         })
             .then((hook) => {
                 setSubmitting(false);
+                console.log('appending', hook);
                 appendHook(hook);
                 dismiss();
             })
@@ -268,13 +276,27 @@ const EditHookModal = ({ hook }: Props) => {
                     <div css={tw`mt-6 text-right`}>
                         {hook && (
                             <>
-                                <Button className={'w-full sm:w-auto md:mx-2 lg:mx-2'} disabled={isSubmitting}>
+                                <Button
+                                    className={'w-full sm:w-auto md:mx-2 lg:mx-2'}
+                                    disabled={isSubmitting}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        deleteHook(uuid, hook!.id!).then(() => {
+                                            dismiss();
+                                            removeHook(hook!.id!);
+                                        });
+                                    }}
+                                >
                                     Delete Hook
                                 </Button>
 
                                 <Button
                                     className={'w-full sm:w-auto md:mx-2 lg:mx-2 mt-2 md:mt-0 lg:mt-0'}
                                     disabled={isSubmitting}
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        executeHook(hook!.id!);
+                                    }}
                                 >
                                     Test Hook
                                 </Button>

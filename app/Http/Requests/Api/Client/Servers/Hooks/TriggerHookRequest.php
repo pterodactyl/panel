@@ -23,9 +23,6 @@ class TriggerHookRequest extends ClientApiRequest
      */
     public function rules(): array
     {
-        return [
-            'name' => 'required|string',
-            'enabled' => 'nullable|boolean'
-        ];
+        return [];
     }
 }

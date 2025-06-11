@@ -8,6 +8,7 @@ use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\DeleteHookRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\StoreHookRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\TriggerHookRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\UpdateHookRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Hooks\ViewHooksRequest;
 use Pterodactyl\Models\Hook;
@@ -42,10 +43,11 @@ class HookController extends ClientApiController
         ]);
     }
 
-    public function execute(ViewHooksRequest $request, Server $server) {
-        return response()->json(
-            Hook::where('server_id', $server->id)->get()
-        );
+    public function execute(TriggerHookRequest $request, Server $server, Hook $hook) {
+        $this->executionService->handle($hook);
+        return response()->json([
+            "status" => "success",
+        ]);
     }
 
     public function store(StoreHookRequest $request, Server $server) {

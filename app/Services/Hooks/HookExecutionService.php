@@ -3,7 +3,7 @@
 namespace Pterodactyl\Services\Hooks;
 
 
-use Illuminate\Console\Scheduling\Schedule;
+use Pterodactyl\Models\Schedule;
 use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Notification;
@@ -33,7 +33,7 @@ class HookExecutionService
             return;
         }
 
-        $config = json_decode($action->config, true);
+        $config = $action->config;
 
         switch ($action->type) {
             case 'run_schedule':
@@ -49,7 +49,6 @@ class HookExecutionService
                 }
 
                 $this->scheduleService->handle($schedule, true);
-
                 break;
             case 'discord_webhook':
                 $webhookUrl = $config[0] ?? null;
@@ -59,7 +58,7 @@ class HookExecutionService
                 }
                 try {
                     Http::post($webhookUrl, [
-
+                        "content" => $message,
                     ]);
                 } catch (RequestException $exception) {
                     throw new ActionExecutionException("Error sending request to discord webhook", []);
