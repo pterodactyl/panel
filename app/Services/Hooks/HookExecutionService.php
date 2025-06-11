@@ -41,6 +41,10 @@ class HookExecutionService
 
                 $this->scheduleService->handle($schedule, true);
                 break;
+            case 'discord_webhook':
+
+            case 'send_email':
+                
         }
     }
 }
