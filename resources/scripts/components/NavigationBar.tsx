@@ -1,8 +1,8 @@
 import * as React from 'react';
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCogs, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
@@ -32,10 +32,28 @@ const RightNavigation = styled.div`
     }
 `;
 
+const onTriggerNavButton = () => {
+    const sidebar = document.getElementById('sidebar');
+
+    if (sidebar) {
+        sidebar.classList.toggle('active-nav');
+    }
+};
+
 export default () => {
     const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
     const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
     const [isLoggingOut, setIsLoggingOut] = useState(false);
+    const location = useLocation();
+    const [showSidebar, setShowSidebar] = useState(false);
+
+    useEffect(() => {
+        if (location.pathname.startsWith('/server') || location.pathname.startsWith('/account')) {
+            setShowSidebar(true);
+            return;
+        }
+        setShowSidebar(false);
+    }, [location.pathname]);
 
     const onTriggerLogout = () => {
         setIsLoggingOut(true);
@@ -46,9 +64,17 @@ export default () => {
     };
 
     return (
-        <div className={'w-full bg-neutral-900 shadow-md overflow-x-auto'}>
+        <div className={'bg-neutral-700 shadow-md overflow-x-auto topbar'}>
             <SpinnerOverlay visible={isLoggingOut} />
             <div className={'mx-auto w-full flex items-center h-[3.5rem] max-w-[1200px]'}>
+                {showSidebar && (
+                    <FontAwesomeIcon
+                        icon={faBars}
+                        className='navbar-button'
+                        onClick={onTriggerNavButton}
+                    ></FontAwesomeIcon>
+                )}
+
                 <div id={'logo'} className={'flex-1'}>
                     <Link
                         to={'/'}
@@ -56,9 +82,10 @@ export default () => {
                             'text-2xl font-header px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'
                         }
                     >
-                        {name}
+                        <img src="/assets/img/logo.png" className="h-50 w-150" />
                     </Link>
                 </div>
+
                 <RightNavigation className={'flex h-full items-center justify-center'}>
                     <SearchContainer />
                     <Tooltip placement={'bottom'} content={'Dashboard'}>

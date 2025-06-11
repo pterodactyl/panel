@@ -12,8 +12,9 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
 {
     /**
      * Test that a startup variable can be edited successfully for a server.
+     *
+     * @dataProvider permissionsDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testStartupVariableCanBeUpdated(array $permissions)
     {
         /** @var \Pterodactyl\Models\Server $server */
@@ -46,8 +47,9 @@ class UpdateStartupVariableTest extends ClientApiIntegrationTestCase
     /**
      * Test that variables that are either not user_viewable, or not user_editable, cannot be
      * updated via this endpoint.
+     *
+     * @dataProvider permissionsDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testStartupVariableCannotBeUpdatedIfNotUserViewableOrEditable(array $permissions)
     {
         /** @var \Pterodactyl\Models\Server $server */

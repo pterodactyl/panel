@@ -8,8 +8,10 @@ class AddForeignKeysToEggMountTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         // Fix the columns having a different type than their relations.
         Schema::table('egg_mount', function (Blueprint $table) {
@@ -43,8 +45,10 @@ class AddForeignKeysToEggMountTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('egg_mount', function (Blueprint $table) {
             $table->dropForeign(['egg_id']);

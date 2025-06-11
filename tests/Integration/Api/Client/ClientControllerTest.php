@@ -101,8 +101,8 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
      */
     public function testServersAreFilteredUsingAllocationInformation()
     {
-        /** @var User $user */
-        /** @var Server $server */
+        /** @var \Pterodactyl\Models\User $user */
+        /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount();
         $server2 = $this->createServerModel(['user_id' => $user->id, 'node_id' => $server->node_id]);
 
@@ -203,7 +203,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
      */
     public function testPermissionsAreReturned()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -285,8 +285,9 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     /**
      * Test that no servers get returned if the user requests all admin level servers by using
      * ?type=admin or ?type=admin-all in the request.
+     *
+     * @dataProvider filterTypeDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('filterTypeDataProvider')]
     public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser(string $type)
     {
         /** @var \Pterodactyl\Models\User[] $users */
@@ -308,7 +309,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
      */
     public function testOnlyPrimaryAllocationIsReturnedToSubuser()
     {
-        /** @var Server $server */
+        /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
         $server->allocation->notes = 'Test notes';
         $server->allocation->save();

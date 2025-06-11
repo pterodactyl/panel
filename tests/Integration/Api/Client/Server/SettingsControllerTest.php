@@ -12,11 +12,12 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
 {
     /**
      * Test that the server's name can be changed.
+     *
+     * @dataProvider renamePermissionsDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('renamePermissionsDataProvider')]
     public function testServerNameCanBeChanged(array $permissions)
     {
-        /** @var Server $server */
+        /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
         $originalName = $server->name;
         $originalDescription = $server->description;
@@ -67,11 +68,12 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
     /**
      * Test that a server can be reinstalled. Honestly this test doesn't do much of anything other
      * than make sure the endpoint works since.
+     *
+     * @dataProvider reinstallPermissionsDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('reinstallPermissionsDataProvider')]
     public function testServerCanBeReinstalled(array $permissions)
     {
-        /** @var Server $server */
+        /** @var \Pterodactyl\Models\Server $server */
         [$user, $server] = $this->generateTestAccount($permissions);
         $this->assertTrue($server->isInstalled());
 

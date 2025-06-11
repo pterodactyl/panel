@@ -9,7 +9,7 @@ class DeleteServiceExecutableOption extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('services', function (Blueprint $table) {
             $table->renameColumn('file', 'folder');
@@ -22,7 +22,7 @@ class DeleteServiceExecutableOption extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('services', function (Blueprint $table) {
             $table->string('executable')->after('folder');

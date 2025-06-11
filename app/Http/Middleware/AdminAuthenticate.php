@@ -10,7 +10,7 @@ class AdminAuthenticate
     /**
      * Handle an incoming request.
      *
-     * @throws AccessDeniedHttpException
+     * @throws \Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException
      */
     public function handle(Request $request, \Closure $next): mixed
     {

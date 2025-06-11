@@ -9,8 +9,10 @@ class CreateBackupsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         $db = config('database.default');
         // There exists a backups plugin for the 0.7 version of the Panel. However, it didn't properly
@@ -47,8 +49,10 @@ class CreateBackupsTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('backups');
     }

@@ -8,7 +8,9 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class AllocationAuthorizationTest extends ClientApiIntegrationTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('methodDataProvider')]
+    /**
+     * @dataProvider methodDataProvider
+     */
     public function testAccessToAServersAllocationsIsRestrictedProperly(string $method, string $endpoint)
     {
         // The API $user is the owner of $server1.

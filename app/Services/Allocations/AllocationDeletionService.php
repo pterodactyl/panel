@@ -19,7 +19,7 @@ class AllocationDeletionService
      * Delete an allocation from the database only if it does not have a server
      * that is actively attached to it.
      *
-     * @throws ServerUsingAllocationException
+     * @throws \Pterodactyl\Exceptions\Service\Allocation\ServerUsingAllocationException
      */
     public function handle(Allocation $allocation): int
     {

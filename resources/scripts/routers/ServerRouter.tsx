@@ -11,7 +11,6 @@ import Spinner from '@/components/elements/Spinner';
 import { NotFound, ServerError } from '@/components/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
 import { useStoreState } from 'easy-peasy';
-import SubNavigation from '@/components/elements/SubNavigation';
 import InstallListener from '@/components/server/InstallListener';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,6 +19,8 @@ import { useLocation } from 'react-router';
 import ConflictStateRenderer from '@/components/server/ConflictStateRenderer';
 import PermissionRoute from '@/components/elements/PermissionRoute';
 import routes from '@/routers/routes';
+import Sidebar from '@/components/Sidebar';
+import { IconProp } from '@fortawesome/fontawesome-svg-core';
 
 export default () => {
     const match = useRouteMatch<{ id: string }>();
@@ -74,31 +75,38 @@ export default () => {
             ) : (
                 <>
                     <CSSTransition timeout={150} classNames={'fade'} appear in>
-                        <SubNavigation>
-                            <div>
-                                {routes.server
-                                    .filter((route) => !!route.name)
-                                    .map((route) =>
-                                        route.permission ? (
-                                            <Can key={route.path} action={route.permission} matchAny>
-                                                <NavLink to={to(route.path, true)} exact={route.exact}>
-                                                    {route.name}
-                                                </NavLink>
-                                            </Can>
-                                        ) : (
-                                            <NavLink key={route.path} to={to(route.path, true)} exact={route.exact}>
+                        <Sidebar>
+                            {routes.server
+                                .filter((route) => !!route.name)
+                                .map((route) =>
+                                    route.permission ? (
+                                        <Can key={route.path} action={route.permission} matchAny>
+                                            <NavLink to={to(route.path, true)} exact={route.exact}>
+                                                <div className='icon'>
+                                                    <FontAwesomeIcon icon={route.iconProp as IconProp} />
+                                                </div>
                                                 {route.name}
                                             </NavLink>
-                                        )
-                                    )}
-                                {rootAdmin && (
-                                    // eslint-disable-next-line react/jsx-no-target-blank
-                                    <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
-                                        <FontAwesomeIcon icon={faExternalLinkAlt} />
-                                    </a>
+                                        </Can>
+                                    ) : (
+                                        <NavLink key={route.path} to={to(route.path, true)} exact={route.exact}>
+                                            <div className='icon'>
+                                                <FontAwesomeIcon icon={route.iconProp as IconProp} />
+                                            </div>
+                                            {route.name}{' '}
+                                        </NavLink>
+                                    )
                                 )}
-                            </div>
-                        </SubNavigation>
+                            {rootAdmin && (
+                                // eslint-disable-next-line react/jsx-no-target-blank
+                                <a href={`/admin/servers/view/${serverId}`} target={'_blank'}>
+                                    <div className='icon'>
+                                        <FontAwesomeIcon icon={faExternalLinkAlt} />
+                                    </div>
+                                    Admin
+                                </a>
+                            )}
+                        </Sidebar>
                     </CSSTransition>
                     <InstallListener />
                     <TransferListener />

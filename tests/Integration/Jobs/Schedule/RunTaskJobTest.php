@@ -25,14 +25,14 @@ class RunTaskJobTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        /** @var Schedule $schedule */
+        /** @var \Pterodactyl\Models\Schedule $schedule */
         $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
             'is_processing' => true,
             'last_run_at' => null,
             'is_active' => false,
         ]);
-        /** @var Task $task */
+        /** @var \Pterodactyl\Models\Task $task */
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'is_queued' => true]);
 
         $job = new RunTaskJob($task);
@@ -52,9 +52,9 @@ class RunTaskJobTest extends IntegrationTestCase
     {
         $server = $this->createServerModel();
 
-        /** @var Schedule $schedule */
+        /** @var \Pterodactyl\Models\Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-        /** @var Task $task */
+        /** @var \Pterodactyl\Models\Task $task */
         $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => 'foobar']);
 
         $job = new RunTaskJob($task);
@@ -64,19 +64,21 @@ class RunTaskJobTest extends IntegrationTestCase
         Bus::dispatchSync($job);
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('isManualRunDataProvider')]
+    /**
+     * @dataProvider isManualRunDataProvider
+     */
     public function testJobIsExecuted(bool $isManualRun)
     {
         $server = $this->createServerModel();
 
-        /** @var Schedule $schedule */
+        /** @var \Pterodactyl\Models\Schedule $schedule */
         $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
             'is_active' => !$isManualRun,
             'is_processing' => true,
             'last_run_at' => null,
         ]);
-        /** @var Task $task */
+        /** @var \Pterodactyl\Models\Task $task */
         $task = Task::factory()->create([
             'schedule_id' => $schedule->id,
             'action' => Task::ACTION_POWER,
@@ -103,14 +105,16 @@ class RunTaskJobTest extends IntegrationTestCase
         $this->assertTrue(CarbonImmutable::now()->isSameAs(\DateTimeInterface::ATOM, $schedule->last_run_at));
     }
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('isManualRunDataProvider')]
+    /**
+     * @dataProvider isManualRunDataProvider
+     */
     public function testExceptionDuringRunIsHandledCorrectly(bool $continueOnFailure)
     {
         $server = $this->createServerModel();
 
-        /** @var Schedule $schedule */
+        /** @var \Pterodactyl\Models\Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-        /** @var Task $task */
+        /** @var \Pterodactyl\Models\Task $task */
         $task = Task::factory()->create([
             'schedule_id' => $schedule->id,
             'action' => Task::ACTION_POWER,

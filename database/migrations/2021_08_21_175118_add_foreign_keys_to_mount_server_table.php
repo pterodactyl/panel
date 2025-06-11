@@ -8,8 +8,10 @@ class AddForeignKeysToMountServerTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         // Fix the columns having a different type than their relations.
         Schema::table('mount_server', function (Blueprint $table) {
@@ -43,8 +45,10 @@ class AddForeignKeysToMountServerTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('mount_server', function (Blueprint $table) {
             $table->dropForeign(['server_id']);

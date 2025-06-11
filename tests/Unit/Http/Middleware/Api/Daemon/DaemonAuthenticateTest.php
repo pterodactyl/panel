@@ -64,8 +64,9 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     /**
      * Test that passing in an invalid node daemon secret will result in a bad request
      * exception being returned.
+     *
+     * @dataProvider badTokenDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('badTokenDataProvider')]
     public function testResponseShouldFailIfTokenFormatIsIncorrect(string $token)
     {
         $this->expectException(BadRequestHttpException::class);
@@ -84,7 +85,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
     {
         $this->expectException(AccessDeniedHttpException::class);
 
-        /** @var Node $model */
+        /** @var \Pterodactyl\Models\Node $model */
         $model = Node::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');
@@ -117,7 +118,7 @@ class DaemonAuthenticateTest extends MiddlewareTestCase
      */
     public function testSuccessfulMiddlewareProcess()
     {
-        /** @var Node $model */
+        /** @var \Pterodactyl\Models\Node $model */
         $model = Node::factory()->make();
 
         $this->request->expects('route->getName')->withNoArgs()->andReturn('random.route');

@@ -9,7 +9,7 @@ class UpdateNodeConfigTokensColumns extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('node_configuration_tokens', function (Blueprint $table) {
             $table->dropForeign(['node']);
@@ -23,7 +23,7 @@ class UpdateNodeConfigTokensColumns extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('node_configuration_tokens', function (Blueprint $table) {
             $table->dropForeign(['node_id']);

@@ -6,7 +6,6 @@ use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Pterodactyl\Models\ApiKey.
@@ -31,8 +30,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $r_eggs
  * @property int $r_database_hosts
  * @property int $r_server_databases
- * @property User $tokenable
- * @property User $user
+ * @property \Pterodactyl\Models\User $tokenable
+ * @property \Pterodactyl\Models\User $user
  *
  * @method static \Database\Factories\ApiKeyFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey newModelQuery()
@@ -62,9 +61,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class ApiKey extends Model
 {
-    /** @use HasFactory<\Database\Factories\ApiKeyFactory> */
-    use HasFactory;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

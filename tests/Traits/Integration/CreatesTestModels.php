@@ -27,25 +27,25 @@ trait CreatesTestModels
         }
 
         if (!isset($attributes['owner_id'])) {
-            /** @var User $user */
+            /** @var \Pterodactyl\Models\User $user */
             $user = User::factory()->create();
             $attributes['owner_id'] = $user->id;
         }
 
         if (!isset($attributes['node_id'])) {
             if (!isset($attributes['location_id'])) {
-                /** @var Location $location */
+                /** @var \Pterodactyl\Models\Location $location */
                 $location = Location::factory()->create();
                 $attributes['location_id'] = $location->id;
             }
 
-            /** @var Node $node */
+            /** @var \Pterodactyl\Models\Node $node */
             $node = Node::factory()->create(['location_id' => $attributes['location_id']]);
             $attributes['node_id'] = $node->id;
         }
 
         if (!isset($attributes['allocation_id'])) {
-            /** @var Allocation $allocation */
+            /** @var \Pterodactyl\Models\Allocation $allocation */
             $allocation = Allocation::factory()->create(['node_id' => $attributes['node_id']]);
             $attributes['allocation_id'] = $allocation->id;
         }
@@ -65,7 +65,7 @@ trait CreatesTestModels
 
         unset($attributes['user_id'], $attributes['location_id']);
 
-        /** @var Server $server */
+        /** @var \Pterodactyl\Models\Server $server */
         $server = Server::factory()->create($attributes);
 
         Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
@@ -85,7 +85,7 @@ trait CreatesTestModels
      */
     public function generateTestAccount(array $permissions = []): array
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         if (empty($permissions)) {
@@ -113,7 +113,7 @@ trait CreatesTestModels
         $model->uuid = Uuid::uuid4()->toString();
         $model->push();
 
-        /** @var Egg $model */
+        /** @var \Pterodactyl\Models\Egg $model */
         $model = $model->fresh();
 
         foreach ($egg->variables as $variable) {
@@ -129,7 +129,7 @@ trait CreatesTestModels
      */
     private function getBungeecordEgg(): Egg
     {
-        /** @var Egg $egg */
+        /** @var \Pterodactyl\Models\Egg $egg */
         $egg = Egg::query()->where('author', 'support@pterodactyl.io')->where('name', 'Bungeecord')->firstOrFail();
 
         return $egg;

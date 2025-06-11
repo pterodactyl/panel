@@ -5,7 +5,6 @@ namespace Pterodactyl\Models;
 use Illuminate\Container\Container;
 use Znck\Eloquent\Traits\BelongsToThrough;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
@@ -20,13 +19,11 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $hashid
- * @property Schedule $schedule
- * @property Server $server
+ * @property \Pterodactyl\Models\Schedule $schedule
+ * @property \Pterodactyl\Models\Server $server
  */
 class Task extends Model
 {
-    /** @use HasFactory<\Database\Factories\TaskFactory> */
-    use HasFactory;
     use BelongsToThrough;
 
     /**
@@ -96,6 +93,9 @@ class Task extends Model
         'continue_on_failure' => 'boolean',
     ];
 
+    /**
+     * {@inheritDoc}
+     */
     public function getRouteKeyName(): string
     {
         return $this->getKeyName();

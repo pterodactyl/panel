@@ -4,7 +4,6 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -19,8 +18,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  * @property bool $required
- * @property Egg $egg
- * @property ServerVariable $serverVariable
+ * @property \Pterodactyl\Models\Egg $egg
+ * @property \Pterodactyl\Models\ServerVariable $serverVariable
  *
  * The "server_value" variable is only present on the object if you've loaded this model
  * using the server relationship.
@@ -28,9 +27,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class EggVariable extends Model
 {
-    /** @use HasFactory<\Database\Factories\EggVariableFactory> */
-    use HasFactory;
-
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.

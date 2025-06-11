@@ -12,7 +12,9 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DatabaseAuthorizationTest extends ClientApiIntegrationTestCase
 {
-    #[\PHPUnit\Framework\Attributes\DataProvider('methodDataProvider')]
+    /**
+     * @dataProvider methodDataProvider
+     */
     public function testAccessToAServersDatabasesIsRestrictedProperly(string $method, string $endpoint)
     {
         // The API $user is the owner of $server1.

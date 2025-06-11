@@ -16,8 +16,9 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that a subuser can be created for a server.
+     *
+     * @dataProvider permissionsDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testSubuserCanBeCreated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
@@ -31,7 +32,7 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
 
         $response->assertOk();
 
-        /** @var User $subuser */
+        /** @var \Pterodactyl\Models\User $subuser */
         $subuser = User::query()->where('email', $email)->firstOrFail();
 
         $response->assertJsonPath('object', Subuser::RESOURCE_NAME);
@@ -110,7 +111,7 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        /** @var User $existing */
+        /** @var \Pterodactyl\Models\User $existing */
         $existing = User::factory()->create(['email' => $this->faker->email]);
 
         $response = $this->actingAs($user)->postJson($this->link($server) . '/users', [

@@ -69,8 +69,9 @@ class DatabaseManagementServiceTest extends IntegrationTestCase
 
     /**
      * Test that a missing or invalid database name format causes an exception to be thrown.
+     *
+     * @dataProvider invalidDataDataProvider
      */
-    #[\PHPUnit\Framework\Attributes\DataProvider('invalidDataDataProvider')]
     public function testEmptyDatabaseNameOrInvalidNameTriggersAnException(array $data)
     {
         $server = $this->createServerModel();

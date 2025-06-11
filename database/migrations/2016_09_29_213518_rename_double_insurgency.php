@@ -7,7 +7,7 @@ class RenameDoubleInsurgency extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         DB::transaction(function () {
             $model = DB::table('service_options')->where('parent_service', 2)->where('id', 3)->where('name', 'Insurgency')->first();
@@ -21,7 +21,7 @@ class RenameDoubleInsurgency extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
     }
 }

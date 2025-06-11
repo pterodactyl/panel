@@ -1,0 +1,192 @@
+/*
+This file is part of NookTheme.
+
+NookTheme is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+NookTheme is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with NookTheme. If not, see <https://www.gnu.org/licenses/>.
+*/
+
+:root {
+    --color-primary: #212121;
+    --color-secondary: #3a3636;
+    --color-tertiary: #17171b;
+    --color-quaternary: #757575;
+    --color-quinary: #9e9e9e;
+    --button-color: #212121;
+    --button-color-hover: #424242;
+    --button-color-active: #1090c7;
+    --button-color-disabled: #757575;
+    --button-color-text: #9e9e9e;
+    --text-main: #ffffff;
+    --text-secondary: #ffffff;
+    --text-tertiary: #ffffff;
+    --background-color: #212121;
+    --invert: 1000;
+    --sidebar-button-color: white;
+    --sidebar-button-color-hover: #0e0e1d;
+    --card-bg: #353535;
+}
+
+:root {
+    --sidebar-size: 220px;
+}
+.nav-bar {
+    display: none;
+}
+
+.sidebar {
+    position: fixed;
+    margin: 0;
+    padding: 0;
+    width: var(--sidebar-size);
+    background-color: var(--color-tertiary);
+    overflow: auto;
+    z-index: 9999;
+    height: calc(100vh - 3.5rem);
+}
+
+.content-container {
+    margin-left: calc(var(--sidebar-size) + 40px);
+    margin-right: 40px;
+}
+
+.content-dashboard {
+    max-width: 1200px;
+}
+
+.navbar-button {
+    display: none;
+}
+
+/* Sidebar links */
+.sidebar a {
+    display: block;
+    color: var(--sidebar-button-color);
+    padding: 16px;
+    text-decoration: none;
+}
+
+/* Active/current link */
+.sidebar .active > .icon {
+    background-color: var(--button-color-active);
+    color: white;
+}
+
+.sidebar > a {
+    display: flex;
+    text-align: center;
+    align-items: center;
+}
+
+.icon {
+    border-radius: 30%;
+    width: 45px;
+    height: 45px;
+    text-align: center;
+    background-size: 100px;
+    line-height: 30px;
+    background-color: var(--button-color);
+    color: var(--button-color-text);
+    margin-right: 10px;
+}
+
+.sidebar > a > div {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Links on mouse-over */
+.sidebar a:hover:not(.active) > .icon {
+    background-color: var(--sidebar-button-color-hover);
+}
+
+.icon {
+    transition: all 0.2s ease-in-out;
+}
+
+/* Page content. The value of the margin-left property should match the value of the sidebar's width property */
+div.content {
+    margin-left: var(--sidebar-size);
+    padding: 1px 16px;
+    height: 1000px;
+}
+
+@media screen and (max-width: 1150px) {
+    .sidebar {
+        position: fixed;
+        width: 100%;
+        left: -1150px;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .content-container {
+        margin-left: 40px;
+        margin-right: 40px;
+    }
+
+    div.content {
+        margin-left: 0;
+        padding: 1px 16px;
+        height: 1000px;
+    }
+
+    .active-nav {
+        left: 0;
+        margin-right: var(--sidebar-size);
+        width: var(--sidebar-size);
+        height: calc(100vh - 3.5rem);
+    }
+
+    .nav-bar {
+        display: flex;
+    }
+
+    .navbar-button {
+        display: inline;
+        font-size: 1.5rem;
+        margin-left: 1rem;
+        cursor: pointer;
+    }
+}
+
+.avatar {
+    margin: 10px;
+    width: 200px;
+    height: 200px;
+    border-radius: 5%;
+}
+
+.smallAvatar {
+    width: 70px;
+    border-radius: 50%;
+}
+
+.nav-bar > * {
+    margin: 10px;
+}
+
+.left {
+    margin-left: auto;
+}
+
+.openMenu {
+    font-size: 50px;
+}
+
+.openMenu:hover {
+    cursor: pointer;
+}
+
+.topbar {
+    position: sticky;
+    margin-top: 0 !important;
+    top: 0;
+    width: 100%;
+    z-index: 100;
+    height: 3.5rem;
+    overflow-y: hidden;
+}

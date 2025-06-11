@@ -11,12 +11,8 @@ trait EnvironmentWriterTrait
      * reasonably cause environment parsing issues. Those values are then wrapped
      * in quotes before being returned.
      */
-    public function escapeEnvironmentValue(?string $value): string
+    public function escapeEnvironmentValue(string $value): string
     {
-        if (is_null($value)) {
-            return '';
-        }
-
         if (!preg_match('/^\"(.*)\"$/', $value) && preg_match('/([^\w.\-+\/])+/', $value)) {
             return sprintf('"%s"', addslashes($value));
         }
@@ -27,7 +23,7 @@ trait EnvironmentWriterTrait
     /**
      * Update the .env file for the application using the passed in values.
      *
-     * @throws PterodactylException
+     * @throws \Pterodactyl\Exceptions\PterodactylException
      */
     public function writeToEnvironment(array $values = []): void
     {

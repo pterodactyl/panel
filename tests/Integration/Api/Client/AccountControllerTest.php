@@ -14,7 +14,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testAccountDetailsAreReturned()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->get('/api/client/account');
@@ -38,7 +38,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testEmailIsUpdated()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/email', [
@@ -57,7 +57,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testEmailIsNotUpdatedWhenPasswordIsInvalid()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/email', [
@@ -76,7 +76,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testEmailIsNotUpdatedWhenNotValid()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/email', [
@@ -103,7 +103,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testPasswordIsUpdated()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $initialHash = $user->password;
@@ -129,7 +129,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testPasswordIsNotUpdatedIfCurrentPasswordIsInvalid()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/password', [
@@ -172,7 +172,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testErrorIsReturnedIfPasswordIsNotConfirmed()
     {
-        /** @var User $user */
+        /** @var \Pterodactyl\Models\User $user */
         $user = User::factory()->create();
 
         $response = $this->actingAs($user)->putJson('/api/client/account/password', [

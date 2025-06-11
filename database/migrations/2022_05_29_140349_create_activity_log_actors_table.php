@@ -8,8 +8,10 @@ class CreateActivityLogActorsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('activity_log_subjects', function (Blueprint $table) {
             $table->id();
@@ -20,8 +22,10 @@ class CreateActivityLogActorsTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('activity_log_subjects');
     }

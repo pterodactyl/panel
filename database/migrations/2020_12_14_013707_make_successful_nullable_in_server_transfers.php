@@ -8,8 +8,10 @@ class MakeSuccessfulNullableInServerTransfers extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('server_transfers', function (Blueprint $table) {
             $table->boolean('successful')->nullable()->default(null)->change();
@@ -18,8 +20,10 @@ class MakeSuccessfulNullableInServerTransfers extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('server_transfers', function (Blueprint $table) {
             $table->boolean('successful')->default(0)->change();

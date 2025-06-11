@@ -9,7 +9,7 @@ class AddUniqueIdentifier extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('services', function (Blueprint $table) {
             $table->char('author', 36)->after('id');
@@ -19,7 +19,7 @@ class AddUniqueIdentifier extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('services', function (Blueprint $table) {
             $table->dropColumn('author');

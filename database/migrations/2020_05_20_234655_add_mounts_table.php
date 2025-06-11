@@ -8,8 +8,10 @@ class AddMountsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('mounts', function (Blueprint $table) {
             $table->increments('id')->unique();
@@ -39,8 +41,10 @@ class AddMountsTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('mount_node');
         Schema::dropIfExists('egg_mount');

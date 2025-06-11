@@ -8,16 +8,20 @@ class DropPermissionsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::dropIfExists('permissions');
     }
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::create('permissions', function (Blueprint $table) {
             $table->increments('id');
