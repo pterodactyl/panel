@@ -85,13 +85,34 @@ export default () => {
         }
     };
 
-    const handleDaemonErrorOutput = (line: string) =>
+    const handleDaemonErrorOutput = (line: string) => {
         terminal.writeln(
             TERMINAL_PREFIX + '\u001b[1m\u001b[41m' + line.replace(/(?:\r\n|\r|\n)$/im, '') + '\u001b[0m'
         );
+    };
 
-    const handlePowerChangeEvent = (state: string) =>
-        terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[34;1m' + state.toUpperCase() + '\u001b[36m...\u001b[0m');
+    const handlePowerChangeEvent = (state: string) => {
+        switch (state) {
+            case 'starting':
+                terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[32;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
+                break;
+            case 'on':
+                terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[32;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
+                break;
+            case 'offline':
+                terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[31;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
+                break;
+            case 'stopping':
+                terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[31;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
+                break;
+            case 'killed':
+                terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[31;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
+                break;
+            case 'off':
+                terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[31;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
+                break;
+        }
+    };
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
