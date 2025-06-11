@@ -1,3 +1,3 @@
 export default {
-    TERMINAL_PRELUDE: 'container@fbg~ ',
+    TERMINAL_PRELUDE: '[FBG]: ',
 };
