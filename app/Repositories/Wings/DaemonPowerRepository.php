@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Repositories\Wings;
 
+use Pterodactyl\Events\Server\Power;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
@@ -20,10 +21,12 @@ class DaemonPowerRepository extends DaemonRepository
         Assert::isInstanceOf($this->server, Server::class);
 
         try {
-            return $this->getHttpClient()->post(
+            $response = $this->getHttpClient()->post(
                 sprintf('/api/servers/%s/power', $this->server->uuid),
                 ['json' => ['action' => $action]]
             );
+            event(new Power($this->server, $action));
+            return $response;
         } catch (TransferException $exception) {
             throw new DaemonConnectionException($exception);
         }
