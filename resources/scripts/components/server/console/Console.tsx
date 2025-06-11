@@ -91,7 +91,8 @@ export default () => {
         );
 
     const handlePowerChangeEvent = (state: string) =>
-        terminal.writeln(TERMINAL_PREFIX + '\u001b[34mServer marked as \u001b[36m' + state.toUpperCase() + '\u001b[34m...\u001b[0m');
+        terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[34;1m' + state.toUpperCase() + '\u001b[36m...\u001b[0m');
+        // terminal.writeln(TERMINAL_PREFIX + '\u001b[34mServer marked as \u001b[36m' + state.toUpperCase() + '\u001b[34m...\u001b[0m');
 
     const handleCommandKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === 'ArrowUp') {
