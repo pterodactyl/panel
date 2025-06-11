@@ -38,6 +38,8 @@ const EditHookModal = ({ hook }: Props) => {
     const actionDefinitions = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     const [selectedTrigger, setSelectedTrigger] = useState<TriggerDefinition | null | undefined>(null);
     const [selectedAction, setSelectedAction] = useState<ActionDefinition | null | undefined>(null);
+    const schedules = ServerContext.useStoreState((state) => state.schedules.data);
+
     useEffect(() => {
         if (hook?.action) {
             setSelectedAction(actionDefinitions.find((t) => t.key === hook?.action.type));
@@ -215,6 +217,26 @@ const EditHookModal = ({ hook }: Props) => {
                             ) : action.input === 'text' ? (
                                 <div css={tw`mt-6`} key={key}>
                                     <Field name={`action.config.${key}`} label={action.label} description={''} />
+                                </div>
+                            ) : action.input === 'schedule' ? (
+                                <div css={tw`mt-6`} key={key}>
+                                    <Label htmlFor={action.label.toLowerCase().replace(' ', '')} isLight={false}>
+                                        Action
+                                    </Label>
+                                    <Select
+                                        name={`action.config.${key}`}
+                                        className={action.label.toLowerCase().replace(' ', '')}
+                                        onChange={(e) => {
+                                            setFieldValue(action.label.toLowerCase().replace(' ', ''), e.target.value);
+                                        }}
+                                    >
+                                        {schedules.map((schedule, key) => (
+                                            <option value={schedule.id} key={key}>
+                                                {schedule.name}
+                                            </option>
+                                        ))}
+                                    </Select>
+                                    <p className={'input-help mt-1 text-xs'}>{selectedAction.description}</p>
                                 </div>
                             ) : null
                         )}

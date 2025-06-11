@@ -26,8 +26,8 @@ class ActionDefinitionSeeder extends Seeder
                     [
                         'type' => 'integer',
                         'required' => true,
-                        'label' => 'Schedule ID',
-                        'input' => 'text',
+                        'label' => 'Schedule',
+                        'input' => 'schedule',
                     ],
                 ],
             ],

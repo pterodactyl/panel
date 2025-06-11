@@ -14,6 +14,7 @@ import tw from 'twin.macro';
 import GreyRowBox from '@/components/elements/GreyRowBox';
 import { Button } from '@/components/elements/button/index';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import getServerSchedules from '@/api/server/schedules/getServerSchedules';
 
 export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
@@ -26,7 +27,7 @@ export default () => {
     const setHooks = ServerContext.useStoreActions((actions) => actions.hooks.setHooks);
     const setTriggerDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.setTriggerDefinitions);
     const setActionDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.setActionDefinitions);
-
+    const setSchedules = ServerContext.useStoreActions((actions) => actions.schedules.setSchedules);
     const triggerDefinition = ServerContext.useStoreState((state) => state.hooks!.trigger_definitions);
     const actionDefinition = ServerContext.useStoreState((state) => state.hooks!.action_definitions);
     useEffect(() => {
@@ -38,6 +39,12 @@ export default () => {
                 console.error(error);
             })
             .then(() => setLoading(false));
+        getServerSchedules(uuid)
+            .then((schedules) => setSchedules(schedules))
+            .catch((error) => {
+                addError({ message: httpErrorToHuman(error), key: 'hooks' });
+                console.error(error);
+            });
         clearFlashes('trigger_definitions');
         getTriggerDefinitions(uuid)
             .then((triggerDefinitions) => setTriggerDefinitions(triggerDefinitions))
