@@ -26,8 +26,8 @@ class UpdateHookRequest extends ClientApiRequest
         return [
             'name' => 'required|string',
             'enabled' => 'nullable|boolean',
-            'triggers' => 'required|array',
-            'actions' => 'nullable|array',
+            'trigger' => 'required|array',
+            'action' => 'nullable|array',
         ];
     }
 }

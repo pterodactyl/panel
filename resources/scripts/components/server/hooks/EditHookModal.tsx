@@ -7,7 +7,6 @@ import createOrUpdateHook from '@/api/server/hooks/createOrUpdateHook';
 import { TriggerDefinition } from '@/api/server/hooks/getTriggerDefinitions';
 import { ActionDefinition } from '@/api/server/hooks/getActionDefinitions';
 import { ServerContext } from '@/state/server';
-import { httpErrorToHuman } from '@/api/http';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import useFlash from '@/plugins/useFlash';
 import tw from 'twin.macro';
@@ -53,6 +52,7 @@ const EditHookModal = ({ hook }: Props) => {
     }, []);
     const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
         clearFlashes('hook:edit');
+        console.log(values);
         createOrUpdateHook(uuid, {
             id: hook?.id,
             name: values.name,
@@ -66,10 +66,24 @@ const EditHookModal = ({ hook }: Props) => {
                 dismiss();
             })
             .catch((error) => {
-                console.error(error);
-
                 setSubmitting(false);
-                addError({ key: 'hook:edit', message: httpErrorToHuman(error) });
+
+                const response = error?.response?.data;
+
+                if (response?.errors) {
+                    const messages = Object.values(response.errors)
+                        .map((val) => (Array.isArray(val) ? val : [val]))
+                        .reduce((acc, val) => acc.concat(val), []);
+                    addError({
+                        key: 'hook:edit',
+                        message: messages.join(' '),
+                    });
+                } else {
+                    addError({
+                        key: 'hook:edit',
+                        message: response?.message || 'An error occurred.',
+                    });
+                }
             });
     };
 
@@ -85,7 +99,7 @@ const EditHookModal = ({ hook }: Props) => {
                 } as Values
             }
         >
-            {({ isSubmitting, setFieldValue }) => (
+            {({ isSubmitting, values, setFieldValue }) => (
                 <Form>
                     <h3 css={tw`text-2xl mb-6`}>{hook ? 'Edit hook' : 'Create new hook'}</h3>
                     <FlashMessageRender byKey={'hook:edit'} css={tw`mb-6`} />
@@ -203,9 +217,10 @@ const EditHookModal = ({ hook }: Props) => {
                                         name={`action.config.${key}`}
                                         className={action.label.toLowerCase().replace(' ', '')}
                                         onChange={(e) => {
-                                            setFieldValue(action.label.toLowerCase().replace(' ', ''), e.target.value);
+                                            setFieldValue(`action.config.${key}`, e.target.value);
                                         }}
                                     >
+                                        <option value=''>-- Select a Option --</option>
                                         {Object.entries(action.options || {}).map(([key, label]) => (
                                             <option value={key} key={key}>
                                                 {label}
@@ -221,17 +236,19 @@ const EditHookModal = ({ hook }: Props) => {
                             ) : action.input === 'schedule' ? (
                                 <div css={tw`mt-6`} key={key}>
                                     <Label htmlFor={action.label.toLowerCase().replace(' ', '')} isLight={false}>
-                                        Action
+                                        {action.label}
                                     </Label>
                                     <Select
                                         name={`action.config.${key}`}
+                                        value={values.action.config?.[key] || ''}
                                         className={action.label.toLowerCase().replace(' ', '')}
                                         onChange={(e) => {
-                                            setFieldValue(action.label.toLowerCase().replace(' ', ''), e.target.value);
+                                            setFieldValue(`action.config.${key}`, e.target.value);
                                         }}
                                     >
-                                        {schedules.map((schedule, key) => (
-                                            <option value={schedule.id} key={key}>
+                                        <option value=''>-- Select a Schedule --</option>
+                                        {schedules.map((schedule) => (
+                                            <option value={schedule?.id} key={schedule?.id}>
                                                 {schedule.name}
                                             </option>
                                         ))}

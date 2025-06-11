@@ -56,7 +56,7 @@ class HookUpdateService
             $trigger['trigger_definition_id'] = $definition->id;
             $hook->trigger()->create($trigger);
         } catch (ValidationException $e) {
-            $errors = array_merge($errors, $e->getErrors());
+            $errors = array_merge($errors, $e->validator->errors()->toArray());
         }
 
         if (!empty($errors)) {
@@ -85,7 +85,7 @@ class HookUpdateService
             $action['action_definition_id'] = $definition->id;
             $hook->action()->create($action);
         } catch (ValidationException $e) {
-            $errors = array_merge($errors, $e->getErrors());
+            $errors = array_merge($errors, $e->validator->errors()->toArray());
         }
         if (!empty($errors)) {
             throw new HookActionValidationException("One or more actions are invalid.", $errors);

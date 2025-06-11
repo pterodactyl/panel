@@ -50,6 +50,7 @@ class HookController extends ClientApiController
 
     public function store(StoreHookRequest $request, Server $server) {
         $validated = $request->validated();
+
         try {
             $hook = $this->creationService->handle($server, $validated);
             return $this->fractal->item(

@@ -21,12 +21,12 @@ export default ({
                 {hook.trigger && (
                     <p css={tw`text-xs text-neutral-300`}>
                         <span css={tw`font-medium`}>
-                            {triggerDefinition!.name ? triggerDefinition!.name : triggerType}
+                            {triggerDefinition?.name ? triggerDefinition?.name : triggerType}
                         </span>
                         {actionConfig && (
                             <>
                                 {' → '}
-                                <span>{actionDefinition!.name ?? `No Action`}</span>
+                                <span>{actionDefinition?.name ?? `No Action`}</span>
                             </>
                         )}
                     </p>

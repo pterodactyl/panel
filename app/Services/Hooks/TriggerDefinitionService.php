@@ -72,7 +72,7 @@ class TriggerDefinitionService
                     try {
                         preg_match($value, '');
                     } catch (\Throwable $e) {
-                        $fail("The {$attribute} field must be a valid regex expression.");
+                        $fail("The regex field must be a valid regex expression.");
                     }
                 };
             }

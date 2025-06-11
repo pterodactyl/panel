@@ -24,7 +24,7 @@ class ActionDefinitionSeeder extends Seeder
                 'description' => 'Execute a selected schedule for this server.',
                 'config_schema' => [
                     [
-                        'type' => 'integer',
+                        'type' => 'string',
                         'required' => true,
                         'label' => 'Schedule',
                         'input' => 'schedule',
