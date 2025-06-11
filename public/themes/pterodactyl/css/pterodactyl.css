@@ -504,12 +504,12 @@ body {
 }
 
 .skin-blue .wrapper, .skin-blue .main-sidebar, .skin-blue .left-side {
-    background-color: #181f27;
+    background-color: #121212;
     box-shadow: 0 4px 8px 0 rgba(0,0,0,.12), 0 2px 4px 0 rgba(0,0,0,.08);
 }
 
 .skin-blue .main-header .logo {
-    background-color: #1f2933;
+    background-color: #191919;
     color: #9aa5b1;
 }
 
@@ -527,21 +527,21 @@ body {
 }
 
 .skin-blue .main-header .navbar {
-    background-color: #1f2933;
+    background-color: #191919;
 }
 
 .skin-blue .main-header .navbar .sidebar-toggle:hover {
-    background-color: #1c252e;
+    background-color: #2f2f2f;
 }
 
 .skin-blue .main-header .logo:hover {
-    background-color: #1c252e;
+    background-color: #2f2f2f;
 }
 
 .main-footer {
-    background: #1f2933;
+    background: #191919;
     color: #9aa5b1;
-    border-top: 1px solid #1f2933;
+    border-top: 1px solid #191919;
 }
 
 .skin-blue .sidebar-menu>li.active>a {
@@ -565,7 +565,7 @@ body {
 }
 
 .content-wrapper {
-    background-color: #33404d;
+    background-color: #2f2f2f;
 }
 
 .btn-success {
@@ -588,28 +588,53 @@ body {
     border-color: #0345a0;
 }
 
+.skin-blue .sidebar-menu>li:hover>a,.skin-blue .sidebar-menu>li.active>a,.skin-blue .sidebar-menu>li.menu-open>a {
+    color:#fff;
+    background:#191919;
+}
+
 .box {
     box-shadow: 0 4px 8px 0 rgba(0,0,0,.12), 0 2px 4px 0 rgba(0,0,0,.08) !important;
-    background: #3f4d5a;
-    border-top: 3px solid #1f2933;
+    background: #121212;
+    border-top: 3px solid #191919;
 }
 
 .box-header {
     color: #cad1d8;
-    background: #1f2933;
+    background: #212121;
 }
 
 .box-header.with-border {
-    border-bottom: 1px solid #1f2933;
+    border-bottom: 1px solid #191919;
 }
 
 .box.box-default {
-    border-top-color: #1f2933;
+    border-top-color: #191919;
+}
+
+.box.box-primary {
+    border-top-color: #0071bd;
+    border-bottom-color: #2f2f2f;
+}
+
+.box.box-pink { 
+    border-top-color: #ff00aa;
+    border-bottom-color: #2f2f2f;
+}
+
+.box.box-success { 
+    border-top-color: #118f00;
+    border-bottom-color: #2f2f2f;
+}
+
+.box.box-danger {
+    border-top-color: #a00000;
+    border-bottom-color: #2f2f2f;
 }
 
 .box-footer {
     border-top: 1px solid #4d5b69;
-    background-color: #3f4d5a;
+    background-color: #121212;
 }
 .content-header>.breadcrumb>li>a {
     color: #cad1d8;
@@ -632,7 +657,7 @@ body {
 }
 
 .table-hover>tbody>tr:hover {
-    background-color: #33404d;
+    background-color: #212121;
 }
 
 a {
@@ -640,7 +665,7 @@ a {
 }
 
 .nav-tabs-custom {
-    background: #1f2933;
+    background: #191919;
 }
 
 .nav-tabs-custom>.nav-tabs>li.active {
@@ -649,9 +674,9 @@ a {
 
 .nav-tabs-custom>.nav-tabs>li.active>a {
     border-top-color: transparent;
-    border-left-color: #15161c;
-    border-right-color: #15161c;
-    background: #13181e;
+    border-left-color: #121212;
+    border-right-color: #121212;
+    background: #212121;
 }
 
 .nav-tabs-custom>.nav-tabs>li>a {
@@ -714,13 +739,13 @@ textarea.form-control {
 }
 
 code {
-    background-color: #515f6cbb;
+    background-color: #2f2f2f;
     color: #c3c3c3;
     border: 1px solid rgba(0, 0, 0, .25);
 }
 
 .btn-default {
-    background-color: #33404d;
+    background-color: #212121;
     color: #cad1d8;
     border-color: #606d7b;
 }
@@ -735,22 +760,22 @@ code {
 }
 
 .modal-body {
-    background: #3f4d5a;
+    background: #121212;
 }
 
 .modal-header {
-    background: #3f4d5a;
+    background: #121212;
     border-bottom-color: #4d5b69;
 }
 
 .modal-footer {
-    background: #3f4d5a;
+    background: #121212;
     border-top-color: #4d5b69;
 }
 
 @media (max-width: 991px) {
     .content-header>.breadcrumb {
-        background: #1f2933 !important;
+        background: #191919 !important;
     }
 }
 
@@ -791,7 +816,7 @@ a:hover {
 
 .form-control[disabled], .form-control[readonly],
 fieldset[disabled] .form-control {
-    background-color: #1f2933;
+    background-color: #191919;
     color: #cad1d8;
     cursor: not-allowed;
 }
@@ -825,11 +850,11 @@ fieldset[disabled] .form-control {
 }
 
 .bg-gray {
-    background-color: #33404d !important;
+    background-color: #212121 !important;
 }
 
 pre {
     color: #cad1d8;
     background-color: #515f6cbb;
-    border-color: #1f2933;
+    border-color: #191919;
 }

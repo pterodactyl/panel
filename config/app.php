@@ -15,13 +15,13 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | NookTheme Version
+    | FBGTheme Version
     |--------------------------------------------------------------------------
-    | This value is set when creating a NookTheme release. You should not
+    | This value is set when creating a FBGTheme release. You should not
     | change this value if you are not maintaining your own internal versions.
     */
 
-    'fork-version' => '1.3.2',
+    'fork-version' => '1.0',
 
     /*
     |--------------------------------------------------------------------------
