@@ -46,7 +46,7 @@ const terminalProps: ITerminalOptions = {
     disableStdin: true,
     cursorStyle: 'underline',
     allowTransparency: true,
-    fontSize: 12,
+    fontSize: 13,
     fontFamily: th('fontFamily.mono'),
     rows: 30,
     theme: theme,
@@ -96,7 +96,7 @@ export default () => {
             case 'starting':
                 terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[32;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
                 break;
-            case 'on':
+            case 'running':
                 terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[32;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
                 break;
             case 'offline':
@@ -110,6 +110,9 @@ export default () => {
                 break;
             case 'off':
                 terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[31;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
+                break;
+            default:
+                terminal.writeln(TERMINAL_PREFIX + '\u001b[36mServer marked as \u001b[32;1m\u001b[1m' + state.toUpperCase() + '\u001b[0m\u001b[36m...\u001b[0m');
                 break;
         }
     };
