@@ -1,14 +1,17 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Pterodactyl\Transformers\Api\Application;
 
 use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Hook;
 use League\Fractal\Resource\Collection;
+use Pterodactyl\Transformers\Api\Client\ActionTransformer;
+use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Pterodactyl\Transformers\Api\Client\TriggerTransformer;
 
 class HookTransformer extends BaseClientTransformer
 {
-    protected array $availableIncludes = ['trigger', 'action'];
+    protected array $availableIncludes = ['trigger'];
 
     protected array $defaultIncludes = ['trigger'];
 
@@ -47,17 +50,6 @@ class HookTransformer extends BaseClientTransformer
         return $this->item(
             $model->trigger,
             $this->makeTransformer(TriggerTransformer::class),
-            Hook::RESOURCE_NAME
-        );
-    }
-    public function includeAction(Hook $model): ?Item
-    {
-        if (!$model->action) {
-            return null;
-        }
-        return $this->item(
-            $model->action,
-            $this->makeTransformer(ActionTransformer::class),
             Hook::RESOURCE_NAME
         );
     }

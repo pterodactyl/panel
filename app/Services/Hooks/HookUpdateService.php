@@ -75,7 +75,7 @@ class HookUpdateService
         $definition = $this->actionDefinitionService->findByKey($action['type']);
 
         if ($definition === null) {
-            $errors[] = "Action '{$action['type']}' not found.";
+            $errors[] = "Action not found. " . json_encode($action);
             return;
         }
 
