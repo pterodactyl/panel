@@ -1,9 +1,9 @@
 import React from 'react';
 import { ServerContext } from '@/state/server';
 import ScreenBlock from '@/components/elements/ScreenBlock';
-import ServerInstallSvg from '@/assets/images/cogs.svg';
-import ServerErrorSvg from '@/assets/images/server_error.svg';
-import ServerRestoreSvg from '@/assets/images/server_restore.svg';
+import ServerInstallSvg from '@/assets/images/tablet.svg';
+import ServerErrorSvg from '@/assets/images/x.svg';
+import ServerRestoreSvg from '@/assets/images/circle.svg';
 
 export default () => {
     const status = ServerContext.useStoreState((state) => state.server.data?.status || null);
