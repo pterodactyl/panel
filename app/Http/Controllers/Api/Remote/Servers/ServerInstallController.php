@@ -12,13 +12,19 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Events\Server\Installed as ServerInstalled;
 use Illuminate\Contracts\Events\Dispatcher as EventDispatcher;
 use Pterodactyl\Http\Requests\Api\Remote\InstallationDataRequest;
+use Exception;
+use Illuminate\Support\Facades\DB;
+use Pterodactyl\Models\User;
+use Pterodactyl\Services\Minecraft\MinecraftSoftwareService;
+use Pterodactyl\Services\Servers\StartupModificationService;
 
 class ServerInstallController extends Controller
 {
     /**
      * ServerInstallController constructor.
      */
-    public function __construct(private ServerRepository $repository, private EventDispatcher $eventDispatcher)
+    public function __construct(private ServerRepository $repository, private EventDispatcher $eventDispatcher,
+        private MinecraftSoftwareService $minecraftSoftwareService, private StartupModificationService $startupModificationService)
     {
     }
 
@@ -57,6 +63,8 @@ class ServerInstallController extends Controller
             if ($request->boolean('reinstall')) {
                 $status = Server::STATUS_REINSTALL_FAILED;
             }
+        } else {
+            $this->updateServerImageFromMinecraftSoftware($server);
         }
 
         // Keep the server suspended if it's already suspended
@@ -76,5 +84,44 @@ class ServerInstallController extends Controller
         }
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
+    }
+
+    protected function updateServerImageFromMinecraftSoftware(Server $server) {
+        try {
+            if (DB::table('modpack_installations')
+                ->where('server_id', $server->id)
+                ->where('finalized', false)
+                ->exists()) {
+
+                    // Update Java Docker image depending on the detected Minecraft version.
+                    $this->minecraftSoftwareService->setServer($server);
+                    $buildInfo = $this->minecraftSoftwareService->getServerBuildInformation();
+
+                    if (isset($buildInfo['java'])) {
+                        $availableImages = $server->egg->docker_images;
+                        $newImage = $this->getImageForJavaVersion($availableImages, $buildInfo['java']) ?? 'ghcr.io/pterodactyl/yolks:java_' . $buildInfo['java'];
+                        $this->startupModificationService->setUserLevel(User::USER_LEVEL_ADMIN)->handle($server, [
+                            'docker_image' => $newImage,
+                        ]);
+                    }
+                    DB::table('modpack_installations')
+                        ->where('server_id', $server->id)
+                        ->where('finalized', false)
+                        ->update(['finalized' => true]);
+                }
+            } catch (Exception) {}
+    }
+
+    protected function getImageForJavaVersion(array $availableImages, string $javaVersion): ?string
+    {
+        if (function_exists('array_find')) {
+            return array_find($availableImages, fn ($v, $k) => str_ends_with($k, ' ' . $javaVersion));
+        }
+        foreach ($availableImages as $name => $avImage) {
+            if (str_ends_with($name, ' ' . $javaVersion)) {
+                return $avImage;
+            }
+        }
+        return null;
     }
 }

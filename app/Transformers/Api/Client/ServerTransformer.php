@@ -40,6 +40,7 @@ class ServerTransformer extends BaseClientTransformer
             'server_owner' => $user->id === $server->owner_id,
             'identifier' => $server->uuidShort,
             'internal_id' => $server->id,
+            'egg_id' => $server->egg_id,
             'uuid' => $server->uuid,
             'name' => $server->name,
             'node' => $server->node->name,

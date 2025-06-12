@@ -1,3 +1,3 @@
 export default {
-    TERMINAL_PREFIX: '[FBG]',
+    TERMINAL_PREFIX: '[FBG]:',
 };

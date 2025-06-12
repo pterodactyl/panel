@@ -1,0 +1,66 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-06-05T19:47:30+00:00",
+    "name": "Minecraft: Java Edition Modpack Installer",
+    "author": "modpack-installer@ric-rac.org",
+    "description": "Egg for installing Minecraft: Java Edition modpacks automatically.",
+    "features": null,
+    "docker_images": {
+        "Java 21": "ghcr.io\/pterodactyl\/yolks:java_21",
+        "Java 17": "ghcr.io\/pterodactyl\/yolks:java_17",
+        "Java 16": "ghcr.io\/pterodactyl\/yolks:java_16",
+        "Java 11": "ghcr.io\/pterodactyl\/yolks:java_11",
+        "Java 8": "ghcr.io\/pterodactyl\/yolks:java_8"
+    },
+    "file_denylist": [],
+    "startup": "java -Xms128M -XX:MaxRAMPercentage=95.0 -Dterminal.jline=false -Dterminal.ansi=true $( [[  ! -f unix_args.txt ]] && printf %s \"-jar server.jar\" || printf %s \"@unix_args.txt\" )",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! For help, type \"\r\n}",
+        "logs": "{}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/ash\r\n# Minecraft: Java Edition Modpack Installer Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\n# Create server directory\r\nmkdir -p \/mnt\/server\r\ncd \/mnt\/server || exit\r\n\r\n# Remove old modpack files if they exist.\r\nrm -rf libraries\r\nrm -rf mods\r\nrm -rf coremods\r\nrm -rf .fabric\r\nrm -f user_jvm_args.txt\r\nrm -f server.jar\r\n\r\n# Run the modpack installer tool\r\n\/bin\/minecraft_modpack_server_installer --provider \"${MODPACK_PROVIDER}\" --modpack-id \"${MODPACK_ID}\" --modpack-version-id \"${MODPACK_VERSION_ID}\" --directory \/mnt\/server",
+            "container": "git.ric-rac.org\/ric-rac\/minecraft_modpack_server_installer:latest",
+            "entrypoint": "ash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Modpack ID",
+            "description": "A unique identifier for the modpack to install.",
+            "env_variable": "MODPACK_ID",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Modpack Version ID",
+            "description": "A unique identifier for the modpack version to install.",
+            "env_variable": "MODPACK_VERSION_ID",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string",
+            "field_type": "text"
+        },
+        {
+            "name": "Modpack Provider",
+            "description": "The modpack provider to use for the installation.",
+            "env_variable": "MODPACK_PROVIDER",
+            "default_value": "",
+            "user_viewable": false,
+            "user_editable": false,
+            "rules": "required|string|in:atlauncher,curseforge,feedthebeast,modrinth,technic,voidswrath",
+            "field_type": "text"
+        }
+    ]
+}

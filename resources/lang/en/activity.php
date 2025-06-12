@@ -126,5 +126,8 @@ return [
             'update' => 'Updated the subuser permissions for :email',
             'delete' => 'Removed :email as a subuser',
         ],
+        'modpack' => [
+            'install' => 'Installed modpack ID :modpack_id, version :modpack_version_id from :provider',
+        ],
     ],
 ];

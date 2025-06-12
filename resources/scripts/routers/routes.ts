@@ -8,6 +8,7 @@ import BackupContainer from '@/components/server/backups/BackupContainer';
 import NetworkContainer from '@/components/server/network/NetworkContainer';
 import StartupContainer from '@/components/server/startup/StartupContainer';
 import FileManagerContainer from '@/components/server/files/FileManagerContainer';
+import ModpacksContainer from '@/components/server/minecraft-modpacks/ModpacksContainer';
 import SettingsContainer from '@/components/server/settings/SettingsContainer';
 import AccountOverviewContainer from '@/components/dashboard/AccountOverviewContainer';
 import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
@@ -29,6 +30,7 @@ import {
     faTerminal,
     faUser,
 } from '@fortawesome/free-solid-svg-icons';
+import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 // Each of the router files is already code split out appropriately — so
 // all of the items above will only be loaded in when that router is loaded.
@@ -50,6 +52,7 @@ interface RouteDefinition {
 
 interface ServerRouteDefinition extends RouteDefinition {
     permission: string | string[] | null;
+    eggIds?: number[];
 }
 
 interface Routes {
@@ -102,6 +105,14 @@ export default {
             name: 'Files',
             component: FileManagerContainer,
             iconProp: faFolder,
+        },
+        {
+            path: '/modpacks',
+            permission: 'file.*',
+            name: 'Modpacks',
+            component: ModpacksContainer,
+            eggIds: [4, 5, 16],
+            iconProp: faGamepad,
         },
         {
             path: '/files/:action(edit|new)',

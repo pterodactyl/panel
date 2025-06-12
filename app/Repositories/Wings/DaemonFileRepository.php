@@ -8,6 +8,7 @@ use Pterodactyl\Models\Server;
 use Psr\Http\Message\ResponseInterface;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
+use GuzzleHttp\Psr7\Query;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
@@ -43,6 +44,36 @@ class DaemonFileRepository extends DaemonRepository
         }
 
         return $response->getBody()->__toString();
+    }
+
+    /**
+     * Returns fingerprints of given files' content.
+     *
+     * @param  $path  string[]
+     * @param  $algorithm string should be `sha512` or `curseforge`
+     * @return array<string, string>
+     *
+     * @throws \GuzzleHttp\Exception\TransferException
+     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     */
+    public function getFingerprints(array $paths, string $algorithm = 'sha512'): array
+    {
+        Assert::isInstanceOf($this->server, Server::class);
+
+        try {
+            $response = $this->getHttpClient()->get(
+                sprintf('/api/servers/%s/files/fingerprints', $this->server->uuid),
+                [
+                    'query' => Query::build(['files' => $paths, 'algorithm' => $algorithm]),
+                ]
+            );
+        } catch (ClientException|TransferException $exception) {
+            throw new DaemonConnectionException($exception);
+        }
+
+        $response = $response->getBody()->__toString();
+
+        return json_decode($response, true)['fingerprints'];
     }
 
     /**

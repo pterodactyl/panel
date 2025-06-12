@@ -139,4 +139,10 @@ Route::group([
         Route::post('/reinstall', [Client\Servers\SettingsController::class, 'reinstall']);
         Route::put('/docker-image', [Client\Servers\SettingsController::class, 'dockerImage']);
     });
+
+    Route::group(['prefix' => '/minecraft-modpacks'], function () {
+        Route::get('/', [Client\Servers\ModpackController::class, 'index']);
+        Route::get('/versions', [Client\Servers\ModpackController::class, 'versions']);
+        Route::post('/install', [Client\Servers\ModpackController::class, 'install']);
+    });
 });
