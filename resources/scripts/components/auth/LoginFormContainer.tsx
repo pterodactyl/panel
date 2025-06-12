@@ -49,7 +49,7 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
             >
                 Frostbyt3 Gaming
             </a>
-            &copy; 2015 - {new Date().getFullYear()}&nbsp;
+            &copy; 2023 - {new Date().getFullYear()}&nbsp;
         </p>
     </Container>
 ));
