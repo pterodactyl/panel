@@ -5,8 +5,8 @@ import { faArrowLeft, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
 import styled, { keyframes } from 'styled-components/macro';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
-import NotFoundSvg from '@/assets/images/not_found.svg';
-import ServerErrorSvg from '@/assets/images/server_error.svg';
+import NotFoundSvg from '@/assets/images/x.svg';
+import ServerErrorSvg from '@/assets/images/x.svg';
 
 interface BaseProps {
     title: string;
@@ -44,7 +44,7 @@ const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProp
     <PageContentBlock>
         <div css={tw`flex justify-center`}>
             <div
-                css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-100 rounded-lg shadow-lg text-center relative`}
+                css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-900 rounded-lg shadow-lg text-center relative`}
             >
                 {(typeof onBack === 'function' || typeof onRetry === 'function') && (
                     <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
@@ -57,8 +57,8 @@ const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProp
                     </div>
                 )}
                 <img src={image} css={tw`w-2/3 h-auto select-none mx-auto`} />
-                <h2 css={tw`mt-10 text-neutral-900 font-bold text-4xl`}>{title}</h2>
-                <p css={tw`text-sm text-neutral-700 mt-2`}>{message}</p>
+                <h2 css={tw`mt-10 text-white font-bold text-4xl`}>{title}</h2>
+                <p css={tw`text-sm text-neutral-200 mt-2`}>{message}</p>
             </div>
         </div>
     </PageContentBlock>
