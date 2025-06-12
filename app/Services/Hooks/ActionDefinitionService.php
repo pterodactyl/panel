@@ -3,7 +3,6 @@
 namespace Pterodactyl\Services\Hooks;
 
 use Closure;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Models\ActionDefinition;

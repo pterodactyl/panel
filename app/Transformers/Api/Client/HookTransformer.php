@@ -10,7 +10,7 @@ class HookTransformer extends BaseClientTransformer
 {
     protected array $availableIncludes = ['trigger', 'action'];
 
-    protected array $defaultIncludes = ['trigger'];
+    protected array $defaultIncludes = ['trigger', 'action'];
 
     /**
      * {@inheritdoc}

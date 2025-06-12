@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Transformers\Api\Client;
+namespace Pterodactyl\Transformers\Api\Application;
 
 use Pterodactyl\Models\Hook;
 use Pterodactyl\Models\HookTrigger;
@@ -8,7 +8,7 @@ use Pterodactyl\Models\Task;
 use Pterodactyl\Models\Schedule;
 use League\Fractal\Resource\Collection;
 
-class TriggerTransformer extends BaseClientTransformer
+class TriggerTransformer extends BaseTransformer
 {
 
     /**
@@ -23,16 +23,14 @@ class TriggerTransformer extends BaseClientTransformer
     {
         return match ($type) {
             'console_match' => [
-                'webhook_url' => $config[0] ?? null,
-                'message' => $config[1] ?? null,
+                'pattern' => $config[0] ?? null,
             ],
             'power_changed' => [
-                'to' => $config[0] ?? null,
-                'subject' => $config[1] ?? null,
-                'message' => $config[2] ?? null,
+                'status' => $config[0] ?? null,
             ],
             'high_stats' => [
-                'schedule' => $config[0] ?? null,
+                'type' => $config[0] ?? null,
+                'threshold' => $config[1] ?? null,
             ],
             default => $config,
         };

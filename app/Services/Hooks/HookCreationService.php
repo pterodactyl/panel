@@ -3,11 +3,7 @@
 namespace Pterodactyl\Services\Hooks;
 
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Validator;
-use Illuminate\Validation\ValidationException;
 use Pterodactyl\Models\Hook;
-use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Server;
 
 class HookCreationService

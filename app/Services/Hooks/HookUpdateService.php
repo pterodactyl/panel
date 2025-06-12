@@ -3,7 +3,6 @@
 namespace Pterodactyl\Services\Hooks;
 
 use Illuminate\Support\Arr;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Exceptions\HookActionValidationException;
 use Pterodactyl\Exceptions\HookTriggerValidationException;

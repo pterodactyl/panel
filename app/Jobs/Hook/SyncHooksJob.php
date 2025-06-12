@@ -7,13 +7,14 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Pterodactyl\Models\Hook;
+use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\Server;
-use League\Fractal\Manager;
-use League\Fractal\Resource\Collection;
+use Pterodactyl\Services\Hooks\HookSyncService;
+
 class SyncHooksJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+
 
     /**
      * Create a new job instance.
@@ -23,8 +24,8 @@ class SyncHooksJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(HookSyncService $hookSyncService): void
     {
-
+        $hookSyncService->handle($this->server);
     }
 }

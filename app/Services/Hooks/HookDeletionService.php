@@ -3,8 +3,6 @@
 namespace Pterodactyl\Services\Hooks;
 
 use Pterodactyl\Models\Hook;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Repositories\Eloquent\HookRepository;
 
 class HookDeletionService

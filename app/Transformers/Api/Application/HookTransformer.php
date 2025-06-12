@@ -5,11 +5,9 @@ namespace Pterodactyl\Transformers\Api\Application;
 use League\Fractal\Resource\Item;
 use Pterodactyl\Models\Hook;
 use League\Fractal\Resource\Collection;
-use Pterodactyl\Transformers\Api\Client\ActionTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
-use Pterodactyl\Transformers\Api\Client\TriggerTransformer;
-
-class HookTransformer extends BaseClientTransformer
+use Pterodactyl\Transformers\Api\Application\TriggerTransformer;
+use Pterodactyl\Transformers\Api\Application\BaseTransformer;
+class HookTransformer extends BaseTransformer
 {
     protected array $availableIncludes = ['trigger'];
 

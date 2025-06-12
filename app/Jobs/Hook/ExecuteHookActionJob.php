@@ -32,7 +32,7 @@ class ExecuteHookActionJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(): void
+    public function handle(ProcessScheduleService $scheduleService): void
     {
         $action = $this->hook->action;
         if (!$action) {
@@ -53,7 +53,6 @@ class ExecuteHookActionJob implements ShouldQueue
                 if (!$schedule) {
                     throw new ActionExecutionException("Schedule ID is no longer valid", []);
                 }
-                $scheduleService = App::make(ProcessScheduleService::class);
                 $scheduleService->handle($schedule, true);
                 break;
             case 'discord_webhook':
