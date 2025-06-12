@@ -41,7 +41,6 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
             </div>
         </Form>
         <p css={tw`text-center text-neutral-100 text-xs mt-4`}>
-            &copy; 2015 - {new Date().getFullYear()}&nbsp;
             <a
                 rel={'noopener nofollow noreferrer'}
                 href={'https://www.frostbyt3gaming.com/'}
@@ -50,6 +49,7 @@ export default forwardRef<HTMLFormElement, Props>(({ title, ...props }, ref) => 
             >
                 Frostbyt3 Gaming
             </a>
+            &copy; 2015 - {new Date().getFullYear()}&nbsp;
         </p>
     </Container>
 ));
