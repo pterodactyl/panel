@@ -1,0 +1,1 @@
+cd /var/www/pterodactyl && git clone https://github.com/Frostbyt3/panel.git && cd panel && cp -r /var/www/pterodactyl && cd /var/www/pterodactyl && rm -rf panel && yarn build:production
