@@ -27,11 +27,6 @@ class SyncHooksJob implements ShouldQueue
      */
     public function handle(HookSyncService $hookSyncService): void
     {
-        try {
-            $hookSyncService->handle($this->server);
-        } catch (\Exception $exception) {
-            Log::info($exception->getMessage());
-            Log::info("Failed sending job?");
-        }
+        $hookSyncService->handle($this->server);
     }
 }
