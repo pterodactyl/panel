@@ -30,6 +30,7 @@ class HookRepository extends EloquentRepository implements HookRepositoryInterfa
             ->get($this->getColumns());
     }
 
+
     /**
      * Return a hook model with the associated  trigger and action relationships.
      *
