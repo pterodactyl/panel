@@ -3,6 +3,7 @@
 namespace Pterodactyl\Services\Hooks;
 
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use Pterodactyl\Exceptions\HookActionValidationException;
 use Pterodactyl\Exceptions\HookTriggerValidationException;
@@ -32,8 +33,9 @@ class HookUpdateService
     {
         $hook->update(Arr::only($params, ["name", "enabled"]));
         $this->updateTrigger($hook, $params['trigger'] ?? []);
-        $this->updateAction($hook, $params['action'] ?? []);
         SyncHooksJob::dispatch($hook->server);
+        $this->updateAction($hook, $params['action'] ?? []);
+
         return $hook;
     }
 

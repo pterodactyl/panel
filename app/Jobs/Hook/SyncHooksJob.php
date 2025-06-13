@@ -7,7 +7,6 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Services\Hooks\HookSyncService;
 
@@ -23,9 +22,11 @@ class SyncHooksJob implements ShouldQueue
 
     /**
      * Execute the job.
+     * @throws \Exception
      */
-    public function handle(HookSyncService $hookSyncService): void
+    public function handle(): void
     {
+        $hookSyncService = app(HookSyncService::class);
         $hookSyncService->handle($this->server);
     }
 }

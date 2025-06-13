@@ -27,6 +27,7 @@ class HookController extends ApplicationApiController
     public function index(Request $request, $uuid): array
     {
         $server = $this->repository->getByUuid($uuid);
+
         return $this->fractal->collection($this->hookRepository->findServerHooks($server->id))
             ->transformWith($this->getTransformer(HookTransformer::class))
             ->toArray();

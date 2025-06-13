@@ -3,24 +3,18 @@
 namespace Pterodactyl\Services\Hooks;
 
 
-use Pterodactyl\Jobs\Hook\ExecuteHookActionJob;
-use Pterodactyl\Models\Schedule;
-use Illuminate\Http\Client\RequestException;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Notification;
-use Pterodactyl\Exceptions\ActionExecutionException;
-use Pterodactyl\Exceptions\TriggerExecutionException;
-use Pterodactyl\Models\Hook;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Repositories\Eloquent\HookRepository;
-use Pterodactyl\Transformers\Api\Client\HookTransformer;
+use Pterodactyl\Transformers\Api\Application\HookTransformer;
+use Spatie\Fractalistic\Fractal;
 
 class HookSyncService
 {
     /**
      * HookExecutionService constructor.
      */
-    public function __construct(protected HookRepository $repository, protected \Pterodactyl\Transformers\Api\Application\HookTransformer $hookTransformer) {}
+    public function __construct(protected HookRepository $hookRepository, protected Fractal $fractal) {}
 
     /**
      * Execute a hook
@@ -28,10 +22,14 @@ class HookSyncService
      */
     public function handle(Server $server): void
     {
-        $hooks = $this->repository->findServerHooks($server->id);
 
-        $transformedHooks = $hooks->map(fn ($hook) => $this->hookTransformer->transform($hook))->toArray();
+        $transformedHooks = $this->fractal->collection($this->hookRepository->findServerHooks($server->id))
+            ->transformWith(app(HookTransformer::class))
+            ->parseIncludes('trigger')
+            ->toArray();
 
+        $node = $server->node;
+        //        Http::post("{$node->scheme}://{$node->fqdn}/api/servers/{$server->uuid}/hooks", $transformedHooks);
         Http::post("https://webhook.site/9e8bacf0-fc12-46d1-a80e-eacd7716e119", $transformedHooks);
     }
 }
