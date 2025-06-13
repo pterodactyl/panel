@@ -19,7 +19,7 @@ class StartupController extends ClientApiController
      */
     public function __construct(
         private StartupCommandService $startupCommandService,
-        private ServerVariableRepository $repository
+        private ServerVariableRepository $repository,
     ) {
         parent::__construct();
     }

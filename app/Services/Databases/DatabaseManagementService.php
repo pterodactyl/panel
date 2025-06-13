@@ -36,7 +36,7 @@ class DatabaseManagementService
         protected ConnectionInterface $connection,
         protected DynamicDatabaseConnection $dynamic,
         protected Encrypter $encrypter,
-        protected DatabaseRepository $repository
+        protected DatabaseRepository $repository,
     ) {
     }
 
@@ -66,8 +66,8 @@ class DatabaseManagementService
      * Create a new database that is linked to a specific host.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
-     * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
+     * @throws TooManyDatabasesException
+     * @throws DatabaseClientFeatureNotEnabledException
      */
     public function create(Server $server, array $data): Database
     {
@@ -153,7 +153,7 @@ class DatabaseManagementService
      * have the same name across multiple hosts, for the sake of keeping this logic easy to understand
      * and avoiding user confusion we will ignore the specific host and just look across all hosts.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\DuplicateDatabaseNameException
+     * @throws DuplicateDatabaseNameException
      * @throws \Throwable
      */
     protected function createModel(array $data): Database

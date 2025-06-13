@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * \Pterodactyl\Models\UserSSHKey.
@@ -16,7 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @property \Illuminate\Support\Carbon|null $deleted_at
- * @property \Pterodactyl\Models\User $user
+ * @property User $user
  *
  * @method static \Illuminate\Database\Eloquent\Builder|UserSSHKey newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|UserSSHKey newQuery()
@@ -39,6 +40,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class UserSSHKey extends Model
 {
+    /** @use HasFactory<\Database\Factories\UserSSHKeyFactory> */
+    use HasFactory;
     use SoftDeletes;
 
     public const RESOURCE_NAME = 'ssh_key';

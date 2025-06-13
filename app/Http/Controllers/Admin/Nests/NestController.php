@@ -24,7 +24,7 @@ class NestController extends Controller
         protected NestDeletionService $nestDeletionService,
         protected NestRepositoryInterface $repository,
         protected NestUpdateService $nestUpdateService,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 

@@ -8,6 +8,7 @@ use Znck\Eloquent\Traits\BelongsToThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
@@ -45,26 +46,26 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  * @property \Illuminate\Support\Carbon|null $installed_at
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLog[] $activity
  * @property int|null $activity_count
- * @property \Pterodactyl\Models\Allocation|null $allocation
+ * @property Allocation|null $allocation
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Allocation[] $allocations
  * @property int|null $allocations_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Backup[] $backups
  * @property int|null $backups_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Database[] $databases
  * @property int|null $databases_count
- * @property \Pterodactyl\Models\Egg|null $egg
+ * @property Egg|null $egg
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Mount[] $mounts
  * @property int|null $mounts_count
- * @property \Pterodactyl\Models\Nest $nest
- * @property \Pterodactyl\Models\Node $node
+ * @property Nest $nest
+ * @property Node $node
  * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property int|null $notifications_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Schedule[] $schedules
  * @property int|null $schedules_count
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Subuser[] $subusers
  * @property int|null $subusers_count
- * @property \Pterodactyl\Models\ServerTransfer|null $transfer
- * @property \Pterodactyl\Models\User $user
+ * @property ServerTransfer|null $transfer
+ * @property User $user
  * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\EggVariable[] $variables
  * @property int|null $variables_count
  *
@@ -104,6 +105,8 @@ use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
  */
 class Server extends Model
 {
+    /** @use HasFactory<\Database\Factories\ServerFactory> */
+    use HasFactory;
     use BelongsToThrough;
     use Notifiable;
 
@@ -348,16 +351,16 @@ class Server extends Model
      * exception is raised. This should be called whenever something needs to make
      * sure the server is not in a weird state that should block user access.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Server\ServerStateConflictException
+     * @throws ServerStateConflictException
      */
     public function validateCurrentState()
     {
         if (
-            $this->isSuspended() ||
-            $this->node->isUnderMaintenance() ||
-            !$this->isInstalled() ||
-            $this->status === self::STATUS_RESTORING_BACKUP ||
-            !is_null($this->transfer)
+            $this->isSuspended()
+            || $this->node->isUnderMaintenance()
+            || !$this->isInstalled()
+            || $this->status === self::STATUS_RESTORING_BACKUP
+            || !is_null($this->transfer)
         ) {
             throw new ServerStateConflictException($this);
         }
@@ -372,9 +375,9 @@ class Server extends Model
     public function validateTransferState()
     {
         if (
-            !$this->isInstalled() ||
-            $this->status === self::STATUS_RESTORING_BACKUP ||
-            !is_null($this->transfer)
+            !$this->isInstalled()
+            || $this->status === self::STATUS_RESTORING_BACKUP
+            || !is_null($this->transfer)
         ) {
             throw new ServerStateConflictException($this);
         }

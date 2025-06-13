@@ -14,7 +14,7 @@ class IndexController extends Controller
      */
     public function __construct(
         protected ServerRepositoryInterface $repository,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 

@@ -33,10 +33,10 @@ class VariableUpdateService
     /**
      * Update a specific egg variable.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\Variable\ReservedVariableNameException
+     * @throws ReservedVariableNameException
      */
     public function handle(EggVariable $variable, array $data): mixed
     {

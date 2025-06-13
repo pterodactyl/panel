@@ -16,14 +16,14 @@ class UserDeletionService
     public function __construct(
         protected UserRepositoryInterface $repository,
         protected ServerRepositoryInterface $serverRepository,
-        protected Translator $translator
+        protected Translator $translator,
     ) {
     }
 
     /**
      * Delete a user from the panel only if they have no servers attached to their account.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function handle(int|User $user): ?bool
     {

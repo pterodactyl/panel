@@ -9,7 +9,7 @@ class DeleteNodeConfigurationTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::dropIfExists('node_configuration_tokens');
     }
@@ -17,7 +17,7 @@ class DeleteNodeConfigurationTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::create('node_configuration_tokens', function (Blueprint $table) {
             $table->increments('id');

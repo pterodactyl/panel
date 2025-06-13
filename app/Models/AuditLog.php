@@ -58,7 +58,7 @@ class AuditLog extends Model
      */
     public static function instance(string $action, array $metadata, bool $isSystem = false): self
     {
-        /** @var \Illuminate\Http\Request $request */
+        /** @var Request $request */
         $request = Container::getInstance()->make('request');
         if ($isSystem || !$request instanceof Request) {
             $request = null;

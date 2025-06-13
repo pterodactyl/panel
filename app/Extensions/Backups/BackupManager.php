@@ -38,7 +38,7 @@ class BackupManager
     /**
      * Returns a backup adapter instance.
      */
-    public function adapter(string $name = null): FilesystemAdapter
+    public function adapter(?string $name = null): FilesystemAdapter
     {
         return $this->get($name ?: $this->getDefaultAdapter());
     }

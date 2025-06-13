@@ -16,14 +16,14 @@ class NodeDeletionService
     public function __construct(
         protected NodeRepositoryInterface $repository,
         protected ServerRepositoryInterface $serverRepository,
-        protected Translator $translator
+        protected Translator $translator,
     ) {
     }
 
     /**
      * Delete a node from the panel if no servers are attached to it.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws HasActiveServersException
      */
     public function handle(int|Node $node): int
     {

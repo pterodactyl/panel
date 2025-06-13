@@ -30,7 +30,7 @@ class BulkPowerActionCommand extends Command
     /**
      * Handle the bulk power request.
      *
-     * @throws \Illuminate\Validation\ValidationException
+     * @throws ValidationException
      */
     public function handle()
     {
