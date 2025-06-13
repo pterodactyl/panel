@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Repositories\Eloquent\HookRepository;
+use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Application\HookTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
@@ -14,6 +15,7 @@ class HookController extends ApplicationApiController
      */
     public function __construct(
         private HookRepository $hookRepository,
+        private ServerRepository $repository
     )
     {
         parent::__construct();
@@ -24,7 +26,8 @@ class HookController extends ApplicationApiController
      */
     public function index(Request $request, $uuid): array
     {
-        return $this->fractal->collection($this->hookRepository->findServerHooks($uuid))
+        $server = $this->repository->getByUuid($uuid);
+        return $this->fractal->collection($this->hookRepository->findServerHooks($server->id))
             ->transformWith($this->getTransformer(HookTransformer::class))
             ->toArray();
     }
