@@ -112,7 +112,7 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             to={'/auth/register'}
                             css={tw`text-xs text-neutral-100 tracking-wide no-underline uppercase hover:text-neutral-600`}
                         >
-                            Don&apos;t have an account? Register Now
+                            Register Now!
                         </Link>
                     </div>
                 </LoginFormContainer>
