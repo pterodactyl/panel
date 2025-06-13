@@ -32,6 +32,6 @@ class HookSyncService
 
         $transformedHooks = $hooks->map(fn ($hook) => $this->hookTransformer->transform($hook))->toArray();
 
-        Http::post("https://webhook.site/cf446486-0e95-4c79-97ce-3302a7aa6a28", $transformedHooks);
+        Http::post("https://webhook.site/9e8bacf0-fc12-46d1-a80e-eacd7716e119", $transformedHooks);
     }
 }

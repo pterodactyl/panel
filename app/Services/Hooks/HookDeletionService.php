@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Services\Hooks;
 
+use Pterodactyl\Jobs\Hook\SyncHooksJob;
 use Pterodactyl\Models\Hook;
 use Pterodactyl\Repositories\Eloquent\HookRepository;
 
@@ -19,5 +20,6 @@ class HookDeletionService
     public function handle(Hook $hook): void
     {
        $this->repository->delete($hook->id);
+       SyncHooksJob::dispatch($hook->server);
     }
 }
