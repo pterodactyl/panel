@@ -30,8 +30,9 @@ import {
     faPlayCircle,
     faTerminal,
     faUser,
+    faGamepad,
+    faIdCard,
 } from '@fortawesome/free-solid-svg-icons';
-import { faGamepad } from '@fortawesome/free-solid-svg-icons';
 
 // Each of the router files is already code split out appropriately — so
 // all of the items above will only be loaded in when that router is loaded.
@@ -73,6 +74,12 @@ export default {
             iconProp: faUser,
         },
         {
+	        path: '/personal',
+	        name: 'Personal Information',
+	        component: PersonalSettingsContainer,
+            iconProp: faIdCard,
+        },
+        {
             path: '/api',
             name: 'API Credentials',
             component: AccountApiContainer,
@@ -89,11 +96,6 @@ export default {
             name: 'Activity',
             component: ActivityLogContainer,
             iconProp: faPaperclip,
-        },
-        {
-	        path: '/personal',
-	        name: 'Personal Settings',
-	        component: PersonalSettingsContainer,
         },
     ],
     server: [

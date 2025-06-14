@@ -79,9 +79,9 @@ export default () => {
     };
 
     return (
-        <PageContentBlock title={'Personal Settings'}>
+        <PageContentBlock title={'Personal Information'}>
             <Container css={[ tw`mb-10 mt-10` ]}>
-                <ContentBox css={tw`mt-8 md:mt-0 md:ml-8`} title={'Update Personal Settings'} showFlashes={'account:personal'}>
+                <ContentBox css={tw`mt-8 md:mt-0 md:ml-8`} title={'Update Personal Information'} showFlashes={'account:personal'}>
                     {!data ?
                         <div css={tw`w-full`}>
                             <Spinner size={'large'} centered />
