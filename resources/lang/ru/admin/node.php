@@ -2,15 +2,15 @@
 
 return [
     'validation' => [
-        'fqdn_not_resolvable' => 'The FQDN or IP address provided does not resolve to a valid IP address.',
-        'fqdn_required_for_ssl' => 'A fully qualified domain name that resolves to a public IP address is required in order to use SSL for this node.',
+        'fqdn_not_resolvable' => 'Указанный FQDN или IP-адрес не разрешается в валидный IP-адрес.',
+        'fqdn_required_for_ssl' => 'Для использования SSL на этом узле требуется полностью квалифицированное доменное имя, которое разрешается в публичный IP-адрес.',
     ],
     'notices' => [
-        'allocations_added' => 'Allocations have successfully been added to this node.',
-        'node_deleted' => 'Node has been successfully removed from the panel.',
-        'location_required' => 'You must have at least one location configured before you can add a node to this panel.',
-        'node_created' => 'Successfully created new node. You can automatically configure the daemon on this machine by visiting the \'Configuration\' tab. <strong>Before you can add any servers you must first allocate at least one IP address and port.</strong>',
-        'node_updated' => 'Node information has been updated. If any daemon settings were changed you will need to reboot it for those changes to take effect.',
-        'unallocated_deleted' => 'Deleted all un-allocated ports for <code>:ip</code>.',
+        'allocations_added' => 'Выделения успешно добавлены к этому узлу.',
+        'node_deleted' => 'Узел успешно удалён из панели.',
+        'location_required' => 'Для добавления узла в эту панель необходимо настроить как минимум одно расположение.',
+        'node_created' => 'Новый узел успешно создан. Вы можете автоматически настроить демон на этой машине, перейдя на вкладку "Конфигурация". <strong>Перед добавлением серверов необходимо выделить хотя бы один IP-адрес и порт.</strong>',
+        'node_updated' => 'Информация об узле обновлена. Если были изменены настройки демона, необходимо перезагрузить его для применения изменений.',
+        'unallocated_deleted' => 'Удалены все нераспределённые порты для <code>:ip</code>.',
     ],
 ];
