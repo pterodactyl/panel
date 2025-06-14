@@ -7,7 +7,7 @@ export default () => {
         <ScreenBlock
             title={'Payment Cancelled'}
             image={NotFoundSvg}
-            message={'The payment was cancelled. If you want to make a payment again, go payments and start a transaction.'}
+            message={'Payment cancelled. To complete your purchase, go to Payments and begin a new transaction.'}
         />
     );
 };

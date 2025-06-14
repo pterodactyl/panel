@@ -98,12 +98,12 @@ export default () => {
                     <div css={tw`w-full pt-4`}>
                         <div css={tw`rounded shadow-md bg-neutral-700 mt-2`}>
                             <div css={tw`bg-neutral-900 rounded-t p-3 border-b border-black`}>
-                                Transaction Log - My Balance: {data.balance} {data.currency}
+                                Transaction Log - Available Funds: {data.balance} {data.currency}
                             </div>
                         </div>
 
                         {data.transactions.length < 1 ? (
-                            <p css={tw`text-center text-sm text-neutral-400 pt-4 pb-4`}>There are no transactions.</p>
+                            <p css={tw`text-center text-sm text-neutral-400 pt-4 pb-4`}>There are no transactions to display.</p>
                         ) : (
                             data.transactions.map((item, key) => (
                                 <GreyRowBox $hoverable={false} css={tw`flex-wrap md:flex-nowrap mt-2`} key={key}>
