@@ -48,8 +48,8 @@ export default () => {
                                 <TitledGreyBox title={item.name}>
                                     <div css={tw`px-1 py-2`}>
                                         <div css={tw`flex flex-wrap`}>
-                                            <div css={tw`w-auto flex justify-center`}>
-                                                <img css={tw`w-auto max-w-full`} src={item.image_url} />
+                                            <div css={tw`w-auto`}>
+                                                <img css={tw`block mx-auto w-auto max-w-full`} src={item.image_url} />
                                             </div>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
