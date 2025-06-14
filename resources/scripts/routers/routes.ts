@@ -117,8 +117,8 @@ export default {
             permission: 'file.*',
             name: 'Modpacks',
             component: ModpacksContainer,
-            eggIds: [1, 2, 5, 18], // Live Egg Ids
-            // eggIds: [4, 5, 16, 19], // Dev Egg Ids
+            // eggIds: [1, 2, 5, 18], // Live Egg Ids
+            eggIds: [4, 5, 16, 19], // Dev Egg Ids
             iconProp: faGamepad,
         },
         {
