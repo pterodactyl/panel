@@ -54,8 +54,8 @@ export default () => {
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                                             <p>Memory</p>
-                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`} title="Unlimited">
-                                                {item.memory === 0 ? '∞' : `${item.memory} MB`}
+                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
+                                                {item.memory === 0 ? <span title="No memory limit">Unlimited</span> : `${item.memory} MB`}
                                             </code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
@@ -64,8 +64,8 @@ export default () => {
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                                             <p>Disk</p>
-                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`} title="Unlimited">
-                                                {item.disk === 0 ? '∞' : `${item.disk} MB`}
+                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
+                                                {item.disk === 0 ? <span title='No disk space limit'>Unlimited</span> : `${item.disk} MB`}
                                             </code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm pb-3`}>
