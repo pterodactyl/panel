@@ -317,7 +317,7 @@ class PaymentController extends ClientApiController
         $amount = $request->input('amount', 10);
 
         if (is_null(Auth::user()->country) || is_null(Auth::user()->address) || is_null(Auth::user()->zip_code)) {
-            throw new DisplayException('Please complete your personal details before you upload balance.');
+            throw new DisplayException('Please complete your personal details before you adding funds.');
         }
 
         \Stripe\Stripe::setApiKey($this->settingsRepository->get('settings::shop::stripe::secret', ''));
