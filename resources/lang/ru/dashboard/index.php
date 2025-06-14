@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'search' => 'Search for servers...',
-    'no_matches' => 'There were no servers found matching the search criteria provided.',
-    'cpu_title' => 'CPU',
-    'memory_title' => 'Memory',
+    'search' => 'Поиск серверов...',
+    'no_matches' => 'Серверы, соответствующие критериям поиска, не найдены.',
+    'cpu_title' => 'ЦП (CPU)',
+    'memory_title' => 'Память (Memory)',
 ];
