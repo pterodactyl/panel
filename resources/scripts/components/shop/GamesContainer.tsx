@@ -54,11 +54,15 @@ export default () => {
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                                             <p>Memory</p>
-                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{item.memory} MB</code>
+                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`} title="Unlimited">
+                                                {item.memory === 0 ? '∞' : `${item.memory} MB`}
+                                            </code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                                             <p>Swap</p>
-                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{item.swap} MB</code>
+                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`} title="Unlimited">
+                                                {item.swap === 0 ? '∞' : `${item.memory} MB`}
+                                            </code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                                             <p>Disk</p>
