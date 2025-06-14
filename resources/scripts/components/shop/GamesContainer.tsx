@@ -45,11 +45,11 @@ export default () => {
                     <div css={tw`w-full flex flex-wrap`}>
                         {data.games.map((item, key) => (
                             <div css={tw`w-full md:w-4/12 md:pl-2 md:pr-2 pt-4`} key={key}>
-                                <TitledGreyBox title={item.name}>
+                                <TitledGreyBox css={tw`justify-center`} title={item.name}>
                                     <div css={tw`px-1 py-2`}>
                                         <div css={tw`flex flex-wrap`}>
                                             <div css={tw`w-auto`}>
-                                                <img css={'width: 100%; justify-content: center;'} src={item.image_url} />
+                                                <img css={'width: 100%;'} src={item.image_url} />
                                             </div>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
