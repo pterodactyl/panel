@@ -41,7 +41,7 @@ export default () => {
                                     <div css={tw`px-1 py-2`}>
                                         <div css={tw`flex flex-wrap`}>
                                             <div css={tw`w-auto`}>
-                                                <img css={'width: 100%; justify-content: center;'} src={item.image_url} />
+                                                <center><img css={'width: 100%;'} src={item.image_url} /></center>
                                             </div>
                                         </div>
                                         <div css={tw`text-center`}>
