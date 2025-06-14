@@ -1,59 +1,72 @@
 <?php
 
 return [
-    'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
+    'daemon_connection_failed' => 'Произошла ошибка при попытке соединения с демоном. Возвращён HTTP-код /:code. Ошибка была записана в журнал.',
+    
     'node' => [
-        'servers_attached' => 'A node must have no servers linked to it in order to be deleted.',
-        'daemon_off_config_updated' => 'The daemon configuration <strong>has been updated</strong>, however there was an error encountered while attempting to automatically update the configuration file on the Daemon. You will need to manually update the configuration file (config.yml) for the daemon to apply these changes.',
+        'servers_attached' => 'Узел нельзя удалить, пока к нему привязаны серверы.',
+        'daemon_off_config_updated' => 'Конфигурация демона <strong>была обновлена</strong>, но возникла ошибка при попытке автоматически изменить конфигурационный файл на демоне. Необходимо вручную обновить файл config.yml, чтобы изменения вступили в силу.',
     ],
+
     'allocations' => [
-        'server_using' => 'A server is currently assigned to this allocation. An allocation can only be deleted if no server is currently assigned.',
-        'too_many_ports' => 'Adding more than 1000 ports in a single range at once is not supported.',
-        'invalid_mapping' => 'The mapping provided for :port was invalid and could not be processed.',
-        'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
-        'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
+        'server_using' => 'Этот адрес сейчас используется сервером. Удаление возможно только при отсутствии привязки.',
+        'too_many_ports' => 'Нельзя добавить более 1000 портов за один диапазон.',
+        'invalid_mapping' => 'Указанное отображение для порта :port недопустимо и не может быть обработано.',
+        'cidr_out_of_range' => 'CIDR-маска должна быть от /25 до /32.',
+        'port_out_of_range' => 'Порты должны быть в диапазоне от 1025 до 65535.',
     ],
+
     'nest' => [
-        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
+        'delete_has_servers' => 'Нельзя удалить шаблон (Nest), пока к нему привязаны активные серверы.',
+
         'egg' => [
-            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
-            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
+            'delete_has_servers' => 'Нельзя удалить конфигурацию (Egg), пока к ней привязаны активные серверы.',
+            'invalid_copy_id' => 'Указанный Egg для копирования скрипта не существует или сам копирует другой скрипт.',
+            'must_be_child' => 'Настройка "Копировать из" должна указывать на подэлемент выбранного шаблона.',
+            'has_children' => 'Этот Egg является родителем для других. Сначала удалите дочерние элементы.',
         ],
+
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
-            'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
-            'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
+            'env_not_unique' => 'Переменная окружения :name должна быть уникальной для этого Egg.',
+            'reserved_name' => 'Имя переменной :name зарезервировано и не может быть использовано.',
+            'bad_validation_rule' => 'Правило проверки ":rule" недопустимо для этого приложения.',
         ],
+
         'importer' => [
-            'json_error' => 'There was an error while attempting to parse the JSON file: :error.',
-            'file_error' => 'The JSON file provided was not valid.',
-            'invalid_json_provided' => 'The JSON file provided is not in a format that can be recognized.',
+            'json_error' => 'Ошибка при попытке разобрать JSON-файл: :error.',
+            'file_error' => 'Указанный JSON-файл недопустим.',
+            'invalid_json_provided' => 'Формат JSON-файла не распознан.',
         ],
     ],
+
     'subusers' => [
-        'editing_self' => 'Editing your own subuser account is not permitted.',
-        'user_is_owner' => 'You cannot add the server owner as a subuser for this server.',
-        'subuser_exists' => 'A user with that email address is already assigned as a subuser for this server.',
+        'editing_self' => 'Нельзя редактировать самого себя как субпользователя.',
+        'user_is_owner' => 'Нельзя добавить владельца сервера как субпользователя.',
+        'subuser_exists' => 'Пользователь с таким email уже является субпользователем этого сервера.',
     ],
+
     'databases' => [
-        'delete_has_databases' => 'Cannot delete a database host server that has active databases linked to it.',
+        'delete_has_databases' => 'Нельзя удалить хост баз данных, пока к нему привязаны активные базы данных.',
     ],
+
     'tasks' => [
-        'chain_interval_too_long' => 'The maximum interval time for a chained task is 15 minutes.',
+        'chain_interval_too_long' => 'Максимальный интервал между связанными задачами — 15 минут.',
     ],
+
     'locations' => [
-        'has_nodes' => 'Cannot delete a location that has active nodes attached to it.',
+        'has_nodes' => 'Нельзя удалить локацию, пока к ней привязаны узлы.',
     ],
+
     'users' => [
-        'node_revocation_failed' => 'Failed to revoke keys on <a href=":link">Node #:node</a>. :error',
+        'node_revocation_failed' => 'Не удалось отозвать ключи на <a href=":link">Узле №:node</a>. :error',
     ],
+
     'deployment' => [
-        'no_viable_nodes' => 'No nodes satisfying the requirements specified for automatic deployment could be found.',
-        'no_viable_allocations' => 'No allocations satisfying the requirements for automatic deployment were found.',
+        'no_viable_nodes' => 'Не найдено узлов, подходящих под условия автоматического развёртывания.',
+        'no_viable_allocations' => 'Не найдено доступных аллокаций для автоматического развёртывания.',
     ],
+
     'api' => [
-        'resource_not_found' => 'The requested resource does not exist on this server.',
+        'resource_not_found' => 'Запрашиваемый ресурс не существует на этом сервере.',
     ],
 ];
