@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useEffect } from 'react';
 import { Link, NavLink, useLocation } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars, faCogs, faLayerGroup, faSignOutAlt, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
+import { faBars, faCogs, faLayerGroup, faSignOutAlt, faUserCircle, faShoppingCart } from '@fortawesome/free-solid-svg-icons';
 import { useStoreState } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
@@ -64,7 +64,7 @@ export default () => {
     };
 
     return (
-        <div className={'bg-neutral-700 shadow-md overflow-x-auto topbar'}>
+        <div className={'bg-neutral-700 shadow-md overflow-x-hidden topbar'}>
             <SpinnerOverlay visible={isLoggingOut} />
             <div className={'mx-auto w-full flex items-center h-[3.5rem] max-w-[1200px]'}>
                 {showSidebar && (

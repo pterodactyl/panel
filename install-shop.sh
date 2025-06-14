@@ -15,7 +15,6 @@ chown -R www-data:www-data /var/www/pterodactyl/* &&
 apt install php8.0-intl &&
 yarn install &&
 yarn add @stripe/stripe-js &&
-yarn run build:production &&
 yarn build:production &&
 php artisan optimize &&
 php artisan migrate &&
