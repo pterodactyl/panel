@@ -50,7 +50,7 @@ export default () => {
                 setModalVisible(false);
                 addFlash({
                     key: 'settings',
-                    message: "You've successfully renewed your server.",
+                    message: "You have successfully renewed your server.",
                     type: 'success',
                     title: 'Success',
                 });
@@ -79,7 +79,7 @@ export default () => {
                         visible={modalVisible}
                         onModalDismissed={() => setModalVisible(false)}
                     >
-                        Your server will be renewed with 1 month, are you sure you wish to continue?
+                        Your server will be renewed for 1 month, are you sure you wish to continue?
                     </ConfirmationModal>
                     <div css={tw`flex items-center justify-between mt-2 text-sm`}>
                         <p>Your Balance</p>
@@ -94,7 +94,7 @@ export default () => {
                         </div>
                     )}
                     <p css={tw`text-sm`}>
-                        Your server will be renew with 1 month and the price will be removed from your balance.
+                        Your server will be renewed for 1 month and the cost will be removed from your balance.
                         {data.price === 0 && (
                             <strong css={tw`font-medium`}>
                                 <br />

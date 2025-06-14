@@ -70,6 +70,11 @@ export default () => {
                             </div>
                         </CopyOnClick>
                     </TitledGreyBox>
+                    <Can action={'settings.renew'}>
+	                    <div css={tw`mt-6 md:mt-10`}>
+		                    <RenewServerBox />
+	                    </div>
+                    </Can>
                 </div>
                 <div css={tw`w-full mt-6 md:flex-1 md:mt-0`}>
                     <Can action={'settings.rename'}>
@@ -79,11 +84,6 @@ export default () => {
                     </Can>
                     <Can action={'settings.reinstall'}>
                         <ReinstallServerBox />
-                    </Can>
-                    <Can action={'settings.renew'}>
-	                    <div css={tw`mt-6 md:mt-10`}>
-		                    <RenewServerBox />
-	                    </div>
                     </Can>
                 </div>
             </div>

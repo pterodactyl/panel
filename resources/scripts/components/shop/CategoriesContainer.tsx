@@ -39,9 +39,9 @@ export default () => {
                             <div css={tw`w-full md:w-4/12 md:pl-2 md:pr-2 pt-4`} key={key}>
                                 <TitledGreyBox title={item.title}>
                                     <div css={tw`px-1 py-2`}>
-                                        <div css={tw`flex flex-wrap`}>
-                                            <div css={tw`w-auto justify-center`}>
-                                                <img css={'width: 100%;'} src={item.image_url} />
+                                        <div css={tw`flex flex-wrap justify-center`}>
+                                            <div css={tw`w-auto`}>
+                                                <img css={'width: 50%;'} src={item.image_url} />
                                             </div>
                                         </div>
                                         <div css={tw`text-center`}>
