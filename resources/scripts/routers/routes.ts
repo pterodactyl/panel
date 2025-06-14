@@ -75,7 +75,7 @@ export default {
         },
         {
 	        path: '/personal',
-	        name: 'Personal Information',
+	        name: 'Personal Info',
 	        component: PersonalSettingsContainer,
             iconProp: faIdCard,
         },
