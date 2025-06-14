@@ -84,7 +84,7 @@ export default () => {
                         You are about to renew your server for an additional month. Do you wish to continue?
                     </ConfirmationModal>
                     <div css={tw`flex items-center justify-between mt-2 text-sm`}>
-                        <p>My Balance</p>
+                        <p>Available Balance</p>
                         <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
                             {CurrencyLabel}{data.balance} {data.currency}
                         </code>

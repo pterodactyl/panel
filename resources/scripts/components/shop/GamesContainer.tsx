@@ -29,6 +29,7 @@ export default () => {
     const MemoryLabel = "Memory (RAM)";
     const SwapLabel = "Swap Memory (MB)";
     const StorageLabel = "Storage Capacity (MB)";
+    const DatabaseLabel = "Database Limit";
     const CurrencyLabel = "$";
 
     useEffect(() => {
@@ -74,12 +75,12 @@ export default () => {
                                             </code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm pb-3`}>
-                                            <p>Max Databases</p>
+                                            <p>{DatabaseLabel}</p>
                                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{item.database_limit}</code>
                                         </div>
                                         <hr />
                                         <div css={tw`flex items-center justify-between mt-2 text-sm pb-3`}>
-                                            <p>My Balance</p>
+                                            <p>Available Balance</p>
                                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
                                                 {CurrencyLabel}{data.balance} {data.currency}
                                             </code>
