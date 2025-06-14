@@ -111,6 +111,27 @@
                                 <i class="fa fa-users"></i> <span>Users</span>
                             </a>
                         </li>
+                        <li class="header">SHOP MANAGEMENT</li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.shop.settings') ?: 'active' }}">
+	                        <a href="{{ route('admin.shop.settings.payments') }}">
+		                        <i class="fa fa-cog"></i> <span>Settings</span>
+	                        </a>
+                        </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.shop.categories') || starts_with(Route::currentRouteName(), 'admin.shop.categories.games') ?: 'active' }}">
+	                        <a href="{{ route('admin.shop.categories') }}">
+		                        <i class="fa fa-list"></i> <span>Categories</span>
+	                        </a>
+                        </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.shop.categories.games') ?: 'active' }}">
+	                        <a href="{{ route('admin.shop.categories.games.categories') }}">
+		                        <i class="fa fa-play"></i> <span>Games</span>
+	                        </a>
+                        </li>
+                        <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.shop.payments') ?: 'active' }}">
+	                        <a href="{{ route('admin.shop.payments') }}">
+		                        <i class="fa fa-money"></i> <span>Payments</span>
+	                        </a>
+                        </li>
                         <li class="header">SERVICE MANAGEMENT</li>
                         <li class="{{ ! starts_with(Route::currentRouteName(), 'admin.mounts') ?: 'active' }}">
                             <a href="{{ route('admin.mounts') }}">

@@ -7,6 +7,7 @@ import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import NotFoundSvg from '@/assets/images/x.svg';
 import ServerErrorSvg from '@/assets/images/x.svg';
+import SuspendedBox from '@/components/server/settings/SuspendedBox';
 
 interface BaseProps {
     title: string;
@@ -62,6 +63,7 @@ const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProp
                 <p css={tw`text-sm text-neutral-200 mt-2`}>{message}</p>
             </div>
         </div>
+        <SuspendedBox />
     </PageContentBlock>
 );
 

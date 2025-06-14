@@ -125,6 +125,10 @@ class User extends Model implements
         'totp_authenticated_at',
         'gravatar',
         'root_admin',
+        'country',
+        'address',
+        'zip_code',
+        'credit',
     ];
 
     /**
@@ -168,6 +172,10 @@ class User extends Model implements
         'language' => 'string',
         'use_totp' => 'boolean',
         'totp_secret' => 'nullable|string',
+        'country' => 'nullable|string',
+        'address' => 'nullable|string',
+        'zip_code' => 'nullable|string',
+        'credit' => 'sometimes',
     ];
 
     /**

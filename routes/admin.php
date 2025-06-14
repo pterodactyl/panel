@@ -226,3 +226,58 @@ Route::group(['prefix' => 'nests'], function () {
     Route::delete('/egg/{egg:id}', [Admin\Nests\EggController::class, 'destroy']);
     Route::delete('/egg/{egg:id}/variables/{variable:id}', [Admin\Nests\EggVariableController::class, 'destroy']);
 });
+
+/*
+|--------------------------------------------------------------------------
+| Shop Controller Routes
+|--------------------------------------------------------------------------
+|
+| Endpoint: /admin/shop
+|
+*/
+Route::group(['prefix' => 'shop'], function () {
+    Route::group(['prefix' => 'settings'], function () {
+        Route::get('/payments', [Admin\Shop\SettingsController::class, 'payments'])->name('admin.shop.settings.payments');
+        Route::get('/servers', [Admin\Shop\SettingsController::class, 'servers'])->name('admin.shop.settings.servers');
+        Route::get('/tos', [Admin\Shop\SettingsController::class, 'tos'])->name('admin.shop.settings.tos');
+        Route::get('/invoice', [Admin\Shop\SettingsController::class, 'invoice'])->name('admin.shop.settings.invoice');
+
+        Route::post('/payments', [Admin\Shop\SettingsController::class, 'savePayments']);
+        Route::post('/settings', [Admin\Shop\SettingsController::class, 'saveSettings'])->name('admin.shop.settings');
+        Route::post('/servers', [Admin\Shop\SettingsController::class, 'saveServerSettings']);
+        Route::post('/tos', [Admin\Shop\SettingsController::class, 'saveTos']);
+        Route::post('/invoice', [Admin\Shop\SettingsController::class, 'saveInvoice']);
+    });
+
+    Route::group(['prefix' => 'payments'], function () {
+        Route::get('/', [Admin\Shop\PaymentsController::class, 'index'])->name('admin.shop.payments');
+        Route::get('/invoice/{id}', [Admin\Shop\PaymentsController::class, 'viewInvoice'])->name('admin.shop.payments.invoice');
+    });
+
+    Route::group(['prefix' => 'categories'], function () {
+        Route::get('/', [Admin\Shop\CategoriesController::class, 'index'])->name('admin.shop.categories');
+        Route::get('/games', [Admin\Shop\GamesController::class, 'index'])->name('admin.shop.categories.games.categories');
+
+        Route::post('/create', [Admin\Shop\CategoriesController::class, 'create'])->name('admin.shop.categories.create');
+
+        Route::delete('/delete', [Admin\Shop\CategoriesController::class, 'delete'])->name('admin.shop.categories.delete');
+
+        Route::group(['prefix' => '{id}'], function () {
+            Route::get('/edit', [Admin\Shop\CategoriesController::class, 'edit'])->name('admin.shop.categories.edit');
+
+            Route::post('/edit', [Admin\Shop\CategoriesController::class, 'update']);
+
+            Route::group(['prefix' => 'games'], function () {
+                Route::get('/', [Admin\Shop\GamesController::class, 'games'])->name('admin.shop.categories.games');
+                Route::get('/create', [Admin\Shop\GamesController::class, 'create'])->name('admin.shop.categories.games.create');
+                Route::get('/{gameId}/edit', [Admin\Shop\GamesController::class, 'edit'])->name('admin.shop.categories.games.edit');
+
+                Route::post('/create', [Admin\Shop\GamesController::class, 'store']);
+                Route::post('/{gameId}/edit', [Admin\Shop\GamesController::class, 'update']);
+                Route::post('/{gameId}/move', [Admin\Shop\GamesController::class, 'move'])->name('admin.shop.categories.games.move');
+
+                Route::delete('/delete', [Admin\Shop\GamesController::class, 'delete'])->name('admin.shop.categories.games.delete');
+            });
+        });
+    });
+});

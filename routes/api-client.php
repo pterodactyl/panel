@@ -19,6 +19,25 @@ use Pterodactyl\Http\Middleware\Api\Client\Server\AuthenticateServerAccess;
 Route::get('/', [Client\ClientController::class, 'index'])->name('api:client.index');
 Route::get('/permissions', [Client\ClientController::class, 'permissions']);
 
+/*
+|--------------------------------------------------------------------------
+| Shop API
+|--------------------------------------------------------------------------
+|
+| Endpoint: /api/shop
+|
+*/
+Route::group(['prefix' => '/shop'], function () {
+    Route::get('/categories', [Client\Shop\ShopController::class, 'categories']);
+    Route::get('/categories/{category}', [Client\Shop\ShopController::class, 'games']);
+    Route::get('/payment/invoice/{id}', [Client\Shop\PaymentController::class, 'viewInvoice']);
+    Route::post('/order', [Client\Shop\ShopController::class, 'order']);
+
+    Route::post('/payment', [Client\Shop\PaymentController::class, 'getDetails']);
+    Route::post('/payment/paypal', [Client\Shop\PaymentController::class, 'paypal']);
+    Route::post('/payment/stripe', [Client\Shop\PaymentController::class, 'stripe']);
+});
+
 Route::prefix('/account')->middleware(AccountSubject::class)->group(function () {
     Route::prefix('/')->withoutMiddleware(RequireTwoFactorAuthentication::class)->group(function () {
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
@@ -35,6 +54,9 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
     Route::get('/api-keys', [Client\ApiKeyController::class, 'index']);
     Route::post('/api-keys', [Client\ApiKeyController::class, 'store']);
     Route::delete('/api-keys/{identifier}', [Client\ApiKeyController::class, 'delete']);
+
+    Route::get('/personal', [Client\PersonalSettingsController::class, 'index']);
+    Route::post('/personal', [Client\PersonalSettingsController::class, 'savePersonalSettings']);
 
     Route::prefix('/ssh-keys')->group(function () {
         Route::get('/', [Client\SSHKeyController::class, 'index']);
@@ -138,6 +160,8 @@ Route::group([
         Route::post('/rename', [Client\Servers\SettingsController::class, 'rename']);
         Route::post('/reinstall', [Client\Servers\SettingsController::class, 'reinstall']);
         Route::put('/docker-image', [Client\Servers\SettingsController::class, 'dockerImage']);
+        Route::get('/renew', [Client\Servers\ServerRenewController::class, 'index'])->withoutMiddleware([AuthenticateServerAccess::class]);
+        Route::post('/renew', [Client\Servers\ServerRenewController::class, 'renew'])->withoutMiddleware([AuthenticateServerAccess::class]);
     });
 
     Route::group(['prefix' => '/minecraft-modpacks'], function () {

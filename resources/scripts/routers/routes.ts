@@ -15,6 +15,7 @@ import AccountApiContainer from '@/components/dashboard/AccountApiContainer';
 import AccountSSHContainer from '@/components/dashboard/ssh/AccountSSHContainer';
 import ActivityLogContainer from '@/components/dashboard/activity/ActivityLogContainer';
 import ServerActivityLogContainer from '@/components/server/ServerActivityLogContainer';
+import PersonalSettingsContainer from '@/components/dashboard/PersonalSettingsContainer';
 import {
     faBackward,
     faClock,
@@ -88,6 +89,11 @@ export default {
             name: 'Activity',
             component: ActivityLogContainer,
             iconProp: faPaperclip,
+        },
+        {
+	        path: '/personal',
+	        name: 'Personal Settings',
+	        component: PersonalSettingsContainer,
         },
     ],
     server: [

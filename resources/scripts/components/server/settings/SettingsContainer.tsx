@@ -12,6 +12,7 @@ import Label from '@/components/elements/Label';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import isEqual from 'react-fast-compare';
 import CopyOnClick from '@/components/elements/CopyOnClick';
+import RenewServerBox from '@/components/server/settings/RenewServerBox';
 import { ip } from '@/lib/formatters';
 import { Button } from '@/components/elements/button/index';
 
@@ -78,6 +79,11 @@ export default () => {
                     </Can>
                     <Can action={'settings.reinstall'}>
                         <ReinstallServerBox />
+                    </Can>
+                    <Can action={'settings.renew'}>
+	                    <div css={tw`mt-6 md:mt-10`}>
+		                    <RenewServerBox />
+	                    </div>
                     </Can>
                 </div>
             </div>

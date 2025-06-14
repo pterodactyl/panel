@@ -101,6 +101,42 @@
                 </div>
             </div>
         </div>
+        <div class="col-xs-12 col-md-6">
+	        <div class="box">
+		        <div class="box-header with-border">
+			        <h3 class="box-title">Personal Details</h3>
+		        </div>
+		        <div class="box-body">
+			        <div class="row">
+				        <div class="form-group col-xs-12 col-sm-6">
+					        <label for="country">Country</label>
+					        <select id="country" name="country" class="form-control">
+						        @foreach (\Pterodactyl\Classes\Countries::$countries as $countryCode => $country)
+							        <option value="{{ $countryCode }}" {{ $countryCode == $user->country ? 'selected' : '' }}>{{ $country }}</option>
+						        @endforeach
+					        </select>
+				        </div>
+				        <div class="form-group col-xs-12 col-sm-6">
+					        <label for="zip_code">Zip Code</label>
+					        <input type="text" id="zip_code" name="zip_code" class="form-control" value="{{ $user->zip_code }}">
+				        </div>
+			        </div>
+			        <div class="row">
+				        <div class="form-group col-xs-12 col-sm-8">
+					        <label for="address">Address</label>
+					        <input type="text" id="address" name="address" class="form-control" value="{{ $user->address }}">
+				        </div>
+				        <div class="form-group col-xs-12 col-sm-4">
+					        <label for="credit">Credit</label>
+					        <div class="input-group">
+						        <input type="text" id="credit" name="credit" class="form-control" value="{{ $user->credit }}">
+						        <span class="input-group-addon">{{ count(\Illuminate\Support\Facades\DB::table('settings')->where('key', '=', 'settings::shop::currency')->get()) < 1 ? 'USD' : \Illuminate\Support\Facades\DB::table('settings')->where('key', '=', 'settings::shop::currency')->get()[0]->value }}</span>
+					        </div>
+				        </div>
+			        </div>
+		        </div>
+	        </div>
+        </div>
     </form>
     <div class="col-xs-12">
         <div class="box box-danger">
@@ -118,6 +154,43 @@
                 </form>
             </div>
         </div>
+    </div>
+    <div class="col-xs-12">
+	    <div class="box box-info">
+		    <div class="box-header with-border">
+			    <h3 class="box-title">Associated Servers</h3>
+		    </div>
+		    <div class="box-body table-responsive no-padding">
+    			<table class="table table-hover">
+				    <thead>
+					    <tr>
+						    <th>#</th>
+						    <th>Name</th>
+						    <th>Node</th>
+						    <th>Creation Date</th>
+						    <th>Expiration Date</th>
+					    </tr>
+				    </thead>
+				    <tbody>
+					    @foreach (\Illuminate\Support\Facades\DB::table('servers')->where('owner_id', '=', $user->id)->leftJoin('nodes', 'nodes.id', '=', 'servers.node_id')->select(['servers.*', 'nodes.name as nodeName'])->get() as $server)
+						    <tr>
+							    <td>{{ $server->id }}</td>
+							    <td><a href="{{ route('admin.servers.view', $server->id) }}" target="_blank">{{ $server->name }}</a></td>
+							    <td><a href="{{ route('admin.nodes.view', $server->node_id) }}" target="_blank">{{ $server->nodeName }}</a></td>
+							    <td><code>{{ $server->created_at }}</code></td>
+							    <td>
+								    @if (is_null($server->expired_at))
+									    <span class="label label-warning"><i class="fa fa-remove"></i></span>
+								    @else
+									    <code>{{ $server->expired_at }}</code>
+								    @endif
+							    </td>
+						    </tr>
+					    @endforeach
+				    </tbody>
+			    </table>
+		    </div>
+	    </div>
     </div>
 </div>
 @endsection

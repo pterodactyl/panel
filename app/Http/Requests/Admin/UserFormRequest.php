@@ -23,6 +23,10 @@ class UserFormRequest extends AdminFormRequest
             'password',
             'language',
             'root_admin',
+            'country',
+            'address',
+            'zip_code',
+            'credit',
         ])->toArray();
     }
 }

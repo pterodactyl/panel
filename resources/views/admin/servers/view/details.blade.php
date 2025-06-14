@@ -35,6 +35,11 @@
                         <p class="text-muted small">Leave empty to not assign an external identifier for this server. The external ID should be unique to this server and not be in use by any other servers.</p>
                     </div>
                     <div class="form-group">
+	                    <label for="expired_at" class="control-label">Expiration Date</label>
+	                    <input type="text" name="expired_at" id="expired_at" value="{{ old('expired_at', $server->expired_at) }}" class="form-control" />
+	                    <p class="text-muted small">Leave empty to not remove the server when it'll be expired.</p>
+                    </div>
+                    <div class="form-group">
                         <label for="pUserId" class="control-label">Server Owner <span class="field-required"></span></label>
                         <select name="owner_id" class="form-control" id="pUserId">
                             <option value="{{ $server->owner_id }}" selected>{{ $server->user->email }}</option>
