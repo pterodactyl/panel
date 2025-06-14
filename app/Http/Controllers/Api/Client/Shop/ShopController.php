@@ -64,7 +64,7 @@ class ShopController extends ClientApiController
     {
         $category = DB::table('game_category')->where('hide', '=', 0)->where('short_url', '=', trim(strip_tags($shortUrl)))->get();
         if (count($category) < 1) {
-            throw new DisplayException('Category not found.');
+            throw new DisplayException('Server Category not found. Please refresh or contact support.');
         }
 
         return [
@@ -91,29 +91,29 @@ class ShopController extends ClientApiController
     {
         $game = DB::table('games')->where('id', '=', (int) $request->input('gameId', 0))->where('hide', '=', 0)->get();
         if (count($game) < 1) {
-            throw new DisplayException('Game not found.');
+            throw new DisplayException('The requested game could not be found. Please refresh or contact support.');
         }
 
         if (Auth::user()->credit < $game[0]->price) {
-            throw new DisplayException('You don\'t have enought balance to renew this server.');
+            throw new DisplayException('Your current balance is insufficient to renew this server.');
         }
 
         $node_ids = explode(',', $game[0]->node_ids);
         $node = DB::table('nodes')->where('id', '=', $node_ids[array_rand($node_ids)])->get();
         if (count($node) < 1) {
-            throw new DisplayException('There are no available space in our servers.');
+            throw new DisplayException('All of our servers are currently at full capacity. Please try again later.');
         }
 
         $allocations = json_decode(json_encode(DB::table('allocations')->where('node_id', '=', $node[0]->id)->whereNull('server_id')->get()), true);
         if (count($allocations) < 1) {
-            throw new DisplayException('There are no available allocations.');
+            throw new DisplayException('No IP/port allocations are currently available.');
         }
 
         $allocation = $allocations[array_rand($allocations)];
 
         $egg = DB::table('eggs')->where('id', '=', $game[0]->egg_id)->get();
         if (count($egg) < 1) {
-            throw new DisplayException('Egg not found.');
+            throw new DisplayException('The requested game configuration could not be found. Please refresh or contact support.');
         }
 
         $env = DB::table('egg_variables')->where('egg_id', '=', $egg[0]->id)->get();
@@ -149,17 +149,17 @@ class ShopController extends ClientApiController
                 'start_on_completion' => true,
             ]);
         } catch (ValidationException $e) {
-            throw new DisplayException('Failed to deploy the new server. Please try again...');
+            throw new DisplayException('Failed to deploy the server. If the issue persists, please contact support.');
         } catch (NoViableAllocationException $e) {
-            throw new DisplayException('Failed to deploy the new server. Please try again...');
+            throw new DisplayException('Failed to deploy the server. If the issue persists, please contact support.');
         } catch (NoViableNodeException $e) {
-            throw new DisplayException('Failed to deploy the new server. Please try again...');
+            throw new DisplayException('Failed to deploy the server. If the issue persists, please contact support.');
         } catch (DisplayException $e) {
-            throw new DisplayException('Failed to deploy the new server. Please try again...');
+            throw new DisplayException('Failed to deploy the server. If the issue persists, please contact support.');
         } catch (RecordNotFoundException $e) {
-            throw new DisplayException('Failed to deploy the new server. Please try again...');
+            throw new DisplayException('Failed to deploy the server. If the issue persists, please contact support.');
         } catch (\Throwable $e) {
-            throw new DisplayException('Failed to deploy the new server. Please try again...');
+            throw new DisplayException('Failed to deploy the server. If the issue persists, please contact support.');
         }
 
         DB::table('servers')->where('id', '=', $newServer->id)->update([

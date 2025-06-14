@@ -68,7 +68,7 @@ class PaymentController extends ClientApiController
             $getPayment = json_decode($payment->getPayment($sessionId), true);
             if ($getPayment['status'] != 'success') {
                 $paymentState = 'error';
-                $paymentMessage = 'Payment not found.';
+                $paymentMessage = 'Unable to verify payment. Please refresh or contact support.';
                 goto showView;
             }
 
@@ -76,7 +76,7 @@ class PaymentController extends ClientApiController
             $executePayment = json_decode($payment->execute());
             if ($executePayment->status != 'success') {
                 $paymentState = 'error';
-                $paymentMessage = 'Failed to verify the payment. Please contact us!';
+                $paymentMessage = 'Unable to verify payment. Please refresh or contact support.';
                 goto showView;
             }
 
@@ -144,14 +144,14 @@ class PaymentController extends ClientApiController
             }
 
             $paymentState = 'success';
-            $paymentMessage = 'You\'ve successfully upload balance to your account.';
+            $paymentMessage = 'Funds added! Your balance has been updated.';
         }
 
         if ($provider == 'stripe') {
             $paymentData = DB::table('payments')->where('payment_type', '=', 'stripe')->where('session_id', '=', $sessionId)->where('completed', '=', 0)->get();
             if (count($paymentData) < 1) {
                 $paymentState = 'error';
-                $paymentMessage = 'Payment not found.';
+                $paymentMessage = 'Unable to verify payment. Please refresh or contact support.';
                 goto showView;
             }
 
@@ -161,7 +161,7 @@ class PaymentController extends ClientApiController
                 $checkoutSession = \Stripe\Checkout\Session::retrieve($sessionId);
             } catch (ApiErrorException $e) {
                 $paymentState = 'error';
-                $paymentMessage = 'Payment not found.';
+                $paymentMessage = 'Unable to verify payment. Please refresh or contact support.';
                 goto showView;
             }
 
@@ -169,7 +169,7 @@ class PaymentController extends ClientApiController
                 $intent = \Stripe\PaymentIntent::retrieve($checkoutSession->payment_intent);
             } catch (ApiErrorException $e) {
                 $paymentState = 'error';
-                $paymentMessage = 'Failed to verify the payment. Please contact us!';
+                $paymentMessage = 'Unable to verify payment. Please refresh or contact support.';
                 goto showView;
             }
 
@@ -228,7 +228,7 @@ class PaymentController extends ClientApiController
             ]);
 
             $paymentState = 'success';
-            $paymentMessage = 'You\'ve successfully upload balance to your account.';
+            $paymentMessage = 'Funds added! Your balance has been updated.';
         }
 
         showView:
@@ -267,7 +267,7 @@ class PaymentController extends ClientApiController
         $amount = $request->input('amount', 10);
 
         if (is_null(Auth::user()->country) || is_null(Auth::user()->address) || is_null(Auth::user()->zip_code)) {
-            throw new DisplayException('Please complete your personal details before you upload balance.');
+            throw new DisplayException('Almost there! Please finish filling out your account details before adding funds.');
         }
 
         $payment = new PayPalPayment(PayPalPayment::getApiContext(
@@ -276,7 +276,7 @@ class PaymentController extends ClientApiController
             $this->settingsRepository->get('settings::shop::paypal::mode', 'live')
         ));
         $payment->setPaymentMethod('paypal');
-        $payment->setTransactionDescription('Balance Upload');
+        $payment->setTransactionDescription('Funds Added');
         $payment->addItem($amount . ' ' . $this->settingsRepository->get('settings::shop::currency', 'USD') . ' Balance', $this->settingsRepository->get('settings::shop::currency', 'USD'), 1, $amount);
         $payment->setDetails('0');
         $payment->setAmount($this->settingsRepository->get('settings::shop::currency', 'USD'));
@@ -291,7 +291,7 @@ class PaymentController extends ClientApiController
         $payment = json_decode($payment->startPayment());
 
         if ($payment->status != 'success') {
-            throw new DisplayException('Failed to make the transaction. Please try again later...');
+            throw new DisplayException('We encountered an issue completing the transaction. Please try again or use a different method.');
         }
 
         return [
@@ -325,7 +325,7 @@ class PaymentController extends ClientApiController
         try {
             $product = \Stripe\Product::create([
                 'name' => $amount . " " . $this->settingsRepository->get('settings::shop::currency', 'USD') . " Balance",
-                'description' => 'Balance Upload',
+                'description' => 'Funds Added',
             ]);
 
             $price = \Stripe\Price::create([
@@ -347,7 +347,7 @@ class PaymentController extends ClientApiController
                 'cancel_url' => route('index') . '/shop/payments/stripe/cancelled',
             ]);
         } catch (ApiErrorException $e) {
-            throw new DisplayException('Failed to make the payment.' . $e->getMessage());
+            throw new DisplayException('Unable to verify payment. Please refresh or contact support.' . $e->getMessage());
         }
 
         DB::table('payments')->insert([
