@@ -31,7 +31,9 @@
                         <h3><small>If you set a Terms of Service URL, the below text will not be displayed.</small></h3>
                         <hr>
                         <div class="form-group">
-                            <textarea name="tos" id="tos">{!! $tos !!}</textarea>
+                            <textarea name="tos" id="tos">
+                                {!! $tos !!}
+                            </textarea>
                         </div>
                     </div>
                     <div class="box-footer">
@@ -46,15 +48,25 @@
 
 @section('footer-scripts')
     @parent
-    <script src="//cdn.tiny.cloud/1/{{ $tinyLicense }}/tinymce/5/tinymce.min.js" referrerpolicy="origin"></script>
+    <script src="https://cdn.tiny.cloud/1/xxgyxwiaqqglhni5qardovr11rmsswgfu5ahsnrtcphvyyun/tinymce/7/tinymce.min.js" referrerpolicy="origin"></script>
     <script>
         tinymce.init({
-            selector: '#tos',
-            plugins: 'advlist autolink lists link image charmap print preview hr anchor pagebreak code',
-            toolbar_mode: 'floating',
-            height: '500px',
-            skin: "oxide-dark",
-            content_css: "dark",
+            selector: 'textarea',
+            plugins: [
+            // Core editing features
+            'anchor', 'autolink', 'charmap', 'codesample', 'emoticons', 'image', 'link', 'lists', 'media', 'searchreplace', 'table', 'visualblocks', 'wordcount',
+            // Your account includes a free trial of TinyMCE premium features
+            // Try the most popular premium features until Jun 28, 2025:
+            'checklist', 'mediaembed', 'casechange', 'formatpainter', 'pageembed', 'a11ychecker', 'tinymcespellchecker', 'permanentpen', 'powerpaste', 'advtable', 'advcode', 'editimage', 'advtemplate', 'ai', 'mentions', 'tinycomments', 'tableofcontents', 'footnotes', 'mergetags', 'autocorrect', 'typography', 'inlinecss', 'markdown','importword', 'exportword', 'exportpdf'
+            ],
+            toolbar: 'undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table mergetags | addcomment showcomments | spellcheckdialog a11ycheck typography | align lineheight | checklist numlist bullist indent outdent | emoticons charmap | removeformat',
+            tinycomments_mode: 'embedded',
+            tinycomments_author: 'Author name',
+            mergetags_list: [
+            { value: 'First.Name', title: 'First Name' },
+            { value: 'Email', title: 'Email' },
+            ],
+            ai_request: (request, respondWith) => respondWith.string(() => Promise.reject('See docs to implement AI Assistant')),
         });
     </script>
 @endsection
