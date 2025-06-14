@@ -30,7 +30,7 @@ export default ({ game, onBuy, currency, tos }: Props) => {
                 setDisabled(false);
                 setIsLoading(false);
                 setVisible(false);
-                addFlash({ key: 'shop', message: 'You\'ve successfully ordered your server.', type: 'success', title: 'Success' });
+                addFlash({ key: 'shop', message: 'Success! Your server is now being deployed.', type: 'success', title: 'Success' });
                 onBuy();
             })
             .catch((error) => {
@@ -46,8 +46,8 @@ export default ({ game, onBuy, currency, tos }: Props) => {
             <OrderModal
                 visible={visible}
                 tos={tos}
-                title={'Are you sure you want to order this server?'}
-                buttonText={'Yes, order it'}
+                title={'Confirm Your Server Order'}
+                buttonText={'Confirm'}
                 onConfirmed={submit}
                 showSpinnerOverlay={isLoading}
                 onModalDismissed={() => setVisible(false)}

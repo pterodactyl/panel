@@ -21,11 +21,11 @@ const OrderModal: React.FC<Props> = ({ title, buttonText, onConfirmed, tos }) =>
             <div css={tw`text-neutral-300`}>
                 {tos.tos_url !== '' ?
                     <>
-                        If you order, you accept our <a rel={'noreferrer'} href={tos.tos_url} target={'_blank'} style={{ color: 'rgba(8.771999999999997,102.92479999999992,210.528)' }}>Terms Of Services</a>.
+                        By proceeding with this purchase, you confirm that you have read, understood, and agreed to be bound by our <a rel={'noreferrer'} href={tos.tos_url} target={'_blank'} style={{ color: 'rgba(8.771999999999997,102.92479999999992,210.528)' }}>Terms Of Service.</a>.
                     </>
                     :
                     <>
-                        If you order, you accept our Terms Of Services, please read it.
+                        By proceeding with this purchase, you confirm that you have read, understood, and agreed to be bound by our Terms Of Service.
                         <br />
                         <br />
                         <hr />

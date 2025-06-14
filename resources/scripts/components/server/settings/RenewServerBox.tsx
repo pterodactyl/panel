@@ -32,6 +32,8 @@ export default () => {
 
     const { data, error, mutate } = useSWR<RenewDetailsResponse>([uuid, '/renew'], (uuid) => getRenewDetails(uuid));
 
+    const CurrencyLabel = "$";
+
     useEffect(() => {
         if (!error) {
             clearFlashes('settings');
@@ -50,7 +52,7 @@ export default () => {
                 setModalVisible(false);
                 addFlash({
                     key: 'settings',
-                    message: "You have successfully renewed your server.",
+                    message: "Your server has been successfully renewed.",
                     type: 'success',
                     title: 'Success',
                 });
@@ -72,19 +74,19 @@ export default () => {
             ) : (
                 <>
                     <ConfirmationModal
-                        title={'Confirm server renew'}
-                        buttonText={'Yes, renew server'}
+                        title={'Confirm Server Renewal'}
+                        buttonText={'Confirm'}
                         onConfirmed={renew}
                         showSpinnerOverlay={isSubmitting}
                         visible={modalVisible}
                         onModalDismissed={() => setModalVisible(false)}
                     >
-                        Your server will be renewed for 1 month, are you sure you wish to continue?
+                        You are about to renew your server for an additional month. Do you wish to continue?
                     </ConfirmationModal>
                     <div css={tw`flex items-center justify-between mt-2 text-sm`}>
-                        <p>Your Balance</p>
+                        <p>My Balance</p>
                         <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
-                            {data.balance} {data.currency}
+                            {CurrencyLabel}{data.balance} {data.currency}
                         </code>
                     </div>
                     {data.expired_at !== null && (
@@ -94,12 +96,12 @@ export default () => {
                         </div>
                     )}
                     <p css={tw`text-sm`}>
-                        Your server will be renewed for 1 month and the cost will be removed from your balance.
+                        Your server will be renewed for an additional month and the cost will be deducted from your balance.
                         {data.price === 0 && (
                             <strong css={tw`font-medium`}>
                                 <br />
                                 <br />
-                                You can&apos;t renew this server.
+                                You cannot renew this server.
                             </strong>
                         )}
                     </p>
@@ -111,7 +113,7 @@ export default () => {
                             disabled={data.price === 0}
                             onClick={() => setModalVisible(true)}
                         >
-                            Renew Server - {data.price} {data.currency}
+                            Renew Server - {CurrencyLabel}{data.price} {data.currency}
                         </Button>
                     </div>
                 </>

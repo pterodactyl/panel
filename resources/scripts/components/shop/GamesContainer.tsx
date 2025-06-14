@@ -26,6 +26,11 @@ export default () => {
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
 
+    const MemoryLabel = "Memory (RAM)";
+    const SwapLabel = "Swap Memory (MB)";
+    const StorageLabel = "Storage Capacity (MB)";
+    const CurrencyLabel = "$";
+
     useEffect(() => {
         if (!error) {
             clearFlashes('shop');
@@ -53,34 +58,34 @@ export default () => {
                                             </div>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
-                                            <p>Memory</p>
+                                            <p>{MemoryLabel}</p>
                                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
-                                                {item.memory === 0 ? <span title="No memory limit">Unlimited</span> : `${item.memory} MB`}
+                                                {item.memory === 0 ? <span title='No memory limit'>Unlimited</span> : `${item.memory} MB`}
                                             </code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
-                                            <p>Swap</p>
+                                            <p>{SwapLabel}</p>
                                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{item.swap} MB</code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm`}>
-                                            <p>Disk</p>
+                                            <p>{StorageLabel}</p>
                                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
                                                 {item.disk === 0 ? <span title='No disk space limit'>Unlimited</span> : `${item.disk} MB`}
                                             </code>
                                         </div>
                                         <div css={tw`flex items-center justify-between mt-2 text-sm pb-3`}>
-                                            <p>Database Count</p>
-                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>Maximum {item.database_limit}</code>
+                                            <p>Max Databases</p>
+                                            <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>{item.database_limit}</code>
                                         </div>
                                         <hr />
                                         <div css={tw`flex items-center justify-between mt-2 text-sm pb-3`}>
                                             <p>My Balance</p>
                                             <code css={tw`font-mono bg-neutral-900 rounded py-1 px-2`}>
-                                                {data.balance} {data.currency}
+                                                {CurrencyLabel}{data.balance} {data.currency}
                                             </code>
                                         </div>
                                         <div css={tw`text-center`}>
-                                            <OrderButton tos={data.tos} game={item} currency={data.currency} onBuy={() => mutate()} />
+                                            <OrderButton tos={data.tos} game={item} currency={`${CurrencyLabel}${data.currency}`} onBuy={() => mutate()} />
                                         </div>
                                     </div>
                                 </TitledGreyBox>

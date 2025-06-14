@@ -56,7 +56,7 @@ export default ({ stripeKey, enabled, minAmount, maxAmount, currency }: Props) =
 
     return (
         <div css={enabled.paypal === 0 ? tw`w-full pt-4` : tw`w-full md:w-6/12 md:pr-2 pt-4`}>
-            <TitledGreyBox title={'Checkout with Stripe'}>
+            <TitledGreyBox title={'Pay with Stripe'}>
                 <Formik
                     onSubmit={submit}
                     initialValues={{ amount: 0 }}
@@ -69,7 +69,7 @@ export default ({ stripeKey, enabled, minAmount, maxAmount, currency }: Props) =
                         <Form>
                             <div css={tw`flex flex-wrap`}>
                                 <p css={tw`text-sm pb-4`}>
-                                    When you start the payment, you will be redirected to official <a href={'https://stripe.com/'} target={'_blank'} rel={'noreferrer'}>Stripe</a> Checkout page.
+                                    You'll be redirected to the official <a href={'https://stripe.com/'} target={'_blank'} rel={'noreferrer'}>Stripe</a> checkout to complete your payment.
                                 </p>
                                 <div css={tw`mb-6 w-full pt-2`}>
                                     <Field
@@ -80,7 +80,7 @@ export default ({ stripeKey, enabled, minAmount, maxAmount, currency }: Props) =
                                 </div>
                             </div>
                             <div css={tw`flex justify-end`}>
-                                <Button type={'submit'} disabled={isSubmit}>Start Payment</Button>
+                                <Button type={'submit'} disabled={isSubmit}>Continue with Stripe</Button>
                             </div>
                         </Form>
                     </React.Fragment>

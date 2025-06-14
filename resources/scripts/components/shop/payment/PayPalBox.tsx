@@ -43,7 +43,7 @@ export default ({ enabled, minAmount, maxAmount, currency }: Props) => {
 
     return (
         <div css={enabled.stripe === 0 ? tw`w-full pt-4` : tw`w-full md:w-6/12 md:pr-2 pt-4`}>
-            <TitledGreyBox title={'Checkout with PayPal'}>
+            <TitledGreyBox title={'Pay with PayPal'}>
                 <Formik
                     onSubmit={submit}
                     initialValues={{ amount: 0 }}
@@ -56,7 +56,7 @@ export default ({ enabled, minAmount, maxAmount, currency }: Props) => {
                         <Form>
                             <div css={tw`flex flex-wrap`}>
                                 <p css={tw`text-sm pb-4`}>
-                                    When you start the payment, you will be redirected to official <a href={'https://paypal.com/'} target={'_blank'} rel={'noreferrer'}>PayPal</a> Checkout page.
+                                    You'll be redirected to the official <a href={'https://paypal.com/'} target={'_blank'} rel={'noreferrer'}>PayPal</a> checkout to complete your payment.
                                 </p>
                                 <div css={tw`mb-6 w-full pt-2`}>
                                     <Field
@@ -67,7 +67,7 @@ export default ({ enabled, minAmount, maxAmount, currency }: Props) => {
                                 </div>
                             </div>
                             <div css={tw`flex justify-end`}>
-                                <Button type={'submit'} disabled={isSubmit}>Start Payment</Button>
+                                <Button type={'submit'} disabled={isSubmit}>Continue with PayPal</Button>
                             </div>
                         </Form>
                     </React.Fragment>
