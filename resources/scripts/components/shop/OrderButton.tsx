@@ -20,6 +20,8 @@ export default ({ game, onBuy, currency, tos }: Props) => {
 
     const { clearAndAddHttpError, clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
+    const CurrencyLabel = "$";
+
     const submit = () => {
         setDisabled(true);
         setIsLoading(true);
@@ -46,14 +48,14 @@ export default ({ game, onBuy, currency, tos }: Props) => {
             <OrderModal
                 visible={visible}
                 tos={tos}
-                title={'Confirm Your Server Order'}
+                title={'Almost There — Confirm Your Order'}
                 buttonText={'Confirm'}
                 onConfirmed={submit}
                 showSpinnerOverlay={isLoading}
                 onModalDismissed={() => setVisible(false)}
             />
             <Button isLoading={disabled} disabled={disabled} type={'button'} color={'primary'} css={tw`mt-3`} onClick={() => setVisible(true)}>
-                Order Now - {game.price} {currency}
+                ORDER NOW - {CurrencyLabel}{game.price} {currency}
             </Button>
         </>
     );

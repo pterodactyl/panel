@@ -85,7 +85,7 @@ export default () => {
                                             </code>
                                         </div>
                                         <div css={tw`text-center`}>
-                                            <OrderButton tos={data.tos} game={item} currency={`${CurrencyLabel}${data.currency}`} onBuy={() => mutate()} />
+                                            <OrderButton tos={data.tos} game={item} currency={data.currency} onBuy={() => mutate()} />
                                         </div>
                                     </div>
                                 </TitledGreyBox>
