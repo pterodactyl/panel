@@ -18,7 +18,7 @@ const OrderModal: React.FC<Props> = ({ title, buttonText, onConfirmed, tos }) =>
     return (
         <>
             <h2 css={tw`text-2xl mb-6`}>{title}</h2>
-            <div css={tw`text-neutral-300`}>
+            <div css={tw`text-neutral-100`}>
                 {tos.tos_url !== '' ?
                     <>
                         By proceeding with this purchase, you confirm that you have read, understood, and agreed to be bound by our <a rel={'noreferrer'} href={tos.tos_url} target={'_blank'} style={{ color: 'rgba(8.771999999999997,102.92479999999992,210.528)' }}>Terms Of Service.</a>.
