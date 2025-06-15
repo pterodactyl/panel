@@ -36,7 +36,7 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                         </a>
                         &nbsp;&copy; 2023 - {new Date().getFullYear()}
                     </p>
-                    </br>
+                    <br />
                     <p css={tw`text-center text-neutral-500 text-xs`}>
                         <a
                             rel={'noopener nofollow noreferrer'}
