@@ -36,8 +36,22 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                         </a>
                         &nbsp;&copy; 2023 - {new Date().getFullYear()}
                     </p>
-                    <p css={tw`text-center text-xs`}>
-                        <a href='https://streamlabs.com/relykstv/tip' target='_blank' rel='noopener nofollow noreferrer'><button className='btn btn-success w-full'><i className='fa fa-fw fa-money'></i> Donate</button></a>
+                    <p css={tw`text-center text-neutral-500 text-xs`}>
+                        <a
+                            rel={'noopener nofollow noreferrer'}
+                            href='https://streamlabs.com/relykstv/tip'
+                            target='_blank'
+                            css={tw`no-underline text-neutral-500 hover:text-neutral-300`}>
+                            Donate
+                        </a>
+                            |
+                        <a
+                            rel={'noopener nofollow noreferrer'}
+                            href='https://discord.gg/xAfHGhvwwA'
+                            target='_blank'
+                            css={tw`no-underline text-neutral-100 hover:text-neutral-300`}>
+                            <i className='fa-brands fa-discord'></i>
+                        </a>
                     </p>
                 </ContentContainer>
             </>
