@@ -36,6 +36,9 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                         </a>
                         &nbsp;&copy; 2023 - {new Date().getFullYear()}
                     </p>
+                    <p css={tw`text-center text-xs`}>
+                        <a href='https://streamlabs.com/relykstv/tip' target='_blank' rel='noopener nofollow noreferrer'><button className='btn btn-success w-full'><i className='fa fa-fw fa-money'></i> Donate</button></a>>
+                    </p>
                 </ContentContainer>
             </>
         </CSSTransition>
