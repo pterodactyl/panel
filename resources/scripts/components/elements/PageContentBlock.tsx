@@ -44,13 +44,21 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
                             css={tw`no-underline text-neutral-500 hover:text-neutral-300`}>
                             Donate
                         </a>
-                            |
+                        &nbsp;|&nbsp;
                         <a
                             rel={'noopener nofollow noreferrer'}
                             href='https://discord.gg/xAfHGhvwwA'
                             target='_blank'
                             css={tw`no-underline text-neutral-100 hover:text-neutral-300`}>
-                            <i className='fa-brands fa-discord'></i>
+                            Discord
+                        </a>
+                        &nbsp;|&nbsp;
+                        <a
+                            rel={'noopener nofollow noreferrer'}
+                            href='https://www.twitch.tv/relykstv'
+                            target='_blank'
+                            css={tw`no-underline text-neutral-100 hover:text-neutral-300`}>
+                            Twitch
                         </a>
                     </p>
                 </ContentContainer>
