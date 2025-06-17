@@ -9,6 +9,7 @@ use Illuminate\Http\Client\RequestException;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -34,9 +35,21 @@ class ExecuteHookActionJob implements ShouldQueue
      */
     public function handle(ProcessScheduleService $scheduleService): void
     {
+        $hookId = $this->hook->id;
         $action = $this->hook->action;
         if (!$action) {
             return;
+        }
+
+        $ratelimitKey = "hook:{$hookId}:{$action->type}:rate_limit";
+
+        if (in_array($action->type, ['discord_webhook', 'send_email']) && Cache::has($ratelimitKey)) {
+            Log::info("Rate limit triggered for hook #{$hookId} ({$action->type})");
+            return;
+        }
+
+        if (in_array($action->type, ['discord_webhook', 'send_email'])) {
+            Cache::put($ratelimitKey, true, now()->addSeconds(30));
         }
 
         $config = $action->config;
