@@ -62,7 +62,7 @@ class TriggerDefinitionSeeder extends Seeder
                         'input' => 'dropdown',
                         'options' => [
                             'memory' => 'Memory Usage',
-                            'disk' => 'Disk Usage',
+                            'cpu' => 'CPU Usage',
                         ]
                     ],
                     [

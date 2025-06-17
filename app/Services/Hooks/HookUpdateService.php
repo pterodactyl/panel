@@ -54,7 +54,6 @@ class HookUpdateService
             return;
         }
 
-        Log::info("Trigger Config", $trigger);
         try {
             $this->triggerDefinitionService->validateConfig($definition, $trigger['config']);
             $trigger['trigger_definition_id'] = $definition->id;
