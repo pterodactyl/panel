@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\Hook;
 use Pterodactyl\Repositories\Eloquent\HookRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
+use Pterodactyl\Services\Hooks\HookExecutionService;
 use Pterodactyl\Transformers\Api\Application\HookTransformer;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 
@@ -18,6 +19,7 @@ class HookController extends ApplicationApiController
      */
     public function __construct(
         private HookRepository $hookRepository,
+        private HookExecutionService $executionService,
         private ServerRepository $repository
     )
     {
@@ -36,9 +38,9 @@ class HookController extends ApplicationApiController
             ->toArray();
     }
 
-    public function trigger(Request $request, $uuid, Hook $hook): JsonResponse
+    public function trigger(Request $request, $uuid): JsonResponse
     {
-        Log::info("wings tried to trigger ", ["uuid" => $uuid, "hook" => $hook]);
+        $this->executionService->handle(Hook::where('id', '=', $request->input('id'))->first());
         return response()->json(["status"=>"success"]);
     }
 }

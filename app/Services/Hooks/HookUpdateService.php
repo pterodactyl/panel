@@ -32,9 +32,9 @@ class HookUpdateService
     public function handle(Hook $hook, $params): Hook
     {
         $hook->update(Arr::only($params, ["name", "enabled"]));
-        SyncHooksJob::dispatch($hook->server);
         $this->updateTrigger($hook, $params['trigger'] ?? []);
         $this->updateAction($hook, $params['action'] ?? []);
+        SyncHooksJob::dispatch($hook->server);
 
         return $hook;
     }
@@ -54,6 +54,7 @@ class HookUpdateService
             return;
         }
 
+        Log::info("Trigger Config", $trigger);
         try {
             $this->triggerDefinitionService->validateConfig($definition, $trigger['config']);
             $trigger['trigger_definition_id'] = $definition->id;

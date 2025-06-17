@@ -159,8 +159,8 @@ const EditHookModal = ({ hook }: Props) => {
                             }}
                         >
                             <option value=''>-- Select an Trigger --</option>
-                            {triggerDefinitions.map((trigger, key) => (
-                                <option value={trigger.key} key={key}>
+                            {triggerDefinitions.map((trigger) => (
+                                <option value={trigger.key} key={trigger.key}>
                                     {trigger.name}
                                 </option>
                             ))}
@@ -181,6 +181,7 @@ const EditHookModal = ({ hook }: Props) => {
                                         onChange={(e) => {
                                             setFieldValue(`trigger.config.${key}`, e.target.value);
                                         }}
+                                        value={values.trigger.config[key]}
                                         className={trigger.label.toLowerCase().replace(' ', '')}
                                     >
                                         {Object.entries(trigger.options || {}).map(([key, label]) => (
@@ -223,8 +224,8 @@ const EditHookModal = ({ hook }: Props) => {
                             }}
                         >
                             <option value=''>-- Select an Action --</option>
-                            {actionDefinitions.map((action, key) => (
-                                <option value={action.key} key={key}>
+                            {actionDefinitions.map((action) => (
+                                <option value={action.key} key={action.key}>
                                     {action.name}
                                 </option>
                             ))}

@@ -70,7 +70,7 @@ class HookController extends ClientApiController
 
     public function update(UpdateHookRequest $request, Server $server, Hook $hook) {
         $validated = $request->validated();
-
+        Log::info($validated);
         try {
             $hook = $this->updateService->handle($hook, $validated);
             return $this->fractal->item(
