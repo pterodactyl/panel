@@ -53,7 +53,6 @@ class HookController extends ClientApiController
 
     public function store(StoreHookRequest $request, Server $server) {
         $validated = $request->validated();
-
         try {
             $hook = $this->creationService->handle($server, $validated);
             return $this->fractal->item(
@@ -71,6 +70,7 @@ class HookController extends ClientApiController
 
     public function update(UpdateHookRequest $request, Server $server, Hook $hook) {
         $validated = $request->validated();
+
         try {
             $hook = $this->updateService->handle($hook, $validated);
             return $this->fractal->item(

@@ -11,11 +11,11 @@ export interface Hook {
 }
 export interface Trigger {
     type: string;
-    config: string;
+    config: Record<number, string>;
 }
 export interface Action {
     type: string;
-    config: string;
+    config: Record<number, string>;
 }
 export const rawDataToServerAction = (data: any): Action => ({
     type: data.type,

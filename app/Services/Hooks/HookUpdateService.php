@@ -32,8 +32,8 @@ class HookUpdateService
     public function handle(Hook $hook, $params): Hook
     {
         $hook->update(Arr::only($params, ["name", "enabled"]));
-        $this->updateTrigger($hook, $params['trigger'] ?? []);
         SyncHooksJob::dispatch($hook->server);
+        $this->updateTrigger($hook, $params['trigger'] ?? []);
         $this->updateAction($hook, $params['action'] ?? []);
 
         return $hook;

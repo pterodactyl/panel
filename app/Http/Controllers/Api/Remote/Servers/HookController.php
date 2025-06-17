@@ -2,7 +2,10 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
+use Pterodactyl\Models\Hook;
 use Pterodactyl\Repositories\Eloquent\HookRepository;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Transformers\Api\Application\HookTransformer;
@@ -33,4 +36,9 @@ class HookController extends ApplicationApiController
             ->toArray();
     }
 
+    public function trigger(Request $request, $uuid, Hook $hook): JsonResponse
+    {
+        Log::info("wings tried to trigger ", ["uuid" => $uuid, "hook" => $hook]);
+        return response()->json(["status"=>"success"]);
+    }
 }
