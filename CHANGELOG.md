@@ -3,6 +3,16 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.11.10
+
+### BREAKING
+
+* Minimum PHP verion is now 8.2 due to Laravel upgrade!
+
+### Fixed
+
+* Update Laravel to address [CVE-2024-52301](https://github.com/advisories/GHSA-gv7v-rgg6-548h)
+
 ## v1.11.9
 
 ### Fixed
