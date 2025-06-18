@@ -6,7 +6,7 @@ export interface SiteSettings {
     recaptcha: {
         enabled: boolean;
         siteKey: string;
-    };
+    } | null;
 }
 
 export interface SettingsStore {

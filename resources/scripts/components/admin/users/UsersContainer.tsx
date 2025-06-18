@@ -5,7 +5,7 @@ import { NavLink } from 'react-router-dom';
 import { useGetUsers } from '@/api/admin/users';
 import type { UUID } from '@/api/definitions';
 import { Transition } from '@/components/elements/transitions';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import Checkbox from '@/components/elements/inputs/Checkbox';
 import InputField from '@/components/elements/inputs/InputField';
 import UserTableRow from '@/components/admin/users/UserTableRow';

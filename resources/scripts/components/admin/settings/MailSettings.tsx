@@ -1,28 +1,62 @@
-import { Form, Formik } from 'formik';
+import { Form, Formik, FormikHelpers } from 'formik';
 import tw from 'twin.macro';
 
 import AdminBox from '@/components/admin/AdminBox';
-import Button from '@/components/elements/Button';
+import { Button } from '@/components/elements/button';
 import Field, { FieldRow } from '@/components/elements/Field';
 import Label from '@/components/elements/Label';
-import Select from '@/components/elements/Select';
+import { Context } from './SettingsRouter';
+import SelectField from '@/components/elements/SelectField';
+import { updateSetting } from '@/api/admin/settings';
+import { Actions, useStoreActions } from 'easy-peasy';
+import { ApplicationStore } from '@/state';
+
+interface Values {
+    smtpHost: string;
+    smtpPort: number;
+    smtpEncryption: string;
+    smtpUsername: string;
+    smtpPassword: string;
+    smtpMailFrom: string;
+    smtpMailFromName: string;
+}
 
 export default () => {
-    const submit = () => {
-        //
+    const { host, port, encryption, username, password, fromAddress, fromName } = Context.useStoreState(
+        state => state.settings!.mail,
+    );
+
+    const { addFlash, clearFlashes, clearAndAddHttpError } = useStoreActions(
+        (actions: Actions<ApplicationStore>) => actions.flashes,
+    );
+
+    const submit = async (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
+        clearFlashes('admin:settings');
+        setSubmitting(true);
+
+        try {
+            await updateSetting(values);
+            addFlash({ type: 'success', message: 'Successfully updated settings.', key: 'admin:settings' });
+            setTimeout(() => clearFlashes('admin:settings'), 2000);
+        } catch (error) {
+            console.error(error);
+            clearAndAddHttpError({ key: 'admin:settings', error });
+        } finally {
+            setSubmitting(false);
+        }
     };
 
     return (
         <Formik
             onSubmit={submit}
             initialValues={{
-                smtpHost: 'smtp.example.com',
-                smtpPort: 587,
-                smtpEncryption: 'tls',
-                username: '',
-                password: '',
-                mailFrom: 'no-reply@example.com',
-                mailFromName: 'Pterodactyl Panel',
+                smtpHost: host ?? 'smtp.example.com',
+                smtpPort: port ?? 587,
+                smtpEncryption: encryption ?? 'tls',
+                smtpUsername: username ?? '',
+                smtpPassword: password ?? '',
+                smtpMailFrom: fromAddress ?? 'no-reply@example.com',
+                smtpMailFromName: fromName ?? 'Pterodactyl Panel',
             }}
         >
             {({ isSubmitting, isValid }) => (
@@ -45,25 +79,28 @@ export default () => {
                             />
                             <div>
                                 <Label>Encryption</Label>
-                                <Select id={'smtpEncryption'} name={'smtpEncryption'} defaultValue={'tls'}>
-                                    <option value="">None</option>
-                                    <option value="ssl">Secure Sockets Layer (SSL)</option>
-                                    <option value="tls">Transport Layer Security (TLS)</option>
-                                </Select>
+                                <SelectField
+                                    id={'smtpEncryption'}
+                                    name={'smtpEncryption'}
+                                    options={[
+                                        { value: 'ssl', label: 'Secure Sockets Layer (SSL)' },
+                                        { value: 'tls', label: 'Transport Layer Security (TLS)' },
+                                    ]}
+                                />
                             </div>
                         </FieldRow>
 
                         <FieldRow>
                             <Field
-                                id={'username'}
-                                name={'username'}
+                                id={'smtpUsername'}
+                                name={'smtpUsername'}
                                 type={'text'}
                                 label={'Username'}
                                 description={''}
                             />
                             <Field
-                                id={'password'}
-                                name={'password'}
+                                id={'smtpPassword'}
+                                name={'smtpPassword'}
                                 type={'password'}
                                 label={'Password'}
                                 description={''}
@@ -72,15 +109,15 @@ export default () => {
 
                         <FieldRow>
                             <Field
-                                id={'mailFrom'}
-                                name={'mailFrom'}
+                                id={'smtpMailFrom'}
+                                name={'smtpMailFrom'}
                                 type={'text'}
                                 label={'Mail From'}
                                 description={''}
                             />
                             <Field
-                                id={'mailFromName'}
-                                name={'mailFromName'}
+                                id={'smtpMailFromName'}
+                                name={'smtpMailFromName'}
                                 type={'text'}
                                 label={'Mail From Name'}
                                 description={''}
@@ -90,7 +127,7 @@ export default () => {
 
                     <div css={tw`bg-neutral-700 rounded shadow-md px-4 xl:px-5 py-4 mt-6`}>
                         <div css={tw`flex flex-row`}>
-                            <Button type="submit" size="small" css={tw`ml-auto`} disabled={isSubmitting || !isValid}>
+                            <Button type="submit" className="ml-auto" disabled={isSubmitting || !isValid}>
                                 Save Changes
                             </Button>
                         </div>
