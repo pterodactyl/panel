@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import getServerHooks from '@/api/server/hooks/getServerHooks';
 import getTriggerDefinitions from '@/api/server/hooks/getTriggerDefinitions';
+import getActionDefinitions from '@/api/server/hooks/getActionDefinitions';
 import { ServerContext } from '@/state/server';
 import Spinner from '@/components/elements/Spinner';
 import { useHistory, useRouteMatch } from 'react-router-dom';
@@ -27,7 +28,7 @@ export default () => {
     const hooks = ServerContext.useStoreState((state) => state.hooks.data);
     const setHooks = ServerContext.useStoreActions((actions) => actions.hooks.setHooks);
     const setTriggerDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.setTriggerDefinitions);
-
+    const setActionDefinitions = ServerContext.useStoreActions((actions) => actions.hooks.getActionDefinitions);
     useEffect(() => {
         clearFlashes('hooks');
         getServerHooks(uuid)
@@ -43,7 +44,11 @@ export default () => {
             .catch((error) => {
                 addError({ message: httpErrorToHuman(error), key: 'hooks' });
             });
-
+        getActionDefinitions(uuid)
+            .then((actionDefinitions) => setActionDefinitions(actionDefinitions))
+            .catch((error) => {
+                addError({ message: httpErrorToHuman(error), key: 'hooks' });
+            });
     }, []);
     return (
         <ServerContentBlock title={'Hooks'}>

@@ -90,6 +90,23 @@ Route::group([
         Route::get('/upload', Client\Servers\FileUploadController::class);
     });
 
+<<<<<<< HEAD
+=======
+    Route::group(['prefix' => '/hooks'], function () {
+        Route::get('/', [Client\Servers\HookController::class, 'index']);
+        Route::get('/trigger-definitions', [Client\Servers\TriggerDefinitionController::class, 'index']);
+        Route::get('/action-definitions', [Client\Servers\ActionDefinitionController::class, 'index']);
+        Route::get('/{hook}', [Client\Servers\HookController::class, 'view'])
+            ->where('hook', '[0-9]+');
+
+        Route::post('/', [Client\Servers\HookController::class, 'store']);
+        Route::post('/{hook}', [Client\Servers\HookController::class, 'update']);
+        Route::post('/{hook}/execute', [Client\Servers\HookController::class, 'execute']);
+
+        Route::delete('/{hook}', [Client\Servers\HookController::class, 'delete']);
+    });
+
+>>>>>>> 14bb12e7e (Convert trigger/action relationship creation to separate handlers.)
     Route::group(['prefix' => '/schedules'], function () {
         Route::get('/', [Client\Servers\ScheduleController::class, 'index']);
         Route::post('/', [Client\Servers\ScheduleController::class, 'store']);

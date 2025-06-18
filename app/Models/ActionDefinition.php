@@ -8,4 +8,15 @@ use Illuminate\Database\Eloquent\Model;
 class ActionDefinition extends Model
 {
     use HasFactory;
+
+    protected $fillable = [
+        'key',
+        'name',
+        'description',
+        'config_schema',
+    ];
+
+    protected $casts = [
+        'config_schema' => 'array',
+    ];
 }
