@@ -2,11 +2,11 @@
 
 namespace Pterodactyl\Http\Controllers\Base;
 
-use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Translation\Translator;
 use Illuminate\Contracts\Translation\Loader;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Base\LocaleRequest;
 
 class LocaleController extends Controller
 {
@@ -20,20 +20,11 @@ class LocaleController extends Controller
     /**
      * Returns translation data given a specific locale and namespace.
      */
-    public function __invoke(Request $request): JsonResponse
+    public function __invoke(LocaleRequest $request): JsonResponse
     {
-        $locales = explode(' ', $request->input('locale') ?? '');
-        $namespaces = explode(' ', $request->input('namespace') ?? '');
-
-        $response = [];
-        foreach ($locales as $locale) {
-            $response[$locale] = [];
-            foreach ($namespaces as $namespace) {
-                $response[$locale][$namespace] = $this->i18n(
-                    $this->loader->load($locale, str_replace('.', '/', $namespace))
-                );
-            }
-        }
+        $locale = $request->input('locale');
+        $namespace = $request->input('namespace');
+        $response[$locale][$namespace] = $this->i18n($this->loader->load($locale, $namespace));
 
         return new JsonResponse($response, 200, [
             // Cache this in the browser for an hour, and allow the browser to use a stale
