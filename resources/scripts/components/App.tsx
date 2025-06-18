@@ -69,13 +69,15 @@ const App = () => {
                                     <AuthenticationRouter />
                                 </Spinner.Suspense>
                             </Route>
-                            <AuthenticatedRoute path={'/server/:id'}>
-                                <Spinner.Suspense>
-                                    <ServerContext.Provider>
-                                        <ServerRouter />
-                                    </ServerContext.Provider>
-                                </Spinner.Suspense>
-                            </AuthenticatedRoute>
+                            <Route path={'/server/:id'}>
+                                <AuthenticatedRoute>
+                                    <Spinner.Suspense>
+                                        <ServerContext.Provider>
+                                            <ServerRouter />
+                                        </ServerContext.Provider>
+                                    </Spinner.Suspense>
+                                </AuthenticatedRoute>
+                            </Route>
                             <AuthenticatedRoute path={'/'}>
                                 <Spinner.Suspense>
                                     <DashboardRouter />
