@@ -58,7 +58,7 @@
         "fakerphp/faker": "~1.21.0",
         "friendsofphp/php-cs-fixer": "~3.14.4",
         "itsgoingd/clockwork": "~5.1.12",
-        "laravel/sail": "~1.21.0",
+        "laravel/sail": "~v1.25.0",
         "mockery/mockery": "~1.5.1",
         "nunomaduro/collision": "~7.0.5",
         "nunomaduro/larastan": "~2.4.1",
