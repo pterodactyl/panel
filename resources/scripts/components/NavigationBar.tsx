@@ -77,9 +77,9 @@ export default () => {
 
                     {rootAdmin && (
                         <Tooltip placement="bottom" content="Admin">
-                            <a href="/admin" rel="noreferrer">
+                            <NavLink to="/admin">
                                 <FontAwesomeIcon icon={faScrewdriverWrench} />
-                            </a>
+                            </NavLink>
                         </Tooltip>
                     )}
 
