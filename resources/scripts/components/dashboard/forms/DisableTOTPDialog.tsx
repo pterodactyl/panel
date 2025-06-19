@@ -2,7 +2,7 @@ import { useContext, useEffect, useState } from 'react';
 import * as React from 'react';
 import asDialog from '@/hoc/asDialog';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { Input } from '@/components/elements/inputs';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';

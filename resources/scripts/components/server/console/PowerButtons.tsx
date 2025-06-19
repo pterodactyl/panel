@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import * as React from 'react';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import Can from '@/components/elements/Can';
 import { ServerContext } from '@/state/server';
 import { PowerAction } from '@/components/server/console/ServerConsoleContainer';

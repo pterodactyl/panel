@@ -1,6 +1,6 @@
 import { useCallback, useState } from 'react';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import triggerScheduleExecution from '@/api/server/schedules/triggerScheduleExecution';
 import { ServerContext } from '@/state/server';
 import useFlash from '@/plugins/useFlash';

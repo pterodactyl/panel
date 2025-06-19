@@ -7,7 +7,7 @@ import Field from '@/components/elements/Field';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
 import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 
 interface Values {
     email: string;

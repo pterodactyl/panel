@@ -7,7 +7,7 @@ import deleteServerAllocation from '@/api/server/network/deleteServerAllocation'
 import getServerAllocations from '@/api/swr/getServerAllocations';
 import { useFlashKey } from '@/plugins/useFlash';
 import { Dialog } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 
 interface Props {
     allocation: number;
