@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ClipboardListIcon } from '@heroicons/react/outline';
 import { Dialog } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 
 export default ({ meta }: { meta: Record<string, unknown> }) => {
     const [open, setOpen] = useState(false);

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import * as React from 'react';
 import { Dialog as HDialog } from '@headlessui/react';
-import { Button } from '@/components/elements/button/index';
+import { Button } from '@/components/elements/button';
 import { XIcon } from '@heroicons/react/solid';
 import { AnimatePresence, motion } from 'framer-motion';
 import { DialogContext, IconPosition, RenderDialogProps, styles } from './';

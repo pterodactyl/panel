@@ -12,6 +12,7 @@ export enum Size {
 export enum Variant {
     Primary,
     Secondary,
+    Danger,
 }
 
 export const Options = { Shape, Size, Variant };
