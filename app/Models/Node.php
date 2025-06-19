@@ -231,6 +231,6 @@ class Node extends Model
         $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
 
-        return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
+        return ($this->servers->sum('memory') + $memory) <= $memoryLimit && ($this->servers->sum('disk') + $disk) <= $diskLimit;
     }
 }
