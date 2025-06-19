@@ -47,7 +47,7 @@ const getUser = (id: number, include: string[] = []): Promise<User> => {
     });
 };
 
-const searchUserAccounts = async (params: QueryBuilderParams<'username' | 'email'>): Promise<User[]> => {
+const searchUserAccounts = async (params: QueryBuilderParams<'owner'>): Promise<User[]> => {
     const { data } = await http.get('/api/application/users', {
         params: withQueryBuilderParams(params),
     });
