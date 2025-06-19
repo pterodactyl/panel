@@ -20,7 +20,7 @@ interface Values {
 
 function LoginContainer() {
     const ref = useRef<Reaptcha>(null);
-    const [token, setToken] = useState('');
+    const token = useRef('');
 
     const { clearFlashes, clearAndAddHttpError } = useFlash();
     const { enabled: recaptchaEnabled, siteKey } = useStoreState(state => state.settings.data!.recaptcha);
@@ -36,7 +36,7 @@ function LoginContainer() {
 
         // If there is no token in the state yet, request the token and then abort this submit request
         // since it will be re-submitted when the recaptcha data is returned by the component.
-        if (recaptchaEnabled && !token) {
+        if (recaptchaEnabled && !token.current) {
             ref.current!.execute().catch(error => {
                 console.error(error);
 
@@ -47,7 +47,7 @@ function LoginContainer() {
             return;
         }
 
-        login({ ...values, recaptchaData: token })
+        login({ ...values, recaptchaData: token.current })
             .then(response => {
                 if (response.complete) {
                     // @ts-expect-error this is valid
@@ -60,7 +60,7 @@ function LoginContainer() {
             .catch(error => {
                 console.error(error);
 
-                setToken('');
+                token.current = '';
                 if (ref.current) ref.current.reset();
 
                 setSubmitting(false);
@@ -94,12 +94,12 @@ function LoginContainer() {
                             size={'invisible'}
                             sitekey={siteKey || '_invalid_key'}
                             onVerify={response => {
-                                setToken(response);
+                                token.current = response;
                                 submitForm();
                             }}
                             onExpire={() => {
                                 setSubmitting(false);
-                                setToken('');
+                                token.current = '';
                             }}
                         />
                     )}
