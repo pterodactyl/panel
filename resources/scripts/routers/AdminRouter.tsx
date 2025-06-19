@@ -12,7 +12,7 @@ import {
     ViewGridIcon,
 } from '@heroicons/react/outline';
 import { useStoreState } from 'easy-peasy';
-import { useState } from 'react';
+import { ComponentType, useState } from 'react';
 import { NavLink, Route, Routes } from 'react-router-dom';
 import tw from 'twin.macro';
 
@@ -47,6 +47,87 @@ import Sidebar from '@/components/admin/Sidebar';
 // import useUserPersistedState from '@/plugins/useUserPersistedState';
 import UsersContainer from '@/components/admin/users/UsersContainer';
 
+type SidebarItem = {
+    name: string;
+    icon: ComponentType;
+    path: string;
+};
+
+type SidebarList = {
+    title: string;
+    items: SidebarItem[];
+};
+
+type SidebarListObject = Record<string, SidebarList>;
+
+const list: SidebarListObject = {
+    administration: {
+        title: 'Administration',
+        items: [
+            {
+                name: 'Overview',
+                icon: OfficeBuildingIcon,
+                path: '/admin',
+            },
+            {
+                name: 'Settings',
+                icon: CogIcon,
+                path: '/admin/settings',
+            },
+        ],
+    },
+    management: {
+        title: 'Management',
+        items: [
+            {
+                name: 'Databases',
+                icon: DatabaseIcon,
+                path: '/admin/databases',
+            },
+            {
+                name: 'Locations',
+                icon: GlobeIcon,
+                path: '/admin/locations',
+            },
+            {
+                name: 'Nodes',
+                icon: ServerIcon,
+                path: '/admin/nodes',
+            },
+            {
+                name: 'Servers',
+                icon: TerminalIcon,
+                path: '/admin/servers',
+            },
+            {
+                name: 'Users',
+                icon: UsersIcon,
+                path: '/admin/users',
+            },
+            {
+                name: 'Roles',
+                icon: UserGroupIcon,
+                path: '/admin/roles',
+            },
+        ],
+    },
+    services: {
+        title: 'Service Management',
+        items: [
+            {
+                name: 'Nests',
+                icon: ViewGridIcon,
+                path: '/admin/nests',
+            },
+            {
+                name: 'Mounts',
+                icon: FolderIcon,
+                path: '/admin/mounts',
+            },
+        ],
+    },
+};
+
 function AdminRouter() {
     const email = useStoreState((state: ApplicationStore) => state.user.data!.email);
     const roleName = useStoreState((state: ApplicationStore) => state.user.data!.roleName);
@@ -66,53 +147,21 @@ function AdminRouter() {
                     {!collapsed ? (
                         <h1 css={tw`text-2xl text-neutral-50 whitespace-nowrap font-medium`}>{applicationName}</h1>
                     ) : (
-                        <img src={CollapsedIcon} css={tw`mt-4 w-20`} alt={'Pterodactyl Icon'} />
+                        <img src={CollapsedIcon} css={tw`mt-4 w-16`} alt={'Pterodactyl Icon'} />
                     )}
                 </div>
                 <Sidebar.Wrapper>
-                    <Sidebar.Section>Administration</Sidebar.Section>
-                    <NavLink to="/admin" end>
-                        <OfficeBuildingIcon />
-                        <span>Overview</span>
-                    </NavLink>
-                    <NavLink to="/admin/settings">
-                        <CogIcon />
-                        <span>Settings</span>
-                    </NavLink>
-                    <Sidebar.Section>Management</Sidebar.Section>
-                    <NavLink to="/admin/databases">
-                        <DatabaseIcon />
-                        <span>Databases</span>
-                    </NavLink>
-                    <NavLink to="/admin/locations">
-                        <GlobeIcon />
-                        <span>Locations</span>
-                    </NavLink>
-                    <NavLink to="/admin/nodes">
-                        <ServerIcon />
-                        <span>Nodes</span>
-                    </NavLink>
-                    <NavLink to="/admin/servers">
-                        <TerminalIcon />
-                        <span>Servers</span>
-                    </NavLink>
-                    <NavLink to="/admin/users">
-                        <UsersIcon />
-                        <span>Users</span>
-                    </NavLink>
-                    <NavLink to="/admin/roles">
-                        <UserGroupIcon />
-                        <span>Roles</span>
-                    </NavLink>
-                    <Sidebar.Section>Service Management</Sidebar.Section>
-                    <NavLink to="/admin/nests">
-                        <ViewGridIcon />
-                        <span>Nests</span>
-                    </NavLink>
-                    <NavLink to="/admin/mounts">
-                        <FolderIcon />
-                        <span>Mounts</span>
-                    </NavLink>
+                    {Object.keys(list).map(key => (
+                        <>
+                            <Sidebar.Section key={list[key]?.title}>{list[key]?.title}</Sidebar.Section>
+                            {list[key]?.items.map(item => (
+                                <NavLink key={item.path} to={item.path} end={item.path === '/admin'}>
+                                    <item.icon />
+                                    <span>{item.name}</span>
+                                </NavLink>
+                            ))}
+                        </>
+                    ))}
                 </Sidebar.Wrapper>
                 <NavLink to="/" css={tw`mt-auto mb-3`}>
                     <ReplyIcon />
