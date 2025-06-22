@@ -9,7 +9,7 @@ class SetAllocationToReferenceNullOnServerDelete extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign(['server_id']);
@@ -21,7 +21,7 @@ class SetAllocationToReferenceNullOnServerDelete extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign(['server_id']);

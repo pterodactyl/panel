@@ -26,7 +26,7 @@ class EggVariableController extends Controller
         protected VariableUpdateService $updateService,
         protected EggRepositoryInterface $repository,
         protected EggVariableRepositoryInterface $variableRepository,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 

@@ -20,7 +20,7 @@ class DeleteLocationCommand extends Command
      */
     public function __construct(
         private LocationDeletionService $deletionService,
-        private LocationRepositoryInterface $repository
+        private LocationRepositoryInterface $repository,
     ) {
         parent::__construct();
     }

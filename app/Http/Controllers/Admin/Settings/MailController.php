@@ -27,7 +27,7 @@ class MailController extends Controller
         private Encrypter $encrypter,
         private Kernel $kernel,
         private SettingsRepositoryInterface $settings,
-        private ViewFactory $view
+        private ViewFactory $view,
     ) {
     }
 

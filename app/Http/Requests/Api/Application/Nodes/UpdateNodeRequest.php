@@ -10,7 +10,7 @@ class UpdateNodeRequest extends StoreNodeRequest
      * Apply validation rules to this request. Uses the parent class rules()
      * function but passes in the rules for updating rather than creating.
      */
-    public function rules(array $rules = null): array
+    public function rules(?array $rules = null): array
     {
         $node = $this->route()->parameter('node')->id;
 

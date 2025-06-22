@@ -9,7 +9,7 @@ class SetAllocationUnqiueUsingMultipleFields extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->unique(['node_id', 'ip', 'port']);
@@ -19,7 +19,7 @@ class SetAllocationUnqiueUsingMultipleFields extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropForeign(['node_id']);

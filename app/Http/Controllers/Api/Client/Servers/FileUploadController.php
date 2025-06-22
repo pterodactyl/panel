@@ -16,7 +16,7 @@ class FileUploadController extends ClientApiController
      * FileUploadController constructor.
      */
     public function __construct(
-        private NodeJWTService $jwtService
+        private NodeJWTService $jwtService,
     ) {
         parent::__construct();
     }

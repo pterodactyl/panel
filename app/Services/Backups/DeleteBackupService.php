@@ -16,7 +16,7 @@ class DeleteBackupService
     public function __construct(
         private ConnectionInterface $connection,
         private BackupManager $manager,
-        private DaemonBackupRepository $daemonBackupRepository
+        private DaemonBackupRepository $daemonBackupRepository,
     ) {
     }
 

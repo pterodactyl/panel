@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $user_id
  * @property string $token
  * @property \Carbon\CarbonImmutable $created_at
- * @property \Pterodactyl\Models\User $user
+ * @property User $user
  */
 class RecoveryToken extends Model
 {
