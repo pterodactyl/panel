@@ -18,9 +18,9 @@ class HashidsServiceProvider extends ServiceProvider
             $config = $this->app['config'];
 
             return new Hashids(
-                $config->get('hashids.salt', ''),
-                $config->get('hashids.length', 0),
-                $config->get('hashids.alphabet', 'abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+                (string) $config->get('hashids.salt', ''),
+                (int) $config->get('hashids.length', 0),
+                (string) $config->get('hashids.alphabet', 'abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
             );
         });
 
