@@ -8,7 +8,7 @@ on:
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
     permissions:
       contents: write # write is required to create releases and push.
     steps:
@@ -31,14 +31,14 @@ jobs:
         env:
           REF: ${{ github.ref }}
         run: |
-          BRANCH=release/${REF:10}
-          git config --local user.email "ci@pterodactyl.io"
-          git config --local user.name "Pterodactyl CI"
-          git checkout -b $BRANCH
-          git push -u origin $BRANCH
+          BRANCH=release/"${REF:10}"
+          git config --local user.email 'ci@pterodactyl.io'
+          git config --local user.name 'Pterodactyl CI'
+          git checkout -b "$BRANCH"
+          git push -u origin "$BRANCH"
           sed -i "s/    'version' => 'canary',/    'version' => '${REF:11}',/" config/app.php
           git add config/app.php
-          git commit -m "ci(release): bump version"
+          git commit -m 'ci(release): bump version'
           git push
 
       - name: Create release archive
@@ -56,7 +56,7 @@ jobs:
         run: |
           SUM=`sha256sum panel.tar.gz`
           echo -e "\n#### SHA256 Checksum\n\n\`\`\`\n$SUM\n\`\`\`\n" >> ./RELEASE_CHANGELOG
-          echo $SUM > checksum.txt
+          echo "$SUM" > checksum.txt
 
       - name: Create release
         id: create_release
@@ -67,25 +67,6 @@ jobs:
           draft: true
           prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
           body_path: ./RELEASE_CHANGELOG
-
-      - name: Upload release archive
-        id: upload-release-archive
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: panel.tar.gz
-          asset_name: panel.tar.gz
-          asset_content_type: application/gzip
-
-      - name: Upload release checksum
-        id: upload-release-checksum
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./checksum.txt
-          asset_name: checksum.txt
-          asset_content_type: text/plain
+          files: |
+            panel.tar.gz
+            checksum.txt
