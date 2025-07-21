@@ -62,7 +62,7 @@ export default () => {
     return (
         <ServerContentBlock title={'File Manager'} showFlashKey={'files'}>
             <ErrorBoundary>
-                <div className={'flex flex-wrap-reverse md:flex-nowrap mb-4'}>
+                <div className={'flex flex-wrap-reverse md:flex-nowrap mb-4'}> 
                     <FileManagerBreadcrumbs
                         renderLeft={
                             <FileActionCheckbox
@@ -92,22 +92,30 @@ export default () => {
                     {!files.length ? (
                         <p css={tw`text-sm text-neutral-400 text-center`}>This directory seems to be empty.</p>
                     ) : (
-                        <CSSTransition classNames={'fade'} timeout={150} appear in>
-                            <div>
-                                {files.length > 250 && (
-                                    <div css={tw`rounded bg-yellow-400 mb-px p-3`}>
-                                        <p css={tw`text-yellow-900 text-sm text-center`}>
-                                            This directory is too large to display in the browser, limiting the output
-                                            to the first 250 files.
-                                        </p>
-                                    </div>
-                                )}
-                                {sortFiles(files.slice(0, 250)).map((file) => (
-                                    <FileObjectRow key={file.key} file={file} />
-                                ))}
-                                <MassActionsBar />
-                            </div>
-                        </CSSTransition>
+						<CSSTransition classNames={'fade'} timeout={150} appear in>
+							<div>
+								{files.length > 250 && (
+									<div css={tw`rounded bg-yellow-400 mb-px p-3`}>
+										<p css={tw`text-yellow-900 text-sm text-center`}>
+											This directory is too large to display in the browser, limiting the output
+											to the first 250 files. Use FTP Instead.
+										</p>
+									</div>
+								)}
+								{(() => {
+									const folders = files.filter(file => file.mimetype === 'inode/directory');
+									const regularFiles = files.filter(file => file.mimetype !== 'inode/directory');
+									const displayFiles = [
+										...folders,
+										...regularFiles.slice(0, Math.max(0, 250 - folders.length))
+									];
+									return sortFiles(displayFiles).map((file) => (
+										<FileObjectRow key={file.key} file={file} />
+									));
+								})()}
+								<MassActionsBar />
+							</div>
+						</CSSTransition>
                     )}
                 </>
             )}
