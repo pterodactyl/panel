@@ -9,7 +9,7 @@ class UpdateServersColumnName extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('databases', function (Blueprint $table) {
             $table->renameColumn('server', 'server_id');
@@ -19,7 +19,7 @@ class UpdateServersColumnName extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('databases', function (Blueprint $table) {
             $table->renameColumn('server_id', 'server');

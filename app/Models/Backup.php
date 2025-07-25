@@ -4,7 +4,6 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -22,13 +21,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property \Carbon\CarbonImmutable $created_at
  * @property \Carbon\CarbonImmutable $updated_at
  * @property \Carbon\CarbonImmutable|null $deleted_at
- * @property Server $server
+ * @property \Pterodactyl\Models\Server $server
  * @property \Pterodactyl\Models\AuditLog[] $audits
  */
 class Backup extends Model
 {
-    /** @use HasFactory<\Database\Factories\BackupFactory> */
-    use HasFactory;
     use SoftDeletes;
 
     public const RESOURCE_NAME = 'backup';

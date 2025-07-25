@@ -9,7 +9,7 @@ class CreateDaemonKeysTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('daemon_keys', function (Blueprint $table) {
             $table->increments('id');
@@ -28,7 +28,7 @@ class CreateDaemonKeysTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('daemon_keys');
     }

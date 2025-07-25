@@ -13,9 +13,11 @@ class StoreNodeTokensAsEncryptedValue extends Migration
     /**
      * Run the migrations.
      *
-     * @throws Exception
+     * @return void
+     *
+     * @throws \Exception
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('nodes', function (Blueprint $table) {
             $table->dropUnique(['daemonSecret']);
@@ -24,15 +26,14 @@ class StoreNodeTokensAsEncryptedValue extends Migration
         Schema::table('nodes', function (Blueprint $table) {
             $table->char('uuid', 36)->after('id');
             $table->char('daemon_token_id', 16)->after('upload_size');
-
-            $table->renameColumn('`daemonSecret`', 'daemon_token');
+            $table->renameColumn('daemonSecret', 'daemon_token');
         });
 
         Schema::table('nodes', function (Blueprint $table) {
             $table->text('daemon_token')->change();
         });
 
-        /** @var Encrypter $encrypter */
+        /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */
         $encrypter = Container::getInstance()->make(Encrypter::class);
 
         foreach (DB::select('SELECT id, daemon_token FROM nodes') as $datum) {
@@ -52,11 +53,13 @@ class StoreNodeTokensAsEncryptedValue extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         DB::transaction(function () {
-            /** @var Encrypter $encrypter */
+            /** @var \Illuminate\Contracts\Encryption\Encrypter $encrypter */
             $encrypter = Container::getInstance()->make(Encrypter::class);
 
             foreach (DB::select('SELECT id, daemon_token_id, daemon_token FROM nodes') as $datum) {

@@ -37,7 +37,7 @@ class FindAssignableAllocationService
         // Attempt to find a given available allocation for a server. If one cannot be found
         // we will fall back to attempting to create a new allocation that can be used for the
         // server.
-        /** @var Allocation|null $allocation */
+        /** @var \Pterodactyl\Models\Allocation|null $allocation */
         $allocation = $server->node->allocations()
             ->where('ip', $server->allocation->ip)
             ->whereNull('server_id')
@@ -100,7 +100,7 @@ class FindAssignableAllocationService
             'allocation_ports' => [$port],
         ]);
 
-        /** @var Allocation $allocation */
+        /** @var \Pterodactyl\Models\Allocation $allocation */
         $allocation = $server->node->allocations()
             ->where('ip', $server->allocation->ip)
             ->where('port', $port)

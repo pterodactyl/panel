@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -9,7 +8,7 @@ class RenamePermissionsColumn extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('permissions', function (Blueprint $table) {
             $table->renameColumn('permissions', 'permission');
@@ -19,7 +18,7 @@ class RenamePermissionsColumn extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('permissions', function (Blueprint $table) {
         });

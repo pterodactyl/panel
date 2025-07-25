@@ -8,8 +8,10 @@ class AddFileDenylistToEggConfigs extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->text('file_denylist')->after('docker_images');
@@ -18,8 +20,10 @@ class AddFileDenylistToEggConfigs extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->dropColumn('file_denylist');

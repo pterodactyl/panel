@@ -22,7 +22,7 @@ class EggCreationService
      * Create a new service option and assign it to the given service.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws NoParentConfigurationFoundException
+     * @throws \Pterodactyl\Exceptions\Service\Egg\NoParentConfigurationFoundException
      */
     public function handle(array $data): Egg
     {

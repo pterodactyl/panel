@@ -9,8 +9,10 @@ class ChangeSuccessfulFieldToDefaultToFalseOnBackupsTable extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->boolean('is_successful')->after('uuid')->default(false)->change();
@@ -24,8 +26,10 @@ class ChangeSuccessfulFieldToDefaultToFalseOnBackupsTable extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('backups', function (Blueprint $table) {
             $table->boolean('is_successful')->after('uuid')->default(true)->change();

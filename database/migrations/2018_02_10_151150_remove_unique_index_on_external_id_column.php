@@ -8,8 +8,10 @@ class RemoveUniqueIndexOnExternalIdColumn extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropUnique(['external_id']);
@@ -18,8 +20,10 @@ class RemoveUniqueIndexOnExternalIdColumn extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unique(['external_id']);

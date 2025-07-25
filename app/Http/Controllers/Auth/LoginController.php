@@ -48,7 +48,7 @@ class LoginController extends AbstractLoginController
         try {
             $username = $request->input('user');
 
-            /** @var User $user */
+            /** @var \Pterodactyl\Models\User $user */
             $user = User::query()->where($this->getField($username), $username)->firstOrFail();
         } catch (ModelNotFoundException) {
             $this->sendFailedLoginResponse($request);

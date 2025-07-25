@@ -11,7 +11,6 @@ return [
     | password incorrectly.
     |
     */
-
     'lockout' => [
         'time' => 2,
         'attempts' => 3,
@@ -22,8 +21,8 @@ return [
     | Authentication Defaults
     |--------------------------------------------------------------------------
     |
-    | This option defines the default authentication "guard" and password
-    | reset "broker" for your application. You may change these values
+    | This option controls the default authentication "guard" and password
+    | reset options for your application. You may change these defaults
     | as required, but they're a perfect start for most applications.
     |
     */
@@ -40,11 +39,11 @@ return [
     |
     | Next, you may define every authentication guard for your application.
     | Of course, a great default configuration has been defined for you
-    | which utilizes session storage plus the Eloquent user provider.
+    | here which uses session storage and the Eloquent user provider.
     |
-    | All authentication guards have a user provider, which defines how the
+    | All authentication drivers have a user provider. This defines how the
     | users are actually retrieved out of your database or other storage
-    | system used by the application. Typically, Eloquent is utilized.
+    | mechanisms used by this application to persist your user's data.
     |
     | Supported: "session", "token"
     |
@@ -67,12 +66,12 @@ return [
     | User Providers
     |--------------------------------------------------------------------------
     |
-    | All authentication guards have a user provider, which defines how the
+    | All authentication drivers have a user provider. This defines how the
     | users are actually retrieved out of your database or other storage
-    | system used by the application. Typically, Eloquent is utilized.
+    | mechanisms used by this application to persist your user's data.
     |
     | If you have multiple user tables or models you may configure multiple
-    | providers to represent the model / table. These providers may then
+    | sources which represent each model / table. These sources may then
     | be assigned to any extra authentication guards you have defined.
     |
     | Supported: "database", "eloquent"
@@ -91,17 +90,17 @@ return [
     | Resetting Passwords
     |--------------------------------------------------------------------------
     |
-    | These configuration options specify the behavior of Laravel's password
-    | reset functionality, including the table utilized for token storage
-    | and the user provider that is invoked to actually retrieve users.
+    | Here you may set the options for resetting passwords including the view
+    | that is your password reset e-mail. You may also set the name of the
+    | table that maintains all of the reset tokens for your application.
     |
-    | The expiry time is the number of minutes that each reset token will be
+    | You may specify multiple password reset configurations if you have more
+    | than one user table or model in the application and you want to have
+    | separate password reset settings based on the specific user types.
+    |
+    | The expire time is the number of minutes that the reset token should be
     | considered valid. This security feature keeps tokens short-lived so
     | they have less time to be guessed. You may change this as needed.
-    |
-    | The throttle setting is the number of seconds a user must wait before
-    | generating more password reset tokens. This prevents the user from
-    | quickly generating a very large amount of password reset tokens.
     |
     */
 
@@ -120,10 +119,10 @@ return [
     |--------------------------------------------------------------------------
     |
     | Here you may define the amount of seconds before a password confirmation
-    | window expires and users are asked to re-enter their password via the
+    | times out and the user is prompted to re-enter their password via the
     | confirmation screen. By default, the timeout lasts for three hours.
     |
     */
 
-    'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+    'password_timeout' => 10800,
 ];

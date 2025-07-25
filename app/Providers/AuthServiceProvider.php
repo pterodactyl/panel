@@ -21,4 +21,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         Sanctum::usePersonalAccessTokenModel(ApiKey::class);
     }
+
+    public function register(): void
+    {
+        Sanctum::ignoreMigrations();
+    }
 }

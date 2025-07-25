@@ -42,7 +42,7 @@ class BackupRemoteUploadController extends Controller
             throw new BadRequestHttpException('A non-empty "size" query parameter must be provided.');
         }
 
-        /** @var Backup $model */
+        /** @var \Pterodactyl\Models\Backup $model */
         $model = Backup::query()
             ->where('uuid', $backup)
             ->firstOrFail();

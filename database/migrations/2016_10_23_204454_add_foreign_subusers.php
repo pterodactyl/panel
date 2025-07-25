@@ -9,7 +9,7 @@ class AddForeignSubusers extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('subusers', function (Blueprint $table) {
             $table->foreign('user_id')->references('id')->on('users');
@@ -20,14 +20,14 @@ class AddForeignSubusers extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('subusers', function (Blueprint $table) {
-            $table->dropForeign(['user_id']);
-            $table->dropIndex(['user_id']);
+            $table->dropForeign('subusers_user_id_foreign');
+            $table->dropForeign('subusers_server_id_foreign');
 
-            $table->dropForeign(['server_id']);
-            $table->dropIndex(['server_id']);
+            $table->dropIndex('subusers_user_id_foreign');
+            $table->dropIndex('subusers_server_id_foreign');
         });
     }
 }

@@ -8,8 +8,10 @@ class AllowTextInUserExternalId extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('external_id')->nullable()->change();
@@ -18,8 +20,10 @@ class AllowTextInUserExternalId extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('users', function (Blueprint $table) {
             $table->unsignedInteger('external_id')->change();

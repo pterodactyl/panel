@@ -15,14 +15,14 @@ class LocationDeletionService
      */
     public function __construct(
         protected LocationRepositoryInterface $repository,
-        protected NodeRepositoryInterface $nodeRepository,
+        protected NodeRepositoryInterface $nodeRepository
     ) {
     }
 
     /**
      * Delete an existing location.
      *
-     * @throws HasActiveNodesException
+     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
      */
     public function handle(Location|int $location): ?int
     {

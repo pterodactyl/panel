@@ -8,8 +8,10 @@ class ChangeUniqueDatabaseNameToAccountForServer extends Migration
 {
     /**
      * Run the migrations.
+     *
+     * @return void
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('databases', function (Blueprint $table) {
             $table->dropUnique(['database_host_id', 'database']);
@@ -22,8 +24,10 @@ class ChangeUniqueDatabaseNameToAccountForServer extends Migration
 
     /**
      * Reverse the migrations.
+     *
+     * @return void
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('databases', function (Blueprint $table) {
             $table->dropUnique(['database_host_id', 'server_id', 'database']);

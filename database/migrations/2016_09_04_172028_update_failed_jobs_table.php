@@ -9,7 +9,7 @@ class UpdateFailedJobsTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('failed_jobs', function (Blueprint $table) {
             $table->text('exception');
@@ -19,7 +19,7 @@ class UpdateFailedJobsTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('failed_jobs', function (Blueprint $table) {
             $table->dropColumn('exception');

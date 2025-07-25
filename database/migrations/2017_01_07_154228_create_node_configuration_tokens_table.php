@@ -9,7 +9,7 @@ class CreateNodeConfigurationTokensTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::create('node_configuration_tokens', function (Blueprint $table) {
             $table->increments('id');
@@ -24,7 +24,7 @@ class CreateNodeConfigurationTokensTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::dropIfExists('node_configuration_tokens');
     }

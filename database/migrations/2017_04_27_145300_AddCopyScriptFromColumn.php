@@ -9,7 +9,7 @@ class AddCopyScriptFromColumn extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->unsignedInteger('copy_script_from')->nullable()->after('script_container');
@@ -21,7 +21,7 @@ class AddCopyScriptFromColumn extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
         Schema::table('service_options', function (Blueprint $table) {
             $table->dropForeign(['copy_script_from']);
