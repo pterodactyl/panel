@@ -199,7 +199,7 @@ class ActivityLogService
 
         $this->activity = new ActivityLog([
             'ip' => Request::ip(),
-            'batch_uuid' => $this->batch->uuid(),
+            'batch' => $this->batch->uuid(),
             'properties' => Collection::make([]),
             'api_key_id' => $this->targetable->apiKeyId(),
         ]);
