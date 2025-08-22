@@ -1,0 +1,42 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-08-20T04:39:19+07:00",
+    "name": "SA-MP-Windows",
+    "author": "SkyNest@Official.net",
+    "description": "Jangan Lupa Support Terus SkyNest Official Ya\ud83d\ude0a",
+    "features": null,
+    "docker_images": {
+        "hcgcloud\/pterodactyl-images:ubuntu-wine": "hcgcloud\/pterodactyl-images:ubuntu-wine"
+    },
+    "file_denylist": [],
+    "startup": "wine64 .\/samp-server.exe",
+    "config": {
+        "files": "{\r\n    \"server.cfg\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"port\": \"port {{server.build.default.port}}\",\r\n            \"maxplayers\": \"maxplayers {{server.build.env.MAX_PLAYERS}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"Started server on port: \",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"samp.log\"\r\n}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\napt -y update\r\napt -y --no-install-recommends install curl unzip lib32gcc1 ca-certificates\r\ncd \/tmp\r\ncurl -SL -o samp.zip http:\/\/files.sa-mp.com\/samp037_svr_R2-1-1_win32.zip\r\nmkdir -p \/mnt\/server\r\nunzip -o -d \/mnt\/server\/ samp.zip\r\ncd \/mnt\/server\r\nchown -R root:root \/mnt\r\nexport HOME=\/mnt\/server",
+            "container": "ubuntu:16.04",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Max Players",
+            "description": "Max players allowed to play in the server",
+            "env_variable": "MAX_PLAYERS",
+            "default_value": "50",
+            "user_viewable": true,
+            "user_editable": false,
+            "rules": "required|integer|between:1,1000",
+            "field_type": "text"
+        }
+    ]
+}
