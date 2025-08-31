@@ -1,0 +1,53 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2025-09-01T03:17:57+07:00",
+    "name": "SA-MP",
+    "author": "SkyNest@Official.net",
+    "description": "aWAS",
+    "features": null,
+    "docker_images": {
+        "Windows": "hcgcloud\/pterodactyl-images:ubuntu-wine",
+        "Linux": "skynestoffc\/pterodactyl-image:linux"
+    },
+    "file_denylist": [],
+    "startup": "{{STARTUP_OS}}",
+    "config": {
+        "files": "{\r\n    \"server.cfg\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"port\": \"port {{server.build.default.port}}\",\r\n            \"maxplayers\": \"maxplayers {{server.build.env.MAX_PLAYERS}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \"Server started successfully\",\r\n    \"userInteraction\": []\r\n}",
+        "logs": "{\r\n    \"custom\": true,\r\n    \"location\": \"samp.log\"\r\n}",
+        "stop": "^C"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!\/bin\/bash\r\napt -y update\r\napt -y --no-install-recommends install curl unzip lib32gcc-s1 ca-certificates wget\r\n\r\ncd \/mnt\/server\r\n\r\nif [ \"$STARTUP_OS\" = \".\/samp03svr\" ]; then\r\n  curl -sSL -o samp.tar.gz http:\/\/sa-mp.co.id\/files\/samp037svr_R2-2-1.tar.gz\r\n  mkdir -p \/mnt\/server\r\n  tar -xzvf samp.tar.gz -C \/mnt\/server\/\r\n  cp -r \/mnt\/server\/samp03\/* \/mnt\/server\r\n  rm -rf \/mnt\/server\/samp03\/\r\n  sed -i '3d' \/mnt\/server\/server.cfg\r\n  echo \"rcon_password changemeplease\" >> \/mnt\/server\/server.cfg\r\nelif [ \"$STARTUP_OS\" = \"wine64 .\/samp-server.exe\" ]; then\r\n  curl -SL -o samp.zip https:\/\/sa-mp.co.id\/files\/samp037_svr_R2-2-1_win32.zip\r\n  unzip -o -d \/mnt\/server\/ samp.zip\r\nrm -rf samp.zip\r\nfi\r\n\r\nchown -R root:root \/mnt\r\nexport HOME=\/mnt\/server",
+            "container": "ubuntu:22.04",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "Server OS",
+            "description": "Sesuai kan Os Dengan gm yg kalian pake",
+            "env_variable": "STARTUP_OS",
+            "default_value": "wine64 .\/samp-server.exe",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:wine64 .\/samp-server.exe,.\/samp03svr",
+            "field_type": "text"
+        },
+        {
+            "name": "Max Players",
+            "description": "Atur Slot Player Yang Kalian Mau",
+            "env_variable": "MAX_PLAYERS",
+            "default_value": "50",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|integer|between:1,1000",
+            "field_type": "text"
+        }
+    ]
+}
