@@ -1,0 +1,65 @@
+sudo apt update && sudo apt upgrade -y
+sudo apt install git curl unzip tar php php-cli php-mbstring php-bcmath php-gd php-curl php-mysql mariadb-server nginx composer redis -y
+cd /var/www/
+git clone https://github.com/<username>/panel.git
+cd panel
+composer install --no-dev --optimize-autoloader
+cp .env.example .env
+php artisan key:generate
+mysql -u root -p
+CREATE DATABASE panel;
+CREATE USER 'ptero'@'127.0.0.1' IDENTIFIED BY 'passwordku';
+GRANT ALL PRIVILEGES ON panel.* TO 'ptero'@'127.0.0.1';
+EXIT;
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=panel
+DB_USERNAME=ptero
+DB_PASSWORD=Fiz123
+php artisan migrate --seed --force
+server {
+    listen 80;
+    server_Fizcxb.com;
+
+    root /var/www/panel/public;
+
+    index index.php;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/var/run/php/php8.1-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        include fastcgi_params;
+    }
+}
+ln -s /etc/nginx/sites-available/panel.conf /etc/nginx/sites-enabled/
+nginx -t
+systemctl restart nginx
+name: Deploy Panel
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy ke VPS
+        uses: appleboy/ssh-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            cd /var/www/panel
+            git pull origin main
+            composer install --no-dev --optimize-autoloader
+            php artisan migrate --force
+            php artisan view:clear
+            php artisan config:clear
+            php artisan cache:clear
