@@ -1,0 +1,42 @@
+{
+    "name": "JentzyyXCyberOverload",
+    "version": "2.0",
+    "description": "script bug",
+    "main": "index.js",
+    "type": "commonjs",
+    "scripts": {
+        "start": "node index.js"
+    },
+    "keywords": [
+        "whiskeysockets",
+        "multi-device"
+    ],
+    "author": "DevLiam",
+    "license": "MIT",
+    "dependencies": {
+        "@adiwajshing/keyed-db": "^0.2.4",
+        "@colors/colors": "^1.5.0",
+        "@hapi/boom": "^10.0.0",
+        "@whiskeysockets/baileys": "github:kiuur/bails",
+        "awesome-phonenumber": "^2.70.0",
+        "chalk": "^4.1.2",
+        "child_process": "^1.0.2",
+        "crypto": "^1.0.1",
+        "colors": "latest",
+        "fs": "0.0.1-security",
+        "human-readable": "^0.2.1",
+        "jimp": "^0.16.3",
+        "js-confuser": "^1.7.3",
+        "moment-timezone": "^0.5.34",
+        "ms": "^2.1.3",
+        "node-fetch": "^2.6.1",
+        "pino": "^7.0.5",
+        "parse-ms": "^2.1.0",
+        "qrcode-terminal": "^0.12.0",
+        "readline": "^1.3.0",
+        "request": "^2.88.2",
+        "stream": "^0.0.3",
+        "util": "^0.12.4",
+        "yt-search": "^2.10.4"
+     }
+}
