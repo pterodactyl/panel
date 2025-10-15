@@ -7,7 +7,6 @@ $textarea-rows: 15 !default;
   font-family: $font-family-monospace !important;
   height: 20rem;
   border: 1px solid #ccc;
-  direction: ltr;
 }
 
 // Code mirror default style (do not affect the console style)
@@ -102,4 +101,14 @@ span {
 
 .CodeMirror-hints {
   z-index: 1999;
+}
+
+.CodeMirror-lint-tooltip {
+  z-index: 2000;
+  font-family: inherit;
+
+  code {
+    font-family: monospace;
+    font-weight: bold;
+  }
 }

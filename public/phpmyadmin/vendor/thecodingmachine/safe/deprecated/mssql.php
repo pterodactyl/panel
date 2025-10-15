@@ -97,7 +97,7 @@ function mssql_close($link_identifier = null): void
  * @throws MssqlException
  *
  */
-function mssql_connect(string $servername = null, string $username = null, string $password = null, bool $new_link = false)
+function mssql_connect(?string $servername = null, ?string $username = null, ?string $password = null, bool $new_link = false)
 {
     error_clear_last();
     if ($new_link !== false) {
@@ -330,7 +330,7 @@ function mssql_init(string $sp_name, $link_identifier = null)
  * @throws MssqlException
  *
  */
-function mssql_pconnect(string $servername = null, string $username = null, string $password = null, bool $new_link = false)
+function mssql_pconnect(?string $servername = null, ?string $username = null, ?string $password = null, bool $new_link = false)
 {
     error_clear_last();
     if ($new_link !== false) {

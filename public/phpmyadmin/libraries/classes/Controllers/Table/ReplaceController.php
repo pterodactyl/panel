@@ -162,6 +162,7 @@ final class ReplaceController extends AbstractController
             'VERSION',
         ];
         $func_optional_param = [
+            'NOW',
             'RAND',
             'UNIX_TIMESTAMP',
         ];

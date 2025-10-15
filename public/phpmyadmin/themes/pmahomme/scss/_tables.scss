@@ -5,11 +5,14 @@
   td {
     text-shadow: 0 1px 0 #fff;
     vertical-align: middle;
+
+    > span:empty::before {
+      content: "\200b";
+    }
   }
 
   th {
     color: $th-color;
-    text-align: left;
   }
 
   td {

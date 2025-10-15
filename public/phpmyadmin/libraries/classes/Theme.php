@@ -20,8 +20,9 @@ use function trim;
 use function version_compare;
 
 use const DIRECTORY_SEPARATOR;
-
 use const E_USER_ERROR;
+use const E_USER_WARNING;
+use const PHP_VERSION_ID;
 
 /**
  * handles theme
@@ -168,7 +169,7 @@ class Theme
                 __('No valid image path for theme %s found!'),
                 $this->getName()
             ),
-            E_USER_ERROR
+            PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
         );
 
         return false;

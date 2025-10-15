@@ -1026,7 +1026,6 @@ code {
     margin-bottom: 0;
     max-height: 10em;
     overflow: auto;
-    direction: ltr;
   }
 
   &.sql {
@@ -1036,7 +1035,6 @@ code {
     margin-bottom: 0;
     max-height: 10em;
     overflow: auto;
-    direction: ltr;
   }
 }
 
@@ -1047,7 +1045,6 @@ div.sqlvalidate {
   margin-bottom: 0;
   max-height: 10em;
   overflow: auto;
-  direction: ltr;
 }
 
 .result_query div.sqlOuter {
@@ -1193,6 +1190,7 @@ input#import_merge {
   top: 0;
   left: 0;
   background: #000;
+  opacity: 0.7;
   z-index: 1000;
   overflow: hidden;
 }
@@ -2866,4 +2864,12 @@ body .ui-dialog {
 
 .table-responsive-md .data {
   z-index: 9;
+}
+
+.table-responsive-md {
+  max-width: fit-content;
+}
+
+.bg-secondary {
+  color: #333;
 }

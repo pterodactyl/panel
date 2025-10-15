@@ -90,7 +90,7 @@ function pspell_clear_session(int $dictionary_link): void
  * @throws PspellException
  *
  */
-function pspell_config_create(string $language, string $spelling = null, string $jargon = null, string $encoding = null): int
+function pspell_config_create(string $language, ?string $spelling = null, ?string $jargon = null, ?string $encoding = null): int
 {
     error_clear_last();
     if ($encoding !== null) {
@@ -392,7 +392,7 @@ function pspell_new_config(int $config): int
  * @throws PspellException
  *
  */
-function pspell_new(string $language, string $spelling = null, string $jargon = null, string $encoding = null, int $mode = 0): int
+function pspell_new(string $language, ?string $spelling = null, ?string $jargon = null, ?string $encoding = null, int $mode = 0): int
 {
     error_clear_last();
     if ($mode !== 0) {

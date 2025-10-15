@@ -44,14 +44,14 @@
                         {% set foreign_db = one_key['ref_db_name'] is defined
                             and one_key['ref_db_name'] is not null
                             ? one_key['ref_db_name'] : db %}
-                        {% set foreign_table = false %}
+                        {% set foreign_table = '' %}
                         {% if foreign_db %}
                             {% set foreign_table = one_key['ref_table_name'] is defined
                                 and one_key['ref_table_name'] is not null
-                                ? one_key['ref_table_name'] : false %}
+                                ? one_key['ref_table_name'] : '' %}
                         {% endif %}
                         {% set unique_columns = [] %}
-                        {% if foreign_db and foreign_table %}
+                        {% if foreign_db is not same as('') and foreign_table is not same as('') %}
                             {% set table_obj = table_get(foreign_table, foreign_db) %}
                             {% set unique_columns = table_obj.getUniqueColumns(false, false) %}
                         {% endif %}
@@ -82,8 +82,8 @@
                     'table': table,
                     'url_params': url_params,
                     'databases': databases,
-                    'foreign_db': foreign_db,
-                    'foreign_table': foreign_table,
+                    'foreign_db': '',
+                    'foreign_table': '',
                     'unique_columns': unique_columns
                 } only %}
                 {% set i = i + 1 %}
@@ -134,7 +134,7 @@
                            in the name attribute (see bug #1746964 ) #}
                         {% set myfield_md5 = column_hash_array[myfield] %}
 
-                        {% set foreign_table = false %}
+                        {% set foreign_table = '' %}
                         {% set foreign_column = false %}
 
                         {# Database dropdown #}
@@ -155,7 +155,7 @@
 
                         {# Column dropdown #}
                         {% set unique_columns = [] %}
-                        {% if foreign_db and foreign_table %}
+                        {% if foreign_db is not same as('') and foreign_table is not same as('') %}
                             {% if existrel[myfield] is defined %}
                                 {% set foreign_column = existrel[myfield]['foreign_field'] %}
                             {% endif %}

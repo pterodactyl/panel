@@ -133,7 +133,7 @@ Basic settings
     :default: false
 
     A warning is displayed on the main page if the PHP parameter
-    session.gc_maxlifetime is lower than cookie validity configured in phpMyAdmin.
+    ``session.gc_maxlifetime`` is lower than cookie validity configured in phpMyAdmin.
 
     You can set this parameter to ``true`` to stop this message from appearing.
 
@@ -240,8 +240,8 @@ Server connection settings
     .. note::
 
         The :config:option:`$cfg['Servers']` array starts with
-        $cfg['Servers'][1]. Do not use $cfg['Servers'][0]. If you want more
-        than one server, just copy following section (including $i
+        ``$cfg['Servers'][1]``. Do not use ``$cfg['Servers'][0]``. If you want more
+        than one server, just copy following section (including ``$i``
         increment) several times. There is no need to define full server
         array, just define values you need to change.
 
@@ -250,7 +250,7 @@ Server connection settings
     :type: string
     :default: ``'localhost'``
 
-    The hostname or :term:`IP` address of your $i-th MySQL-server. E.g.
+    The hostname or :term:`IP` address of your ``$i``-th MySQL-server. E.g.
     ``localhost``.
 
     Possible values are:
@@ -279,7 +279,7 @@ Server connection settings
     :type: string
     :default: ``''``
 
-    The port-number of your $i-th MySQL-server. Default is 3306 (leave
+    The port-number of your ``$i``-th MySQL-server. Default is 3306 (leave
     blank).
 
     .. note::
@@ -624,7 +624,7 @@ Server connection settings
     :type: string
     :default: ``''``
 
-    When using auth\_type = ``http``, this field allows to define a custom
+    When using ``'http'`` for :config:option:`$cfg['Servers'][$i]['auth_type']`, this field allows to define a custom
     :term:`HTTP` Basic Auth Realm which will be displayed to the user. If not
     explicitly specified in your configuration, a string combined of
     "phpMyAdmin " and either :config:option:`$cfg['Servers'][$i]['verbose']` or
@@ -638,7 +638,7 @@ Server connection settings
 
     .. versionadded:: 3.0.0.0
 
-        This setting was named `$cfg['Servers'][$i]['auth_feebee_config']` and was renamed before the `3.0.0.0` release.
+        This setting was named ``$cfg['Servers'][$i]['auth_feebee_config']`` and was renamed before the `3.0.0.0` release.
 
     .. deprecated:: 4.6.4
 
@@ -663,7 +663,7 @@ Server connection settings
     :default: ``''``
 
     When using :config:option:`$cfg['Servers'][$i]['auth_type']` set to
-    'config', this is the user/password-pair which phpMyAdmin will use to
+    ``'config'``, this is the user/password-pair which phpMyAdmin will use to
     connect to the MySQL server. This user/password pair is not needed when
     :term:`HTTP` or cookie authentication is used
     and should be empty.
@@ -821,14 +821,14 @@ Server connection settings
       point to the foreign table;
     * display in an optional tool-tip the "display column" when browsing the
       master table, if you move the mouse to a column containing a foreign
-      key (use also the 'table\_info' table); (see :ref:`faqdisplay`)
+      key (use also the ``table_info`` table); (see :ref:`faqdisplay`)
     * in edit/insert mode, display a drop-down list of possible foreign keys
       (key value and "display column" are shown) (see :ref:`faq6_21`)
     * display links on the table properties page, to check referential
       integrity (display missing foreign keys) for each described key;
     * in query-by-example, create automatic joins (see :ref:`faq6_6`)
     * enable you to get a :term:`PDF` schema of
-      your database (also uses the table\_coords table).
+      your database (also uses the ``table_coords`` table).
 
     The keys can be numeric or character.
 
@@ -856,7 +856,7 @@ Server connection settings
 
     .. versionadded:: 2.3.0
 
-    Since release 2.3.0 you can describe, in a special 'table\_info'
+    Since release 2.3.0 you can describe, in a special ``table_info``
     table, which column is to be displayed as a tool-tip when moving the
     cursor over the corresponding key. This configuration variable will
     hold the name of this special table. To allow the usage of this
@@ -895,8 +895,8 @@ Server connection settings
     Since release 2.3.0 you can have phpMyAdmin create :term:`PDF` pages
     showing the relations between your tables. Further, the designer interface
     permits visually managing the relations. To do this it needs two tables
-    "pdf\_pages" (storing information about the available :term:`PDF` pages)
-    and "table\_coords" (storing coordinates where each table will be placed on
+    "``pdf_pages``" (storing information about the available :term:`PDF` pages)
+    and "``table_coords``" (storing coordinates where each table will be placed on
     a :term:`PDF` schema output).  You must be using the "relation" feature.
 
     To allow the usage of this functionality:
@@ -949,15 +949,15 @@ Server connection settings
     Also new in release 2.5.0 is a MIME- transformation system which is also
     based on the following table structure. See :ref:`transformations` for
     further information. To use the MIME- transformation system, your
-    column\_info table has to have the three new columns 'mimetype',
-    'transformation', 'transformation\_options'.
+    ``column_info`` table has to have the three new columns ``'mimetype'``,
+    ``'transformation'``, ``'transformation_options'``.
 
     Starting with release 4.3.0, a new input-oriented transformation system
     has been introduced. Also, backward compatibility code used in the old
-    transformations system was removed. As a result, an update to column\_info
+    transformations system was removed. As a result, an update to ``column_info``
     table is necessary for previous transformations and the new input-oriented
     transformation system to work. phpMyAdmin will upgrade it automatically
-    for you by analyzing your current column\_info table structure.
+    for you by analyzing your current ``column_info`` table structure.
     However, if something goes wrong with the auto-upgrade then you can
     use the SQL script found in ``./sql/upgrade_column_info_4_3_0+.sql``
     to upgrade it manually.
@@ -967,7 +967,7 @@ Server connection settings
     * set up :config:option:`$cfg['Servers'][$i]['pmadb']` and the phpMyAdmin configuration storage
     * put the table name in :config:option:`$cfg['Servers'][$i]['column\_info']` (e.g.
       ``pma__column_info``)
-    * to update your PRE-2.5.0 Column\_comments table use this:  and
+    * to update your PRE-2.5.0 ``column_comments`` table use this:  and
       remember that the Variable in :file:`config.inc.php` has been renamed from
       :samp:`$cfg['Servers'][$i]['column\_comments']` to
       :config:option:`$cfg['Servers'][$i]['column\_info']`
@@ -978,7 +978,7 @@ Server connection settings
            ADD `mimetype` VARCHAR( 255 ) NOT NULL,
            ADD `transformation` VARCHAR( 255 ) NOT NULL,
            ADD `transformation_options` VARCHAR( 255 ) NOT NULL;
-    * to update your PRE-4.3.0 Column\_info table manually use this
+    * to update your PRE-4.3.0 ``column_info`` table manually use this
       ``./sql/upgrade_column_info_4_3_0+.sql`` SQL script.
 
     This feature can be disabled by setting the configuration to ``false``.
@@ -1420,7 +1420,7 @@ Server connection settings
 .. config:option:: $cfg['Servers'][$i]['AllowDeny']['rules']
 
     :type: array of strings
-    :default: array()
+    :default: ``[]``
 
     The general format for the rules is as such:
 
@@ -1433,7 +1433,7 @@ Server connection settings
 
     There are a few shortcuts you can
     use in the *ipmask* field as well (please note that those containing
-    SERVER\_ADDRESS might not be available on all webservers):
+    ``SERVER_ADDRESS`` might not be available on all webservers):
 
     .. code-block:: none
 
@@ -1537,13 +1537,13 @@ Server connection settings
 .. config:option:: $cfg['Servers'][$i]['SignonCookieParams']
 
     :type: array
-    :default: ``array()``
+    :default: ``[]``
 
     .. versionadded:: 4.7.0
 
     An associative array of session cookie parameters of other authentication system.
-    It is not needed if the other system doesn't use session_set_cookie_params().
-    Keys should include 'lifetime', 'path', 'domain', 'secure' or 'httponly'.
+    It is not needed if the other system doesn't use ``session_set_cookie_params()``.
+    Keys should include ``'lifetime'``, ``'path'``, ``'domain'``, ``'secure'`` or ``'httponly'``.
     Valid values are mentioned in `session_get_cookie_params <https://www.php.net/manual/en/
     function.session-get-cookie-params.php>`_, they should be set to same values as the
     other application uses. Takes effect only if
@@ -1614,7 +1614,7 @@ Generic settings
     :default: true
 
     Enables check for latest versions using JavaScript on the main phpMyAdmin
-    page or by directly accessing `index.php?route=/version-check`.
+    page or by directly accessing ``index.php?route=/version-check``.
 
     .. note::
 
@@ -1772,7 +1772,7 @@ Generic settings
     so you definitely don't want to put here a too low
     value. It has no effect when PHP is running in safe mode.
 
-    You can also use any string as in :file:`php.ini`, eg. '16M'. Ensure you
+    You can also use any string as in :file:`php.ini`, eg. ``'16M'``. Ensure you
     don't omit the suffix (16 means 16 bytes!)
 
 .. config:option:: $cfg['SkipLockedTables']
@@ -1919,8 +1919,8 @@ Cookie authentication options
     :type: string
     :default: ``''``
 
-    The "cookie" auth\_type uses the :term:`Sodium` extension to encrypt the cookies (see :term:`Cookie`). If you are
-    using the "cookie" auth\_type, enter here a generated string of random bytes to be used as an encryption key. It
+    The ``'cookie'`` :config:option:`$cfg['Servers'][$i]['auth_type']` uses the :term:`Sodium` extension to encrypt the cookies (see :term:`Cookie`). If you are
+    using the ``'cookie'`` :config:option:`$cfg['Servers'][$i]['auth_type']`, enter here a generated string of random bytes to be used as an encryption key. It
     will be used internally by the :term:`Sodium` extension: you won't be prompted for this encryption key.
 
     Since a binary string is usually not printable, it can be converted into a hexadecimal representation (using a
@@ -2278,7 +2278,7 @@ Navigation panel setup
 
     Enter the :term:`URL` where the logo in the navigation panel will point to.
     For use especially with self made theme which changes this.
-    For relative/internal URLs, you need to have leading `` ./ `` or trailing characters `` ? `` such as ``'./index.php?route=/server/sql?'``.
+    For relative/internal URLs, you need to have leading ``./`` or trailing characters ``?`` such as ``'./index.php?route=/server/sql?'``.
     For external URLs, you should include URL protocol schemes (``http`` or ``https``) with absolute URLs.
 
     You may want to make the link open in a new browser tab, for that you need to use :config:option:`$cfg['NavigationLogoLinkWindow']`
@@ -2713,7 +2713,7 @@ Editing mode
 .. config:option:: $cfg['ForeignKeyDropdownOrder']
 
     :type: array
-    :default: array('content-id', 'id-content')
+    :default: ``['content-id', 'id-content']``
 
     For the foreign key drop-down fields, there are several methods of
     display, offering both the key and value data. The contents of the
@@ -2755,7 +2755,7 @@ Export and import settings
 .. config:option:: $cfg['Export']
 
     :type: array
-    :default: array(...)
+    :default: ``[...]``
 
     In this array are defined default parameters for export, names of
     items are similar to texts seen on export page, so you can easily
@@ -2835,7 +2835,7 @@ Export and import settings
 .. config:option:: $cfg['Import']
 
     :type: array
-    :default: array(...)
+    :default: ``[...]``
 
     In this array are defined default parameters for import, names of
     items are similar to texts seen on import page, so you can easily
@@ -2852,7 +2852,7 @@ Export and import settings
 .. config:option:: $cfg['Schema']
 
     :type: array
-    :default: array(...)
+    :default: ``[...]``
 
 .. config:option:: $cfg['Schema']['format']
 
@@ -2927,7 +2927,7 @@ PDF Options
 .. config:option:: $cfg['PDFPageSizes']
 
     :type: array
-    :default: ``array('A3', 'A4', 'A5', 'letter', 'legal')``
+    :default: ``['A3', 'A4', 'A5', 'letter', 'legal']``
 
     Array of possible paper sizes for creating PDF pages.
 
@@ -2951,7 +2951,7 @@ Languages
 
     Defines the default language to use, if not browser-defined or user-
     defined. The corresponding language file needs to be in
-    locale/*code*/LC\_MESSAGES/phpmyadmin.mo.
+    ``locale/*code*/LC_MESSAGES/phpmyadmin.mo``.
 
 .. config:option:: $cfg['DefaultConnectionCollation']
 
@@ -2969,7 +2969,7 @@ Languages
     :default: not set
 
     Force language to use. The corresponding language file needs to be in
-    locale/*code*/LC\_MESSAGES/phpmyadmin.mo.
+    ``locale/*code*/LC_MESSAGES/phpmyadmin.mo``.
 
 .. config:option:: $cfg['FilterLanguages']
 
@@ -2988,12 +2988,12 @@ Languages
     You can select here which functions will be used for character set
     conversion. Possible values are:
 
-    * auto - automatically use available one (first is tested iconv, then
-      recode)
-    * iconv - use iconv or libiconv functions
-    * recode - use recode\_string function
-    * mb - use :term:`mbstring` extension
-    * none - disable encoding conversion
+    * ``auto`` - automatically use available one (first is tested ``iconv``, then
+      ``recode``)
+    * ``iconv`` - use ``iconv`` or ``libiconv`` functions
+    * ``recode`` - use ``recode_string`` function
+    * ``mb`` - use :term:`mbstring` extension
+    * ``none`` - disable encoding conversion
 
     Enabled charset conversion activates a pull-down menu in the Export
     and Import pages, to choose the character set when exporting a file.
@@ -3014,7 +3014,7 @@ Languages
 .. config:option:: $cfg['AvailableCharsets']
 
     :type: array
-    :default: array(...)
+    :default: ``[...]``
 
     Available character sets for MySQL conversion. You can add your own
     (any of supported by recode/iconv) or remove these which you don't
@@ -3040,7 +3040,7 @@ Web server settings
 .. config:option:: $cfg['TrustedProxies']
 
     :type: array
-    :default: array()
+    :default: ``[]``
 
     Lists proxies and HTTP headers which are trusted for
     :config:option:`$cfg['Servers'][$i]['AllowDeny']['order']`. This list is by
@@ -3048,7 +3048,7 @@ Web server settings
     want to use rules for IP addresses behind proxy.
 
     The following example specifies that phpMyAdmin should trust a
-    HTTP\_X\_FORWARDED\_FOR (``X-Forwarded-For``) header coming from the proxy
+    ``HTTP_X_FORWARDED_FOR`` (``X-Forwarded-For``) header coming from the proxy
     1.2.3.4:
 
     .. code-block:: php
@@ -3066,9 +3066,9 @@ Web server settings
     Specifies whether GD >= 2 is available. If yes it can be used for MIME
     transformations. Possible values are:
 
-    * auto - automatically detect
-    * yes - GD 2 functions can be used
-    * no - GD 2 function cannot be used
+    * ``auto`` - automatically detect
+    * ``yes`` - GD 2 functions can be used
+    * ``no`` - GD 2 function cannot be used
 
 .. config:option:: $cfg['CheckConfigurationPermissions']
 
@@ -3194,7 +3194,11 @@ Design customization
 
     This defines the default sort order for the tables, having a :term:`primary key`,
     when there is no sort order defines externally.
-    Acceptable values : ['NONE', 'ASC', 'DESC']
+    Possible values are:
+
+    * ``NONE``
+    * ``ASC``
+    * ``DESC``
 
 .. config:option:: $cfg['ShowBrowseComments']
 
@@ -3235,9 +3239,9 @@ Text fields
     VARCHAR columns. Applies to data editing and also to the default values
     in structure editing. Possible values are:
 
-    * input - this allows to limit size of text to size of columns in MySQL,
+    * ``input`` - this allows to limit size of text to size of columns in MySQL,
       but has problems with newlines in columns
-    * textarea - no problems with newlines in columns, but also no length
+    * ``textarea`` - no problems with newlines in columns, but also no length
       limitations
 
 .. config:option:: $cfg['MinSizeForInputField']
@@ -3594,7 +3598,7 @@ Various display setting
 .. config:option:: $cfg['UserprefsDisallow']
 
     :type: array
-    :default: array()
+    :default: ``[]``
 
     Contains names of configuration options (keys in ``$cfg`` array) that
     users can't set through user preferences. For possible values, refer
@@ -3695,7 +3699,7 @@ MySQL settings
 .. config:option:: $cfg['DefaultFunctions']
 
     :type: array
-    :default: ``array('FUNC_CHAR' => '', 'FUNC_DATE' => '', 'FUNC_NUMBER' => '', 'FUNC_SPATIAL' => 'GeomFromText', 'FUNC_UUID' => 'UUID', 'first_timestamp' => 'NOW')``
+    :default: ``['FUNC_CHAR' => '', 'FUNC_DATE' => '', 'FUNC_NUMBER' => '', 'FUNC_SPATIAL' => 'GeomFromText', 'FUNC_UUID' => 'UUID', 'first_timestamp' => 'NOW']``
 
     Functions selected by default when inserting/changing row, Functions
     are defined for meta types as (``FUNC_NUMBER``, ``FUNC_DATE``, ``FUNC_CHAR``,
@@ -3726,47 +3730,47 @@ Default options for Transformations
 .. config:option:: $cfg['DefaultTransformations']['Substring']
 
     :type: array
-    :default: array(0, 'all', '…')
+    :default: ``[0, 'all', '…']``
 
 .. config:option:: $cfg['DefaultTransformations']['Bool2Text']
 
     :type: array
-    :default: array('T', 'F')
+    :default: ``['T', 'F']``
 
 .. config:option:: $cfg['DefaultTransformations']['External']
 
     :type: array
-    :default: array(0, '-f /dev/null -i -wrap -q', 1, 1)
+    :default: ``[0, '-f /dev/null -i -wrap -q', 1, 1]``
 
 .. config:option:: $cfg['DefaultTransformations']['PreApPend']
 
     :type: array
-    :default: array('', '')
+    :default: ``['', '']``
 
 .. config:option:: $cfg['DefaultTransformations']['Hex']
 
     :type: array
-    :default: array('2')
+    :default: ``['2']``
 
 .. config:option:: $cfg['DefaultTransformations']['DateFormat']
 
     :type: array
-    :default: array(0, '', 'local')
+    :default: ``[0, '', 'local']``
 
 .. config:option:: $cfg['DefaultTransformations']['Inline']
 
     :type: array
-    :default: array('100', 100)
+    :default: ``['100', 100]``
 
 .. config:option:: $cfg['DefaultTransformations']['TextImageLink']
 
     :type: array
-    :default: array('', 100, 50)
+    :default: ``['', 100, 50]``
 
 .. config:option:: $cfg['DefaultTransformations']['TextLink']
 
     :type: array
-    :default: array('', '', '')
+    :default: ``['', '', '']``
 
 Console settings
 ----------------
@@ -3813,7 +3817,7 @@ Console settings
 .. config:option:: $cfg['Console']['Mode']
 
     :type: string
-    :default: 'info'
+    :default: ``'info'``
 
     Console mode
 

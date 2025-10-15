@@ -725,6 +725,27 @@ can be set to use the older authentication with a command such as
 
 .. seealso:: <https://github.com/phpmyadmin/phpmyadmin/issues/14220>, <https://stackoverflow.com/questions/49948350/phpmyadmin-on-mysql-8-0>, <https://bugs.php.net/bug.php?id=76243>
 
+.. _faq1_46:
+
+1.46 Missing ``HTTP_HOST`` variable when using nginx with HTTP/3
+-----------------------------------------------------------------------------------------------------------
+
+When using phpMyAdmin with nginx and HTTP/3 enabled, the ``HTTP_HOST`` variable may be missing due to a known issue with nginx's HTTP/3 implementation, which can cause several issues:
+
+- Two-factor authentication won't work
+- Exported settings have no hostname in the filename (e.g., ``phpMyAdmin-config-.json``)
+- The hostname is missing from the page title (empty ``@HTTP_HOST@``)
+
+To fix this issue, add the following line to your nginx configuration:
+
+.. code-block:: nginx
+
+    fastcgi_param HTTP_HOST $host;
+
+This line should be placed in the server block of your nginx configuration where the PHP-FPM settings are defined.
+
+.. seealso:: <https://github.com/php/php-src/issues/13021>, <https://github.com/nginx/nginx/issues/455>, <https://trac.nginx.org/nginx/ticket/2281>, <https://mailman.nginx.org/pipermail/nginx-devel/2024-January/3CQEHII5QU2BTQ7L7DAVCBWK3OQS3GU6.html>
+
 .. _faqconfig:
 
 Configuration

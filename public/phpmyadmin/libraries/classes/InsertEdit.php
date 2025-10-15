@@ -30,6 +30,7 @@ use function implode;
 use function in_array;
 use function is_array;
 use function is_file;
+use function is_numeric;
 use function is_string;
 use function max;
 use function mb_stripos;
@@ -1628,6 +1629,13 @@ class InsertEdit
             ) {
                 return $multiEditFuncs[$key] . "('" . $this->dbi->escapeString($currentValue) . "','"
                     . $this->dbi->escapeString($multiEditSalt[$key]) . "')";
+            }
+
+            if (
+                $multiEditFuncs[$key] === 'NOW'
+                && (is_numeric($currentValue) && $currentValue >= 0 && $currentValue <= 6)
+            ) {
+                return $multiEditFuncs[$key] . '(' . $this->dbi->escapeString($currentValue) . ')';
             }
 
             return $multiEditFuncs[$key] . "('" . $this->dbi->escapeString($currentValue) . "')";

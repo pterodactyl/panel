@@ -57,6 +57,7 @@ use const DATE_RFC1123;
 use const E_USER_ERROR;
 use const E_USER_WARNING;
 use const FILTER_VALIDATE_IP;
+use const PHP_VERSION_ID;
 
 /**
  * Core functions used all over the scripts.
@@ -375,7 +376,10 @@ class Core
 
         session_write_close();
         if ($response->headersSent()) {
-            trigger_error('Core::sendHeaderLocation called when headers are already sent!', E_USER_ERROR);
+            trigger_error(
+                'Core::sendHeaderLocation called when headers are already sent!',
+                PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
+            );
         }
 
         // bug #1523784: IE6 does not like 'Refresh: 0', it
@@ -458,45 +462,63 @@ class Core
     }
 
     /**
-     * Sends header indicating file download.
-     *
-     * @param string $filename Filename to include in headers if empty,
-     *                         none Content-Disposition header will be sent.
+     * @param string $filename Filename to include in headers if empty, none Content-Disposition header will be sent.
      * @param string $mimetype MIME type to include in headers.
      * @param int    $length   Length of content (optional)
-     * @param bool   $no_cache Whether to include no-caching headers.
+     * @param bool   $noCache  Whether to include no-caching headers.
+     *
+     * @return array<string, string>
      */
-    public static function downloadHeader(
+    public static function getDownloadHeaders(
         string $filename,
         string $mimetype,
         int $length = 0,
-        bool $no_cache = true
-    ): void {
+        bool $noCache = true
+    ): array {
         $headers = [];
 
-        if ($no_cache) {
+        if ($noCache) {
             $headers = self::getNoCacheHeaders();
         }
 
         /* Replace all possibly dangerous chars in filename */
         $filename = Sanitize::sanitizeFilename($filename);
-        if (! empty($filename)) {
+        if ($filename !== '') {
             $headers['Content-Description'] = 'File Transfer';
             $headers['Content-Disposition'] = 'attachment; filename="' . $filename . '"';
         }
 
         $headers['Content-Type'] = $mimetype;
 
-        // The default output in PMA uses gzip,
-        // so if we want to output uncompressed file, we should reset the encoding.
-        // See PHP bug https://github.com/php/php-src/issues/8218
-        header_remove('Content-Encoding');
-
         $headers['Content-Transfer-Encoding'] = 'binary';
 
         if ($length > 0) {
             $headers['Content-Length'] = (string) $length;
         }
+
+        return $headers;
+    }
+
+    /**
+     * Sends header indicating file download.
+     *
+     * @param string $filename Filename to include in headers if empty, none Content-Disposition header will be sent.
+     * @param string $mimetype MIME type to include in headers.
+     * @param int    $length   Length of content (optional)
+     * @param bool   $noCache  Whether to include no-caching headers.
+     */
+    public static function downloadHeader(
+        string $filename,
+        string $mimetype,
+        int $length = 0,
+        bool $noCache = true
+    ): void {
+        $headers = self::getDownloadHeaders($filename, $mimetype, $length, $noCache);
+
+        // The default output in PMA uses gzip,
+        // so if we want to output uncompressed file, we should reset the encoding.
+        // See PHP bug https://github.com/php/php-src/issues/8218
+        header_remove('Content-Encoding');
 
         foreach ($headers as $name => $value) {
             header(sprintf('%s: %s', $name, $value));
@@ -687,9 +709,6 @@ class Core
             'www.cve.org',
             /* Following are doubtful ones. */
             'mysqldatabaseadministration.blogspot.com',
-            /* arion2000.xyz Domains */
-            'arion2000.xyz',
-            'www.arion2000.xyz'
         ];
 
         return in_array($domain, $domainAllowList);

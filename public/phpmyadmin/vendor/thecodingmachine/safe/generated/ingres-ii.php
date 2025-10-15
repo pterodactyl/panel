@@ -332,7 +332,7 @@ function ingres_commit($link): void
  * @throws IngresiiException
  *
  */
-function ingres_connect(string $database = null, string $username = null, string $password = null, array $options = null)
+function ingres_connect(?string $database = null, ?string $username = null, ?string $password = null, ?array $options = null)
 {
     error_clear_last();
     if ($options !== null) {
@@ -364,7 +364,7 @@ function ingres_connect(string $database = null, string $username = null, string
  * @throws IngresiiException
  *
  */
-function ingres_execute($result, array $params = null, string $types = null): void
+function ingres_execute($result, ?array $params = null, ?string $types = null): void
 {
     error_clear_last();
     if ($types !== null) {
@@ -503,7 +503,7 @@ function ingres_free_result($result): void
  * @throws IngresiiException
  *
  */
-function ingres_pconnect(string $database = null, string $username = null, string $password = null, array $options = null)
+function ingres_pconnect(?string $database = null, ?string $username = null, ?string $password = null, ?array $options = null)
 {
     error_clear_last();
     if ($options !== null) {

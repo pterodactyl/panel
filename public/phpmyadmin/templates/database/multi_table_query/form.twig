@@ -53,7 +53,7 @@
                 <br>
                 <input type="checkbox"
                     title="{% trans 'Use this column in criteria' %}"
-                    class="criteria_col">
+                    class="criteria_col" data-bs-toggle="collapse" data-bs-target="#criteriaOptions{{ id }}" aria-expanded="false" aria-controls="criteriaOptions{{ id }}">
 
                 <button class="btn btn-link p-0 jsCriteriaButton" type="button" data-bs-toggle="collapse" data-bs-target="#criteriaOptions{{ id }}" aria-expanded="false" aria-controls="criteriaOptions{{ id }}">
                   {% trans 'criteria' %}

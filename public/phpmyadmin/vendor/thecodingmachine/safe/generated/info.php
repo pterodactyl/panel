@@ -192,7 +192,7 @@ function getmyuid(): int
  * @throws InfoException
  *
  */
-function getopt(string $options, array $longopts = null, ?int &$optind = null): array
+function getopt(string $options, ?array $longopts = null, ?int &$optind = null): array
 {
     error_clear_last();
     if ($optind !== null) {

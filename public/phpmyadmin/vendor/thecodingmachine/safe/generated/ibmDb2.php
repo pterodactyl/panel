@@ -46,7 +46,7 @@ use Safe\Exceptions\IbmDb2Exception;
  * @throws IbmDb2Exception
  *
  */
-function db2_autocommit($connection, int $value = null)
+function db2_autocommit($connection, ?int $value = null)
 {
     error_clear_last();
     if ($value !== null) {
@@ -96,7 +96,7 @@ function db2_autocommit($connection, int $value = null)
  * @throws IbmDb2Exception
  *
  */
-function db2_bind_param($stmt, int $parameter_number, string $variable_name, int $parameter_type = null, int $data_type = 0, int $precision = -1, int $scale = 0): void
+function db2_bind_param($stmt, int $parameter_number, string $variable_name, ?int $parameter_type = null, int $data_type = 0, int $precision = -1, int $scale = 0): void
 {
     error_clear_last();
     if ($scale !== 0) {
@@ -304,7 +304,7 @@ function db2_commit($connection): void
  * @throws IbmDb2Exception
  *
  */
-function db2_execute($stmt, array $parameters = null): void
+function db2_execute($stmt, ?array $parameters = null): void
 {
     error_clear_last();
     if ($parameters !== null) {

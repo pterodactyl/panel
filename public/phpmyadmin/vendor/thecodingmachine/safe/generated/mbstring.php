@@ -13,7 +13,7 @@ use Safe\Exceptions\MbstringException;
  * @throws MbstringException
  *
  */
-function mb_chr(int $cp, string $encoding = null): string
+function mb_chr(int $cp, ?string $encoding = null): string
 {
     error_clear_last();
     if ($encoding !== null) {
@@ -190,7 +190,7 @@ function mb_ereg_search_getregs(): array
  * @throws MbstringException
  *
  */
-function mb_ereg_search_init(string $string, string $pattern = null, string $option = "msr"): void
+function mb_ereg_search_init(string $string, ?string $pattern = null, string $option = "msr"): void
 {
     error_clear_last();
     if ($option !== "msr") {
@@ -215,7 +215,7 @@ function mb_ereg_search_init(string $string, string $pattern = null, string $opt
  * @throws MbstringException
  *
  */
-function mb_ereg_search_regs(string $pattern = null, string $option = "ms"): array
+function mb_ereg_search_regs(?string $pattern = null, string $option = "ms"): array
 {
     error_clear_last();
     if ($option !== "ms") {
@@ -289,7 +289,7 @@ function mb_eregi_replace(string $pattern, string $replace, string $string, stri
  * @throws MbstringException
  *
  */
-function mb_http_output(string $encoding = null)
+function mb_http_output(?string $encoding = null)
 {
     error_clear_last();
     if ($encoding !== null) {
@@ -320,7 +320,7 @@ function mb_http_output(string $encoding = null)
  * @throws MbstringException
  *
  */
-function mb_internal_encoding(string $encoding = null)
+function mb_internal_encoding(?string $encoding = null)
 {
     error_clear_last();
     if ($encoding !== null) {
@@ -344,7 +344,7 @@ function mb_internal_encoding(string $encoding = null)
  * @throws MbstringException
  *
  */
-function mb_ord(string $str, string $encoding = null): int
+function mb_ord(string $str, ?string $encoding = null): int
 {
     error_clear_last();
     if ($encoding !== null) {
@@ -392,7 +392,7 @@ function mb_parse_str(string $encoded_string, ?array &$result): void
  * @throws MbstringException
  *
  */
-function mb_regex_encoding(string $encoding = null)
+function mb_regex_encoding(?string $encoding = null)
 {
     error_clear_last();
     if ($encoding !== null) {
@@ -464,7 +464,7 @@ function mb_regex_encoding(string $encoding = null)
  * @throws MbstringException
  *
  */
-function mb_send_mail(string $to, string $subject, string $message, $additional_headers = null, string $additional_parameter = null): void
+function mb_send_mail(string $to, string $subject, string $message, $additional_headers = null, ?string $additional_parameter = null): void
 {
     error_clear_last();
     $result = \mb_send_mail($to, $subject, $message, $additional_headers, $additional_parameter);
@@ -511,7 +511,7 @@ function mb_split(string $pattern, string $string, int $limit = -1): array
  * @throws MbstringException
  *
  */
-function mb_str_split(string $string, int $split_length = 1, string $encoding = null): array
+function mb_str_split(string $string, int $split_length = 1, ?string $encoding = null): array
 {
     error_clear_last();
     if ($encoding !== null) {

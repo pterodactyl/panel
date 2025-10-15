@@ -22,7 +22,7 @@ use Safe\Exceptions\ImapException;
  * @throws ImapException
  *
  */
-function imap_append($imap_stream, string $mailbox, string $message, string $options = null, string $internal_date = null): void
+function imap_append($imap_stream, string $mailbox, string $message, ?string $options = null, ?string $internal_date = null): void
 {
     error_clear_last();
     $result = \imap_append($imap_stream, $mailbox, $message, $options, $internal_date);
@@ -567,7 +567,7 @@ function imap_gc($imap_stream, int $caches): void
  * @throws ImapException
  *
  */
-function imap_headerinfo($imap_stream, int $msg_number, int $fromlength = 0, int $subjectlength = 0, string $defaulthost = null): \stdClass
+function imap_headerinfo($imap_stream, int $msg_number, int $fromlength = 0, int $subjectlength = 0, ?string $defaulthost = null): \stdClass
 {
     error_clear_last();
     $result = \imap_headerinfo($imap_stream, $msg_number, $fromlength, $subjectlength, $defaulthost);
@@ -784,7 +784,7 @@ function imap_mail_move($imap_stream, string $msglist, string $mailbox, int $opt
  * @throws ImapException
  *
  */
-function imap_mail(string $to, string $subject, string $message, string $additional_headers = null, string $cc = null, string $bcc = null, string $rpath = null): void
+function imap_mail(string $to, string $subject, string $message, ?string $additional_headers = null, ?string $cc = null, ?string $bcc = null, ?string $rpath = null): void
 {
     error_clear_last();
     $result = \imap_mail($to, $subject, $message, $additional_headers, $cc, $bcc, $rpath);
@@ -1325,7 +1325,7 @@ function imap_setflag_full($imap_stream, string $sequence, string $flag, int $op
  * @throws ImapException
  *
  */
-function imap_sort($imap_stream, int $criteria, int $reverse, int $options = 0, string $search_criteria = null, string $charset = null): array
+function imap_sort($imap_stream, int $criteria, int $reverse, int $options = 0, ?string $search_criteria = null, ?string $charset = null): array
 {
     error_clear_last();
     $result = \imap_sort($imap_stream, $criteria, $reverse, $options, $search_criteria, $charset);

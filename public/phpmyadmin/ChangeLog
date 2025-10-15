@@ -1,6 +1,57 @@
 phpMyAdmin - ChangeLog
 ======================
 
+5.2.3 (2025-10-07)
+- issue #19548 Fix missing tooltip in status monitor log table
+- issue #19619 Fix horizontal scrollbar in server status pages
+- issue #17141 Fix table comment readability on original theme
+- issue #19138 Adjusted the chart size in System Monitor
+- issue #19351 Fixed paging with approximate number of rows
+- issue #18170 Fixed `window.makeGrid is not a function` partially
+- issue #17535 Fixed "Delete" button not asking for confirmation when deleting a row
+- issue        Fixed not needed table names conversion to htmlentities when renaming a table
+- issue #18922 Remove the `maxlength` for routines names
+- issue #19641 Allow optional precision parameter for `NOW()`
+- issue        Added size support for the CSV table type
+- issue #18903 Fix error 500 when simulating a `SET` statement
+- issue #19404 Fixed PHP 8.4 deprecations in `thecodingmachine/safe`
+- issue #19133 Updated documentation about Y2K38 as is fixed in MariaDB 11.5
+- issue #19685 Prevent "ol.css" being added multiple times
+- issue        Fixed some bugs in relations tab with foreign keys having special names
+- issue #19715 Fix sorting with URL encryption enabled in results display
+- issue        Fix duplicate Set-Cookie
+- issue        Improved GIS visualization to work with huge tables
+- issue        Fix horizontal scrollbar in server status pages
+- issue #19653 Fix body padding automatically using a MutationObserver
+- issue        Fix criteria form visibility toggle in a multi-table query
+- issue #18807 Fixed range search on the search page
+- issue #19744 Fixed checking that curl is enabled
+- issue #19757 Fix move column with foreign key
+- issue #16869 Fix query time not showing for `SELECT COUNT(*)` queries
+- issue #19775 Fix copy to clipboard
+- issue #19073 Fix both replicated and not replicated icons are shown
+- issue #19772 Fix progress value in process list for multi-stage query
+- issue        Fixed some PHP 8.4 and PHP 8.5 deprecations
+- issue #17329 Improve the handling of "The quota has been exceeded" when pasting multi megabytes queries
+- issue        Improve the detection of PHP GD2
+- issue #19625 Fix special characters support in move columns
+- issue #19643 Fix upload progress showing a SyntaxError
+- issue #19593 Fix upload progress showing a SyntaxError
+- issue #19504 Fix Advisor rules are throwing some errors with `--skip-innodb`
+- issue #19760 Fixed `Variable 'lc_messages' can't be set to the value of 'fr_FR'` on misconfigured database servers
+- issue #19371 Fixed tablename doesn't match with csv filename when importing it
+- issue        Fix `$http_response_header` deprecation for PHP 8.5
+- issue #19701 Add "symfony/polyfill-iconv" in case users do not have PHP "iconv" extension installed
+- issue #18066 Fixed "uncaught ReferenceError: u2f is not defined" on browsers that removed support for it
+- issue #19822 Fix incorrect usage/placement of 'SQL_NO_CACHE'
+- issue        Add support for "bacon-qr-code" v3
+- issue #19850 Fix undefined array key 4 in PDF structure export
+- issue #19859 Fix deprecated null array offset
+- issue #18437 Fix SQL editor's alignment in rtl
+- issue #18472 Fix responsive table edit-box in rtl mode
+- issue #19109 Do not enforce character encoding when checking roles
+- issue #19611 Restore text operators order (`LIKE %...%` vs `LIKE` before)
+
 5.2.2 (2025-01-21)
 - issue        [security] Fix for a path disclosure leak in the Monitoring tab
 - issue        Prevent the user from deleting system databases

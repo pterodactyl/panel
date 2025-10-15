@@ -9,9 +9,11 @@ use PhpMyAdmin\Html\Generator;
 use PhpMyAdmin\Util;
 
 use function __;
+use function array_key_exists;
 use function array_keys;
 use function count;
 use function mb_strtolower;
+use function number_format;
 use function strlen;
 use function ucfirst;
 
@@ -44,11 +46,9 @@ final class Processes
         $sqlQuery = $showFullSql
             ? 'SHOW FULL PROCESSLIST'
             : 'SHOW PROCESSLIST';
-        if (
-            (! empty($params['order_by_field'])
-                && ! empty($params['sort_order']))
-            || ! empty($params['showExecuting'])
-        ) {
+        $useIS = ! empty($params['showExecuting']) ||
+            (! empty($params['order_by_field']) && ! empty($params['sort_order']));
+        if ($useIS) {
             $urlParams['order_by_field'] = $params['order_by_field'];
             $urlParams['sort_order'] = $params['sort_order'];
             $urlParams['showExecuting'] = $params['showExecuting'];
@@ -80,6 +80,15 @@ final class Processes
                 unset($process[$key]);
             }
 
+            $progress = ! empty($process['Progress']) ? $process['Progress'] : '---';
+            if ($useIS && ! empty($process['Progress'])) {
+                $stage = array_key_exists('Stage', $process) ? (int) $process['Stage'] : null;
+                $maxStage = array_key_exists('Max_stage', $process) ? (int) $process['Max_stage'] : null;
+                if ($stage !== null && $maxStage !== null && $maxStage > 1) {
+                    $progress = number_format(($stage - 1) / $maxStage * 100 + ((float) $progress) / $maxStage, 3);
+                }
+            }
+
             $rows[] = [
                 'id' => $process['Id'],
                 'user' => $process['User'],
@@ -88,7 +97,7 @@ final class Processes
                 'command' => $process['Command'],
                 'time' => $process['Time'],
                 'state' => ! empty($process['State']) ? $process['State'] : '---',
-                'progress' => ! empty($process['Progress']) ? $process['Progress'] : '---',
+                'progress' => $progress,
                 'info' => ! empty($process['Info']) ? Generator::formatSql($process['Info'], ! $showFullSql) : '---',
             ];
         }

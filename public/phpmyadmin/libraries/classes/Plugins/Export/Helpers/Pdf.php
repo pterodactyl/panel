@@ -641,7 +641,7 @@ class Pdf extends PdfLib
             foreach ($data as $col => $txt) {
                 $this->page = $currpage;
                 $this->setXY($l, $h);
-                if ($this->tablewidths[$col] > 0) {
+                if (isset($this->tablewidths[$col]) && $this->tablewidths[$col] > 0) {
                     $this->MultiCell(
                         $this->tablewidths[$col],
                         // phpcs:ignore Squiz.NamingConventions.ValidVariableName.MemberNotCamelCaps

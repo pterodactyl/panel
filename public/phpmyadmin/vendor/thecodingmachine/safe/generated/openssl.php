@@ -209,7 +209,7 @@ function openssl_csr_get_subject($csr, bool $use_shortnames = true): array
  * @throws OpensslException
  *
  */
-function openssl_csr_new(array $dn, &$privkey, array $configargs = null, array $extraattribs = null)
+function openssl_csr_new(array $dn, &$privkey, ?array $configargs = null, ?array $extraattribs = null)
 {
     error_clear_last();
     if ($extraattribs !== null) {
@@ -250,7 +250,7 @@ function openssl_csr_new(array $dn, &$privkey, array $configargs = null, array $
  * @throws OpensslException
  *
  */
-function openssl_csr_sign($csr, $cacert, $priv_key, int $days, array $configargs = null, int $serial = 0)
+function openssl_csr_sign($csr, $cacert, $priv_key, int $days, ?array $configargs = null, int $serial = 0)
 {
     error_clear_last();
     if ($serial !== 0) {
@@ -360,7 +360,7 @@ function openssl_digest(string $data, string $method, bool $raw_output = false):
  * @throws OpensslException
  *
  */
-function openssl_open(string $sealed_data, ?string &$open_data, string $env_key, $priv_key_id, string $method = "RC4", string $iv = null): void
+function openssl_open(string $sealed_data, ?string &$open_data, string $env_key, $priv_key_id, string $method = "RC4", ?string $iv = null): void
 {
     error_clear_last();
     if ($iv !== null) {
@@ -433,7 +433,7 @@ function openssl_pbkdf2(string $password, string $salt, int $key_length, int $it
  * @throws OpensslException
  *
  */
-function openssl_pkcs12_export_to_file($x509, string $filename, $priv_key, string $pass, array $args = null): void
+function openssl_pkcs12_export_to_file($x509, string $filename, $priv_key, string $pass, ?array $args = null): void
 {
     error_clear_last();
     if ($args !== null) {
@@ -481,7 +481,7 @@ function openssl_pkcs12_export_to_file($x509, string $filename, $priv_key, strin
  * @throws OpensslException
  *
  */
-function openssl_pkcs12_export($x509, ?string &$out, $priv_key, string $pass, array $args = null): void
+function openssl_pkcs12_export($x509, ?string &$out, $priv_key, string $pass, ?array $args = null): void
 {
     error_clear_last();
     if ($args !== null) {
@@ -618,7 +618,7 @@ function openssl_pkcs7_read(string $infilename, ?array &$certs): void
  * @throws OpensslException
  *
  */
-function openssl_pkcs7_sign(string $infilename, string $outfilename, $signcert, $privkey, array $headers, int $flags = PKCS7_DETACHED, string $extracerts = null): void
+function openssl_pkcs7_sign(string $infilename, string $outfilename, $signcert, $privkey, array $headers, int $flags = PKCS7_DETACHED, ?string $extracerts = null): void
 {
     error_clear_last();
     if ($extracerts !== null) {
@@ -648,7 +648,7 @@ function openssl_pkcs7_sign(string $infilename, string $outfilename, $signcert, 
  * @throws OpensslException
  *
  */
-function openssl_pkey_export_to_file($key, string $outfilename, string $passphrase = null, array $configargs = null): void
+function openssl_pkey_export_to_file($key, string $outfilename, ?string $passphrase = null, ?array $configargs = null): void
 {
     error_clear_last();
     if ($configargs !== null) {
@@ -679,7 +679,7 @@ function openssl_pkey_export_to_file($key, string $outfilename, string $passphra
  * @throws OpensslException
  *
  */
-function openssl_pkey_export($key, ?string &$out, string $passphrase = null, array $configargs = null): void
+function openssl_pkey_export($key, ?string &$out, ?string $passphrase = null, ?array $configargs = null): void
 {
     error_clear_last();
     if ($configargs !== null) {
@@ -768,7 +768,7 @@ function openssl_pkey_get_public($certificate)
  * @throws OpensslException
  *
  */
-function openssl_pkey_new(array $configargs = null)
+function openssl_pkey_new(?array $configargs = null)
 {
     error_clear_last();
     if ($configargs !== null) {
@@ -953,7 +953,7 @@ function openssl_random_pseudo_bytes(int $length, ?bool &$crypto_strong = null):
  * @throws OpensslException
  *
  */
-function openssl_seal(string $data, ?string &$sealed_data, array &$env_keys, array $pub_key_ids, string $method = "RC4", string &$iv = null): int
+function openssl_seal(string $data, ?string &$sealed_data, array &$env_keys, array $pub_key_ids, string $method = "RC4", ?string &$iv = null): int
 {
     error_clear_last();
     $result = \openssl_seal($data, $sealed_data, $env_keys, $pub_key_ids, $method, $iv);

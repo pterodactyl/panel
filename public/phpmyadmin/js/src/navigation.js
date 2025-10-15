@@ -1097,6 +1097,17 @@ Navigation.ResizeHandler = function () {
                 $('#floating_menubar').outerHeight(true)
             );
         }, 2);
+
+        if (window.MutationObserver) {
+            var target = document.getElementById('floating_menubar');
+            if (target) {
+                var observer = new MutationObserver(function () {
+                    $('body').css('padding-top', $('#floating_menubar').outerHeight(true));
+                });
+                observer.observe(target, { attributes: true, childList: true, subtree: true });
+            }
+        }
+
         $('#pma_console')
             .css('margin-' + this.left, (pos + resizerWidth) + 'px');
         $resizer.css(this.left, pos + 'px');

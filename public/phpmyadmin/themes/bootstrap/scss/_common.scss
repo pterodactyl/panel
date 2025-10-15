@@ -842,7 +842,6 @@ code {
     margin-bottom: 0;
     max-height: 10em;
     overflow: auto;
-    direction: ltr;
   }
 
   &.sql {
@@ -852,7 +851,6 @@ code {
     margin-bottom: 0;
     max-height: 10em;
     overflow: auto;
-    direction: ltr;
   }
 }
 
@@ -863,7 +861,6 @@ div.sqlvalidate {
   margin-bottom: 0;
   max-height: 10em;
   overflow: auto;
-  direction: ltr;
 }
 
 .result_query {
@@ -987,10 +984,10 @@ select.invalid_value,
   background-image: url("../img/ajax_clock_small.gif");
   background-repeat: no-repeat;
   background-position: 2%;
-  border: 1px solid #e2b709;
-  background-color: #ffe57e;
+  border: 1px solid var(--bs-warning-border-subtle);
+  background-color: var(--bs-warning-bg-subtle);
+  color: var(--bs-warning-text-emphasis);
   border-radius: 5px;
-  box-shadow: 0 5px 90px #888;
 }
 
 #loading_parent {
@@ -1007,6 +1004,7 @@ select.invalid_value,
   top: 0;
   left: 0;
   background: $black;
+  opacity: 0.7;
   z-index: 1000;
   overflow: hidden;
 }
@@ -1716,6 +1714,7 @@ input#auto_increment_opt {
     overflow-y: scroll;
     padding: 0;
     margin: 0;
+    resize: both;
   }
 
   .edit_box_posting {
@@ -2719,4 +2718,8 @@ body .ui-dialog {
 
 .table-responsive-md .data {
   z-index: 9;
+}
+
+.table-responsive-md {
+  max-width: fit-content;
 }

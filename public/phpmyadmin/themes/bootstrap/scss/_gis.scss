@@ -8,6 +8,11 @@ a.close_gis_editor {
 #gis_editor {
   display: none;
   position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  padding: 40px;
   z-index: 1001;
   overflow-y: auto;
   overflow-x: hidden;
@@ -19,6 +24,8 @@ a.close_gis_editor {
 
 #gis_data_textarea {
   height: 6em;
+  resize: vertical;
+  width: 100%;
 }
 
 #gis_data_editor {
