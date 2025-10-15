@@ -66,7 +66,7 @@ use Safe\Exceptions\ImageException;
  * @throws ImageException
  *
  */
-function getimagesize(string $filename, array &$imageinfo = null): array
+function getimagesize(string $filename, ?array &$imageinfo = null): array
 {
     error_clear_last();
     $result = \getimagesize($filename, $imageinfo);
@@ -91,7 +91,7 @@ function getimagesize(string $filename, array &$imageinfo = null): array
  * @throws ImageException
  *
  */
-function image2wbmp($image, ?string $filename = null, int $foreground = null): void
+function image2wbmp($image, ?string $filename = null, ?int $foreground = null): void
 {
     error_clear_last();
     if ($foreground !== null) {
@@ -118,7 +118,7 @@ function image2wbmp($image, ?string $filename = null, int $foreground = null): v
  * @throws ImageException
  *
  */
-function imageaffine($image, array $affine, array $clip = null)
+function imageaffine($image, array $affine, ?array $clip = null)
 {
     error_clear_last();
     if ($clip !== null) {
@@ -1367,7 +1367,7 @@ function imagefilltoborder($image, int $x, int $y, int $border, int $color): voi
  * @throws ImageException
  *
  */
-function imagefilter($image, int $filtertype, int $arg1 = null, int $arg2 = null, int $arg3 = null, int $arg4 = null): void
+function imagefilter($image, int $filtertype, ?int $arg1 = null, ?int $arg2 = null, ?int $arg3 = null, ?int $arg4 = null): void
 {
     error_clear_last();
     if ($arg4 !== null) {
@@ -2551,7 +2551,7 @@ function imagettftext($image, float $size, float $angle, int $x, int $y, int $co
  * @throws ImageException
  *
  */
-function imagewbmp($image, $to = null, int $foreground = null): void
+function imagewbmp($image, $to = null, ?int $foreground = null): void
 {
     error_clear_last();
     if ($foreground !== null) {
@@ -2606,7 +2606,7 @@ function imagewebp($image, $to = null, int $quality = 80): void
  * @throws ImageException
  *
  */
-function imagexbm($image, ?string $filename, int $foreground = null): void
+function imagexbm($image, ?string $filename, ?int $foreground = null): void
 {
     error_clear_last();
     if ($foreground !== null) {

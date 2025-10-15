@@ -233,7 +233,7 @@ function date_sun_info(int $timestamp, float $latitude, float $longitude): array
  * @throws DatetimeException
  *
  */
-function date_sunrise(int $timestamp, int $returnFormat = SUNFUNCS_RET_STRING, float $latitude = null, float $longitude = null, float $zenith = null, float $utcOffset = 0)
+function date_sunrise(int $timestamp, int $returnFormat = SUNFUNCS_RET_STRING, ?float $latitude = null, ?float $longitude = null, ?float $zenith = null, float $utcOffset = 0)
 {
     error_clear_last();
     if ($utcOffset !== 0) {
@@ -336,7 +336,7 @@ function date_sunrise(int $timestamp, int $returnFormat = SUNFUNCS_RET_STRING, f
  * @throws DatetimeException
  *
  */
-function date_sunset(int $timestamp, int $returnFormat = SUNFUNCS_RET_STRING, float $latitude = null, float $longitude = null, float $zenith = null, float $utcOffset = 0)
+function date_sunset(int $timestamp, int $returnFormat = SUNFUNCS_RET_STRING, ?float $latitude = null, ?float $longitude = null, ?float $zenith = null, float $utcOffset = 0)
 {
     error_clear_last();
     if ($utcOffset !== 0) {
@@ -374,7 +374,7 @@ function date_sunset(int $timestamp, int $returnFormat = SUNFUNCS_RET_STRING, fl
  * @throws DatetimeException
  *
  */
-function date(string $format, int $timestamp = null): string
+function date(string $format, ?int $timestamp = null): string
 {
     error_clear_last();
     if ($timestamp !== null) {
@@ -405,7 +405,7 @@ function date(string $format, int $timestamp = null): string
  * @throws DatetimeException
  *
  */
-function gmdate(string $format, int $timestamp = null): string
+function gmdate(string $format, ?int $timestamp = null): string
 {
     error_clear_last();
     if ($timestamp !== null) {
@@ -461,7 +461,7 @@ function gmdate(string $format, int $timestamp = null): string
  * @throws DatetimeException
  *
  */
-function mktime(int $hour = null, int $minute = null, int $second = null, int $month = null, int $day = null, int $year = null): int
+function mktime(?int $hour = null, ?int $minute = null, ?int $second = null, ?int $month = null, ?int $day = null, ?int $year = null): int
 {
     error_clear_last();
     if ($year !== null) {
@@ -584,7 +584,7 @@ function strptime(string $date, string $format): array
  * @throws DatetimeException
  *
  */
-function strtotime(string $datetime, int $now = null): int
+function strtotime(string $datetime, ?int $now = null): int
 {
     error_clear_last();
     if ($now !== null) {

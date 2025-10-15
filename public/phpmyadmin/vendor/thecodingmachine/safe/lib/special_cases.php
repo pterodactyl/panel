@@ -152,7 +152,7 @@ function apcu_fetch($key)
  * @throws PcreException
  *
  */
-function preg_replace($pattern, $replacement, $subject, int $limit = -1, int &$count = null)
+function preg_replace($pattern, $replacement, $subject, int $limit = -1, ?int &$count = null)
 {
     error_clear_last();
     $result = \preg_replace($pattern, $replacement, $subject, $limit, $count);

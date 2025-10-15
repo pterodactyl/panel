@@ -1,5 +1,19 @@
 ## Change Log
 
+## [9.0.0] - 202-09-18
+### ⚠️ Breaking Change
+### Added
+- Increased default secret key length from 16 to 32 characters for enhanced security
+- Cryptographic entropy increased from 80 bits to 160 bits
+- Maintains full compatibility with Google Authenticator and other TOTP apps
+### Changed
+- `generateSecretKey()` now generates 32-character secrets by default
+- To maintain previous behavior, use `generateSecretKey(16)`
+- Updated tests to reflect new default behavior
+### Security
+- This change significantly improves security against brute force attacks
+- 32-character secrets provide stronger cryptographic protection while maintaining RFC 6238 compliance
+
 ## [8.0.1] - 2020-05-05
 ### Added
 - Test using GitHub Actions

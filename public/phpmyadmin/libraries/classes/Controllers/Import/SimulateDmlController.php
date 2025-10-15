@@ -81,6 +81,12 @@ final class SimulateDmlController extends AbstractController
 
     private function process(Parser $parser): void
     {
+        if ($parser->errors !== []) {
+            $this->error = $parser->errors[0]->getMessage();
+
+            return;
+        }
+
         foreach ($parser->statements as $statement) {
             if (
                 ! $statement instanceof UpdateStatement && ! $statement instanceof DeleteStatement

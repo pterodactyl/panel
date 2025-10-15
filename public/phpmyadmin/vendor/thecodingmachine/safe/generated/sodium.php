@@ -43,7 +43,7 @@ function sodium_crypto_pwhash_str(string $password, int $opslimit, int $memlimit
  * @throws SodiumException
  *
  */
-function sodium_crypto_pwhash(int $length, string $password, string $salt, int $opslimit, int $memlimit, int $alg = null): string
+function sodium_crypto_pwhash(int $length, string $password, string $salt, int $opslimit, int $memlimit, ?int $alg = null): string
 {
     error_clear_last();
     if ($alg !== null) {

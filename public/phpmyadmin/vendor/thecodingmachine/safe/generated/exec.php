@@ -148,7 +148,7 @@ function proc_nice(int $increment): void
  * @throws ExecException
  *
  */
-function system(string $command, int &$return_var = null): string
+function system(string $command, ?int &$return_var = null): string
 {
     error_clear_last();
     $result = \system($command, $return_var);

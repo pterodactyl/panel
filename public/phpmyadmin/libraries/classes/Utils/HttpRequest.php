@@ -267,6 +267,10 @@ class HttpRequest
             stream_context_create($context)
         );
 
+        if (function_exists('http_get_last_response_headers')) {
+            $http_response_header = http_get_last_response_headers();
+        }
+
         if (! isset($http_response_header)) {
             return null;
         }

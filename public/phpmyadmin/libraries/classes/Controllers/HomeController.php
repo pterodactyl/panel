@@ -8,6 +8,7 @@ use PhpMyAdmin\Charsets;
 use PhpMyAdmin\CheckUserPrivileges;
 use PhpMyAdmin\Config;
 use PhpMyAdmin\ConfigStorage\Relation;
+use PhpMyAdmin\Core;
 use PhpMyAdmin\DatabaseInterface;
 use PhpMyAdmin\Git;
 use PhpMyAdmin\Html\Generator;
@@ -393,6 +394,21 @@ class HomeController extends AbstractController
                         'be slow because of this.'
                     ),
                     $this->config->get('TempDir')
+                ),
+                'severity' => 'warning',
+            ];
+        }
+
+        /**
+         * Check for missing HTTP_HOST
+         * This commonly occurs with nginx >= 1.25.0 and HTTP/3 configurations
+         */
+        if (Core::getenv('HTTP_HOST') === '') {
+            $this->errors[] = [
+                'message' => __(
+                    'The [code]HTTP_HOST[/code] variable is missing,'
+                    . ' which might cause phpMyAdmin to not work properly.'
+                    . ' Please refer to [doc@faq1-46]documentation[/doc] for possible issues.'
                 ),
                 'severity' => 'warning',
             ];

@@ -3,7 +3,6 @@ $textarea-rows: 15;
 
 .CodeMirror {
   height: 20rem;
-  direction: ltr;
 }
 
 // Code mirror default style (do not affect the console style)
@@ -93,7 +92,7 @@ span {
 }
 
 .CodeMirror-lint-tooltip {
-  z-index: 200;
+  z-index: 2000;
   font-family: inherit;
 
   code {

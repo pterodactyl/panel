@@ -17,6 +17,13 @@
     }
   }
 
+  th,
+  td {
+    > span:empty::before {
+      content: "\200b";
+    }
+  }
+
   caption {
     font-family: $font-family-bold;
     background-color: $th-background;

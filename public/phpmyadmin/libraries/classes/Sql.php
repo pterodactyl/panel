@@ -21,9 +21,11 @@ use PhpMyAdmin\SqlParser\Utils\Query;
 use PhpMyAdmin\Utils\ForeignKey;
 
 use function __;
+use function array_find_key;
 use function array_key_exists;
 use function array_keys;
 use function array_map;
+use function assert;
 use function bin2hex;
 use function ceil;
 use function count;
@@ -34,11 +36,13 @@ use function in_array;
 use function is_array;
 use function is_bool;
 use function is_object;
+use function is_string;
 use function session_start;
 use function session_write_close;
 use function sprintf;
 use function str_contains;
 use function str_replace;
+use function strtoupper;
 use function ucwords;
 
 /**
@@ -745,6 +749,15 @@ class Sql
                 /** @var SelectStatement $statement */
                 $statement = $analyzedSqlResults['statement'];
 
+                assert($statement->options !== null);
+                /** @var int|null $noCacheIndex */
+                $noCacheIndex = array_find_key(
+                    $statement->options->options,
+                    /** @param mixed $value */
+                    static function ($value): bool {
+                        return is_string($value) && strtoupper($value) === 'SQL_NO_CACHE';
+                    }
+                );
                 $changeOrder = $analyzedSqlResults['order'] !== false;
                 $changeLimit = $analyzedSqlResults['limit'] !== false;
                 $changeExpression = $analyzedSqlResults['is_group'] === false
@@ -752,8 +765,14 @@ class Sql
                     && $analyzedSqlResults['union'] === false
                     && count($statement->expr) === 1;
 
-                if ($changeOrder || $changeLimit || $changeExpression) {
+                if ($changeOrder || $changeLimit || $changeExpression || $noCacheIndex !== null) {
                     $statement = clone $statement;
+                    // Remove SQL_NO_CACHE from subquery because it is not valid sql
+                    if ($noCacheIndex !== null) {
+                        assert($statement->options !== null);
+                        $statement->options = clone $statement->options;
+                        unset($statement->options->options[$noCacheIndex]);
+                    }
                 }
 
                 // Remove ORDER BY to decrease unnecessary sorting time
@@ -832,8 +851,8 @@ class Sql
             $GLOBALS['querytime'] = $this->dbi->lastQueryExecutionTime;
 
             if (! defined('TESTSUITE')) {
-                // reopen session
-                session_start();
+                // reopen session but prevent PHP from sending the session cookie again
+                session_start(['use_cookies' => false]);
             }
 
             // Displays an error message if required and stop parsing the script

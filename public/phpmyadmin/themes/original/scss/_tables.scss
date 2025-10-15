@@ -11,6 +11,13 @@
     background-color: $th-background;
   }
 
+  th,
+  td {
+    > span:empty::before {
+      content: "\200b";
+    }
+  }
+
   thead th {
     border-bottom: 0;
   }

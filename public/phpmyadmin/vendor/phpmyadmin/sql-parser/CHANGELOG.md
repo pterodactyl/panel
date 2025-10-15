@@ -1,6 +1,28 @@
 # Change Log
 
-## [5.10.3] - 2024-01-18
+## [5.11.1] - 2025-07-20
+
+### Added
+
+- Add context files for MySQL 9.2, MySQL 9.3 and MariaDB 12.1 (#628)
+- Add context files for MariaDB 11.8 and MariaDB 12.0 (#620)
+
+### Fixed
+
+-  Fix Window function handling that failed because of "OVER" keyword case-sensitive comparison (#623)
+
+## [5.11.0] - 2025-02-22
+
+### Added
+
+- Add Translator::setLocale() method (#599)
+
+### Fixed
+
+- Fix FORCE INDEX not been parsed correctly (#614)
+- Fix parsing of ADD UNIQUE and ADD UNIQUE KEY for ALTER TABLE statements (#611)
+
+## [5.10.3] - 2025-01-18
 
 ### Fixed
 
@@ -604,6 +626,8 @@ __Breaking changes:__
 
 * First release of this library.
 
+[5.11.1]: https://github.com/phpmyadmin/sql-parser/compare/5.11.0...5.11.1
+[5.11.0]: https://github.com/phpmyadmin/sql-parser/compare/5.10.3...5.11.0
 [5.10.3]: https://github.com/phpmyadmin/sql-parser/compare/5.10.2...5.10.3
 [5.10.2]: https://github.com/phpmyadmin/sql-parser/compare/5.10.1...5.10.2
 [5.10.1]: https://github.com/phpmyadmin/sql-parser/compare/5.10.0...5.10.1

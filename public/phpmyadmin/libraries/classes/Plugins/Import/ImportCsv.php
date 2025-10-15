@@ -723,17 +723,20 @@ class ImportCsv extends AbstractImportCsv
             }
 
             // check to see if {filename} as table exist
-            $nameArray = preg_grep('/' . $importFileName . '/isU', $result);
+            $nameArray = preg_grep('/^' . $importFileName . '$/isU', $result);
             // if no use filename as table name
             if ($nameArray === false || count($nameArray) === 0) {
                 return $importFileName;
             }
 
             // check if {filename}_ as table exist
-            $nameArray = preg_grep('/' . $importFileName . '_/isU', $result);
+            $nameArray = preg_grep('/^' . $importFileName . '_$/isU', $result);
             if ($nameArray === false) {
                 return $importFileName;
             }
+
+            // Filter for table names starting with the {filename}_ prefix
+            $nameArray = preg_grep('/^' . $importFileName . '_/isU', $result);
 
             return $importFileName . '_' . (count($nameArray) + 1);
         }

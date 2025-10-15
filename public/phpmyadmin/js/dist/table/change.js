@@ -343,6 +343,11 @@ function verificationsAfterFieldChange(urlField, multiEdit, theType) {
     $thisInput.removeAttr('min');
     $thisInput.removeAttr('max');
     // @todo: put back attributes if corresponding function is deselected
+
+    if ($thisFunction.val() === 'NOW') {
+      $thisInput.attr('min', 0);
+      $thisInput.attr('max', $thisInput.parent().attr('data-decimals'));
+    }
   }
   if ($thisInput.data('rulesadded') === null && !functionSelected) {
     // call validate before adding rules

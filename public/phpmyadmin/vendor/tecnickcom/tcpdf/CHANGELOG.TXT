@@ -1,3 +1,38 @@
+6.10.0 (2025-05-27)
+	- Embedded files support (Factur-X 1.07 / ZUGFeRD 2.3) #789
+
+6.9.5 (2025-05-27)
+	- Automatically add destinations from HTML code #804
+	- Wrong default value when $table_el['old_cell_padding'] is missing #807
+	- Fixed PHP warning when empty hash link for image exists in HTML #809
+	- Fix for application of alpha component to SVG RGBA fills #810
+
+6.9.4 (2025-05-13)
+	- Update donation link.
+
+6.9.3 (2025-04-20)
+	- New fix for "Deserialization of untrusted data" (check on valid protocols).
+	- Removed global phar configuration.
+
+6.9.2 (2025-04-18)
+	- Quick fix for "Deserialization of untrusted data" security vulnerability reported by Positive Technologies.
+	- Disable phar protocol globally.
+
+6.9.1 (2025-04-03)
+	- Fixed "Path Traversal" security vulnerability reported by Positive Technologies.
+
+6.9.0 (2025-03-30)
+	- Added PHP 8.4 testing.
+	- Removed tcpdf_import.php and tcpdf_parser.php files (for a parser check the tc-lib-pdf-parser project instead).
+	- Fix composer.json.
+
+6.8.2 (2025-01-26)
+	- Fix some annotation flags values.
+	- Remove examples from packaging.
+
+6.8.1 (2025-01-26) - UNTAGGED
+	- Check relative paths on SVG images.
+
 6.8.0 (2024-12-23)
 	- Requires PHP 7.1+ and curl extension.
 	- Escape error message.

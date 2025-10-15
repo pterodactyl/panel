@@ -1,13 +1,13 @@
 <?php
 //============================================================+
 // File name   : tcpdf.php
-// Version     : 6.8.0
+// Version     : 6.10.0
 // Begin       : 2002-08-03
-// Last Update : 2024-12-23
+// Last Update : 2025-05-27
 // Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
-// Copyright (C) 2002-2024 Nicola Asuni - Tecnick.com LTD
+// Copyright (C) 2002-2025 Nicola Asuni - Tecnick.com LTD
 //
 // This file is part of TCPDF software library.
 //
@@ -104,7 +104,7 @@
  * Tools to encode your unicode fonts are on fonts/utils directory.</p>
  * @package com.tecnick.tcpdf
  * @author Nicola Asuni
- * @version 6.8.0
+ * @version 6.10.0
  */
 
 // TCPDF configuration
@@ -128,7 +128,7 @@ require_once(dirname(__FILE__).'/include/tcpdf_static.php');
  * TCPDF project (http://www.tcpdf.org) has been originally derived in 2002 from the Public Domain FPDF class by Olivier Plathey (http://www.fpdf.org), but now is almost entirely rewritten.<br>
  * @package com.tecnick.tcpdf
  * @brief PHP class for generating PDF documents without requiring external extensions.
- * @version 6.8.0
+ * @version 6.10.0
  * @author Nicola Asuni - info@tecnick.com
  * @IgnoreAnnotation("protected")
  * @IgnoreAnnotation("public")
@@ -1809,6 +1809,13 @@ class TCPDF {
 	 * @since 6.3.0 (2019-09-19)
 	 */
 	protected $custom_xmp_rdf = '';
+
+	/**
+	 * Custom XMP RDF pdfaextension data.
+	 * @protected
+	 * @since 6.9.0 (2025-02-11)
+	 */
+	protected $custom_xmp_rdf_pdfaExtension = '';
 
 	/**
 	 * Overprint mode array.
@@ -4933,6 +4940,32 @@ class TCPDF {
 	}
 
 	/**
+	 * Embed the attached files.
+	 * @since 6.9.000 (2025-02-11)
+	 * @public
+	 */
+	public function EmbedFile($opt) {
+		if (!$this->pdfa_mode || ($this->pdfa_mode && $this->pdfa_version == 3)) {
+			if ((($opt['Subtype'] == 'FileAttachment')) AND (!TCPDF_STATIC::empty_string($opt['FS']))
+				AND (@TCPDF_STATIC::file_exists($opt['FS']) OR TCPDF_STATIC::isValidURL($opt['FS']))
+				AND (!isset($this->embeddedfiles[basename($opt['FS'])]))) {
+				$this->embeddedfiles[basename($opt['FS'])] = array('f' => ++$this->n, 'n' => ++$this->n, 'file' => $opt['FS']);
+			}
+		}
+	}
+
+	/**
+	 * Embed the attached files.
+	 * @since 6.9.000 (2025-02-11)
+	 * @public
+	 */
+	public function EmbedFileFromString($filename, $content) {
+		if (!$this->pdfa_mode || ($this->pdfa_mode && $this->pdfa_version == 3)) {
+			$this->embeddedfiles[$filename] = array('f' => ++$this->n, 'n' => ++$this->n, 'content' => $content );
+		}
+	}
+
+	/**
 	 * Embedd the attached files.
 	 * @since 4.4.000 (2008-12-07)
 	 * @protected
@@ -4945,7 +4978,12 @@ class TCPDF {
 		}
 		reset($this->embeddedfiles);
 		foreach ($this->embeddedfiles as $filename => $filedata) {
-		    $data = $this->getCachedFileContents($filedata['file']);
+			$data = false;
+			if (isset($filedata['file']) && !empty($filedata['file'])) {
+				$data = $this->getCachedFileContents($filedata['file']);
+			} elseif ($filedata['content'] && !empty($filedata['content'])) {
+				$data = $filedata['content'];
+			}
 			if ($data !== FALSE) {
 				$rawsize = strlen($data);
 				if ($rawsize > 0) {
@@ -6989,7 +7027,7 @@ class TCPDF {
 			unset($imgdata);
 			$imsize = @getimagesize($file);
 			if ($imsize === FALSE) {
-				unlink($file);
+				$this->_unlink($file);
 				$file = $original_file;
 			}
 		}
@@ -7222,7 +7260,7 @@ class TCPDF {
 					$tempname = TCPDF_STATIC::getObjFilename('img', $this->file_id);
 					$img->writeImage($tempname);
 					$info = TCPDF_IMAGES::_parsejpeg($tempname);
-					unlink($tempname);
+					$this->_unlink($tempname);
 					$img->destroy();
 				} catch(Exception $e) {
 					$info = false;
@@ -7858,15 +7896,16 @@ class TCPDF {
 			if ($handle = @opendir(K_PATH_CACHE)) {
 				while ( false !== ( $file_name = readdir( $handle ) ) ) {
 					if (strpos($file_name, '__tcpdf_'.$this->file_id.'_') === 0) {
-						unlink(K_PATH_CACHE.$file_name);
+						$this->_unlink(K_PATH_CACHE.$file_name);
 					}
 				}
 				closedir($handle);
 			}
 			if (isset($this->imagekeys)) {
 				foreach($this->imagekeys as $file) {
-					if (strpos($file, K_PATH_CACHE) === 0 && TCPDF_STATIC::file_exists($file)) {
-						@unlink($file);
+					if ((strpos($file,  K_PATH_CACHE.'__tcpdf_'.$this->file_id.'_') === 0)
+						&& TCPDF_STATIC::file_exists($file)) {
+							$this->_unlink($file);
 					}
 				}
 			}
@@ -8311,15 +8350,15 @@ class TCPDF {
 										break;
 									}
 									case 'locked': {
-										$fval += 1 << 8;
+										$fval += 1 << 7;
 										break;
 									}
 									case 'togglenoview': {
-										$fval += 1 << 9;
+										$fval += 1 << 8;
 										break;
 									}
 									case 'lockedcontents': {
-										$fval += 1 << 10;
+										$fval += 1 << 9;
 										break;
 									}
 									default: {
@@ -9630,6 +9669,17 @@ class TCPDF {
 	}
 
 	/**
+	 * Set additional XMP data to be added to the default XMP data for PDF/A extensions.
+	 * IMPORTANT: This data is added as-is without controls, so you have to validate your data before using this method!
+	 * @param string $xmp Custom XMP RDF data.
+	 * @since 6.9.0 (2025-02-14)
+	 * @public
+	 */
+	public function setExtraXMPPdfaextension($xmp) {
+		$this->custom_xmp_rdf_pdfaExtension = $xmp;
+	}
+
+	/**
 	 * Put XMP data object and return ID.
 	 * @return int The object ID.
 	 * @since 5.9.121 (2011-09-28)
@@ -9763,6 +9813,7 @@ class TCPDF {
 		$xmp .= "\t\t\t\t\t\t\t".'</rdf:Seq>'."\n";
 		$xmp .= "\t\t\t\t\t\t".'</pdfaSchema:property>'."\n";
 		$xmp .= "\t\t\t\t\t".'</rdf:li>'."\n";
+		$xmp .= $this->custom_xmp_rdf_pdfaExtension;
 		$xmp .= "\t\t\t\t".'</rdf:Bag>'."\n";
 		$xmp .= "\t\t\t".'</pdfaExtension:schemas>'."\n";
 		$xmp .= "\t\t".'</rdf:Description>'."\n";
@@ -9801,7 +9852,11 @@ class TCPDF {
 		}
 		// start catalog
 		$oid = $this->_newobj();
-		$out = '<< /Type /Catalog';
+		$out = '<< ';
+		if (!empty($this->efnames)) {
+			$out .= ' /AF [ '. implode(' ', $this->efnames) .' ]';
+		}
+		$out .= ' /Type /Catalog';
 		$out .= ' /Version /'.$this->PDFVersion;
 		//$out .= ' /Extensions <<>>';
 		$out .= ' /Pages 1 0 R';
@@ -17426,6 +17481,9 @@ class TCPDF {
 				}
 			}
 			if ($key == $maxel) break;
+			if ($dom[$key]['tag'] AND $dom[$key]['opening'] AND !empty($dom[$key]['attribute']['id'])) {
+				$this->setDestination($dom[$key]['attribute']['id']);
+			}
 			if ($dom[$key]['tag'] AND isset($dom[$key]['attribute']['pagebreak'])) {
 				// check for pagebreak
 				if (($dom[$key]['attribute']['pagebreak'] == 'true') OR ($dom[$key]['attribute']['pagebreak'] == 'left') OR ($dom[$key]['attribute']['pagebreak'] == 'right')) {
@@ -18869,6 +18927,29 @@ class TCPDF {
 	}
 
 	/**
+	 * Check if the path is relative.
+	 * @param string $path path to check
+	 * @return boolean true if the path is relative
+	 * @protected
+	 * @since 6.9.1
+	 */
+	protected function isRelativePath($path) {
+		return (strpos(str_ireplace('%2E', '.', $this->unhtmlentities($path)), '..') !== false);
+	}
+
+	/**
+	 * Check if it contains a non-allowed external protocol.
+	 * @param string $path path to check
+	 * @return boolean true if the protocol is not allowed.
+	 * @protected
+	 * @since 6.9.3
+	 */
+	protected function hasExtForbiddenProtocol($path) {
+		return ((strpos($path, '://') !== false)
+			&& (preg_match('|^https?://|', $path) !== 1));
+	}
+
+	/**
 	 * Process opening tags.
 	 * @param array $dom html dom array
 	 * @param int $key current element id
@@ -19060,13 +19141,15 @@ class TCPDF {
 				} else if (preg_match('@^data:image/([^;]*);base64,(.*)@', $imgsrc, $reg)) {
 					$imgsrc = '@'.base64_decode($reg[2]);
 					$type = $reg[1];
-				} elseif (strpos($imgsrc, '../') !== false) {
+				} elseif ($this->isRelativePath($imgsrc)) {
 					// accessing parent folders is not allowed
 					break;
 				} elseif ( $this->allowLocalFiles && substr($imgsrc, 0, 7) === 'file://') {
 					// get image type from a local file path
 					$imgsrc = substr($imgsrc, 7);
 					$type = TCPDF_IMAGES::getImageFileType($imgsrc);
+				} elseif ($this->hasExtForbiddenProtocol($imgsrc)) {
+					break;
 				} else {
 					if (($imgsrc[0] === '/') AND !empty($_SERVER['DOCUMENT_ROOT']) AND ($_SERVER['DOCUMENT_ROOT'] != '/')) {
 						// fix image path
@@ -19125,7 +19208,7 @@ class TCPDF {
 				$imglink = '';
 				if (isset($this->HREF['url']) AND !TCPDF_STATIC::empty_string($this->HREF['url'])) {
 					$imglink = $this->HREF['url'];
-					if ($imglink[0] == '#' AND is_numeric($imglink[1])) {
+					if ($imglink[0] == '#' AND isset($imglink[1]) AND is_numeric($imglink[1])) {
 						// convert url to internal link
 						$lnkdata = explode(',', $imglink);
 						if (isset($lnkdata[0])) {
@@ -19986,7 +20069,7 @@ class TCPDF {
 					}
 				}
 				if (!$in_table_head) { // we are not inside a thead section
-					$this->cell_padding = isset($table_el['old_cell_padding']) ? $table_el['old_cell_padding'] : null;
+					$this->cell_padding = isset($table_el['old_cell_padding']) ? $table_el['old_cell_padding'] : array('T' => 0, 'R' => 0, 'B' => 0, 'L' => 0);
 					// reset row height
 					$this->resetLastH();
 					if (($this->page == ($this->numpages - 1)) AND ($this->pageopen[$this->numpages])) {
@@ -23453,6 +23536,8 @@ class TCPDF {
 			$fill_color = TCPDF_COLORS::convertHTMLColorToDec($svgstyle['fill'], $this->spot_colors);
 			if ($svgstyle['fill-opacity'] != 1) {
 				$this->setAlpha($this->alpha['CA'], 'Normal', $svgstyle['fill-opacity'], false);
+			} elseif (preg_match('/rgba\(\d+%?,\s*\d+%?,\s*\d+%?,\s*(\d+(?:\.\d+)?)\)/i', $svgstyle['fill'], $rgba_matches)) {
+				$this->setAlpha($this->alpha['CA'], 'Normal', $rgba_matches[1], false);
 			}
 			$this->setFillColorArray($fill_color);
 			if ($svgstyle['fill-rule'] == 'evenodd') {
@@ -24467,6 +24552,9 @@ class TCPDF {
 						$img = '@'.base64_decode(substr($img, strlen($m[0])));
 					} else {
 						// fix image path
+						if ($this->isRelativePath($img) || $this->hasExtForbiddenProtocol($img)) {
+							break;
+						}
 						if (!TCPDF_STATIC::empty_string($this->svgdir) AND (($img[0] == '.') OR (basename($img) == $img))) {
 							// replace relative path with full server path
 							$img = $this->svgdir.'/'.$img;
@@ -24786,6 +24874,20 @@ class TCPDF {
 
         return TCPDF_STATIC::file_exists($file);
     }
+
+	/**
+	 * Wrapper for unlink with disabled protocols.
+	 * @param string $file
+	 * @return bool
+	 */
+	protected function _unlink($file)
+	{
+		if ((strpos($file, '://') !== false) && ((substr($file, 0, 7) !== 'file://') || (!$this->allowLocalFiles))) {
+			// forbidden protocol
+			return false;
+		}
+		return @unlink($file);
+	}
 
 } // END OF TCPDF CLASS
 

@@ -24,6 +24,8 @@ use function str_replace;
 use function trigger_error;
 
 use const E_USER_ERROR;
+use const E_USER_WARNING;
+use const PHP_VERSION_ID;
 
 /**
  * Base class for forms, loads default configuration options, checks allowed
@@ -130,13 +132,19 @@ class Form
     {
         $value = $this->configFile->getDbEntry($optionPath);
         if ($value === null) {
-            trigger_error($optionPath . ' - select options not defined', E_USER_ERROR);
+            trigger_error(
+                $optionPath . ' - select options not defined',
+                PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
+            );
 
             return [];
         }
 
         if (! is_array($value)) {
-            trigger_error($optionPath . ' - not a static value list', E_USER_ERROR);
+            trigger_error(
+                $optionPath . ' - not a static value list',
+                PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
+            );
 
             return [];
         }

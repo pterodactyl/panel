@@ -339,7 +339,7 @@ function sapi_windows_generate_ctrl_event(int $event, int $pid = 0): void
  * @throws MiscException
  *
  */
-function sapi_windows_vt100_support($stream, bool $enable = null): void
+function sapi_windows_vt100_support($stream, ?bool $enable = null): void
 {
     error_clear_last();
     if ($enable !== null) {

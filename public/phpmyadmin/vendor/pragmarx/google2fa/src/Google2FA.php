@@ -123,7 +123,7 @@ class Google2FA
      *
      * @return string
      */
-    public function generateSecretKey($length = 16, $prefix = '')
+    public function generateSecretKey($length = 32, $prefix = '')
     {
         return $this->generateBase32RandomKey($length, $prefix);
     }

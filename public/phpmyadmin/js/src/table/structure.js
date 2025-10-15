@@ -384,7 +384,7 @@ AJAX.registerOnload('table/structure.js', function () {
                     for (var i in data.columns) {
                         var theColumn = data.columns[i];
                         var $theRow = $rows
-                            .find('input:checkbox[value=\'' + theColumn + '\']')
+                            .find('input:checkbox[value=' + $.escapeSelector(theColumn) + ']')
                             .closest('tr');
                         // append the row for this column to the table
                         $fieldsTable.append($theRow);

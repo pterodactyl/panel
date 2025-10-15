@@ -7,7 +7,7 @@
 // Author      : Nicola Asuni - Tecnick.com LTD - www.tecnick.com - info@tecnick.com
 // License     : GNU-LGPL v3 (http://www.gnu.org/copyleft/lesser.html)
 // -------------------------------------------------------------------
-// Copyright (C) 2008-2024 Nicola Asuni - Tecnick.com LTD
+// Copyright (C) 2008-2025 Nicola Asuni - Tecnick.com LTD
 //
 // This file is part of TCPDF software library.
 //

@@ -83,7 +83,7 @@ class ExportPhparray extends ExportPlugin
         $this->export->outputHandler(
             '<?php' . $GLOBALS['crlf']
             . '/**' . $GLOBALS['crlf']
-            . ' * Export to PHP Array plugin for PHPMyAdmin' . $GLOBALS['crlf']
+            . ' * Export to PHP Array plugin for phpMyAdmin' . $GLOBALS['crlf']
             . ' * @version ' . Version::VERSION . $GLOBALS['crlf']
             . ' */' . $GLOBALS['crlf'] . $GLOBALS['crlf']
         );

@@ -512,7 +512,7 @@ function curl_exec($ch)
  * @throws CurlException
  *
  */
-function curl_getinfo($ch, int $opt = null)
+function curl_getinfo($ch, ?int $opt = null)
 {
     error_clear_last();
     if ($opt !== null) {
@@ -542,7 +542,7 @@ function curl_getinfo($ch, int $opt = null)
  * @throws CurlException
  *
  */
-function curl_init(string $url = null)
+function curl_init(?string $url = null)
 {
     error_clear_last();
     $result = \curl_init($url);

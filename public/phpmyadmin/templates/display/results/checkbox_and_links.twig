@@ -32,7 +32,7 @@
   {% if delete.url is not empty %}
     <td class="text-center d-print-none{{ is_ajax ? ' ajax' }}">
       <span class="text-nowrap">
-        {{ link_or_button(delete.url, delete.params, delete.string, {'class': 'delete_row requireConfirm' ~ (is_ajax ? ' ajax') }) }}
+        {{ link_or_button(delete.url, delete.params, delete.string, {'class': 'delete_row requireConfirm ajax'}) }}
         {% if js_conf is not empty %}
           <div class="hide">{{ js_conf }}</div>
         {% endif %}
@@ -43,7 +43,7 @@
   {% if delete.url is not empty %}
     <td class="text-center d-print-none{{ is_ajax ? ' ajax' }}">
       <span class="text-nowrap">
-        {{ link_or_button(delete.url, delete.params, delete.string, {'class': 'delete_row requireConfirm' ~ (is_ajax ? ' ajax') }) }}
+        {{ link_or_button(delete.url, delete.params, delete.string, {'class': 'delete_row requireConfirm ajax'}) }}
         {% if js_conf is not empty %}
           <div class="hide">{{ js_conf }}</div>
         {% endif %}

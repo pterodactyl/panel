@@ -111,7 +111,7 @@ use Safe\Exceptions\PasswordException;
  * @throws PasswordException
  *
  */
-function password_hash(string $password, $algo, array $options = null): string
+function password_hash(string $password, $algo, ?array $options = null): string
 {
     error_clear_last();
     if ($options !== null) {

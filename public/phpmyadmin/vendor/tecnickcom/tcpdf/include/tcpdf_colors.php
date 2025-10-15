@@ -275,7 +275,7 @@ class TCPDF_COLORS {
 		$color = strtolower($color);
 		// check for javascript color array syntax
 		if (strpos($color, '[') !== false) {
-			if (preg_match('/[\[][\"\'](t|g|rgb|cmyk)[\"\'][\,]?([0-9\.]*+)[\,]?([0-9\.]*+)[\,]?([0-9\.]*+)[\,]?([0-9\.]*+)[\]]/', $color, $m) > 0) {
+			if (preg_match('/[\[][\"\'](t|g|rgba|rgb|cmyk)[\"\'][\,]?([0-9\.]*+)[\,]?([0-9\.]*+)[\,]?([0-9\.]*+)[\,]?([0-9\.]*+)[\]]/', $color, $m) > 0) {
 				$returncolor = array();
 				switch ($m[1]) {
 					case 'cmyk': {
@@ -286,7 +286,8 @@ class TCPDF_COLORS {
 						$returncolor['K'] = max(0, min(100, (floatval($m[5]) * 100)));
 						break;
 					}
-					case 'rgb': {
+					case 'rgb':
+					case 'rgba': {
 						// RGB
 						$returncolor['R'] = max(0, min(255, (floatval($m[2]) * 255)));
 						$returncolor['G'] = max(0, min(255, (floatval($m[3]) * 255)));
@@ -316,6 +317,25 @@ class TCPDF_COLORS {
 		}
 		if (strlen($color) == 0) {
 			return $defcol;
+		}
+		// RGBA ARRAY
+		if (substr($color, 0, 4) == 'rgba') {
+			$codes = substr($color, 5);
+			$codes = str_replace(')', '', $codes);
+			$returncolor = explode(',', $codes);
+			// remove alpha component
+			array_pop($returncolor);
+			foreach ($returncolor as $key => $val) {
+				if (strpos($val, '%') > 0) {
+					// percentage
+					$returncolor[$key] = (255 * intval($val) / 100);
+				} else {
+					$returncolor[$key] = intval($val); /* floatize */
+				}
+				// normalize value
+				$returncolor[$key] = max(0, min(255, $returncolor[$key]));
+			}
+			return $returncolor;
 		}
 		// RGB ARRAY
 		if (substr($color, 0, 3) == 'rgb') {

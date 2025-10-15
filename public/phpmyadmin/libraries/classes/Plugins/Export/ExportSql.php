@@ -53,7 +53,9 @@ use function strtoupper;
 use function trigger_error;
 
 use const E_USER_ERROR;
+use const E_USER_WARNING;
 use const PHP_VERSION;
+use const PHP_VERSION_ID;
 
 /**
  * Handles the export for the SQL class
@@ -1541,7 +1543,7 @@ class ExportSql extends ExportPlugin
             $message = sprintf(__('Error reading structure for table %s:'), $db . '.' . $table);
             $message .= ' ' . $tmpError;
             if (! defined('TESTSUITE')) {
-                trigger_error($message, E_USER_ERROR);
+                trigger_error($message, PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING);
             }
 
             return $this->exportComment($message);
@@ -2270,7 +2272,7 @@ class ExportSql extends ExportPlugin
             $message = sprintf(__('Error reading data for table %s:'), $db . '.' . $table);
             $message .= ' ' . $tmpError;
             if (! defined('TESTSUITE')) {
-                trigger_error($message, E_USER_ERROR);
+                trigger_error($message, PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING);
             }
 
             return $this->export->outputHandler(

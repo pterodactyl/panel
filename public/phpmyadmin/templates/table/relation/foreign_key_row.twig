@@ -113,7 +113,7 @@
         </span>
     </td>
     <td>
-        {% if foreign_db and foreign_table %}
+        {% if foreign_table is not same as('') %}
             {% for foreign_column in one_key['ref_index_list'] %}
                 <span class="formelement clearfloat">
                     {% include 'table/relation/relational_dropdown.twig' with {

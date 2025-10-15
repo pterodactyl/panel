@@ -73,19 +73,28 @@ class JoinKeyword extends Component
     public $using;
 
     /**
+     * Index hints
+     *
+     * @var IndexHint[]
+     */
+     public $indexHints = [];
+
+    /**
      * @see JoinKeyword::$JOINS
      *
-     * @param string      $type  Join type
-     * @param Expression  $expr  join expression
-     * @param Condition[] $on    join conditions
-     * @param ArrayObj    $using columns joined
+     * @param string      $type       Join type
+     * @param Expression  $expr       join expression
+     * @param Condition[] $on         join conditions
+     * @param ArrayObj    $using      columns joined
+     * @param IndexHint[] $indexHints index hints
      */
-    public function __construct($type = null, $expr = null, $on = null, $using = null)
+    public function __construct($type = null, $expr = null, $on = null, $using = null, $indexHints = [])
     {
         $this->type = $type;
         $this->expr = $expr;
         $this->on = $on;
         $this->using = $using;
+        $this->indexHints = $indexHints;
     }
 
     /**
@@ -110,6 +119,7 @@ class JoinKeyword extends Component
          *
          *      1 -----------------------[ expr ]----------------------> 2
          *
+         *      2 -------------------[ index_hints ]-------------------> 2
          *      2 ------------------------[ ON ]-----------------------> 3
          *      2 -----------------------[ USING ]---------------------> 4
          *
@@ -163,6 +173,12 @@ class JoinKeyword extends Component
                         case 'USING':
                             $state = 4;
                             break;
+                        case 'USE':
+                        case 'IGNORE':
+                        case 'FORCE':
+                            // Adding index hint on the JOIN clause.
+                            $expr->indexHints = IndexHint::parse($parser, $list);
+                            break;
                         default:
                             if (empty(static::$JOINS[$token->keyword])) {
                                 /* Next clause is starting */
@@ -210,6 +226,7 @@ class JoinKeyword extends Component
         $ret = [];
         foreach ($component as $c) {
             $ret[] = array_search($c->type, static::$JOINS) . ' ' . $c->expr
+                . ($c->indexHints !== [] ? ' ' . IndexHint::build($c->indexHints) : '')
                 . (! empty($c->on)
                     ? ' ON ' . Condition::build($c->on) : '')
                 . (! empty($c->using)

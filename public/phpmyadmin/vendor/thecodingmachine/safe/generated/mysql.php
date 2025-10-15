@@ -73,7 +73,7 @@ function mysql_close($link_identifier = null): void
  * @throws MysqlException
  *
  */
-function mysql_connect(string $server = null, string $username = null, string $password = null, bool $new_link = false, int $client_flags = 0)
+function mysql_connect(?string $server = null, ?string $username = null, ?string $password = null, bool $new_link = false, int $client_flags = 0)
 {
     error_clear_last();
     if ($client_flags !== 0) {

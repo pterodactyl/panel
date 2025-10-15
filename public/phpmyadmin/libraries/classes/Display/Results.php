@@ -840,12 +840,16 @@ class Results
         // Move to the next page or to the last one
         $moveForwardButtons = '';
         if (
+            ! (
             // view with unknown number of rows
-            ($this->properties['unlim_num_rows'] === -1 || $this->properties['unlim_num_rows'] === false)
-            || (! $isShowingAll
-            && intval($_SESSION['tmpval']['pos']) + intval($_SESSION['tmpval']['max_rows'])
-                < $this->properties['unlim_num_rows']
-            && $this->properties['num_rows'] >= $_SESSION['tmpval']['max_rows'])
+            $this->properties['unlim_num_rows'] !== -1
+            && $this->properties['unlim_num_rows'] !== false
+            && ($isShowingAll
+                || ( $this->isExactCount()
+                    && (int) $_SESSION['tmpval']['pos'] + (int) $_SESSION['tmpval']['max_rows']
+                    >= $this->properties['unlim_num_rows'])
+                || $this->properties['num_rows'] < $_SESSION['tmpval']['max_rows'])
+            )
         ) {
             $moveForwardButtons = $this->getMoveForwardButtonsForTableNavigation(
                 htmlspecialchars($this->properties['sql_query']),
@@ -876,6 +880,15 @@ class Results
             'pos' => $_SESSION['tmpval']['pos'],
             'sort_by_key' => $sortByKeyData,
         ];
+    }
+
+    private function isExactCount(): bool
+    {
+        // If we have the full page of rows, we don't know
+        // if there are more unless unlimNumRows is smaller than MaxExactCount
+        return $this->properties['unlim_num_rows'] < $GLOBALS['cfg']['MaxExactCount']
+            || $_SESSION['tmpval']['max_rows'] === self::ALL_ROWS
+            || $this->properties['num_rows'] < $_SESSION['tmpval']['max_rows'];
     }
 
     /**
@@ -1870,14 +1883,14 @@ class Results
         array $orderUrlParams,
         array $multiOrderUrlParams
     ): string {
-        $urlPath = Url::getFromRoute('/sql', $multiOrderUrlParams, false);
+        $urlPath = Url::getFromRoute('/sql', $multiOrderUrlParams, true);
         $innerLinkContent = htmlspecialchars($fieldsMeta->name) . $orderImg
             . '<input type="hidden" value="'
             . $urlPath
             . '">';
 
         return Generator::linkOrButton(
-            Url::getFromRoute('/sql', $orderUrlParams, false),
+            Url::getFromRoute('/sql', $orderUrlParams, true),
             null,
             $innerLinkContent,
             ['class' => 'sortlink']
@@ -3687,8 +3700,19 @@ class Results
 
             $sqlQueryMessage = Generator::getMessage($message, $this->properties['sql_query'], 'success');
         } elseif (($printView === null || $printView != '1') && ! $isLimitedDisplay) {
+            $message = Message::success(__('Your SQL query has been executed successfully.'));
+
+            if ($this->properties['querytime'] > 0) {
+                $message->addText('(');
+
+                $messageQueryTime = Message::notice(__('Query took %01.4f seconds.') . ')');
+                $messageQueryTime->addParam($this->properties['querytime']);
+
+                $message->addMessage($messageQueryTime, '');
+            }
+
             $sqlQueryMessage = Generator::getMessage(
-                __('Your SQL query has been executed successfully.'),
+                $message,
                 $this->properties['sql_query'],
                 'success'
             );
@@ -3962,7 +3986,7 @@ class Results
             }
         } elseif (($_SESSION['tmpval']['max_rows'] === self::ALL_ROWS) || ($posNext > $total)) {
             $firstShownRec = $_SESSION['tmpval']['pos'];
-            $lastShownRec = $total - 1;
+            $lastShownRec = $firstShownRec + $this->properties['num_rows'] - 1;
         } else {
             $firstShownRec = $_SESSION['tmpval']['pos'];
             $lastShownRec = $posNext - 1;

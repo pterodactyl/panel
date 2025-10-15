@@ -529,7 +529,7 @@ function sprintf(string $format, ...$params): string
  * @throws StringsException
  *
  */
-function substr(string $string, int $start, int $length = null): string
+function substr(string $string, int $start, ?int $length = null): string
 {
     error_clear_last();
     if ($length !== null) {

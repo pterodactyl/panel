@@ -251,7 +251,7 @@ function sqlsrv_free_stmt($stmt): void
  * @throws SqlsrvException
  *
  */
-function sqlsrv_get_field($stmt, int $fieldIndex, int $getAsType = null)
+function sqlsrv_get_field($stmt, int $fieldIndex, ?int $getAsType = null)
 {
     error_clear_last();
     if ($getAsType !== null) {
@@ -357,7 +357,7 @@ function sqlsrv_num_rows($stmt): int
  * @throws SqlsrvException
  *
  */
-function sqlsrv_prepare($conn, string $sql, array $params = null, array $options = null)
+function sqlsrv_prepare($conn, string $sql, ?array $params = null, ?array $options = null)
 {
     error_clear_last();
     if ($options !== null) {
@@ -394,7 +394,7 @@ function sqlsrv_prepare($conn, string $sql, array $params = null, array $options
  * @throws SqlsrvException
  *
  */
-function sqlsrv_query($conn, string $sql, array $params = null, array $options = null)
+function sqlsrv_query($conn, string $sql, ?array $params = null, ?array $options = null)
 {
     error_clear_last();
     if ($options !== null) {

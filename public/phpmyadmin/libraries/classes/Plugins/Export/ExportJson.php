@@ -113,7 +113,7 @@ class ExportJson extends ExportPlugin
         $data = $this->encode([
             'type' => 'header',
             'version' => Version::VERSION,
-            'comment' => 'Export to JSON plugin for PHPMyAdmin',
+            'comment' => 'Export to JSON plugin for phpMyAdmin',
         ]);
         if ($data === false) {
             return false;

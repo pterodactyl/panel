@@ -20,7 +20,7 @@ use Safe\Exceptions\PcntlException;
  * @throws PcntlException
  *
  */
-function pcntl_exec(string $path, array $args = null, array $envs = null): void
+function pcntl_exec(string $path, ?array $args = null, ?array $envs = null): void
 {
     error_clear_last();
     if ($envs !== null) {
@@ -50,7 +50,7 @@ function pcntl_exec(string $path, array $args = null, array $envs = null): void
  * @throws PcntlException
  *
  */
-function pcntl_getpriority(int $pid = null, int $process_identifier = PRIO_PROCESS): int
+function pcntl_getpriority(?int $pid = null, int $process_identifier = PRIO_PROCESS): int
 {
     error_clear_last();
     if ($process_identifier !== PRIO_PROCESS) {
@@ -83,7 +83,7 @@ function pcntl_getpriority(int $pid = null, int $process_identifier = PRIO_PROCE
  * @throws PcntlException
  *
  */
-function pcntl_setpriority(int $priority, int $pid = null, int $process_identifier = PRIO_PROCESS): void
+function pcntl_setpriority(int $priority, ?int $pid = null, int $process_identifier = PRIO_PROCESS): void
 {
     error_clear_last();
     if ($process_identifier !== PRIO_PROCESS) {

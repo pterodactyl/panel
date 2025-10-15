@@ -18,6 +18,7 @@ use function trigger_error;
 use const DIRECTORY_SEPARATOR;
 use const E_USER_ERROR;
 use const E_USER_WARNING;
+use const PHP_VERSION_ID;
 
 /**
  * phpMyAdmin theme manager
@@ -83,7 +84,7 @@ class ThemeManager
                     __('Default theme %s not found!'),
                     htmlspecialchars($GLOBALS['cfg']['ThemeDefault'])
                 ),
-                E_USER_ERROR
+                PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
             );
             $configThemeExists = false;
         } else {
@@ -142,7 +143,7 @@ class ThemeManager
                     __('Theme %s not found!'),
                     htmlspecialchars((string) $theme)
                 ),
-                E_USER_ERROR
+                PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
             );
 
             return false;

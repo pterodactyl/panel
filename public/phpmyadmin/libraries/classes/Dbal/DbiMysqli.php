@@ -33,6 +33,7 @@ use const MYSQLI_OPT_SSL_VERIFY_SERVER_CERT;
 use const MYSQLI_REPORT_OFF;
 use const MYSQLI_STORE_RESULT;
 use const MYSQLI_USE_RESULT;
+use const PHP_VERSION_ID;
 
 /**
  * Interface to the MySQL Improved extension (MySQLi)
@@ -167,7 +168,7 @@ class DbiMysqli implements DbiExtension
                         '[code][doc@cfg_Servers_hide_connection_errors]'
                         . '$cfg[\'Servers\'][$i][\'hide_connection_errors\'][/doc][/code]'
                     ),
-                    E_USER_ERROR
+                    PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
                 );
             }
 

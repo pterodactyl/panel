@@ -3,7 +3,6 @@ $textarea-rows: 15;
 
 .CodeMirror {
   height: 20rem;
-  direction: ltr;
   border: $card-border-width solid $card-border-color;
 
   @include border-radius($card-border-radius);
@@ -96,7 +95,7 @@ span {
 }
 
 .CodeMirror-lint-tooltip {
-  z-index: 200;
+  z-index: 2000;
   font-family: inherit;
 
   code {

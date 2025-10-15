@@ -42,7 +42,7 @@ $( function() {
 
             var perform_upload = function () {
             new $.getJSON(
-                "{{ ajax_url|raw }}",
+                "{{ ajax_url|e('js') }}",
                 {},
                 function(response) {
                     finished = response.finished;
@@ -51,7 +51,7 @@ $( function() {
                     complete = response.complete;
 
                     if (total==0 && complete==0 && percent==0) {
-                        $("#upload_form_status_info").html('<img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock"> {{ promot_str|raw }}');
+                        $("#upload_form_status_info").html('<img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock"> {{ promot_str|e('js') }}');
                         $("#upload_form_status").css("display", "none");
                     } else {
                         var now = new Date();
@@ -64,7 +64,7 @@ $( function() {
                             now.getSeconds())
                             + now.getMilliseconds() - 1000;
                         var statustext = Functions.sprintf(
-                            "{{ statustext_str|raw }}",
+                            "{{ statustext_str|e('js') }}",
                             Functions.formatBytes(
                                 complete, 1, Messages.strDecimalSeparator
                             ),
@@ -77,7 +77,7 @@ $( function() {
                             {# Show progress UI #}
                             $("#importmain").hide();
                             $("#import_form_status")
-                            .html('{{ upload_html|raw }}')
+                            .html('{{ upload_html|e('js') }}')
                             .show();
                             import_start = now;
                         }
@@ -86,7 +86,7 @@ $( function() {
                             var used_time = now - import_start;
                             var seconds = parseInt(((total - complete) / complete) * used_time / 1000);
                             var speed = Functions.sprintf(
-                                "{{ second_str|raw }}",
+                                "{{ second_str|e('js') }}",
                                 Functions.formatBytes(complete / used_time * 1000, 1, Messages.strDecimalSeparator)
                             );
 
@@ -94,12 +94,12 @@ $( function() {
                             seconds %= 60;
                             var estimated_time;
                             if (minutes > 0) {
-                                estimated_time = "{{ remaining_min|raw }}"
+                                estimated_time = "{{ remaining_min|e('js') }}"
                                     .replace("%MIN", minutes)
                                     .replace("%SEC", seconds);
                             }
                             else {
-                                estimated_time = "{{ remaining_second|raw }}"
+                                estimated_time = "{{ remaining_second|e('js') }}"
                                 .replace("%SEC", seconds);
                             }
 
@@ -132,9 +132,9 @@ $( function() {
                         $("#importmain").hide();
                         {# Loads the message, either success or mysql error #}
                         $("#import_form_status")
-                        .html('<img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock"> {{ processed_str|raw }}')
+                        .html('<img src="{{ image('ajax_clock_small.gif') }}" width="16" height="16" alt="ajax clock"> {{ processed_str|e('js') }}')
                         .show();
-                        $("#import_form_status").load("index.php?route=/import-status&message=true&{{ import_url|raw }}");
+                        $("#import_form_status").load("index.php?route=/import-status&message=true&{{ import_url|e('js') }}");
                         Navigation.reload();
 
                         {# If finished #}

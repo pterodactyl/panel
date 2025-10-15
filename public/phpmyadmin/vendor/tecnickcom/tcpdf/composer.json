@@ -12,7 +12,7 @@
         "barcodes"
     ],
     "homepage": "http://www.tcpdf.org/",
-    "version": "6.8.0",
+    "version": "6.10.0",
     "license": "LGPL-3.0-or-later",
     "authors": [
         {
@@ -30,8 +30,6 @@
             "config",
             "include",
             "tcpdf.php",
-            "tcpdf_parser.php",
-            "tcpdf_import.php",
             "tcpdf_barcodes_1d.php",
             "tcpdf_barcodes_2d.php",
             "include/tcpdf_colors.php",
@@ -43,11 +41,6 @@
             "include/barcodes/datamatrix.php",
             "include/barcodes/pdf417.php",
             "include/barcodes/qrcode.php"
-        ]
-    },
-    "archive": {
-        "exclude": [
-            "/examples"
         ]
     }
 }

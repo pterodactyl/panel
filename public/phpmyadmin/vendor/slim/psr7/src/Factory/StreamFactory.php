@@ -51,7 +51,7 @@ class StreamFactory implements StreamFactoryInterface
     public function createStreamFromFile(
         string $filename,
         string $mode = 'r',
-        StreamInterface $cache = null
+        ?StreamInterface $cache = null
     ): StreamInterface {
         set_error_handler(
             static function (int $errno, string $errstr) use ($filename, $mode): void {
@@ -82,7 +82,7 @@ class StreamFactory implements StreamFactoryInterface
     /**
      * {@inheritdoc}
      */
-    public function createStreamFromResource($resource, StreamInterface $cache = null): StreamInterface
+    public function createStreamFromResource($resource, ?StreamInterface $cache = null): StreamInterface
     {
         if (!is_resource($resource)) {
             throw new InvalidArgumentException(

@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>FAQ - Frequently Asked Questions &#8212; phpMyAdmin 5.2.2 documentation</title>
+    <title>FAQ - Frequently Asked Questions &#8212; phpMyAdmin 5.2.3 documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" type="text/css" href="_static/classic.css" />
     
@@ -35,7 +35,7 @@
         <li class="right" >
           <a href="other.html" title="Other sources of information"
              accesskey="P">previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">FAQ - Frequently Asked Questions</a></li> 
       </ul>
     </div>  
@@ -597,6 +597,24 @@ can be set to use the older authentication with a command such as</p>
 <div class="admonition seealso">
 <p class="admonition-title">See also</p>
 <p>&lt;<a class="reference external" href="https://github.com/phpmyadmin/phpmyadmin/issues/14220">https://github.com/phpmyadmin/phpmyadmin/issues/14220</a>&gt;, &lt;<a class="reference external" href="https://stackoverflow.com/questions/49948350/phpmyadmin-on-mysql-8-0">https://stackoverflow.com/questions/49948350/phpmyadmin-on-mysql-8-0</a>&gt;, &lt;<a class="reference external" href="https://bugs.php.net/bug.php?id=76243">https://bugs.php.net/bug.php?id=76243</a>&gt;</p>
+</div>
+</section>
+<section id="missing-http-host-variable-when-using-nginx-with-http-3">
+<span id="faq1-46"></span><h3>1.46 Missing <code class="docutils literal notranslate"><span class="pre">HTTP_HOST</span></code> variable when using nginx with HTTP/3<a class="headerlink" href="#missing-http-host-variable-when-using-nginx-with-http-3" title="Permalink to this heading">¶</a></h3>
+<p>When using phpMyAdmin with nginx and HTTP/3 enabled, the <code class="docutils literal notranslate"><span class="pre">HTTP_HOST</span></code> variable may be missing due to a known issue with nginx’s HTTP/3 implementation, which can cause several issues:</p>
+<ul class="simple">
+<li><p>Two-factor authentication won’t work</p></li>
+<li><p>Exported settings have no hostname in the filename (e.g., <code class="docutils literal notranslate"><span class="pre">phpMyAdmin-config-.json</span></code>)</p></li>
+<li><p>The hostname is missing from the page title (empty <code class="docutils literal notranslate"><span class="pre">&#64;HTTP_HOST&#64;</span></code>)</p></li>
+</ul>
+<p>To fix this issue, add the following line to your nginx configuration:</p>
+<div class="highlight-nginx notranslate"><div class="highlight"><pre><span></span><span class="k">fastcgi_param</span><span class="w"> </span><span class="s">HTTP_HOST</span><span class="w"> </span><span class="nv">$host</span><span class="p">;</span>
+</pre></div>
+</div>
+<p>This line should be placed in the server block of your nginx configuration where the PHP-FPM settings are defined.</p>
+<div class="admonition seealso">
+<p class="admonition-title">See also</p>
+<p>&lt;<a class="reference external" href="https://github.com/php/php-src/issues/13021">https://github.com/php/php-src/issues/13021</a>&gt;, &lt;<a class="reference external" href="https://github.com/nginx/nginx/issues/455">https://github.com/nginx/nginx/issues/455</a>&gt;, &lt;<a class="reference external" href="https://trac.nginx.org/nginx/ticket/2281">https://trac.nginx.org/nginx/ticket/2281</a>&gt;, &lt;<a class="reference external" href="https://mailman.nginx.org/pipermail/nginx-devel/2024-January/3CQEHII5QU2BTQ7L7DAVCBWK3OQS3GU6.html">https://mailman.nginx.org/pipermail/nginx-devel/2024-January/3CQEHII5QU2BTQ7L7DAVCBWK3OQS3GU6.html</a>&gt;</p>
 </div>
 </section>
 </section>
@@ -1839,6 +1857,7 @@ spreadsheet program to properly parse and sanitize such data on input instead.</
 <li><a class="reference internal" href="#why-can-t-i-display-the-structure-of-my-table-containing-hundreds-of-columns">1.43 Why can’t I display the structure of my table containing hundreds of columns?</a></li>
 <li><a class="reference internal" href="#how-can-i-reduce-the-installed-size-of-phpmyadmin-on-disk">1.44 How can I reduce the installed size of phpMyAdmin on disk?</a></li>
 <li><a class="reference internal" href="#i-get-an-error-message-about-unknown-authentication-method-caching-sha2-password-when-trying-to-log-in">1.45 I get an error message about unknown authentication method caching_sha2_password when trying to log in</a></li>
+<li><a class="reference internal" href="#missing-http-host-variable-when-using-nginx-with-http-3">1.46 Missing <code class="docutils literal notranslate"><span class="pre">HTTP_HOST</span></code> variable when using nginx with HTTP/3</a></li>
 </ul>
 </li>
 <li><a class="reference internal" href="#configuration">Configuration</a><ul>
@@ -2023,12 +2042,12 @@ spreadsheet program to properly parse and sanitize such data on input instead.</
         <li class="right" >
           <a href="other.html" title="Other sources of information"
              >previous</a> |</li>
-        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.2 documentation</a> &#187;</li>
+        <li class="nav-item nav-item-0"><a href="index.html">phpMyAdmin 5.2.3 documentation</a> &#187;</li>
         <li class="nav-item nav-item-this"><a href="">FAQ - Frequently Asked Questions</a></li> 
       </ul>
     </div>
     <div class="footer" role="contentinfo">
-        &#169; <a href="copyright.html">Copyright</a> 2012 - 2024, The phpMyAdmin devel team.
+        &#169; <a href="copyright.html">Copyright</a> 2012 - 2025, The phpMyAdmin devel team.
       Created using <a href="https://www.sphinx-doc.org/">Sphinx</a> 5.3.0.
     </div>
   </body>

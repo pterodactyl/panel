@@ -15,6 +15,7 @@ use function implode;
 use function is_array;
 use function rtrim;
 use function strlen;
+use function strtoupper;
 use function trim;
 
 /**
@@ -372,7 +373,7 @@ class Expression extends Component
                             && ! ($prev[1]->flags & Token::FLAG_SYMBOL_VARIABLE)
                             && ! ($prev[1]->flags & Token::FLAG_SYMBOL_PARAMETER))
                         || ($prev[1]->type === Token::TYPE_NONE
-                            && $prev[1]->token !== 'OVER'))
+                            && strtoupper($prev[1]->token) !== 'OVER'))
                 ) {
                     if (! empty($ret->alias)) {
                         $parser->error('An alias was previously found.', $token);

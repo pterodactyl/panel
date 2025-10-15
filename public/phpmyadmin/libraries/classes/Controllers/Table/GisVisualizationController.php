@@ -10,6 +10,9 @@ use PhpMyAdmin\Gis\GisVisualization;
 use PhpMyAdmin\Html\Generator;
 use PhpMyAdmin\Message;
 use PhpMyAdmin\ResponseRenderer;
+use PhpMyAdmin\SqlParser\Components\Limit;
+use PhpMyAdmin\SqlParser\Parser;
+use PhpMyAdmin\SqlParser\Statements\SelectStatement;
 use PhpMyAdmin\Template;
 use PhpMyAdmin\Url;
 use PhpMyAdmin\Util;
@@ -73,24 +76,7 @@ final class GisVisualizationController extends AbstractController
             return;
         }
 
-        // Execute the query and return the result
-        $result = $this->dbi->tryQuery($sqlQuery);
-        // Get the meta data of results
-        $meta = [];
-        if ($result !== false) {
-            $meta = $this->dbi->getFieldsMeta($result);
-        }
-
-        // Find the candidate fields for label column and spatial column
-        $labelCandidates = [];
-        $spatialCandidates = [];
-        foreach ($meta as $column_meta) {
-            if ($column_meta->isMappedTypeGeometry) {
-                $spatialCandidates[] = $column_meta->name;
-            } else {
-                $labelCandidates[] = $column_meta->name;
-            }
-        }
+        [$labelCandidates, $spatialCandidates] = $this->getCandidateColumns($sqlQuery);
 
         // Get settings if any posted
         $visualizationSettings = [];
@@ -199,5 +185,35 @@ final class GisVisualizationController extends AbstractController
     {
         $this->response->disable();
         $this->visualization->toFile($filename, $format);
+    }
+
+    /**
+     * @return array{list<string>,list<string>}
+     */
+    private function getCandidateColumns(string $sqlQuery): array
+    {
+        $parser = new Parser($sqlQuery);
+        /** @var SelectStatement $statement */
+        $statement = $parser->statements[0];
+        $statement->limit = new Limit(0, 0);
+        $limitedSqlQuery = $statement->build();
+
+        $result = $this->dbi->tryQuery($limitedSqlQuery);
+        $meta = [];
+        if ($result !== false) {
+            $meta = $this->dbi->getFieldsMeta($result);
+        }
+
+        $labelCandidates = [];
+        $spatialCandidates = [];
+        foreach ($meta as $column_meta) {
+            if ($column_meta->isMappedTypeGeometry) {
+                $spatialCandidates[] = $column_meta->name;
+            } else {
+                $labelCandidates[] = $column_meta->name;
+            }
+        }
+
+        return [$labelCandidates, $spatialCandidates];
     }
 }

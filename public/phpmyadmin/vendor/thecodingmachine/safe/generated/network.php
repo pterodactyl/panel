@@ -304,7 +304,7 @@ function dns_get_record(string $hostname, int $type = DNS_ANY, ?array &$authns =
  * @throws NetworkException
  *
  */
-function fsockopen(string $hostname, int $port = -1, ?int &$errno = null, ?string &$errstr = null, float $timeout = null)
+function fsockopen(string $hostname, int $port = -1, ?int &$errno = null, ?string &$errstr = null, ?float $timeout = null)
 {
     error_clear_last();
     if ($timeout !== null) {

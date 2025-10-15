@@ -24,7 +24,7 @@ use function fileperms;
 use function fopen;
 use function fread;
 use function function_exists;
-use function gd_info;
+use function get_defined_constants;
 use function get_object_vars;
 use function implode;
 use function ini_get;
@@ -63,6 +63,7 @@ use function trim;
 use const ARRAY_FILTER_USE_KEY;
 use const DIRECTORY_SEPARATOR;
 use const E_USER_ERROR;
+use const E_USER_WARNING;
 use const PHP_OS;
 use const PHP_URL_PATH;
 use const PHP_URL_SCHEME;
@@ -246,38 +247,20 @@ class Config
     }
 
     /**
-     * Whether GD2 is present
+     * Determines if GD2+ is available
+     *
+     * Respects the config override ('yes' / 'no') if set,
+     * otherwise checks the `GD_MAJOR_VERSION` constant (>= 2).
      */
     public function checkGd2(): void
     {
         if ($this->get('GD2Available') === 'yes') {
             $this->set('PMA_IS_GD2', 1);
-
-            return;
-        }
-
-        if ($this->get('GD2Available') === 'no') {
+        } elseif ($this->get('GD2Available') === 'no') {
             $this->set('PMA_IS_GD2', 0);
-
-            return;
+        } else {
+            $this->set('PMA_IS_GD2', (get_defined_constants()['GD_MAJOR_VERSION'] ?? 0) >= 2 ? 1 : 0);
         }
-
-        if (! function_exists('imagecreatetruecolor')) {
-            $this->set('PMA_IS_GD2', 0);
-
-            return;
-        }
-
-        if (function_exists('gd_info')) {
-            $gd_nfo = gd_info();
-            if (mb_strstr($gd_nfo['GD Version'], '2.')) {
-                $this->set('PMA_IS_GD2', 1);
-
-                return;
-            }
-        }
-
-        $this->set('PMA_IS_GD2', 0);
     }
 
     /**
@@ -707,7 +690,7 @@ class Config
             . __('This usually means there is a syntax error in it, please check any errors shown below.')
             . '[br][br]'
             . '[conferr]';
-        trigger_error($error, E_USER_ERROR);
+        trigger_error($error, PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING);
     }
 
     /**
@@ -1232,7 +1215,7 @@ class Config
             if (! is_int($server_index) || $server_index < 1) {
                 trigger_error(
                     sprintf(__('Invalid server index: %s'), $server_index),
-                    E_USER_ERROR
+                    PHP_VERSION_ID < 80400 ? E_USER_ERROR : E_USER_WARNING
                 );
             }
 
