@@ -1,0 +1,88 @@
+services:
+  app:
+    build:
+      context: ..
+      dockerfile: .devcontainer/Dockerfile
+    volumes:
+      - ../..:/workspaces:cached
+
+    command: sleep infinity
+
+    networks:
+      - devcontainer-net
+
+    depends_on:
+      - mariadb
+      - mailhog
+      - redis
+
+  mariadb:
+    image: mariadb:12.0-noble
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: panel
+      MYSQL_USER: pterodactyl
+      MYSQL_PASSWORD: secret
+      TZ: UTC
+    command:
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+      - --max-allowed-packet=64M
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    expose:
+      - "3306"
+    networks:
+      - devcontainer-net
+    healthcheck:
+      test:
+        [
+          "CMD-SHELL",
+          "mysqladmin ping -h localhost -p${MYSQL_ROOT_PASSWORD} >/dev/null 2>&1 || exit 1",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  mailhog:
+    image: mailhog/mailhog:latest
+    restart: unless-stopped
+    ports:
+      - "8025:8025" # Web UI
+      - "1025:1025" # SMTP
+    environment:
+      MH_UI_BIND_ADDR: "0.0.0.0:8025"
+      MH_SMTP_BIND_ADDR: "0.0.0.0:1025"
+    networks:
+      - devcontainer-net
+    healthcheck:
+      test:
+        ["CMD-SHELL", "curl -fsS http://localhost:8025/ >/dev/null || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  redis:
+    image: redis:7
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    ports:
+      - "6379:6379"
+    networks:
+      - devcontainer-net
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  mariadb_data:
+
+networks:
+  devcontainer-net:
+    driver: bridge
