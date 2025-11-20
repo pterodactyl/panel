@@ -21,14 +21,10 @@
         "vscode": {
             "extensions": [
                 "fill-labs.dependi",
-                "mhutchie.git-graph",
                 "ecmel.vscode-html-css",
                 "p42ai.refactor",
-                "christian-kohler.npm-intellisense",
-                "quick-lint.quick-lint-js",
                 "bradlc.vscode-tailwindcss",
                 "MaxvanderSchee.web-accessibility",
-                "lokalise.i18n-ally",
                 "dbaeumer.vscode-eslint",
                 "xdebug.php-pack"
             ]
