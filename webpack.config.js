@@ -1,16 +1,15 @@
-const path = require('path');
+const path = require('node:path');
 const webpack = require('webpack');
-const AssetsManifestPlugin = require('webpack-assets-manifest');
+const { WebpackAssetsManifest } = require('webpack-assets-manifest');
 const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const isProduction = process.env.NODE_ENV === 'production';
 
 module.exports = {
     cache: true,
     target: 'web',
-    mode: process.env.NODE_ENV,
+    mode: isProduction ? 'production' : 'development',
     devtool: isProduction ? false : (process.env.DEVTOOL || 'eval-source-map'),
     performance: {
         hints: false,
@@ -96,11 +95,11 @@ module.exports = {
     },
     plugins: [
         new webpack.EnvironmentPlugin({
-            NODE_ENV: 'development',
+            NODE_ENV: process.env.NODE_ENV || 'development',
             DEBUG: process.env.NODE_ENV !== 'production',
             WEBPACK_BUILD_HASH: Date.now().toString(16),
         }),
-        new AssetsManifestPlugin({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
+        new WebpackAssetsManifest({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
         new ForkTsCheckerWebpackPlugin({
             typescript: {
                 mode: 'write-references',
@@ -126,7 +125,6 @@ module.exports = {
         minimize: isProduction,
         minimizer: [
             new TerserPlugin({
-                cache: isProduction,
                 parallel: true,
                 extractComments: false,
                 terserOptions: {
