@@ -1,7 +1,7 @@
 {
     "name": "pterodactyl-panel",
     "engines": {
-        "node": ">=14"
+        "node": ">=22"
     },
     "dependencies": {
         "@floating-ui/react-dom-interactions": "^0.6.6",
