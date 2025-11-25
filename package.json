@@ -30,7 +30,7 @@
         "i18next": "^21.8.9",
         "i18next-http-backend": "^1.4.1",
         "i18next-multiload-backend-adapter": "^1.0.0",
-        "path-browserify": "^1.0.1",
+        "pathe": "^2.0.3",
         "qrcode.react": "^1.0.1",
         "react": "^16.14.0",
         "react-chartjs-2": "^4.2.0",
