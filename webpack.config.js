@@ -17,8 +17,8 @@ module.exports = {
     entry: ['react-hot-loader/patch', './resources/scripts/index.tsx'],
     output: {
         path: path.join(__dirname, '/public/assets'),
-        filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[hash:8].js',
-        chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[hash:8].js',
+        filename: isProduction ? 'bundle.[chunkhash:8].js' : 'bundle.[fullhash:8].js',
+        chunkFilename: isProduction ? '[name].[chunkhash:8].js' : '[name].[fullhash:8].js',
         publicPath: (process.env.WEBPACK_PUBLIC_PATH || '/assets/'),
         crossOriginLoading: 'anonymous',
     },
@@ -111,9 +111,6 @@ module.exports = {
                     syntactic: true,
                 },
             },
-            // eslint: isProduction ? undefined : {
-            //     files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
-            // }
         }),
     ].filter(p => p),
     optimization: {
@@ -141,8 +138,11 @@ module.exports = {
     },
     devServer: {
         compress: true,
-        contentBase: path.join(__dirname, '/public'),
-        publicPath: process.env.WEBPACK_PUBLIC_PATH || '/assets/',
+        port: 5173,
+        static: {
+            directory: path.join(__dirname, '/public'),
+            publicPath: process.env.WEBPACK_PUBLIC_PATH || '/assets/',
+        },
         allowedHosts: [
             '.pterodactyl.test',
         ],
