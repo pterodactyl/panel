@@ -99,7 +99,7 @@ module.exports = {
             DEBUG: process.env.NODE_ENV !== 'production',
             WEBPACK_BUILD_HASH: Date.now().toString(16),
         }),
-        new WebpackAssetsManifest({ writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
+        new WebpackAssetsManifest({ output: 'manifest.json', writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
         new ForkTsCheckerWebpackPlugin({
             typescript: {
                 mode: 'write-references',
