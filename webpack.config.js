@@ -10,7 +10,7 @@ module.exports = {
     cache: true,
     target: 'web',
     mode: isProduction ? 'production' : 'development',
-    devtool: isProduction ? false : (process.env.DEVTOOL || 'eval-source-map'),
+    devtool: process.env.DEVTOOL || (isProduction ? false : 'eval-source-map'),
     performance: {
         hints: false,
     },
@@ -112,10 +112,6 @@ module.exports = {
             //     files: `${path.join(__dirname, '/resources/scripts')}/**/*.{ts,tsx}`,
             // }
         }),
-        process.env.ANALYZE_BUNDLE ? new BundleAnalyzerPlugin({
-            analyzerHost: '0.0.0.0',
-            analyzerPort: 8081,
-        }) : null
     ].filter(p => p),
     optimization: {
         usedExports: true,
