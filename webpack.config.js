@@ -1,7 +1,6 @@
 const path = require('node:path');
 const webpack = require('webpack');
 const { WebpackAssetsManifest } = require('webpack-assets-manifest');
-const ForkTsCheckerWebpackPlugin = require('fork-ts-checker-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const isProduction = process.env.NODE_ENV === 'production';
@@ -103,16 +102,7 @@ module.exports = {
             WEBPACK_BUILD_HASH: Date.now().toString(16),
         }),
         new WebpackAssetsManifest({ output: 'manifest.json', writeToDisk: true, publicPath: true, integrity: true, integrityHashes: ['sha384'] }),
-        new ForkTsCheckerWebpackPlugin({
-            typescript: {
-                mode: 'write-references',
-                diagnosticOptions: {
-                    semantic: true,
-                    syntactic: true,
-                },
-            },
-        }),
-    ].filter(p => p),
+    ],
     optimization: {
         usedExports: true,
         sideEffects: false,

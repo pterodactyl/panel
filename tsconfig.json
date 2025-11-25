@@ -17,7 +17,7 @@
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "baseUrl": ".",
-    "importsNotUsedAsValues": "preserve",
+    "verbatimModuleSyntax": false,
     "paths": {
       "@/*": [
         "./resources/scripts/*"

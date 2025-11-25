@@ -18,12 +18,14 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 22
           cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
 
+      - run: yarn tsc
+      - run: yarn lint
       - name: Build
         run: yarn build:production
 

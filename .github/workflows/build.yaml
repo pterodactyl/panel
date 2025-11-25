@@ -19,7 +19,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16]
+        node-version: [22]
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
@@ -32,6 +32,6 @@ jobs:
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Build
-        run: yarn build:production
+      - run: yarn tsc
+      - run: yarn lint
+      - run: yarn build:production
