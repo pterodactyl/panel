@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property \Illuminate\Support\Collection|null $properties
  * @property Carbon $timestamp
  * @property IlluminateModel|\Eloquent $actor
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLogSubject[] $subjects
+ * @property \Illuminate\Database\Eloquent\Collection<int, \Pterodactyl\Models\ActivityLogSubject> $subjects
  * @property int|null $subjects_count
  * @property ApiKey|null $apiKey
  *
@@ -88,7 +88,7 @@ class ActivityLog extends Model
     public function actor(): MorphTo
     {
         $morph = $this->morphTo();
-        if (method_exists($morph, 'withTrashed')) {
+        if (method_exists($morph, 'withTrashed')) { // @phpstan-ignore function.alreadyNarrowedType
             return $morph->withTrashed();
         }
 

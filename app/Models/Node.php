@@ -240,6 +240,7 @@ class Node extends Model
         $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
 
+        // @phpstan-ignore-next-line property.notFound, property.notFound
         return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
 }

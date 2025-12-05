@@ -88,9 +88,10 @@ class User extends Model implements
     use Authorizable;
     use AvailableLanguages;
     use CanResetPassword;
+    /** @use \Pterodactyl\Models\Traits\HasAccessTokens<\Pterodactyl\Models\ApiKey> */
     use HasAccessTokens;
     use Notifiable;
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
 
     public const USER_LEVEL_USER = 0;

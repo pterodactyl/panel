@@ -45,7 +45,7 @@ class ActivityLogSubject extends Pivot
     public function subject(): MorphTo
     {
         $morph = $this->morphTo();
-        if (method_exists($morph, 'withTrashed')) {
+        if (method_exists($morph, 'withTrashed')) { // @phpstan-ignore function.alreadyNarrowedType
             return $morph->withTrashed();
         }
 

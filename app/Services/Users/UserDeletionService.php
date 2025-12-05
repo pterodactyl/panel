@@ -36,6 +36,6 @@ class UserDeletionService
             throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
         }
 
-        return $this->repository->delete($user);
+        return $this->repository->delete($user); // @phpstan-ignore return.type (this has been like this, unsure at the moment what is truly correct)
     }
 }

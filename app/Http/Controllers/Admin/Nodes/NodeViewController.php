@@ -13,7 +13,6 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Traits\Controllers\JavascriptInjection;
 use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Pterodactyl\Repositories\Eloquent\LocationRepository;
-use Pterodactyl\Repositories\Eloquent\AllocationRepository;
 
 class NodeViewController extends Controller
 {
@@ -23,7 +22,6 @@ class NodeViewController extends Controller
      * NodeViewController constructor.
      */
     public function __construct(
-        private AllocationRepository $allocationRepository,
         private LocationRepository $locationRepository,
         private NodeRepository $repository,
         private ServerRepository $serverRepository,
@@ -71,7 +69,7 @@ class NodeViewController extends Controller
     {
         $node = $this->repository->loadNodeAllocations($node);
 
-        $this->plainInject(['node' => Collection::wrap($node)->only(['id'])]);
+        $this->plainInject(['node' => Collection::make([$node])->only(['id'])]);
 
         return view('admin.nodes.view.allocation', [
             'node' => $node,
@@ -88,7 +86,7 @@ class NodeViewController extends Controller
     public function servers(Request $request, Node $node): View
     {
         $this->plainInject([
-            'node' => Collection::wrap($node->makeVisible(['daemon_token_id', 'daemon_token']))
+            'node' => Collection::make([$node->makeVisible(['daemon_token_id', 'daemon_token'])])
                 ->only(['scheme', 'fqdn', 'daemonListen', 'daemon_token_id', 'daemon_token']),
         ]);
 

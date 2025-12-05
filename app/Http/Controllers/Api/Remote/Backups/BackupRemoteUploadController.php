@@ -9,6 +9,7 @@ use Illuminate\Http\JsonResponse;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Extensions\Backups\BackupManager;
 use Pterodactyl\Extensions\Filesystem\S3Filesystem;
+use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 
@@ -42,14 +43,10 @@ class BackupRemoteUploadController extends Controller
             throw new BadRequestHttpException('A non-empty "size" query parameter must be provided.');
         }
 
-        /** @var Backup $model */
-        $model = Backup::query()
-            ->where('uuid', $backup)
-            ->firstOrFail();
+        $model = Backup::query()->where('uuid', $backup)->firstOrFail();
 
         // Check that the backup is "owned" by the node making the request. This avoids other nodes
         // from messing with backups that they don't own.
-        /** @var \Pterodactyl\Models\Server $server */
         $server = $model->server;
         if ($server->node_id !== $node->id) {
             throw new HttpForbiddenException('You do not have permission to access that backup.');
