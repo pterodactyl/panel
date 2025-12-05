@@ -39,7 +39,7 @@ class EggVariableController extends Controller
     {
         $egg = $this->repository->getWithVariables($egg);
 
-        return $this->view->make('admin.eggs.variables', ['egg' => $egg]);
+        return view('admin.eggs.variables', ['egg' => $egg]);
     }
 
     /**

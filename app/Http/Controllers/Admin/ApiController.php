@@ -9,7 +9,6 @@ use Pterodactyl\Models\ApiKey;
 use Illuminate\Http\RedirectResponse;
 use Prologue\Alerts\AlertsMessageBag;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Illuminate\View\Factory as ViewFactory;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Services\Api\KeyCreationService;
 use Pterodactyl\Contracts\Repository\ApiKeyRepositoryInterface;
@@ -24,7 +23,6 @@ class ApiController extends Controller
         private AlertsMessageBag $alert,
         private ApiKeyRepositoryInterface $repository,
         private KeyCreationService $keyCreationService,
-        private ViewFactory $view,
     ) {
     }
 
@@ -33,7 +31,7 @@ class ApiController extends Controller
      */
     public function index(Request $request): View
     {
-        return $this->view->make('admin.api.index', [
+        return view('admin.api.index', [
             'keys' => $this->repository->getApplicationKeys($request->user()),
         ]);
     }
@@ -48,7 +46,7 @@ class ApiController extends Controller
         $resources = AdminAcl::getResourceList();
         sort($resources);
 
-        return $this->view->make('admin.api.new', [
+        return view('admin.api.new', [
             'resources' => $resources,
             'permissions' => [
                 'r' => AdminAcl::READ,

@@ -60,7 +60,7 @@ class NodesController extends Controller
             return redirect()->route('admin.locations');
         }
 
-        return $this->view->make('admin.nodes.new', ['locations' => $locations]);
+        return view('admin.nodes.new', ['locations' => $locations]);
     }
 
     /**
