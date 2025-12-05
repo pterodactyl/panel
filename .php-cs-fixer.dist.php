@@ -5,19 +5,22 @@ use PhpCsFixer\Finder;
 use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
 
 $finder = (new Finder())
-    ->in(__DIR__)
-    ->exclude([
-        'vendor',
-        'node_modules',
-        'storage',
-        'bootstrap/cache',
-    ])
-    ->notName(['_ide_helper*']);
+    ->name('*.php')
+    ->ignoreVCSIgnored(true)
+    ->exclude([__DIR__ . '/bootstrap/cache'])
+    ->in([
+        __DIR__ . '/app',
+        __DIR__ . '/bootstrap',
+        __DIR__ . '/config',
+        __DIR__ . '/database',
+        __DIR__ . '/routes',
+        __DIR__ . '/tests',
+    ]);
 
 return (new Config())
-    ->setParallelConfig(ParallelConfigFactory::detect())
-    ->setRiskyAllowed(true)
     ->setFinder($finder)
+    ->setUsingCache(true)
+    ->setParallelConfig(ParallelConfigFactory::detect())
     ->setRules([
         '@Symfony' => true,
         '@PSR1' => true,
