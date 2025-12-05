@@ -33,10 +33,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder|UserSSHKey whereUserId($value)
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withTrashed()
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withoutTrashed()
+ * @method static \Database\Factories\UserSSHKeyFactory factory(...$parameters)
  *
  * @mixin \Eloquent
- *
- * @method static \Database\Factories\UserSSHKeyFactory factory(...$parameters)
  */
 class UserSSHKey extends Model
 {

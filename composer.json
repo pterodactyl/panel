@@ -61,6 +61,7 @@
         "mockery/mockery": "^1.6",
         "nunomaduro/collision": "^8.5",
         "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^10.5",
         "spatie/laravel-ignition": "^2.9"
     },
