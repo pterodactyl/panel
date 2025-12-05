@@ -53,18 +53,16 @@
         "webmozart/assert": "^1.11.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "~3.2.0",
-        "fakerphp/faker": "~1.23.1",
+        "barryvdh/laravel-ide-helper": "^3.6",
+        "fakerphp/faker": "^1.24",
         "friendsofphp/php-cs-fixer": "~3.64.0",
-        "itsgoingd/clockwork": "~5.2.2",
+        "itsgoingd/clockwork": "^5.3",
         "larastan/larastan": "~2.9.9",
-        "laravel/pail": "~1.1.5",
-        "laravel/sail": "~1.36.0",
-        "mockery/mockery": "~1.6.12",
-        "nunomaduro/collision": "~8.5.0",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.5",
         "phpstan/phpstan": "~1.12.7",
-        "phpunit/phpunit": "~10.5.37",
-        "spatie/laravel-ignition": "~2.8.0"
+        "phpunit/phpunit": "^10.5",
+        "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {
         "files": [
