@@ -40,7 +40,7 @@
         "phpseclib/phpseclib": "~3.0.42",
         "pragmarx/google2fa": "~8.0.3",
         "predis/predis": "~2.2.2",
-        "prologue/alerts": "~1.2.0",
+        "prologue/alerts": "^1.3.0",
         "psr/cache": "^3.0.0",
         "s1lentium/iptools": "~1.2.0",
         "spatie/laravel-fractal": "~6.2.1",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "402a8327ad12d16c51d4db1929e98cbc",
+    "content-hash": "2b56343dd77f3d70a944ebc9c232d116",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -3772,22 +3772,22 @@
         },
         {
             "name": "prologue/alerts",
-            "version": "1.2.0",
+            "version": "1.3.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/prologuephp/alerts.git",
-                "reference": "00c4662ce50a633c39d3424698baa5cbfb880da3"
+                "reference": "0a73c65c70d4838a79cc927e8c966a00b2cefcfc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/prologuephp/alerts/zipball/00c4662ce50a633c39d3424698baa5cbfb880da3",
-                "reference": "00c4662ce50a633c39d3424698baa5cbfb880da3",
+                "url": "https://api.github.com/repos/prologuephp/alerts/zipball/0a73c65c70d4838a79cc927e8c966a00b2cefcfc",
+                "reference": "0a73c65c70d4838a79cc927e8c966a00b2cefcfc",
                 "shasum": ""
             },
             "require": {
-                "illuminate/config": "~9|^10|^11.0",
-                "illuminate/session": "~9|^10|^11.0",
-                "illuminate/support": "~9|^10|^11.0"
+                "illuminate/config": "~9|^10|^11.0|^12.0",
+                "illuminate/session": "~9|^10|^11.0|^12.0",
+                "illuminate/support": "~9|^10|^11.0|^12.0"
             },
             "require-dev": {
                 "mockery/mockery": "^1.0",
@@ -3835,9 +3835,9 @@
             ],
             "support": {
                 "issues": "https://github.com/prologuephp/alerts/issues",
-                "source": "https://github.com/prologuephp/alerts/tree/1.2.0"
+                "source": "https://github.com/prologuephp/alerts/tree/1.3.0"
             },
-            "time": "2024-03-12T11:23:19+00:00"
+            "time": "2025-02-24T15:15:54+00:00"
         },
         {
             "name": "psr/cache",
