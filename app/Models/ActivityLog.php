@@ -82,6 +82,9 @@ class ActivityLog extends Model
         'properties' => ['array'],
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function actor(): MorphTo
     {
         $morph = $this->morphTo();
@@ -92,11 +95,17 @@ class ActivityLog extends Model
         return $morph;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\ActivityLogSubject, $this>
+     */
     public function subjects(): HasMany
     {
         return $this->hasMany(ActivityLogSubject::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\ApiKey, $this>
+     */
     public function apiKey(): HasOne
     {
         return $this->hasOne(ApiKey::class, 'id', 'api_key_id');

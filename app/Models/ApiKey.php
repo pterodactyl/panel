@@ -161,6 +161,8 @@ class ApiKey extends Model
 
     /**
      * Returns the user this token is assigned to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
      */
     public function user(): BelongsTo
     {
@@ -169,6 +171,8 @@ class ApiKey extends Model
 
     /**
      * Required for support with Laravel Sanctum.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
      *
      * @see \Laravel\Sanctum\Guard::supportsTokens()
      */

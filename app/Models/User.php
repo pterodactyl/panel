@@ -228,23 +228,34 @@ class User extends Model implements
 
     /**
      * Returns all servers that a user owns.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Server, $this>
      */
     public function servers(): HasMany
     {
         return $this->hasMany(Server::class, 'owner_id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\ApiKey, $this>
+     */
     public function apiKeys(): HasMany
     {
         return $this->hasMany(ApiKey::class)
             ->where('key_type', ApiKey::TYPE_ACCOUNT);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\RecoveryToken, $this>
+     */
     public function recoveryTokens(): HasMany
     {
         return $this->hasMany(RecoveryToken::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\UserSSHKey, $this>
+     */
     public function sshKeys(): HasMany
     {
         return $this->hasMany(UserSSHKey::class);
@@ -253,6 +264,8 @@ class User extends Model implements
     /**
      * Returns all the activity logs where this user is the subject — not to
      * be confused by activity logs where this user is the _actor_.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<\Pterodactyl\Models\ActivityLog, $this>
      */
     public function activity(): MorphToMany
     {
@@ -262,6 +275,8 @@ class User extends Model implements
     /**
      * Returns all the servers that a user can access by way of being the owner of the
      * server, or because they are assigned as a subuser for that server.
+     *
+     * @return \Illuminate\Database\Eloquent\Builder<\Pterodactyl\Models\Server>
      */
     public function accessibleServers(): Builder
     {

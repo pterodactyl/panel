@@ -60,6 +60,9 @@ class UserSSHKey extends Model
         'public_key' => ['required', 'string'],
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

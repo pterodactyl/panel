@@ -133,6 +133,8 @@ class Schedule extends Model
 
     /**
      * Return tasks belonging to a schedule.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Task, $this>
      */
     public function tasks(): HasMany
     {
@@ -141,6 +143,8 @@ class Schedule extends Model
 
     /**
      * Return the server model that a schedule belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
      */
     public function server(): BelongsTo
     {

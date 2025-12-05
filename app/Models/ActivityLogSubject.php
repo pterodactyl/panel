@@ -3,6 +3,8 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\Pivot;
+use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * \Pterodactyl\Models\ActivityLogSubject.
@@ -29,12 +31,18 @@ class ActivityLogSubject extends Pivot
 
     protected $guarded = ['id'];
 
-    public function activityLog()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\ActivityLog, $this>
+     */
+    public function activityLog(): BelongsTo
     {
         return $this->belongsTo(ActivityLog::class);
     }
 
-    public function subject()
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
+    public function subject(): MorphTo
     {
         $morph = $this->morphTo();
         if (method_exists($morph, 'withTrashed')) {

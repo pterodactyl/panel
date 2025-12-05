@@ -51,6 +51,8 @@ class Location extends Model
 
     /**
      * Gets the nodes in a specified location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Node, $this>
      */
     public function nodes(): HasMany
     {
@@ -59,6 +61,8 @@ class Location extends Model
 
     /**
      * Gets the servers within a given location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Pterodactyl\Models\Server, \Pterodactyl\Models\Node, $this>
      */
     public function servers(): HasManyThrough
     {
