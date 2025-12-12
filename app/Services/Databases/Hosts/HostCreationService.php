@@ -39,6 +39,7 @@ class HostCreationService
                 'username' => array_get($data, 'username'),
                 'max_databases' => null,
                 'node_id' => array_get($data, 'node_id'),
+                'enabled' => array_get($data, 'enabled', true),
             ]);
 
             // Confirm access using the provided credentials before saving data.
