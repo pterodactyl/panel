@@ -95,7 +95,7 @@ class BuildModificationService
 
             // Keep track of all the allocations we're just now adding so that we can use the first
             // one to reset the default allocation to.
-            $freshlyAllocated = $query->pluck('id')->first();
+            $freshlyAllocated = $query->pluck('id')->first(); // @phpstan-ignore larastan.noUnnecessaryCollectionCall
 
             $query->update(['server_id' => $server->id, 'notes' => null]);
         }

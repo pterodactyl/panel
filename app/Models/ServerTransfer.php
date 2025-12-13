@@ -70,6 +70,8 @@ class ServerTransfer extends Model
 
     /**
      * Gets the server associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
      */
     public function server(): BelongsTo
     {
@@ -78,6 +80,8 @@ class ServerTransfer extends Model
 
     /**
      * Gets the source node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\Node, $this>
      */
     public function oldNode(): HasOne
     {
@@ -86,6 +90,8 @@ class ServerTransfer extends Model
 
     /**
      * Gets the target node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\Node, $this>
      */
     public function newNode(): HasOne
     {

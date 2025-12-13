@@ -57,7 +57,7 @@ class UserController extends Controller
             ->allowedSorts(['id', 'uuid'])
             ->paginate(50);
 
-        return $this->view->make('admin.users.index', ['users' => $users]);
+        return view('admin.users.index', ['users' => $users]);
     }
 
     /**
@@ -65,7 +65,7 @@ class UserController extends Controller
      */
     public function create(): View
     {
-        return $this->view->make('admin.users.new', [
+        return view('admin.users.new', [
             'languages' => $this->getAvailableLanguages(true),
         ]);
     }
@@ -75,7 +75,7 @@ class UserController extends Controller
      */
     public function view(User $user): View
     {
-        return $this->view->make('admin.users.view', [
+        return view('admin.users.view', [
             'user' => $user,
             'languages' => $this->getAvailableLanguages(true),
         ]);
@@ -139,12 +139,14 @@ class UserController extends Controller
         // Handle single user requests.
         if ($request->query('user_id')) {
             $user = User::query()->findOrFail($request->input('user_id'));
+            // @phpstan-ignore-next-line property.notFound
             $user->md5 = md5(strtolower($user->email));
 
             return $user;
         }
 
         return $users->map(function ($item) {
+            // @phpstan-ignore-next-line property.notFound
             $item->md5 = md5(strtolower($item->email));
 
             return $item;

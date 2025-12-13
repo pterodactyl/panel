@@ -26,7 +26,7 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  * @property \Illuminate\Support\Collection|null $properties
  * @property Carbon $timestamp
  * @property IlluminateModel|\Eloquent $actor
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ActivityLogSubject[] $subjects
+ * @property \Illuminate\Database\Eloquent\Collection<int, \Pterodactyl\Models\ActivityLogSubject> $subjects
  * @property int|null $subjects_count
  * @property ApiKey|null $apiKey
  *
@@ -82,21 +82,30 @@ class ActivityLog extends Model
         'properties' => ['array'],
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\MorphTo<\Illuminate\Database\Eloquent\Model, $this>
+     */
     public function actor(): MorphTo
     {
         $morph = $this->morphTo();
-        if (method_exists($morph, 'withTrashed')) {
+        if (method_exists($morph, 'withTrashed')) { // @phpstan-ignore function.alreadyNarrowedType
             return $morph->withTrashed();
         }
 
         return $morph;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\ActivityLogSubject, $this>
+     */
     public function subjects(): HasMany
     {
         return $this->hasMany(ActivityLogSubject::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\ApiKey, $this>
+     */
     public function apiKey(): HasOne
     {
         return $this->hasOne(ApiKey::class, 'id', 'api_key_id');

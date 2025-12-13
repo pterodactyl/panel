@@ -194,6 +194,9 @@ class Node extends Model
         return $this->maintenance_mode;
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Pterodactyl\Models\Mount, \Pterodactyl\Models\MountNode, $this>
+     */
     public function mounts(): HasManyThrough
     {
         return $this->hasManyThrough(Mount::class, MountNode::class, 'node_id', 'id', 'id', 'mount_id');
@@ -201,6 +204,8 @@ class Node extends Model
 
     /**
      * Gets the location associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Location, $this>
      */
     public function location(): BelongsTo
     {
@@ -209,6 +214,8 @@ class Node extends Model
 
     /**
      * Gets the servers associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Server, $this>
      */
     public function servers(): HasMany
     {
@@ -217,6 +224,8 @@ class Node extends Model
 
     /**
      * Gets the allocations associated with a node.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Allocation, $this>
      */
     public function allocations(): HasMany
     {
@@ -231,6 +240,7 @@ class Node extends Model
         $memoryLimit = $this->memory * (1 + ($this->memory_overallocate / 100));
         $diskLimit = $this->disk * (1 + ($this->disk_overallocate / 100));
 
+        // @phpstan-ignore-next-line property.notFound, property.notFound
         return ($this->sum_memory + $memory) <= $memoryLimit && ($this->sum_disk + $disk) <= $diskLimit;
     }
 }

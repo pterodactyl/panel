@@ -6,8 +6,8 @@ use Carbon\CarbonImmutable;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\User;
-use Lcobucci\JWT\Token\Plain;
 use Lcobucci\JWT\Configuration;
+use Lcobucci\JWT\UnencryptedToken;
 use Lcobucci\JWT\Signer\Hmac\Sha256;
 use Lcobucci\JWT\Signer\Key\InMemory;
 use Pterodactyl\Extensions\Lcobucci\JWT\Encoding\TimestampDates;
@@ -18,7 +18,7 @@ class NodeJWTService
 
     private ?User $user = null;
 
-    private ?\DateTimeImmutable $expiresAt;
+    private \DateTimeImmutable $expiresAt;
 
     private ?string $subject = null;
 
@@ -60,7 +60,7 @@ class NodeJWTService
     /**
      * Generate a new JWT for a given node.
      */
-    public function handle(Node $node, ?string $identifiedBy, string $algo = 'md5'): Plain
+    public function handle(Node $node, ?string $identifiedBy, string $algo = 'md5'): UnencryptedToken
     {
         $identifier = hash($algo, $identifiedBy);
         $config = Configuration::forSymmetricSigner(new Sha256(), InMemory::plainText($node->getDecryptedKey()));
@@ -73,7 +73,7 @@ class NodeJWTService
             ->issuedAt(CarbonImmutable::now())
             ->canOnlyBeUsedAfter(CarbonImmutable::now()->subMinutes(5));
 
-        if ($this->expiresAt) {
+        if (isset($this->expiresAt)) {
             $builder = $builder->expiresAt($this->expiresAt);
         }
 

@@ -72,6 +72,9 @@ class Backup extends Model
         'upload_id' => 'nullable|string',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     */
     public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);

@@ -100,7 +100,7 @@ class ServerDetailsController extends Controller
                         // so that power actions, file management, and backups can resume as normal.
                         Activity::event('server:backup.restore-failed')
                             ->subject($server, $subject->subject)
-                            ->property('name', $subject->subject->name)
+                            ->property('name', $subject->subject->name) // @phpstan-ignore property.notFound
                             ->log();
                     }
                 }
