@@ -191,7 +191,12 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
     }, [editor, mode]);
 
     useEffect(() => {
-        editor && editor.setValue(initialContent || '');
+        if (editor) {
+            editor.setValue(initialContent || '');
+            // Reset the history so that "Ctrl+Z" doesn't delete the intial content
+            // we just set above.
+            editor.setHistory({ done: [], undone: [] });
+        }
     }, [editor, initialContent]);
 
     useEffect(() => {
