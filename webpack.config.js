@@ -66,6 +66,10 @@ module.exports = {
                 },
             },
             {
+                test: /\.(woff|woff2)$/i,
+                type: 'asset/resource',
+            },
+            {
                 test: /\.svg$/,
                 loader: 'svg-url-loader',
             },
