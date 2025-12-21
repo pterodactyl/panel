@@ -1,15 +1,17 @@
 # Local Development
-Pterodactyl is now powered by React, Typescript, and Tailwindcss using webpack at its core to generate compiled assets.
+
+Pterodactyl is now powered by React, TypesSript, and TailwindCSS using Webpack at its core to generate compiled assets.
 Release versions of Pterodactyl will include pre-compiled, minified, and hashed assets ready-to-go.
 
 However, if you are interested in running custom themes or making modifications to the React files you'll need a build
 system in place to generate these compiled assets. To get your environment setup you'll need at minimum:
 
-* [Node.js](https://nodejs.org/en/) v14.x.x
-* [Yarn](https://classic.yarnpkg.com/lang/en/) v1.x.x
-* [Go](https://golang.org/) 1.17.x
+-   [Node.js](https://nodejs.org/en/) v22.x.x
+-   [Yarn](https://classic.yarnpkg.com/lang/en/) v1.x.x
+-   [Go](https://golang.org/) 1.23.x
 
 ### Install Dependencies
+
 ```bash
 yarn install
 ```
@@ -29,6 +31,7 @@ yarn run watch
 ```
 
 ### Hot Module Reloading
+
 For more advanced users, we also support 'Hot Module Reloading', allowing you to quickly see changes you're making
 to the Vue template files without having to reload the page you're on. To Get started with this, you just need
 to run the command below.
@@ -43,10 +46,12 @@ The second is the `PUBLIC_PATH` environment variable which is the URL pointing t
 the asset URLs used in Pterodactyl.
 
 #### Development Environment
+
 If you're using the [`pterodactyl/development`](https://github.com/pterodactyl/development) environments, which are
 highly recommended, you can just run `yarn run serve` to run the HMR server, no additional configuration is necessary.
 
 ### Building for Production
+
 Once you have your files squared away and ready for the live server, you'll be needing to generate compiled, minified,
 and hashed assets to push live. To do so, run the command below:
 
@@ -58,6 +63,7 @@ This will generate a production JS bundle and associated assets, all located in 
 be uploaded to your server or CDN for clients to use.
 
 ### Running Wings
+
 To run `wings` in development all you need to do is set up the configuration file as normal when adding a new node, and
 then you can build and run a local version of Wings by executing `make debug` in the Wings code directory. This must
 be run on a Linux VM of some sort, you cannot run this locally on macOS or Windows.
