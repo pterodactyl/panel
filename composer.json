@@ -4,16 +4,10 @@
     "license": "MIT",
     "authors": [
         {
-            "name": "Matthew Penner",
-            "email": "matthew@pterodactyl.io",
-            "homepage": "https://github.com/matthewpi",
-            "role": "Lead Developer"
-        },
-        {
             "name": "Dane Everitt",
             "email": "dane@daneeveritt.com",
             "homepage": "https://github.com/DaneEveritt",
-            "role": "Developer"
+            "role": " Lead Developer"
         }
     ],
     "require": {

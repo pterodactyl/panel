@@ -20,7 +20,7 @@ publicly disclose whatever issue you have found. We understand how frustrating i
 no one will respond to you. This holds us to a standard of providing prompt attention to any issues that arise and
 keeping this community safe.
 
-If you've found what you believe is a security issue please email `matthew@pterodactyl.io`. Please check
+If you've found what you believe is a security issue please email `dane@pterodactyl.io`. Please check
 [SECURITY.md](/SECURITY.md) for additional details.
 
 ### Contact Us
