@@ -1,6 +1,6 @@
 # Local Development
 
-Pterodactyl is now powered by React, TypesSript, and TailwindCSS using Webpack at its core to generate compiled assets.
+Pterodactyl is now powered by React, TypeScript, and TailwindCSS using Webpack at its core to generate compiled assets.
 Release versions of Pterodactyl will include pre-compiled, minified, and hashed assets ready-to-go.
 
 However, if you are interested in running custom themes or making modifications to the React files you'll need a build
