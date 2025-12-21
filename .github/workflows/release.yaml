@@ -45,7 +45,7 @@ jobs:
 
       - name: Create release archive
         run: |
-          rm -rf node_modules tests CODE_OF_CONDUCT.md CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix
+          rm -rf node_modules tests CODE_OF_CONDUCT.md CONTRIBUTING.md phpunit.xml
           tar -czf panel.tar.gz * .editorconfig .env.example .eslintignore .eslintrc.js .gitignore .prettierrc.json
 
       - name: Extract changelog
