@@ -1,13 +1,8 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - "develop"
-      - "1.0-develop"
   pull_request:
     branches:
-      - "develop"
       - "1.0-develop"
 
 jobs:
@@ -19,7 +14,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        node-version: [22]
+        node-version: [ 22 ]
     steps:
       - name: Code Checkout
         uses: actions/checkout@v4
