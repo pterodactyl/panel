@@ -15,7 +15,6 @@
         "@tailwindcss/forms": "^0.5.2",
         "@tailwindcss/line-clamp": "^0.4.0",
         "axios": "^1.13.2",
-        "boring-avatars": "^1.7.0",
         "chart.js": "^3.8.0",
         "classnames": "^2.3.1",
         "codemirror": "^5.57.0",

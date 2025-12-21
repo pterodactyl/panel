@@ -1,19 +1,27 @@
 import React from 'react';
-import BoringAvatar, { AvatarProps } from 'boring-avatars';
 import { useStoreState } from '@/state/hooks';
+import { gravatarUrl } from '@/lib/gravatar';
 
-const palette = ['#FFAD08', '#EDD75A', '#73B06F', '#0C8F8F', '#587291'];
+interface Props extends React.ImgHTMLAttributes<HTMLImageElement> {
+    /** Optional email to use for gravatar hashing. Falls back to `name` or `'system'`. */
+    email?: string | null;
+    /** Optional seed to use when email is not available. */
+    name?: string | null;
+    size?: number;
+}
 
-type Props = Omit<AvatarProps, 'colors'>;
+const _Avatar = ({ email, name, size = 48, className, style, alt, ...props }: Props) => {
+    const url = gravatarUrl(email ?? name ?? '');
 
-const _Avatar = ({ variant = 'beam', ...props }: AvatarProps) => (
-    <BoringAvatar colors={palette} variant={variant} {...props} />
-);
+    return <img src={url.replace(/s=48/, `s=${size}`)} width={size} height={size} className={className} style={style} alt={alt ?? 'Avatar'} {...props} />;
+};
 
-const _UserAvatar = ({ variant = 'beam', ...props }: Omit<Props, 'name'>) => {
-    const uuid = useStoreState((state) => state.user.data?.uuid);
+const _UserAvatar = ({ size = 48, className, style, alt, ...props }: Omit<Props, 'name'>) => {
+    const email = useStoreState((state) => state.user.data?.email);
 
-    return <BoringAvatar colors={palette} name={uuid || 'system'} variant={variant} {...props} />;
+    const url = gravatarUrl(email ?? '');
+
+    return <img src={url.replace(/s=48/, `s=${size}`)} width={size} height={size} className={className} style={style} alt={alt ?? 'User avatar'} {...props} />;
 };
 
 _Avatar.displayName = 'Avatar';

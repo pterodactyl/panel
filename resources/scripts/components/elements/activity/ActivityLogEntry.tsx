@@ -47,7 +47,7 @@ export default ({ activity, children }: Props) => {
         <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
             <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
                 <div className={'flex items-center w-10 h-10 rounded-full bg-gray-600 overflow-hidden'}>
-                    <Avatar name={actor?.uuid || 'system'} />
+                    <Avatar email={actor?.email} name={actor?.uuid || 'system'} size={40} />
                 </div>
             </div>
             <div className={'col-span-10 sm:col-span-9 flex'}>
