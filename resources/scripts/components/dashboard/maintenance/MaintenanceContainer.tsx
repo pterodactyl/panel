@@ -22,7 +22,7 @@ export default () => {
     } else {
         return (
             <>
-                <Tooltip placement={'bottom'} content={'Hilfe'}>
+                <Tooltip placement={'bottom'} content={'Wiki/Support'}>
                     <div className={'navigation-link'} onClick={() => window.open('https://wiki.arion2000.xyz', '_blank')}>
                         <FontAwesomeIcon icon={faQuestionCircle} />
                     </div>
