@@ -136,7 +136,7 @@
         "watch": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --watch --progress",
         "build": "cross-env NODE_ENV=development ./node_modules/.bin/webpack --progress",
         "build:production": "yarn run clean && cross-env NODE_ENV=production ./node_modules/.bin/webpack --mode production",
-        "serve": "yarn run clean && cross-env NODE_ENV=development WEBPACK_PUBLIC_PATH=https://localhost:5173/ webpack serve --progress --hot --server-type https"
+        "serve": "yarn run clean && cross-env NODE_ENV=development USE_LOCAL_CERTS=true WEBPACK_PUBLIC_PATH=https://pterodactyl.test:5173/ webpack serve --progress --hot --server-type https"
     },
     "browserslist": [
         "> 0.5%",
