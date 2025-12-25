@@ -107,7 +107,7 @@ class Node extends Model
         'daemonSFTP' => 'required|numeric|between:1,65535',
         'daemonListen' => 'required|numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
-        'upload_size' => 'int|between:1,1024',
+        'upload_size' => 'int|min:1',
     ];
 
     /**
