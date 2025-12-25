@@ -89,8 +89,8 @@ class UserController extends Controller
      */
     public function delete(Request $request, User $user): RedirectResponse
     {
-        if ($request->user()->id === $user->id) {
-            throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
+        if ($request->user()->is($user)) {
+            throw new DisplayException(__('admin/user.exceptions.delete_self'));
         }
 
         $this->deletionService->handle($user);
