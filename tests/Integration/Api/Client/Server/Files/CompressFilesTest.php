@@ -40,6 +40,6 @@ class CompressFilesTest extends ClientApiIntegrationTestCase
             ->assertOk()
             ->assertJsonPath('object', 'file_object')
             ->assertJsonPath('attributes.name', 'test.tar.gz')
-            ->assertJsonPath('attributes.mime', 'application/gzip');
+            ->assertJsonPath('attributes.mimetype', 'application/gzip');
     }
 }
