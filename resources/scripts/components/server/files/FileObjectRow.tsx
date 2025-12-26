@@ -1,19 +1,13 @@
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faFileAlt,
-  faFileArchive,
-  faFileImport,
-  faFolder,
-  faImage,
-} from "@fortawesome/free-solid-svg-icons";
-import { encodePathSegments } from "@/helpers";
-import { differenceInHours, format, formatDistanceToNow } from "date-fns";
-import React, { memo, useState } from "react";
-import { FileObject } from "@/api/server/files/loadDirectory";
-import FileDropdownMenu from "@/components/server/files/FileDropdownMenu";
-import { ServerContext } from "@/state/server";
-import { NavLink, useRouteMatch } from "react-router-dom";
-import tw from "twin.macro";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faFileAlt, faFileArchive, faFileImport, faFolder, faImage } from '@fortawesome/free-solid-svg-icons';
+import { encodePathSegments } from '@/helpers';
+import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
+import React, { memo, useState } from 'react';
+import { FileObject } from '@/api/server/files/loadDirectory';
+import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
+import { ServerContext } from '@/state/server';
+import { NavLink, useRouteMatch } from 'react-router-dom';
+import tw from 'twin.macro';
 import isEqual from "react-fast-compare";
 import SelectFileCheckbox from "@/components/server/files/SelectFileCheckbox";
 import { usePermissions } from "@/plugins/usePermissions";
@@ -28,9 +22,6 @@ const IMAGE_EXTENSIONS = [
   "jpeg",
   "gif",
   "webp",
-  "svg",
-  "bmp",
-  "ico",
 ];
 
 const isImageFile = (filename: string): boolean => {
