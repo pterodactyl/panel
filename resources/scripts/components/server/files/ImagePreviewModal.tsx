@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Dialog } from '@/components/elements/dialog';
 import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
 import { httpErrorToHuman } from '@/api/http';
@@ -31,10 +30,7 @@ const ImagePreviewContent = ({ file }: Props) => {
 
                 if (ext === 'jpg' || ext === 'jpeg') mimeType = 'image/jpeg';
                 else if (ext === 'gif') mimeType = 'image/gif';
-                else if (ext === 'svg') mimeType = 'image/svg+xml';
                 else if (ext === 'webp') mimeType = 'image/webp';
-                else if (ext === 'bmp') mimeType = 'image/bmp';
-                else if (ext === 'ico') mimeType = 'image/x-icon';
 
                 const blob = new Blob([response.data], { type: mimeType });
                 const url = URL.createObjectURL(blob);
