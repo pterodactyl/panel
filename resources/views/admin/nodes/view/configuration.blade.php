@@ -39,6 +39,7 @@
             </div>
             <div class="box-footer">
                 <p class="no-margin">This file should be placed in your daemon's root directory (usually <code>/etc/pterodactyl</code>) in a file called <code>config.yml</code>.</p>
+                <button id="copyConfigBtn" class="btn btn-sm btn-primary" style="margin-bottom: 5px;">Copy Configuration</button>
             </div>
         </div>
     </div>
@@ -82,6 +83,20 @@
                 text: 'Something went wrong creating your token.',
                 type: 'error'
             });
+        });
+    });
+
+    $('#copyConfigBtn').on('click', function () {
+        const textArea = document.createElement('textarea');
+        textArea.value = $('pre.no-margin').text();
+        document.body.appendChild(textArea);
+        textArea.select();
+        document.execCommand('copy');
+        document.body.removeChild(textArea);
+        swal({
+            type: 'success',
+            title: 'Copied!',
+            text: 'The configuration has been copied to your clipboard.'
         });
     });
     </script>
