@@ -11,6 +11,10 @@ use GuzzleHttp\Exception\TransferException;
 use Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
+/**
+ * @method \Pterodactyl\Repositories\Wings\DaemonFileRepository setNode(\Pterodactyl\Models\Node $node)
+ * @method \Pterodactyl\Repositories\Wings\DaemonFileRepository setServer(\Pterodactyl\Models\Server $server)
+ */
 class DaemonFileRepository extends DaemonRepository
 {
     /**
@@ -18,11 +22,11 @@ class DaemonFileRepository extends DaemonRepository
      *
      * @param int|null $notLargerThan the maximum content length in bytes
      *
-     * @throws \GuzzleHttp\Exception\TransferException
-     * @throws \Pterodactyl\Exceptions\Http\Server\FileSizeTooLargeException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws TransferException
+     * @throws FileSizeTooLargeException
+     * @throws DaemonConnectionException
      */
-    public function getContent(string $path, int $notLargerThan = null): string
+    public function getContent(string $path, ?int $notLargerThan = null): string
     {
         Assert::isInstanceOf($this->server, Server::class);
 
@@ -49,7 +53,7 @@ class DaemonFileRepository extends DaemonRepository
      * Save new contents to a given file. This works for both creating and updating
      * a file.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function putContent(string $path, string $content): ResponseInterface
     {
@@ -71,7 +75,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Return a directory listing for a given path.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function getDirectory(string $path): array
     {
@@ -94,7 +98,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Creates a new directory for the server in the given $path.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function createDirectory(string $name, string $path): ResponseInterface
     {
@@ -118,7 +122,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Renames or moves a file on the remote machine.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function renameFiles(?string $root, array $files): ResponseInterface
     {
@@ -142,7 +146,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Copy a given file and give it a unique name.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function copyFile(string $location): ResponseInterface
     {
@@ -165,7 +169,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Delete a file or folder for the server.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function deleteFiles(?string $root, array $files): ResponseInterface
     {
@@ -189,7 +193,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Compress the given files or folders in the given root.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function compressFiles(?string $root, array $files): array
     {
@@ -218,7 +222,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Decompresses a given archive file.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function decompressFile(?string $root, string $file): ResponseInterface
     {
@@ -245,7 +249,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Chmods the given files.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function chmodFiles(?string $root, array $files): ResponseInterface
     {
@@ -269,7 +273,7 @@ class DaemonFileRepository extends DaemonRepository
     /**
      * Pulls a file from the given URL and saves it to the disk.
      *
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
+     * @throws DaemonConnectionException
      */
     public function pull(string $url, ?string $directory, array $params = []): ResponseInterface
     {

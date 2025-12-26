@@ -19,7 +19,7 @@ class NodeAutoDeployController extends Controller
     public function __construct(
         private ApiKeyRepository $repository,
         private Encrypter $encrypter,
-        private KeyCreationService $keyCreationService
+        private KeyCreationService $keyCreationService,
     ) {
     }
 
@@ -31,7 +31,7 @@ class NodeAutoDeployController extends Controller
      */
     public function __invoke(Request $request, Node $node): JsonResponse
     {
-        /** @var \Pterodactyl\Models\ApiKey|null $key */
+        /** @var ApiKey|null $key */
         $key = $this->repository->getApplicationKeys()
             ->filter(function (ApiKey $key) {
                 if ($key->user->id != $request->user()->id) return false;

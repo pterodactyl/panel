@@ -8,10 +8,8 @@ class AddTableServerTransfers extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         // Nuclear approach to whatever plugins are out there and not properly namespacing their own tables
         // leading to constant support requests from people...
@@ -20,13 +18,13 @@ class AddTableServerTransfers extends Migration
         Schema::create('server_transfers', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('server_id')->unsigned();
-            $table->tinyInteger('successful')->unsigned()->default(0);
+            $table->boolean('successful')->unsigned()->default(0);
             $table->integer('old_node')->unsigned();
             $table->integer('new_node')->unsigned();
             $table->integer('old_allocation')->unsigned();
             $table->integer('new_allocation')->unsigned();
-            $table->string('old_additional_allocations')->nullable();
-            $table->string('new_additional_allocations')->nullable();
+            $table->json('old_additional_allocations')->nullable();
+            $table->json('new_additional_allocations')->nullable();
             $table->timestamps();
 
             $table->foreign('server_id')->references('id')->on('servers')->onDelete('cascade');
@@ -35,10 +33,8 @@ class AddTableServerTransfers extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('server_transfers');
     }

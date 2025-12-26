@@ -16,7 +16,7 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class InitiateBackupService
 {
-    private ?array $ignoredFiles;
+    private array $ignoredFiles = [];
 
     private bool $isLocked = false;
 
@@ -28,7 +28,7 @@ class InitiateBackupService
         private ConnectionInterface $connection,
         private DaemonBackupRepository $daemonBackupRepository,
         private DeleteBackupService $deleteBackupService,
-        private BackupManager $backupManager
+        private BackupManager $backupManager,
     ) {
     }
 
@@ -52,7 +52,7 @@ class InitiateBackupService
     {
         if (is_array($ignored)) {
             foreach ($ignored as $value) {
-                Assert::string($value);
+                Assert::string($value); // @phpstan-ignore staticMethod.alreadyNarrowedType
             }
         }
 
@@ -70,10 +70,10 @@ class InitiateBackupService
      * Initiates the backup process for a server on Wings.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\Service\Backup\TooManyBackupsException
-     * @throws \Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException
+     * @throws TooManyBackupsException
+     * @throws TooManyRequestsHttpException
      */
-    public function handle(Server $server, string $name = null, bool $override = false): Backup
+    public function handle(Server $server, ?string $name = null, bool $override = false): Backup
     {
         $limit = config('backups.throttles.limit');
         $period = config('backups.throttles.period');
@@ -82,7 +82,7 @@ class InitiateBackupService
             if ($previous->count() >= $limit) {
                 $message = sprintf('Only %d backups may be generated within a %d second span of time.', $limit, $period);
 
-                throw new TooManyRequestsHttpException(CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)), $message);
+                throw new TooManyRequestsHttpException((int) CarbonImmutable::now()->diffInSeconds($previous->last()->created_at->addSeconds($period)), $message);
             }
         }
 
@@ -98,7 +98,6 @@ class InitiateBackupService
             // Get the oldest backup the server has that is not "locked" (indicating a backup that should
             // never be automatically purged). If we find a backup we will delete it and then continue with
             // this process. If no backup is found that can be used an exception is thrown.
-            /** @var \Pterodactyl\Models\Backup $oldest */
             $oldest = $successful->where('is_locked', false)->orderBy('created_at')->first();
             if (!$oldest) {
                 throw new TooManyBackupsException($server->backup_limit);
@@ -108,12 +107,12 @@ class InitiateBackupService
         }
 
         return $this->connection->transaction(function () use ($server, $name) {
-            /** @var \Pterodactyl\Models\Backup $backup */
+            /** @var Backup $backup */
             $backup = $this->repository->create([
                 'server_id' => $server->id,
                 'uuid' => Uuid::uuid4()->toString(),
                 'name' => trim($name) ?: sprintf('Backup at %s', CarbonImmutable::now()->toDateTimeString()),
-                'ignored_files' => array_values($this->ignoredFiles ?? []),
+                'ignored_files' => array_values($this->ignoredFiles),
                 'disk' => $this->backupManager->getDefaultAdapter(),
                 'is_locked' => $this->isLocked,
             ], true, true);

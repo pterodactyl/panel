@@ -8,10 +8,8 @@ class AddDatabaseAndPortLimitColumnsToServersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->unsignedInteger('database_limit')->after('installed')->nullable()->default(0);
@@ -21,10 +19,8 @@ class AddDatabaseAndPortLimitColumnsToServersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropColumn(['database_limit', 'allocation_limit']);

@@ -20,7 +20,7 @@ class BuildModificationService
     public function __construct(
         private ConnectionInterface $connection,
         private DaemonServerRepository $daemonServerRepository,
-        private ServerConfigurationStructureService $structureService
+        private ServerConfigurationStructureService $structureService,
     ) {
     }
 
@@ -28,11 +28,11 @@ class BuildModificationService
      * Change the build details for a specified server.
      *
      * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function handle(Server $server, array $data): Server
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var Server $server */
         $server = $this->connection->transaction(function () use ($server, $data) {
             $this->processAllocations($server, $data);
 
@@ -77,7 +77,7 @@ class BuildModificationService
     /**
      * Process the allocations being assigned in the data and ensure they are available for a server.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     private function processAllocations(Server $server, array &$data): void
     {
@@ -95,7 +95,7 @@ class BuildModificationService
 
             // Keep track of all the allocations we're just now adding so that we can use the first
             // one to reset the default allocation to.
-            $freshlyAllocated = $query->pluck('id')->first();
+            $freshlyAllocated = $query->pluck('id')->first(); // @phpstan-ignore larastan.noUnnecessaryCollectionCall
 
             $query->update(['server_id' => $server->id, 'notes' => null]);
         }

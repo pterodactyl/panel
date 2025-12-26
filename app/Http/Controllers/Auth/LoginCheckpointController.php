@@ -24,7 +24,7 @@ class LoginCheckpointController extends AbstractLoginController
     public function __construct(
         private Encrypter $encrypter,
         private Google2FA $google2FA,
-        private ValidationFactory $validation
+        private ValidationFactory $validation,
     ) {
         parent::__construct();
     }
@@ -56,7 +56,6 @@ class LoginCheckpointController extends AbstractLoginController
         }
 
         try {
-            /** @var \Pterodactyl\Models\User $user */
             $user = User::query()->findOrFail($details['user_id']);
         } catch (ModelNotFoundException) {
             $this->sendFailedLoginResponse($request, null, self::TOKEN_EXPIRED_MESSAGE);
@@ -72,7 +71,7 @@ class LoginCheckpointController extends AbstractLoginController
         } else {
             $decrypted = $this->encrypter->decrypt($user->totp_secret);
 
-            if ($this->google2FA->verifyKey($decrypted, (string) $request->input('authentication_code') ?? '', config('pterodactyl.auth.2fa.window'))) {
+            if ($this->google2FA->verifyKey($decrypted, (string) ($request->input('authentication_code') ?? ''), config('pterodactyl.auth.2fa.window'))) {
                 Event::dispatch(new ProvidedAuthenticationToken($user));
 
                 return $this->sendLoginResponse($user, $request);

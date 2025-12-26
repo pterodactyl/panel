@@ -27,7 +27,7 @@ class SubuserController extends ClientApiController
     public function __construct(
         private SubuserRepository $repository,
         private SubuserCreationService $creationService,
-        private DaemonServerRepository $serverRepository
+        private DaemonServerRepository $serverRepository,
     ) {
         parent::__construct();
     }

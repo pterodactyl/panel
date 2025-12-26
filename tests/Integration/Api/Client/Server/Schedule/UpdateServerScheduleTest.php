@@ -24,14 +24,13 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
 
     /**
      * Test that a schedule can be updated.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testScheduleCanBeUpdated(array $permissions)
     {
         [$user, $server] = $this->generateTestAccount($permissions);
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create(['server_id' => $server->id]);
         $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
 
@@ -89,7 +88,7 @@ class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
     {
         [$user, $server] = $this->generateTestAccount();
 
-        /** @var \Pterodactyl\Models\Schedule $schedule */
+        /** @var Schedule $schedule */
         $schedule = Schedule::factory()->create([
             'server_id' => $server->id,
             'is_active' => true,

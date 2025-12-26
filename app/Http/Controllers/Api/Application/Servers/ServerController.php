@@ -22,7 +22,7 @@ class ServerController extends ApplicationApiController
      */
     public function __construct(
         private ServerCreationService $creationService,
-        private ServerDeletionService $deletionService
+        private ServerDeletionService $deletionService,
     ) {
         parent::__construct();
     }
