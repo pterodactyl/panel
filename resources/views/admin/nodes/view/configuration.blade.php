@@ -34,12 +34,19 @@
             <div class="box-header with-border">
                 <h3 class="box-title">Configuration File</h3>
             </div>
-            <div class="box-body">
+            <div class="box-body" style="position: relative;">
+                <button
+                    id="copyConfigBtn"
+                    class="btn btn-xs btn-default"
+                    style="position:absolute; top:14px; right:14px; z-index:10;"
+                    title="Copy configuration"
+                >
+                    <i class="fa fa-copy"></i> Copy
+                </button>
                 <pre class="no-margin">{{ $node->getYamlConfiguration() }}</pre>
             </div>
             <div class="box-footer">
                 <p class="no-margin">This file should be placed in your daemon's root directory (usually <code>/etc/pterodactyl</code>) in a file called <code>config.yml</code>.</p>
-                <button id="copyConfigBtn" class="btn btn-sm btn-primary" style="margin-bottom: 5px;">Copy Configuration</button>
             </div>
         </div>
     </div>
