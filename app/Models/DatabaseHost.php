@@ -62,7 +62,7 @@ class DatabaseHost extends Model
      */
     public static array $validationRules = [
         'name' => 'required|string|max:191',
-        'host' => 'required|string',
+        'host' => 'required|string|regex:/^[\w\-\.]+$/',
         'port' => 'required|numeric|between:1,65535',
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
