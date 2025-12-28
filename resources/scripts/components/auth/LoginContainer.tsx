@@ -3,7 +3,7 @@ import { Link, RouteComponentProps } from 'react-router-dom';
 import login from '@/api/auth/login';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
 import { useStoreState } from 'easy-peasy';
-import { Formik, FormikHelpers } from 'formik';
+import { Formik, FormikHelpers, FormikProps } from 'formik';
 import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import tw from 'twin.macro';
@@ -70,14 +70,14 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             initialValues={{ username: '', password: '' }}
             validationSchema={object().shape({
                 username: string().required('A username or email must be provided.'),
-                password: string().required('Please enter your account password.'),
+                password: string().required('Please enter your passkey.'),
             })}
         >
-            {({ isSubmitting, setSubmitting, submitForm }) => (
+            {({ isSubmitting, setSubmitting, submitForm }: FormikProps<Values>) => (
                 <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
                     <Field light type={'text'} label={'Username or Email'} name={'username'} disabled={isSubmitting} />
                     <div css={tw`mt-6`}>
-                        <Field light type={'password'} label={'Password'} name={'password'} disabled={isSubmitting} />
+                        <Field light type={'password'} label={'Passkey'} name={'password'} disabled={isSubmitting} />
                     </div>
                     <div css={tw`mt-6`}>
                         <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
