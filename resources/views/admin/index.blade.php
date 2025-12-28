@@ -30,11 +30,10 @@
                     You are running Pterodactyl Panel version 
                     <a href="https://github.com/Pterodactyl/Panel/releases/v{{ config('app.version') }}" target="_blank">
                         <code>{{ config('app.version') }}</code>
-                    </a>
-                    . Your panel is up-to-date!
+                    </a>. Your panel is up-to-date!
                 @else
-                    <p>
-                        Your panel is <strong>not up-to-date!</strong><br>
+                    <p style="margin: 0 0 0px;">
+                        Your panel is <strong>not up-to-date!</strong>
                         The latest version is
                         <a href="https://github.com/Pterodactyl/Panel/releases/v{{ $version->getPanel() }}" target="_blank">
                             <code>{{ $version->getPanel() }}</code>
@@ -44,14 +43,18 @@
                             <code>{{ config('app.version') }}</code>
                         </a>.
                     </p>
-
-                    <a href="https://pterodactyl.io/panel/1.0/updating.html"
-                    target="_blank"
-                    class="btn btn-danger">
-                        <i class="fa fa-refresh"></i> Update Instructions
-                    </a>    
                 @endif
             </div>
+            @if (!$version->isLatestPanel())
+            <div class="box-footer">
+                <span class="text-muted small">
+                Check out the documentation for instructions on
+                <a href="https://pterodactyl.io/panel/1.0/updating.html" target="_blank">
+                    how to update your Pterodactyl panel.
+                </a>
+                </span>
+            </div>
+            @endif
         </div>
     </div>
 </div>
@@ -64,7 +67,7 @@
     </div>
     <div class="clearfix visible-xs-block">&nbsp;</div>
     <div class="col-xs-6 col-sm-3 text-center">
-        <a href="https://github.com/pterodactyl/panel"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-support"></i> GitHub</button></a>
+        <a href="https://github.com/pterodactyl/panel"><button class="btn btn-primary" style="width:100%;"><i class="fa fa-fw fa-support"></i> Github</button></a>
     </div>
     <div class="col-xs-6 col-sm-3 text-center">
         <a href="{{ $version->getDonations() }}"><button class="btn btn-success" style="width:100%;"><i class="fa fa-fw fa-money"></i> Support the Project</button></a>
