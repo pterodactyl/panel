@@ -15,8 +15,10 @@ abstract class TestCase extends BaseTestCase
     {
         parent::setUp();
 
-        Carbon::setTestNow(Carbon::now());
-        CarbonImmutable::setTestNow(Carbon::now());
+        $now = Carbon::now()->startOfSecond();
+
+        Carbon::setTestNow($now);
+        CarbonImmutable::setTestNow($now);
 
         // Why, you ask? If we don't force this to false it is possible for certain exceptions
         // to show their error message properly in the integration test output, but not actually
