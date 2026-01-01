@@ -106,7 +106,6 @@ const NewButton = () => {
     return (
         <>
             <NewDirectoryDialog open={openDirectoryDialog} onClose={() => setOpenDirectoryDialog(false)} />
-            
             <DropdownMenu
                 renderToggle={(onClick) => (
                     <Button onClick={onClick}>
@@ -121,8 +120,11 @@ const NewButton = () => {
                         File
                     </DropdownButtonRow>
                 </NavLink>
-                
-                <DropdownButtonRow onClick={() => setOpenDirectoryDialog(true)} style={{ width: '100%' }} css={tw`justify-start`}>
+                <DropdownButtonRow 
+                    onClick={() => setOpenDirectoryDialog(true)} 
+                    style={{ width: '100%' }} 
+                    css={tw`justify-start`}
+                >
                     <FontAwesomeIcon icon={faFolder} css={tw`mr-3`} />
                     Folder
                 </DropdownButtonRow>
