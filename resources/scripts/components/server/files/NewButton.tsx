@@ -120,9 +120,9 @@ const NewButton = () => {
                         File
                     </DropdownButtonRow>
                 </NavLink>
-                <DropdownButtonRow 
-                    onClick={() => setOpenDirectoryDialog(true)} 
-                    style={{ width: '100%' }} 
+                <DropdownButtonRow
+                    onClick={() => setOpenDirectoryDialog(true)}
+                    style={{ width: '100%' }}
                     css={tw`justify-start`}
                 >
                     <FontAwesomeIcon icon={faFolder} css={tw`mr-3`} />
