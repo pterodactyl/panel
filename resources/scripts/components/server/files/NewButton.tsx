@@ -8,7 +8,7 @@ import { faChevronDown, faFile, faFolder } from '@fortawesome/free-solid-svg-ico
 import tw from 'twin.macro';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
-import { join } from 'path';
+import { join } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import { FileObject } from '@/api/server/files/loadDirectory';
