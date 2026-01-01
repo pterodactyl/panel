@@ -4,7 +4,7 @@ import { useFlashKey } from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
 import { ServerContext } from '@/state/server';
 import AllocationRow from '@/components/server/network/AllocationRow';
-import Button from '@/components/elements/Button';
+import { Button } from "@/components/elements/button/index";
 import createServerAllocation from '@/api/server/network/createServerAllocation';
 import tw from 'twin.macro';
 import Can from '@/components/elements/Can';
