@@ -6,7 +6,7 @@ import { join } from 'pathe';
 import renameFiles from '@/api/server/files/renameFiles';
 import { ServerContext } from '@/state/server';
 import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
+import { Button } from "@/components/elements/button/index";
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
 
