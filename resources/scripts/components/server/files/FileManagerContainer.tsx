@@ -30,7 +30,6 @@ const sortFiles = (files: FileObject[]): FileObject[] => {
 };
 
 export default () => {
-    const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const { hash } = useLocation();
     const { data: files, error, mutate } = useFileManagerSwr();
     const directory = ServerContext.useStoreState((state) => state.files.directory);
