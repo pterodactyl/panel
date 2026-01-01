@@ -99,7 +99,7 @@ const NewDirectoryDialog = asDialog({
     );
 });
 
-const CreateButton = () => {
+const NewButton = () => {
     const id = ServerContext.useStoreState((state) => state.server.data!.id);
     const [openDirectoryDialog, setOpenDirectoryDialog] = useState(false);
 
@@ -131,4 +131,4 @@ const CreateButton = () => {
     );
 };
 
-export default CreateButton;
+export default NewButton;
