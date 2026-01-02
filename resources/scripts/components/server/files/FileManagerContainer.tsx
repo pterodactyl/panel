@@ -74,8 +74,8 @@ export default () => {
                     <Can action={'file.create'}>
                         <div className={style.manager_actions}>
                             <FileManagerStatus />
-                            <NewButton />
                             <UploadButton />
+                            <NewButton />
                         </div>
                     </Can>
                 </div>
