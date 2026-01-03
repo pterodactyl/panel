@@ -1,6 +1,20 @@
 import React, { lazy } from 'react';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import { faTerminal, faFolder, faDatabase, faClock, faUsers, faCloudUploadAlt, faNetworkWired, faRocket, faCog, faHistory, faUser, faKey, faServer } from '@fortawesome/free-solid-svg-icons';
+import {
+    faTerminal,
+    faFolder,
+    faDatabase,
+    faClock,
+    faUsers,
+    faCloudUploadAlt,
+    faNetworkWired,
+    faRocket,
+    faCog,
+    faHistory,
+    faUser,
+    faKey,
+    faServer,
+} from '@fortawesome/free-solid-svg-icons';
 import ServerConsole from '@/components/server/console/ServerConsoleContainer';
 import DatabasesContainer from '@/components/server/databases/DatabasesContainer';
 import ScheduleContainer from '@/components/server/schedules/ScheduleContainer';
