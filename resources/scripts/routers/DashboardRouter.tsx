@@ -23,9 +23,7 @@ export default () => {
                             .filter((route) => !!route.name)
                             .map(({ path, name, exact = false, icon }) => (
                                 <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
-                                    {icon && (
-                                        <FontAwesomeIcon icon={icon} style={{ marginRight: '8px' }} />
-                                    )}
+                                    {icon && <FontAwesomeIcon icon={icon} style={{ marginRight: '8px' }} />}
                                     {name}
                                 </NavLink>
                             ))}
