@@ -82,12 +82,7 @@ export default () => {
                                         route.permission ? (
                                             <Can key={route.path} action={route.permission} matchAny>
                                                 <NavLink to={to(route.path, true)} exact={route.exact}>
-                                                    {route.icon && (
-                                                        <FontAwesomeIcon 
-                                                            icon={route.icon} 
-                                                            style={{ marginRight: '8px' }} 
-                                                        />
-                                                    )}
+                                                    {icon && <FontAwesomeIcon icon={icon} style={{ marginRight: '8px' }} />}
                                                     {route.name}
                                                 </NavLink>
                                             </Can>
