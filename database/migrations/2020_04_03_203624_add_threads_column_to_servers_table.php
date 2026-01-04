@@ -8,10 +8,8 @@ class AddThreadsColumnToServersTable extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->string('threads')->nullable()->after('cpu');
@@ -20,10 +18,8 @@ class AddThreadsColumnToServersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropColumn('threads');

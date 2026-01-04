@@ -21,7 +21,7 @@ class EggScriptController extends Controller
         protected AlertsMessageBag $alert,
         protected EggRepositoryInterface $repository,
         protected InstallScriptService $installScriptService,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 
@@ -41,7 +41,7 @@ class EggScriptController extends Controller
             ['copy_script_from', '=', $egg->id],
         ]);
 
-        return $this->view->make('admin.eggs.scripts', [
+        return view('admin.eggs.scripts', [
             'copyFromOptions' => $copy,
             'relyOnScript' => $rely,
             'egg' => $egg,

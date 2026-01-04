@@ -14,7 +14,7 @@ class IndexController extends Controller
      */
     public function __construct(
         protected ServerRepositoryInterface $repository,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 
@@ -23,6 +23,6 @@ class IndexController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('templates/base.core');
+        return view('templates/base.core');
     }
 }

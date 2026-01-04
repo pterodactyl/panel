@@ -8,10 +8,8 @@ class AddContinueOnFailureOptionToTasks extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
             $table->unsignedTinyInteger('continue_on_failure')->after('is_queued')->default(0);
@@ -20,10 +18,8 @@ class AddContinueOnFailureOptionToTasks extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('tasks', function (Blueprint $table) {
             $table->dropColumn('continue_on_failure');

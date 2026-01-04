@@ -27,7 +27,7 @@ class EggController extends Controller
         protected EggRepositoryInterface $repository,
         protected EggUpdateService $updateService,
         protected NestRepositoryInterface $nestRepository,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 
@@ -41,7 +41,7 @@ class EggController extends Controller
         $nests = $this->nestRepository->getWithEggs();
         \JavaScript::put(['nests' => $nests->keyBy('id')]);
 
-        return $this->view->make('admin.eggs.new', ['nests' => $nests]);
+        return view('admin.eggs.new', ['nests' => $nests]);
     }
 
     /**
@@ -66,7 +66,7 @@ class EggController extends Controller
      */
     public function view(Egg $egg): View
     {
-        return $this->view->make('admin.eggs.view', [
+        return view('admin.eggs.view', [
             'egg' => $egg,
             'images' => array_map(
                 fn ($key, $value) => $key === $value ? $value : "$key|$value",
@@ -111,7 +111,7 @@ class EggController extends Controller
     /**
      * Normalizes a string of docker image data into the expected egg format.
      */
-    protected function normalizeDockerImages(string $input = null): array
+    protected function normalizeDockerImages(?string $input = null): array
     {
         $data = array_map(fn ($value) => trim($value), explode("\n", $input ?? ''));
 

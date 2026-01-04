@@ -21,7 +21,7 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
      */
     public function rules(): array
     {
-        $server = $this->route()->parameter('server');
+        $server = $this->parameter('server', Server::class);
 
         return [
             'database' => [

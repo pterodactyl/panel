@@ -4,7 +4,7 @@ import { Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
 import { ServerContext } from '@/state/server';
-import { join } from 'path';
+import { join } from 'pathe';
 import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 
