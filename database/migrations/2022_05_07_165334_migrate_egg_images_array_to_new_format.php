@@ -10,7 +10,7 @@ class MigrateEggImagesArrayToNewFormat extends Migration
      * images array to both exist, and have key => value pairings to support naming the
      * images provided.
      */
-    public function up()
+    public function up(): void
     {
         DB::table('eggs')->select(['id', 'docker_images'])->cursor()->each(function ($egg) {
             $images = is_null($egg->docker_images) ? [] : json_decode($egg->docker_images, true, 512, JSON_THROW_ON_ERROR);
@@ -26,10 +26,8 @@ class MigrateEggImagesArrayToNewFormat extends Migration
 
     /**
      * Reverse the migrations. This just keeps the values from the docker images array.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         DB::table('eggs')->select(['id', 'docker_images'])->cursor()->each(function ($egg) {
             DB::table('eggs')->where('id', $egg->id)->update([

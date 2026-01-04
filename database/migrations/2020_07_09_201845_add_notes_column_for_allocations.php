@@ -8,10 +8,8 @@ class AddNotesColumnForAllocations extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->string('notes')->nullable()->after('server_id');
@@ -20,10 +18,8 @@ class AddNotesColumnForAllocations extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('allocations', function (Blueprint $table) {
             $table->dropColumn('notes');

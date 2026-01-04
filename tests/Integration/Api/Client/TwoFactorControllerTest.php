@@ -17,7 +17,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
      */
     public function testTwoFactorImageDataIsReturned()
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create(['use_totp' => false]);
 
         $this->assertFalse($user->use_totp);
@@ -41,7 +41,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
      */
     public function testErrorIsReturnedWhenTwoFactorIsAlreadyEnabled()
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create(['use_totp' => true]);
 
         $response = $this->actingAs($user)->getJson('/api/client/account/two-factor');
@@ -56,7 +56,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
      */
     public function testValidationErrorIsReturnedIfInvalidDataIsPassedToEnabled2FA()
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create(['use_totp' => false]);
 
         $this->actingAs($user)
@@ -73,7 +73,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
      */
     public function testTwoFactorCanBeEnabledOnAccount()
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create(['use_totp' => false]);
 
         // Make the initial call to get the account setup for 2FA.
@@ -82,7 +82,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         $user = $user->refresh();
         $this->assertNotNull($user->totp_secret);
 
-        /** @var \PragmaRX\Google2FA\Google2FA $service */
+        /** @var Google2FA $service */
         $service = $this->app->make(Google2FA::class);
 
         $secret = decrypt($user->totp_secret);
@@ -129,10 +129,10 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     {
         Carbon::setTestNow(Carbon::now());
 
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create(['use_totp' => true]);
 
-        $response = $this->actingAs($user)->deleteJson('/api/client/account/two-factor', [
+        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor/disable', [
             'password' => 'invalid',
         ]);
 
@@ -140,7 +140,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         $response->assertJsonPath('errors.0.code', 'BadRequestHttpException');
         $response->assertJsonPath('errors.0.detail', 'The password provided was not valid.');
 
-        $response = $this->actingAs($user)->deleteJson('/api/client/account/two-factor', [
+        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor/disable', [
             'password' => 'password',
         ]);
 
@@ -160,10 +160,10 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
     {
         Carbon::setTestNow(Carbon::now());
 
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create(['use_totp' => false]);
 
-        $response = $this->actingAs($user)->deleteJson('/api/client/account/two-factor', [
+        $response = $this->actingAs($user)->postJson('/api/client/account/two-factor/disable', [
             'password' => 'password',
         ]);
 
@@ -196,7 +196,7 @@ class TwoFactorControllerTest extends ClientApiIntegrationTestCase
         $user = User::factory()->create(['use_totp' => true]);
 
         $this->actingAs($user)
-            ->deleteJson('/api/client/account/two-factor', [
+            ->postJson('/api/client/account/two-factor/disable', [
                 'password' => 'foo',
             ])
             ->assertStatus(Response::HTTP_BAD_REQUEST)

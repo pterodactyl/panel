@@ -22,7 +22,7 @@ class DatabaseController extends ApplicationApiController
      */
     public function __construct(
         private DatabaseManagementService $databaseManagementService,
-        private DatabasePasswordService $databasePasswordService
+        private DatabasePasswordService $databasePasswordService,
     ) {
         parent::__construct();
     }

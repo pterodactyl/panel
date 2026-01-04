@@ -71,7 +71,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Create a new record in the database and return the associated model.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @throws DataValidationException
      */
     public function create(array $fields, bool $validate = true, bool $force = false): Model|bool
     {
@@ -92,7 +92,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Find a model that has the specific ID passed.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws RecordNotFoundException
      */
     public function find(int $id): Model
     {
@@ -114,7 +114,7 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Find and return the first matching instance for the given fields.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws RecordNotFoundException
      */
     public function findFirstWhere(array $fields): Model
     {
@@ -154,8 +154,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Update a given ID with the passed array of fields.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws DataValidationException
+     * @throws RecordNotFoundException
      */
     public function update(int $id, array $fields, bool $validate = true, bool $force = false): Model|bool
     {
@@ -200,8 +200,8 @@ abstract class EloquentRepository extends Repository implements RepositoryInterf
     /**
      * Update a record if it exists in the database, otherwise create it.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws DataValidationException
+     * @throws RecordNotFoundException
      */
     public function updateOrCreate(array $where, array $fields, bool $validate = true, bool $force = false): Model|bool
     {

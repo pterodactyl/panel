@@ -9,12 +9,12 @@ use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
 class NestSeeder extends Seeder
 {
     /**
-     * @var \Pterodactyl\Services\Nests\NestCreationService
+     * @var NestCreationService
      */
     private $creationService;
 
     /**
-     * @var \Pterodactyl\Contracts\Repository\NestRepositoryInterface
+     * @var NestRepositoryInterface
      */
     private $repository;
 
@@ -23,7 +23,7 @@ class NestSeeder extends Seeder
      */
     public function __construct(
         NestCreationService $creationService,
-        NestRepositoryInterface $repository
+        NestRepositoryInterface $repository,
     ) {
         $this->creationService = $creationService;
         $this->repository = $repository;
@@ -51,7 +51,7 @@ class NestSeeder extends Seeder
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    private function createMinecraftNest(array $nest = null)
+    private function createMinecraftNest(?array $nest = null)
     {
         if (is_null($nest)) {
             $this->creationService->handle([
@@ -66,7 +66,7 @@ class NestSeeder extends Seeder
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    private function createSourceEngineNest(array $nest = null)
+    private function createSourceEngineNest(?array $nest = null)
     {
         if (is_null($nest)) {
             $this->creationService->handle([
@@ -81,7 +81,7 @@ class NestSeeder extends Seeder
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    private function createVoiceServersNest(array $nest = null)
+    private function createVoiceServersNest(?array $nest = null)
     {
         if (is_null($nest)) {
             $this->creationService->handle([
@@ -96,7 +96,7 @@ class NestSeeder extends Seeder
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
-    private function createRustNest(array $nest = null)
+    private function createRustNest(?array $nest = null)
     {
         if (is_null($nest)) {
             $this->creationService->handle([

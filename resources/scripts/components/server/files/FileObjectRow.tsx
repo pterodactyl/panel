@@ -11,7 +11,7 @@ import tw from 'twin.macro';
 import isEqual from 'react-fast-compare';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
 import { usePermissions } from '@/plugins/usePermissions';
-import { join } from 'path';
+import { join } from 'pathe';
 import { bytesToString } from '@/lib/formatters';
 import styles from './style.module.css';
 

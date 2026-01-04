@@ -8,10 +8,8 @@ class AllowNullableDescriptions extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->text('description')->nullable()->change();
@@ -32,10 +30,8 @@ class AllowNullableDescriptions extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('eggs', function (Blueprint $table) {
             $table->text('description')->nullable(false)->change();

@@ -19,7 +19,7 @@ class HostUpdateService
         private DatabaseManager $databaseManager,
         private DynamicDatabaseConnection $dynamic,
         private Encrypter $encrypter,
-        private DatabaseHostRepositoryInterface $repository
+        private DatabaseHostRepositoryInterface $repository,
     ) {
     }
 

@@ -25,7 +25,7 @@ class LocationController extends ApplicationApiController
     public function __construct(
         private LocationCreationService $creationService,
         private LocationDeletionService $deletionService,
-        private LocationUpdateService $updateService
+        private LocationUpdateService $updateService,
     ) {
         parent::__construct();
     }

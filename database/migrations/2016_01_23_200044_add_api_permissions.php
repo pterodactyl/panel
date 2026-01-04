@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
@@ -8,7 +9,7 @@ class AddApiPermissions extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::create('api_permissions', function (Blueprint $table) {
             $table->increments('id');
@@ -20,7 +21,7 @@ class AddApiPermissions extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('api_permissions');
     }

@@ -18,7 +18,7 @@ import useFlash from '@/plugins/useFlash';
 import { ServerContext } from '@/state/server';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
-import { dirname } from 'path';
+import { dirname } from 'pathe';
 import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
 
 export default () => {

@@ -29,7 +29,7 @@ abstract class ApplicationApiRequest extends FormRequest
      * Determine if the current user is authorized to perform
      * the requested action against the API.
      *
-     * @throws \Pterodactyl\Exceptions\PterodactylException
+     * @throws PterodactylException
      */
     public function authorize(): bool
     {
@@ -38,7 +38,7 @@ abstract class ApplicationApiRequest extends FormRequest
         }
 
         $token = $this->user()->currentAccessToken();
-        if ($token instanceof TransientToken) {
+        if ($token instanceof TransientToken) { // @phpstan-ignore instanceof.alwaysFalse
             return true;
         }
 
@@ -84,7 +84,7 @@ abstract class ApplicationApiRequest extends FormRequest
         $value = $this->route()->parameter($key);
 
         Assert::isInstanceOf($value, $expect);
-        Assert::isInstanceOf($value, Model::class);
+        Assert::isInstanceOf($value, Model::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
         Assert::true($value->exists);
 
         /* @var T $value */
