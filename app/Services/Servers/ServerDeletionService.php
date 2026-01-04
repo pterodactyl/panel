@@ -78,9 +78,8 @@ class ServerDeletionService
             }
 
             // clear any allocation notes for the server
-            $server->allocations->each(function ($allocation) {
-                $allocation->update(['notes' => null]);
-            });
+            $server->allocations()->update(['notes' => null]);
+
 
             $server->delete();
         });

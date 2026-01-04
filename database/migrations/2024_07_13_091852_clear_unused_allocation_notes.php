@@ -10,10 +10,11 @@ return new class extends Migration
      */
     public function up(): void
     {
+        
         DB::table('allocations')
-            ->where('server_id', null)
-            ->whereNot('notes', null)
+            ->whereNull('server_id')
             ->update(['notes' => null]);
+
     }
 
     /**
