@@ -32,7 +32,7 @@ class NodeAutoDeployController extends Controller
     public function __invoke(Request $request, Node $node): JsonResponse
     {
         /** @var ApiKey|null $key */
-        $key = $this->repository->getApplicationKeys()
+        $key = $this->repository->getApplicationKeys($request->user())
             ->filter(function (ApiKey $key) {
                 if ($key->user->id != $request->user()->id) return false;
                 foreach ($key->getAttributes() as $permission => $value) {

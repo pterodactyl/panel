@@ -78,7 +78,7 @@ class ApiController extends Controller
      */
     public function delete(Request $request, string $identifier): Response
     {
-        $this->repository->deleteApplicationKey($identifier);
+        $this->repository->deleteApplicationKey(null, $identifier);
 
         return response('', 204);
     }
