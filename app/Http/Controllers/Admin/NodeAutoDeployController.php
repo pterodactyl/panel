@@ -34,7 +34,7 @@ class NodeAutoDeployController extends Controller
         /** @var ApiKey|null $key */
         $key = $this->repository->getApplicationKeys($request->user())
             ->filter(function (ApiKey $key) {
-                if ($key->user->id != $request->user()->id) { 
+                if ($key->user->id != $request->user()->id) {
                     return false;
                 }
                 foreach ($key->getAttributes() as $permission => $value) {
