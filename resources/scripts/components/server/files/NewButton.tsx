@@ -115,15 +115,14 @@ const NewButton = () => {
                 )}
             >
                 <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
-                    <DropdownButtonRow style={{ width: '100%' }} css={tw`justify-start`}>
+                    <DropdownButtonRow css={tw`justify-start !w-full`}>
                         <FontAwesomeIcon icon={faFile} css={tw`mr-3`} />
                         File
                     </DropdownButtonRow>
                 </NavLink>
                 <DropdownButtonRow
                     onClick={() => setOpenDirectoryDialog(true)}
-                    style={{ width: '100%' }}
-                    css={tw`justify-start`}
+                    css={tw`justify-start !w-full`}
                 >
                     <FontAwesomeIcon icon={faFolder} css={tw`mr-3`} />
                     Folder
