@@ -1,35 +1,32 @@
 name: Build
 
 on:
-  push:
-    branches:
-      - "develop"
-      - "1.0-develop"
   pull_request:
     branches:
-      - "develop"
       - "1.0-develop"
 
 jobs:
   ui:
     name: UI
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
-        node-version: [16]
+        node-version: [ 22 ]
     steps:
       - name: Code Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Setup Node
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
-          cache: "yarn"
+          cache: yarn
 
       - name: Install dependencies
         run: yarn install --frozen-lockfile
-
-      - name: Build
-        run: yarn build:production
+      - run: yarn tsc
+      - run: yarn lint
+      - run: yarn build:production

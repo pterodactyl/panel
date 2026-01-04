@@ -9,7 +9,7 @@ class AddLockedStatusToTable extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('packs', function (Blueprint $table) {
             $table->boolean('locked')->default(false)->after('visible');
@@ -19,7 +19,7 @@ class AddLockedStatusToTable extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('packs', function (Blueprint $table) {
             $table->dropColumn('locked');

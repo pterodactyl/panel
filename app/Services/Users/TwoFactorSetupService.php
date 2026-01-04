@@ -17,7 +17,7 @@ class TwoFactorSetupService
     public function __construct(
         private ConfigRepository $config,
         private Encrypter $encrypter,
-        private UserRepositoryInterface $repository
+        private UserRepositoryInterface $repository,
     ) {
     }
 

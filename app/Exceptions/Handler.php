@@ -235,7 +235,7 @@ class Handler extends ExceptionHandler
      */
     public static function isReportable(\Exception $exception): bool
     {
-        return (new static(Container::getInstance()))->shouldReport($exception);
+        return (new self(Container::getInstance()))->shouldReport($exception);
     }
 
     /**
@@ -262,7 +262,7 @@ class Handler extends ExceptionHandler
     {
         $previous = [];
         while ($value = $e->getPrevious()) {
-            if (!$value instanceof \Throwable) {
+            if (!$value instanceof \Throwable) { // @phpstan-ignore instanceof.alwaysTrue
                 break;
             }
             $previous[] = $value;

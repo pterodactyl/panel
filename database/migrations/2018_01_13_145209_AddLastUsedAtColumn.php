@@ -8,10 +8,8 @@ class AddLastUsedAtColumn extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
             $table->unsignedTinyInteger('key_type')->after('user_id')->default(0);
@@ -28,10 +26,8 @@ class AddLastUsedAtColumn extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('api_keys', function (Blueprint $table) {
             $table->timestamp('expires_at')->after('memo')->nullable();

@@ -23,7 +23,7 @@ class AllocationController extends ApplicationApiController
      */
     public function __construct(
         private AssignmentService $assignmentService,
-        private AllocationDeletionService $deletionService
+        private AllocationDeletionService $deletionService,
     ) {
         parent::__construct();
     }

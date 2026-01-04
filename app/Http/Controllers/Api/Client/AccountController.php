@@ -64,7 +64,7 @@ class AccountController extends ClientApiController
         $guard->setUser($user);
 
         // This method doesn't exist in the stateless Sanctum world.
-        if (method_exists($guard, 'logoutOtherDevices')) {
+        if (method_exists($guard, 'logoutOtherDevices')) { // @phpstan-ignore function.alreadyNarrowedType
             $guard->logoutOtherDevices($request->input('password'));
         }
 

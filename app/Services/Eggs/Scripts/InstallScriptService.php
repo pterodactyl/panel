@@ -20,7 +20,7 @@ class InstallScriptService
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Egg\InvalidCopyFromException
+     * @throws InvalidCopyFromException
      */
     public function handle(Egg $egg, array $data): void
     {
