@@ -35,10 +35,10 @@
                         @foreach($keys as $key)
                             <tr>
                                 <td><code>
-                                    @if(Auth::user()->id != $key->user->id)
-                                        {{ $key->identifier . "****" }}
-                                    @else
+                                    @if (Auth::user()->is($key->user))
                                         {{ $key->identifier . decrypt($key->token) }}
+                                    @else
+                                        {{ $key->identifier . '****' }}
                                     @endif
                                 </code></td>
                                 <td>{{ $key->memo }}</td>
