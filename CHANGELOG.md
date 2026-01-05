@@ -3,52 +3,63 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
-## v1.11.10
-
-### BREAKING
-
-* Minimum PHP verion is now 8.2 due to Laravel upgrade!
-
+## v1.12.0
 ### Fixed
 
+* [CVE-2025-68954](https://github.com/pterodactyl/panel/security/advisories/GHSA-8c39-xppg-479c)
+* [CVE-2025-69197](https://github.com/pterodactyl/panel/security/advisories/GHSA-rgmp-4873-r683)
+* [CVE-2025-69198](https://github.com/pterodactyl/panel/security/advisories/GHSA-jw2v-cq5x-q68g)
+* Fixes a self-XSS issue when entering random data into boxes while creating a new database host.
+* Fixes missing `HttpForbiddenException` import in the backup status controller.
+* Fixes issue where scheduled tasks would execute every minute regardless of their configured cron syntax.
+* Pressing `Ctrl+Z` to undo while editing a file no longer deletes the initial file content.
+* Fixed incorrect error message being returned when attempting to delete your own account as an admin.
+* Fixes node description not being settable via the API.
+* Fixes 0-bytes files returning an error when attempting to upload.
+* Fixes nodes displaying the first available location even when that field was not edited and the node has a different value set.
+
+### Changed
+* Minimum NodeJS version updated to 22 for building.
+* Updated all JS and PHP dependencies to their latest versions (where feasible).
+* The endpoint for disabling 2FA on an account using the client API changed from `DELETE /api/client/account/two-factor` to `POST /api/client/account/two-factor/disable`
+* `^C` in an egg's stop configuration no longer rewrites itself into the default stop configuration.
+* `IBM Plex Sans` font is now bundled with the local assets instead of loading from Google CDNs.
+* Upload size on nodes is no longer restricted to a max of 1024MB, any positive integer value can be used.
+* Administrators are now listed first when viewing a list of all users on the system.
+* Websocket no longer endlessly polls when connection issues are encountered, or when Wings disconnects the user for a reason that should not be re-attempted.
+
+## v1.11.10
+### Fixed
 * Update Laravel to address [CVE-2024-52301](https://github.com/advisories/GHSA-gv7v-rgg6-548h)
 
+### Changed
+* Minimum PHP version is now 8.2 due to Laravel upgrade!
+
 ## v1.11.9
-
 ### Fixed
-
 * Fixed issue with CI not pushing Docker image
 
 ## v1.11.8
-
 ### Fixed
-
 * Fixed an issue where a `DELETE` request was used instead of a `POST`, potentially logging user passwords in plain text if they disable 2FA.
 
 ## v1.11.7
-
 ### Added
-
 * Java 21 to Minecraft eggs
 
 ### Changed
-
 * Updated Minecraft EULA link
 
 ### Fixed
-
 * Fixed backups not ever being marked as completed (#5088)
 * Fixed `.7z` files not being detected as a compressed file (#5016)
 
 ## v1.11.6
-
 ### Changed
-
 * Better node ownership checks for internal backup endpoints
 * Improved validation rules on `docker_image` fields to prevent invalid inputs
 
 ### Fixed
-
 * Multiple XSS vulnerabilities in the admin area ([GHSA-384w-wffr-x63q](https://github.com/pterodactyl/panel/security/advisories/GHSA-384w-wffr-x63q))
 
 ## v1.11.5
