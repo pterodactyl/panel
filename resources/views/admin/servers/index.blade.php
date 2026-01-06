@@ -61,7 +61,7 @@
                                     @endif
                                 </td>
                                 <td class="text-center">
-                                    <a class="btn btn-xs btn-default" href="/server/{{ $server->uuidShort }}"><i class="fa fa-wrench"></i></a>
+                                    <a class="btn btn-xs btn-default" target="_blank" href="/server/{{ $server->uuidShort }}"><i class="fa fa-external-link"></i></a>
                                 </td>
                             </tr>
                         @endforeach
