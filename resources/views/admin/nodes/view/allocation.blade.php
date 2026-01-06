@@ -184,7 +184,7 @@
     $('#pAllocationIP').select2({
         tags: true,
         maximumSelectionLength: 1,
-        selectOnClose: true,
+        selectOnClose: false,
         tokenSeparators: [',', ' '],
     });
 
