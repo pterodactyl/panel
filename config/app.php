@@ -1,6 +1,5 @@
 <?php
 
-use Illuminate\Support\Facades\Facade;
 
 return [
     /*
@@ -219,7 +218,7 @@ return [
     |
     */
 
-    'aliases' => Facade::defaultAliases()->merge([
+    'aliases' => Illuminate\Support\Facades\Facade::defaultAliases()->merge([
         'Alert' => Prologue\Alerts\Facades\Alert::class,
         'Carbon' => Carbon\Carbon::class,
         'JavaScript' => Laracasts\Utilities\JavaScript\JavaScriptFacade::class,

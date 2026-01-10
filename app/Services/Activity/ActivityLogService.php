@@ -140,7 +140,7 @@ class ActivityLogService
 
         try {
             return $this->save();
-        } catch (\Throwable|\Exception $exception) {
+        } catch (\Throwable $exception) {
             if (config('app.env') !== 'production') {
                 /* @noinspection PhpUnhandledExceptionInspection */
                 throw $exception;
@@ -165,6 +165,8 @@ class ActivityLogService
      * Executes the provided callback within the scope of a database transaction
      * and will only save the activity log entry if everything else successfully
      * settles.
+     *
+     * @param \Closure($this): mixed $callback
      *
      * @throws \Throwable
      */
@@ -199,7 +201,7 @@ class ActivityLogService
 
         $this->activity = new ActivityLog([
             'ip' => Request::ip(),
-            'batch_uuid' => $this->batch->uuid(),
+            'batch' => $this->batch->uuid(),
             'properties' => Collection::make([]),
             'api_key_id' => $this->targetable->apiKeyId(),
         ]);
@@ -210,10 +212,8 @@ class ActivityLogService
 
         if ($actor = $this->targetable->actor()) {
             $this->actor($actor);
-        } elseif ($user = $this->manager->guard()->user()) {
-            if ($user instanceof Model) {
-                $this->actor($user);
-            }
+        } elseif (! is_null($user = $this->manager->guard()->user())) {
+            $this->actor($user);
         }
 
         return $this->activity;

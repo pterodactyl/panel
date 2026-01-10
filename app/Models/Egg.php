@@ -167,7 +167,7 @@ class Egg extends Model
      */
     public function getCopyScriptEntryAttribute(): string
     {
-        if (!is_null($this->script_entry) || is_null($this->copy_script_from)) {
+        if (is_null($this->copy_script_from)) {
             return $this->script_entry;
         }
 
@@ -180,7 +180,7 @@ class Egg extends Model
      */
     public function getCopyScriptContainerAttribute(): string
     {
-        if (!is_null($this->script_container) || is_null($this->copy_script_from)) {
+        if (is_null($this->copy_script_from)) {
             return $this->script_container;
         }
 
@@ -263,6 +263,8 @@ class Egg extends Model
 
     /**
      * Gets nest associated with an egg.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Nest, $this>
      */
     public function nest(): BelongsTo
     {
@@ -271,6 +273,8 @@ class Egg extends Model
 
     /**
      * Gets all servers associated with this egg.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Server, $this>
      */
     public function servers(): HasMany
     {
@@ -279,6 +283,8 @@ class Egg extends Model
 
     /**
      * Gets all variables associated with this egg.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\EggVariable, $this>
      */
     public function variables(): HasMany
     {
@@ -287,6 +293,8 @@ class Egg extends Model
 
     /**
      * Get the parent egg from which to copy scripts.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<self, $this>
      */
     public function scriptFrom(): BelongsTo
     {
@@ -295,6 +303,8 @@ class Egg extends Model
 
     /**
      * Get the parent egg from which to copy configuration settings.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<self, $this>
      */
     public function configFrom(): BelongsTo
     {

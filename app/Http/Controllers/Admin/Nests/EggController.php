@@ -41,7 +41,7 @@ class EggController extends Controller
         $nests = $this->nestRepository->getWithEggs();
         \JavaScript::put(['nests' => $nests->keyBy('id')]);
 
-        return $this->view->make('admin.eggs.new', ['nests' => $nests]);
+        return view('admin.eggs.new', ['nests' => $nests]);
     }
 
     /**
@@ -66,7 +66,7 @@ class EggController extends Controller
      */
     public function view(Egg $egg): View
     {
-        return $this->view->make('admin.eggs.view', [
+        return view('admin.eggs.view', [
             'egg' => $egg,
             'images' => array_map(
                 fn ($key, $value) => $key === $value ? $value : "$key|$value",

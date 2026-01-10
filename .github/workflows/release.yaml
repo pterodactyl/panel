@@ -1,72 +1,49 @@
 name: Release
-
 on:
   push:
     tags:
       - "v*"
-
 jobs:
   release:
     name: Release
-    runs-on: ubuntu-24.04
+    runs-on: ubuntu-latest
     permissions:
-      contents: write # write is required to create releases and push.
+      contents: write
     steps:
-      - name: Code checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
         with:
-          node-version: 16
+          node-version: 22
           cache: yarn
-
-      - name: Install dependencies
-        run: yarn install --frozen-lockfile
-
-      - name: Build
-        run: yarn build:production
-
-      - name: Create release branch and bump version
+      - run: yarn install --frozen-lockfile
+      - run: yarn tsc
+      - run: yarn build:production
+      - name: create release branch and bump version
         env:
-          REF: ${{ github.ref }}
+          VERSION: ${{ github.ref_name }}
         run: |
-          BRANCH=release/"${REF:10}"
+          BRANCH=release/${{ env.VERSION }}
           git config --local user.email 'ci@pterodactyl.io'
           git config --local user.name 'Pterodactyl CI'
           git checkout -b "$BRANCH"
           git push -u origin "$BRANCH"
-          sed -i "s/    'version' => 'canary',/    'version' => '${REF:11}',/" config/app.php
+          sed -i "s/'canary'/'${VERSION:1}'/" config/app.php
           git add config/app.php
           git commit -m 'ci(release): bump version'
           git push
-
-      - name: Create release archive
+      - name: create release archive
         run: |
-          rm -rf node_modules tests CODE_OF_CONDUCT.md CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix
+          rm -rf node_modules tests CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix
           tar -czf panel.tar.gz * .editorconfig .env.example .eslintignore .eslintrc.js .gitignore .prettierrc.json
-
-      - name: Extract changelog
-        env:
-          REF: ${{ github.ref }}
+      - name: write changelog
         run: |
-          sed -n "/^## ${REF:10}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG
-
-      - name: Create checksum and add to changelog
-        run: |
-          SUM=`sha256sum panel.tar.gz`
-          echo -e "\n#### SHA256 Checksum\n\n\`\`\`\n$SUM\n\`\`\`\n" >> ./RELEASE_CHANGELOG
-          echo "$SUM" > checksum.txt
-
-      - name: Create release
-        id: create_release
-        uses: softprops/action-gh-release@v2
+          sed -n "/^## ${{ github.ref_name }}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG
+      - uses: softprops/action-gh-release@a06a81a03ee405af7f2048a818ed3f03bbf83c7b
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           draft: true
-          prerelease: ${{ contains(github.ref, 'rc') || contains(github.ref, 'beta') || contains(github.ref, 'alpha') }}
+          prerelease: ${{ contains(github.ref_name, 'rc') || contains(github.ref_name, 'beta') || contains(github.ref_name, 'alpha') }}
           body_path: ./RELEASE_CHANGELOG
           files: |
             panel.tar.gz
-            checksum.txt

@@ -5,19 +5,22 @@ use PhpCsFixer\Finder;
 use PhpCsFixer\Runner\Parallel\ParallelConfigFactory;
 
 $finder = (new Finder())
-    ->in(__DIR__)
-    ->exclude([
-        'vendor',
-        'node_modules',
-        'storage',
-        'bootstrap/cache',
-    ])
-    ->notName(['_ide_helper*']);
+    ->name('*.php')
+    ->ignoreVCSIgnored(true)
+    ->exclude([__DIR__ . '/bootstrap/cache'])
+    ->in([
+        __DIR__ . '/app',
+        __DIR__ . '/bootstrap',
+        __DIR__ . '/config',
+        __DIR__ . '/database',
+        __DIR__ . '/routes',
+        __DIR__ . '/tests',
+    ]);
 
 return (new Config())
-    ->setParallelConfig(ParallelConfigFactory::detect())
-    ->setRiskyAllowed(true)
     ->setFinder($finder)
+    ->setUsingCache(true)
+    ->setParallelConfig(ParallelConfigFactory::detect())
     ->setRules([
         '@Symfony' => true,
         '@PSR1' => true,
@@ -27,8 +30,8 @@ return (new Config())
         'combine_consecutive_unsets' => true,
         'concat_space' => ['spacing' => 'one'],
         'heredoc_to_nowdoc' => true,
-        'no_alias_functions' => true,
-        'no_unreachable_default_argument_value' => true,
+        // 'no_alias_functions' => true,
+        // 'no_unreachable_default_argument_value' => true,
         'no_useless_return' => true,
         'ordered_imports' => [
             'sort_algorithm' => 'length',
@@ -44,7 +47,7 @@ return (new Config())
                 'var',
             ],
         ],
-        'random_api_migration' => true,
+        // 'random_api_migration' => true,
         'ternary_to_null_coalescing' => true,
         'yoda_style' => [
             'equal' => false,

@@ -10,8 +10,8 @@ use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Log;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Transformers\Api\Client\SubuserTransformer;
+use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest;
@@ -27,7 +27,7 @@ class SubuserController extends ClientApiController
     public function __construct(
         private SubuserRepository $repository,
         private SubuserCreationService $creationService,
-        private DaemonServerRepository $serverRepository,
+        private DaemonRevocationRepository $revocationRepository,
     ) {
         parent::__construct();
     }
@@ -115,7 +115,10 @@ class SubuserController extends ClientApiController
                 ]);
 
                 try {
-                    $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
+                    $this->revocationRepository->setNode($server->node)->deauthorize(
+                        $subuser->user->uuid,
+                        [$server->uuid],
+                    );
                 } catch (DaemonConnectionException $exception) {
                     // Don't block this request if we can't connect to the Wings instance. Chances are it is
                     // offline and the token will be invalid once Wings boots back.
@@ -150,7 +153,10 @@ class SubuserController extends ClientApiController
             $subuser->delete();
 
             try {
-                $this->serverRepository->setServer($server)->revokeUserJTI($subuser->user_id);
+                $this->revocationRepository->setNode($server->node)->deauthorize(
+                    $subuser->user->uuid,
+                    [$server->uuid],
+                );
             } catch (DaemonConnectionException $exception) {
                 // Don't block this request if we can't connect to the Wings instance.
                 Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);

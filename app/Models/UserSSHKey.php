@@ -33,10 +33,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @method static \Illuminate\Database\Eloquent\Builder|UserSSHKey whereUserId($value)
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withTrashed()
  * @method static \Illuminate\Database\Query\Builder|UserSSHKey withoutTrashed()
+ * @method static \Database\Factories\UserSSHKeyFactory factory(...$parameters)
  *
  * @mixin \Eloquent
- *
- * @method static \Database\Factories\UserSSHKeyFactory factory(...$parameters)
  */
 class UserSSHKey extends Model
 {
@@ -60,6 +59,9 @@ class UserSSHKey extends Model
         'public_key' => ['required', 'string'],
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
