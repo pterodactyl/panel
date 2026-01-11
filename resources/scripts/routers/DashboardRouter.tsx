@@ -7,6 +7,7 @@ import TransitionRouter from '@/TransitionRouter';
 import SubNavigation from '@/components/elements/SubNavigation';
 import { useLocation } from 'react-router';
 import Spinner from '@/components/elements/Spinner';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import routes from '@/routers/routes';
 
 export default () => {
@@ -20,8 +21,9 @@ export default () => {
                     <div>
                         {routes.account
                             .filter((route) => !!route.name)
-                            .map(({ path, name, exact = false }) => (
+                            .map(({ path, name, exact = false, icon }) => (
                                 <NavLink key={path} to={`/account/${path}`.replace('//', '/')} exact={exact}>
+                                    {icon && <FontAwesomeIcon icon={icon} style={{ marginRight: '8px' }} />}
                                     {name}
                                 </NavLink>
                             ))}
