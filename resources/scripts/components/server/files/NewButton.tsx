@@ -1,16 +1,19 @@
 import React, { useContext, useEffect, useState } from 'react';
+import { NavLink } from 'react-router-dom';
+import { Button } from '@/components/elements/button/index';
 import { ServerContext } from '@/state/server';
+import DropdownMenu, { DropdownButtonRow } from '@/components/elements/DropdownMenu';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faChevronDown, faFile, faFolder } from '@fortawesome/free-solid-svg-icons';
+import tw from 'twin.macro';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
 import { join } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import { useFlashKey } from '@/plugins/useFlash';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import { WithClassname } from '@/components/types';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
 import Code from '@/components/elements/Code';
@@ -96,15 +99,34 @@ const NewDirectoryDialog = asDialog({
     );
 });
 
-export default ({ className }: WithClassname) => {
-    const [open, setOpen] = useState(false);
+const NewButton = () => {
+    const id = ServerContext.useStoreState((state) => state.server.data!.id);
+    const [openDirectoryDialog, setOpenDirectoryDialog] = useState(false);
 
     return (
         <>
-            <NewDirectoryDialog open={open} onClose={setOpen.bind(this, false)} />
-            <Button.Text onClick={setOpen.bind(this, true)} className={className}>
-                Create Directory
-            </Button.Text>
+            <NewDirectoryDialog open={openDirectoryDialog} onClose={() => setOpenDirectoryDialog(false)} />
+            <DropdownMenu
+                renderToggle={(onClick) => (
+                    <Button onClick={onClick}>
+                        New
+                        <FontAwesomeIcon icon={faChevronDown} css={tw`ml-2`} />
+                    </Button>
+                )}
+            >
+                <NavLink to={`/server/${id}/files/new${window.location.hash}`}>
+                    <DropdownButtonRow css={tw`justify-start !w-full`}>
+                        <FontAwesomeIcon icon={faFile} css={tw`mr-3`} />
+                        File
+                    </DropdownButtonRow>
+                </NavLink>
+                <DropdownButtonRow onClick={() => setOpenDirectoryDialog(true)} css={tw`justify-start !w-full`}>
+                    <FontAwesomeIcon icon={faFolder} css={tw`mr-3`} />
+                    Folder
+                </DropdownButtonRow>
+            </DropdownMenu>
         </>
     );
 };
+
+export default NewButton;
