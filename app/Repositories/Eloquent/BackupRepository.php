@@ -34,6 +34,8 @@ class BackupRepository extends EloquentRepository
 
     /**
      * Returns a query filtering only non-failed backups for a specific server.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Backup, \Pterodactyl\Models\Server>
      */
     public function getNonFailedBackups(Server $server): HasMany
     {

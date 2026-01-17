@@ -26,7 +26,7 @@ class EggVariableController extends Controller
         protected VariableUpdateService $updateService,
         protected EggRepositoryInterface $repository,
         protected EggVariableRepositoryInterface $variableRepository,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 
@@ -39,7 +39,7 @@ class EggVariableController extends Controller
     {
         $egg = $this->repository->getWithVariables($egg);
 
-        return $this->view->make('admin.eggs.variables', ['egg' => $egg]);
+        return view('admin.eggs.variables', ['egg' => $egg]);
     }
 
     /**

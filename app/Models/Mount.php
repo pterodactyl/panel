@@ -94,6 +94,8 @@ class Mount extends Model
 
     /**
      * Returns all eggs that have this mount assigned.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Egg, $this>
      */
     public function eggs(): BelongsToMany
     {
@@ -102,6 +104,8 @@ class Mount extends Model
 
     /**
      * Returns all nodes that have this mount assigned.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Node, $this>
      */
     public function nodes(): BelongsToMany
     {
@@ -110,6 +114,8 @@ class Mount extends Model
 
     /**
      * Returns all servers that have this mount assigned.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Server, $this>
      */
     public function servers(): BelongsToMany
     {

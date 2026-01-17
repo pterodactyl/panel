@@ -23,7 +23,7 @@ class UserController extends ApplicationApiController
     public function __construct(
         private UserCreationService $creationService,
         private UserDeletionService $deletionService,
-        private UserUpdateService $updateService
+        private UserUpdateService $updateService,
     ) {
         parent::__construct();
     }

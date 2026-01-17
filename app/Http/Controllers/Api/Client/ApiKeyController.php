@@ -25,7 +25,7 @@ class ApiKeyController extends ClientApiController
     /**
      * Store a new API key for a user's account.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function store(StoreApiKeyRequest $request): array
     {
@@ -54,7 +54,7 @@ class ApiKeyController extends ClientApiController
      */
     public function delete(ClientApiRequest $request, string $identifier): JsonResponse
     {
-        /** @var \Pterodactyl\Models\ApiKey $key */
+        /** @var ApiKey $key */
         $key = $request->user()->apiKeys()
             ->where('key_type', ApiKey::TYPE_ACCOUNT)
             ->where('identifier', $identifier)

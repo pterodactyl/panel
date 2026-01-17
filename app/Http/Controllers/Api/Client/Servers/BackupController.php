@@ -30,7 +30,7 @@ class BackupController extends ClientApiController
         private DeleteBackupService $deleteBackupService,
         private InitiateBackupService $initiateBackupService,
         private DownloadLinkService $downloadLinkService,
-        private BackupRepository $repository
+        private BackupRepository $repository,
     ) {
         parent::__construct();
     }
@@ -39,7 +39,7 @@ class BackupController extends ClientApiController
      * Returns all the backups for a given server instance in a paginated
      * result set.
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function index(Request $request, Server $server): array
     {
@@ -74,15 +74,21 @@ class BackupController extends ClientApiController
         // how best to allow a user to create a backup that is locked without also preventing
         // them from just filling up a server with backups that can never be deleted?
         if ($request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            $action->setIsLocked((bool) $request->input('is_locked'));
+            $action->setIsLocked($request->boolean('is_locked'));
         }
 
-        $backup = $action->handle($server, $request->input('name'));
+        $backup = Activity::event('server:backup.start')->transaction(function ($log) use ($action, $server, $request) {
+            $server->backups()->lockForUpdate();
 
-        Activity::event('server:backup.start')
-            ->subject($backup)
-            ->property(['name' => $backup->name, 'locked' => (bool) $request->input('is_locked')])
-            ->log();
+            $backup = $action->handle($server, $request->input('name'));
+
+            $log->subject($backup)->property([
+                'name' => $backup->name,
+                'locked' => $request->boolean('is_locked'),
+            ]);
+
+            return $backup;
+        });
 
         return $this->fractal->item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
@@ -93,7 +99,7 @@ class BackupController extends ClientApiController
      * Toggles the lock status of a given backup for a server.
      *
      * @throws \Throwable
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function toggleLock(Request $request, Server $server, Backup $backup): array
     {
@@ -115,7 +121,7 @@ class BackupController extends ClientApiController
     /**
      * Returns information about a single backup.
      *
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function view(Request $request, Server $server, Backup $backup): array
     {
@@ -156,7 +162,7 @@ class BackupController extends ClientApiController
      * which the user is redirected to.
      *
      * @throws \Throwable
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     * @throws AuthorizationException
      */
     public function download(Request $request, Server $server, Backup $backup): JsonResponse
     {

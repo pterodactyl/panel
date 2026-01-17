@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -19,6 +20,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class DatabaseHost extends Model
 {
+    /** @use HasFactory<\Database\Factories\DatabaseHostFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -58,7 +62,7 @@ class DatabaseHost extends Model
      */
     public static array $validationRules = [
         'name' => 'required|string|max:191',
-        'host' => 'required|string',
+        'host' => 'required|string|regex:/^[\w\-\.]+$/',
         'port' => 'required|numeric|between:1,65535',
         'username' => 'required|string|max:32',
         'password' => 'nullable|string',
@@ -67,6 +71,8 @@ class DatabaseHost extends Model
 
     /**
      * Gets the node associated with a database host.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Node, $this>
      */
     public function node(): BelongsTo
     {
@@ -75,6 +81,8 @@ class DatabaseHost extends Model
 
     /**
      * Gets the databases associated with this host.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Database, $this>
      */
     public function databases(): HasMany
     {

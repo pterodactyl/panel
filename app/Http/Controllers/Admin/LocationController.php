@@ -26,7 +26,7 @@ class LocationController extends Controller
         protected LocationDeletionService $deletionService,
         protected LocationRepositoryInterface $repository,
         protected LocationUpdateService $updateService,
-        protected ViewFactory $view
+        protected ViewFactory $view,
     ) {
     }
 
@@ -35,7 +35,7 @@ class LocationController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.locations.index', [
+        return view('admin.locations.index', [
             'locations' => $this->repository->getAllWithDetails(),
         ]);
     }
@@ -47,7 +47,7 @@ class LocationController extends Controller
      */
     public function view(int $id): View
     {
-        return $this->view->make('admin.locations.view', [
+        return view('admin.locations.view', [
             'location' => $this->repository->getWithNodes($id),
         ]);
     }
@@ -86,7 +86,7 @@ class LocationController extends Controller
      * Delete a location from the system.
      *
      * @throws \Exception
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function delete(Location $location): RedirectResponse
     {

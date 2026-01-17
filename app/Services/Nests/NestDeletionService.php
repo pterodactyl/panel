@@ -13,14 +13,14 @@ class NestDeletionService
      */
     public function __construct(
         protected ServerRepositoryInterface $serverRepository,
-        protected NestRepositoryInterface $repository
+        protected NestRepositoryInterface $repository,
     ) {
     }
 
     /**
      * Delete a nest from the system only if there are no servers attached to it.
      *
-     * @throws \Pterodactyl\Exceptions\Service\HasActiveServersException
+     * @throws HasActiveServersException
      */
     public function handle(int $nest): int
     {

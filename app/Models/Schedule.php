@@ -7,6 +7,7 @@ use Carbon\CarbonImmutable;
 use Illuminate\Container\Container;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
 
 /**
@@ -26,11 +27,14 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property string $hashid
- * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\Task[]|\Illuminate\Support\Collection $tasks
+ * @property Server $server
+ * @property \Illuminate\Database\Eloquent\Collection<int, \Pterodactyl\Models\Task> $tasks
  */
 class Schedule extends Model
 {
+    /** @use HasFactory<\Database\Factories\ScheduleFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -102,9 +106,6 @@ class Schedule extends Model
         'next_run_at' => 'nullable|date',
     ];
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRouteKeyName(): string
     {
         return $this->getKeyName();
@@ -119,9 +120,7 @@ class Schedule extends Model
     {
         $formatted = sprintf('%s %s %s %s %s', $this->cron_minute, $this->cron_hour, $this->cron_day_of_month, $this->cron_month, $this->cron_day_of_week);
 
-        return CarbonImmutable::createFromTimestamp(
-            (new CronExpression($formatted))->getNextRunDate()->getTimestamp()
-        );
+        return CarbonImmutable::instance((new CronExpression($formatted))->getNextRunDate());
     }
 
     /**
@@ -134,6 +133,8 @@ class Schedule extends Model
 
     /**
      * Return tasks belonging to a schedule.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Task, $this>
      */
     public function tasks(): HasMany
     {
@@ -142,6 +143,8 @@ class Schedule extends Model
 
     /**
      * Return the server model that a schedule belongs to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
      */
     public function server(): BelongsTo
     {

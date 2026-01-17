@@ -16,7 +16,7 @@
 
 @section('content')
     @include('admin.servers.partials.navigation')
-    <div class="row">
+    <div class="row equal-height">
         <div class="col-sm-4">
             <div class="box box-danger">
                 <div class="box-header with-border">

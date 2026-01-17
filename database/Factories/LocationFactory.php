@@ -3,18 +3,13 @@
 namespace Database\Factories;
 
 use Illuminate\Support\Str;
-use Pterodactyl\Models\Location;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
+/**
+ * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Pterodactyl\Models\Location>
+ */
 class LocationFactory extends Factory
 {
-    /**
-     * The name of the factory's corresponding model.
-     *
-     * @var string
-     */
-    protected $model = Location::class;
-
     /**
      * Define the model's default state.
      */

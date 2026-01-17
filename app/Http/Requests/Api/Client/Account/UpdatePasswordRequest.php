@@ -10,7 +10,7 @@ use Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException;
 class UpdatePasswordRequest extends ClientApiRequest
 {
     /**
-     * @throws \Pterodactyl\Exceptions\Http\Base\InvalidPasswordProvidedException
+     * @throws InvalidPasswordProvidedException
      */
     public function authorize(): bool
     {

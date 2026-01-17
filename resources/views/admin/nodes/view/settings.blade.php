@@ -54,7 +54,7 @@
                         <div>
                             <select name="location_id" class="form-control">
                                 @foreach($locations as $location)
-                                    <option value="{{ $location->id }}" {{ (old('location_id', $node->location_id) === $location->id) ? 'selected' : '' }}>{{ $location->long }} ({{ $location->short }})</option>
+                                    <option value="{{ $location->id }}" {{ (((int) old('location_id', $node->location_id)) === $location->id) ? 'selected' : '' }}>{{ $location->long }} ({{ $location->short }})</option>
                                 @endforeach
                             </select>
                         </div>
@@ -107,11 +107,11 @@
                         <label class="form-label"><span class="label label-warning"><i class="fa fa-wrench"></i></span> Maintenance Mode</label>
                         <div>
                             <div class="radio radio-success radio-inline">
-                                <input type="radio" id="pMaintenanceFalse" value="0" name="maintenance_mode" {{ (old('behind_proxy', $node->maintenance_mode) == false) ? 'checked' : '' }}>
+                                <input type="radio" id="pMaintenanceFalse" value="0" name="maintenance_mode" {{ (old('maintenance_mode', $node->maintenance_mode) == false) ? 'checked' : '' }}>
                                 <label for="pMaintenanceFalse"> Disabled</label>
                             </div>
                             <div class="radio radio-warning radio-inline">
-                                <input type="radio" id="pMaintenanceTrue" value="1" name="maintenance_mode" {{ (old('behind_proxy', $node->maintenance_mode) == true) ? 'checked' : '' }}>
+                                <input type="radio" id="pMaintenanceTrue" value="1" name="maintenance_mode" {{ (old('maintenance_mode', $node->maintenance_mode) == true) ? 'checked' : '' }}>
                                 <label for="pMaintenanceTrue"> Enabled</label>
                             </div>
                         </div>

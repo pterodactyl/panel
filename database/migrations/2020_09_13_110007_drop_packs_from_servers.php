@@ -8,10 +8,8 @@ class DropPacksFromServers extends Migration
 {
     /**
      * Run the migrations.
-     *
-     * @return void
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->dropForeign(['pack_id']);
@@ -21,10 +19,8 @@ class DropPacksFromServers extends Migration
 
     /**
      * Reverse the migrations.
-     *
-     * @return void
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('servers', function (Blueprint $table) {
             $table->unsignedInteger('pack_id')->after('egg_id')->nullable();
