@@ -13,7 +13,7 @@ class ReinstallServerService
      */
     public function __construct(
         private ConnectionInterface $connection,
-        private DaemonServerRepository $daemonServerRepository
+        private DaemonServerRepository $daemonServerRepository,
     ) {
     }
 

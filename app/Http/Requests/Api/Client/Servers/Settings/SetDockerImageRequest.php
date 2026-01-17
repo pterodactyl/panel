@@ -18,13 +18,12 @@ class SetDockerImageRequest extends ClientApiRequest implements ClientPermission
 
     public function rules(): array
     {
-        /** @var \Pterodactyl\Models\Server $server */
         $server = $this->route()->parameter('server');
 
         Assert::isInstanceOf($server, Server::class);
 
         return [
-            'docker_image' => ['required', 'string', 'max:191', 'regex:/^[\w#\.\/\- ]*\|*[\w\.\/\-:@ ]*$/', Rule::in(array_values($server->egg->docker_images))],
+            'docker_image' => ['required', 'string', 'max:191', 'regex:/^[\w#\.\/\- ]*\|?~?[\w\.\/\-:@ ]*$/', Rule::in(array_values($server->egg->docker_images))],
         ];
     }
 }

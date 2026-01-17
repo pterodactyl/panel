@@ -2,7 +2,7 @@
 # Build the assets that are needed for the frontend. This build stage is then discarded
 # since we won't need NodeJS anymore in the future. This Docker image ships a final production
 # level distribution of Pterodactyl.
-FROM --platform=$TARGETOS/$TARGETARCH mhart/alpine-node:14
+FROM --platform=$TARGETOS/$TARGETARCH node:22-alpine
 WORKDIR /app
 COPY . ./
 RUN yarn install --frozen-lockfile \
@@ -10,7 +10,7 @@ RUN yarn install --frozen-lockfile \
 
 # Stage 1:
 # Build the actual container with all of the needed PHP dependencies that will run the application.
-FROM --platform=$TARGETOS/$TARGETARCH php:8.2-fpm-alpine
+FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets

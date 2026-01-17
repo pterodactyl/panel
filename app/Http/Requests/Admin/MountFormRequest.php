@@ -12,7 +12,7 @@ class MountFormRequest extends AdminFormRequest
     public function rules(): array
     {
         if ($this->method() === 'PATCH') {
-            return Mount::getRulesForUpdate($this->route()->parameter('mount')->id);
+            return Mount::getRulesForUpdate($this->route()->parameter('mount')->id); // @phpstan-ignore property.nonObject
         }
 
         return Mount::getRules();

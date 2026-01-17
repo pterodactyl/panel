@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -17,6 +18,9 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
  */
 class Nest extends Model
 {
+    /** @use HasFactory<\Database\Factories\NestFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -44,6 +48,8 @@ class Nest extends Model
 
     /**
      * Gets all eggs associated with this service.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Egg, $this>
      */
     public function eggs(): HasMany
     {
@@ -52,6 +58,8 @@ class Nest extends Model
 
     /**
      * Gets all servers associated with this nest.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Server, $this>
      */
     public function servers(): HasMany
     {

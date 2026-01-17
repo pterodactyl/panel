@@ -50,7 +50,7 @@ abstract class BaseTransformer extends TransformerAbstract
     /**
      * Returns a new transformer instance with the request set on the instance.
      */
-    public static function fromRequest(Request $request): BaseTransformer
+    public static function fromRequest(Request $request): static
     {
         return app(static::class)->setRequest($request);
     }
@@ -66,7 +66,7 @@ abstract class BaseTransformer extends TransformerAbstract
     {
         $allowed = [ApiKey::TYPE_ACCOUNT, ApiKey::TYPE_APPLICATION];
 
-        $token = $this->request->user()->currentAccessToken();
+        $token = $this->request->user()?->currentAccessToken();
         if (!$token instanceof ApiKey || !in_array($token->key_type, $allowed)) {
             return false;
         }
@@ -97,7 +97,7 @@ abstract class BaseTransformer extends TransformerAbstract
      */
     protected function makeTransformer(string $abstract)
     {
-        Assert::subclassOf($abstract, self::class);
+        Assert::subclassOf($abstract, self::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
 
         return $abstract::fromRequest($this->request);
     }

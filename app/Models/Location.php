@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
@@ -16,6 +17,9 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  */
 class Location extends Model
 {
+    /** @use HasFactory<\Database\Factories\LocationFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -40,9 +44,6 @@ class Location extends Model
         'long' => 'string|nullable|between:1,191',
     ];
 
-    /**
-     * {@inheritDoc}
-     */
     public function getRouteKeyName(): string
     {
         return $this->getKeyName();
@@ -50,6 +51,8 @@ class Location extends Model
 
     /**
      * Gets the nodes in a specified location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Node, $this>
      */
     public function nodes(): HasMany
     {
@@ -58,6 +61,8 @@ class Location extends Model
 
     /**
      * Gets the servers within a given location.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Pterodactyl\Models\Server, \Pterodactyl\Models\Node, $this>
      */
     public function servers(): HasManyThrough
     {

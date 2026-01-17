@@ -39,8 +39,8 @@ class UpgradeCommand extends Command
             $this->line($this->getUrl());
         }
 
-        if (version_compare(PHP_VERSION, '7.4.0') < 0) {
-            $this->error('Cannot execute self-upgrade process. The minimum required PHP version required is 7.4.0, you have [' . PHP_VERSION . '].');
+        if (version_compare(PHP_VERSION, '8.2.0', '<')) {
+            $this->error('Cannot execute self-upgrade process. The minimum required PHP version required is 8.2.0, you have [' . PHP_VERSION . '].');
         }
 
         $user = 'www-data';
@@ -133,7 +133,7 @@ class UpgradeCommand extends Command
 
         /** @var \Illuminate\Foundation\Application $app */
         $app = require __DIR__ . '/../../../bootstrap/app.php';
-        /** @var \Pterodactyl\Console\Kernel $kernel */
+        /** @var Kernel $kernel */
         $kernel = $app->make(Kernel::class);
         $kernel->bootstrap();
         $this->setLaravel($app);

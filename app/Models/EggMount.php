@@ -6,7 +6,7 @@ class EggMount extends Model
 {
     protected $table = 'egg_mount';
 
-    protected $primaryKey = null;
+    protected $primaryKey;
 
     public $incrementing = false;
 }

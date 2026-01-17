@@ -31,14 +31,14 @@ class ResetPasswordController extends Controller
     public function __construct(
         private Dispatcher $dispatcher,
         private Hasher $hasher,
-        private UserRepositoryInterface $userRepository
+        private UserRepositoryInterface $userRepository,
     ) {
     }
 
     /**
      * Reset the given user's password.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function __invoke(ResetPasswordRequest $request): JsonResponse
     {
@@ -67,7 +67,7 @@ class ResetPasswordController extends Controller
      * account do not automatically log them in. In those cases, send the user back to the login
      * form with a note telling them their password was changed and to log back in.
      *
-     * @param \Illuminate\Contracts\Auth\CanResetPassword|\Pterodactyl\Models\User $user
+     * @param \Illuminate\Contracts\Auth\CanResetPassword&\Pterodactyl\Models\User $user
      * @param string $password
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException

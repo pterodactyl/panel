@@ -19,7 +19,7 @@ class WebsocketController extends ClientApiController
      */
     public function __construct(
         private NodeJWTService $jwtService,
-        private GetUserPermissionsService $permissionsService
+        private GetUserPermissionsService $permissionsService,
     ) {
         parent::__construct();
     }

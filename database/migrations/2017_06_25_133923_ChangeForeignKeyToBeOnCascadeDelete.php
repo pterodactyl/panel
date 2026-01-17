@@ -9,7 +9,7 @@ class ChangeForeignKeyToBeOnCascadeDelete extends Migration
     /**
      * Run the migrations.
      */
-    public function up()
+    public function up(): void
     {
         Schema::table('api_permissions', function (Blueprint $table) {
             $table->dropForeign(['key_id']);
@@ -21,7 +21,7 @@ class ChangeForeignKeyToBeOnCascadeDelete extends Migration
     /**
      * Reverse the migrations.
      */
-    public function down()
+    public function down(): void
     {
         Schema::table('api_permissions', function (Blueprint $table) {
             $table->dropForeign(['key_id']);

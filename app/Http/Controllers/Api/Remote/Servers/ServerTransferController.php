@@ -22,7 +22,7 @@ class ServerTransferController extends Controller
     public function __construct(
         private ConnectionInterface $connection,
         private ServerRepository $repository,
-        private DaemonServerRepository $daemonServerRepository
+        private DaemonServerRepository $daemonServerRepository,
     ) {
     }
 

@@ -54,7 +54,7 @@ export default () => {
                     <Link
                         to={'/'}
                         className={
-                            'text-2xl font-header px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'
+                            'text-2xl font-header font-medium px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'
                         }
                     >
                         {name}

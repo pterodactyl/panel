@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react';
 import { ServerContext } from '@/state/server';
 import { Form, Formik, FormikHelpers } from 'formik';
 import Field from '@/components/elements/Field';
-import { join } from 'path';
+import { join } from 'pathe';
 import { object, string } from 'yup';
 import createDirectory from '@/api/server/files/createDirectory';
 import tw from 'twin.macro';

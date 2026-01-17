@@ -10,10 +10,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Pterodactyl\Extensions\Laravel\Sanctum\NewAccessToken;
 
 /**
+ * @template TToken of \Laravel\Sanctum\Contracts\HasAbilities
+ *
  * @mixin \Pterodactyl\Models\Model
  */
 trait HasAccessTokens
 {
+    /** @use \Laravel\Sanctum\HasApiTokens<TToken> */
     use HasApiTokens {
         tokens as private _tokens;
         createToken as private _createToken;
@@ -26,7 +29,7 @@ trait HasAccessTokens
 
     public function createToken(?string $memo, ?array $ips): NewAccessToken
     {
-        /** @var \Pterodactyl\Models\ApiKey $token */
+        /** @var ApiKey $token */
         $token = $this->tokens()->forceCreate([
             'user_id' => $this->id,
             'key_type' => ApiKey::TYPE_ACCOUNT,

@@ -47,5 +47,6 @@ module.exports = {
         '@typescript-eslint/no-use-before-define': 'warn',
         '@typescript-eslint/no-unused-vars': ['warn', { argsIgnorePattern: '^_', varsIgnorePattern: '^_' }],
         '@typescript-eslint/ban-ts-comment': ['error', { 'ts-expect-error': 'allow-with-description' }],
+        'react/no-unknown-property': ['error', { ignore: ['css'] }],
     },
 };
