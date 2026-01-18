@@ -65,7 +65,11 @@ class SoftwareVersionService
             return true;
         }
 
-        return version_compare(config('app.version'), $this->getPanel()) >= 0;
+        return version_compare(
+            ltrim(config('app.version'), 'vV'),
+            ltrim($this->getPanel(), 'vV'),
+            '>='
+        );
     }
 
     /**
