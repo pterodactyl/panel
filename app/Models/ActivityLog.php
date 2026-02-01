@@ -7,9 +7,11 @@ use Illuminate\Support\Facades\Event;
 use Pterodactyl\Events\ActivityLogged;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\MassPrunable;
+use Pterodactyl\Contracts\Models\Identifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
+use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Model as IlluminateModel;
 
 /**
@@ -48,9 +50,11 @@ use Illuminate\Database\Eloquent\Model as IlluminateModel;
  *
  * @mixin \Eloquent
  */
-class ActivityLog extends Model
+#[Attributes\Identifiable('actl')]
+class ActivityLog extends Model implements Identifiable
 {
     use MassPrunable;
+    use HasRealtimeIdentifier;
 
     public const RESOURCE_NAME = 'activity_log';
 
