@@ -3,6 +3,8 @@
 namespace Pterodactyl\Models;
 
 use Illuminate\Validation\Rules\NotIn;
+use Pterodactyl\Contracts\Models\Identifiable;
+use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
@@ -18,8 +20,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  */
-class Mount extends Model
+#[Attributes\Identifiable('moun')]
+class Mount extends Model implements Identifiable
 {
+    use HasRealtimeIdentifier;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
