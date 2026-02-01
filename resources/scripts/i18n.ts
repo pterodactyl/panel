@@ -1,6 +1,6 @@
 import i18n from 'i18next';
 import { initReactI18next } from 'react-i18next';
-import I18NextHttpBackend, { BackendOptions } from 'i18next-http-backend';
+import I18NextHttpBackend, { HttpBackendOptions } from 'i18next-http-backend';
 import I18NextMultiloadBackendAdapter from 'i18next-multiload-backend-adapter';
 
 // If we're using HMR use a unique hash per page reload so that we're always
@@ -21,7 +21,7 @@ i18n.use(I18NextMultiloadBackendAdapter)
                 loadPath: '/locales/locale.json?locale={{lng}}&namespace={{ns}}',
                 queryStringParams: { hash },
                 allowMultiLoading: true,
-            } as BackendOptions,
+            } as HttpBackendOptions,
         } as Record<string, any>,
         interpolation: {
             // Per i18n-react documentation: this is not needed since React is already
