@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Pterodactyl\Exceptions\Http\Server\ServerStateConflictException;
+use Illuminate\Validation\Rule;
 
 /**
  * \Pterodactyl\Models\Server.
@@ -215,6 +216,35 @@ class Server extends Model
     public function isSuspended(): bool
     {
         return $this->status === self::STATUS_SUSPENDED;
+    }
+
+    public static function getRulesForUpdate($model, string $column = 'id'): array
+    {
+        if ($model instanceof Model) {
+            [$id, $column] = [$model->getKey(), $model->getKeyName()];
+        }
+
+        $rules = static::getRules();
+        foreach ($rules as $key => &$data) {
+            foreach ($data as &$datum) {
+                if (!is_string($datum) || !str_starts_with($datum, 'unique')) {
+                    continue;
+                }
+
+                [, $args] = explode(':', $datum);
+                $args = explode(',', $args);
+
+                if ($key === 'external_id') {
+                    $datum = Rule::unique($args[0], $args[1] ?? $key)
+                        ->ignore($id ?? $model, $column)
+                        ->whereNotNull('external_id');
+                } else {
+                    $datum = Rule::unique($args[0], $args[1] ?? $key)->ignore($id ?? $model, $column);
+                }
+            }
+        }
+
+        return $rules;
     }
 
     /**
