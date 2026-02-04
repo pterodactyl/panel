@@ -66,12 +66,30 @@ class ServersController extends Controller
      *
      * @throws DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws ValidationException
      */
     public function setDetails(Request $request, Server $server): RedirectResponse
     {
-        $this->detailsModificationService->handle($server, $request->only([
-            'owner_id', 'external_id', 'name', 'description',
-        ]));
+        if ($request->input('external_id')) {
+            $externalId = $request->input('external_id');
+            $exists = Server::where('external_id', $externalId)
+                ->where('id', '!=', $server->id)
+                ->exists();
+
+            if ($exists) {
+                throw ValidationException::withMessages([
+                    'external_id' => 'The external identifier must be unique to this server.',
+                ]);
+            }
+        }
+
+        try {
+            $this->detailsModificationService->handle($server, $request->only([
+                'owner_id', 'external_id', 'name', 'description',
+            ]));
+        } catch (DataValidationException $exception) {
+            throw new ValidationException($exception->getValidator());
+        }
 
         $this->alert->success(trans('admin/server.alerts.details_updated'))->flash();
 
