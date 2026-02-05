@@ -78,7 +78,7 @@ class ServersController extends Controller
 
             if ($exists) {
                 throw ValidationException::withMessages([
-                    'external_id' => 'The external identifier must be unique to this server.',
+                    'external_id' => 'The external identifier must be unique among all servers.',
                 ]);
             }
         }
