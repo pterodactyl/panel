@@ -65,7 +65,7 @@ class ServerFormRequest extends AdminFormRequest
                 }
 
                 if ($query->exists()) {
-                    $validator->errors()->add('external_id', 'The external identifier must be unique to this server.');
+                    $validator->errors()->add('external_id', 'The external identifier must be unique among all servers.');
                 }
             }
         });
