@@ -154,7 +154,7 @@ class Server extends Model
         'node_id' => 'required|exists:nodes,id',
         'description' => 'string',
         'status' => 'nullable|string',
-        'memory' => 'required|numeric|min:6',
+        'memory' => 'required|numeric|min:0',
         'swap' => 'required|numeric|min:-1',
         'io' => 'required|numeric|between:10,1000',
         'cpu' => 'required|numeric|min:0',
@@ -412,5 +412,21 @@ class Server extends Model
         ) {
             throw new ServerStateConflictException($this);
         }
+    }
+
+    /**
+     * Overriding getRules to add custom memory validation
+     */
+    public static function getRules(): array
+    {
+        $rules = parent::getRules();
+
+        $rules['memory'][] = function ($attribute, $value, $fail) {
+            if ($value != 0 && $value < 6) {
+                $fail('The ' . $attribute . ' must be either 0 or at least 6!');
+            }
+        };
+
+        return $rules;
     }
 }
