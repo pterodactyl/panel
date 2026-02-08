@@ -154,7 +154,7 @@ class Server extends Model
         'node_id' => 'required|exists:nodes,id',
         'description' => 'string',
         'status' => 'nullable|string',
-        'memory' => 'required|numeric|min:0',
+        'memory' => 'required|numeric|min:6',
         'swap' => 'required|numeric|min:-1',
         'io' => 'required|numeric|between:10,1000',
         'cpu' => 'required|numeric|min:0',
