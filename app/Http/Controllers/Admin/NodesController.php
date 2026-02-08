@@ -1,6 +1,6 @@
 <?php
 
-Pterodactyl\Http\Controllers\Admin\Nodes;
+namespace Pterodactyl\Http\Controllers\Admin\Nodes;
 namespace Pterodactyl\Http\Controllers\Admin\Nodes;
 
 use Illuminate\View\View;
