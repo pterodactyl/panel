@@ -84,7 +84,7 @@ class Node extends Model
      */
     protected $fillable = [
         'public', 'name', 'location_id',
-        'fqdn', 'scheme', 'behind_proxy',
+        'description', 'fqdn', 'scheme', 'behind_proxy',
         'memory', 'memory_overallocate', 'disk',
         'disk_overallocate', 'upload_size', 'daemonBase',
         'daemonSFTP', 'daemonListen',
@@ -107,7 +107,7 @@ class Node extends Model
         'daemonSFTP' => 'required|numeric|between:1,65535',
         'daemonListen' => 'required|numeric|between:1,65535',
         'maintenance_mode' => 'boolean',
-        'upload_size' => 'int|between:1,1024',
+        'upload_size' => 'int|min:1',
     ];
 
     /**

@@ -145,7 +145,7 @@
                             @foreach (Alert::getMessages() as $type => $messages)
                                 @foreach ($messages as $message)
                                     <div class="alert alert-{{ $type }} alert-dismissable" role="alert">
-                                        {!! $message !!}
+                                        {{ $message }}
                                     </div>
                                 @endforeach
                             @endforeach

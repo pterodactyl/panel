@@ -166,6 +166,8 @@ class ActivityLogService
      * and will only save the activity log entry if everything else successfully
      * settles.
      *
+     * @param \Closure($this): mixed $callback
+     *
      * @throws \Throwable
      */
     public function transaction(\Closure $callback)
@@ -199,7 +201,7 @@ class ActivityLogService
 
         $this->activity = new ActivityLog([
             'ip' => Request::ip(),
-            'batch_uuid' => $this->batch->uuid(),
+            'batch' => $this->batch->uuid(),
             'properties' => Collection::make([]),
             'api_key_id' => $this->targetable->apiKeyId(),
         ]);

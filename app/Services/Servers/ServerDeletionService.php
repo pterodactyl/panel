@@ -35,7 +35,7 @@ class ServerDeletionService
     }
 
     /**
-     * Delete a server from the panel and remove any associated databases from hosts.
+     * Delete a server from the panel, clear any allocation notes, and remove any associated databases from hosts.
      *
      * @throws \Throwable
      * @throws \Pterodactyl\Exceptions\DisplayException
@@ -76,6 +76,10 @@ class ServerDeletionService
                     Log::warning($exception);
                 }
             }
+
+            // clear any allocation notes for the server
+            $server->allocations()->update(['notes' => null]);
+
 
             $server->delete();
         });

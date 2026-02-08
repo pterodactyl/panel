@@ -48,12 +48,15 @@ class DatabaseController extends ClientApiController
      */
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
-        $database = $this->deployDatabaseService->handle($server, $request->validated());
+        $database = Activity::event('server:database.create')->transaction(function ($log) use ($request, $server) {
+            $server->databases()->lockForUpdate();
 
-        Activity::event('server:database.create')
-            ->subject($database)
-            ->property('name', $database->database)
-            ->log();
+            $database = $this->deployDatabaseService->handle($server, $request->validated());
+
+            $log->subject($database)->property('name', $database->database);
+
+            return $database;
+        });
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
@@ -69,15 +72,16 @@ class DatabaseController extends ClientApiController
      */
     public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database): array
     {
-        $this->passwordService->handle($database);
-        $database->refresh();
-
         Activity::event('server:database.rotate-password')
             ->subject($database)
             ->property('name', $database->database)
-            ->log();
+            ->transaction(function () use ($database) {
+                $database->lockForUpdate();
 
-        return $this->fractal->item($database)
+                $this->passwordService->handle($database);
+            });
+
+        return $this->fractal->item($database->refresh())
             ->parseIncludes(['password'])
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
             ->toArray();

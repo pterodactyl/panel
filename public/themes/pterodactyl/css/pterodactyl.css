@@ -833,3 +833,23 @@ pre {
     background-color: #515f6cbb;
     border-color: #1f2933;
 }
+
+/* Make the row a flex container so all columns in the same row can have equal height */
+.equal-height {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.equal-height>[class*="col-"] {
+    display: flex;
+}
+
+.equal-height .box {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.equal-height .box-body {
+    flex: 1;
+}
