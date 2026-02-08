@@ -1,6 +1,6 @@
 <?php
 
-namespace Pterodactyl\Http\Controllers\Admin;
+namespace Pterodactyl\Http\Controllers\Admin\Nodes;
 
 use Illuminate\View\View;
 use Illuminate\Http\Request;
@@ -25,6 +25,8 @@ use Pterodactyl\Services\Allocations\AllocationDeletionService;
 use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
 use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Http\Requests\Admin\Node\AllocationAliasFormRequest;
+use Pterodactyl\Services\Nodes\NodeCloneService;
+use Pterodactyl\Http\Requests\Admin\Node\NodeCloneRequest;
 
 class NodesController extends Controller
 {
@@ -45,6 +47,7 @@ class NodesController extends Controller
         protected NodeUpdateService $updateService,
         protected SoftwareVersionService $versionService,
         protected ViewFactory $view,
+        private NodeCloneService $cloneService,
     ) {
     }
 
@@ -179,5 +182,15 @@ class NodesController extends Controller
         $this->alert->success(trans('admin/node.notices.node_deleted'))->flash();
 
         return redirect()->route('admin.nodes');
+    }
+
+    /**
+     * Handle POST request to clone a node.
+     */
+    public function clone(NodeCloneRequest $request, Node $node): RedirectResponse
+    {
+        $this->cloneService->handle($node, $request->validated());
+
+        return redirect()->route('admin.nodes')->with('success', 'Node cloned successfully.');
     }
 }
