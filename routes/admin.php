@@ -157,6 +157,8 @@ Route::group(['prefix' => 'nodes'], function () {
     Route::get('/view/{node:id}/servers', [Admin\Nodes\NodeViewController::class, 'servers'])->name('admin.nodes.view.servers');
     Route::get('/view/{node:id}/system-information', Admin\Nodes\SystemInformationController::class);
 
+    Route::post('/nodes/{node}/clone', [NodesController::class, 'clone'])->name('admin.nodes.clone');
+    
     Route::post('/new', [Admin\NodesController::class, 'store']);
     Route::post('/view/{node:id}/allocation', [Admin\NodesController::class, 'createAllocation']);
     Route::post('/view/{node:id}/allocation/remove', [Admin\NodesController::class, 'allocationRemoveBlock'])->name('admin.nodes.view.allocation.removeBlock');
