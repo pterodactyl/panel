@@ -40,7 +40,16 @@ class ServerDetailsController extends Controller
         Assert::isInstanceOf($node = $request->attributes->get('node'), Node::class);
 
         $server = $this->repository->getByUuid($uuid);
-        if (! $server->node->is($node)) {
+        $transfer = $server->transfer;
+
+        // If the server is being transferred allow either node to request information about
+        // the server. If the server is not being transferred only the target node is allowed
+        // to fetch these details.
+        $valid = $transfer
+            ? $node->id === $transfer->old_node || $node->id === $transfer->new_node
+            : $node->id === $server->node_id;
+
+        if (! $valid) {
             throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
