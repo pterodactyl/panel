@@ -166,6 +166,8 @@ class ActivityLogService
      * and will only save the activity log entry if everything else successfully
      * settles.
      *
+     * @param \Closure($this): mixed $callback
+     *
      * @throws \Throwable
      */
     public function transaction(\Closure $callback)

@@ -17,6 +17,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Fixes node description not being settable via the API.
 * Fixes 0-bytes files returning an error when attempting to upload.
 * Fixes nodes displaying the first available location even when that field was not edited and the node has a different value set.
+* Fixes allocation notes not being reset when a server is deleted. ([#5157](https://github.com/pterodactyl/panel/pull/5157))
 
 ### Changed
 * Minimum NodeJS version updated to 22 for building.
