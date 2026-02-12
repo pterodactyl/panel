@@ -29,9 +29,6 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 * Administrators are now listed first when viewing a list of all users on the system.
 * Websocket no longer endlessly polls when connection issues are encountered, or when Wings disconnects the user for a reason that should not be re-attempted.
 
-### Added
-* Administrators can now view all of the application API keys that have been created. They cannot view the full key unless they are the owner.
-
 ## v1.11.10
 ### Fixed
 * Update Laravel to address [CVE-2024-52301](https://github.com/advisories/GHSA-gv7v-rgg6-548h)
