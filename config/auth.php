@@ -126,4 +126,23 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+    /*
+    |--------------------------------------------------------------------------
+    | HTTP Header Authentication
+    |--------------------------------------------------------------------------
+    |
+    | This configuration allows authentication via HTTP headers, which is useful
+    | when running behind an SSO proxy like Authelia, Authentik, or OIDC providers.
+    |
+    | The proxy will handle authentication and pass user credentials via HTTP headers.
+    |
+    */
+
+    'header' => [
+        'enabled' => env('AUTH_HEADER_ENABLED', false),
+        'username_header' => env('AUTH_HEADER_USERNAME_HEADER', 'X-Auth-Username'),
+        'email_header' => env('AUTH_HEADER_EMAIL_HEADER', 'X-Auth-Email'),
+        'auto_create_user' => env('AUTH_HEADER_AUTO_CREATE_USER', true),
+    ],
 ];
