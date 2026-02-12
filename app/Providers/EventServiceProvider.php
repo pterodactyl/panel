@@ -9,8 +9,8 @@ use Pterodactyl\Models\EggVariable;
 use Pterodactyl\Observers\UserObserver;
 use Pterodactyl\Observers\ServerObserver;
 use Pterodactyl\Observers\SubuserObserver;
-use Pterodactyl\Listeners\PasswordListener;
 use Pterodactyl\Listeners\TwoFactorListener;
+use Pterodactyl\Listeners\RevocationListener;
 use Pterodactyl\Observers\EggVariableObserver;
 use Pterodactyl\Listeners\AuthenticationListener;
 use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
@@ -28,7 +28,7 @@ class EventServiceProvider extends ServiceProvider
 
     protected $subscribe = [
         AuthenticationListener::class,
-        PasswordListener::class,
+        RevocationListener::class,
         TwoFactorListener::class,
     ];
 
