@@ -6,6 +6,14 @@ use Illuminate\Http\Request;
 
 class SetSecurityHeaders
 {
+    /**
+     * Ideally we move away from X-Frame-Options/X-XSS-Protection and implement a
+     * proper standard CSP, but I can guarantee that will break for a lot of folks
+     * using custom plugins and who knows what image embeds.
+     *
+     * We'll circle back to that at a later date when it can be more fully controlled
+     * by the admin to support those cases without too much trouble.
+     */
     private static array $headers = [
         'X-Frame-Options' => 'DENY',
         'X-Content-Type-Options' => 'nosniff',
