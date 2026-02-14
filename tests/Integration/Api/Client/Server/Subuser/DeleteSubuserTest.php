@@ -3,12 +3,12 @@
 namespace Pterodactyl\Tests\Integration\Api\Client\Server\Subuser;
 
 use Ramsey\Uuid\Uuid;
-use Mockery\MockInterface;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Permission;
+use Illuminate\Support\Facades\Bus;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use PHPUnit\Framework\Attributes\TestWith;
-use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteSubuserTest extends ClientApiIntegrationTestCase
@@ -28,6 +28,8 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
     #[TestWith(['18180000'])]
     public function testCorrectSubuserIsDeletedFromServer(?string $prefix)
     {
+        Bus::fake([RevokeSftpAccessJob::class]);
+
         [$user, $server] = $this->generateTestAccount();
 
         /** @var User $differentUser */
@@ -46,18 +48,12 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
             'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
 
-        $this->mock(DaemonRevocationRepository::class, function (MockInterface $mock) use ($subuser, $server) {
-            $mock->expects('setNode')
-                ->with(\Mockery::on(fn ($value) => $value->is($server->node)))
-                ->andReturnSelf();
-
-            $mock->expects('deauthorize')
-                ->with($subuser->uuid, [$server->uuid])
-                ->andReturnUndefined();
-        });
-
         $this->withoutExceptionHandling()
             ->actingAs($user)
             ->deleteJson($this->link($server) . "/users/$subuser->uuid")->assertNoContent();
+
+        Bus::assertDispatchedTimes(function (RevokeSftpAccessJob $job) use ($subuser, $server) {
+            return $job->user === $subuser->uuid && $job->target->is($server);
+        });
     }
 }
