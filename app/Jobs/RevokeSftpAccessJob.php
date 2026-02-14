@@ -3,6 +3,7 @@
 namespace Pterodactyl\Jobs;
 
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Contracts\Queue\ShouldBeUnique;
@@ -12,7 +13,7 @@ use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 /**
- * Revokes all SFTP access for a user on a given node.
+ * Revokes all SFTP access for a user on a given node or for a specific server.
  */
 #[DeleteWhenMissingModels]
 class RevokeSftpAccessJob implements ShouldQueue, ShouldBeUnique
@@ -26,19 +27,26 @@ class RevokeSftpAccessJob implements ShouldQueue, ShouldBeUnique
     public function __construct(
         public readonly string $user,
         #[WithoutRelations]
-        public readonly Node $node,
+        public readonly Server|Node $target,
     ) {
     }
 
     public function uniqueId(): string
     {
-        return "revoke-sftp:{$this->user}:{$this->node->uuid}";
+        $target = $this->target instanceof Node ? "node:{$this->target->uuid}" : "server:{$this->target->uuid}";
+
+        return "revoke-sftp:{$this->user}:{$target}";
     }
 
     public function handle(DaemonRevocationRepository $repository): void
     {
+        $node = $this->target instanceof Node ? $this->target : $this->target->node;
+
         try {
-            $repository->setNode($this->node)->deauthorize($this->user);
+            $repository->setNode($node)->deauthorize(
+                $this->user,
+                $this->target instanceof Server ? [$this->target->uuid] : []
+            );
         } catch (DaemonConnectionException) {
             // Keep retrying this job with a longer and longer backoff until we hit three
             // attempts at which point we stop and will assume the node is fully offline

@@ -4,11 +4,11 @@ namespace Pterodactyl\Services\Servers;
 
 use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\ReturnsUpdatedModels;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 
 class DetailsModificationService
 {
@@ -45,16 +45,7 @@ class DetailsModificationService
             // on the Wings instance so that the old owner no longer has any permission to access the
             // websockets.
             if (! $server->refresh()->user->is($original)) {
-                try {
-                    $this->revocationRepository->setNode($server->node)->deauthorize(
-                        $original->uuid,
-                        [$server->uuid],
-                    );
-                } catch (DaemonConnectionException $exception) {
-                    // Do nothing. A failure here is not ideal, but it is likely to be caused by Wings
-                    // being offline, or in an entirely broken state. Remember, these tokens reset every
-                    // few minutes by default, we're just trying to help it along a little quicker.
-                }
+                RevokeSftpAccessJob::dispatch($original->uuid, $server);
             }
 
             return $server;
