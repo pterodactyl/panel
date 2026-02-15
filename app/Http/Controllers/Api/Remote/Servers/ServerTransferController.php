@@ -15,6 +15,7 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Webmozart\Assert\Assert;
 
 class ServerTransferController extends Controller
 {
