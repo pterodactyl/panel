@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
+use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
@@ -54,7 +55,7 @@ class ServerTransferController extends Controller
      *
      * @throws \Throwable
      */
-    public function success(string $uuid): JsonResponse
+    public function success(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
@@ -62,9 +63,12 @@ class ServerTransferController extends Controller
             throw new ConflictHttpException('Server is not being transferred.');
         }
 
+        /** @var Node $node */
+        Assert::isInstanceOf($node = $request->attributes->get('node'), Node::class);
+
         // Only the new node communicates a successful state to the panel, so we should
         // not allow the old node to hit this endpoint.
-        if (! $server->node->is($transfer->newNode)) {
+        if (! $node->is($transfer->newNode)) {
             throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
