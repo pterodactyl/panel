@@ -7,6 +7,7 @@ use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
+use Pterodactyl\Models\Node;
 use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
