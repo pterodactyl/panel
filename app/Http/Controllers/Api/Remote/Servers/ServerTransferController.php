@@ -34,7 +34,7 @@ class ServerTransferController extends Controller
      *
      * @throws \Throwable
      */
-    public function failure(string $uuid): JsonResponse
+    public function failure(Request $reqest, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
@@ -42,9 +42,12 @@ class ServerTransferController extends Controller
             throw new ConflictHttpException('Server is not being transferred.');
         }
 
+        /** @var Node $node */
+        Assert::isInstanceOf($node = $request->attributes->get('node'), Node::class);
+
         // Either node can tell the panel that the transfer has failed. Only the new node
         // can tell the panel that it was successful.
-        if (! $server->node->is($transfer->newNode) && ! $server->node->is($transfer->oldNode)) {
+        if (! $node->is($transfer->newNode) && ! $node->is($transfer->oldNode)) {
             throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
