@@ -2,7 +2,9 @@
 
 namespace Pterodactyl\Models;
 
+use Pterodactyl\Contracts\Models\Identifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
@@ -47,10 +49,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property Egg|null $scriptFrom
  * @property Egg|null $configFrom
  */
-class Egg extends Model
+#[Attributes\Identifiable('eegg')]
+class Egg extends Model implements Identifiable
 {
     /** @use HasFactory<\Database\Factories\EggFactory> */
     use HasFactory;
+    use HasRealtimeIdentifier;
 
     /**
      * The resource name for this model when it is transformed into an

@@ -5,7 +5,10 @@ namespace Pterodactyl\Tests\Integration\Api\Client;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
+use Pterodactyl\Models\Subuser;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Hash;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
 
 class AccountControllerTest extends ClientApiIntegrationTestCase
 {
@@ -38,16 +41,16 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testEmailIsUpdated()
     {
-        /** @var User $user */
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
-            'email' => $email = Str::random() . '@example.com',
-            'password' => 'password',
-        ]);
+        $this->actingAs($user)
+            ->putJson('/api/client/account/email', [
+                'email' => $email = Str::random() . '@example.com',
+                'password' => 'password',
+            ])
+            ->assertNoContent();
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
-
+        $this->assertActivityFor('user:account.email-changed', $user, $user);
         $this->assertDatabaseHas('users', ['id' => $user->id, 'email' => $email]);
     }
 
@@ -103,16 +106,26 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testPasswordIsUpdated()
     {
-        /** @var User $user */
         $user = User::factory()->create();
+
+        // Assign the user to two servers, one as the owner the other as a subuser, both
+        // on different nodes to ensure our logic fires off correctly and the user has their
+        // credentials revoked on both nodes.
+        $server = $this->createServerModel(['owner_id' => $user->id]);
+        $server2 = $this->createServerModel();
+        Subuser::factory()->for($server2)->for($user)->create();
 
         $initialHash = $user->password;
 
-        $response = $this->actingAs($user)->putJson('/api/client/account/password', [
-            'current_password' => 'password',
-            'password' => 'New_Password1',
-            'password_confirmation' => 'New_Password1',
-        ]);
+        Bus::fake([RevokeSftpAccessJob::class]);
+
+        $this->actingAs($user)
+            ->putJson('/api/client/account/password', [
+                'current_password' => 'password',
+                'password' => 'New_Password1',
+                'password_confirmation' => 'New_Password1',
+            ])
+            ->assertNoContent();
 
         $user = $user->refresh();
 
@@ -120,7 +133,12 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->assertTrue(Hash::check('New_Password1', $user->password));
         $this->assertFalse(Hash::check('password', $user->password));
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $this->assertActivityFor('user:account.password-changed', $user, $user);
+        $this->assertNotEquals($server->node_id, $server2->node_id);
+
+        Bus::assertDispatchedTimes(RevokeSftpAccessJob::class, 2);
+        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
+        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
     }
 
     /**

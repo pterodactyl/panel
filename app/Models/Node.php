@@ -7,7 +7,9 @@ use Symfony\Component\Yaml\Yaml;
 use Illuminate\Container\Container;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Encryption\Encrypter;
+use Pterodactyl\Contracts\Models\Identifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
@@ -40,11 +42,13 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
  * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
  * @property \Pterodactyl\Models\Allocation[]|\Illuminate\Database\Eloquent\Collection $allocations
  */
-class Node extends Model
+#[Attributes\Identifiable('node')]
+class Node extends Model implements Identifiable
 {
     /** @use HasFactory<\Database\Factories\NodeFactory> */
     use HasFactory;
     use Notifiable;
+    use HasRealtimeIdentifier;
 
     /**
      * The resource name for this model when it is transformed into an
