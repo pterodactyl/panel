@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -18,12 +19,15 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $archived
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property Server $server
- * @property Node $oldNode
- * @property Node $newNode
+ * @property \Pterodactyl\Models\Server $server
+ * @property \Pterodactyl\Models\Node $oldNode
+ * @property \Pterodactyl\Models\Node $newNode
  */
 class ServerTransfer extends Model
 {
+    /** @use HasFactory<\Database\Factories\ServerTransferFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
