@@ -35,7 +35,7 @@ class ServerTransferController extends Controller
      *
      * @throws \Throwable
      */
-    public function failure(Request $reqest, string $uuid): JsonResponse
+    public function failure(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
