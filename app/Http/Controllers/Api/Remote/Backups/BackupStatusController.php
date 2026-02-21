@@ -45,7 +45,7 @@ class BackupStatusController extends Controller
         /** @var \Pterodactyl\Models\Server $server */
         $server = $model->server;
         if ($server->node_id !== $node->id) {
-            throw new HttpForbiddenException('You do not have permission to access that backup.');
+            throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
         if ($model->is_successful) {
@@ -94,6 +94,11 @@ class BackupStatusController extends Controller
     {
         /** @var Backup $model */
         $model = Backup::query()->where('uuid', $backup)->firstOrFail();
+
+        $node = $request->attributes->get('node');
+        if (! $model->server->node->is($node)) {
+            throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
+        }
 
         $model->server->update(['status' => null]);
 
