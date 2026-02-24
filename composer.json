@@ -30,7 +30,7 @@
         "laracasts/utilities": "~3.2.3",
         "laravel/framework": "^11.31.0",
         "laravel/helpers": "^1.8.0",
-        "laravel/sanctum": "^4.2.0",
+        "laravel/sanctum": "~4.2.4",
         "laravel/tinker": "^2.10.0",
         "laravel/ui": "~4.5.2",
         "lcobucci/jwt": "^5.6.0",
