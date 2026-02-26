@@ -52,15 +52,15 @@ class StartupController extends ClientApiController
      */
     public function update(UpdateStartupVariableRequest $request, Server $server): array
     {
-        /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
-        $original = $variable->server_value;
 
         if (is_null($variable) || !$variable->user_viewable) {
             throw new BadRequestHttpException('The environment variable you are trying to edit does not exist.');
         } elseif (!$variable->user_editable) {
             throw new BadRequestHttpException('The environment variable you are trying to edit is read-only.');
         }
+
+        $original = $variable->server_value;
 
         // Revalidate the variable value using the egg variable specific validation rules for it.
         $this->validate($request, ['value' => $variable->rules]);

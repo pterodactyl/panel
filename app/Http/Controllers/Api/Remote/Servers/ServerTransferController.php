@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -39,6 +40,12 @@ class ServerTransferController extends Controller
             throw new ConflictHttpException('Server is not being transferred.');
         }
 
+        // Either node can tell the panel that the transfer has failed. Only the new node
+        // can tell the panel that it was successful.
+        if (! $server->node->is($transfer->newNode) && ! $server->node->is($transfer->oldNode)) {
+            throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
+        }
+
         return $this->processFailedTransfer($transfer);
     }
 
@@ -53,6 +60,12 @@ class ServerTransferController extends Controller
         $transfer = $server->transfer;
         if (is_null($transfer)) {
             throw new ConflictHttpException('Server is not being transferred.');
+        }
+
+        // Only the new node communicates a successful state to the panel, so we should
+        // not allow the old node to hit this endpoint.
+        if (! $server->node->is($transfer->newNode)) {
+            throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
         /** @var \Pterodactyl\Models\Server $server */

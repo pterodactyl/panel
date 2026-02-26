@@ -30,6 +30,10 @@ export default () => {
     );
 
     useEffect(() => {
+        setPage(1);
+    }, [showOnlyAdmin]);
+
+    useEffect(() => {
         if (!servers) return;
         if (servers.pagination.currentPage > 1 && !servers.items.length) {
             setPage(1);

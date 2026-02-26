@@ -84,6 +84,9 @@ class EggVariable extends Model
         return in_array('required', explode('|', $this->rules));
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\Egg, $this>
+     */
     public function egg(): HasOne
     {
         return $this->hasOne(Egg::class);
@@ -91,6 +94,8 @@ class EggVariable extends Model
 
     /**
      * Return server variables associated with this variable.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\ServerVariable, $this>
      */
     public function serverVariable(): HasMany
     {

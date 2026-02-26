@@ -27,7 +27,7 @@ class ResourceBelongsToServer
     public function handle(Request $request, \Closure $next): mixed
     {
         $params = $request->route()->parameters();
-        if (is_null($params) || !$params['server'] instanceof Server) {
+        if (! isset($params['server']) || !$params['server'] instanceof Server) {
             throw new \InvalidArgumentException('This middleware cannot be used in a context that is missing a server in the parameters.');
         }
 
@@ -70,7 +70,7 @@ class ResourceBelongsToServer
                     // that requires something in addition to the server in order to be accessed.
                 case Task::class:
                     $schedule = $request->route()->parameter('schedule');
-                    if ($model->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
+                    if (!$schedule instanceof Schedule || $model->schedule_id !== $schedule->id || $schedule->server_id !== $server->id) {
                         throw $exception;
                     }
                     break;

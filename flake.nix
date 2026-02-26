@@ -49,6 +49,7 @@
             composer
             nodejs_18
             nodePackages.pnpm
+            nodePackages.yarn
             phpWithExtensions
           ];
 

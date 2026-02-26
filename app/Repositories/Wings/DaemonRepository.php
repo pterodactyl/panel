@@ -8,10 +8,6 @@ use Webmozart\Assert\Assert;
 use Pterodactyl\Models\Server;
 use Illuminate\Contracts\Foundation\Application;
 
-/**
- * @method \Pterodactyl\Repositories\Wings\DaemonRepository setNode(\Pterodactyl\Models\Node $node)
- * @method \Pterodactyl\Repositories\Wings\DaemonRepository setServer(\Pterodactyl\Models\Server $server)
- */
 abstract class DaemonRepository
 {
     protected ?Server $server;

@@ -25,7 +25,7 @@ Stop settling for less. Make game servers a first class citizen on your platform
 ## Sponsors
 
 I would like to extend my sincere thanks to the following sponsors for helping fund Pterodactyl's development.
-[Interested in becoming a sponsor?](https://github.com/sponsors/matthewpi)
+[Interested in becoming a sponsor?](https://github.com/sponsors/pterodactyl)
 
 | Company                                                                           | About                                                                                                                                                                                                                                           |
 |-----------------------------------------------------------------------------------|-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|
@@ -63,7 +63,7 @@ and there are plenty more games available provided by the community. Some of the
 * Xonotic
 * Starmade
 * Discord ATLBot, and most other Node.js/Python discord bots
-* [and many more...](https://github.com/parkervcp/eggs)
+* [and many more...](https://pterodactyleggs.com)
 
 ## License
 

@@ -39,11 +39,17 @@ class AuditLog extends Model
         'created_at',
     ];
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     */
     public function server(): BelongsTo
     {
         return $this->belongsTo(Server::class);
@@ -58,9 +64,8 @@ class AuditLog extends Model
      */
     public static function instance(string $action, array $metadata, bool $isSystem = false): self
     {
-        /** @var Request $request */
         $request = Container::getInstance()->make('request');
-        if ($isSystem || !$request instanceof Request) {
+        if ($isSystem || !$request instanceof Request) { // @phpstan-ignore instanceof.alwaysTrue
             $request = null;
         }
 

@@ -66,7 +66,7 @@ class ServerTransferController extends Controller
             $transfer->new_node = $node_id;
             $transfer->old_allocation = $server->allocation_id;
             $transfer->new_allocation = $allocation_id;
-            $transfer->old_additional_allocations = $server->allocations->where('id', '!=', $server->allocation_id)->pluck('id');
+            $transfer->old_additional_allocations = $server->allocations->where('id', '!=', $server->allocation_id)->pluck('id')->values()->toArray();
             $transfer->new_additional_allocations = $additional_allocations;
 
             $transfer->save();

@@ -25,6 +25,7 @@ class UserTransformer extends BaseClientTransformer
             // used in AccountTransformer. Do we want to keep this?
             'id' => $model->id,
             'uuid' => $model->uuid,
+            'identifier' => $model->identifier,
             'username' => $model->username,
             'email' => $model->email,
             'image' => 'https://gravatar.com/avatar/' . md5(Str::lower($model->email)),
