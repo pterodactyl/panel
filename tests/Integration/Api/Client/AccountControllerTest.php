@@ -27,6 +27,7 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
             'attributes' => [
                 'id' => $user->id,
                 'uuid' => $user->uuid,
+                'identifier' => $user->identifier,
                 // TODO: pick one or keep both
                 'admin' => false,
                 'root_admin' => false,

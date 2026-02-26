@@ -30,14 +30,14 @@ class UserTransformer extends BaseClientTransformer
             'email' => $model->email,
             'image' => 'https://gravatar.com/avatar/' . md5(Str::lower($model->email)),
             // which do we prefer?
-            'admin' => (bool) $user->root_admin,
-            'root_admin' => (bool) $user->root_admin,
-            '2fa_enabled' => $model->use_totp,
+            'admin' => (bool) $model->root_admin,
+            'root_admin' => (bool) $model->root_admin,
+            '2fa_enabled' => (bool) $model->use_totp,
             'first_name' => $model->name_first,
             'last_name' => $model->name_last,
             'language' => $model->language,
-            'created_at' => $this->formatTimestamp($user->created_at),
-            'updated_at' => $this->formatTimestamp($user->updated_at),
+            'created_at' => $this->formatTimestamp($model->created_at),
+            'updated_at' => $this->formatTimestamp($model->updated_at),
         ];
     }
 }
