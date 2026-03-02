@@ -143,6 +143,21 @@ Route::group([
         Route::put('/variable', [Client\Servers\StartupController::class, 'update']);
     });
 
+
+    Route::group(['prefix' => '/worlds', 'middleware' => ['throttle:30,1']], function () {
+        Route::get('/search', [Client\Servers\WorldManagerController::class, 'search']);
+        Route::get('/projects/{projectId}/versions', [Client\Servers\WorldManagerController::class, 'versions']);
+        Route::post('/install', [Client\Servers\WorldManagerController::class, 'install']);
+
+        Route::get('/installed', [Client\Servers\WorldManagerController::class, 'installed']);
+        Route::get('/logs', [Client\Servers\WorldManagerController::class, 'logs']);
+
+        Route::post('/installed/{world}/rename', [Client\Servers\WorldManagerController::class, 'rename']);
+        Route::post('/installed/{world}/activate', [Client\Servers\WorldManagerController::class, 'activate']);
+        Route::post('/installed/{world}/backup', [Client\Servers\WorldManagerController::class, 'backup']);
+        Route::delete('/installed/{world}', [Client\Servers\WorldManagerController::class, 'delete']);
+    });
+
     Route::group(['prefix' => '/settings'], function () {
         Route::post('/rename', [Client\Servers\SettingsController::class, 'rename']);
         Route::post('/reinstall', [Client\Servers\SettingsController::class, 'reinstall']);
