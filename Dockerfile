@@ -26,14 +26,6 @@ RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar un
     && mkdir -p /app/storage/logs/ \
     && chown -R nginx:nginx .
 
-RUN rm -f /usr/bin/mysql \
-    && cat <<'EOF' > /usr/bin/mysql
-#!/bin/sh
-exec mariadb --ssl="${DB_SSLMODE}" "$@"
-EOF
-
-RUN chmod +x /usr/bin/mysql
-
 RUN rm /usr/local/etc/php-fpm.conf \
     && echo "* * * * * /usr/local/bin/php /app/artisan schedule:run >> /dev/null 2>&1" >> /var/spool/cron/crontabs/root \
     && echo "0 23 * * * certbot renew --nginx --quiet" >> /var/spool/cron/crontabs/root \
