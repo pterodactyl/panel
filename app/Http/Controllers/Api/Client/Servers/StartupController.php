@@ -77,13 +77,13 @@ class StartupController extends ClientApiController
 
         $startup = $this->startupCommandService->handle($server);
 
-        if ($variable->env_variable !== $request->input('value')) {
+        if ($original !== $request->input('value')) {
             Activity::event('server:startup.edit')
                 ->subject($variable)
                 ->property([
                     'variable' => $variable->env_variable,
                     'old' => $original,
-                    'new' => $request->input('value'),
+                    'new' => $request->input('value') ?? '',
                 ])
                 ->log();
         }

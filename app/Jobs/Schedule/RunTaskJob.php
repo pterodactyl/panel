@@ -4,8 +4,10 @@ namespace Pterodactyl\Jobs\Schedule;
 
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\Task;
-use Illuminate\Foundation\Queue\Queueable;
+use Illuminate\Bus\Queueable;
+use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Foundation\Bus\DispatchesJobs;
 use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
@@ -14,6 +16,8 @@ use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 class RunTaskJob implements ShouldQueue
 {
     use Queueable;
+    use DispatchesJobs;
+    use SerializesModels;
 
     /**
      * RunTaskJob constructor.
