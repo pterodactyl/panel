@@ -74,15 +74,21 @@ class BackupController extends ClientApiController
         // how best to allow a user to create a backup that is locked without also preventing
         // them from just filling up a server with backups that can never be deleted?
         if ($request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            $action->setIsLocked((bool) $request->input('is_locked'));
+            $action->setIsLocked($request->boolean('is_locked'));
         }
 
-        $backup = $action->handle($server, $request->input('name'));
+        $backup = Activity::event('server:backup.start')->transaction(function ($log) use ($action, $server, $request) {
+            $server->backups()->lockForUpdate();
 
-        Activity::event('server:backup.start')
-            ->subject($backup)
-            ->property(['name' => $backup->name, 'locked' => (bool) $request->input('is_locked')])
-            ->log();
+            $backup = $action->handle($server, $request->input('name'));
+
+            $log->subject($backup)->property([
+                'name' => $backup->name,
+                'locked' => $request->boolean('is_locked'),
+            ]);
+
+            return $backup;
+        });
 
         return $this->fractal->item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))

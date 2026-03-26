@@ -47,6 +47,7 @@ return (new Config())
                 'var',
             ],
         ],
+        'phpdoc_no_alias_tag' => false,
         // 'random_api_migration' => true,
         'ternary_to_null_coalescing' => true,
         'yoda_style' => [

@@ -8,6 +8,7 @@ use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Contracts\Events\Dispatcher;
+use Pterodactyl\Events\User\PasswordChanged;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\ResetsPasswords;
@@ -81,6 +82,7 @@ class ResetPasswordController extends Controller
         ]);
 
         $this->dispatcher->dispatch(new PasswordReset($user));
+        PasswordChanged::dispatch($user);
 
         // If the user is not using 2FA log them in, otherwise skip this step and force a
         // fresh login where they'll be prompted to enter a token.

@@ -24,7 +24,7 @@
         "ext-pdo_mysql": "*",
         "ext-posix": "*",
         "ext-zip": "*",
-        "aws/aws-sdk-php": "^3.366.2",
+        "aws/aws-sdk-php": "^3.369",
         "guzzlehttp/guzzle": "^7.9.2",
         "hashids/hashids": "^5.0.2",
         "laracasts/utilities": "~3.2.3",
@@ -62,7 +62,7 @@
         "nunomaduro/collision": "^8.5",
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-webmozart-assert": "^2.0",
-        "phpunit/phpunit": "^10.5",
+        "phpunit/phpunit": "^10.5.62",
         "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {

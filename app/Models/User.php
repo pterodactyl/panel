@@ -9,11 +9,13 @@ use Illuminate\Validation\Rules\In;
 use Illuminate\Auth\Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasAccessTokens;
 use Illuminate\Auth\Passwords\CanResetPassword;
 use Pterodactyl\Traits\Helpers\AvailableLanguages;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\Access\Authorizable;
+use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -79,10 +81,12 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  *
  * @mixin \Eloquent
  */
+#[Attributes\Identifiable('user')]
 class User extends Model implements
     AuthenticatableContract,
     AuthorizableContract,
-    CanResetPasswordContract
+    CanResetPasswordContract,
+    Identifiable
 {
     use Authenticatable;
     use Authorizable;
@@ -93,6 +97,7 @@ class User extends Model implements
     use Notifiable;
     /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\UserFactory> */
     use HasFactory;
+    use HasRealtimeIdentifier;
 
     public const USER_LEVEL_USER = 0;
     public const USER_LEVEL_ADMIN = 1;
@@ -193,7 +198,9 @@ class User extends Model implements
      */
     public function toVueObject(): array
     {
-        return Collection::make($this->toArray())->except(['id', 'external_id'])->toArray();
+        return Collection::make($this->toArray())->except(['id', 'external_id'])
+            ->merge(['identifier' => $this->identifier])
+            ->toArray();
     }
 
     /**
