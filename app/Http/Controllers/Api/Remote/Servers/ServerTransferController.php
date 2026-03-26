@@ -3,11 +3,12 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
 use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
+use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
 use Illuminate\Support\Facades\Log;
-use Pterodactyl\Models\Node;
 use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
@@ -16,7 +17,6 @@ use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
-use Webmozart\Assert\Assert;
 
 class ServerTransferController extends Controller
 {
@@ -43,7 +43,7 @@ class ServerTransferController extends Controller
             throw new ConflictHttpException('Server is not being transferred.');
         }
 
-        /** @var Node $node */
+        /* @var Node $node */
         Assert::isInstanceOf($node = $request->attributes->get('node'), Node::class);
 
         // Either node can tell the panel that the transfer has failed. Only the new node
@@ -68,7 +68,7 @@ class ServerTransferController extends Controller
             throw new ConflictHttpException('Server is not being transferred.');
         }
 
-        /** @var Node $node */
+        /* @var Node $node */
         Assert::isInstanceOf($node = $request->attributes->get('node'), Node::class);
 
         // Only the new node communicates a successful state to the panel, so we should

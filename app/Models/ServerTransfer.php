@@ -2,9 +2,9 @@
 
 namespace Pterodactyl\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -19,9 +19,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property bool $archived
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Server $server
- * @property \Pterodactyl\Models\Node $oldNode
- * @property \Pterodactyl\Models\Node $newNode
+ * @property Server $server
+ * @property Node $oldNode
+ * @property Node $newNode
  */
 class ServerTransfer extends Model
 {

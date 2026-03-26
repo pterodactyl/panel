@@ -2,7 +2,6 @@
 
 namespace Pterodactyl\Tests\Traits\Integration;
 
-use Pterodactyl\Models\ServerTransfer;
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\Egg;
 use Pterodactyl\Models\Node;
@@ -73,65 +72,6 @@ trait CreatesTestModels
 
         return $server->fresh([
             'location', 'user', 'node', 'allocation', 'nest', 'egg',
-        ]);
-    }
-
-    public function createNodeModel(array $attributes = []): Node
-    {
-        if (!isset($attributes['location_id'])) {
-            /** @var Location $location */
-            $location = Location::factory()->create();
-            $attributes['location_id'] = $location->id;
-        }
-
-        /** @var Node $node */
-        $node = Node::factory()->create(['location_id' => $attributes['location_id']]);
-
-        return $node->fresh(['location']);
-    }
-
-    public function createServerTransferModel(array $attributes = [], array $serverAttributes = []): ServerTransfer
-    {
-        if (!isset($attributes['server_id'])) {
-            $server = $this->createServerModel($serverAttributes);
-            $attributes['server_id'] = $server->id;
-            $attributes['old_node'] = $server->node_id;
-        } else {
-            $server = Server::query()->with(['location', 'node', 'allocation'])
-                ->findOrFail($attributes['server_id']);
-        }
-
-        if (!isset($attributes['old_node'])) {
-            $attributes['old_node'] = $server->node_id;
-        }
-
-        if (!isset($attributes['new_node'])) {
-            if (!isset($attributes['location_id'])) {
-                /** @var Location $location */
-                $location = Location::factory()->create();
-                $attributes['location_id'] = $location->id;
-            }
-
-            /** @var Node $newNode */
-            $newNode = Node::factory()->create(['location_id' => $attributes['location_id']]);
-            $attributes['new_node'] = $newNode->id;
-        }
-
-        if (!isset($attributes['old_allocation'])) {
-            $attributes['old_allocation'] = $server->allocation_id;
-        }
-
-        if (!isset($attributes['new_allocation'])) {
-            /** @var Allocation $allocation */
-            $allocation = Allocation::factory()->create(['node_id' => $attributes['new_node']]);
-            $attributes['new_allocation'] = $allocation->id;
-        }
-
-        /** @var ServerTransfer $transfer */
-        $transfer = ServerTransfer::factory()->create(array_except($attributes, ['server', 'location_id']));
-
-        return $transfer->fresh([
-            'server', 'oldNode', 'newNode'
         ]);
     }
 
