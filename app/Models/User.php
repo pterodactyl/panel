@@ -194,9 +194,9 @@ class User extends Model implements
     }
 
     /**
-     * Return the user model in a format that can be passed over to Vue templates.
+     * Return the user model in a format that can be passed over to the React SPA.
      */
-    public function toVueObject(): array
+    public function toReactObject(): array
     {
         return Collection::make($this->toArray())->except(['id', 'external_id'])
             ->merge(['identifier' => $this->identifier])
