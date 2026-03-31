@@ -26,12 +26,20 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
             'object' => 'user',
             'attributes' => [
                 'id' => $user->id,
+                'uuid' => $user->uuid,
+                'identifier' => $user->identifier,
+                // TODO: pick one or keep both
                 'admin' => false,
+                'root_admin' => false,
+                '2fa_enabled' => false,
                 'username' => $user->username,
                 'email' => $user->email,
                 'first_name' => $user->name_first,
                 'last_name' => $user->name_last,
-                'language' => $user->language,
+                'language' => 'en',
+                'image' => 'https://gravatar.com/avatar/' . md5(Str::lower($user->email)),
+                'created_at' => $this->formatTimestamp($user->created_at),
+                'updated_at' => $this->formatTimestamp($user->updated_at),
             ],
         ]);
     }

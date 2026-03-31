@@ -24,8 +24,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
         $response->assertJsonStructure([
             'object',
             'data' => [
-                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa', 'created_at', 'updated_at']],
-                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa', 'created_at', 'updated_at']],
+                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa_enabled', '2fa', 'created_at', 'updated_at']],
+                ['object', 'attributes' => ['id', 'external_id', 'uuid', 'username', 'email', 'first_name', 'last_name', 'language', 'root_admin', '2fa_enabled', '2fa', 'created_at', 'updated_at']],
             ],
             'meta' => ['pagination' => ['total', 'count', 'per_page', 'current_page', 'total_pages']],
         ]);
@@ -56,7 +56,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'last_name' => $this->getApiUser()->name_last,
                     'language' => $this->getApiUser()->language,
                     'root_admin' => $this->getApiUser()->root_admin,
-                    '2fa' => (bool) $this->getApiUser()->totp_enabled,
+                    '2fa_enabled' => (bool) $this->getApiUser()->use_totp,
+                    '2fa' => (bool) $this->getApiUser()->use_totp,
                     'created_at' => $this->formatTimestamp($this->getApiUser()->created_at),
                     'updated_at' => $this->formatTimestamp($this->getApiUser()->updated_at),
                 ],
@@ -73,7 +74,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                     'last_name' => $user->name_last,
                     'language' => $user->language,
                     'root_admin' => (bool) $user->root_admin,
-                    '2fa' => (bool) $user->totp_enabled,
+                    '2fa_enabled' => (bool) $user->use_totp,
+                    '2fa' => (bool) $user->use_totp,
                     'created_at' => $this->formatTimestamp($user->created_at),
                     'updated_at' => $this->formatTimestamp($user->updated_at),
                 ],
