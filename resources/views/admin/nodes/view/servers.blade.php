@@ -32,7 +32,7 @@
     <div class="col-sm-12">
         <div class="box box-primary">
             <div class="box-header with-border">
-                <h3 class="box-title">Process Manager</h3>
+                <h3 class="box-title">Server List</h3>
             </div>
             <div class="box-body table-responsive no-padding">
                 <table class="table table-hover">

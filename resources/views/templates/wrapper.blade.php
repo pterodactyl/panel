@@ -35,7 +35,7 @@
             @import url('/assets/fonts/Rubik.css');
             @import url('/assets/fonts/IBMPlexMono+IBMPlexSans.css');
         </style>
-
+        
         @yield('assets')
 
         @include('layouts.scripts')

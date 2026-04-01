@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2015",
     "module": "es2020",
-    "jsx": "react",
+    "jsx": "react-jsx",
     "moduleResolution": "node",
     "lib": [
       "es2015",

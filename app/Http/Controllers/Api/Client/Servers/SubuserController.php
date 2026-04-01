@@ -7,13 +7,12 @@ use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
 use Pterodactyl\Models\Permission;
-use Illuminate\Support\Facades\Log;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Repositories\Eloquent\SubuserRepository;
 use Pterodactyl\Services\Subusers\SubuserCreationService;
 use Pterodactyl\Transformers\Api\Client\SubuserTransformer;
 use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\GetSubuserRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\StoreSubuserRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Subusers\DeleteSubuserRequest;
@@ -109,23 +108,12 @@ class SubuserController extends ClientApiController
         // Only update the database and hit up the Wings instance to invalidate JTI's if the permissions
         // have actually changed for the user.
         if ($permissions !== $current) {
-            $log->transaction(function ($instance) use ($request, $subuser, $server) {
+            $log->transaction(function () use ($request, $subuser, $server) {
                 $this->repository->update($subuser->id, [
                     'permissions' => $this->getDefaultPermissions($request),
                 ]);
 
-                try {
-                    $this->revocationRepository->setNode($server->node)->deauthorize(
-                        $subuser->user->uuid,
-                        [$server->uuid],
-                    );
-                } catch (DaemonConnectionException $exception) {
-                    // Don't block this request if we can't connect to the Wings instance. Chances are it is
-                    // offline and the token will be invalid once Wings boots back.
-                    Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
-
-                    $instance->property('revoked', false);
-                }
+                RevokeSftpAccessJob::dispatch($subuser->user->uuid, $server);
             });
         }
 
@@ -149,20 +137,10 @@ class SubuserController extends ClientApiController
             ->property('email', $subuser->user->email)
             ->property('revoked', true);
 
-        $log->transaction(function ($instance) use ($server, $subuser) {
+        $log->transaction(function () use ($server, $subuser) {
             $subuser->delete();
 
-            try {
-                $this->revocationRepository->setNode($server->node)->deauthorize(
-                    $subuser->user->uuid,
-                    [$server->uuid],
-                );
-            } catch (DaemonConnectionException $exception) {
-                // Don't block this request if we can't connect to the Wings instance.
-                Log::warning($exception, ['user_id' => $subuser->user_id, 'server_id' => $server->id]);
-
-                $instance->property('revoked', false);
-            }
+            RevokeSftpAccessJob::dispatch($subuser->user->uuid, $server);
         });
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
