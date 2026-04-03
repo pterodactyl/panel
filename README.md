@@ -13,7 +13,7 @@ UI to end users.
 
 Stop settling for less. Make game servers a first class citizen on your platform.
 
-![Image](https://cdn.pterodactyl.io/site-assets/pterodactyl_v1_demo.gif)
+![Image](https://github.com/itzzjustmateo/panel/blob/1.0-develop/preview.png)
 
 ## Documentation
 
