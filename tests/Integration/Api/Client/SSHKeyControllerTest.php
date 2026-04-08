@@ -8,6 +8,10 @@ use Pterodactyl\Models\UserSSHKey;
 
 class SSHKeyControllerTest extends ClientApiIntegrationTestCase
 {
+    private const ED25519_SK_PUBLIC_KEY = 'sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIJMm0fXS9aEgPF3rZ528wuD27ZzBgrKprvffaN5ECseMAAAABHNzaDo=';
+
+    private const ECDSA_SK_PUBLIC_KEY = 'sk-ecdsa-sha2-nistp256@openssh.com AAAAInNrLWVjZHNhLXNoYTItbmlzdHAyNTZAb3BlbnNzaC5jb20AAAAIbmlzdHAyNTYAAABBBNjJTvrOinVU5vgN8pZidHlvRM4LfPDwPM5sB8dYHmjrGWz605iISV5e8gSLTQNraIIrjuFptlM6EvJ4FfYC+7kAAAAEc3NoOg==';
+
     /**
      * Test that only the SSH keys for the authenticated user are returned.
      */
@@ -125,6 +129,38 @@ class SSHKeyControllerTest extends ClientApiIntegrationTestCase
 
         $this->assertCount(1, $user->sshKeys);
         $this->assertEquals($key->public_key, $user->sshKeys[0]->public_key);
+    }
+
+    public function testEd25519SecurityKeyCanBeStored()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->postJson('/api/client/account/ssh-keys', [
+            'name' => 'Name',
+            'public_key' => self::ED25519_SK_PUBLIC_KEY,
+        ])
+            ->assertOk()
+            ->assertJsonPath('object', UserSSHKey::RESOURCE_NAME)
+            ->assertJsonPath('attributes.public_key', self::ED25519_SK_PUBLIC_KEY);
+
+        $this->assertCount(1, $user->sshKeys);
+        $this->assertEquals(self::ED25519_SK_PUBLIC_KEY, $user->sshKeys[0]->public_key);
+    }
+
+    public function testEcdsaSecurityKeyCanBeStored()
+    {
+        $user = User::factory()->create();
+
+        $this->actingAs($user)->postJson('/api/client/account/ssh-keys', [
+            'name' => 'Name',
+            'public_key' => self::ECDSA_SK_PUBLIC_KEY,
+        ])
+            ->assertOk()
+            ->assertJsonPath('object', UserSSHKey::RESOURCE_NAME)
+            ->assertJsonPath('attributes.public_key', self::ECDSA_SK_PUBLIC_KEY);
+
+        $this->assertCount(1, $user->sshKeys);
+        $this->assertEquals(self::ECDSA_SK_PUBLIC_KEY, $user->sshKeys[0]->public_key);
     }
 
     public function testPublicKeyThatAlreadyExistsCannotBeAddedASecondTime()

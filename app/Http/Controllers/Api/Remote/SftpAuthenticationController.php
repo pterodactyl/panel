@@ -3,6 +3,7 @@
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
 use Illuminate\Http\Request;
+use phpseclib3\Common\Functions\Strings;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
@@ -21,6 +22,11 @@ use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
+
+    private const SK_PUBLIC_KEY_TYPES = [
+        'sk-ssh-ed25519@openssh.com' => true,
+        'sk-ecdsa-sha2-nistp256@openssh.com' => true,
+    ];
 
     public function __construct(protected GetUserPermissionsService $permissions)
     {
@@ -54,14 +60,22 @@ class SftpAuthenticationController extends Controller
                 $this->reject($request);
             }
         } else {
-            $key = null;
+            $fingerprint = null;
+
             try {
-                $key = PublicKeyLoader::loadPublicKey(trim($request->input('password')));
+                $password = trim((string) $request->input('password'));
+
+                if ($this->isSecurityKey($password)) {
+                    $fingerprint = $this->getSecurityKeyFingerprint($password);
+                } else {
+                    $key = PublicKeyLoader::loadPublicKey($password);
+                    $fingerprint = $key->getFingerprint('sha256');
+                }
             } catch (NoKeyLoadedException) {
                 // do nothing
             }
 
-            if (!$key || !$user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {
+            if (!$fingerprint || !$user->sshKeys()->where('fingerprint', $fingerprint)->exists()) {
                 // We don't log here because of the way the SFTP system works. This endpoint
                 // will get hit for every key the user provides, which could be 4 or 5. That is
                 // a lot of unnecessary log noise.
@@ -161,5 +175,38 @@ class SftpAuthenticationController extends Controller
         $username = explode('.', strrev($request->input('username', '')));
 
         return strtolower(strrev($username[0] ?? '') . '|' . $request->ip()); // @phpstan-ignore nullCoalesce.offset
+    }
+
+    private function isSecurityKey(string $publicKey): bool
+    {
+        $type = strtok($publicKey, " \t\n\r\0\x0B");
+
+        return is_string($type) && isset(self::SK_PUBLIC_KEY_TYPES[$type]);
+    }
+
+    private function getSecurityKeyFingerprint(string $publicKey): string
+    {
+        $parts = preg_split('/\s+/', $publicKey, 3);
+
+        if ($parts === false || count($parts) < 2 || !isset(self::SK_PUBLIC_KEY_TYPES[$parts[0]])) {
+            throw new NoKeyLoadedException('Unable to read key');
+        }
+
+        $decoded = base64_decode($parts[1], true);
+        if ($decoded === false) {
+            throw new NoKeyLoadedException('Unable to read key');
+        }
+
+        try {
+            [$blobType] = Strings::unpackSSH2('s', $decoded);
+        } catch (\Throwable $exception) {
+            throw new NoKeyLoadedException('Unable to read key');
+        }
+
+        if ($blobType !== $parts[0]) {
+            throw new NoKeyLoadedException('Unable to read key');
+        }
+
+        return rtrim(base64_encode(hash('sha256', $decoded, true)), '=');
     }
 }
