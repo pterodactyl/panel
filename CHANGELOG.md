@@ -3,6 +3,14 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.12.2
+### Fixed
+* Fixes task execution jobs to correctly dispatch the next job in the chain.
+* Fixes dropdown menu not appearing correctly inside modal when transferring a server.
+* Fixes startup variables logging as changed in the activity log even when no change was actually made.
+* Fixes multiple issues with the docker image.
+* Fixes server transfers getting stuck due to incorrect permission checks in the API.
+
 ## v1.12.1
 ### Fixed
 * [CVE-2026-26016](https://github.com/pterodactyl/panel/security/advisories/GHSA-g7vw-f8p5-c728)

@@ -54,6 +54,28 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->assertDatabaseHas('users', ['id' => $user->id, 'email' => $email]);
     }
 
+    public function testEmailChangeIsThrottled(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $endpoint = route('api:client.account.update-email');
+
+        for ($i = 0; $i < 3; ++$i) {
+            $this->actingAs($users[0])
+                ->putJson($endpoint, ['email' => "foo+{$i}@example.com", 'password' => 'password'])
+                ->assertNoContent();
+        }
+
+        $this
+            ->putJson($endpoint, ['email' => 'bar@example.com', 'password' => 'password'])
+            ->assertTooManyRequests();
+
+        // The other user should still be able to update their email because the throttle
+        // is tied to the account, not to the IP address.
+        $this->actingAs($users[1])
+            ->putJson($endpoint, ['email' => 'bar+1@example.com', 'password' => 'password'])
+            ->assertNoContent();
+    }
+
     /**
      * Tests that an email is not updated if the password provided in the request is not
      * valid for the account.
