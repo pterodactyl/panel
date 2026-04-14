@@ -72,7 +72,7 @@ export default () => {
                     {({ items }) =>
                         items.length > 0 ? (
                             items.map((server, index) => (
-                                <ServerRow key={server.uuid} server={server} css={index > 0 ? 'mt-2' : undefined} />
+                                <ServerRow key={server.uuid} server={server} className={index > 0 ? 'mt-2' : undefined} />
                             ))
                         ) : (
                             <p className="text-center text-sm text-neutral-400">

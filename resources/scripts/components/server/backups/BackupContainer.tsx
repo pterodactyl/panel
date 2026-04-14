@@ -48,7 +48,7 @@ const BackupContainer = () => {
                         )
                     ) : (
                         items.map((backup, index) => (
-                            <BackupRow key={backup.uuid} backup={backup} css={index > 0 ? 'mt-2' : undefined} />
+                            <BackupRow key={backup.uuid} backup={backup} className={index > 0 ? 'mt-2' : undefined} />
                         ))
                     )
                 }

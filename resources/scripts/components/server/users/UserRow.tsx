@@ -31,7 +31,7 @@ export default ({ subuser }: Props) => {
                     <FontAwesomeIcon
                         icon={subuser.twoFactorEnabled ? faUserLock : faUnlockAlt}
                         fixedWidth
-                        css={!subuser.twoFactorEnabled ? 'text-red-400' : undefined}
+                        className={!subuser.twoFactorEnabled ? 'text-red-400' : undefined}
                     />
                     &nbsp;
                 </p>

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import ContentContainer from '@/components/elements/ContentContainer';
 import { CSSTransition } from 'react-transition-group';
+import FlashMessageRender from '@/components/FlashMessageRender';
 import classNames from 'classnames';
 
 export interface PageContentBlockProps {

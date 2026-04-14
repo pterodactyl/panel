@@ -1,5 +1,6 @@
 import React, { CSSProperties } from 'react';
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
+import classNames from 'classnames';
 
 interface Props {
     icon: IconDefinition;
@@ -14,8 +15,7 @@ const Icon = ({ icon, className, style }: Props) => {
         <svg
             xmlns={'http://www.w3.org/2000/svg'}
             viewBox={`0 0 ${width} ${height}`}
-            className="fill-current inline-block"
-            className={className}
+            className={classNames('fill-current inline-block', className)}
             style={style}
         >
             {(Array.isArray(paths) ? paths : [paths]).map((path, index) => (
