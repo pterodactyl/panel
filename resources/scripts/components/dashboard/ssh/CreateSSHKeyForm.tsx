@@ -3,7 +3,6 @@ import { Field, Form, Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input, { Textarea } from '@/components/elements/Input';
 import styled from 'styled-components/macro';
@@ -16,7 +15,7 @@ interface Values {
 }
 
 const CustomTextarea = styled(Textarea)`
-    ${tw`h-32`}
+    height: 8rem;
 `;
 
 export default () => {
@@ -48,7 +47,7 @@ export default () => {
                 {({ isSubmitting }) => (
                     <Form>
                         <SpinnerOverlay visible={isSubmitting} />
-                        <FormikFieldWrapper label={'SSH Key Name'} name={'name'} css={tw`mb-6`}>
+                        <FormikFieldWrapper label={'SSH Key Name'} name={'name'} className={'mb-6'}>
                             <Field name={'name'} as={Input} />
                         </FormikFieldWrapper>
                         <FormikFieldWrapper
@@ -58,7 +57,7 @@ export default () => {
                         >
                             <Field name={'publicKey'} as={CustomTextarea} />
                         </FormikFieldWrapper>
-                        <div css={tw`flex justify-end mt-6`}>
+                        <div className={'flex justify-end mt-6'}>
                             <Button>Save</Button>
                         </div>
                     </Form>

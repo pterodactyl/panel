@@ -1,5 +1,4 @@
 import React from 'react';
-import tw from 'twin.macro';
 import styled from 'styled-components/macro';
 import CSSTransition, { CSSTransitionProps } from 'react-transition-group/CSSTransition';
 
@@ -16,20 +15,24 @@ const Container = styled.div<{ timeout: number }>`
 
     .fade-enter,
     .fade-appear {
-        ${tw`opacity-0`};
+        opacity: 0;
 
         &.fade-enter-active,
         &.fade-appear-active {
-            ${tw`opacity-100 transition-opacity ease-in`};
+            opacity: 1;
+            transition-property: opacity;
+            transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
             transition-duration: ${(props) => props.timeout}ms;
         }
     }
 
     .fade-exit {
-        ${tw`opacity-100`};
+        opacity: 1;
 
         &.fade-exit-active {
-            ${tw`opacity-0 transition-opacity ease-in`};
+            opacity: 0;
+            transition-property: opacity;
+            transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
             transition-duration: ${(props) => props.timeout}ms;
         }
     }

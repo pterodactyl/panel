@@ -1,15 +1,17 @@
 import React from 'react';
-import tw from 'twin.macro';
 import { ServerContext } from '@/state/server';
 import styled from 'styled-components/macro';
 import Input from '@/components/elements/Input';
 
 export const FileActionCheckbox = styled(Input)`
     && {
-        ${tw`border-neutral-500 bg-transparent`};
+        border-color: hsl(211, 12%, 43%);
+        background-color: transparent;
 
         &:not(:checked) {
-            ${tw`hover:border-neutral-300`};
+            &:hover {
+                border-color: hsl(211, 13%, 65%);
+            }
         }
     }
 `;
@@ -20,7 +22,7 @@ export default ({ name }: { name: string }) => {
     const removeSelectedFile = ServerContext.useStoreActions((actions) => actions.files.removeSelectedFile);
 
     return (
-        <label css={tw`flex-none px-4 py-2 absolute self-center z-30 cursor-pointer`}>
+        <label className={'flex-none px-4 py-2 absolute self-center z-30 cursor-pointer'}>
             <FileActionCheckbox
                 name={'selectedFiles'}
                 value={name}

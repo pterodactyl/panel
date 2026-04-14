@@ -1,6 +1,5 @@
 import React, { Suspense } from 'react';
 import styled, { css, keyframes } from 'styled-components/macro';
-import tw from 'twin.macro';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 export type SpinnerSize = 'small' | 'base' | 'large';
@@ -22,17 +21,23 @@ const spin = keyframes`
 
 // noinspection CssOverwrittenProperties
 const SpinnerComponent = styled.div<Props>`
-    ${tw`w-8 h-8`};
+    width: 2rem;
+    height: 2rem;
     border-width: 3px;
     border-radius: 50%;
     animation: ${spin} 1s cubic-bezier(0.55, 0.25, 0.25, 0.7) infinite;
 
     ${(props) =>
         props.size === 'small'
-            ? tw`w-4 h-4 border-2`
+            ? css`
+                  width: 1rem;
+                  height: 1rem;
+                  border-width: 2px;
+              `
             : props.size === 'large'
             ? css`
-                  ${tw`w-16 h-16`};
+                  width: 4rem;
+                  height: 4rem;
                   border-width: 6px;
               `
             : null};
@@ -43,7 +48,7 @@ const SpinnerComponent = styled.div<Props>`
 
 const Spinner: Spinner = ({ centered, ...props }) =>
     centered ? (
-        <div css={[tw`flex justify-center items-center`, props.size === 'large' ? tw`m-20` : tw`m-6`]}>
+        <div className={`flex justify-center items-center ${props.size === 'large' ? 'm-20' : 'm-6'}`}>
             <SpinnerComponent {...props} />
         </div>
     ) : (

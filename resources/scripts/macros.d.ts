@@ -22,8 +22,3 @@ declare module 'styled-components' {
         ): ReactElement<StyledComponentProps<C, T, O, A>>;
     }
 }
-
-declare module 'twin.macro' {
-    const css: typeof cssImport;
-    const styled: typeof styledImport;
-}

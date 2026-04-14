@@ -1,6 +1,5 @@
 import React from 'react';
 import { PaginatedResult } from '@/api/http';
-import tw from 'twin.macro';
 import styled from 'styled-components/macro';
 import Button from '@/components/elements/Button';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -21,10 +20,12 @@ interface Props<T> {
 }
 
 const Block = styled(Button)`
-    ${tw`p-0 w-10 h-10`}
+    padding: 0;
+    width: 2.5rem;
+    height: 2.5rem;
 
     &:not(:last-of-type) {
-        ${tw`mr-2`};
+        margin-right: 0.5rem;
     }
 `;
 
@@ -47,7 +48,7 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
         <>
             {children({ items, isFirstPage, isLastPage })}
             {pages.length > 1 && (
-                <div css={tw`mt-4 flex justify-center`}>
+                <div className={'mt-4 flex justify-center'}>
                     {pages[0] > 1 && !isFirstPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(1)}>
                             <FontAwesomeIcon icon={faAngleDoubleLeft} />

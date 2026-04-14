@@ -1,29 +1,48 @@
 import styled from 'styled-components/macro';
-import tw, { theme } from 'twin.macro';
 
 const SubNavigation = styled.div`
-    ${tw`w-full bg-neutral-700 shadow overflow-x-auto`};
+    width: 100%;
+    background-color: hsl(209, 18%, 30%);
+    box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+    overflow-x: auto;
 
     & > div {
-        ${tw`flex items-center text-sm mx-auto px-2`};
+        display: flex;
+        align-items: center;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+        margin-left: auto;
+        margin-right: auto;
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
         max-width: 1200px;
 
         & > a,
         & > div {
-            ${tw`inline-block py-3 px-4 text-neutral-300 no-underline whitespace-nowrap transition-all duration-150`};
+            display: inline-block;
+            padding-top: 0.75rem;
+            padding-bottom: 0.75rem;
+            padding-left: 1rem;
+            padding-right: 1rem;
+            color: hsl(211, 13%, 65%);
+            text-decoration-line: none;
+            white-space: nowrap;
+            transition-property: all;
+            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+            transition-duration: 150ms;
 
             &:not(:first-of-type) {
-                ${tw`ml-2`};
+                margin-left: 0.5rem;
             }
 
             &:hover {
-                ${tw`text-neutral-100`};
+                color: hsl(214, 15%, 91%);
             }
 
             &:active,
             &.active {
-                ${tw`text-neutral-100`};
-                box-shadow: inset 0 -2px ${theme`colors.cyan.600`.toString()};
+                color: hsl(214, 15%, 91%);
+                box-shadow: inset 0 -2px #0891b2;
             }
         }
     }

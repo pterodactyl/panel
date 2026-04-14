@@ -1,7 +1,6 @@
+import styled from 'styled-components/macro';
 import React, { useCallback, useEffect, useState } from 'react';
 import CodeMirror from 'codemirror';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
 import modes from '@/modes';
 
 require('codemirror/lib/codemirror.css');
@@ -82,10 +81,11 @@ require('codemirror/mode/yaml/yaml');
 const EditorContainer = styled.div`
     min-height: 16rem;
     height: calc(100vh - 20rem);
-    ${tw`relative`};
+    position: relative;
 
     > div {
-        ${tw`rounded h-full`};
+        border-radius: 0.25rem;
+        height: 100%;
     }
 
     .CodeMirror {

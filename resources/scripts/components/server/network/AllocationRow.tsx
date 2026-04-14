@@ -1,6 +1,5 @@
 import React, { memo, useCallback, useState } from 'react';
 import isEqual from 'react-fast-compare';
-import tw from 'twin.macro';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faNetworkWired } from '@fortawesome/free-solid-svg-icons';
 import InputSpinner from '@/components/elements/InputSpinner';
@@ -22,7 +21,20 @@ import { ip } from '@/lib/formatters';
 import Code from '@/components/elements/Code';
 
 const Label = styled.label`
-    ${tw`uppercase text-xs mt-1 text-neutral-400 block px-1 select-none transition-colors duration-150`}
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    line-height: 1rem;
+    margin-top: 0.25rem;
+    color: hsl(211, 10%, 53%);
+    display: block;
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+    transition-property: color;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
 `;
 
 interface Props {

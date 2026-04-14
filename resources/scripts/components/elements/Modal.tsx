@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import tw from 'twin.macro';
 import styled, { css } from 'styled-components/macro';
 import { breakpoint } from '@/theme';
 import Fade from '@/components/elements/Fade';
@@ -21,7 +20,15 @@ export interface ModalProps extends RequiredModalProps {
 }
 
 export const ModalMask = styled.div`
-    ${tw`fixed z-50 overflow-auto flex w-full inset-0`};
+    position: fixed;
+    z-index: 50;
+    overflow: auto;
+    display: flex;
+    width: 100%;
+    top: 0px;
+    right: 0px;
+    bottom: 0px;
+    left: 0px;
     background: rgba(0, 0, 0, 0.7);
 `;
 
@@ -31,7 +38,11 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     ${breakpoint('md')`max-width: 75%`};
     ${breakpoint('lg')`max-width: 50%`};
 
-    ${tw`relative flex flex-col w-full m-auto`};
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    margin: auto;
     ${(props) =>
         props.alignTop &&
         css`
@@ -42,15 +53,25 @@ const ModalContainer = styled.div<{ alignTop?: boolean }>`
     margin-bottom: auto;
 
     & > .close-icon {
-        ${tw`absolute right-0 p-2 text-white cursor-pointer opacity-50 transition-all duration-150 ease-linear hover:opacity-100`};
+        position: absolute;
+        right: 0px;
+        padding: 0.5rem;
+        color: #ffffff;
+        cursor: pointer;
+        opacity: 0.5;
+        transition-property: all;
+        transition-timing-function: linear;
+        transition-duration: 150ms;
         top: -2.5rem;
 
         &:hover {
-            ${tw`transform rotate-90`}
+            opacity: 1;
+            transform: rotate(90deg);
         }
 
         & > svg {
-            ${tw`w-6 h-6`};
+            width: 1.5rem;
+            height: 1.5rem;
         }
     }
 `;
@@ -122,7 +143,7 @@ const Modal: React.FC<ModalProps> = ({
                     {showSpinnerOverlay && (
                         <Fade timeout={150} appear in>
                             <div
-                                css={tw`absolute w-full h-full rounded flex items-center justify-center`}
+                                className={'absolute w-full h-full rounded flex items-center justify-center'}
                                 style={{ background: 'hsla(211, 10%, 53%, 0.35)', zIndex: 9999 }}
                             >
                                 <Spinner />
@@ -130,7 +151,7 @@ const Modal: React.FC<ModalProps> = ({
                         </Fade>
                     )}
                     <div
-                        css={tw`bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150`}
+                        className={'bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150'}
                     >
                         {children}
                     </div>

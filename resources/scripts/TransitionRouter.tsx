@@ -3,13 +3,15 @@ import { Route } from 'react-router';
 import { SwitchTransition } from 'react-transition-group';
 import Fade from '@/components/elements/Fade';
 import styled from 'styled-components/macro';
-import tw from 'twin.macro';
 
 const StyledSwitchTransition = styled(SwitchTransition)`
-    ${tw`relative`};
+    position: relative;
 
     & section {
-        ${tw`absolute w-full top-0 left-0`};
+        position: absolute;
+        width: 100%;
+        top: 0px;
+        left: 0px;
     }
 `;
 
