@@ -8,7 +8,6 @@ import { useFormikContext, withFormik } from 'formik';
 import useFlash from '@/plugins/useFlash';
 import { FlashStore } from '@/state/flashes';
 import Field from '@/components/elements/Field';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 
 interface Values {
@@ -27,8 +26,8 @@ const LoginCheckpointContainer = () => {
     const [isMissingDevice, setIsMissingDevice] = useState(false);
 
     return (
-        <LoginFormContainer title={'Device Checkpoint'} css={tw`w-full flex`}>
-            <div css={tw`mt-6`}>
+        <LoginFormContainer title={'Device Checkpoint'} className='w-full flex'>
+            <div className='mt-6'>
                 <Field
                     light
                     name={isMissingDevice ? 'recoveryCode' : 'code'}
@@ -43,27 +42,27 @@ const LoginCheckpointContainer = () => {
                     autoFocus
                 />
             </div>
-            <div css={tw`mt-6`}>
+            <div className='mt-6'>
                 <Button size={'xlarge'} type={'submit'} disabled={isSubmitting} isLoading={isSubmitting}>
                     Continue
                 </Button>
             </div>
-            <div css={tw`mt-6 text-center`}>
+            <div className='mt-6 text-center'>
                 <span
                     onClick={() => {
                         setFieldValue('code', '');
                         setFieldValue('recoveryCode', '');
                         setIsMissingDevice((s) => !s);
                     }}
-                    css={tw`cursor-pointer text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
+                    className='cursor-pointer text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700'
                 >
                     {!isMissingDevice ? "I've Lost My Device" : 'I Have My Device'}
                 </span>
             </div>
-            <div css={tw`mt-6 text-center`}>
+            <div className='mt-6 text-center'>
                 <Link
                     to={'/auth/login'}
-                    css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
+                    className='text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700'
                 >
                     Return to Login
                 </Link>

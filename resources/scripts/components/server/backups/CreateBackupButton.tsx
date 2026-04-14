@@ -8,7 +8,6 @@ import useFlash from '@/plugins/useFlash';
 import createServerBackup from '@/api/server/backups/createServerBackup';
 import FlashMessageRender from '@/components/FlashMessageRender';
 import Button from '@/components/elements/Button';
-import tw from 'twin.macro';
 import { Textarea } from '@/components/elements/Input';
 import getServerBackups from '@/api/swr/getServerBackups';
 import { ServerContext } from '@/state/server';
@@ -27,14 +26,14 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
     return (
         <Modal {...props} showSpinnerOverlay={isSubmitting}>
             <Form>
-                <FlashMessageRender byKey={'backups:create'} css={tw`mb-4`} />
-                <h2 css={tw`text-2xl mb-6`}>Create server backup</h2>
+                <FlashMessageRender byKey={'backups:create'} className='mb-4' />
+                <h2 className='text-2xl mb-6'>Create server backup</h2>
                 <Field
                     name={'name'}
                     label={'Backup name'}
                     description={'If provided, the name that should be used to reference this backup.'}
                 />
-                <div css={tw`mt-6`}>
+                <div className='mt-6'>
                     <FormikFieldWrapper
                         name={'ignored'}
                         label={'Ignored Files & Directories'}
@@ -49,7 +48,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                     </FormikFieldWrapper>
                 </div>
                 <Can action={'backup.delete'}>
-                    <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
+                    <div className='mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded'>
                         <FormikSwitch
                             name={'isLocked'}
                             label={'Locked'}
@@ -57,7 +56,7 @@ const ModalContent = ({ ...props }: RequiredModalProps) => {
                         />
                     </div>
                 </Can>
-                <div css={tw`flex justify-end mt-6`}>
+                <div className='flex justify-end mt-6'>
                     <Button type={'submit'} disabled={isSubmitting}>
                         Start backup
                     </Button>
@@ -108,7 +107,7 @@ export default () => {
                     <ModalContent appear visible={visible} onDismissed={() => setVisible(false)} />
                 </Formik>
             )}
-            <Button css={tw`w-full sm:w-auto`} onClick={() => setVisible(true)}>
+            <Button className='w-full sm:w-auto' onClick={() => setVisible(true)}>
                 Create backup
             </Button>
         </>

@@ -1,12 +1,35 @@
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import styled, { css } from 'styled-components';
 
 export default styled.div<{ $hoverable?: boolean }>`
-    ${tw`flex rounded no-underline text-neutral-200 items-center bg-neutral-700 p-4 border border-transparent transition-colors duration-150 overflow-hidden`};
+    display: flex;
+    border-radius: 0.25rem;
+    text-decoration-line: none;
+    color: hsl(210, 16%, 82%);
+    align-items: center;
+    background-color: hsl(209, 18%, 30%);
+    padding: 1rem;
+    border-width: 1px;
+    border-color: transparent;
+    transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    overflow: hidden;
 
-    ${(props) => props.$hoverable !== false && tw`hover:border-neutral-500`};
+    ${(props) =>
+        props.$hoverable !== false &&
+        css`
+            &:hover {
+                border-color: hsl(211, 12%, 43%);
+            }
+        `};
 
     & .icon {
-        ${tw`rounded-full w-16 flex items-center justify-center bg-neutral-500 p-3`};
+        border-radius: 9999px;
+        width: 4rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: hsl(211, 12%, 43%);
+        padding: 0.75rem;
     }
 `;

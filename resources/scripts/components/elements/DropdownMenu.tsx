@@ -1,6 +1,5 @@
 import React, { createRef } from 'react';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import styled, { css } from 'styled-components';
 import Fade from '@/components/elements/Fade';
 
 interface Props {
@@ -9,11 +8,25 @@ interface Props {
 }
 
 export const DropdownButtonRow = styled.button<{ danger?: boolean }>`
-    ${tw`p-2 flex items-center rounded w-full text-neutral-500`};
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    border-radius: 0.25rem;
+    width: 100%;
+    color: hsl(211, 10%, 53%);
     transition: 150ms all ease;
 
     &:hover {
-        ${(props) => (props.danger ? tw`text-red-700 bg-red-100` : tw`text-neutral-700 bg-neutral-100`)};
+        ${(props) =>
+            props.danger
+                ? css`
+                      color: #b91c1c;
+                      background-color: #fee2e2;
+                  `
+                : css`
+                      color: hsl(209, 18%, 30%);
+                      background-color: hsl(214, 15%, 91%);
+                  `};
     }
 `;
 
@@ -94,7 +107,9 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                             this.setState({ visible: false });
                         }}
                         style={{ width: '12rem' }}
-                        css={tw`absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 z-50`}
+                        className={
+                            'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 z-50'
+                        }
                     >
                         {this.props.children}
                     </div>

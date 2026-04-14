@@ -8,7 +8,6 @@ import deleteSubuser from '@/api/server/users/deleteSubuser';
 import { Actions, useStoreActions } from 'easy-peasy';
 import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
 
 export default ({ subuser }: { subuser: Subuser }) => {
     const [loading, setLoading] = useState(false);
@@ -49,7 +48,7 @@ export default ({ subuser }: { subuser: Subuser }) => {
             <button
                 type={'button'}
                 aria-label={'Delete subuser'}
-                css={tw`block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150`}
+                className='block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150'
                 onClick={() => setShowConfirmation(true)}
             >
                 <FontAwesomeIcon icon={faTrashAlt} />

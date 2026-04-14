@@ -10,8 +10,7 @@ import getServers from '@/api/getServers';
 import { Server } from '@/api/server/getServer';
 import { ApplicationStore } from '@/state';
 import { Link } from 'react-router-dom';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import styled from 'styled-components';
 import Input from '@/components/elements/Input';
 import { ip } from '@/lib/formatters';
 
@@ -22,14 +21,25 @@ interface Values {
 }
 
 const ServerResult = styled(Link)`
-    ${tw`flex items-center bg-neutral-900 p-4 rounded border-l-4 border-neutral-900 no-underline transition-all duration-150`};
+    display: flex;
+    align-items: center;
+    background-color: hsl(210, 24%, 16%);
+    padding: 1rem;
+    border-radius: 0.25rem;
+    border-left-width: 4px;
+    border-left-color: hsl(210, 24%, 16%);
+    text-decoration-line: none;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
 
     &:hover {
-        ${tw`shadow border-cyan-500`};
+        box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+        border-left-color: #06b6d4;
     }
 
     &:not(:last-of-type) {
-        ${tw`mb-2`};
+        margin-bottom: 0.5rem;
     }
 `;
 
@@ -99,16 +109,16 @@ export default ({ ...props }: Props) => {
                         </FormikFieldWrapper>
                     </Form>
                     {servers.length > 0 && (
-                        <div css={tw`mt-6`}>
+                        <div className={'mt-6'}>
                             {servers.map((server) => (
                                 <ServerResult
                                     key={server.uuid}
                                     to={`/server/${server.id}`}
                                     onClick={() => props.onDismissed()}
                                 >
-                                    <div css={tw`flex-1 mr-4`}>
-                                        <p css={tw`text-sm`}>{server.name}</p>
-                                        <p css={tw`mt-1 text-xs text-neutral-400`}>
+                                    <div className={'flex-1 mr-4'}>
+                                        <p className={'text-sm'}>{server.name}</p>
+                                        <p className={'mt-1 text-xs text-neutral-400'}>
                                             {server.allocations
                                                 .filter((alloc) => alloc.isDefault)
                                                 .map((allocation) => (
@@ -118,8 +128,8 @@ export default ({ ...props }: Props) => {
                                                 ))}
                                         </p>
                                     </div>
-                                    <div css={tw`flex-none text-right`}>
-                                        <span css={tw`text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded`}>
+                                    <div className={'flex-none text-right'}>
+                                        <span className={'text-xs py-1 px-2 bg-cyan-800 text-cyan-100 rounded'}>
                                             {server.node}
                                         </span>
                                     </div>

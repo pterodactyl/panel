@@ -5,10 +5,10 @@ import Field from '@/components/elements/Field';
 import { join } from 'pathe';
 import renameFiles from '@/api/server/files/renameFiles';
 import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import useFlash from '@/plugins/useFlash';
+import classNames from 'classnames';
 
 interface FormikValues {
     name: string;
@@ -59,9 +59,11 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
         <Formik onSubmit={submit} initialValues={{ name: files.length > 1 ? '' : files[0] || '' }}>
             {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form css={tw`m-0`}>
-                        <div css={[tw`flex flex-wrap`, useMoveTerminology ? tw`items-center` : tw`items-end`]}>
-                            <div css={tw`w-full sm:flex-1 sm:mr-4`}>
+                    <Form className='m-0'>
+                        <div
+                            className={classNames('flex flex-wrap', useMoveTerminology ? 'items-center' : 'items-end')}
+                        >
+                            <div className='w-full sm:flex-1 sm:mr-4'>
                                 <Field
                                     type={'string'}
                                     id={'file_name'}
@@ -75,13 +77,13 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                                     autoFocus
                                 />
                             </div>
-                            <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>{useMoveTerminology ? 'Move' : 'Rename'}</Button>
+                            <div className='w-full sm:w-auto mt-4 sm:mt-0'>
+                                <Button className='w-full'>{useMoveTerminology ? 'Move' : 'Rename'}</Button>
                             </div>
                         </div>
                         {useMoveTerminology && (
-                            <p css={tw`text-xs mt-2 text-neutral-400`}>
-                                <strong css={tw`text-neutral-200`}>New location:</strong>
+                            <p className='text-xs mt-2 text-neutral-400'>
+                                <strong className='text-neutral-200'>New location:</strong>
                                 &nbsp;/home/container/{join(directory, values.name).replace(/^(\.\.\/|\/)+/, '')}
                             </p>
                         )}

@@ -1,5 +1,4 @@
-import tw from 'twin.macro';
-import { createGlobalStyle } from 'styled-components/macro';
+import { createGlobalStyle } from 'styled-components';
 // @ts-expect-error untyped font file
 import font from '@fontsource-variable/ibm-plex-sans/files/ibm-plex-sans-latin-wght-normal.woff2';
 
@@ -14,24 +13,31 @@ export default createGlobalStyle`
     }
 
     body {
-        ${tw`font-sans bg-neutral-800 text-neutral-200`};
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+        background-color: hsl(209, 20%, 25%);
+        color: hsl(210, 16%, 82%);
         letter-spacing: 0.015em;
     }
 
     h1, h2, h3, h4, h5, h6 {
-        ${tw`font-medium tracking-normal font-header`};
+        font-weight: 500;
+        letter-spacing: 0em;
+        font-family: "IBM Plex Sans", "Roboto", system-ui, sans-serif;
     }
 
     p {
-        ${tw`text-neutral-200 leading-snug font-sans`};
+        color: hsl(210, 16%, 82%);
+        line-height: 1.375;
+        font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
     }
 
     form {
-        ${tw`m-0`};
+        margin: 0px;
     }
 
     textarea, select, input, button, button:focus, button:focus-visible {
-        ${tw`outline-none`};
+        outline: 2px solid transparent;
+        outline-offset: 2px;
     }
 
     input[type=number]::-webkit-outer-spin-button,

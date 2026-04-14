@@ -9,7 +9,6 @@ import FlashMessageRender from '@/components/FlashMessageRender';
 import { boolean, number, object, string } from 'yup';
 import useFlash from '@/plugins/useFlash';
 import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import tw from 'twin.macro';
 import Label from '@/components/elements/Label';
 import { Textarea } from '@/components/elements/Input';
 import { Button } from '@/components/elements/button/index';
@@ -117,11 +116,11 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
             }}
         >
             {({ isSubmitting, values }) => (
-                <Form css={tw`m-0`}>
-                    <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`} />
-                    <h2 css={tw`text-2xl mb-6`}>{task ? 'Edit Task' : 'Create Task'}</h2>
-                    <div css={tw`flex`}>
-                        <div css={tw`mr-2 w-1/3`}>
+                <Form className='m-0'>
+                    <FlashMessageRender byKey={'schedule:task'} className='mb-4' />
+                    <h2 className='text-2xl mb-6'>{task ? 'Edit Task' : 'Create Task'}</h2>
+                    <div className='flex'>
+                        <div className='mr-2 w-1/3'>
                             <Label>Action</Label>
                             <ActionListener />
                             <FormikFieldWrapper name={'action'}>
@@ -132,7 +131,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>
-                        <div css={tw`flex-1 ml-6`}>
+                        <div className='flex-1 ml-6'>
                             <Field
                                 name={'timeOffset'}
                                 label={'Time offset (in seconds)'}
@@ -142,7 +141,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                             />
                         </div>
                     </div>
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         {values.action === 'command' ? (
                             <div>
                                 <Label>Payload</Label>
@@ -176,14 +175,14 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                             </div>
                         )}
                     </div>
-                    <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
+                    <div className='mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded'>
                         <FormikSwitch
                             name={'continueOnFailure'}
                             description={'Future tasks will be run when this task fails.'}
                             label={'Continue on Failure'}
                         />
                     </div>
-                    <div css={tw`flex justify-end mt-6`}>
+                    <div className='flex justify-end mt-6'>
                         <Button type={'submit'} disabled={isSubmitting}>
                             {task ? 'Save Changes' : 'Create Task'}
                         </Button>

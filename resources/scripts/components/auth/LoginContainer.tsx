@@ -6,7 +6,6 @@ import { useStoreState } from 'easy-peasy';
 import { Formik, FormikHelpers } from 'formik';
 import { object, string } from 'yup';
 import Field from '@/components/elements/Field';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Reaptcha from 'reaptcha';
 import useFlash from '@/plugins/useFlash';
@@ -74,12 +73,12 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
             })}
         >
             {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Login to Continue'} css={tw`w-full flex`}>
+                <LoginFormContainer title={'Login to Continue'} className='w-full flex'>
                     <Field light type={'text'} label={'Username or Email'} name={'username'} disabled={isSubmitting} />
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         <Field light type={'password'} label={'Password'} name={'password'} disabled={isSubmitting} />
                     </div>
-                    <div css={tw`mt-6`}>
+                    <div className='mt-6'>
                         <Button type={'submit'} size={'xlarge'} isLoading={isSubmitting} disabled={isSubmitting}>
                             Login
                         </Button>
@@ -99,10 +98,10 @@ const LoginContainer = ({ history }: RouteComponentProps) => {
                             }}
                         />
                     )}
-                    <div css={tw`mt-6 text-center`}>
+                    <div className='mt-6 text-center'>
                         <Link
                             to={'/auth/password'}
-                            css={tw`text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600`}
+                            className='text-xs text-neutral-500 tracking-wide no-underline uppercase hover:text-neutral-600'
                         >
                             Forgot password?
                         </Link>

@@ -8,10 +8,9 @@ import { ApplicationStore } from '@/state';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import { ApiKey } from '@/api/account/getApiKeys';
-import tw from 'twin.macro';
 import Button from '@/components/elements/Button';
 import Input, { Textarea } from '@/components/elements/Input';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import ApiKeyModal from '@/components/dashboard/ApiKeyModal';
 
 interface Values {
@@ -20,7 +19,7 @@ interface Values {
 }
 
 const CustomTextarea = styled(Textarea)`
-    ${tw`h-32`}
+    height: 8rem;
 `;
 
 export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
@@ -62,7 +61,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                             label={'Description'}
                             name={'description'}
                             description={'A description of this API key.'}
-                            css={tw`mb-6`}
+                            className={'mb-6'}
                         >
                             <Field name={'description'} as={Input} />
                         </FormikFieldWrapper>
@@ -75,7 +74,7 @@ export default ({ onKeyCreated }: { onKeyCreated: (key: ApiKey) => void }) => {
                         >
                             <Field name={'allowedIps'} as={CustomTextarea} />
                         </FormikFieldWrapper>
-                        <div css={tw`flex justify-end mt-6`}>
+                        <div className={'flex justify-end mt-6'}>
                             <Button>Create</Button>
                         </div>
                     </Form>

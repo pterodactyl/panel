@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import tw from 'twin.macro';
 import Icon from '@/components/elements/Icon';
 import { ServerContext } from '@/state/server';
 import deleteServerAllocation from '@/api/server/network/deleteServerAllocation';
@@ -52,7 +51,7 @@ const DeleteAllocationButton = ({ allocation }: Props) => {
                 type={'button'}
                 onClick={() => setConfirm(true)}
             >
-                <Icon icon={faTrashAlt} css={tw`w-3 h-auto`} />
+                <Icon icon={faTrashAlt} className='w-3 h-auto' />
             </Button.Danger>
         </>
     );

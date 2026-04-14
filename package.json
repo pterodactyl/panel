@@ -122,7 +122,6 @@
         "terser-webpack-plugin": "^5.3.14",
         "ts-essentials": "^9.1.2",
         "ts-jest": "^28.0.5",
-        "twin.macro": "^2.8.2",
         "typescript": "~5.1.0",
         "webpack": "^5.103.0",
         "webpack-assets-manifest": "^6.4.0",

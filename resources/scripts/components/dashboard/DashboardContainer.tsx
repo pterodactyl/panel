@@ -8,7 +8,6 @@ import useFlash from '@/plugins/useFlash';
 import { useStoreState } from 'easy-peasy';
 import { usePersistedState } from '@/plugins/usePersistedState';
 import Switch from '@/components/elements/Switch';
-import tw from 'twin.macro';
 import useSWR from 'swr';
 import { PaginatedResult } from '@/api/http';
 import Pagination from '@/components/elements/Pagination';
@@ -55,8 +54,8 @@ export default () => {
     return (
         <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
             {rootAdmin && (
-                <div css={tw`mb-2 flex justify-end items-center`}>
-                    <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
+                <div className='mb-2 flex justify-end items-center'>
+                    <p className='uppercase text-xs text-neutral-400 mr-2'>
                         {showOnlyAdmin ? "Showing others' servers" : 'Showing your servers'}
                     </p>
                     <Switch
@@ -73,10 +72,14 @@ export default () => {
                     {({ items }) =>
                         items.length > 0 ? (
                             items.map((server, index) => (
-                                <ServerRow key={server.uuid} server={server} css={index > 0 ? tw`mt-2` : undefined} />
+                                <ServerRow
+                                    key={server.uuid}
+                                    server={server}
+                                    className={index > 0 ? 'mt-2' : undefined}
+                                />
                             ))
                         ) : (
-                            <p css={tw`text-center text-sm text-neutral-400`}>
+                            <p className='text-center text-sm text-neutral-400'>
                                 {showOnlyAdmin
                                     ? 'There are no other servers to display.'
                                     : 'There are no servers associated with your account.'}

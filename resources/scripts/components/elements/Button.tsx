@@ -1,6 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components/macro';
-import tw from 'twin.macro';
+import styled, { css } from 'styled-components';
 import Spinner from '@/components/elements/Spinner';
 
 interface Props {
@@ -11,42 +10,68 @@ interface Props {
 }
 
 const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
-    ${tw`relative inline-block rounded p-2 uppercase tracking-wide text-sm transition-all duration-150 border`};
+    position: relative;
+    display: inline-block;
+    border-radius: 0.25rem;
+    padding: 0.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.025em;
+    font-size: 0.875rem;
+    line-height: 1.25rem;
+    transition-property: all;
+    transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    transition-duration: 150ms;
+    border-width: 1px;
 
     ${(props) =>
         ((!props.isSecondary && !props.color) || props.color === 'primary') &&
         css<Props>`
-            ${(props) => !props.isSecondary && tw`bg-primary-500 border-primary-600 border text-primary-50`};
+            ${(props) =>
+                !props.isSecondary &&
+                `
+                background-color: #3b82f6;
+                border-color: #2563eb;
+                border-width: 1px;
+                color: #eff6ff;
+            `};
 
             &:hover:not(:disabled) {
-                ${tw`bg-primary-600 border-primary-700`};
+                background-color: #2563eb;
+                border-color: #1d4ed8;
             }
         `};
 
     ${(props) =>
         props.color === 'grey' &&
         css`
-            ${tw`border-neutral-600 bg-neutral-500 text-neutral-50`};
+            border-color: hsl(209, 14%, 37%);
+            background-color: hsl(211, 12%, 43%);
+            color: hsl(216, 33%, 97%);
 
             &:hover:not(:disabled) {
-                ${tw`bg-neutral-600 border-neutral-700`};
+                background-color: hsl(209, 14%, 37%);
+                border-color: hsl(209, 18%, 30%);
             }
         `};
 
     ${(props) =>
         props.color === 'green' &&
         css<Props>`
-            ${tw`border-green-600 bg-green-500 text-green-50`};
+            border-color: #16a34a;
+            background-color: #22c55e;
+            color: #f0fdf4;
 
             &:hover:not(:disabled) {
-                ${tw`bg-green-600 border-green-700`};
+                background-color: #16a34a;
+                border-color: #15803d;
             }
 
             ${(props) =>
                 props.isSecondary &&
                 css`
                     &:active:not(:disabled) {
-                        ${tw`bg-green-600 border-green-700`};
+                        background-color: #16a34a;
+                        border-color: #15803d;
                     }
                 `};
         `};
@@ -54,36 +79,73 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
     ${(props) =>
         props.color === 'red' &&
         css<Props>`
-            ${tw`border-red-600 bg-red-500 text-red-50`};
+            border-color: #dc2626;
+            background-color: #ef4444;
+            color: #fef2f2;
 
             &:hover:not(:disabled) {
-                ${tw`bg-red-600 border-red-700`};
+                background-color: #dc2626;
+                border-color: #b91c1c;
             }
 
             ${(props) =>
                 props.isSecondary &&
                 css`
                     &:active:not(:disabled) {
-                        ${tw`bg-red-600 border-red-700`};
+                        background-color: #dc2626;
+                        border-color: #b91c1c;
                     }
                 `};
         `};
 
-    ${(props) => props.size === 'xsmall' && tw`px-2 py-1 text-xs`};
-    ${(props) => (!props.size || props.size === 'small') && tw`px-4 py-2`};
-    ${(props) => props.size === 'large' && tw`p-4 text-sm`};
-    ${(props) => props.size === 'xlarge' && tw`p-4 w-full`};
+    ${(props) =>
+        props.size === 'xsmall' &&
+        `
+        padding-left: 0.5rem;
+        padding-right: 0.5rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        font-size: 0.75rem;
+        line-height: 1rem;
+    `};
+    ${(props) =>
+        (!props.size || props.size === 'small') &&
+        `
+        padding-left: 1rem;
+        padding-right: 1rem;
+        padding-top: 0.5rem;
+        padding-bottom: 0.5rem;
+    `};
+    ${(props) =>
+        props.size === 'large' &&
+        `
+        padding: 1rem;
+        font-size: 0.875rem;
+        line-height: 1.25rem;
+    `};
+    ${(props) =>
+        props.size === 'xlarge' &&
+        `
+        padding: 1rem;
+        width: 100%;
+    `};
 
     ${(props) =>
         props.isSecondary &&
         css<Props>`
-            ${tw`border-neutral-600 bg-transparent text-neutral-200`};
+            border-color: hsl(209, 14%, 37%);
+            background-color: transparent;
+            color: hsl(210, 16%, 82%);
 
             &:hover:not(:disabled) {
-                ${tw`border-neutral-500 text-neutral-100`};
-                ${(props) => props.color === 'red' && tw`bg-red-500 border-red-600 text-red-50`};
-                ${(props) => props.color === 'primary' && tw`bg-primary-500 border-primary-600 text-primary-50`};
-                ${(props) => props.color === 'green' && tw`bg-green-500 border-green-600 text-green-50`};
+                border-color: hsl(211, 12%, 43%);
+                color: hsl(214, 15%, 91%);
+                ${(props) =>
+                    props.color === 'red' && `background-color: #ef4444; border-color: #dc2626; color: #fef2f2;`};
+                ${(props) =>
+                    props.color === 'primary' && `background-color: #3b82f6; border-color: #2563eb; color: #eff6ff;`};
+                ${(props) =>
+                    props.color === 'green' && `background-color: #22c55e; border-color: #16a34a; color: #f0fdf4;`};
             }
         `};
 
@@ -98,11 +160,11 @@ type ComponentProps = Omit<JSX.IntrinsicElements['button'], 'ref' | keyof Props>
 const Button: React.FC<ComponentProps> = ({ children, isLoading, ...props }) => (
     <ButtonStyle {...props}>
         {isLoading && (
-            <div css={tw`flex absolute justify-center items-center w-full h-full left-0 top-0`}>
+            <div className={'flex absolute justify-center items-center w-full h-full left-0 top-0'}>
                 <Spinner size={'small'} />
             </div>
         )}
-        <span css={isLoading ? tw`text-transparent` : undefined}>{children}</span>
+        <span className={isLoading ? 'text-transparent' : undefined}>{children}</span>
     </ButtonStyle>
 );
 
