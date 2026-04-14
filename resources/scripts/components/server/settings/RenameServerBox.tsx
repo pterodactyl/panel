@@ -23,17 +23,17 @@ const RenameServerBox = () => {
     const { isSubmitting } = useFormikContext<Values>();
 
     return (
-        <TitledGreyBox title={'Change Server Details'} className="relative">
+        <TitledGreyBox title={'Change Server Details'} className='relative'>
             <SpinnerOverlay visible={isSubmitting} />
-            <Form className="mb-0">
+            <Form className='mb-0'>
                 <Field id={'name'} name={'name'} label={'Server Name'} type={'text'} />
-                <div className="mt-6">
+                <div className='mt-6'>
                     <Label>Server Description</Label>
                     <FormikFieldWrapper name={'description'}>
                         <FormikField as={Textarea} name={'description'} rows={3} />
                     </FormikFieldWrapper>
                 </div>
-                <div className="mt-6 text-right">
+                <div className='mt-6 text-right'>
                     <Button type={'submit'}>Save</Button>
                 </div>
             </Form>

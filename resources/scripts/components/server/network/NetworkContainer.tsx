@@ -61,13 +61,13 @@ const NetworkContainer = () => {
                     {allocationLimit > 0 && (
                         <Can action={'allocation.create'}>
                             <SpinnerOverlay visible={loading} />
-                            <div className="mt-6 sm:flex items-center justify-end">
-                                <p className="text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0">
+                            <div className='mt-6 sm:flex items-center justify-end'>
+                                <p className='text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0'>
                                     You are currently using {data.length} of {allocationLimit} allowed allocations for
                                     this server.
                                 </p>
                                 {allocationLimit > data.length && (
-                                    <Button className="w-full sm:w-auto" color={'primary'} onClick={onCreateAllocation}>
+                                    <Button className='w-full sm:w-auto' color={'primary'} onClick={onCreateAllocation}>
                                         Create Allocation
                                     </Button>
                                 )}

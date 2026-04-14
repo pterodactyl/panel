@@ -71,13 +71,13 @@ export default ({ database, className }: Props) => {
                             resetForm();
                         }}
                     >
-                        <FlashMessageRender byKey={'database:delete'} className="mb-6" />
-                        <h2 className="text-2xl mb-6">Confirm database deletion</h2>
-                        <p className="text-sm">
+                        <FlashMessageRender byKey={'database:delete'} className='mb-6' />
+                        <h2 className='text-2xl mb-6'>Confirm database deletion</h2>
+                        <p className='text-sm'>
                             Deleting a database is a permanent action, it cannot be undone. This will permanently delete
                             the <strong>{database.name}</strong> database and remove all associated data.
                         </p>
-                        <Form className="m-0 mt-6">
+                        <Form className='m-0 mt-6'>
                             <Field
                                 type={'text'}
                                 id={'confirm_name'}
@@ -85,8 +85,8 @@ export default ({ database, className }: Props) => {
                                 label={'Confirm Database Name'}
                                 description={'Enter the database name to confirm deletion.'}
                             />
-                            <div className="mt-6 text-right">
-                                <Button type={'button'} isSecondary className="mr-2" onClick={() => setVisible(false)}>
+                            <div className='mt-6 text-right'>
+                                <Button type={'button'} isSecondary className='mr-2' onClick={() => setVisible(false)}>
                                     Cancel
                                 </Button>
                                 <Button type={'submit'} color={'red'} disabled={!isValid}>
@@ -98,39 +98,39 @@ export default ({ database, className }: Props) => {
                 )}
             </Formik>
             <Modal visible={connectionVisible} onDismissed={() => setConnectionVisible(false)}>
-                <FlashMessageRender byKey={'database-connection-modal'} className="mb-6" />
-                <h3 className="mb-6 text-2xl">Database connection details</h3>
+                <FlashMessageRender byKey={'database-connection-modal'} className='mb-6' />
+                <h3 className='mb-6 text-2xl'>Database connection details</h3>
                 <div>
                     <Label>Endpoint</Label>
                     <CopyOnClick text={database.connectionString}>
                         <Input type={'text'} readOnly value={database.connectionString} />
                     </CopyOnClick>
                 </div>
-                <div className="mt-6">
+                <div className='mt-6'>
                     <Label>Connections from</Label>
                     <Input type={'text'} readOnly value={database.allowConnectionsFrom} />
                 </div>
-                <div className="mt-6">
+                <div className='mt-6'>
                     <Label>Username</Label>
                     <CopyOnClick text={database.username}>
                         <Input type={'text'} readOnly value={database.username} />
                     </CopyOnClick>
                 </div>
                 <Can action={'database.view_password'}>
-                    <div className="mt-6">
+                    <div className='mt-6'>
                         <Label>Password</Label>
                         <CopyOnClick text={database.password} showInNotification={false}>
                             <Input type={'text'} readOnly value={database.password} />
                         </CopyOnClick>
                     </div>
                 </Can>
-                <div className="mt-6">
+                <div className='mt-6'>
                     <Label>JDBC Connection String</Label>
                     <CopyOnClick text={jdbcConnectionString} showInNotification={false}>
                         <Input type={'text'} readOnly value={jdbcConnectionString} />
                     </CopyOnClick>
                 </div>
-                <div className="mt-6 text-right">
+                <div className='mt-6 text-right'>
                     <Can action={'database.update'}>
                         <RotatePasswordButton databaseId={database.id} onUpdate={appendDatabase} />
                     </Can>
@@ -140,32 +140,32 @@ export default ({ database, className }: Props) => {
                 </div>
             </Modal>
             <GreyRowBox $hoverable={false} className={classNames('mb-2', className)}>
-                <div className="hidden md:block">
+                <div className='hidden md:block'>
                     <FontAwesomeIcon icon={faDatabase} fixedWidth />
                 </div>
-                <div className="flex-1 ml-4">
+                <div className='flex-1 ml-4'>
                     <CopyOnClick text={database.name}>
-                        <p className="text-lg">{database.name}</p>
+                        <p className='text-lg'>{database.name}</p>
                     </CopyOnClick>
                 </div>
-                <div className="ml-8 text-center hidden md:block">
+                <div className='ml-8 text-center hidden md:block'>
                     <CopyOnClick text={database.connectionString}>
-                        <p className="text-sm">{database.connectionString}</p>
+                        <p className='text-sm'>{database.connectionString}</p>
                     </CopyOnClick>
-                    <p className="mt-1 text-2xs text-neutral-500 uppercase select-none">Endpoint</p>
+                    <p className='mt-1 text-2xs text-neutral-500 uppercase select-none'>Endpoint</p>
                 </div>
-                <div className="ml-8 text-center hidden md:block">
-                    <p className="text-sm">{database.allowConnectionsFrom}</p>
-                    <p className="mt-1 text-2xs text-neutral-500 uppercase select-none">Connections from</p>
+                <div className='ml-8 text-center hidden md:block'>
+                    <p className='text-sm'>{database.allowConnectionsFrom}</p>
+                    <p className='mt-1 text-2xs text-neutral-500 uppercase select-none'>Connections from</p>
                 </div>
-                <div className="ml-8 text-center hidden md:block">
+                <div className='ml-8 text-center hidden md:block'>
                     <CopyOnClick text={database.username}>
-                        <p className="text-sm">{database.username}</p>
+                        <p className='text-sm'>{database.username}</p>
                     </CopyOnClick>
-                    <p className="mt-1 text-2xs text-neutral-500 uppercase select-none">Username</p>
+                    <p className='mt-1 text-2xs text-neutral-500 uppercase select-none'>Username</p>
                 </div>
-                <div className="ml-8">
-                    <Button isSecondary className="mr-2" onClick={() => setConnectionVisible(true)}>
+                <div className='ml-8'>
+                    <Button isSecondary className='mr-2' onClick={() => setConnectionVisible(true)}>
                         <FontAwesomeIcon icon={faEye} fixedWidth />
                     </Button>
                     <Can action={'database.delete'}>

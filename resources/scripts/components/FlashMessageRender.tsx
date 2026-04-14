@@ -16,7 +16,7 @@ const FlashMessageRender = ({ byKey, className }: Props) => {
         <div className={className}>
             {flashes.map((flash, index) => (
                 <React.Fragment key={flash.id || flash.type + flash.message}>
-                    {index > 0 && <div className="mt-2"></div>}
+                    {index > 0 && <div className='mt-2'></div>}
                     <MessageBox type={flash.type} title={flash.title}>
                         {flash.message}
                     </MessageBox>

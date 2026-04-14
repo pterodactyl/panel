@@ -21,16 +21,16 @@ const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey
         <CSSTransition timeout={150} classNames={'fade'} appear in>
             <>
                 <ContentContainer className={classNames('my-4 sm:my-10', className)}>
-                    {showFlashKey && <FlashMessageRender byKey={showFlashKey} className="mb-4" />}
+                    {showFlashKey && <FlashMessageRender byKey={showFlashKey} className='mb-4' />}
                     {children}
                 </ContentContainer>
-                <ContentContainer className="mb-4">
-                    <p className="text-center text-neutral-500 text-xs">
+                <ContentContainer className='mb-4'>
+                    <p className='text-center text-neutral-500 text-xs'>
                         <a
                             rel={'noopener nofollow noreferrer'}
                             href={'https://pterodactyl.io'}
                             target={'_blank'}
-                            className="no-underline text-neutral-500 hover:text-neutral-300"
+                            className='no-underline text-neutral-500 hover:text-neutral-300'
                         >
                             Pterodactyl&reg;
                         </a>

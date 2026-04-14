@@ -59,9 +59,11 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
         <Formik onSubmit={submit} initialValues={{ name: files.length > 1 ? '' : files[0] || '' }}>
             {({ isSubmitting, values }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form className="m-0">
-                        <div className={classNames('flex flex-wrap', useMoveTerminology ? 'items-center' : 'items-end')}>
-                            <div className="w-full sm:flex-1 sm:mr-4">
+                    <Form className='m-0'>
+                        <div
+                            className={classNames('flex flex-wrap', useMoveTerminology ? 'items-center' : 'items-end')}
+                        >
+                            <div className='w-full sm:flex-1 sm:mr-4'>
                                 <Field
                                     type={'string'}
                                     id={'file_name'}
@@ -75,13 +77,13 @@ const RenameFileModal = ({ files, useMoveTerminology, ...props }: OwnProps) => {
                                     autoFocus
                                 />
                             </div>
-                            <div className="w-full sm:w-auto mt-4 sm:mt-0">
-                                <Button className="w-full">{useMoveTerminology ? 'Move' : 'Rename'}</Button>
+                            <div className='w-full sm:w-auto mt-4 sm:mt-0'>
+                                <Button className='w-full'>{useMoveTerminology ? 'Move' : 'Rename'}</Button>
                             </div>
                         </div>
                         {useMoveTerminology && (
-                            <p className="text-xs mt-2 text-neutral-400">
-                                <strong className="text-neutral-200">New location:</strong>
+                            <p className='text-xs mt-2 text-neutral-400'>
+                                <strong className='text-neutral-200'>New location:</strong>
                                 &nbsp;/home/container/{join(directory, values.name).replace(/^(\.\.\/|\/)+/, '')}
                             </p>
                         )}

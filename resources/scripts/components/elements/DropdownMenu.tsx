@@ -1,5 +1,5 @@
 import React, { createRef } from 'react';
-import styled, { css } from 'styled-components/macro';
+import styled, { css } from 'styled-components';
 import Fade from '@/components/elements/Fade';
 
 interface Props {
@@ -107,7 +107,9 @@ class DropdownMenu extends React.PureComponent<Props, State> {
                             this.setState({ visible: false });
                         }}
                         style={{ width: '12rem' }}
-                        className={'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 z-50'}
+                        className={
+                            'absolute bg-white p-2 rounded border border-neutral-700 shadow-lg text-neutral-500 z-50'
+                        }
                     >
                         {this.props.children}
                     </div>

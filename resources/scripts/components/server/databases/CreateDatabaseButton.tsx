@@ -67,9 +67,9 @@ export default () => {
                             setVisible(false);
                         }}
                     >
-                        <FlashMessageRender byKey={'database:create'} className="mb-6" />
-                        <h2 className="text-2xl mb-6">Create new database</h2>
-                        <Form className="m-0">
+                        <FlashMessageRender byKey={'database:create'} className='mb-6' />
+                        <h2 className='text-2xl mb-6'>Create new database</h2>
+                        <Form className='m-0'>
                             <Field
                                 type={'string'}
                                 id={'database_name'}
@@ -77,7 +77,7 @@ export default () => {
                                 label={'Database Name'}
                                 description={'A descriptive name for your database instance.'}
                             />
-                            <div className="mt-6">
+                            <div className='mt-6'>
                                 <Field
                                     type={'string'}
                                     id={'connections_from'}
@@ -88,16 +88,16 @@ export default () => {
                                     }
                                 />
                             </div>
-                            <div className="flex flex-wrap justify-end mt-6">
+                            <div className='flex flex-wrap justify-end mt-6'>
                                 <Button
                                     type={'button'}
                                     isSecondary
-                                    className="w-full sm:w-auto sm:mr-2"
+                                    className='w-full sm:w-auto sm:mr-2'
                                     onClick={() => setVisible(false)}
                                 >
                                     Cancel
                                 </Button>
-                                <Button className="w-full mt-4 sm:w-auto sm:mt-0" type={'submit'}>
+                                <Button className='w-full mt-4 sm:w-auto sm:mt-0' type={'submit'}>
                                     Create Database
                                 </Button>
                             </div>

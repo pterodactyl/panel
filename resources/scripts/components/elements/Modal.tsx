@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import Spinner from '@/components/elements/Spinner';
-import styled, { css } from 'styled-components/macro';
+import styled, { css } from 'styled-components';
 import { breakpoint } from '@/theme';
 import Fade from '@/components/elements/Fade';
 import { createPortal } from 'react-dom';
@@ -151,7 +151,9 @@ const Modal: React.FC<ModalProps> = ({
                         </Fade>
                     )}
                     <div
-                        className={'bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150'}
+                        className={
+                            'bg-neutral-800 p-3 sm:p-4 md:p-6 rounded shadow-md overflow-y-scroll transition-all duration-150'
+                        }
                     >
                         {children}
                     </div>

@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import React, { useCallback, useEffect, useState } from 'react';
 import CodeMirror from 'codemirror';
 import modes from '@/modes';

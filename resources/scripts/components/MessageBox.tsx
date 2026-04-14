@@ -57,7 +57,7 @@ const MessageBox = ({ title, children, type }: Props) => (
                 {title}
             </span>
         )}
-        <span className="mr-2 text-left flex-auto">{children}</span>
+        <span className='mr-2 text-left flex-auto'>{children}</span>
     </div>
 );
 MessageBox.displayName = 'MessageBox';

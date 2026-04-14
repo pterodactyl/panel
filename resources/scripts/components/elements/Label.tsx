@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 
 const Label = styled.label<{ isLight?: boolean }>`
     display: block;

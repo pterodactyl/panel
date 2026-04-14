@@ -35,7 +35,7 @@ export default ({ databaseId, onUpdate }: { databaseId: string; onUpdate: (datab
     };
 
     return (
-        <Button isSecondary color={'primary'} className="mr-2" onClick={rotate} isLoading={loading}>
+        <Button isSecondary color={'primary'} className='mr-2' onClick={rotate} isLoading={loading}>
             Rotate Password
         </Button>
     );

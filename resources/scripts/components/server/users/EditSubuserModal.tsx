@@ -102,29 +102,29 @@ const EditSubuserModal = ({ subuser }: Props) => {
             })}
         >
             <Form>
-                <div className="flex justify-between">
-                    <h2 className="text-2xl" ref={ref}>
+                <div className='flex justify-between'>
+                    <h2 className='text-2xl' ref={ref}>
                         {subuser
                             ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
                             : 'Create new subuser'}
                     </h2>
                     <div>
-                        <Button type={'submit'} className="w-full sm:w-auto">
+                        <Button type={'submit'} className='w-full sm:w-auto'>
                             {subuser ? 'Save' : 'Invite User'}
                         </Button>
                     </div>
                 </div>
-                <FlashMessageRender byKey={'user:edit'} className="mt-4" />
+                <FlashMessageRender byKey={'user:edit'} className='mt-4' />
                 {!isRootAdmin && loggedInPermissions[0] !== '*' && (
-                    <div className="mt-4 pl-4 py-2 border-l-4 border-cyan-400">
-                        <p className="text-sm text-neutral-300">
+                    <div className='mt-4 pl-4 py-2 border-l-4 border-cyan-400'>
+                        <p className='text-sm text-neutral-300'>
                             Only permissions which your account is currently assigned may be selected when creating or
                             modifying other users.
                         </p>
                     </div>
                 )}
                 {!subuser && (
-                    <div className="mt-6">
+                    <div className='mt-6'>
                         <Field
                             name={'email'}
                             label={'User Email'}
@@ -134,7 +134,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                         />
                     </div>
                 )}
-                <div className="my-6">
+                <div className='my-6'>
                     {Object.keys(permissions)
                         .filter((key) => key !== 'websocket')
                         .map((key, index) => (
@@ -145,7 +145,7 @@ const EditSubuserModal = ({ subuser }: Props) => {
                                 permissions={Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)}
                                 className={index > 0 ? 'mt-4' : undefined}
                             >
-                                <p className="text-sm text-neutral-400 mb-4">{permissions[key].description}</p>
+                                <p className='text-sm text-neutral-400 mb-4'>{permissions[key].description}</p>
                                 {Object.keys(permissions[key].keys).map((pkey) => (
                                     <PermissionRow
                                         key={`permission_${key}.${pkey}`}
@@ -157,8 +157,8 @@ const EditSubuserModal = ({ subuser }: Props) => {
                         ))}
                 </div>
                 <Can action={subuser ? 'user.update' : 'user.create'}>
-                    <div className="pb-6 flex justify-end">
-                        <Button type={'submit'} className="w-full sm:w-auto">
+                    <div className='pb-6 flex justify-end'>
+                        <Button type={'submit'} className='w-full sm:w-auto'>
                             {subuser ? 'Save' : 'Invite User'}
                         </Button>
                     </div>

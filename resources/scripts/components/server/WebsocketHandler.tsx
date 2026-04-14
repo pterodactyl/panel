@@ -108,17 +108,17 @@ export default () => {
 
     return error ? (
         <CSSTransition timeout={150} in appear classNames={'fade'}>
-            <div className="bg-red-500 py-2">
-                <ContentContainer className="flex items-center justify-center">
+            <div className='bg-red-500 py-2'>
+                <ContentContainer className='flex items-center justify-center'>
                     {error === 'connecting' ? (
                         <>
                             <Spinner size={'small'} />
-                            <p className="ml-2 text-sm text-red-100">
+                            <p className='ml-2 text-sm text-red-100'>
                                 We&apos;re having some trouble connecting to your server, please wait...
                             </p>
                         </>
                     ) : (
-                        <p className="ml-2 text-sm text-white">{error}</p>
+                        <p className='ml-2 text-sm text-white'>{error}</p>
                     )}
                 </ContentContainer>
             </div>

@@ -61,7 +61,7 @@ const MassActionsBar = () => {
 
     return (
         <>
-            <div className="pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center">
+            <div className='pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center'>
                 <SpinnerOverlay visible={loading} size={'large'} fixed>
                     {loadingMessage}
                 </SpinnerOverlay>
@@ -94,7 +94,7 @@ const MassActionsBar = () => {
                 <Portal>
                     <div className={'pointer-events-none fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
                         <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-                            <div className="flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50">
+                            <div className='flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50'>
                                 <Button onClick={() => setShowMove(true)}>Move</Button>
                                 <Button onClick={onClickCompress}>Archive</Button>
                                 <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>

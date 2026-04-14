@@ -69,13 +69,13 @@ const NewDirectoryDialog = asDialog({
             {({ submitForm, values }) => (
                 <>
                     <FlashMessageRender key={'files:directory-modal'} />
-                    <Form className="m-0">
+                    <Form className='m-0'>
                         <Field autoFocus id={'directoryName'} name={'directoryName'} label={'Name'} />
-                        <p className="mt-2 text-sm md:text-base break-all">
-                            <span className="text-neutral-200">This directory will be created as&nbsp;</span>
+                        <p className='mt-2 text-sm md:text-base break-all'>
+                            <span className='text-neutral-200'>This directory will be created as&nbsp;</span>
                             <Code>
                                 /home/container/
-                                <span className="text-cyan-200">
+                                <span className='text-cyan-200'>
                                     {join(directory, values.directoryName).replace(/^(\.\.\/|\/)+/, '')}
                                 </span>
                             </Code>

@@ -23,32 +23,32 @@ export default () => {
 
     return (
         <ServerContentBlock title={'Settings'}>
-            <FlashMessageRender byKey={'settings'} className="mb-4" />
-            <div className="md:flex">
-                <div className="w-full md:flex-1 md:mr-10">
+            <FlashMessageRender byKey={'settings'} className='mb-4' />
+            <div className='md:flex'>
+                <div className='w-full md:flex-1 md:mr-10'>
                     <Can action={'file.sftp'}>
-                        <TitledGreyBox title={'SFTP Details'} className="mb-6 md:mb-10">
+                        <TitledGreyBox title={'SFTP Details'} className='mb-6 md:mb-10'>
                             <div>
                                 <Label>Server Address</Label>
                                 <CopyOnClick text={`sftp://${ip(sftp.ip)}:${sftp.port}`}>
                                     <Input type={'text'} value={`sftp://${ip(sftp.ip)}:${sftp.port}`} readOnly />
                                 </CopyOnClick>
                             </div>
-                            <div className="mt-6">
+                            <div className='mt-6'>
                                 <Label>Username</Label>
                                 <CopyOnClick text={`${username}.${id}`}>
                                     <Input type={'text'} value={`${username}.${id}`} readOnly />
                                 </CopyOnClick>
                             </div>
-                            <div className="mt-6 flex items-center">
-                                <div className="flex-1">
-                                    <div className="border-l-4 border-cyan-500 p-3">
-                                        <p className="text-xs text-neutral-200">
+                            <div className='mt-6 flex items-center'>
+                                <div className='flex-1'>
+                                    <div className='border-l-4 border-cyan-500 p-3'>
+                                        <p className='text-xs text-neutral-200'>
                                             Your SFTP password is the same as the password you use to access this panel.
                                         </p>
                                     </div>
                                 </div>
-                                <div className="ml-4">
+                                <div className='ml-4'>
                                     <a href={`sftp://${username}.${id}@${ip(sftp.ip)}:${sftp.port}`}>
                                         <Button.Text variant={Button.Variants.Secondary}>Launch SFTP</Button.Text>
                                     </a>
@@ -56,22 +56,22 @@ export default () => {
                             </div>
                         </TitledGreyBox>
                     </Can>
-                    <TitledGreyBox title={'Debug Information'} className="mb-6 md:mb-10">
-                        <div className="flex items-center justify-between text-sm">
+                    <TitledGreyBox title={'Debug Information'} className='mb-6 md:mb-10'>
+                        <div className='flex items-center justify-between text-sm'>
                             <p>Node</p>
-                            <code className="font-mono bg-neutral-900 rounded py-1 px-2">{node}</code>
+                            <code className='font-mono bg-neutral-900 rounded py-1 px-2'>{node}</code>
                         </div>
                         <CopyOnClick text={uuid}>
-                            <div className="flex items-center justify-between mt-2 text-sm">
+                            <div className='flex items-center justify-between mt-2 text-sm'>
                                 <p>Server ID</p>
-                                <code className="font-mono bg-neutral-900 rounded py-1 px-2">{uuid}</code>
+                                <code className='font-mono bg-neutral-900 rounded py-1 px-2'>{uuid}</code>
                             </div>
                         </CopyOnClick>
                     </TitledGreyBox>
                 </div>
-                <div className="w-full mt-6 md:flex-1 md:mt-0">
+                <div className='w-full mt-6 md:flex-1 md:mt-0'>
                     <Can action={'settings.rename'}>
-                        <div className="mb-6 md:mb-10">
+                        <div className='mb-6 md:mb-10'>
                             <RenameServerBox />
                         </div>
                     </Can>

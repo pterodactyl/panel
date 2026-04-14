@@ -1,4 +1,4 @@
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import Checkbox from '@/components/elements/Checkbox';
 import React from 'react';
 import { useStoreState } from 'easy-peasy';

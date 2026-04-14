@@ -1,5 +1,5 @@
 import React from 'react';
-import styled, { css } from 'styled-components/macro';
+import styled, { css } from 'styled-components';
 import Spinner from '@/components/elements/Spinner';
 
 interface Props {
@@ -141,14 +141,11 @@ const ButtonStyle = styled.button<Omit<Props, 'isLoading'>>`
                 border-color: hsl(211, 12%, 43%);
                 color: hsl(214, 15%, 91%);
                 ${(props) =>
-                    props.color === 'red' &&
-                    `background-color: #ef4444; border-color: #dc2626; color: #fef2f2;`};
+                    props.color === 'red' && `background-color: #ef4444; border-color: #dc2626; color: #fef2f2;`};
                 ${(props) =>
-                    props.color === 'primary' &&
-                    `background-color: #3b82f6; border-color: #2563eb; color: #eff6ff;`};
+                    props.color === 'primary' && `background-color: #3b82f6; border-color: #2563eb; color: #eff6ff;`};
                 ${(props) =>
-                    props.color === 'green' &&
-                    `background-color: #22c55e; border-color: #16a34a; color: #f0fdf4;`};
+                    props.color === 'green' && `background-color: #22c55e; border-color: #16a34a; color: #f0fdf4;`};
             }
         `};
 

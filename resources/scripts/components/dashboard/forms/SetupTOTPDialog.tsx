@@ -64,7 +64,7 @@ const ConfigureTwoFactorForm = ({ onTokens }: Props) => {
                 {!token ? (
                     <Spinner />
                 ) : (
-                    <QRCode renderAs={'svg'} value={token.image_url_data} className="w-full h-full shadow-none" />
+                    <QRCode renderAs={'svg'} value={token.image_url_data} className='w-full h-full shadow-none' />
                 )}
             </div>
             <CopyOnClick text={token?.secret}>

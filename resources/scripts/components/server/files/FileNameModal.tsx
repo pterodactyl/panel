@@ -47,7 +47,7 @@ export default ({ onFileNamed, onDismissed, ...props }: Props) => {
                             description={'Enter the name that this file should be saved as.'}
                             autoFocus
                         />
-                        <div className="mt-6 text-right">
+                        <div className='mt-6 text-right'>
                             <Button>Create File</Button>
                         </div>
                     </Form>

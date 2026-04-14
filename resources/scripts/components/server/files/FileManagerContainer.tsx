@@ -66,7 +66,7 @@ export default () => {
                         renderLeft={
                             <FileActionCheckbox
                                 type={'checkbox'}
-                                className="mx-4"
+                                className='mx-4'
                                 checked={selectedFilesLength === (files?.length === 0 ? -1 : files?.length)}
                                 onChange={onSelectAllClick}
                             />
@@ -89,13 +89,13 @@ export default () => {
             ) : (
                 <>
                     {!files.length ? (
-                        <p className="text-sm text-neutral-400 text-center">This directory seems to be empty.</p>
+                        <p className='text-sm text-neutral-400 text-center'>This directory seems to be empty.</p>
                     ) : (
                         <CSSTransition classNames={'fade'} timeout={150} appear in>
                             <div>
                                 {files.length > 250 && (
-                                    <div className="rounded bg-yellow-400 mb-px p-3">
-                                        <p className="text-yellow-900 text-sm text-center">
+                                    <div className='rounded bg-yellow-400 mb-px p-3'>
+                                        <p className='text-yellow-900 text-sm text-center'>
                                             This directory is too large to display in the browser, limiting the output
                                             to the first 250 files.
                                         </p>

@@ -24,7 +24,7 @@ import useFlash from '@/plugins/useFlash';
 import { FileObject } from '@/api/server/files/loadDirectory';
 import useFileManagerSwr from '@/plugins/useFileManagerSwr';
 import DropdownMenu from '@/components/elements/DropdownMenu';
-import styled, { css } from 'styled-components/macro';
+import styled, { css } from 'styled-components';
 import useEventListener from '@/plugins/useEventListener';
 import compressFiles from '@/api/server/files/compressFiles';
 import decompressFiles from '@/api/server/files/decompressFiles';

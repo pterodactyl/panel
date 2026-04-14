@@ -1,7 +1,6 @@
 module.exports = function (api) {
     let targets = {};
     const plugins = [
-        'babel-plugin-macros',
         'styled-components',
         'react-hot-loader/babel',
         '@babel/transform-runtime',

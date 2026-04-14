@@ -134,7 +134,7 @@ export default ({ className }: WithClassname) => {
             <input
                 type={'file'}
                 ref={fileUploadInput}
-                className="hidden"
+                className='hidden'
                 onChange={(e) => {
                     if (!e.currentTarget.files) return;
 

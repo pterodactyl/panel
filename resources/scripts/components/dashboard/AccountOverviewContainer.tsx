@@ -5,7 +5,7 @@ import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddr
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { breakpoint } from '@/theme';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import MessageBox from '@/components/MessageBox';
 import { useLocation } from 'react-router-dom';
 import classNames from 'classnames';
@@ -39,11 +39,17 @@ export default () => {
                 </MessageBox>
             )}
 
-            <Container className={classNames('lg:grid lg:grid-cols-3 mb-10', state?.twoFactorRedirect ? 'mt-4' : 'mt-10')}>
+            <Container
+                className={classNames('lg:grid lg:grid-cols-3 mb-10', state?.twoFactorRedirect ? 'mt-4' : 'mt-10')}
+            >
                 <ContentBox title={'Update Password'} showFlashes={'account:password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox className={'mt-8 sm:mt-0 sm:ml-8'} title={'Update Email Address'} showFlashes={'account:email'}>
+                <ContentBox
+                    className={'mt-8 sm:mt-0 sm:ml-8'}
+                    title={'Update Email Address'}
+                    showFlashes={'account:email'}
+                >
                     <UpdateEmailAddressForm />
                 </ContentBox>
                 <ContentBox className={'md:ml-8 mt-8 md:mt-0'} title={'Two-Step Verification'}>

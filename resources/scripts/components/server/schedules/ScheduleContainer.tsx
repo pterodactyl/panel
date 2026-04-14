@@ -38,13 +38,13 @@ export default () => {
 
     return (
         <ServerContentBlock title={'Schedules'}>
-            <FlashMessageRender byKey={'schedules'} className="mb-4" />
+            <FlashMessageRender byKey={'schedules'} className='mb-4' />
             {!schedules.length && loading ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
                     {schedules.length === 0 ? (
-                        <p className="text-sm text-center text-neutral-300">
+                        <p className='text-sm text-center text-neutral-300'>
                             There are no schedules configured for this server.
                         </p>
                     ) : (
@@ -53,7 +53,7 @@ export default () => {
                                 as={'a'}
                                 key={schedule.id}
                                 href={`${match.url}/${schedule.id}`}
-                                className="cursor-pointer mb-2 flex-wrap"
+                                className='cursor-pointer mb-2 flex-wrap'
                                 onClick={(e: any) => {
                                     e.preventDefault();
                                     history.push(`${match.url}/${schedule.id}`);
@@ -64,7 +64,7 @@ export default () => {
                         ))
                     )}
                     <Can action={'schedule.create'}>
-                        <div className="mt-8 flex justify-end">
+                        <div className='mt-8 flex justify-end'>
                             <EditScheduleModal visible={visible} onModalDismissed={() => setVisible(false)} />
                             <Button type={'button'} onClick={() => setVisible(true)}>
                                 Create schedule

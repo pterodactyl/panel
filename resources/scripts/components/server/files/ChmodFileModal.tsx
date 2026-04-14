@@ -55,13 +55,13 @@ const ChmodFileModal = ({ files, ...props }: OwnProps) => {
         <Formik onSubmit={submit} initialValues={{ mode: files.length > 1 ? '' : files[0].mode || '' }}>
             {({ isSubmitting }) => (
                 <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form className="m-0">
-                        <div className="flex flex-wrap items-end">
-                            <div className="w-full sm:flex-1 sm:mr-4">
+                    <Form className='m-0'>
+                        <div className='flex flex-wrap items-end'>
+                            <div className='w-full sm:flex-1 sm:mr-4'>
                                 <Field type={'string'} id={'file_mode'} name={'mode'} label={'File Mode'} autoFocus />
                             </div>
-                            <div className="w-full sm:w-auto mt-4 sm:mt-0">
-                                <Button className="w-full">Update</Button>
+                            <div className='w-full sm:w-auto mt-4 sm:mt-0'>
+                                <Button className='w-full'>Update</Button>
                             </div>
                         </div>
                     </Form>

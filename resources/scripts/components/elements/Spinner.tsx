@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import styled, { css, keyframes } from 'styled-components/macro';
+import styled, { css, keyframes } from 'styled-components';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 
 export type SpinnerSize = 'small' | 'base' | 'large';
@@ -8,6 +8,7 @@ interface Props {
     size?: SpinnerSize;
     centered?: boolean;
     isBlue?: boolean;
+    className?: string;
 }
 
 interface Spinner extends React.FC<Props> {

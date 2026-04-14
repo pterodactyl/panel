@@ -72,17 +72,17 @@ const GSLTokenModalFeature = () => {
                 closeOnBackground={false}
                 showSpinnerOverlay={loading}
             >
-                <FlashMessageRender key={'feature:gslToken'} className="mb-4" />
+                <FlashMessageRender key={'feature:gslToken'} className='mb-4' />
                 <Form>
-                    <h2 className="text-2xl mb-4 text-neutral-100">Invalid GSL token!</h2>
-                    <p className="mt-4">
+                    <h2 className='text-2xl mb-4 text-neutral-100'>Invalid GSL token!</h2>
+                    <p className='mt-4'>
                         It seems like your Gameserver Login Token (GSL token) is invalid or has expired.
                     </p>
-                    <p className="mt-4">
+                    <p className='mt-4'>
                         You can either generate a new one and enter it below or leave the field blank to remove it
                         completely.
                     </p>
-                    <div className="sm:flex items-center mt-4">
+                    <div className='sm:flex items-center mt-4'>
                         <Field
                             name={'gslToken'}
                             label={'GSL Token'}
@@ -90,8 +90,8 @@ const GSLTokenModalFeature = () => {
                             autoFocus
                         />
                     </div>
-                    <div className="mt-8 sm:flex items-center justify-end">
-                        <Button type={'submit'} className="mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto">
+                    <div className='mt-8 sm:flex items-center justify-end'>
+                        <Button type={'submit'} className='mt-4 sm:mt-0 sm:ml-4 w-full sm:w-auto'>
                             Update GSL Token
                         </Button>
                     </div>

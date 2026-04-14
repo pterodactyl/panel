@@ -84,20 +84,21 @@ export default () => {
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'files:view'} className="mb-4" />
+            <FlashMessageRender byKey={'files:view'} className='mb-4' />
             <ErrorBoundary>
-                <div className="mb-4">
+                <div className='mb-4'>
                     <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'} />
                 </div>
             </ErrorBoundary>
             {hash.replace(/^#/, '').endsWith('.pteroignore') && (
-                <div className="mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400">
-                    <p className="text-neutral-300 text-sm">
-                        You&apos;re editing a <code className="font-mono bg-black rounded py-px px-1">.pteroignore</code>{' '}
-                        file. Any files or directories listed in here will be excluded from backups. Wildcards are
-                        supported by using an asterisk (<code className="font-mono bg-black rounded py-px px-1">*</code>).
-                        You can negate a prior rule by prepending an exclamation point (
-                        <code className="font-mono bg-black rounded py-px px-1">!</code>).
+                <div className='mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400'>
+                    <p className='text-neutral-300 text-sm'>
+                        You&apos;re editing a{' '}
+                        <code className='font-mono bg-black rounded py-px px-1'>.pteroignore</code> file. Any files or
+                        directories listed in here will be excluded from backups. Wildcards are supported by using an
+                        asterisk (<code className='font-mono bg-black rounded py-px px-1'>*</code>). You can negate a
+                        prior rule by prepending an exclamation point (
+                        <code className='font-mono bg-black rounded py-px px-1'>!</code>).
                     </p>
                 </div>
             )}
@@ -109,7 +110,7 @@ export default () => {
                     save(name);
                 }}
             />
-            <div className="relative">
+            <div className='relative'>
                 <SpinnerOverlay visible={loading} />
                 <CodemirrorEditor
                     mode={mode}
@@ -128,8 +129,8 @@ export default () => {
                     }}
                 />
             </div>
-            <div className="flex justify-end mt-4">
-                <div className="flex-1 sm:flex-none rounded bg-neutral-900 mr-4">
+            <div className='flex justify-end mt-4'>
+                <div className='flex-1 sm:flex-none rounded bg-neutral-900 mr-4'>
                     <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
                         {modes.map((mode) => (
                             <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
@@ -140,13 +141,13 @@ export default () => {
                 </div>
                 {action === 'edit' ? (
                     <Can action={'file.update'}>
-                        <Button className="flex-1 sm:flex-none" onClick={() => save()}>
+                        <Button className='flex-1 sm:flex-none' onClick={() => save()}>
                             Save Content
                         </Button>
                     </Can>
                 ) : (
                     <Can action={'file.create'}>
-                        <Button className="flex-1 sm:flex-none" onClick={() => setModalVisible(true)}>
+                        <Button className='flex-1 sm:flex-none' onClick={() => setModalVisible(true)}>
                             Create File
                         </Button>
                     </Can>

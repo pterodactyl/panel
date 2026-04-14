@@ -1,6 +1,6 @@
 import React from 'react';
 import { ServerContext } from '@/state/server';
-import styled from 'styled-components/macro';
+import styled from 'styled-components';
 import Input from '@/components/elements/Input';
 
 export const FileActionCheckbox = styled(Input)`

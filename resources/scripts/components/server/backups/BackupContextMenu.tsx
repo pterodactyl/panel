@@ -137,11 +137,11 @@ export default ({ backup }: Props) => {
                     Your server will be stopped. You will not be able to control the power state, access the file
                     manager, or create additional backups until completed.
                 </p>
-                <p className="mt-4 -mb-2 bg-gray-700 p-3 rounded">
-                    <label htmlFor={'restore_truncate'} className="text-base flex items-center cursor-pointer">
+                <p className='mt-4 -mb-2 bg-gray-700 p-3 rounded'>
+                    <label htmlFor={'restore_truncate'} className='text-base flex items-center cursor-pointer'>
                         <Input
                             type={'checkbox'}
-                            className="text-red-500! w-5! h-5! mr-2"
+                            className='text-red-500! w-5! h-5! mr-2'
                             id={'restore_truncate'}
                             value={'true'}
                             checked={truncate}
@@ -166,23 +166,23 @@ export default ({ backup }: Props) => {
                     renderToggle={(onClick) => (
                         <button
                             onClick={onClick}
-                            className="text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2"
+                            className='text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2'
                         >
                             <FontAwesomeIcon icon={faEllipsisH} />
                         </button>
                     )}
                 >
-                    <div className="text-sm">
+                    <div className='text-sm'>
                         <Can action={'backup.download'}>
                             <DropdownButtonRow onClick={doDownload}>
-                                <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} className="text-xs" />
-                                <span className="ml-2">Download</span>
+                                <FontAwesomeIcon fixedWidth icon={faCloudDownloadAlt} className='text-xs' />
+                                <span className='ml-2'>Download</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.restore'}>
                             <DropdownButtonRow onClick={() => setModal('restore')}>
-                                <FontAwesomeIcon fixedWidth icon={faBoxOpen} className="text-xs" />
-                                <span className="ml-2">Restore</span>
+                                <FontAwesomeIcon fixedWidth icon={faBoxOpen} className='text-xs' />
+                                <span className='ml-2'>Restore</span>
                             </DropdownButtonRow>
                         </Can>
                         <Can action={'backup.delete'}>
@@ -191,14 +191,14 @@ export default ({ backup }: Props) => {
                                     <FontAwesomeIcon
                                         fixedWidth
                                         icon={backup.isLocked ? faUnlock : faLock}
-                                        className="text-xs mr-2"
+                                        className='text-xs mr-2'
                                     />
                                     {backup.isLocked ? 'Unlock' : 'Lock'}
                                 </DropdownButtonRow>
                                 {!backup.isLocked && (
                                     <DropdownButtonRow danger onClick={() => setModal('delete')}>
-                                        <FontAwesomeIcon fixedWidth icon={faTrashAlt} className="text-xs" />
-                                        <span className="ml-2">Delete</span>
+                                        <FontAwesomeIcon fixedWidth icon={faTrashAlt} className='text-xs' />
+                                        <span className='ml-2'>Delete</span>
                                     </DropdownButtonRow>
                                 )}
                             </>
@@ -208,7 +208,7 @@ export default ({ backup }: Props) => {
             ) : (
                 <button
                     onClick={() => setModal('delete')}
-                    className="text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2"
+                    className='text-gray-200 transition-colors duration-150 hover:text-gray-100 p-2'
                 >
                     <FontAwesomeIcon icon={faTrashAlt} />
                 </button>
