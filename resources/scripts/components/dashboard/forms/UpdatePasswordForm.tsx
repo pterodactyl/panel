@@ -7,7 +7,6 @@ import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import updateAccountPassword from '@/api/account/updateAccountPassword';
 import { httpErrorToHuman } from '@/api/http';
 import { ApplicationStore } from '@/state';
-import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
 
 interface Values {
@@ -64,14 +63,14 @@ export default () => {
                 {({ isSubmitting, isValid }) => (
                     <React.Fragment>
                         <SpinnerOverlay size={'large'} visible={isSubmitting} />
-                        <Form css={tw`m-0`}>
+                        <Form className="m-0">
                             <Field
                                 id={'current_password'}
                                 type={'password'}
                                 name={'current'}
                                 label={'Current Password'}
                             />
-                            <div css={tw`mt-6`}>
+                            <div className="mt-6">
                                 <Field
                                     id={'new_password'}
                                     type={'password'}
@@ -82,7 +81,7 @@ export default () => {
                                     }
                                 />
                             </div>
-                            <div css={tw`mt-6`}>
+                            <div className="mt-6">
                                 <Field
                                     id={'confirm_new_password'}
                                     type={'password'}
@@ -90,7 +89,7 @@ export default () => {
                                     label={'Confirm New Password'}
                                 />
                             </div>
-                            <div css={tw`mt-6`}>
+                            <div className="mt-6">
                                 <Button disabled={isSubmitting || !isValid}>Update Password</Button>
                             </div>
                         </Form>

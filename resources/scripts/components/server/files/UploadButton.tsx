@@ -1,6 +1,5 @@
 import axios, { AxiosProgressEvent } from 'axios';
 import getFileUploadUrl from '@/api/server/files/getFileUploadUrl';
-import tw from 'twin.macro';
 import { Button } from '@/components/elements/button/index';
 import React, { useEffect, useRef } from 'react';
 import { ModalMask } from '@/components/elements/Modal';
@@ -135,7 +134,7 @@ export default ({ className }: WithClassname) => {
             <input
                 type={'file'}
                 ref={fileUploadInput}
-                css={tw`hidden`}
+                className="hidden"
                 onChange={(e) => {
                     if (!e.currentTarget.files) return;
 
