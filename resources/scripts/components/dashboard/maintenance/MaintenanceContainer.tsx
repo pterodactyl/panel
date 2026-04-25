@@ -9,7 +9,7 @@ export default () => {
         return new Date(inputDate.toDateString()) >= new Date(new Date().toDateString());
     }
 
-    if (validateDate(2026, 2, 20)) {
+    if (validateDate(2026, 4, 25)) {
         return (
             <>
                 <Tooltip placement={'bottom'} content={'Geplante Wartungsarbeiten'}>

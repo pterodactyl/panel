@@ -54,10 +54,6 @@ class Kernel extends HttpKernel
         SubstituteClientBindings::class,
     ];
 
-    protected $middlewarePriority = [
-        SubstituteClientBindings::class,
-    ];
-
     /**
      * The application's route middleware groups.
      */
