@@ -10,7 +10,7 @@ return [
     | change this value if you are not maintaining your own internal versions.
     */
 
-    'version' => '1.12.1',
+    'version' => '1.12.2',
 
     /*
     |--------------------------------------------------------------------------
