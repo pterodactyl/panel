@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Backups;
 
 use Carbon\CarbonImmutable;
 use Pterodactyl\Models\User;
+use Pterodactyl\Enum\JwtScope;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Services\Nodes\NodeJWTService;
 use Pterodactyl\Extensions\Backups\BackupManager;
@@ -34,6 +35,7 @@ class DownloadLinkService
                 'backup_uuid' => $backup->uuid,
                 'server_uuid' => $backup->server->uuid,
             ])
+            ->setScopes(JwtScope::BackupDownload)
             ->handle($backup->server->node, $user->id . $backup->server->uuid);
 
         return sprintf('%s/download/backup?token=%s', $backup->server->node->getConnectionAddress(), $token->toString());
