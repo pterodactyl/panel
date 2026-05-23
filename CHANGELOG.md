@@ -11,6 +11,7 @@ This project follows [Semantic Versioning](http://semver.org) guidelines.
 ### Changed
 * Added Java 25 as an option to the default Minecraft eggs.
 * Updates Paper install script and adds support for Java 25 to default egg.
+* JWTs now require at least one `JwtScope` enum value to be set when generating. Failure to provide a scope will result in an exception being raised.
 
 ## v1.12.2
 ### Fixed
