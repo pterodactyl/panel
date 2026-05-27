@@ -67,7 +67,7 @@ return [
             'delete' => 'Deleted database :name',
         ],
         'file' => [
-            'compress_one' => 'Compressed :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Compressed :count files in :directory',
             'read' => 'Viewed the contents of :file',
             'copy' => 'Created a copy of :file',
