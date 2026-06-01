@@ -48,9 +48,8 @@ class CreateServerSubuserTest extends ClientApiIntegrationTestCase
     }
 
     /**
-     * Test that inviting a brand-new email address — which transparently creates a new user
-     * account on the system — records a user:user.create activity log entry. This unprivileged
-     * path previously minted accounts with no audit trail, hiding them from forensic review.
+     * Test that a newly created user account correctly causes the creation of a user:user.create
+     * activity log entry.
      */
     public function testCreatingSubuserWithNewEmailLogsUserCreation()
     {
