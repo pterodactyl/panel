@@ -121,6 +121,35 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonPath('errors.0.meta.rule', 'email');
         $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+
+
+        /*
+        * RFCs limit certain parts of an email to certain character limits.
+        * A limit of <= 64 for the local, then <= 63 for each domain label.
+        */
+        $local = str_repeat(Str::random(10), 6) . '1234';
+        $label = str_repeat(Str::random(10), 6) . '1';
+
+
+        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
+            'email' => "1$local@$label.$label", // exceed RFC limit for local part
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+        $response->assertJsonPath('errors.0.meta.source_field', 'email');
+
+
+        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
+            'email' => "$local@1234$label.$label", // exceed RFC limit for label part
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+        $response->assertJsonPath('errors.0.meta.source_field', 'email');
+
     }
 
     /**
@@ -159,8 +188,8 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->assertNotEquals($server->node_id, $server2->node_id);
 
         Bus::assertDispatchedTimes(RevokeSftpAccessJob::class, 2);
-        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
-        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
+        Bus::assertDispatched(fn(RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
+        Bus::assertDispatched(fn(RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
     }
 
     /**
