@@ -35,7 +35,7 @@ class LocationController extends Controller
      */
     public function index(): View
     {
-        return $this->view->make('admin.locations.index', [
+        return view('admin.locations.index', [
             'locations' => $this->repository->getAllWithDetails(),
         ]);
     }
@@ -47,7 +47,7 @@ class LocationController extends Controller
      */
     public function view(int $id): View
     {
-        return $this->view->make('admin.locations.view', [
+        return view('admin.locations.view', [
             'location' => $this->repository->getWithNodes($id),
         ]);
     }

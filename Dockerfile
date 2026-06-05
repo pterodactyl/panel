@@ -2,7 +2,7 @@
 # Build the assets that are needed for the frontend. This build stage is then discarded
 # since we won't need NodeJS anymore in the future. This Docker image ships a final production
 # level distribution of Pterodactyl.
-FROM --platform=$TARGETOS/$TARGETARCH mhart/alpine-node:14
+FROM --platform=$TARGETOS/$TARGETARCH node:22-alpine
 WORKDIR /app
 COPY . ./
 RUN yarn install --frozen-lockfile \
@@ -14,7 +14,7 @@ FROM --platform=$TARGETOS/$TARGETARCH php:8.3-fpm-alpine
 WORKDIR /app
 COPY . ./
 COPY --from=0 /app/public/assets ./public/assets
-RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot certbot-nginx \
+RUN apk add --no-cache --update ca-certificates dcron curl git supervisor tar unzip nginx libpng-dev libxml2-dev libzip-dev certbot certbot-nginx mysql-client \
     && docker-php-ext-configure zip \
     && docker-php-ext-install bcmath gd pdo_mysql zip \
     && curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \

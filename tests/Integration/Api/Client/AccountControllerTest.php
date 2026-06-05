@@ -5,7 +5,10 @@ namespace Pterodactyl\Tests\Integration\Api\Client;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\User;
 use Illuminate\Http\Response;
+use Pterodactyl\Models\Subuser;
+use Illuminate\Support\Facades\Bus;
 use Illuminate\Support\Facades\Hash;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
 
 class AccountControllerTest extends ClientApiIntegrationTestCase
 {
@@ -38,17 +41,39 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testEmailIsUpdated()
     {
-        /** @var User $user */
         $user = User::factory()->create();
 
-        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
-            'email' => $email = Str::random() . '@example.com',
-            'password' => 'password',
-        ]);
+        $this->actingAs($user)
+            ->putJson('/api/client/account/email', [
+                'email' => $email = Str::random() . '@example.com',
+                'password' => 'password',
+            ])
+            ->assertNoContent();
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
-
+        $this->assertActivityFor('user:account.email-changed', $user, $user);
         $this->assertDatabaseHas('users', ['id' => $user->id, 'email' => $email]);
+    }
+
+    public function testEmailChangeIsThrottled(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $endpoint = route('api:client.account.update-email');
+
+        for ($i = 0; $i < 3; ++$i) {
+            $this->actingAs($users[0])
+                ->putJson($endpoint, ['email' => "foo+{$i}@example.com", 'password' => 'password'])
+                ->assertNoContent();
+        }
+
+        $this
+            ->putJson($endpoint, ['email' => 'bar@example.com', 'password' => 'password'])
+            ->assertTooManyRequests();
+
+        // The other user should still be able to update their email because the throttle
+        // is tied to the account, not to the IP address.
+        $this->actingAs($users[1])
+            ->putJson($endpoint, ['email' => 'bar+1@example.com', 'password' => 'password'])
+            ->assertNoContent();
     }
 
     /**
@@ -103,16 +128,26 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
      */
     public function testPasswordIsUpdated()
     {
-        /** @var User $user */
         $user = User::factory()->create();
+
+        // Assign the user to two servers, one as the owner the other as a subuser, both
+        // on different nodes to ensure our logic fires off correctly and the user has their
+        // credentials revoked on both nodes.
+        $server = $this->createServerModel(['owner_id' => $user->id]);
+        $server2 = $this->createServerModel();
+        Subuser::factory()->for($server2)->for($user)->create();
 
         $initialHash = $user->password;
 
-        $response = $this->actingAs($user)->putJson('/api/client/account/password', [
-            'current_password' => 'password',
-            'password' => 'New_Password1',
-            'password_confirmation' => 'New_Password1',
-        ]);
+        Bus::fake([RevokeSftpAccessJob::class]);
+
+        $this->actingAs($user)
+            ->putJson('/api/client/account/password', [
+                'current_password' => 'password',
+                'password' => 'New_Password1',
+                'password_confirmation' => 'New_Password1',
+            ])
+            ->assertNoContent();
 
         $user = $user->refresh();
 
@@ -120,7 +155,12 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->assertTrue(Hash::check('New_Password1', $user->password));
         $this->assertFalse(Hash::check('password', $user->password));
 
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $this->assertActivityFor('user:account.password-changed', $user, $user);
+        $this->assertNotEquals($server->node_id, $server2->node_id);
+
+        Bus::assertDispatchedTimes(RevokeSftpAccessJob::class, 2);
+        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
+        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
     }
 
     /**

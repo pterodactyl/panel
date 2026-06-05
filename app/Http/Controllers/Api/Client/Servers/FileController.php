@@ -4,6 +4,7 @@ namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
 use Illuminate\Http\Response;
+use Pterodactyl\Enum\JwtScope;
 use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
@@ -83,6 +84,7 @@ class FileController extends ClientApiController
                 'file_path' => rawurldecode($request->get('file')),
                 'server_uuid' => $server->uuid,
             ])
+            ->setScopes(JwtScope::FileDownload)
             ->handle($server->node, $request->user()->id . $server->uuid);
 
         Activity::event('server:file.download')->property('file', $request->get('file'))->log();

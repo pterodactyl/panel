@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import { ServerContext } from '@/state/server';
-import { join } from 'path';
+import { join } from 'pathe';
 import deleteFiles from '@/api/server/files/deleteFiles';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import copyFile from '@/api/server/files/copyFile';

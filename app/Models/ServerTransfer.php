@@ -4,6 +4,7 @@ namespace Pterodactyl\Models;
 
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -24,6 +25,9 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  */
 class ServerTransfer extends Model
 {
+    /** @use HasFactory<\Database\Factories\ServerTransferFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -70,6 +74,8 @@ class ServerTransfer extends Model
 
     /**
      * Gets the server associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
      */
     public function server(): BelongsTo
     {
@@ -78,6 +84,8 @@ class ServerTransfer extends Model
 
     /**
      * Gets the source node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\Node, $this>
      */
     public function oldNode(): HasOne
     {
@@ -86,6 +94,8 @@ class ServerTransfer extends Model
 
     /**
      * Gets the target node associated with a server transfer.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\Node, $this>
      */
     public function newNode(): HasOne
     {

@@ -4,6 +4,7 @@ namespace Pterodactyl\Providers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Enum\ResourceLimit;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
@@ -106,5 +107,7 @@ class RouteServiceProvider extends ServiceProvider
                 config('http.rate_limit.application')
             )->by($key);
         });
+
+        ResourceLimit::boot();
     }
 }

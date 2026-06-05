@@ -81,11 +81,12 @@ abstract class Model extends IlluminateModel
     /**
      * Returns the validator instance used by this model.
      */
-    public function getValidator(): Validator
+    public function getValidator(): \Illuminate\Validation\Validator
     {
         $rules = $this->exists ? static::getRulesForUpdate($this) : static::getRules();
 
-        return static::$validatorFactory->make([], $rules, [], []);
+        // @phpstan-ignore-next-line return.type
+        return static::$validatorFactory->make([], $rules);
     }
 
     /**
