@@ -85,7 +85,7 @@ abstract class AbstractLoginController extends Controller
             'data' => [
                 'complete' => true,
                 'intended' => $this->redirectPath(),
-                'user' => $user->toVueObject(),
+                'user' => $user->toReactObject(),
             ],
         ]);
     }
