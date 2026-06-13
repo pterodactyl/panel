@@ -10,9 +10,8 @@ class AdminAclTest extends TestCase
 {
     /**
      * Test that permissions return the expects values.
-     *
-     * @dataProvider permissionsDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
     public function testPermissions(int $permission, int $check, bool $outcome)
     {
         $this->assertSame($outcome, AdminAcl::can($permission, $check));

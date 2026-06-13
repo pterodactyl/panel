@@ -1,5 +1,6 @@
 <?php
 
+use Pterodactyl\Enum\ResourceLimit;
 use Illuminate\Support\Facades\Route;
 use Pterodactyl\Http\Controllers\Api\Client;
 use Pterodactyl\Http\Middleware\Activity\ServerSubject;
@@ -24,10 +25,12 @@ Route::prefix('/account')->middleware(AccountSubject::class)->group(function () 
         Route::get('/', [Client\AccountController::class, 'index'])->name('api:client.account');
         Route::get('/two-factor', [Client\TwoFactorController::class, 'index']);
         Route::post('/two-factor', [Client\TwoFactorController::class, 'store']);
-        Route::delete('/two-factor', [Client\TwoFactorController::class, 'delete']);
+        Route::post('/two-factor/disable', [Client\TwoFactorController::class, 'delete']);
     });
 
-    Route::put('/email', [Client\AccountController::class, 'updateEmail'])->name('api:client.account.update-email');
+    Route::put('/email', [Client\AccountController::class, 'updateEmail'])
+        ->middleware('throttle')
+        ->name('api:client.account.update-email');
     Route::put('/password', [Client\AccountController::class, 'updatePassword'])->name('api:client.account.update-password');
 
     Route::get('/activity', Client\ActivityLogController::class)->name('api:client.account.activity');
@@ -60,7 +63,9 @@ Route::group([
     ],
 ], function () {
     Route::get('/', [Client\Servers\ServerController::class, 'index'])->name('api:client:server.view');
-    Route::get('/websocket', Client\Servers\WebsocketController::class)->name('api:client:server.ws');
+    Route::middleware([ResourceLimit::Websocket->middleware()])
+        ->get('/websocket', Client\Servers\WebsocketController::class)
+        ->name('api:client:server.ws');
     Route::get('/resources', Client\Servers\ResourceUtilizationController::class)->name('api:client:server.resources');
     Route::get('/activity', Client\Servers\ActivityLogController::class)->name('api:client:server.activity');
 
@@ -69,7 +74,8 @@ Route::group([
 
     Route::group(['prefix' => '/databases'], function () {
         Route::get('/', [Client\Servers\DatabaseController::class, 'index']);
-        Route::post('/', [Client\Servers\DatabaseController::class, 'store']);
+        Route::middleware([ResourceLimit::Database->middleware()])
+            ->post('/', [Client\Servers\DatabaseController::class, 'store']);
         Route::post('/{database}/rotate-password', [Client\Servers\DatabaseController::class, 'rotatePassword']);
         Route::delete('/{database}', [Client\Servers\DatabaseController::class, 'delete']);
     });
@@ -86,13 +92,15 @@ Route::group([
         Route::post('/delete', [Client\Servers\FileController::class, 'delete']);
         Route::post('/create-folder', [Client\Servers\FileController::class, 'create']);
         Route::post('/chmod', [Client\Servers\FileController::class, 'chmod']);
-        Route::post('/pull', [Client\Servers\FileController::class, 'pull'])->middleware(['throttle:10,5']);
+        Route::middleware([ResourceLimit::FilePull->middleware()])
+            ->post('/pull', [Client\Servers\FileController::class, 'pull']);
         Route::get('/upload', Client\Servers\FileUploadController::class);
     });
 
     Route::group(['prefix' => '/schedules'], function () {
         Route::get('/', [Client\Servers\ScheduleController::class, 'index']);
-        Route::post('/', [Client\Servers\ScheduleController::class, 'store']);
+        Route::middleware([ResourceLimit::Schedule->middleware()])
+            ->post('/', [Client\Servers\ScheduleController::class, 'store']);
         Route::get('/{schedule}', [Client\Servers\ScheduleController::class, 'view']);
         Route::post('/{schedule}', [Client\Servers\ScheduleController::class, 'update']);
         Route::post('/{schedule}/execute', [Client\Servers\ScheduleController::class, 'execute']);
@@ -105,7 +113,8 @@ Route::group([
 
     Route::group(['prefix' => '/network'], function () {
         Route::get('/allocations', [Client\Servers\NetworkAllocationController::class, 'index']);
-        Route::post('/allocations', [Client\Servers\NetworkAllocationController::class, 'store']);
+        Route::middleware([ResourceLimit::Allocation->middleware()])
+            ->post('/allocations', [Client\Servers\NetworkAllocationController::class, 'store']);
         Route::post('/allocations/{allocation}', [Client\Servers\NetworkAllocationController::class, 'update']);
         Route::post('/allocations/{allocation}/primary', [Client\Servers\NetworkAllocationController::class, 'setPrimary']);
         Route::delete('/allocations/{allocation}', [Client\Servers\NetworkAllocationController::class, 'delete']);
@@ -113,7 +122,8 @@ Route::group([
 
     Route::group(['prefix' => '/users'], function () {
         Route::get('/', [Client\Servers\SubuserController::class, 'index']);
-        Route::post('/', [Client\Servers\SubuserController::class, 'store']);
+        Route::middleware([ResourceLimit::Subuser->middleware()])
+            ->post('/', [Client\Servers\SubuserController::class, 'store']);
         Route::get('/{user}', [Client\Servers\SubuserController::class, 'view']);
         Route::post('/{user}', [Client\Servers\SubuserController::class, 'update']);
         Route::delete('/{user}', [Client\Servers\SubuserController::class, 'delete']);
@@ -125,7 +135,8 @@ Route::group([
         Route::get('/{backup}', [Client\Servers\BackupController::class, 'view']);
         Route::get('/{backup}/download', [Client\Servers\BackupController::class, 'download']);
         Route::post('/{backup}/lock', [Client\Servers\BackupController::class, 'toggleLock']);
-        Route::post('/{backup}/restore', [Client\Servers\BackupController::class, 'restore']);
+        Route::middleware([ResourceLimit::Backup->middleware()])
+            ->post('/{backup}/restore', [Client\Servers\BackupController::class, 'restore']);
         Route::delete('/{backup}', [Client\Servers\BackupController::class, 'delete']);
     });
 

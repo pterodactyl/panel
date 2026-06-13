@@ -17,52 +17,53 @@
         }
     ],
     "require": {
-        "php": "^8.1 || ^8.2",
+        "php": "^8.2 || ^8.3",
         "ext-json": "*",
         "ext-mbstring": "*",
         "ext-pdo": "*",
         "ext-pdo_mysql": "*",
         "ext-posix": "*",
         "ext-zip": "*",
-        "aws/aws-sdk-php": "~3.260.1",
-        "doctrine/dbal": "~3.6.0",
-        "guzzlehttp/guzzle": "~7.5.0",
-        "hashids/hashids": "~5.0.0",
-        "laracasts/utilities": "~3.2.2",
-        "laravel/framework": "~10.1.3",
-        "laravel/helpers": "~1.6.0",
-        "laravel/sanctum": "~3.2.1",
-        "laravel/tinker": "~2.8.1",
-        "laravel/ui": "~4.2.1",
-        "lcobucci/jwt": "~4.3.0",
-        "league/flysystem-aws-s3-v3": "~3.12.2",
-        "league/flysystem-memory": "~3.10.3",
-        "matriphe/iso-639": "~1.2",
-        "phpseclib/phpseclib": "~3.0.18",
-        "pragmarx/google2fa": "~8.0.0",
-        "predis/predis": "~2.1.1",
-        "prologue/alerts": "~1.1.0",
-        "psr/cache": "~3.0.0",
+        "aws/aws-sdk-php": "^3.369",
+        "guzzlehttp/guzzle": "^7.9.2",
+        "hashids/hashids": "^5.0.2",
+        "laracasts/utilities": "~3.2.3",
+        "laravel/framework": "^11.31.0",
+        "laravel/helpers": "^1.8.0",
+        "laravel/sanctum": "^4.2.0",
+        "laravel/tinker": "^2.10.0",
+        "laravel/ui": "~4.5.2",
+        "lcobucci/jwt": "^5.6.0",
+        "league/flysystem-aws-s3-v3": "^3.30.1",
+        "league/flysystem-memory": "^3.29.0",
+        "matriphe/iso-639": "~2.0",
+        "phpseclib/phpseclib": "^3.0.47",
+        "pragmarx/google2fa": "~8.0.3",
+        "predis/predis": "^3.3.0",
+        "prologue/alerts": "^1.3.0",
+        "psr/cache": "^3.0.0",
         "s1lentium/iptools": "~1.2.0",
-        "spatie/laravel-fractal": "~6.0.3",
-        "spatie/laravel-query-builder": "~5.1.2",
-        "staudenmeir/belongs-to-through": "~2.13",
-        "symfony/http-client": "~6.2.6",
-        "symfony/mailgun-mailer": "~6.2.5",
-        "symfony/postmark-mailer": "~6.2.5",
-        "symfony/yaml": "~6.2.5",
-        "webmozart/assert": "~1.11.0"
+        "spatie/laravel-fractal": "^6.3.2",
+        "spatie/laravel-query-builder": "^6.3.6",
+        "staudenmeir/belongs-to-through": "^2.16.0",
+        "symfony/http-client": "^7.4.0",
+        "symfony/mailgun-mailer": "^7.4.0",
+        "symfony/postmark-mailer": "^7.4.0",
+        "symfony/yaml": "^7.4.0",
+        "webmozart/assert": "^1.11.0"
     },
     "require-dev": {
-        "barryvdh/laravel-ide-helper": "~2.13.0",
-        "fakerphp/faker": "~1.21.0",
-        "friendsofphp/php-cs-fixer": "~3.14.4",
-        "itsgoingd/clockwork": "~5.1.12",
-        "laravel/sail": "~1.21.0",
-        "mockery/mockery": "~1.5.1",
-        "nunomaduro/collision": "~7.0.5",
-        "phpunit/phpunit": "~10.0.11",
-        "spatie/laravel-ignition": "~2.0.0"
+        "barryvdh/laravel-ide-helper": "^3.6",
+        "fakerphp/faker": "^1.24",
+        "friendsofphp/php-cs-fixer": "~3.64.0",
+        "itsgoingd/clockwork": "^5.3",
+        "larastan/larastan": "^3.8",
+        "mockery/mockery": "^1.6",
+        "nunomaduro/collision": "^8.5",
+        "phpstan/phpstan": "^2.1",
+        "phpstan/phpstan-webmozart-assert": "^2.0",
+        "phpunit/phpunit": "^10.5.62",
+        "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {
         "files": [
@@ -86,11 +87,16 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi || true"
         ],
+        "post-install-cmd": [
+            "@php artisan p:environment:addons:run-hooks post-install || true"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],
         "post-create-project-cmd": [
-            "@php artisan key:generate --ansi"
+            "@php artisan key:generate --ansi",
+            "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
+            "@php artisan migrate --graceful --ansi"
         ]
     },
     "config": {
@@ -98,7 +104,7 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "platform": {
-            "php": "8.1.0"
+            "php": "8.2.0"
         }
     },
     "minimum-stability": "stable",

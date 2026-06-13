@@ -19,7 +19,7 @@ class DynamicDatabaseConnection
     public function __construct(
         protected ConfigRepository $config,
         protected Encrypter $encrypter,
-        protected DatabaseHostRepositoryInterface $repository
+        protected DatabaseHostRepositoryInterface $repository,
     ) {
     }
 

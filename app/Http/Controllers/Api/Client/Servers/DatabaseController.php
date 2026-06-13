@@ -6,6 +6,7 @@ use Illuminate\Http\Response;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Database;
 use Pterodactyl\Facades\Activity;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
@@ -24,7 +25,7 @@ class DatabaseController extends ClientApiController
     public function __construct(
         private DeployServerDatabaseService $deployDatabaseService,
         private DatabaseManagementService $managementService,
-        private DatabasePasswordService $passwordService
+        private DatabasePasswordService $passwordService,
     ) {
         parent::__construct();
     }
@@ -48,12 +49,17 @@ class DatabaseController extends ClientApiController
      */
     public function store(StoreDatabaseRequest $request, Server $server): array
     {
-        $database = $this->deployDatabaseService->handle($server, $request->validated());
+        $database = Activity::event('server:database.create')->transaction(function ($log) use ($request, $server) {
+            if ($server->databases()->lockForUpdate()->count() >= $server->database_limit) {
+                throw new DisplayException('Cannot create additional databases on this server: limit has been reached.');
+            }
 
-        Activity::event('server:database.create')
-            ->subject($database)
-            ->property('name', $database->database)
-            ->log();
+            $database = $this->deployDatabaseService->handle($server, $request->validated());
+
+            $log->subject($database)->property('name', $database->database);
+
+            return $database;
+        });
 
         return $this->fractal->item($database)
             ->parseIncludes(['password'])
@@ -69,15 +75,12 @@ class DatabaseController extends ClientApiController
      */
     public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database): array
     {
-        $this->passwordService->handle($database);
-        $database->refresh();
-
         Activity::event('server:database.rotate-password')
             ->subject($database)
             ->property('name', $database->database)
-            ->log();
+            ->transaction(fn () => $this->passwordService->handle($database));
 
-        return $this->fractal->item($database)
+        return $this->fractal->item($database->refresh())
             ->parseIncludes(['password'])
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
             ->toArray();

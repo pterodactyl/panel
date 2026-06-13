@@ -5,6 +5,7 @@ namespace Pterodactyl\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * @property int $id
@@ -13,11 +14,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property array $permissions
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\User $user
- * @property \Pterodactyl\Models\Server $server
+ * @property User $user
+ * @property Server $server
  */
 class Subuser extends Model
 {
+    /** @use HasFactory<\Database\Factories\SubuserFactory> */
+    use HasFactory;
     use Notifiable;
 
     /**
@@ -62,6 +65,8 @@ class Subuser extends Model
 
     /**
      * Gets the server associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
      */
     public function server(): BelongsTo
     {
@@ -70,6 +75,8 @@ class Subuser extends Model
 
     /**
      * Gets the user associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
      */
     public function user(): BelongsTo
     {
@@ -78,6 +85,8 @@ class Subuser extends Model
 
     /**
      * Gets the permissions associated with a subuser.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Permission, $this>
      */
     public function permissions(): HasMany
     {

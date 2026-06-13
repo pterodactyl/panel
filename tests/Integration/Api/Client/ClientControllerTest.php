@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
+use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
@@ -53,8 +54,8 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
         $servers = [
             $this->createServerModel(['user_id' => $users[0]->id, 'name' => 'Julia']),
             $this->createServerModel(['user_id' => $users[1]->id, 'uuidShort' => '12121212', 'name' => 'Janice']),
-            $this->createServerModel(['user_id' => $users[1]->id, 'uuid' => '88788878-12356789', 'external_id' => 'ext123', 'name' => 'Julia']),
-            $this->createServerModel(['user_id' => $users[1]->id, 'uuid' => '88788878-abcdefgh', 'name' => 'Jennifer']),
+            $this->createServerModel(['user_id' => $users[1]->id, 'uuid' => Uuid::uuid4()->toString(), 'external_id' => 'ext123', 'name' => 'Julia']),
+            $this->createServerModel(['user_id' => $users[1]->id, 'uuid' => Uuid::uuid4()->toString(), 'name' => 'Jennifer']),
         ];
 
         $this->actingAs($users[1])->getJson('/api/client?filter[*]=Julia')
@@ -77,16 +78,14 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
             ->assertJsonCount(1, 'data')
             ->assertJsonPath('data.0.attributes.identifier', $servers[1]->uuidShort);
 
-        $this->actingAs($users[1])->getJson('/api/client?filter[*]=88788878')
+        $this->actingAs($users[1])->getJson("/api/client?filter[*]={$servers[2]->uuidShort}")
             ->assertOk()
-            ->assertJsonCount(2, 'data')
-            ->assertJsonPath('data.0.attributes.identifier', $servers[2]->uuidShort)
-            ->assertJsonPath('data.1.attributes.identifier', $servers[3]->uuidShort);
+            ->assertJsonCount(1, 'data')
+            ->assertJsonPath('data.0.attributes.identifier', $servers[2]->uuidShort);
 
         $this->actingAs($users[1])->getJson('/api/client?filter[*]=88788878-abcd')
             ->assertOk()
-            ->assertJsonCount(1, 'data')
-            ->assertJsonPath('data.0.attributes.identifier', $servers[3]->uuidShort);
+            ->assertJsonCount(0, 'data');
 
         $this->actingAs($users[0])->getJson('/api/client?filter[*]=Julia&type=admin-all')
             ->assertOk()
@@ -101,8 +100,8 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
      */
     public function testServersAreFilteredUsingAllocationInformation()
     {
-        /** @var \Pterodactyl\Models\User $user */
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var User $user */
+        /** @var Server $server */
         [$user, $server] = $this->generateTestAccount();
         $server2 = $this->createServerModel(['user_id' => $user->id, 'node_id' => $server->node_id]);
 
@@ -203,7 +202,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
      */
     public function testPermissionsAreReturned()
     {
-        /** @var \Pterodactyl\Models\User $user */
+        /** @var User $user */
         $user = User::factory()->create();
 
         $this->actingAs($user)
@@ -285,9 +284,8 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
     /**
      * Test that no servers get returned if the user requests all admin level servers by using
      * ?type=admin or ?type=admin-all in the request.
-     *
-     * @dataProvider filterTypeDataProvider
      */
+    #[\PHPUnit\Framework\Attributes\DataProvider('filterTypeDataProvider')]
     public function testNoServersAreReturnedIfAdminFilterIsPassedByRegularUser(string $type)
     {
         /** @var \Pterodactyl\Models\User[] $users */
@@ -309,7 +307,7 @@ class ClientControllerTest extends ClientApiIntegrationTestCase
      */
     public function testOnlyPrimaryAllocationIsReturnedToSubuser()
     {
-        /** @var \Pterodactyl\Models\Server $server */
+        /** @var Server $server */
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
         $server->allocation->notes = 'Test notes';
         $server->allocation->save();

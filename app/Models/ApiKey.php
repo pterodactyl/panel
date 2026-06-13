@@ -5,7 +5,9 @@ namespace Pterodactyl\Models;
 use Illuminate\Support\Str;
 use Webmozart\Assert\Assert;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Laravel\Sanctum\Contracts\HasAbilities;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
  * Pterodactyl\Models\ApiKey.
@@ -30,8 +32,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $r_eggs
  * @property int $r_database_hosts
  * @property int $r_server_databases
- * @property \Pterodactyl\Models\User $tokenable
- * @property \Pterodactyl\Models\User $user
+ * @property User $tokenable
+ * @property User $user
  *
  * @method static \Database\Factories\ApiKeyFactory factory(...$parameters)
  * @method static \Illuminate\Database\Eloquent\Builder|ApiKey newModelQuery()
@@ -59,8 +61,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  *
  * @mixin \Eloquent
  */
-class ApiKey extends Model
+class ApiKey extends Model implements HasAbilities
 {
+    /** @use HasFactory<\Database\Factories\ApiKeyFactory> */
+    use HasFactory;
+
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
@@ -155,8 +160,22 @@ class ApiKey extends Model
         'r_' . AdminAcl::RESOURCE_SERVERS => 'integer|min:0|max:3',
     ];
 
+    public function can($ability)
+    {
+        // todo: this was never initially implemented and only became obvious once
+        //  internal tooling was updated and started catching this mistake.
+        return false;
+    }
+
+    public function cant($ability)
+    {
+        return ! $this->can($ability);
+    }
+
     /**
      * Returns the user this token is assigned to.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
      */
     public function user(): BelongsTo
     {
@@ -165,6 +184,8 @@ class ApiKey extends Model
 
     /**
      * Required for support with Laravel Sanctum.
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
      *
      * @see \Laravel\Sanctum\Guard::supportsTokens()
      */

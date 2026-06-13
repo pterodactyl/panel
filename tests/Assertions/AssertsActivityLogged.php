@@ -11,7 +11,7 @@ use Pterodactyl\Models\ActivityLogSubject;
 trait AssertsActivityLogged
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Model|array $subjects
+     * @param Model|array $subjects
      */
     public function assertActivityFor(string $event, ?Model $actor, ...$subjects): void
     {

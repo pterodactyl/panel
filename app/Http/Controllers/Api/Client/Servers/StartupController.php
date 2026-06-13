@@ -19,7 +19,7 @@ class StartupController extends ClientApiController
      */
     public function __construct(
         private StartupCommandService $startupCommandService,
-        private ServerVariableRepository $repository
+        private ServerVariableRepository $repository,
     ) {
         parent::__construct();
     }
@@ -52,15 +52,15 @@ class StartupController extends ClientApiController
      */
     public function update(UpdateStartupVariableRequest $request, Server $server): array
     {
-        /** @var \Pterodactyl\Models\EggVariable $variable */
         $variable = $server->variables()->where('env_variable', $request->input('key'))->first();
-        $original = $variable->server_value;
 
         if (is_null($variable) || !$variable->user_viewable) {
             throw new BadRequestHttpException('The environment variable you are trying to edit does not exist.');
         } elseif (!$variable->user_editable) {
             throw new BadRequestHttpException('The environment variable you are trying to edit is read-only.');
         }
+
+        $original = $variable->server_value;
 
         // Revalidate the variable value using the egg variable specific validation rules for it.
         $this->validate($request, ['value' => $variable->rules]);
@@ -77,13 +77,13 @@ class StartupController extends ClientApiController
 
         $startup = $this->startupCommandService->handle($server);
 
-        if ($variable->env_variable !== $request->input('value')) {
+        if ($original !== $request->input('value')) {
             Activity::event('server:startup.edit')
                 ->subject($variable)
                 ->property([
                     'variable' => $variable->env_variable,
                     'old' => $original,
-                    'new' => $request->input('value'),
+                    'new' => $request->input('value') ?? '',
                 ])
                 ->log();
         }

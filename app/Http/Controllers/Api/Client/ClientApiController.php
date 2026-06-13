@@ -49,7 +49,7 @@ abstract class ClientApiController extends ApplicationApiController
      */
     public function getTransformer(string $abstract)
     {
-        Assert::subclassOf($abstract, BaseClientTransformer::class);
+        Assert::subclassOf($abstract, BaseClientTransformer::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
 
         return $abstract::fromRequest($this->request);
     }

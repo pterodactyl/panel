@@ -48,7 +48,7 @@ const DisableTOTPDialog = () => {
                 type={'password'}
                 variant={Input.Text.Variants.Loose}
                 value={password}
-                onChange={(e) => setPassword(e.currentTarget.value)}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
             />
             <Dialog.Footer>
                 <Button.Text onClick={close}>Cancel</Button.Text>

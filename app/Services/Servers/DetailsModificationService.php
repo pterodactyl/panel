@@ -4,10 +4,11 @@ namespace Pterodactyl\Services\Servers;
 
 use Illuminate\Support\Arr;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Traits\Services\ReturnsUpdatedModels;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
-use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Repositories\Wings\DaemonRevocationRepository;
 
 class DetailsModificationService
 {
@@ -16,8 +17,11 @@ class DetailsModificationService
     /**
      * DetailsModificationService constructor.
      */
-    public function __construct(private ConnectionInterface $connection, private DaemonServerRepository $serverRepository)
-    {
+    public function __construct(
+        private ConnectionInterface $connection,
+        private DaemonServerRepository $serverRepository,
+        private DaemonRevocationRepository $revocationRepository,
+    ) {
     }
 
     /**
@@ -28,7 +32,7 @@ class DetailsModificationService
     public function handle(Server $server, array $data): Server
     {
         return $this->connection->transaction(function () use ($data, $server) {
-            $owner = $server->owner_id;
+            $original = $server->user;
 
             $server->forceFill([
                 'external_id' => Arr::get($data, 'external_id'),
@@ -40,14 +44,8 @@ class DetailsModificationService
             // If the owner_id value is changed we need to revoke any tokens that exist for the server
             // on the Wings instance so that the old owner no longer has any permission to access the
             // websockets.
-            if ($server->owner_id !== $owner) {
-                try {
-                    $this->serverRepository->setServer($server)->revokeUserJTI($owner);
-                } catch (DaemonConnectionException $exception) {
-                    // Do nothing. A failure here is not ideal, but it is likely to be caused by Wings
-                    // being offline, or in an entirely broken state. Remember, these tokens reset every
-                    // few minutes by default, we're just trying to help it along a little quicker.
-                }
+            if (! $server->refresh()->user->is($original)) {
+                RevokeSftpAccessJob::dispatch($original->uuid, $server);
             }
 
             return $server;

@@ -3,39 +3,25 @@
 namespace Pterodactyl\Services\Users;
 
 use Pterodactyl\Models\User;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Exceptions\DisplayException;
-use Illuminate\Contracts\Translation\Translator;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
-use Pterodactyl\Contracts\Repository\ServerRepositoryInterface;
 
 class UserDeletionService
 {
     /**
-     * UserDeletionService constructor.
-     */
-    public function __construct(
-        protected UserRepositoryInterface $repository,
-        protected ServerRepositoryInterface $serverRepository,
-        protected Translator $translator
-    ) {
-    }
-
-    /**
      * Delete a user from the panel only if they have no servers attached to their account.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
+     * @throws DisplayException
      */
     public function handle(int|User $user): ?bool
     {
-        if ($user instanceof User) {
-            $user = $user->id;
-        }
+        $user = $user instanceof User ? $user : User::query()->findOrFail($user);
 
-        $servers = $this->serverRepository->setColumns('id')->findCountWhere([['owner_id', '=', $user]]);
+        $servers = Server::query()->where('owner_id', $user->id)->count();
         if ($servers > 0) {
-            throw new DisplayException($this->translator->get('admin/user.exceptions.user_has_servers'));
+            throw new DisplayException(trans('admin/user.exceptions.user_has_servers'));
         }
 
-        return $this->repository->delete($user);
+        return $user->delete();
     }
 }

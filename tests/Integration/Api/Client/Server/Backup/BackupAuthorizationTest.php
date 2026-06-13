@@ -10,9 +10,7 @@ use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class BackupAuthorizationTest extends ClientApiIntegrationTestCase
 {
-    /**
-     * @dataProvider methodDataProvider
-     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('methodDataProvider')]
     public function testAccessToAServersBackupIsRestrictedProperly(string $method, string $endpoint)
     {
         // The API $user is the owner of $server1.

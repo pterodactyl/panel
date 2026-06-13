@@ -1,24 +1,27 @@
 name: Tests
 
 on:
-  push:
-    branches:
-      - "develop"
-      - "1.0-develop"
   pull_request:
     branches:
-      - "develop"
       - "1.0-develop"
 
 jobs:
   tests:
     name: Tests
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
     strategy:
       fail-fast: false
       matrix:
-        php: [8.1, 8.2]
-        database: ["mariadb:10.2", "mysql:8"]
+        php:
+          - 8.2
+          - 8.3
+        database:
+          - mariadb:10
+          - mariadb:11
+          - mysql:8
+          - mysql:9
     services:
       database:
         image: ${{ matrix.database }}
@@ -27,46 +30,30 @@ jobs:
           MYSQL_DATABASE: testing
         ports:
           - 3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
     steps:
-      - name: Code Checkout
-        uses: actions/checkout@v3
-
-      - name: Get cache directory
-        id: composer-cache
+      - uses: actions/checkout@v4
+      - id: composer-cache
         run: |
           echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache
-        uses: actions/cache@v3
+      - uses: actions/cache@v4
         with:
           path: ${{ steps.composer-cache.outputs.dir }}
           key: ${{ runner.os }}-composer-${{ matrix.php }}-${{ hashFiles('**/composer.lock') }}
           restore-keys: |
             ${{ runner.os }}-composer-${{ matrix.php }}-
-
-      - name: Setup PHP
-        uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ matrix.php }}
           extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
           tools: composer:v2
           coverage: none
-
-      - name: Setup .env
-        run: cp .env.ci .env
-
-      - name: Install dependencies
-        run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
-
-      - name: Unit tests
-        run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
-        if: ${{ always() }}
+      - run: cp .env.ci .env
+      - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+      - run: vendor/bin/php-cs-fixer fix --dry-run --diff
+      - run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
         env:
           DB_HOST: UNIT_NO_DB
-
-      - name: Integration tests
-        run: vendor/bin/phpunit tests/Integration
+      - run: vendor/bin/phpunit tests/Integration
         env:
           DB_PORT: ${{ job.services.database.ports[3306] }}
           DB_USERNAME: root

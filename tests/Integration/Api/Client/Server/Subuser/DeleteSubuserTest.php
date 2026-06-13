@@ -6,7 +6,9 @@ use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Repositories\Wings\DaemonServerRepository;
+use Illuminate\Support\Facades\Bus;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
+use PHPUnit\Framework\Attributes\TestWith;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class DeleteSubuserTest extends ClientApiIntegrationTestCase
@@ -22,20 +24,22 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
      *
      * @see https://github.com/pterodactyl/panel/issues/2359
      */
-    public function testCorrectSubuserIsDeletedFromServer()
+    #[TestWith([null])]
+    #[TestWith(['18180000'])]
+    public function testCorrectSubuserIsDeletedFromServer(?string $prefix)
     {
-        $this->swap(DaemonServerRepository::class, $mock = \Mockery::mock(DaemonServerRepository::class));
+        Bus::fake([RevokeSftpAccessJob::class]);
 
         [$user, $server] = $this->generateTestAccount();
 
-        /** @var \Pterodactyl\Models\User $differentUser */
+        /** @var User $differentUser */
         $differentUser = User::factory()->create();
 
         $real = Uuid::uuid4()->toString();
         // Generate a UUID that lines up with a user in the database if it were to be cast to an int.
-        $uuid = $differentUser->id . substr($real, strlen((string) $differentUser->id));
+        $uuid = ($prefix ?: $differentUser->id) . substr($real, strlen($prefix ?: (string) $differentUser->id));
 
-        /** @var \Pterodactyl\Models\User $subuser */
+        /** @var User $subuser */
         $subuser = User::factory()->create(['uuid' => $uuid]);
 
         Subuser::query()->forceCreate([
@@ -44,24 +48,12 @@ class DeleteSubuserTest extends ClientApiIntegrationTestCase
             'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
         ]);
 
-        $mock->expects('setServer->revokeUserJTI')->with($subuser->id)->andReturnUndefined();
+        $this->withoutExceptionHandling()
+            ->actingAs($user)
+            ->deleteJson($this->link($server) . "/users/$subuser->uuid")->assertNoContent();
 
-        $this->actingAs($user)->deleteJson($this->link($server) . "/users/$subuser->uuid")->assertNoContent();
-
-        // Try the same test, but this time with a UUID that if cast to an int (shouldn't) line up with
-        // anything in the database.
-        $uuid = '18180000' . substr(Uuid::uuid4()->toString(), 8);
-        /** @var \Pterodactyl\Models\User $subuser */
-        $subuser = User::factory()->create(['uuid' => $uuid]);
-
-        Subuser::query()->forceCreate([
-            'user_id' => $subuser->id,
-            'server_id' => $server->id,
-            'permissions' => [Permission::ACTION_WEBSOCKET_CONNECT],
-        ]);
-
-        $mock->expects('setServer->revokeUserJTI')->with($subuser->id)->andReturnUndefined();
-
-        $this->actingAs($user)->deleteJson($this->link($server) . "/users/$subuser->uuid")->assertNoContent();
+        Bus::assertDispatchedTimes(function (RevokeSftpAccessJob $job) use ($subuser, $server) {
+            return $job->user === $subuser->uuid && $job->target->is($server);
+        });
     }
 }

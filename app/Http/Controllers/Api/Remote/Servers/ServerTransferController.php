@@ -2,6 +2,9 @@
 
 namespace Pterodactyl\Http\Controllers\Api\Remote\Servers;
 
+use Illuminate\Http\Request;
+use Pterodactyl\Models\Node;
+use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Models\Allocation;
@@ -9,6 +12,7 @@ use Illuminate\Support\Facades\Log;
 use Pterodactyl\Models\ServerTransfer;
 use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Repositories\Eloquent\ServerRepository;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Symfony\Component\HttpKernel\Exception\ConflictHttpException;
@@ -22,7 +26,7 @@ class ServerTransferController extends Controller
     public function __construct(
         private ConnectionInterface $connection,
         private ServerRepository $repository,
-        private DaemonServerRepository $daemonServerRepository
+        private DaemonServerRepository $daemonServerRepository,
     ) {
     }
 
@@ -31,12 +35,21 @@ class ServerTransferController extends Controller
      *
      * @throws \Throwable
      */
-    public function failure(string $uuid): JsonResponse
+    public function failure(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
         if (is_null($transfer)) {
             throw new ConflictHttpException('Server is not being transferred.');
+        }
+
+        /* @var Node $node */
+        Assert::isInstanceOf($node = $request->attributes->get('node'), Node::class);
+
+        // Either node can tell the panel that the transfer has failed. Only the new node
+        // can tell the panel that it was successful.
+        if (! $node->is($transfer->newNode) && ! $node->is($transfer->oldNode)) {
+            throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
         return $this->processFailedTransfer($transfer);
@@ -47,12 +60,21 @@ class ServerTransferController extends Controller
      *
      * @throws \Throwable
      */
-    public function success(string $uuid): JsonResponse
+    public function success(Request $request, string $uuid): JsonResponse
     {
         $server = $this->repository->getByUuid($uuid);
         $transfer = $server->transfer;
         if (is_null($transfer)) {
             throw new ConflictHttpException('Server is not being transferred.');
+        }
+
+        /* @var Node $node */
+        Assert::isInstanceOf($node = $request->attributes->get('node'), Node::class);
+
+        // Only the new node communicates a successful state to the panel, so we should
+        // not allow the old node to hit this endpoint.
+        if (! $node->is($transfer->newNode)) {
+            throw new HttpForbiddenException('Requesting node does not have permission to access this server.');
         }
 
         /** @var \Pterodactyl\Models\Server $server */

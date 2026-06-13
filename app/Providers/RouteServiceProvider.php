@@ -4,6 +4,7 @@ namespace Pterodactyl\Providers;
 
 use Illuminate\Http\Request;
 use Pterodactyl\Models\Database;
+use Pterodactyl\Enum\ResourceLimit;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Support\Facades\RateLimiter;
@@ -79,7 +80,7 @@ class RouteServiceProvider extends ServiceProvider
                 return Limit::perMinute(2)->by($request->ip());
             }
 
-            return Limit::perMinute(10);
+            return Limit::perMinute(10)->by($request->ip());
         });
 
         // Configure the throttles for both the application and client APIs below.
@@ -106,5 +107,7 @@ class RouteServiceProvider extends ServiceProvider
                 config('http.rate_limit.application')
             )->by($key);
         });
+
+        ResourceLimit::boot();
     }
 }
