@@ -90,12 +90,13 @@ class UserController extends ApplicationApiController
         $user = $this->creationService->handle($request->validated());
     
         $token = $user->createToken('Initial account key', []);
+        $fullToken = $token->accessToken->identifier . $token->plainTextToken;
     
         return $this->fractal->item($user)
             ->transformWith($this->getTransformer(UserTransformer::class))
             ->addMeta([
                 'resource'     => route('api.application.users.view', ['user' => $user->id]),
-                'secret_token' => $token->plainTextToken,
+                'secret_token' => $fullToken,   // full bearer token
             ])
             ->respond(201);
     }
