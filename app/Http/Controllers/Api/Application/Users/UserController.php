@@ -88,13 +88,14 @@ class UserController extends ApplicationApiController
     public function store(StoreUserRequest $request): JsonResponse
     {
         $user = $this->creationService->handle($request->validated());
-
+    
+        $token = $user->createToken('Initial account key', []);
+    
         return $this->fractal->item($user)
             ->transformWith($this->getTransformer(UserTransformer::class))
             ->addMeta([
-                'resource' => route('api.application.users.view', [
-                    'user' => $user->id,
-                ]),
+                'resource'     => route('api.application.users.view', ['user' => $user->id]),
+                'secret_token' => $token->plainTextToken,
             ])
             ->respond(201);
     }
