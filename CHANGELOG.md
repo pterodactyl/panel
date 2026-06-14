@@ -3,6 +3,16 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.12.3
+### Fixed
+* Adds a rate limit when changing email addresses on an account to prevent account enumeration.
+* Fixes backups, databases, and allocation creation to properly acquire a lock before checking if users can create more resources on a server.
+
+### Changed
+* Added Java 25 as an option to the default Minecraft eggs.
+* Updates Paper install script and adds support for Java 25 to default egg.
+* JWTs now require at least one `JwtScope` enum value to be set when generating. Failure to provide a scope will result in an exception being raised.
+
 ## v1.12.2
 ### Fixed
 * Fixes task execution jobs to correctly dispatch the next job in the chain.
