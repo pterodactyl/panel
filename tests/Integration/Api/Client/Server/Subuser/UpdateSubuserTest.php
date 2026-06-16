@@ -5,6 +5,8 @@ namespace Pterodactyl\Tests\Integration\Api\Client\Server\Subuser;
 use Pterodactyl\Models\User;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Models\Permission;
+use Illuminate\Support\Facades\Bus;
+use Pterodactyl\Jobs\RevokeSftpAccessJob;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class UpdateSubuserTest extends ClientApiIntegrationTestCase
@@ -15,6 +17,8 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
      */
     public function testCorrectPermissionsAreRequiredForUpdating()
     {
+        Bus::fake([RevokeSftpAccessJob::class]);
+
         [$user, $server] = $this->generateTestAccount(['user.read']);
 
         $subuser = Subuser::factory()
@@ -47,6 +51,10 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
         ]);
 
         $this->postJson($endpoint, $data)->assertOk();
+
+        Bus::assertDispatchedTimes(function (RevokeSftpAccessJob $job) use ($server, $subuser) {
+            return $job->user === $subuser->user->uuid && $job->target->is($server);
+        });
     }
 
     /**
@@ -55,6 +63,8 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
      */
     public function testPermissionsAreSavedToAccount()
     {
+        Bus::fake([RevokeSftpAccessJob::class]);
+
         [$user, $server] = $this->generateTestAccount();
 
         /** @var Subuser $subuser */
@@ -82,6 +92,10 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
             ['control.start', 'control.stop', 'websocket.connect'],
             $subuser->permissions
         );
+
+        Bus::assertDispatchedTimes(function (RevokeSftpAccessJob $job) use ($server, $subuser) {
+            return $job->user === $subuser->user->uuid && $job->target->is($server);
+        });
     }
 
     /**
@@ -90,6 +104,8 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
      */
     public function testUserCannotAssignPermissionsTheyDoNotHave()
     {
+        Bus::fake([RevokeSftpAccessJob::class]);
+
         [$user, $server] = $this->generateTestAccount([Permission::ACTION_USER_READ, Permission::ACTION_USER_UPDATE]);
 
         $subuser = Subuser::factory()
@@ -104,6 +120,8 @@ class UpdateSubuserTest extends ClientApiIntegrationTestCase
             ->assertForbidden();
 
         $this->assertEqualsCanonicalizing(['foo.bar'], $subuser->refresh()->permissions);
+
+        Bus::assertNothingDispatched();
     }
 
     /**

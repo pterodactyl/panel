@@ -3,6 +3,43 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v1.12.3
+### Fixed
+* Adds a rate limit when changing email addresses on an account to prevent account enumeration.
+* Fixes backups, databases, and allocation creation to properly acquire a lock before checking if users can create more resources on a server.
+
+### Changed
+* Added Java 25 as an option to the default Minecraft eggs.
+* Updates Paper install script and adds support for Java 25 to default egg.
+* JWTs now require at least one `JwtScope` enum value to be set when generating. Failure to provide a scope will result in an exception being raised.
+
+## v1.12.2
+### Fixed
+* Fixes task execution jobs to correctly dispatch the next job in the chain.
+* Fixes dropdown menu not appearing correctly inside modal when transferring a server.
+* Fixes startup variables logging as changed in the activity log even when no change was actually made.
+* Fixes multiple issues with the docker image.
+* Fixes server transfers getting stuck due to incorrect permission checks in the API.
+
+## v1.12.1
+### Fixed
+* [CVE-2026-26016](https://github.com/pterodactyl/panel/security/advisories/GHSA-g7vw-f8p5-c728)
+* [GHSA-hr7j-63v7-vj7g](https://github.com/pterodactyl/panel/security/advisories/GHSA-hr7j-63v7-vj7g)
+* Fixes bug where presigned URLs would 
+* Fixes issue where certain input values would cause the activity log screen to stop rendering properly due to improper element encoding.
+* Fixes improper display of unicode characters in console output.
+* Fixes page number not resetting when toggling between "Show My Servers" and "Show All Servers" on the dashboard.
+
+### Changed
+* SFTP sessions are now revoked on nodes when a user changes their password or their account is deleted.
+* Remote node access tokens are now scoped to only allow access to servers that belong to the same node. Previously a node could access information and control the installation status for any server in the system.
+* The default rate limit for the client API was bumped from `128` to `256` requests per minute.
+
+### Added
+* HTTP responses now include default security headers if not otherwise set.
+* Adds modal popup when running a Hytale server that requires additional auth.
+* Adds support for administrators to view any application API key that has been created, regardless of the owning account.
+
 ## v1.12.0
 ### Fixed
 

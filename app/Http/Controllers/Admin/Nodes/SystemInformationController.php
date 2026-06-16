@@ -33,7 +33,7 @@ class SystemInformationController extends Controller
                 'type' => Str::title($data['os'] ?? 'Unknown'),
                 'arch' => $data['architecture'] ?? '--',
                 'release' => $data['kernel_version'] ?? '--',
-                'cpus' => $data['cpu_count'] ?? 0,
+                'cpus' => (int) ($data['cpu_count'] ?? 0),
             ],
         ]);
     }

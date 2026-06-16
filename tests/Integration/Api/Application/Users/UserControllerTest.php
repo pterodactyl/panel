@@ -231,6 +231,8 @@ class UserControllerTest extends ApplicationApiIntegrationTestCase
                 'resource' => route('api.application.users.view', $user->id),
             ],
         ], true);
+
+        $this->assertActivityFor('user:user.create', $this->getApiUser(), $user);
     }
 
     /**
