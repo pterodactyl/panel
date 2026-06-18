@@ -87,6 +87,9 @@
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi || true"
         ],
+        "post-install-cmd": [
+            "@php artisan p:environment:addons:run-hooks post-install || true"
+        ],
         "post-root-package-install": [
             "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
         ],

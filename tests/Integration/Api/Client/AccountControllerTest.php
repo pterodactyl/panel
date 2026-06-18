@@ -54,6 +54,28 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->assertDatabaseHas('users', ['id' => $user->id, 'email' => $email]);
     }
 
+    public function testEmailChangeIsThrottled(): void
+    {
+        $users = User::factory()->count(2)->create();
+        $endpoint = route('api:client.account.update-email');
+
+        for ($i = 0; $i < 3; ++$i) {
+            $this->actingAs($users[0])
+                ->putJson($endpoint, ['email' => "foo+{$i}@example.com", 'password' => 'password'])
+                ->assertNoContent();
+        }
+
+        $this
+            ->putJson($endpoint, ['email' => 'bar@example.com', 'password' => 'password'])
+            ->assertTooManyRequests();
+
+        // The other user should still be able to update their email because the throttle
+        // is tied to the account, not to the IP address.
+        $this->actingAs($users[1])
+            ->putJson($endpoint, ['email' => 'bar+1@example.com', 'password' => 'password'])
+            ->assertNoContent();
+    }
+
     /**
      * Tests that an email is not updated if the password provided in the request is not
      * valid for the account.
@@ -99,6 +121,35 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
         $response->assertJsonPath('errors.0.meta.rule', 'email');
         $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+
+
+        /*
+        * RFCs limit certain parts of an email to certain character limits.
+        * A limit of <= 64 for the local, then <= 63 for each domain label.
+        */
+        $local = str_repeat(Str::random(10), 6) . '1234';
+        $label = str_repeat(Str::random(10), 6) . '1';
+
+
+        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
+            'email' => "1$local@$label.$label", // exceed RFC limit for local part
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+        $response->assertJsonPath('errors.0.meta.source_field', 'email');
+
+
+        $response = $this->actingAs($user)->putJson('/api/client/account/email', [
+            'email' => "$local@1234$label.$label", // exceed RFC limit for label part
+            'password' => 'password',
+        ]);
+
+        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+        $response->assertJsonPath('errors.0.detail', 'The email must be a valid email address.');
+        $response->assertJsonPath('errors.0.meta.source_field', 'email');
+
     }
 
     /**
@@ -137,8 +188,8 @@ class AccountControllerTest extends ClientApiIntegrationTestCase
         $this->assertNotEquals($server->node_id, $server2->node_id);
 
         Bus::assertDispatchedTimes(RevokeSftpAccessJob::class, 2);
-        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
-        Bus::assertDispatched(fn (RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
+        Bus::assertDispatched(fn(RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server->node));
+        Bus::assertDispatched(fn(RevokeSftpAccessJob $job) => $job->user === $user->uuid && $job->target->is($server2->node));
     }
 
     /**
