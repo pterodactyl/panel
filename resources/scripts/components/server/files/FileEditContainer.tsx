@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import getFileContents from '@/api/server/files/getFileContents';
 import { httpErrorToHuman } from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
@@ -20,6 +20,10 @@ import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
 import { dirname } from 'pathe';
 import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
+import { debounce } from 'debounce';
+
+// Helper to generate localStorage key for draft
+const getDraftKey = (uuid: string, directory: string) => `pterodactyl:draft:${uuid}:${directory}`;
 
 export default () => {
     const [error, setError] = useState('');
@@ -36,8 +40,29 @@ export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
     const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
     const { addError, clearFlashes } = useFlash();
+    const directory = ServerContext.useStoreState((state) => state.files.directory);
 
     let fetchFileContent: null | (() => Promise<string>) = null;
+
+    // Set directory from hash for new files (persists on refresh)
+    useEffect(() => {
+        if (action !== 'new') return;
+
+        const path = hashToPath(hash);
+        // For new files, the hash IS the directory (not a file path)
+        setDirectory(path || '/');
+    }, [action, hash, setDirectory]);
+
+    // Load draft content from localStorage for new files
+    useEffect(() => {
+        if (action !== 'new' || !uuid || !directory) return;
+
+        const draftKey = getDraftKey(uuid, directory);
+        const savedDraft = localStorage.getItem(draftKey);
+        if (savedDraft) {
+            setContent(savedDraft);
+        }
+    }, [action, uuid, directory]);
 
     useEffect(() => {
         if (action === 'new') return;
@@ -55,6 +80,17 @@ export default () => {
             .then(() => setLoading(false));
     }, [action, uuid, hash]);
 
+    // Debounced draft save function for new files
+    const saveDraft = useMemo(
+        () =>
+            debounce((draftContent: string) => {
+                if (action === 'new' && uuid && directory) {
+                    localStorage.setItem(getDraftKey(uuid, directory), draftContent);
+                }
+            }, 1000),
+        [action, uuid, directory]
+    );
+
     const save = (name?: string) => {
         if (!fetchFileContent) {
             return;
@@ -63,8 +99,13 @@ export default () => {
         setLoading(true);
         clearFlashes('files:view');
         fetchFileContent()
-            .then((content) => saveFileContents(uuid, name || hashToPath(hash), content))
+            .then((fileContent) => saveFileContents(uuid, name || hashToPath(hash), fileContent))
             .then(() => {
+                // Clear draft from localStorage after successful save
+                if (action === 'new' && uuid && directory) {
+                    localStorage.removeItem(getDraftKey(uuid, directory));
+                }
+
                 if (name) {
                     history.push(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
                     return;
@@ -127,6 +168,7 @@ export default () => {
                             save();
                         }
                     }}
+                    onContentChanged={action === 'new' ? saveDraft : undefined}
                 />
             </div>
             <div css={tw`flex justify-end mt-4`}>

@@ -113,6 +113,7 @@ export interface Props {
     onModeChanged: (mode: string) => void;
     fetchContent: (callback: () => Promise<string>) => void;
     onContentSaved: () => void;
+    onContentChanged?: (content: string) => void;
 }
 
 const findModeByFilename = (filename: string) => {
@@ -143,7 +144,16 @@ const findModeByFilename = (filename: string) => {
     return undefined;
 };
 
-export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
+export default ({
+    style,
+    initialContent,
+    filename,
+    mode,
+    fetchContent,
+    onContentSaved,
+    onModeChanged,
+    onContentChanged,
+}: Props) => {
     const [editor, setEditor] = useState<CodeMirror.Editor>();
 
     const ref = useCallback((node) => {
@@ -212,6 +222,20 @@ export default ({ style, initialContent, filename, mode, fetchContent, onContent
 
         fetchContent(() => Promise.resolve(editor.getValue()));
     }, [editor, fetchContent, onContentSaved]);
+
+    // Notify parent of content changes (for draft saving)
+    useEffect(() => {
+        if (!editor || !onContentChanged) return;
+
+        const handleChange = () => {
+            onContentChanged(editor.getValue());
+        };
+
+        editor.on('change', handleChange);
+        return () => {
+            editor.off('change', handleChange);
+        };
+    }, [editor, onContentChanged]);
 
     return (
         <EditorContainer style={style}>
