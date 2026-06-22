@@ -53,6 +53,21 @@ class ServerFormRequest extends AdminFormRequest
             ], function ($input) {
                 return !$input->auto_deploy;
             });
+
+            if ($this->input('external_id')) {
+                $server = $this->route('server');
+                $externalId = $this->input('external_id');
+
+                $query = Server::where('external_id', $externalId);
+
+                if ($server) {
+                    $query->where('id', '!=', $server->id);
+                }
+
+                if ($query->exists()) {
+                    $validator->errors()->add('external_id', 'The external identifier must be unique among all servers.');
+                }
+            }
         });
     }
 }
