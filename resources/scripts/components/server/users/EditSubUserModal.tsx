@@ -17,6 +17,8 @@ import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
 import asModal from '@/hoc/asModal';
 import PermissionRow from '@/components/server/users/PermissionRow';
 import ModalContext from '@/context/ModalContext';
+import AllPermissionsButton from '@/components/server/users/AllPermissionsButton';
+import TitledGreyBox from '@/components/elements/TitledGreyBox';
 
 type Props = {
     subuser?: Subuser;
@@ -102,87 +104,81 @@ const EditSubuserModal = ({ subuser }: Props) => {
                 permissions: array().of(string()),
             })}
         >
-            {({ values, setFieldValue }) => (
-                <Form>
-                    <div css={tw`flex flex-col sm:flex-row justify-between gap-4`}>
-                        <h2 css={tw`text-2xl`} ref={ref}>
-                            {subuser
-                                ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
-                                : 'Create new subuser'}
-                        </h2>
-                        <div css={tw`flex flex-col sm:flex-row items-center gap-2`}>
-                            <Button
-                                type={'button'}
-                                css={tw`w-full sm:w-auto`}
-                                onClick={() => setFieldValue('permissions', values.permissions.length === editablePermissions.length ? [] : editablePermissions)}
-                            >
-                                {values.permissions.length === editablePermissions.length ? 'Deselect All' : 'Select All'}
-                            </Button>
-                            
-                            <Button type={'submit'} css={tw`w-full sm:w-auto`}>
-                                {subuser ? 'Save' : 'Invite User'}
-                            </Button>
-                        </div>
+            <Form>
+                <div css={tw`flex justify-between`}>
+                    <h2 css={tw`text-2xl`} ref={ref}>
+                        {subuser
+                            ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
+                            : 'Create new subuser'}
+                    </h2>
+                    <div>
+                        <Button type={'submit'} css={tw`w-full sm:w-auto`}>
+                            {subuser ? 'Save' : 'Invite User'}
+                        </Button>
                     </div>
-                    <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
-                    {!isRootAdmin && loggedInPermissions[0] !== '*' && (
-                        <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
-                            <p css={tw`text-sm text-neutral-300`}>
-                                Only permissions which your account is currently assigned may be selected when creating or
-                                modifying other users.
-                            </p>
-                        </div>
-                    )}
-                    {!subuser && (
-                        <div css={tw`mt-6`}>
-                            <Field
-                                name={'email'}
-                                label={'User Email'}
-                                description={
-                                    'Enter the email address of the user you wish to invite as a subuser for this server.'
-                                }
-                            />
-                        </div>
-                    )}
-                    <div css={tw`my-6`}>
-                        {Object.keys(permissions)
-                            .filter((key) => key !== 'websocket')
-                            .map((key, index) => (
-                                <PermissionTitleBox
-                                    key={`permission_${key}`}
-                                    title={key}
-                                    isEditable={canEditUser}
-                                    permissions={Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)}
-                                    css={index > 0 ? tw`mt-4` : undefined}
-                                >
-                                    <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key].description}</p>
-                                    {Object.keys(permissions[key].keys).map((pkey) => (
-                                        <PermissionRow
-                                            key={`permission_${key}.${pkey}`}
-                                            permission={`${key}.${pkey}`}
-                                            disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
-                                        />
-                                    ))}
-                                </PermissionTitleBox>
-                            ))}
+                </div>
+                <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
+                {!isRootAdmin && loggedInPermissions[0] !== '*' && (
+                    <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
+                        <p css={tw`text-sm text-neutral-300`}>
+                            Only permissions which your account is currently assigned may be selected when creating or
+                            modifying other users.
+                        </p>
                     </div>
-                    <Can action={subuser ? 'user.update' : 'user.create'}>
-                        <div css={tw`pb-6 flex flex-col sm:flex-row justify-end gap-2`}>
-                            <Button
-                                type={'button'}
-                                css={tw`w-full sm:w-auto`}
-                                onClick={() => setFieldValue('permissions', values.permissions.length === editablePermissions.length ? [] : editablePermissions)}
+                )}
+                {!subuser && (
+                    <div css={tw`mt-6`}>
+                        <Field
+                            name={'email'}
+                            label={'User Email'}
+                            description={
+                                'Enter the email address of the user you wish to invite as a subuser for this server.'
+                            }
+                        />
+                    </div>
+                )}
+                <TitledGreyBox css={tw`mt-6`}
+                title={
+                <div css={tw`flex items-center justify-between`}>
+                    <span css={tw`text-sm uppercase text-neutral-200`}>All Permissions</span>
+                    
+                    <AllPermissionsButton editablePermissions={editablePermissions} />
+                </div>
+            }>
+                <p css={tw`m-0 text-sm text-neutral-400`}>
+                    Only select this if you <strong>entirely trust the user you are inviting</strong> with all available permissions!
+                </p>
+                </TitledGreyBox>
+                <div css={tw`my-6`}>
+                    {Object.keys(permissions)
+                        .filter((key) => key !== 'websocket')
+                        .map((key, index) => (
+                            <PermissionTitleBox
+                                key={`permission_${key}`}
+                                title={key}
+                                isEditable={canEditUser}
+                                permissions={Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)}
+                                css={index > 0 ? tw`mt-4` : undefined}
                             >
-                                {values.permissions.length === editablePermissions.length ? 'Deselect All' : 'Select All'}
-                            </Button>
-
-                            <Button type={'submit'} css={tw`w-full sm:w-auto`}>
-                                {subuser ? 'Save' : 'Invite User'}
-                            </Button>
-                        </div>
-                    </Can>
-                </Form>
-            )}
+                                <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key].description}</p>
+                                {Object.keys(permissions[key].keys).map((pkey) => (
+                                    <PermissionRow
+                                        key={`permission_${key}.${pkey}`}
+                                        permission={`${key}.${pkey}`}
+                                        disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
+                                    />
+                                ))}
+                            </PermissionTitleBox>
+                        ))}
+                </div>
+                <Can action={subuser ? 'user.update' : 'user.create'}>
+                    <div css={tw`pb-6 flex justify-end`}>
+                        <Button type={'submit'} css={tw`w-full sm:w-auto`}>
+                            {subuser ? 'Save' : 'Invite User'}
+                        </Button>
+                    </div>
+                </Can>
+            </Form>
         </Formik>
     );
 };
