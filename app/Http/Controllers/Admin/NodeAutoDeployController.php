@@ -22,8 +22,8 @@ class NodeAutoDeployController extends Controller
     }
 
     /**
-     * Generates a new API key for the logged-in user with only permission to read
-     * nodes, and returns that as the deployment key for a node.
+     * Generates a new API key for the logged-in user with read and write permission
+     * to nodes, and returns that as the deployment key for a node.
      *
      * @throws \Pterodactyl\Exceptions\Model\DataValidationException
      */
@@ -32,17 +32,17 @@ class NodeAutoDeployController extends Controller
         $key = ApiKey::query()
             ->where('user_id', $request->user()->id)
             ->where('key_type', ApiKey::TYPE_APPLICATION)
-            ->where('r_nodes', 1)
+            ->where('r_nodes', 3)
             ->first();
 
-        // We couldn't find a key that exists for this user with only permission for
-        // reading nodes. Go ahead and create it now.
+        // We couldn't find a key that exists for this user with read and write
+        // permission for nodes. Go ahead and create it now.
         if (!$key) {
             $key = $this->keyCreationService->setKeyType(ApiKey::TYPE_APPLICATION)->handle([
                 'user_id' => $request->user()->id,
                 'memo' => 'Automatically generated node deployment key.',
                 'allowed_ips' => [],
-            ], ['r_nodes' => 1]);
+            ], ['r_nodes' => 3]);
         }
 
         return new JsonResponse([
