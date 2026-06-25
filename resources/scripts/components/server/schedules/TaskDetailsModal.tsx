@@ -33,7 +33,7 @@ interface Values {
 }
 
 const schema = object().shape({
-    action: string().required().oneOf(['command', 'power', 'backup']),
+    action: string().required().oneOf(['command', 'power', 'backup', 'delete-files']),
     payload: string().when('action', {
         is: (v) => v !== 'backup',
         then: string().required('A task payload must be provided.'),
@@ -119,9 +119,9 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
             {({ isSubmitting, values }) => (
                 <Form css={tw`m-0`}>
                     <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`} />
-                    <h2 css={tw`text-2xl mb-6`}>{task ? 'Edit Task' : 'Create Task'}</h2>
+                    <h2 css={tw`mb-6 text-2xl`}>{task ? 'Edit Task' : 'Create Task'}</h2>
                     <div css={tw`flex`}>
-                        <div css={tw`mr-2 w-1/3`}>
+                        <div css={tw`w-1/3 mr-2`}>
                             <Label>Action</Label>
                             <ActionListener />
                             <FormikFieldWrapper name={'action'}>
@@ -129,6 +129,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                     <option value={'command'}>Send command</option>
                                     <option value={'power'}>Send power action</option>
                                     <option value={'backup'}>Create backup</option>
+                                    <option value={'delete-files'}>Delete files</option>
                                 </FormikField>
                             </FormikFieldWrapper>
                         </div>
@@ -162,7 +163,7 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                     </FormikField>
                                 </FormikFieldWrapper>
                             </div>
-                        ) : (
+                        ) : values.action === 'backup' ? (
                             <div>
                                 <Label>Ignored Files</Label>
                                 <FormikFieldWrapper
@@ -174,9 +175,21 @@ const TaskDetailsModal = ({ schedule, task }: Props) => {
                                     <FormikField as={Textarea} name={'payload'} rows={6} />
                                 </FormikFieldWrapper>
                             </div>
+                        ) : (
+                            <div>
+                                <Label>Files</Label>
+                                <FormikFieldWrapper
+                                    name={'payload'}
+                                    description={
+                                        'Include the files and folders to be deleted when this task runs, one per line. Be careful when using this option as deleted files cannot be recovered. Only files with exact patterns will be deleted.'
+                                    }
+                                >
+                                    <FormikField as={Textarea} name={'payload'} rows={6} />
+                                </FormikFieldWrapper>
+                            </div>
                         )}
                     </div>
-                    <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
+                    <div css={tw`p-4 mt-6 border rounded shadow-inner bg-neutral-700 border-neutral-800`}>
                         <FormikSwitch
                             name={'continueOnFailure'}
                             description={'Future tasks will be run when this task fails.'}

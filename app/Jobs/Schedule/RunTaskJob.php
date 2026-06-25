@@ -12,6 +12,7 @@ use Pterodactyl\Services\Backups\InitiateBackupService;
 use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Repositories\Wings\DaemonFileRepository;
 
 class RunTaskJob implements ShouldQueue
 {
@@ -36,6 +37,7 @@ class RunTaskJob implements ShouldQueue
         DaemonCommandRepository $commandRepository,
         InitiateBackupService $backupService,
         DaemonPowerRepository $powerRepository,
+        DaemonFileRepository $fileRepository
     ) {
         // Do not process a task that is not set to active, unless it's been manually triggered.
         if (!$this->task->schedule->is_active && !$this->manualRun) {
@@ -59,7 +61,7 @@ class RunTaskJob implements ShouldQueue
         // Perform the provided task against the daemon.
         try {
             switch ($this->task->action) {
-                case Task::ACTION_POWER:
+                case Task::ACTION_POWER: 
                     $powerRepository->setServer($server)->send($this->task->payload);
                     break;
                 case Task::ACTION_COMMAND:
@@ -67,6 +69,9 @@ class RunTaskJob implements ShouldQueue
                     break;
                 case Task::ACTION_BACKUP:
                     $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
+                    break;
+                case Task::ACTION_DELETE_FILES:
+                    $fileRepository->setServer($server)->deleteFiles('/', explode(PHP_EOL, $this->task->payload));
                     break;
                 default:
                     throw new \InvalidArgumentException('Invalid task action provided: ' . $this->task->action);
@@ -86,7 +91,7 @@ class RunTaskJob implements ShouldQueue
     /**
      * Handle a failure while sending the action to the daemon or otherwise processing the job.
      */
-    public function failed(?\Exception $exception = null)
+    public function failed(\Exception $exception = null)
     {
         $this->markTaskNotQueued();
         $this->markScheduleComplete();
@@ -97,7 +102,7 @@ class RunTaskJob implements ShouldQueue
      */
     private function queueNextTask()
     {
-        /** @var Task|null $nextTask */
+        /** @var \Pterodactyl\Models\Task|null $nextTask */
         $nextTask = Task::query()->where('schedule_id', $this->task->schedule_id)
             ->orderBy('sequence_id', 'asc')
             ->where('sequence_id', '>', $this->task->sequence_id)

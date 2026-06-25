@@ -19,7 +19,7 @@ class StoreTaskRequest extends ViewScheduleRequest
     public function rules(): array
     {
         return [
-            'action' => 'required|in:command,power,backup',
+            'action' => 'required|in:command,power,backup,delete-files',
             'payload' => 'required_unless:action,backup|string|nullable',
             'time_offset' => 'required|numeric|min:0|max:900',
             'sequence_id' => 'sometimes|required|numeric|min:1',
