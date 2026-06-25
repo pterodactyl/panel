@@ -1,0 +1,23 @@
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_1e4e38747bb289::t_4d09a76b0ab935 13,17,19-21,28-33,35,41-46
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_97b235763c9423 58,129-130,132-136
+resources/scripts/router/search.ts
+  s_1e4e38747bb289::t_c436199f9d356c 27-30,64-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "bef9d6f6088fca6f201c0802c6fdfc99e1b55f6b",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
