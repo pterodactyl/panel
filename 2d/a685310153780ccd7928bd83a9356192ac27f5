@@ -1,0 +1,21 @@
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_1e4e38747bb289::t_5e16c532707635 1-2,17-34,65,69,90
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_a2bcff8a7f3be3 350-352,546-556,558-562
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "2da685310153780ccd7928bd83a9356192ac27f5",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
