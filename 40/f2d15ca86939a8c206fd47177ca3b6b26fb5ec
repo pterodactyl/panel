@@ -1,0 +1,23 @@
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_1e4e38747bb289::t_b7dd85ec309340 55-56
+resources/scripts/components/elements/ContentBox.tsx
+  s_1e4e38747bb289::t_d12b942cd35c34 13
+resources/scripts/state/types.ts
+  s_1e4e38747bb289::t_598a071a0af73e 4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "40f2d15ca86939a8c206fd47177ca3b6b26fb5ec",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
