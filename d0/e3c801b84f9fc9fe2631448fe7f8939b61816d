@@ -1,0 +1,19 @@
+resources/scripts/components/admin/README.md
+  s_1e4e38747bb289::t_24cb6d385ebfb0 3-4,8-17,21-28
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "d0e3c801b84f9fc9fe2631448fe7f8939b61816d",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
