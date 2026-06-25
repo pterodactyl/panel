@@ -1,0 +1,43 @@
+resources/scripts/components/admin/api/ApiKeysContainer.tsx
+  s_1e4e38747bb289::t_b8714f5ef06e2e 3
+resources/scripts/components/admin/databases/DatabaseHostsContainer.tsx
+  s_1e4e38747bb289::t_180379f6384cd9 4
+resources/scripts/components/admin/locations/LocationsContainer.tsx
+  s_1e4e38747bb289::t_9dc97a2ab1f53e 4
+resources/scripts/components/admin/mounts/MountsContainer.tsx
+  s_1e4e38747bb289::t_67378726659aa8 4
+resources/scripts/components/admin/nests/NestsContainer.tsx
+  s_1e4e38747bb289::t_c79d0af8d37996 4
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_1e4e38747bb289::t_916a0700729645 26
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_1e4e38747bb289::t_0ab3961f047152 5
+resources/scripts/components/admin/nodes/NodesContainer.tsx
+  s_1e4e38747bb289::t_a011257a631ac9 4
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_1e4e38747bb289::t_7c27e04ba416b9 4
+resources/scripts/components/admin/users/UsersContainer.tsx
+  s_1e4e38747bb289::t_af4fea0cb9546e 4
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_1e4e38747bb289::t_b9704e9ecb7ca2 1-2,13,15-19,35-46
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_56d3e3c1ed3876 58,277-279,282
+resources/scripts/router/search.ts
+  s_1e4e38747bb289::t_799fc7be8c89a7 14,16-18,22,24-28,32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "6bdf218ae6284b320cdc25b0cab1101ae716ec61",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
