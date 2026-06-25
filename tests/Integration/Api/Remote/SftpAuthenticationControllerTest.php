@@ -12,6 +12,10 @@ use Pterodactyl\Tests\Integration\IntegrationTestCase;
 
 class SftpAuthenticationControllerTest extends IntegrationTestCase
 {
+    private const ED25519_SK_PUBLIC_KEY = 'sk-ssh-ed25519@openssh.com AAAAGnNrLXNzaC1lZDI1NTE5QG9wZW5zc2guY29tAAAAIJMm0fXS9aEgPF3rZ528wuD27ZzBgrKprvffaN5ECseMAAAABHNzaDo=';
+
+    private const ECDSA_SK_PUBLIC_KEY = 'sk-ecdsa-sha2-nistp256@openssh.com AAAAInNrLWVjZHNhLXNoYTItbmlzdHAyNTZAb3BlbnNzaC5jb20AAAAIbmlzdHAyNTYAAABBBNjJTvrOinVU5vgN8pZidHlvRM4LfPDwPM5sB8dYHmjrGWz605iISV5e8gSLTQNraIIrjuFptlM6EvJ4FfYC+7kAAAAEc3NoOg==';
+
     protected User $user;
 
     protected Server $server;
@@ -61,6 +65,27 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
         $key->delete();
         $this->postJson('/api/remote/sftp/auth', $data)->assertForbidden();
         $this->postJson('/api/remote/sftp/auth', array_merge($data, ['type' => null]))->assertForbidden();
+    }
+
+    public function testSecurityKeysAreValidatedCorrectly()
+    {
+        foreach ([self::ED25519_SK_PUBLIC_KEY, self::ECDSA_SK_PUBLIC_KEY] as $index => $publicKey) {
+            UserSSHKey::create([
+                'user_id' => $this->user->id,
+                'name' => 'Security key ' . $index,
+                'public_key' => $publicKey,
+                'fingerprint' => $this->fingerprintForPublicKey($publicKey),
+            ]);
+
+            $this->postJson('/api/remote/sftp/auth', [
+                'type' => 'public_key',
+                'username' => $this->getUsername(),
+                'password' => $publicKey,
+            ])
+                ->assertOk()
+                ->assertJsonPath('server', $this->server->uuid)
+                ->assertJsonPath('permissions', ['*']);
+        }
     }
 
     /**
@@ -242,5 +267,13 @@ class SftpAuthenticationControllerTest extends IntegrationTestCase
         $node = $node ?? $this->server->node;
 
         $this->withHeader('Authorization', 'Bearer ' . $node->daemon_token_id . '.' . decrypt($node->daemon_token));
+    }
+
+    protected function fingerprintForPublicKey(string $publicKey): string
+    {
+        [, $encoded] = preg_split('/\s+/', trim($publicKey), 3);
+        $decoded = base64_decode($encoded, true);
+
+        return rtrim(base64_encode(hash('sha256', $decoded, true)), '=');
     }
 }
