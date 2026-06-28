@@ -1,0 +1,24 @@
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_7fc020740704a9 706,714
+  s_1e4e38747bb289::t_6cce8b2a59ce21 707-709,711-713
+  s_1e4e38747bb289::t_3b578a7fada8c2 715-717
+  s_1e4e38747bb289::t_371399fd0440f8 710,718-721
+resources/scripts/components/admin/settings/SettingsContainer.tsx
+  s_1e4e38747bb289::t_7fc020740704a9 2,30,32-37,66-71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "569f428ebc72e3cb6cefbb7afb351155ed490d4d",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
