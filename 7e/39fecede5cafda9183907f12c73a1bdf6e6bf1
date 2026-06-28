@@ -1,0 +1,32 @@
+resources/scripts/api/admin/nodes/getNodes.ts
+  s_1e4e38747bb289::t_d6d2ccdc3a261d 5,7-16
+resources/scripts/api/admin/nodes/queries.ts
+  s_1e4e38747bb289::t_058e831375aa14 41,60-61
+resources/scripts/components/admin/nodes/NodeRow.tsx
+  s_1e4e38747bb289::t_74267a7f9b4612 6,23-29,156-164,166-173,179-206,208,210
+  s_1e4e38747bb289::t_0888eadfe74d11 165,175-177
+resources/scripts/components/admin/nodes/NodeAboutTab.tsx
+  s_1e4e38747bb289::t_ffbdad9e54663d 1,3,7,11-12,47-48,50,58-65,67-78,130,152-153,165,167
+  s_1e4e38747bb289::t_0888eadfe74d11 79-121,123-129,131-149,154-163
+resources/scripts/api/admin/nodes/getNode.ts
+  s_1e4e38747bb289::t_8cab035c36f2df 26-31,36-73
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_1e4e38747bb289::t_ec76f190315a83 49
+  s_1e4e38747bb289::t_094f475c37251a 69-70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "7e39fecede5cafda9183907f12c73a1bdf6e6bf1",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
