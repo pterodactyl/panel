@@ -1,0 +1,56 @@
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_1e4e38747bb289::t_8fa011f202cd04 61-65
+resources/scripts/components/admin/settings/SettingsContainer.tsx
+  s_1e4e38747bb289::t_8fa011f202cd04 11,36-43
+app/Http/Controllers/Api/Admin/LanguagesController.php
+  s_1e4e38747bb289::t_8fa011f202cd04 1-20
+resources/scripts/api/admin/languages/queries.ts
+  s_1e4e38747bb289::t_8fa011f202cd04 1-18
+resources/scripts/components/admin/settings/AdvancedSettingsForm.tsx
+  s_1e4e38747bb289::t_2843d909e3ed1e 49-50
+  s_1e4e38747bb289::t_8fa011f202cd04 6,46-48,51-53
+tests/Integration/Api/Admin/Settings/SettingsControllerTest.php
+  s_1e4e38747bb289::t_8fa011f202cd04 87,94-101,189
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_1e4e38747bb289::t_8fa011f202cd04 7,19-20,24-32,116,119-121,232-233,332-336
+resources/scripts/components/admin/users/UserRow.tsx
+  s_1e4e38747bb289::t_8fa011f202cd04 9,17-18,33-34,41-42,152,155-157,327-328,382-383
+resources/scripts/api/admin/settings/getSettings.ts
+  s_1e4e38747bb289::t_8fa011f202cd04 32-36,41
+resources/scripts/components/admin/settings/GeneralSettingsForm.tsx
+  s_1e4e38747bb289::t_8fa011f202cd04 4,7,11-12,60,63-65
+resources/scripts/components/admin/languageOptions.ts
+  s_1e4e38747bb289::t_8fa011f202cd04 1-12
+resources/scripts/api/admin/languages/getLanguages.ts
+  s_1e4e38747bb289::t_8fa011f202cd04 1-9
+app/Http/Requests/Api/Admin/GetLanguagesRequest.php
+  s_1e4e38747bb289::t_8fa011f202cd04 1-11
+routes/api-admin.php
+  s_1e4e38747bb289::t_8fa011f202cd04 10,60
+  s_1e4e38747bb289::t_bc13ac664aebad 61
+resources/scripts/components/ui/Select.tsx
+  s_1e4e38747bb289::t_87a0267e129319 242,244-250,271,318
+  s_1e4e38747bb289::t_758ea55744596f 225-230,232-241,254,256-258,270,272-280,299,317,319-323,327
+  s_1e4e38747bb289::t_c7aff60dd2cdd3 243
+  s_1e4e38747bb289::t_8b4424069675d4 231,251-253,255,298,337
+resources/scripts/api/queryKeys.ts
+  s_1e4e38747bb289::t_8fa011f202cd04 82
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_1e4e38747bb289::t_8fa011f202cd04 5,11,26-27,159,162-164
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "9937f9077fc783b6ed034b717aa618c4201a8d37",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
