@@ -1,0 +1,43 @@
+resources/scripts/components/admin/servers/CreateServerDatabaseButton.tsx
+  s_1e4e38747bb289::t_cb687c6bd1fe55 6,23
+resources/scripts/api/admin/users/queries.ts
+  s_1e4e38747bb289::t_56de217004b921 47-67,84-86,88
+  s_1e4e38747bb289::t_fa28ad7186650a 87
+  s_1e4e38747bb289::t_2b4a87de3c0bcb 89
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_1e4e38747bb289::t_56de217004b921 48-68,97-99,101
+  s_1e4e38747bb289::t_f383d22faaedc6 100
+  s_1e4e38747bb289::t_ad5a6b6a37807c 102
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_1e4e38747bb289::t_cb687c6bd1fe55 14,543
+resources/scripts/api/admin/database-hosts/getDatabaseHosts.ts
+  s_1e4e38747bb289::t_56de217004b921 8-9,15
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_1e4e38747bb289::t_cb687c6bd1fe55 6,44
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_1e4e38747bb289::t_cb687c6bd1fe55 4,234
+resources/scripts/api/admin/locations/getLocations.ts
+  s_1e4e38747bb289::t_56de217004b921 6-15
+resources/scripts/api/admin/users/getUsers.ts
+  s_1e4e38747bb289::t_56de217004b921 26-36
+resources/scripts/api/admin/locations/queries.ts
+  s_1e4e38747bb289::t_56de217004b921 44-64,81-83,85
+  s_1e4e38747bb289::t_1b4b7b0d027750 84
+  s_1e4e38747bb289::t_d2734a061206a2 86
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "1b39f33e0aa592d179189a3ae38bf80d3ca88e56",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
