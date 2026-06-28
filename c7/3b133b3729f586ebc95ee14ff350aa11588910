@@ -1,0 +1,31 @@
+app/Transformers/Api/Admin/MountTransformer.php
+  s_1e4e38747bb289::t_b6cd4a426231c2 34-36
+resources/scripts/components/admin/mounts/MountRow.tsx
+  s_1e4e38747bb289::t_90a04bea236096 21-27,235-241,246,250-252,254-259,261,263
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_1e4e38747bb289::t_c004c3a8b9e86d 3,69-75
+resources/scripts/api/admin/mounts/getMounts.ts
+  s_1e4e38747bb289::t_cb14bab657157a 18-20,32-34
+tests/Integration/Api/Admin/Mounts/MountControllerTest.php
+  s_1e4e38747bb289::t_a38d2efc3a7c25 23-38,73-85,117-129,162-174
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_1e4e38747bb289::t_6b8dc97362fe99 30,50-51
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_1e4e38747bb289::t_86673f216c688f 191-197,228-234
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "c73b133b3729f586ebc95ee14ff350aa11588910",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
