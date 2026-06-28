@@ -1,0 +1,54 @@
+resources/scripts/components/admin/users/UserRow.tsx
+  s_1e4e38747bb289::t_f324ca02fc652b 293-294,311-319,324-330,373,420-424
+resources/scripts/api/admin/nests/queries.ts
+  s_1e4e38747bb289::t_f324ca02fc652b 20,161,165,168-169,171,174
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_1e4e38747bb289::t_f324ca02fc652b 13,20-21,27-30,33
+app/Http/Controllers/Api/Admin/Settings/TestMailController.php
+  s_1e4e38747bb289::t_cc0aa118a8c5bf 8,23-28
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_c4340e7c3c5c63 435-439,447
+  s_1e4e38747bb289::t_6614baca1fb82f 448-450
+  s_1e4e38747bb289::t_b0155b564daabf 451
+resources/scripts/api/admin/nests/importEgg.ts
+  s_1e4e38747bb289::t_f324ca02fc652b 2,6,11,14-15
+resources/views/templates/wrapper.blade.php
+  s_1e4e38747bb289::t_cc0aa118a8c5bf 3
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_1e4e38747bb289::t_cc0aa118a8c5bf 12,44-45,62,80-81,119,146-149
+  s_1e4e38747bb289::t_0a2acb476fcd0f 150-153
+  s_1e4e38747bb289::t_04cdd474d332de 154-155
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_1e4e38747bb289::t_f324ca02fc652b 40
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_1e4e38747bb289::t_f324ca02fc652b 19,28
+resources/scripts/components/admin/nests/NestsContainer.tsx
+  s_1e4e38747bb289::t_f324ca02fc652b 2,22,42-43,48
+  s_1e4e38747bb289::t_fc094f3173fdb1 44-47
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_1e4e38747bb289::t_cc0aa118a8c5bf 12,44-45,77-78,107-108,140-143,148
+  s_1e4e38747bb289::t_0a2acb476fcd0f 144-147
+  s_1e4e38747bb289::t_72fc27d23884ba 149
+app/Http/Requests/Api/Admin/Nodes/UpdateNodeRequest.php
+  s_1e4e38747bb289::t_f324ca02fc652b 26
+  s_1e4e38747bb289::t_cc0aa118a8c5bf 7,23-25
+  s_1e4e38747bb289::t_134cda41b09d64 27
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_1e4e38747bb289::t_f324ca02fc652b 24,549,578-586
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "f9efd7e91b2182ea1f899df6387419a856d87298",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
