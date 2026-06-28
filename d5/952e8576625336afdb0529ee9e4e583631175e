@@ -1,0 +1,26 @@
+resources/scripts/components/admin/users/UsersContainer.tsx
+  s_1e4e38747bb289::t_d2edab964c2a87 20,36
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_1e4e38747bb289::t_f4916374aa41ff 12-13,56-70
+resources/scripts/api/admin/users/getUsers.ts
+  s_1e4e38747bb289::t_63cd61bdffddf0 11
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_1e4e38747bb289::t_fa0a1d965ac603 81-123
+  s_1e4e38747bb289::t_d3cd5d790d45f0 303-312
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "d5952e8576625336afdb0529ee9e4e583631175e",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
