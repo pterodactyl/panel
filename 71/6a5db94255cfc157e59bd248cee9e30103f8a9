@@ -1,0 +1,19 @@
+resources/scripts/components/admin/settings/SettingsContainer.tsx
+  s_1e4e38747bb289::t_1a09bd13cbf940 1-2,15-17,25-27,29-31,55-66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "716a5db94255cfc157e59bd248cee9e30103f8a9",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
