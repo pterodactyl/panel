@@ -1,0 +1,29 @@
+resources/scripts/api/admin/locations/queries.ts
+  s_1e4e38747bb289::t_903ddc36edb5ac 59
+resources/scripts/api/admin/servers/queries.ts
+  s_1e4e38747bb289::t_0092753246c855 115
+resources/scripts/components/ui/Select.tsx
+  s_1e4e38747bb289::t_b0b97ddbf379c2 230-232,234,236,242,245,248,272,320
+resources/scripts/api/admin/users/queries.ts
+  s_1e4e38747bb289::t_f8ab87ccf05ce4 62
+resources/scripts/api/admin/languages/queries.ts
+  s_1e4e38747bb289::t_f95cdfb543d8ae 8
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_1e4e38747bb289::t_d73e332d71a8f8 63,76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "fa018756b8603830935d63fa29466972dc25e3b9",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
