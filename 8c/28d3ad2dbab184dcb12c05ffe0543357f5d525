@@ -1,0 +1,53 @@
+app/Services/Databases/DeployServerDatabaseService.php
+  s_1e4e38747bb289::t_7a1140f5612d33 41-42,44-46,49
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_1e4e38747bb289::t_7a1140f5612d33 37,48,59
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_1e4e38747bb289::t_7a1140f5612d33 7-8,79,95-122,307
+resources/scripts/api/admin/database-hosts/getDatabaseHostDatabases.ts
+  s_1e4e38747bb289::t_7a1140f5612d33 1-22
+resources/scripts/api/admin/servers/databases/getServerDatabases.ts
+  s_1e4e38747bb289::t_7a1140f5612d33 10,20
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_1e4e38747bb289::t_7a1140f5612d33 8,60,67-90
+  s_1e4e38747bb289::t_43ef1a6c541f56 91-93
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_1e4e38747bb289::t_7a1140f5612d33 139-147,154
+resources/scripts/api/admin/servers/databases/createServerDatabase.ts
+  s_1e4e38747bb289::t_7a1140f5612d33 8,19
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_1e4e38747bb289::t_7a1140f5612d33 11,22,222-224,226,228-235,237-240,242-270,307
+  s_1e4e38747bb289::t_4453b213c5edd9 227
+  s_1e4e38747bb289::t_821bddb2fd508b 236
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_1e4e38747bb289::t_7a1140f5612d33 16,31,55-66,81-88,90
+  s_1e4e38747bb289::t_27692790629f51 89
+routes/api-admin.php
+  s_1e4e38747bb289::t_7a1140f5612d33 375
+resources/scripts/api/queryKeys.ts
+  s_1e4e38747bb289::t_7a1140f5612d33 55-58
+resources/scripts/components/admin/servers/CreateServerDatabaseButton.tsx
+  s_1e4e38747bb289::t_7a1140f5612d33 32,41,121-129
+  s_1e4e38747bb289::t_e94b4d55337604 130-132
+  s_1e4e38747bb289::t_a29f7f0dbab418 133
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_1e4e38747bb289::t_7a1140f5612d33 124-130,183,187-188
+  s_1e4e38747bb289::t_e9151ddfa144b7 184-186
+  s_1e4e38747bb289::t_deab4f137589ba 123
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "8c28d3ad2dbab184dcb12c05ffe0543357f5d525",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
