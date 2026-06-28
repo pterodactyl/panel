@@ -1,0 +1,27 @@
+resources/scripts/router/routeTree.ts
+  s_1e4e38747bb289::t_940410106a771f 173,178,325,332
+resources/scripts/router/search.ts
+  s_1e4e38747bb289::t_80ecefef1a7d4e 74,76
+resources/scripts/components/dashboard/activity/ActivityLogContainer.tsx
+  s_1e4e38747bb289::t_0c39275dad7856 17-18,33,75
+resources/scripts/components/elements/activity/ActivityLogEntry.tsx
+  s_1e4e38747bb289::t_7035be0fccb7cb 68
+resources/scripts/components/server/ServerActivityLogContainer.tsx
+  s_1e4e38747bb289::t_575a0b1ac13ab6 17-18,34,76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "b241451c1349203a9f16b096c44083d2cf202b05",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
