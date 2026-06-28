@@ -1,0 +1,23 @@
+resources/scripts/components/admin/nodes/NodeRow.tsx
+  s_1e4e38747bb289::t_2ed46f7625abf6 186
+  s_1e4e38747bb289::t_29dbfa846edb66 6,10,30-55,205
+resources/scripts/components/admin/nests/NestsContainer.tsx
+  s_1e4e38747bb289::t_2ed46f7625abf6 48-53
+  s_1e4e38747bb289::t_544cf931a5d3d8 1,3,12-16,20-47,54-104,139-142
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "5d4b98294098ec0147955f059e4d6d1077b06d47",
+  "prompts": {},
+  "sessions": {
+    "s_1e4e38747bb289": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019eeba9-96ae-7c60-b5b5-4878fed3fe57",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
