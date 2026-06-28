@@ -1,0 +1,24 @@
+tests/Integration/Api/Client/Server/Backup/RestoreBackupTest.php
+  s_3638838034c22c::t_b2b2b2c6624379 10,38
+  s_3638838034c22c::t_333563830ce022 7
+  s_3638838034c22c::t_38271576dfed00 1-6,8-9,11-37,39-43,46-51,54-55,57-59,69-70
+  s_3638838034c22c::t_4650cd2f835df3 44-45,52-53,56,60-68
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_3638838034c22c::t_4650cd2f835df3 206
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ace8effd07026c844cd35fd300aecc0e61c8cba5",
+  "prompts": {},
+  "sessions": {
+    "s_3638838034c22c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f0f8e-1b31-7162-a52a-ae54c64a91b9",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
