@@ -1,0 +1,44 @@
+resources/scripts/api/account/enableAccountTwoFactor.ts
+  s_731111b3bfaced::t_24a13ddfd4a82f 1,9
+  s_731111b3bfaced::t_9981897ca1c985 2,5-7
+resources/scripts/api/account/createApiKey.ts
+  s_731111b3bfaced::t_9981897ca1c985 1,3,6-10,14
+resources/scripts/api/account/deleteApiKey.ts
+  s_731111b3bfaced::t_9981897ca1c985 1,4
+resources/scripts/api/getServers.ts
+  s_731111b3bfaced::t_9981897ca1c985 2-4,13-24
+resources/scripts/api/account/updateAccountEmail.ts
+  s_731111b3bfaced::t_9981897ca1c985 1,4-6
+resources/scripts/api/account/activity/queries.ts
+  s_731111b3bfaced::t_9981897ca1c985 6-7,18-19,23
+  s_731111b3bfaced::t_24a13ddfd4a82f 5,25
+resources/scripts/api/getSystemPermissions.ts
+  s_731111b3bfaced::t_9981897ca1c985 1,11
+resources/scripts/api/account/disableAccountTwoFactor.ts
+  s_731111b3bfaced::t_9981897ca1c985 1,4-6
+resources/scripts/api/account/getApiKeys.ts
+  s_731111b3bfaced::t_9981897ca1c985 1-3,22,24-26
+resources/scripts/api/account/updateAccountPassword.ts
+  s_731111b3bfaced::t_9981897ca1c985 1,10-16
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_731111b3bfaced::t_9981897ca1c985 3-5,14,16,29,31
+  s_731111b3bfaced::t_24a13ddfd4a82f 34-36
+resources/scripts/api/account/getTwoFactorTokenData.ts
+  s_731111b3bfaced::t_9981897ca1c985 1,9,11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "d0cf78a2f2fbf319f97f7ceb7cc2334aeb7081a3",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
