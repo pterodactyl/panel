@@ -1,0 +1,27 @@
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_8d7540531858c9 20-24,39-40,48,55-56,64,91-94,108-113,199-201,237-244,248-252,318-319,441,445-456,459
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_882cf2dfd739f3 594-597,2569,2890
+resources/scripts/api/admin/servers/getServerTransferProgress.ts
+  s_731111b3bfaced::t_8d7540531858c9 1,16-22
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_390e89c9184e05 179-181,188
+app/Http/Controllers/Api/Admin/Servers/TransferProgressController.php
+  s_731111b3bfaced::t_390e89c9184e05 29-31
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "66097b0d66a6357a6ea94a56b63543fe0efa6101",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
