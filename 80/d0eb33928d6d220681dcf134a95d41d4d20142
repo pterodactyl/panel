@@ -1,0 +1,48 @@
+resources/scripts/api/admin/nodes/generateDeployToken.ts
+  s_731111b3bfaced::t_30b824d06f38c0 10-15
+  s_731111b3bfaced::t_741f7858574e9e 1
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_8d9172079b3b87 5
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_6424342fa7f20d 23-24,36,38-39,41-44,50,52-53,55-58
+  s_731111b3bfaced::t_1a206c1e2a6212 26
+  s_731111b3bfaced::t_140bda8842bd8d 25,211-214
+  s_731111b3bfaced::t_b1d4ec95f92f28 216-219,405-406,409,411-415
+  s_731111b3bfaced::t_af4ce16cd9a4c7 318-319,324-325,330-331
+  s_731111b3bfaced::t_09f37be4840acc 171-177,182-189,194-200,204-210,215
+  s_731111b3bfaced::t_72c14fc71f7429 220
+resources/scripts/api/admin/nodes/getNodeSystemInformation.ts
+  s_731111b3bfaced::t_c77814cca26610 1
+  s_731111b3bfaced::t_6336df5801e89d 13-21
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_8d9172079b3b87 403-434,456-478,2004,2042,2080,3620
+resources/scripts/api/admin/nodes/getNodeConfiguration.ts
+  s_731111b3bfaced::t_23fafa9c50959a 3
+  s_731111b3bfaced::t_8cd11e3649e36d 1
+app/Http/Controllers/Api/Admin/Nodes/UtilizationController.php
+  s_731111b3bfaced::t_7331702faafcc3 21-24,27-30
+resources/scripts/api/admin/nodes/getNodeUtilization.ts
+  s_731111b3bfaced::t_dc9b6292ea75f7 3
+  s_731111b3bfaced::t_4d27b4324830fc 1
+app/Http/Controllers/Api/Admin/Nodes/ConfigurationController.php
+  s_731111b3bfaced::t_87e2e6a86b34c6 19,39
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_5afe688a322798 50-53,139-142,572-634
+  s_731111b3bfaced::t_785581a8d10a1f 635
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "80d0eb33928d6d220681dcf134a95d41d4d20142",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
