@@ -1,0 +1,32 @@
+resources/scripts/components/admin/settings/AdvancedSettingsForm.tsx
+  s_731111b3bfaced::t_01928c9ab03acb 3
+resources/scripts/components/admin/settings/MailSettingsForm.tsx
+  s_731111b3bfaced::t_01928c9ab03acb 3
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_bf0a6fefdca7d7 5
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_bf0a6fefdca7d7 541-572,5641
+resources/scripts/components/admin/settings/GeneralSettingsForm.tsx
+  s_731111b3bfaced::t_01928c9ab03acb 3
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_9d0beee1e65797 50,118,432-501
+  s_731111b3bfaced::t_aeb303dcd0a3a6 502-504
+resources/scripts/api/admin/settings/queries.ts
+  s_731111b3bfaced::t_01928c9ab03acb 9-10,17-18,25,28-30,32-33
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "c589547c26021aaf1eab67e2195beb2cd89fb2b1",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
