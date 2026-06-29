@@ -1,0 +1,21 @@
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_731111b3bfaced::t_8607dbef137ef4 9-13,16,23-24,27-59,76-82,112-115,130-136
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_731111b3bfaced::t_8607dbef137ef4 7-11,13,21-22,25-92,106-109,133-140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "a3f686b3473588f033fc96492e3e2c0b6bab0e6f",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
