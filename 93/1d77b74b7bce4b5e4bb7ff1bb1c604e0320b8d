@@ -1,0 +1,35 @@
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_bb6fd2a97df310 1111,1118,1131-1191
+resources/scripts/api/admin/locations/queries.ts
+  s_731111b3bfaced::t_499519d3ff6f1f 18,147
+  s_731111b3bfaced::t_96c1cf0a19d735 9,16,22,91-96,101-105,136-137,145,148,153-154,159-160
+  s_731111b3bfaced::t_22c6f5dabdd8bd 12-13,19-21,23-24,33-79,82,97-98,112-113,122-129,131-132
+  s_731111b3bfaced::t_7b31361cbed4d5 146
+resources/scripts/api/admin/nodes/getNodesGroupedByLocation.ts
+  s_731111b3bfaced::t_3fc88196c3cebc 24,41-42
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_731111b3bfaced::t_8c259e83551697 85-89
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_bb6fd2a97df310 3896,3900,3904,3908-3912,3916
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_bb6fd2a97df310 635
+resources/scripts/api/admin/locations/getLocation.ts
+  s_731111b3bfaced::t_22c6f5dabdd8bd 2,30-38
+  s_731111b3bfaced::t_499519d3ff6f1f 46-48
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "931d77b74b7bce4b5e4bb7ff1bb1c604e0320b8d",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
