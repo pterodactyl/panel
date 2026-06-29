@@ -1,0 +1,21 @@
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_731111b3bfaced::t_eab49229337574 9,11-15,17,28-29,32-100,117-123,140-144,158-163,186-193,211-215
+app/Http/Controllers/Api/Admin/Locations/EligibleNodesController.php
+  s_731111b3bfaced::t_ea8d02613d1a4e 6-9,11,15-16,19-69,73-77
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "16bca33d7448c6e80f40580dabba46fc74c1e17a",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
