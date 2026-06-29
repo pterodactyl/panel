@@ -1,0 +1,82 @@
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-16912
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/client.gen.ts
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+  s_731111b3bfaced::t_cde4cf116ab0cd 4
+  s_731111b3bfaced::t_76014715496feb 3,5-19
+resources/scripts/api/generated/client/types.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-170
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/core/utils.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-141
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+eslint.config.mjs
+  s_731111b3bfaced::t_1b63fff6c2f237 14
+resources/scripts/api/generated/core/bodySerializer.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-83
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/core/pathSerializer.gen.ts
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+  s_731111b3bfaced::t_76014715496feb 3-172
+resources/scripts/api/generated/core/serverSentEvents.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-243
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+openapi-ts.config.ts
+  s_731111b3bfaced::t_38e213675a94a6 9-10
+  s_731111b3bfaced::t_f9e92c50e41bb6 1-8,11-17,19-34
+  s_731111b3bfaced::t_d715543d06ee4d 18
+resources/scripts/api/hey-api-runtime.ts
+  s_731111b3bfaced::t_3263f3be0118c4 1-9
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+  s_731111b3bfaced::t_76014715496feb 3-2830
+resources/scripts/api/generated/core/queryKeySerializer.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-118
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/client/client.gen.ts
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+  s_731111b3bfaced::t_76014715496feb 3-162
+package.json
+  s_731111b3bfaced::t_12a60feaae5631 40-41
+  s_731111b3bfaced::t_bd22d6e9dc459f 74-75
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_76014715496feb 3-5
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/core/auth.gen.ts
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+  s_731111b3bfaced::t_76014715496feb 3-49
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-4630
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/client/index.ts
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+  s_731111b3bfaced::t_76014715496feb 3-26
+resources/scripts/api/generated/core/params.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-179
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/client/utils.gen.ts
+  s_731111b3bfaced::t_76014715496feb 3-207
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+resources/scripts/api/generated/core/types.gen.ts
+  s_731111b3bfaced::t_a1ce2d30ef3d04 1-2
+  s_731111b3bfaced::t_76014715496feb 3-111
+package-lock.json
+  s_731111b3bfaced::t_95450ddc629e73 42-43,671-809,926-942,2774-2783,3090-3134,3242-3257,3305-3314,3327-3336,3344-3350,3613-3642,3661-3673,3692-3698,3718-3724,3755-3767,4322-4328,4608-4620,4627-4636,5091-5106,5166-5197,5386-5401,6171-6198,6313-6319,6340-6351,6391-6403,6518-6528,6612-6625,6785-6794,6829-6841,7994-8010
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "5bee0383a426480dac12b7f8e32bc950db67fa73",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
