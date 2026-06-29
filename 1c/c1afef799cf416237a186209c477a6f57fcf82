@@ -1,0 +1,20 @@
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_731111b3bfaced::t_6ca5e301a85f69 19
+  s_731111b3bfaced::t_e9d016cad26193 11-15,28-29,32-98,113-116,127-132,150-157,182-189,232-237
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "1cc1afef799cf416237a186209c477a6f57fcf82",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
