@@ -1,0 +1,32 @@
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_2bc8cec9d72aaf 54-55
+  s_731111b3bfaced::t_18a73d5fe7b955 183
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_731111b3bfaced::t_2bc8cec9d72aaf 13,45-52,67,98,114-115
+  s_731111b3bfaced::t_18a73d5fe7b955 39
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_731111b3bfaced::t_2bc8cec9d72aaf 24-31
+resources/scripts/api/admin/servers/databases/getServerDatabases.ts
+  s_731111b3bfaced::t_a0eba433a4ce20 1,14-21,28
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_1295046e0bfbf7 534,928,1292
+  s_731111b3bfaced::t_c7741b8cf18e8c 535-542,3041-3046,3145,3187-3193,3234,8835,8873,8913,9994,10037
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_171ca7e16f5fa8 25-27,29,33-34,36-37,42,46-47,51-52,55,77-81,88,177-179,181-188,192-196,274-275,433,437-451,469,473-479,501,505-513
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "2c178a36a59a175bfb9c20c01f26521f5ca80f96",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
