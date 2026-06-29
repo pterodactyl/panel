@@ -1,0 +1,83 @@
+resources/scripts/api/server/files/saveFileContents.ts
+  s_731111b3bfaced::t_3318ffcfe46890 12
+  s_731111b3bfaced::t_c7dd7074090be1 2,5
+resources/scripts/api/server/users/getServerSubusers.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 1
+  s_731111b3bfaced::t_0da5e1f40bc033 21-22
+  s_731111b3bfaced::t_73a6309a223748 2,17,19
+  s_731111b3bfaced::t_1e036986c54da6 20
+resources/scripts/api/fractal.ts
+  s_731111b3bfaced::t_b5c3b30c25f678 37-42
+resources/scripts/api/server/files/getFileContents.ts
+  s_731111b3bfaced::t_379216533bf84a 2-4,7
+  s_731111b3bfaced::t_3318ffcfe46890 12
+resources/scripts/api/server/users/deleteSubuser.ts
+  s_731111b3bfaced::t_7575a2006fce57 1,5
+resources/scripts/api/server/schedules/getServerSchedules.ts
+  s_731111b3bfaced::t_a5a7ab1b6273cd 75-77
+  s_731111b3bfaced::t_46c366df924965 2,72-74
+  s_731111b3bfaced::t_c3512b02252faf 71
+  s_731111b3bfaced::t_d7c3ca5d961ec3 1,82
+resources/scripts/api/server/schedules/createOrUpdateScheduleTask.ts
+  s_731111b3bfaced::t_a6be6a84bcdc01 13,21-22,26
+  s_731111b3bfaced::t_d7c3ca5d961ec3 25,29
+  s_731111b3bfaced::t_e446348a0d13ca 1,11-12
+resources/scripts/api/server/users/createOrUpdateSubuser.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 18
+  s_731111b3bfaced::t_6511c169a94b19 2,10-11
+  s_731111b3bfaced::t_2217484937f9a2 12,14-15,19
+resources/scripts/api/server/files/getFileUploadUrl.ts
+  s_731111b3bfaced::t_123261a8bb3abf 2-4,7,9
+resources/scripts/api/fractal.spec.ts
+  s_731111b3bfaced::t_df02dc36b71053 68,81
+  s_731111b3bfaced::t_b5c3b30c25f678 82-92
+  s_731111b3bfaced::t_3f2d484134617b 80,96
+  s_731111b3bfaced::t_6ff991a7614faf 110-111
+  s_731111b3bfaced::t_44f4497d9abc71 55,93-95,97-100
+  s_731111b3bfaced::t_9f771bf285468e 2,101-109
+resources/scripts/api/server/files/decompressFiles.ts
+  s_731111b3bfaced::t_3318ffcfe46890 11
+  s_731111b3bfaced::t_f7865ada0b2525 2,5
+resources/scripts/api/server/schedules/getServerSchedule.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 12
+  s_731111b3bfaced::t_2a58c59b2beb36 2,4
+  s_731111b3bfaced::t_25ddb5e7a35950 5-7
+resources/scripts/api/server/schedules/createOrUpdateSchedule.ts
+  s_731111b3bfaced::t_63df68faf3b948 8,20-21,25
+  s_731111b3bfaced::t_d7c3ca5d961ec3 24,28
+  s_731111b3bfaced::t_97f69fa1e755ae 1,6-7
+resources/scripts/api/server/files/compressFiles.ts
+  s_731111b3bfaced::t_87ef1fed600a0c 5,7
+  s_731111b3bfaced::t_3318ffcfe46890 13
+  s_731111b3bfaced::t_11c98c0c8eea80 1,4
+resources/scripts/api/server/files/loadDirectory.ts
+  s_731111b3bfaced::t_2cb83893749b08 2,20-22
+  s_731111b3bfaced::t_f52de15fbaf545 23-25
+resources/scripts/api/server/files/getFileDownloadUrl.ts
+  s_731111b3bfaced::t_f0b4923bd7ec56 2-4,7,12
+  s_731111b3bfaced::t_3318ffcfe46890 10
+resources/scripts/api/endpoint.ts
+  s_731111b3bfaced::t_efa04935112aa6 53-58
+  s_731111b3bfaced::t_61405c9420c999 1-4,6-11,13,15-16,19-52
+  s_731111b3bfaced::t_255601a9eddf73 17-18
+  s_731111b3bfaced::t_fa8c6d9bc194d3 5,12,14
+resources/scripts/api/server/files/chmodFiles.ts
+  s_731111b3bfaced::t_3318ffcfe46890 13
+  s_731111b3bfaced::t_a1b8b5f84edd69 2,10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "10ec6e7793b86005d3b4cfc37932d3059b343b55",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": null
+    }
+  }
+}
