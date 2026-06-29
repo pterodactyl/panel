@@ -1,0 +1,57 @@
+resources/scripts/api/server/files/compressFiles.ts
+  s_731111b3bfaced::t_3318ffcfe46890 4-5,8,14,16
+resources/scripts/api/server/users/getServerSubusers.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 1,3,20
+resources/scripts/api/generated-helpers.ts
+  s_731111b3bfaced::t_f8315480a0d9f1 1,3-4,6,12-13,19-20
+  s_731111b3bfaced::t_b8561b53c7438a 5,9-10,16-17
+  s_731111b3bfaced::t_b5c3b30c25f678 2,7-8,11,14-15,18,21
+resources/scripts/api/server/files/decompressFiles.ts
+  s_731111b3bfaced::t_3318ffcfe46890 2,5,11
+resources/scripts/api/server/files/getFileUploadUrl.ts
+  s_731111b3bfaced::t_3318ffcfe46890 2,7
+resources/scripts/api/server/schedules/createOrUpdateSchedule.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 3-4,20,23-24,27,29
+resources/scripts/api/server/schedules/createOrUpdateScheduleTask.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 3-4,21,24-25,28,30
+resources/scripts/api/server/schedules/getServerSchedules.ts
+  s_731111b3bfaced::t_56db0ad018367d 80
+  s_731111b3bfaced::t_d7c3ca5d961ec3 1,3-4,73,78
+resources/scripts/api/server/files/loadDirectory.ts
+  s_731111b3bfaced::t_3318ffcfe46890 3,26
+resources/scripts/api/server/files/getFileDownloadUrl.ts
+  s_731111b3bfaced::t_3318ffcfe46890 2-3,6,9,11
+resources/scripts/api/server/schedules/getServerSchedule.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 2-3,7,12,14
+resources/scripts/api/server/files/chmodFiles.ts
+  s_731111b3bfaced::t_3318ffcfe46890 2,10,13
+resources/scripts/api/server/files/getFileContents.ts
+  s_731111b3bfaced::t_3318ffcfe46890 2,5,10
+resources/scripts/api/server/users/createOrUpdateSubuser.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 2-3,14,17,23
+resources/scripts/api/fractal.spec.ts
+  s_731111b3bfaced::t_b5c3b30c25f678 4,8-10,83-100
+  s_731111b3bfaced::t_6ff991a7614faf 101-102
+resources/scripts/api/server/users/deleteSubuser.ts
+  s_731111b3bfaced::t_d7c3ca5d961ec3 2,5
+resources/scripts/api/fractal.ts
+  s_731111b3bfaced::t_b5c3b30c25f678 37-59
+resources/scripts/api/server/files/saveFileContents.ts
+  s_731111b3bfaced::t_3318ffcfe46890 2,5,12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ac0ed2c24af2a0be8103cb8dc2fe7e4c27606bfa",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
