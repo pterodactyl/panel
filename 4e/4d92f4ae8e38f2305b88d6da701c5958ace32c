@@ -1,0 +1,56 @@
+resources/scripts/api/admin/database-hosts/getDatabaseHostDatabases.ts
+  s_731111b3bfaced::t_f7b752fcfab64b 20
+  s_731111b3bfaced::t_5f56e2f1bddf3b 1,3-15,18-19,23
+resources/scripts/api/admin/nodes/getNodesGroupedByLocation.ts
+  s_731111b3bfaced::t_abf62ecb46bab0 1,4-5,23-24,27-29,38-39,41
+  s_731111b3bfaced::t_6e725ce1ac0650 30,32-37
+  s_731111b3bfaced::t_f7b752fcfab64b 42
+resources/scripts/api/admin/users/getUser.ts
+  s_731111b3bfaced::t_f7b752fcfab64b 8
+  s_731111b3bfaced::t_5f56e2f1bddf3b 3,6
+resources/scripts/api/admin/servers/getServer.ts
+  s_731111b3bfaced::t_abf62ecb46bab0 1-2,148,150-152,180-182,230-233
+  s_731111b3bfaced::t_f7b752fcfab64b 3,121-145,155-157,160-162,165-167,170-172,175-177,235
+resources/scripts/api/admin/users/getUsers.ts
+  s_731111b3bfaced::t_5f56e2f1bddf3b 1-2,5-6,27-29,31,34
+resources/scripts/api/admin/users/getUserWithServers.ts
+  s_731111b3bfaced::t_f7b752fcfab64b 43,45
+  s_731111b3bfaced::t_5f56e2f1bddf3b 1,4-5,34,40-42
+resources/scripts/api/admin/database-hosts/getDatabaseHosts.ts
+  s_731111b3bfaced::t_5f56e2f1bddf3b 1-2,4-5,14-15,22
+  s_731111b3bfaced::t_f7b752fcfab64b 19
+resources/scripts/api/admin/locations/getLocations.ts
+  s_731111b3bfaced::t_5f56e2f1bddf3b 1-2,4-5,13-14,17,20
+resources/scripts/api/admin/database-hosts/getDatabaseHost.ts
+  s_731111b3bfaced::t_5f56e2f1bddf3b 1-3,37-53,56-60,69,77,84-87
+  s_731111b3bfaced::t_6e725ce1ac0650 71-76
+  s_731111b3bfaced::t_f7b752fcfab64b 89
+resources/scripts/api/admin/servers/getServers.ts
+  s_731111b3bfaced::t_f7b752fcfab64b 29
+  s_731111b3bfaced::t_abf62ecb46bab0 1-2,4-5,25-26,32
+resources/scripts/api/admin/locations/getLocation.ts
+  s_731111b3bfaced::t_f7b752fcfab64b 3,37,51
+  s_731111b3bfaced::t_5f56e2f1bddf3b 1-2,31,39,46-49
+resources/scripts/api/admin/nodes/getNodes.ts
+  s_731111b3bfaced::t_f7b752fcfab64b 18
+  s_731111b3bfaced::t_abf62ecb46bab0 1-2,4-5,14-15,21
+resources/scripts/api/admin/nodes/getNode.ts
+  s_731111b3bfaced::t_f7b752fcfab64b 84
+  s_731111b3bfaced::t_abf62ecb46bab0 1-3,63-72,79-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "4e4d92f4ae8e38f2305b88d6da701c5958ace32c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
