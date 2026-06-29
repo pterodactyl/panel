@@ -1,0 +1,45 @@
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_731111b3bfaced::t_774a01eedfd7f4 62-82,86,135-141,159-160
+  s_731111b3bfaced::t_701719a1edfb04 13,198
+resources/scripts/api/admin/nodes/getNode.ts
+  s_731111b3bfaced::t_03b5646839325e 1,36-38,62-69
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_731111b3bfaced::t_04c51244082534 182
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_f26b8e5fc8e19f 68-74
+  s_731111b3bfaced::t_8db3ac95c9a157 10,14,18-22,35-40,43-44,46-49,59-67,75-90,98,115-117,119,124-131,141-145
+  s_731111b3bfaced::t_5f1bee659f2764 45,91-95,109-114,118
+  s_731111b3bfaced::t_629f99ecff71ff 41-42
+  s_731111b3bfaced::t_58aa24ea0e190d 99-101,135-140,256
+  s_731111b3bfaced::t_37f07bb7ccdb15 149-155,257,262-263,268-269
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_165cbf346315af 3376,3624,7134,7439
+  s_731111b3bfaced::t_28c7b0707c9d07 398-400,3308,3312,3316,3320,3324-3328,3332-3336,3517-3522
+  s_731111b3bfaced::t_47822f73bf4470 3677-3680
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_28c7b0707c9d07 815,822,835-895
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_28c7b0707c9d07 476
+resources/scripts/api/admin/nodes/updateNode.ts
+  s_731111b3bfaced::t_486fb5bb0f0d17 3,6-25,28-29,31
+resources/scripts/api/admin/nodes/createNode.ts
+  s_731111b3bfaced::t_2695da44f0d581 24,41,45
+resources/scripts/api/admin/nodes/getNodesGroupedByLocation.ts
+  s_731111b3bfaced::t_9d2d2ce8c76b69 18-22,26-27,30-31,33-39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "82f713c0d6fbe5b279989949ac18e9095b29a2ed",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
