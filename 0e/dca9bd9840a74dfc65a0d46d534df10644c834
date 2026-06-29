@@ -1,0 +1,33 @@
+app/Http/Controllers/Api/Client/Servers/ServerController.php
+  s_731111b3bfaced::t_dc8d9c75f2d769 6-10,16-17,20-80,93-95
+app/Http/Controllers/Api/Client/Servers/CommandController.php
+  s_731111b3bfaced::t_dc8d9c75f2d769 8-12,21-22,25-57,71-77
+  s_731111b3bfaced::t_d38e2a93118eca 15
+app/Http/Controllers/Api/Client/Servers/PowerController.php
+  s_731111b3bfaced::t_d38e2a93118eca 14
+  s_731111b3bfaced::t_dc8d9c75f2d769 8-12,18-19,22-44,56-61
+app/Http/Controllers/Api/Client/Servers/WebsocketController.php
+  s_731111b3bfaced::t_dc8d9c75f2d769 10-13,21-22,25-41,58-61
+  s_731111b3bfaced::t_d38e2a93118eca 16
+app/Http/Controllers/Api/Client/Servers/ResourceUtilizationController.php
+  s_731111b3bfaced::t_dc8d9c75f2d769 8-11,13,18-19,22-47,63-66
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_731111b3bfaced::t_dc8d9c75f2d769 9,12-14,18,23-24,27-66,70-76
+  s_731111b3bfaced::t_d38e2a93118eca 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "0edca9bd9840a74dfc65a0d46d534df10644c834",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
