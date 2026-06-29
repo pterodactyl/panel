@@ -1,0 +1,45 @@
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_8aff6944b5a098 1362,1369,1382,1389
+  s_731111b3bfaced::t_cbb6154eed709d 1383-1388,1390-1413
+resources/scripts/components/admin/mounts/MountRow.tsx
+  s_731111b3bfaced::t_c2e10295a51d08 8
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_731111b3bfaced::t_0e9d579b5bcbb8 10,24-25
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_731111b3bfaced::t_0e9d579b5bcbb8 10,24-25
+resources/scripts/api/admin/mounts/getMount.ts
+  s_731111b3bfaced::t_88ba5e65324549 1,11,25,38,40,44-45
+resources/scripts/api/admin/mounts/queries.ts
+  s_731111b3bfaced::t_740fc151ffe2fb 9,25,147,149,158
+  s_731111b3bfaced::t_c439ee8f587deb 11-24,26-43,51-58,66-127,129-131,135,140,145-146,148,150-152,156-157,159-163,167-171,176-177,185,189-195,211,215-221,237,241-245,247,266,270-280,298,302-312,328,332-336,356,360-364
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_8aff6944b5a098 742
+resources/scripts/api/admin/mounts/getMounts.ts
+  s_731111b3bfaced::t_88ba5e65324549 1,17-26
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_731111b3bfaced::t_cc2ca72327d5bb 125-126,128
+  s_731111b3bfaced::t_7846c55b0bf385 45-95,127,129,147-148
+resources/scripts/components/admin/mounts/CreateMountForm.tsx
+  s_731111b3bfaced::t_c2e10295a51d08 4
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_8aff6944b5a098 4425,4429,4433,4441
+  s_731111b3bfaced::t_cbb6154eed709d 316-320,4434-4437,4442-4445,4576-4581,4691-4696,4785-4790
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_731111b3bfaced::t_c2e10295a51d08 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "256919152887b2b6b011d8bea3af108b77a35509",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
