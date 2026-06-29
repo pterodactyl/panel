@@ -1,0 +1,23 @@
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_731111b3bfaced::t_c37276ad426057 21
+  s_731111b3bfaced::t_6481a258a45403 12-16,28-29,32-89,106-118,180-192,248-254
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_731111b3bfaced::t_c37276ad426057 20
+  s_731111b3bfaced::t_6481a258a45403 13-17,31-32,35-129,141-144,160-173,203-208,229-244,287-292,305-310
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "5a1627596b51891e3cf21b71714d0ee74802be84",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
