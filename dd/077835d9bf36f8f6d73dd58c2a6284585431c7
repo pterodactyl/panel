@@ -1,0 +1,59 @@
+resources/scripts/api/admin/eggs/createEgg.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,3,42-45,47
+resources/scripts/api/admin/eggs/deleteEggVariable.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,4
+resources/scripts/api/admin/eggs/getEggs.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1-3,21-22,25
+  s_731111b3bfaced::t_91945c5bde1010 23
+resources/scripts/api/admin/nests/importEgg.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1,3,12,14
+resources/scripts/api/admin/nests/getNest.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1-2,30-33,35
+resources/scripts/api/admin/eggs/getEgg.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1-2,71-74,76
+resources/scripts/api/admin/eggs/exportEgg.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,6-9
+resources/scripts/api/admin/eggs/updateEggScript.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,3,15-23,26
+resources/scripts/api/admin/eggs/updateEgg.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,4,8-11,13
+resources/scripts/api/admin/nests/deleteNest.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1,4
+resources/scripts/api/admin/eggs/deleteEgg.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,4
+resources/scripts/api/admin/eggs/updateEggVariable.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,4,13-16,18
+resources/scripts/api/admin/eggs/getEggVariables.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1-3,34-35,38
+  s_731111b3bfaced::t_91945c5bde1010 36
+resources/scripts/api/admin/nests/getNestEggs.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1-3,29-32,34
+resources/scripts/api/admin/nests/getNests.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1-2,4-5,10-12,14
+resources/scripts/api/admin/eggs/updateEggFromFile.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,3,10-13,15
+resources/scripts/api/admin/eggs/createEggVariable.ts
+  s_731111b3bfaced::t_179d3528ceccc2 1,3,34-37,39
+resources/scripts/api/admin/nests/updateNest.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1,4,7-10,12
+resources/scripts/api/admin/nests/getNestsWithEggs.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1,3-4,19-21,23,25-28
+resources/scripts/api/admin/nests/createNest.ts
+  s_731111b3bfaced::t_5862fb5259b3f4 1,3,11,13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "dd077835d9bf36f8f6d73dd58c2a6284585431c7",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
