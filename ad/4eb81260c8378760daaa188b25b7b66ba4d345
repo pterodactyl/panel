@@ -1,0 +1,30 @@
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_731111b3bfaced::t_192897f7064202 4
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_731111b3bfaced::t_192897f7064202 3
+resources/scripts/api/admin/nodes/getNode.ts
+  s_731111b3bfaced::t_a147848988e009 36-54
+resources/scripts/components/admin/nodes/NodeRow.tsx
+  s_731111b3bfaced::t_192897f7064202 8
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_731111b3bfaced::t_192897f7064202 3
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_ba2f6a244c8132 463-464
+  s_731111b3bfaced::t_cc75db1afa1303 16,30,33,49,53-54,56,71,119-142,302,420,423,425-429,431-433,446-462,465-467,471,474,476,478-481
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "ad4eb81260c8378760daaa188b25b7b66ba4d345",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
