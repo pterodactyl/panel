@@ -1,0 +1,35 @@
+app/Http/Controllers/Api/Application/Servers/DatabaseController.php
+  s_731111b3bfaced::t_2bc44059bec442 9-16,26-27,30-101,116-121,132-138,151-156,169-178,199-204
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_731111b3bfaced::t_caea8f5a3102b7 8,10-15,18-19,27-28,31-73,87-98,122-151,164-169,182-186
+database/Factories/DatabaseFactory.php
+  s_731111b3bfaced::t_be57851c0551f5 7,9,37-45
+  s_731111b3bfaced::t_4878b4ac455239 46
+app/Http/Controllers/Api/Application/Servers/StartupController.php
+  s_731111b3bfaced::t_5553e24f7f0d52 7-13,19-20,23-65,82-93
+app/Http/Controllers/Api/Application/Servers/ServerManagementController.php
+  s_731111b3bfaced::t_cb69e57b6f41ff 7-10,13,17-18,21-60,76-82,95-101,116-121
+database/Factories/ServerFactory.php
+  s_731111b3bfaced::t_392fa9ab157845 8-11,13,55-71
+  s_731111b3bfaced::t_8eba09fd81998c 72
+app/Http/Controllers/Api/Application/Servers/ExternalServerController.php
+  s_731111b3bfaced::t_719d87978ebb83 6-11,16-17,20-39,43-47
+app/Http/Controllers/Api/Application/Servers/ServerDetailsController.php
+  s_731111b3bfaced::t_7af90b4d768d61 6-12,20-21,24-66,84-93,113-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "4b8001068d7fec9e28900919cb1e93e04e2f8d30",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
