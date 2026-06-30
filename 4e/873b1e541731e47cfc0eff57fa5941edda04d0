@@ -1,0 +1,37 @@
+app/Http/Controllers/Api/Client/AccountController.php
+  s_731111b3bfaced::t_e8cdef2ea0715e 12,74,109-110
+resources/scripts/api/account/queries.ts
+  s_731111b3bfaced::t_813578711056af 6-11,27,39,48,51,53-54,56,65-75,77-84,86,93
+  s_731111b3bfaced::t_19628d132905f5 52,55,76,85
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_bbaa661af8f145 62,285-308,349
+  s_731111b3bfaced::t_e8cdef2ea0715e 398
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_731111b3bfaced::t_e8cdef2ea0715e 11,27,101-102,136
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_a17858d33c9823 1620-1626,9274
+  s_731111b3bfaced::t_3090cec89e4e87 9280-9289,9304-9307,9322-9327,9342-9345,9365-9368,9391,9411-9418
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_3090cec89e4e87 1967,1971-1975,1983,1986-1990
+resources/scripts/api/account/two-factor/queries.ts
+  s_731111b3bfaced::t_813578711056af 2,6-21,24-31,42-45,47,53-54,65,67-68,70-71,73
+  s_731111b3bfaced::t_19628d132905f5 46,48-51,69,72
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_a17858d33c9823 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "4e873b1e541731e47cfc0eff57fa5941edda04d0",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
