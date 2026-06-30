@@ -1,0 +1,39 @@
+resources/scripts/api/server/queries.ts
+  s_731111b3bfaced::t_9787b4e61ed9a9 23-24,93-94,116-133
+  s_f8acc34803d486::t_a53e9936167415 134
+resources/scripts/api/server/startup/queries.ts
+  s_731111b3bfaced::t_9787b4e61ed9a9 5
+resources/scripts/api/server/backups/queries.ts
+  s_731111b3bfaced::t_c08bcfe61a432a 25
+  s_731111b3bfaced::t_9787b4e61ed9a9 38-47
+  s_731111b3bfaced::t_2718ede8541567 48-49
+resources/scripts/api/server/files/queries.ts
+  s_731111b3bfaced::t_8ab619447003f9 147
+  s_731111b3bfaced::t_9787b4e61ed9a9 106-146
+resources/scripts/api/server/network/queries.ts
+  s_731111b3bfaced::t_9787b4e61ed9a9 3
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "10c2088f225db52a9d4668561dcfd2dfac58f453",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_f8acc34803d486": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "98aa8e04-8dbd-4899-9598-7451f6a1a83b",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
