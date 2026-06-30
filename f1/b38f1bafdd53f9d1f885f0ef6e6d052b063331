@@ -1,0 +1,22 @@
+resources/scripts/components/elements/table/PaginationFooter.tsx
+  s_731111b3bfaced::t_62400d64855883 6-12
+  s_731111b3bfaced::t_25cff063f60dad 13
+resources/scripts/components/elements/Pagination.tsx
+  s_731111b3bfaced::t_b2bbedd6b9f8cd 14,34-41,57-58
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "f1b38f1bafdd53f9d1f885f0ef6e6d052b063331",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
