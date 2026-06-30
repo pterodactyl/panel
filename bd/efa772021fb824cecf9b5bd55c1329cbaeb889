@@ -1,0 +1,28 @@
+resources/scripts/components/server/databases/CreateDatabaseButton.tsx
+  s_731111b3bfaced::t_6c7a976671629b 7,20-21,24-25
+resources/scripts/components/server/databases/DatabaseRow.tsx
+  s_731111b3bfaced::t_ac2ea640a9be6e 10-14
+  s_731111b3bfaced::t_2ed4cf35634c78 49
+resources/scripts/components/server/databases/RotatePasswordButton.tsx
+  s_731111b3bfaced::t_57da463c6a0aa8 3,23
+resources/scripts/api/server/databases/queries.ts
+  s_731111b3bfaced::t_117875ae9dc883 103-107,116-118
+  s_731111b3bfaced::t_83da633f473206 28-54,83-85,87,100-102,128-130,132
+  s_731111b3bfaced::t_ac2ea640a9be6e 108-114
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "bdefa772021fb824cecf9b5bd55c1329cbaeb889",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
