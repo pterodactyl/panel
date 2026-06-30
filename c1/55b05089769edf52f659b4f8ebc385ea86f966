@@ -1,0 +1,30 @@
+resources/scripts/api/server/queries.ts
+  s_731111b3bfaced::t_ec53debea125be 5-6,10,15-27,38-41,68
+  s_731111b3bfaced::t_e462dd1d02af2b 9
+  s_731111b3bfaced::t_51c9403b50a3b9 30-32,34-35,43
+  s_731111b3bfaced::t_75908720424438 29,33,36,42,45
+  s_731111b3bfaced::t_716ae60aeeee6b 37
+  s_731111b3bfaced::t_e55b41f2d7555d 28
+resources/scripts/components/server/TransferListener.tsx
+  s_731111b3bfaced::t_ec53debea125be 3,29
+resources/scripts/api/server/getServer.ts
+  s_731111b3bfaced::t_ec53debea125be 5
+resources/scripts/components/server/InstallListener.tsx
+  s_731111b3bfaced::t_ec53debea125be 3,23
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "c155b05089769edf52f659b4f8ebc385ea86f966",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
