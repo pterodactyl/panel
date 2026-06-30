@@ -1,0 +1,23 @@
+resources/scripts/api/account/two-factor/queries.ts
+  s_731111b3bfaced::t_971f7e0b92c521 10,24-25,38-39
+resources/scripts/components/dashboard/forms/SetupTOTPDialog.tsx
+  s_731111b3bfaced::t_1129d5eb987eaa 40-41
+resources/scripts/components/dashboard/forms/DisableTOTPDialog.tsx
+  s_731111b3bfaced::t_a921ac52004a9c 25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "bd79366e4bc2dec33b55e2476ea0e7dc55b8a7c9",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
