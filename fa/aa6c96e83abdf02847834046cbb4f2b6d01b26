@@ -1,0 +1,21 @@
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_36f3c78b260bb5 31,59,149-180,212-237,564,568-574
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_3748de6ff8e641 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "faaa6c96e83abdf02847834046cbb4f2b6d01b26",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
