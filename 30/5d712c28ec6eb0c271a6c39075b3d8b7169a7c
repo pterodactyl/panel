@@ -1,0 +1,37 @@
+resources/scripts/api/account/two-factor/queries.ts
+  s_731111b3bfaced::t_83af880c4d1531 1,22
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_6ead4f28583b95 132-133
+resources/scripts/components/server/users/CreateSubuserContainer.tsx
+  s_731111b3bfaced::t_2ad467a25f4064 14-15
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_731111b3bfaced::t_c54e8e8888e78d 20,25
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_731111b3bfaced::t_b1fe8c89df6090 51,54
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_cedcd937e53650 422,432,441,445
+resources/scripts/api/system/queries.ts
+  s_731111b3bfaced::t_19c037433f7dcf 3
+resources/scripts/components/dashboard/forms/SetupTOTPDialog.tsx
+  s_731111b3bfaced::t_9b0a840da2ac75 22-23
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_731111b3bfaced::t_dfd460e1414543 32,36
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_731111b3bfaced::t_9b0737adfc47a3 61-62,67-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "305d712c28ec6eb0c271a6c39075b3d8b7169a7c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
