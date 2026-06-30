@@ -99,7 +99,7 @@ class ServerDetailsController extends Controller
         $servers = Server::query()
             ->with([
                 'activity' => fn ($builder) => $builder
-                    ->where('activity_logs.event', 'server:backup.restore-started')
+                    ->where('activity_logs.event', 'server:backup.restore')
                     ->latest('timestamp'),
             ])
             ->where('node_id', $node->id)
