@@ -1,0 +1,32 @@
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_731111b3bfaced::t_ad855f32e290dc 16,108,158
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_d6f413df797903 1426,10719-10724,10867-10872
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_ad855f32e290dc 153-162
+resources/scripts/api/server/schedules/queries.ts
+  s_731111b3bfaced::t_3643aa2cbe41cb 42,47
+  s_731111b3bfaced::t_ad855f32e290dc 17-29,31-32,43-46,48-51,53-54,69,83-90,99-106
+  s_731111b3bfaced::t_df34227a4a2bcb 30
+  s_731111b3bfaced::t_9d9ae54c7129f8 14,66-68
+resources/scripts/api/server/schedules/getServerSchedules.ts
+  s_731111b3bfaced::t_ad855f32e290dc 1-5,88-90
+  s_731111b3bfaced::t_3643aa2cbe41cb 42,44,55,67
+  s_731111b3bfaced::t_df34227a4a2bcb 43,45-54,85
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "971307078c2fb3ae6ed839241373b398a8e42606",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
