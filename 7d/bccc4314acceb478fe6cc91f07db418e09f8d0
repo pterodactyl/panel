@@ -1,0 +1,22 @@
+resources/scripts/components/admin/settings/MailSettingsForm.tsx
+  s_731111b3bfaced::t_17e1429ba05b34 5,7,22-23,39-40
+resources/scripts/api/admin/settings/queries.ts
+  s_731111b3bfaced::t_9882e764cb4375 1,26-28,143,145,153-155,165,167,173-175,179,185-187,190,194,197,201
+  s_731111b3bfaced::t_3289bfa03b6124 109
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "7dbccc4314acceb478fe6cc91f07db418e09f8d0",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
