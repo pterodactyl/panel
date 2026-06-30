@@ -3,6 +3,7 @@
 namespace Pterodactyl\Models;
 
 use Pterodactyl\Rules\Username;
+use Pterodactyl\Rules\UserEmail;
 use Pterodactyl\Facades\Activity;
 use Illuminate\Support\Collection;
 use Illuminate\Validation\Rules\In;
@@ -167,7 +168,7 @@ class User extends Model implements
      */
     public static array $validationRules = [
         'uuid' => 'required|string|size:36|unique:users,uuid',
-        'email' => 'required|email|between:1,191|unique:users,email',
+        'email' => 'required|email:strict|between:1,191|unique:users,email',
         'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',
         'username' => 'required|between:1,191|unique:users,username',
         'name_first' => 'required|string|between:1,191',
@@ -189,6 +190,7 @@ class User extends Model implements
 
         $rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
         $rules['username'][] = new Username();
+        $rules['email'][] = new UserEmail();
 
         return $rules;
     }

@@ -33,8 +33,20 @@ class StoreSSHKeyRequest extends ClientApiRequest
     public function withValidator(Validator $validator): void
     {
         $validator->after(function () {
+            $publicKey = $this->input('public_key');
+            if (!is_string($publicKey)) {
+                return;
+            }
+
+            $publicKey = trim($publicKey);
+            if (!UserSSHKey::isSupportedPublicKeyMaterial($publicKey)) {
+                $this->validator->errors()->add('public_key', 'The public key provided is not valid.');
+
+                return;
+            }
+
             try {
-                $this->key = PublicKeyLoader::loadPublicKey($this->input('public_key'));
+                $this->key = PublicKeyLoader::loadPublicKey($publicKey);
             } catch (NoKeyLoadedException $exception) {
                 $this->validator->errors()->add('public_key', 'The public key provided is not valid.');
 

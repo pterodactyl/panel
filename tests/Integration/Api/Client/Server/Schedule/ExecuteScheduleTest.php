@@ -8,6 +8,7 @@ use Pterodactyl\Models\Schedule;
 use Pterodactyl\Models\Permission;
 use Illuminate\Support\Facades\Bus;
 use Pterodactyl\Jobs\Schedule\RunTaskJob;
+use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
 class ExecuteScheduleTest extends ClientApiIntegrationTestCase
@@ -63,8 +64,27 @@ class ExecuteScheduleTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertForbidden();
     }
 
+    public function testSubuserCannotExecuteScheduleWithoutTaskActionPermission()
+    {
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_UPDATE]);
+
+        $mock = $this->mock(DaemonCommandRepository::class);
+        $mock->shouldNotReceive('setServer');
+
+        /** @var Schedule $schedule */
+        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+        Task::factory()->create([
+            'schedule_id' => $schedule->id,
+            'sequence_id' => 1,
+            'action' => 'command',
+            'payload' => 'say Test',
+        ]);
+
+        $this->actingAs($user)->postJson($this->link($schedule, '/execute'))->assertForbidden();
+    }
+
     public static function permissionsDataProvider(): array
     {
-        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];
+        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE, Permission::ACTION_CONTROL_CONSOLE]]];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
+use Pterodactyl\Rules\UserEmail;
 use Pterodactyl\Models\Permission;
 
 class StoreSubuserRequest extends SubuserRequest
@@ -14,7 +15,7 @@ class StoreSubuserRequest extends SubuserRequest
     public function rules(): array
     {
         return [
-            'email' => 'required|email|between:1,191',
+            'email' => ['required', 'email:strict', 'between:1,191', new UserEmail()],
             'permissions' => 'required|array',
             'permissions.*' => 'string',
         ];

@@ -66,7 +66,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
     useEffect(() => {
         // Don't waste a HTTP request if there is nothing important to show to the user because
         // the server is suspended.
-        if (isSuspended) return;
+        if (isSuspended || server.isNodeUnderMaintenance) return;
 
         getStats().then(() => {
             interval.current = setInterval(() => getStats(), 30000);
@@ -75,7 +75,7 @@ export default ({ server, className }: { server: Server; className?: string }) =
         return () => {
             interval.current && clearInterval(interval.current);
         };
-    }, [isSuspended]);
+    }, [isSuspended, server.isNodeUnderMaintenance]);
 
     const alarms = { cpu: false, memory: false, disk: false };
     if (stats) {
@@ -116,11 +116,17 @@ export default ({ server, className }: { server: Server; className?: string }) =
                 </div>
             </div>
             <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
-                {!stats || isSuspended ? (
+                {!stats || isSuspended || server.isNodeUnderMaintenance ? (
                     isSuspended ? (
                         <div css={tw`flex-1 text-center`}>
                             <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
                                 {server.status === 'suspended' ? 'Suspended' : 'Connection Error'}
+                            </span>
+                        </div>
+                    ) : server.isNodeUnderMaintenance ? (
+                        <div css={tw`flex-1 text-center`}>
+                            <span css={tw`bg-yellow-500 rounded px-2 py-1 text-yellow-100 text-xs`}>
+                                Under Maintenance
                             </span>
                         </div>
                     ) : server.isTransferring || server.status ? (

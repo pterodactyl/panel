@@ -4,6 +4,7 @@ namespace Pterodactyl\Services\Users;
 
 use Ramsey\Uuid\Uuid;
 use Pterodactyl\Models\User;
+use Pterodactyl\Facades\Activity;
 use Illuminate\Contracts\Hashing\Hasher;
 use Illuminate\Database\ConnectionInterface;
 use Illuminate\Contracts\Auth\PasswordBroker;
@@ -52,6 +53,15 @@ class UserCreationService
 
         $this->connection->commit();
         $user->notify(new AccountCreated($user, $token ?? null));
+
+        Activity::event('user:user.create')
+            ->subject($user)
+            ->property([
+                'email' => $user->email,
+                'username' => $user->username,
+                'admin' => $user->root_admin,
+            ])
+            ->log();
 
         return $user;
     }
