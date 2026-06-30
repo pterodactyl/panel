@@ -1,0 +1,34 @@
+resources/scripts/components/elements/activity/ActivityLogEntry.tsx
+  s_731111b3bfaced::t_56e852839b80ee 11
+  s_731111b3bfaced::t_68b9fe383739de 49-51,57,69,72,75,80,89,92,94,98-102,106
+resources/scripts/components/elements/table/PaginationFooter.tsx
+  s_731111b3bfaced::t_68b9fe383739de 9-17,22-33,35,48,65,69,71
+resources/scripts/components/dashboard/activity/ActivityLogContainer.tsx
+  s_731111b3bfaced::t_68b9fe383739de 56-59,71
+resources/scripts/api/definitions/user/models.d.ts
+  s_731111b3bfaced::t_68b9fe383739de 1
+resources/scripts/api/server/activity/queries.ts
+  s_731111b3bfaced::t_68b9fe383739de 13,21,38
+resources/scripts/api/account/activity/queries.ts
+  s_731111b3bfaced::t_68b9fe383739de 12,20,35
+resources/scripts/api/activity.ts
+  s_731111b3bfaced::t_56e852839b80ee 2,5
+resources/scripts/components/server/ServerActivityLogContainer.tsx
+  s_731111b3bfaced::t_68b9fe383739de 56,62-63,71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "9ca61e187fdee64f12c75b5b24ec79c9d84ef2a6",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
