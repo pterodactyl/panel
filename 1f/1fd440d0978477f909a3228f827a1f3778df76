@@ -1,0 +1,27 @@
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_731111b3bfaced::t_49fa111d0dacf4 8,10,41,51
+resources/scripts/components/admin/locations/CreateLocationButton.tsx
+  s_731111b3bfaced::t_4e689ccf7319b8 4,17
+resources/scripts/api/admin/locations/queries.ts
+  s_731111b3bfaced::t_c151aa184d36a4 37-49,87-92,94-96,104-126,215,217,237,239,241,259,261,263-267
+  s_731111b3bfaced::t_4fd53284b88745 1,208-210,230-232,252-254,270
+  s_731111b3bfaced::t_5b5ad060f7cc02 127
+resources/scripts/components/admin/locations/LocationRow.tsx
+  s_731111b3bfaced::t_d3d29c81f81243 8,32,44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "1f1fd440d0978477f909a3228f827a1f3778df76",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
