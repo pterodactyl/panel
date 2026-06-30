@@ -1,0 +1,45 @@
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_731111b3bfaced::t_b8ecfc3506c906 4
+resources/scripts/components/admin/eggs/helpers.ts
+  s_731111b3bfaced::t_b8ecfc3506c906 1
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_731111b3bfaced::t_05e0698f554bed 3
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_731111b3bfaced::t_b8ecfc3506c906 3-8
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_731111b3bfaced::t_05e0698f554bed 5
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_731111b3bfaced::t_b8ecfc3506c906 5
+resources/scripts/components/admin/eggs/EggConfigurationForm.tsx
+  s_731111b3bfaced::t_05e0698f554bed 6
+resources/scripts/components/admin/eggs/ExportEggButton.tsx
+  s_731111b3bfaced::t_b8ecfc3506c906 2
+resources/scripts/components/admin/nests/NestDetailContainer.tsx
+  s_731111b3bfaced::t_05e0698f554bed 16,347
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_731111b3bfaced::t_b8ecfc3506c906 2
+resources/scripts/api/admin/nests/queries.ts
+  s_731111b3bfaced::t_05e0698f554bed 16
+resources/scripts/components/admin/eggs/EggVariablesTab.tsx
+  s_731111b3bfaced::t_b8ecfc3506c906 2
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_953e3314d71efb 29,34-35,69-198,200-248
+  s_731111b3bfaced::t_05e0698f554bed 199,250-258,488
+  s_731111b3bfaced::t_96fd1cfa30beaf 249
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "e463202c91653d06cc9fa1176f84c459fc98f8b8",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
