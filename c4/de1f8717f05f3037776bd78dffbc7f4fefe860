@@ -1,0 +1,30 @@
+resources/scripts/components/server/users/UserRow.tsx
+  s_731111b3bfaced::t_dab2ae0a185875 18,24,27,33-34,42,46
+resources/scripts/components/server/users/CreateSubuserContainer.tsx
+  s_731111b3bfaced::t_ce5f877ce5c1f8 31
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_731111b3bfaced::t_b023c5c5aa3951 16-17,43,48
+  s_731111b3bfaced::t_dca750ea21faea 34-37
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_731111b3bfaced::t_282e36196d935b 59-60,130
+resources/scripts/api/server/users/queries.ts
+  s_731111b3bfaced::t_422d63c7977513 67
+  s_731111b3bfaced::t_8c7d9cc2cda797 122
+  s_731111b3bfaced::t_6f1036a4ec72f2 25,40,71,79,82,84-98,127,129-135,138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "c4de1f8717f05f3037776bd78dffbc7f4fefe860",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
