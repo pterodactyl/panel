@@ -1,0 +1,39 @@
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_731111b3bfaced::t_5f8e8c8bcf8f3f 32-76,85,87,90-98,122,171-176,196,212-213
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_a0e0f3179bc1ed 196-197,199-220
+  s_731111b3bfaced::t_8be71e557f3d3e 198
+resources/scripts/components/admin/databases/DatabaseHostRow.tsx
+  s_731111b3bfaced::t_20a8e9ceed86cc 8
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_7d0248b8822d83 117,126,128
+  s_731111b3bfaced::t_c044dbc901d77b 131-134,6348-6356,6360,6364,6368,6370,6372,6507-6512,6621-6625,6629
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_c044dbc901d77b 2240,2247,2260-2291,2398-2428
+  s_731111b3bfaced::t_fd7fc707ffb239 2429
+resources/scripts/components/admin/databases/CreateDatabaseHostForm.tsx
+  s_731111b3bfaced::t_20a8e9ceed86cc 5
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_731111b3bfaced::t_20a8e9ceed86cc 9,11-41,44,50-94,99-141,143-155,157-163,167,171-214,216-223,232-237,247-248,253-260,264,266-269,271-272,276-292,295,297,302-303,308-309,315,323,327-332,350,354-363,379,383-390,392
+  s_731111b3bfaced::t_5de99f31e6ac75 142,314
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_731111b3bfaced::t_20a8e9ceed86cc 8-9
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_c044dbc901d77b 1221
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "f843cb556b1179215218722dd7e6c53db3f4282d",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
