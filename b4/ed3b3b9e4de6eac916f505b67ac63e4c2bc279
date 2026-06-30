@@ -1,0 +1,69 @@
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_879b472299920f 343,362,373,547,595
+resources/scripts/components/admin/eggs/EggConfigurationForm.tsx
+  s_731111b3bfaced::t_5d1c1e16ef52da 199-200
+resources/scripts/components/admin/eggs/ExportEggButton.tsx
+  s_731111b3bfaced::t_6d3aed5f10639a 26,31
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_731111b3bfaced::t_4b9e5992ab8106 21-24,36-37,44,54-55,65-69,89-92,95,108,125-128,178-181,186
+  s_731111b3bfaced::t_3137c362811818 176
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_731111b3bfaced::t_222f61928c3766 22-23,36-37
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_731111b3bfaced::t_6bcdda63a638ad 28
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_731111b3bfaced::t_1965fdaf5e06e6 30,84
+  s_731111b3bfaced::t_fe798620d406a8 50,68,76
+resources/scripts/components/admin/nests/NestDetailContainer.tsx
+  s_731111b3bfaced::t_bb98d5cee5c410 312,327-328,352,358,383-385,425,427-429
+  s_731111b3bfaced::t_9e6ea1e2621859 53,59-60
+  s_731111b3bfaced::t_e7db587ecdd806 190,197,204,232,236,239,241-244,248,250-251
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_731111b3bfaced::t_5a4d8d63802e0a 32,38-41,86-90
+  s_731111b3bfaced::t_8d5782110e6334 33-35
+resources/scripts/components/admin/eggs/EggVariablesTab.tsx
+  s_731111b3bfaced::t_4f30c0e7b3639e 19-24
+  s_731111b3bfaced::t_97fcab8b92fead 29,40,48-54
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_731111b3bfaced::t_4f30c0e7b3639e 103
+  s_731111b3bfaced::t_44ffcf2507ce0f 23-29,47,69-70,82,86,88,112-116,133-137,142-146,151,172
+resources/scripts/api/admin/nests/queries.ts
+  s_731111b3bfaced::t_34daff834f8b4a 225,228,252,256,313,317
+  s_731111b3bfaced::t_047439aa296dc6 11-12
+  s_731111b3bfaced::t_ab8a8d612da660 147,157,167,178
+  s_731111b3bfaced::t_dc0a7952b25f0a 53,60-62
+resources/scripts/components/admin/eggs/helpers.ts
+  s_731111b3bfaced::t_ab780458854f0d 60-70
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_731111b3bfaced::t_59d9fc7c87670f 26-30,56,63
+resources/scripts/components/admin/nests/NestsContainer.tsx
+  s_731111b3bfaced::t_9f4313ef79a82a 27,46,70-72,160
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_731111b3bfaced::t_4f30c0e7b3639e 153-154
+  s_731111b3bfaced::t_03c2c32b41e029 118-119,148,155,167,242,332
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_3e17cc51ece0c3 102-104
+  s_731111b3bfaced::t_4f30c0e7b3639e 327-329
+  s_731111b3bfaced::t_0373dcfb4f5769 267,270-271,295,298-299,323,326,357,360-363,430,434,460,464
+  s_731111b3bfaced::t_c7830c5b9dd1c2 199,210,221
+resources/scripts/components/admin/nests/NestRow.tsx
+  s_731111b3bfaced::t_5f73359e889791 36,39,51,92,109,146,153,159,185,188,190-191,194-196,198-199
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_731111b3bfaced::t_21a7a36d8bfa2f 58-62,69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "b4ed3b3b9e4de6eac916f505b67ac63e4c2bc279",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
