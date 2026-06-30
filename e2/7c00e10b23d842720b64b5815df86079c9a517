@@ -1,0 +1,25 @@
+resources/scripts/components/server/network/AllocationRow.tsx
+  s_731111b3bfaced::t_cd3e72ae473304 17-23,50,56
+resources/scripts/components/server/network/DeleteAllocationButton.tsx
+  s_731111b3bfaced::t_07d745fb285184 7,20
+resources/scripts/api/server/network/queries.ts
+  s_731111b3bfaced::t_6046b7c5fa639c 30-56,78-80,82,109-111,113-114,125-127,129,135,149-151,153,157
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_731111b3bfaced::t_1c034852ccc895 9-13,26
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "e27c00e10b23d842720b64b5815df86079c9a517",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
