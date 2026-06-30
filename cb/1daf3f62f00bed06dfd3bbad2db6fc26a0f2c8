@@ -1,0 +1,26 @@
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_731111b3bfaced::t_9eb6691b3d44af 4,36
+resources/scripts/api/admin/users/queries.ts
+  s_731111b3bfaced::t_b70da36ba0295e 1
+  s_731111b3bfaced::t_f9030837534770 113-131,134,143-164,236,241,243,253,258,260,262,270,275,277,279-281,284
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_731111b3bfaced::t_e8d332be94d836 10-11,254,287
+resources/scripts/components/admin/users/UserRow.tsx
+  s_731111b3bfaced::t_fb9bd83ad41452 8,390,406
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "cb1daf3f62f00bed06dfd3bbad2db6fc26a0f2c8",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
