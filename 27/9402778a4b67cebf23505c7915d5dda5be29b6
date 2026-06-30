@@ -1,0 +1,33 @@
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_731111b3bfaced::t_8561937e11a9a0 30-34,142,158
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_752801f53d9d75 92
+  s_731111b3bfaced::t_72e9e302b87cb5 373,629
+  s_731111b3bfaced::t_a877b3c60ac978 357
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_cd82bddb6ba5be 733,753,764
+  s_731111b3bfaced::t_1d2a74c3f5f12c 12
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_731111b3bfaced::t_ad4cef8064d7a5 202,205,323,326
+  s_731111b3bfaced::t_abe50808bc785f 35-36,52-53,58,61,63,80,87-88,92,101,104,107,111,116,172-173,175
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_731111b3bfaced::t_3fc4c2d3c1081c 51-55,261,277,292
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_ce0fa584fc78d1 135-136
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "279402778a4b67cebf23505c7915d5dda5be29b6",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
