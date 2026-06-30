@@ -1,0 +1,24 @@
+resources/scripts/components/dashboard/forms/CreateApiKeyForm.tsx
+  s_731111b3bfaced::t_bf1586c680e8e9 16-21
+resources/scripts/components/dashboard/AccountApiContainer.tsx
+  s_731111b3bfaced::t_98378999379cdf 41-44
+resources/scripts/api/account/api-keys/queries.ts
+  s_731111b3bfaced::t_285a303b6261e8 39-40,56-58
+  s_731111b3bfaced::t_c8ff227f16ca08 66
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "1b76e14ee7c33916cff42c0fb9b549121e7fb49e",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
