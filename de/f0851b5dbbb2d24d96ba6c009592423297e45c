@@ -1,0 +1,31 @@
+resources/scripts/api/server/schedules/queries.ts
+  s_731111b3bfaced::t_f7dfefbb248570 234,236,238-242,244-245,247-260,266,270-273,276,282,286-291,295,301,303-314,317,319,321-328,330-340,343
+  s_731111b3bfaced::t_44859ad1ca9052 1,36,50,85-141
+  s_731111b3bfaced::t_b48165290f9df7 142
+resources/scripts/components/server/schedules/DeleteScheduleButton.tsx
+  s_731111b3bfaced::t_c13c4cc2555e88 2,20
+resources/scripts/components/server/schedules/TaskDetailsModal.tsx
+  s_731111b3bfaced::t_152deab52c86a4 5-10,30-31,52-56
+resources/scripts/components/server/schedules/RunScheduleButton.tsx
+  s_731111b3bfaced::t_2ed45add6459bc 4-8,13,17
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_731111b3bfaced::t_3ee12cfbd426cf 5-10,24-25,41-48,50-58
+resources/scripts/components/server/schedules/ScheduleTaskRow.tsx
+  s_731111b3bfaced::t_e6ff23a13a8111 4,34,38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "def0851b5dbbb2d24d96ba6c009592423297e45c",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
