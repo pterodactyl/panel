@@ -1,0 +1,51 @@
+scripts/check-openapi-client-contract.php
+  s_731111b3bfaced::t_3c4a5ba54aee8a 93-96
+resources/scripts/api/server/files/saveFileContents.ts
+  s_731111b3bfaced::t_b6799aa12dfa9f 4
+app/Http/Controllers/Api/Client/ClientController.php
+  s_731111b3bfaced::t_a08305069871b2 136
+resources/scripts/api/server/files/getFileDownloadUrl.ts
+  s_731111b3bfaced::t_b6799aa12dfa9f 4,9
+resources/scripts/api/server/getServer.ts
+  s_731111b3bfaced::t_b126689da864d4 5,66-68
+resources/scripts/api/server/files/getFileUploadUrl.ts
+  s_731111b3bfaced::t_b6799aa12dfa9f 4,6
+resources/scripts/api/getServers.ts
+  s_731111b3bfaced::t_b531e35d230aa5 6,11
+  s_731111b3bfaced::t_a08305069871b2 5,22
+  s_731111b3bfaced::t_b126689da864d4 2-3,15-21,23,25-29
+  s_731111b3bfaced::t_1450d26b375890 4
+resources/scripts/api/server/files/getFileContents.ts
+  s_731111b3bfaced::t_b6799aa12dfa9f 4
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_3c4a5ba54aee8a 37-38,475-498
+  s_731111b3bfaced::t_9fb205a3949d87 499-500
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_a8f3441e05353e 1490,1658,2247,2259,2271,2310,2315
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_731111b3bfaced::t_3c4a5ba54aee8a 60
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_a8f3441e05353e 7400,8038,8069-8072,9142,10095,10142,10189,10334-10337
+  s_731111b3bfaced::t_cfb05b35536b28 9143-9145
+resources/scripts/api/account/servers/queries.ts
+  s_731111b3bfaced::t_b531e35d230aa5 2,9
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_cfb05b35536b28 3526-3557
+  s_731111b3bfaced::t_a8f3441e05353e 2790
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "c2dbab81449028be6fab161f37e1e97d72ea84cf",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
