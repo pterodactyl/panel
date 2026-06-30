@@ -1,0 +1,23 @@
+resources/scripts/api/account/queries.ts
+  s_731111b3bfaced::t_6c1f6ccd528004 50-52,62-63
+resources/scripts/components/dashboard/forms/UpdatePasswordForm.tsx
+  s_731111b3bfaced::t_a6414155427606 14-20
+resources/scripts/components/dashboard/forms/UpdateEmailAddressForm.tsx
+  s_731111b3bfaced::t_b29dcd862b5f52 17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "dba6f53aee03b520811dc96cca200390db5837ba",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
