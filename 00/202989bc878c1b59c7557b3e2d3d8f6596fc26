@@ -1,0 +1,28 @@
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_44f5efc3b112bb 5
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_31b6cbd4f5d9dd 16-18,25-28,46,536,538-539,543-550,554-557,559
+  s_731111b3bfaced::t_f3823f2392a58f 537,540-542,551-553,558,560-590
+  s_731111b3bfaced::t_37647e6aa0aa59 591
+scripts/check-openapi-client-contract.php
+  s_731111b3bfaced::t_3d9a6dc19c10f0 93-96,210-223
+  s_731111b3bfaced::t_bdafd6147561b4 224-225
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_44f5efc3b112bb 1698-3596,3689,3883,4081,4243,4395,4437,4479,4521,4679,4848,5161-5176,5332,5374,5487,5628,5670,5812,5964,6056,6170,6212,6301,6437,6483,6529,6668,6803,6899,7013,7097,7201,7247,7309,7342,7413-7418,7505,7623,7766,7875,7997,8096,8213,8427,8522,8649,8752,8840-8854,8988,9023,9062,9336,9774,9807,9840,9877,9981,10073,10102,10301,10343,10420,10689,10731,10773,10820,10862,10904,10946,10988,11030,11145,11268,11350,11442,11602,11716,11834,11923,12137,12217,12259,12329
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "00202989bc878c1b59c7557b3e2d3d8f6596fc26",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
