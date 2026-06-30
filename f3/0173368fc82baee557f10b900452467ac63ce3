@@ -1,0 +1,40 @@
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_9d5578fea47e64 531-532
+  s_731111b3bfaced::t_f4b92da43c369c 73,271-276,305,315,537,554,564
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_731111b3bfaced::t_42750062bcdee2 17-32,49
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_731111b3bfaced::t_382f42b8136e7a 39
+resources/scripts/components/admin/nodes/NodeConfigurationTab.tsx
+  s_731111b3bfaced::t_17a12165d6d07a 54,59,63
+resources/scripts/components/admin/nodes/NodeAboutTab.tsx
+  s_731111b3bfaced::t_fd6efb5210a8b3 46,52,54,58,61,75,124,127,154,162
+resources/scripts/components/admin/servers/ServerManageTab.tsx
+  s_731111b3bfaced::t_66a0053c5eea37 47
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_731111b3bfaced::t_79ae00529af534 21,25,49
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_731111b3bfaced::t_10446ce7d8dc19 52-53,56
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_731111b3bfaced::t_09394eea4b1074 130,141,154,158,201,213,225,284,323
+resources/scripts/components/admin/nodes/NodeRow.tsx
+  s_731111b3bfaced::t_36cd92d049e0d1 35,61-62,69-84,91,103,128,159,166,172,197-199,202,205,208,210,214-217,224,227-228,236-237,242-243
+resources/scripts/components/admin/nodes/NodesContainer.tsx
+  s_731111b3bfaced::t_8542cfec584a5f 52
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "f30173368fc82baee557f10b900452467ac63ce3",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
