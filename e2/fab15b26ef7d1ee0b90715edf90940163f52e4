@@ -1,0 +1,37 @@
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_731111b3bfaced::t_06eef6c87a5b84 2-6,60
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_731111b3bfaced::t_631b9188416a0f 11-13,15,313,324,352,361
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_731111b3bfaced::t_e0fc717703c113 2-6,56
+resources/scripts/api/admin/mounts/queries.ts
+  s_731111b3bfaced::t_ba193038a6ac92 301,323
+  s_731111b3bfaced::t_3dd8d3c8573073 1,347-351
+  s_731111b3bfaced::t_63e540015f87b3 227,232,247,252,267,272,293,299,315,321,337,343,369,375
+  s_731111b3bfaced::t_10dc981c2e131b 169-190
+  s_731111b3bfaced::t_6d2a3c0c5fe60a 274,276-278,281
+  s_731111b3bfaced::t_13d558d4d11fa4 336,338,345,352-353,355-356,368,370,377,379-385,387-388
+  s_731111b3bfaced::t_174a83c7900128 109-140
+  s_731111b3bfaced::t_6909000e24a0ab 234,254,256
+  s_731111b3bfaced::t_059ca30f7c964e 141
+resources/scripts/components/admin/mounts/MountRow.tsx
+  s_731111b3bfaced::t_d786b5b80555c6 9,11,53,65
+resources/scripts/components/admin/mounts/CreateMountForm.tsx
+  s_731111b3bfaced::t_453dc830a82538 4,27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "e2fab15b26ef7d1ee0b90715edf90940163f52e4",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
