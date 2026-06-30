@@ -1,0 +1,42 @@
+resources/scripts/api/admin/users/queries.ts
+  s_731111b3bfaced::t_ff152bee028a37 9,11,13-37,40,46-59,63-142,144-150,154,158-182,184-191,200-205,215-216,221-228,240,246,252,260,264-269,282,286-295,308,312-319,321
+  s_731111b3bfaced::t_b8cd7e886b69e8 239
+  s_731111b3bfaced::t_9cef2c222ed45b 232-237,245,251
+  s_731111b3bfaced::t_a3b49a1e625c07 238
+resources/scripts/api/admin/transformers.ts
+  s_731111b3bfaced::t_ff152bee028a37 3,6
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_731111b3bfaced::t_ff152bee028a37 4
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_b256633c5280cf 39
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_b5205ad18802b0 1799,2028
+  s_731111b3bfaced::t_b256633c5280cf 728-730,1706-1714,1718,1722,1726,1730,1734,1738,1921-1926
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_b256633c5280cf 64,71,84-144
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_f34439d87697d1 439-446
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_731111b3bfaced::t_f0f80778bb72d7 52-101,157-164,206
+resources/scripts/components/admin/users/UserRow.tsx
+  s_731111b3bfaced::t_ff152bee028a37 8
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_731111b3bfaced::t_ff152bee028a37 6
+  s_731111b3bfaced::t_b495e8bcd7a2e2 8-13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "b44666a9ebad586c1b71cf4d122928842c07b9f7",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
