@@ -1,0 +1,35 @@
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_731111b3bfaced::t_8cf2c5337197e4 3-9,46,53,70-72
+  s_731111b3bfaced::t_8645705e5a85c8 47-52
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_731111b3bfaced::t_8cf2c5337197e4 4,26-28
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_28763e60e91810 50,57-58,61-92,94-126,232,252,273,297,320,333,357,379,401
+  s_731111b3bfaced::t_8645705e5a85c8 93
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_731111b3bfaced::t_8cf2c5337197e4 2,28-30
+resources/scripts/components/admin/eggs/CreateEggVariableButton.tsx
+  s_731111b3bfaced::t_8cf2c5337197e4 4,37-39
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_731111b3bfaced::t_8cf2c5337197e4 3,35-41
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_731111b3bfaced::t_8cf2c5337197e4 6,44-46
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_731111b3bfaced::t_8cf2c5337197e4 5,45-46,52-53
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "f131dd7b40c39bbd9817b2480b60502823dbb38f",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
