@@ -1,0 +1,33 @@
+resources/scripts/api/server/types.d.ts
+  s_731111b3bfaced::t_e783ce1fcc46db 14-15
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_731111b3bfaced::t_e783ce1fcc46db 106
+resources/scripts/api/transformers.ts
+  s_731111b3bfaced::t_e783ce1fcc46db 3,8,61
+resources/scripts/api/server/backups/queries.ts
+  s_731111b3bfaced::t_57c1857cc747f0 2,4-5,10-29,33-36,38-50,67,78,80-86,98-108,111,122,124-125,135,151,153-154,173,175-176,184-185,193,195-197
+  s_731111b3bfaced::t_34f45224fd6534 87-97,127-132,155-162,178-183
+  s_731111b3bfaced::t_bbf5e2a7c90eea 126,177
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_13f5a52a081d16 4706-4737
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_13f5a52a081d16 1172,1175,1188,1217-1221,11617-11620
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_e783ce1fcc46db 105-107,176-190,645-660,1029-1035
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "6485eb0138eeb9711230d5a45e80db44fa8758ef",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
