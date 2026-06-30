@@ -1,0 +1,26 @@
+resources/scripts/api/server/schedules/queries.ts
+  s_731111b3bfaced::t_425f1d1e979902 10-15,18-22,27-28,31-35,42-43,53-59,71-88,157-158,162-181,199,203-209,227,231-237,255-256,261-280,299,303-309
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_dd5b36f69f4f4e 10776-10783,10932-10939
+resources/scripts/api/server/schedules/getServerSchedules.ts
+  s_731111b3bfaced::t_425f1d1e979902 3
+  s_731111b3bfaced::t_5fd7a6be348f0f 90-91
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_731111b3bfaced::t_9a49a3603f2e18 15,127-128,184-185
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "fb582b8a4e213570b2aca3c473ecbe38eb7730f0",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
