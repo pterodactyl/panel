@@ -1,0 +1,24 @@
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_731111b3bfaced::t_cdfc36573412b7 10,61-63
+  s_731111b3bfaced::t_87aa55e53e8c08 34-35,51-53
+resources/scripts/components/dashboard/ssh/CreateSSHKeyForm.tsx
+  s_731111b3bfaced::t_5561d5fe47a50d 14-19
+resources/scripts/components/dashboard/ssh/DeleteSSHKeyButton.tsx
+  s_731111b3bfaced::t_c7f51f5e8e765b 13
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.4",
+  "base_commit_sha": "937958f32e16b59e6b72eeecaa42471247971b59",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
