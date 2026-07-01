@@ -1,0 +1,1049 @@
+resources/scripts/components/admin/servers/ServerAboutTab.tsx
+  s_731111b3bfaced::t_3ac6e5e95354d5 3,21-22
+resources/scripts/api/queryOptions.ts
+  s_731111b3bfaced::t_08f8be62f6d2a9 1
+  s_731111b3bfaced::t_ae3afd2eda3299 13-14
+  s_731111b3bfaced::t_9323f2e7e85147 2,11,22
+  s_731111b3bfaced::t_e1e6d95318f0ea 18
+  s_731111b3bfaced::t_f61caf123c4d98 23
+  s_731111b3bfaced::t_4a72743ba74f9d 15-17,19-21,24-28
+  s_731111b3bfaced::t_88826e058152c2 12
+  s_731111b3bfaced::t_5d09b0170c224e 3-10
+resources/scripts/api/auth/loginCheckpoint.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_f0e43463f9c57b 1,4-6,10,12-16
+resources/scripts/components/server/settings/ReinstallServerBox.tsx
+  s_731111b3bfaced::t_55cd1f0d81ab99 1
+  s_731111b3bfaced::t_7cfbeba7020025 11,14,30-44
+resources/scripts/components/server/files/useFileActions.tsx
+  s_731111b3bfaced::t_82df0815441ee6 5,34
+  s_731111b3bfaced::t_177d0d6f1196a0 23,80,87-88,91-94
+  s_731111b3bfaced::t_ffac4f1337a463 46,60,64
+  s_731111b3bfaced::t_276aafa99d9024 56,67-68
+  s_731111b3bfaced::t_f1dda23131d24d 69
+resources/scripts/components/server/users/RemoveSubuserButton.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 8
+  s_731111b3bfaced::t_206c5650e175e5 20,24,28-48
+  s_731111b3bfaced::t_f84636e28193e3 1,18,23
+resources/scripts/api/admin/nodes/queries.ts
+  s_731111b3bfaced::t_c187eeffbde3e0 267-268
+  s_731111b3bfaced::t_14b5df3549cf2a 404
+  s_731111b3bfaced::t_331c2d53c4e5d9 157,159
+  s_731111b3bfaced::t_98beed73293dda 310-311
+  s_731111b3bfaced::t_ab7eb78580bda5 405,408
+  s_731111b3bfaced::t_08f8be62f6d2a9 3
+  s_731111b3bfaced::t_a5f9a243e9e42c 409
+  s_731111b3bfaced::t_c4afed73634b1c 328-329,331-332,345
+  s_731111b3bfaced::t_10f9401357a5c8 411,419-421,423,431,458-459,467
+  s_731111b3bfaced::t_0ea6f9372b434c 1,362,365,390,393,396,399,402
+  s_731111b3bfaced::t_c9841fc4b8bba0 241-249,255,257-266,269-272,406-407,424-428,430,433-438,440-445,447-453,455-456,460,466
+  s_731111b3bfaced::t_ce2b231e7b23e1 2
+  s_731111b3bfaced::t_9e3b40107f88a8 217-233,235-238,250-254,256
+  s_731111b3bfaced::t_c9d893a3a7e4a0 334-335,337-338
+  s_731111b3bfaced::t_5fb33f28bff611 462-465
+  s_731111b3bfaced::t_eaf3c6336033bf 102
+  s_731111b3bfaced::t_674db902b3f996 5,413,415,417
+  s_731111b3bfaced::t_85d8dfc115a891 461
+  s_731111b3bfaced::t_76c9b6c71d0399 4,108,111-113
+  s_731111b3bfaced::t_4af152754dcd12 410
+  s_731111b3bfaced::t_1633cec032451c 457
+resources/scripts/components/auth/LoginContainer.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 6-7
+  s_731111b3bfaced::t_9d0d46ecf1b684 32-39,41,48
+package.json
+  s_731111b3bfaced::t_53ec3483d46391 70-71
+doctor.config.json
+  s_731111b3bfaced::t_5c22cfa39d075f 1-5
+resources/scripts/components/admin/eggs/EggVariableBox.tsx
+  s_731111b3bfaced::t_f5daa7c490b355 1
+  s_731111b3bfaced::t_ab291c67cf5622 163-175
+  s_731111b3bfaced::t_ed4d4c7397d608 3
+resources/scripts/api/activity.ts
+  s_731111b3bfaced::t_21440bc6c6081e 2,16
+resources/scripts/state/server/types.ts
+  s_731111b3bfaced::t_c27dccd629b648 2,4-5
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_eeda1286a77889 171-172,174,176
+  s_731111b3bfaced::t_3f5b8477806414 3,198,222,229,231,233
+  s_731111b3bfaced::t_e2421881833245 148
+  s_731111b3bfaced::t_c984429e16b4af 186-193,225
+  s_731111b3bfaced::t_0a995cb33e1c40 153,196,200-201,204-208,210-211,214-218,227
+  s_731111b3bfaced::t_868cb538f72051 2,155-157,160,163,166
+  s_731111b3bfaced::t_3ebdd1d6e5a940 114
+  s_731111b3bfaced::t_c42fb49d08e1a4 1,169
+  s_731111b3bfaced::t_3945887a7494a7 129-131,173,175,181-184,195,203,213
+  s_731111b3bfaced::t_76c456c675f26b 9,149-152,220
+  s_731111b3bfaced::t_b2da7952b0f647 168,177,202,212
+  s_731111b3bfaced::t_5d3da78a081fa5 170,178-179,185,194,224,226
+  s_731111b3bfaced::t_9b509464162899 154
+  s_731111b3bfaced::t_5bc2eeffbfb97a 167
+resources/scripts/api/server/queries.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 12-13
+  s_731111b3bfaced::t_305df0cfca1004 1,4
+  s_731111b3bfaced::t_6d06319a206b7f 11,61,93,96-107
+  s_731111b3bfaced::t_a4cce3fd2300ec 41
+  s_731111b3bfaced::t_ce41de585df1a3 60
+  s_731111b3bfaced::t_0380529f6d3a63 91-92,94-95,108-110,112-115
+  s_731111b3bfaced::t_4b5865743c5525 66,72,74
+  s_731111b3bfaced::t_1a6b2cc47f5016 62-65
+resources/scripts/components/admin/locations/CreateLocationButton.tsx
+  s_731111b3bfaced::t_edc433a8cd37a9 9-14,22,32-64,66,69,75-77,81-101
+  s_731111b3bfaced::t_417a27ce2aae1b 1
+resources/scripts/api/useGeneratedMutation.ts
+  s_731111b3bfaced::t_dcff2c01723362 279-282,288-289,291-292,294-298,300-308
+  s_731111b3bfaced::t_e250888ceacbd1 187
+  s_731111b3bfaced::t_25222717063124 269,315,328,379-381,392-395
+  s_731111b3bfaced::t_b3775adcb0ad0f 166-167,170-176
+  s_731111b3bfaced::t_75de5a65193820 30-37
+  s_731111b3bfaced::t_721b6c67eb683d 179
+  s_731111b3bfaced::t_e0ed7cb48da12b 369,382-385,391
+  s_731111b3bfaced::t_c0753f698ee6d1 42-58,67-71,102,117
+  s_731111b3bfaced::t_21d58f8b1f81de 59-66,109-112
+  s_731111b3bfaced::t_14ac5ccfe1351b 182,189,200,207
+  s_731111b3bfaced::t_d8019df3f0c5c7 212-213,230-235,238-240,242-243
+  s_731111b3bfaced::t_ba07028aae6a8a 256-260,409-413
+  s_731111b3bfaced::t_834d0d4a8376ca 150-153,180
+  s_731111b3bfaced::t_d9726e97e9833e 101
+  s_731111b3bfaced::t_a07cc00e911c95 188
+  s_731111b3bfaced::t_44c208bfc556d1 267,270-278,283-287,293,299,309
+  s_731111b3bfaced::t_4eaa10d278bc12 442
+  s_731111b3bfaced::t_cc085291c2a508 198,208
+  s_731111b3bfaced::t_00ed50d3f13008 420-424,429-434,436-441,443,445-463
+  s_731111b3bfaced::t_a3c5cbb9bcab16 78-84,124-129
+  s_731111b3bfaced::t_478739a2958a5a 168-169,177
+  s_731111b3bfaced::t_fbf1da66ae74e5 154-155,157,160,164
+  s_731111b3bfaced::t_71c57dedf3fca3 28
+  s_731111b3bfaced::t_3dd4c4b9af2e54 38-41,97-100,113-116,142
+  s_731111b3bfaced::t_e4403615d242fe 290
+  s_731111b3bfaced::t_b838bc9902918e 76
+  s_731111b3bfaced::t_47a8244a1bb8ff 2-7,29,143-148
+  s_731111b3bfaced::t_5aae062778e1e7 310,316-326,329-331,365-368,388-390,397-398,400-407
+  s_731111b3bfaced::t_a419921785f712 8-11,13,199,237
+  s_731111b3bfaced::t_8985e05d487e45 249
+  s_731111b3bfaced::t_ae35dc21187893 1
+  s_731111b3bfaced::t_d30446fc32463c 156,163,165
+  s_731111b3bfaced::t_0cd08a269f6ca5 181
+  s_731111b3bfaced::t_433091a3eedb1a 183-184,201-202,214-226,236
+  s_731111b3bfaced::t_cbd52495db0b65 332-334,345-351,353-355,357-359,361,363
+  s_731111b3bfaced::t_da8139a4f48618 90
+  s_731111b3bfaced::t_8399d2bc842163 444
+  s_731111b3bfaced::t_6211c37fb41dae 149
+  s_731111b3bfaced::t_ad9898bd9bd2a4 85-89,91,118-123,130-136
+  s_731111b3bfaced::t_700a64d514d42b 12,193,209,241
+  s_731111b3bfaced::t_d509ae4534b7f2 425-428
+  s_731111b3bfaced::t_2b7986539e2b75 158-159,161-162
+  s_731111b3bfaced::t_68adb9ab52e773 92-96,137-141
+  s_731111b3bfaced::t_3dbc87b4904ae8 72-75,77,103-108
+  s_731111b3bfaced::t_eda567507ee0f6 266,408,414-419
+  s_731111b3bfaced::t_70b5200b9f4bb0 435
+  s_731111b3bfaced::t_8048f55b3fafa2 190-192
+  s_731111b3bfaced::t_f4911c93d67973 254-255,261-265
+  s_731111b3bfaced::t_a19fd8e1cefa57 14-27,178,185-186,194-197,203-206,210-211,227-229,244-248,250-253
+  s_731111b3bfaced::t_298ab2f2c64304 268,311-314,327,335-344,352,356,360,362,364,370-378,386-387,396,399
+resources/scripts/plugins/useEventListener.ts
+  s_731111b3bfaced::t_c8e3f26753237d 8
+  s_731111b3bfaced::t_b7b1bc33abd060 3,5,18
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_731111b3bfaced::t_3e8f7b50dba6bb 12-15,17,23,28-57,80-86
+resources/scripts/components/elements/ServerContentBlock.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 1-2
+config/scribe.php
+  s_731111b3bfaced::t_3e8f7b50dba6bb 53-58
+resources/scripts/components/auth/ForgotPasswordContainer.tsx
+  s_731111b3bfaced::t_fd406fedb02040 33-38
+  s_731111b3bfaced::t_ed4d4c7397d608 6-7
+resources/scripts/components/admin/eggs/EggVariablesTab.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_9b14834cd4300d 3,15-16
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_731111b3bfaced::t_dd01376fc52fcd 1,44-55,172,313
+  s_731111b3bfaced::t_a92a2a36691620 20,133-134
+  s_731111b3bfaced::t_8b9930e23291a0 78-104,106-126,225-240,289-305,307-309
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_731111b3bfaced::t_715466010df22f 1
+  s_731111b3bfaced::t_9f5cb03e40387f 153-155,203-221,223,225-237,239-258,265-269
+  s_731111b3bfaced::t_f6c88f3c2d07b5 31,36-40,110-116
+  s_731111b3bfaced::t_926f6a366c3dfc 32-35,52,62-109,117-128,136-152,156-202
+  s_731111b3bfaced::t_388cd60e8e2c58 41,259-264
+resources/scripts/components/elements/dialog/context.ts
+  s_731111b3bfaced::t_a39fb0cc4c2ed3 2
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_731111b3bfaced::t_95ada966031c70 10,33-42,252,254,260,263,327-335,338-352
+  s_731111b3bfaced::t_1ad6a93fce52df 2,27,336-337
+  s_731111b3bfaced::t_ed4d4c7397d608 4-5
+  s_731111b3bfaced::t_47a04aea6c0b50 1,193-201,207-219,276,280,285,319
+  s_731111b3bfaced::t_f7bc61940d7908 278
+resources/scripts/components/admin/eggs/useEggDetail.ts
+  s_731111b3bfaced::t_126074d839c7f8 1,4,8-9,12
+  s_731111b3bfaced::t_b75ce76ef68c82 2,5-6
+resources/scripts/components/server/features/PIDLimitModalFeature.tsx
+  s_731111b3bfaced::t_4e69fd92c80ca5 20,25,43,64
+  s_731111b3bfaced::t_badbeb0bb54b4c 1,8,10-17,21
+  s_731111b3bfaced::t_09b614f366dc33 19
+resources/scripts/components/admin/nodes/useNodeDetail.ts
+  s_731111b3bfaced::t_db7c678efacf5a 1,3-4,7-15
+  s_731111b3bfaced::t_b75ce76ef68c82 2,5-6
+resources/scripts/components/elements/dialog/DialogTrigger.tsx
+  s_731111b3bfaced::t_9d80ab7907e2e4 3-18,20-22,25-27
+  s_731111b3bfaced::t_b5d60c9f2883a8 1-2,19,23-24
+resources/scripts/components/admin/mounts/CreateMountForm.tsx
+  s_731111b3bfaced::t_087ea925fe51f8 6,50
+resources/scripts/components/admin/locations/LocationRow.tsx
+  s_731111b3bfaced::t_aa522330cf010b 1
+  s_731111b3bfaced::t_bdd8ae343fef10 22-28,36,46-78,80,83,89-91,95-113,119-178,200-206,210-221
+  s_731111b3bfaced::t_5068d1d17fee3f 118
+  s_731111b3bfaced::t_ed4d4c7397d608 8-9
+  s_731111b3bfaced::t_b49ac81b7a16e2 207-209
+  s_731111b3bfaced::t_1f854c97932340 114-117
+resources/scripts/components/admin/eggs/CreateEggVariableButton.tsx
+  s_731111b3bfaced::t_ec71999698d4af 15-19,34,45,55-85,87,91-93,97-100,102-148
+  s_731111b3bfaced::t_5318d2df863bae 1
+resources/scripts/components/elements/Input.tsx
+  s_731111b3bfaced::t_bf7c69518f8227 30,42
+resources/scripts/components/dashboard/forms/RecoveryTokensDialog.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2-3
+resources/scripts/plugins/useDebouncedCallback.ts
+  s_731111b3bfaced::t_0a18ed56cdc733 1,3-8,10-18,20-26,28-35
+resources/scripts/state/server/socket.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_8716818fed803a 18-23,25-30,32-37
+resources/scripts/components/server/network/AllocationRow.tsx
+  s_731111b3bfaced::t_79b1c6b0f847c0 16,45
+  s_731111b3bfaced::t_5318d2df863bae 1,46,79
+resources/scripts/components/server/features/HytaleOauthRequireFeature.tsx
+  s_731111b3bfaced::t_10b1d6f08fb48a 20,25-29,31,38
+  s_731111b3bfaced::t_89d48e56b09df6 1,4-6,12-15
+  s_731111b3bfaced::t_15d5a521e8bca4 7,11
+resources/scripts/api/admin/version/queries.ts
+  s_731111b3bfaced::t_7792764b22e963 1,14
+  s_731111b3bfaced::t_98beed73293dda 11
+resources/scripts/components/server/files/SelectFileCheckbox.tsx
+  s_731111b3bfaced::t_d96598cddbcb66 2,6-8
+resources/scripts/plugins/Websocket.ts
+  s_731111b3bfaced::t_d89cbf1ae82e8b 35-41
+  s_731111b3bfaced::t_ae30b51bdf71a1 1,23,29,34,45-46,59,66
+  s_731111b3bfaced::t_b7b1bc33abd060 22,33,44
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_731111b3bfaced::t_a3a46472d2dded 1,23-31,47-52,54
+resources/scripts/components/server/files/FileManagerBreadcrumbs.tsx
+  s_731111b3bfaced::t_dea2d27d7e56c6 3,17
+  s_731111b3bfaced::t_d055c074912cb3 7,24
+  s_731111b3bfaced::t_c4acd187d93a0d 21
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_731111b3bfaced::t_0b1b7471a78102 3,23,432-433
+  s_731111b3bfaced::t_ed4d4c7397d608 5-6
+  s_731111b3bfaced::t_760444b2455df1 38-46,323-325,332,425-431,434-448
+  s_731111b3bfaced::t_1927e7c1125418 1,179-194,231-246,256,258-259,262-278,280-283,285-321,343,347,366-386,388-405,408-421
+  s_731111b3bfaced::t_ee5b5cb7e5f4dc 322
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_731111b3bfaced::t_8d505812b14b74 28-29
+  s_731111b3bfaced::t_0dde18f7798549 23,32,40,53,60,89
+  s_731111b3bfaced::t_c2f33a6177f336 4
+  s_731111b3bfaced::t_9d20e8a2b145b6 3
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_731111b3bfaced::t_2a90edbe87d3ad 20,22
+  s_731111b3bfaced::t_ed4d4c7397d608 14
+resources/scripts/api/queryKeyGuards.ts
+  s_731111b3bfaced::t_2293f06a4c441b 1-15
+resources/scripts/components/server/console/stats.ts
+  s_731111b3bfaced::t_ae30b51bdf71a1 1-38
+resources/scripts/components/elements/Button.tsx
+  s_731111b3bfaced::t_bf7c69518f8227 119,136,139
+resources/scripts/api/account/two-factor/queries.ts
+  s_731111b3bfaced::t_305df0cfca1004 1,14
+  s_731111b3bfaced::t_30e3a8c7c8ba06 2,16-17,19-20,22-23,25-26
+  s_731111b3bfaced::t_44e5396da38805 3,18,24
+resources/scripts/api/server/startup/queries.ts
+  s_731111b3bfaced::t_d8ea660dff681d 38-41,48-50
+  s_731111b3bfaced::t_305df0cfca1004 1,33
+  s_731111b3bfaced::t_e263039f9001b3 4-5,7-8,60-61,80-81
+  s_731111b3bfaced::t_964bbabead024c 51-55
+  s_731111b3bfaced::t_52c788b4734229 6,63-68,70-72,74-75,78-79
+  s_731111b3bfaced::t_0a818362c02fc9 58-59,62,82
+  s_731111b3bfaced::t_7ba9b3fd3f6db4 42
+  s_70df96d247dc8a::t_8bf61fd76b3039 3
+resources/scripts/components/server/schedules/RunScheduleButton.tsx
+  s_731111b3bfaced::t_8a0f95622c11f3 1,15,21
+app/Http/Controllers/Auth/LoginController.php
+  s_731111b3bfaced::t_6004f07618c26e 80-81,83-86
+  s_731111b3bfaced::t_3e8f7b50dba6bb 13-17,20,23-69,93-101
+  s_731111b3bfaced::t_f93b00a7cb2b03 12,82
+resources/scripts/api/admin/locations/queries.ts
+  s_731111b3bfaced::t_f6f69247e09d7d 117-118,120,122
+  s_731111b3bfaced::t_868cb538f72051 1,3,99,114
+  s_731111b3bfaced::t_34865b8287c2fb 45,47
+  s_731111b3bfaced::t_5a4f23ff2c2875 123
+  s_731111b3bfaced::t_34657b836f0350 84-89,92,119,121
+  s_731111b3bfaced::t_7eb1e6f3620552 124
+  s_731111b3bfaced::t_98beed73293dda 82,96
+  s_731111b3bfaced::t_0c305cf1a178f6 136
+  s_731111b3bfaced::t_8dc51674c1b97d 6-9,128,132
+  s_731111b3bfaced::t_a5b182ee021067 116,127,129,131,135
+  s_731111b3bfaced::t_2a094e378c4ff9 125,133,137
+  s_731111b3bfaced::t_2fea99f8467d15 4,52-54,64-65
+  s_731111b3bfaced::t_6e25dd43674267 5
+  s_731111b3bfaced::t_c8c1585eeb3656 83
+  s_731111b3bfaced::t_d9aa6c1cc6088c 115
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3-4
+  s_731111b3bfaced::t_0aa312c78d9f30 16,21,357-360,364-366
+  s_731111b3bfaced::t_35225f6922a13c 361-363
+resources/scripts/components/server/schedules/NewTaskButton.tsx
+  s_731111b3bfaced::t_1aec2bed81ab7c 5,13-21
+  s_731111b3bfaced::t_7bf838568fa6de 1
+resources/scripts/components/server/databases/DatabaseRow.tsx
+  s_731111b3bfaced::t_cf90edbdea3111 29-41,51-52,61-65,67-99,101-136,138-140,143-152,154-167,194-204,206-216
+  s_731111b3bfaced::t_715466010df22f 1
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_731111b3bfaced::t_a4cce3fd2300ec 28
+  s_731111b3bfaced::t_b2b262bb2e05dd 5-6,33,36,47,49-50
+  s_731111b3bfaced::t_6dc855d081fc0e 3-4,7,32,37-38
+  s_731111b3bfaced::t_84e2bda1c0cd31 42-45,52
+  s_731111b3bfaced::t_648335ec2a37f5 30-31,39-40
+  s_731111b3bfaced::t_305df0cfca1004 1
+  s_731111b3bfaced::t_b04bf8dcae3cd3 2,14-21,34-35,46,48,51
+  s_731111b3bfaced::t_b15eb15cc131c4 29
+resources/scripts/components/admin/nests/NestRow.tsx
+  s_731111b3bfaced::t_eacff5073738e8 20-25,35,42,48-116,118-119,128,136-182,212-229
+  s_731111b3bfaced::t_d9ce52b9fe7d42 1
+resources/scripts/api/auth/performPasswordReset.ts
+  s_731111b3bfaced::t_07ec0481790ba1 1,14-16,21,23-27
+resources/scripts/components/NavigationBar.tsx
+  s_731111b3bfaced::t_40c283ae27b882 26
+resources/scripts/i18n.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 3-4
+  s_731111b3bfaced::t_04f3b8a62eb155 26
+resources/scripts/api/server/databases/queries.ts
+  s_731111b3bfaced::t_01cca6bcde8ede 4,93
+  s_731111b3bfaced::t_305df0cfca1004 1,64
+  s_731111b3bfaced::t_c55a511ed95bde 3,5-7,66-78,82,91,104
+  s_731111b3bfaced::t_05c5d3a81433f8 57
+  s_731111b3bfaced::t_48ca2035cb5071 80-81,83-87,89-90,92,95-100,102-103,105-109
+  s_70df96d247dc8a::t_41ad714abfc8a4 2,65,79
+resources/scripts/plugins/usePermissions.ts
+  s_731111b3bfaced::t_ddbd7cee79c78c 6-8,10-17
+resources/scripts/api/account/queries.ts
+  s_731111b3bfaced::t_4d0dcfdfab638d 1
+  s_731111b3bfaced::t_2edc65f3cdda7a 2,44-46,48,53
+  s_731111b3bfaced::t_1b2901c3288073 51-52,54-63
+resources/scripts/components/dashboard/ApiKeyModalContent.tsx
+  s_731111b3bfaced::t_61366cd9c05213 1,7,10,24
+resources/scripts/state/progress.ts
+  s_731111b3bfaced::t_fe3df979cc1d9e 17-22,25-30,33-39
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_731111b3bfaced::t_f0511ee8e03e6f 1,50-52
+  s_731111b3bfaced::t_5cd830242f1609 13,40,43-44
+  s_731111b3bfaced::t_542698ebe63d86 48
+  s_731111b3bfaced::t_7e0c3adb536dac 49
+resources/scripts/api/server/schedules/queries.ts
+  s_731111b3bfaced::t_46eef9bb3ed555 240,253,263,273
+  s_731111b3bfaced::t_8f5009b4f6b389 5-6,153,155-157,162,164
+  s_731111b3bfaced::t_892d852ef0c925 246,256,266,276
+  s_731111b3bfaced::t_20895ed00f566f 237-239,247-248,250-252,257-262,267-272,277-278
+  s_731111b3bfaced::t_1a0f9793dae890 230-232,254-255,264-265
+  s_731111b3bfaced::t_2c2d7dc99d595b 1,214
+  s_731111b3bfaced::t_308d84cec6c753 216-217,219-220,222-223,225-226,228-229,234-235
+  s_731111b3bfaced::t_a4cce3fd2300ec 208
+  s_731111b3bfaced::t_5874d6c0362cfc 3-4,7-8,148-149,151-152,158-161,165-166,218,224,233,241-242,245,274-275
+  s_731111b3bfaced::t_85b9d41c82b1b8 2
+resources/scripts/components/server/features/Features.tsx
+  s_731111b3bfaced::t_8a0f95622c11f3 1,8-11
+resources/scripts/components/form/fields.tsx
+  s_731111b3bfaced::t_35f6df41217fa6 134-143
+  s_731111b3bfaced::t_604e1b9eb631b1 130,160-163
+resources/scripts/components/elements/dialog/Dialog.tsx
+  s_731111b3bfaced::t_406781b9e5d385 46
+resources/scripts/components/server/schedules/ScheduleTaskRow.tsx
+  s_731111b3bfaced::t_c8e3f26753237d 3,17
+  s_731111b3bfaced::t_f5daa7c490b355 1
+  s_731111b3bfaced::t_2495c93cd5886c 34,37,108-123,125-126
+  s_731111b3bfaced::t_889226d85bac9b 88-100,102-105
+resources/scripts/components/admin/eggs/ExportEggButton.tsx
+  s_731111b3bfaced::t_a111575eece202 42-43
+  s_731111b3bfaced::t_ed4d4c7397d608 2-3
+  s_731111b3bfaced::t_fa8f0d2d507550 5,24,28-32,48
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_731111b3bfaced::t_c9b8cdad5013fb 20
+  s_731111b3bfaced::t_b75ce76ef68c82 2,6,17-18
+  s_731111b3bfaced::t_86bc02c4f4080b 1,53
+  s_731111b3bfaced::t_0c0ca661956d0c 5,15
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_731111b3bfaced::t_85c1a060024a71 4,8-9,3506-3615,5211-5230
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_731111b3bfaced::t_eab7fa55ec7355 5,41
+resources/scripts/api/server/users/queries.ts
+  s_731111b3bfaced::t_d5a1351f0bb91c 73,76
+  s_731111b3bfaced::t_4fc2b7a306d57f 4,92
+  s_731111b3bfaced::t_393eaa00f359b9 3,7,64,66-67,69-71,80,85,90
+  s_731111b3bfaced::t_8eaece6f1dab65 77
+  s_731111b3bfaced::t_f834fa820c6002 78-79,81,83-84,86,88-89,91,93-99,101-103
+  s_731111b3bfaced::t_2c2d7dc99d595b 1,41
+  s_731111b3bfaced::t_4b144fb2017e20 5-6,65,68,72,74-75
+  s_70df96d247dc8a::t_c8366075282e00 2
+resources/scripts/components/elements/SpinnerOverlay.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2-3
+resources/scripts/components/server/files/UploadButton.tsx
+  s_731111b3bfaced::t_82e311d1674aee 4
+  s_731111b3bfaced::t_b53d36cd503a15 6,31-32
+  s_731111b3bfaced::t_52154abf1a479f 12,25
+  s_731111b3bfaced::t_d89cbf1ae82e8b 36
+  s_731111b3bfaced::t_e1bc97a51bd6e3 40,46,48,90,98
+  s_731111b3bfaced::t_ed4d4c7397d608 1,7
+scripts/check-openapi-coverage.php
+  s_731111b3bfaced::t_3e8f7b50dba6bb 16-23,65-67
+  s_731111b3bfaced::t_02ff9b8dd5dfbd 68-69
+resources/scripts/components/auth/ResetPasswordContainer.tsx
+  s_731111b3bfaced::t_77c8d17c96e1ba 21-26
+resources/scripts/components/dashboard/search/SearchContainer.tsx
+  s_731111b3bfaced::t_8a0f95622c11f3 1,19-20,27,33
+  s_731111b3bfaced::t_52154abf1a479f 8,15
+resources/scripts/components/server/files/RenameFileModal.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 4-5
+  s_731111b3bfaced::t_e1ec60575624d2 8,17-18
+resources/scripts/api/auth/queries.ts
+  s_731111b3bfaced::t_5fea1482574933 3-10,15-18,24,30-31,37,43
+resources/scripts/components/server/network/DeleteAllocationButton.tsx
+  s_731111b3bfaced::t_eedaf8ee3f1e6d 18
+  s_731111b3bfaced::t_e352d65a2e017e 17,22-39
+  s_731111b3bfaced::t_f87f6d2911ce2f 1
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_731111b3bfaced::t_98d3f993577edd 98
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_2293f06a4c441b 22-25,36
+resources/scripts/api/admin/nests/queries.ts
+  s_731111b3bfaced::t_98beed73293dda 122-125
+  s_731111b3bfaced::t_4f2cbbdb6de731 146
+  s_731111b3bfaced::t_58beae29b80ee8 148,156-159,161-169
+  s_731111b3bfaced::t_b60ec81fe4483a 160
+  s_731111b3bfaced::t_868cb538f72051 2,128,131,134,137
+  s_731111b3bfaced::t_5566a689f804c0 147
+  s_731111b3bfaced::t_21440bc6c6081e 3,68-69,75-76
+  s_731111b3bfaced::t_5939f37e6c25d2 139,154
+  s_731111b3bfaced::t_3f5b8477806414 4,150,152
+  s_731111b3bfaced::t_9177b3a43b1913 155
+  s_731111b3bfaced::t_121f5c0724881b 140-145
+  s_731111b3bfaced::t_528d26b7c0d650 138
+resources/scripts/components/elements/CopyOnClick.tsx
+  s_731111b3bfaced::t_c8e3f26753237d 12-16,32,36
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_731111b3bfaced::t_b027574e2ada96 738-740,742
+  s_731111b3bfaced::t_88d5303a5e4a7e 741
+  s_731111b3bfaced::t_16fd9802847aa5 659-662
+  s_731111b3bfaced::t_0cd2689178ce5a 1727-1739,1770-1771,1781-1782
+  s_731111b3bfaced::t_30ceaf687be4e3 705-710,712-729,731,735-737,743-747,753-760
+  s_731111b3bfaced::t_ab92f0bfc03d29 121-126
+  s_731111b3bfaced::t_72f7ef723322e4 72,730,732,734
+  s_731111b3bfaced::t_5c2dc2a6633e1b 733
+  s_731111b3bfaced::t_5c5b5949066c1d 442-618
+  s_731111b3bfaced::t_3d63bf302d6a88 30-36,64
+  s_731111b3bfaced::t_9b696dc0c09978 748-752
+  s_731111b3bfaced::t_3068df06dcf900 711
+resources/scripts/components/server/files/FileNameModal.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3-4
+  s_731111b3bfaced::t_6d78c6988cd3e9 5,13
+resources/scripts/components/server/console/useConsoleCommandHistory.ts
+  s_731111b3bfaced::t_e60d4c8aa2049f 1-18,21-35,37
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_731111b3bfaced::t_50f192bc36312e 27,72
+  s_731111b3bfaced::t_ed4d4c7397d608 4
+resources/scripts/components/admin/users/UserFormFields.tsx
+  s_731111b3bfaced::t_4482a79b87914b 1-196
+resources/scripts/api/server/files/queries.ts
+  s_731111b3bfaced::t_cfc5e12ed5c1ba 275,277,280-282,317,320-327
+  s_731111b3bfaced::t_838f94bf9d4e96 237-238,240,242-243,250-252,254-255,259,266,291-293,295-296,300,307,331-333,335-336,338,340-342,351-353,356,360,363-364,367-368,370,372,375-377,379-380,382,384,387-389
+  s_731111b3bfaced::t_648eb2687880b6 7-8,12-13,25,42,130-138,146-153,239,241,244-245,248-249,256-258,261-265,267-274,289-290,297-299,302-306,308-315,329-330,337,339,343-345,349-350,355,357-359,362,365,369,371,374,381,383,386,397-401
+  s_731111b3bfaced::t_fec643869660e1 246-247
+  s_731111b3bfaced::t_a4cce3fd2300ec 233
+  s_731111b3bfaced::t_72f7812490e973 285,348
+  s_731111b3bfaced::t_557f0b7ab33ac4 440
+  s_731111b3bfaced::t_8e48f3877b0aaf 143
+  s_731111b3bfaced::t_ed45977a0d76e4 9,346-347
+  s_731111b3bfaced::t_0edac6d53c890b 10-11,276,278-279,284,286-287,316,318-319
+  s_731111b3bfaced::t_2c2d7dc99d595b 1,5,224
+  s_731111b3bfaced::t_f8330eddeb7df4 6,139,154
+resources/scripts/api/queryParameters.ts
+  s_731111b3bfaced::t_303de6763bb308 1-34
+resources/scripts/components/server/databases/RotatePasswordButton.tsx
+  s_731111b3bfaced::t_5318d2df863bae 1,19,23
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 23-24
+resources/scripts/api/auth/login.ts
+  s_731111b3bfaced::t_34424304d232c9 1,15-16,18-23,25-30
+resources/scripts/components/admin/servers/ServerDetailContainer.tsx
+  s_731111b3bfaced::t_c9b8cdad5013fb 20
+  s_731111b3bfaced::t_86bc02c4f4080b 1,75
+  s_731111b3bfaced::t_6fcb429fc36e47 5,14-15
+  s_731111b3bfaced::t_b75ce76ef68c82 2,6,17-18
+resources/scripts/components/admin/mounts/MountFormFields.tsx
+  s_731111b3bfaced::t_00e03a4de6e34b 1-139
+resources/scripts/state/index.ts
+  s_731111b3bfaced::t_482593965750e5 3
+  s_731111b3bfaced::t_ddf705db82f946 1-2,10-14,16-18,20-22,25-26
+resources/scripts/components/admin/users/UserRow.tsx
+  s_731111b3bfaced::t_6dcc9bd34ad53f 11,24,28-40,42-62,73-78,92,94-111
+  s_731111b3bfaced::t_f5daa7c490b355 1
+  s_731111b3bfaced::t_7aa76cc17aa8ff 69,118
+  s_731111b3bfaced::t_fa2e324ee25984 63-66,80,112-115,143
+  s_731111b3bfaced::t_2f217b7a0250dd 242-245,272-273,279-287
+  s_731111b3bfaced::t_ed4d4c7397d608 6
+  s_731111b3bfaced::t_65926f3cc2065c 246-271
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_731111b3bfaced::t_b84f3a96b01a34 3-4,17-18
+resources/scripts/components/admin/settings/MailSettingsForm.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3-4
+resources/scripts/components/server/features/SteamDiskSpaceFeature.tsx
+  s_731111b3bfaced::t_3f714337e12c0a 11,16,33,48
+  s_731111b3bfaced::t_74ab3c1ff0c782 1,6,8,10,12
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_731111b3bfaced::t_d1e9c50c7a2226 159
+  s_731111b3bfaced::t_1dbc90427ca42c 49,55,59-82,84,87-89,95-97,101-111,113-126,128-143,145-151
+  s_731111b3bfaced::t_715466010df22f 1
+  s_731111b3bfaced::t_646d7fc917ac24 2,23,156-157
+  s_731111b3bfaced::t_517b42488fe869 51
+  s_731111b3bfaced::t_68bde2c90478aa 112
+resources/scripts/components/admin/databases/DatabaseHostRow.tsx
+  s_731111b3bfaced::t_50f863ec917e73 31-35,37-44,46-47,49,55,65-91,93,97-99,108-114,116-117,119-122,125-129,132-138,141-144,147-235,262-279
+  s_731111b3bfaced::t_7244b38b0e17af 1
+  s_731111b3bfaced::t_681855b36679ef 104
+resources/scripts/components/admin/eggs/EggConfigurationForm.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2,5-8
+resources/scripts/components/server/schedules/ScheduleContainer.tsx
+  s_731111b3bfaced::t_5d44a7db4215dd 15,51-59
+  s_731111b3bfaced::t_f63a0282468a15 1
+resources/scripts/api/generated/sdk.gen.ts
+  s_731111b3bfaced::t_85c1a060024a71 6,1914-1988,2915-2920
+  s_731111b3bfaced::t_e9f83b64b77e32 1108
+  s_731111b3bfaced::t_ef739f7e4f273c 2921
+resources/scripts/api/interceptors.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_c8e3f26753237d 4,14-16
+resources/scripts/router/serverScreen.ts
+  s_731111b3bfaced::t_c8e3f26753237d 5
+resources/scripts/components/admin/nests/NestsContainer.tsx
+  s_731111b3bfaced::t_1aa28d05601199 26-31,39,70-117,126-127
+  s_731111b3bfaced::t_85e877470a2c08 64-69,119-125
+  s_731111b3bfaced::t_910af8899c930b 118
+resources/scripts/api/admin/languages/queries.ts
+  s_731111b3bfaced::t_7792764b22e963 1,12
+  s_731111b3bfaced::t_0a061a637b0fc9 9
+resources/scripts/api/auth/requestPasswordResetEmail.ts
+  s_731111b3bfaced::t_bfb3a45537c2a2 1,3-8,10-11
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3-4,8
+  s_731111b3bfaced::t_86bc02c4f4080b 1
+  s_731111b3bfaced::t_186be3ec0c9a48 5,17,70-74
+  s_731111b3bfaced::t_d93928646c1385 75
+resources/scripts/components/elements/TitledGreyBox.tsx
+  s_731111b3bfaced::t_621901aadee532 1,29
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+resources/scripts/api/admin/users/queries.ts
+  s_731111b3bfaced::t_ac07811e5b1fc8 143,151,155
+  s_731111b3bfaced::t_0e5c51fc5527f3 100,102
+  s_731111b3bfaced::t_2fea99f8467d15 4,51-55,65
+  s_731111b3bfaced::t_a5b182ee021067 134,145,147,149,153
+  s_731111b3bfaced::t_fd4f8978f1ea60 141
+  s_731111b3bfaced::t_98beed73293dda 113-114
+  s_731111b3bfaced::t_0a6b5694d3da36 6-9,146,150
+  s_731111b3bfaced::t_fff4b3876f0f79 142
+  s_731111b3bfaced::t_800e83d3ec284e 135-140
+  s_731111b3bfaced::t_882461d0239062 154
+  s_731111b3bfaced::t_868cb538f72051 1,3,117,132
+  s_731111b3bfaced::t_2c91a93232d14e 5
+  s_731111b3bfaced::t_718c6903577f42 133
+resources/scripts/api/generated/types.gen.ts
+  s_731111b3bfaced::t_85c1a060024a71 963-1004,2959-3017,10559-10709,13435-13450
+  s_731111b3bfaced::t_e9f83b64b77e32 3402-3405
+  s_731111b3bfaced::t_fe15f026409e84 3018
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_731111b3bfaced::t_86bc02c4f4080b 1
+  s_731111b3bfaced::t_94d4e1196d2d92 7,34,193-197
+  s_731111b3bfaced::t_ed4d4c7397d608 5-6,9-10
+  s_731111b3bfaced::t_f5bd855c7e9bfb 198
+resources/scripts/components/server/features/GSLTokenModalFeature.tsx
+  s_731111b3bfaced::t_2e9d6a693a8922 14,35,45
+  s_731111b3bfaced::t_8d505812b14b74 18
+  s_731111b3bfaced::t_2adccf7815f10e 1-2,5,9-11
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_731111b3bfaced::t_b75ce76ef68c82 2,7,22,24-25
+  s_731111b3bfaced::t_c9b8cdad5013fb 27-28
+  s_731111b3bfaced::t_a804dd8a9bfee3 20
+  s_731111b3bfaced::t_ed4d4c7397d608 5
+  s_731111b3bfaced::t_86bc02c4f4080b 1,71
+resources/scripts/components/elements/Icon.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+resources/scripts/components/server/console/Console.tsx
+  s_731111b3bfaced::t_d992175037446b 31-33,39
+  s_731111b3bfaced::t_94a266fd964303 4
+  s_731111b3bfaced::t_ef67535f64c64c 1,9-10
+  s_731111b3bfaced::t_08001f18c64254 8,40
+resources/scripts/components/server/files/MassActionsBar.tsx
+  s_731111b3bfaced::t_c4e6bf37d10933 54-64
+  s_731111b3bfaced::t_276aafa99d9024 1,25,36,39
+  s_731111b3bfaced::t_a2613e23d85800 78-81
+  s_731111b3bfaced::t_a5dafc10d6527c 5,14,16-17
+  s_731111b3bfaced::t_baa75f2cde37fa 28-29,66-77,82-87
+  s_731111b3bfaced::t_1ddc72a3cd1c12 53
+  s_731111b3bfaced::t_418a29a306b894 40
+resources/scripts/components/server/backups/CreateBackupButton.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 8
+  s_731111b3bfaced::t_4d05a8ff3c47f4 1
+  s_731111b3bfaced::t_bd3a5769e1d6b9 13,22,32-41,43-56,62-84,88-98
+  s_731111b3bfaced::t_f1f3a09f751332 99
+resources/scripts/routers/routes.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 1-2
+resources/scripts/components/server/schedules/ScheduleEditContainer.tsx
+  s_731111b3bfaced::t_edb15db79df34c 19,105-115
+  s_731111b3bfaced::t_8a0f95622c11f3 1
+resources/scripts/components/admin/nodes/NodeAboutTab.tsx
+  s_731111b3bfaced::t_3ce2c3193fd2c3 149-152,154-160
+  s_731111b3bfaced::t_1b08fd178946b9 1
+  s_731111b3bfaced::t_5ba46da37583bd 4,7,42-43
+  s_731111b3bfaced::t_a2ebecd6278420 58
+  s_731111b3bfaced::t_6aa3a799017ca1 56,60,64-83,85-107,109-115,117-126,128-148,162
+resources/scripts/components/server/files/NewDirectoryButton.tsx
+  s_731111b3bfaced::t_ee757e71eea76d 1,9,13,24,56,65
+  s_731111b3bfaced::t_7e73ad9ac9aee7 69-81
+  s_731111b3bfaced::t_d59fc9029f427e 5,15
+  s_731111b3bfaced::t_ed4d4c7397d608 8
+resources/scripts/components/server/startup/VariableBox.tsx
+  s_731111b3bfaced::t_9adf87657ec117 1,110
+  s_731111b3bfaced::t_50fc4d96899d15 77-78
+  s_731111b3bfaced::t_ac991487ef7e58 10,23
+resources/scripts/components/admin/servers/ServerManageTab.tsx
+  s_731111b3bfaced::t_30c8c6e74d9c19 13,27,225-229
+  s_731111b3bfaced::t_5465148514f960 192-201,203-213
+  s_731111b3bfaced::t_04f16c1d289b8c 1,35-38,63-77,79-81,96-112,122-138,148-166,168-170
+  s_731111b3bfaced::t_359b2fa66ebcdb 230
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_731111b3bfaced::t_e64ab403569345 1,11,19,56,131-137
+resources/scripts/components/Avatar.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2-3
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_731111b3bfaced::t_204559fe3c265e 10,31
+  s_731111b3bfaced::t_bf7c69518f8227 23-28
+resources/scripts/components/server/console/PowerButtons.tsx
+  s_731111b3bfaced::t_3c839e0cdc3bee 4,13-14
+  s_731111b3bfaced::t_68a0c36e83150b 1,17,21,42-69
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_c1764e5ad4743d 424-425,427
+  s_731111b3bfaced::t_a5f9a243e9e42c 428
+  s_731111b3bfaced::t_98beed73293dda 306-307
+  s_731111b3bfaced::t_f69c453fe0644f 252-258,279-283,435,460,537,543,549
+  s_731111b3bfaced::t_c4afed73634b1c 332-333,335-336,344-345,361,373,397
+  s_731111b3bfaced::t_391126ce0d43c9 5,222-227,230
+  s_731111b3bfaced::t_9addf41d5c9ef2 347-354,362-366,487,499,507-513,515-517,519-521,523,526-529,531-534
+  s_731111b3bfaced::t_8f78db2e16f25b 426,447,478
+  s_731111b3bfaced::t_4565c00f47153e 429
+  s_731111b3bfaced::t_4f691d874a4ff9 7-10,514
+  s_731111b3bfaced::t_14b5df3549cf2a 423,430,484,486,488
+  s_731111b3bfaced::t_f1ee492b4429fc 277-278,284,286
+  s_731111b3bfaced::t_4eab1c045ef7c0 434,436-441,443-444,453-457,459,461-466,472-473,475-476,479-483,489,495-497,504-506,536,538-542,544-548,550-554
+  s_731111b3bfaced::t_0ea6f9372b434c 1,376,379,400,415,418,421
+  s_731111b3bfaced::t_ce2b231e7b23e1 2
+  s_731111b3bfaced::t_08f8be62f6d2a9 4,385,390
+  s_731111b3bfaced::t_1ddee9abb03a61 445,474
+  s_731111b3bfaced::t_b6cc0b96f0e572 446,448-452
+  s_731111b3bfaced::t_6cf3faa4ec3f8b 498
+  s_731111b3bfaced::t_0fe9063248adc0 500-503
+  s_731111b3bfaced::t_674db902b3f996 432,468,470,491,493
+  s_731111b3bfaced::t_1086298f1424af 6,422
+resources/scripts/api/account/api-keys/queries.ts
+  s_731111b3bfaced::t_305df0cfca1004 1
+  s_731111b3bfaced::t_4b4a0455916184 2,14-19,39-42,49
+  s_731111b3bfaced::t_a4cce3fd2300ec 25
+  s_731111b3bfaced::t_d44c486dfa7cee 27-28,36-37
+  s_731111b3bfaced::t_8c61388b93aa93 31-32,43,45,48
+  s_731111b3bfaced::t_746a0de1594c01 3-4,7,29,34-35
+  s_731111b3bfaced::t_dc23261562b18b 5-6,30,33,44,46-47
+  s_731111b3bfaced::t_ffd25e43bff1fd 26,38
+resources/scripts/components/server/console/ServerConsoleContainer.tsx
+  s_731111b3bfaced::t_74a5b2808048f6 1,64
+resources/scripts/api/account/activity/queries.ts
+  s_731111b3bfaced::t_305df0cfca1004 1,13,16
+resources/scripts/components/admin/servers/ServerDeleteTab.tsx
+  s_731111b3bfaced::t_9d515dc1731894 12,25,141-145
+  s_731111b3bfaced::t_b30fd788195a80 146
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_731111b3bfaced::t_1e824582841b0b 4,27-28,30-31
+  s_731111b3bfaced::t_d89cbf1ae82e8b 5,22-24,74-77
+  s_731111b3bfaced::t_e1b1afb8a5c9f1 78
+resources/scripts/components/admin/servers/CreateServerDatabaseButton.tsx
+  s_731111b3bfaced::t_568327d9068c13 20-24,28,31,49,59-110,114-132,136-156
+  s_731111b3bfaced::t_1b08fd178946b9 1
+resources/scripts/components/elements/dialog/ConfirmationDialogTrigger.tsx
+  s_731111b3bfaced::t_b333d523ab2b2a 1,3,17,21,24-25,27
+  s_731111b3bfaced::t_005ce53bb799bb 2,4-15,18-20,22-23,26,28-32
+  s_731111b3bfaced::t_a9f10cc80834cc 16
+resources/scripts/components/elements/InvisibleRecaptcha.tsx
+  s_731111b3bfaced::t_bf7c69518f8227 21,64
+scripts/check-zustand-boundary.php
+  s_731111b3bfaced::t_e7220a79079e4f 1-68
+resources/scripts/components/admin/api/ApiKeyRow.tsx
+  s_731111b3bfaced::t_7fb0885589606e 31,33,38-39,46-80,83-85
+  s_731111b3bfaced::t_5b56eafa5f33f5 40-45
+  s_731111b3bfaced::t_65d19c2b3dea8f 1
+  s_731111b3bfaced::t_ed4d4c7397d608 6
+resources/scripts/components/server/users/UserRow.tsx
+  s_731111b3bfaced::t_78bd09a02db81a 1
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_504b2068dbb61d 10,48-60,62-65
+resources/scripts/api/admin/mounts/queries.ts
+  s_731111b3bfaced::t_4f2cbbdb6de731 175
+  s_731111b3bfaced::t_487e4ff0c2f5e7 170,172,174
+  s_731111b3bfaced::t_2dfc49784c9818 209,217,219-221,223
+  s_731111b3bfaced::t_3a03afdc7119d2 176
+  s_731111b3bfaced::t_674db902b3f996 211,213,215
+  s_731111b3bfaced::t_a4cce3fd2300ec 2
+  s_731111b3bfaced::t_98beed73293dda 160-161
+  s_731111b3bfaced::t_1d8776a967f557 171,193-195
+  s_731111b3bfaced::t_868cb538f72051 164,167
+  s_731111b3bfaced::t_0234b6b035f57d 5-6,8-9,149
+  s_731111b3bfaced::t_21440bc6c6081e 3,69,75
+  s_731111b3bfaced::t_e97139fa90b10c 7,200
+  s_731111b3bfaced::t_5939f37e6c25d2 169
+  s_731111b3bfaced::t_cf92c0e1880679 106,108,123-127,129,132-136,138
+  s_731111b3bfaced::t_3814d9f4dde222 40-42,146-147,150,173,177,179-180,182-188,190,196-199,201-208,218,222,225-233
+  s_731111b3bfaced::t_a9e5822d81d25a 4,168,216,224
+resources/scripts/api/queryClient.ts
+  s_731111b3bfaced::t_ca39ba9d52eb36 68,73-74,86,91,97,131
+  s_731111b3bfaced::t_43b4d94a0a6082 2-16,22-27,29-31,33-40,43-46,49-67,70-72,75-79,81-82,84-85,87-90,95-96,101-109,114-115,122
+  s_731111b3bfaced::t_4b1302b9057e7e 69,130
+  s_731111b3bfaced::t_bab02616a96553 1,17,28,80,92-94
+  s_731111b3bfaced::t_3288b191e0e84b 41-42,47-48
+  s_731111b3bfaced::t_edf34eea73869d 18-21,32,83,98-100
+  s_731111b3bfaced::t_b3eeb7f5a75048 110-113
+resources/scripts/components/elements/activity/ActivityLogEntry.tsx
+  s_731111b3bfaced::t_2293f06a4c441b 5,24,29-30,33-40,46-53
+  s_9f5bfb4e88d8aa::t_ea4b91ce50beb9 54
+resources/scripts/plugins/useDebouncedValue.ts
+  s_731111b3bfaced::t_b52b0462ef259e 1-15
+resources/scripts/components/server/features/index.ts
+  s_731111b3bfaced::t_c8e3f26753237d 17
+  s_731111b3bfaced::t_ed4d4c7397d608 1-2
+resources/scripts/components/admin/nodes/NodeFormFields.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2-3
+resources/scripts/components/form/index.ts
+  s_731111b3bfaced::t_e36dae9204b3aa 59
+  s_731111b3bfaced::t_bc40d1d7a53d9f 1-2,18-29,33-34,41-42,44-58,60-61
+resources/scripts/components/server/console/ServerDetailsBlock.tsx
+  s_731111b3bfaced::t_ae30b51bdf71a1 13,66-67
+  s_731111b3bfaced::t_4bbf90d4de744c 1,47-55
+  s_731111b3bfaced::t_8d505812b14b74 4,40-42
+resources/scripts/state/types.ts
+  s_731111b3bfaced::t_c617335314d1f3 2,4-5
+resources/scripts/components/dashboard/search/SearchModal.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3-4
+  s_731111b3bfaced::t_b52b0462ef259e 1,13,27
+  s_731111b3bfaced::t_a4e798132d4af9 22
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_731111b3bfaced::t_3801f6e76277f7 10,14,30,166-170,174-175
+  s_731111b3bfaced::t_3b17b1657392bd 171-173,176-182
+  s_731111b3bfaced::t_cc60adf003eac6 183
+resources/scripts/components/server/users/PermissionTitleBox.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 16
+  s_731111b3bfaced::t_bf7c69518f8227 13
+resources/scripts/components/server/files/ChmodFileModal.tsx
+  s_731111b3bfaced::t_a424b7cbb85cd9 7,20-21
+  s_731111b3bfaced::t_ed4d4c7397d608 4-5
+resources/scripts/router/routeTree.ts
+  s_731111b3bfaced::t_b75ce76ef68c82 352-353
+  s_731111b3bfaced::t_c8e3f26753237d 66
+  s_731111b3bfaced::t_b9a42ae33664fb 544-579,606,619,685
+  s_731111b3bfaced::t_6763ea979bbaad 38-42
+  s_731111b3bfaced::t_6a50ad019cfd4d 497,507,515
+  s_731111b3bfaced::t_38f01c91969fd3 519-543,703,730
+  s_731111b3bfaced::t_c9b8cdad5013fb 359,412,481,485-486
+  s_731111b3bfaced::t_0e0eac0cb1a484 367,375,383,393,403
+  s_731111b3bfaced::t_1686bfa556c6c4 420,425,430,435,447,459,464,469
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_731111b3bfaced::t_2abbd0075e8ae7 8,59-64
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_731111b3bfaced::t_6027494613896b 1,48-55
+  s_731111b3bfaced::t_2b5aee57ebe273 18,23,29,67,76-102,210-217,219,226-229
+  s_731111b3bfaced::t_0bb1ed050a0074 220-225
+resources/scripts/components/form/controls.tsx
+  s_731111b3bfaced::t_b7b1bc33abd060 35-38
+  s_731111b3bfaced::t_04f3b8a62eb155 40,53
+  s_731111b3bfaced::t_997e4d073ddd84 39
+app/Http/Controllers/Auth/ForgotPasswordController.php
+  s_731111b3bfaced::t_a440b4612cf84a 20-22,46
+  s_731111b3bfaced::t_3e8f7b50dba6bb 8-10,12,14,17,23-45,47
+resources/scripts/components/admin/settings/AdvancedSettingsForm.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3
+resources/scripts/components/server/schedules/DeleteScheduleButton.tsx
+  s_731111b3bfaced::t_aa6c7352d489a4 1
+  s_731111b3bfaced::t_f638065dbd9144 17,20,24,29-41
+resources/scripts/components/server/files/FileManagerStatus.tsx
+  s_731111b3bfaced::t_177d0d6f1196a0 1,74-76,79-80,82,88-99
+  s_731111b3bfaced::t_f11ab0e420c06b 2,32-34,68-69
+  s_731111b3bfaced::t_27a6f96a5407e3 4,31,61
+eslint.config.mjs
+  s_731111b3bfaced::t_0dc8b8dd895eaf 58
+  s_731111b3bfaced::t_aa2885a88c2d87 66
+resources/scripts/api/admin/settings/queries.ts
+  s_731111b3bfaced::t_0a061a637b0fc9 107
+  s_731111b3bfaced::t_7792764b22e963 1,122
+  s_731111b3bfaced::t_9f8836961c9eef 136-138
+  s_731111b3bfaced::t_41cb9d8383734c 26,108-119,124-127,132-133,148-151
+  s_731111b3bfaced::t_7945f6ea6c34dd 2,25,129-131,134-135
+  s_731111b3bfaced::t_9b974d82704e99 140-146
+  s_70df96d247dc8a::t_8e30e0dcba03f2 123,128,139,147
+resources/scripts/components/dashboard/ApiKeyModal.tsx
+  s_731111b3bfaced::t_be8e364c9be746 2,5-7,9-15
+  s_731111b3bfaced::t_380ab05e687768 1
+resources/scripts/components/admin/AdminContentBlock.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2-3
+resources/scripts/components/dashboard/forms/DisableTOTPDialog.tsx
+  s_731111b3bfaced::t_5d14d62287a8bb 1-2,8-14,25,43,63-64,66-78
+resources/scripts/components/server/events.ts
+  s_731111b3bfaced::t_8fd511b204ac36 17
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 4-5
+  s_731111b3bfaced::t_bce33a337ff6cd 1
+  s_731111b3bfaced::t_efb03b53649344 15-19,24,34,45-100
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_731111b3bfaced::t_278d519a1ad1d4 101-103,156,158
+  s_731111b3bfaced::t_5939f37e6c25d2 153
+  s_731111b3bfaced::t_5a4f23ff2c2875 160
+  s_731111b3bfaced::t_9acab94f2c151c 161
+  s_731111b3bfaced::t_2fea99f8467d15 4,72-74,81-82
+  s_731111b3bfaced::t_a4cce3fd2300ec 3,132
+  s_731111b3bfaced::t_da77b875bfc6ac 162
+  s_731111b3bfaced::t_d4d07b6845d2ea 154-155,157,159
+  s_731111b3bfaced::t_868cb538f72051 1,122,124-126,148,151
+  s_731111b3bfaced::t_3f5b8477806414 5,164,166,168
+  s_731111b3bfaced::t_4c351c8c655bb7 152
+resources/scripts/api/generated/index.ts
+  s_731111b3bfaced::t_85c1a060024a71 4-5
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_731111b3bfaced::t_8e6eb969149597 14,30,119-123,127-129
+  s_731111b3bfaced::t_0705910b658bb4 124-126
+  s_731111b3bfaced::t_e1e8ce2d62a3eb 130
+resources/scripts/components/ui/Select.tsx
+  s_731111b3bfaced::t_b7b1bc33abd060 52,112,116,120-123,127-130,134,138,142,146,150-153
+  s_731111b3bfaced::t_04f3b8a62eb155 108-111,157
+resources/scripts/api/server/activity/queries.ts
+  s_731111b3bfaced::t_2c2d7dc99d595b 1,22
+  s_731111b3bfaced::t_0a061a637b0fc9 18
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_731111b3bfaced::t_f6af7f34464a00 13-17,21,36,43-46,49-78,87-88
+  s_731111b3bfaced::t_025e5e84db454d 1
+  s_731111b3bfaced::t_ed4d4c7397d608 2-3
+  s_731111b3bfaced::t_e141a0871f3ad4 47-48,80-86
+  s_731111b3bfaced::t_4650f8707e036d 79
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_731111b3bfaced::t_ab79954647cfb4 12,14,323-326,330-331,336
+  s_731111b3bfaced::t_ed4d4c7397d608 3
+  s_731111b3bfaced::t_3f16518369d35c 327-329
+resources/scripts/components/server/console/StatBlock.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3
+resources/scripts/plugins/usePersistedState.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 1-2
+resources/scripts/components/server/features/useConsolePatternTrigger.ts
+  s_731111b3bfaced::t_a39408c8bb5436 19,49
+  s_731111b3bfaced::t_0dde18f7798549 1,4
+  s_731111b3bfaced::t_eebfa5806f3091 20,38,47
+  s_731111b3bfaced::t_6f31bd8cd71c37 8-11,15-18,24-28,37
+  s_731111b3bfaced::t_2f7f1be42228f6 2-3,5-7,12-14,21-23,29-36,39-46,48,50
+resources/scripts/components/dashboard/forms/SetupTOTPDialog.tsx
+  s_731111b3bfaced::t_a50a474c96b671 1-2,18-26,96,120-121,123-142
+resources/scripts/api/account/servers/queries.ts
+  s_731111b3bfaced::t_305df0cfca1004 1,35,41,53
+resources/scripts/components/elements/dialog/types.d.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 1
+resources/scripts/components/admin/settings/GeneralSettingsForm.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 3
+resources/scripts/components/admin/nodes/NodeRow.tsx
+  s_731111b3bfaced::t_2f81b06d90af30 29-34,68,95,102-135,141,150-199,260-277
+  s_731111b3bfaced::t_0b6ed66754c561 140
+  s_731111b3bfaced::t_1b08fd178946b9 1
+resources/scripts/components/admin/servers/useServerDetail.ts
+  s_731111b3bfaced::t_b75ce76ef68c82 2,5-6
+  s_731111b3bfaced::t_309b94bff14de9 1,4
+  s_731111b3bfaced::t_84ec28c9e75e5e 3,7-15
+resources/scripts/components/server/console/StatGraphs.tsx
+  s_731111b3bfaced::t_e454f89e2eb0d9 3
+  s_731111b3bfaced::t_ae30b51bdf71a1 9,53-54
+  s_731111b3bfaced::t_8d505812b14b74 32
+resources/scripts/components/server/features/eula/EulaModalFeature.tsx
+  s_731111b3bfaced::t_8d505812b14b74 18-19
+  s_731111b3bfaced::t_91e6c5fa992459 1-2,6,9-11
+  s_731111b3bfaced::t_12cc26336bbfef 8,26
+  s_731111b3bfaced::t_aa4c338feacdf2 14,33,42,58
+resources/scripts/components/dashboard/ssh/DeleteSSHKeyButton.tsx
+  s_731111b3bfaced::t_8762aff789f7e3 2
+  s_731111b3bfaced::t_adf722a29ab7c2 11-12,16-30
+resources/scripts/components/server/schedules/TaskDetailsModal.tsx
+  s_731111b3bfaced::t_79d2ff6d6e9f29 11,23,55,181,184-185,187-189
+  s_731111b3bfaced::t_3a20ad7794d28f 64-67
+  s_731111b3bfaced::t_41af1818a93617 1,63,68,93,182,186
+resources/scripts/api/server/backups/queries.ts
+  s_731111b3bfaced::t_1715687b3555e2 6-8,95-98,123,150,152-153
+  s_731111b3bfaced::t_2c2d7dc99d595b 1,3,84
+  s_731111b3bfaced::t_cad957be1aeeb9 4-5,10-11,99,122,124,131,149,155,162
+  s_731111b3bfaced::t_22b64a77f958ba 9
+  s_731111b3bfaced::t_fb9e951a0b589d 86-88,117,144,167,179,191
+  s_731111b3bfaced::t_17b4a07bd0eb60 114-115,134-139,141-142,165-166,168-178,180-189,192,194-196
+  s_731111b3bfaced::t_b7e97d540ff71b 89-94,116,119-120,132-133,143,146-147,163-164,190,193
+  s_731111b3bfaced::t_7b294c1b7a4b17 125-130,156-161
+  s_731111b3bfaced::t_cacface1923056 109-111
+  s_731111b3bfaced::t_dba0c60b5221de 151,154
+  s_731111b3bfaced::t_9d1375d52be11c 197-205,211-212,222-224
+  s_70df96d247dc8a::t_daabbb2b94f5fd 85,100
+resources/scripts/components/admin/servers/ServerRow.tsx
+  s_731111b3bfaced::t_3f92c278cc06be 22-28,53
+  s_731111b3bfaced::t_7aee96d6658ac1 1
+  s_731111b3bfaced::t_16c2d092939fce 61,71-125,210-221,223,225-226
+  s_731111b3bfaced::t_58f1ea019e19a1 224
+resources/scripts/components/elements/ProgressBar.tsx
+  s_731111b3bfaced::t_19f9f0217541bf 2,7-9
+resources/scripts/components/admin/api/CreateApiKeyButton.tsx
+  s_731111b3bfaced::t_ee5bfc7a66d855 36-42,51-52,61-135,155-159
+  s_731111b3bfaced::t_ed4d4c7397d608 4-5
+resources/scripts/components/admin/nodes/NodeConfigurationTab.tsx
+  s_731111b3bfaced::t_1d3faebcb41e83 8,50-51
+  s_731111b3bfaced::t_7d4ec2dba23080 60,71
+resources/scripts/components/admin/servers/ServerDatabaseTab.tsx
+  s_731111b3bfaced::t_21f46f4ae19abb 4
+  s_731111b3bfaced::t_08d528f1ee9cf5 17,61-65,69-71
+  s_731111b3bfaced::t_599f3034bb7e5e 66-68
+  s_731111b3bfaced::t_38f344a75cbff7 72
+resources/scripts/components/admin/nests/NestDetailContainer.tsx
+  s_731111b3bfaced::t_ac2dc5ad867822 141-147
+  s_731111b3bfaced::t_44ad6ab544067e 2,22,447-448
+  s_731111b3bfaced::t_ed4d4c7397d608 5-6
+  s_731111b3bfaced::t_29ccef0917a27a 1,40-44,334,336,344,439-446,449-463
+  s_731111b3bfaced::t_be5f568c963b0b 148-189,420-435
+  s_731111b3bfaced::t_f3b0224c8be918 403-416
+resources/scripts/state/server/index.tsx
+  s_731111b3bfaced::t_528ef6ec5ee5e4 4
+  s_731111b3bfaced::t_b068845c0fabe4 2,8,96-100
+  s_731111b3bfaced::t_482593965750e5 5-7,38-40,43,49
+  s_731111b3bfaced::t_93c2fdff1fe885 1,105-115
+  s_731111b3bfaced::t_874325e014cf71 3,20-25,36-37,41-42,44-48,50-62,88-89,92-93,101-104
+resources/scripts/api/admin/api-keys/queries.ts
+  s_731111b3bfaced::t_1877e556b8d420 4,115
+  s_731111b3bfaced::t_296799f7496638 111,119
+  s_731111b3bfaced::t_e31a71eaf8595c 3,74-76,86-87
+  s_731111b3bfaced::t_52162ccdeefbe5 112,120
+  s_731111b3bfaced::t_0a061a637b0fc9 104
+  s_731111b3bfaced::t_a5b182ee021067 109,114,116-118
+  s_731111b3bfaced::t_eaf3c6336033bf 67
+  s_731111b3bfaced::t_5a4f23ff2c2875 110
+  s_731111b3bfaced::t_7792764b22e963 2,107
+  s_70df96d247dc8a::t_1ca47df02b005d 113
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_731111b3bfaced::t_f603a6b3c0ad75 118-119,121,133,156
+  s_731111b3bfaced::t_ed4d4c7397d608 16-17
+  s_731111b3bfaced::t_66d122e0618822 18,78
+  s_731111b3bfaced::t_7141e9928b82ca 1
+  s_731111b3bfaced::t_52154abf1a479f 19,53
+resources/scripts/components/elements/dialog/DialogFooter.tsx
+  s_731111b3bfaced::t_406781b9e5d385 1
+  s_731111b3bfaced::t_4dcd8de00cd2c5 4-6
+resources/scripts/api/http.ts
+  s_731111b3bfaced::t_ed4d4c7397d608 1-2
+  s_731111b3bfaced::t_c8e3f26753237d 4,45-47,59-63,67,72
+resources/scripts/components/server/console/useGhosttyTerminal.ts
+  s_731111b3bfaced::t_04acb587222881 1-160
+resources/scripts/components/server/console/useConsoleSocketLogs.ts
+  s_731111b3bfaced::t_2440384872caaa 1-101
+resources/scripts/components/elements/dialog/useDialogState.ts
+  s_731111b3bfaced::t_52154abf1a479f 1-10
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_731111b3bfaced::t_44fbfa74685ea0 63,67,71,76-92,94,98-100,104-108,112-113,115-116,118,124-143,203
+  s_731111b3bfaced::t_594068e9becb96 109-111,121,145-167,170-173,177-202
+  s_731111b3bfaced::t_f7b0c11363fe9d 3,31,271-272
+  s_731111b3bfaced::t_d1e9c50c7a2226 274
+  s_731111b3bfaced::t_7da08a27c1fb1b 1,30,208-209,218-229
+  s_731111b3bfaced::t_e39b4aed360600 144
+resources/scripts/components/server/databases/CreateDatabaseButton.tsx
+  s_731111b3bfaced::t_9be2b5798a3e20 1
+  s_731111b3bfaced::t_665d6df71e27bd 35-71,73,76,82-86,90-102
+  s_731111b3bfaced::t_ed4d4c7397d608 9
+  s_731111b3bfaced::t_ff647440c25b1e 11,25,106-116
+  s_731111b3bfaced::t_49f2b46e9b7ab1 117
+resources/scripts/components/dashboard/ServerRowMetrics.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_c161471edada78 1,5-6
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_731111b3bfaced::t_3e8f7b50dba6bb 7,9-10,12,18,23,35-50,66-73
+resources/scripts/api/server/network/queries.ts
+  s_731111b3bfaced::t_6cd492d06d9b23 4,98-103
+  s_731111b3bfaced::t_f93c6d19d4765e 5-6,68,71,75,77-78
+  s_731111b3bfaced::t_7948037ea1cb62 81-82,84-88,90-91,93,95-96,106-107,109-110,112-113
+  s_731111b3bfaced::t_53b640e1ddf990 3,7,67,69-70,72-74,76,83,92,111
+  s_731111b3bfaced::t_305df0cfca1004 1,65
+  s_731111b3bfaced::t_22592f494460e9 79-80,97,105
+  s_70df96d247dc8a::t_f8e88ed32aa46b 2,66
+resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
+  s_731111b3bfaced::t_5d6dc7004ad35e 1
+  s_731111b3bfaced::t_6fb21a7396cbf0 5,35-36,257-262
+  s_731111b3bfaced::t_4b4cd3729ef842 46-47
+resources/scripts/components/admin/mounts/MountRow.tsx
+  s_731111b3bfaced::t_74525f8627cc98 15,27-32,40,57,64-95,101,110-158,190-207
+  s_731111b3bfaced::t_1b08fd178946b9 1
+  s_731111b3bfaced::t_63ff69f064f954 100
+resources/scripts/components/auth/LoginCheckpointContainer.tsx
+  s_731111b3bfaced::t_f52472e2777dae 19-23,25,27
+resources/scripts/state/server/files.ts
+  s_731111b3bfaced::t_4e113e94284fc7 53
+  s_731111b3bfaced::t_48428e6984ab13 29-34,37-42,45-50,56-61,65-73,77-79,81-93,98-99,101-109,119-126
+resources/scripts/plugins/useFilteredObject.ts
+  s_731111b3bfaced::t_b7b1bc33abd060 8,11,18,20
+  s_731111b3bfaced::t_c8e3f26753237d 15
+resources/scripts/components/elements/Translate.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 2
+  s_731111b3bfaced::t_bc40d1d7a53d9f 14-16,18-19
+  s_731111b3bfaced::t_2293f06a4c441b 4-13,17
+resources/scripts/components/elements/Portal.tsx
+  s_731111b3bfaced::t_ed4d4c7397d608 1-2
+resources/scripts/components/admin/nests/CreateNestButton.tsx
+  s_731111b3bfaced::t_079daca52e8595 11-16,24,34-68,70,73,79-81,85-103
+  s_731111b3bfaced::t_d15908e0ecdb40 1
+resources/scripts/components/elements/activity/ActivityLogMetaButton.tsx
+  s_731111b3bfaced::t_8a0f95622c11f3 1
+  s_731111b3bfaced::t_a587d9fac74cbb 12-24,26-40
+  s_731111b3bfaced::t_d901e1fa407ff2 5,7,9
+resources/scripts/components/elements/Can.tsx
+  s_731111b3bfaced::t_346faf3baa1293 1,11,21
+resources/scripts/plugins/useWebsocketEvent.ts
+  s_731111b3bfaced::t_ae30b51bdf71a1 2-3,8,15
+  s_731111b3bfaced::t_e7979f4bf35d8c 6-7
+resources/scripts/components/elements/dialog/index.ts
+  s_731111b3bfaced::t_118de8477917a8 4,14
+  s_731111b3bfaced::t_4e1dbc5b1cf39e 6,11
+  s_731111b3bfaced::t_52154abf1a479f 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.6",
+  "base_commit_sha": "5f5a93a5496dc3d877f14fc7415a95bb4ffd54ff",
+  "prompts": {},
+  "sessions": {
+    "s_70df96d247dc8a": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b5d63178-e089-4f0f-bc34-8992a88d4a82",
+        "model": "claude-opus-4-8"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_9f5bfb4e88d8aa": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f19a6-f316-7061-aeac-1e2528b70c70",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
