@@ -1,0 +1,38 @@
+resources/scripts/components/elements/codemirror/languages.spec.ts
+  s_c8aa5989c2c734::t_998c25038a4d84 1-29
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_c8aa5989c2c734::t_231021b0dd3343 104-107
+  s_c8aa5989c2c734::t_d4cb8267024ccf 3,139-147,149-150
+  s_c8aa5989c2c734::t_27bf95e195274d 122,159,163,176,191
+  s_c8aa5989c2c734::t_d85e23e16e65ca 169,171-172,181,183-186
+  s_c8aa5989c2c734::t_998c25038a4d84 2,4-7,21-103,108-121,123-138,148,151-153,156,158,160-161,166,174,182,190,193
+  s_c8aa5989c2c734::t_038184099e79e6 1,157,162,170,175,187,197
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_c8aa5989c2c734::t_998c25038a4d84 1,51,53
+  s_c8aa5989c2c734::t_5b621a13cda9bc 22,24,26,29-30,41,52
+  s_c8aa5989c2c734::t_209dd00ae9026f 54
+resources/scripts/components/elements/codemirror/languages.ts
+  s_c8aa5989c2c734::t_998c25038a4d84 1-14,16-31,33-34,40,82-84
+  s_c8aa5989c2c734::t_425b2562c615a9 15
+  s_c8aa5989c2c734::t_f02d92627dbd28 32,35-39,41-81
+package.json
+  s_c8aa5989c2c734::t_235c76a754228f 8-30,33,42
+package-lock.json
+  s_c8aa5989c2c734::t_7903ee2b0d480e 10-32,35,44,423-721,1237-1413,1424-1429,3747-3759,3840-3845,7744-7749,8319-8324
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.6",
+  "base_commit_sha": "71548ce31f27c38cc49c63d9705aa22b41fb4e19",
+  "prompts": {},
+  "sessions": {
+    "s_c8aa5989c2c734": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1e78-323f-7c43-a767-7a5b29cb6890",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
