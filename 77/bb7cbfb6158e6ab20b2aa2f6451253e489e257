@@ -1,0 +1,131 @@
+resources/scripts/components/admin/mounts/CreateMountButton.tsx
+  s_c8aa5989c2c734::t_e6c4304003cc6e 2
+  s_c8aa5989c2c734::t_5559d8ff0c3153 5
+resources/scripts/api/activity.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 1
+resources/scripts/api/admin/servers/queries.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 3
+resources/scripts/components/admin/databases/CreateDatabaseHostButton.tsx
+  s_c8aa5989c2c734::t_5559d8ff0c3153 5
+  s_c8aa5989c2c734::t_24832bf4b4552f 2
+resources/scripts/api/queryParameters.ts
+  s_731111b3bfaced::t_6a8ba1bccfa207 6-15
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_c8aa5989c2c734::t_f07539e73e6a68 46-59,105,113
+resources/scripts/plugins/useEventListener.ts
+  s_c8aa5989c2c734::t_44ed384ee75655 10,24,30
+  s_c8aa5989c2c734::t_f02a437bbef291 6,9,11-13,25-26,28
+resources/scripts/state/server/files.ts
+  s_c8aa5989c2c734::t_205e3d3601913d 10,14-17,27,31,35-36,40,44-45,49,53-69
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_731111b3bfaced::t_fee2d04158734a 4
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_c8aa5989c2c734::t_dd3aa6952f26f2 107-108,110
+resources/scripts/api/admin/users/queries.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 2
+PLAN.md
+  s_c8aa5989c2c734::t_049f9db6f572fe 452-462
+resources/scripts/components/auth/LoginCheckpointContainer.tsx
+  s_c8aa5989c2c734::t_cbe3c19c73d2d2 26
+resources/scripts/components/server/users/AddSubuserButton.tsx
+  s_c8aa5989c2c734::t_44039387abfee6 9
+resources/scripts/api/admin/api-keys/queries.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 1
+scripts/check-api-layer-native.php
+  s_731111b3bfaced::t_04093c2d5ee9c9 21,24,74-77,95
+  s_731111b3bfaced::t_3b85dbfc904d34 78
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 2
+resources/scripts/api/admin/locations/queries.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 2
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_c8aa5989c2c734::t_9d0f1c3dd9eba1 1,4,27-29,36,40-46,48-50,57,104,126-131,134,140,144-184
+resources/scripts/components/server/files/RenameFileModal.tsx
+  s_c8aa5989c2c734::t_5e05f2f6baaced 18,33
+resources/scripts/state/server/index.tsx
+  s_c8aa5989c2c734::t_1d32d4e70971ea 52
+  s_c8aa5989c2c734::t_68f332af8eff9d 107-109
+  s_c8aa5989c2c734::t_5559d8ff0c3153 110
+  s_c8aa5989c2c734::t_3e1ae364c2255f 59-63
+  s_c8aa5989c2c734::t_f93ee4c462020a 111
+resources/scripts/components/elements/ProgressBar.tsx
+  s_731111b3bfaced::t_f420dd1bd7f476 1,9
+resources/scripts/api/admin/eggs/queries.ts
+  s_731111b3bfaced::t_b5df3404792bff 219-220
+resources/scripts/components/server/backups/BackupContextMenu.tsx
+  s_c8aa5989c2c734::t_dfa9f2d08b74f2 43
+resources/scripts/components/server/files/useFileActions.tsx
+  s_c8aa5989c2c734::t_cefca17e6b2676 53
+resources/scripts/components/server/files/ChmodFileModal.tsx
+  s_c8aa5989c2c734::t_9ed7f57fe1d0ac 21,31
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_c8aa5989c2c734::t_6224ee06c14bb0 10,64
+resources/scripts/plugins/usePersistedState.ts
+  s_c8aa5989c2c734::t_c21279ffa52398 2-8,10-19,25-29,31-33,35-39,42-61,66-72,74
+  s_c8aa5989c2c734::t_9bf7e5c9c013ed 62-65
+  s_c8aa5989c2c734::t_5559d8ff0c3153 9
+resources/scripts/components/server/files/MassActionsBar.tsx
+  s_c8aa5989c2c734::t_4e124eb588826b 17,24,34
+resources/scripts/components/elements/dialog/DialogIcon.tsx
+  s_c8aa5989c2c734::t_9462ce0e06fe58 33-34,39-40
+tsconfig.json
+  s_c8aa5989c2c734::t_40259fdb2f791a 13
+resources/scripts/api/admin/mounts/queries.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 1
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_c8aa5989c2c734::t_1de22951c21e83 1,13,44,47-50
+resources/scripts/api/account/servers/queries.ts
+  s_731111b3bfaced::t_51702a2e542c05 7,17
+resources/scripts/api/auth/queries.ts
+  s_c8aa5989c2c734::t_8c2418bf7526d9 45
+resources/scripts/api/account/queries.ts
+  s_c8aa5989c2c734::t_590b060e2a7dca 60
+scripts/check-generated-api-boundary.php
+  s_731111b3bfaced::t_ce2128434be8cc 37,41-52,71-109
+resources/scripts/components/server/files/SelectFileCheckbox.tsx
+  s_c8aa5989c2c734::t_b927166020a5b2 2,6-7,17,19
+  s_c8aa5989c2c734::t_5559d8ff0c3153 18
+resources/scripts/api/admin/nests/queries.ts
+  s_731111b3bfaced::t_d0b8a5ba0c54b1 1
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_c8aa5989c2c734::t_4536242cd72810 34,39-42,44
+resources/scripts/components/elements/Button.tsx
+  s_c8aa5989c2c734::t_dc54e50ae0f20b 3,149-151
+resources/scripts/components/admin/nodes/CreateNodeButton.tsx
+  s_c8aa5989c2c734::t_5f7d1cdcc857ec 2
+  s_c8aa5989c2c734::t_5559d8ff0c3153 5
+resources/scripts/api/system/queries.ts
+  s_731111b3bfaced::t_2a04e87e87d671 1-2,13
+resources/scripts/components/auth/ResetPasswordContainer.tsx
+  s_c8aa5989c2c734::t_f4114ecca62e2f 28
+  s_c8aa5989c2c734::t_a6e0dda1c6466d 12
+resources/scripts/components/admin/users/CreateUserButton.tsx
+  s_c8aa5989c2c734::t_7be893bc1b5fb5 2
+  s_c8aa5989c2c734::t_5559d8ff0c3153 5
+resources/scripts/components/auth/LoginContainer.tsx
+  s_c8aa5989c2c734::t_09599ac7c87b59 40
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.6",
+  "base_commit_sha": "77bb7cbfb6158e6ab20b2aa2f6451253e489e257",
+  "prompts": {},
+  "sessions": {
+    "s_731111b3bfaced": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1159-0f4e-72d0-962e-ed553a8270ab",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_c8aa5989c2c734": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f1e78-323f-7c43-a767-7a5b29cb6890",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
