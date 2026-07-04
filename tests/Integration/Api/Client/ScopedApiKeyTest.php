@@ -223,6 +223,63 @@ class ScopedApiKeyTest extends ClientApiIntegrationTestCase
     }
 
     /**
+     * A permission-scoped key may not assign subuser permissions beyond its own
+     * scope, even when the owner could. This closes a subuser-based escalation.
+     */
+    public function testScopedKeyCannotAssignSubuserPermissionsBeyondScope()
+    {
+        [$user, $server] = $this->generateTestAccount();
+
+        $token = $user->createToken('test', null, [
+            Permission::ACTION_USER_CREATE,
+            Permission::ACTION_USER_READ,
+        ], null);
+
+        $this->withHeader('Authorization', $this->bearer($token->accessToken))
+            ->postJson("/api/client/servers/$server->uuid/users", [
+                'email' => 'subuser@example.com',
+                'permissions' => [Permission::ACTION_CONTROL_CONSOLE, Permission::ACTION_USER_READ],
+            ])
+            ->assertForbidden();
+    }
+
+    /**
+     * A restricted admin key may not use the admin enumeration modes to list
+     * every server on the panel.
+     */
+    public function testRestrictedAdminKeyCannotEnumerateAllServers()
+    {
+        /** @var User $admin */
+        $admin = User::factory()->create(['root_admin' => true]);
+        [, $otherServer] = $this->generateTestAccount();
+
+        $token = $admin->createToken('test', null, [Permission::ACTION_WEBSOCKET_CONNECT], null);
+
+        $response = $this->withHeader('Authorization', $this->bearer($token->accessToken))
+            ->getJson('/api/client?type=admin-all')
+            ->assertOk();
+
+        $uuids = array_column(array_column($response->json('data'), 'attributes'), 'uuid');
+        $this->assertNotContains($otherServer->uuid, $uuids);
+    }
+
+    /**
+     * The user_permissions meta reported for a permission-scoped key is clamped
+     * to the key's scope rather than reporting the owner's wildcard.
+     */
+    public function testServerMetaPermissionsAreClampedForScopedKey()
+    {
+        [$user, $server] = $this->generateTestAccount();
+
+        $token = $user->createToken('test', null, [Permission::ACTION_FILE_READ], null);
+
+        $this->withHeader('Authorization', $this->bearer($token->accessToken))
+            ->getJson("/api/client/servers/$server->uuid")
+            ->assertOk()
+            ->assertJsonPath('meta.user_permissions', [Permission::ACTION_FILE_READ]);
+    }
+
+    /**
      * A key cannot be created scoped to a server the user has no access to.
      */
     public function testKeyCannotBeScopedToInaccessibleServer()
