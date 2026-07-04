@@ -61,6 +61,13 @@ class ClientController extends ClientApiController
             $builder = $builder->whereIn('servers.id', $user->accessibleServers()->pluck('id')->all());
         }
 
+        // When the request is authenticated using a server-scoped API key, only
+        // the servers within the key's scope should ever be returned.
+        $token = $user->currentApiKey();
+        if (!is_null($token?->allowed_servers)) {
+            $builder = $builder->whereIn('servers.uuid', $token->allowed_servers);
+        }
+
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());
 
         return $this->fractal->transformWith($transformer)->collection($servers)->toArray();
