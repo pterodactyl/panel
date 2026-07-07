@@ -1,0 +1,55 @@
+config/extensions.php
+  s_df7dc93e661050::t_53335be6900fdb 12-13
+app/Services/Extensions/Porting/stubs/CLAUDE.md
+  s_df7dc93e661050::t_53335be6900fdb 47,49-50
+app/Services/Extensions/ExtensionInstaller.php
+  s_df7dc93e661050::t_1cbf4a5f306cea 52,56,59,70,72,83,94-101,106
+app/Models/Extension.php
+  s_df7dc93e661050::t_505fc4e519ad92 22
+database/migrations/2026_07_07_000001_drop_extension_quarantine_column.php
+  s_3a230dc1efc7c1::t_26b5c0e04cbb73 4-5,7
+  s_df7dc93e661050::t_820514b51f5e30 1-3,6,8-29
+app/Services/Extensions/ExtensionManager.php
+  s_df7dc93e661050::t_505fc4e519ad92 15-16,28-32,80-85,108,124,129,154,162-163,179-194,196-203,206-207,209-228,230-234,236-237,242,249-251,256-263
+  s_df7dc93e661050::t_9955ad51a391de 173-174,229,235,252-255
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_df7dc93e661050::t_c06495e2bd6156 50
+  s_df7dc93e661050::t_1cbf4a5f306cea 94
+app/Console/Commands/Extensions/RemoveCommand.php
+  s_df7dc93e661050::t_1cbf4a5f306cea 7,23-29
+database/migrations/2026_07_06_000001_create_extensions_tables.php
+  s_3a230dc1efc7c1::t_3cab2181f9e06f 4-5,7
+tests/Unit/Services/Extensions/ExtensionManagerTest.php
+  s_df7dc93e661050::t_e9b65adb3a4b2e 8,57-103
+  s_df7dc93e661050::t_e9aec000525bf8 104
+app/Providers/ExtensionServiceProvider.php
+  s_df7dc93e661050::t_505fc4e519ad92 19-20,23-30
+  s_df7dc93e661050::t_6eb48faec8e25c 31
+app/Services/Extensions/ExtensionManifest.php
+  s_df7dc93e661050::t_1cbf4a5f306cea 5,15-16,81-83,139-147
+  s_df7dc93e661050::t_66f904701d21e4 148
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "6562d15b30b0af8750c3cdafd47f5b418c6fbe7d",
+  "prompts": {},
+  "sessions": {
+    "s_3a230dc1efc7c1": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e05-5cd9-7643-bc45-824b50386e99",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_df7dc93e661050": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3dfb-cdf6-72b1-baf7-f9ab54d512df",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
