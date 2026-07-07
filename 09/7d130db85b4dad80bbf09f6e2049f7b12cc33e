@@ -1,0 +1,19 @@
+resources/scripts/extensions/overrides.ts
+  s_41c12f1c80ed78::t_1fd7d8ec5ab3dd 20,71
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "097d130db85b4dad80bbf09f6e2049f7b12cc33e",
+  "prompts": {},
+  "sessions": {
+    "s_41c12f1c80ed78": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e26-2fdd-7963-bb7e-80612c705ccb",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
