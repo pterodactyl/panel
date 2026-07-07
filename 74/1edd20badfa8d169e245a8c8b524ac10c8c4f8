@@ -1,0 +1,38 @@
+resources/scripts/extensions/loader.spec.ts
+  s_df7dc93e661050::t_f9bf1f45e6a40a 1,28-31,61,93-129
+  s_df7dc93e661050::t_02a7cd457978cd 130
+resources/scripts/extensions/loader.ts
+  s_df7dc93e661050::t_2150803014774b 16-22,24-40,44,49-50,53-54,83-91
+  s_df7dc93e661050::t_b5e21b078cb90f 23,47-48,74-76
+  s_df7dc93e661050::t_cf96f2c580e80b 67-68
+  s_df7dc93e661050::t_56fd533d0383d0 92
+resources/scripts/extensions/overrides.spec.ts
+  s_df7dc93e661050::t_f9bf1f45e6a40a 19,26,30-39
+  s_df7dc93e661050::t_c06495e2bd6156 51-54
+  s_df7dc93e661050::t_073d77e332268b 40-41
+resources/scripts/sdk/index.ts
+  s_df7dc93e661050::t_2150803014774b 84
+resources/scripts/index.tsx
+  s_df7dc93e661050::t_53335be6900fdb 14-15
+resources/scripts/extensions/overrides.ts
+  s_df7dc93e661050::t_0d59c321ce1242 36,80-82,96-97
+  s_df7dc93e661050::t_2150803014774b 85,87-91,93-95,98-101,115-116,118
+packages/sdk/types/index.d.ts
+  s_df7dc93e661050::t_2150803014774b 92
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "741edd20badfa8d169e245a8c8b524ac10c8c4f8",
+  "prompts": {},
+  "sessions": {
+    "s_df7dc93e661050": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3dfb-cdf6-72b1-baf7-f9ab54d512df",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
