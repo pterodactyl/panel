@@ -1,0 +1,79 @@
+app/Http/Requests/Api/Admin/Extensions/GetExtensionsRequest.php
+  s_df7dc93e661050::t_201f1891a3f48c 1-14
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_df7dc93e661050::t_4b15ecd446232a 273-281,400-404,409-413,436-438,522,555-558,568-570
+  s_df7dc93e661050::t_f3e01adaad78e4 1-24,26-229,282-310,313-340,342-399,405-408,414-435,439-521,523-554,559-567,571-574
+  s_df7dc93e661050::t_6611052b520e9b 25,230-272,311-312,341
+app/Services/Extensions/Diagnostics/ExtensionDiagnosticsReport.php
+  s_df7dc93e661050::t_a1142f23c00bd3 65
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_df7dc93e661050::t_f14aea062c3b0b 1-183
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_df7dc93e661050::t_d7e4ed43b657ba 8-9,64-220
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_df7dc93e661050::t_201f1891a3f48c 1-72,74-240
+  s_df7dc93e661050::t_88bb731d7fe257 73
+routes/api-admin.php
+  s_df7dc93e661050::t_cf5da20e3d3b90 6,65-78,81
+  s_df7dc93e661050::t_a1e39902fbd2ae 79-80
+resources/scripts/router/routeTree.ts
+  s_df7dc93e661050::t_21b484b2a0c733 39,783-790
+  s_df7dc93e661050::t_b716de63c5f0be 791
+resources/scripts/api/generated/types.gen.ts
+  s_df7dc93e661050::t_a38336a77b98fb 249-260,262-267,4847
+  s_df7dc93e661050::t_d7e4ed43b657ba 1458-1468,3428-3516,3560-3567,4752-4846,4848-4964
+  s_df7dc93e661050::t_8d6e7011cc2336 261
+  s_df7dc93e661050::t_d95f39910bbb87 4965
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_df7dc93e661050::t_a19106a50fe7b0 46,48,50-55,62-63,108-111
+  s_df7dc93e661050::t_22fcb57fb045b7 112
+app/Enum/Permissions.php
+  s_df7dc93e661050::t_201f1891a3f48c 72-76
+app/Http/Requests/Api/Admin/Extensions/InstallExtensionRequest.php
+  s_df7dc93e661050::t_201f1891a3f48c 1-29
+resources/scripts/api/admin/extensions/queries.ts
+  s_df7dc93e661050::t_4b15ecd446232a 41,55,63-64
+  s_df7dc93e661050::t_d142d8a132d365 1-40,42-54,56-62,65-100
+resources/scripts/api/generated/index.ts
+  s_df7dc93e661050::t_d7e4ed43b657ba 4
+  s_df7dc93e661050::t_a38336a77b98fb 5
+app/Http/Requests/Api/Admin/Extensions/DeleteExtensionRequest.php
+  s_df7dc93e661050::t_201f1891a3f48c 1-14
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_df7dc93e661050::t_d1742aea31b6ad 1578
+  s_df7dc93e661050::t_6ffb073531eeea 1565-1577,1579-1632
+  s_df7dc93e661050::t_4c5c3328607967 114,657
+app/Services/Extensions/Diagnostics/ExtensionDiagnostic.php
+  s_df7dc93e661050::t_738164baa5fc22 5-6,34,43
+app/Extensions/ExtensionProvider.php
+  s_df7dc93e661050::t_49498a2d57c308 47,60,72,84
+resources/scripts/api/generated/sdk.gen.ts
+  s_df7dc93e661050::t_d7e4ed43b657ba 6,34-108
+  s_df7dc93e661050::t_f16da80fe8280a 109
+app/Providers/ExtensionServiceProvider.php
+  s_df7dc93e661050::t_a19106a50fe7b0 29
+  s_df7dc93e661050::t_fe58e25cc93162 26-28
+app/Http/Requests/Api/Admin/Extensions/UpdateExtensionRequest.php
+  s_df7dc93e661050::t_201f1891a3f48c 1-14
+tests/Unit/Extensions/ExtensionProviderTest.php
+  s_df7dc93e661050::t_c5232e76c9aa26 44,47,65-76
+  s_df7dc93e661050::t_5ce142ca43bbc8 40,60,77-84
+  s_df7dc93e661050::t_753a23392efa46 1-39,41-43,45-46,48-59,61-64,85-100,103-123
+  s_df7dc93e661050::t_5bf1f2b1a77c67 101-102
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "ebf7072a8c7b9f190bf4027c9c1c893c8b78b0e0",
+  "prompts": {},
+  "sessions": {
+    "s_df7dc93e661050": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3dfb-cdf6-72b1-baf7-f9ab54d512df",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
