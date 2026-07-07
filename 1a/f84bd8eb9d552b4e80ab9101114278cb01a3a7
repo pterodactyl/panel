@@ -1,0 +1,20 @@
+.oxlintrc.json
+  s_41c12f1c80ed78::t_b04851ac77e08b 1-2,4-5,7-46
+  s_41c12f1c80ed78::t_349b40026a5a44 3,6
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "1af84bd8eb9d552b4e80ab9101114278cb01a3a7",
+  "prompts": {},
+  "sessions": {
+    "s_41c12f1c80ed78": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e26-2fdd-7963-bb7e-80612c705ccb",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
