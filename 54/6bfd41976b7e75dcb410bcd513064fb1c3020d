@@ -1,0 +1,86 @@
+app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+  s_5abe510b694a54::t_df7f823b8ccb22 33,82
+  s_5abe510b694a54::t_ce9b2e0b700097 5,8,29
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_5abe510b694a54::t_ce9b2e0b700097 7
+  s_5abe510b694a54::t_df7f823b8ccb22 27
+tests/Integration/Jobs/Schedule/RunTaskJobTest.php
+  s_5abe510b694a54::t_df7f823b8ccb22 64
+  s_5abe510b694a54::t_ce9b2e0b700097 11
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_5abe510b694a54::t_df7f823b8ccb22 85,89
+  s_5abe510b694a54::t_ce9b2e0b700097 7
+app/Http/Requests/Api/ApiRequest.php
+  s_5abe510b694a54::t_ce9b2e0b700097 7
+  s_5abe510b694a54::t_df7f823b8ccb22 43,47
+app/Repositories/Repository.php
+  s_5abe510b694a54::t_df7f823b8ccb22 100
+  s_5abe510b694a54::t_ce9b2e0b700097 7
+app/Http/Controllers/Api/Application/ApplicationApiController.php
+  s_5abe510b694a54::t_df7f823b8ccb22 63
+  s_5abe510b694a54::t_ce9b2e0b700097 9
+app/Models/Traits/HasRealtimeIdentifier.php
+  s_5abe510b694a54::t_df7f823b8ccb22 64
+  s_5abe510b694a54::t_ce9b2e0b700097 9
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_5abe510b694a54::t_df7f823b8ccb22 53
+  s_5abe510b694a54::t_ce9b2e0b700097 5
+app/Jobs/Schedule/RunTaskJob.php
+  s_5abe510b694a54::t_ce9b2e0b700097 10
+  s_5abe510b694a54::t_df7f823b8ccb22 73
+app/Contracts/Extensions/HashidsInterface.php
+  s_5abe510b694a54::t_df7f823b8ccb22 13
+  s_5abe510b694a54::t_ce9b2e0b700097 6
+app/Http/Requests/Api/Client/Servers/Settings/SetDockerImageRequest.php
+  s_5abe510b694a54::t_df7f823b8ccb22 24
+  s_5abe510b694a54::t_ce9b2e0b700097 6
+app/Http/Controllers/Api/Admin/AdminApiController.php
+  s_5abe510b694a54::t_ce9b2e0b700097 5
+  s_5abe510b694a54::t_df7f823b8ccb22 25
+app/Repositories/Wings/DaemonRepository.php
+  s_5abe510b694a54::t_df7f823b8ccb22 67,76
+  s_5abe510b694a54::t_ce9b2e0b700097 7
+app/Services/Activity/ActivityLogService.php
+  s_5abe510b694a54::t_ce9b2e0b700097 12
+  s_5abe510b694a54::t_df7f823b8ccb22 229
+app/Services/Backups/InitiateBackupService.php
+  s_5abe510b694a54::t_ce9b2e0b700097 7
+  s_5abe510b694a54::t_df7f823b8ccb22 55
+app/Transformers/Api/Client/BaseClientTransformer.php
+  s_5abe510b694a54::t_df7f823b8ccb22 31
+  s_5abe510b694a54::t_ce9b2e0b700097 5
+tests/Integration/Api/Client/ClientApiIntegrationTestCase.php
+  s_5abe510b694a54::t_ce9b2e0b700097 9
+  s_5abe510b694a54::t_df7f823b8ccb22 79
+tests/Traits/Http/RequestMockHelpers.php
+  s_5abe510b694a54::t_ce9b2e0b700097 6
+  s_5abe510b694a54::t_df7f823b8ccb22 71
+app/Models/ApiKey.php
+  s_5abe510b694a54::t_df7f823b8ccb22 228
+  s_5abe510b694a54::t_ce9b2e0b700097 10
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_5abe510b694a54::t_df7f823b8ccb22 73
+  s_5abe510b694a54::t_ce9b2e0b700097 7
+tests/Integration/Services/Schedules/ProcessScheduleServiceTest.php
+  s_5abe510b694a54::t_ce9b2e0b700097 9
+  s_5abe510b694a54::t_df7f823b8ccb22 50
+tests/Integration/Services/Servers/SuspensionServiceTest.php
+  s_5abe510b694a54::t_ce9b2e0b700097 5
+  s_5abe510b694a54::t_df7f823b8ccb22 62
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.10",
+  "base_commit_sha": "546bfd41976b7e75dcb410bcd513064fb1c3020d",
+  "prompts": {},
+  "sessions": {
+    "s_5abe510b694a54": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3e5a-f0ca-7793-9873-405e50e9f937",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
