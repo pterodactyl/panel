@@ -202,7 +202,7 @@ class ApiKey extends Model implements HasAbilities
         $identifier = substr($token, 0, self::IDENTIFIER_LENGTH);
 
         $model = static::where('identifier', $identifier)->first();
-        if (!is_null($model) && decrypt($model->token) === substr($token, strlen($identifier))) {
+        if (!is_null($model) && hash_equals(decrypt($model->token), substr($token, strlen($identifier)))) {
             return $model;
         }
 

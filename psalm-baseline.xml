@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <files psalm-version="6.16.1@f1f5de594dc76faf8784e02d3dc4716c91c6f6ac">
-  <file src="app/Models/ApiKey.php">
-    <TaintedSystemSecret>
-      <code><![CDATA[decrypt($model->token) === substr($token, strlen($identifier))]]></code>
-    </TaintedSystemSecret>
-    <TaintedUserSecret>
-      <code><![CDATA[decrypt($model->token) === substr($token, strlen($identifier))]]></code>
-    </TaintedUserSecret>
-  </file>
   <file src="app/Repositories/Eloquent/EloquentRepository.php">
     <TaintedSql>
       <code><![CDATA[$fields]]></code>
