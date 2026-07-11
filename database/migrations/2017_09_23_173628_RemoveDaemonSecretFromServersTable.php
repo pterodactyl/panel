@@ -5,7 +5,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
-use Pterodactyl\Contracts\Repository\DaemonKeyRepositoryInterface;
 
 class RemoveDaemonSecretFromServersTable extends Migration
 {
@@ -21,7 +20,10 @@ class RemoveDaemonSecretFromServersTable extends Migration
             $inserts[] = [
                 'user_id' => $server->owner_id,
                 'server_id' => $server->id,
-                'secret' => DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER . str_random(40),
+                // 'i_' matches DaemonKeyRepositoryInterface::INTERNAL_KEY_IDENTIFIER, removed in 703f55271
+                // along with the rest of the daemon-key system; the literal is kept here since this
+                // migration still needs to run, unchanged, for anyone migrating from a pre-2020 install.
+                'secret' => 'i_' . str_random(40),
                 'expires_at' => Carbon::now()->addMinutes(config('pterodactyl.api.key_expire_time', 720))->toDateTimeString(),
                 'created_at' => Carbon::now()->toDateTimeString(),
                 'updated_at' => Carbon::now()->toDateTimeString(),

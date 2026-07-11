@@ -126,7 +126,7 @@ class Schedule extends Model
     /**
      * Return a hashid encoded string to represent the ID of the schedule.
      */
-    protected function getHashidAttribute(): string
+    public function getHashidAttribute(): string
     {
         return Container::getInstance()->make(HashidsInterface::class)->encode($this->id);
     }

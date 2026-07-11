@@ -86,7 +86,7 @@ class Allocation extends Model
     /**
      * Return a hashid encoded string to represent the ID of the allocation.
      */
-    protected function getHashidAttribute(): string
+    public function getHashidAttribute(): string
     {
         return app()->make('hashids')->encode($this->id);
     }
@@ -94,7 +94,7 @@ class Allocation extends Model
     /**
      * Accessor to automatically provide the IP alias if defined.
      */
-    protected function getAliasAttribute(?string $value): string
+    public function getAliasAttribute(?string $value): string
     {
         return (is_null($this->ip_alias)) ? $this->ip : $this->ip_alias;
     }
@@ -102,7 +102,7 @@ class Allocation extends Model
     /**
      * Accessor to quickly determine if this allocation has an alias.
      */
-    protected function getHasAliasAttribute(?string $value): bool
+    public function getHasAliasAttribute(?string $value): bool
     {
         return !is_null($this->ip_alias);
     }
