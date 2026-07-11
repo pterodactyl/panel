@@ -223,7 +223,7 @@ class User extends Model implements
     /**
      * Store the username as a lowercase string.
      */
-    public function setUsernameAttribute(string $value)
+    protected function setUsernameAttribute(string $value)
     {
         $this->attributes['username'] = mb_strtolower($value);
     }
@@ -231,7 +231,7 @@ class User extends Model implements
     /**
      * Return a concatenated result for the accounts full name.
      */
-    public function getNameAttribute(): string
+    protected function getNameAttribute(): string
     {
         return trim($this->name_first . ' ' . $this->name_last);
     }

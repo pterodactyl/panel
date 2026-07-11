@@ -156,7 +156,7 @@ class Egg extends Model implements Identifiable
      * Returns the install script for the egg; if egg is copying from another
      * it will return the copied script.
      */
-    public function getCopyScriptInstallAttribute(): ?string
+    protected function getCopyScriptInstallAttribute(): ?string
     {
         if (!is_null($this->script_install) || is_null($this->copy_script_from)) {
             return $this->script_install;
@@ -169,7 +169,7 @@ class Egg extends Model implements Identifiable
      * Returns the entry command for the egg; if egg is copying from another
      * it will return the copied entry command.
      */
-    public function getCopyScriptEntryAttribute(): string
+    protected function getCopyScriptEntryAttribute(): string
     {
         if (is_null($this->copy_script_from)) {
             return $this->script_entry;
@@ -182,7 +182,7 @@ class Egg extends Model implements Identifiable
      * Returns the install container for the egg; if egg is copying from another
      * it will return the copied install container.
      */
-    public function getCopyScriptContainerAttribute(): string
+    protected function getCopyScriptContainerAttribute(): string
     {
         if (is_null($this->copy_script_from)) {
             return $this->script_container;
@@ -194,7 +194,7 @@ class Egg extends Model implements Identifiable
     /**
      * Return the file configuration for an egg.
      */
-    public function getInheritConfigFilesAttribute(): ?string
+    protected function getInheritConfigFilesAttribute(): ?string
     {
         if (!is_null($this->config_files) || is_null($this->config_from)) {
             return $this->config_files;
@@ -206,7 +206,7 @@ class Egg extends Model implements Identifiable
     /**
      * Return the startup configuration for an egg.
      */
-    public function getInheritConfigStartupAttribute(): ?string
+    protected function getInheritConfigStartupAttribute(): ?string
     {
         if (!is_null($this->config_startup) || is_null($this->config_from)) {
             return $this->config_startup;
@@ -218,7 +218,7 @@ class Egg extends Model implements Identifiable
     /**
      * Return the log reading configuration for an egg.
      */
-    public function getInheritConfigLogsAttribute(): ?string
+    protected function getInheritConfigLogsAttribute(): ?string
     {
         if (!is_null($this->config_logs) || is_null($this->config_from)) {
             return $this->config_logs;
@@ -230,7 +230,7 @@ class Egg extends Model implements Identifiable
     /**
      * Return the stop command configuration for an egg.
      */
-    public function getInheritConfigStopAttribute(): ?string
+    protected function getInheritConfigStopAttribute(): ?string
     {
         if (!is_null($this->config_stop) || is_null($this->config_from)) {
             return $this->config_stop;
@@ -243,7 +243,7 @@ class Egg extends Model implements Identifiable
      * Returns the features available to this egg from the parent configuration if there are
      * no features defined for this egg specifically and there is a parent egg configured.
      */
-    public function getInheritFeaturesAttribute(): ?array
+    protected function getInheritFeaturesAttribute(): ?array
     {
         if (!is_null($this->features) || is_null($this->config_from)) {
             return $this->features;
@@ -256,7 +256,7 @@ class Egg extends Model implements Identifiable
      * Returns the features available to this egg from the parent configuration if there are
      * no features defined for this egg specifically and there is a parent egg configured.
      */
-    public function getInheritFileDenylistAttribute(): ?array
+    protected function getInheritFileDenylistAttribute(): ?array
     {
         if (is_null($this->config_from)) {
             return $this->file_denylist;

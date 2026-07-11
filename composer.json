@@ -28,7 +28,7 @@
         "guzzlehttp/guzzle": "^7.9.2",
         "hashids/hashids": "^5.0.2",
         "laracasts/utilities": "~3.2.3",
-        "laravel/framework": "^11.31.0",
+        "laravel/framework": "^11.54",
         "laravel/helpers": "^1.8.0",
         "laravel/sanctum": "^4.2.0",
         "laravel/tinker": "^2.10.0",
@@ -63,6 +63,7 @@
         "phpstan/phpstan": "^2.1",
         "phpstan/phpstan-webmozart-assert": "^2.0",
         "phpunit/phpunit": "^10.5.62",
+        "psalm/plugin-laravel": "^3",
         "spatie/laravel-ignition": "^2.9"
     },
     "autoload": {
@@ -104,7 +105,19 @@
         "preferred-install": "dist",
         "sort-packages": true,
         "platform": {
-            "php": "8.2.0"
+            "php": "8.2.27"
+        },
+        "allow-plugins": {
+            "composer/package-versions-deprecated": true
+        },
+        "policy": {
+            "advisories": {
+                "ignore-id": {
+                    "PKSA-mdq4-51ck-6kdq": "CRLF injection in default email validation rule: no fix exists on the 11.x line (fixed only in 12.60.0/13.10.0); accepted risk while pinned to Laravel 11.",
+                    "PKSA-3r5d-mb8f-1qw9": "CRLF injection in default email validation rule (duplicate advisory entry): no fix exists on the 11.x line (fixed only in 12.60.0/13.10.0); accepted risk while pinned to Laravel 11.",
+                    "PKSA-m5cs-t1y6-qpcs": "Temporary signed URL path confusion: no fix exists on the 11.x line (fixed only in 12.61.1/13.12.0); accepted risk while pinned to Laravel 11."
+                }
+            }
         }
     },
     "minimum-stability": "stable",

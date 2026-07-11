@@ -79,7 +79,7 @@ class EggVariable extends Model
         'user_viewable' => 0,
     ];
 
-    public function getRequiredAttribute(): bool
+    protected function getRequiredAttribute(): bool
     {
         return in_array('required', explode('|', $this->rules));
     }
