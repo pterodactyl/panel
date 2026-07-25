@@ -10,6 +10,7 @@ use Illuminate\Database\ConnectionInterface;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Repositories\Wings\DaemonServerRepository;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Models\Task;
 
 class ProcessScheduleService
 {
@@ -75,7 +76,13 @@ class ProcessScheduleService
             //
             // @see https://github.com/pterodactyl/panel/issues/2550
             try {
-                $this->dispatcher->dispatchNow($job);
+                $details = $this->serverRepository->setServer($schedule->server)->getDetails();
+                $state = $details['state'] ?? 'offline';
+                if (in_array($state, ['offline', 'stopping']) && $task->action !== Task::ACTION_COMMAND) {
+                    $this->dispatcher->dispatchNow($job);
+                } else if (in_array($state, ['starting', 'running'])) {
+                    $this->dispatcher->dispatchNow($job);
+                }
             } catch (\Exception $exception) {
                 $job->failed($exception);
 
