@@ -75,12 +75,16 @@ class ProcessScheduleService
             // so we need to manually trigger it and then continue with the exception throw.
             //
             // @see https://github.com/pterodactyl/panel/issues/2550
+            //
+            // When forcing a run now, if a schedule is set to only run when the server is online
+            // it will not run and will fail silently, added logic to allow force runs.
             try {
                 $details = $this->serverRepository->setServer($schedule->server)->getDetails();
                 $state = $details['state'] ?? 'offline';
-                if (in_array($state, ['offline', 'stopping']) && $task->action !== Task::ACTION_COMMAND) {
-                    $this->dispatcher->dispatchNow($job);
-                } else if (in_array($state, ['starting', 'running'])) {
+
+                if (in_array($state, ['offline', 'stopping']) && $task->action === Task::ACTION_COMMAND) {
+                    $job->skip();
+                } else {
                     $this->dispatcher->dispatchNow($job);
                 }
             } catch (\Exception $exception) {
