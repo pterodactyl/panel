@@ -1,0 +1,36 @@
+app/Services/Extensions/ExtensionDoctor.php
+  s_a383e7060bfcdc::t_084a1100504cc9 263-264
+app/Services/Extensions/Scaffolding/stubs/provider.stub
+  s_a383e7060bfcdc::t_47fc40cdd2a1a4 17
+tests/Unit/Extensions/ExtensionProviderTest.php
+  s_a383e7060bfcdc::t_c948426812b383 181-185
+  s_a383e7060bfcdc::t_7898c223e6849a 8-10,95-97
+  s_a383e7060bfcdc::t_ee545cf43d81ad 79-94,98-100
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_a383e7060bfcdc::t_6cde50d35260a4 5
+  s_a383e7060bfcdc::t_b1a3245ba2ec8c 32
+  s_a383e7060bfcdc::t_804d6dcd538570 43
+app/Extensions/ExtensionProvider.php
+  s_a383e7060bfcdc::t_a963e3d771c722 7-9
+  s_a383e7060bfcdc::t_a46314ec1d71e4 104,113
+  s_a383e7060bfcdc::t_46870bf6d0c99f 67-89
+  s_a383e7060bfcdc::t_d2c781659ef9df 66
+app/Repositories/Wings/DaemonFileRepository.php
+  s_a383e7060bfcdc::t_7b886ec6007366 288-296,300
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "d3b8b58b561df0de0b13d798a982a8e53db1b073",
+  "prompts": {},
+  "sessions": {
+    "s_a383e7060bfcdc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e9c45f4-e23f-46b4-98a6-fbc5deb578a1",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
