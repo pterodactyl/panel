@@ -1,0 +1,31 @@
+resources/scripts/components/server/files/FileManagerStatus.tsx
+  s_41b783078d5c57::t_5662ecb32687a7 34-37,71-76,87
+vitest.config.ts
+  s_7a2c691b568e73::t_f0cbdaeb082054 17-21
+resources/scripts/state/server/index.tsx
+  s_41b783078d5c57::t_9df12370173604 73,111-113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "81944aa6cf6752c3ac8bc0b92e5483034981def0",
+  "prompts": {},
+  "sessions": {
+    "s_41b783078d5c57": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3f00-121b-7d43-9d4e-eb3a053846e6",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_7a2c691b568e73": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f3edc-26ed-7cf1-90ba-d87033ca382c",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
