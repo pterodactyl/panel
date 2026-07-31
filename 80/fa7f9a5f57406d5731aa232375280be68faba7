@@ -1,0 +1,100 @@
+app/Services/Extensions/ExtensionDoctor.php
+  s_a383e7060bfcdc::t_aba66f35196b49 80,87-199
+  s_a383e7060bfcdc::t_1640f7a78212d4 200
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_a383e7060bfcdc::t_45f0b860af297d 24,27,31,36
+  s_a383e7060bfcdc::t_99df62a4175d1b 512,544
+  s_a383e7060bfcdc::t_34e3fb81a0fbaf 11
+  s_a383e7060bfcdc::t_3b941f6f6d714f 828-838
+  s_a383e7060bfcdc::t_3b86ffb31ac0b9 485-511,513-543,545-680
+  s_a383e7060bfcdc::t_e24d8c6ed89674 50-52
+vitest.config.ts
+  s_a383e7060bfcdc::t_0467c06df0f15e 21
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_a383e7060bfcdc::t_0b1934c969490d 6,10-11,16-26,56-106,121-139
+app/Services/Extensions/ExtensionSettings.php
+  s_a383e7060bfcdc::t_4db68be6a4732b 74-77,86-87
+  s_a383e7060bfcdc::t_1e47cf69be834f 13-15,20,22,28
+  s_a383e7060bfcdc::t_0ae418a8f73705 48-51
+  s_a383e7060bfcdc::t_fcfa12541bfc3c 109-110
+resources/scripts/sdk/index.ts
+  s_a383e7060bfcdc::t_20bdbe5d1a2960 103-115
+  s_a383e7060bfcdc::t_a0552f886be06c 15-16,18
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_a383e7060bfcdc::t_53227213c37d57 1892-1896
+examples/kitchen-sink/src/KitchenSinkProvider.php
+  s_a383e7060bfcdc::t_6a50dca3f7d355 11,18-21
+resources/scripts/extensions/loader.ts
+  s_a383e7060bfcdc::t_1e4c81392180f5 113
+  s_a383e7060bfcdc::t_d53f607e5c8e39 63-79
+  s_a383e7060bfcdc::t_cddc7740b87783 62
+routes/api-admin.php
+  s_a383e7060bfcdc::t_4175eaaacebd10 75-76
+resources/scripts/api/admin/extensions/queries.ts
+  s_a383e7060bfcdc::t_f87cb51b7a7209 64-82,85-88,92-98,102-106
+  s_a383e7060bfcdc::t_d95c2de3126bbc 7-8,13,22
+  s_a383e7060bfcdc::t_e9fbd2b8731637 99-101
+  s_a383e7060bfcdc::t_156839b60f1d7d 83-84
+  s_a383e7060bfcdc::t_15014199ec32f4 107
+tests/Unit/Services/Extensions/ExtensionSettingsRegistryTest.php
+  s_a383e7060bfcdc::t_89d2ae7a60ff83 1-36
+packages/sdk/types/index.d.ts
+  s_a383e7060bfcdc::t_1131469cf51360 275-298
+app/Services/Extensions/ExtensionRepository.php
+  s_a383e7060bfcdc::t_43319a3853b35a 128,138,144-156
+  s_a383e7060bfcdc::t_ba8d577fb5a6f5 21-23,28
+  s_a383e7060bfcdc::t_cc2d2cec9a1a3f 188-190
+  s_a383e7060bfcdc::t_068cb267f91059 157-158
+app/Services/Extensions/ExtensionApiVersion.php
+  s_a383e7060bfcdc::t_0abd26bd5cfd97 12
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_a383e7060bfcdc::t_df9c58635b6d49 80-95,101
+  s_a383e7060bfcdc::t_0778bb94b28b1a 27
+  s_a383e7060bfcdc::t_11064f6c360e22 8
+  s_a383e7060bfcdc::t_5d6635eb3197f6 154-183
+examples/kitchen-sink/src/client/index.tsx
+  s_a383e7060bfcdc::t_53a79cc605997a 55,58-63
+  s_a383e7060bfcdc::t_f0a45c77e8d7e2 2,7-13,15-34
+packages/sdk/package.json
+  s_a383e7060bfcdc::t_f93c6dd863c673 3
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_a383e7060bfcdc::t_b68e0d49d71ca0 67-99
+app/Extensions/ExtensionProvider.php
+  s_a383e7060bfcdc::t_9ea010e5c7eb12 172-185
+  s_a383e7060bfcdc::t_c949b137f27f70 11,14-15
+tests/Unit/Services/Extensions/ExtensionSettingsDefinitionTest.php
+  s_a383e7060bfcdc::t_ef58fcc5dcce33 1-119
+app/Services/Extensions/ExtensionSettingsRegistry.php
+  s_a383e7060bfcdc::t_20c05fd689545b 1-30
+packages/sdk/types-drift.spec.ts
+  s_a383e7060bfcdc::t_c7e8feb632624d 1-73
+app/Providers/ExtensionServiceProvider.php
+  s_a383e7060bfcdc::t_26445e39beb39e 11
+  s_a383e7060bfcdc::t_30ad6925c97136 19
+examples/kitchen-sink/src/KitchenSinkSettings.php
+  s_a383e7060bfcdc::t_ddfeae37e3428a 1-36
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_a383e7060bfcdc::t_503ebe7141d0d6 8-9,155-196,5401-5860
+resources/scripts/api/generated/index.ts
+  s_a383e7060bfcdc::t_312bd0d9369ac7 4-5
+resources/scripts/api/generated/sdk.gen.ts
+  s_a383e7060bfcdc::t_f653c809e6bce9 6,75-102,3026-3270
+resources/scripts/api/generated/types.gen.ts
+  s_a383e7060bfcdc::t_152e8c7d0283bc 1469-1477,3437-3537,3585-3612,3698-4075,4078-4081,5243-5300,5430-5509,14450-15051
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "80fa7f9a5f57406d5731aa232375280be68faba7",
+  "prompts": {},
+  "sessions": {
+    "s_a383e7060bfcdc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e9c45f4-e23f-46b4-98a6-fbc5deb578a1",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
