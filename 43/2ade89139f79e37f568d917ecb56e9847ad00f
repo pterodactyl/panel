@@ -1,0 +1,23 @@
+app/Console/Commands/Extensions/EnableCommand.php
+  s_a383e7060bfcdc::t_6b13e1fb13b075 11
+app/Console/Commands/Extensions/InstallCommand.php
+  s_a383e7060bfcdc::t_f69e90a4aa1034 13
+composer.lock
+  s_a383e7060bfcdc::t_a2785aa7a67eee 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.18",
+  "base_commit_sha": "432ade89139f79e37f568d917ecb56e9847ad00f",
+  "prompts": {},
+  "sessions": {
+    "s_a383e7060bfcdc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e9c45f4-e23f-46b4-98a6-fbc5deb578a1",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
