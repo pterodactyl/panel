@@ -63,6 +63,10 @@ class SettingsController extends ClientApiController
      */
     public function reinstall(ReinstallServerRequest $request, Server $server): JsonResponse
     {
+        if ($server->skip_scripts) {
+            throw new BadRequestHttpException('This server is configured to skip its egg\'s install script; reinstalling it would stop the server without running that script.');
+        }
+
         $this->reinstallServerService->handle($server);
 
         Activity::event('server:reinstall')->log();

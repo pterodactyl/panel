@@ -11,6 +11,7 @@ import { Dialog } from '@/components/elements/dialog';
 
 export default () => {
     const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+    const skipScripts = ServerContext.useStoreState((state) => state.server.data!.skipScripts);
     const [modalVisible, setModalVisible] = useState(false);
     const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
 
@@ -35,6 +36,18 @@ export default () => {
     useEffect(() => {
         clearFlashes();
     }, []);
+
+    if (skipScripts) {
+        return (
+            <TitledGreyBox title={'Reinstall Server'}>
+                <p css={tw`text-sm`}>
+                    This server has been configured by an administrator to skip its egg&apos;s installation script.
+                    Reinstalling it would stop the server without running that script, so this option is not available
+                    here. An administrator can still reinstall this server from the admin area.
+                </p>
+            </TitledGreyBox>
+        );
+    }
 
     return (
         <TitledGreyBox title={'Reinstall Server'} css={tw`relative`}>
