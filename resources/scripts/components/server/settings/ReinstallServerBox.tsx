@@ -41,9 +41,8 @@ export default () => {
         return (
             <TitledGreyBox title={'Reinstall Server'}>
                 <p css={tw`text-sm`}>
-                    This server has been configured by an administrator to skip its egg&apos;s installation script.
-                    Reinstalling it would stop the server without running that script, so this option is not available
-                    here. An administrator can still reinstall this server from the admin area.
+                    This server has been configured to skip its egg&apos;s installation script.
+                    An administrator can still reinstall this server from the admin area.
                 </p>
             </TitledGreyBox>
         );
