@@ -127,10 +127,7 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         $this->actingAs($user)
             ->postJson("/api/client/servers/$server->uuid/settings/reinstall")
             ->assertStatus(Response::HTTP_BAD_REQUEST)
-            ->assertJsonPath(
-                'errors.0.detail',
-                'This server is configured to skip its egg\'s install script; reinstalling it would stop the server without running that script.'
-            );
+            ->assertJsonPath('errors.0.detail', trans('admin/server.exceptions.skipping_install_script'));
 
         $this->assertNull($server->refresh()->status);
     }
