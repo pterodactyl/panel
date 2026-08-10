@@ -13,21 +13,21 @@
         "pid_limit"
     ],
     "docker_images": {
-        "Java 25": "ghcr.io\/pterodactyl\/yolks:java_25",
-        "Java 21": "ghcr.io\/pterodactyl\/yolks:java_21"
+        "Java 25": "ghcr.io/pterodactyl/yolks:java_25",
+        "Java 21": "ghcr.io/pterodactyl/yolks:java_21"
     },
     "file_denylist": [],
     "startup": "java -Xms128M -XX:MaxRAMPercentage=95.0 -jar {{SERVER_JARFILE}}",
     "config": {
-        "files": "{\r\n    \"velocity.toml\": {\r\n        \"parser\": \"toml\",\r\n        \"find\": {\r\n            \"bind\": \"0.0.0.0:{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
+        "files": "{\r\n    \"velocity.toml\": {\r\n        \"parser\": \"file\",\r\n        \"find\": {\r\n            \"bind = \": \"bind = \\\"0.0.0.0:{{server.build.default.port}}\\\"\"\r\n        }\r\n    }\r\n}",
         "startup": "{\r\n    \"done\": \"Done (\"\r\n}",
         "logs": "{}",
         "stop": "end"
     },
     "scripts": {
         "installation": {
-            "script": "#!\/bin\/ash\r\n# Velocity Installation Script\r\n#\r\n# Server Files: \/mnt\/server\r\n\r\ncd \/mnt\/server\r\n\r\nUSER_AGENT=\"pterodactyl-panel\/1.0 (https:\/\/github.com\/pterodactyl\/panel)\"\r\n\r\n# PaperMC sunset the v2 API in favour of the \"fill\" v3 API, which requires a\r\n# descriptive User-Agent. Versions are grouped newest-first with snapshots listed\r\n# before their stable release, so scan them in order and take the first version\r\n# that has a STABLE build (the same jar papermc.io serves on its downloads page).\r\nVERSIONS=\"$(curl -s -H \"User-Agent: ${USER_AGENT}\" https:\/\/fill.papermc.io\/v3\/projects\/velocity | jq -r '.versions | to_entries[] | .value[]')\"\r\n\r\nfor VERSION in $VERSIONS; do\r\n    BUILDS=\"$(curl -s -H \"User-Agent: ${USER_AGENT}\" \"https:\/\/fill.papermc.io\/v3\/projects\/velocity\/versions\/${VERSION}\/builds\")\"\r\n\r\n    # Abort if the API returned an error payload instead of a build list.\r\n    API_ERROR=\"$(echo \"${BUILDS}\" | jq -r 'if (type == \"object\" and .ok == false) then .message else \"ok\" end')\"\r\n    if [ \"${API_ERROR}\" != \"ok\" ]; then\r\n        echo \"Error: ${API_ERROR}\"\r\n        exit 1\r\n    fi\r\n\r\n    DOWNLOAD_URL=\"$(echo \"${BUILDS}\" | jq -r 'first(.[] | select(.channel == \"STABLE\") | .downloads.\"server:default\".url) \/\/ \"null\"')\"\r\n\r\n    if [ \"${DOWNLOAD_URL}\" != \"null\" ]; then\r\n        break\r\n    fi\r\ndone\r\n\r\nif [ -z \"${DOWNLOAD_URL}\" ] || [ \"${DOWNLOAD_URL}\" == \"null\" ]; then\r\n    echo \"No stable Velocity build is available from the PaperMC API.\"\r\n    exit 1\r\nfi\r\n\r\necho -e \"Downloading Velocity ${VERSION}...\"\r\ncurl -o ${SERVER_JARFILE} \"${DOWNLOAD_URL}\" || { echo \"Download failed.\"; exit 2; }\r\n\r\necho -e \"Install Complete\"",
-            "container": "ghcr.io\/pterodactyl\/installers:alpine",
+            "script": "#!/bin/ash\r\n# Velocity Installation Script\r\n#\r\n# Server Files: /mnt/server\r\n\r\ncd /mnt/server\r\n\r\nUSER_AGENT=\"pterodactyl-panel/1.0 (https://github.com/pterodactyl/panel)\"\r\n\r\n# PaperMC sunset the v2 API in favour of the \"fill\" v3 API, which requires a\r\n# descriptive User-Agent. Versions are grouped newest-first with snapshots listed\r\n# before their stable release, so scan them in order and take the first version\r\n# that has a STABLE build, skipping snapshot builds so installs always get the\r\n# latest stable release.\r\nVERSIONS=\"$(curl -s --max-time 30 -H \"User-Agent: ${USER_AGENT}\" https://fill.papermc.io/v3/projects/velocity | jq -r '.versions | to_entries[] | .value[]')\"\r\n\r\nfor VERSION in $VERSIONS; do\r\n    BUILDS=\"$(curl -s --max-time 30 -H \"User-Agent: ${USER_AGENT}\" \"https://fill.papermc.io/v3/projects/velocity/versions/${VERSION}/builds\")\"\r\n\r\n    # If this version's build list is unavailable (PaperMC purges old builds and\r\n    # prunes snapshot trains regularly), skip it and try the next version.\r\n    API_ERROR=\"$(echo \"${BUILDS}\" | jq -r 'if (type == \"object\" and .ok == false) then .message else \"ok\" end')\"\r\n    if [ \"${API_ERROR}\" != \"ok\" ]; then\r\n        echo \"Skipping Velocity ${VERSION}: ${API_ERROR:-unknown API error}\" 1>&2\r\n        continue\r\n    fi\r\n\r\n    DOWNLOAD_URL=\"$(echo \"${BUILDS}\" | jq -r 'first(.[] | select(.channel == \"STABLE\" and (.downloads.\"server:default\".url | contains(\"SNAPSHOT\") | not)) | .downloads.\"server:default\".url) // \"null\"')\"\r\n    SHA256=\"$(echo \"${BUILDS}\" | jq -r 'first(.[] | select(.channel == \"STABLE\" and (.downloads.\"server:default\".url | contains(\"SNAPSHOT\") | not)) | .downloads.\"server:default\".checksums.sha256) // \"\"')\"\r\n\r\n    if [ \"${DOWNLOAD_URL}\" != \"null\" ]; then\r\n        break\r\n    fi\r\ndone\r\n\r\nif [ -z \"${DOWNLOAD_URL}\" ] || [ \"${DOWNLOAD_URL}\" == \"null\" ]; then\r\n    echo \"No stable Velocity release is available from the PaperMC API.\"\r\n    exit 1\r\nfi\r\n\r\necho -e \"Downloading Velocity ${VERSION}...\"\r\ncurl -f -o ${SERVER_JARFILE}.tmp \"${DOWNLOAD_URL}\" || { echo \"Download failed.\"; exit 2; }\r\n\r\n# Verify the download against the checksum published by the API before\r\n# promoting it into place. A mismatch means the artifact is not what PaperMC\r\n# published, so the install fails and the temporary file is removed.\r\nif [ -n \"${SHA256}\" ]; then\r\n    if ! (echo \"${SHA256}  ${SERVER_JARFILE}.tmp\" | sha256sum -c - > /dev/null 2>&1); then\r\n        echo \"Checksum mismatch for ${SERVER_JARFILE}; aborting install.\"\r\n        rm -f ${SERVER_JARFILE}.tmp\r\n        exit 3\r\n    fi\r\nfi\r\n\r\nmv ${SERVER_JARFILE}.tmp ${SERVER_JARFILE}\r\n\r\necho -e \"Install Complete\"\r\n",
+            "container": "ghcr.io/pterodactyl/installers:alpine",
             "entrypoint": "ash"
         }
     },
@@ -39,7 +39,7 @@
             "default_value": "velocity.jar",
             "user_viewable": true,
             "user_editable": true,
-            "rules": "required|regex:\/^([\\w\\d._-]+)(\\.jar)$\/",
+            "rules": "required|regex:/^([\\w\\d._-]+)(\\.jar)$/",
             "field_type": "text"
         }
     ]
