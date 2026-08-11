@@ -30,7 +30,9 @@ else
 fi
 
 ## generate a random salt for hashids if not provided
-if [ -z $HASHIDS_SALT ]; then
+if grep -q '^HASHIDS_SALT=' /app/var/.env; then
+    echo "HASHIDS_SALT already exists in /app/var/.env, keeping it."
+elif [ -z $HASHIDS_SALT ]; then
     echo -e "Generating hashids salt."
     HASHIDS_SALT=$(cat /dev/urandom | tr -dc 'a-zA-Z0-9!@#$%^&*()_+?><~' | fold -w 20 | head -n 1)
     echo -e "Generated hashids salt: $HASHIDS_SALT"
