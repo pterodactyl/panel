@@ -1,0 +1,501 @@
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_ed4358b2b27b7f::t_80e5ddf11a2091 110,119
+resources/scripts/components/admin/servers/CreateServerDatabaseButton.tsx
+  s_5bc182bfd13a1f::t_54203ee107b6c0 61
+resources/scripts/components/admin/servers/CreateServerButton.tsx
+  s_5bc182bfd13a1f::t_fdff3bc72d5267 1-10,12-18
+  s_ed4358b2b27b7f::t_7a1b0437d358f4 11
+resources/scripts/components/NavigationBar.tsx
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 14,17-19
+  s_5bc182bfd13a1f::t_cea5136e54b535 39
+  s_5bc182bfd13a1f::t_387d369d032e82 4,55
+resources/scripts/sdk/index.ts
+  s_5bc182bfd13a1f::t_0bdcc95cc9a8d0 16
+packages/sdk/types/index.d.ts
+  s_5bc182bfd13a1f::t_07112228edcfb4 349-354
+design-system.html
+  s_5bc182bfd13a1f::t_240f98565546bd 1-12
+app/Http/Controllers/Api/Admin/Nests/NestController.php
+  s_ed4358b2b27b7f::t_f0dbc955a1c4db 94,103
+tests/Integration/Api/Admin/ApiKeys/ApiKeyControllerTest.php
+  s_ed4358b2b27b7f::t_dfdd5cbc08c0cb 66-90,277-281
+resources/scripts/api/admin/nodes/queries.ts
+  s_ed4358b2b27b7f::t_42d2feb1a9f3c6 52-61,110,120-151
+  s_ed4358b2b27b7f::t_459317aff0fe37 152
+resources/scripts/components/ui/Checkbox.tsx
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 17-18,20
+resources/scripts/components/auth/ResetPasswordContainer.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 5
+  s_5bc182bfd13a1f::t_13f4e9b294b24f 39
+resources/scripts/components/elements/table/DataTablePagination.tsx
+  s_ed4358b2b27b7f::t_8b5bfb16441364 66-70
+  s_ed4358b2b27b7f::t_baae612cf6f5c8 11,29-35,44,49
+  s_ed4358b2b27b7f::t_dbbb318ce06a4c 43,45-46
+  s_ed4358b2b27b7f::t_b01caf1479dc59 52-56,59-63
+  s_ed4358b2b27b7f::t_2934b332dadb1b 1-10,12-28,36-42,47-48,50-51,57-58,64-65,71-87
+resources/scripts/components/elements/EmptyState.tsx
+  s_5bc182bfd13a1f::t_4005bae8ab1bd0 3,8-10,16-35
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_ed4358b2b27b7f::t_7692291b536caf 5,43,45,69-95,104,111
+resources/scripts/api/admin/mounts/queries.ts
+  s_ed4358b2b27b7f::t_7692291b536caf 63-82
+  s_ed4358b2b27b7f::t_d80696e08e28d9 40
+  s_ed4358b2b27b7f::t_310a70091eaccd 83
+resources/scripts/components/elements/GreyRowBox.tsx
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 3,16,18
+resources/scripts/components/admin/eggs/DeleteEggButton.tsx
+  s_5bc182bfd13a1f::t_54203ee107b6c0 47
+resources/scripts/components/admin/api/ApiKeysContainer.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 27
+  s_ed4358b2b27b7f::t_8f000b1479c080 1-2,10-11,18-19,22,24-26,28,30-32,43-49,51-52,59,64,93
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 3-9,12-17,33-42,53-58,60-63,65-91,101-117,119-122,127-128,131-145
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 71-77
+resources/scripts/components/admin/users/UserTable.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 174-176,179,183,185,253-258,275-279,291-298
+  s_ed4358b2b27b7f::t_643c6955646dbb 3-4,6-13,16,18,20-24,42,49,55,59,62-72,76,80-81,83,85,91,93,99,105,109,112-122,124-125,139-140,144-145,147,149,155,157,161-170,188,194,198,201-203,210-212,215,220-221,230-252,259-274,280-290,299-310
+resources/scripts/api/admin/servers/queries.ts
+  s_ed4358b2b27b7f::t_b910267c86eaf2 231,233-249
+  s_ed4358b2b27b7f::t_bafb2e687c3732 66,81,218-230
+  s_ed4358b2b27b7f::t_31ab9460ad1d5f 67
+  s_ed4358b2b27b7f::t_246fe7ae640332 204
+  s_ed4358b2b27b7f::t_144270f15c053a 232
+resources/scripts/components/admin/api/CreateApiKeyButton.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 138
+  s_5bc182bfd13a1f::t_54203ee107b6c0 64
+resources/scripts/components/admin/servers/ServerDeleteTab.tsx
+  s_5bc182bfd13a1f::t_54203ee107b6c0 55
+resources/scripts/components/elements/table/DataTable.spec.tsx
+  s_ed4358b2b27b7f::t_62059fc430d5ce 1-20,22-38,40-60,63-64
+  s_ed4358b2b27b7f::t_dbbb318ce06a4c 21
+  s_ed4358b2b27b7f::t_baae612cf6f5c8 39
+  s_ed4358b2b27b7f::t_8b5bfb16441364 61-62
+resources/scripts/components/dashboard/forms/SetupTOTPDialog.tsx
+  s_5bc182bfd13a1f::t_5a448d4f5da015 11,65
+resources/scripts/components/admin/servers/ServerDatabaseTab.tsx
+  s_ed4358b2b27b7f::t_92d69dfe3900f7 2,6,11-13,24,99,102-104,112
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 25-90,105-111
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 15,64
+resources/scripts/components/form/controls.tsx
+  s_5bc182bfd13a1f::t_13f4e9b294b24f 17,20-21
+resources/scripts/components/admin/users/UsersContainer.tsx
+  s_ed4358b2b27b7f::t_8f000b1479c080 1-2,10,12-14,17,19-21,23,25,27-28,44-54,61-66,81-95,111,129
+  s_5bc182bfd13a1f::t_e970990e589922 22
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 3-9,29-42,55-60,67-80,101,103-110,112-119,121-124,130,133-145
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_5bc182bfd13a1f::t_387d369d032e82 96-101,112,126-131,134,140,144,157,165,170,175,183,186-188
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 50,591-594
+  s_5bc182bfd13a1f::t_ffbd1ec150d22b 139,723
+  s_5bc182bfd13a1f::t_4005bae8ab1bd0 724,737
+  s_a383e7060bfcdc::t_c554a07addb0b1 726
+resources/scripts/components/server/databases/CreateDatabaseButton.tsx
+  s_5bc182bfd13a1f::t_54203ee107b6c0 37
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 9,68
+resources/scripts/router/search.spec.ts
+  s_ed4358b2b27b7f::t_31ab9460ad1d5f 16
+  s_ed4358b2b27b7f::t_7dcdd822f94cae 3,17-24,47
+  s_ed4358b2b27b7f::t_801d97fad7a9fb 1,5-15,48-49
+  s_ed4358b2b27b7f::t_ca878dd5342d46 2,4,25-46
+resources/scripts/components/dashboard/AccountOverviewContainer.tsx
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 12,24
+  s_5bc182bfd13a1f::t_ffbd1ec150d22b 32
+  s_5bc182bfd13a1f::t_5a448d4f5da015 8,26,28
+resources/scripts/components/elements/dialog/types.d.ts
+  s_5bc182bfd13a1f::t_7aebe1c2f0edbe 21-22
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 56-108,110-115,127-136
+  s_ed4358b2b27b7f::t_14edb808a2e4be 116
+  s_ed4358b2b27b7f::t_92d69dfe3900f7 3,21,55,109
+resources/scripts/components/server/backups/BackupTable.tsx
+  s_ed4358b2b27b7f::t_b41d71ff56d66b 3-7,12-14,16,25-26,28,35-36,41-44,49-57,59,61,65-116
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 45-48
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_ed4358b2b27b7f::t_80e5ddf11a2091 164,194
+resources/scripts/components/admin/databases/DatabaseHostTable.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 153,155,157,185-187,195-196,210,216,218,220,230-239,245-254,257-259,265-272,275-282,289-333
+  s_ed4358b2b27b7f::t_1c239ef8a70879 2,19,21-24,41,52,56,62-64,70,85-86,103,152,163,165,176,180,193,215,226-229,240-244,261-264,273-274,283-288,334
+resources/scripts/components/admin/nodes/NodeTable.spec.tsx
+  s_ed4358b2b27b7f::t_7ae3969e7a1c66 1-30
+resources/scripts/components/admin/nests/NestTable.tsx
+  s_ed4358b2b27b7f::t_84daec3d40b3c7 2-3,6-12,14,16-19,29,35,38,42,55,97,108,110,116,119,123,136,158,169,171-172,183-187,196-197,206-211,268
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 47-49,98,100,102,128-130,138-139,153,159,161,163,173-182,188-195,198-205,212-252,254-267
+docs/theming/tokens.md
+  s_5bc182bfd13a1f::t_ffbd1ec150d22b 55-60,70-74,95-97,142
+  s_5bc182bfd13a1f::t_387d369d032e82 7,44,99-102
+  s_5bc182bfd13a1f::t_1412afe00b2281 98
+resources/scripts/components/admin/nodes/CreateNodeButton.tsx
+  s_ed4358b2b27b7f::t_42d2feb1a9f3c6 11
+  s_5bc182bfd13a1f::t_c4cedf0cf99630 2,4,7-9,13-17
+  s_5bc182bfd13a1f::t_db493df105c4f2 10,12
+resources/scripts/components/admin/locations/CreateLocationButton.tsx
+  s_5bc182bfd13a1f::t_54203ee107b6c0 34
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 13,123
+resources/scripts/components/admin/mounts/MountsContainer.tsx
+  s_ed4358b2b27b7f::t_0fb246e2245fb9 1-2,17,21,23-24,27-39,42,50,55,102,112-115,120-121,124,136
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 3-9,11-16,44-49,51-54,56-82,94-101,103-109,125-135
+  s_5bc182bfd13a1f::t_e970990e589922 25,110
+resources/scripts/components/ui/styles.ts
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 1-13
+resources/scripts/components/elements/alert/Alert.tsx
+  s_5bc182bfd13a1f::t_afdc1d366a323a 1,5-6,8-9,15-34,37-40,43,45-46,50-54
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 14,35
+  s_ed4358b2b27b7f::t_032b22ec5e9b52 36
+resources/scripts/components/admin/servers/ServerTable.spec.tsx
+  s_ed4358b2b27b7f::t_5a2f8a14edfb67 1-35
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_ed4358b2b27b7f::t_eaaa3524c50359 3,24-25,33-39,45-46,50-55,59-62
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 32,40-44,47-49,56-58,66-71,168-171
+  s_5bc182bfd13a1f::t_c6c5d62f12032a 203
+resources/scripts/components/admin/nests/CreateNestButton.tsx
+  s_5bc182bfd13a1f::t_54203ee107b6c0 36
+resources/scripts/components/admin/overview/OverviewVersionCard.spec.tsx
+  s_5bc182bfd13a1f::t_82f103e1f95d67 1-37
+resources/scripts/components/admin/api/ApiKeyTable.tsx
+  s_ed4358b2b27b7f::t_da05cc61e71840 2,4,9,13,15-17,22,24,27-40,42-64,69-85,91-104,110-117,126-137
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 65-67,86-89,105-109,118-125
+resources/scripts/design-system.tsx
+  s_5bc182bfd13a1f::t_240f98565546bd 1-16
+resources/scripts/components/server/users/UsersContainer.tsx
+  s_ed4358b2b27b7f::t_4bc5e4c407c030 2,12-13,28-34
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 53
+resources/scripts/components/admin/nodes/NodeTable.tsx
+  s_ed4358b2b27b7f::t_054f3fa321b54e 266,268-269,272-275,370-372
+  s_ed4358b2b27b7f::t_7ae3969e7a1c66 1,3-5,17-18,20-25,33-70,73,77,80-82,91-108,114,118,123-125,131,134-135,137,139,157,161,166-168,174,176,195-196,198,200,208,212-265,277-295,297-316,319-369,373-408
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_ed4358b2b27b7f::t_b8bc5edf72c184 2,16-17,26-32,48
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 60-66
+resources/scripts/components/elements/dialog/Dialog.tsx
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 7
+  s_5bc182bfd13a1f::t_7aebe1c2f0edbe 8,66-72,77-81
+resources/scripts/components/ui/Switch.tsx
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 22-23
+resources/scripts/components/dashboard/ApiKeyModal.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 11
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 20,326
+resources/scripts/components/server/users/SubuserTable.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 25-27,37-39,51-55,66-69,77-78
+  s_ed4358b2b27b7f::t_4bc5e4c407c030 2,5-8,10-11,13-15,18-24,28,30-36,40,44-50,56-65,70-76,79-89
+resources/scripts/api/admin/nests/queries.ts
+  s_ed4358b2b27b7f::t_7692291b536caf 32,50,70-94,98,104
+  s_ed4358b2b27b7f::t_d80696e08e28d9 5
+resources/scripts/components/server/features/SteamDiskSpaceFeature.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 16-22
+resources/scripts/components/server/features/eula/EulaModalFeature.tsx
+  s_5bc182bfd13a1f::t_ffbd1ec150d22b 44
+  s_5bc182bfd13a1f::t_6ec232ba66e417 42-43,45-48,54
+resources/scripts/components/server/settings/SettingsContainer.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 6,32,38
+resources/scripts/components/dashboard/ssh/AccountSSHTable.tsx
+  s_ed4358b2b27b7f::t_382c0c5ba5ccc2 1-5,7-11,13-24,26,30-35,37-50,52-56
+  s_ed4358b2b27b7f::t_a6a9f088d4ddb8 6,12,25,36
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 27-29,51
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 232-235,240-242,256-261,265-268
+  s_5bc182bfd13a1f::t_c6c5d62f12032a 324
+  s_ed4358b2b27b7f::t_eaaa3524c50359 3,30-31,226-231,236-239,243-255,262-264,269-271
+resources/scripts/components/elements/Button.tsx
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 15,21,32,55-59
+tests/Integration/Api/Admin/Mounts/MountControllerTest.php
+  s_ed4358b2b27b7f::t_6cc739f7c167bd 64-74
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_ed4358b2b27b7f::t_dc91cfa971102d 3,5,11-13,18-23,29-30,34-41,56-65,71-76,83-86,96-106,115-116,128,131,145
+  s_5bc182bfd13a1f::t_5a448d4f5da015 14,123
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 24-28,31-33,42-55,66-70,77-82,107-114,132-144
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 132
+resources/scripts/components/admin/nests/NestsContainer.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 3-9,161-166,168-171,173-199,217-224,226-232,251-261
+  s_5bc182bfd13a1f::t_e970990e589922 29,117,233
+  s_5bc182bfd13a1f::t_54203ee107b6c0 93
+  s_ed4358b2b27b7f::t_b7ca7534fddc0f 1-2,14-16,21,25,27-28,37-51,159,167,172,225,235-238,246-247,250,262
+resources/scripts/components/admin/mounts/MountTable.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 54-56,66,68,70,97-99,107-108,122,128,130,132,142-151,155-159,163-170,173-180,187-229
+  s_ed4358b2b27b7f::t_a4b7506b8991c0 2,4,16,18-20,32-39,45,49,62,65,88,92,105,127,140-141,152-153,160-162,171-172,181-186,230
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_5bc182bfd13a1f::t_5a448d4f5da015 32,352
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 84-92,95-104,108-121,123-140,143-144,146,149-159,170,173-175,177-179,181-206,208-211,242-249,361-376,378-383
+  s_ed4358b2b27b7f::t_026638004821b9 3,28-30,59,61-63,66-67,70,93-94,105-107,180,231-241,250-251,357,360,384
+  s_5bc182bfd13a1f::t_e970990e589922 24
+resources/scripts/assets/tailwind.css
+  s_5bc182bfd13a1f::t_ffbd1ec150d22b 246-253
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 10,34,60-61,74,241-245,254-255
+  s_5bc182bfd13a1f::t_500d0d2aa45d55 256-257
+resources/scripts/setup-tests.ts
+  s_ed4358b2b27b7f::t_c2b8e914158b69 6-7
+  s_5bc182bfd13a1f::t_1fc17a032e43af 2-5,8
+package.json
+  s_ed4358b2b27b7f::t_d4c8553e07a309 38
+  s_5bc182bfd13a1f::t_240f98565546bd 93
+resources/scripts/api/admin/locations/queries.ts
+  s_ed4358b2b27b7f::t_f0eb0d079da719 27-28,76-99
+  s_ed4358b2b27b7f::t_56c57a41e7c242 5,53,63
+  s_ed4358b2b27b7f::t_bf9c38f10fda87 100
+resources/scripts/router/search.ts
+  s_ed4358b2b27b7f::t_5c02c7bf2a9d86 5-10,39-45,122-135,154-171,236,270-277
+  s_ed4358b2b27b7f::t_42d2feb1a9f3c6 3,35-38,97-108,112-115,141-148,151-152,230,233,244,248,255,261,265-269
+  s_ed4358b2b27b7f::t_b378b1df28e489 46-55,238
+  s_ed4358b2b27b7f::t_bd1e667a8bebf3 239-240
+  s_ed4358b2b27b7f::t_01e815c2fc4378 4,31-34,69,96,109-111,116-121,136-140,149-150,229,231-232,234-235,237,241-243,245-247,249-254,256-260,262-264
+  s_ed4358b2b27b7f::t_338e3026789b94 153
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_ed4358b2b27b7f::t_b41d71ff56d66b 1-2,13-15,23-52,66-83
+resources/scripts/components/server/files/FileManagerBreadcrumbs.tsx
+  s_5bc182bfd13a1f::t_cea5136e54b535 38-41,51-53
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 120-126
+tests/Integration/Api/Admin/Nodes/NodeControllerTest.php
+  s_ed4358b2b27b7f::t_42d2feb1a9f3c6 61-73
+resources/scripts/components/server/databases/DatabasesContainer.tsx
+  s_ed4358b2b27b7f::t_f38c82a2cdc0ac 2,11-12,19-25,37-40,42-44
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_ed4358b2b27b7f::t_eaaa3524c50359 3,27-29,214-250,254-257,259-279,283,286-289,293-300
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 251-253,258,290-292
+  s_5bc182bfd13a1f::t_c6c5d62f12032a 332
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_5bc182bfd13a1f::t_050f1a076563de 86
+  s_5bc182bfd13a1f::t_4e30b341dc0987 176
+resources/scripts/api/admin/users/queries.ts
+  s_ed4358b2b27b7f::t_f0eb0d079da719 40-41,71-94
+  s_ed4358b2b27b7f::t_5670ff26cafbff 95
+resources/scripts/components/ui/DesignSystemGallery.tsx
+  s_5bc182bfd13a1f::t_ffbd1ec150d22b 141-143
+  s_5bc182bfd13a1f::t_39acef700ec7f5 11,27,76-78
+  s_5bc182bfd13a1f::t_74dab196ae3448 1-10,12-26,28-75,79-140,144-160
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_ed4358b2b27b7f::t_dfdd5cbc08c0cb 96-112,331-334
+  s_ed4358b2b27b7f::t_a61f58063b6a2f 335
+resources/scripts/components/elements/table/DataTable.tsx
+  s_ed4358b2b27b7f::t_f2e7afc1072201 23
+  s_ed4358b2b27b7f::t_2934b332dadb1b 1-22,24-92
+resources/scripts/api/admin/api-keys/queries.ts
+  s_ed4358b2b27b7f::t_f0eb0d079da719 22-23,103-126
+  s_ed4358b2b27b7f::t_56c57a41e7c242 5,80,90
+  s_ed4358b2b27b7f::t_2ac2f3bf4d85e3 127
+resources/scripts/components/elements/PageHeading.tsx
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 1-19
+resources/scripts/components/admin/eggs/CreateEggVariableButton.tsx
+  s_5bc182bfd13a1f::t_54203ee107b6c0 57
+resources/scripts/components/server/features/PIDLimitModalFeature.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 25-31
+resources/scripts/components/dashboard/AccountApiContainer.tsx
+  s_ed4358b2b27b7f::t_382c0c5ba5ccc2 1,12-13,20-24,26-27
+  s_ed4358b2b27b7f::t_a6a9f088d4ddb8 2,25
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 55-58
+resources/scripts/components/dashboard/search/SearchModal.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 36
+  s_5bc182bfd13a1f::t_5a448d4f5da015 10,60
+resources/scripts/components/server/features/GSLTokenModalFeature.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 45-51
+resources/scripts/components/admin/servers/ServerTable.tsx
+  s_ed4358b2b27b7f::t_54f03f105264be 133,253,285,308
+  s_ed4358b2b27b7f::t_b01caf1479dc59 137-139,292-295
+  s_ed4358b2b27b7f::t_5a2f8a14edfb67 1,3-5,7,9-10,12-15,23,25-26,28-47,50-51,53-67,86,96-97,116-117,119,121,129,134-136,141-216,218-219,221-230,232-241,244-252,254-284,286-291,296-307,309-310
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_5bc182bfd13a1f::t_d05fcc08edb69b 146
+resources/scripts/components/ui/DesignSystemGallery.spec.tsx
+  s_5bc182bfd13a1f::t_74dab196ae3448 1-2,4,6,9-36
+  s_5bc182bfd13a1f::t_00c715c296e1ff 3,5,7-8
+resources/scripts/components/server/backups/BackupContextMenu.tsx
+  s_5bc182bfd13a1f::t_cea5136e54b535 125,155
+resources/scripts/components/admin/AdminContentBlock.tsx
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 4,16
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_ed4358b2b27b7f::t_f0dbc955a1c4db 175,184
+resources/scripts/components/ui/Select.tsx
+  s_5bc182bfd13a1f::t_4e30b341dc0987 76
+resources/scripts/components/server/schedules/ScheduleTable.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 24-27,46-48,55-56,61,63-64
+  s_ed4358b2b27b7f::t_a23775f322714e 2-6,10-19,21-23,30-45,49-54,57-60,67-73
+resources/scripts/components/elements/ContentBox.tsx
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 4,16
+packages/sdk/package.json
+  s_5bc182bfd13a1f::t_9d2e2d9887efc0 3
+packages/sdk/design-system-contract.spec.ts
+  s_5bc182bfd13a1f::t_c6d94e03db8f6f 1-25,28-40,43-45
+  s_5bc182bfd13a1f::t_00c715c296e1ff 26-27
+  s_5bc182bfd13a1f::t_30e8f40a7c2e3d 41-42
+resources/scripts/components/admin/nodes/NodesContainer.tsx
+  s_ed4358b2b27b7f::t_ac51ed9a9c24e1 1-9,11-18,21,23-25,27,29-64,67-73,75-112,124-132,142-145,150-151,154-166
+  s_5bc182bfd13a1f::t_e970990e589922 26,140
+  s_5bc182bfd13a1f::t_c4cedf0cf99630 28,133-139
+resources/scripts/components/admin/overview/OverviewVersionCard.tsx
+  s_5bc182bfd13a1f::t_82f103e1f95d67 3,7-10,12-17,20-31
+  s_5bc182bfd13a1f::t_c7d4959a21a9c8 18-19
+resources/scripts/components/server/databases/DatabaseTable.tsx
+  s_ed4358b2b27b7f::t_f38c82a2cdc0ac 2-3,12,14-22,119,150,162-163,176-178,192-196,198-202,208-212,218-229,235-244
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 24-28,32,55-61,64-65,99-107,123,128,133,140,147,164-175,179-186,188-191,203-207,213-217,230-234
+resources/scripts/components/elements/table/DataTableColumnHeader.tsx
+  s_ed4358b2b27b7f::t_b01caf1479dc59 23-25
+  s_ed4358b2b27b7f::t_2934b332dadb1b 1-22,26-42
+tests/Integration/Api/Admin/Nests/NestControllerTest.php
+  s_ed4358b2b27b7f::t_6cc739f7c167bd 85-98
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_a383e7060bfcdc::t_0a9cce32c11c7d 102,106,109-113,115-122
+  s_a383e7060bfcdc::t_7b718cbdba3323 156-157
+resources/scripts/components/admin/nodes/NodeConfigurationTab.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 72
+  s_5bc182bfd13a1f::t_5a448d4f5da015 14,91
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_ed4358b2b27b7f::t_382c0c5ba5ccc2 19
+resources/scripts/components/admin/overview/OverviewContainer.tsx
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 13-14,62-65,80-83
+  s_5bc182bfd13a1f::t_387d369d032e82 46
+resources/scripts/components/elements/SubNavigation.tsx
+  s_5bc182bfd13a1f::t_0bfa092ec9a494 7-8
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 67-73
+resources/scripts/components/elements/ProgressBar.tsx
+  s_5bc182bfd13a1f::t_d05fcc08edb69b 44
+resources/scripts/components/server/schedules/ScheduleTaskTable.tsx
+  s_ed4358b2b27b7f::t_a23775f322714e 2,10,13-16,31-37,43-48,56,61,63,81-85,98-101,106-116,126-131,145-155
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 4-9,38-42,64-68,70,72,74-80,86-89,91,93,95-97,117-125,132-144
+resources/scripts/components/dashboard/ssh/AccountSSHContainer.tsx
+  s_ed4358b2b27b7f::t_382c0c5ba5ccc2 10-11,15-18,20-21
+  s_ed4358b2b27b7f::t_a6a9f088d4ddb8 2,19
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 35-38
+resources/scripts/components/admin/locations/LocationTable.tsx
+  s_ed4358b2b27b7f::t_c848d2a2654158 2-3,6-12,14,16-19,30,37,41,46-48,50,54-56,71-72,75-93,95-98,108,115,119,124-126,128,132,134,136-137,148-149,152-154,156-159,166-178,187-194,196-202,208-209,213-235,244-255
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 179-186,203-207,210-212,236-243
+resources/scripts/components/admin/README.md
+  s_5bc182bfd13a1f::t_387d369d032e82 3-5
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_ed4358b2b27b7f::t_42d2feb1a9f3c6 138,147
+resources/scripts/components/server/network/AllocationTable.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 48-54,59-61,82-88
+  s_ed4358b2b27b7f::t_b8bc5edf72c184 1-2,10-20,22,26,29-47,55,58,62-71,75-81,89-113
+docs/frontend/design-system.md
+  s_5bc182bfd13a1f::t_74dab196ae3448 1-42,47-52
+  s_5bc182bfd13a1f::t_240f98565546bd 43-46
+resources/scripts/components/admin/nodes/NodeAboutTab.tsx
+  s_5bc182bfd13a1f::t_d05fcc08edb69b 31
+tests/Integration/Api/Admin/Servers/ServerControllerTest.php
+  s_ed4358b2b27b7f::t_3176b93ede8677 68-80
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 43-49
+resources/scripts/components/dashboard/activity/ActivityLogContainer.tsx
+  s_5bc182bfd13a1f::t_5a448d4f5da015 11,28
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_ed4358b2b27b7f::t_6cc739f7c167bd 76-89
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 16,137,142,146,157,163,169
+  s_5bc182bfd13a1f::t_54203ee107b6c0 62
+  s_ed4358b2b27b7f::t_92d69dfe3900f7 4,21,28,33,190-192,194-201,211-218,228-229
+  s_5bc182bfd13a1f::t_6ec232ba66e417 133
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 202-210,219-227
+resources/scripts/components/server/schedules/ScheduleContainer.tsx
+  s_ed4358b2b27b7f::t_a23775f322714e 1-2,13-14,23-30,42
+resources/scripts/components/ui/typography.ts
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 1-7
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_ed4358b2b27b7f::t_3176b93ede8677 267,285
+resources/scripts/components/server/features/HytaleOauthRequireFeature.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 31
+resources/scripts/components/server/schedules/TaskDetailsModal.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 184
+tests/Integration/Api/Admin/Locations/LocationControllerTest.php
+  s_ed4358b2b27b7f::t_dfdd5cbc08c0cb 55-71,222-226
+resources/scripts/components/server/schedules/ScheduleEditContainer.tsx
+  s_ed4358b2b27b7f::t_14edb808a2e4be 52
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 141-145
+  s_ed4358b2b27b7f::t_a23775f322714e 1-2,20-21,53-64,154
+resources/scripts/components/admin/AdminResourceTables.spec.tsx
+  s_ed4358b2b27b7f::t_4146e2e4bb79b4 1-26
+resources/scripts/components/server/backups/CreateBackupButton.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 32-38
+resources/scripts/components/admin/databases/DatabaseHostsContainer.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 25,118
+  s_ed4358b2b27b7f::t_0fb246e2245fb9 1-2,17,21,23-24,27-45,48,58-90,110,120-123,128-129,132,144
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 3-9,11-16,50-57,102-109,111-117,133-143
+resources/scripts/components/dashboard/SearchServerResult.tsx
+  s_5bc182bfd13a1f::t_d05fcc08edb69b 9
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_ed4358b2b27b7f::t_b910267c86eaf2 11,64
+  s_5bc182bfd13a1f::t_e970990e589922 23
+  s_ed4358b2b27b7f::t_baae612cf6f5c8 158
+  s_5bc182bfd13a1f::t_fdff3bc72d5267 28,127-137,139-141,143
+  s_ed4358b2b27b7f::t_7a1b0437d358f4 1-10,12-16,19,21-22,30-54,57,65-102,116,126,138,145,148-157,159-160
+  s_de8e10a90f1e42::t_c9c4af8d4e871d 29
+resources/scripts/components/dashboard/AccountApiTable.tsx
+  s_ed4358b2b27b7f::t_382c0c5ba5ccc2 1-5,7-12,14-25,27-34,36-63
+  s_ed4358b2b27b7f::t_a6a9f088d4ddb8 6,13,26,35
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_5bc182bfd13a1f::t_6ec232ba66e417 333-339
+  s_ed4358b2b27b7f::t_11db58d85359cc 4,35-36,164-165,214,221,231-232,242-243,283,290,300-301
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 166-213,215-220,222-230,244-252,254-282,284-289,291-299
+resources/scripts/components/admin/eggs/EggVariablesTab.tsx
+  s_5bc182bfd13a1f::t_5a448d4f5da015 9,31
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_ed4358b2b27b7f::t_80e5ddf11a2091 114,122
+resources/scripts/components/admin/nests/NestDetailContainer.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 283-328,351-366
+  s_5bc182bfd13a1f::t_c6c5d62f12032a 432
+  s_5bc182bfd13a1f::t_6ec232ba66e417 60-66,116-122
+  s_ed4358b2b27b7f::t_11db58d85359cc 4,35-36,329,342-350,367-368
+  s_5bc182bfd13a1f::t_e970990e589922 28,126,261,268,275
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_5bc182bfd13a1f::t_387d369d032e82 75-79,81
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_5bc182bfd13a1f::t_ccc43033d55726 94-95,105-106
+resources/scripts/components/elements/TitledGreyBox.tsx
+  s_5bc182bfd13a1f::t_d9f6d46c2671fd 5,19,22
+resources/scripts/components/admin/locations/LocationsContainer.tsx
+  s_ed4358b2b27b7f::t_4ca292dc58eb3c 3-9,12-17,33-42,53-58,60-63,65-91,101-117,119-122,127-128,131-143
+  s_5bc182bfd13a1f::t_e970990e589922 27
+  s_ed4358b2b27b7f::t_8f000b1479c080 1-2,10,18-19,22,24-26,28,30-32,43-49,51-52,59,64,93
+resources/scripts/components/server/startup/VariableBox.tsx
+  s_5bc182bfd13a1f::t_e970990e589922 5,88
+resources/scripts/router/routeTree.ts
+  s_ed4358b2b27b7f::t_1dc31c857ba854 91,836-837
+  s_ed4358b2b27b7f::t_4ba68a5cd5eb69 13-16,19,24,43,47-51,54,82,84,86-88,92,769-770,773,794-795,798,869-870,873,894-895,898,919-920,923,999-1000,1003
+  s_ed4358b2b27b7f::t_42d2feb1a9f3c6 29,89,811-812,815
+  s_ed4358b2b27b7f::t_b910267c86eaf2 38,840
+  s_5bc182bfd13a1f::t_74dab196ae3448 746-755
+  s_ed4358b2b27b7f::t_9b7d255c551ef1 12
+package-lock.json
+  s_ed4358b2b27b7f::t_8773c30cc54799 40,2855-2874,2904-2916
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "aeddabdb47db7ee049a686c65a1e13b75649ba72",
+  "prompts": {},
+  "sessions": {
+    "s_5bc182bfd13a1f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fcd6e-dc5a-7231-b92e-ab4f7d82c746",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_a383e7060bfcdc": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9e9c45f4-e23f-46b4-98a6-fbc5deb578a1",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_de8e10a90f1e42": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fe1a410e-e167-475a-8608-9845d3da108a",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_ed4358b2b27b7f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff728-e630-7113-8499-da8855e4e3e5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
