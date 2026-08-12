@@ -1,0 +1,192 @@
+resources/scripts/components/elements/codemirror/languages.ts
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 86
+  s_ed4358b2b27b7f::t_abb1498d0ad50e 34-84
+packages/sdk/types/index.d.ts
+  s_ed4358b2b27b7f::t_47444ea721c480 209-220,224
+resources/scripts/components/elements/tooltip/Tooltip.tsx
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 39,44,51,56
+resources/scripts/api/account/servers/queries.ts
+  s_ed4358b2b27b7f::t_f8603e617638b1 25-30
+resources/scripts/plugins/useEventListener.ts
+  s_ed4358b2b27b7f::t_728987df73ec75 9-10,12-14,21-22,27,29
+resources/scripts/router/routeTree.ts
+  s_ed4358b2b27b7f::t_8a23bd762d4757 68-74,128
+tools/oxlint/anti-slop/rules/no-runtime-typeof.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-25
+tools/oxlint/anti-slop/rules/no-object-parameters.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-112
+resources/scripts/api/queryKeyGuards.ts
+  s_ed4358b2b27b7f::t_02c8b55161572a 2,9
+resources/scripts/components/elements/ScreenBlock.tsx
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 39
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_ed4358b2b27b7f::t_c2b8e914158b69 19-20
+tools/oxlint/anti-slop/rules/no-shape-in-symbol-names.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-39
+resources/scripts/api/admin/eggs/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 250,296
+resources/scripts/extensions/loader.spec.ts
+  s_ed4358b2b27b7f::t_3a9d935f3af8c1 179
+  s_ed4358b2b27b7f::t_5b7f5ddb6301ae 3,89,93
+resources/scripts/plugins/useFilteredObject.ts
+  s_ed4358b2b27b7f::t_728987df73ec75 8,10-12,14-15,17-30
+resources/scripts/api/activity.ts
+  s_ed4358b2b27b7f::t_f8603e617638b1 18,20-25
+resources/scripts/components/admin/servers/useServerDetail.ts
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 4-9
+tools/oxlint/anti-slop/package.json
+  s_ed4358b2b27b7f::t_e94f1d5be9af75 1-4
+tools/oxlint/anti-slop/rules/no-widen-then-assert.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-363
+resources/scripts/lib/objects.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 5-13,15-17,25,34,38
+  s_ed4358b2b27b7f::t_16e41be7a2cd12 14,18
+tools/oxlint/anti-slop/rules/no-known-value-widening.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-247
+resources/scripts/components/admin/nodes/CreateNodeForm.tsx
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 32
+resources/scripts/components/elements/CopyOnClick.tsx
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 44
+resources/scripts/components/elements/activity/ActivityLogEntry.tsx
+  s_ed4358b2b27b7f::t_c2b8e914158b69 12,26,34,36-41,45
+resources/scripts/components/form/errors.ts
+  s_ed4358b2b27b7f::t_04a991d95ff40b 1-2
+  s_ed4358b2b27b7f::t_c2b8e914158b69 6,16,20-21
+tools/oxlint/anti-slop/rules/no-unknown-type-aliases.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-69
+resources/scripts/extensions/registry.ts
+  s_ed4358b2b27b7f::t_47444ea721c480 234,237-244,263,292,306,367-368,370
+resources/scripts/api/admin/locations/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 151
+tools/oxlint/anti-slop/index.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-31
+resources/scripts/api/admin/mounts/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 194,235,253
+resources/scripts/router/nav.ts
+  s_ed4358b2b27b7f::t_47444ea721c480 31-37
+resources/scripts/plugins/notifications.ts
+  s_ed4358b2b27b7f::t_728987df73ec75 14-15,18
+resources/scripts/plugins/usePersistedState.ts
+  s_ed4358b2b27b7f::t_728987df73ec75 63
+resources/scripts/components/server/features/useConsolePatternTrigger.ts
+  s_ed4358b2b27b7f::t_c2b8e914158b69 13
+resources/scripts/components/server/console/useGhosttyTerminal.ts
+  s_ed4358b2b27b7f::t_d30e3a30d4bc9c 4,15,37,48-50,61
+resources/scripts/api/admin/nests/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 179
+resources/scripts/api/admin/users/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 166
+resources/scripts/api/server/databases/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 102
+resources/scripts/api/http.ts
+  s_ed4358b2b27b7f::t_02c8b55161572a 4,49-51,55,63,65,71,76
+resources/scripts/router/search.ts
+  s_ed4358b2b27b7f::t_8a23bd762d4757 3,31-39,53-57,59,62-64,66-68,71-79,103-106,109
+resources/scripts/extensions/loader.ts
+  s_ed4358b2b27b7f::t_5b7f5ddb6301ae 2-3,22,28,61-62,64-65,74-76,88-99,114-115,125,131,133,140,144
+  s_ed4358b2b27b7f::t_abb1498d0ad50e 27
+tools/oxlint/anti-slop/rules/no-unknown-parameters.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-83
+resources/scripts/sdk/index.ts
+  s_ed4358b2b27b7f::t_47444ea721c480 87-97
+  s_ed4358b2b27b7f::t_a55a5db480bf7b 98
+  s_ed4358b2b27b7f::t_4632d6fe23db21 102
+resources/scripts/components/elements/TitledGreyBox.tsx
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 5,17
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_ed4358b2b27b7f::t_f8603e617638b1 28,50
+resources/scripts/api/interceptors.ts
+  s_ed4358b2b27b7f::t_02c8b55161572a 15-16
+  s_ed4358b2b27b7f::t_abb1498d0ad50e 17-21
+resources/scripts/components/ui/Select.tsx
+  s_ed4358b2b27b7f::t_c2b8e914158b69 5,86,97
+  s_ed4358b2b27b7f::t_3444a0edc7daf2 98
+resources/scripts/components/server/console/useConsoleSocketLogs.ts
+  s_ed4358b2b27b7f::t_3a9d935f3af8c1 49-51
+  s_ed4358b2b27b7f::t_d30e3a30d4bc9c 47-48,52-55,72-73,94-95
+tools/oxlint/anti-slop/shared/dictionary-types.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-448
+tools/oxlint/anti-slop/rules/no-conditional-empty-object-spread.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-49
+resources/scripts/components/server/ServerActivityLogContainer.tsx
+  s_5bc182bfd13a1f::t_5a448d4f5da015 11,28
+  s_ed4358b2b27b7f::t_f8603e617638b1 76
+tools/oxlint/anti-slop/rules/no-unsafe-dictionary-type.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-94
+resources/scripts/api/client-meta.d.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 1-9
+resources/scripts/api/account/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 12,38
+resources/scripts/api/server/backups/queries.spec.tsx
+  s_ed4358b2b27b7f::t_3a9d935f3af8c1 26,35-36,39
+.oxlintrc.json
+  s_ed4358b2b27b7f::t_8599d2f4af3444 4,34-43
+resources/scripts/components/server/console/stats.ts
+  s_ed4358b2b27b7f::t_02c8b55161572a 1,15,20-30
+  s_ed4358b2b27b7f::t_abb1498d0ad50e 14
+resources/scripts/components/admin/users/CreateUserForm.tsx
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 27
+resources/scripts/api/admin/servers/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 475,492,542,574,593
+resources/scripts/api/admin/extensions/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 88,115,130,145
+package.json
+  s_ed4358b2b27b7f::t_c0b8a9741f3793 63,75
+resources/scripts/api/admin/nodes/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 403
+  s_ed4358b2b27b7f::t_cf0cf69ff511ff 49,224-228
+resources/scripts/components/admin/eggs/helpers.ts
+  s_ed4358b2b27b7f::t_c2b8e914158b69 2,66
+  s_ed4358b2b27b7f::t_abb1498d0ad50e 61
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_ed4358b2b27b7f::t_dbd2e48f73d5f2 193
+resources/scripts/components/server/console/chart.ts
+  s_ed4358b2b27b7f::t_ed2315e1237ab6 34
+resources/scripts/components/admin/nodes/NodeConfigurationTab.tsx
+  s_ed4358b2b27b7f::t_c2b8e914158b69 30
+  s_ed4358b2b27b7f::t_1ff9e75cb8710d 31
+  s_ed4358b2b27b7f::t_33aa3fa9bde81a 16,22,36
+resources/scripts/components/admin/api/CreateApiKeyButton.tsx
+  s_ed4358b2b27b7f::t_3c3b7284fbf8ad 24,34
+resources/scripts/plugins/Websocket.spec.ts
+  s_ed4358b2b27b7f::t_728987df73ec75 30
+resources/scripts/i18n.ts
+  s_ed4358b2b27b7f::t_3a9d935f3af8c1 7-10,29
+  s_ed4358b2b27b7f::t_47444ea721c480 30
+resources/scripts/components/admin/servers/ServerRow.tsx
+  s_5bc182bfd13a1f::t_fdff3bc72d5267 29-30
+  s_5bc182bfd13a1f::t_1fda13ad3dbb3a 31-33
+  s_ed4358b2b27b7f::t_6053137dafaac7 34
+tools/oxlint/anti-slop/rules/no-chained-type-assertions.ts
+  s_ed4358b2b27b7f::t_4d1be6a93af5f4 1-77
+package-lock.json
+  s_ed4358b2b27b7f::t_e9f8947b845811 65,77,1474-1476,1491-1493,1508-1510,1525-1527,1542-1544,1559-1561,1576-1578,1593-1595,1600-1602,1613-1615,1620-1622,1633-1635,1640-1642,1653-1655,1660-1662,1673-1675,1680-1682,1693-1695,1700-1702,1713-1715,1720-1722,1733-1735,1740-1742,1753-1755,1770-1772,1787-1789,1804-1806,1820-1832,5077-5079,5092-5110,5113
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_ed4358b2b27b7f::t_f32446c9cce0eb 49
+resources/scripts/components/dashboard/activity/ActivityLogContainer.tsx
+  s_ed4358b2b27b7f::t_886f38ab90964c 14,59,76
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "910d9e1e70956960ff0b259caf25f3d9019503a0",
+  "prompts": {},
+  "sessions": {
+    "s_5bc182bfd13a1f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019fcd6e-dc5a-7231-b92e-ab4f7d82c746",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_ed4358b2b27b7f": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019ff728-e630-7113-8499-da8855e4e3e5",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
