@@ -59,6 +59,7 @@ return [
         'api' => [
             'driver' => 'token',
             'provider' => 'users',
+            'hash' => false,
         ],
     ],
 
@@ -126,4 +127,11 @@ return [
     */
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
+
+    'header' => [
+        'enabled' => env('AUTH_HEADER_ENABLED', false),
+        'auto_create' => env('AUTH_HEADER_AUTO_CREATE', false),
+        'username_header' => env('AUTH_HEADER_USERNAME', 'X-Auth-Username'),
+        'email_header' => env('AUTH_HEADER_EMAIL', 'X-Auth-Email'),
+    ],
 ];
