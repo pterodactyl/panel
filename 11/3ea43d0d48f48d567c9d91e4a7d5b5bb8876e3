@@ -1,0 +1,19 @@
+Dockerfile
+  s_86ef9af8cec382::t_63a5e4a2d98af8 5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "113ea43d0d48f48d567c9d91e4a7d5b5bb8876e3",
+  "prompts": {},
+  "sessions": {
+    "s_86ef9af8cec382": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "6339005f-f387-4696-a816-11148b0502ec",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
