@@ -91,6 +91,15 @@ class RunTaskJob implements ShouldQueue
         $this->markTaskNotQueued();
         $this->markScheduleComplete();
     }
+    
+    /**
+     * Skip this task without running it against the daemon, but continue to process the rest of the schedule.
+     */
+    public function skip()
+    {
+        $this->markTaskNotQueued();
+        $this->queueNextTask();
+    }
 
     /**
      * Get the next task in the schedule and queue it for running after the defined period of wait time.
