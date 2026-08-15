@@ -1,0 +1,42 @@
+{
+    "_comment": "DO NOT EDIT: FILE GENERATED AUTOMATICALLY BY PTERODACTYL PANEL - PTERODACTYL.IO",
+    "meta": {
+        "version": "PTDL_v2",
+        "update_url": null
+    },
+    "exported_at": "2026-06-30T00:00:00+00:00",
+    "name": "PocketMine-MP",
+    "author": "info@vehosts.com",
+    "description": "PocketMine-MP - Bedrock Edition Server with automatic PHP binary download and version detection.",
+    "features": null,
+    "docker_images": {
+        "ghcr.io\/parkervcp\/yolks:debian": "ghcr.io\/parkervcp\/yolks:debian"
+    },
+    "file_denylist": [],
+    "startup": ".\/bin\/php7\/bin\/php .\/PocketMine-MP.phar --no-wizard --disable-ansi",
+    "config": {
+        "files": "{\r\n    \"server.properties\": {\r\n        \"parser\": \"properties\",\r\n        \"find\": {\r\n            \"server-ip\": \"0.0.0.0\",\r\n            \"enable-query\": \"true\",\r\n            \"server-port\": \"{{server.build.default.port}}\",\r\n            \"query.port\": \"{{server.build.default.port}}\"\r\n        }\r\n    }\r\n}",
+        "startup": "{\r\n    \"done\": \")! \"\r\n}",
+        "logs": "{}",
+        "stop": "stop"
+    },
+    "scripts": {
+        "installation": {
+            "script": "#!/bin\/bash\n\napt-get update\napt-get install -y curl jq tar\n\nmkdir -p \/mnt\/server\ncd \/mnt\/server || exit 1\n\nARCH=$([ \"$(uname -m)\" = \"x86_64\" ] && echo 'x86_64' || echo 'aarch64')\n\nVERSION=\"${VERSION:-PM5}\"\nVERSION=\"${VERSION^^}\"\n\nif [[ \"${VERSION}\" == \"PM4\" ]]; then\n  API_CHANNEL=\"4\"\nelif [[ \"${VERSION}\" == \"PM5\" ]]; then\n  API_CHANNEL=\"stable\"\nelse\n  echo \"Unsupported version: ${VERSION}\"\n  exit 1\nfi\n\n# Get required PHP version from PMMP API\necho \"Fetching required PHP version for ${VERSION}...\"\nAPI_RESPONSE=$(curl -sSL \"https:\/\/update.pmmp.io\/api?channel=${API_CHANNEL}\")\nPHP_VER=$(echo \"$API_RESPONSE\" | jq -r '.php_version')\nPHAR_URL=$(echo \"$API_RESPONSE\" | jq -r '.download_url')\necho \"Required PHP version: ${PHP_VER}\"\n\n# Download PHP binary\nPHP_URL=\"https:\/\/github.com\/pmmp\/PHP-Binaries\/releases\/download\/pm5-php-${PHP_VER}-latest\/PHP-${PHP_VER}-Linux-${ARCH}-PM5.tar.gz\"\necho \"Downloading PHP ${PHP_VER} from GitHub...\"\ncurl -L --progress-bar -o php.tar.gz \"${PHP_URL}\"\ntar -xzf php.tar.gz\nrm php.tar.gz\n\n# Create symlink bin/php7 -> actual php folder (whatever version it is)\nPHP_ACTUAL=$(find bin -maxdepth 1 -type d | grep -v '^bin$' | head -1)\nif [ -n \"$PHP_ACTUAL\" ] && [ \"$PHP_ACTUAL\" != \"bin\/php7\" ]; then\n  echo \"Creating symlink: bin\/php7 -> $PHP_ACTUAL\"\n  ln -sfn \"$(basename $PHP_ACTUAL)\" bin\/php7\nfi\necho \"PHP installed successfully!\"\n\n# Download PocketMine-MP\necho \"Downloading PocketMine-MP ${VERSION}...\"\ncurl -L --progress-bar -o PocketMine-MP.phar \"${PHAR_URL}\"\necho \"PocketMine-MP downloaded!\"\n\n# Download default server.properties if not exists\nif [[ ! -f server.properties ]]; then\n  echo \"Downloading default server.properties...\"\n  curl -sSL -o server.properties https:\/\/raw.githubusercontent.com\/parkervcp\/eggs\/master\/game_eggs\/minecraft\/bedrock\/pocketmine_mp\/server.properties\nfi\n\n# Create default folders and files\necho \"Creating default folder structure...\"\ntouch banned-ips.txt banned-players.txt ops.txt white-list.txt server.log\nmkdir -p players worlds plugins resource_packs\n\necho \"PocketMine-MP Installation Complete!\"",
+            "container": "ghcr.io\/parkervcp\/installers:debian",
+            "entrypoint": "bash"
+        }
+    },
+    "variables": [
+        {
+            "name": "PocketMine Version",
+            "description": "Version of PocketMine-MP to install. PM5 is recommended.",
+            "env_variable": "VERSION",
+            "default_value": "PM5",
+            "user_viewable": true,
+            "user_editable": true,
+            "rules": "required|string|in:PM5,PM4",
+            "field_type": "text"
+        }
+    ]
+}
