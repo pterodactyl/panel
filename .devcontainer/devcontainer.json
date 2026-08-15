@@ -1,0 +1,33 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the
+// README at: https://github.com/devcontainers/templates/tree/main/src/php
+{
+    "name": "PHP",
+    "dockerComposeFile": "docker-compose.yaml",
+    "service": "app",
+    "workspaceFolder": "/workspaces/${localWorkspaceFolderBasename}",
+    // Use 'forwardPorts' to make a list of ports inside the container available locally.
+    "forwardPorts": [
+        80
+    ],
+    "features": {
+        "ghcr.io/devcontainers/features/github-cli:1": {},
+        "ghcr.io/devcontainers/features/node:1": {
+            "version": "24",
+            "pnpmVersion": "latest",
+            "nvmVersion": "latest"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "fill-labs.dependi",
+                "ecmel.vscode-html-css",
+                "p42ai.refactor",
+                "bradlc.vscode-tailwindcss",
+                "MaxvanderSchee.web-accessibility",
+                "dbaeumer.vscode-eslint",
+                "xdebug.php-pack"
+            ]
+        }
+    }
+}
