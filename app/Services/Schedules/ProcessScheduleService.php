@@ -60,6 +60,8 @@ class ProcessScheduleService
                     // issue connecting to Wings run the failed sequence for a job. Otherwise we
                     // can just quietly mark the task as completed without actually running anything.
                     $job->failed($exception);
+
+                    return;
                 }
                 $job->failed();
 

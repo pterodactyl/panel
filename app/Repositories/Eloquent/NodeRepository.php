@@ -23,8 +23,8 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     {
         $stats = $this->getBuilder()
             ->selectRaw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-            ->join('servers', 'servers.node_id', '=', 'nodes.id')
-            ->where('node_id', '=', $node->id)
+            ->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')
+            ->where('nodes.id', '=', $node->id)
             ->first();
 
         return Collection::make(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])
@@ -34,7 +34,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
                     $maxUsage = $node->{$key} * (1 + ($node->{$key . '_overallocate'} / 100));
                 }
 
-                $percent = ($value / $maxUsage) * 100;
+                $percent = $maxUsage > 0 ? ($value / $maxUsage) * 100 : 0;
 
                 return [
                     $key => [
@@ -55,7 +55,7 @@ class NodeRepository extends EloquentRepository implements NodeRepositoryInterfa
     {
         $stats = $this->getBuilder()->select(
             $this->getBuilder()->raw('IFNULL(SUM(servers.memory), 0) as sum_memory, IFNULL(SUM(servers.disk), 0) as sum_disk')
-        )->join('servers', 'servers.node_id', '=', 'nodes.id')->where('node_id', $node->id)->first();
+        )->leftJoin('servers', 'servers.node_id', '=', 'nodes.id')->where('nodes.id', $node->id)->first();
 
         return collect(['disk' => $stats->sum_disk, 'memory' => $stats->sum_memory])->mapWithKeys(function ($value, $key) use ($node) {
             $maxUsage = $node->{$key};

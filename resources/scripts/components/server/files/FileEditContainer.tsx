@@ -168,7 +168,7 @@ export default () => {
             </div>
             <div css={tw`flex justify-end mt-4`}>
                 <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
-                    <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
+                    <Select value={mode} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setMode(e.currentTarget.value)}>
                         {modes.map((mode) => (
                             <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
                                 {mode.name}

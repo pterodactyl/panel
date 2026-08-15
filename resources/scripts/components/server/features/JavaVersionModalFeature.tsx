@@ -86,7 +86,7 @@ const JavaVersionModalFeature = () => {
             <Can action={'startup.docker-image'}>
                 <div css={tw`mt-4`}>
                     <InputSpinner visible={!data || isValidating}>
-                        <Select disabled={!data} onChange={(e) => setSelectedVersion(e.target.value)}>
+                        <Select disabled={!data} onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setSelectedVersion(e.target.value)}>
                             {!data ? (
                                 <option disabled />
                             ) : (
