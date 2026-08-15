@@ -40,7 +40,15 @@ class ClientController extends ClientApiController
             AllowedFilter::custom('*', new MultiFieldServerFilter()),
         ]);
 
-        $type = $request->input('type');
+        // A restricted API key is never treated as an admin for enumeration
+        // purposes. Without this, an admin's permission-scoped key could pass
+        // ?type=admin-all and enumerate every server on the panel, escaping the
+        // key's scope. Restricted keys only ever see their own accessible (and,
+        // if server-scoped, in-scope) servers.
+        $token = $user->currentApiKey();
+        $restricted = !is_null($token) && $token->isRestricted();
+
+        $type = $restricted ? null : $request->input('type');
         // Either return all the servers the user has access to because they are an admin `?type=admin` or
         // just return all the servers the user has access to because they are the owner or a subuser of the
         // server. If ?type=admin-all is passed all servers on the system will be returned to the user, rather
@@ -59,6 +67,12 @@ class ClientController extends ClientApiController
             $builder = $builder->where('servers.owner_id', $user->id);
         } else {
             $builder = $builder->whereIn('servers.id', $user->accessibleServers()->pluck('id')->all());
+        }
+
+        // When the request is authenticated using a server-scoped API key, only
+        // the servers within the key's scope should ever be returned.
+        if (!is_null($token?->allowed_servers)) {
+            $builder = $builder->whereIn('servers.uuid', $token->allowed_servers);
         }
 
         $servers = $builder->paginate(min($request->query('per_page', 50), 100))->appends($request->query());

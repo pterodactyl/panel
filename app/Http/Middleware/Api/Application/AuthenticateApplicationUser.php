@@ -19,6 +19,13 @@ class AuthenticateApplicationUser
             throw new AccessDeniedHttpException('This account does not have permission to access the API.');
         }
 
+        // Client API keys with permission or server restrictions are scoped to a
+        // subset of the client API; they may never be used against the application
+        // API, which would otherwise expose every server and user on the system.
+        if ($user->currentApiKey()?->isRestricted()) {
+            throw new AccessDeniedHttpException('This API key is restricted and may not be used to access the application API.');
+        }
+
         return $next($request);
     }
 }
