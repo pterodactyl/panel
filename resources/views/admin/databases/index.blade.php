@@ -32,6 +32,7 @@
                             <th>Port</th>
                             <th>Username</th>
                             <th class="text-center">Databases</th>
+                            <th class="text-center">Status</th>
                             <th class="text-center">Node</th>
                         </tr>
                         @foreach ($hosts as $host)
@@ -42,6 +43,13 @@
                                 <td><code>{{ $host->port }}</code></td>
                                 <td>{{ $host->username }}</td>
                                 <td class="text-center">{{ $host->databases_count }}</td>
+                                <td class="text-center">
+                                    @if($host->enabled)
+                                        <span class="label label-success">Enabled</span>
+                                    @else
+                                        <span class="label label-warning">Disabled</span>
+                                    @endif
+                                </td>
                                 <td class="text-center">
                                     @if(! is_null($host->node))
                                         <a href="{{ route('admin.nodes.view', $host->node->id) }}">{{ $host->node->name }}</a>
@@ -108,6 +116,13 @@
                             @endforeach
                         </select>
                         <p class="text-muted small">This setting does nothing other than default to this database host when adding a database to a server on the selected node.</p>
+                    </div>
+                    <div class="form-group">
+                        <div class="checkbox checkbox-primary no-margin-bottom">
+                            <input id="pEnabled" name="enabled" type="checkbox" value="1" checked />
+                            <label for="pEnabled" class="strong">Enabled</label>
+                        </div>
+                        <p class="text-muted small no-margin-bottom">When disabled, this host will not be used for automatic database creation.</p>
                     </div>
                 </div>
                 <div class="modal-footer">

@@ -27,7 +27,7 @@ class DeployServerDatabaseService
         Assert::notEmpty($data['database'] ?? null);
         Assert::notEmpty($data['remote'] ?? null);
 
-        $hosts = DatabaseHost::query()->get()->toBase();
+        $hosts = DatabaseHost::query()->where('enabled', true)->get()->toBase();
         if ($hosts->isEmpty()) {
             throw new NoSuitableDatabaseHostException();
         } else {

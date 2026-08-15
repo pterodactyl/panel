@@ -25,6 +25,12 @@ class DatabaseHostFormRequest extends AdminFormRequest
             $this->merge(['node_id' => null]);
         }
 
+        if ($this->has('enabled')) {
+            $this->merge(['enabled' => $this->input('enabled') === '1' || $this->input('enabled') === true]);
+        } else {
+            $this->merge(['enabled' => false]);
+        }
+
         return parent::getValidatorInstance();
     }
 }
