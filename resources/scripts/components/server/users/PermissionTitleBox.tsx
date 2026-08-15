@@ -9,18 +9,19 @@ interface Props {
     isEditable: boolean;
     title: string;
     permissions: string[];
+    editablePermissions: string[];
     className?: string;
 }
 
-const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissions, className, children }) => {
+const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissions, editablePermissions, className, children }) => {
     const [{ value }, , { setValue }] = useField<string[]>('permissions');
 
     const onCheckboxClicked = useCallback(
         (e: React.ChangeEvent<HTMLInputElement>) => {
             if (e.currentTarget.checked) {
-                setValue([...value, ...permissions.filter((p) => !value.includes(p))]);
+                setValue([...value, ...permissions.filter((p) => !value.includes(p) && editablePermissions.includes(p))]);
             } else {
-                setValue(value.filter((p) => !permissions.includes(p)));
+                setValue(value.filter((p) => !editablePermissions.includes(p)));
             }
         },
         [permissions, value]
@@ -34,8 +35,9 @@ const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissio
                     {isEditable && (
                         <Input
                             type={'checkbox'}
-                            checked={permissions.every((p) => value.includes(p))}
+                            checked={editablePermissions.every((p) => value.includes(p)) && value.find((p) => p.startsWith(title)) != null}
                             onChange={onCheckboxClicked}
+                            disabled={editablePermissions.filter((p) => p.startsWith(title)).length === 0}
                         />
                     )}
                 </div>
