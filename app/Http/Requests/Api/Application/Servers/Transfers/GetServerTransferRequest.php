@@ -1,0 +1,13 @@
+<?php
+
+namespace Pterodactyl\Http\Requests\Api\Application\Servers\Transfers;
+
+use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+
+class GetServerTransferRequest extends ApplicationApiRequest
+{
+    protected ?string $resource = AdminAcl::RESOURCE_SERVERS;
+
+    protected int $permission = AdminAcl::READ;
+}
