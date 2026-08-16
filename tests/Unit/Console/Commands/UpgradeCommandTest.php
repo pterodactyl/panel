@@ -13,9 +13,7 @@ class UpgradeCommandTest extends TestCase
     {
         parent::setUp();
 
-        // The unit suite runs without a database, but the pre-flight check wants a
-        // working connection: a migration that cannot run is the whole reason the
-        // command used to strand Panels in maintenance mode.
+        // The unit suite runs without a database; the pre-flight check needs one.
         config([
             'database.default' => 'sqlite',
             'database.connections.sqlite' => ['driver' => 'sqlite', 'database' => ':memory:', 'prefix' => ''],
@@ -32,9 +30,8 @@ class UpgradeCommandTest extends TestCase
     }
 
     /**
-     * Any test that reaches the second half of the upgrade really does put the
-     * application into maintenance mode, and the process that would lift it back
-     * out is faked away.
+     * Tests that reach the second half really do go into maintenance mode, and the
+     * process that would lift it back out is faked away.
      */
     private function bringApplicationUp(): void
     {
@@ -61,8 +58,6 @@ class UpgradeCommandTest extends TestCase
             ->expectsOutputToContain('The upgrade did not complete')
             ->assertExitCode(Command::FAILURE);
 
-        // The old command discarded every exit status, so a failed step still ran
-        // the migrations behind it and reported a successful upgrade at the end.
         Process::assertDidntRun(fn ($process) => $this->isHandoff($process));
     }
 

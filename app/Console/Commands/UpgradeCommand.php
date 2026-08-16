@@ -13,8 +13,7 @@ class UpgradeCommand extends Command
     protected const DEFAULT_URL = 'https://github.com/pterodactyl/panel/releases/%s/panel.tar.gz';
 
     /**
-     * Rough lower bound on the space needed to unpack an archive over the existing
-     * tree and reinstall dependencies on top of it.
+     * Rough lower bound for unpacking an archive and reinstalling dependencies.
      */
     protected const REQUIRED_DISK_BYTES = 512 * 1024 * 1024;
 
@@ -30,15 +29,9 @@ class UpgradeCommand extends Command
     protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
 
     /**
-     * An upgrade is split across two processes on purpose.
-     *
-     * The first half runs from the code that is currently installed and stops the
-     * moment the new code is on disk. The second half is a brand new PHP process,
-     * so it boots the code that was just installed. This is not a stylistic choice:
-     * `composer install` replaces the autoloader and every class under vendor/ while
-     * the first process is still running, and PHP cannot unload the classes it has
-     * already loaded. Anything the old process touches after that point is a coin
-     * flip between the definition it holds in memory and the file now on disk.
+     * Splits the upgrade over two processes: composer install replaces every class
+     * under vendor/ while this one is running, and PHP cannot unload what it has
+     * already loaded.
      */
     public function handle(): int
     {
@@ -46,13 +39,8 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * Runs from the currently installed code, and does everything up to and
-     * including putting the new code on disk.
-     *
-     * The ordering matters. Every check that can fail cheaply happens before the
-     * Panel is taken offline and before a single file is written, so that an
-     * upgrade which was never going to work costs the operator a message rather
-     * than an outage.
+     * Runs from the installed code and stops once the new code is on disk. Checks
+     * that can fail cheaply run before the Panel goes offline.
      */
     protected function stage(): int
     {
@@ -88,16 +76,12 @@ class UpgradeCommand extends Command
 
         $archive = null;
 
-        // Fetching and vetting the archive is kept in its own attempt because none
-        // of it touches the installation. Anything that goes wrong here is still a
-        // clean abort, with the Panel serving traffic exactly as it was.
         try {
             if (!$skipDownload) {
                 $archive = tempnam(sys_get_temp_dir(), 'pterodactyl-panel-');
 
-                // Downloading to a temporary file rather than piping curl straight
-                // into tar means a truncated or failed transfer cannot leave a
-                // half-written Panel behind, and gives us something to hash.
+                // A temporary file rather than curl piped into tar, so a truncated
+                // transfer cannot leave a half-written Panel behind.
                 $this->step('Downloading the release archive');
                 $this->runProcess(['curl', '-L', '--fail', '-o', $archive, $this->getUrl()]);
 
@@ -115,7 +99,6 @@ class UpgradeCommand extends Command
         }
 
         try {
-            // From here on the Panel is offline and files start moving.
             $this->step('Putting the Panel into maintenance mode');
             $this->call('down');
 
@@ -130,8 +113,7 @@ class UpgradeCommand extends Command
             $this->step('Installing dependencies');
             $this->runProcess($this->composerInstallCommand());
 
-            // Past this line the classes held in memory no longer match the ones on
-            // disk, so the rest of the upgrade is handed to a fresh process.
+            // Memory and disk stop agreeing here, so the rest runs elsewhere.
             $this->step('Handing over to the newly installed code');
             $handoff = [PHP_BINARY, 'artisan', 'p:upgrade', '--finalize', '--no-interaction', '--user=' . $user, '--group=' . $group];
             $this->runProcess($handoff, 900);
@@ -145,8 +127,8 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * Runs as a fresh process from the code that was just installed, which is why
-     * it is safe to boot the framework and call other Artisan commands here.
+     * Runs as a fresh process from the newly installed code, so booting the
+     * framework and calling other Artisan commands is safe here.
      */
     protected function finalize(): int
     {
@@ -163,12 +145,10 @@ class UpgradeCommand extends Command
 
             $this->step("Setting file ownership to {$user}:{$group}");
             try {
-                // "." rather than "*" so that dotfiles, .env above all, are included.
+                // "." rather than "*", which skips dotfiles such as .env.
                 $this->runProcess(['chown', '-R', "{$user}:{$group}", '.']);
             } catch (\Exception $exception) {
-                // Wrong ownership is worth shouting about but it is recoverable by
-                // hand, and aborting here would strand a Panel that is otherwise
-                // fully upgraded in maintenance mode.
+                // Recoverable by hand, and aborting would strand an upgraded Panel offline.
                 $this->warn('Could not set file ownership: ' . $exception->getMessage());
                 $this->warn("Run \"chown -R {$user}:{$group} .\" from the Panel directory yourself.");
             }
@@ -227,11 +207,9 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * Compare the downloaded archive against a hash the operator supplied.
-     *
-     * A hash fetched over the same channel as the archive would prove nothing about
-     * its authenticity, so this deliberately only accepts one passed on the command
-     * line, from a source the operator trusts.
+     * Verifies the archive against a hash the operator supplied. Only one passed on
+     * the command line is accepted, since a hash fetched over the same channel as
+     * the archive would prove nothing about it.
      */
     protected function verifyChecksum(string $archive): void
     {
@@ -251,11 +229,8 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * Ask Composer whether this machine can actually run the release we are about to
-     * unpack, using the manifests from inside the archive rather than the ones that
-     * are already installed. Catching a PHP or extension mismatch here means finding
-     * out while the Panel is still up and the tree is still untouched, rather than
-     * halfway through `composer install` with the Panel already offline.
+     * Checks this machine against the manifests inside the archive, so an unsupported
+     * PHP version or a missing extension surfaces while the Panel is still up.
      */
     protected function assertPlatformRequirementsMet(string $archive): void
     {
@@ -290,7 +265,7 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * Pull a single file out of the archive without unpacking any of the rest of it.
+     * Pulls a single file out of the archive without unpacking the rest of it.
      */
     protected function extractFile(string $archive, string $file, string $destination): bool
     {
@@ -309,11 +284,8 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * Work out who should own the files once the upgrade is done.
-     *
-     * An explicitly passed option always wins. Detection is only a fallback, and the
-     * guess is only put to the operator when there is somebody there to answer, so
-     * that the flags behave the same whether or not the command is run by hand.
+     * Resolves the eventual file owner. An explicit option wins; detection is the
+     * fallback, and the guess is only confirmed when somebody is there to answer.
      */
     protected function resolveOwnership(): array
     {
@@ -361,11 +333,7 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * Run an external command and abort the upgrade if it does not succeed.
-     *
-     * Every step of an upgrade is load-bearing. A step that fails quietly, which is
-     * what happened while the exit status went unchecked, leaves the tree in a state
-     * nothing downstream is expecting and still reports success at the end.
+     * Runs an external command and aborts the upgrade if it does not succeed.
      */
     protected function runProcess(array $command, int $timeout = 600): void
     {
@@ -383,9 +351,8 @@ class UpgradeCommand extends Command
     }
 
     /**
-     * The Panel is deliberately left in maintenance mode. A half upgraded tree will
-     * serve errors or, worse, write bad data; an honest maintenance page is the
-     * better of those two outcomes.
+     * Leaves the Panel in maintenance mode on purpose: a half upgraded tree serving
+     * traffic is worse than a maintenance page.
      */
     protected function abort(\Exception $exception): int
     {
