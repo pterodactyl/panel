@@ -265,9 +265,7 @@ class UpgradeCommand extends Command
     {
         $user = $this->option('user');
         if (is_null($user)) {
-            $user = function_exists('posix_getpwuid')
-                ? (posix_getpwuid(fileowner('public'))['name'] ?? 'www-data')
-                : 'www-data';
+            $user = posix_getpwuid(fileowner('public'))['name'] ?? 'www-data';
 
             if ($this->input->isInteractive() && !$this->confirm("Your webserver user has been detected as <fg=blue>[{$user}]:</> is this correct?", true)) {
                 $user = $this->anticipate(
@@ -279,9 +277,7 @@ class UpgradeCommand extends Command
 
         $group = $this->option('group');
         if (is_null($group)) {
-            $group = function_exists('posix_getgrgid')
-                ? (posix_getgrgid(filegroup('public'))['name'] ?? 'www-data')
-                : 'www-data';
+            $group = posix_getgrgid(filegroup('public'))['name'] ?? 'www-data';
 
             if ($this->input->isInteractive() && !$this->confirm("Your webserver group has been detected as <fg=blue>[{$group}]:</> is this correct?", true)) {
                 $group = $this->anticipate(

@@ -301,14 +301,10 @@ class UpgradeCommandTest extends TestCase
     }
 
     /**
-     * Mirrors the owner the command detects, which differs between platforms.
+     * Mirrors the owner the command detects, which varies per machine.
      */
     private function detected(string $lookup): string
     {
-        if (!function_exists($lookup)) {
-            return 'www-data';
-        }
-
         $id = $lookup === 'posix_getpwuid' ? fileowner('public') : filegroup('public');
 
         return $lookup($id)['name'] ?? 'www-data';
