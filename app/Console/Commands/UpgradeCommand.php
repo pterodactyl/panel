@@ -6,6 +6,7 @@ use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Process;
 use Symfony\Component\Process\ExecutableFinder;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
 class UpgradeCommand extends Command
@@ -28,6 +29,8 @@ class UpgradeCommand extends Command
 
     protected $description = 'Downloads a new archive for Pterodactyl from GitHub and then executes the normal upgrade commands.';
 
+    private ?ProgressBar $bar = null;
+
     /**
      * Splits the upgrade over two processes: composer install replaces every class
      * under vendor/ while this one is running, and PHP cannot unload what it has
@@ -35,90 +38,46 @@ class UpgradeCommand extends Command
      */
     public function handle(): int
     {
-        return $this->option('finalize') ? $this->finalize() : $this->stage();
+        return $this->option('finalize') ? $this->finalize() : $this->upgrade();
     }
 
     /**
-     * Runs from the installed code and stops once the new code is on disk. Checks
-     * that can fail cheaply run before the Panel goes offline.
+     * Runs from the installed code and stops once the new code is on disk.
      */
-    protected function stage(): int
+    protected function upgrade(): int
     {
-        $skipDownload = $this->option('skip-download');
-
-        if (!$skipDownload) {
-            $this->output->warning('This command does not verify the authenticity of downloaded assets. Please ensure that you trust the download source before continuing. Pass --checksum=<sha256> to have the download checked against a hash you obtained separately. If you do not wish to download an archive, please indicate that using the --skip-download flag, or answering "no" to the question below.');
-            $this->output->comment('Download Source (set with --url=):');
-            $this->line($this->getUrl());
-        }
-
+        $skipDownload = !$this->wantsDownload();
         [$user, $group] = $this->resolveOwnership();
 
-        if ($this->input->isInteractive()) {
-            if (!$skipDownload) {
-                $skipDownload = !$this->confirm('Would you like to download and unpack the archive files for the latest version?', true);
-            }
+        if (!$this->confirmUpgrade()) {
+            $this->warn('Upgrade process terminated by user.');
 
-            if (!$this->confirm('Are you sure you want to run the upgrade process for your Panel?')) {
-                $this->warn('Upgrade process terminated by user.');
-
-                return self::SUCCESS;
-            }
+            return self::SUCCESS;
         }
-
-        $this->step('Running pre-flight checks');
-        if ($problem = $this->preflight($skipDownload)) {
-            $this->error($problem);
-            $this->warn('Nothing has been changed and your Panel is still online.');
-
-            return self::FAILURE;
-        }
-
-        $archive = null;
 
         try {
-            if (!$skipDownload) {
-                $archive = tempnam(sys_get_temp_dir(), 'pterodactyl-panel-');
+            $this->preflight($skipDownload);
+        } catch (\Exception $exception) {
+            return $this->abortWhileOnline($exception);
+        }
 
-                // A temporary file rather than curl piped into tar, so a truncated
-                // transfer cannot leave a half-written Panel behind.
-                $this->step('Downloading the release archive');
-                $this->runProcess(['curl', '-L', '--fail', '-o', $archive, $this->getUrl()]);
+        $archive = $skipDownload ? null : tempnam(sys_get_temp_dir(), 'pterodactyl-panel-');
+        $this->startProgress($skipDownload ? 4 : 7);
 
-                $this->step('Verifying the release archive');
-                $this->verifyChecksum($archive);
-                $this->assertPlatformRequirementsMet($archive);
+        try {
+            if (!is_null($archive)) {
+                $this->downloadArchive($archive);
             }
         } catch (\Exception $exception) {
             $this->discard($archive);
-            $this->newLine(2);
-            $this->error('The upgrade did not start: ' . $exception->getMessage());
-            $this->warn('Nothing has been changed and your Panel is still online.');
 
-            return self::FAILURE;
+            return $this->abortWhileOnline($exception);
         }
 
         try {
-            $this->step('Putting the Panel into maintenance mode');
-            $this->call('down');
-
-            if (!is_null($archive)) {
-                $this->step('Unpacking the release archive');
-                $this->runProcess(['tar', '-xzf', $archive]);
-            }
-
-            $this->step('Fixing storage permissions');
-            $this->runProcess(['chmod', '-R', '755', 'storage', 'bootstrap/cache']);
-
-            $this->step('Installing dependencies');
-            $this->runProcess($this->composerInstallCommand());
-
-            // Memory and disk stop agreeing here, so the rest runs elsewhere.
-            $this->step('Handing over to the newly installed code');
-            $handoff = [PHP_BINARY, 'artisan', 'p:upgrade', '--finalize', '--no-interaction', '--user=' . $user, '--group=' . $group];
-            $this->runProcess($handoff, 900);
+            $this->replaceInstallation($archive, $user, $group);
         } catch (\Exception $exception) {
-            return $this->abort($exception);
+            return $this->abortWhileOffline($exception);
         } finally {
             $this->discard($archive);
         }
@@ -135,31 +94,17 @@ class UpgradeCommand extends Command
         $user = $this->option('user') ?: 'www-data';
         $group = $this->option('group') ?: 'www-data';
 
+        $this->startProgress(6);
+
         try {
-            $this->step('Clearing cached views and configuration');
-            $this->call('view:clear');
-            $this->call('config:clear');
-
-            $this->step('Running database migrations');
-            $this->call('migrate', ['--force' => true, '--seed' => true]);
-
-            $this->step("Setting file ownership to {$user}:{$group}");
-            try {
-                // "." rather than "*", which skips dotfiles such as .env.
-                $this->runProcess(['chown', '-R', "{$user}:{$group}", '.']);
-            } catch (\Exception $exception) {
-                // Recoverable by hand, and aborting would strand an upgraded Panel offline.
-                $this->warn('Could not set file ownership: ' . $exception->getMessage());
-                $this->warn("Run \"chown -R {$user}:{$group} .\" from the Panel directory yourself.");
-            }
-
-            $this->step('Restarting queue workers');
-            $this->call('queue:restart');
-
-            $this->step('Taking the Panel out of maintenance mode');
-            $this->call('up');
+            $this->withProgress(fn () => $this->call('view:clear'));
+            $this->withProgress(fn () => $this->call('config:clear'));
+            $this->withProgress(fn () => $this->call('migrate', ['--force' => true, '--seed' => true]));
+            $this->withProgress(fn () => $this->setOwnership($user, $group));
+            $this->withProgress(fn () => $this->call('queue:restart'));
+            $this->withProgress(fn () => $this->call('up'));
         } catch (\Exception $exception) {
-            return $this->abort($exception);
+            return $this->abortWhileOffline($exception);
         }
 
         $this->newLine(2);
@@ -169,41 +114,70 @@ class UpgradeCommand extends Command
     }
 
     /**
+     * Fetches and vets the archive while the Panel is still serving traffic.
+     */
+    protected function downloadArchive(string $archive): void
+    {
+        // A temporary file rather than curl piped into tar, so a truncated
+        // transfer cannot leave a half-written Panel behind.
+        $this->withProgress(fn () => $this->runProcess(['curl', '-L', '--fail', '-o', $archive, $this->getUrl()]));
+
+        $this->withProgress(function () use ($archive) {
+            $this->verifyChecksum($archive);
+            $this->assertPlatformRequirementsMet($archive);
+        });
+    }
+
+    /**
+     * The offline half, where the installation is actually overwritten.
+     */
+    protected function replaceInstallation(?string $archive, string $user, string $group): void
+    {
+        $this->withProgress(fn () => $this->call('down'));
+
+        if (!is_null($archive)) {
+            $this->withProgress(fn () => $this->runProcess(['tar', '-xzf', $archive]));
+        }
+
+        $this->withProgress(fn () => $this->runProcess(['chmod', '-R', '755', 'storage', 'bootstrap/cache']));
+        $this->withProgress(fn () => $this->runProcess($this->composerInstallCommand()));
+
+        // Memory and disk stop agreeing here, so the rest runs elsewhere.
+        $handoff = [PHP_BINARY, 'artisan', 'p:upgrade', '--finalize', '--no-interaction', '--user=' . $user, '--group=' . $group];
+        $this->withProgress(fn () => $this->runProcess($handoff, 900));
+    }
+
+    /**
      * Everything that can be established while the Panel is still serving traffic.
      */
-    protected function preflight(bool $skipDownload): ?string
+    protected function preflight(bool $skipDownload): void
     {
         $finder = new ExecutableFinder();
         foreach ($skipDownload ? ['composer'] : ['curl', 'tar', 'composer'] as $binary) {
             if (is_null($finder->find($binary))) {
-                return "Required executable [{$binary}] could not be found in your PATH.";
+                throw new \RuntimeException("Required executable [{$binary}] could not be found in your PATH.");
             }
         }
 
         $base = $this->getLaravel()->basePath();
         foreach ([$base, $base . '/vendor'] as $path) {
             if (file_exists($path) && !is_writable($path)) {
-                return "The upgrade needs to write to [{$path}], but it is not writable by the current user.";
+                throw new \RuntimeException("The upgrade needs to write to [{$path}], but it is not writable by the current user.");
             }
         }
 
         $free = disk_free_space($base);
         if ($free !== false && $free < self::REQUIRED_DISK_BYTES) {
-            return sprintf(
-                'Only %dMB of free disk space is available at [%s]; the upgrade needs roughly %dMB.',
-                $free / 1024 / 1024,
-                $base,
-                self::REQUIRED_DISK_BYTES / 1024 / 1024
-            );
+            $available = sprintf('Only %dMB of free disk space is available at [%s]; the upgrade needs roughly %dMB.', $free / 1024 / 1024, $base, self::REQUIRED_DISK_BYTES / 1024 / 1024);
+
+            throw new \RuntimeException($available);
         }
 
         try {
             DB::connection()->getPdo();
         } catch (\Exception $exception) {
-            return 'Could not connect to the database, so the migration step would fail: ' . $exception->getMessage();
+            throw new \RuntimeException('Could not connect to the database, so the migration step would fail: ' . $exception->getMessage());
         }
-
-        return null;
     }
 
     /**
@@ -320,6 +294,39 @@ class UpgradeCommand extends Command
         return [$user, $group];
     }
 
+    /**
+     * Ownership failures are recoverable by hand, so they do not strand a Panel
+     * that is otherwise fully upgraded.
+     */
+    protected function setOwnership(string $user, string $group): void
+    {
+        try {
+            // "." rather than "*", which skips dotfiles such as .env.
+            $this->runProcess(['chown', '-R', "{$user}:{$group}", '.']);
+        } catch (\Exception $exception) {
+            $this->warn('Could not set file ownership: ' . $exception->getMessage());
+            $this->warn("Run \"chown -R {$user}:{$group} .\" from the Panel directory yourself.");
+        }
+    }
+
+    protected function wantsDownload(): bool
+    {
+        if ($this->option('skip-download')) {
+            return false;
+        }
+
+        $this->output->warning('This command does not verify the authenticity of downloaded assets. Please ensure that you trust the download source before continuing. Pass --checksum=<sha256> to have the download checked against a hash you obtained separately. If you do not wish to download an archive, please indicate that using the --skip-download flag, or answering "no" to the question below.');
+        $this->output->comment('Download Source (set with --url=):');
+        $this->line($this->getUrl());
+
+        return !$this->input->isInteractive() || $this->confirm('Would you like to download and unpack the archive files for the latest version?', true);
+    }
+
+    protected function confirmUpgrade(): bool
+    {
+        return !$this->input->isInteractive() || $this->confirm('Are you sure you want to run the upgrade process for your Panel?');
+    }
+
     protected function composerInstallCommand(): array
     {
         $command = ['composer', 'install', '--no-ansi', '--no-interaction'];
@@ -350,12 +357,42 @@ class UpgradeCommand extends Command
         }
     }
 
-    /**
-     * Leaves the Panel in maintenance mode on purpose: a half upgraded tree serving
-     * traffic is worse than a maintenance page.
-     */
-    protected function abort(\Exception $exception): int
+    protected function startProgress(int $steps): void
     {
+        ini_set('output_buffering', '0');
+
+        $this->bar = $this->output->createProgressBar($steps);
+        $this->bar->start();
+    }
+
+    protected function withProgress(\Closure $callback): void
+    {
+        $this->bar?->clear();
+        $callback();
+        $this->bar?->advance();
+        $this->bar?->display();
+    }
+
+    /**
+     * Nothing has been written yet, so the Panel keeps serving traffic.
+     */
+    protected function abortWhileOnline(\Exception $exception): int
+    {
+        $this->bar?->clear();
+        $this->newLine(2);
+        $this->error('The upgrade did not start: ' . $exception->getMessage());
+        $this->warn('Nothing has been changed and your Panel is still online.');
+
+        return self::FAILURE;
+    }
+
+    /**
+     * Maintenance mode is kept on purpose: a half upgraded tree serving traffic is
+     * worse than a maintenance page.
+     */
+    protected function abortWhileOffline(\Exception $exception): int
+    {
+        $this->bar?->clear();
         $this->newLine(2);
         $this->error('The upgrade did not complete: ' . $exception->getMessage());
         $this->warn('Your Panel has been left in maintenance mode on purpose, because the installation may be half upgraded.');
@@ -369,12 +406,6 @@ class UpgradeCommand extends Command
         if (!is_null($archive) && file_exists($archive)) {
             @unlink($archive);
         }
-    }
-
-    protected function step(string $message): void
-    {
-        $this->newLine();
-        $this->line("<fg=blue>==></> {$message}");
     }
 
     protected function getUrl(): string
