@@ -21,6 +21,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Changed email from :old to :new',
             'password-changed' => 'Changed password',
@@ -67,7 +70,7 @@ return [
             'delete' => 'Deleted database :name',
         ],
         'file' => [
-            'compress_one' => 'Compressed :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Compressed :count files in :directory',
             'read' => 'Viewed the contents of :file',
             'copy' => 'Created a copy of :file',

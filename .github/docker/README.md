@@ -21,7 +21,7 @@ docker exec -it <container id> php artisan p:user:make
 ```
 If you are using docker compose use
 ```
-docker-compose exec panel php artisan p:user:make
+docker compose exec panel php artisan p:user:make
 ```
 
 ## Environment Variables

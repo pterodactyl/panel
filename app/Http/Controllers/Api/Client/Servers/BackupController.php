@@ -78,7 +78,7 @@ class BackupController extends ClientApiController
         }
 
         $backup = Activity::event('server:backup.start')->transaction(function ($log) use ($action, $server, $request) {
-            $server->backups()->lockForUpdate();
+            $server->backups()->lockForUpdate()->count();
 
             $backup = $action->handle($server, $request->input('name'));
 
@@ -203,7 +203,7 @@ class BackupController extends ClientApiController
             throw new BadRequestHttpException('This server is not currently in a state that allows for a backup to be restored.');
         }
 
-        if (!$backup->is_successful && is_null($backup->completed_at)) {
+        if (!$backup->is_successful || is_null($backup->completed_at)) {
             throw new BadRequestHttpException('This backup cannot be restored at this time: not completed or failed.');
         }
 

@@ -26,7 +26,10 @@
                     <p>This will reinstall the server with the assigned service scripts. <strong>Danger!</strong> This could overwrite server data.</p>
                 </div>
                 <div class="box-footer">
-                    @if($server->isInstalled())
+                    @if(! $server->canBeReinstalled())
+                        <button class="btn btn-danger disabled">Reinstall Server</button>
+                        <p style="padding-top: 1rem;">This server is set to skip its install script. Disable "Skip Egg Install Script" on the startup page to reinstall it.</p>
+                    @elseif($server->isInstalled())
                         <form action="{{ route('admin.servers.view.manage.reinstall', $server->id) }}" method="POST">
                             {!! csrf_field() !!}
                             <button type="submit" class="btn btn-danger">Reinstall Server</button>

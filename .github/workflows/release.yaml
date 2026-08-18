@@ -47,3 +47,18 @@ jobs:
           body_path: ./RELEASE_CHANGELOG
           files: |
             panel.tar.gz
+
+      # Hand the tagged version to pterodactyl/pterodactyl-cdn, which publishes
+      # https://cdn.pterodactyl.io/releases/latest.json. It can't read the
+      # version off the API itself, because the release above is still a draft.
+      # GITHUB_TOKEN deliberately cannot be used here: it has no access to
+      # another repository.
+      - name: Update CDN release manifest
+        if: ${{ !contains(github.ref_name, 'rc') && !contains(github.ref_name, 'beta') && !contains(github.ref_name, 'alpha') }}
+        env:
+          GH_TOKEN: ${{ secrets.CDN_DISPATCH_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          jq -n --arg version "$VERSION" \
+            '{event_type: "release-tagged", client_payload: {component: "panel", version: $version}}' \
+            | gh api repos/pterodactyl/pterodactyl-cdn/dispatches --input -

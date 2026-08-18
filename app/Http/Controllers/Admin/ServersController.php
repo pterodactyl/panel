@@ -25,6 +25,7 @@ use Pterodactyl\Services\Databases\DatabasePasswordService;
 use Pterodactyl\Services\Servers\DetailsModificationService;
 use Pterodactyl\Services\Servers\StartupModificationService;
 use Pterodactyl\Contracts\Repository\NestRepositoryInterface;
+use Pterodactyl\Http\Requests\Admin\ServerDetailsFormRequest;
 use Pterodactyl\Repositories\Eloquent\DatabaseHostRepository;
 use Pterodactyl\Services\Databases\DatabaseManagementService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
@@ -67,9 +68,9 @@ class ServersController extends Controller
      * @throws DataValidationException
      * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function setDetails(Request $request, Server $server): RedirectResponse
+    public function setDetails(ServerDetailsFormRequest $request, Server $server): RedirectResponse
     {
-        $this->detailsModificationService->handle($server, $request->only([
+        $this->detailsModificationService->handle($server, $request->normalize([
             'owner_id', 'external_id', 'name', 'description',
         ]));
 

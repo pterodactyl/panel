@@ -139,6 +139,12 @@ class ScheduleController extends ClientApiController
      * Executes a given schedule immediately rather than waiting on it's normally scheduled time
      * to pass. This does not care about the schedule state.
      *
+     * Tasks are not checked against their action permissions here. They cannot be created or
+     * modified without that permission, and anyone reaching this endpoint can already run them
+     * by re-pointing the cron expression.
+     *
+     * @see https://github.com/pterodactyl/panel/issues/5671
+     *
      * @throws \Throwable
      */
     public function execute(TriggerScheduleRequest $request, Server $server, Schedule $schedule): JsonResponse

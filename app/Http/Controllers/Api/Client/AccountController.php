@@ -7,13 +7,20 @@ use Illuminate\Http\Response;
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\JsonResponse;
 use Pterodactyl\Facades\Activity;
+use Illuminate\Support\Facades\RateLimiter;
 use Pterodactyl\Services\Users\UserUpdateService;
 use Pterodactyl\Transformers\Api\Client\AccountTransformer;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
+use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class AccountController extends ClientApiController
 {
+    /**
+     * The number of seconds that must elapse before the email change throttle resets.
+     */
+    private const EMAIL_UPDATE_THROTTLE = 60 * 60 * 24;
+
     /**
      * AccountController constructor.
      */
@@ -34,12 +41,22 @@ class AccountController extends ClientApiController
      */
     public function updateEmail(UpdateEmailRequest $request): JsonResponse
     {
-        $original = $request->user()->email;
-        $this->updateService->handle($request->user(), $request->validated());
+        $user = $request->user();
+        // Only allow a user to change their email three times in the span
+        // of 24 hours. This prevents malicious users from trying to find
+        // existing accounts in the system by constantly changing their email.
+        if (RateLimiter::tooManyAttempts($key = "user:update-email:{$user->uuid}", 3)) {
+            throw new TooManyRequestsHttpException(message: 'Your email address has been changed too many times today. Please try again later.');
+        }
 
-        if ($original !== $request->input('email')) {
+        $original = $user->email;
+        if (mb_strtolower($original) !== mb_strtolower($request->validated('email'))) {
+            RateLimiter::hit($key, self::EMAIL_UPDATE_THROTTLE);
+
+            $this->updateService->handle($user, $request->validated());
+
             Activity::event('user:account.email-changed')
-                ->property(['old' => $original, 'new' => $request->input('email')])
+                ->property(['old' => $original, 'new' => $request->validated('email')])
                 ->log();
         }
 
