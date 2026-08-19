@@ -1,0 +1,27 @@
+tests/Unit/Services/Deployment/NodeTagGateTest.php
+  s_3b64ebd9dc4ce1::t_8fd96f4505c1ed 71-84
+  s_3b64ebd9dc4ce1::t_6a97598fc74813 70
+tests/Unit/Enum/EggSpecificTagsTest.php
+  s_3b64ebd9dc4ce1::t_f738d1b397471a 34-50
+  s_3b64ebd9dc4ce1::t_e819d23b2b2b08 33
+app/Enum/EggSpecificTags.php
+  s_3b64ebd9dc4ce1::t_bc8d327cea332c 67-71,77-91
+app/Http/Requests/Api/Application/Tags/SyncTagAttachmentsRequest.php
+  s_3b64ebd9dc4ce1::t_76b36d8c0c2a4c 25-27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "47ff6a83d3766e284f1101b92e175b0a3e85fd36",
+  "prompts": {},
+  "sessions": {
+    "s_3b64ebd9dc4ce1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cccda6bc-5c51-4660-b02f-90088572ff50",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
