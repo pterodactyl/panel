@@ -1,0 +1,22 @@
+NESTS_TO_TAGS_PLAN.md
+  s_1575af2bb362fe::t_dc39247a4b3ad0 302-357
+  s_1575af2bb362fe::t_ac5a661158f13d 1-2,6-301
+  s_1575af2bb362fe::t_b490724d0886ab 5
+  s_1575af2bb362fe::t_76910ae59125fe 3-4
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7b888055aa5ea60868eab36be62258040ee26740",
+  "prompts": {},
+  "sessions": {
+    "s_1575af2bb362fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "018442f7-ba2c-4a8f-9aef-5fa9d10163e6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
