@@ -1,0 +1,143 @@
+tests/Unit/Enum/EggSpecificTagsTest.php
+  s_1575af2bb362fe::t_79583862c0ba72 1-56
+app/Http/Requests/Api/Application/Tags/GetTagsRequest.php
+  s_1575af2bb362fe::t_88f7b3e3901504 1-13
+tests/Unit/Services/Deployment/NodeTagGateTest.php
+  s_1575af2bb362fe::t_918ab465e37d4e 1-11,13-80
+  s_1575af2bb362fe::t_33da8fc4392a0b 12
+database/migrations/2026_08_20_000003_make_eggs_nest_id_nullable.php
+  s_1575af2bb362fe::t_d288c3b796ed36 1-29
+database/Factories/TagFactory.php
+  s_1575af2bb362fe::t_bbbdfd26ea9e0e 1-46
+app/Repositories/Eloquent/EggRepository.php
+  s_1575af2bb362fe::t_28f82f35bf0f27 70
+app/Services/Servers/ServerCreationService.php
+  s_1575af2bb362fe::t_18a327a51adcef 114-117,122-123
+  s_1575af2bb362fe::t_66854518b7f3d5 70
+app/Rules/ExistingTag.php
+  s_1575af2bb362fe::t_c2f8041108f0be 16
+  s_1575af2bb362fe::t_11efcf6b84e2ed 1-15,17-28
+app/Http/Requests/Api/Application/Nodes/GetDeployableNodesRequest.php
+  s_1575af2bb362fe::t_e30cc3f787fd43 5-7,18-21,24-39
+  s_1575af2bb362fe::t_1af3f1e052ef07 40
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_1575af2bb362fe::t_d9d8e216a8e230 1-112
+app/Services/Tags/TagBackfiller.php
+  s_1575af2bb362fe::t_2d3ca399392e10 61-64
+  s_1575af2bb362fe::t_bf8ffe3824aa4c 1-60,65-102,107-224
+  s_1575af2bb362fe::t_2c624ed4ee135e 103-106
+app/Services/Acl/Api/AdminAcl.php
+  s_1575af2bb362fe::t_8e757647166ece 34
+app/Models/Tag.php
+  s_1575af2bb362fe::t_5308b5f01de0dc 1-108,110-151
+  s_1575af2bb362fe::t_c2f8041108f0be 109
+app/Http/Controllers/Api/Application/Tags/TagController.php
+  s_1575af2bb362fe::t_b029d740520530 1-6,9-145
+  s_1575af2bb362fe::t_c2f8041108f0be 7-8
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_1575af2bb362fe::t_7e73f740b42d93 33-35
+app/Http/Requests/Api/Application/Tags/DeleteTagRequest.php
+  s_1575af2bb362fe::t_71eaaee9a4b524 1-13
+app/Models/Objects/DeploymentObject.php
+  s_1575af2bb362fe::t_fabc4edf3ed666 54-68,71
+  s_1575af2bb362fe::t_59374c579945ae 13-18
+  s_1575af2bb362fe::t_a539b643d94352 69-70
+app/Services/Eggs/Sharing/EggImporterService.php
+  s_1575af2bb362fe::t_0c5a6b3cc9bdbc 13,17-21
+  s_1575af2bb362fe::t_a001152132057a 51-52
+  s_1575af2bb362fe::t_97377f2e90713d 53-54
+app/Http/Requests/Api/Application/Tags/SyncTagAttachmentsRequest.php
+  s_1575af2bb362fe::t_cf9113cec500c4 1-60
+app/Enum/EggSpecificTags.php
+  s_1575af2bb362fe::t_eced93982fcdef 3
+  s_1575af2bb362fe::t_5ee4a1b4acf25a 1-2,4-106
+app/Http/Requests/Api/Application/Tags/UpdateTagRequest.php
+  s_1575af2bb362fe::t_0b1725e8fe5a20 1-18
+database/migrations/2026_08_20_000001_create_tags_tables.php
+  s_1575af2bb362fe::t_e420ff7b63fdbc 1-70
+app/Services/Tags/TagResolutionService.php
+  s_1575af2bb362fe::t_3df5ab473d5cca 1-56
+app/Services/Eggs/EggParserService.php
+  s_1575af2bb362fe::t_ff461f3da0d3dd 59-80
+  s_1575af2bb362fe::t_256b05911578a4 58
+app/Http/Requests/Api/Application/Tags/StoreTagRequest.php
+  s_1575af2bb362fe::t_7d8a7b11bc764d 16-19,21-22,24-31,34
+  s_1575af2bb362fe::t_43765d8179dca7 1-15,20,23,32-33,35-36
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_1575af2bb362fe::t_d6a622b63e4a27 150-151
+  s_1575af2bb362fe::t_c60fe9f2ed9de8 10,15-16,21-28
+  s_1575af2bb362fe::t_fc40601a48458e 167
+  s_1575af2bb362fe::t_67916fa881ce28 75-79
+  s_1575af2bb362fe::t_4270844c513dcc 29
+routes/api-application.php
+  s_1575af2bb362fe::t_0bbbb128978000 125-150
+database/migrations/2026_08_20_000005_add_tags_permission_column_to_api_keys.php
+  s_1575af2bb362fe::t_fd973ae1ff8b78 1-28
+app/Models/Server.php
+  s_1575af2bb362fe::t_bd99e88e55a525 15
+  s_1575af2bb362fe::t_32ba8e5fce35f2 278-283,285,287-297
+  s_1575af2bb362fe::t_c87764d169b062 40
+  s_1575af2bb362fe::t_49c99ffe3178ff 310-329
+  s_1575af2bb362fe::t_9d654174fecea9 330
+app/Rules/TagSlug.php
+  s_1575af2bb362fe::t_25dd0cedac770c 1-28,30-48
+  s_1575af2bb362fe::t_c2f8041108f0be 29
+app/Services/Deployment/FindViableNodesService.php
+  s_1575af2bb362fe::t_f5d7a5ba1a971e 63-85,87-88
+  s_1575af2bb362fe::t_d19c0639584943 22-26
+  s_1575af2bb362fe::t_1e360a94a03013 122-127
+  s_1575af2bb362fe::t_b0410cf71d2e5a 16-21
+  s_1575af2bb362fe::t_4cb2de8d263376 86,89,128-129
+app/Services/Nests/NestDeletionService.php
+  s_1575af2bb362fe::t_8395ad05a57081 28-30
+  s_1575af2bb362fe::t_c538fa08ee3dca 5
+database/migrations/2026_08_20_000004_drop_nest_id_from_servers_table.php
+  s_1575af2bb362fe::t_daf2f907662b5c 1-31
+database/migrations/2026_08_20_000002_backfill_tags_from_nests.php
+  s_1575af2bb362fe::t_281a1ca734629a 1-30
+app/Providers/AppServiceProvider.php
+  s_1575af2bb362fe::t_46f1ac248241c9 46,50
+app/Services/Eggs/Sharing/EggExporterService.php
+  s_1575af2bb362fe::t_1904dd12f1a779 39-40
+app/Services/Deployment/NodeTagGate.php
+  s_1575af2bb362fe::t_c2f8041108f0be 32-33,56,75
+  s_1575af2bb362fe::t_0b332d5309e678 1-31,34-55,57-74,76-93
+app/Services/Eggs/Sharing/EggUpdateImporterService.php
+  s_1575af2bb362fe::t_9081494cde9136 11,18-22
+  s_1575af2bb362fe::t_848e34de009d38 51-55
+  s_1575af2bb362fe::t_9cea3493514413 56
+app/Models/Node.php
+  s_1575af2bb362fe::t_3fd88346aaeea3 243-295
+  s_1575af2bb362fe::t_64b31d258de1bb 45-47
+  s_1575af2bb362fe::t_507722760d6594 15
+  s_1575af2bb362fe::t_597295ca89718e 296
+app/Services/Servers/StartupModificationService.php
+  s_1575af2bb362fe::t_a47bfc1f62bb82 76
+app/Models/Egg.php
+  s_1575af2bb362fe::t_6ab60c25d2f01f 10
+  s_1575af2bb362fe::t_40828cd602f89b 48
+  s_1575af2bb362fe::t_d7fc75e88a07e0 127-128
+  s_1575af2bb362fe::t_9df92d849c97c9 281-301
+  s_1575af2bb362fe::t_c29428f211dede 302
+app/Models/ApiKey.php
+  s_1575af2bb362fe::t_20ffedb7d5d459 33
+app/Transformers/Api/Application/TagTransformer.php
+  s_1575af2bb362fe::t_c2f8041108f0be 7
+  s_1575af2bb362fe::t_3b54acf584eb6e 1-6,8-82
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "4b36d077943aeb07cc9e1492138ae84c99231e77",
+  "prompts": {},
+  "sessions": {
+    "s_1575af2bb362fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "018442f7-ba2c-4a8f-9aef-5fa9d10163e6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
