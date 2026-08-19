@@ -1,0 +1,23 @@
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_3b64ebd9dc4ce1::t_bf3ab456ab2478 54
+app/Exceptions/DisplayException.php
+  s_3b64ebd9dc4ce1::t_fdc90606c8a6b1 55
+composer.lock
+  s_3b64ebd9dc4ce1::t_ef8ae75bb51224 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "509fe24a38a6b0b1e18d7c983414a09ee17c268c",
+  "prompts": {},
+  "sessions": {
+    "s_3b64ebd9dc4ce1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cccda6bc-5c51-4660-b02f-90088572ff50",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
