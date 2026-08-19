@@ -1,0 +1,81 @@
+app/Enum/Permissions.php
+  s_3b64ebd9dc4ce1::t_0ed007dff4bc1f 42-46
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_3b64ebd9dc4ce1::t_661907cd5ef177 3,15-19,25,28,104,132-139,141-146,154-157,167-169,171,181,191-193,210-211,213
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_3b64ebd9dc4ce1::t_a53d30ee9707a9 3,11-12,44,58
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_3b64ebd9dc4ce1::t_0c9704ba09d64b 3,16-19,71,83,102,124
+app/Http/Controllers/Api/Admin/Eggs/ExportEggController.php
+  s_3b64ebd9dc4ce1::t_250ca3ed7b06d7 3,12,47
+app/Http/Controllers/Api/Admin/Eggs/ImportEggController.php
+  s_3b64ebd9dc4ce1::t_d300053f58adbb 3,13,49
+app/Http/Controllers/Api/Admin/Eggs/ReorderVariablesController.php
+  s_3b64ebd9dc4ce1::t_d1069d422f758d 3,11,24
+app/Http/Controllers/Api/Admin/Eggs/UpdateImportEggController.php
+  s_3b64ebd9dc4ce1::t_cf05aa7321b1b3 3,11,33
+app/Http/Controllers/Api/Admin/Nests/NestController.php
+  s_3b64ebd9dc4ce1::t_f2fe70cf97b9bf 14
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_3b64ebd9dc4ce1::t_e7fd885d13f653 1-269
+app/Http/Requests/Api/Admin/Eggs/DeleteEggRequest.php
+  s_3b64ebd9dc4ce1::t_0177cde194d1f1 3
+app/Http/Requests/Api/Admin/Eggs/GetEggRequest.php
+  s_3b64ebd9dc4ce1::t_40b30901d6c8c6 3
+app/Http/Requests/Api/Admin/Eggs/GetEggScriptRequest.php
+  s_3b64ebd9dc4ce1::t_cfba33e97808a3 3
+app/Http/Requests/Api/Admin/Eggs/GetEggsRequest.php
+  s_3b64ebd9dc4ce1::t_261961be0dd0b6 3
+app/Http/Requests/Api/Admin/Eggs/ImportEggRequest.php
+  s_3b64ebd9dc4ce1::t_5a2b2bc2b5ad99 3
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_3b64ebd9dc4ce1::t_f02fa5fd902333 3
+app/Http/Requests/Api/Admin/Eggs/UpdateEggRequest.php
+  s_3b64ebd9dc4ce1::t_d5d79efafe32e6 3
+app/Http/Requests/Api/Admin/Eggs/UpdateEggScriptRequest.php
+  s_3b64ebd9dc4ce1::t_4711e67ce63120 3
+app/Http/Requests/Api/Admin/Eggs/UpdateImportEggRequest.php
+  s_3b64ebd9dc4ce1::t_e6caf81f5ce3da 3
+app/Http/Requests/Api/Admin/Eggs/Variables/DeleteVariableRequest.php
+  s_3b64ebd9dc4ce1::t_bbfb1af7ceeb41 3
+app/Http/Requests/Api/Admin/Eggs/Variables/GetVariablesRequest.php
+  s_3b64ebd9dc4ce1::t_7d9fa8651d7f10 3
+app/Http/Requests/Api/Admin/Eggs/Variables/ReorderVariablesRequest.php
+  s_3b64ebd9dc4ce1::t_7b4832bc280efe 3
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_3b64ebd9dc4ce1::t_55be1e6a1fe31c 3
+app/Http/Requests/Api/Admin/Eggs/Variables/UpdateVariableRequest.php
+  s_3b64ebd9dc4ce1::t_9addb119ca0632 3
+app/Http/Requests/Api/Admin/Tags/DeleteTagRequest.php
+  s_3b64ebd9dc4ce1::t_bd77785f977f0b 1-14
+app/Http/Requests/Api/Admin/Tags/GetTagRequest.php
+  s_3b64ebd9dc4ce1::t_7b3a4cb9481bf2 1-13
+app/Http/Requests/Api/Admin/Tags/GetTagsRequest.php
+  s_3b64ebd9dc4ce1::t_aed7cf9b9aac31 1-14
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_3b64ebd9dc4ce1::t_bf987ef3553fd2 1-34
+app/Http/Requests/Api/Admin/Tags/SyncTagsRequest.php
+  s_3b64ebd9dc4ce1::t_e94e7af0a35715 1-46
+app/Http/Requests/Api/Admin/Tags/UpdateTagRequest.php
+  s_3b64ebd9dc4ce1::t_be0a5e5ccb2bf0 1-19
+app/Transformers/Api/Admin/TagTransformer.php
+  s_3b64ebd9dc4ce1::t_ae9c3489894d0d 1-62
+routes/api-admin.php
+  s_3b64ebd9dc4ce1::t_137abdb76e1c8a 6-12,54,210-214,291,307-309,326,329,336,339,342,344-345,350,353-356,360,362-390
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "decb509935eeaa40fd6e3f4bfd7faf34a3da688e",
+  "prompts": {},
+  "sessions": {
+    "s_3b64ebd9dc4ce1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cccda6bc-5c51-4660-b02f-90088572ff50",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
