@@ -1,0 +1,19 @@
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_1575af2bb362fe::t_c2f8041108f0be 127-129,190-191
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "7b4a658e1e93a0af81f1280eee881a5739f9fc7c",
+  "prompts": {},
+  "sessions": {
+    "s_1575af2bb362fe": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "018442f7-ba2c-4a8f-9aef-5fa9d10163e6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
