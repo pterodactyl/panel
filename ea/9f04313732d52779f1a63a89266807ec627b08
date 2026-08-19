@@ -1,0 +1,23 @@
+routes/base.php
+  s_3b64ebd9dc4ce1::t_11e80a92f3167c 17
+resources/scripts/components/NavigationBar.tsx
+  s_3b64ebd9dc4ce1::t_09872a040dfba2 5
+composer.lock
+  s_3b64ebd9dc4ce1::t_d8ebfe1c58d8f7 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "ea9f04313732d52779f1a63a89266807ec627b08",
+  "prompts": {},
+  "sessions": {
+    "s_3b64ebd9dc4ce1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cccda6bc-5c51-4660-b02f-90088572ff50",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
