@@ -1,0 +1,32 @@
+routes/api-application.php
+  s_3b64ebd9dc4ce1::t_d60d229592f0e0 50-54
+  s_3b64ebd9dc4ce1::t_8c7b7b490ba61f 149,151-163
+app/Transformers/Api/Application/NodeTransformer.php
+  s_3b64ebd9dc4ce1::t_e9f9134952cf62 5
+  s_3b64ebd9dc4ce1::t_893e0a9bb91ad2 17
+  s_3b64ebd9dc4ce1::t_b646a8fec46853 74-107
+app/Transformers/Api/Application/EggTransformer.php
+  s_3b64ebd9dc4ce1::t_a56fa01064029a 161-176
+  s_3b64ebd9dc4ce1::t_088026092ba489 7
+  s_3b64ebd9dc4ce1::t_a3a3463e09113b 27
+  s_3b64ebd9dc4ce1::t_b3bc8c34ff6ab3 160
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_3b64ebd9dc4ce1::t_9b56aed00e2a18 33
+  s_3b64ebd9dc4ce1::t_829d693fa22f26 15-23,28-29,31,37-38,42,44,48-55,63-64,70-71,73-81,84-88,98-103
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.22",
+  "base_commit_sha": "95b5eda2600c0724e8cb0c7cd99fe020fc981dc6",
+  "prompts": {},
+  "sessions": {
+    "s_3b64ebd9dc4ce1": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "cccda6bc-5c51-4660-b02f-90088572ff50",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
