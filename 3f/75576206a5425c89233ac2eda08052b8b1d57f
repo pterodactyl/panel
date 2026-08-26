@@ -1,0 +1,47 @@
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_d4115f9d96b565::t_b84b8347807ac7 30,32
+doctor.config.json
+  s_d4115f9d96b565::t_568d041b69d566 3-9
+resources/scripts/state/server/index.tsx
+  s_d4115f9d96b565::t_54ce90f89f57ce 1
+  s_d4115f9d96b565::t_6ed0e145d64bd6 78,80
+resources/scripts/components/server/files/FileManagerStatus.tsx
+  s_d4115f9d96b565::t_c997dd393c523f 52
+resources/scripts/components/server/users/PermissionTitleBox.tsx
+  s_d4115f9d96b565::t_3f8dba6e6e1af2 18-19,23,25,28
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_d4115f9d96b565::t_79eaff9ef5937b 32
+  s_d4115f9d96b565::t_9997815ee9cf4b 41
+resources/scripts/components/server/backups/BackupContextMenu.tsx
+  s_d4115f9d96b565::t_190a1b5884fa2e 154
+resources/scripts/lib/helpers.ts
+  s_d4115f9d96b565::t_c73780e7253577 12-17
+resources/scripts/components/server/features/Features.tsx
+  s_d4115f9d96b565::t_c07565b2a6a640 9-11
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_d4115f9d96b565::t_74515a6742e95c 294-295,297-298,300
+  s_d4115f9d96b565::t_ee4adc300ea2b5 120
+  s_d4115f9d96b565::t_7c8d41b5f36563 106-107
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_d4115f9d96b565::t_f0b9996409aea8 162-165
+resources/scripts/components/elements/Portal.tsx
+  s_d4115f9d96b565::t_3f0afcf2a07803 5
+resources/scripts/components/server/users/EditSubuserModal.tsx
+  s_d4115f9d96b565::t_65e18c761fa91f 51,55
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "3f75576206a5425c89233ac2eda08052b8b1d57f",
+  "prompts": {},
+  "sessions": {
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
