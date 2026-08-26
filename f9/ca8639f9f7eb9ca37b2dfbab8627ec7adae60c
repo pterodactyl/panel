@@ -1,0 +1,43 @@
+app/Http/Controllers/Auth/ForgotPasswordController.php
+  s_666ef4c84a40d6::t_b26181fa93c795 41-47
+app/Http/Controllers/Auth/LoginController.php
+  s_666ef4c84a40d6::t_c333e319d71ad3 10-11,87-94,119,121-123,131
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_d4115f9d96b565::t_544a73d573d6a5 10,118,146
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_d4115f9d96b565::t_1b6d760b5e518c 8-9,21,44,53
+app/Http/Controllers/Auth/AbstractLoginController.php
+  s_d4115f9d96b565::t_d5b37dbef1274d 9,15,19,57,64
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_d4115f9d96b565::t_cb433d995437c2 12,68,150,167,171,175,179
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_d4115f9d96b565::t_3bc9c94d275992 8-9,67-68,94-95,97,99,105
+app/Services/Users/ToggleTwoFactorService.php
+  s_d4115f9d96b565::t_07ddd77b41321d 8,67
+app/Traits/Helpers/ThrottlesLogins.php
+  s_d4115f9d96b565::t_c59578e4c41362 1-74
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "f9ca8639f9f7eb9ca37b2dfbab8627ec7adae60c",
+  "prompts": {},
+  "sessions": {
+    "s_666ef4c84a40d6": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a03a10-a8f5-7ae1-9da1-6bfdb8fde223",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
