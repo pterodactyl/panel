@@ -1,0 +1,19 @@
+composer.lock
+  s_d4115f9d96b565::t_9e972354f07c91 7
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "bf69bc8bcc7d9e3c29987098efff7674df2b7108",
+  "prompts": {},
+  "sessions": {
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
