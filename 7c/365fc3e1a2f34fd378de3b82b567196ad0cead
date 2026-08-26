@@ -1,0 +1,454 @@
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_d4115f9d96b565::t_834e421014f2c4 17
+  s_d4115f9d96b565::t_a945dfc48e89a2 60
+  s_d4115f9d96b565::t_0055d3a736e3cc 124
+app/Transformers/Api/Admin/ServerDatabaseTransformer.php
+  s_d4115f9d96b565::t_a9a96fe5f80917 11
+  s_d4115f9d96b565::t_87319dc8fb6206 8
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_d4115f9d96b565::t_2f7e920c05327f 37,51
+  s_d4115f9d96b565::t_6e1351c04b2bb6 12
+resources/scripts/components/admin/eggs/helpers.ts
+  s_d4115f9d96b565::t_15df4300a239e7 86
+database/Factories/SubuserFactory.php
+  s_d4115f9d96b565::t_b5a4d571c10ca9 7,9
+  s_d4115f9d96b565::t_4c57511a05dd2f 26-27
+app/Http/Controllers/Api/Application/Nodes/NodeController.php
+  s_d4115f9d96b565::t_3813c6c13d1482 14
+  s_d4115f9d96b565::t_e1c975e29cd25d 109
+resources/scripts/components/admin/servers/ServerStartupTab.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 22,40,61,263,265
+app/Transformers/Api/Admin/MountTransformer.php
+  s_d4115f9d96b565::t_b44709b2f6cf8d 7,10
+app/Transformers/Api/Application/ServerTransformer.php
+  s_d4115f9d96b565::t_87319dc8fb6206 9
+  s_d4115f9d96b565::t_b44709b2f6cf8d 19
+  s_d4115f9d96b565::t_a9a96fe5f80917 14-18
+app/Http/Controllers/Api/Admin/Nodes/AvailableAllocationsController.php
+  s_d4115f9d96b565::t_dfb659ec4afbc5 32
+  s_d4115f9d96b565::t_f20c488fdf48ad 9-10,13
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_d4115f9d96b565::t_87a803b549f23b 9
+  s_d4115f9d96b565::t_e0606159c57f4b 25
+app/Http/Controllers/Api/Admin/Servers/StartupController.php
+  s_d4115f9d96b565::t_6a0d7633a4ab85 35
+  s_d4115f9d96b565::t_a1768297d101ee 8
+app/Extensions/Scribe/Attributes/ResponseFromTransformer.php
+  s_d4115f9d96b565::t_b7ea4d126dd7b3 1-14,19-30,33-36
+  s_d4115f9d96b565::t_ab95e71d8df061 15-18,31-32
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_d4115f9d96b565::t_4d85eea524252a 33-35
+  s_d4115f9d96b565::t_bd30dd6b372497 14
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_d4115f9d96b565::t_eada54628f9f0e 119
+  s_d4115f9d96b565::t_536796d338934d 61
+  s_d4115f9d96b565::t_7434b2b5f1dd6b 163
+  s_d4115f9d96b565::t_c09ade8961219e 92
+  s_d4115f9d96b565::t_ed198c650fefc4 16
+  s_d4115f9d96b565::t_3c8510073e0549 73
+app/Http/Controllers/Api/Admin/Servers/ToggleBackupController.php
+  s_d4115f9d96b565::t_169852313b28ff 25
+  s_d4115f9d96b565::t_8ff402f99e3790 9
+resources/scripts/components/server/network/NetworkContainer.tsx
+  s_d4115f9d96b565::t_04d9b62d03a51f 22
+app/Http/Controllers/Api/Admin/Servers/BuildController.php
+  s_d4115f9d96b565::t_95798af2819470 8
+  s_d4115f9d96b565::t_378a4fd3bba009 34
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_d4115f9d96b565::t_c5c389dc212357 13,15
+  s_d4115f9d96b565::t_2f7e920c05327f 113
+  s_d4115f9d96b565::t_1b6795706dc0ed 149
+  s_d4115f9d96b565::t_5ece4f81748e6c 125
+  s_d4115f9d96b565::t_673af0591b57c5 71
+resources/scripts/components/server/schedules/ScheduleEditContainer.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 22,53
+app/Transformers/Api/Application/EggTransformer.php
+  s_d4115f9d96b565::t_a9a96fe5f80917 17-22
+  s_d4115f9d96b565::t_b44709b2f6cf8d 23
+  s_d4115f9d96b565::t_87319dc8fb6206 10
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 12,24
+app/Transformers/Api/Admin/EggVariableTransformer.php
+  s_d4115f9d96b565::t_b44709b2f6cf8d 5,8
+database/Factories/EggFactory.php
+  s_d4115f9d96b565::t_eb3e23017abb87 7,26,31-32,37-38
+app/Transformers/Api/Client/ApiKeyTransformer.php
+  s_d4115f9d96b565::t_b44709b2f6cf8d 5,8
+database/Factories/TagFactory.php
+  s_d4115f9d96b565::t_eb3e23017abb87 6,31
+app/Http/Controllers/Api/Admin/Locations/EligibleNodesController.php
+  s_d4115f9d96b565::t_de14e9e5e27211 8,12
+  s_d4115f9d96b565::t_a21a1b71d5b7e7 23
+resources/scripts/api/admin/mounts/queries.ts
+  s_d4115f9d96b565::t_15ede70977ba5b 53-55,57-59
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_d4115f9d96b565::t_746844839c381d 13-14
+  s_d4115f9d96b565::t_93ab016de71881 66
+  s_d4115f9d96b565::t_468aded18416d1 122
+config/scribe.php
+  s_d4115f9d96b565::t_330c254eaf1699 261-264,266
+  s_d4115f9d96b565::t_f394c90f01175b 11
+app/Transformers/Api/Client/ScheduleTransformer.php
+  s_d4115f9d96b565::t_87319dc8fb6206 7
+  s_d4115f9d96b565::t_a9a96fe5f80917 11
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_d4115f9d96b565::t_b44709b2f6cf8d 9,12
+database/Factories/ActivityLogFactory.php
+  s_d4115f9d96b565::t_242245bbd9dcd0 1-46
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_d4115f9d96b565::t_80957191921bcb 112
+  s_d4115f9d96b565::t_2050b5bb10c262 51
+  s_d4115f9d96b565::t_994c19e3291394 94
+  s_d4115f9d96b565::t_bae9a2ad9a46d0 68
+  s_d4115f9d96b565::t_bd192f03aab122 13-14
+resources/scripts/api/generated/index.ts
+  s_d4115f9d96b565::t_ff7f9c4b465610 5
+database/Factories/DatabaseHostFactory.php
+  s_d4115f9d96b565::t_eb3e23017abb87 8,25
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_d4115f9d96b565::t_3675a76e1349c9 94
+  s_d4115f9d96b565::t_43a7c6b31ab898 12-13
+  s_d4115f9d96b565::t_ccb939b367128c 116
+  s_d4115f9d96b565::t_8b302dd8380571 64
+  s_d4115f9d96b565::t_2f7e920c05327f 82
+app/Models/ActivityLog.php
+  s_d4115f9d96b565::t_0384669e0c25b6 58
+  s_d4115f9d96b565::t_60874fd9da3168 7
+database/Factories/EggVariableFactory.php
+  s_d4115f9d96b565::t_bfe5a521059a90 7
+  s_d4115f9d96b565::t_011cc8cf5cc917 25
+  s_d4115f9d96b565::t_1e65acde8a5230 33
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_d4115f9d96b565::t_cbf7a72e3d0bcb 25
+  s_d4115f9d96b565::t_df71e8829802a1 9
+app/Transformers/Api/Admin/DatabaseHostTransformer.php
+  s_d4115f9d96b565::t_a9a96fe5f80917 12-13
+  s_d4115f9d96b565::t_87319dc8fb6206 8
+resources/scripts/components/admin/servers/ServerAboutTab.tsx
+  s_d4115f9d96b565::t_4d85eea524252a 7,26,29-31
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_d4115f9d96b565::t_15df4300a239e7 26
+  s_d4115f9d96b565::t_3d8b874b9bc3ee 98
+app/Http/Controllers/Api/Admin/Eggs/ReorderVariablesController.php
+  s_d4115f9d96b565::t_8b710c9194985b 24
+  s_d4115f9d96b565::t_a042ac049de11d 8,13
+app/Transformers/Api/Client/BackupTransformer.php
+  s_d4115f9d96b565::t_a9a96fe5f80917 5,8-9
+resources/scripts/components/admin/locations/LocationDetailContainer.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 26,69
+  s_d4115f9d96b565::t_6c72aa54b92c79 33-36
+database/Factories/ScheduleFactory.php
+  s_d4115f9d96b565::t_4dde2ce801d9aa 7,24
+app/Http/Controllers/Api/Application/Servers/DatabaseController.php
+  s_d4115f9d96b565::t_96779016f27b84 12
+  s_d4115f9d96b565::t_1c44f86d56b476 54
+  s_d4115f9d96b565::t_ba08d7dd99a16d 95
+resources/scripts/components/admin/nodes/NodeTable.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 26,243
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_d4115f9d96b565::t_87319dc8fb6206 7
+  s_d4115f9d96b565::t_a9a96fe5f80917 11-13
+  s_d4115f9d96b565::t_3517eee498cb7d 120-122
+app/Http/Controllers/Api/Admin/Servers/DetailsController.php
+  s_d4115f9d96b565::t_a569041ba5e8a0 34
+  s_d4115f9d96b565::t_e55a1f2ebf6d42 8
+app/Http/Controllers/Api/Client/ClientController.php
+  s_d4115f9d96b565::t_57c81005b2083a 10-11
+  s_d4115f9d96b565::t_4101d4004058f0 68
+resources/scripts/components/admin/servers/ServerTable.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 16,152,174,194
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_d4115f9d96b565::t_0cea745f8e7e1b 76
+  s_d4115f9d96b565::t_ec40a9809e3071 13,15
+  s_d4115f9d96b565::t_5126986c01042a 140
+  s_d4115f9d96b565::t_370da0cf845aa5 164
+  s_d4115f9d96b565::t_f7c3712f759c5e 101
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 32,311
+app/Transformers/Api/Admin/ApiKeyTransformer.php
+  s_d4115f9d96b565::t_a9a96fe5f80917 5,9
+app/Http/Controllers/Api/Application/Locations/LocationController.php
+  s_d4115f9d96b565::t_d7da0bf645f209 16
+  s_d4115f9d96b565::t_9104f53e03ecc8 97
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_d4115f9d96b565::t_df2964bfdc6910 68-79
+  s_d4115f9d96b565::t_db8c8da9b9a900 47
+  s_d4115f9d96b565::t_3ece3f260c1c87 13
+  s_d4115f9d96b565::t_78429ca48928d2 87-90
+  s_d4115f9d96b565::t_5c9dc80213e4a0 26-28,30-43
+  s_d4115f9d96b565::t_d1a9fb5c317e3d 29
+  s_d4115f9d96b565::t_1ccaa79f076726 5,9-11,20-22,46,48-51,66-67,80-86,91-108
+  s_d4115f9d96b565::t_21ac97554d2e9e 7,17-18
+  s_d4115f9d96b565::t_6c724b7e684e0f 19,23,44-45,52-54,57,61-65
+  s_d4115f9d96b565::t_a23fb841cbd16a 1-4,6,8,12,14-16,24-25,55-56,58-60,109-110
+resources/scripts/api/relationships.ts
+  s_d4115f9d96b565::t_9b301467522128 1-18
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_d4115f9d96b565::t_5aba49d44e4030 52
+  s_d4115f9d96b565::t_a32fa726cda4ed 12,17
+  s_d4115f9d96b565::t_33dfb56978a732 77
+database/Factories/ServerFactory.php
+  s_d4115f9d96b565::t_e1fae3de903457 75-76
+  s_d4115f9d96b565::t_eb3e23017abb87 10,65-66,72-73
+database/Factories/UserSSHKeyFactory.php
+  s_d4115f9d96b565::t_8105781816b40b 7
+  s_d4115f9d96b565::t_a5f9c87721d1ac 33
+app/Http/Controllers/Api/Client/SSHKeyController.php
+  s_d4115f9d96b565::t_0d366c98e8bf11 10,14
+  s_d4115f9d96b565::t_1509a3af18a812 38
+  s_d4115f9d96b565::t_bd5285a753946d 26
+app/Http/Controllers/Api/Client/Servers/ServerController.php
+  s_d4115f9d96b565::t_de0186bc11a58a 32
+  s_d4115f9d96b565::t_7fbd00abb5eaa9 8
+app/Http/Controllers/Api/Admin/Servers/ExternalController.php
+  s_d4115f9d96b565::t_fff2b7aa11c91a 22
+  s_d4115f9d96b565::t_6620880b463e48 8
+resources/scripts/components/server/console/ServerConsoleContainer.tsx
+  s_d4115f9d96b565::t_e397ff6db8e2e4 64
+resources/scripts/api/generated/types.gen.ts
+  s_d4115f9d96b565::t_3ad70c6cdb2fd6 11,78,201,219-224,345,452,500-502,657-661,680,1135,6916,6958,8013,8055,8143,8185,8393,8480,9902,11070,13780
+  s_d4115f9d96b565::t_723fdf1ec067a3 1446
+  s_d4115f9d96b565::t_3bdd5bd5e72740 164-167,456,469-470,750-752,904-906,1240
+  s_d4115f9d96b565::t_ff7f9c4b465610 122-123,176,179-184,189,193,195,200,209-210,245,276,308-311,313-315,361-364,370,484,490-492,507-509,592,596-597,650,695,772,914,1047,1086,1143,1163-1165,1235,1242-1243,1251-1252,1321,1383,1444-1445,3498-3500,3502,3504,3524-3526,3528,3530,3579-3581,3583,3585,3600-3602,3604,3606
+  s_d4115f9d96b565::t_28ae0179be5383 225-226,1447-1448
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_d4115f9d96b565::t_4d85eea524252a 76-78
+database/Factories/TaskFactory.php
+  s_d4115f9d96b565::t_4dde2ce801d9aa 16
+  s_d4115f9d96b565::t_4fa1e2155d8dcc 6
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_d4115f9d96b565::t_2f7e920c05327f 87
+  s_d4115f9d96b565::t_5a8f34172cf7ae 13
+  s_d4115f9d96b565::t_1a91d848bdfb71 55
+  s_d4115f9d96b565::t_7169904025765d 71
+database/Factories/BackupFactory.php
+  s_d4115f9d96b565::t_4dde2ce801d9aa 8,26
+resources/scripts/components/server/files/useFileActions.tsx
+  s_d4115f9d96b565::t_91aaba543cdd2c 101
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_d4115f9d96b565::t_2f9b65b9c4ffb0 11,14
+  s_d4115f9d96b565::t_0c1dfd426581aa 53
+tests/TestCase.php
+  s_d4115f9d96b565::t_55797835d6d84d 10-11,15
+  s_d4115f9d96b565::t_293c2116729f05 43,81-104
+  s_d4115f9d96b565::t_a0d8e0ce28a332 36-41
+  s_d4115f9d96b565::t_58f3e12d3bda99 16
+  s_d4115f9d96b565::t_2583f8fedae9d6 42,44,105
+app/Transformers/Api/Admin/EggTransformer.php
+  s_d4115f9d96b565::t_b44709b2f6cf8d 18-23
+  s_d4115f9d96b565::t_a9a96fe5f80917 15-17
+  s_d4115f9d96b565::t_87319dc8fb6206 9
+app/Http/Controllers/Api/Client/Servers/ResourceUtilizationController.php
+  s_d4115f9d96b565::t_97ebb2bb68910c 12
+  s_d4115f9d96b565::t_2cc8e44bb8bb82 67
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_d4115f9d96b565::t_43b79b9801a164 33,83-84
+app/Http/Controllers/Api/Admin/Eggs/UpdateImportEggController.php
+  s_d4115f9d96b565::t_74c45c403f4aae 32
+  s_d4115f9d96b565::t_8691630634b13e 8
+resources/scripts/api/server/startup/queries.ts
+  s_d4115f9d96b565::t_15df4300a239e7 67-77
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_d4115f9d96b565::t_05a79b58cfad7a 166
+  s_d4115f9d96b565::t_66e5dacfe4b831 187
+  s_d4115f9d96b565::t_2cb5aa805d46e8 207
+  s_d4115f9d96b565::t_33986e31957b6a 12
+  s_d4115f9d96b565::t_a013064656f812 92
+  s_d4115f9d96b565::t_eb911a7248b214 118
+  s_d4115f9d96b565::t_f1ba025faaee4e 78
+  s_d4115f9d96b565::t_9f22156527d7e2 15
+  s_d4115f9d96b565::t_15c76621626f20 60
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_d4115f9d96b565::t_2f7e920c05327f 119
+  s_d4115f9d96b565::t_ea57a2f850ebca 12,15
+  s_d4115f9d96b565::t_77f5a8a73fc8e5 197
+  s_d4115f9d96b565::t_e150fc4516964a 166
+  s_d4115f9d96b565::t_97ebb2bb68910c 14,137
+  s_d4115f9d96b565::t_2cc8e44bb8bb82 144
+  s_d4115f9d96b565::t_2dacc1db685d83 99
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_d4115f9d96b565::t_81c94c0b435e53 11,13
+  s_d4115f9d96b565::t_2f7e920c05327f 36
+tests/Support/OpenApiSpecValidator.php
+  s_d4115f9d96b565::t_b915494922e69a 93-96
+  s_d4115f9d96b565::t_7b5410297a7edf 1-92,97-239
+database/Factories/DatabaseFactory.php
+  s_d4115f9d96b565::t_a5f9c87721d1ac 29-30
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_d4115f9d96b565::t_8ce496b3d45d97 14
+  s_d4115f9d96b565::t_7c11760e3673fc 68,81,107,126
+app/Http/Controllers/Api/Admin/Users/ExternalController.php
+  s_d4115f9d96b565::t_b5d584b2d4f802 22
+  s_d4115f9d96b565::t_7ae68af86f9da2 8
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_d4115f9d96b565::t_a0df7ebaaba744 13-14
+  s_d4115f9d96b565::t_2f7e920c05327f 67,85,99,124
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 17,42,65-66
+app/Transformers/Api/Application/ServerDatabaseTransformer.php
+  s_d4115f9d96b565::t_a9a96fe5f80917 14
+  s_d4115f9d96b565::t_87319dc8fb6206 9
+app/Http/Controllers/Api/Admin/Servers/TransferProgressController.php
+  s_d4115f9d96b565::t_def40526568dc4 10,14
+  s_d4115f9d96b565::t_a413d6cac47f3c 25
+resources/scripts/components/dashboard/search/SearchModal.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 14,68
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_d4115f9d96b565::t_83d8691226da83 114
+  s_d4115f9d96b565::t_bc9f3a55e02459 12-13
+  s_d4115f9d96b565::t_d0db267c7b56ac 88
+  s_d4115f9d96b565::t_2f7e920c05327f 74
+  s_d4115f9d96b565::t_9e20caec8ada40 56
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_d4115f9d96b565::t_bf1dfd8156111b 15
+  s_d4115f9d96b565::t_2f7e920c05327f 76,106
+  s_d4115f9d96b565::t_5d0940177f4cdc 59
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_d4115f9d96b565::t_9becf3f6c90fc1 206,368-376,394,396-397,405,1523
+  s_d4115f9d96b565::t_6bc625aaa5294f 19-21
+  s_d4115f9d96b565::t_923dece6d90ff7 170
+  s_d4115f9d96b565::t_5d3037b385d0bc 198-204,207-219,222-224,227-235,237,239-245,247-252,259,263-264,267,269-279,282-283,286-288,290-299,302-303,365,367,377-386,388-389,391,398-404,406-407,410
+  s_d4115f9d96b565::t_723fdf1ec067a3 1520
+  s_d4115f9d96b565::t_58f3e12d3bda99 8,395
+  s_d4115f9d96b565::t_3edd9f44284ffa 387
+  s_d4115f9d96b565::t_4dc249b33368f8 5,10
+  s_d4115f9d96b565::t_1673319d21074a 333-336,339-352,355-357
+  s_d4115f9d96b565::t_811e6e3eff39cb 390
+  s_d4115f9d96b565::t_97ebb2bb68910c 171-175
+  s_d4115f9d96b565::t_b915494922e69a 136,255-257,415,431-436,1499-1506,1513-1519,1521-1522
+  s_d4115f9d96b565::t_8d9884bea01201 78,304-305,307-314,318-321,323-326,328-329,331-332,337,353,360-363
+  s_d4115f9d96b565::t_4b5df6a16f677c 354,1524
+resources/scripts/components/admin/mounts/MountDetailContainer.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 37,432,453
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_d4115f9d96b565::t_5ed780b379b0b4 248
+  s_d4115f9d96b565::t_ca588e1605c150 12-13
+  s_d4115f9d96b565::t_2f7e920c05327f 275
+  s_d4115f9d96b565::t_2ab642d5e391c3 287
+resources/scripts/components/admin/servers/ServerDatabaseTab.tsx
+  s_d4115f9d96b565::t_e397ff6db8e2e4 107,115
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_d4115f9d96b565::t_c29212716b6713 113
+  s_d4115f9d96b565::t_b6ac1c1e184e9c 80
+  s_d4115f9d96b565::t_6b648cf5621b98 18
+  s_d4115f9d96b565::t_b33e1826d800c5 61
+  s_d4115f9d96b565::t_f65e1e779e19c0 137
+composer.json
+  s_d4115f9d96b565::t_91995afc109f77 80-83
+resources/scripts/components/server/databases/DatabaseTable.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 23,111
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 15,53
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_d4115f9d96b565::t_c8fd121e809739 21,24,44,49,53,56-57
+resources/scripts/components/admin/databases/DatabaseHostDetailContainer.tsx
+  s_d4115f9d96b565::t_4d85eea524252a 34,141-145
+app/Transformers/Api/Application/BaseTransformer.php
+  s_d4115f9d96b565::t_c3426759db62c1 29-33
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_d4115f9d96b565::t_b53f62e2609051 15
+  s_d4115f9d96b565::t_8d4913b3ad51d2 108
+resources/scripts/api/server/schedules/queries.ts
+  s_d4115f9d96b565::t_be8ef5f3d44477 169
+  s_d4115f9d96b565::t_6c72aa54b92c79 170
+  s_d4115f9d96b565::t_46abceb22be5b0 190
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_d4115f9d96b565::t_764df04d183500 57
+  s_d4115f9d96b565::t_ce2fcfd5375e38 44
+  s_d4115f9d96b565::t_96affbc29b3abe 9
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_d4115f9d96b565::t_6800c8877af4ab 88
+  s_d4115f9d96b565::t_2f7e920c05327f 73
+  s_d4115f9d96b565::t_2b699ff4dc2111 12-13
+  s_d4115f9d96b565::t_430aca6d3a6f5b 112
+  s_d4115f9d96b565::t_809158726e8104 54
+database/Factories/ApiKeyFactory.php
+  s_d4115f9d96b565::t_196d65f8ad8fe8 28
+  s_d4115f9d96b565::t_f159a649651183 9
+  s_d4115f9d96b565::t_eb3e23017abb87 38-46
+  s_d4115f9d96b565::t_14d3c1312345ed 47
+app/Transformers/Api/Admin/TagTransformer.php
+  s_d4115f9d96b565::t_b44709b2f6cf8d 7,12
+resources/scripts/components/server/features/Features.tsx
+  s_d4115f9d96b565::t_2ddff168cacd40 9-10
+app/Http/Controllers/Api/Client/ActivityLogController.php
+  s_d4115f9d96b565::t_2f7e920c05327f 30
+  s_d4115f9d96b565::t_bd9343c570005f 9-10
+resources/scripts/components/elements/activity/ActivityLogEntry.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 13,50
+app/Extensions/Scribe/Attributes/ResponseField.php
+  s_d4115f9d96b565::t_56901d80097705 1-34
+resources/scripts/components/server/databases/DatabasesContainer.tsx
+  s_d4115f9d96b565::t_0022978f8610bb 16
+app/Transformers/Api/Admin/ServerTransformer.php
+  s_d4115f9d96b565::t_87319dc8fb6206 8
+  s_d4115f9d96b565::t_a9a96fe5f80917 13-16
+  s_d4115f9d96b565::t_b44709b2f6cf8d 17
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 14,31
+database/Factories/AllocationFactory.php
+  s_d4115f9d96b565::t_4094e27c9eac49 38-51
+  s_d4115f9d96b565::t_4dde2ce801d9aa 7,25
+  s_d4115f9d96b565::t_d9df8068286751 52
+resources/scripts/components/admin/servers/ServerDatabaseRow.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 20,118
+app/Http/Controllers/Api/Admin/Servers/ServerBackupController.php
+  s_d4115f9d96b565::t_4490a70935afd2 9-10,13
+  s_d4115f9d96b565::t_9609ea0bcd6d2d 30
+app/Transformers/Api/Client/ServerTransformer.php
+  s_d4115f9d96b565::t_b44709b2f6cf8d 23-25
+  s_d4115f9d96b565::t_a9a96fe5f80917 20-22,26
+  s_d4115f9d96b565::t_87319dc8fb6206 11
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 26,427,495
+database/Factories/ServerTransferFactory.php
+  s_d4115f9d96b565::t_c6d309658cad61 6-8,28-32
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_d4115f9d96b565::t_2cc8e44bb8bb82 15,31-35
+app/Http/Controllers/Api/Admin/Eggs/ImportEggController.php
+  s_d4115f9d96b565::t_e4aad0ace5f172 34
+  s_d4115f9d96b565::t_dc6be1b8223dab 10,14
+app/Transformers/Api/Client/AllocationTransformer.php
+  s_d4115f9d96b565::t_a9a96fe5f80917 5,8
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_d4115f9d96b565::t_2cc8e44bb8bb82 15
+  s_d4115f9d96b565::t_94820b6b963586 36-38
+app/Transformers/Api/Client/DatabaseTransformer.php
+  s_d4115f9d96b565::t_87319dc8fb6206 10
+  s_d4115f9d96b565::t_a9a96fe5f80917 13
+resources/scripts/components/admin/servers/ServerBuildTab.tsx
+  s_d4115f9d96b565::t_9f75dc02a9f39e 45-46
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_d4115f9d96b565::t_e2bb47ca28f83b 9
+  s_d4115f9d96b565::t_2f7e920c05327f 36
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_d4115f9d96b565::t_dfc56385808d0b 48
+  s_d4115f9d96b565::t_b09c4a807d6cea 12,15
+  s_d4115f9d96b565::t_133d535bd3019f 61
+  s_d4115f9d96b565::t_c7346e234e3cdd 81
+  s_d4115f9d96b565::t_2a3fc01c512708 104
+resources/scripts/components/admin/databases/DatabaseHostTable.tsx
+  s_d4115f9d96b565::t_bd30dd6b372497 25,245
+.ai/rules/api.md
+  s_d4115f9d96b565::t_af6d6c5fca56f0 1-9
+.ai/rules/index.md
+  s_d4115f9d96b565::t_674e70ff7ae320 1-8
+.ai/rules/transformers.md
+  s_d4115f9d96b565::t_4417102316906c 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "7c365fc3e1a2f34fd378de3b82b567196ad0cead",
+  "prompts": {},
+  "sessions": {
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
