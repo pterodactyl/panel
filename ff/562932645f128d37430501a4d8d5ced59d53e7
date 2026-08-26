@@ -1,0 +1,63 @@
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_d4115f9d96b565::t_ee79664aca53e3 20
+app/Services/Subusers/SubuserCreationService.php
+  s_d4115f9d96b565::t_2a761f51c09268 5,11,19,32-33,35,40,43,57
+app/Services/Users/UserUpdateService.php
+  s_d4115f9d96b565::t_0639a3594caa01 12-13,19
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_d4115f9d96b565::t_ee09a1523dcbfe 91
+app/Http/Requests/Api/Application/Users/StoreUserRequest.php
+  s_d4115f9d96b565::t_139e581540c666 20
+app/Http/Requests/Api/Client/Account/UpdateEmailRequest.php
+  s_d4115f9d96b565::t_55b1c0717df02b 34
+app/Models/User.php
+  s_d4115f9d96b565::t_197a0bdf0b9af8 12
+  s_d4115f9d96b565::t_25da64ddf5ed88 136
+  s_d4115f9d96b565::t_18c46624fad5bc 157-161,163,165-175,177-183
+  s_d4115f9d96b565::t_2217357d88fb57 185-191
+  s_d4115f9d96b565::t_635def103b28c9 219,221-223,229,231-233
+  s_d4115f9d96b565::t_d064da358695a3 87
+  s_d4115f9d96b565::t_2655786ebb71a1 7-8,18
+  s_d4115f9d96b565::t_f727c38d433c7e 98
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_d4115f9d96b565::t_1d81e433915a09 100
+  s_d4115f9d96b565::t_4be9f27d9f28f9 82
+app/Console/Commands/User/DisableTwoFactorCommand.php
+  s_d4115f9d96b565::t_7fbf52a498c4fb 6,17,25-26,30
+app/Services/Users/UserDeletionService.php
+  s_d4115f9d96b565::t_e1339c7605af21 19
+app/Services/Users/TwoFactorSetupService.php
+  s_d4115f9d96b565::t_66c63feb8f88ac 15,26,33,35
+app/Services/Users/UserCreationService.php
+  s_d4115f9d96b565::t_84a6d162778457 6,16,19-20,22-25,29-31,34-35,37-38,40
+app/Console/Commands/User/MakeUserCommand.php
+  s_d4115f9d96b565::t_39105512eb7f97 6-7,27,29,43-54,62-63
+tests/Integration/Api/Remote/SftpAuthenticationControllerTest.php
+  s_d4115f9d96b565::t_4f4c525dd77402 29,86,159,187
+app/Http/Requests/Api/Admin/Users/UpdateUserRequest.php
+  s_d4115f9d96b565::t_549143cc572ef6 18
+app/Services/Users/ToggleTwoFactorService.php
+  s_d4115f9d96b565::t_fa7d7482f936dd 7,15,47,74,77,80
+app/Http/Requests/Api/Application/Users/UpdateUserRequest.php
+  s_d4115f9d96b565::t_23109633c2f146 14
+.ai/rules/index.md
+  s_d4115f9d96b565::t_bf90960627e34e 8
+.ai/rules/requests.md
+  s_d4115f9d96b565::t_b069a594e808bd 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "ff562932645f128d37430501a4d8d5ced59d53e7",
+  "prompts": {},
+  "sessions": {
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
