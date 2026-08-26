@@ -1,0 +1,55 @@
+app/Http/Controllers/Api/Remote/Backups/BackupRemoteUploadController.php
+  s_d4115f9d96b565::t_e00fdb49770ee5 115-117
+resources/scripts/lib/clipboard.ts
+  s_d4115f9d96b565::t_5fc53311adbaa6 2-4
+app/Providers/RouteServiceProvider.php
+  s_d4115f9d96b565::t_a3e9a580d44ed2 86-88
+app/Http/Controllers/Base/LocaleController.php
+  s_d4115f9d96b565::t_c27237fcefbe66 49-50
+resources/scripts/router/NavLink.tsx
+  s_d4115f9d96b565::t_fb839586cce2e5 13-14
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_d4115f9d96b565::t_378483a2d20fc4 67-68
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_d4115f9d96b565::t_257a951406df28 36
+app/Services/Tags/TagBackfiller.php
+  s_d4115f9d96b565::t_9e8cbcf13e42f3 10-13
+app/Models/Model.php
+  s_d4115f9d96b565::t_637a156293965a 59-60
+resources/scripts/components/elements/dropdown/DropdownMenu.tsx
+  s_d4115f9d96b565::t_3771cfad11110d 8-10
+app/Rules/TagSlug.php
+  s_d4115f9d96b565::t_22fb93532222c4 9-12
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_d4115f9d96b565::t_b2cef02c9f52fa 84-86
+app/Models/Egg.php
+  s_d4115f9d96b565::t_c32fca75fc546a 76-77
+app/Services/Extensions/Porting/BlueprintPorter.php
+  s_d4115f9d96b565::t_2dfc686f304aad 12-15
+app/Services/Deployment/NodeTagGate.php
+  s_d4115f9d96b565::t_f318c3ae46abcd 9-12
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_d4115f9d96b565::t_84ac2fd210eabc 11-15
+tests/Integration/Api/Client/Server/Subuser/DeleteSubuserTest.php
+  s_d4115f9d96b565::t_14976c9b32627d 17-18
+app/Http/Middleware/EnsureStatefulRequests.php
+  s_d4115f9d96b565::t_7888ba936a01fa 10-12
+resources/scripts/sdk/index.ts
+  s_d4115f9d96b565::t_c56913092b005b 2-5
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "779e86494f4655f5b03c209502fd7d39e3ebc35f",
+  "prompts": {},
+  "sessions": {
+    "s_d4115f9d96b565": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ff8a84ae-c669-424f-9465-08f8332a30d7",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
