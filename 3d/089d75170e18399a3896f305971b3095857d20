@@ -1,0 +1,31 @@
+tools/phpstan/anti-slop/tests/Rules/NoChainedVarTagsRuleTest.php
+  s_5eb93878083371::t_53bbf7f39d6b4b 1-28
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_1cb25e4d2b5aff 1
+tools/phpstan/anti-slop/tests/Rules/data/no-chained-var-tags.php
+  s_5eb93878083371::t_53bbf7f39d6b4b 1-23
+tools/phpstan/anti-slop/tests/Rules/NoChainedAssertionsRuleTest.php
+  s_5eb93878083371::t_53bbf7f39d6b4b 1-32
+tools/phpstan/anti-slop/tests/Rules/data/no-chained-assertions.php
+  s_5eb93878083371::t_53bbf7f39d6b4b 1-16
+tools/phpstan/anti-slop/src/Rules/NoChainedAssertionsRule.php
+  s_5eb93878083371::t_53bbf7f39d6b4b 1-46
+tools/phpstan/anti-slop/src/Rules/NoChainedVarTagsRule.php
+  s_5eb93878083371::t_53bbf7f39d6b4b 1-87
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "3d089d75170e18399a3896f305971b3095857d20",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
