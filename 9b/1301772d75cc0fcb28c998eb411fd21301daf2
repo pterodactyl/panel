@@ -1,0 +1,46 @@
+app/Models/Database.php
+  s_be04b879a75a03::t_dc2be318b78780 92-93,95
+app/Services/Backups/InitiateBackupService.php
+  s_be04b879a75a03::t_dc2be318b78780 51
+  s_be04b879a75a03::t_595062c8398633 79
+  s_be04b879a75a03::t_9098d77e06d209 105,112
+app/Models/Node.php
+  s_be04b879a75a03::t_c34dfacdd199ed 22,213
+  s_be04b879a75a03::t_dc2be318b78780 152,165,211-212,214-216
+  s_be04b879a75a03::t_9098d77e06d209 48,156-160,182
+phpstan.neon
+  s_be04b879a75a03::t_dc2be318b78780 47
+app/Models/Server.php
+  s_be04b879a75a03::t_dc2be318b78780 221-229,253
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_dc2be318b78780 35-36
+app/Services/Backups/DownloadLinkService.php
+  s_be04b879a75a03::t_c34dfacdd199ed 8,54
+  s_be04b879a75a03::t_dc2be318b78780 53,55
+app/Services/Tags/TagResolutionService.php
+  s_be04b879a75a03::t_dc2be318b78780 42,45
+app/Services/Backups/DeleteBackupService.php
+  s_be04b879a75a03::t_dc2be318b78780 78,80
+  s_be04b879a75a03::t_c34dfacdd199ed 10,79
+app/Repositories/Eloquent/BackupRepository.php
+  s_be04b879a75a03::t_dc2be318b78780 21
+  s_be04b879a75a03::t_9098d77e06d209 22,36-44
+  s_be04b879a75a03::t_a54f5e71dd67eb 10
+  s_be04b879a75a03::t_0088682824ef35 45-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "9b1301772d75cc0fcb28c998eb411fd21301daf2",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
