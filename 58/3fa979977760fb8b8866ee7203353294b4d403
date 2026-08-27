@@ -1,0 +1,172 @@
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 55
+app/Models/Server.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 247,458,475
+app/Services/Tags/TagResolutionService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 44
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 79
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 41
+app/Services/Eggs/EggUpdateService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 32
+app/Transformers/Api/Client/ServerTransformer.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 100
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 45,72
+app/Repositories/Eloquent/NodeRepository.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 88
+app/Traits/Commands/EnvironmentWriterTrait.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 18
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 89
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 74
+app/Models/ActivityLog.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 158
+app/Repositories/Wings/DaemonConfigurationRepository.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 26
+app/Services/Tags/TagBackfiller.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 78,89-90,109
+app/Models/Allocation.php
+  s_be04b879a75a03::t_0048ecafd37b7c 112
+app/Models/Egg.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 161,174,187,199,211,223,235,250,265
+app/Transformers/Api/Application/ServerTransformer.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 240
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 71
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 156
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 44
+app/Services/Deployment/FindViableNodesService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 150,160
+app/Exceptions/Http/Server/ServerStateConflictException.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 28
+app/Http/Controllers/Api/Remote/Backups/BackupRemoteUploadController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 61,86
+app/Repositories/Eloquent/SettingsRepository.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 55
+app/Events/ActivityLogged.php
+  s_be04b879a75a03::t_0048ecafd37b7c 32
+app/Repositories/Eloquent/SubuserRepository.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 65
+app/Services/Subusers/SubuserCreationService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 41
+app/Exceptions/Handler.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 173
+app/Transformers/Api/Application/EggTransformer.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 117,137
+app/Repositories/Eloquent/ServerRepository.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 44,46,60,62
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 152
+app/Services/Databases/DatabaseManagementService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 87
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 70
+app/Http/Controllers/Api/Client/SSHKeyController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 76
+app/Http/Controllers/Api/Admin/Settings/AdvancedController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 39
+app/Console/Commands/UpgradeCommand.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 54,71
+app/Jobs/Schedule/RunTaskJob.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 58,104
+app/Console/Commands/Environment/AppSettingsCommand.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 122
+app/Services/Backups/InitiateBackupService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 68
+app/Http/Controllers/Api/Admin/Servers/TransferProgressController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 35
+app/Services/Deployment/AllocationSelectionService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 101
+app/Transformers/Api/Admin/AllocationTransformer.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 40,59
+app/Console/Kernel.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 67
+app/Console/Commands/User/MakeUserCommand.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 40
+app/Http/Controllers/Api/Admin/Settings/GeneralController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 39
+app/Http/Controllers/Api/Client/Servers/WebsocketController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 61
+app/Repositories/Wings/DaemonFileRepository.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 291
+app/Exceptions/Http/Connection/DaemonConnectionException.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 37,49,57
+app/Services/Nodes/NodeJWTService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 127
+app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 67
+app/Enum/EggSpecificTags.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 57
+  s_be04b879a75a03::t_0048ecafd37b7c 35
+app/Http/Requests/FrontendUserFormRequest.php
+  s_be04b879a75a03::t_0048ecafd37b7c 21
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 154
+app/Notifications/AccountCreated.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 43
+app/Models/ApiKey.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 181
+app/Models/Filters/MultiFieldServerFilter.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 53
+app/Repositories/Eloquent/EloquentRepository.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 194
+app/Services/Activity/ActivityLogService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 144,225
+app/Services/Eggs/EggCreationService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 34
+app/Services/Eggs/Variables/VariableUpdateService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 39
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 116
+app/Services/Schedules/ProcessScheduleService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 32
+app/Services/Telemetry/TelemetryCollectionService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 59,109
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 40,105
+app/Http/Controllers/Auth/LoginController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 125
+app/Services/Allocations/AllocationDeletionService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 26
+app/Transformers/Api/Application/AllocationTransformer.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 45
+app/Console/Commands/Location/DeleteLocationCommand.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 49
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 260,264
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 112
+app/Services/Backups/DeleteBackupService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 40
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 139
+app/Services/Eggs/Scripts/InstallScriptService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 32
+app/Services/Servers/SuspensionService.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 47
+app/Extensions/Spatie/Fractalistic/Fractal.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 50,57
+app/Http/Controllers/Api/Remote/ActivityProcessingController.php
+  s_be04b879a75a03::t_9a5ae75e125ce0 37
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "583fa979977760fb8b8866ee7203353294b4d403",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
