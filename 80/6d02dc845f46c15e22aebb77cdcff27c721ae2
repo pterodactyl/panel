@@ -1,0 +1,21 @@
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_9997edb4c7a58b 1
+tools/phpstan/anti-slop/tests/Integration/PackageCoverageTest.php
+  s_5eb93878083371::t_8f7622aed03098 20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "806d02dc845f46c15e22aebb77cdcff27c721ae2",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
