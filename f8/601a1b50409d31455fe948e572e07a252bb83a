@@ -1,0 +1,39 @@
+phpstan.neon
+  s_be04b879a75a03::t_b7e7d462761a99 30-36
+tests/Unit/Http/Controllers/Api/Client/ClientApiControllerTest.php
+  s_be04b879a75a03::t_b3fb4dbe490f65 1-2,4,6,29,32,34-35
+  s_be04b879a75a03::t_ad27e7215f30f2 3,5,7-28,30-31,33
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_be04b879a75a03::t_a63f255f07de09 35-36,40-43,51,55,58
+tests/Unit/Exceptions/HandlerTest.php
+  s_be04b879a75a03::t_b3fb4dbe490f65 1-2,4,6,13,64-65
+  s_be04b879a75a03::t_ad27e7215f30f2 3,5,7-12,14-63
+app/Http/Requests/Api/Remote/ActivityEventRequest.php
+  s_be04b879a75a03::t_a63f255f07de09 8-10,39,43-48,54,58-65,73,75,78-104,107-108,110-114,116-126,128-138
+  s_be04b879a75a03::t_f85d75ec68c63a 105-106,109,127,139
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_a63f255f07de09 30
+app/Http/Controllers/Api/Remote/ActivityProcessingController.php
+  s_be04b879a75a03::t_a63f255f07de09 26,32
+  s_be04b879a75a03::t_f85d75ec68c63a 51,57
+app/Exceptions/Handler.php
+  s_be04b879a75a03::t_b7e7d462761a99 85,123-124,130-131,133-135,146,149,151,159-160,191-192
+  s_be04b879a75a03::t_f676d1d7b7bf9c 232-247
+  s_be04b879a75a03::t_cd7f8e5db978f7 248-249
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f8601a1b50409d31455fe948e572e07a252bb83a",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
