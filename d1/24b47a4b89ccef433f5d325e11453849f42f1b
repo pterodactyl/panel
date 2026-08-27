@@ -1,0 +1,39 @@
+app/Http/Requests/Api/Application/Locations/UpdateLocationRequest.php
+  s_be04b879a75a03::t_638f702a302d3f 18
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_be04b879a75a03::t_c624e6cf034ca3 47,52-54
+  s_be04b879a75a03::t_638f702a302d3f 75
+app/Transformers/Api/Application/LocationTransformer.php
+  s_be04b879a75a03::t_080433b03e97e5 41
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_be04b879a75a03::t_638f702a302d3f 75
+  s_be04b879a75a03::t_c624e6cf034ca3 49,54-57
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_be04b879a75a03::t_638f702a302d3f 28
+app/Http/Requests/Api/Client/Servers/Schedules/ViewScheduleRequest.php
+  s_be04b879a75a03::t_638f702a302d3f 14,27-33,37-38
+app/Http/Requests/Api/Client/Servers/Subusers/SubuserRequest.php
+  s_be04b879a75a03::t_638f702a302d3f 33-38,76
+tests/Integration/Api/Application/Location/LocationControllerTest.php
+  s_be04b879a75a03::t_77a66f2ec7dc7a 56,66
+phpstan.neon
+  s_be04b879a75a03::t_c624e6cf034ca3 68
+app/Http/Requests/Api/Client/Servers/Settings/SetDockerImageRequest.php
+  s_be04b879a75a03::t_638f702a302d3f 12,26-27,30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "d124b47a4b89ccef433f5d325e11453849f42f1b",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
