@@ -1,0 +1,39 @@
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_be04b879a75a03::t_2be68d4280d431 152
+app/Http/Requests/Api/Client/Servers/Settings/RenameServerRequest.php
+  s_be04b879a75a03::t_2be68d4280d431 12,38-46
+  s_be04b879a75a03::t_1d9196e1e0e6fa 47
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_be04b879a75a03::t_2be68d4280d431 61-62
+app/Http/Controllers/Api/Admin/Settings/AdvancedController.php
+  s_be04b879a75a03::t_2be68d4280d431 39
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_be04b879a75a03::t_2be68d4280d431 70
+app/Http/Requests/Api/Admin/Extensions/UpdateExtensionRequest.php
+  s_be04b879a75a03::t_2be68d4280d431 9-10,18-37
+  s_be04b879a75a03::t_3fe67e40b68439 38
+app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+  s_be04b879a75a03::t_2be68d4280d431 89-94
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_be04b879a75a03::t_c13f42388a658b 82-88
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_be04b879a75a03::t_2be68d4280d431 105
+app/Http/Controllers/Api/Admin/Settings/GeneralController.php
+  s_be04b879a75a03::t_2be68d4280d431 39
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "39b4734f5cbfdd2882d205d3feae67d13ad3b64f",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
