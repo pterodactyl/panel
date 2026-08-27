@@ -1,0 +1,25 @@
+tools/phpstan/anti-slop/tests/Rules/NoConditionalEmptyArraySpreadRuleTest.php
+  s_5eb93878083371::t_e27353e08c9344 1-32
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_e27353e08c9344 1
+tools/phpstan/anti-slop/src/Rules/NoConditionalEmptyArraySpreadRule.php
+  s_5eb93878083371::t_e27353e08c9344 1-90
+tools/phpstan/anti-slop/tests/Rules/data/no-conditional-empty-array-spread.php
+  s_5eb93878083371::t_e27353e08c9344 1-25
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ed917097f78c5332c2091dffbcfdf1647122f952",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
