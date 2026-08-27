@@ -1,0 +1,35 @@
+app/Http/Middleware/Api/Client/SubstituteClientBindings.php
+  s_be04b879a75a03::t_05c660d317df7e 36
+  s_be04b879a75a03::t_a0f194b66d928f 35,37-40
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_be04b879a75a03::t_a0f194b66d928f 130
+  s_be04b879a75a03::t_48cf5316d7bb43 98-106
+  s_be04b879a75a03::t_b1c93c56a60bff 115
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_be04b879a75a03::t_1ad11c616dfbbf 31
+app/Http/Middleware/MaintenanceMiddleware.php
+  s_be04b879a75a03::t_05c660d317df7e 10,31
+  s_be04b879a75a03::t_a0f194b66d928f 30,32-33
+app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+  s_be04b879a75a03::t_a0f194b66d928f 42
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_a0f194b66d928f 34
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_be04b879a75a03::t_a0f194b66d928f 53-54
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2802e02d4083e236873b8234fe036e184a972795",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
