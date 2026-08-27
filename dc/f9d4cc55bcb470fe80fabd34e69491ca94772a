@@ -1,0 +1,25 @@
+tools/phpstan/anti-slop/src/Laravel/Rules/NoServiceConstructionRule.php
+  s_5eb93878083371::t_ee47b8b1c9fe25 1-152
+tools/phpstan/anti-slop/tests/Rules/NoServiceConstructionRuleTest.php
+  s_5eb93878083371::t_ee47b8b1c9fe25 1-31
+tools/phpstan/anti-slop/tests/Rules/data/no-service-construction.php
+  s_5eb93878083371::t_ee47b8b1c9fe25 1-59
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_ee47b8b1c9fe25 1
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "dcf9d4cc55bcb470fe80fabd34e69491ca94772a",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
