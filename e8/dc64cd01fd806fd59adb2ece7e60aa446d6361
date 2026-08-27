@@ -1,0 +1,45 @@
+app/Notifications/SendPasswordReset.php
+  s_be04b879a75a03::t_91c78ecf80c0c1 35
+  s_be04b879a75a03::t_1de52ff71318ce 11
+app/Policies/ServerPolicy.php
+  s_be04b879a75a03::t_1de52ff71318ce 17-18
+app/Contracts/Repository/SettingsRepositoryInterface.php
+  s_be04b879a75a03::t_c4fa7683eb287e 7,35
+  s_be04b879a75a03::t_1de52ff71318ce 32-34,36
+app/Services/Activity/ActivityLogService.php
+  s_be04b879a75a03::t_1de52ff71318ce 110-111
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_be04b879a75a03::t_1de52ff71318ce 15,1043,1558-1561,1565,1643
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_be04b879a75a03::t_1de52ff71318ce 83
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_be04b879a75a03::t_1de52ff71318ce 289
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_be04b879a75a03::t_5c207dbee88ec6 76,162-168
+  s_be04b879a75a03::t_35912eacbf6026 169
+app/Helpers/Utilities.php
+  s_be04b879a75a03::t_91c78ecf80c0c1 51
+app/Extensions/Compat/Blueprint/BlueprintExtensionLibrary.php
+  s_be04b879a75a03::t_1de52ff71318ce 28-31,38-40,56,62
+app/Repositories/Eloquent/SettingsRepository.php
+  s_be04b879a75a03::t_1de52ff71318ce 42-44,46
+  s_be04b879a75a03::t_c4fa7683eb287e 7,45
+app/Exceptions/Service/Allocation/InvalidPortMappingException.php
+  s_be04b879a75a03::t_1de52ff71318ce 11
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "e8dc64cd01fd806fd59adb2ece7e60aa446d6361",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
