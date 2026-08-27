@@ -1,0 +1,2736 @@
+app/Exceptions/Http/Server/ServerStateConflictException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 9,17
+tests/Assertions/MiddlewareAttributeAssertionsTrait.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_10_23_203105_add_foreign_databases.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,16,23,140
+app/Http/Controllers/Auth/LoginCheckpointController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,10,81,148
+  s_5eb93878083371::t_4b3535ecea262d 33,35,55,69-70
+app/Http/Requests/Api/Admin/Extensions/GetExtensionsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Users/GetUserRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Egg/InvalidCopyFromException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,50-60
+  s_5eb93878083371::t_e25747a1c17fe7 61-62
+database/migrations/old/2017_09_10_230309_CreateNewTasksTableForSchedules.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Services/Databases/DeployServerDatabaseService.php
+  s_5eb93878083371::t_4b3535ecea262d 21,41,43-45
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14,24
+app/Http/Requests/Api/Client/Servers/Files/PullFileRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Repositories/Eloquent/LocationRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Application/Servers/StartupController.php
+  s_5eb93878083371::t_4b3535ecea262d 27,40
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Mounts/AttachNodesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Startup/UpdateStartupVariableRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Servers/RebuildController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25
+app/Http/Requests/Api/Remote/AuthenticateWebsocketDetailsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Console/Commands/Overrides/KeyGenerateCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,15
+database/migrations/old/2016_01_23_195641_add_allocations_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Requests/Api/Application/Servers/Databases/GetServerDatabasesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Tags/GetTagRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_09_13_113503_drop_daemon_key_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,24,33
+app/Listeners/TwoFactorListener.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Unit/Enum/EggSpecificTagsTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Concerns/FiltersDeployTags.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,94,97
+  s_5eb93878083371::t_4b3535ecea262d 43
+app/Http/Controllers/Api/Admin/Eggs/ReorderVariablesController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26
+tests/Integration/Api/Remote/SftpAuthenticationControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,39-54
+  s_5eb93878083371::t_2d0f016e1503b1 55
+app/Events/Server/Saved.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2019_03_02_142328_set_allocation_limit_default_null.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,20-21,23-29,273-274,276
+database/migrations/old/2018_01_01_122821_AllowNegativeValuesForServerSwap.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2016_02_07_181319_add_database_servers_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+tests/Integration/Api/Application/Eggs/EggControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Application/Servers/ExternalServerController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/ApiKeyControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,26-39
+  s_5eb93878083371::t_7d9275cd069b0a 40-41
+tests/Integration/Services/Servers/StartupModificationServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Extensions/Lcobucci/JWT/Encoding/TimestampDates.php
+  s_5eb93878083371::t_3ab56c47b18fa7 7,26
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/User.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,280-299
+  s_5eb93878083371::t_4b3535ecea262d 208,275
+app/Transformers/Api/Application/BaseTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,48,50,52,56,58,60-62
+  s_5eb93878083371::t_845482fbdbe076 116,118-122
+app/Http/Controllers/Api/Client/ClientController.php
+  s_5eb93878083371::t_4b3535ecea262d 26,37,62
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+scripts/check-openapi-client-contract.php
+  s_5eb93878083371::t_3ab56c47b18fa7 49,55,63,70,74,86,355
+app/Http/Requests/Api/Remote/ReportBackupCompleteRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Deployment/AllocationSelectionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 24
+app/Models/MountServer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 14-17
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26
+app/Exceptions/Http/Server/FileTypeNotEditableException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Contracts/Repository/LocationRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/Illuminate/Database/Eloquent/Builder.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Nodes/Allocations/GetAllocationsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,106-123
+  s_5eb93878083371::t_4b3535ecea262d 25
+  s_5eb93878083371::t_e775504089f2d8 124
+app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 40
+resources/lang/en/auth.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Extensions/Backups/BackupManager.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,121-178
+database/Factories/AllocationFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 46
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+scripts/check-generated-api-boundary.php
+  s_5eb93878083371::t_3ab56c47b18fa7 70
+tests/Integration/Api/Remote/RemoteServersApiTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,202-205
+  s_5eb93878083371::t_58f73679e7aeab 206
+app/Services/Activity/ActivityLogService.php
+  s_5eb93878083371::t_2b5b67b6f77ef6 152
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,18,146,172,174,176,228,232,236
+  s_5eb93878083371::t_4b3535ecea262d 149,240
+config/ide-helper.php
+  s_5eb93878083371::t_3ab56c47b18fa7 191-192
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+config/session.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Contracts/Repository/ScheduleRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Databases/DeleteDatabaseRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,32-45
+  s_5eb93878083371::t_9cc4a86ce261ed 46-47
+tests/Support/OpenApiSpecValidator.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,196,237,239
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 30,44-45,54,79,86-88
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,84,112,117
+app/Http/Requests/Api/Admin/Nodes/DeployTokenRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/ClientApiRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_05_01_141559_DeleteNodeConfigurationTable.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,24,31
+app/Http/Requests/Api/Admin/Tags/GetTagsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/SendCommandRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Subuser/UpdateSubuserTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Traits/Services/ValidatesValidationRules.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,27
+  s_5eb93878083371::t_4b3535ecea262d 29-30,33
+app/Helpers/Utilities.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,31,42
+  s_5eb93878083371::t_3b97c662ce3b42 33
+app/Providers/BladeServiceProvider.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,17
+app/Transformers/Api/Client/AccountTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_10_23_203857_add_foreign_server_variables.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+app/Http/Controllers/Api/Admin/Settings/AdvancedController.php
+  s_5eb93878083371::t_4b3535ecea262d 25-26
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_90323730f62131 39
+app/Models/Permission.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,22-25
+  s_5eb93878083371::t_4b3535ecea262d 59,79,92,104,115,124,135,145,153
+  s_5eb93878083371::t_0547613af8dfd8 26
+database/migrations/old/2017_01_07_154228_create_node_configuration_tokens_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Controllers/Api/Application/Servers/ServerManagementController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,26,36,50-51
+  s_5eb93878083371::t_3ab56c47b18fa7 20,59,75
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_5eb93878083371::t_4b3535ecea262d 30,44-48,129
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,74
+database/migrations/old/2017_10_03_233202_CascadeDeletionWhenServiceOptionIsDeleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+app/Http/Controllers/Api/Admin/Servers/ExternalController.php
+  s_5eb93878083371::t_4b3535ecea262d 24
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,10,20-32,204
+tests/Integration/Api/Client/Server/ScheduleTask/UpdateScheduleTaskTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Allocation/AllocationAuthorizationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14-22
+app/Http/Controllers/Api/Client/SSHKeyController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 28,40
+app/Contracts/Repository/DatabaseRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/APILog.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2021_01_13_013420_add_cron_month.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Requests/Api/Admin/Extensions/InstallExtensionRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Schedules/TriggerScheduleRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/Themes/ResetCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Api/Client/Server/GetServerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Schedule/DeleteServerScheduleTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-20
+app/Services/Themes/ThemeService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,23
+app/Http/Controllers/Api/Application/ApplicationApiController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,33
+  s_5eb93878083371::t_4b3535ecea262d 27,43
+database/Factories/EggFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Subuser/DeleteSubuserTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,37
+database/migrations/old/2017_02_05_164123_AdjustColumnNames.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+app/Services/Helpers/SoftwareVersionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,100
+  s_5eb93878083371::t_236efa114bd59b 96
+app/Http/Requests/Api/Admin/Eggs/UpdateImportEggRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Egg/Variable/BadValidationRuleException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Client/ScheduleTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 13
+resources/lang/en/dashboard/account.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/ServerTransfer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,41-52
+  s_5eb93878083371::t_4d47be6a05eebf 53
+app/Transformers/Api/Application/DatabaseHostTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Application/ServerDatabaseTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 16,26,63-64
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,62
+app/Http/Controllers/Api/Admin/Eggs/ImportEggController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 27,36
+database/migrations/old/2017_11_11_161922_Add2FaLastAuthorizationTimeColumn.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 19,24-25,43-44,58
+app/Models/Subuser.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,37-42
+  s_5eb93878083371::t_347a496add3c26 43
+app/Repositories/Eloquent/PermissionRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 7,15,19
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Services/Backups/DownloadLinkServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,39
+app/Contracts/Http/ClientPermissionsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Repository/DuplicateDatabaseNameException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Unit/Services/Extensions/ExtensionSettingsDefinitionTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,71,75-121
+app/Events/Auth/FailedPasswordReset.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Allocation/ServerUsingAllocationException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_11_11_231731_set_service_name_unique.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Client/SSHKeyControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Remote/ActivityEventRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,45
+app/Http/Middleware/Api/Client/SubstituteClientBindings.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,18,22,26
+  s_5eb93878083371::t_4b3535ecea262d 23-25,27-28
+database/migrations/old/2018_03_01_192831_add_database_and_port_limit_columns_to_servers_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Observers/SubuserObserver.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_11_27_142519_add_pack_column.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+database/migrations/old/2019_03_02_151321_fix_unique_index_to_account_for_host.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,30
+database/migrations/old/2021_01_10_153937_add_file_denylist_to_egg_configs.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Requests/Api/Admin/Eggs/GetEggsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+config/broadcasting.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/ApiKeys/UpdateApiKeyRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+routes/api-application.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17,36,47,62,80,93,111
+database/Factories/DatabaseFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 45-47
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,44
+database/migrations/old/2018_01_13_142012_SetupTableForKeyEncryption.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,19,24,37
+app/Http/Middleware/Api/Application/AuthenticateApplicationUser.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,18
+app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 50,61,70,82,87
+app/Events/User/PasswordChanged.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,10,14
+app/Models/Tag.php
+  s_5eb93878083371::t_4b3535ecea262d 136,138-139
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,41-47
+  s_5eb93878083371::t_4fb7266b2e4235 48
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 38-40,50,63,83
+database/migrations/old/2017_08_05_174811_SetAllocationUnqiueUsingMultipleFields.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Traits/MocksPdoConnection.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Facades/Activity.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Users/DisableTwoFactorRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Api/KeyCreationService.php
+  s_5eb93878083371::t_4b3535ecea262d 17
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Backup/DeleteBackupTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,53
+config/trustedproxy.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Deployment/FindViableNodesServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,59,67
+tests/Unit/Http/Middleware/Api/Daemon/DaemonAuthenticateTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,37-53
+  s_5eb93878083371::t_91c25460706c23 54-55
+app/Exceptions/Service/Subuser/ServerSubuserExistsException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/Traits/HasAccessTokens.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/InvalidFileUploadException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_10_23_203522_add_foreign_permissions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Http/Requests/Api/Admin/Extensions/UpdateExtensionRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Events/Extensions/ExtensionDisabling.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Console/Commands/Location/MakeLocationCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 22,32,37
+app/Exceptions/Repository/RepositoryException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,13-31,37
+  s_5eb93878083371::t_d85e356c6a87b7 53
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2020_05_21_192756_add_mount_server_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+tests/Integration/Services/Servers/ServerCreationServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,13,48,131
+database/migrations/old/2022_01_25_030847_drop_google_analytics.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Traits/Commands/EnvironmentWriterTrait.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,43
+  s_5eb93878083371::t_4b3535ecea262d 42
+app/Services/Eggs/Sharing/EggImporterService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15,24,30
+app/Events/Server/Saving.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15-19,215,217,236,282,302,389,410,412,971,1297,1426,2022,2024,2037,2066,2089,2094
+  s_5eb93878083371::t_302df25015cec4 1128
+  s_5eb93878083371::t_3b97c662ce3b42 1104,1114
+  s_5eb93878083371::t_4b3535ecea262d 109,175-176,183,192,261,266,304,339,356,360-361,364,366,372,717,733,767,791,848,869,880,896,912,915,923,994,1015,1018,1036,1060,1074,1329,1371,1395,1420,1478,1722-1723,2086,2130,2138,2159
+app/Events/ActivityLogged.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Middleware/Api/Client/RequireClientApiKey.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,18
+app/Transformers/Api/Admin/AllocationTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Mounts/MountAttachmentTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,17-18,20-25,220-221,223-231
+app/Http/Requests/Api/Application/Servers/Databases/GetServerDatabaseRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Files/CreateFolderRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Files/UploadFileRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_11_11_220649_add_pack_support.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+database/migrations/2026_08_20_000002_backfill_tags_from_nests.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Http/Controllers/Base/BaseRoutesTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Unit/Http/Middleware/MaintenanceMiddlewareTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Allocation/AutoAllocationNotEnabledException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Client/TaskTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Users/DisableTwoFactorController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Databases/DeployServerDatabaseServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,30,47-55
+  s_5eb93878083371::t_e66e632e0892f7 56-57
+tests/Integration/Api/Client/Server/Startup/UpdateStartupVariableTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,18-22
+tests/Unit/Services/Extensions/ExtensionScaffolderTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/HasActiveServersException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Contracts/Repository/AllocationRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Console/Commands/Extensions/RemoveCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 15,27-28
+app/Http/Controllers/Api/Admin/LanguagesController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,21
+app/Http/Requests/Api/Admin/Eggs/Variables/ReorderVariablesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_01_23_200648_add_nodes.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+tests/Integration/Api/Client/Server/Schedule/ExecuteScheduleTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,19-23
+database/Seeders/DatabaseSeeder.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,14
+app/Http/Requests/Api/Admin/Eggs/GetEggScriptRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Notifications/MailTested.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 13,25
+database/migrations/2026_07_06_000001_create_extensions_tables.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 13,22
+app/Http/Requests/Api/Admin/Servers/UpdateServerStartupRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Mounts/DeleteMountRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Mounts/DetachEggRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Servers/DeleteServerMountRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2018_02_10_151150_remove_unique_index_on_external_id_column.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Client/ClientControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,18-22
+app/Exceptions/Http/Server/FileSizeTooLargeException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Events/Server/Installed.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Nodes/UtilizationController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,21,39
+app/Events/Extensions/ExtensionEnabled.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Auth/LoginCheckpointRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 30,35
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Wings/DaemonBackupRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 18,50-51,75-76,93-94
+app/Http/Requests/Auth/ResetPasswordRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_10_23_201624_add_foreign_allocations.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17,30
+app/Http/Requests/FrontendUserFormRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/InfoCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 17,25
+app/Services/Eggs/Variables/VariableUpdateService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,38,73-80
+  s_5eb93878083371::t_7edf1ff993c4df 81
+config/cors.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+scripts/check-generated-api-types.php
+  s_5eb93878083371::t_3ab56c47b18fa7 41,63
+app/Http/Middleware/EncryptCookies.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Network/SetPrimaryAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+routes/api-admin.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,73,91,112,126,140,171,189,202,226,248,267,292,309,322,339,363,381,397,416,434
+database/migrations/old/2021_08_21_175118_add_foreign_keys_to_mount_server_table.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 17,33,51
+app/Console/Commands/Themes/ApplyCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21-22
+database/Factories/BackupFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Api/Admin/Servers/ServerTransferControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/TwoFactorControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_05_01_141528_DeleteDownloadTable.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,24
+app/Console/RequiresDatabaseMigrations.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,29
+app/Http/Requests/Api/Application/Servers/ServerWriteRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Wings/DaemonServerRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 30-31,53-54,69-70,85-86,104-105,124-125,161-162
+app/Http/Requests/Api/Application/Servers/GetServersRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Providers/AppServiceProvider.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,99,105
+  s_5eb93878083371::t_4b3535ecea262d 94
+app/Exceptions/Service/Egg/Variable/ReservedVariableNameException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Servers/SuspensionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 7,12,30,59
+  s_5eb93878083371::t_4b3535ecea262d 3-4,24
+app/Exceptions/Service/Allocation/CidrOutOfRangeException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/ClientApiIntegrationTestCase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,26,85,94
+app/Models/RecoveryToken.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Allocation/NoAutoAllocationSpaceAvailableException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Console/Commands/Extensions/DisableCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21-22
+database/migrations/old/2020_12_26_184914_add_upload_id_column_to_backups_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Repositories/Eloquent/DatabaseRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21,84
+app/Transformers/Api/Client/UserTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Settings/UpdateMailSettingsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Jobs/Schedule/RunTaskJobTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,15,27-31,59,99,102,114,132,151,182
+database/migrations/old/2017_07_08_152806_ChangeUserPermissionsToDeleteOnUserDeletion.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,22,36,44
+app/Http/Requests/Api/Admin/Tags/SyncTagsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,44-45
+app/Http/Requests/Api/Application/Locations/UpdateLocationRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Database/LegacyNestSchemaTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,34-36
+  s_5eb93878083371::t_a9e319589215b7 37-38
+config/activity.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_08_05_115800_CascadeNullValuesForDatabaseHostWhenNodeIsDeleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Console/Commands/Overrides/UpCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Unit/Http/Middleware/MiddlewareTestCase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Providers/HashidsServiceProvider.php
+  s_5eb93878083371::t_845482fbdbe076 25
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,19
+examples/kitchen-sink/routes/client.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Middleware/Api/Admin/AuthenticateAdmin.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,19
+app/Exceptions/Service/ServiceLimitExceededException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 8,16
+database/migrations/old/2017_03_31_221948_AddServerDescriptionColumn.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Events/Extensions/ExtensionRemoving.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_02_09_174834_SetupPermissionsPivotTable.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 18,22,30,47,53,62
+app/Http/Requests/Api/Admin/Mounts/AttachEggsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Acl/Api/AdminAcl.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8-9,69,73,75
+  s_5eb93878083371::t_236efa114bd59b 54
+app/Http/Requests/Api/Application/Users/GetUsersRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Events/Subuser/Deleting.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Client/FileObjectTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+resources/lang/en/passwords.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Allocations/FindAssignableAllocationServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,147,158
+database/migrations/old/2020_07_09_201845_add_notes_column_for_allocations.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Unit/Helpers/EnvironmentWriterTraitTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,31-37
+  s_5eb93878083371::t_79bd05cbf43ebe 38
+tests/Integration/Services/Schedules/ProcessScheduleServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,12,23-27,136
+database/migrations/old/2021_02_23_205021_add_index_for_server_and_action.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,33
+app/Models/Database.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,40-48
+  s_5eb93878083371::t_1039b7207cbf3e 49
+app/Contracts/Repository/NodeRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 27
+app/Rules/Fqdn.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,19-27
+  s_5eb93878083371::t_46c955a31991e8 28
+app/Http/Requests/Api/Client/Servers/Network/UpdateAllocationRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2024_07_13_091852_clear_unused_allocation_notes.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,39,42
+  s_5eb93878083371::t_4b3535ecea262d 29,56,58
+  s_5eb93878083371::t_d85e356c6a87b7 57
+app/Http/Middleware/MaintenanceMiddleware.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,22
+  s_5eb93878083371::t_4b3535ecea262d 17
+database/migrations/old/2016_01_23_203947_create_sessions_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Requests/Api/Admin/Eggs/DeleteEggRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Application/EggVariableTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_09_07_163017_add_unique_identifier.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Client/ActivityLogControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Application/Users/StoreUserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 22
+app/Transformers/Api/Admin/ServerDatabaseTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,53
+  s_5eb93878083371::t_4b3535ecea262d 13,22,54-55
+database/migrations/old/2016_01_23_201433_add_password_resets.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Services/Users/UserDeletionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Eggs/EggShareControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-17,19-23,122-123,125-140
+app/Services/Helpers/AssetHashService.php
+  s_5eb93878083371::t_4b3535ecea262d 145,150
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,36,176-210
+  s_5eb93878083371::t_910a5067db4c68 37
+app/Exceptions/Service/Database/NoSuitableDatabaseHostException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Events/Server/Updated.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+config/auth.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2022_05_28_135717_create_activity_logs_table.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 16
+tests/Integration/Api/Application/PaginationValidationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,13-25
+app/Contracts/Extensions/HashidsInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Repository/RecordNotFoundException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Allocation/InvalidPortMappingException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/EggVariable.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,49-58
+  s_5eb93878083371::t_a0898c4ca537f6 59
+tests/Integration/Api/Client/Server/Database/DatabaseControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2018_02_25_160604_define_unique_index_on_users_external_id.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Client/Servers/ServerController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 24,34
+database/migrations/old/2020_05_20_234655_add_mounts_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27,34
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_5eb93878083371::t_4b3535ecea262d 36-37,51,68,94,112
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Middleware/VerifyReCaptcha.php
+  s_5eb93878083371::t_236efa114bd59b 44
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,15,28,65
+  s_5eb93878083371::t_4b3535ecea262d 23
+config/filesystems.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_03_16_181109_ReOrganizeDatabaseServersToDatabaseHost.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,22,34,40
+app/Contracts/Repository/ServerVariableRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_03_16_181515_CleanupDatabasesDatabase.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,30
+app/Http/Requests/Api/Client/Servers/Files/CopyFileRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Settings/UpdateGeneralSettingsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Api/Application/Nodes/NodeController/UpdateNodeTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,23
+app/Services/Eggs/Sharing/EggExporterService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,42,57
+  s_5eb93878083371::t_4b3535ecea262d 58-60
+database/migrations/old/2018_01_13_145209_AddLastUsedAtColumn.php
+  s_5eb93878083371::t_4b3535ecea262d 16,24,34,40
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_07_24_194433_DeleteTaskWhenParentServerIsDeleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Events/Subuser/Creating.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Eloquent/DatabaseHostRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/Factories/LocationFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2021_01_26_210502_update_file_denylist_to_json.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,20,30,34
+database/migrations/old/2017_07_08_154650_CascadeDeletionWhenAServerOrVariableIsDeleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,30
+app/Extensions/League/Fractal/Serializers/PterodactylSerializer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Network/NewAllocationRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+resources/lang/en/exceptions.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/ActivityLogSubject.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Repositories/Wings/DaemonRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 15,17
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Events/Subuser/Created.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/Backup.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,49-60
+  s_5eb93878083371::t_8c845f62905c9f 61
+resources/lang/en/server/users.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_04_20_171943_AddScriptsToServiceOptions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+database/migrations/old/2017_12_04_184012_DropAllocationsWhenNodeIsDeleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+composer.json
+  s_5eb93878083371::t_ef86789e48b9e7 101-103
+database/migrations/old/2016_08_30_212718_add_ip_alias.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 16,37
+app/Providers/ViewComposerServiceProvider.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Nodes/AllocationControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,27-39
+  s_5eb93878083371::t_c27b173fed73de 40-41
+app/Repositories/Eloquent/NodeRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,122,124
+  s_5eb93878083371::t_4b3535ecea262d 33,62,121,125-127
+  s_5eb93878083371::t_ae29224bb1e82d 32
+database/migrations/old/2016_03_18_155649_add_nullable_field_lastrun.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 12,21
+database/migrations/old/2021_05_03_201016_add_support_for_locking_a_backup.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 13-14,43,63
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,71
+config/view.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Rules/Username.php
+  s_5eb93878083371::t_236efa114bd59b 32
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,10,17-20
+  s_5eb93878083371::t_5e11f6b20a7055 21
+app/Console/Commands/Environment/DatabaseSettingsCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,10,78
+  s_5eb93878083371::t_4b3535ecea262d 79,101
+app/Transformers/Api/Client/SubuserTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Network/GetNetworkRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_02_05_164516_AdjustColumnNamesForServicePacks.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+app/Console/Commands/Overrides/SeedCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Backups/DownloadLinkService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 20
+app/Services/Servers/ReinstallServerService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,10,22
+  s_5eb93878083371::t_4b3535ecea262d 15-16
+app/Console/Commands/Environment/Addons/RunHooksCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 37
+app/Http/Requests/Api/Client/Servers/Files/DownloadFileRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Application/Locations/GetLocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/GetLanguagesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_5eb93878083371::t_4b3535ecea262d 28-30,107
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,22,91
+app/Providers/SettingsServiceProvider.php
+  s_5eb93878083371::t_e91f0095de6e2f 93
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,60-64,77
+  s_5eb93878083371::t_4b3535ecea262d 78-79,89
+app/Transformers/Api/Application/ServerTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,38
+  s_5eb93878083371::t_4b3535ecea262d 17-19,43
+  s_5eb93878083371::t_94c32a9f37a4d4 39
+tests/Integration/Api/Admin/Eggs/EggVariableControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-17,19-25,251-252,254-262
+tests/Unit/Http/Middleware/LanguageMiddlewareTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Subusers/SubuserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 18
+app/Providers/BroadcastServiceProvider.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 22
+tests/Integration/Http/Controllers/Auth/PasswordResetTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,21-24
+  s_5eb93878083371::t_b49c1bb8c9e43e 25
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_5eb93878083371::t_4b3535ecea262d 27
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_10_23_193810_add_foreign_keys_servers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,38
+app/Http/Requests/Api/Admin/Mounts/GetMountsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Servers/ServerDeletionService.php
+  s_5eb93878083371::t_302df25015cec4 60
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,16,44,67
+  s_5eb93878083371::t_3b97c662ce3b42 80
+  s_5eb93878083371::t_4b3535ecea262d 26-28,51,56-57,63
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 38,48,54,58
+database/migrations/old/2016_08_30_213301_modify_ip_storage_method.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 16,44,55,77
+app/Exceptions/ManifestDoesNotExistException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7-9
+app/Http/Requests/Api/Application/Servers/GetExternalServerRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/Node.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,70-87
+  s_5eb93878083371::t_295214a5d1e6c8 88
+database/migrations/old/2017_04_27_223629_AddAbilityToDefineConnectionOverSSLWithDaemonBehindProxy.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2016_01_23_195851_add_api_keys.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+tests/Integration/Api/Client/Server/CommandControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,11,61
+database/migrations/old/2016_10_23_202703_add_foreign_api_permissions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Events/Server/Deleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,17,39,84
+database/migrations/old/2017_03_12_150648_MoveFunctionsFromFileToDatabase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 11,46,92,96,112
+app/Exceptions/Handler.php
+  s_5eb93878083371::t_845482fbdbe076 134,136-137
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,22,28,72-88,103,149,157,164-165,218,220,232,234-255
+  s_5eb93878083371::t_4b3535ecea262d 37,107,118,120,129,159,190,224
+app/Extensions/Filesystem/S3Filesystem.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,13-14
+config/compile.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Account/UpdateEmailRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Files/RenameFileRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/Extensions/EnableCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 21-22
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Files/WriteFileContentRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Admin/EggTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14,38
+app/Exceptions/Service/Database/DatabaseClientFeatureNotEnabledException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Contracts/Models/Identifiable.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/2026_08_20_000004_relax_nest_id_on_servers_table.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26,30,44
+app/Http/ViewComposers/AssetComposer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,18-19
+  s_5eb93878083371::t_3ab56c47b18fa7 10,51
+app/Repositories/Eloquent/EggRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Servers/DetailsController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25,34
+app/Traits/Helpers/AvailableLanguages.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,23
+  s_5eb93878083371::t_4b3535ecea262d 21
+app/Exceptions/Http/Base/InvalidPasswordProvidedException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Traits/Helpers/ThrottlesLogins.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Backup/TooManyBackupsException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Eloquent/ServerRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 147
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Middleware/Api/IsValidJson.php
+  s_5eb93878083371::t_4b3535ecea262d 25
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,9,19,24
+database/Factories/ScheduleFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Files/ChmodFilesRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Servers/DetailsModificationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,12,28,32
+app/Http/Requests/Api/Client/Servers/Subusers/DeleteSubuserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_02_07_172148_add_databases_tables.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Events/Extensions/ExtensionInstalling.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Facades/LogBatch.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Eggs/EggConfigurationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,66,70
+  s_5eb93878083371::t_4b3535ecea262d 17,131-138,216-217
+  s_5eb93878083371::t_90323730f62131 189
+  s_5eb93878083371::t_845482fbdbe076 176
+app/Services/Eggs/Scripts/InstallScriptService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26,40-43
+  s_5eb93878083371::t_90323730f62131 70
+app/Http/Requests/Api/Admin/Nodes/Allocations/UpdateAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Api/Admin/Servers/ServerMountControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15-16,18-22,117-118,120-126
+database/migrations/old/2017_03_14_200326_AddLockedStatusToTable.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2020_08_20_205533_add_backup_state_column_to_backups.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Exceptions/Service/Server/RequiredVariableMissingException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,29
+  s_5eb93878083371::t_4b3535ecea262d 16,81
+  s_5eb93878083371::t_7bda07fd46636d 8
+database/migrations/old/2016_10_07_152117_build_api_log_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Services/Locations/LocationDeletionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/ScheduleTask/CreateServerScheduleTaskTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,17-21
+database/migrations/old/2016_10_23_204157_add_foreign_service_options.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Events/Server/Creating.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Contracts/Repository/ApiKeyRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/DatabaseHosts/DeleteDatabaseHostRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Traits/Http/IntegrationJsonRequestAssertions.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Node/ConfigurationNotPersistedException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Eloquent/EggVariableRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Events/Extensions/ExtensionLoadFailed.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 8,16
+database/migrations/old/2020_04_03_203624_add_threads_column_to_servers_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 37,47,62,80,94,120,168,189,209
+app/Events/User/Deleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Client/AccountController.php
+  s_5eb93878083371::t_4b3535ecea262d 31,41,59,76,111
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,25,109,118
+app/Models/Model.php
+  s_5eb93878083371::t_4b3535ecea262d 36
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,20-21,58,83-112,139-161
+app/Services/Backups/DeleteBackupService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16,30,69
+  s_5eb93878083371::t_4b3535ecea262d 21-23,50,53-54,58,73
+tests/Integration/Api/Admin/Locations/LocationControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-33
+tests/Unit/Services/Deployment/NodeTagGateTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_09_29_213518_rename_double_insurgency.php
+  s_5eb93878083371::t_4b3535ecea262d 14
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Application/ServerVariableTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_01_23_200528_add_locations.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Transformers/Api/Admin/EggVariableTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 10
+app/Http/Controllers/Api/Admin/Servers/SuspensionController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25
+app/Console/Commands/Extensions/MakeCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 37-38
+app/Console/Commands/Node/NodeListCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 17-22
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16
+database/migrations/old/2016_12_01_173018_add_configurable_upload_limit.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Admin/Eggs/EggCrudControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15-16,19-23,209-210,213-221,224-228
+  s_5eb93878083371::t_c0a300d446ac15 229
+app/Http/Requests/Api/Admin/Servers/Backups/ListBackupsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Rules/TagSlug.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,22-31
+tests/Unit/Rules/UsernameTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,49-74
+tests/Integration/Api/Admin/Servers/ServerBackupControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14-22
+app/Extensions/Scribe/Attributes/ResponseField.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7,16
+config/database.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_11_19_122708_MigratePubPrivFormatToSingleKey.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 20-21,34,39,50,55,60,67-68
+tests/Unit/Console/Commands/Environment/Addons/RunHooksCommandTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Events/User/Creating.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Unit/Http/Requests/Api/Application/Servers/StoreServerRequestTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_10_23_204610_add_foreign_tasks.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Contracts/Repository/TaskRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_5eb93878083371::t_ae29224bb1e82d 61
+  s_5eb93878083371::t_4b3535ecea262d 24,37,55
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_90323730f62131 62
+routes/base.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Providers/AuthServiceProvider.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,29
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,74,131,138,140,142
+  s_5eb93878083371::t_4b3535ecea262d 128,135
+app/Models/Schedule.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,11,50-64,123
+database/migrations/old/2017_12_12_220426_MigrateSettingsTableToNewFormat.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,18,28
+tests/Integration/Services/Backups/DeleteBackupServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Databases/Hosts/HostDeletionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 17-18
+database/Factories/SubuserFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Servers/GetServersRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2021_07_12_013420_remove_userinteraction.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,24
+app/Observers/UserObserver.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,114,121,123,125
+  s_5eb93878083371::t_4b3535ecea262d 111,118
+database/migrations/old/2020_08_23_175331_modify_checksums_column_for_backups.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17,21-22,31,35
+app/Models/AuditLog.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,69-84
+database/migrations/old/2022_08_16_214400_add_force_outgoing_ip_column_to_eggs_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2016_01_23_202731_add_service_varibles.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,34,101,118,139,183,204,239
+  s_5eb93878083371::t_4b3535ecea262d 40,47,61-65,79,104,143,167,260
+app/Events/Extensions/ExtensionInstalled.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+config/addons.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Remote/InstallationDataRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Client/Servers/FileUploadController.php
+  s_5eb93878083371::t_4b3535ecea262d 24,35
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Nodes/UniqueIpsController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20
+app/Console/Commands/User/DeleteUserCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21
+app/Repositories/Wings/DaemonFileRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 70-71,91-92,117-118,141-142,164-165,188-189,215-216,244-245,268-269,291,304-305
+  s_5eb93878083371::t_236efa114bd59b 95,219
+app/Http/Controllers/Api/Application/Nodes/NodeConfigurationController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20
+app/Http/Requests/Api/Admin/Servers/UpdateServerSuspensionRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Wings/DaemonConfigurationRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 27-28,48-49
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Users/UpdateUserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Users/DeleteUserRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2021_08_21_180921_add_foreign_keys_to_egg_mount_table.php
+  s_5eb93878083371::t_4b3535ecea262d 17,33,51
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Observers/ServerObserver.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Facades/Alert.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 49-50,66,122
+tests/Integration/Api/Client/Server/Allocation/DeleteAllocationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-20
+app/Models/Session.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,80
+  s_5eb93878083371::t_4b3535ecea262d 30,38,45,59,81-82,86
+database/migrations/old/2021_05_01_092523_add_only_run_when_server_online_option_to_schedules.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Middleware/LanguageMiddleware.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,21
+  s_5eb93878083371::t_4b3535ecea262d 16
+database/Factories/ServerFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 60,75
+database/migrations/old/2016_10_23_204321_add_foreign_service_variables.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+database/migrations/old/2016_02_27_163411_add_tasks_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+database/migrations/old/2017_10_02_202007_ChangeToABetterUniqueServiceConfiguration.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,19,25,30,38,48,54-55
+database/migrations/old/2020_11_02_201014_add_features_column_to_eggs.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Application/Users/ExternalUserController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Mounts/StoreMountRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/Factories/TagFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 42
+database/migrations/old/2016_01_23_201748_add_servers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Requests/Api/Application/Nodes/GetDeployableNodesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Extensions/ExtensionInstaller.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,21,150
+  s_5eb93878083371::t_4b3535ecea262d 30-32
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,278-284
+  s_5eb93878083371::t_5ddba92c081c05 285
+scripts/check-api-layer-native.php
+  s_5eb93878083371::t_3ab56c47b18fa7 144
+database/migrations/old/2017_09_23_173628_RemoveDaemonSecretFromServersTable.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 23,34,38,49
+app/Console/Commands/Node/NodeConfigurationCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 23
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Servers/ServerWriteRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Auth/LoginController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 28,48,55,65
+app/Services/Extensions/ExtensionManifest.php
+  s_5eb93878083371::t_4b3535ecea262d 78
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,58
+app/Exceptions/Service/Subuser/UserIsServerOwnerException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+routes/api-client.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,25-26,44,66,77,85,102,116,125,134,145,150
+config/hashing.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Contracts/Repository/ServerRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Console/Commands/User/DisableTwoFactorCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Admin/UserTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Application/Servers/ServerDetailsController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 27,41-42
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,16,34,175,206,238-245
+  s_5eb93878083371::t_4b3535ecea262d 40,54,71,85-87,102,122,140,148,169,200
+  s_5eb93878083371::t_ea5e5cfa1bc1ea 246
+database/migrations/old/2017_09_10_225749_RenameTasksTableForStructureRefactor.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+scripts/generate-extension-openapi.php
+  s_5eb93878083371::t_3ab56c47b18fa7 56,106
+tests/Traits/Http/RequestMockHelpers.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,18
+  s_5eb93878083371::t_0e847a86157dd9 19
+app/Services/Servers/StartupModificationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14,28
+app/Http/Controllers/Api/Admin/Locations/EligibleNodesController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25
+app/Services/Activity/ActivityLogTargetableService.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Http/Controllers/Auth/LoginControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/TelemetryCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,21,31
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 34
+database/Factories/TaskFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Extensions/ExtensionAdminSettingsController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Repositories/Eloquent/ScheduleRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25,39,53
+app/Models/Objects/DeploymentObject.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/Schedule/ProcessRunnableCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,12,72
+  s_5eb93878083371::t_2b5b67b6f77ef6 73
+  s_5eb93878083371::t_4b3535ecea262d 75
+app/Services/Servers/ServerConfigurationStructureService.php
+  s_5eb93878083371::t_4b3535ecea262d 15,28,81-84
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,80,107
+app/Http/Requests/Api/Admin/Eggs/Variables/DeleteVariableRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/Scribe/Strategies/InferPterodactylUrlParameters.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Client/BackupTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 10-11
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/Server/BulkPowerActionCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 27,37,70,75,80
+  s_5eb93878083371::t_d1aa684fd21d14 101,103,105
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Admin/LocationTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Providers/ExtensionServiceProvider.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Schedules/UpdateScheduleRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/Factories/MountFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/User/MakeUserCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,11,30
+  s_5eb93878083371::t_4b3535ecea262d 22,46
+app/Http/Requests/Api/Application/Users/DeleteUserRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,12,52,104
+  s_5eb93878083371::t_4b3535ecea262d 25-26
+app/Transformers/Api/Client/BaseClientTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Providers/RouteServiceProvider.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,30
+  s_5eb93878083371::t_4b3535ecea262d 37-38,45
+app/Transformers/Api/Client/DatabaseTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,64
+  s_5eb93878083371::t_4b3535ecea262d 15,27,65-66
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 34,48-50,64,82,94,116
+app/Services/Backups/InitiateBackupService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,18,64,72,114
+  s_5eb93878083371::t_4b3535ecea262d 30-34
+tests/Integration/Services/Servers/VariableValidatorServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2018_09_03_143756_allow_egg_variables_to_have_longer_values.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Models/Setting.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 22-28
+app/Services/Users/TwoFactorSetupService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,10,31,33-34
+  s_5eb93878083371::t_4b3535ecea262d 19
+config/recaptcha.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Notifications/SendPasswordReset.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/PterodactylException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7-9
+app/Services/Servers/EnvironmentService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,40,83
+database/migrations/old/2022_08_16_230204_add_installed_at_column_to_servers_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Requests/Api/Application/Users/UpdateUserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Settings/SendTestMailRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Eloquent/ServerVariableRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Api/Client/Server/Database/DatabaseAuthorizationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,18-25
+app/Http/Requests/Api/Client/Servers/Schedules/DeleteScheduleRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Startup/GetStartupRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Settings/GetSettingsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+config/logging.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Traits/MocksUuids.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Contracts/Repository/ApiPermissionRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Events/Extensions/ExtensionRemoved.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Transformer/InvalidTransformerLevelException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Client/EggTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_04_21_151432_AddServiceScriptTrackingToServers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Client/Server/Files/FileControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,45-56
+  s_5eb93878083371::t_21990b3588a236 57-58
+app/Http/Requests/Api/Client/Servers/Settings/ReinstallServerRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_03_14_175631_RenameServicePacksToSingluarPacks.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,22,32,38
+resources/lang/en/admin/server.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+resources/lang/en/validation.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Middleware/PreventRequestForgery.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Client/Servers/PowerController.php
+  s_5eb93878083371::t_4b3535ecea262d 25
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,41
+database/Factories/ApiKeyFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Egg/BadJsonFormatException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/Seeders/EggSeeder.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,32,52,55
+  s_5eb93878083371::t_4b3535ecea262d 37
+app/Repositories/Eloquent/AllocationRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 42,46-47,59,70
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,80-101
+  s_5eb93878083371::t_41439581e11cc3 102
+database/migrations/old/2020_04_22_055500_add_max_connections_column.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+routes/auth.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,27
+app/Http/Controllers/Api/Application/Nodes/NodeController.php
+  s_5eb93878083371::t_4b3535ecea262d 35,45,59-61,112
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,29,130
+tests/Integration/Api/Admin/Nodes/NodeControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,20-32,243
+app/Services/Deployment/NodeTagGate.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,29,32
+tests/Integration/Api/Client/Server/ResourceUtilizationControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,19,24
+app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 21,26
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Http/Connection/DaemonConnectionException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25,73
+tests/Integration/Api/Client/Server/NetworkAllocationControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-20
+app/Http/Controllers/Api/Admin/Nodes/ConfigurationController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20
+database/migrations/old/2018_02_24_112356_add_external_id_column_to_servers_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Services/Servers/GetUserPermissionsService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,36,183,225
+  s_5eb93878083371::t_4b3535ecea262d 42,55,65,84,117,141
+app/Http/Kernel.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Nodes/Allocations/BulkDeleteAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_01_23_200440_create_jobs_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Requests/Api/Admin/Settings/UpdateAdvancedSettingsRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+resources/lang/en/admin/node.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Users/UserUpdateService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,10,18
+app/Console/Commands/Extensions/PortCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 23-24
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Database/TooManyDatabasesException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_10_26_194904_remove_nullable_from_schedule_name_field.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,19,29
+database/migrations/old/2020_12_12_102435_support_multiple_docker_images_and_updates.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17,31,41,55
+app/Repositories/Eloquent/RecoveryTokenRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/TaskLog.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Api/Admin/VersionControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Contracts/Core/ReceivesEvents.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 41,71
+database/migrations/old/2016_01_23_202544_add_service_options.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+database/migrations/old/2016_09_14_145945_allow_longer_regex_field.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Admin/Mounts/DetachNodeController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Facades/LogTarget.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Nodes/NodeDeletionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Backups/StoreBackupRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Admin/SubuserTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Application/Servers/UpdateServerBuildConfigurationRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,109
+bootstrap/tests.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Mounts/MountControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15-26
+app/Repositories/Repository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_beb96705dccd76 96
+  s_5eb93878083371::t_4b3535ecea262d 97-100
+database/migrations/old/2026_05_31_000000_add_sort_order_to_egg_variables_table.php
+  s_5eb93878083371::t_4b3535ecea262d 18,25
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Events/User/Deleting.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_04_03_230614_create_backups_table.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21,32
+database/migrations/old/2021_01_17_102401_create_audit_logs_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Services/Users/ToggleTwoFactorService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,19,34
+  s_5eb93878083371::t_4b3535ecea262d 27-28,50,85
+config/backups.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_09_01_211924_remove_active_column.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Admin/AdminApiIntegrationTestCase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Eggs/EggScriptControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14-22
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_5eb93878083371::t_b8852107b12de5 306
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,17-29
+app/Http/Requests/Api/Admin/Tags/DeleteTagRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 38,48,62-63
+app/Http/Requests/Api/Client/Account/StoreSSHKeyRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,76
+  s_5eb93878083371::t_4b3535ecea262d 19,38,41
+app/Services/Subusers/SubuserCreationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15,31,49
+  s_5eb93878083371::t_4b3535ecea262d 22
+app/Support/Alerts/AlertsMessageBag.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 11,17
+app/Models/Filters/AdminServerFilter.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,19,24,28
+  s_5eb93878083371::t_3ab56c47b18fa7 7,22
+database/migrations/2026_07_07_000001_drop_extension_quarantine_column.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 17,28
+app/Notifications/AddedToServer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/Themes/ListCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,19,23
+app/Repositories/Eloquent/SettingsRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,30,48,50,67,76
+  s_5eb93878083371::t_d85e356c6a87b7 49
+database/migrations/old/2022_05_07_165334_migrate_egg_images_array_to_new_format.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 17,34
+database/migrations/2026_08_20_000003_make_eggs_nest_id_nullable.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 19,33
+app/Services/Eggs/EggCreationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21
+database/migrations/old/2018_02_04_145617_AllowTextInUserExternalId.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Admin/Servers/ToggleBackupController.php
+  s_5eb93878083371::t_4b3535ecea262d 27
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Contracts/Repository/PermissionRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Listeners/RevocationListener.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25,32-33
+app/Console/Commands/Maintenance/CleanServiceBackupFilesCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 35,39
+app/Jobs/Schedule/RunTaskJob.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,19,38,72,75,87
+  s_5eb93878083371::t_4b3535ecea262d 44,66-71,96,118,129
+app/Exceptions/Extensions/InvalidExtensionException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Location/HasActiveNodesException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_12_14_013707_make_successful_nullable_in_server_transfers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Services/Nodes/NodeUpdateService.php
+  s_5eb93878083371::t_4b3535ecea262d 24-27,42,59
+  s_5eb93878083371::t_2b5b67b6f77ef6 60
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16,33
+tests/Integration/Api/Client/Server/Schedule/GetServerSchedulesTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,26-33
+  s_5eb93878083371::t_6c7d7b5f704fdf 34-35
+app/Contracts/Criteria/CriteriaInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Eggs/UpdateEggScriptRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Events/User/Created.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/Scribe/Strategies/InferPterodactylBodyParameters.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,13,15,19,51,76-99
+app/Models/Allocation.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,57-64
+  s_5eb93878083371::t_4b3535ecea262d 103
+  s_5eb93878083371::t_adeb8943e35baa 65
+database/migrations/old/2017_10_06_215741_ServiceVariablesToEggVariablesConversion.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20,38
+database/migrations/old/2020_07_02_213612_create_user_recovery_tokens_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+database/migrations/old/2022_12_12_213937_update_mail_settings_to_new_format.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,35,42,67
+  s_5eb93878083371::t_4b3535ecea262d 28,32,41,52,57,64
+app/Http/Requests/Api/Application/Servers/UpdateServerDetailsRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_04_27_145300_AddCopyScriptFromColumn.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+app/Repositories/Eloquent/TaskRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Eggs/Variables/VariableCreationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,34,55-62
+  s_5eb93878083371::t_688ba317494a90 63
+database/migrations/old/2017_09_23_185022_RemoveDaemonSecretFromSubusersTable.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 22,33,37,48,53,57
+app/Http/Controllers/Api/Admin/VersionController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,19,31
+app/Notifications/RemovedFromServer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Schedule/UpdateServerScheduleTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,29-32
+  s_5eb93878083371::t_235afccaa16812 33
+database/migrations/old/2021_08_03_210600_change_successful_field_to_default_to_false_on_backups_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17,32
+app/Http/Controllers/Auth/ForgotPasswordController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21,25
+app/Transformers/Api/Admin/BackupTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/IntegrationTestCase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_90323730f62131 37,39-43
+app/Repositories/Eloquent/BackupRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25,41
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,27,85,103
+  s_5eb93878083371::t_4b3535ecea262d 37-39,106
+app/Transformers/Api/Admin/MountTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_02_20_155318_add_unique_service_field.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Requests/Api/Admin/Servers/Databases/GetDatabasesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/Scribe/Attributes/ResponseFromTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7,10
+app/Exceptions/Model/DataValidationException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 23
+app/Services/Allocations/AllocationDeletionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 16
+app/Http/Controllers/Api/Application/Eggs/EggController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Providers/BackupsServiceProvider.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,18
+database/migrations/old/2016_09_01_193520_add_suspension_for_servers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Requests/Api/Admin/Eggs/GetEggRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/ApiKeys/GetApiKeysRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/ApiKeys/StoreApiKeyRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,24,38
+database/migrations/old/2016_10_14_164802_update_api_keys.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+database/migrations/old/2021_03_21_104718_force_cron_month_field_to_have_value_if_missing.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Files/CompressFilesRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,55
+app/Transformers/Api/Client/StatsTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Notifications/ServerInstalled.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/Factories/UserSSHKeyFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,34-62,160
+database/migrations/old/2018_03_15_124536_add_description_to_nodes.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Requests/Api/Admin/Extensions/DeleteExtensionRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_03_22_163911_merge_permissions_table_into_subusers.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,87
+  s_5eb93878083371::t_4b3535ecea262d 68,74,77,84-85,116,123
+app/Events/Extensions/ExtensionDisabled.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+scripts/check-openapi-coverage.php
+  s_5eb93878083371::t_3ab56c47b18fa7 55,67,77,125,128
+app/Http/Controllers/Api/Admin/Nodes/SystemInformationController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,22,30,42,57,61,63
+app/Http/Requests/Api/Admin/GetVersionRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_12_17_014330_add_archived_field_to_server_transfers_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17,30
+app/Http/Requests/Api/Client/Servers/Settings/RenameServerRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2018_01_11_213943_AddApiKeyPermissionColumns.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,18,37,45
+database/migrations/old/2016_09_02_190647_add_sftp_password_storage.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2016_09_04_182835_create_notifications_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_5eb93878083371::t_4b3535ecea262d 38,52-54,71,90-91,113,125,149
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_5eb93878083371::t_90323730f62131 120-121
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,63,162
+  s_5eb93878083371::t_4b3535ecea262d 93,103
+app/Extensions/Illuminate/Events/Contracts/SubscribesToEvents.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Application/EggTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,18,50,56,119,139
+  s_5eb93878083371::t_4b3535ecea262d 120-124,140-144
+app/Http/Requests/Api/Admin/AdminApiRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 28
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Repositories/Eloquent/SessionRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_11_04_000949_add_ark_service_option_fixed.php
+  s_5eb93878083371::t_4b3535ecea262d 14,80
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Files/ListFilesRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,134,149,243,253
+  s_5eb93878083371::t_4b3535ecea262d 39,56,66,83-86,143,193
+config/mail.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Application/Nodes/GetNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Telemetry/TelemetryCollectionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,11,42,62,65,127
+  s_5eb93878083371::t_4b3535ecea262d 31-32,107
+database/migrations/2026_08_20_000001_create_tags_tables.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 19,44
+app/Models/ServerVariable.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,28-32
+  s_5eb93878083371::t_4813fc9fd196ee 33
+app/Console/Commands/Environment/AppSettingsCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 93,149,158
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,96,122,151
+app/Http/Requests/Api/Admin/Nodes/GetUtilizationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Application/Locations/GetLocationsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_09_11_002938_TransferOldTasksToNewScheduler.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,18,21,60
+app/Services/Databases/DatabaseManagementService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,20,55,72,106,123,133,145,164
+  s_5eb93878083371::t_4b3535ecea262d 30
+app/Http/Controllers/Api/Admin/Servers/ServerBackupController.php
+  s_5eb93878083371::t_4b3535ecea262d 32
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_5eb93878083371::t_4b3535ecea262d 58,76,90,116
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Remote/SftpAuthenticationFormRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Application/Location/LocationControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Users/ExternalController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 24
+app/Http/Requests/Api/Client/Servers/Settings/SetDockerImageRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_01_12_135449_add_more_user_data.php
+  s_5eb93878083371::t_4b3535ecea262d 17,24,31,41
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Repositories/Eloquent/EloquentRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,249,255,271-290
+  s_5eb93878083371::t_4b3535ecea262d 240
+app/Providers/EventServiceProvider.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Admin/BaseAdminTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/Extension.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Users/UserCreationService.php
+  s_5eb93878083371::t_4b3535ecea262d 19,37
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,12,28
+app/Http/Requests/Api/Admin/Users/GetUsersRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Listeners/AuthenticationListener.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 43-45
+app/Http/Controllers/Api/Admin/Servers/ReinstallController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26
+database/migrations/old/2016_01_23_201649_add_server_variables.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,35,131,153,206,228,356
+  s_5eb93878083371::t_4b3535ecea262d 44,59,74,81,88,102-103
+app/Http/Requests/Api/Admin/Servers/DeleteServerRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/Mount.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,75-102
+  s_5eb93878083371::t_7e851443373acb 103
+app/Http/Requests/Api/Admin/Nodes/Allocations/BlockDeleteAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_08_15_214555_CascadeDeletionWhenAParentServiceIsDeleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,30,73,83,105
+  s_5eb93878083371::t_4b3535ecea262d 36,50-52,62,79,109,115
+tests/Integration/Api/Client/Server/Files/CompressFilesTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/Factories/EggVariableFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 45-46,55-56
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,44,54
+tests/Integration/Jobs/RevokeSftpAccessJobTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,43,67
+tests/Integration/Api/Client/Server/Schedule/ScheduleAuthorizationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14-24
+tests/Integration/Api/Admin/Settings/SettingsControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,26-27,30-35,160-161,164-197
+app/Transformers/Api/Application/NodeTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 36
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_09_17_194246_add_docker_image_column.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 17,22,40
+app/Http/Middleware/Activity/ServerSubject.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,22
+app/Console/Commands/Environment/EmailSettingsCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 45,83,114,135,146
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Contracts/Repository/SettingsRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_03_10_162934_AddNewServiceOptionsColumns.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,34
+tests/Integration/Api/Application/Servers/ServerControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_5eb93878083371::t_4b3535ecea262d 212-213,234,261,273
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/Traits/HasRealtimeIdentifier.php
+  s_5eb93878083371::t_4b3535ecea262d 43
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15,55,66-73
+  s_5eb93878083371::t_b5460b77824783 74
+app/Events/Extensions/ExtensionEnabling.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Servers/BuildModificationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16,32,41
+  s_5eb93878083371::t_2b5b67b6f77ef6 72
+  s_5eb93878083371::t_4b3535ecea262d 24-26
+app/Transformers/Api/Admin/ApiKeyTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,22
+app/Rules/ExistingTag.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,19
+tests/Integration/Api/Client/Server/Backup/BackupAuthorizationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,17-25,44
+tests/Unit/Extensions/ExtensionProviderTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_03_05_212803_DeleteServiceExecutableOption.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+app/Http/Middleware/SetSecurityHeaders.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,33,35
+app/Http/Requests/Api/Admin/Nodes/Allocations/StoreAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_01_23_200159_add_downloads.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Controllers/Api/Admin/Settings/SettingsController.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20,56
+app/Console/Commands/Location/DeleteLocationCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 26-27,38,40
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/User/TwoFactorAuthenticationTokenInvalid.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Controller.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/DynamicDatabaseConnection.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 31
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,40
+app/Http/Controllers/Api/Client/Servers/CommandController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25,38,55-56,60,64
+database/migrations/old/2017_02_03_155554_RenameColumns.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,32
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 33
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Nodes/GetNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_12_24_092449_make_allocation_fields_json.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,14,16,25,27
+app/Services/Locations/LocationCreationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Middleware/Api/Client/Server/AuthenticateServerAccess.php
+  s_5eb93878083371::t_4b3535ecea262d 48,53,55,57
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,26
+database/migrations/old/2020_04_04_131016_add_table_server_transfers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20
+app/Http/Requests/Api/Application/Users/GetExternalUserRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Enum/EggSpecificTags.php
+  s_5eb93878083371::t_4b3535ecea262d 95
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,51,101-126
+app/Transformers/Api/Admin/ServerTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,35
+  s_5eb93878083371::t_4b3535ecea262d 17-18
+  s_5eb93878083371::t_4f1096558fc1d2 36
+app/Console/Commands/Extensions/ListCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21
+config/queue.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Subusers/StoreSubuserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/ApiKeys/ApiKeyControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-32
+app/Http/Requests/Api/Admin/Servers/ToggleInstallRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Servers/UpdateServerDetailsRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Admin/ServerTransferTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Repository/Daemon/InvalidPowerSignalException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/Server.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,139-162,218
+  s_5eb93878083371::t_4b3535ecea262d 138,338,448,467
+app/Models/Attributes/Identifiable.php
+  s_5eb93878083371::t_3ab56c47b18fa7 7-9
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+resources/lang/en/pagination.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Nodes/NodeIntrospectionControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,19-28,43
+tests/Integration/Api/Application/Nodes/NodeCrudTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,18-27,93,97
+tests/Unit/Services/Helpers/AssetHashServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Servers/TransferProgressController.php
+  s_5eb93878083371::t_4b3535ecea262d 27
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Resources/Wings/ServerConfigurationCollection.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,26
+  s_5eb93878083371::t_4b3535ecea262d 27-30
+database/migrations/old/2020_04_17_203438_allow_nullable_descriptions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,20,24,28,38,42,46,50
+database/migrations/old/2016_10_23_203335_add_foreign_nodes.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Services/Servers/ServerCreationService.php
+  s_5eb93878083371::t_4b3535ecea262d 37-44,108,111,204-207
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,29,53,94,157,203,221
+app/Events/Server/Created.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Databases/Hosts/HostUpdateService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14,32
+  s_5eb93878083371::t_4b3535ecea262d 22-26
+app/Services/Allocations/AssignmentService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,63
+app/Http/Requests/Api/Admin/Locations/GetLocationsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Client/Servers/WebsocketController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26,37-38,55
+database/migrations/old/2016_01_23_200044_add_api_permissions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+tests/Integration/Api/Application/Users/ExternalUserControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Repositories/Wings/DaemonTransferRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 35-36
+database/migrations/old/2016_01_23_202943_add_services.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+database/Factories/ActivityLogFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Application/Allocations/GetAllocationsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_04_26_111208_add_backup_limit_to_servers.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 21,26,30,41
+app/Http/Requests/Api/Application/Allocations/StoreAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+config/scribe.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Files/DeleteFileRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Allocation/PortOutOfRangeException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_5eb93878083371::t_4b3535ecea262d 52,89,177,202
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,267
+  s_5eb93878083371::t_53d23bc5f4fa74 8
+app/Events/Auth/ProvidedAuthenticationToken.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_09_21_165554_update_servers_column_name.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2016_12_02_185206_correct_service_variables.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 14
+app/Http/Middleware/TrimStrings.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Helpers/Time.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Middleware/RedirectIfAuthenticated.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,21
+  s_5eb93878083371::t_4b3535ecea262d 16
+tests/Integration/Api/Application/Nodes/NodeControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Http/HttpTestCase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/Filters/MultiFieldServerFilter.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,30,54
+  s_5eb93878083371::t_4b3535ecea262d 18,27,39,46,53,64
+app/Repositories/Eloquent/MountRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 40,51,54
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+config/fractal.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Servers/GetServerMountsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Enum/Permissions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Nodes/GetNodesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Subusers/UpdateSubuserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Schedules/ViewScheduleRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Nodes/Allocations/DeleteAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Base/LocaleRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_06_25_133923_ChangeForeignKeyToBeOnCascadeDelete.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_5eb93878083371::t_4b3535ecea262d 31,36,45-46,110-111
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,25,86,102
+app/Services/Allocations/FindAssignableAllocationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,80,84
+  s_5eb93878083371::t_4b3535ecea262d 23,53,73-74,101
+app/Http/Requests/Api/Admin/Locations/GetLocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/SendPowerRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 18-23
+tests/Integration/Api/Admin/Servers/ServerControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,22-40
+app/Http/Requests/Api/Admin/Servers/Databases/ServerDatabaseWriteRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Contracts/Repository/SubuserRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Servers/ToggleInstallController.php
+  s_5eb93878083371::t_4b3535ecea262d 22
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_5eb93878083371::t_4b3535ecea262d 39,53-54,80
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,33,102
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,85
+app/Http/Controllers/Auth/ResetPasswordController.php
+  s_5eb93878083371::t_4b3535ecea262d 27,33,70
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,43-48
+  s_5eb93878083371::t_db35e92343ccee 49
+app/Models/ActivityLog.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,18,36,76-83,146
+  s_5eb93878083371::t_4b3535ecea262d 160
+config/http.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7-8,22,25
+database/Factories/ServerTransferFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Eggs/Sharing/EggUpdateImporterService.php
+  s_5eb93878083371::t_4b3535ecea262d 38,45
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14,26
+tests/Integration/Api/Admin/Eggs/EggControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Databases/DatabasePasswordServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,55,68
+app/Contracts/Repository/RepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 39
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Extensions/Porting/BlueprintPorter.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,11,69,322,485
+  s_5eb93878083371::t_4b3535ecea262d 119,254,366,373,377
+app/Services/Servers/StartupCommandService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+public/index.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/DatabaseHost.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,36-46
+  s_5eb93878083371::t_bc5b2585ee6ec1 47
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_5eb93878083371::t_4b3535ecea262d 35,49-51,67,85,99,124
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Client/ActivityLogController.php
+  s_5eb93878083371::t_4b3535ecea262d 32
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Mounts/UpdateMountRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Application/ServerTransferTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_10_23_181719_update_misnamed_bungee.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+examples/kitchen-sink/src/KitchenSinkProvider.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Settings/GeneralController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_90323730f62131 39
+  s_5eb93878083371::t_4b3535ecea262d 25-26
+app/Exceptions/DisplayException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16,31,71
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,36
+  s_5eb93878083371::t_4b3535ecea262d 29,63
+app/Http/Requests/Api/Application/Eggs/GetEggsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_10_06_214026_ServicesToNestsConversion.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20,27,46,53
+database/migrations/old/2017_02_10_171858_UpdateAPIKeyColumnNames.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+app/Services/Activity/ActivityLogBatchService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,55
+app/Http/Requests/Api/Admin/Nodes/UpdateNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+examples/kitchen-sink/src/KitchenSinkSettings.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,34-35
+database/migrations/old/2017_09_23_170933_CreateDaemonKeysTable.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+database/migrations/old/2021_02_23_212657_make_sftp_port_unsigned_int.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Remote/ActivityProcessingController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8-9,43,47
+  s_5eb93878083371::t_4b3535ecea262d 23,72
+  s_5eb93878083371::t_2b5b67b6f77ef6 48
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,41
+  s_5eb93878083371::t_4b3535ecea262d 60
+database/migrations/old/2016_10_23_202953_add_foreign_database_servers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Exceptions/Http/HttpForbiddenException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,9,16
+app/Http/Requests/Api/Admin/Eggs/ImportEggRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_03_03_224254_UpdateNodeConfigTokensColumns.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,30
+tests/Traits/Http/MocksMiddlewareClosure.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,20
+app/Exceptions/Service/Helper/CdnVersionFetchingException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7-9
+app/Exceptions/Http/TwoFactorAuthRequiredException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 10,17
+tests/Integration/Api/Client/Server/WebsocketControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Databases/DatabasePasswordService.php
+  s_5eb93878083371::t_4b3535ecea262d 21-24,36
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,13,30
+app/Transformers/Api/Admin/DatabaseHostTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 14-15,61
+app/Http/Requests/Api/Admin/DatabaseHosts/GetDatabaseHostsRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Nodes/GetSystemInformationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Extensions/ExtensionSettings.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,100
+  s_5eb93878083371::t_4b3535ecea262d 18,33,99
+database/migrations/old/2016_10_23_202222_add_foreign_api_keys.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_5eb93878083371::t_4b3535ecea262d 38-40,54,73,88,112
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_02_13_154306_add_service_option_default_startup.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+database/migrations/old/2016_01_23_200421_create_failed_jobs_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+config/egg_features/eula.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_09_10_225941_CreateSchedulesTable.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Requests/Api/Client/Servers/Backups/RestoreBackupRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Nodes/NodeCreationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+config/sanctum.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Allocation/TooManyPortsInRangeException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Application/Nodes/DeleteNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Events/Auth/DirectLogin.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+bootstrap/app.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Egg/NoParentConfigurationFoundException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Locations/LocationUpdateService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/TestCase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,34,107-108
+app/Http/Requests/Api/Admin/Mounts/GetMountRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_04_02_163232_DropDeletedAtColumnFromServers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_5eb93878083371::t_4b3535ecea262d 111
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,47
+config/pterodactyl.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Application/LocationTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Tags/TagResolutionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,31
+rector.php
+  s_5eb93878083371::t_e01598a0873458 6,24-26
+  s_5eb93878083371::t_12f6dba6f85352 7,19-23,27-29
+app/Providers/RepositoryServiceProvider.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Extensions/Spatie/Fractalistic/Fractal.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26
+app/Http/Requests/Auth/LoginRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2021_01_17_152623_add_generic_server_status_column.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17,25,36,45
+app/Http/Requests/Api/Admin/DatabaseHosts/GetDatabaseHostRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Admin/TagTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 14
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Extensions/ExtensionRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 28-31,110,113,123-124,148-149
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14,36,44,93,134,140,147,156,167-180
+  s_5eb93878083371::t_7673b5ed8f1e88 181
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,26,105,141
+  s_5eb93878083371::t_4b3535ecea262d 32,39,49,59,73-75
+app/Http/Controllers/Api/Admin/Eggs/ExportEggController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,52
+  s_5eb93878083371::t_4b3535ecea262d 39
+app/Services/Databases/Hosts/HostCreationService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14,32
+  s_5eb93878083371::t_4b3535ecea262d 22-26
+config/services.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/Factories/UserFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_01_23_203150_add_subusers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+resources/lang/en/strings.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Application/Nodes/NodeDeploymentControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2020_08_22_132500_update_bytes_to_unsigned_bigint.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Admin/Servers/StartupController.php
+  s_5eb93878083371::t_4b3535ecea262d 26,35
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/UpgradeCommand.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7-8,36,180
+  s_5eb93878083371::t_4b3535ecea262d 38,98,101,107,112,115,120,130,142,147,152,157,161,166,171
+app/Extensions/ExtensionProvider.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,120
+  s_5eb93878083371::t_4b3535ecea262d 115-118
+app/Http/Controllers/Api/Remote/EggInstallController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 20
+app/Repositories/Wings/DaemonCommandRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 33-34
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_01_23_201531_add_permissions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Models/Task.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,50-58
+  s_5eb93878083371::t_33a356847de118 59
+app/Http/Controllers/Api/Admin/Servers/BuildController.php
+  s_5eb93878083371::t_4b3535ecea262d 25,34
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Extensions/Compat/Blueprint/BlueprintExtensionLibrary.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 36
+database/migrations/old/2016_01_23_203119_create_settings_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+database/migrations/old/2017_08_05_144104_AllowNegativeValuesForOverallocation.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 16,27
+tests/Integration/Api/Admin/IncludesTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,185-203
+  s_5eb93878083371::t_0f3ea934cb8e24 204
+database/migrations/old/2017_09_13_211810_UpdateOldPermissionsToPointToNewScheduleSystem.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_10_24_222238_RemoveLegacySFTPInformation.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+tests/Integration/Api/Client/Server/Startup/GetStartupAndVariablesTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,17-21
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Files/DecompressFilesRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Nodes/BulkDeleteAllocationsController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25
+database/migrations/old/2018_02_17_134254_ensure_unique_allocation_id_on_servers_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2016_02_27_163447_add_tasks_log_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Contracts/Repository/DatabaseHostRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/MountNode.php
+  s_5eb93878083371::t_3ab56c47b18fa7 11-12
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 24,35-36
+app/Http/Requests/Api/Admin/Servers/StoreServerMountRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 22
+app/Enum/JwtScope.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Application/Servers/GetServerRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_10_10_165437_change_unique_database_name_to_account_for_server.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,20,30,34
+app/Events/Event.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/Egg.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,83-101
+  s_5eb93878083371::t_0b1e5040b77a13 102
+app/Http/Requests/Api/Client/GetServersRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_07_08_154416_SetAllocationToReferenceNullOnServerDelete.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+tests/Integration/Api/Client/Server/Allocation/CreateNewAllocationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,28-30
+  s_5eb93878083371::t_acc54ad6322972 31-32
+app/Http/Controllers/Api/Client/Servers/ResourceUtilizationController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,73
+  s_5eb93878083371::t_4b3535ecea262d 25,41,54,69
+app/Providers/ActivityLogServiceProvider.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,17
+app/Http/Controllers/Api/Application/Servers/DatabaseController.php
+  s_5eb93878083371::t_4b3535ecea262d 31,45-46,57,98
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,25,81,95
+tests/Integration/Api/Application/ApplicationApiIntegrationTestCase.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Remote/Backups/BackupRemoteUploadController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,20,34-35
+  s_5eb93878083371::t_4b3535ecea262d 29,127
+database/migrations/old/2018_02_25_160152_remove_default_null_value_on_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,20,24
+database/migrations/old/2021_08_21_175111_add_foreign_keys_to_mount_node_table.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 18,34,52
+resources/lang/en/activity.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Client/AllocationTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,10
+app/Transformers/Api/Admin/ServerVariableTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Kernel.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,73
+database/migrations/old/2016_01_23_203159_add_users.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Enum/ResourceLimit.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,30-42
+  s_5eb93878083371::t_523c8ccddb825c 43
+app/Http/Requests/Api/Application/Locations/StoreLocationRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Console/Commands/Node/MakeNodeCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,36,46
+app/Http/Middleware/Activity/TrackAPIKey.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,20
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,132
+  s_5eb93878083371::t_4b3535ecea262d 34,44,59-60,70,83,109,128
+app/Http/Requests/Api/Admin/ApiKeys/DeleteApiKeyRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Eggs/Variables/UpdateVariableRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Application/Locations/LocationController.php
+  s_5eb93878083371::t_4b3535ecea262d 36,50-52,99
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,32,90,192
+  s_5eb93878083371::t_4b3535ecea262d 38,52-53,62,74,93,120,144,175
+app/Exceptions/Service/Egg/HasChildrenException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Deployment/FindViableNodesService.php
+  s_5eb93878083371::t_4b3535ecea262d 30,131
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,38
+database/migrations/old/2017_06_10_152951_add_external_id_to_users.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/Factories/NodeFactory.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Client/ServerTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 23,26-27
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Subuser/SubuserAuthorizationTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,16-20
+tests/Unit/Http/Middleware/RedirectIfAuthenticatedTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Contracts/Repository/EggVariableRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Unit/Services/Acl/Api/AdminAclTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14-29
+routes/api-remote.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,15,23
+database/migrations/old/2016_09_04_171338_update_jobs_tables.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+tests/Integration/Http/Controllers/Auth/LoginCheckpointControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Servers/Backups/ToggleBackupRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_5eb93878083371::t_4b3535ecea262d 29,62,70
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,22,34,92,118
+app/Http/Controllers/Auth/AbstractLoginController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/DatabaseHosts/StoreDatabaseHostRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 21
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Eggs/UpdateEggRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Base/IndexController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Admin/Servers/ServerInstallControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/TestResponse.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,20
+app/Repositories/Eloquent/SubuserRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Allocation/AllocationDoesNotBelongToServerException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Application/Servers/Databases/ServerDatabaseWriteRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Application/Nodes/GetNodesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Extensions/Contracts/ManagesExtensionSettings.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2018_09_03_144005_allow_server_variables_to_have_longer_values.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Controllers/Api/Admin/Nodes/DeleteAllocationBlockController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 25
+app/Http/Requests/Api/Application/Eggs/GetEggRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2023_01_24_210051_add_uuid_column_to_failed_jobs_table.php
+  s_5eb93878083371::t_4b3535ecea262d 18,22,34
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Repositories/Eloquent/ApiKeyRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2022_05_29_140349_create_activity_log_actors_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 24,44,53
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Contracts/Repository/SessionRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2020_09_13_110007_drop_packs_from_servers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+database/migrations/old/2022_06_18_112822_track_api_key_usage_for_activity_events.php
+  s_5eb93878083371::t_4b3535ecea262d 16,26
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Subuser/GetSubusersTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/PowerControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,17-44,84,90,96
+app/Http/Requests/Api/Admin/Mounts/DetachNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Servers/Subusers/GetSubuserRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Application/UserTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Extensions/Scribe/Strategies/InferPterodactylResponses.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,14-15,75,94,109
+app/Http/Requests/Api/Client/Servers/GetServerRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/DatabaseHosts/UpdateDatabaseHostRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Controllers/Api/Admin/Mounts/DetachEggController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_10_06_214053_ServiceOptionsToEggsConversion.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,18,25,32,39,44,61,68,75,82,87
+database/migrations/old/2017_01_03_150436_fix_misnamed_option_tag.php
+  s_5eb93878083371::t_4b3535ecea262d 14
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Policies/ServerPolicy.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,13-15,17,19,35,37,39-44
+.github/workflows/ci.yaml
+  s_5eb93878083371::t_484b6768b05711 54
+app/Http/Controllers/Api/Admin/AdminApiController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Servers/VariableValidatorService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,54
+  s_5eb93878083371::t_4b3535ecea262d 40-42,55-58
+tests/Integration/Api/Client/Server/Backup/BackupControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Extensions/ExtensionSettingsRegistry.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Events/Server/Updating.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/ApiRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+examples/kitchen-sink/src/Http/Controllers/StatsController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Traits/MocksRequestException.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,32
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 26
+app/Events/Server/Deleting.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Transformers/Api/Application/AllocationTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Eggs/EggUpdateService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Assertions/AssertsActivityLogged.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Admin/Locations/DeleteLocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+resources/lang/en/dashboard/index.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_08_18_215428_RemovePackWhenParentServiceOptionIsDeleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,28
+database/migrations/old/2016_10_23_204454_add_foreign_subusers.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,27
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 24,37,46,59
+app/Http/Requests/Api/Admin/Eggs/Variables/GetVariablesRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Repositories/Wings/DaemonRevocationRepository.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,25-26
+app/Events/Auth/FailedCaptcha.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Backup/BackupLockedException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Unit/Services/Extensions/ExtensionManagerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Traits/Integration/CreatesTestModels.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Servers/BuildModificationServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,10,113
+app/Transformers/Api/Client/ApiKeyTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+resources/lang/en/command/messages.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+config/hashids.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Services/Eggs/EggParserService.php
+  s_5eb93878083371::t_4b3535ecea262d 48
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,10,19,87
+app/Models/EggMount.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 9-10
+database/migrations/old/2020_09_13_110047_drop_packs_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,24,37
+app/Console/Commands/Extensions/InstallCommand.php
+  s_5eb93878083371::t_4b3535ecea262d 23-24
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Files/GetFileContentsRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 27,36,46
+config/extensions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Nodes/DeleteNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_02_02_175548_UpdateColumnNames.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,47
+app/Http/Requests/Api/Admin/Locations/StoreLocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 21
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Jobs/RevokeSftpAccessJob.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+config/cache.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Api/Client/Server/Schedule/CreateServerScheduleTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15-19
+app/Http/Requests/Api/Application/Allocations/DeleteAllocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2018_05_04_123826_add_maintenance_to_nodes.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Notifications/AccountCreated.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Users/UserDeletionServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Models/UserSSHKey.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,53-57
+  s_5eb93878083371::t_2bf459a67629ce 58
+app/Services/Tags/TagBackfiller.php
+  s_5eb93878083371::t_4b3535ecea262d 19,35,48,129
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,68,207
+app/Http/Requests/Api/Admin/Tags/UpdateTagRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2016_01_25_234418_rename_permissions_column.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+tests/Integration/Api/Remote/ServerTransferControllerTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Client/EggVariableTransformer.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7,23
+app/Http/Controllers/Base/LocaleController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Extensions/ExtensionManager.php
+  s_5eb93878083371::t_4b3535ecea262d 21
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/Service/Deployment/NoViableNodeException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2016_09_04_172028_update_failed_jobs_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+database/migrations/old/2017_04_15_125021_UpgradeTaskSystem.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 17,27,40
+app/Repositories/Wings/DaemonPowerRepository.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 31-32
+app/Models/Location.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,33-39
+  s_5eb93878083371::t_12aa3d421a300b 40
+app/Http/Requests/Api/Admin/Locations/UpdateLocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Exceptions/Service/Deployment/NoViableAllocationException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Middleware/EnsureStatefulRequests.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Eggs/EggDeletionService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_03_18_204953_AddForeignKeyToPacks.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Exceptions/Service/Schedule/Task/TaskIntervalTooLongException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2021_05_01_092457_add_continue_on_failure_option_to_tasks.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Http/Requests/Api/Client/Servers/Schedules/StoreScheduleRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Traits/Services/HasUserLevels.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Transformers/Api/Client/UserSSHKeyTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+resources/lang/en/admin/user.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Settings/TestMailController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,17,44
+  s_5eb93878083371::t_4b3535ecea262d 23,45
+database/migrations/old/2017_03_11_215455_ChangeServiceVariablesValidationRules.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 16,20,27,37,42
+app/Transformers/Api/Application/SubuserTransformer.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Requests/Api/Client/Servers/Databases/GetDatabasesRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Services/Schedules/ProcessScheduleService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,15,27
+  s_5eb93878083371::t_4b3535ecea262d 22,36,65
+app/Exceptions/AutoDeploymentException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7-9
+app/Services/Nodes/NodeJWTService.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,28,60
+  s_5eb93878083371::t_4b3535ecea262d 102
+tests/Unit/Services/Extensions/ExtensionSettingsRegistryTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Exceptions/AccountNotFoundException.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+  s_5eb93878083371::t_3ab56c47b18fa7 7-9
+app/Http/Requests/Api/Application/Nodes/UpdateNodeRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2023_02_23_191004_add_expires_at_column_to_api_keys_table.php
+  s_5eb93878083371::t_4b3535ecea262d 16,26
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2020_09_13_110021_drop_packs_from_api_key_permissions.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,26
+app/Extensions/Hashids.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Middleware/Activity/AccountSubject.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,17
+app/Http/Requests/Api/Client/Servers/Databases/RotatePasswordRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Traits/Services/ReturnsUpdatedModels.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+scripts/check-zustand-boundary.php
+  s_5eb93878083371::t_3ab56c47b18fa7 69
+app/Contracts/Repository/EggRepositoryInterface.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Admin/Servers/GetServerRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+tests/Unit/Http/Middleware/Api/Application/AuthenticateUserTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Databases/DatabaseManagementServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,9,37-48,151,157,165,183,199,203
+tests/Integration/Services/Servers/SuspensionServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,8,26
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,181
+  s_5eb93878083371::t_4b3535ecea262d 36,50-51,63,80,127,138
+app/Http/Requests/Api/Client/Servers/Network/DeleteAllocationRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+tests/Integration/Services/Servers/ServerDeletionServiceTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,7,11,40-41,125,127,129,150,152
+database/migrations/old/2020_03_22_164814_drop_permissions_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,24
+app/Http/Controllers/Api/Admin/Nodes/AvailableAllocationsController.php
+  s_5eb93878083371::t_4b3535ecea262d 34
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Http/Controllers/Api/Admin/Eggs/UpdateImportEggController.php
+  s_5eb93878083371::t_4b3535ecea262d 25,34
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+config/app.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2017_03_10_173607_MigrateToNewServiceSystem.php
+  s_5eb93878083371::t_4b3535ecea262d 14,21,29
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+database/migrations/old/2021_07_17_211512_create_user_ssh_keys_table.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+  s_5eb93878083371::t_4b3535ecea262d 45,55,71,87
+database/migrations/old/2017_10_02_202000_ChangeServicesToUseAMoreUniqueIdentifier.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,18,29,36,46
+database/migrations/old/2020_04_10_141024_store_node_tokens_as_encrypted_value.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,43-44
+  s_5eb93878083371::t_4b3535ecea262d 22,26,33,49,60,72,77,82
+tests/Integration/Api/Client/Server/ScheduleTask/DeleteScheduleTaskTest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Events/Subuser/Deleted.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Http/Requests/Api/Client/Account/UpdatePasswordRequest.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4
+app/Extensions/Laravel/Sanctum/NewAccessToken.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/Factories/DatabaseHostFactory.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+app/Models/ApiKey.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,105-127,172,174-206
+app/Http/Requests/Api/Application/Locations/DeleteLocationRequest.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4
+database/migrations/old/2017_02_03_140948_UpdateNodesTable.php
+  s_5eb93878083371::t_4b3535ecea262d 3-4,16,29
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_5eb93878083371::t_3ab56c47b18fa7 3-4,23,39,66,123
+  s_5eb93878083371::t_4b3535ecea262d 31-33,112,127
+  s_5eb93878083371::t_2b5b67b6f77ef6 113
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2cf9e2747a9cde8ca5990e73bb3d78f2cd0d936e",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
