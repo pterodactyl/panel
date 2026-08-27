@@ -1,0 +1,137 @@
+tests/Integration/Api/Admin/Eggs/EggCrudControllerTest.php
+  s_5eb93878083371::t_7652b0362fb675 38-39
+  s_5eb93878083371::t_d00804c7d8eec9 29,32,36,43-44,65,68,74,90,93,98,102,122,140,165-166,178,192,194
+resources/scripts/api/admin/servers/queries.ts
+  s_5eb93878083371::t_1840711a5bc831 204
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_5eb93878083371::t_c1c8ca9d21f8dd 243,248
+database/Seeders/EggSeeder.php
+  s_5eb93878083371::t_e822729ac66804 18-20,24-27,46-47,52-55,57,59,61,71,80
+tests/Integration/Api/Admin/Eggs/EggShareControllerTest.php
+  s_5eb93878083371::t_ebb40693396d25 50,66,73,81,100,110,125
+database/migrations/2026_08_20_000004_relax_nest_id_on_servers_table.php
+  s_5eb93878083371::t_2df845109d9cf9 1-47
+app/Http/Controllers/Api/Application/Eggs/EggController.php
+  s_5eb93878083371::t_ee09412c542ee1 29,34,47
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_5eb93878083371::t_8e8699b047fdf8 99
+  s_5eb93878083371::t_4e2e7ea55c5913 105-108
+  s_5eb93878083371::t_ed6b8e12b53c0a 68,83
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_5eb93878083371::t_ed6b8e12b53c0a 19
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_5eb93878083371::t_c1b50917acd559 69,123
+tests/Integration/Api/Application/Servers/ServerControllerTest.php
+  s_5eb93878083371::t_6d12e6f16543b6 56,58,63-64
+app/Services/Eggs/Sharing/EggImporterService.php
+  s_5eb93878083371::t_28bb0c661dab8a 23,27
+app/Models/Extension.php
+  s_5eb93878083371::t_ed6b8e12b53c0a 30-36
+resources/lang/en/exceptions.php
+  s_5eb93878083371::t_c1b50917acd559 16-20
+tests/Unit/Services/Extensions/ExtensionManagerTest.php
+  s_5eb93878083371::t_6e3f035271563d 37-38,40,52
+app/Repositories/Eloquent/EggRepository.php
+  s_5eb93878083371::t_28bb0c661dab8a 82,84
+app/Services/Eggs/Scripts/InstallScriptService.php
+  s_5eb93878083371::t_c1b50917acd559 30
+  s_5eb93878083371::t_28bb0c661dab8a 29
+tests/Integration/Api/Application/Eggs/EggControllerTest.php
+  s_5eb93878083371::t_6d12e6f16543b6 25,62,75,77,81-82
+resources/scripts/components/admin/eggs/EggConfigurationForm.tsx
+  s_5eb93878083371::t_1840711a5bc831 48-49,196
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_5eb93878083371::t_787e75771a1c28 44-81
+tests/Integration/Api/Admin/IncludesTest.php
+  s_5eb93878083371::t_01a018997ae1d1 40,128
+tests/Integration/Database/LegacyNestSchemaTest.php
+  s_5eb93878083371::t_108c73037f147c 6,37
+  s_5eb93878083371::t_0f3cfcfed89f36 1-5,7-36,38-59
+app/Services/Eggs/EggDeletionService.php
+  s_5eb93878083371::t_c1b50917acd559 30,35
+app/Services/Eggs/EggUpdateService.php
+  s_5eb93878083371::t_c1b50917acd559 34
+app/Http/Controllers/Api/Admin/Eggs/ImportEggController.php
+  s_5eb93878083371::t_28bb0c661dab8a 37
+app/Repositories/Eloquent/ServerRepository.php
+  s_5eb93878083371::t_c1b50917acd559 144,170
+app/Contracts/Repository/EggRepositoryInterface.php
+  s_5eb93878083371::t_c1b50917acd559 36
+  s_5eb93878083371::t_28bb0c661dab8a 38
+tests/Traits/Integration/CreatesTestModels.php
+  s_5eb93878083371::t_d3236d5d4894a0 54,57,65
+resources/scripts/components/admin/nodes/NodeServersTab.tsx
+  s_5eb93878083371::t_01f8f50c93f91d 66
+database/Factories/TagFactory.php
+  s_5eb93878083371::t_e822729ac66804 30
+tests/Integration/Api/Admin/Eggs/EggScriptControllerTest.php
+  s_5eb93878083371::t_cb9829b8f95e07 73,91,94,113,115
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_5eb93878083371::t_72fe1476c83254 615
+  s_5eb93878083371::t_974e371cba796a 82,524
+  s_5eb93878083371::t_01f8f50c93f91d 731
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_5eb93878083371::t_ee09412c542ee1 66
+app/Services/Eggs/EggCreationService.php
+  s_5eb93878083371::t_c1b50917acd559 36
+app/Services/Tags/TagResolutionService.php
+  s_5eb93878083371::t_23d7ef4deb0f11 16-20
+app/Transformers/Api/Admin/EggTransformer.php
+  s_5eb93878083371::t_b79c7151aa6c51 14
+  s_5eb93878083371::t_e5a0bba921c691 24
+tests/Integration/Api/Admin/Eggs/EggVariableControllerTest.php
+  s_5eb93878083371::t_01a018997ae1d1 14,17
+resources/scripts/components/admin/eggs/helpers.ts
+  s_5eb93878083371::t_23dde96415be77 33
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_5eb93878083371::t_6e3f035271563d 58,71
+tests/Integration/Services/Servers/StartupModificationServiceTest.php
+  s_5eb93878083371::t_6d12e6f16543b6 19,74
+app/Models/Tag.php
+  s_5eb93878083371::t_ed6b8e12b53c0a 11,61-83
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_5eb93878083371::t_c1b50917acd559 802-803
+resources/scripts/api/generated/types.gen.ts
+  s_5eb93878083371::t_f16ceb80263750 3562-3565,3722,3739,4402,4404,4407,4409,4459,4464,5635,5791,10362,10398,10469,10584
+  s_5eb93878083371::t_efe45a7a3ba242 166
+tests/Integration/Api/Admin/Eggs/EggControllerTest.php
+  s_5eb93878083371::t_d3236d5d4894a0 19,22-23,25,31,45,47
+resources/scripts/api/generated/sdk.gen.ts
+  s_5eb93878083371::t_f16ceb80263750 1098
+database/Factories/ServerFactory.php
+  s_5eb93878083371::t_e822729ac66804 61
+scripts/check-api-layer-native.php
+  s_5eb93878083371::t_75971ad3baf2b1 54
+app/Console/Commands/Extensions/ListCommand.php
+  s_5eb93878083371::t_8e8699b047fdf8 39,48
+tests/Integration/Api/Admin/Servers/ServerControllerTest.php
+  s_5eb93878083371::t_01a018997ae1d1 159
+resources/scripts/api/admin/nodes/queries.ts
+  s_5eb93878083371::t_1840711a5bc831 350
+resources/scripts/api/generated/index.ts
+  s_5eb93878083371::t_f16ceb80263750 5
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_5eb93878083371::t_ee09412c542ee1 231,260-261
+app/Http/Requests/Api/Admin/Tags/UpdateTagRequest.php
+  s_5eb93878083371::t_ed6b8e12b53c0a 17
+app/Traits/Services/ValidatesValidationRules.php
+  s_5eb93878083371::t_c1b50917acd559 27
+tests/Integration/Api/Admin/Mounts/MountAttachmentTest.php
+  s_5eb93878083371::t_d3236d5d4894a0 15,18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.24",
+  "base_commit_sha": "a12f4f8f6dd23f40f369ef34eb281be3f6e0892b",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
