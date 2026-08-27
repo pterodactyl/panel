@@ -1,0 +1,27 @@
+tools/phpstan/anti-slop/src/Rules/NoObjectParametersRule.php
+  s_5eb93878083371::t_6fde61e32c20bb 1-58
+tools/phpstan/anti-slop/tests/Rules/data/no-object-parameters.php
+  s_5eb93878083371::t_6fde61e32c20bb 1-29
+tools/phpstan/anti-slop/.phpunit.cache/test-results
+  s_5eb93878083371::t_56137403ba58ed 1
+tools/phpstan/anti-slop/tests/Rules/NoObjectParametersRuleTest.php
+  s_5eb93878083371::t_6fde61e32c20bb 1-38
+tools/phpstan/anti-slop/src/Support/TypeClassifier.php
+  s_5eb93878083371::t_401046731e5269 9,40-42
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2db5f06271b401b252893588bff3e21886916356",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
