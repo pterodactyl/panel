@@ -1,0 +1,36 @@
+app/Services/Eggs/Sharing/EggImporterService.php
+  s_be04b879a75a03::t_9bc8886be1c8bf 32,39-40
+app/Services/Eggs/EggImportData.php
+  s_be04b879a75a03::t_36db9ca6500c29 3-4,7-11,13-202,204-205,207-221,223
+  s_be04b879a75a03::t_a68b95a099762f 1-2,5-6,12,203,206,222,224-225
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_9bc8886be1c8bf 38
+tests/Unit/Services/Eggs/EggParserServiceTest.php
+  s_be04b879a75a03::t_f569de3f22f3dd 3,5,7-12,14-55
+  s_be04b879a75a03::t_9f16bbaeee8274 1-2,4,6,13,56-57
+app/Services/Eggs/EggParserService.php
+  s_be04b879a75a03::t_9bc8886be1c8bf 20,31,37,40-53
+app/Services/Eggs/EggImportVariable.php
+  s_be04b879a75a03::t_a68b95a099762f 1-2,5-6,8,35,37,39,41-42
+  s_be04b879a75a03::t_36db9ca6500c29 3-4,7,9-34,36,38,40
+app/Services/Eggs/Sharing/EggUpdateImporterService.php
+  s_be04b879a75a03::t_9bc8886be1c8bf 36,39-40,44-47
+tests/Integration/Services/Eggs/EggImporterServiceTest.php
+  s_be04b879a75a03::t_bc416e4a3e1cd9 1-41
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f6f6e5575965d4b308ae45906d9a41e6c3c4b600",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
