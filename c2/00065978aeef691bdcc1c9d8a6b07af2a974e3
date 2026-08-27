@@ -1,0 +1,122 @@
+app/Transformers/Api/Admin/AllocationTransformer.php
+  s_5eb93878083371::t_54c284eb84752d 22-23
+app/Console/Commands/Maintenance/CleanServiceBackupFilesCommand.php
+  s_5eb93878083371::t_c3eb46518f5cd4 37-38,40-41
+database/Factories/UserFactory.php
+  s_5eb93878083371::t_8ef3626bcebf0e 31
+app/Models/Server.php
+  s_5eb93878083371::t_b91915932ede5b 333-335
+  s_5eb93878083371::t_45370b18bd3f8a 12
+  s_5eb93878083371::t_ba0debc35a089c 392-394,396,398,400
+app/Transformers/Api/Client/SubuserTransformer.php
+  s_5eb93878083371::t_84b233fb99d3dd 26
+app/Http/Middleware/SetSecurityHeaders.php
+  s_5eb93878083371::t_3d853cb5e3dbe6 36
+resources/scripts/api/generated/types.gen.ts
+  s_5eb93878083371::t_55eda0da4ae42c 44
+app/Exceptions/ManifestDoesNotExistException.php
+  s_5eb93878083371::t_ba0debc35a089c 5,7,9
+app/Models/Traits/HasRealtimeIdentifier.php
+  s_5eb93878083371::t_3d853cb5e3dbe6 35,37
+app/Services/Servers/StartupCommandService.php
+  s_5eb93878083371::t_8a18eba88ddca0 15
+  s_5eb93878083371::t_b91915932ede5b 14,16-20,24
+app/Services/Eggs/Sharing/EggImporterService.php
+  s_5eb93878083371::t_54c284eb84752d 38
+app/Transformers/Api/Client/EggVariableTransformer.php
+  s_5eb93878083371::t_8a18eba88ddca0 28
+app/Transformers/Api/Admin/ServerTransformer.php
+  s_5eb93878083371::t_54c284eb84752d 101
+  s_5eb93878083371::t_b91915932ede5b 168-169
+app/Console/Commands/Server/BulkPowerActionCommand.php
+  s_5eb93878083371::t_c3eb46518f5cd4 92-94
+rector.php
+  s_5eb93878083371::t_77d01fcfc4a7dd 1-28
+app/Http/Controllers/Api/Client/Servers/ActivityLogController.php
+  s_5eb93878083371::t_c3eb46518f5cd4 49
+app/Transformers/Api/Admin/UserTransformer.php
+  s_5eb93878083371::t_54c284eb84752d 34
+  s_5eb93878083371::t_8a18eba88ddca0 35
+app/Policies/ServerPolicy.php
+  s_5eb93878083371::t_edacaf3d97b15b 15
+.github/workflows/ci.yaml
+  s_5eb93878083371::t_b0fb09b60cd1e9 29-54
+phpstan.neon
+  s_5eb93878083371::t_3d853cb5e3dbe6 14
+  s_5eb93878083371::t_c3eb46518f5cd4 10,15-21
+app/Extensions/Scribe/Strategies/InferPterodactylResponses.php
+  s_5eb93878083371::t_c3eb46518f5cd4 71-74
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_5eb93878083371::t_54c284eb84752d 34-36,39-40,48
+app/Repositories/Wings/DaemonRepository.php
+  s_5eb93878083371::t_d257575ba14efa 25,39
+  s_5eb93878083371::t_fa4b7e77a2c6d4 24,38
+app/Transformers/Api/Client/ServerTransformer.php
+  s_5eb93878083371::t_b91915932ede5b 131-132
+  s_5eb93878083371::t_c86b8402838db3 118
+  s_5eb93878083371::t_84b233fb99d3dd 50
+  s_5eb93878083371::t_6c9b24f27cf00a 49
+app/Services/Eggs/Sharing/EggUpdateImporterService.php
+  s_5eb93878083371::t_54c284eb84752d 38
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_5eb93878083371::t_3d853cb5e3dbe6 19
+app/Console/Commands/Extensions/ListCommand.php
+  s_5eb93878083371::t_3d853cb5e3dbe6 34
+app/Transformers/Api/Admin/ApiKeyTransformer.php
+  s_5eb93878083371::t_b0fb09b60cd1e9 9
+  s_5eb93878083371::t_3d853cb5e3dbe6 27,31
+app/Transformers/Api/Admin/MountTransformer.php
+  s_5eb93878083371::t_54c284eb84752d 36,38
+  s_5eb93878083371::t_8a18eba88ddca0 37
+app/Transformers/Api/Client/AllocationTransformer.php
+  s_5eb93878083371::t_54c284eb84752d 21-22
+app/Transformers/Api/Admin/TagTransformer.php
+  s_5eb93878083371::t_54c284eb84752d 36
+  s_5eb93878083371::t_8a18eba88ddca0 37
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_5eb93878083371::t_3d853cb5e3dbe6 242
+app/Repositories/Wings/DaemonTransferRepository.php
+  s_5eb93878083371::t_c3eb46518f5cd4 6,19
+pint.json
+  s_5eb93878083371::t_77d01fcfc4a7dd 2-55
+app/Providers/AppServiceProvider.php
+  s_5eb93878083371::t_e338a8103f07a4 5-6,10-11,28-38
+  s_5eb93878083371::t_f2035b05c86bab 39
+app/Services/Servers/EnvironmentService.php
+  s_5eb93878083371::t_84b233fb99d3dd 36-37
+  s_5eb93878083371::t_b91915932ede5b 78
+app/Transformers/Api/Application/NodeTransformer.php
+  s_5eb93878083371::t_6c9b24f27cf00a 50-54
+tests/TestCase.php
+  s_5eb93878083371::t_ab9c4099928ff5 10-11,47-50
+  s_5eb93878083371::t_ac165f76323b7c 51
+tests/Integration/Api/Remote/RemoteServersApiTest.php
+  s_5eb93878083371::t_8a18eba88ddca0 75,88
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_5eb93878083371::t_8a18eba88ddca0 76-80
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_5eb93878083371::t_c3eb46518f5cd4 29
+app/Models/Task.php
+  s_5eb93878083371::t_45370b18bd3f8a 10
+  s_5eb93878083371::t_ba0debc35a089c 126-127,129,131,133
+composer.json
+  s_5eb93878083371::t_2c673146616f7f 58
+composer.lock
+  s_5eb93878083371::t_94f57859ba7afc 7,9872-9931
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c200065978aeef691bdcc1c9d8a6b07af2a974e3",
+  "prompts": {},
+  "sessions": {
+    "s_5eb93878083371": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "386e086a-d87f-499e-be20-1d2dd84f16a6",
+        "model": "claude-fable-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
