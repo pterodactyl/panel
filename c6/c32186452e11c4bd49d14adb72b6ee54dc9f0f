@@ -1,0 +1,25 @@
+app/Services/Servers/StartupModificationService.php
+  s_be04b879a75a03::t_c804b77393abda 8,28,64-69,76,80,82-83
+app/Services/Servers/BuildModificationService.php
+  s_be04b879a75a03::t_c804b77393abda 32,55-57,83,103
+app/Models/Tag.php
+  s_be04b879a75a03::t_57f07e7670fbe2 133
+phpstan.neon
+  s_be04b879a75a03::t_c804b77393abda 45-46
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "c6c32186452e11c4bd49d14adb72b6ee54dc9f0f",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
