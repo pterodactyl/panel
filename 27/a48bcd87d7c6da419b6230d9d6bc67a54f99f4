@@ -1,0 +1,26 @@
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_be04b879a75a03::t_a38557bab3fcba 63
+app/Services/Extensions/Porting/BlueprintPorter.php
+  s_be04b879a75a03::t_7f6d39c481bb04 149,153,156,233,357-360,400,402,428,527-529
+app/Services/Tags/TagBackfiller.php
+  s_be04b879a75a03::t_a38557bab3fcba 68,93,159-162
+app/Transformers/Api/Application/NodeTransformer.php
+  s_be04b879a75a03::t_6213e80eb5c02c 14,41-45,50-51
+  s_be04b879a75a03::t_a38557bab3fcba 57,59,66,68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "27a48bcd87d7c6da419b6230d9d6bc67a54f99f4",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
