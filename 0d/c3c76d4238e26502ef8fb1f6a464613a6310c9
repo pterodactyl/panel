@@ -1,0 +1,26 @@
+app/Services/Helpers/SoftwareVersionService.php
+  s_be04b879a75a03::t_b2fc98ad41ac44 12,18,36,44,52,60,90,94,99,107-129
+tests/Unit/Services/Helpers/SoftwareVersionServiceTest.php
+  s_be04b879a75a03::t_6a215acdb8f4f4 3,5,7-15,17-32,34-52
+  s_be04b879a75a03::t_75e78000f405c4 1-2,4,6,16,33,53-54
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_b2fc98ad41ac44 44
+phpstan.neon
+  s_be04b879a75a03::t_b2fc98ad41ac44 44
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "0dc3c76d4238e26502ef8fb1f6a464613a6310c9",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
