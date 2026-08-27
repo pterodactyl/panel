@@ -1,0 +1,35 @@
+tools/phpstan/anti-slop/tests/Rules/NoMixedParametersRuleTest.php
+  s_be04b879a75a03::t_e0cb0cbcabf59d 26-29
+  s_be04b879a75a03::t_b5ea5dba4b754e 18,31-32
+  s_be04b879a75a03::t_6045646bc92a30 23-25
+  s_be04b879a75a03::t_46ff7f490c2c39 19-22
+  s_be04b879a75a03::t_487fced4a7088e 30
+tools/phpstan/anti-slop/src/Rules/NoMixedParametersRule.php
+  s_be04b879a75a03::t_9a95a2f1135d08 11,47,53-55,67,69-74,79,87
+  s_be04b879a75a03::t_ce5d081ce4a301 15,82
+  s_be04b879a75a03::t_1de52ff71318ce 21-23
+  s_be04b879a75a03::t_94393dc879cdfa 52,68,75-78,80-81,83-84
+  s_be04b879a75a03::t_b1bb32eae17aa0 85-86,88
+  s_be04b879a75a03::t_27cfbe081f1739 89
+tools/phpstan/anti-slop/tests/Rules/data/no-mixed-parameters.php
+  s_be04b879a75a03::t_1bc48f3cbe2ae8 7-10,14,26,34,39
+  s_be04b879a75a03::t_9a95a2f1135d08 35,37-38,40-41
+  s_be04b879a75a03::t_ce5d081ce4a301 42-52
+  s_be04b879a75a03::t_bbff786e883d90 36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "47c8a1436d69731e0d3f1c68f908d04202a15440",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
