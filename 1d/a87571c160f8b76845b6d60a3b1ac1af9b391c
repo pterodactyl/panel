@@ -1,0 +1,34 @@
+phpstan.neon
+  s_be04b879a75a03::t_0001ad19806342 31,33-35
+  s_be04b879a75a03::t_18d04a9f5f54cd 30
+  s_be04b879a75a03::t_fa47958cc2a7ad 32,37-38
+  s_be04b879a75a03::t_245d270ee923e1 36
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_be04b879a75a03::t_ee2378782887f8 7,236-237,318
+  s_be04b879a75a03::t_bef81fa4627470 956,980
+  s_be04b879a75a03::t_563632086a4fe4 1940
+  s_be04b879a75a03::t_18d04a9f5f54cd 454,481,506,541,552,579,605,620,645,1614,1644,1667,1707,1821,1841,1852,1872,1901,1912,1924,2008,2087,2104
+  s_be04b879a75a03::t_1a53f4af2305c2 1595,1786,1805
+  s_be04b879a75a03::t_0001ad19806342 31,34,37,44-45,79-80,106-107,129
+  s_be04b879a75a03::t_245d270ee923e1 972-973,990
+  s_be04b879a75a03::t_1cd1c5fd6f776e 1759-1760,1764-1773
+  s_be04b879a75a03::t_0bdece2ffcbd9c 1578,1754
+.ai/rules/scribe.md
+  s_be04b879a75a03::t_3357652bf215f2 10-12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "1da87571c160f8b76845b6d60a3b1ac1af9b391c",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
