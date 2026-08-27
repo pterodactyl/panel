@@ -1,0 +1,49 @@
+phpstan.neon
+  s_be04b879a75a03::t_4299bd4e9ba6bf 26-28
+app/Services/Extensions/ExtensionSettings.php
+  s_be04b879a75a03::t_01dacc3ee60747 8,44,117
+  s_be04b879a75a03::t_4299bd4e9ba6bf 16,21-24,32,38-43,45-48,52,59,72,85,108,115-116,118-123
+tests/Unit/Services/Extensions/ExtensionSettingValueGuardTest.php
+  s_be04b879a75a03::t_d03c905e9f111a 1-2,4,6,14,47-48
+  s_be04b879a75a03::t_4299bd4e9ba6bf 3,5,7-13,15-32,34-46
+  s_be04b879a75a03::t_01dacc3ee60747 33
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_be04b879a75a03::t_4299bd4e9ba6bf 25,36,47,60,77,92
+app/Services/Extensions/ExtensionSettingValueGuard.php
+  s_be04b879a75a03::t_4299bd4e9ba6bf 3-4,6-7,9,11-21,23,25,27-37
+  s_be04b879a75a03::t_fe526597ad79d6 1-2,5,8,10,22,24,26,38-39
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_be04b879a75a03::t_4299bd4e9ba6bf 15,18,27,32-35,44-47,53,61,89,120-123,126-128,131-134,137-139,152-153
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_4299bd4e9ba6bf 31-32
+app/Services/Extensions/Contracts/ManagesExtensionSettings.php
+  s_be04b879a75a03::t_4299bd4e9ba6bf 9,12,15
+.ai/rules/extensions.md
+  s_421ae2f039e76e::t_1ce7c8ba0c1610 1-9
+.ai/rules/index.md
+  s_421ae2f039e76e::t_c211d84341f97d 9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "b2be52cb6a717090e79c39f310287e4c4ea96694",
+  "prompts": {},
+  "sessions": {
+    "s_421ae2f039e76e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4415058-582a-4592-8c64-04fcf1fb7246",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
