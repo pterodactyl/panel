@@ -1,0 +1,63 @@
+app/Http/Requests/Api/Admin/ApiKeys/StoreApiKeyRequest.php
+  s_be04b879a75a03::t_add40eafcfe0f5 28-32,34
+app/Http/Requests/Api/Application/Locations/UpdateLocationRequest.php
+  s_be04b879a75a03::t_e2e2dca386d816 8,21
+  s_be04b879a75a03::t_add40eafcfe0f5 24
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_be04b879a75a03::t_260482b47bbbcb 76,94
+app/Http/Requests/Api/Application/Users/StoreUserRequest.php
+  s_be04b879a75a03::t_add40eafcfe0f5 35
+  s_be04b879a75a03::t_61000c30563026 44,48-59,61-63,65-67
+  s_be04b879a75a03::t_e2e2dca386d816 10,28
+app/Http/Requests/Api/Admin/Tags/StoreTagRequest.php
+  s_be04b879a75a03::t_e2e2dca386d816 11,38
+app/Support/ValidationRuleSubset.php
+  s_be04b879a75a03::t_e2e2dca386d816 7,10-12,14,16-23
+  s_be04b879a75a03::t_91cc8948d1d307 3-4
+  s_be04b879a75a03::t_84f0f91c24c382 1-2,5-6,8-9,13,15,24-25
+phpstan.neon
+  s_be04b879a75a03::t_61000c30563026 69-70
+app/Transformers/Api/Application/ServerTransformer.php
+  s_be04b879a75a03::t_260482b47bbbcb 100
+app/Http/Requests/Api/Admin/DatabaseHosts/StoreDatabaseHostRequest.php
+  s_be04b879a75a03::t_e2e2dca386d816 10,29
+  s_be04b879a75a03::t_add40eafcfe0f5 36
+app/Http/Requests/Api/Admin/Locations/StoreLocationRequest.php
+  s_be04b879a75a03::t_add40eafcfe0f5 32
+  s_be04b879a75a03::t_e2e2dca386d816 10,29
+app/Http/Requests/Api/Admin/Nodes/StoreNodeRequest.php
+  s_be04b879a75a03::t_add40eafcfe0f5 50-53,55-56,58
+  s_be04b879a75a03::t_61000c30563026 87,91-113,115-117
+  s_be04b879a75a03::t_e2e2dca386d816 13,33
+app/Http/Requests/Api/Application/Nodes/StoreNodeRequest.php
+  s_be04b879a75a03::t_61000c30563026 72,76-98,100-102
+  s_be04b879a75a03::t_e2e2dca386d816 11,27
+  s_be04b879a75a03::t_add40eafcfe0f5 44-47,49-50,52
+app/Transformers/Api/Application/UserTransformer.php
+  s_be04b879a75a03::t_260482b47bbbcb 48
+app/Transformers/Api/Admin/DatabaseHostTransformer.php
+  s_be04b879a75a03::t_260482b47bbbcb 43
+app/Http/Requests/Api/Application/Locations/StoreLocationRequest.php
+  s_be04b879a75a03::t_e2e2dca386d816 10,25
+  s_be04b879a75a03::t_add40eafcfe0f5 28
+app/Http/Requests/Api/Admin/Users/StoreUserRequest.php
+  s_be04b879a75a03::t_e2e2dca386d816 10,29
+  s_be04b879a75a03::t_add40eafcfe0f5 37
+  s_be04b879a75a03::t_61000c30563026 46,50-61,63-65,67-68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8fa6747c4167d114103a77da101bd159b4b76629",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
