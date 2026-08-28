@@ -1,0 +1,19 @@
+tests/Integration/Api/Admin/Locations/LocationControllerTest.php
+  s_be04b879a75a03::t_42df6dd49866c3 67,71,107
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "2cce8d3dcf70da3e42e313042af61b571d73aae7",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
