@@ -1,0 +1,19 @@
+app/Extensions/League/Fractal/Serializers/PterodactylSerializer.php
+  s_be04b879a75a03::t_17b8b51c4473f3 66-69
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "8843fc189fe8d63faecfa6500b4284d5832e241d",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
