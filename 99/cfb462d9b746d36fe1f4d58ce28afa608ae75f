@@ -1,0 +1,112 @@
+phpstan-anti-slop.neon
+  s_be04b879a75a03::t_118d0fcb8641b2 13
+  s_be04b879a75a03::t_5620d1e1a5552e 20-24
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_be04b879a75a03::t_3940d0179bfa1e 30-31,33
+tests/Integration/Api/Admin/Eggs/EggVariableControllerTest.php
+  s_be04b879a75a03::t_3940d0179bfa1e 259-282
+  s_be04b879a75a03::t_46dd6916c99b26 28-35
+app/Models/Server.php
+  s_be04b879a75a03::t_24eb848f8c3fce 258
+app/Support/JsonValueGuard.php
+  s_be04b879a75a03::t_17175cbd8d09a2 89,111,182,197,217,237
+  s_be04b879a75a03::t_5344ba26c6462b 87-88,90-91,99,109-110,112-113,124,134,139,143,153,163,180-181,183-184,195-196,198-199,215-216,218-219,235-236,238-239
+app/Services/Activity/ActivityLogService.php
+  s_be04b879a75a03::t_bfa31c8de8eb9c 18
+  s_be04b879a75a03::t_22a293e218a318 112
+  s_be04b879a75a03::t_29f02fdff9433e 123
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_be04b879a75a03::t_8bab8a3ed10ee9 152
+  s_be04b879a75a03::t_094fde0ff2ef9d 82-84
+app/Extensions/Scribe/OpenApi/PterodactylOpenApiGenerator.php
+  s_be04b879a75a03::t_22b56c284f654f 102,125,236-237,1125,1407,1675,1694
+  s_be04b879a75a03::t_55e892e71d9a3f 239
+  s_be04b879a75a03::t_0b6ba4066d743d 1110,1684,1713,1804,1981
+  s_be04b879a75a03::t_d45db6d78d55fe 1695
+app/Data/ServerCreationData.php
+  s_be04b879a75a03::t_24eb848f8c3fce 112
+  s_be04b879a75a03::t_3950ed3ceaf816 12,47,57,63,78,84,94,101,123
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_be04b879a75a03::t_9242efd19f5625 7,332-335
+  s_be04b879a75a03::t_22a293e218a318 292
+  s_be04b879a75a03::t_df71c38eaf52b6 349
+  s_be04b879a75a03::t_55e892e71d9a3f 348,352
+  s_be04b879a75a03::t_957215af108137 336-338
+app/Repositories/Eloquent/MountRepository.php
+  s_be04b879a75a03::t_8bab8a3ed10ee9 47-48
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_be04b879a75a03::t_29f02fdff9433e 64-65
+app/Support/JsonValueTree.php
+  s_be04b879a75a03::t_22a293e218a318 15
+  s_be04b879a75a03::t_24eb848f8c3fce 12-13,67-68
+app/Http/Requests/Api/Remote/ReportBackupCompleteRequest.php
+  s_be04b879a75a03::t_8bab8a3ed10ee9 21,23
+app/Transformers/Api/Application/NodeTransformer.php
+  s_be04b879a75a03::t_e634a0b4cfcce0 85
+app/Services/Eggs/EggImportData.php
+  s_be04b879a75a03::t_3950ed3ceaf816 43,79,105,132,147-148,168,178,184,195,204
+app/Http/Requests/Api/Admin/Extensions/UpdateExtensionRequest.php
+  s_be04b879a75a03::t_29f02fdff9433e 9,22,24
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_be04b879a75a03::t_3bac64f4a93d17 22
+  s_be04b879a75a03::t_8bab8a3ed10ee9 120,172-173,175-176,193-196
+  s_be04b879a75a03::t_17175cbd8d09a2 174
+app/Services/Extensions/ExtensionSettingValueGuard.php
+  s_be04b879a75a03::t_29f02fdff9433e 8,27-41
+  s_421ae2f039e76e::t_58274e586b8039 42
+app/Services/Eggs/EggConfigurationService.php
+  s_be04b879a75a03::t_9242efd19f5625 11,282
+  s_be04b879a75a03::t_0b6ba4066d743d 267
+  s_be04b879a75a03::t_87bce8e09bf6b5 283-285
+app/Http/Controllers/Base/LocaleController.php
+  s_be04b879a75a03::t_22a293e218a318 49-50
+app/Http/Controllers/Api/Admin/Extensions/ExtensionAdminSettingsController.php
+  s_be04b879a75a03::t_29f02fdff9433e 11,37
+  s_be04b879a75a03::t_e189f898760d0b 20,24,28-30
+app/Services/Helpers/SoftwareVersionService.php
+  s_be04b879a75a03::t_3950ed3ceaf816 112
+.github/workflows/ci.yaml
+  s_be04b879a75a03::t_3940d0179bfa1e 53
+app/Data/AllocationRange.php
+  s_be04b879a75a03::t_3950ed3ceaf816 17-18,32
+app/Services/Extensions/Porting/BlueprintPorter.php
+  s_be04b879a75a03::t_22a293e218a318 530-531
+app/Extensions/Scribe/Strategies/UsePterodactylResponseAttributes.php
+  s_be04b879a75a03::t_24eb848f8c3fce 72-77
+app/Http/Requests/Api/Remote/ActivityEventRequest.php
+  s_be04b879a75a03::t_22a293e218a318 121,131
+phpstan.neon
+  s_be04b879a75a03::t_37bdfca000bba7 31
+  s_be04b879a75a03::t_0da417b607a437 56
+  s_be04b879a75a03::t_29f02fdff9433e 103
+  s_be04b879a75a03::t_8bab8a3ed10ee9 90
+  s_be04b879a75a03::t_6ad7ad4f3a0ec4 40
+  s_be04b879a75a03::t_9d09803f4ee741 72
+  s_be04b879a75a03::t_22a293e218a318 30
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_8bab8a3ed10ee9 37,44,85-90
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "99cfb462d9b746d36fe1f4d58ce28afa608ae75f",
+  "prompts": {},
+  "sessions": {
+    "s_421ae2f039e76e": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "b4415058-582a-4592-8c64-04fcf1fb7246",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
