@@ -1,0 +1,47 @@
+app/Http/Middleware/Api/Client/Server/ResourceBelongsToServer.php
+  s_be04b879a75a03::t_5255e8d4695a99 11,24-25,40-41,85
+app/Http/Middleware/Api/Client/RequireClientApiKey.php
+  s_be04b879a75a03::t_5255e8d4695a99 9,15-16,27
+  s_be04b879a75a03::t_f327a991c30d68 29
+app/Http/Concerns/ResolvesRequestContext.php
+  s_be04b879a75a03::t_5255e8d4695a99 1-19,24-27
+  s_be04b879a75a03::t_b2e7a0b907ed49 20-23
+app/Http/Middleware/Api/Client/Server/AuthenticateServerAccess.php
+  s_be04b879a75a03::t_5255e8d4695a99 10,16-17,36-37
+app/Http/Middleware/Activity/AccountSubject.php
+  s_be04b879a75a03::t_5255e8d4695a99 10,14-15,25-27
+app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+  s_be04b879a75a03::t_5255e8d4695a99 12,19-20,46
+app/Http/Middleware/Activity/ServerSubject.php
+  s_be04b879a75a03::t_5255e8d4695a99 10,15-16,31,33
+app/Http/Controllers/Api/Client/ClientApiController.php
+  s_be04b879a75a03::t_5255e8d4695a99 8,14-15
+app/Http/Middleware/Api/Client/SubstituteClientBindings.php
+  s_be04b879a75a03::t_5255e8d4695a99 8,28,36,39
+  s_be04b879a75a03::t_91d538916d6eeb 11
+app/Http/Middleware/RequireTwoFactorAuthentication.php
+  s_be04b879a75a03::t_5255e8d4695a99 11,16-17,50
+app/Http/Middleware/VerifyReCaptcha.php
+  s_be04b879a75a03::t_5255e8d4695a99 47,49,57-58,68-71,79-98
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_be04b879a75a03::t_5255e8d4695a99 14,20-21,37,47-52,60-61
+  s_be04b879a75a03::t_f327a991c30d68 34
+tools/phpstan/anti-slop/extension.neon
+  s_be04b879a75a03::t_5255e8d4695a99 30
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "f5496c4249fd57032930790264849344dbd32cae",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
