@@ -1,0 +1,28 @@
+app/Support/JsonValueGuard.php
+  s_be04b879a75a03::t_29fff8171a1bc8 51
+app/Transformers/Api/Admin/EggTransformer.php
+  s_be04b879a75a03::t_29fff8171a1bc8 14,45
+app/Support/JsonEmptyObject.php
+  s_be04b879a75a03::t_ed202cc3548182 1-2,5,8
+  s_be04b879a75a03::t_29fff8171a1bc8 3-4,6-7,9
+app/Transformers/Api/Application/EggTransformer.php
+  s_be04b879a75a03::t_29fff8171a1bc8 18,61
+phpstan.neon
+  s_be04b879a75a03::t_29fff8171a1bc8 18
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "22316c772b37a822024fab054e1f42fb170bda17",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
