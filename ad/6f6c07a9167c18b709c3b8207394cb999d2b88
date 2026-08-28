@@ -1,0 +1,31 @@
+app/Http/Middleware/Activity/TrackAPIKey.php
+  s_be04b879a75a03::t_d21fc044bf825a 29
+app/Http/Middleware/Api/Client/RequireClientApiKey.php
+  s_be04b879a75a03::t_6fa77110c61f0a 9,30-31
+  s_be04b879a75a03::t_6f04242ea81d58 29
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_be04b879a75a03::t_6f04242ea81d58 51
+app/Models/Traits/HasAccessTokens.php
+  s_be04b879a75a03::t_6f04242ea81d58 9,28,62-66
+  s_be04b879a75a03::t_67fe06bc09bf08 67
+app/Http/Middleware/Api/AuthenticateIPAccess.php
+  s_be04b879a75a03::t_6f04242ea81d58 36,43
+app/Models/User.php
+  s_be04b879a75a03::t_ff1f5494d5428a 22,96
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ad6f6c07a9167c18b709c3b8207394cb999d2b88",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
