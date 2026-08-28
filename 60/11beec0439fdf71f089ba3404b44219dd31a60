@@ -1,0 +1,39 @@
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_be04b879a75a03::t_9b174505788c44 7,84-86
+  s_be04b879a75a03::t_a029a00c112a9a 60,62-65
+app/Http/Requests/Api/Admin/Settings/UpdateAdvancedSettingsRequest.php
+  s_be04b879a75a03::t_a029a00c112a9a 66,70-83
+app/Http/Controllers/Api/Admin/Settings/GeneralController.php
+  s_be04b879a75a03::t_a029a00c112a9a 39-40
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_be04b879a75a03::t_a029a00c112a9a 107-111
+app/Http/Controllers/Api/Admin/Extensions/ExtensionAdminSettingsController.php
+  s_be04b879a75a03::t_2190709f22e8e7 23-24,26
+  s_be04b879a75a03::t_a029a00c112a9a 11,33
+  s_be04b879a75a03::t_9b174505788c44 18
+  s_be04b879a75a03::t_7c16085816262b 19
+phpstan.neon
+  s_be04b879a75a03::t_a029a00c112a9a 76
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_be04b879a75a03::t_a029a00c112a9a 29,152,155-157
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_be04b879a75a03::t_a029a00c112a9a 92
+tests/Integration/Api/Admin/Locations/LocationControllerTest.php
+  s_be04b879a75a03::t_9b174505788c44 67-70,74-77,113-116
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "6011beec0439fdf71f089ba3404b44219dd31a60",
+  "prompts": {},
+  "sessions": {
+    "s_be04b879a75a03": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a044c4-7964-7223-b1b6-367c3d488b6b",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
