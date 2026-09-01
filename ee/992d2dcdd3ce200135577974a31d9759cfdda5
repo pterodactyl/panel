@@ -1,0 +1,21 @@
+app/Services/Extensions/ExtensionManifest.php
+  s_a8d8e651ce8586::t_e0d1f13f496349 20
+.ai/rules/extensions.md
+  s_a8d8e651ce8586::t_e0d1f13f496349 12
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.0",
+  "base_commit_sha": "ee992d2dcdd3ce200135577974a31d9759cfdda5",
+  "prompts": {},
+  "sessions": {
+    "s_a8d8e651ce8586": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0594e-63fd-7bc3-8401-68dce978e0d7",
+        "model": "gpt-5.6-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
