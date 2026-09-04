@@ -56,6 +56,10 @@
         @apply border-0 border-b-2 border-transparent transition-colors duration-100;
         @apply active:border-cyan-500 focus:border-cyan-500;
     }
+	& .trash_icon {
+		@apply flex items-center top-0 right-0 absolute z-10 select-none h-full px-3 transition-colors duration-100;
+		@apply cursor-pointer;
+	}
 }
 
 .chart_container {
