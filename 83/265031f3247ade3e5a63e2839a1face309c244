@@ -1,0 +1,343 @@
+.github/docker/README.md
+  s_b1506b90bff9f2::t_164d88722c0697 48
+  s_b1506b90bff9f2::t_bc3d15417ddb44 93-110
+  s_b1506b90bff9f2::t_f448e3ac68e0f7 1,3,5,7,9,11-16,18,20-30,32-47,49-78,80-87,90
+  s_b1506b90bff9f2::t_077229e3242991 31
+  s_b1506b90bff9f2::t_e111afe7dd416d 91-92
+resources/scripts/components/admin/nodes/NodesContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/dashboard/AccountApiContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Http/Requests/Api/Admin/Mounts/AttachNodesRequest.php
+  s_b1506b90bff9f2::t_4ce35d871f212d 36
+  s_b1506b90bff9f2::t_ac94bef825ad5c 7,9,15-21
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 11
+tests/Integration/Api/Admin/Tags/TagControllerTest.php
+  s_b1506b90bff9f2::t_54cd82a703bb5b 8,69-83
+  s_b1506b90bff9f2::t_f2b26b7e7844f6 84
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 72,97
+resources/scripts/components/admin/servers/ServerDetailsTab.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Admin/EggTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 29-34
+.github/docker/smoke-test.sh
+  s_b1506b90bff9f2::t_1b28836a728127 65
+  s_b1506b90bff9f2::t_9804f4432e2df5 116-118,122
+  s_b1506b90bff9f2::t_077229e3242991 181,183,196,198,208
+  s_b1506b90bff9f2::t_da602dccf0ae1c 192,207,210
+  s_b1506b90bff9f2::t_79e40d4d5fd2fa 70-75,222-223,234-240
+  s_b1506b90bff9f2::t_9e3a6bf1aac09f 3,32,38,63
+  s_b1506b90bff9f2::t_d5ac02ad35cd6f 1-2,4-9,11-19,21-22,24-31,33-37,39-59,61-62,64,66-69,76-82,88-115,119-121,123-141,144-151,214-221,224-233,241-244
+  s_b1506b90bff9f2::t_cbb0fa4205cf97 10,20,23,83-87,142-143,152-180,182,184-191,193-195,197,199-206,209,211-213,245
+  s_b1506b90bff9f2::t_be154d78bfc97a 60
+app/Transformers/Api/Application/BaseTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 10,28-38,71-74,76-120
+  s_b1506b90bff9f2::t_4ce35d871f212d 13-14,39,75
+  s_b1506b90bff9f2::t_e933078d5b24be 121-122
+app/Services/Databases/DatabaseManagementService.php
+  s_b1506b90bff9f2::t_4ce35d871f212d 153
+.github/workflows/docker.yaml
+  s_b1506b90bff9f2::t_e111afe7dd416d 4-12,21-46,49,51
+resources/scripts/components/admin/servers/TransferServerModal.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/eggs/CreateEggForm.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Admin/AllocationTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 15-21
+app/Services/Tags/TagResolutionService.php
+  s_b1506b90bff9f2::t_4ce35d871f212d 28-34,43,58
+resources/scripts/components/server/schedules/ScheduleContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+Dockerfile
+  s_b1506b90bff9f2::t_f94c8ba63461ed 51-55,72
+  s_b1506b90bff9f2::t_077229e3242991 62-64
+  s_b1506b90bff9f2::t_90b9732fbc2886 42
+  s_b1506b90bff9f2::t_29d592402a593a 58
+  s_b1506b90bff9f2::t_3e3c752528b3e2 1-3,5-12,14-32,34-35,38-39,43-48,56-57,59-60,65,69,81-82
+  s_b1506b90bff9f2::t_ea874dbeccf6c0 40-41
+  s_b1506b90bff9f2::t_012d236af56d54 33,36-37,49-50,66-68,76-78
+  s_b1506b90bff9f2::t_164d88722c0697 61
+  s_b1506b90bff9f2::t_bb1d250e23a82b 79
+resources/scripts/components/admin/users/UsersContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/server/console/AreaChart.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Application/NodeTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 18-25
+  s_b1506b90bff9f2::t_ac94bef825ad5c 64-65
+  s_a6ab0e671e93f2::t_40a5e35334987c 49
+app/Transformers/Api/Application/SubuserTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 15-19
+.github/docker/entrypoint.sh
+  s_b1506b90bff9f2::t_012d236af56d54 1-2,6-8,10-28,30-31,34-37,40-61,63,65,67-68,70-72
+  s_b1506b90bff9f2::t_077229e3242991 5,32
+  s_b1506b90bff9f2::t_f94c8ba63461ed 73
+resources/scripts/components/server/features/GSLTokenModalFeature.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/router/routeSlots.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Application/UserTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 15-18
+resources/scripts/components/admin/eggs/EggConfigurationTab.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/eggs/UpdateEggFromFileButton.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Application/ServerTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 24-36
+resources/scripts/components/dashboard/forms/ConfigureTwoFactorForm.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/server/files/useFileActions.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/eggs/EggScriptTab.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/locations/LocationsContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/tags/TagsContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Client/DatabaseTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 18-19
+app/Http/Requests/Api/Admin/Mounts/AttachEggsRequest.php
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 11
+  s_b1506b90bff9f2::t_4ce35d871f212d 36
+  s_b1506b90bff9f2::t_ac94bef825ad5c 7,9,15-21
+resources/scripts/components/elements/ProgressBar.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Admin/DatabaseHostTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 20-23,25-26
+  s_b1506b90bff9f2::t_ac94bef825ad5c 24
+resources/scripts/components/dashboard/forms/CreateApiKeyForm.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Client/SubuserTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 12-13
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_b1506b90bff9f2::t_ac94bef825ad5c 17-18,50-51
+  s_b1506b90bff9f2::t_4ce35d871f212d 42,53,64-68,70-71
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 10
+  s_b1506b90bff9f2::t_7eadef90885d67 63
+app/Transformers/Api/Client/ActivityLogTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 19-22
+app/Services/Extensions/ExtensionSettings.php
+  s_b1506b90bff9f2::t_7eadef90885d67 8,22-50
+  s_b1506b90bff9f2::t_da3e20bcec1943 51
+resources/scripts/components/auth/LoginContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/server/files/UploadButton.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 4
+app/Transformers/Api/Admin/TagTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 18-22
+resources/scripts/components/admin/mounts/AttachNodesModal.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Admin/UserTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 14-17
+resources/scripts/components/admin/databases/DatabaseHostsContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Models/Node.php
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 328
+  s_b1506b90bff9f2::t_ac94bef825ad5c 329-355
+app/Transformers/Api/Application/ServerVariableTransformer.php
+  s_b1506b90bff9f2::t_7eadef90885d67 56
+  s_a6ab0e671e93f2::t_c0c6ea5eb3990b 39
+resources/scripts/components/admin/servers/ServerDeleteTab.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/server/features/eula/EulaModalFeature.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/nodes/NodeConfigurationTab.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/nodes/NodeAllocationTab.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Services/Schedules/ProcessScheduleService.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 31
+.github/docker/default.conf
+  s_b1506b90bff9f2::t_012d236af56d54 32,49
+app/Extensions/Spatie/Fractalistic/Fractal.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 8-9,67-71,73-84
+  s_b1506b90bff9f2::t_4ce35d871f212d 14
+  s_a6ab0e671e93f2::t_1ec9046debc7c3 72
+resources/scripts/components/server/schedules/TaskDetailsModal.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+tests/Integration/Api/Application/Servers/ServerControllerTest.php
+  s_b1506b90bff9f2::t_b6e6cb62f22fe4 80-99
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 60-79
+tests/Integration/Services/Servers/ServerDeletionServiceTest.php
+  s_b1506b90bff9f2::t_b6e6cb62f22fe4 11,16,98-120
+.github/docker/health.conf
+  s_b1506b90bff9f2::t_012d236af56d54 1-15
+app/Models/Server.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 300,310,404
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_b1506b90bff9f2::t_54cd82a703bb5b 7,20,22,70-124
+app/Services/Servers/StartupCommandService.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 12-13,22
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+composer.json
+  s_b1506b90bff9f2::t_e99474c4c77d67 31
+app/Transformers/Api/Client/ScheduleTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 16-19
+resources/scripts/components/admin/api/CreateApiKeyButton.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/elements/table/DataTable.spec.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 3
+app/Console/Commands/Schedule/ProcessRunnableCommand.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 26
+resources/scripts/components/server/startup/VariableBox.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Client/ServerTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 33-40
+  s_b1506b90bff9f2::t_b6e6cb62f22fe4 20,151
+app/Services/Servers/ServerDeletionService.php
+  s_b1506b90bff9f2::t_4ce35d871f212d 64
+resources/scripts/components/admin/api/ApiKeysContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+.github/docker/default_ssl.conf
+  s_b1506b90bff9f2::t_012d236af56d54 11-12,30,33,52,69,72
+.github/docker/supervisord.conf
+  s_b1506b90bff9f2::t_012d236af56d54 2-3,7-11,14,17,21-33,36-41,44,46-47,49-56,58,60-61,63-70
+  s_b1506b90bff9f2::t_164d88722c0697 6
+  s_b1506b90bff9f2::t_9804f4432e2df5 59
+resources/scripts/components/server/console/StatGraphs.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/auth/LoginCheckpointContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+.github/docker/healthcheck.sh
+  s_b1506b90bff9f2::t_012d236af56d54 1-17
+tests/Integration/Api/Client/ClientControllerTest.php
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 7-8,11-12,15,154-218
+app/Transformers/Api/Admin/ServerTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 23-35,194
+tests/Integration/Services/Schedules/ProcessScheduleServiceTest.php
+  s_b1506b90bff9f2::t_54cd82a703bb5b 11,102-126
+resources/scripts/components/admin/nodes/NodeTable.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/servers/ServerMountsTab.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/servers/ServerTable.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Admin/ServerDatabaseTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 16-17
+app/Services/Extensions/ExtensionRepository.php
+  s_b1506b90bff9f2::t_1664aa1ae88b30 130
+  s_b1506b90bff9f2::t_4ce35d871f212d 165-174,176
+  s_b1506b90bff9f2::t_7eadef90885d67 128-129,131-140
+.dockerignore
+  s_b1506b90bff9f2::t_29d592402a593a 33
+  s_b1506b90bff9f2::t_a167262400ed43 1-5,9-18,26-32,34-38
+  s_b1506b90bff9f2::t_944f4e672bb8f1 6
+  s_b1506b90bff9f2::t_e111afe7dd416d 7-8,39-40
+  s_b1506b90bff9f2::t_ea874dbeccf6c0 19-25
+app/Transformers/Api/Admin/LocationTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 13-19
+app/Transformers/Api/Admin/MountTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 15-20
+app/Transformers/Api/Application/EggTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 29-35
+app/Transformers/Api/Application/ServerDatabaseTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 19-22
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/server/schedules/ScheduleEditContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Application/AllocationTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 17-21
+resources/scripts/components/admin/mounts/MountsContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Client/AllocationTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 14-15
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_b1506b90bff9f2::t_4ce35d871f212d 36,43,52,62-63
+app/Transformers/Api/Admin/NodeTransformer.php
+  s_b1506b90bff9f2::t_ac94bef825ad5c 55-56
+  s_b1506b90bff9f2::t_08fe504e4077fd 18-25
+  s_a6ab0e671e93f2::t_5e64eb20f415eb 41
+resources/scripts/components/elements/dialog/DialogIcon.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+.github/docker/optimize.sh
+  s_b1506b90bff9f2::t_f94c8ba63461ed 1-43
+resources/scripts/components/server/features/HytaleOauthRequireFeature.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+resources/scripts/components/admin/servers/CreateServerForm.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Application/DatabaseHostTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 16-19
+resources/scripts/components/server/backups/BackupContextMenu.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+app/Transformers/Api/Application/LocationTransformer.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 15-19
+resources/scripts/components/admin/mounts/AttachEggsModal.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+tests/Integration/Api/Remote/RemoteServersApiTest.php
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 8,14,105-132,160-161
+  s_b1506b90bff9f2::t_1664aa1ae88b30 9,134-159
+  s_b1506b90bff9f2::t_7eadef90885d67 133
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_b1506b90bff9f2::t_843b561bc9ea50 1
+tests/Integration/Api/Admin/Mounts/MountAttachmentTest.php
+  s_b1506b90bff9f2::t_1664aa1ae88b30 8,133-143,145-153
+  s_b1506b90bff9f2::t_249aa4944a3636 144
+.github/docker/www.conf
+  s_b1506b90bff9f2::t_f94c8ba63461ed 10,12
+  s_b1506b90bff9f2::t_012d236af56d54 1-3,5,13-16
+app/Models/Schedule.php
+  s_b1506b90bff9f2::t_08fe504e4077fd 148
+.github/docker/php.ini
+  s_b1506b90bff9f2::t_f94c8ba63461ed 1-10
+tests/Integration/Api/Admin/IncludesTest.php
+  s_b1506b90bff9f2::t_54cd82a703bb5b 121-124,127,129-134
+  s_b1506b90bff9f2::t_6ed1ddbfa9ff4e 7,9,105-120,125-126,128,135-136,138-147
+  s_b1506b90bff9f2::t_2a1df818300348 137
+app/Http/Concerns/ValidatesArrayExistence.php
+  s_b1506b90bff9f2::t_54cd82a703bb5b 17-18
+  s_b1506b90bff9f2::t_ac94bef825ad5c 1-15,19-44
+  s_b1506b90bff9f2::t_c639b22e1f0a53 16
+docker-compose.example.yml
+  s_b1506b90bff9f2::t_9e3a6bf1aac09f 20
+  s_b1506b90bff9f2::t_077229e3242991 82
+  s_b1506b90bff9f2::t_f448e3ac68e0f7 1-19,21-33,37-38,42-51,53-62,65-67,71-75,77-81,83
+app/Transformers/Api/Admin/ServerVariableTransformer.php
+  s_a6ab0e671e93f2::t_e4db0553f1a7ef 24
+app/Transformers/Api/Application/EggVariableTransformer.php
+  s_a6ab0e671e93f2::t_a028329ee3673a 26
+composer.lock
+  s_2e7f5eb95a22b9::t_d7b5c35972efe2 7,661-794,1414-1505,2894-2895,2898-2899,2903-2904,2908,2911-2915,2920,2924-2980,3332-3427,3634-3683,4729-4730,4733-4734,4738-4739,4743-4745,4748-4751,4756,4765-4766,4769-4770,4772,4775-4776,4780-4781,4784,4787-4849,8053-8133,9063-9064,9067-9068,9072-9073,9077-9079,9081-9084,9086-9090,9095,9099-9101,9105,9605-9619,9621-9624,9627-9630,9633-9636,9639-9660,9663-9664,9667-9668,9672-9673,9677-9681,9684-9687,9691-9695,9702,9704-9708,9711-9712,9714-9720
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.2",
+  "base_commit_sha": "83265031f3247ade3e5a63e2839a1face309c244",
+  "prompts": {},
+  "sessions": {
+    "s_2e7f5eb95a22b9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "fb73de4d-4e75-408d-be14-c46eeec3729c",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_a6ab0e671e93f2": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f7d973b81ffeleQWRxBj7eNya3",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_b1506b90bff9f2": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a08287-0c77-7610-910c-f17ac2a823cf",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
