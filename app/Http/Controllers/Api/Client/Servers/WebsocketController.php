@@ -63,7 +63,10 @@ class WebsocketController extends ClientApiController
             ->setScopes(JwtScope::Websocket)
             ->handle($node, $user->id . $server->uuid);
 
-        $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $node->getConnectionAddress());
+        // Use APP_URL so the WebSocket connection uses the public URL the
+        // browser can reach, not the internal Docker DNS name returned by
+        // $node->getConnectionAddress() (e.g. http://pterodactyl_wings:8080).
+        $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], rtrim(config('app.url'), '/'));
 
         return new JsonResponse([
             'data' => [
