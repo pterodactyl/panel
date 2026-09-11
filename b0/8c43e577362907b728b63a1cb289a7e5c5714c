@@ -1,0 +1,72 @@
+app/Models/Egg.php
+  s_53916ba32af787::t_48127d992dcb38 9
+  s_53916ba32af787::t_89f9cc57f9879b 340-348
+  s_53916ba32af787::t_2d9d268d0a8258 349-350
+app/Http/Requests/Api/Admin/Eggs/Variables/UpdateVariableRequest.php
+  s_53916ba32af787::t_d7bf9035caf600 7,9,17-20
+  s_53916ba32af787::t_d73ff34a241e93 21
+app/Services/Eggs/Variables/VariableUpdateService.php
+  s_53916ba32af787::t_d7bf9035caf600 12,14,18
+app/Http/Requests/Api/Admin/Eggs/StoreEggRequest.php
+  s_53916ba32af787::t_48127d992dcb38 7,10,34
+  s_53916ba32af787::t_89f9cc57f9879b 75-80
+  s_53916ba32af787::t_9a9d3a8a18a8df 81-82
+tests/Integration/Api/Admin/Eggs/EggCrudControllerTest.php
+  s_53916ba32af787::t_94eff131f8892b 116-132
+resources/scripts/api/generated/types.gen.ts
+  s_53916ba32af787::t_b4d12677f08dde 2068,2096,2184,2235
+app/Models/EggVariable.php
+  s_53916ba32af787::t_48127d992dcb38 10,80-82,84,86
+app/Services/Eggs/EggUpdateService.php
+  s_53916ba32af787::t_d7bf9035caf600 14
+app/Models/ActivityLog.php
+  s_53916ba32af787::t_176ac650d2fb21 10
+  s_53916ba32af787::t_89f9cc57f9879b 168-189
+.ai/rules/services.md
+  s_53916ba32af787::t_0b313afa8c43fb 9
+app/Http/Requests/Api/Admin/Eggs/Variables/StoreVariableRequest.php
+  s_53916ba32af787::t_d7bf9035caf600 7-10,13,15,35-37,39-40,43,48-58,60-72,75-76,82-83,87-96,98-100
+  s_53916ba32af787::t_8a634e1ac63c2e 38,59,97
+phpstan.neon
+  s_53916ba32af787::t_48127d992dcb38 89
+app/Models/Tag.php
+  s_53916ba32af787::t_176ac650d2fb21 9
+  s_53916ba32af787::t_89f9cc57f9879b 163-179
+  s_53916ba32af787::t_3f3417f7a6535c 180-181
+app/Services/Eggs/Variables/VariableCreationService.php
+  s_53916ba32af787::t_d7bf9035caf600 13,15,19
+app/Rules/TagSlug.php
+  s_53916ba32af787::t_176ac650d2fb21 15
+tests/Integration/Api/Admin/Eggs/EggVariableControllerTest.php
+  s_53916ba32af787::t_94eff131f8892b 144-153,155-161,163-168,170-174,176-179
+  s_53916ba32af787::t_d9ea457e9a494f 154,162,169,175
+app/Rules/ValidRuleSet.php
+  s_53916ba32af787::t_d7bf9035caf600 1-27,29,31-37
+  s_53916ba32af787::t_8a634e1ac63c2e 28,30
+app/Contracts/Models/Identifiable.php
+  s_53916ba32af787::t_176ac650d2fb21 15
+app/Services/Eggs/EggCreationService.php
+  s_53916ba32af787::t_d7bf9035caf600 23,27-28,30
+app/Models/Traits/HasRealtimeIdentifier.php
+  s_53916ba32af787::t_176ac650d2fb21 7,42-43
+.ai/rules/index.md
+  s_53916ba32af787::t_0ed0685de0713c 12
+.ai/rules/models.md
+  s_53916ba32af787::t_3f38f8c69a3830 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b08c43e577362907b728b63a1cb289a7e5c5714c",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
