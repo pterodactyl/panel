@@ -1,0 +1,92 @@
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_53916ba32af787::t_3ee5ea76b011a2 97,154
+app/Services/Telemetry/TelemetryCollectionService.php
+  s_53916ba32af787::t_7d415ae9bce7a6 19,55,58
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_53916ba32af787::t_3ee5ea76b011a2 52,89,169,205
+app/Http/Controllers/Api/Admin/Servers/DetailsController.php
+  s_53916ba32af787::t_ef31668e5f4c25 39
+app/Models/UserSSHKey.php
+  s_53916ba32af787::t_5f7074283e7ae9 62-74
+  s_53916ba32af787::t_5e6dd8d6b6dc79 61
+app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+  s_53916ba32af787::t_7150655b4d4b89 10,26
+app/Models/Mount.php
+  s_53916ba32af787::t_7a1a94be8ab9cd 8-9,13,90-93,95,97-104
+  s_53916ba32af787::t_4516a13666f75d 136-148
+  s_53916ba32af787::t_698c914ea7f784 149
+app/Services/Api/KeyCreationService.php
+  s_53916ba32af787::t_c5890bd1c01188 15,49-52
+app/Http/Requests/Api/Admin/ApiKeys/StoreApiKeyRequest.php
+  s_53916ba32af787::t_c5890bd1c01188 27
+.ai/rules/app.md
+  s_53916ba32af787::t_fd8e012faa2a8d 17,20
+app/Http/Controllers/Api/Application/Servers/ServerDetailsController.php
+  s_53916ba32af787::t_ef31668e5f4c25 57
+app/Models/Setting.php
+  s_53916ba32af787::t_7d415ae9bce7a6 24-39
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_53916ba32af787::t_c5890bd1c01188 20
+app/Services/Servers/DetailsModificationService.php
+  s_53916ba32af787::t_5895bcde0ebebf 19
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_53916ba32af787::t_7150655b4d4b89 93
+app/Http/Requests/Api/Admin/Mounts/StoreMountRequest.php
+  s_53916ba32af787::t_7a1a94be8ab9cd 25
+app/Models/Schedule.php
+  s_53916ba32af787::t_4516a13666f75d 100-121
+  s_53916ba32af787::t_fa09a26fc82e64 122
+app/Http/Requests/Api/Admin/Mounts/UpdateMountRequest.php
+  s_53916ba32af787::t_7a1a94be8ab9cd 24
+.github/docker/smoke-test.sh
+  s_53916ba32af787::t_7d415ae9bce7a6 175
+app/Http/Controllers/Api/Admin/Settings/GeneralController.php
+  s_53916ba32af787::t_ef31668e5f4c25 15,39
+app/Models/ApiKey.php
+  s_53916ba32af787::t_4516a13666f75d 148-174
+  s_53916ba32af787::t_42c73b25483f09 175
+tests/Integration/Api/Admin/Settings/SettingsControllerTest.php
+  s_53916ba32af787::t_7305535160dda0 10,35-37,45,63-64
+app/Http/Controllers/Api/Admin/Settings/AdvancedController.php
+  s_53916ba32af787::t_7d415ae9bce7a6 39
+  s_53916ba32af787::t_4516a13666f75d 15
+app/Http/Controllers/Api/Admin/Settings/MailController.php
+  s_53916ba32af787::t_7d415ae9bce7a6 70
+  s_53916ba32af787::t_4516a13666f75d 19
+app/Providers/SettingsServiceProvider.php
+  s_53916ba32af787::t_7d415ae9bce7a6 14,77,86
+app/Models/Backup.php
+  s_53916ba32af787::t_7150655b4d4b89 9-10
+  s_53916ba32af787::t_4516a13666f75d 79-89
+  s_53916ba32af787::t_846e7d93378566 90
+app/Http/Requests/Api/Client/Account/StoreSSHKeyRequest.php
+  s_53916ba32af787::t_0e8ac558b1ba43 30-31
+resources/scripts/api/generated/types.gen.ts
+  s_53916ba32af787::t_a73f6ab6720943 2006,2010
+app/Services/Backups/InitiateBackupService.php
+  s_53916ba32af787::t_7150655b4d4b89 75-79,91,110
+app/Http/Requests/Api/Client/Servers/Schedules/StoreScheduleRequest.php
+  s_53916ba32af787::t_3ee5ea76b011a2 22
+.ai/rules/services.md
+  s_53916ba32af787::t_c9e268cebd3444 9
+app/Console/Kernel.php
+  s_53916ba32af787::t_65d1a44eccc8a4 14,55,59-60,62
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_53916ba32af787::t_7a1a94be8ab9cd 66,140
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "b45776bfc14d57fcdf55c0eec342d98bde724efd",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
