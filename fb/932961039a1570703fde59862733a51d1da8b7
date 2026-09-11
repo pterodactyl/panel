@@ -1,0 +1,57 @@
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_53916ba32af787::t_4e8d143fa138c1 149
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_53916ba32af787::t_4e8d143fa138c1 56-61,64,66,70,72
+app/Http/Requests/Api/Application/Servers/UpdateServerBuildConfigurationRequest.php
+  s_53916ba32af787::t_553dd971266302 19
+app/Services/Servers/ServerCreationService.php
+  s_53916ba32af787::t_4e8d143fa138c1 22,158,183-185,227,238-239
+app/Http/Requests/Api/Admin/Servers/UpdateServerDetailsRequest.php
+  s_53916ba32af787::t_4e8d143fa138c1 24
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_53916ba32af787::t_4e8d143fa138c1 40,64
+app/Http/Requests/Api/Admin/Servers/UpdateServerStartupRequest.php
+  s_53916ba32af787::t_553dd971266302 27
+app/Http/Requests/Api/Application/Servers/UpdateServerStartupRequest.php
+  s_53916ba32af787::t_553dd971266302 27
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_53916ba32af787::t_4e8d143fa138c1 35
+app/Http/Requests/Api/Application/Servers/UpdateServerDetailsRequest.php
+  s_53916ba32af787::t_4e8d143fa138c1 18
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_53916ba32af787::t_4e8d143fa138c1 35
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_53916ba32af787::t_4e8d143fa138c1 38
+app/Http/Controllers/Api/Client/Servers/StartupController.php
+  s_53916ba32af787::t_4e8d143fa138c1 19,101
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_53916ba32af787::t_4e8d143fa138c1 26,33,36,55
+  s_53916ba32af787::t_9175fa38cb3ace 19
+app/Http/Controllers/Base/IndexController.php
+  s_53916ba32af787::t_4e8d143fa138c1 16
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_53916ba32af787::t_02f3b7751cf18c 108
+app/Http/Requests/Api/Client/Servers/Settings/RenameServerRequest.php
+  s_53916ba32af787::t_1ed98964fc8d4c 34
+app/Http/Requests/Api/Admin/Servers/UpdateServerBuildConfigurationRequest.php
+  s_53916ba32af787::t_4e8d143fa138c1 25
+app/Models/Server.php
+  s_53916ba32af787::t_ac02a196da1341 8-9,23,193-225,278,513
+  s_53916ba32af787::t_bf531a6d789323 503-512
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fb932961039a1570703fde59862733a51d1da8b7",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
