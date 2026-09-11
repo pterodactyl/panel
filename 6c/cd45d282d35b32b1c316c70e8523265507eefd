@@ -1,0 +1,43 @@
+app/Transformers/Api/Application/BaseTransformer.php
+  s_53916ba32af787::t_bfdf7d4914de7d 87,97
+  s_53916ba32af787::t_38c3265a9fdcb4 107-111
+tests/Fixtures/assets/manifest.json
+  s_53916ba32af787::t_aa4313c4130714 1-62
+app/Extensions/Spatie/Fractalistic/Fractal.php
+  s_53916ba32af787::t_bfdf7d4914de7d 78,81
+app/Http/Requests/Api/Admin/Mounts/AttachNodesRequest.php
+  s_53916ba32af787::t_2ea926b1a1ba4e 10
+app/Http/Requests/Concerns/ValidatesArrayExistence.php
+  s_53916ba32af787::t_58b32913e0c89f 1-32,34-45
+  s_53916ba32af787::t_bfdf7d4914de7d 33
+app/Services/Helpers/AssetHashService.php
+  s_53916ba32af787::t_bf9025d52d263a 41-42,44,46
+tests/Integration/IntegrationTestCase.php
+  s_53916ba32af787::t_b2b98c44ca25a2 9-10,13,35-41
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_53916ba32af787::t_58b32913e0c89f 10
+app/Services/Extensions/ExtensionSettings.php
+  s_53916ba32af787::t_bfdf7d4914de7d 31,44,47
+app/Services/Tags/TagResolutionService.php
+  s_53916ba32af787::t_bfdf7d4914de7d 32
+.github/workflows/ci.yaml
+  s_53916ba32af787::t_9139d9a55740a7 17-22
+app/Http/Requests/Api/Admin/Mounts/AttachEggsRequest.php
+  s_53916ba32af787::t_2ea926b1a1ba4e 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6ccd45d282d35b32b1c316c70e8523265507eefd",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
