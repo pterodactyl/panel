@@ -1,0 +1,55 @@
+artisan
+  s_53916ba32af787::t_ef23bb68bcc26b 4-5,7,9-10,12-14,16
+app/Console/Scheduler.php
+  s_53916ba32af787::t_ef23bb68bcc26b 17,19,38,45,57
+  s_53916ba32af787::t_8ec7040b190d96 43
+app/Console/Commands/UpgradeCommand.php
+  s_53916ba32af787::t_8ace91df12889a 10
+app/Exceptions/DisplayException.php
+  s_53916ba32af787::t_8affd8fe265842 92,96-99
+  s_53916ba32af787::t_8ace91df12889a 9,63,84-85
+.ai/rules/bootstrap.md
+  s_53916ba32af787::t_777e81087f9fed 1-9
+routes/auth.php
+  s_53916ba32af787::t_8ace91df12889a 26
+config/sanctum.php
+  s_53916ba32af787::t_dec7dc71136a68 5-6
+tools/phpstan/anti-slop/extension.neon
+  s_53916ba32af787::t_b0ef94560c1326 36
+app/Providers/AppServiceProvider.php
+  s_53916ba32af787::t_f6ad010cd183ca 8,11,16-17,23,36-38
+  s_53916ba32af787::t_37919bab1a254d 39
+  s_53916ba32af787::t_1a40e9072f06e9 136-137,139-166
+  s_53916ba32af787::t_8ec7040b190d96 138
+bootstrap/providers.php
+  s_53916ba32af787::t_ef23bb68bcc26b 5-16
+app/Exceptions/ApiErrorResponse.php
+  s_53916ba32af787::t_ef23bb68bcc26b 17-20,30,32,34-39,43-44,46,48,67,75,79-80,85,89,107,110-111,119,121-122,139-142,144,146,160,184
+  s_53916ba32af787::t_b0ef94560c1326 90,125,129-138
+tests/Unit/Exceptions/ApiErrorResponseTest.php
+  s_53916ba32af787::t_dec7dc71136a68 5,7,15,24
+public/index.php
+  s_53916ba32af787::t_ef23bb68bcc26b 5,10-12,15,18-19,22
+bootstrap/app.php
+  s_53916ba32af787::t_ef23bb68bcc26b 5,7,9-68,70-74,76-131
+  s_53916ba32af787::t_2951b2114818a6 69,75
+  s_53916ba32af787::t_1a40e9072f06e9 6
+.ai/rules/index.md
+  s_53916ba32af787::t_e6f5358c12e30c 10
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1cd32c195132f26269d3dce291cbc5f17a182fbe",
+  "prompts": {},
+  "sessions": {
+    "s_53916ba32af787": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "9a03512d-d2a6-467d-ad8f-a71166cbc71f",
+        "model": "claude-fable-5-1"
+      },
+      "human_author": null
+    }
+  }
+}
