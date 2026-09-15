@@ -1,0 +1,22 @@
+app/Services/Eggs/EggCatalogService.php
+  s_a1fd6c79aae8c1::t_1ef44a8fb41b2c 25,68-69,72
+app/Data/EggCatalogEntry.php
+  s_a1fd6c79aae8c1::t_1ef44a8fb41b2c 33,43,69-70,73,75
+  s_a1fd6c79aae8c1::t_88a0ca574d9423 38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "6ba415b715245930e8cfc0b2ed4878c4f019e20b",
+  "prompts": {},
+  "sessions": {
+    "s_a1fd6c79aae8c1": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f5c2fccb6ffeZKfrDqmzeykTTx",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
