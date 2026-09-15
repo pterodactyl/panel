@@ -1,0 +1,88 @@
+tests/Unit/JsonValueTreeTest.php
+  s_54a5d46c1240e4::t_e23c4d29465135 12-13,15-17
+tests/Integration/Services/Backups/DeleteBackupServiceTest.php
+  s_54a5d46c1240e4::t_317abcb91d6ac8 23-28,53-57
+tests/Integration/Services/Servers/BuildModificationServiceTest.php
+  s_54a5d46c1240e4::t_57435a5777dc4a 130-134
+  s_54a5d46c1240e4::t_fd54fcbb902373 125,135-136
+tests/Integration/Services/Databases/DatabaseManagementServiceTest.php
+  s_54a5d46c1240e4::t_fa5d1a2438aa7d 64-70
+tests/Integration/Api/Admin/Nodes/NodeIntrospectionControllerTest.php
+  s_54a5d46c1240e4::t_2033eb1bc794f2 73-76
+tests/Unit/Services/Extensions/ExtensionSettingValueGuardTest.php
+  s_54a5d46c1240e4::t_97fe4576beadea 13,15,17-18,20-26
+tests/Integration/Jobs/RevokeSftpAccessJobTest.php
+  s_54a5d46c1240e4::t_3f51351834f88a 15,33
+  s_54a5d46c1240e4::t_494933c2c2c5ff 37-38,40-42,45,50-51,53-55,58
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_54a5d46c1240e4::t_d960e3f0ff98b0 102
+  s_54a5d46c1240e4::t_3fa9f40266c425 101
+  s_54a5d46c1240e4::t_0b25345f0e4cfc 8,110-111,119-120
+tests/Integration/Services/Servers/SuspensionServiceTest.php
+  s_54a5d46c1240e4::t_6966262d1882d2 34
+tests/Integration/Api/Application/Nodes/NodeDeploymentControllerTest.php
+  s_54a5d46c1240e4::t_ef5155e04627cf 16-20
+tests/Integration/Api/Application/Eggs/EggControllerTest.php
+  s_54a5d46c1240e4::t_e14259dba6710b 34-36
+  s_54a5d46c1240e4::t_a422940982bbc9 32-33
+tests/Integration/Api/Client/Server/ResourceUtilizationControllerTest.php
+  s_54a5d46c1240e4::t_04a369157efbc3 30
+  s_54a5d46c1240e4::t_e6b141c26eee42 24-29,31-38
+tests/Integration/Api/Client/Server/Schedule/ScheduleAuthorizationTest.php
+  s_54a5d46c1240e4::t_9b24bb9d0fbab4 38-39
+  s_54a5d46c1240e4::t_6239ff6d78a17f 29-37,40-42
+tests/Integration/Api/Client/Server/Allocation/AllocationAuthorizationTest.php
+  s_54a5d46c1240e4::t_0f9106296989d3 31-33
+  s_54a5d46c1240e4::t_2a5093215f4ea0 28
+tests/Unit/JsonValueGuardTest.php
+  s_54a5d46c1240e4::t_086cb947ebf906 40
+tests/Integration/Http/Middleware/Api/Daemon/DaemonAuthenticateTest.php
+  s_54a5d46c1240e4::t_46e14584b443e9 27-32
+tests/Integration/Services/Servers/ServerDeletionServiceTest.php
+  s_54a5d46c1240e4::t_81cb4f1afe2c46 47-51
+  s_54a5d46c1240e4::t_bb3d909fd0af2e 76-80
+tests/Integration/Api/Client/Server/Database/DatabaseControllerTest.php
+  s_54a5d46c1240e4::t_896f173fb2516a 7,32
+  s_54a5d46c1240e4::t_a702c05c1eb8ea 33
+tests/Integration/Services/Schedules/ProcessScheduleServiceTest.php
+  s_54a5d46c1240e4::t_e6bd9725c13782 93-95,98
+  s_54a5d46c1240e4::t_45e9edabc9b775 96-97
+  s_54a5d46c1240e4::t_853e1858e7dfff 40-46
+tests/Integration/Api/Remote/SftpAuthenticationControllerTest.php
+  s_54a5d46c1240e4::t_6df01dc14498f5 66
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_54a5d46c1240e4::t_ebc4bf475fdc4d 49-50,53-54
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_54a5d46c1240e4::t_9906b4daaea601 52,55,58,62
+  s_54a5d46c1240e4::t_27fb0db35323c8 50-51,53-54,57,59-61
+app/Http/Controllers/Api/Application/Nodes/NodeDeploymentController.php
+  s_54a5d46c1240e4::t_531c55a5c7c276 7
+  s_54a5d46c1240e4::t_3df5e1429a043f 63,65
+  s_54a5d46c1240e4::t_0ae3f373f2af83 61
+  s_54a5d46c1240e4::t_7f65876b667182 59-60,62
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_54a5d46c1240e4::t_a9fc399783eb53 9
+  s_54a5d46c1240e4::t_f8be5cb0190a19 51-53
+tests/Integration/Services/Servers/ServerCreationServiceTest.php
+  s_54a5d46c1240e4::t_37b54b3a8ba12c 99-103
+tests/Integration/Api/Admin/VersionControllerTest.php
+  s_54a5d46c1240e4::t_99c6ac2b77225f 27-28
+tests/Integration/Api/Client/Server/ScheduleTask/UpdateScheduleTaskTest.php
+  s_54a5d46c1240e4::t_2c7f3c8c2605e2 34
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "3b49677d0f4d07278ffaf163224547a9aa2972f9",
+  "prompts": {},
+  "sessions": {
+    "s_54a5d46c1240e4": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f5d87f45bffeY3IX2DPn7EZvax",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
