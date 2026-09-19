@@ -1,0 +1,496 @@
+app/Contracts/Databases/DeletesDatabaseHosts.php
+  s_a8b5be0877831b::t_efec5f8239dacf 7-9,12-13
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,14
+app/Services/Servers/ServerInstallService.php
+  s_a8b5be0877831b::t_24c8f5044c87bb 32
+app/Actions/Servers/AttachMountToServer.php
+  s_a8b5be0877831b::t_6b9642cfd7f4a1 5,8,13,15,22
+app/Http/Controllers/Api/Admin/Servers/BuildController.php
+  s_a8b5be0877831b::t_2546aeec4d53be 30,32
+  s_a8b5be0877831b::t_cec536872df9fe 10
+app/Contracts/Databases/UpdatesDatabaseHosts.php
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_efec5f8239dacf 7-9,12-15
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,16
+app/Http/Controllers/Api/Admin/Servers/DatabaseController.php
+  s_a8b5be0877831b::t_ebb0470df5eed0 15-16,26,87,93,95,123,128
+app/Http/Controllers/Api/Admin/Eggs/UpdateImportEggController.php
+  s_a8b5be0877831b::t_da5c14b117a538 30,32
+  s_a8b5be0877831b::t_7cb19693fe30c6 10
+.github/docker/smoke-test.sh
+  s_a8b5be0877831b::t_7765d5092341c1 202
+app/Actions/Databases/CreateDatabaseHost.php
+  s_a8b5be0877831b::t_8e0b298dbad267 35
+  s_a8b5be0877831b::t_156997f2e61bed 11,17,33
+  s_a8b5be0877831b::t_71003b9fb8bdee 5
+  s_a8b5be0877831b::t_60741f90339a0a 20-23
+tests/Integration/Services/Backups/DeleteBackupServiceTest.php
+  s_a8b5be0877831b::t_51311050b30fde 10
+  s_a8b5be0877831b::t_178348edc1c52d 26,36,46,57,71
+app/Contracts/Backups/InitiatesBackups.php
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-18
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+app/Console/Commands/Themes/ResetCommand.php
+  s_a8b5be0877831b::t_d51b863f9eba7c 10,16
+app/Actions/Backups/CompleteBackup.php
+  s_a8b5be0877831b::t_44f3ae7f9e1501 1-2,5,15,17,53,60,62,101-102
+  s_a8b5be0877831b::t_81454434cbdc16 3-4,6-14,18,21-52,54-59,61,63-100
+  s_a8b5be0877831b::t_60741f90339a0a 16,19-20
+app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+  s_a8b5be0877831b::t_149f2fb732611f 120,122
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 15
+app/Http/Controllers/Api/Client/Servers/BackupController.php
+  s_a8b5be0877831b::t_fffd0aef30f98c 14-18,97,112,134,136,170,172,188,192,216,222
+app/Actions/Backups/DeleteBackup.php
+  s_a8b5be0877831b::t_3bf738757d1d5d 3-4,7-10,12-19,22,26-27,29-32,34,36-37,39-68,70-81
+  s_a8b5be0877831b::t_2d0cb50e110f70 11,69
+  s_a8b5be0877831b::t_60741f90339a0a 20,23-25
+  s_a8b5be0877831b::t_e8dd0d7a100dfe 1-2,5-6,21,28,33,35,38,82-83
+app/Actions/Servers/ToggleServerSuspension.php
+  s_a8b5be0877831b::t_d73e530c8bd3e3 5,9,15,18,20-23,34-35,41
+  s_a8b5be0877831b::t_bc595b821281a1 17,19
+  s_a8b5be0877831b::t_626c93362095e1 28,33,40
+app/Contracts/Eggs/ImportsEggs.php
+  s_a8b5be0877831b::t_4c89a1c332713c 1-19
+app/Http/Controllers/Api/Admin/Servers/SuspensionController.php
+  s_a8b5be0877831b::t_d25c8b4fa6adfe 12,27,31,33
+app/Actions/Activity/IngestActivityLogs.php
+  s_a8b5be0877831b::t_2fdbf01aaf41cc 5
+  s_a8b5be0877831b::t_3b728451a73119 13,20,22-23,29,32,37-38,64
+app/Contracts/Servers/UpdatesServerStartup.php
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,12,19
+  s_a8b5be0877831b::t_c77872ee81edf3 7-11,18
+  s_a8b5be0877831b::t_51480857e5745e 14-15
+  s_a8b5be0877831b::t_60741f90339a0a 13,16-17
+app/Contracts/Themes/AppliesThemes.php
+  s_a8b5be0877831b::t_d51b863f9eba7c 3-4,9
+  s_a8b5be0877831b::t_f207040e3e3c9e 1-2,5-8,10
+app/Services/Deployment/AllocationSelectionService.php
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 8
+  s_a8b5be0877831b::t_29313c48a731e3 82-83
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_a8b5be0877831b::t_65bb8fda5e70da 269,271,293,295,310,312
+  s_a8b5be0877831b::t_966dfa1ab51ff8 15-16
+tests/Integration/Services/Eggs/EggImporterServiceTest.php
+  s_a8b5be0877831b::t_da5c14b117a538 10,21
+  s_a8b5be0877831b::t_6258531bce15ea 9,16
+app/Contracts/Eggs/ImportsCatalogEggs.php
+  s_a8b5be0877831b::t_1432c7bf8478f4 1-12
+app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+  s_a8b5be0877831b::t_fffd0aef30f98c 8-9,27,44,61,63
+app/Actions/Servers/UpdateServerStartup.php
+  s_a8b5be0877831b::t_2d0cb50e110f70 25
+  s_a8b5be0877831b::t_d6c49cf9db08d5 51-53
+  s_a8b5be0877831b::t_e2b65a03a685c9 5,9,14,17,19-22,29,31,33,38,41,47,55,61-62,65,67
+app/Services/Extensions/ExtensionPackageLocator.php
+  s_a8b5be0877831b::t_9383ab7a40156e 12
+  s_a8b5be0877831b::t_474b452e2e4716 14-15,27
+app/Actions/Eggs/Sharing/ImportEgg.php
+  s_a8b5be0877831b::t_128bd419a98039 9,18,20,22-23,25,28
+  s_a8b5be0877831b::t_3001e70ab67dac 5
+app/Contracts/Backups/CompletesBackups.php
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_129d5cf0bc987f 1-2,5-18
+app/Actions/Databases/RotateDatabasePassword.php
+  s_a8b5be0877831b::t_1bb5bdeec127f5 9,13,16,19-22,25-26,32
+  s_a8b5be0877831b::t_e8d3005213b2c7 5
+app/Actions/Api/CreateApiKey.php
+  s_a8b5be0877831b::t_3b728451a73119 9,12,14,20,23-24,28,32
+  s_a8b5be0877831b::t_eb34916ef9e54e 18
+  s_a8b5be0877831b::t_2fdbf01aaf41cc 5
+app/Actions/Extensions/UpdateExtensionSettings.php
+  s_a8b5be0877831b::t_d162f51e32ab14 1-22
+tests/Integration/Services/Servers/SuspensionServiceTest.php
+  s_a8b5be0877831b::t_a66a51c6a40f2a 27,33,48,51
+  s_a8b5be0877831b::t_2d0cb50e110f70 8
+app/Console/Commands/Extensions/InstallCommand.php
+  s_a8b5be0877831b::t_d68b9ff432bd26 10,19
+app/Contracts/Backups/RestoresBackupStatuses.php
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,13
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_15a7e551e957ec 7-9,12
+app/Actions/Extensions/InstallExtension.php
+  s_a8b5be0877831b::t_9383ab7a40156e 1-2,5-6,21-22,32,63-64
+  s_a8b5be0877831b::t_608b9eb311ea33 3-4
+  s_a8b5be0877831b::t_fbf4548cce4ec5 7-20,23-31,33-62
+app/Actions/Databases/CreateDatabase.php
+  s_a8b5be0877831b::t_82df0393d078d8 26
+  s_a8b5be0877831b::t_b8eaa170184dcb 101
+  s_a8b5be0877831b::t_8e0b298dbad267 86,93
+  s_a8b5be0877831b::t_71003b9fb8bdee 5
+  s_a8b5be0877831b::t_41d17877983a77 58
+  s_a8b5be0877831b::t_516948264549f4 12,20,24,29,32-35,38,45,64,87-88,92,102
+app/Contracts/Backups/GeneratesBackupDownloadLinks.php
+  s_a8b5be0877831b::t_efec5f8239dacf 7-9,12
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,13
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+app/Actions/Backups/ToggleBackupLock.php
+  s_a8b5be0877831b::t_da6615bfe746f4 7,10,12
+  s_a8b5be0877831b::t_e8dd0d7a100dfe 5
+app/Console/Commands/Extensions/EnableCommand.php
+  s_a8b5be0877831b::t_d68b9ff432bd26 10,17
+app/Actions/Backups/RestoreBackup.php
+  s_a8b5be0877831b::t_e8dd0d7a100dfe 5
+  s_a8b5be0877831b::t_60741f90339a0a 17,20-22
+  s_a8b5be0877831b::t_ad0b882a734d67 8-9,31,38
+tests/Integration/Services/Servers/ServerCreationServiceTest.php
+  s_a8b5be0877831b::t_2d0cb50e110f70 13
+  s_a8b5be0877831b::t_8883d1ddcddab6 54,61,98,106,109
+app/Actions/Telemetry/SendTelemetry.php
+  s_a8b5be0877831b::t_024cb9aa4df6ad 1-2,5,11,13,17,29-30
+  s_a8b5be0877831b::t_0e0530f5fc26f6 3-4,6-10,12,14-16,18-28
+tests/Integration/Services/Databases/DeployServerDatabaseServiceTest.php
+  s_a8b5be0877831b::t_788cf56e3cac89 42,50,55,62,76
+  s_a8b5be0877831b::t_178348edc1c52d 86,89
+  s_a8b5be0877831b::t_51311050b30fde 8
+app/Http/Controllers/Api/Remote/ActivityProcessingController.php
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 7
+  s_a8b5be0877831b::t_29313c48a731e3 13,15
+app/Actions/Servers/UpdateServerDetails.php
+  s_a8b5be0877831b::t_78006a0ef26a10 5,9,14,23
+  s_a8b5be0877831b::t_2d0cb50e110f70 19
+  s_a8b5be0877831b::t_60741f90339a0a 16
+  s_a8b5be0877831b::t_626c93362095e1 34
+app/Contracts/Themes/ResetsThemes.php
+  s_a8b5be0877831b::t_f207040e3e3c9e 1-2,5-8,10
+  s_a8b5be0877831b::t_d51b863f9eba7c 3-4,9
+app/Http/Controllers/Api/Remote/Backups/BackupRemoteUploadController.php
+  s_a8b5be0877831b::t_fffd0aef30f98c 11,29,48
+app/Contracts/Allocations/CreatesAllocations.php
+  s_a8b5be0877831b::t_d866862f187acd 1-26
+app/Actions/Allocations/CreateAllocations.php
+  s_a8b5be0877831b::t_7514a9a3072d69 5,10,19,33,44,60-61,63-68,70,72-76,78-81,83,94-95,97
+  s_a8b5be0877831b::t_4b075ccc3adaa6 62,69,71,77
+app/Contracts/Allocations/AssignsAvailableAllocations.php
+  s_a8b5be0877831b::t_4c89a1c332713c 1-15
+tests/Integration/Services/Servers/StartupModificationServiceTest.php
+  s_a8b5be0877831b::t_2d0cb50e110f70 10
+  s_a8b5be0877831b::t_c85262cf2714d8 23,35,47,66,70,78,80,83
+app/Console/Scheduler.php
+  s_a8b5be0877831b::t_0e0530f5fc26f6 13,67-69
+app/Console/Commands/Extensions/DisableCommand.php
+  s_a8b5be0877831b::t_d68b9ff432bd26 10,17
+app/Contracts/Servers/AttachesMountsToServers.php
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,11,13
+  s_a8b5be0877831b::t_c77872ee81edf3 7-10,12
+app/Http/Controllers/Api/Client/Servers/DatabaseController.php
+  s_a8b5be0877831b::t_6767ebb7ea0b7e 13-15,74,76,98,103,116,118
+app/Actions/Backups/GenerateBackupDownloadLink.php
+  s_a8b5be0877831b::t_e8d3005213b2c7 5
+  s_a8b5be0877831b::t_60741f90339a0a 18,20
+  s_a8b5be0877831b::t_f5a63fa8208c30 9,26
+  s_a8b5be0877831b::t_2d0cb50e110f70 51
+app/Contracts/Backups/DeletesBackups.php
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,14
+  s_a8b5be0877831b::t_15a7e551e957ec 7-9,12-13
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+app/Http/Controllers/Api/Admin/Servers/DetailsController.php
+  s_a8b5be0877831b::t_2546aeec4d53be 30,32
+  s_a8b5be0877831b::t_9e354dfb409d96 10
+app/Http/Controllers/Api/Admin/Eggs/ImportCatalogEggController.php
+  s_a8b5be0877831b::t_da5c14b117a538 30,32
+  s_a8b5be0877831b::t_015138dd8f841c 13
+tests/Integration/Services/Servers/BuildModificationServiceTest.php
+  s_a8b5be0877831b::t_13b4274e94d5d1 39,69,73,89,100,108,118,129,137,140
+  s_a8b5be0877831b::t_2d0cb50e110f70 10
+app/Http/Requests/Api/Client/Servers/Databases/StoreDatabaseRequest.php
+  s_a8b5be0877831b::t_0744be4e7acf75 13,40
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_a8b5be0877831b::t_0744be4e7acf75 17-19,172,175,205,208,230,237
+tests/Integration/Services/Databases/DatabasePasswordServiceTest.php
+  s_a8b5be0877831b::t_178348edc1c52d 47,50
+  s_a8b5be0877831b::t_51311050b30fde 7
+  s_a8b5be0877831b::t_197f2a4506517a 31
+app/Contracts/Backups/RestoresBackups.php
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,12-13,16
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_15a7e551e957ec 7-11,14-15
+tests/Integration/Services/Allocations/FindAssignableAllocationServiceTest.php
+  s_a8b5be0877831b::t_c4461399216404 113
+  s_a8b5be0877831b::t_6258531bce15ea 29,40,51,60,73,80,86,93,102,115,118
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 9
+app/Http/Controllers/Api/Admin/Servers/StartupController.php
+  s_a8b5be0877831b::t_d25c8b4fa6adfe 31,33
+  s_a8b5be0877831b::t_2d946ef472de3f 10
+app/Actions/Servers/UpdateServerBuild.php
+  s_a8b5be0877831b::t_626c93362095e1 34,43-44,66-67,83,86-87,100-101
+  s_a8b5be0877831b::t_2d0cb50e110f70 27
+  s_a8b5be0877831b::t_0a4a5a81c041d2 5,9,15,18,21-23,32,35,38-39,75,84-85,105
+app/Actions/Eggs/Sharing/ImportCatalogEgg.php
+  s_a8b5be0877831b::t_a8bf1d925aa50c 1-2,5-6,19,23,40-41
+  s_a8b5be0877831b::t_7bbb814ac4f3ff 7-18,20-22,24-39
+  s_a8b5be0877831b::t_2d0cb50e110f70 3-4
+app/Http/Controllers/Api/Client/Servers/SettingsController.php
+  s_a8b5be0877831b::t_d53def14ddc57c 14,77,79
+app/Http/Controllers/Api/Application/Servers/DatabaseController.php
+  s_a8b5be0877831b::t_a9612ad146bfba 14-16,81,83,96,98,118,120
+app/Actions/Themes/ApplyTheme.php
+  s_a8b5be0877831b::t_f207040e3e3c9e 1-2,5-6,13,18,35-36
+  s_a8b5be0877831b::t_d51b863f9eba7c 3-4,7-12,14-17,19-34
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_a8b5be0877831b::t_5b397ca6450993 7-21,23-30,32-56
+  s_a8b5be0877831b::t_608b9eb311ea33 3-4
+  s_a8b5be0877831b::t_9383ab7a40156e 1-2,5-6,22,31,57-58
+app/Actions/Servers/DetachMountFromServer.php
+  s_a8b5be0877831b::t_1156974886d9a5 5,7,12,14,16
+app/Actions/Allocations/AssignAvailableAllocation.php
+  s_a8b5be0877831b::t_29313c48a731e3 8-9,19,21,23-24,28-43
+  s_a8b5be0877831b::t_512f2fb755b8ce 5
+app/Contracts/Databases/DeploysServerDatabases.php
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4,9
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,15-16,25
+  s_a8b5be0877831b::t_efec5f8239dacf 7-8,10-14,17-24
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_a8b5be0877831b::t_608b9eb311ea33 17-19
+  s_a8b5be0877831b::t_d68b9ff432bd26 107,166,180,192
+  s_a8b5be0877831b::t_758fabb25a7377 20,147,157,159
+app/Contracts/Databases/CreatesDatabaseHosts.php
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,16
+  s_a8b5be0877831b::t_efec5f8239dacf 7-9,12-15
+app/Actions/Backups/PresignBackupUpload.php
+  s_a8b5be0877831b::t_60741f90339a0a 15,19
+  s_a8b5be0877831b::t_81fe46e4939d74 8,29
+  s_a8b5be0877831b::t_e8d3005213b2c7 5
+app/Actions/Databases/DeployServerDatabase.php
+  s_a8b5be0877831b::t_71003b9fb8bdee 5
+  s_a8b5be0877831b::t_1bb5bdeec127f5 9-10,18,21,24-25,28,32-33,35,50,54
+app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+  s_a8b5be0877831b::t_3cff3cef9ac0bb 12-13,93,97,113,117
+app/Http/Controllers/Api/Admin/Eggs/ImportEggController.php
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 12
+  s_a8b5be0877831b::t_29313c48a731e3 30,32
+tests/Integration/Services/Servers/ServerDeletionServiceTest.php
+  s_a8b5be0877831b::t_2d0cb50e110f70 12
+  s_a8b5be0877831b::t_f659ff01d749d9 46,56,63,75,90,95,98,111
+app/Contracts/Backups/PresignsBackupUploads.php
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,16
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4,8
+  s_a8b5be0877831b::t_efec5f8239dacf 7,9,12-15
+tests/Integration/Services/Databases/DatabaseManagementServiceTest.php
+  s_a8b5be0877831b::t_41d17877983a77 54
+  s_a8b5be0877831b::t_07f8f00ed47884 16,34-36,59,75,96
+  s_a8b5be0877831b::t_51311050b30fde 9
+  s_a8b5be0877831b::t_178348edc1c52d 108,111
+app/Contracts/Servers/UpdatesServerBuild.php
+  s_a8b5be0877831b::t_c77872ee81edf3 7-11,19
+  s_a8b5be0877831b::t_51480857e5745e 14-15
+  s_a8b5be0877831b::t_60741f90339a0a 13,16-18
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,12,20
+app/Support/DatabaseName.php
+  s_a8b5be0877831b::t_71003b9fb8bdee 1-2,5-6,8,10,12-13
+  s_a8b5be0877831b::t_1bb5bdeec127f5 3-4,7,9,11
+app/Actions/Servers/DeleteServer.php
+  s_a8b5be0877831b::t_2d0cb50e110f70 12,21
+  s_a8b5be0877831b::t_09075e384b3991 5,19,40
+  s_a8b5be0877831b::t_c8049b98238af4 45-46,57-58,64
+  s_a8b5be0877831b::t_357e7b88e67ef7 11,26,54
+tests/Integration/Providers/ActionServiceProviderTest.php
+  s_a8b5be0877831b::t_ae3321041eddf2 1-18,20-36
+  s_a8b5be0877831b::t_2d0cb50e110f70 19
+app/Contracts/Activity/IngestsActivityLogs.php
+  s_a8b5be0877831b::t_4c89a1c332713c 1-13
+app/Contracts/Servers/RecordsServerInstallResults.php
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,11,13
+  s_a8b5be0877831b::t_c77872ee81edf3 7-10,12
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 13
+  s_a8b5be0877831b::t_86a2638d678592 37,46
+app/Actions/Servers/CreateServer.php
+  s_a8b5be0877831b::t_60741f90339a0a 32,35-40
+  s_a8b5be0877831b::t_2d0cb50e110f70 44
+  s_a8b5be0877831b::t_c8049b98238af4 54,60,76,88,99
+  s_a8b5be0877831b::t_0a4dd49a6221c1 5,11-12,28,52,86,89,96,103,118,123,147,150,160,163,168,179
+app/Http/Controllers/Api/Application/Servers/ServerManagementController.php
+  s_a8b5be0877831b::t_3b93b931117fc6 12-13
+  s_a8b5be0877831b::t_65bb8fda5e70da 53,55,69,84,86
+  s_a8b5be0877831b::t_bc595b821281a1 71
+app/Http/Requests/Api/Admin/Servers/Databases/StoreDatabaseRequest.php
+  s_a8b5be0877831b::t_0744be4e7acf75 12,78
+app/Contracts/Servers/DetachesMountsFromServers.php
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,11,13
+  s_a8b5be0877831b::t_c77872ee81edf3 7-10,12
+app/Contracts/Api/CreatesApiKeys.php
+  s_a8b5be0877831b::t_4c89a1c332713c 1-12,14-16
+  s_a8b5be0877831b::t_eb34916ef9e54e 13
+app/Contracts/Servers/ReinstallsServers.php
+  s_a8b5be0877831b::t_c77872ee81edf3 7-10,12-13
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,11,14
+app/Http/Requests/Api/Application/Servers/Databases/StoreServerDatabaseRequest.php
+  s_a8b5be0877831b::t_1d2a7a23c574bb 12,78
+app/Actions/Databases/UpdateDatabaseHost.php
+  s_a8b5be0877831b::t_60741f90339a0a 18-21
+  s_a8b5be0877831b::t_2719208a7e141d 10,15,31
+  s_a8b5be0877831b::t_e8d3005213b2c7 5
+app/Contracts/Databases/CreatesDatabases.php
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,13-14,23
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_efec5f8239dacf 7-12,15-22
+app/Actions/Extensions/RemoveExtension.php
+  s_a8b5be0877831b::t_608b9eb311ea33 3-4
+  s_a8b5be0877831b::t_9383ab7a40156e 1-2,5-6,19,27,37-38
+  s_a8b5be0877831b::t_5b397ca6450993 7-18,20-26,28-36
+database/Seeders/EggSeeder.php
+  s_a8b5be0877831b::t_da5c14b117a538 10-11,32,70,73
+tests/Integration/Console/Commands/Themes/ThemeCommandsTest.php
+  s_a8b5be0877831b::t_90b14a17904caa 1-39
+app/Contracts/Backups/TogglesBackupLocks.php
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,9-10,12
+  s_a8b5be0877831b::t_efec5f8239dacf 7-8,11
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 16
+  s_a8b5be0877831b::t_149f2fb732611f 105,111,113
+app/Contracts/Telemetry/SendsTelemetry.php
+  s_a8b5be0877831b::t_0e0530f5fc26f6 1-10
+app/Providers/ActionServiceProvider.php
+  s_a8b5be0877831b::t_3d1bf99ac02594 178-180
+  s_a8b5be0877831b::t_3e29e36190604e 181-182
+  s_a8b5be0877831b::t_c82f6546fdfdd9 183-184
+  s_a8b5be0877831b::t_8248eb0f57840c 177
+  s_a8b5be0877831b::t_0e0bd3d0f3b640 37-39,43-45,75-76,88,90-91,97-112,117-118,121,123-125,155-156
+  s_a8b5be0877831b::t_010eefae482e6c 11,18-19,23-27,29,185-214
+  s_a8b5be0877831b::t_0e0530f5fc26f6 74,154,215
+  s_a8b5be0877831b::t_aaa86b81cb973f 46,126
+  s_a8b5be0877831b::t_1efaa88dbba329 172-173,216-256
+  s_a8b5be0877831b::t_46f907868d9b09 8,10,17,20-22,28,30-32,61-70,141-150
+app/Http/Controllers/Api/Admin/Servers/ReinstallController.php
+  s_a8b5be0877831b::t_d53def14ddc57c 13,28,30
+app/Http/Controllers/Api/Application/Servers/ServerController.php
+  s_a8b5be0877831b::t_65bb8fda5e70da 102,104,133,135
+  s_a8b5be0877831b::t_3b93b931117fc6 17-18
+app/Contracts/Databases/RotatesDatabasePasswords.php
+  s_a8b5be0877831b::t_efec5f8239dacf 7-9,12-13
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,14
+app/Actions/Databases/DeleteDatabaseHost.php
+  s_a8b5be0877831b::t_5abac453545288 11,18
+  s_a8b5be0877831b::t_e8d3005213b2c7 5
+  s_a8b5be0877831b::t_2d0cb50e110f70 7
+app/Console/Commands/Extensions/RemoveCommand.php
+  s_a8b5be0877831b::t_d68b9ff432bd26 10,17
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_a8b5be0877831b::t_608b9eb311ea33 10-12
+  s_a8b5be0877831b::t_d68b9ff432bd26 49-51,55-56,81
+app/Contracts/Servers/DeletesServers.php
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,12,20
+  s_a8b5be0877831b::t_60741f90339a0a 15-18
+  s_a8b5be0877831b::t_c77872ee81edf3 7-11,13-14,19
+app/Http/Controllers/Api/Application/Servers/StartupController.php
+  s_a8b5be0877831b::t_d25c8b4fa6adfe 48,50
+  s_a8b5be0877831b::t_54d3d86d51d5e6 12
+app/Http/Controllers/Api/Remote/Servers/ServerInstallController.php
+  s_a8b5be0877831b::t_3cff3cef9ac0bb 29,33
+  s_a8b5be0877831b::t_3b93b931117fc6 10
+app/Contracts/Databases/DeletesDatabases.php
+  s_a8b5be0877831b::t_902663e0ea3a4c 3-4
+  s_a8b5be0877831b::t_efec5f8239dacf 7-9,12-13
+  s_a8b5be0877831b::t_02ae8008536eb4 1-2,5-6,10-11,14
+app/Actions/Servers/ReinstallServer.php
+  s_a8b5be0877831b::t_0dbf63603cbee5 5,8,13,16-17,20-21,23
+app/Contracts/Servers/TogglesServerSuspension.php
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,10,16
+  s_a8b5be0877831b::t_c77872ee81edf3 7-9
+  s_a8b5be0877831b::t_bc595b821281a1 11-15
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_a8b5be0877831b::t_36b1c4ff3a2bc5 16
+  s_a8b5be0877831b::t_86a2638d678592 63,65
+app/Contracts/Servers/CreatesServers.php
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,16-17,25,27
+  s_a8b5be0877831b::t_c77872ee81edf3 8-10,13-15,18-24,26
+  s_a8b5be0877831b::t_3ceb6974e2eaea 7,11-12
+app/Http/Controllers/Api/Application/Servers/ServerDetailsController.php
+  s_a8b5be0877831b::t_2546aeec4d53be 46,48,69,71
+  s_a8b5be0877831b::t_9b673586594931 11-12
+app/Contracts/Eggs/UpdatesEggsFromImports.php
+  s_a8b5be0877831b::t_1432c7bf8478f4 1-16
+app/Actions/Eggs/Sharing/UpdateEggFromImport.php
+  s_a8b5be0877831b::t_1432c7bf8478f4 5,9,17,19-22,26,38
+app/Contracts/Extensions/UpdatesExtensionSettings.php
+  s_a8b5be0877831b::t_1a9cff22f8375e 1-11,13-16
+  s_a8b5be0877831b::t_0e0bd3d0f3b640 12
+app/Actions/Backups/InitiateBackup.php
+  s_a8b5be0877831b::t_791ddcd6233ac1 1-2,5-6,23,47,51,53,127-128
+  s_a8b5be0877831b::t_530bae2e376ede 3-4,7-22,24-46,48-50,52,54-126
+app/Console/Commands/Themes/ApplyCommand.php
+  s_a8b5be0877831b::t_d51b863f9eba7c 10,17
+app/Actions/Backups/RestoreBackupStatus.php
+  s_a8b5be0877831b::t_e8dd0d7a100dfe 5
+  s_a8b5be0877831b::t_140b8331ed80e2 7,12,14
+tests/Integration/Console/SchedulerTest.php
+  s_a8b5be0877831b::t_860e4cfbf8e69f 11,24
+  s_a8b5be0877831b::t_ed1877f0d84353 10,29-30,32
+  s_a8b5be0877831b::t_aa00ef25e75864 22
+  s_a8b5be0877831b::t_8f262b1c33d138 1-9,12-21,23,25-28,31,33-54
+app/Jobs/Schedule/RunTaskJob.php
+  s_a8b5be0877831b::t_2d0cb50e110f70 14
+  s_a8b5be0877831b::t_fffd0aef30f98c 49,76
+app/Http/Controllers/Api/Admin/Servers/RotateDatabasePasswordController.php
+  s_a8b5be0877831b::t_0744be4e7acf75 32,41
+  s_a8b5be0877831b::t_a9762bb5b0800d 11
+app/Actions/Databases/DeleteDatabase.php
+  s_a8b5be0877831b::t_2d0cb50e110f70 7,9
+  s_a8b5be0877831b::t_e8d3005213b2c7 1-2,5,12,14,22,30-31
+  s_a8b5be0877831b::t_516948264549f4 3-4,6,8,10-11,13,15-21,23-29
+app/Actions/Servers/RecordServerInstallResult.php
+  s_a8b5be0877831b::t_4bdd5a0cc7cb96 1-28,30-40,42-44
+  s_a8b5be0877831b::t_60741f90339a0a 29
+  s_a8b5be0877831b::t_2d0cb50e110f70 41
+app/Services/Eggs/EggCatalogService.php
+  s_a8b5be0877831b::t_008f4af5253ed2 23,37,39,42
+tests/Integration/Services/Backups/DownloadLinkServiceTest.php
+  s_a8b5be0877831b::t_51311050b30fde 13
+  s_a8b5be0877831b::t_178348edc1c52d 22
+app/Contracts/Servers/UpdatesServerDetails.php
+  s_a8b5be0877831b::t_60741f90339a0a 12,15-16
+  s_a8b5be0877831b::t_c77872ee81edf3 7-10,17
+  s_a8b5be0877831b::t_00b521b69f8d47 1-6,11,18
+  s_a8b5be0877831b::t_51480857e5745e 13-14
+app/Actions/Themes/ResetTheme.php
+  s_a8b5be0877831b::t_f207040e3e3c9e 1-2,5-6,12,17,20-21
+  s_a8b5be0877831b::t_d51b863f9eba7c 3-4,7-11,13-16,18-19
+app/Actions/Allocations/AssignAllocation.php
+  s_a8b5be0877831b::t_29313c48a731e3 19,31
+  s_a8b5be0877831b::t_2d0cb50e110f70 9
+.ai/rules/api.md
+  s_a8b5be0877831b::t_1ae6f875e20982 19-21
+.ai/rules/index.md
+  s_a8b5be0877831b::t_6c4cda97e652e3 7-8
+.ai/rules/services.md
+  s_a8b5be0877831b::t_d181f457715884 10-12
+app/Contracts/Extensions/InstallsExtensions.php
+  s_a8b5be0877831b::t_9b7476b05f400e 1-12
+app/Contracts/Extensions/RemovesExtensions.php
+  s_a8b5be0877831b::t_63c0fa63f77ea7 1-10
+app/Contracts/Extensions/SetsExtensionEnabled.php
+  s_a8b5be0877831b::t_07e24040158448 1-12
+.ai/rules/actions-contracts-providers.md
+  s_d8b9b4e3bbf85c::t_c84bf17914d4bd 1-9
+.ai/rules/actions.md
+  s_d8b9b4e3bbf85c::t_3abad906093282 1-9
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "18a0cf2c950a073045ed6435c26980ab44d22412",
+  "prompts": {},
+  "sessions": {
+    "s_a8b5be0877831b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0bb9f-418b-7862-b0ad-da7576f71af0",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_d8b9b4e3bbf85c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0bba0-86c6-7122-a064-98275c6823eb",
+        "model": "unknown"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
