@@ -1,0 +1,324 @@
+app/Contracts/Eggs/CreatesEggVariables.php
+  s_a1fd6c79aae8c1::t_3546d220f644cd 1-18
+app/Http/Controllers/Api/Remote/Servers/ServerDetailsController.php
+  s_a1fd6c79aae8c1::t_a2a9d62bfb78f5 73,75
+  s_a1fd6c79aae8c1::t_44922f336455c8 9
+app/Actions/Locations/CreateLocation.php
+  s_a1fd6c79aae8c1::t_616557865380fa 1-21
+app/Contracts/Schedules/CreatesScheduleTasks.php
+  s_a1fd6c79aae8c1::t_50afb6a3a51f0b 1-24
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_a1fd6c79aae8c1::t_9781d0ef0985d4 113,115
+  s_a1fd6c79aae8c1::t_058062dbc1e575 15-17
+  s_a1fd6c79aae8c1::t_9220bdb8ed8328 89,91
+  s_a1fd6c79aae8c1::t_a4962fd87490ae 133,135
+app/Contracts/Transfers/InitiatesTransfers.php
+  s_a1fd6c79aae8c1::t_bf3fe720fb315a 1-25
+app/Contracts/Users/SetsUpTwoFactor.php
+  s_a1fd6c79aae8c1::t_c2fc7ea782081c 1-19
+app/Actions/Allocations/DeleteAllocation.php
+  s_a1fd6c79aae8c1::t_2d77cf67fb7c48 1-26
+app/Console/Commands/User/DeleteUserCommand.php
+  s_a1fd6c79aae8c1::t_3baa80295eba9f 11
+  s_a1fd6c79aae8c1::t_05d54ca4b64b3b 22,73
+app/Actions/Transfers/CompleteTransfer.php
+  s_a1fd6c79aae8c1::t_b2a76eaef201db 1-59
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_a1fd6c79aae8c1::t_2a2a37b850cf6e 145,147
+  s_a1fd6c79aae8c1::t_44922f336455c8 16-18
+  s_a1fd6c79aae8c1::t_83f040b3291e5e 121,123
+  s_a1fd6c79aae8c1::t_618f5a02b5f2f8 94,96
+app/Contracts/Eggs/UpdatesEggVariables.php
+  s_a1fd6c79aae8c1::t_b7d5c5ec4d742e 1-17
+app/Actions/Allocations/UpdateAllocationNotes.php
+  s_a1fd6c79aae8c1::t_a6c6328f13f665 1-18
+app/Console/Commands/Schedule/ProcessRunnableCommand.php
+  s_a1fd6c79aae8c1::t_61d9ddafab16c8 12
+  s_a1fd6c79aae8c1::t_a5a450d337f47d 66
+app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+  s_a1fd6c79aae8c1::t_841dd8bd2e7a71 15
+  s_a1fd6c79aae8c1::t_50b4f65489a655 135,137
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_a1fd6c79aae8c1::t_a057bc32b9343d 166,172
+  s_a1fd6c79aae8c1::t_fca274ae8b00b3 16-18
+  s_a1fd6c79aae8c1::t_4c44b2174fa29a 120,122,146,148
+app/Contracts/Allocations/UnassignsAllocations.php
+  s_a1fd6c79aae8c1::t_f1071fe308ead7 1-17
+app/Http/Controllers/Api/Remote/Servers/ServerTransferController.php
+  s_a1fd6c79aae8c1::t_cb539029966ef2 10-11
+  s_a1fd6c79aae8c1::t_4bde63624b81ac 27,34
+  s_a1fd6c79aae8c1::t_4494cef509692e 44,51
+app/Actions/Allocations/AssignAllocation.php
+  s_a1fd6c79aae8c1::t_2396be16443e9f 15
+  s_a1fd6c79aae8c1::t_28794848e4f183 18-19
+  s_a1fd6c79aae8c1::t_8380eaa00e58d6 1-14,16-17,20-34
+app/Actions/Users/DeleteUser.php
+  s_a1fd6c79aae8c1::t_a000dfb4af5b69 1-26
+app/Actions/Allocations/SetPrimaryAllocation.php
+  s_a1fd6c79aae8c1::t_d7d7f3b087fbf3 1-19
+app/Contracts/Schedules/UpdatesScheduleTasks.php
+  s_a1fd6c79aae8c1::t_891fc320022f60 1-22
+app/Actions/Schedules/DeleteScheduleTask.php
+  s_a1fd6c79aae8c1::t_3ee258fe15150d 1-32
+app/Actions/Schedules/UpdateSchedule.php
+  s_a1fd6c79aae8c1::t_790a38d6fdd397 1-58
+app/Contracts/Eggs/CreatesEggs.php
+  s_a1fd6c79aae8c1::t_f279456f9522f9 1-17
+app/Http/Controllers/Api/Application/Locations/LocationController.php
+  s_a1fd6c79aae8c1::t_64962621e9f9c5 15-17
+  s_a1fd6c79aae8c1::t_16e4bba8043f85 90,92
+  s_a1fd6c79aae8c1::t_ef0b6394669762 111,113,128,130
+app/Actions/Users/CreateUser.php
+  s_a1fd6c79aae8c1::t_4935f77b5ce76e 1-50
+app/Contracts/Eggs/DeletesEggs.php
+  s_a1fd6c79aae8c1::t_49d3282ffb2e23 1-21
+app/Actions/Eggs/CreateEgg.php
+  s_a1fd6c79aae8c1::t_ee930270edf959 1-30
+app/Http/Controllers/Api/Client/Servers/SubuserController.php
+  s_a1fd6c79aae8c1::t_f9af614a90450f 87,91,115,127,150,154
+  s_a1fd6c79aae8c1::t_5c585b9edbb94d 12-14
+app/Actions/Subusers/CreateSubuser.php
+  s_a1fd6c79aae8c1::t_49e90cfcd31d17 10
+  s_a1fd6c79aae8c1::t_c82587300a9e04 21,60
+  s_a1fd6c79aae8c1::t_a56ca987162c5a 1-9,11-20,22-59,61-76
+app/Actions/Nodes/CreateNode.php
+  s_a1fd6c79aae8c1::t_e1a9e95baedb83 1-31
+app/Contracts/Schedules/ProcessesSchedules.php
+  s_a1fd6c79aae8c1::t_0a623634af9068 1-18
+app/Contracts/Users/DisablesTwoFactor.php
+  s_a1fd6c79aae8c1::t_cc2116eb6863f3 1-12
+app/Http/Controllers/Api/Admin/Servers/TransferController.php
+  s_a1fd6c79aae8c1::t_cb539029966ef2 13
+  s_a1fd6c79aae8c1::t_204515258875c3 43,48
+app/Actions/Allocations/UpdateAllocation.php
+  s_a1fd6c79aae8c1::t_15df7021ef19c2 1-20
+tests/Integration/Services/Schedules/ProcessScheduleServiceTest.php
+  s_a1fd6c79aae8c1::t_b9e389804316fe 13
+  s_a1fd6c79aae8c1::t_5826431bb1a37a 32,41,76,122
+  s_a1fd6c79aae8c1::t_9527f3426c01a5 55,93
+  s_a1fd6c79aae8c1::t_f56b6aed227704 101,104
+app/Contracts/Locations/CreatesLocations.php
+  s_a1fd6c79aae8c1::t_4e2acacdabeec6 1-17
+app/Contracts/Eggs/ExportsEggs.php
+  s_a1fd6c79aae8c1::t_e468469ec6cb13 1-18
+app/Contracts/Schedules/DeletesScheduleTasks.php
+  s_a1fd6c79aae8c1::t_f14e158862cef0 1-19
+app/Http/Controllers/Api/Application/Users/UserController.php
+  s_a1fd6c79aae8c1::t_4bf5f221555d48 85,87
+  s_a1fd6c79aae8c1::t_fca274ae8b00b3 14-16
+  s_a1fd6c79aae8c1::t_f75921a9499969 125,127
+  s_a1fd6c79aae8c1::t_636cf97b70d09e 103,105
+app/Actions/Eggs/Sharing/ExportEgg.php
+  s_a1fd6c79aae8c1::t_f760dd6d15ba61 1-69
+app/Actions/Eggs/Variables/CreateEggVariable.php
+  s_a1fd6c79aae8c1::t_f29789ef7711ab 1-24
+app/Contracts/Transfers/FailsTransfers.php
+  s_a1fd6c79aae8c1::t_a81ac9c1bb7193 1-18
+app/Actions/Schedules/UpdateScheduleTask.php
+  s_a1fd6c79aae8c1::t_d6f0f64e424b07 1-53
+app/Actions/Nodes/DeleteNode.php
+  s_a1fd6c79aae8c1::t_34bf6a8144d0b1 1-26
+app/Contracts/Allocations/DeletesAllocations.php
+  s_a1fd6c79aae8c1::t_1d20d8f6b2a3ec 1-18
+app/Actions/Nodes/ResetServerStates.php
+  s_a1fd6c79aae8c1::t_c552a6b6b33229 1-57
+app/Contracts/Users/UpdatesUserEmails.php
+  s_a1fd6c79aae8c1::t_002b77969ef10a 1-15
+app/Actions/Locations/DeleteLocation.php
+  s_a1fd6c79aae8c1::t_d056b8f2f2fa72 1-26
+app/Contracts/Allocations/SetsPrimaryAllocations.php
+  s_a1fd6c79aae8c1::t_11cf6823e0bafd 1-13
+app/Actions/Eggs/Variables/UpdateEggVariable.php
+  s_a1fd6c79aae8c1::t_881da2ef2197f8 1-21
+app/Http/Controllers/Api/Client/AccountController.php
+  s_a1fd6c79aae8c1::t_d672447350b171 71,75
+  s_a1fd6c79aae8c1::t_fca274ae8b00b3 15-16
+  s_a1fd6c79aae8c1::t_aac8e19aa8be91 97,101
+app/Contracts/Nodes/CreatesNodes.php
+  s_a1fd6c79aae8c1::t_ec3ba63ef798f8 1-17
+app/Contracts/Users/UpdatesUsers.php
+  s_a1fd6c79aae8c1::t_2f657c90e43ff1 1-21
+app/Contracts/Schedules/UpdatesSchedules.php
+  s_a1fd6c79aae8c1::t_da76965cd7d58a 1-18
+app/Actions/Schedules/CreateScheduleTask.php
+  s_a1fd6c79aae8c1::t_fa5e80007466b5 1-54
+app/Http/Controllers/Api/Application/Nodes/NodeController.php
+  s_a1fd6c79aae8c1::t_7db60ac2a250ee 129,131
+  s_a1fd6c79aae8c1::t_44922f336455c8 14-16
+  s_a1fd6c79aae8c1::t_03ff2aa8f05915 104,106,151,153
+app/Actions/Users/ToggleTwoFactor.php
+  s_a1fd6c79aae8c1::t_4a985c1cb456c4 1-93
+app/Actions/Allocations/UnassignAllocation.php
+  s_a1fd6c79aae8c1::t_08587b68c59b88 1-29
+app/Actions/Users/UpdateUserEmail.php
+  s_a1fd6c79aae8c1::t_c229f25d60eb0e 1-44
+app/Actions/Eggs/DeleteEgg.php
+  s_a1fd6c79aae8c1::t_17e0a98aa2cac8 1-33
+app/Contracts/Subusers/CreatesSubusers.php
+  s_a1fd6c79aae8c1::t_cb86387aca8406 1-28
+app/Actions/Subusers/DeleteSubuser.php
+  s_a1fd6c79aae8c1::t_28724dd42c3e81 1-31
+app/Console/Commands/Location/MakeLocationCommand.php
+  s_a1fd6c79aae8c1::t_364032c8b2892d 24,46
+  s_a1fd6c79aae8c1::t_bb6d577516ceb4 11
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_a1fd6c79aae8c1::t_64962621e9f9c5 16-18
+  s_a1fd6c79aae8c1::t_8f58aa89db5b2d 88,90,114,116
+  s_a1fd6c79aae8c1::t_ad4dd0dc3ace3d 133,135
+app/Console/Commands/Location/DeleteLocationCommand.php
+  s_a1fd6c79aae8c1::t_64962621e9f9c5 11
+  s_a1fd6c79aae8c1::t_9cd87dd7448a0f 20
+  s_a1fd6c79aae8c1::t_aeac399b49e9f7 25
+  s_a1fd6c79aae8c1::t_84af67f99f5225 53
+  s_a1fd6c79aae8c1::t_f31a1a86e4cb0e 37,40,43
+app/Contracts/Locations/DeletesLocations.php
+  s_a1fd6c79aae8c1::t_45b02106584f3d 1-18
+app/Actions/Nodes/UpdateNode.php
+  s_a1fd6c79aae8c1::t_f3bc62bfc2f8cc 1-79
+app/Contracts/Users/DeletesUsers.php
+  s_a1fd6c79aae8c1::t_e620e3922dde32 1-18
+app/Http/Controllers/Api/Client/Servers/NetworkAllocationController.php
+  s_a1fd6c79aae8c1::t_841dd8bd2e7a71 12-15
+  s_a1fd6c79aae8c1::t_88149dbb4a6816 100,102
+  s_a1fd6c79aae8c1::t_e8eb0044cc7aa9 75,79,122,124,141,143
+app/Actions/Eggs/Scripts/UpdateInstallScript.php
+  s_a1fd6c79aae8c1::t_c5a2fe902fbb64 1-37
+app/Contracts/Users/CreatesUsers.php
+  s_a1fd6c79aae8c1::t_98c3d7f3b92120 1-24
+app/Providers/ActionServiceProvider.php
+  s_a1fd6c79aae8c1::t_780b4d19ded3bf 102-103
+  s_a1fd6c79aae8c1::t_8d012bc052e26b 120
+  s_a1fd6c79aae8c1::t_e65f62ae72dc10 82-89
+  s_a1fd6c79aae8c1::t_86132bb3566311 1-13,21-54,62-78,90-100,104-110,112-118,122-125,129-134,138-142
+  s_a1fd6c79aae8c1::t_743383c004562f 121
+  s_a1fd6c79aae8c1::t_2b0cf9b3effbb6 111,119,126-128
+  s_a1fd6c79aae8c1::t_1ec54d2c7023cb 135-137
+  s_a1fd6c79aae8c1::t_058062dbc1e575 17,56-61
+  s_a1fd6c79aae8c1::t_a2b8ced25b19b3 14-16
+  s_a1fd6c79aae8c1::t_9fa42721d5424a 18-20
+  s_a1fd6c79aae8c1::t_3891c793d219bb 55
+  s_a1fd6c79aae8c1::t_3acae3d2bef6e6 79-81
+  s_a1fd6c79aae8c1::t_c5baa410fbdf21 101
+app/Actions/Eggs/UpdateEgg.php
+  s_a1fd6c79aae8c1::t_a7c90832107509 1-25
+app/Contracts/Nodes/UpdatesNodes.php
+  s_a1fd6c79aae8c1::t_5df9afd43b4818 1-20
+app/Actions/Locations/UpdateLocation.php
+  s_a1fd6c79aae8c1::t_86a699fc11d004 1-23
+app/Contracts/Subusers/UpdatesSubusers.php
+  s_a1fd6c79aae8c1::t_3ca1b88e70580d 1-21
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_a1fd6c79aae8c1::t_76451a1c5756f6 136,140
+  s_a1fd6c79aae8c1::t_841dd8bd2e7a71 16-17
+  s_a1fd6c79aae8c1::t_02bcbceeb3c4c3 158,162
+tests/Integration/Services/Users/UserDeletionServiceTest.php
+  s_a1fd6c79aae8c1::t_fca274ae8b00b3 8
+  s_a1fd6c79aae8c1::t_c57eaaf28d7f38 23,29,39
+app/Contracts/Allocations/UpdatesAllocations.php
+  s_a1fd6c79aae8c1::t_265995f9e49e3b 1-12
+app/Actions/Users/DisableTwoFactor.php
+  s_a1fd6c79aae8c1::t_ca04a562f6e7ff 1-19
+app/Contracts/Transfers/CompletesTransfers.php
+  s_a1fd6c79aae8c1::t_7452c0570d245a 1-19
+app/Http/Controllers/Api/Client/Servers/ScheduleTaskController.php
+  s_a1fd6c79aae8c1::t_b9e389804316fe 13-15
+  s_a1fd6c79aae8c1::t_58fa8f0eb3a654 100,102
+  s_a1fd6c79aae8c1::t_ade6951cb16f3d 78,82
+  s_a1fd6c79aae8c1::t_25e0cfd68c1507 54,58
+app/Contracts/Allocations/AssignsAllocations.php
+  s_a1fd6c79aae8c1::t_c5916be019f4f4 1-19
+app/Http/Controllers/Api/Admin/Eggs/ExportEggController.php
+  s_a1fd6c79aae8c1::t_3504001d4e99ca 41,46
+  s_a1fd6c79aae8c1::t_058062dbc1e575 13
+app/Http/Controllers/Api/Admin/Nodes/BulkDeleteAllocationsController.php
+  s_a1fd6c79aae8c1::t_12171ae706fbcf 28,35
+  s_a1fd6c79aae8c1::t_841dd8bd2e7a71 12
+app/Contracts/Schedules/CreatesSchedules.php
+  s_a1fd6c79aae8c1::t_446a44cb20d242 1-19
+app/Contracts/Allocations/UpdatesAllocationNotes.php
+  s_a1fd6c79aae8c1::t_ceb1cc813d63a0 1-12
+app/Contracts/Users/TogglesTwoFactor.php
+  s_a1fd6c79aae8c1::t_dd186921c09cad 1-29
+app/Contracts/Schedules/DeletesSchedules.php
+  s_a1fd6c79aae8c1::t_287b3888694f74 1-12
+app/Contracts/Locations/UpdatesLocations.php
+  s_a1fd6c79aae8c1::t_22c2fccc371285 1-17
+app/Actions/Schedules/DeleteSchedule.php
+  s_a1fd6c79aae8c1::t_4191a7bccd9f54 1-16
+app/Contracts/Nodes/DeletesNodes.php
+  s_a1fd6c79aae8c1::t_ce3a9bc5ed62e3 1-18
+app/Http/Controllers/Api/Client/TwoFactorController.php
+  s_a1fd6c79aae8c1::t_fca274ae8b00b3 16-18
+  s_a1fd6c79aae8c1::t_27291fc308d45b 126
+  s_a1fd6c79aae8c1::t_6fd4e6be05c176 104
+  s_a1fd6c79aae8c1::t_d1e2925cc93feb 76,82
+  s_a1fd6c79aae8c1::t_4b8770c4ab1de5 96,132
+tests/Integration/Api/Admin/Eggs/EggCatalogControllerTest.php
+  s_a1fd6c79aae8c1::t_cd862785abac6a 56
+  s_a1fd6c79aae8c1::t_0b373e98aba96a 107
+  s_a1fd6c79aae8c1::t_058062dbc1e575 9
+app/Console/Commands/Node/MakeNodeCommand.php
+  s_a1fd6c79aae8c1::t_167b308894b535 39
+  s_a1fd6c79aae8c1::t_361835ebed7dda 12,101
+bootstrap/providers.php
+  s_a1fd6c79aae8c1::t_798bc34536a69f 7
+app/Http/Controllers/Api/Admin/Eggs/EggVariableController.php
+  s_a1fd6c79aae8c1::t_2168bf460205ea 54,57
+  s_a1fd6c79aae8c1::t_762b44bbd9ffd8 76,78
+  s_a1fd6c79aae8c1::t_058062dbc1e575 15-16
+tests/Integration/Api/Admin/Eggs/EggShareControllerTest.php
+  s_a1fd6c79aae8c1::t_88fb04debbe3fb 9,30,43
+app/Contracts/Subusers/DeletesSubusers.php
+  s_a1fd6c79aae8c1::t_a70c4baa88ae77 1-19
+app/Contracts/Eggs/UpdatesEggInstallScripts.php
+  s_a1fd6c79aae8c1::t_193dcdf25befab 1-20
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_a1fd6c79aae8c1::t_43eea2045dcdef 161,163
+  s_a1fd6c79aae8c1::t_b9e389804316fe 15-18
+  s_a1fd6c79aae8c1::t_0494f133725af5 147,149
+  s_a1fd6c79aae8c1::t_b057ce6fc6c6df 79,81,125,127
+app/Actions/Transfers/InitiateTransfer.php
+  s_a1fd6c79aae8c1::t_f907b64e2b278e 1-78
+app/Actions/Users/UpdateUser.php
+  s_a1fd6c79aae8c1::t_1c78a082e22dbf 1-37
+app/Console/Commands/User/MakeUserCommand.php
+  s_a1fd6c79aae8c1::t_37ee91388805cd 23
+  s_a1fd6c79aae8c1::t_007c8433beebf2 11,58
+app/Actions/Transfers/FailTransfer.php
+  s_a1fd6c79aae8c1::t_22a05a34bdc771 1-32
+app/Http/Controllers/Api/Admin/Eggs/EggScriptController.php
+  s_a1fd6c79aae8c1::t_058062dbc1e575 11
+  s_a1fd6c79aae8c1::t_9aa222dd42fb23 59,64
+app/Actions/Users/SetupTwoFactor.php
+  s_a1fd6c79aae8c1::t_b2e04fad453017 1-52
+app/Actions/Subusers/UpdateSubuser.php
+  s_a1fd6c79aae8c1::t_99dff5c44c6b12 1-35
+app/Contracts/Users/UpdatesUserPasswords.php
+  s_a1fd6c79aae8c1::t_dcfffb6126cbf6 1-12
+app/Actions/Users/UpdateUserPassword.php
+  s_a1fd6c79aae8c1::t_c1ef053af32354 1-32
+app/Contracts/Nodes/ResetsServerStates.php
+  s_a1fd6c79aae8c1::t_0fa5768bd552b6 1-19
+app/Actions/Schedules/CreateSchedule.php
+  s_a1fd6c79aae8c1::t_29c751df95cc00 1-51
+app/Actions/Schedules/ProcessSchedule.php
+  s_a1fd6c79aae8c1::t_c6ee0db1fbb77f 1-84
+app/Contracts/Eggs/UpdatesEggs.php
+  s_a1fd6c79aae8c1::t_72e83914d0ee10 1-17
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "1f796602f624c0436eb686fe51c104aaff64d80f",
+  "prompts": {},
+  "sessions": {
+    "s_a1fd6c79aae8c1": {
+      "agent_id": {
+        "tool": "opencode",
+        "id": "ses_f5c2fccb6ffeZKfrDqmzeykTTx",
+        "model": "muse-spark-1.3-contributor"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
