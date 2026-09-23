@@ -1,0 +1,482 @@
+packages/sdk/types/plugins/usePermissions.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-2
+packages/sdk/types/components/elements/PageContentBlock.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-9
+resources/scripts/extensions/context.ts
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 1-25
+PLAN.md
+  s_1edaddfcbe203b::t_2111e27c78f3e9 3,11-17,19,21,23-29,31,33,41,43,45,53,55,57,64,66,68,76,78,80,90,92,94,105,107,109,118,120,122,124
+  s_1edaddfcbe203b::t_924560f15c41e3 123,125
+  s_1edaddfcbe203b::t_4ca668c14832e9 151
+  s_1edaddfcbe203b::t_ad028251583a5d 5,35-39,47-51,59-62,70-74,82-88,96-103,111-116,126-150,152-156
+  s_1edaddfcbe203b::t_162e2c51103123 1-2,4,6-10,18,20,22,30,32,34,40,42,44,46,52,54,56,58,63,65,67,69,75,77,79,81,89,91,93,95,104,106,108,110,117,119,121
+resources/scripts/api/admin/extensions/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3,30,71,73-74
+  s_1edaddfcbe203b::t_342704bed16150 80-81,97-98,111-112,126-127,141-142
+packages/sdk/types/api/generated/client/utils.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-15
+packages/sdk/types/components/elements/dialog/DialogTrigger.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-15
+packages/sdk/types/components/form/Form.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-10
+packages/sdk/types/components/ui/Switch.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-16
+resources/scripts/api/account/activity/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1-2,16
+  s_1edaddfcbe203b::t_02720c39bee469 13
+resources/scripts/api/server/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,5-6
+  s_1edaddfcbe203b::t_4e5be32998a6fd 20-21
+  s_1edaddfcbe203b::t_17958c0afbe8ac 18,45-46,48,50,53-57,59-62,72,86-87,100
+packages/sdk/types/components/form/SubmitButton.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-6
+resources/scripts/api/admin/eggs/catalog.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,11,22
+  s_1edaddfcbe203b::t_f6fbef549f0151 32-33
+resources/scripts/api/server/startup/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 31
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3
+  s_1edaddfcbe203b::t_1d35b3f09d1c56 33,38,50,55-59
+resources/scripts/api/server/startup/queries.spec.tsx
+  s_1edaddfcbe203b::t_920075a95e65a2 1-14,16-19,21,23-36,38,40-44,46,48-69,71-81,83-95,97-121,123-139,141-144,146-158
+  s_1edaddfcbe203b::t_dff87c314007cf 39,70
+  s_1edaddfcbe203b::t_fe3f64ad00f9d2 15,20,22,37,45,47,82,96,122,140,145
+packages/sdk/types/api/generated/core/auth.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-26
+resources/scripts/api/admin/servers/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 317,353,362,371
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4,322-323,348-349,356,365,374,377,379-382,388,393-396,403,405-408,422-425,427-430,432-435
+  s_1edaddfcbe203b::t_70d46322fcdb7b 299-303,320-321,441-442,454-460,471-485,498-504,517-518,534-535,551,553-559,572-573,587-588,603-604,619-620,638-639,657-663,674-680,691-697
+resources/scripts/ext-runtime/react.ts
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 10,35
+packages/sdk/types/api/generated/core/serverSentEvents.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-72
+packages/sdk/types/components/elements/Button.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-37
+packages/sdk/types/api.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-2
+resources/scripts/api/account/ssh-keys/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3,25
+  s_1edaddfcbe203b::t_00d85a2527dce4 32-33,57-59,64-69,71-80
+resources/scripts/components/server/features/JavaVersionModalFeature.tsx
+  s_1edaddfcbe203b::t_8444d3bf7f4fbc 29-30,53
+  s_1edaddfcbe203b::t_68caca40ac79c6 2,26
+resources/scripts/components/App.tsx
+  s_1edaddfcbe203b::t_f1925d34776b53 1-2,12,16,21-22
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 13-15,17-20
+resources/scripts/router/routeSlots.tsx
+  s_1edaddfcbe203b::t_f1925d34776b53 4,10-11
+resources/scripts/api/admin/version/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1-2,12,15
+.ai/rules/scripts-extensions.md
+  s_1edaddfcbe203b::t_8af773bf09aa5a 1-9
+resources/scripts/api/server/schedules/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 220-221,223
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3
+  s_1edaddfcbe203b::t_8444d3bf7f4fbc 145-160,164-166,170,213-214,222,284-286,297-300,311-314
+  s_1edaddfcbe203b::t_41d73ae7da7009 229-230,241-242,253,257,268-269,283
+resources/scripts/extensions/loader.spec.ts
+  s_1edaddfcbe203b::t_99c3b500239ce0 45,85,112-113,118
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 34-40,105-108,119-122
+  s_1edaddfcbe203b::t_63f73ce274390f 207-230
+resources/scripts/router/routeTree.ts
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 1095-1104
+  s_1edaddfcbe203b::t_f1925d34776b53 5,62,1088-1092,1094,1106-1108
+  s_1edaddfcbe203b::t_2b414adeac53fa 98,156,168-169,171,173-174,176,199,211,225-226,230,232,246,279-280,282,284-285,287,299-300,302,304-305,307,318-319,321,323-324,326,337,349-350,352,355-357,359,374-375,377,379-380,382,394-395,397,399-400,402,414-415,417,419-420,422,446-447,449,451-452,456,458,478-479,481,501-502,504,515-516,518,531-532,534,547-548,550,564-565,567,611-612,614,617-618,620,632-633,635,638-639,641,674,686,705-706,708,719,732-733,735,747-748,750,762-763,765,782-784,786,803,812,823,834,848-849,851,874-875,877,892-893,895,918-919,921,933-934,936-938,940-942,944-945,961-962,964,987-988,990,1011,1022,1042-1043,1045,1057,1071-1072,1074
+  s_1edaddfcbe203b::t_4edfc40f0e004f 170,175,231,281,286,301,306,320,325,351,358,376,381,396,401,416,421,448,457,480,503,517,533,549,566,613,619,634,640,707,734,749,764,785,850,876,894,920,935,939,943,963,989,1044,1073,1084-1085
+packages/sdk/types/components/elements/Can.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-10
+resources/scripts/index.tsx
+  s_1edaddfcbe203b::t_f1925d34776b53 3
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 14-18
+resources/scripts/extensions/ExtensionMount.tsx
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 39,41-48,53-60,74-85
+  s_1edaddfcbe203b::t_0b3b6490dc0b6b 5-6
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 2-4,7-10,13-14,38,40,49-52,61-73,86-92
+  s_1edaddfcbe203b::t_b03240dcfb448c 1,11-12,15-37
+packages/hello-world/src/client/index.tsx
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 14
+packages/sdk/types/components/elements/ServerContentBlock.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-7
+resources/scripts/api/queryClient.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 3,7
+resources/scripts/extensions/loader.ts
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 94-96,98-105,107-108,111
+  s_1edaddfcbe203b::t_f1925d34776b53 2,10-12,16-17,49,88-93,112
+resources/scripts/extensions/registry.ts
+  s_1edaddfcbe203b::t_f1925d34776b53 3,9-10,205,225,241,243-244,247,252-258,262,266,270-272,275,277-279,282-285,301-302,311,315-328,331-335,337-340,343-357,360-370,374,379-386,388,391-393,395-398,407,410,412-419,431-432,437,446,462,465-466,468-469,471-473,478-480
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 206-224,226-227,286-300,303-304,312-314,358-359,399-406,420-429,451,453-454,458-460,463-464
+  s_1edaddfcbe203b::t_0b3b6490dc0b6b 1,228-230,273-274
+  s_1edaddfcbe203b::t_4e5be32998a6fd 2
+  s_1edaddfcbe203b::t_050d43525ce4d0 307-310,371-373,375-378,447,474-477
+packages/sdk/types/components/elements/alert/index.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-3
+resources/scripts/api/mutationUtils.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 14-17,19,22
+packages/sdk/types/api/generated/core/bodySerializer.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-26
+resources/scripts/api/admin/nodes/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 314,325,330,335,349,358
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4,320-321,338-339,343-345,351,368,370-373,397-400,402-405,407-410,412-415,417-420
+  s_1edaddfcbe203b::t_5088bbf37ef3b7 252-258,274-279,318-319,340-342,426-427,439-443,455-456,476-477,506-507,518-519
+packages/sdk/types/api/generated/core/params.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-44
+resources/scripts/api/queryLifecycle.spec.tsx
+  s_1edaddfcbe203b::t_d05be9fba43844 1-4,6-9,17-25,27,29-44,46-83,85-115,117-124,126-129,156-161,163-175,177-181
+  s_1edaddfcbe203b::t_dff87c314007cf 116
+  s_1edaddfcbe203b::t_858fa359c4d5c8 10-14,16,130-155
+  s_1edaddfcbe203b::t_3df8fee85627a7 5,15,26,28,45,84,125,162,176
+packages/sdk/types/api/queryClient.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-3
+resources/scripts/api/admin/database-hosts/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4,141,143-144,149,164-167,169-176
+  s_1edaddfcbe203b::t_2b414adeac53fa 131,136
+  s_1edaddfcbe203b::t_f69f5c799669d2 139-140,182-183,195-201,213-214
+resources/scripts/api/account/two-factor/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 12
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3
+resources/scripts/api/system/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1-2,10
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-12701
+packages/sdk/types/api/generated/client/index.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-11
+packages/sdk/types/components/form/context.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-2
+app/Services/Extensions/Scaffolding/stubs/client-index.stub
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 5-7
+resources/scripts/extensions/registry.spec.ts
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 34,36-40,47-74,81-83,86-88,92-94
+  s_1edaddfcbe203b::t_99c3b500239ce0 33,41-44,46,75-78,80,84-85,89-91,95-111
+  s_1edaddfcbe203b::t_9fad72f13c9d70 35
+packages/sdk/types/components/elements/Spinner.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-18
+resources/scripts/api/account/api-keys/queries.spec.tsx
+  s_1edaddfcbe203b::t_621c55e08b2ae8 95-112,114-127
+  s_1edaddfcbe203b::t_5c12f7b0f84be8 113
+resources/scripts/components/server/features/GSLTokenModalFeature.tsx
+  s_1edaddfcbe203b::t_8444d3bf7f4fbc 18
+  s_1edaddfcbe203b::t_c7f897d378a093 6,15,17
+packages/hello-world/extension.json
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 6-19
+resources/scripts/api/admin/languages/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1-2,10,13
+packages/sdk/types/components/ui/Select.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-39
+resources/scripts/extensions/screen.spec.tsx
+  s_1edaddfcbe203b::t_acb58bdc61431a 1-10,12-49,52-57,59-62,64-70,72-75,77-108,110-119,121-123,125-134
+  s_1edaddfcbe203b::t_3f1ff7c145b22c 11,50-51,58,63,71,76,109,120,124
+resources/scripts/api/admin/api-keys/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4,131,134
+  s_1edaddfcbe203b::t_975830209cbe61 129-130,141-142,156-157
+packages/sdk/types/components/elements/dialog/Dialog.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-4
+packages/sdk/types/extensions/registry.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-2,4-116
+  s_1edaddfcbe203b::t_4d8633daec3536 3
+resources/scripts/api/admin/eggs/queries.spec.tsx
+  s_1edaddfcbe203b::t_dff87c314007cf 29,31
+  s_1edaddfcbe203b::t_f9ebcca3a1792d 1-12,14-22,24,26-28,30,33-102
+  s_1edaddfcbe203b::t_fd45a8ab27b9b0 13,23,25,32
+packages/sdk/types/components/elements/alert/Alert.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-11
+packages/sdk/types/api/generated/client/types.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-88
+packages/sdk/types/api/generated/core/pathSerializer.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-34
+resources/scripts/plugins/Websocket.ts
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 66-70
+resources/scripts/api/server/databases/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 62
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3
+  s_1edaddfcbe203b::t_8448ed2ca80943 64-66,76,78-80,84,91-92,104-105,118-119
+packages/sdk/types/components/elements/ContentBox.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-9
+packages/sdk/types/sdk/index.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-9,13-34,40-62,64-81,83
+  s_1edaddfcbe203b::t_f70c9737ddc802 10-12,35-39,63,82
+resources/scripts/api/account/servers/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1-2,38,56-57
+  s_1edaddfcbe203b::t_2b414adeac53fa 44
+  s_1edaddfcbe203b::t_3ff7d3038e7f58 58
+resources/scripts/api/admin/settings/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3,109,116
+  s_1edaddfcbe203b::t_eadb92750240d6 122-123,135-136,160-161
+resources/scripts/api/admin/tags/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 5,99
+  s_1edaddfcbe203b::t_2e7e26d75d6450 1,10,16,101-127,131
+  s_1edaddfcbe203b::t_a0c3e4872b71e9 96,100,134,141-142,155-156,169-170,183-184
+packages/sdk/types/api/generated/client/client.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-3
+resources/scripts/api/admin/mounts/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 172
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4,177-178,181,183-186
+  s_1edaddfcbe203b::t_836c78af184565 175-176,192-193,205-209,221-222,236-237,239,250-251,253,264-268,284-288
+resources/scripts/api/server/backups/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 78
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4
+  s_1edaddfcbe203b::t_ec70804beb5a2f 5,87,94,99-102,109,114-117
+packages/sdk/types/components/form/fields.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-55
+packages/sdk/types/index.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-2
+packages/hello-world/src/client/examples.spec.tsx
+  s_1edaddfcbe203b::t_99c3b500239ce0 56,63
+resources/scripts/api/server/types.ts
+  s_1edaddfcbe203b::t_4e5be32998a6fd 1-2
+resources/scripts/api/admin/tags/queries.spec.ts
+  s_1edaddfcbe203b::t_ea555bdd9b8fb8 1-54,56-112,114-118
+  s_1edaddfcbe203b::t_b5df1501dba86e 55,113
+.ai/rules/sdk.md
+  s_1edaddfcbe203b::t_8af773bf09aa5a 1-9
+resources/scripts/api/server/files/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 223,232
+  s_1edaddfcbe203b::t_856ed24191c44a 1,5
+  s_1edaddfcbe203b::t_8444d3bf7f4fbc 154-155,228
+  s_1edaddfcbe203b::t_7d4eea111480d9 139,144-147,149-152,239,241,257,262,273,286,291,307,320,323,338,340,353,355,368,370,389-390,433-434
+scripts/generate-sdk-types.mjs
+  s_1edaddfcbe203b::t_18e458027c4f05 39,42
+  s_1edaddfcbe203b::t_35ce8ea7059497 72
+  s_1edaddfcbe203b::t_4c95736dceb962 1-10,26-29,37-38,43-49,52,73-75,79-81,85-88,93,99-103,113-115,120-121
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 11-25,30-36,40-41,53-58,62-71,78,83-84,89-92,97-98,104-112,116-119
+  s_1edaddfcbe203b::t_5080f2356c1b87 50-51,59-61,76-77,82,94-96
+packages/sdk/types-drift.spec.ts
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 11-83,85-102,104-125
+  s_1edaddfcbe203b::t_791deeace4bd33 1-5,8-10,84,126-127,129
+resources/scripts/api/admin/users/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 134
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4,139-140,143,157-160
+  s_1edaddfcbe203b::t_9c4226e47e1cf9 137-138,166-167,179-183,195-196
+resources/scripts/api/server/activity/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1-2,22-23,26
+  s_1edaddfcbe203b::t_0877343d6e3070 5,18,20,24-25
+resources/scripts/extensions/context.spec.tsx
+  s_1edaddfcbe203b::t_acb58bdc61431a 1-13,15-29,31,33-35,37-103
+  s_1edaddfcbe203b::t_b3fa47564a41cd 14,30,32,36
+packages/sdk/types/components/server/events.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-21
+resources/scripts/api/admin/eggs/queries.ts
+  s_1edaddfcbe203b::t_2b414adeac53fa 122,127
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3,135-136,138,140-143,145-148,156-157,170-174,186-190,202-206,219-223,232
+  s_1edaddfcbe203b::t_5597d33562d6ec 238-239,253-254,266-267,279-280
+resources/scripts/router/router.tsx
+  s_1edaddfcbe203b::t_2b414adeac53fa 13
+packages/sdk/types/api/hey-api-runtime.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-3
+packages/sdk/types/api/http.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-9
+resources/scripts/api/account/api-keys/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3,23
+  s_1edaddfcbe203b::t_9415113e2ff1e4 30-31,55,60-65,67-76
+packages/sdk/types/components/elements/TitledGreyBox.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-12
+resources/scripts/extensions/ExtensionBoundary.tsx
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 2,7-9,13-17,21-22,29-38,40
+  s_1edaddfcbe203b::t_988c9a819f1a3a 18-19
+packages/sdk/types/api/account/types.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-15
+packages/sdk/types/components/elements/dialog/types.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-30
+packages/sdk/types/sdk/api.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-14
+packages/sdk/types/components/elements/dialog/useDialogState.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-8
+.ai/rules/index.md
+  s_1edaddfcbe203b::t_8af773bf09aa5a 22,24
+  s_1edaddfcbe203b::t_8f1907fdc676d4 21
+packages/sdk/types/components/elements/dialog/index.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-18
+packages/sdk/types/components/elements/dialog/ConfirmationDialogTrigger.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-13
+packages/sdk/types/components/ui/Checkbox.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-11
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_1edaddfcbe203b::t_e65b9d05292c05 150,160
+  s_1edaddfcbe203b::t_62c87967948e46 111
+packages/sdk/types/api/settings/types.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-9
+packages/sdk/types/components/form/index.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-34
+resources/scripts/components/server/features/eula/EulaModalFeature.tsx
+  s_1edaddfcbe203b::t_8444d3bf7f4fbc 19,33
+  s_1edaddfcbe203b::t_6f6f96d005849f 6,15
+packages/sdk/types/components/elements/CopyOnClick.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-9
+resources/scripts/components/admin/eggs/EggTagsTab.tsx
+  s_1edaddfcbe203b::t_2e7e26d75d6450 41-42,48
+  s_1edaddfcbe203b::t_9506eba2740e54 18
+resources/scripts/extensions/Slot.spec.tsx
+  s_1edaddfcbe203b::t_8af773bf09aa5a 2,118-137
+  s_1edaddfcbe203b::t_18e458027c4f05 6,9
+  s_1edaddfcbe203b::t_99c3b500239ce0 4-5,20-21,23-24,26,51,55-59,66-67,74-90,98-107,112,114-117
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 60-65,68-73,91-92,94-97,108-111,113
+  s_1edaddfcbe203b::t_c8d64803d4b7bb 3,10,93
+resources/scripts/extensions/Slot.tsx
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 7-10,13-14,26
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 1-3,5,11-12
+  s_1edaddfcbe203b::t_8af773bf09aa5a 18-24
+resources/scripts/extensions/screen.tsx
+  s_1edaddfcbe203b::t_0b3b6490dc0b6b 1,25
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 6-12,20-23,32-36,38-39
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 2,5,18-19,24,26-28,30
+packages/sdk/types/components/elements/ScreenBlock.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-27
+packages/sdk/types/components/form/controls.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-19
+resources/scripts/api/server/network/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3
+  s_1edaddfcbe203b::t_2b414adeac53fa 62
+  s_1edaddfcbe203b::t_ac07be5042ad99 64-66,70,72-74,78,85-86,110-113,136-137
+resources/scripts/api/admin/locations/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,4,106,120,123,137-140
+  s_1edaddfcbe203b::t_2b414adeac53fa 117
+  s_1edaddfcbe203b::t_ef9659e8fdae55 104-105,147-148,161-165,178-179
+packages/sdk/types/api/generated/client.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-13
+packages/sdk/types/components/elements/dialog/ConfirmationDialog.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-10
+resources/scripts/components/server/backups/BackupContextMenu.tsx
+  s_1edaddfcbe203b::t_8444d3bf7f4fbc 46,52-53,59-60,68
+  s_1edaddfcbe203b::t_63ca69ffe9044c 9,28,33,37-39
+packages/sdk/types/components/elements/Icon.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-14
+packages/sdk/types/components/elements/Label.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-8
+packages/sdk/types/components/elements/dialog/context.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-4
+resources/scripts/api/server/users/queries.ts
+  s_1edaddfcbe203b::t_856ed24191c44a 1,3
+  s_1edaddfcbe203b::t_2b414adeac53fa 39
+  s_1edaddfcbe203b::t_60439a56c111ef 62-64,68,70-72,76,103-104
+packages/sdk/types/api/generated/core/types.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-84
+resources/scripts/sdk/index.ts
+  s_1edaddfcbe203b::t_f1925d34776b53 10-12,82,113-114
+  s_1edaddfcbe203b::t_2b414adeac53fa 144
+  s_1edaddfcbe203b::t_7fd54e0e23dd9e 28,140
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 136-139
+  s_1edaddfcbe203b::t_4e5be32998a6fd 19-27,61-73,147
+  s_1edaddfcbe203b::t_dcd8ba1f76dbf8 18
+resources/scripts/plugins/Websocket.spec.ts
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 113-115
+  s_1edaddfcbe203b::t_99c3b500239ce0 107-112,116-125
+packages/sdk/types/api/generated/core/queryKeySerializer.gen.d.ts
+  s_1edaddfcbe203b::t_6b1a2b618eed4e 1-19
+scripts/check-extension-runtime.mjs
+  s_1edaddfcbe203b::t_dd33bb1fa82ed9 11-77
+  s_1edaddfcbe203b::t_f87600b6cfcfc7 1-10,78-84
+.ai/rules/scripts-api.md
+  s_acb4269bf0b277::t_c07913de214fce 1-9
+app/Services/Extensions/ExtensionManifest.php
+  s_1edaddfcbe203b::t_ec801f04f789ef 34-35,61
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_1edaddfcbe203b::t_0a58f275cd95ef 27-32,72-81,122
+app/Services/Extensions/ExtensionRepository.php
+  s_1edaddfcbe203b::t_018561abbacdce 124,140
+app/Services/Extensions/Scaffolding/stubs/package.stub
+  s_1edaddfcbe203b::t_08065359430190 16-17
+app/Services/Extensions/Scaffolding/stubs/readme-frontend.stub
+  s_1edaddfcbe203b::t_6741292ec4924a 17-18
+package.json
+  s_1edaddfcbe203b::t_403241c14225b5 93,99-102
+packages/sdk/README.md
+  s_1edaddfcbe203b::t_a217e357f0326e 9,25,44-54,61-76
+packages/sdk/package.json
+  s_1edaddfcbe203b::t_4c4210f9962354 3,28-36
+packages/sdk/slot-coverage.spec.ts
+  s_1edaddfcbe203b::t_622b57873c6109 39,42,44
+packages/sdk/types/api/server/types.d.ts
+  s_1edaddfcbe203b::t_431cacfbfacd3d 1-3
+phpstan.neon
+  s_1edaddfcbe203b::t_30659da51e5748 110-111
+resources/scripts/api/account/queries.ts
+  s_1edaddfcbe203b::t_94206a7a91b493 11-12,27,36
+resources/scripts/api/server/backups/queries.spec.tsx
+  s_1edaddfcbe203b::t_2c1484fba24c13 23-26,60,73,79-80
+resources/scripts/components/elements/ServerContentBlock.tsx
+  s_1edaddfcbe203b::t_cc57664ad41f44 3,10
+resources/scripts/components/server/InstallListener.tsx
+  s_1edaddfcbe203b::t_ac249805b581f4 3,10
+resources/scripts/components/server/WebsocketHandler.tsx
+  s_1edaddfcbe203b::t_f4cac6a3248185 2,31
+resources/scripts/components/server/backups/BackupContainer.tsx
+  s_1edaddfcbe203b::t_382b5c238c23a6 98
+resources/scripts/components/server/backups/BackupTable.tsx
+  s_1edaddfcbe203b::t_127024ce886b5c 5,17
+resources/scripts/components/server/backups/CreateBackupButton.tsx
+  s_1edaddfcbe203b::t_d1c176fc969579 9,12-14,92,100
+resources/scripts/components/server/databases/CreateDatabaseButton.tsx
+  s_1edaddfcbe203b::t_cbf76389f4fcd1 5,11
+resources/scripts/components/server/databases/DatabaseTable.tsx
+  s_1edaddfcbe203b::t_dda137c5a4548c 9,33
+resources/scripts/components/server/databases/RotatePasswordButton.tsx
+  s_1edaddfcbe203b::t_ddda3b025c5640 1,10
+resources/scripts/components/server/files/ChmodFileModal.tsx
+  s_1edaddfcbe203b::t_8237e2afced204 7,18
+resources/scripts/components/server/files/FileManagerBreadcrumbs.tsx
+  s_1edaddfcbe203b::t_c89ba74a0af888 2,15
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_1edaddfcbe203b::t_8d369f8e496025 7,32
+resources/scripts/components/server/files/MassActionsBar.tsx
+  s_1edaddfcbe203b::t_19be2ec4e3302a 3,11
+resources/scripts/components/server/files/NewDirectoryButton.tsx
+  s_1edaddfcbe203b::t_518be03852df66 3,13
+resources/scripts/components/server/files/RenameFileModal.tsx
+  s_1edaddfcbe203b::t_1fe805c1018179 9,15
+resources/scripts/components/server/files/UploadButton.tsx
+  s_1edaddfcbe203b::t_64347eefaa96be 2,30
+resources/scripts/components/server/files/useFileActions.tsx
+  s_1edaddfcbe203b::t_18c0a4f40f47f4 10,33
+resources/scripts/components/server/network/AllocationTable.tsx
+  s_1edaddfcbe203b::t_d45e0d48c07535 9,22,42
+resources/scripts/components/server/network/DeleteAllocationButton.tsx
+  s_1edaddfcbe203b::t_a1616ab39a6bf4 5,13
+resources/scripts/components/server/schedules/DeleteScheduleButton.tsx
+  s_1edaddfcbe203b::t_bc30c8492153b4 5,13
+resources/scripts/components/server/schedules/EditScheduleModal.tsx
+  s_1edaddfcbe203b::t_765b2ffc7c2b27 13,20
+resources/scripts/components/server/schedules/RunScheduleButton.tsx
+  s_1edaddfcbe203b::t_8da603bdb49700 8,11
+resources/scripts/components/server/schedules/ScheduleTaskTable.tsx
+  s_1edaddfcbe203b::t_c3992c163a36a2 9,48
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_1edaddfcbe203b::t_b62864df5132eb 19
+resources/scripts/components/server/startup/VariableBox.tsx
+  s_1edaddfcbe203b::t_f77b3f85f76bdb 8,16,18-19,21,23-27,30-34,53,58,62,64,75,87,94,108-112
+resources/scripts/ext-runtime/react-dom-client.ts
+  s_1edaddfcbe203b::t_aa6f218d445e07 3-4
+resources/scripts/ext-runtime/react-jsx-runtime.ts
+  s_1edaddfcbe203b::t_c67123039d3fe6 3
+scripts/build-if-changed.mjs
+  s_1edaddfcbe203b::t_b2283335c547a5 18-24,27-29,175,198
+scripts/check-api-layer-native.php
+  s_1edaddfcbe203b::t_57e62240b4b435 53-55
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_1edaddfcbe203b::t_ec2325903136df 8,14,71-111
+tests/Unit/Services/Extensions/ExtensionScaffolderTest.php
+  s_1edaddfcbe203b::t_4fc665ef872809 32
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "d8945fc6055bd4d8b1e34094f74b115ec037b787",
+  "prompts": {},
+  "sessions": {
+    "s_1edaddfcbe203b": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0cb6c-35bf-71d0-8d60-b02eecac0bf1",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_acb4269bf0b277": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0ca96-1bc5-77d0-83d4-ab20401cf715",
+        "model": "gpt-6-astra"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
