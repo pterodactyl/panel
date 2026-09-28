@@ -12,7 +12,7 @@ class FailedCaptcha extends Event
     /**
      * Create a new event instance.
      */
-    public function __construct(public string $ip, public string $domain)
+    public function __construct(public string $ip, public ?string $domain)
     {
     }
 }
