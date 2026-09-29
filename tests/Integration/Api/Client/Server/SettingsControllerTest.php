@@ -110,6 +110,48 @@ class SettingsControllerTest extends ClientApiIntegrationTestCase
         $this->assertTrue($server->isInstalled());
     }
 
+    /**
+     * Test that a server configured to skip its egg's install script cannot be reinstalled.
+     */
+    #[\PHPUnit\Framework\Attributes\DataProvider('reinstallPermissionsDataProvider')]
+    public function testServerCannotBeReinstalledIfConfiguredToSkipScripts(array $permissions)
+    {
+        [$user, $server] = $this->generateTestAccount($permissions);
+        $server->update(['skip_scripts' => true]);
+
+        $service = \Mockery::mock(DaemonServerRepository::class);
+        $this->app->instance(DaemonServerRepository::class, $service);
+
+        $service->expects('setServer')->never();
+
+        $this->actingAs($user)
+            ->postJson("/api/client/servers/$server->uuid/settings/reinstall")
+            ->assertStatus(Response::HTTP_BAD_REQUEST)
+            ->assertJsonPath('errors.0.detail', trans('admin/server.exceptions.skipping_install_script'));
+
+        $this->assertNull($server->refresh()->status);
+    }
+
+    /**
+     * Test that the "skip scripts" state is exposed to the client API.
+     */
+    public function testSkipScriptsStateIsExposedToClient()
+    {
+        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SETTINGS_REINSTALL]);
+
+        $this->actingAs($user)
+            ->getJson("/api/client/servers/$server->uuid")
+            ->assertOk()
+            ->assertJsonPath('attributes.skip_scripts', false);
+
+        $server->update(['skip_scripts' => true]);
+
+        $this->actingAs($user)
+            ->getJson("/api/client/servers/$server->uuid")
+            ->assertOk()
+            ->assertJsonPath('attributes.skip_scripts', true);
+    }
+
     public static function renamePermissionsDataProvider(): array
     {
         return [[[]], [[Permission::ACTION_SETTINGS_RENAME]]];

@@ -49,7 +49,7 @@ class DisplayException extends PterodactylException implements HttpExceptionInte
      */
     public function render(Request $request): JsonResponse|RedirectResponse
     {
-        if ($request->expectsJson()) {
+        if ($request->expectsJson() || $request->is('api/*')) {
             return response()->json(Handler::toArray($this), $this->getStatusCode(), $this->getHeaders());
         }
 
