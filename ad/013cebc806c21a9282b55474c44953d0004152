@@ -1,0 +1,41 @@
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_0717e852bcfa2c::t_eac7302c7b38ec 8,10-11,17,24-35,37-38,47
+  s_0717e852bcfa2c::t_6f7a97f4bcee29 44-46,48,51
+app/Models/Task.php
+  s_0717e852bcfa2c::t_eac7302c7b38ec 14,63-69,94-110
+  s_0717e852bcfa2c::t_62c5e77f38f377 111-112
+app/Http/Requests/Api/Client/Servers/SendPowerRequest.php
+  s_0717e852bcfa2c::t_eac7302c7b38ec 7,10,30
+  s_0717e852bcfa2c::t_836fe4149ffcb7 19
+tests/Integration/Api/Client/Server/ScheduleTask/CreateServerScheduleTaskTest.php
+  s_0717e852bcfa2c::t_51249a6a107caa 15,17-24,60-81
+tests/Integration/Api/Client/Server/ScheduleTask/UpdateScheduleTaskTest.php
+  s_0717e852bcfa2c::t_99ebfcaf771e42 46-72
+app/Http/Controllers/Api/Application/Nodes/NodeConfigurationController.php
+  s_0717e852bcfa2c::t_1a09a6352533c9 13,50,52
+tests/Integration/Api/Admin/Nodes/NodeIntrospectionControllerTest.php
+  s_0717e852bcfa2c::t_1a09a6352533c9 12
+  s_0717e852bcfa2c::t_28cb863785ea41 43,50-53,64,67-72
+app/Http/Requests/Api/Application/Nodes/GetNodeConfigurationRequest.php
+  s_0717e852bcfa2c::t_1a09a6352533c9 1-15
+app/Http/Controllers/Api/Admin/Nodes/DeployTokenController.php
+  s_0717e852bcfa2c::t_1a09a6352533c9 19,40-44,48,56
+tests/Integration/Api/Application/Nodes/NodeCrudTest.php
+  s_0717e852bcfa2c::t_2f25d42536377e 11,31-36
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "ad013cebc806c21a9282b55474c44953d0004152",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

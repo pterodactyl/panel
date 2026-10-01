@@ -1,0 +1,32 @@
+app/Http/Requests/Api/Client/Account/StoreSSHKeyRequest.php
+  s_0717e852bcfa2c::t_cbd31b06aedd5a 46-56,58
+tests/Integration/Api/Client/SSHKeyControllerTest.php
+  s_0717e852bcfa2c::t_97238672f0a504 55-62,64-65
+  s_0717e852bcfa2c::t_1c4d0275a7c522 63
+tests/Integration/Api/Remote/SftpAuthenticationControllerTest.php
+  s_0717e852bcfa2c::t_97238672f0a504 62-63,67-68
+  s_0717e852bcfa2c::t_6b67ec8c43e0e5 64-66
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_0717e852bcfa2c::t_cbd31b06aedd5a 25,60-66
+app/Validation/UserSSHKeyRules.php
+  s_0717e852bcfa2c::t_cbd31b06aedd5a 9-31,42,45-65
+  s_0717e852bcfa2c::t_859dfb65df8803 66
+tests/Fixtures/keys/x509-certificate.pem
+  s_0717e852bcfa2c::t_c44f867b4ce28c 1-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fd60cb76cf2281c595510a19262c4c8f449b4735",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
