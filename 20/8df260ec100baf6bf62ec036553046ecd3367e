@@ -1,0 +1,29 @@
+resources/scripts/components/server/files/NewDirectoryButton.tsx
+  s_0717e852bcfa2c::t_996cbd4d0909e4 49
+  s_0717e852bcfa2c::t_68d419c7164a32 6
+resources/scripts/helpers.ts
+  s_0717e852bcfa2c::t_68d419c7164a32 1-2,55-59
+  s_0717e852bcfa2c::t_996cbd4d0909e4 60
+resources/scripts/helpers.spec.ts
+  s_0717e852bcfa2c::t_68d419c7164a32 2,24-41
+  s_0717e852bcfa2c::t_cbb59845488a6e 42
+resources/scripts/api/server/files/queries.ts
+  s_0717e852bcfa2c::t_996cbd4d0909e4 4
+  s_0717e852bcfa2c::t_68d419c7164a32 207
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "208df260ec100baf6bf62ec036553046ecd3367e",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
