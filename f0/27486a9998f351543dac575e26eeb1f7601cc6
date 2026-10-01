@@ -1,0 +1,21 @@
+CONTRIBUTING.md
+  s_2a466f836ebff9::t_99d4c18c85a5c3 3,18-25
+README.md
+  s_2a466f836ebff9::t_0f866b4ae30ce8 32-39,68
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f027486a9998f351543dac575e26eeb1f7601cc6",
+  "prompts": {},
+  "sessions": {
+    "s_2a466f836ebff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7e5d8e5-6b40-4a69-b94b-81a9f9262fa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
