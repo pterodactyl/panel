@@ -1,0 +1,31 @@
+tests/Integration/Http/ExtensionFrontendConfigTest.php
+  s_0717e852bcfa2c::t_4ecb4cf1b02e44 43,48
+  s_0717e852bcfa2c::t_0691ce4926893a 1-42,44-47,49-50
+app/Services/Extensions/ExtensionRepository.php
+  s_0717e852bcfa2c::t_881f7df20ec4db 124-126,129,132-137,144
+app/Http/ViewComposers/AssetComposer.php
+  s_0717e852bcfa2c::t_2b4185febfdf55 7,41-43,54
+app/Services/Extensions/ExtensionManager.php
+  s_0717e852bcfa2c::t_881f7df20ec4db 69,71
+tests/Unit/Services/Extensions/ExtensionManagerTest.php
+  s_0717e852bcfa2c::t_186b224731618f 46
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_0717e852bcfa2c::t_186b224731618f 109,115-116,118,122-127
+  s_0717e852bcfa2c::t_81bf2d3b24af56 7,14-15,22,26,29-30,36,40,47,53,59,69,74,80,82,97,101,103-105,114,117,119-121,128
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4218837c84b2919fc0025a1ec790a469b23d54ba",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
