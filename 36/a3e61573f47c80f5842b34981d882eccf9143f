@@ -1,0 +1,31 @@
+resources/scripts/extensions/screen.spec.tsx
+  s_2a466f836ebff9::t_792fc680f8b094 135-173
+packages/sdk/README.md
+  s_2a466f836ebff9::t_9890d544d85deb 64
+packages/sdk/types/extensions/registry.d.ts
+  s_2a466f836ebff9::t_cb2e96abe2f2b1 64-65,67,103
+packages/sdk/types/sdk/index.d.ts
+  s_2a466f836ebff9::t_cb2e96abe2f2b1 9,42
+resources/scripts/extensions/registry.ts
+  s_2a466f836ebff9::t_10e2c68000a4d0 241-243,276,302
+resources/scripts/sdk/index.ts
+  s_2a466f836ebff9::t_10e2c68000a4d0 13,81
+resources/scripts/extensions/screen.tsx
+  s_2a466f836ebff9::t_312cb481be736c 6,26,29
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "36a3e61573f47c80f5842b34981d882eccf9143f",
+  "prompts": {},
+  "sessions": {
+    "s_2a466f836ebff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7e5d8e5-6b40-4a69-b94b-81a9f9262fa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
