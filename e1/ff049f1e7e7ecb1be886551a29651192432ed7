@@ -1,0 +1,21 @@
+tests/Integration/Api/Client/ActivityLogControllerTest.php
+  s_0717e852bcfa2c::t_7ffb02119c9449 20-31
+app/Services/Activity/ActivityLogService.php
+  s_0717e852bcfa2c::t_c93bff9db90276 129-130
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e1ff049f1e7e7ecb1be886551a29651192432ed7",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
