@@ -1,0 +1,55 @@
+app/Http/Requests/Api/Application/Tags/GetTagsRequest.php
+  s_1987c4c7a2db6b::t_d84d109dcb714c 1-15
+app/Transformers/Api/Application/EggTransformer.php
+  s_1987c4c7a2db6b::t_53d76d44e18720 185-200
+  s_1987c4c7a2db6b::t_23dbcd05867d00 35,48
+  s_1987c4c7a2db6b::t_fd1f70ec65bc52 17
+routes/api-application.php
+  s_1987c4c7a2db6b::t_eadc332ca67c21 18
+  s_1987c4c7a2db6b::t_a7e65e6a0978d3 100-111
+  s_1987c4c7a2db6b::t_60059f83dbba57 99
+resources/scripts/api/generated/index.ts
+  s_1987c4c7a2db6b::t_b5518bef653f40 4-5
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_1987c4c7a2db6b::t_b5518bef653f40 8-9,3414-3452
+  s_1987c4c7a2db6b::t_5b86ac8cc24441 3453
+app/Http/Controllers/Api/Application/Tags/TagController.php
+  s_1987c4c7a2db6b::t_b96bcdd0ec374e 1-63
+resources/scripts/api/generated/sdk.gen.ts
+  s_1987c4c7a2db6b::t_b5518bef653f40 6,1852-1874
+  s_1987c4c7a2db6b::t_b3406d95367f75 1875
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_1987c4c7a2db6b::t_b5518bef653f40 855-875,3981-3984,3990,3992,3994,3996,3998-4022,9275-9278,9284,9315,9340-9416
+app/Http/Requests/Api/Application/Tags/GetTagRequest.php
+  s_1987c4c7a2db6b::t_faf3b4bac57f7b 1-15
+tests/Integration/Api/Application/Tags/TagControllerTest.php
+  s_1987c4c7a2db6b::t_1e60f39d16eae3 48,57
+  s_1987c4c7a2db6b::t_fa0e4063f9f259 1-47,49-56,58-68
+app/Http/Controllers/Api/Application/Eggs/EggController.php
+  s_1987c4c7a2db6b::t_abb3396b21df03 34,43
+  s_1987c4c7a2db6b::t_72247dae7eaada 19,36,41-42,44,59
+app/Transformers/Api/Application/TagTransformer.php
+  s_1987c4c7a2db6b::t_6a761ac61acbb7 1-93
+tests/Integration/Api/Application/Eggs/EggControllerTest.php
+  s_1987c4c7a2db6b::t_f47b2987801203 39-55
+  s_1987c4c7a2db6b::t_3c928b3f06a95f 10
+resources/scripts/api/generated/types.gen.ts
+  s_1987c4c7a2db6b::t_b5518bef653f40 943-966,4445-4449,4456,4458,4461,4463,4467-4498,10546-10549,10555,10591,10621-10706
+  s_1987c4c7a2db6b::t_f559357790c012 10707
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "c82f8d3348f8978ecf497fce6c8b78c5610175f6",
+  "prompts": {},
+  "sessions": {
+    "s_1987c4c7a2db6b": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "a546e5c2-5c0a-4525-8b68-fc36bc85da6e",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
