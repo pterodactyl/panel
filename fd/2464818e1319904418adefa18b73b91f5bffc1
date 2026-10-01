@@ -1,0 +1,23 @@
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_2a466f836ebff9::t_3e7e405ee4cece 80,96
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_2a466f836ebff9::t_42fb9f21aeaf07 97-105
+packages/sdk/README.md
+  s_2a466f836ebff9::t_0d02828ef472f2 64
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "fd2464818e1319904418adefa18b73b91f5bffc1",
+  "prompts": {},
+  "sessions": {
+    "s_2a466f836ebff9": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "d7e5d8e5-6b40-4a69-b94b-81a9f9262fa8",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
