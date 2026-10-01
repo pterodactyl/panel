@@ -1,0 +1,30 @@
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_0717e852bcfa2c::t_eac7302c7b38ec 8,10-11,17,24-38,47
+  s_0717e852bcfa2c::t_6f7a97f4bcee29 44-46,48,51
+app/Models/Task.php
+  s_0717e852bcfa2c::t_eac7302c7b38ec 14,63-69,94-110
+  s_0717e852bcfa2c::t_62c5e77f38f377 111-112
+app/Http/Requests/Api/Client/Servers/SendPowerRequest.php
+  s_0717e852bcfa2c::t_eac7302c7b38ec 7,10,30
+  s_0717e852bcfa2c::t_836fe4149ffcb7 19
+tests/Integration/Api/Client/Server/ScheduleTask/CreateServerScheduleTaskTest.php
+  s_0717e852bcfa2c::t_51249a6a107caa 15,17-24,60-81
+tests/Integration/Api/Client/Server/ScheduleTask/UpdateScheduleTaskTest.php
+  s_0717e852bcfa2c::t_99ebfcaf771e42 46-72
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "2c3b99cc8138615a23fa7c49bf7b9a752e1f2c58",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
