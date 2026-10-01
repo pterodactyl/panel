@@ -1,0 +1,31 @@
+resources/scripts/plugins/useDebouncedCallback.ts
+  s_0717e852bcfa2c::t_a476fc20150596 1-3,8,24-25,28,30,32-33,38-41
+resources/scripts/components/elements/CodemirrorEditor.tsx
+  s_0717e852bcfa2c::t_0da5a8d50c8659 208-215
+  s_0717e852bcfa2c::t_00ae238c8e8ed6 12,169-170,200-204,219,225,244-245
+resources/scripts/components/server/files/FileEditContainer.tsx
+  s_0717e852bcfa2c::t_00ae238c8e8ed6 1,20-21,52-57,75-77,127-128
+resources/scripts/lib/fileDrafts.spec.ts
+  s_0717e852bcfa2c::t_8b5a45437a5255 1-41
+resources/scripts/plugins/useDebouncedCallback.spec.ts
+  s_0717e852bcfa2c::t_da6210a96ef9ed 1-38
+resources/scripts/lib/fileDrafts.ts
+  s_0717e852bcfa2c::t_6bbb689ad5e94d 1-26,28-31
+  s_0717e852bcfa2c::t_00ae238c8e8ed6 27
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "67fe64529ecd827bd3c3f49ca22f5290ce7aba02",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
