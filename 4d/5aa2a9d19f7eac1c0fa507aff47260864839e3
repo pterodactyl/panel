@@ -1,0 +1,31 @@
+database/schema/mariadb-schema.sql
+  s_0717e852bcfa2c::t_01df78aaab7c52 1-886
+tests/Unit/Database/SchemaDumpTest.php
+  s_0717e852bcfa2c::t_8001fa6b0ee283 1-17
+.ai/rules/index.md
+  s_0717e852bcfa2c::t_578403b16bc2cd 21
+.ai/rules/schema.md
+  s_0717e852bcfa2c::t_6ecf18b2bba416 1-9
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_0717e852bcfa2c::t_27d9512d4e3013 20
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_0717e852bcfa2c::t_27d9512d4e3013 17
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_0717e852bcfa2c::t_27d9512d4e3013 15-16
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "4d5aa2a9d19f7eac1c0fa507aff47260864839e3",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

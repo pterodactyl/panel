@@ -1,0 +1,55 @@
+resources/scripts/api/generated/types.gen.ts
+  s_0717e852bcfa2c::t_db95479b9e3e45 900,1259,3160
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_0717e852bcfa2c::t_0892e601073a7a 20,25,29,32,36,40,45,49,60,65,71,76,87,94,108,120,130
+  s_0717e852bcfa2c::t_e8f8018c4c927d 50-59
+app/Transformers/Api/Client/ServerTransformer.php
+  s_0717e852bcfa2c::t_ef5ae0b036d68b 113
+resources/scripts/api/generated/sdk.gen.ts
+  s_0717e852bcfa2c::t_db95479b9e3e45 1698
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_0717e852bcfa2c::t_0892e601073a7a 22,27,34,40,48,56,59,63,71,77,89,98,104,110,117,127,136,150
+  s_0717e852bcfa2c::t_e8f8018c4c927d 78-88,90-97
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_0717e852bcfa2c::t_db95479b9e3e45 818,1136,2944
+resources/scripts/components/server/ConflictStateRenderer.tsx
+  s_0717e852bcfa2c::t_6cb7805a75da64 6
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_0717e852bcfa2c::t_e8f8018c4c927d 52-63
+  s_0717e852bcfa2c::t_0892e601073a7a 17,25,34,41,51,64,70,78,84,89
+resources/lang/en/admin/server.php
+  s_0717e852bcfa2c::t_0892e601073a7a 8,12,15
+app/Transformers/Api/Application/ServerTransformer.php
+  s_0717e852bcfa2c::t_ef5ae0b036d68b 105
+resources/scripts/components/server/settings/ReinstallServerBox.tsx
+  s_0717e852bcfa2c::t_6cb7805a75da64 5,10,31,38
+resources/scripts/lib/serverStatus.ts
+  s_0717e852bcfa2c::t_6cb7805a75da64 1-8,11-15,17
+  s_0717e852bcfa2c::t_a6e2c3a20ce0eb 9-10,16
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_0717e852bcfa2c::t_db95479b9e3e45 3167
+app/Actions/Servers/ReinstallServer.php
+  s_0717e852bcfa2c::t_ef5ae0b036d68b 9,21-24,27-28
+resources/scripts/components/admin/servers/ServerManageTab.tsx
+  s_0717e852bcfa2c::t_6cb7805a75da64 21,79-84,108,112
+app/Models/Server.php
+  s_0717e852bcfa2c::t_ef5ae0b036d68b 216-228
+resources/scripts/lib/serverStatus.spec.ts
+  s_0717e852bcfa2c::t_6cb7805a75da64 1-20
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "f02a0dc4e495dd873e4efc45b4a02c2fef007d0f",
+  "prompts": {},
+  "sessions": {
+    "s_0717e852bcfa2c": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "03cf75a0-95c3-468d-81f1-c7c73a4cbcae",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
