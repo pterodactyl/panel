@@ -1,0 +1,34 @@
+tests/Integration/Api/Remote/SftpAuthenticationControllerTest.php
+  s_3638838034c22c::t_f1fc08631c056b 127-130,132-136,138-140,260-262,281
+  s_3638838034c22c::t_0f47fcef0ac454 131,137
+  s_3638838034c22c::t_b2ad474eaafa7d 263-280
+app/Http/Requests/Api/Client/Account/StoreSSHKeyRequest.php
+  s_3638838034c22c::t_36a9c230f91807 36-41
+  s_3638838034c22c::t_2c55001ffa4ff0 42-47,49
+app/Http/Controllers/Api/Remote/SftpAuthenticationController.php
+  s_3638838034c22c::t_43312a45357908 11,59-66
+app/Models/UserSSHKey.php
+  s_3638838034c22c::t_0419e864a3c24e 47-60,73,76-91
+  s_3638838034c22c::t_cbc27c9cbc9951 92
+tests/Integration/Api/Client/SSHKeyControllerTest.php
+  s_3638838034c22c::t_4af1f04f51e0c8 113-126,158-160,179
+  s_3638838034c22c::t_48de9481a8bdb2 161-178
+composer.lock
+  s_3638838034c22c::t_19595f10457c36 3550,3554,3558-3559,3640,3656
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "ea3b492dd577b714b422400d401d69fa55a94fd8",
+  "prompts": {},
+  "sessions": {
+    "s_3638838034c22c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f0f8e-1b31-7162-a52a-ae54c64a91b9",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

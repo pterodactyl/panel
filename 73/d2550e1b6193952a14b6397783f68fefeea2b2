@@ -1,0 +1,28 @@
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_34409ad73eb109::t_aa6f4c4ee18de7 145-147
+  s_34409ad73eb109::t_372040fd8ab103 142-144
+tests/Integration/Api/Client/Server/Schedule/ExecuteScheduleTest.php
+  s_34409ad73eb109::t_5f2eee53e49ff6 126-131
+  s_34409ad73eb109::t_c1ff929cfcb2aa 104,113
+  s_34409ad73eb109::t_6cd1a932625396 66,68-69,74,79-80,83-84,88-92,95,97-103,105-112,114-115,120-123,125,132
+  s_34409ad73eb109::t_6d5e4476b3f0c9 124
+  s_34409ad73eb109::t_7d6d6694718801 78,87
+  s_34409ad73eb109::t_8247018978c3e4 93-94,96
+  s_34409ad73eb109::t_adae0449dc1b63 67,70
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "73d2550e1b6193952a14b6397783f68fefeea2b2",
+  "prompts": {},
+  "sessions": {
+    "s_34409ad73eb109": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee93e51c-661e-416b-b365-d8326a0cdf81",
+        "model": "claude-opus-5"
+      },
+      "human_author": null
+    }
+  }
+}

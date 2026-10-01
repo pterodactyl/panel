@@ -1,0 +1,22 @@
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_34409ad73eb109::t_aa6f4c4ee18de7 142-150
+tests/Integration/Api/Client/Server/Schedule/ExecuteScheduleTest.php
+  s_34409ad73eb109::t_6d5e4476b3f0c9 133
+  s_34409ad73eb109::t_6cd1a932625396 66-75,79,83-84,87-88,91-124,129-132,134-138
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.16",
+  "base_commit_sha": "77a9680bc466e657cc0bde7d742f0571a162f31f",
+  "prompts": {},
+  "sessions": {
+    "s_34409ad73eb109": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "ee93e51c-661e-416b-b365-d8326a0cdf81",
+        "model": "claude-opus-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

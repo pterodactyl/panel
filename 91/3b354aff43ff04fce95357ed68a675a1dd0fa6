@@ -1,0 +1,35 @@
+tests/Integration/Api/Client/Server/ScheduleTask/UpdateServerScheduleTaskTest.php
+  s_3638838034c22c::t_b85534c9cf9c87 1-89
+tests/Integration/Api/Client/Server/Schedule/ExecuteScheduleTest.php
+  s_3638838034c22c::t_b85534c9cf9c87 11,67-85,88
+tests/Integration/Api/Client/Server/ScheduleTask/CreateServerScheduleTaskTest.php
+  s_3638838034c22c::t_b85534c9cf9c87 115-173,233-257
+app/Models/Task.php
+  s_3638838034c22c::t_6ca71e8235a078 44,100-120
+  s_3638838034c22c::t_b63cc315eeb9be 121
+app/Http/Requests/Api/Client/Servers/Schedules/StoreTaskRequest.php
+  s_3638838034c22c::t_6ca71e8235a078 5-6,13,20-35,40-45
+  s_3638838034c22c::t_dd7873f87f1e9a 7
+app/Http/Requests/Api/Client/Servers/SendPowerRequest.php
+  s_3638838034c22c::t_6ca71e8235a078 5,15,24
+app/Http/Controllers/Api/Client/Servers/ScheduleController.php
+  s_3638838034c22c::t_dd7873f87f1e9a 15
+  s_3638838034c22c::t_6ca71e8235a078 7,148-149,157-165
+  s_3638838034c22c::t_25594c5ef39d5c 166-167
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "913b354aff43ff04fce95357ed68a675a1dd0fa6",
+  "prompts": {},
+  "sessions": {
+    "s_3638838034c22c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f0f8e-1b31-7162-a52a-ae54c64a91b9",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}

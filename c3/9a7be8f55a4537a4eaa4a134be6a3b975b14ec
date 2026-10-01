@@ -1,0 +1,33 @@
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_3638838034c22c::t_3f3e4ea3d1282e 153-160
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_3638838034c22c::t_3f3e4ea3d1282e 152-166
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_3638838034c22c::t_3f3e4ea3d1282e 238-250,280-293
+  s_3638838034c22c::t_5bbe20b011f4a3 294
+app/Rules/UserEmail.php
+  s_3638838034c22c::t_5a8f4c423fd819 1-33
+app/Http/Requests/Api/Client/Servers/Subusers/StoreSubuserRequest.php
+  s_3638838034c22c::t_5a8f4c423fd819 5,18
+app/Models/User.php
+  s_3638838034c22c::t_c519932a91f193 193
+  s_3638838034c22c::t_7f96f9d84b44eb 6
+composer.lock
+  s_3638838034c22c::t_52614dacc7b2cb 5227,5231,5235-5236,5249,5274,5285-5288,5294,5380,5384,5388-5389,5441,5461,5465,5469,5473-5474,5488,5521,5532-5535,5541,6063,6067,6071-6072,6123,6143,6220,6224,6228-6229,6240-6241,6248,6285,6305,6474,6478,6482-6483,6537,6557,6561,6565,6569-6570,6622,6642,6646,6650,6654-6655,6707,6727,6731,6735,6739-6740,6791,6811,7282,7286,7290-7291,7309,7345,7365
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.6.3",
+  "base_commit_sha": "c39a7be8f55a4537a4eaa4a134be6a3b975b14ec",
+  "prompts": {},
+  "sessions": {
+    "s_3638838034c22c": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "019f0f8e-1b31-7162-a52a-ae54c64a91b9",
+        "model": "gpt-5.5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
