@@ -1,0 +1,21 @@
+resources/scripts/components/admin/settings/SettingsForms.spec.tsx
+  s_d8bf3068e3dcf0::t_8163cc16d50c28 6,14
+tests/Unit/Database/SchemaDumpTest.php
+  s_d8bf3068e3dcf0::t_5d6b1d73ad556e 14
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "17f7489dc24ca2e9aa01c32a9a3c128985662a6e",
+  "prompts": {},
+  "sessions": {
+    "s_d8bf3068e3dcf0": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe24-2b85-70b2-a5a2-5982776c0b60",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
