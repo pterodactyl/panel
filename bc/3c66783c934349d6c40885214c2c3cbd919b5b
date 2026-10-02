@@ -1,0 +1,565 @@
+app/Services/Extensions/Scaffolding/stubs/package.stub
+  s_68f0ff11e08ed5::t_0bb4649ee72048 17-23,39-41
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 35-38
+  s_68f0ff11e08ed5::t_66f82cf73d0a66 9-12,29-34
+routes/api-client.php
+  s_68f0ff11e08ed5::t_c2b0f453f807ce 47,97
+  s_bf99a93e97ab76::t_e5ab187bc52b6f 13
+app/Services/Extensions/Scaffolding/stubs/externalize-api.stub
+  s_68f0ff11e08ed5::t_f0cbd9ecfdd43a 1-3
+resources/scripts/sdk/progress.ts
+  s_68f0ff11e08ed5::t_a1de8d89dc4ffe 1,3-16,18-21,26,28-47
+  s_68f0ff11e08ed5::t_1d7a5f428f7339 2,17,22-25,27
+app/Http/Controllers/Api/Client/ExtensionProgressController.php
+  s_68f0ff11e08ed5::t_1d7a5f428f7339 20-26
+  s_68f0ff11e08ed5::t_53035b16372588 33,43
+  s_68f0ff11e08ed5::t_c2b0f453f807ce 1-19,27-32,34-42,44-50
+resources/scripts/components/admin/eggs/EggsContainer.tsx
+  s_68f0ff11e08ed5::t_0860650f036b01 1,64,67
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_68f0ff11e08ed5::t_3b16231f7536b9 60
+  s_68f0ff11e08ed5::t_cfc595fd014836 56,58-59,61
+  s_68f0ff11e08ed5::t_8435474af0ce9a 18-19,36,66,108
+  s_68f0ff11e08ed5::t_303263c6f81f9b 57,62
+scripts/generate-extension-api.mjs
+  s_68f0ff11e08ed5::t_9cd96bd048ef55 2-4,6-14,16-19,22-25
+app/Services/Extensions/ExtensionRepository.php
+  s_68f0ff11e08ed5::t_27588db3627d15 22-24,36,84,115-117,125,130-135
+  s_68f0ff11e08ed5::t_97819a1f34696c 142,161
+  s_bf99a93e97ab76::t_9295dd3693f30f 114
+app/Console/Commands/Extensions/TypesCommand.php
+  s_68f0ff11e08ed5::t_66d131024df796 3-4,10-14,16-17,22-38,41-44,46-51
+  s_68f0ff11e08ed5::t_70a17aff4ef8f1 1-2,5-9,15,18-19,21,52-53
+  s_68f0ff11e08ed5::t_33545da325b5ab 20,39-40
+  s_68f0ff11e08ed5::t_16126c7cd8b7fd 45
+resources/scripts/components/admin/eggs/EggDetailContainer.tsx
+  s_68f0ff11e08ed5::t_5a7826d4db6d91 18,77
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 16,72
+  s_68f0ff11e08ed5::t_8ffd7631a15f55 1,17,29-33,43-61,63-71,73-76
+app/Services/Extensions/ExtensionSettingValueGuard.php
+  s_68f0ff11e08ed5::t_ed9851df947acf 26,30,55-72
+  s_bf99a93e97ab76::t_b9852f564c4005 7,16,18-25,27-29,31-33
+resources/scripts/extensions/Slot.tsx
+  s_68f0ff11e08ed5::t_c240336bbf2f23 14-22
+resources/scripts/extensions/registry.ts
+  s_68f0ff11e08ed5::t_c240336bbf2f23 334
+  s_68f0ff11e08ed5::t_eeac6db5a5b0f6 11
+  s_68f0ff11e08ed5::t_4ab192b63e83a1 6-7,9,240,421,427,457-463
+  s_68f0ff11e08ed5::t_5a7826d4db6d91 10,127,146,183,250,252,255-261,265-266,291-299,301-304,307-308,317,319
+  s_68f0ff11e08ed5::t_97819a1f34696c 361
+  s_68f0ff11e08ed5::t_6b2e1e3a6c4ff3 341-349,414-420,435-436,485,626-628,635-638,643
+  s_68f0ff11e08ed5::t_b6d8bd5ccba70b 367,376-377,523,561-563,565-570,597-605,607-612
+  s_68f0ff11e08ed5::t_851d90de46c8cf 184,253-254,262-264,331
+  s_68f0ff11e08ed5::t_8435474af0ce9a 74-76,226-237,249,267,287-290,315-316
+  s_68f0ff11e08ed5::t_c4206a755c9d2d 96,238-239,241-245,285-286,305,314,577
+  s_68f0ff11e08ed5::t_b94e1e4fea1b4e 502
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 332,340,466-467,487-491,494,625
+  s_68f0ff11e08ed5::t_9244b1c4be02ae 4-5,8,185,246-248,251,281-284,300,306,310,318,559-560,564,606
+app/Services/Extensions/ExtensionLock.php
+  s_68f0ff11e08ed5::t_d869471eb1c39e 1-2,5,10,12,19,49-50
+  s_68f0ff11e08ed5::t_39bf9656a48bd0 3-4,6-9,11,13-15,24-27,29,31-43
+  s_bf99a93e97ab76::t_65466db4774e76 16-18,20-23,28,30,44-48
+packages/sdk/vite.mjs
+  s_68f0ff11e08ed5::t_8e90e52d168055 31-43,50-57
+  s_68f0ff11e08ed5::t_2f45539d96bd70 24-30,44-49,58-61,68
+resources/scripts/extensions/loader.ts
+  s_68f0ff11e08ed5::t_97819a1f34696c 20,109
+  s_68f0ff11e08ed5::t_4ab192b63e83a1 18,61
+  s_68f0ff11e08ed5::t_eeac6db5a5b0f6 62-64
+  s_68f0ff11e08ed5::t_b6d8bd5ccba70b 10,54-60
+  s_bf99a93e97ab76::t_f7d1791b5a8ae9 65
+resources/scripts/sdk/index.ts
+  s_68f0ff11e08ed5::t_59245a0bbb6450 66
+  s_68f0ff11e08ed5::t_eeac6db5a5b0f6 99
+  s_68f0ff11e08ed5::t_3760c9044ff75d 149-164
+  s_68f0ff11e08ed5::t_9158f3cf5c7431 166,176
+  s_68f0ff11e08ed5::t_a7ee3c1ed75853 65,67
+  s_68f0ff11e08ed5::t_a1de8d89dc4ffe 69
+  s_68f0ff11e08ed5::t_4ab192b63e83a1 8,136
+  s_68f0ff11e08ed5::t_20053e7abf7f0f 68
+  s_68f0ff11e08ed5::t_5a7826d4db6d91 70
+  s_68f0ff11e08ed5::t_c240336bbf2f23 85
+  s_68f0ff11e08ed5::t_1a5cfc0db72233 57
+  s_68f0ff11e08ed5::t_c4206a755c9d2d 92-96,98
+  s_68f0ff11e08ed5::t_b6d8bd5ccba70b 135
+  s_68f0ff11e08ed5::t_2f45539d96bd70 33,198
+  s_68f0ff11e08ed5::t_0e384603215af6 97,137,202-203
+tests/Unit/Services/Extensions/ExtensionScaffolderTest.php
+  s_68f0ff11e08ed5::t_8bf14d7755f490 42
+app/Services/Extensions/Scaffolding/stubs/ci.stub
+  s_68f0ff11e08ed5::t_f0cbd9ecfdd43a 1-10,19-21
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 11-18
+app/Services/Extensions/ExtensionRuntimeRefresher.php
+  s_68f0ff11e08ed5::t_57074a0a7395a5 1-6,12,16-20
+  s_68f0ff11e08ed5::t_0aafa69b56ae93 7-11,13-15
+app/Http/Requests/Base/LocaleRequest.php
+  s_68f0ff11e08ed5::t_666ded5e345565 18
+resources/scripts/sdk/navigation.tsx
+  s_68f0ff11e08ed5::t_851d90de46c8cf 55,65
+  s_68f0ff11e08ed5::t_b94e1e4fea1b4e 42,47-48
+  s_68f0ff11e08ed5::t_a7ee3c1ed75853 1-2,4-13,19-26,28-41,43-45,49-52,59,68-69,71-95,97-103,105
+  s_68f0ff11e08ed5::t_4ab192b63e83a1 3,70
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 53,56,58,60-63,66-67
+  s_68f0ff11e08ed5::t_75af2ab497308e 14-18
+  s_68f0ff11e08ed5::t_e2432051afe960 27,46,54,57,64,96,104
+app/Services/Extensions/ExtensionCompatibility.php
+  s_68f0ff11e08ed5::t_e5280f3550f57a 77-82,85-101,115
+  s_68f0ff11e08ed5::t_33545da325b5ab 106
+  s_68f0ff11e08ed5::t_d42b6a40d0b0be 3-62,64-65,74-76,83-84,102-105,107-114
+  s_68f0ff11e08ed5::t_88652d1db913d1 63,66-73
+  s_bf99a93e97ab76::t_b6dc46ede48ca0 1-2,116
+packages/sdk/vitest.mjs
+  s_68f0ff11e08ed5::t_bd0760bc7bbecf 25
+  s_68f0ff11e08ed5::t_d84bf94f1be019 2-20
+  s_bf99a93e97ab76::t_61844d493fa70d 1,21-24
+app/Services/Extensions/ExtensionManifest.php
+  s_68f0ff11e08ed5::t_33545da325b5ab 36,66
+  s_68f0ff11e08ed5::t_27588db3627d15 37-39,67
+app/Services/Extensions/Scaffolding/stubs/openapi.config.stub
+  s_68f0ff11e08ed5::t_f0cbd9ecfdd43a 1-12
+tests/Unit/Services/Extensions/ExtensionRuntimeTest.php
+  s_68f0ff11e08ed5::t_8bf14d7755f490 1-48
+  s_68f0ff11e08ed5::t_0f6a43910fa0e2 49-73
+resources/scripts/router/routeTree.spec.ts
+  s_68f0ff11e08ed5::t_75af2ab497308e 51,53-68,70-72,74,77-81
+  s_68f0ff11e08ed5::t_0bb4649ee72048 34-37
+  s_68f0ff11e08ed5::t_1e6a169e395239 38-50,52,73,76
+resources/scripts/assets/tailwind.css
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 2
+packages/sdk/openapi.mjs
+  s_68f0ff11e08ed5::t_8cd020b58a13e6 1-39
+app/Http/Requests/Api/Client/GetExtensionProgressRequest.php
+  s_68f0ff11e08ed5::t_c2b0f453f807ce 1-14
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_68f0ff11e08ed5::t_33545da325b5ab 32,92,95,106
+  s_68f0ff11e08ed5::t_27588db3627d15 29-31,33-36,39-44,93-94,96-97
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 102
+  s_68f0ff11e08ed5::t_bf645576c63743 7,12,49-53,107,110-115
+  s_bf99a93e97ab76::t_e3be099e16415d 37-38
+resources/scripts/extensions/registry.spec.ts
+  s_68f0ff11e08ed5::t_6e310e50fb4876 114-115,117-125,127-135,137-140
+  s_68f0ff11e08ed5::t_c240336bbf2f23 149,191-199,201-204,206-209,211-217,221
+  s_68f0ff11e08ed5::t_2bde07fed6cefe 150-168,170-179,181,183-185,187,189-190
+  s_68f0ff11e08ed5::t_e4adebd818c182 116,126,136,169,180,182,186,188,200,205,210,218-220
+resources/scripts/components/server/startup/StartupContainer.tsx
+  s_68f0ff11e08ed5::t_3b16231f7536b9 43
+  s_68f0ff11e08ed5::t_c4206a755c9d2d 12-13,22,42,44-54,56-63
+  s_68f0ff11e08ed5::t_885d8fc2fbab69 55
+tests/Unit/Services/Extensions/ExtensionToolingTest.php
+  s_68f0ff11e08ed5::t_ac7d0a37989a22 24,27,33,56,64,73-89
+  s_bf99a93e97ab76::t_89d7c71133babb 1-23,25-26,28-32,34-55,57-63,65-72
+tests/Integration/Services/Extensions/ExtensionScopedSettingsTest.php
+  s_68f0ff11e08ed5::t_1fbec51142d62a 8-18
+  s_bf99a93e97ab76::t_950b177b2b1f1f 1-7,19-79
+resources/scripts/sdk/testing.tsx
+  s_68f0ff11e08ed5::t_851d90de46c8cf 157
+  s_68f0ff11e08ed5::t_9158f3cf5c7431 23-37
+  s_68f0ff11e08ed5::t_4977ac9125137d 40,42-82,113,187,193,196,202-204
+  s_68f0ff11e08ed5::t_0cfa2af4499bee 1-22,38-39,41,83-112,114-156,158-186,188-192,194-195,197-201
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_68f0ff11e08ed5::t_b94e1e4fea1b4e 1,50-51,65-67
+  s_68f0ff11e08ed5::t_3b16231f7536b9 104
+  s_68f0ff11e08ed5::t_cfc595fd014836 23-24,45,48-49,52-56,60-64,81,134
+  s_68f0ff11e08ed5::t_0d63ed720b9a57 57-59,82-103,105-133
+tests/Integration/Services/Servers/ServerCreationServiceTest.php
+  s_68f0ff11e08ed5::t_bfe29e7ab1f4de 12,15,37,66,108
+tests/Integration/Services/Extensions/ServerOperationEventTest.php
+  s_68f0ff11e08ed5::t_bfe29e7ab1f4de 1-40
+resources/scripts/extensions/tableColumns.tsx
+  s_68f0ff11e08ed5::t_eeac6db5a5b0f6 1,6
+  s_68f0ff11e08ed5::t_b6d8bd5ccba70b 2-5,7-23,25-32,34-37
+  s_68f0ff11e08ed5::t_c4521e329a2a0e 24,33
+packages/sdk/README.md
+  s_68f0ff11e08ed5::t_0f6a43910fa0e2 89,120,127,139,147-160
+  s_68f0ff11e08ed5::t_2eaef73bf919ea 86-88,90-104,108-119,121-126,128-138,140-146
+  s_68f0ff11e08ed5::t_09aea44a8a5cab 105-107
+scripts/externalize-extension-api-runtime.mjs
+  s_68f0ff11e08ed5::t_8cd020b58a13e6 1,3,6-7,10
+app/Services/Extensions/Scaffolding/stubs/vitest.config.stub
+  s_68f0ff11e08ed5::t_f0cbd9ecfdd43a 1,3-4,6-8
+  s_68f0ff11e08ed5::t_bd0760bc7bbecf 2,5
+app/Events/Server/OperationCompleted.php
+  s_68f0ff11e08ed5::t_666ded5e345565 3-4,7-8,10-11,13-19
+  s_68f0ff11e08ed5::t_e7ef8b7100bd0a 1-2,5-6,9,12,20
+tests/Integration/Api/Client/ExtensionProgressControllerTest.php
+  s_68f0ff11e08ed5::t_53035b16372588 51,53-55
+  s_68f0ff11e08ed5::t_81877a90a410b3 1-2,23,27,40,58
+  s_68f0ff11e08ed5::t_e44ae6cb30fc12 3-5,20-22
+  s_68f0ff11e08ed5::t_f30e522d94bdd7 24-26
+  s_68f0ff11e08ed5::t_6032c3f5e1694d 28-30,37-39
+  s_68f0ff11e08ed5::t_af3273a173abec 41-43,48-50
+  s_68f0ff11e08ed5::t_e4fa58064f813a 52
+  s_68f0ff11e08ed5::t_ef21db6acb1adf 56-57
+  s_68f0ff11e08ed5::t_426105dd3ff589 6-19,31-36,44-47
+app/Services/Extensions/Scaffolding/stubs/client-styles.stub
+  s_68f0ff11e08ed5::t_4977ac9125137d 1-4
+packages/sdk/types/extensions/registry.d.ts
+  s_68f0ff11e08ed5::t_ce43f93dfb0b95 64-67,75-76,78-80,90-103,116
+  s_bf99a93e97ab76::t_85c84a51f41628 5-9,24,38-63,117,119-121,129,133-137,150-153,159,172,176-177,183-184,186
+packages/sdk/vite.spec.ts
+  s_68f0ff11e08ed5::t_f42f7278da8edd 50
+  s_68f0ff11e08ed5::t_8e90e52d168055 1-49,51-58
+app/Http/Controllers/Base/LocaleController.php
+  s_68f0ff11e08ed5::t_666ded5e345565 31-34
+resources/scripts/extensions/resourceContext.ts
+  s_68f0ff11e08ed5::t_5a7826d4db6d91 1,8-11,14-19
+  s_68f0ff11e08ed5::t_a903dab92cecca 12-13
+  s_68f0ff11e08ed5::t_851d90de46c8cf 2-5,7
+  s_bf99a93e97ab76::t_3c6ac8c2c068f0 6
+resources/scripts/router/nav.ts
+  s_68f0ff11e08ed5::t_6b2e1e3a6c4ff3 19-21
+  s_68f0ff11e08ed5::t_bf645576c63743 9-10,22
+app/Actions/Servers/CreateServer.php
+  s_68f0ff11e08ed5::t_666ded5e345565 9,16,95
+  s_bf99a93e97ab76::t_3369acc967aafc 96
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_68f0ff11e08ed5::t_d8aa1b4d56a882 77,79
+  s_68f0ff11e08ed5::t_88652d1db913d1 19,33,53-56,93-94
+  s_68f0ff11e08ed5::t_39bf9656a48bd0 20,34,39,46-48
+  s_68f0ff11e08ed5::t_be9a2f80cf4dbe 10,24,45,61-76,78,80-82
+  s_68f0ff11e08ed5::t_914f49824254e5 23,35,40-44,59-60
+resources/scripts/extensions/development.spec.ts
+  s_68f0ff11e08ed5::t_f7ec028a28b23f 1-12,14-56
+  s_68f0ff11e08ed5::t_2ddacf76f7a81d 13
+resources/scripts/extensions/development.ts
+  s_68f0ff11e08ed5::t_97819a1f34696c 1-7,9-29,37-61
+  s_68f0ff11e08ed5::t_56f03a0a72d43f 8,30-36
+app/Extensions/Scribe/Support/PterodactylDocumentation.php
+  s_68f0ff11e08ed5::t_7614d9d1598190 65,70
+resources/scripts/extensions/tableTypes.ts
+  s_68f0ff11e08ed5::t_eeac6db5a5b0f6 1-18
+app/Services/Extensions/ExtensionJobProgress.php
+  s_68f0ff11e08ed5::t_b5825012921e25 22,31,33-35,44-46,53-55
+  s_68f0ff11e08ed5::t_c2b0f453f807ce 1-20,23-30,32,36,38-43,47-52,56-60,63-80
+  s_68f0ff11e08ed5::t_cc3c22b4b04945 21,37,61-62
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_68f0ff11e08ed5::t_66f82cf73d0a66 81-85
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 79-80
+  s_68f0ff11e08ed5::t_722c6e9c75161b 159,169
+  s_68f0ff11e08ed5::t_35f44a28a2dc90 111,115
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_68f0ff11e08ed5::t_ac7d0a37989a22 18-50
+  s_bf99a93e97ab76::t_3eaf0e7fb04d54 1-17,51-65
+resources/scripts/sdk/index.spec.ts
+  s_68f0ff11e08ed5::t_8e90e52d168055 1-14
+resources/scripts/sdk/server.ts
+  s_68f0ff11e08ed5::t_b94e1e4fea1b4e 2,38-39,42,51,65-66,96-99,106-108
+  s_68f0ff11e08ed5::t_e23d41abe35889 43,46,50
+  s_68f0ff11e08ed5::t_a7ee3c1ed75853 3-29,54-55,57-58,60-61,63-64,67-68,70-95,109-115
+  s_68f0ff11e08ed5::t_62c57f0a1a4dcc 1,30-37,40-41,44-45,47-49,52-53,56,59,62,69
+  s_68f0ff11e08ed5::t_24ea4e66b04e79 100-101,103-105
+  s_bf99a93e97ab76::t_5a03b82ab5be55 102
+tests/Unit/Services/Extensions/ExtensionJobProgressTest.php
+  s_68f0ff11e08ed5::t_81877a90a410b3 1-2,29,42
+  s_68f0ff11e08ed5::t_5ac0c3dd9da1ac 16,32-33
+  s_68f0ff11e08ed5::t_7b38a1a6b73e24 3-15,17-28,30-31,34-41
+resources/scripts/extensions/NavigationLabel.tsx
+  s_68f0ff11e08ed5::t_6b2e1e3a6c4ff3 1-12,14-17,19-23,25
+  s_68f0ff11e08ed5::t_c54ee093d67f6d 13,18,24
+resources/scripts/components/admin/servers/ServersContainer.tsx
+  s_68f0ff11e08ed5::t_0860650f036b01 1,92,95
+resources/scripts/api/server/startup/queries.ts
+  s_68f0ff11e08ed5::t_b94e1e4fea1b4e 25-27
+composer.json
+  s_68f0ff11e08ed5::t_5ca67730a49ae2 22,29
+resources/scripts/sdk/mutations.ts
+  s_68f0ff11e08ed5::t_59245a0bbb6450 2-8,11-13,15-26,28-36,38-48,50-58,60-68,70-77,79-87,89-96
+  s_68f0ff11e08ed5::t_1871283deb47b9 9
+  s_68f0ff11e08ed5::t_bfe29e7ab1f4de 1
+  s_68f0ff11e08ed5::t_e5b05e2ae0b3ec 10,14,27,37,49,59,69,78,88
+resources/scripts/sdk/navigation.spec.ts
+  s_68f0ff11e08ed5::t_75af2ab497308e 27-32,34,41-43
+  s_68f0ff11e08ed5::t_a7d5266b85e487 1-10,12-26,35-40,44-47
+  s_68f0ff11e08ed5::t_2c557c8fb54088 11
+  s_68f0ff11e08ed5::t_150690a69659b2 33
+tests/Unit/Extensions/ExtensionProviderTest.php
+  s_68f0ff11e08ed5::t_753e79a5f070e7 150-154,198-199,202-203,205-213
+  s_c202351b3d1826::t_a92702b579958c 10,19,200-201,204
+resources/scripts/extensions/ResourceExtensionTabs.tsx
+  s_68f0ff11e08ed5::t_6b2e1e3a6c4ff3 2-3,10,13
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 1,4-5,7-9,11-12,14-17
+  s_bf99a93e97ab76::t_d276a23b355250 6
+packages/sdk/manifest.schema.json
+  s_68f0ff11e08ed5::t_35f44a28a2dc90 1-247
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_68f0ff11e08ed5::t_27588db3627d15 43-45,47-52
+  s_bf99a93e97ab76::t_111781c757ab51 42,97-110
+packages/hello-world/tsconfig.json
+  s_68f0ff11e08ed5::t_722c6e9c75161b 11-15
+resources/scripts/components/admin/extensions/ExtensionsContainer.tsx
+  s_68f0ff11e08ed5::t_67a9f383611a31 1,3,41-42,714,732,734-736,738
+  s_68f0ff11e08ed5::t_bf645576c63743 704
+  s_68f0ff11e08ed5::t_b3240f937b4187 715,731,733,737,739
+resources/scripts/sdk/localization.ts
+  s_68f0ff11e08ed5::t_20053e7abf7f0f 1-19
+phpstan.neon
+  s_68f0ff11e08ed5::t_851d90de46c8cf 111
+  s_68f0ff11e08ed5::t_bf645576c63743 110
+resources/scripts/components/admin/nodes/NodesContainer.tsx
+  s_68f0ff11e08ed5::t_0860650f036b01 1,101,104
+resources/scripts/extensions/context.ts
+  s_68f0ff11e08ed5::t_c240336bbf2f23 6-9,13,15
+app/Actions/Extensions/InstallExtension.php
+  s_68f0ff11e08ed5::t_39bf9656a48bd0 9,14,17-18,23-24,35-36,52-62,64,73,76-83,91-99,104,116-122,124-127,132-135,137-138
+  s_68f0ff11e08ed5::t_e5280f3550f57a 51,65-71,100-103,105-114
+  s_68f0ff11e08ed5::t_d8aa1b4d56a882 72
+  s_68f0ff11e08ed5::t_bd4e9a3111d947 37,45-50,63,84-87,89-90,123
+resources/scripts/components/admin/AdminSidebar.tsx
+  s_68f0ff11e08ed5::t_bf645576c63743 24,118-119
+app/Models/ExtensionSetting.php
+  s_68f0ff11e08ed5::t_9ff548e4877cda 9,17-20,26-37
+app/Actions/Backups/CompleteBackup.php
+  s_68f0ff11e08ed5::t_666ded5e345565 9,11,52-53
+packages/sdk/theme.css
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 1-60
+packages/sdk/types-drift.spec.ts
+  s_68f0ff11e08ed5::t_722c6e9c75161b 77-80,84-87,94,98,105
+  s_68f0ff11e08ed5::t_471d7e73cd9e41 42-46
+  s_68f0ff11e08ed5::t_3c337d0395dd7c 51-61
+  s_68f0ff11e08ed5::t_fe08cc489bf7ae 171
+config/extensions.php
+  s_68f0ff11e08ed5::t_27588db3627d15 20,23
+  s_68f0ff11e08ed5::t_722c6e9c75161b 21
+  s_68f0ff11e08ed5::t_c2b0f453f807ce 22
+packages/hello-world/src/client/examples.spec.tsx
+  s_68f0ff11e08ed5::t_0860650f036b01 34
+  s_68f0ff11e08ed5::t_5c1974f187eb68 10,46
+  s_68f0ff11e08ed5::t_a4fa26e404b920 1-2,5,11-15,19-21,23-26,44-45,47-48,52,57,62,72,78,89,107,109,111,117,129,131,137,149-150
+app/Services/Extensions/ExtensionSettingDefinition.php
+  s_68f0ff11e08ed5::t_1c5aff03cf51a6 34-36,115,121-134,140-152
+  s_bf99a93e97ab76::t_90a30c43d1316a 32-33,153,169-172
+packages/sdk/package.json
+  s_68f0ff11e08ed5::t_35f44a28a2dc90 24-25,38-39
+  s_68f0ff11e08ed5::t_8cd020b58a13e6 22,36
+  s_68f0ff11e08ed5::t_471d7e73cd9e41 35,54
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 23,37
+  s_68f0ff11e08ed5::t_722c6e9c75161b 3
+  s_68f0ff11e08ed5::t_cb23a73630d922 17-21,32-34,52-53
+resources/scripts/sdk/server.spec.ts
+  s_68f0ff11e08ed5::t_3c337d0395dd7c 2,6-11,13-17,43-48,52-60
+  s_68f0ff11e08ed5::t_e23d41abe35889 23
+  s_68f0ff11e08ed5::t_a7d5266b85e487 1,3-5,12,18-22,24-42,61
+  s_68f0ff11e08ed5::t_9a42fce7b8177d 49-51
+app/Services/Extensions/Scaffolding/stubs/client-index.stub
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 1
+app/Data/Extensions/ExtensionJobSnapshot.php
+  s_68f0ff11e08ed5::t_c2b0f453f807ce 1-6,9-23,30-44
+  s_68f0ff11e08ed5::t_b5825012921e25 7-8,24-29
+app/Console/Commands/Extensions/DevCommand.php
+  s_68f0ff11e08ed5::t_f7ec028a28b23f 59,61-63
+  s_68f0ff11e08ed5::t_97819a1f34696c 13-43,64-68
+  s_68f0ff11e08ed5::t_c0e93d4d1f6732 1-12,44-58,60,69-78
+packages/sdk/openapi.spec.ts
+  s_68f0ff11e08ed5::t_bad14006619eef 6-7,42-57,59-67,74,76-101
+  s_68f0ff11e08ed5::t_8e90e52d168055 1-5,8-22,25-30,32-41,102
+  s_68f0ff11e08ed5::t_e942ddf0cc2837 23-24,31,58,68-73,75
+app/Services/Extensions/Scaffolding/stubs/client-test.stub
+  s_68f0ff11e08ed5::t_f0cbd9ecfdd43a 1-2,4-5,7-12
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 3,6
+app/Services/Extensions/Scaffolding/stubs/tsconfig.stub
+  s_68f0ff11e08ed5::t_0bb4649ee72048 8
+packages/sdk/slot-coverage.spec.ts
+  s_68f0ff11e08ed5::t_3b16231f7536b9 36-41
+  s_68f0ff11e08ed5::t_c7c0abbc02a154 42
+resources/scripts/components/admin/servers/ServerDetailContainer.tsx
+  s_68f0ff11e08ed5::t_5a7826d4db6d91 15,88
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 13,82
+  s_68f0ff11e08ed5::t_4b959f56e1ebd7 1,14,25-29,43-64,66-81,83-87
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_68f0ff11e08ed5::t_60d5ce4fcfd744 17-22,26-33,36,40-41,43-76,78-82,84-85,89,98
+  s_68f0ff11e08ed5::t_7614d9d1598190 83,86-88
+  s_68f0ff11e08ed5::t_0d4553ca8d180b 11,42
+  s_68f0ff11e08ed5::t_97819a1f34696c 109-136
+scripts/generate-extension-openapi.php
+  s_68f0ff11e08ed5::t_2f45539d96bd70 33-34
+packages/sdk/prepack.mjs
+  s_68f0ff11e08ed5::t_471d7e73cd9e41 1-4
+resources/scripts/components/server/files/useFileManagerExtensionData.ts
+  s_68f0ff11e08ed5::t_cfc595fd014836 1,4,6-7
+  s_68f0ff11e08ed5::t_8435474af0ce9a 2-3,5,8
+resources/scripts/router/layouts/AccountLayout.tsx
+  s_68f0ff11e08ed5::t_bf645576c63743 6,17,19
+resources/scripts/extensions/screen.tsx
+  s_68f0ff11e08ed5::t_c240336bbf2f23 7,28
+  s_68f0ff11e08ed5::t_b94e1e4fea1b4e 31
+resources/scripts/components/admin/nodes/NodeDetailContainer.tsx
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 13,65
+  s_68f0ff11e08ed5::t_5a7826d4db6d91 15,70
+  s_68f0ff11e08ed5::t_ebfa1dc893bcbb 1,14,25-29,42-46,48-64,66-69
+resources/scripts/components/server/files/MassActionsBar.tsx
+  s_68f0ff11e08ed5::t_8435474af0ce9a 7-8,41
+  s_68f0ff11e08ed5::t_3b16231f7536b9 55
+packages/sdk/types/extensions/resourceContext.d.ts
+  s_68f0ff11e08ed5::t_ce43f93dfb0b95 2-14
+  s_bf99a93e97ab76::t_4378097c6f828e 1,15-17
+app/Services/Extensions/Scaffolding/stubs/readme-frontend.stub
+  s_68f0ff11e08ed5::t_66f82cf73d0a66 12,20-35
+  s_68f0ff11e08ed5::t_2eaef73bf919ea 40-44
+  s_68f0ff11e08ed5::t_77deaa4bc5b234 36-39
+app/Services/Extensions/Scaffolding/stubs/postcss.config.stub
+  s_68f0ff11e08ed5::t_4977ac9125137d 1
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_68f0ff11e08ed5::t_be9a2f80cf4dbe 10,27,135-218
+database/migrations/2026_10_02_215043_add_scope_and_secrets_to_extension_settings.php
+  s_68f0ff11e08ed5::t_9ff548e4877cda 3-22,30-35
+  s_bf99a93e97ab76::t_c3ba94aa5818ee 1-2,23-29,36-38
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_68f0ff11e08ed5::t_dcf92c71da5a9b 115,132
+  s_68f0ff11e08ed5::t_c240336bbf2f23 140-145,147-158
+  s_68f0ff11e08ed5::t_ac7d0a37989a22 146,159
+  s_68f0ff11e08ed5::t_8bf14d7755f490 160-174
+  s_68f0ff11e08ed5::t_bf645576c63743 75
+app/Console/Commands/Extensions/PackCommand.php
+  s_68f0ff11e08ed5::t_241b703a3d6e0d 32,35-36,51,54-59
+  s_68f0ff11e08ed5::t_471d7e73cd9e41 44
+  s_68f0ff11e08ed5::t_0d4553ca8d180b 11-30,34
+  s_bf99a93e97ab76::t_2450ea9bf06504 1-10,31,33,37-43,45-50,52-53,60-73
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_68f0ff11e08ed5::t_1c5aff03cf51a6 29,34,100,129-131,137-148
+  s_bf99a93e97ab76::t_fb56b39d0f2e05 8-9,28,30-33,35-37,82,85-88,90-92,96-99,149
+app/Providers/ExtensionServiceProvider.php
+  s_68f0ff11e08ed5::t_39bf9656a48bd0 26
+  s_c202351b3d1826::t_05816a7366d13f 9
+resources/scripts/router/routeTree.ts
+  s_68f0ff11e08ed5::t_ed7bf4cfe81b4f 684-685,746-747,791
+  s_68f0ff11e08ed5::t_ff9569fe4032f3 1153,1157-1158,1167
+  s_68f0ff11e08ed5::t_2ff4e8f2680c08 506,575-576,593,701,1159-1161,1176-1178,1180-1181
+  s_68f0ff11e08ed5::t_bf645576c63743 5-9,11
+  s_68f0ff11e08ed5::t_6b2e1e3a6c4ff3 1171,1207
+  s_68f0ff11e08ed5::t_b94e1e4fea1b4e 1166
+  s_68f0ff11e08ed5::t_a903dab92cecca 789
+  s_bf99a93e97ab76::t_3ea2d0734563d0 10,773-782,785-788,790,792-793,926,1151-1152,1154-1156,1162-1164,1179,1182-1183
+app/Actions/Extensions/RemoveExtension.php
+  s_68f0ff11e08ed5::t_88652d1db913d1 15,27,47
+  s_68f0ff11e08ed5::t_39bf9656a48bd0 16,28,41-44
+  s_68f0ff11e08ed5::t_3b95fe8b6d9269 19,29,35-40,53
+resources/scripts/sdk/ui.tsx
+  s_68f0ff11e08ed5::t_1a5cfc0db72233 1-8,10-29,31-50
+  s_68f0ff11e08ed5::t_8e6bc483f9e639 9,30
+resources/scripts/router/layouts/ServerLayout.tsx
+  s_68f0ff11e08ed5::t_bf645576c63743 21,63,67,77
+app/Actions/Servers/RecordServerInstallResult.php
+  s_68f0ff11e08ed5::t_666ded5e345565 12,43
+  s_68f0ff11e08ed5::t_f82dbf85bc7efa 44
+packages/sdk/vitest-setup.mjs
+  s_68f0ff11e08ed5::t_1d7a5f428f7339 4-9
+  s_bf99a93e97ab76::t_46a15145e4f436 1-3
+.ai/rules/extensions.md
+  s_bf99a93e97ab76::t_17e5ec8169b916 13-15
+.ai/rules/sdk.md
+  s_bf99a93e97ab76::t_002040ec9b55e7 10-12
+.gitignore
+  s_68f0ff11e08ed5::t_f2360ce30c7745 49-51
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_bf99a93e97ab76::t_768e30f606ebbb 1-39
+app/Extensions/ExtensionProvider.php
+  s_bf99a93e97ab76::t_41dc3452645aef 7,10,18,22,174-185
+app/Services/Extensions/ExtensionSettings.php
+  s_bf99a93e97ab76::t_736b519f611e38 7-8,10-11,23-26,34,42-45,50,60-69,85-86,95-96,98-101,107-108,110-116,121,131,135,142,148-192
+composer.lock
+  s_bf99a93e97ab76::t_06fd4e988e589e 7,288-364,13934
+package.json
+  s_68f0ff11e08ed5::t_5d3587e9d87562 102-104
+packages/hello-world/vitest.config.ts
+  s_68f0ff11e08ed5::t_fb62ebcff20961 2,8,13
+packages/sdk/types/api/admin/users/types.d.ts
+  s_bf99a93e97ab76::t_012d6c89d4a66a 1-10
+packages/sdk/types/api/generated/types.gen.d.ts
+  s_bf99a93e97ab76::t_978bb228ccd73d 3430-3464,3481-3515,4289-4290,4327-4329,4635,4705,4738,4771,10568-10601,11132-11169
+packages/sdk/types/components/elements/Pagination.d.ts
+  s_bf99a93e97ab76::t_9fd3136ed1882e 1-28
+packages/sdk/types/components/elements/dropdown/DropdownMenu.d.ts
+  s_bf99a93e97ab76::t_03f2b97b804887 1-28
+packages/sdk/types/extensions/context.d.ts
+  s_bf99a93e97ab76::t_15454dddd7190b 1-6
+packages/sdk/types/extensions/tableTypes.d.ts
+  s_bf99a93e97ab76::t_2e48cdbe5cafd3 1-20
+packages/sdk/types/sdk/index.d.ts
+  s_bf99a93e97ab76::t_5a512b02196a87 9,34,37-42,49,52-53,77-79,86-95,97,105,109
+packages/sdk/types/sdk/localization.d.ts
+  s_bf99a93e97ab76::t_c77f9b694530fc 1-8
+packages/sdk/types/sdk/mutations.d.ts
+  s_bf99a93e97ab76::t_6513579202c788 1-41
+packages/sdk/types/sdk/navigation.d.ts
+  s_bf99a93e97ab76::t_72e670173463e6 1-45
+packages/sdk/types/sdk/progress.d.ts
+  s_bf99a93e97ab76::t_299e57c648b28c 1-11
+packages/sdk/types/sdk/server.d.ts
+  s_bf99a93e97ab76::t_d91517d4f3b1a6 1-25
+packages/sdk/types/sdk/testing.d.ts
+  s_bf99a93e97ab76::t_6357486a179a6e 1-35
+packages/sdk/types/sdk/ui.d.ts
+  s_bf99a93e97ab76::t_d80b00225d3359 1-28
+packages/sdk/types/testing.d.ts
+  s_bf99a93e97ab76::t_1a350aeccc71a0 1-2
+resources/scripts/api/account/queries.ts
+  s_68f0ff11e08ed5::t_0c9815b0ab17bb 11
+resources/scripts/api/admin/users/queries.ts
+  s_68f0ff11e08ed5::t_e2b115ad72c075 29-30
+resources/scripts/api/admin/users/types.ts
+  s_68f0ff11e08ed5::t_5865bf1ab2aa0e 1-9
+resources/scripts/api/generated/@tanstack/react-query.gen.ts
+  s_bf99a93e97ab76::t_dd1729459f9c7e 8-9,4072-4091,4480-4499
+resources/scripts/api/generated/index.ts
+  s_bf99a93e97ab76::t_301a890f88555f 4-5
+resources/scripts/api/generated/sdk.gen.ts
+  s_bf99a93e97ab76::t_90d8959e0d54a0 6,2185,2216-2227,2455-2466
+resources/scripts/api/generated/types.gen.ts
+  s_bf99a93e97ab76::t_b664e16c8e3888 3686-3721,3740-3775,4818-4821,4870-4875,5281,5361,5399,5437,12018-12056,12672-12714
+resources/scripts/api/settings/queries.ts
+  s_68f0ff11e08ed5::t_5bee4342f9e24f 5
+resources/scripts/components/admin/users/UserDetailContainer.tsx
+  s_68f0ff11e08ed5::t_29dbc00863a778 1-2,27-34,319,321,337,347,352-356,369-404
+resources/scripts/extensions/nativeForm.spec.tsx
+  s_68f0ff11e08ed5::t_3568dffea2ab3e 1-98
+resources/scripts/sdk/localization.spec.tsx
+  s_68f0ff11e08ed5::t_485d1f0737f6f9 1-31
+resources/scripts/sdk/progress.spec.tsx
+  s_68f0ff11e08ed5::t_305bafd03633f9 1-87
+resources/scripts/setup-tests.ts
+  s_68f0ff11e08ed5::t_da091b116ce72a 9-12
+scripts/build-sdk-testing.mjs
+  s_68f0ff11e08ed5::t_22b0086d0ca01c 1-21
+scripts/generate-sdk-types.mjs
+  s_68f0ff11e08ed5::t_b02d1b06758582 23,89-90
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_68f0ff11e08ed5::t_0b30cd7eaaff4f 142,174-185
+tests/Unit/Http/Controllers/Base/LocaleControllerTest.php
+  s_68f0ff11e08ed5::t_fc776b3b645d56 13-26
+tests/Unit/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_c202351b3d1826::t_61ce43905dd0c0 1-44
+tests/Unit/Services/Extensions/ExtensionSettingsDefinitionTest.php
+  s_68f0ff11e08ed5::t_67dff749084ead 12,98-110
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "bc3c66783c934349d6c40885214c2c3cbd919b5b",
+  "prompts": {},
+  "sessions": {
+    "s_68f0ff11e08ed5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe47-43c3-7613-9dbc-50c0bca9d979",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_bf99a93e97ab76": {
+      "agent_id": {
+        "tool": "claude",
+        "id": "3306d217-ef25-4a58-aa1a-8bdfdb5da12f",
+        "model": "claude-opus-5-5"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_c202351b3d1826": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe2d-4e63-7e41-b719-caa999b24fd9",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
