@@ -1,0 +1,24 @@
+scripts/generate-extension-openapi.php
+  s_68f0ff11e08ed5::t_c0f3de4ab817c7 22-23
+  s_68f0ff11e08ed5::t_097b64e82615fe 24-41,75,85-91,98-106,127-128,134
+packages/sdk/openapi.spec.ts
+  s_68f0ff11e08ed5::t_097b64e82615fe 53
+  s_68f0ff11e08ed5::t_a86a8dc76a1cdf 34-37,40-50,65-71
+  s_68f0ff11e08ed5::t_bfb7f6c09f6fa5 23-33,38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "e2c42dabc4f8da0fca561afe3ccc04cc65b667e8",
+  "prompts": {},
+  "sessions": {
+    "s_68f0ff11e08ed5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe47-43c3-7613-9dbc-50c0bca9d979",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
