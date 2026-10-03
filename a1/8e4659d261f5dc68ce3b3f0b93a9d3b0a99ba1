@@ -1,0 +1,21 @@
+resources/scripts/extensions/registry.ts
+  s_68f0ff11e08ed5::t_0bfe25b0d1b9a3 439-450,454,706
+resources/scripts/extensions/ComponentView.spec.tsx
+  s_68f0ff11e08ed5::t_0bfe25b0d1b9a3 104-105
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "a18e4659d261f5dc68ce3b3f0b93a9d3b0a99ba1",
+  "prompts": {},
+  "sessions": {
+    "s_68f0ff11e08ed5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe47-43c3-7613-9dbc-50c0bca9d979",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
