@@ -1,0 +1,151 @@
+resources/scripts/extensions/componentTypes.ts
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 16-23
+  s_68f0ff11e08ed5::t_805604e7dab08a 27,75-76
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 1,65,69-71,79-81,83
+  s_68f0ff11e08ed5::t_73c14824650451 2-15,24-26,28-61,63-64,66-68,72-74,84
+  s_68f0ff11e08ed5::t_e1869e4fcc5505 62,77-78,82
+app/Services/Extensions/ExtensionManifest.php
+  s_68f0ff11e08ed5::t_0636eefd73153f 16-17,38-39,70
+tests/Unit/Services/Extensions/ExtensionManifestTest.php
+  s_68f0ff11e08ed5::t_a35bf1fe24180f 175-197
+  s_68f0ff11e08ed5::t_f5437b53eec4f8 198-203
+packages/sdk/manifest.schema.json
+  s_68f0ff11e08ed5::t_2c6ccea3ed7fd6 243-254
+  s_68f0ff11e08ed5::t_f5437b53eec4f8 255,258-287,291
+  s_68f0ff11e08ed5::t_a24cf167c75224 256-257
+app/Console/Commands/Extensions/DoctorCommand.php
+  s_68f0ff11e08ed5::t_2c6ccea3ed7fd6 24
+resources/scripts/sdk/index.ts
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 1,126
+  s_68f0ff11e08ed5::t_73c14824650451 125,127,144
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 145-158
+  s_68f0ff11e08ed5::t_954f1b66743c6a 159
+packages/hello-world/extension.json
+  s_68f0ff11e08ed5::t_f5437b53eec4f8 5,18,20-22
+  s_68f0ff11e08ed5::t_87f7e48286613b 19
+resources/scripts/extensions/loader.ts
+  s_68f0ff11e08ed5::t_73c14824650451 11,48,50
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 49
+resources/scripts/extensions/loader.spec.ts
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 231-305
+packages/sdk/README.md
+  s_68f0ff11e08ed5::t_6e5eefa23e862b 85
+  s_68f0ff11e08ed5::t_066efa3354f729 161-192
+app/Services/Extensions/ExtensionRepository.php
+  s_68f0ff11e08ed5::t_0636eefd73153f 118-128,147,166
+  s_68f0ff11e08ed5::t_6de2a761211da4 136
+resources/scripts/extensions/registry.ts
+  s_68f0ff11e08ed5::t_7ed8e5633e8c15 639
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 615,617-618,628
+  s_68f0ff11e08ed5::t_73c14824650451 367,375,390,423-430,490-497,502-507,511-512,559,579-581,597,614,616,619-625,630-633
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 12-17,508-510,626-627,629
+phpstan.neon
+  s_68f0ff11e08ed5::t_2c6ccea3ed7fd6 111
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_68f0ff11e08ed5::t_2c6ccea3ed7fd6 53
+app/Services/Extensions/ExtensionManifestValidator.php
+  s_68f0ff11e08ed5::t_0636eefd73153f 10,95,102-103,135-136,164
+resources/scripts/components/dashboard/DashboardContainer.tsx
+  s_68f0ff11e08ed5::t_7ed8e5633e8c15 1,18
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 108-115
+packages/hello-world/src/client/ServerCard.tsx
+  s_68f0ff11e08ed5::t_f5437b53eec4f8 1-5
+resources/scripts/components/dashboard/ServerCardView.tsx
+  s_68f0ff11e08ed5::t_580e422a80882a 1-8,15-22,26-27,31-46,54-58,62,73-76,105-111,117-122,130
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 80,87,94,99-100
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 9-14,23-25,28-30,47-53,59-61,63-72,77-78,81-85,88-92,95-98,101-104,112-116,123-129
+  s_68f0ff11e08ed5::t_dbd4553c563cfd 79,86,93
+packages/sdk/slot-coverage.spec.ts
+  s_68f0ff11e08ed5::t_991c10d85b21f7 34
+packages/sdk/types-drift.spec.ts
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 43-54,89-97,203-207
+  s_68f0ff11e08ed5::t_2dc3f19b9d247f 208
+resources/scripts/sdk/testing.tsx
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 5,256-257,259-261
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 212-231
+  s_68f0ff11e08ed5::t_0679d12f454e98 1-4,209-211,232-255,258,262-279
+packages/hello-world/src/client/FileDetails.tsx
+  s_68f0ff11e08ed5::t_f5437b53eec4f8 1-8
+app/Actions/Extensions/InstallExtension.php
+  s_68f0ff11e08ed5::t_2c6ccea3ed7fd6 68
+resources/scripts/components/server/files/FileManagerContainer.tsx
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 138-145
+  s_68f0ff11e08ed5::t_7ed8e5633e8c15 1,42
+packages/hello-world/src/client/index.tsx
+  s_68f0ff11e08ed5::t_f5437b53eec4f8 10,14-15
+  s_68f0ff11e08ed5::t_121d80ba288156 16
+tests/Unit/Services/Extensions/ExtensionCompatibilityTest.php
+  s_68f0ff11e08ed5::t_a35bf1fe24180f 66-96
+resources/scripts/extensions/ComponentView.spec.tsx
+  s_68f0ff11e08ed5::t_991c10d85b21f7 2,194,219
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 14-18,35-42,55-59,64-69,71-76,85-89,91-93,96-101,108-113,117-119,126-130,134-139,161-172,225-234,248-250
+  s_68f0ff11e08ed5::t_a35bf1fe24180f 1,3-4,6-13,19-27,29-34,43-54,60-63,70,77-84,90,94-95,102-107,114-116,120-125,131-133,140-160,173-193,221-224,235-247,251-252
+  s_68f0ff11e08ed5::t_2173429bf38add 195-218,220
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 5,28
+resources/scripts/extensions/ComponentView.tsx
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 16-25,28-45
+  s_68f0ff11e08ed5::t_4e65d778e291ae 1-15,26-27,46-59
+resources/scripts/components/dashboard/ServerRow.tsx
+  s_68f0ff11e08ed5::t_580e422a80882a 1,3-5,9-10,12,43,56-59,96,107-108,112,117
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 35-42,44-55,74-80,82-86,93,95,109-111,113-116
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 87-92,94,103
+  s_68f0ff11e08ed5::t_8246823f514ae9 81
+resources/scripts/components/server/files/FileObjectRow.spec.tsx
+  s_68f0ff11e08ed5::t_87f7e48286613b 1-5,8-10,13-14,23,25-44,47-60,62-80,82-96,98-102
+  s_68f0ff11e08ed5::t_991c10d85b21f7 15-22,24,45-46
+  s_68f0ff11e08ed5::t_2173429bf38add 61,81,97
+  s_68f0ff11e08ed5::t_74ce8eecba1010 6-7,11-12
+app/Services/Extensions/ExtensionCompatibility.php
+  s_68f0ff11e08ed5::t_0636eefd73153f 91-101
+resources/scripts/extensions/componentSession.tsx
+  s_68f0ff11e08ed5::t_4e65d778e291ae 18-19,21-22,24-28,30-31,34-45,47-52,54-58,69-82,84-133
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 46,59-68
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 1-16
+  s_68f0ff11e08ed5::t_805604e7dab08a 17,83
+  s_68f0ff11e08ed5::t_cb395022c71556 20,23,29,32-33,53
+resources/scripts/components/server/files/FileObjectRow.tsx
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 70-84,98-99,102-108
+  s_68f0ff11e08ed5::t_4334727871ce5d 1-4,7,97,100-101,109
+  s_68f0ff11e08ed5::t_a98f1a26d6a382 44-50,54-60
+packages/hello-world/src/client/examples.spec.tsx
+  s_68f0ff11e08ed5::t_6fcac9bccd80b1 162-163,171-173
+  s_68f0ff11e08ed5::t_f5437b53eec4f8 1-3,38,158-161,164-167,169-170,174
+  s_68f0ff11e08ed5::t_c77ab39875220a 168
+resources/scripts/components/server/files/FileDetailsView.tsx
+  s_68f0ff11e08ed5::t_4334727871ce5d 1-6,13-17,23-27,31-32,47-52,61
+  s_68f0ff11e08ed5::t_1e4b83d99d8bb4 7-12,18-22,28-30,33-46,53-60
+.ai/rules/scripts-extensions.md
+  s_68f0ff11e08ed5::t_57ccfef2ed956b 10-12
+app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+  s_68f0ff11e08ed5::t_60db13b227cf9a 115,159,169
+config/extensions.php
+  s_68f0ff11e08ed5::t_327c59ba7abcfa 21
+packages/sdk/package.json
+  s_68f0ff11e08ed5::t_08b9bb6cc0d40e 3
+packages/sdk/types/extensions/componentTypes.d.ts
+  s_68f0ff11e08ed5::t_6d2ffafcfc9d5f 1-65
+packages/sdk/types/extensions/registry.d.ts
+  s_68f0ff11e08ed5::t_5d8b00dface0f7 10,151,162,175-176,185
+packages/sdk/types/sdk/index.d.ts
+  s_68f0ff11e08ed5::t_88ee73d1d02462 2,70-72,85-86
+packages/sdk/types/sdk/testing.d.ts
+  s_68f0ff11e08ed5::t_aa9860a2bd995f 2,37-53
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_68f0ff11e08ed5::t_5b5351321fcf49 219-267
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.4",
+  "base_commit_sha": "624e400db56bfe3818adba37135d0091d93465e4",
+  "prompts": {},
+  "sessions": {
+    "s_68f0ff11e08ed5": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe47-43c3-7613-9dbc-50c0bca9d979",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
