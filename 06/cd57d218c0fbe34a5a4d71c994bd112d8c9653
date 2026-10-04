@@ -1,0 +1,854 @@
+app/Contracts/Files/ChangesFilePermissions.php
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11-12
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,13
+.ai/rules/extensions.md
+  s_a6e4d95112d140::t_e0964d7cf8f983 19-27
+  s_a6e4d95112d140::t_a40cf2fa57cbc1 16-18
+app/Services/Extensions/ExtensionPermissionRegistry.php
+  s_a6e4d95112d140::t_674d3a48a05fdf 49-53
+tests/Integration/Api/Admin/Users/UserControllerTest.php
+  s_a6e4d95112d140::t_280cb64cf1daba 33,75,77,81,87-88,90,98,100,104
+  s_a6e4d95112d140::t_de32d284d435bb 16-17,19
+  s_a6e4d95112d140::t_b6a7c72bd9d25f 36-38
+  s_a6e4d95112d140::t_8d2a93b499be37 8,34-35
+  s_a6e4d95112d140::t_7be7a2048dc00f 20,28,39-40,45,49,56,69,106,110,116,123,130,149,153
+app/Http/Controllers/Api/Admin/Users/UserController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 93
+app/Http/Controllers/Api/Admin/Locations/LocationController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 56
+app/Services/Extensions/ExtensionSettingsDefinition.php
+  s_a6e4d95112d140::t_f5e7e7a328213e 97-100
+  s_a6e4d95112d140::t_875fbeba82fccd 81,85-91,101-113,115-116,144-145,147-150
+app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 93
+app/Actions/Extensions/InstallExtension.php
+  s_a6e4d95112d140::t_a10ac36b433864 7,19,28,40-41,43-47,52,54-55,57,59-66,68-70,74,76-97,106-107
+  s_a6e4d95112d140::t_c73326cbc521ba 56,73
+  s_a6e4d95112d140::t_e74f40fbaa0617 53
+  s_a6e4d95112d140::t_cea6edddd77674 100-105
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_56eebc1448ef98 99
+app/Http/Requests/Api/Application/ApplicationApiRequest.php
+  s_a6e4d95112d140::t_4cd4e675a7277f 9,13
+app/Actions/Files/CompressFiles.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,19
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,16,18,20-21
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11,15,17
+  s_a6e4d95112d140::t_5556da1b06fd05 14
+tests/Integration/Api/Client/Server/Startup/GetStartupAndVariablesTest.php
+  s_a6e4d95112d140::t_506d3d1b21703e 15,31,43
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 32-41
+  s_a6e4d95112d140::t_de32d284d435bb 14
+app/Actions/Servers/CreateServer.php
+  s_a6e4d95112d140::t_c73326cbc521ba 77
+  s_a6e4d95112d140::t_f461fba4e4a98b 86
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_8bf32099803b12 21
+app/Contracts/Files/PullsFiles.php
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11-12
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,13
+app/Services/Extensions/ExtensionSettingsRegistry.php
+  s_a6e4d95112d140::t_674d3a48a05fdf 28-32
+app/Services/Extensions/ExtensionPackageLocator.php
+  s_a6e4d95112d140::t_9b2d01352928e4 7,11,16,20-34,38-39,42-46,48-49,51,62-63,65,67,70-72
+  s_a6e4d95112d140::t_821fc4090d8d77 47,50,66,69
+  s_a6e4d95112d140::t_e74f40fbaa0617 17
+  s_a6e4d95112d140::t_23e5e6262f473c 18-19
+app/Actions/Api/CreateApiKey.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,23
+app/Actions/Backups/InitiateBackup.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 119
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_c73326cbc521ba 69
+  s_a6e4d95112d140::t_59c4b0f36c9b8c 13
+app/Actions/Servers/UpdateServerDetails.php
+  s_a6e4d95112d140::t_c73326cbc521ba 23
+  s_a6e4d95112d140::t_15b57e93f38260 8
+app/Actions/Schedules/CreateScheduleTask.php
+  s_a6e4d95112d140::t_3e90535a2fe90b 29-31
+  s_a6e4d95112d140::t_c73326cbc521ba 7,28
+app/Actions/Users/CreateUser.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,35,38
+  s_a6e4d95112d140::t_15b57e93f38260 8
+app/Actions/Servers/RebuildServer.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,15
+  s_a6e4d95112d140::t_9fa612a88e0a94 1-6,12,14,16-17
+  s_a6e4d95112d140::t_5f88a59272d773 7-11
+tests/Integration/Services/Servers/VariableValidatorServiceTest.php
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 7,17
+app/Notifications/AddedToServer.php
+  s_a6e4d95112d140::t_3e90535a2fe90b 23-25
+app/Actions/Transfers/FailTransfer.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,22
+app/Services/Extensions/ExtensionAssetPublisher.php
+  s_a6e4d95112d140::t_821fc4090d8d77 43,46
+  s_a6e4d95112d140::t_33f4752cae716d 7,13,35-42,44-45
+  s_a6e4d95112d140::t_90464e4e05b6cb 47-49
+app/Actions/Files/DeleteFiles.php
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11,14
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,15,17-18
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,16
+app/Providers/ActionServiceProvider.php
+  s_a6e4d95112d140::t_6427b57cef19ce 207-222
+  s_a6e4d95112d140::t_9401511e8f52bb 17,43,49-57,76,79-80,88,112,135,144-152,171,174-175,183
+tests/Integration/Api/Admin/Nodes/NodeControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 18
+  s_a6e4d95112d140::t_280cb64cf1daba 25,42,44,48,55,61-62
+  s_a6e4d95112d140::t_8d2a93b499be37 10,26-27
+  s_a6e4d95112d140::t_a69666c626a0fc 7,9,14,19,29,37,64,70,78,81,93,95,102,110,116,120
+app/Actions/Themes/ApplyTheme.php
+  s_a6e4d95112d140::t_6aa7a46b715595 8,11,16,29-33,35-48
+app/Exceptions/Http/Connection/DaemonConnectionException.php
+  s_a6e4d95112d140::t_aa1a71cc3468dd 53-63
+  s_a6e4d95112d140::t_b2aeaedf4a9dd9 7-8,12,14,17-18,21,23-24
+  s_c202351b3d1826::t_c9c237fa3a1b6c 25-28,30,35,37-38,50-52,64-76
+app/Http/Controllers/Api/Client/ApiKeyController.php
+  s_a6e4d95112d140::t_6427b57cef19ce 62,64-68
+  s_a6e4d95112d140::t_cef73d7f3a0951 12
+app/Actions/Files/RenameFiles.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,15,17-18
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11,14
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,16
+app/Actions/Files/CopyFile.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,14,16-17
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,15
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11
+app/Actions/Files/DecompressFile.php
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11,15
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,14,17-18
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,16
+app/Http/Controllers/Api/Admin/Servers/ServerBackupController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 41
+app/Http/Controllers/Api/Admin/Nodes/NodeController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 65
+app/Contracts/Files/WritesFileContents.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,12
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11
+tests/Integration/Api/Client/AccountControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 14
+  s_a6e4d95112d140::t_d429863dc77e75 114-135
+  s_a6e4d95112d140::t_bdbd3eb6f7a4fb 16-17,23,29,35,41,49,72,90-91,93,101,106
+tests/Integration/Services/Schedules/ProcessScheduleServiceTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 28,80,105
+  s_a6e4d95112d140::t_c4519e667891a2 14,22,142
+  s_a6e4d95112d140::t_506d3d1b21703e 29,36,47,51,59,70,86,96-97,99,108,116,125,131
+  s_a6e4d95112d140::t_6a83462a84c526 10,23,27,87,102,127,134-141,143-189
+app/Support/JsonValueGuard.php
+  s_a6e4d95112d140::t_de32d284d435bb 206
+  s_a6e4d95112d140::t_0197b2f25b559e 205,207-209,211
+  s_a6e4d95112d140::t_ee5985ec3c4974 210,212-213
+tests/Integration/Api/Client/ApiKeyControllerTest.php
+  s_a6e4d95112d140::t_39699238119fa0 72-80
+  s_a6e4d95112d140::t_de32d284d435bb 12,14,18,25
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 32-40,42,52-60
+  s_a6e4d95112d140::t_06833ae7e390ab 26,64,69,81,87,93,103,113,124
+app/Actions/Databases/CreateDatabaseHost.php
+  s_a6e4d95112d140::t_15b57e93f38260 8-9
+  s_a6e4d95112d140::t_c73326cbc521ba 18,29,31,42
+tests/Integration/Api/Admin/Servers/ServerControllerTest.php
+  s_a6e4d95112d140::t_280cb64cf1daba 27,63,65,69,71,82,86,97,106,109,115,117,122,126,133,137
+  s_a6e4d95112d140::t_de32d284d435bb 20
+  s_a6e4d95112d140::t_8d2a93b499be37 8,28
+  s_a6e4d95112d140::t_bfcfcda1b61cfb 16,21,30,38,46,58,139,143
+app/Actions/Eggs/Sharing/ImportEgg.php
+  s_a6e4d95112d140::t_c73326cbc521ba 20,30
+  s_a6e4d95112d140::t_15b57e93f38260 8
+app/Actions/Users/UpdateUserPassword.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,14
+  s_a6e4d95112d140::t_e54c71da85401b 20
+app/Http/Requests/Api/Client/Account/UpdatePasswordRequest.php
+  s_a6e4d95112d140::t_ee5985ec3c4974 21,25-28
+  s_3f4b5347620927::t_14b277bb8af8ff 29
+rector.php
+  s_a6e4d95112d140::t_3defac432ed955 8,40-44
+app/Contracts/Tags/SyncsTags.php
+  s_a6e4d95112d140::t_820908d4740bb2 1-2,5,9,11,20
+  s_a6e4d95112d140::t_6427b57cef19ce 3-4,6-8,10,12-19
+tests/Integration/Api/Client/Server/Schedule/GetServerSchedulesTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 20
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 37-65
+  s_a6e4d95112d140::t_506d3d1b21703e 16,21,32,36,67,73
+app/Http/Requests/Api/Admin/Extensions/UpdateExtensionSettingsRequest.php
+  s_a6e4d95112d140::t_5e7cdfdfe84923 1-2,5-6,11,13,16,18-19,22,33-34
+  s_a6e4d95112d140::t_875fbeba82fccd 3-4,7-9,12,14-15,17,20-21,23-32
+  s_a6e4d95112d140::t_23e5e6262f473c 10
+app/Actions/Subusers/UpdateSubuser.php
+  s_a6e4d95112d140::t_c73326cbc521ba 26,30
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_7f5f89eb16def0 7,29
+app/Http/Controllers/Api/Admin/Mounts/MountController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 67
+app/Http/Requests/Api/Client/Account/StoreApiKeyRequest.php
+  s_a6e4d95112d140::t_88e1075a7491cb 25
+app/Contracts/Servers/RebuildsServers.php
+  s_a6e4d95112d140::t_9fa612a88e0a94 1-8,10,12
+  s_a6e4d95112d140::t_04b5de3c0316c7 9,11
+tests/Unit/WingsJsonResponseTest.php
+  s_a6e4d95112d140::t_44429d0f5b3613 3-6,8-17,19,23-25,30-34,36,41-44,46-56,58-63
+  s_a6e4d95112d140::t_9d3bf56be66103 1-2
+  s_a6e4d95112d140::t_8e82d27a048594 7,18,20-22,26-29,35,37-40,45,57
+app/Http/Requests/Api/Admin/Mounts/AttachNodesRequest.php
+  s_a6e4d95112d140::t_7a0e6876e12da3 49
+  s_a6e4d95112d140::t_4cd4e675a7277f 14,41,45-48
+  s_a6e4d95112d140::t_518bed33ab20d8 8,42
+  s_a6e4d95112d140::t_2c659914227898 50
+app/Http/Controllers/Api/Admin/Mounts/AttachEggsController.php
+  s_a6e4d95112d140::t_4cd4e675a7277f 33
+app/Actions/Servers/SendServerPower.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,15
+  s_a6e4d95112d140::t_4322029ae1c409 1-6,12,14,16-17
+  s_a6e4d95112d140::t_928fb247fb97b0 7-11
+tests/Integration/Api/Admin/Eggs/EggVariableControllerTest.php
+  s_a6e4d95112d140::t_0bf7d4c4c58211 114
+  s_a6e4d95112d140::t_280cb64cf1daba 49
+  s_a6e4d95112d140::t_de32d284d435bb 15
+  s_a6e4d95112d140::t_8d2a93b499be37 8,29-30
+  s_a6e4d95112d140::t_d429863dc77e75 86-109
+  s_a6e4d95112d140::t_c82983df7ca16e 110,119
+  s_a6e4d95112d140::t_0ab9619d39010b 111-113,115-118
+  s_a6e4d95112d140::t_2618bab4584684 22,32,39,48,51,64,72,120,127,134,141,149,154,161,167,175,179,181-182,189,197,204,211
+tests/Integration/Api/Application/Tags/TagControllerTest.php
+  s_a6e4d95112d140::t_ec46ee084ea402 19-31,49
+  s_a6e4d95112d140::t_e13552458f15b6 14,41-42
+app/Actions/Servers/DeleteServer.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 41
+  s_a6e4d95112d140::t_15b57e93f38260 9
+  s_a6e4d95112d140::t_c73326cbc521ba 49
+  s_a6e4d95112d140::t_ee6625ef150358 15
+app/Contracts/Files/CopiesFiles.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,12
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11
+tests/Integration/Api/Admin/PaginationValidationTest.php
+  s_a6e4d95112d140::t_4322029ae1c409 1-2,4,58
+  s_a6e4d95112d140::t_f59f36a977dcc7 3,5-57
+tests/Integration/Services/Backups/DeleteBackupServiceTest.php
+  s_a6e4d95112d140::t_ef824f879275dc 7
+  s_a6e4d95112d140::t_e2349774227398 8
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 19
+  s_a6e4d95112d140::t_0875ae1b529ef3 16,33,42-43,52-53
+app/Http/Controllers/Api/Admin/Eggs/ReorderVariablesController.php
+  s_a6e4d95112d140::t_6427b57cef19ce 31,33
+  s_a6e4d95112d140::t_9201f1e1fab237 10
+app/Actions/Databases/UpdateDatabaseHost.php
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_c73326cbc521ba 7,16,29,34,37
+app/Actions/Databases/DeployServerDatabase.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,23,34
+app/Http/Controllers/Api/Admin/Extensions/ExtensionController.php
+  s_a6e4d95112d140::t_875fbeba82fccd 26,146,151
+app/Http/Requests/Api/ApiRequest.php
+  s_a6e4d95112d140::t_ee5985ec3c4974 13-16,27-34,59-70
+  s_3f4b5347620927::t_703851d9210383 71
+app/Http/Controllers/Api/Admin/ActivityController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 55
+app/Actions/Files/PullFile.php
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11,14
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,15,17-18
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,16
+app/Http/Controllers/Api/Client/Servers/FileController.php
+  s_a6e4d95112d140::t_ced33560f21e6c 386
+  s_a6e4d95112d140::t_7672e756966b13 15,17-18,22-23,287,313,338,363,383
+  s_a6e4d95112d140::t_f461fba4e4a98b 121,124,141,144
+  s_a6e4d95112d140::t_6427b57cef19ce 16,19-21,203,206,221,225,243,247,265,268,283,308,334,359,379
+  s_a6e4d95112d140::t_767c03d1ef713a 28
+tests/Integration/Api/Admin/ApiKeys/ApiKeyControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 15-16
+  s_a6e4d95112d140::t_8d2a93b499be37 8
+  s_a6e4d95112d140::t_5f19cfae9fc119 17,27,34,41,52,56,64,68,81,88,92,98,102
+  s_a6e4d95112d140::t_b6a7c72bd9d25f 24-25,54,62,70-71,78-79
+app/Actions/Backups/RestoreBackup.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,10,34
+  s_a6e4d95112d140::t_f461fba4e4a98b 41
+app/Actions/Extensions/SetExtensionEnabled.php
+  s_a6e4d95112d140::t_15b57e93f38260 10
+  s_a6e4d95112d140::t_33f4752cae716d 76
+  s_a6e4d95112d140::t_a10ac36b433864 38,45,47,49,51,54-56,58-59,61-64,66,68-75,77-84
+  s_a6e4d95112d140::t_c73326cbc521ba 46,57
+tests/Integration/Api/Client/Server/NetworkAllocationControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 14
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 22-30
+  s_a6e4d95112d140::t_d475159b1c7228 15,21,32,41,53,62,72
+tests/Integration/Services/Users/UserDeletionServiceTest.php
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 7,16
+app/Services/Daemon/ServerClient.php
+  s_a6e4d95112d140::t_415b9c93432039 7,13,15-22,24-25,27-30,32-51,56-59,64,69,74,79,82,84-85,87-90,92,95,97-102
+  s_a6e4d95112d140::t_0b7f9b31cb40e9 5
+  s_a6e4d95112d140::t_c6b68b72425990 8,91
+  s_a6e4d95112d140::t_d7c765c0e0610b 9
+app/Services/Telemetry/TelemetryCollectionService.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 41
+  s_a6e4d95112d140::t_0ec6f0f7bd4e5d 11
+tests/Integration/Services/Databases/DatabasePasswordServiceTest.php
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 7,17
+app/Jobs/RevokeSftpAccessJob.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 47,52
+  s_a6e4d95112d140::t_4448d6e1009dfc 13
+app/Contracts/Eggs/ReordersEggVariables.php
+  s_a6e4d95112d140::t_820908d4740bb2 1-8,10,13
+  s_a6e4d95112d140::t_61d225fe90742f 9,11-12
+tests/Integration/Services/Backups/DownloadLinkServiceTest.php
+  s_a6e4d95112d140::t_ef824f879275dc 8
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 19
+tests/Integration/Services/Servers/ServerDeletionServiceTest.php
+  s_a6e4d95112d140::t_ef824f879275dc 8
+  s_a6e4d95112d140::t_e2349774227398 10
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 22
+  s_a6e4d95112d140::t_97a92eb5132297 17,30,42,53,60
+app/Notifications/RemovedFromServer.php
+  s_a6e4d95112d140::t_3e90535a2fe90b 23-25
+app/Actions/Servers/UpdateServerStartup.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,19,28
+app/Services/Daemon/DaemonConnection.php
+  s_a6e4d95112d140::t_eb7fe6dc69c845 3-4,7-21,23-52,54-55,57,59-71
+  s_a6e4d95112d140::t_0b7f9b31cb40e9 1-2,5-6,22,53,56,58,72-73
+tests/Integration/Database/SubuserGrantUniquenessMigrationTest.php
+  s_a6e4d95112d140::t_ef9e93e4b58882 10,26,45,51,62
+  s_a6e4d95112d140::t_9fcf12564b70bf 7,34,36,63,65
+  s_a6e4d95112d140::t_054cb4745d5289 39,44
+  s_a6e4d95112d140::t_3ff4c5c7d17b95 1-6,8-9,11-25,27-33,35,37-38,40-43,46-50,52-61,64,66-68
+app/Actions/Databases/RotateDatabasePassword.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,28,30
+  s_a6e4d95112d140::t_15b57e93f38260 8
+tests/Integration/Api/Application/Servers/ServerManagementTest.php
+  s_a6e4d95112d140::t_aa1a71cc3468dd 15-16,39,41,47,79,91,148,151
+tests/Integration/Api/Admin/Eggs/EggCrudControllerTest.php
+  s_a6e4d95112d140::t_506d3d1b21703e 15,18,27,34,38,47,56,63,71,79,86,92,96,108-109,115,120
+  s_a6e4d95112d140::t_8d2a93b499be37 8,24-25
+  s_a6e4d95112d140::t_de32d284d435bb 14
+  s_a6e4d95112d140::t_280cb64cf1daba 32,45
+app/Actions/Schedules/DeleteScheduleTask.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,22
+  s_a6e4d95112d140::t_3e90535a2fe90b 23-25
+app/Http/Requests/Api/Client/Account/UpdateEmailRequest.php
+  s_a6e4d95112d140::t_ee5985ec3c4974 16,18,20-23,26,28
+app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 106,145
+tests/Integration/Console/Commands/UpgradeCommandTest.php
+  s_a6e4d95112d140::t_7333f0a9b30808 49
+  s_a6e4d95112d140::t_66d3e3efd610d2 17-18,22,37-38
+  s_a6e4d95112d140::t_8e7b1f6f3a7568 1-16,19-21,23-36,39-48,50-51
+app/Actions/Servers/ToggleServerSuspension.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 36
+  s_a6e4d95112d140::t_9f2173f85c5bab 10
+tests/Integration/Api/Application/Servers/ServerControllerTest.php
+  s_a6e4d95112d140::t_adeae2969e1dc5 18-23,25-60,72-88
+  s_a6e4d95112d140::t_97718deb762f65 62-64,66-69,71
+  s_a6e4d95112d140::t_c82983df7ca16e 61,70
+  s_a6e4d95112d140::t_0bf7d4c4c58211 65
+  s_a6e4d95112d140::t_5a2e83faf30b9c 15,24,89-90,95,102,106,111,127,134,138,152,156,166
+app/Http/Controllers/Api/Admin/Eggs/EggController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 62
+app/Http/Controllers/Api/Client/Servers/PowerController.php
+  s_a6e4d95112d140::t_6427b57cef19ce 17,28,30-31
+  s_a6e4d95112d140::t_7672e756966b13 12
+tests/Integration/Api/Admin/Mounts/MountControllerTest.php
+  s_a6e4d95112d140::t_8d2a93b499be37 8,22
+  s_a6e4d95112d140::t_de32d284d435bb 14
+  s_a6e4d95112d140::t_280cb64cf1daba 21,37,39,43,49-50,52,60
+  s_a6e4d95112d140::t_738aaf1852f3ad 15,24,31,62,69,75,79
+tests/Integration/Api/Admin/Servers/DatabaseControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 20,151
+  s_a6e4d95112d140::t_e13552458f15b6 24,29-30,32,41,44,47
+  s_a6e4d95112d140::t_8d2a93b499be37 8
+  s_a6e4d95112d140::t_3331a506116c5f 21,49,59,67,76,81,87,92,99,108,112,120,132,140
+app/Facades/Daemon.php
+  s_a6e4d95112d140::t_916516172be3af 3-4,6-12,14-20,22,24
+  s_a6e4d95112d140::t_0b7f9b31cb40e9 1-2,5,13,21,23,25-26
+app/Actions/Servers/UpdateServerBuild.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,12,33
+  s_a6e4d95112d140::t_f461fba4e4a98b 62
+app/Actions/Servers/SendServerCommand.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 16,19
+  s_a6e4d95112d140::t_9389fb5bc30391 21
+  s_a6e4d95112d140::t_3f7b2ae0f197f8 5,7-8,10,12,14,20,22-23
+app/Http/Controllers/Api/Admin/Mounts/AttachNodesController.php
+  s_a6e4d95112d140::t_4cd4e675a7277f 33
+app/Actions/Users/SetupTwoFactor.php
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_c73326cbc521ba 36
+app/Http/Requests/Api/Admin/Servers/TransferServerRequest.php
+  s_a6e4d95112d140::t_7a0e6876e12da3 93
+  s_a6e4d95112d140::t_88e1075a7491cb 14,42
+  s_a6e4d95112d140::t_c82983df7ca16e 43
+app/Http/Controllers/Api/Admin/ApiKeys/ApiKeyController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 51
+tests/Integration/Services/Servers/StartupModificationServiceTest.php
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 20
+  s_a6e4d95112d140::t_ef824f879275dc 9
+app/Http/Controllers/Api/Admin/Nodes/AvailableAllocationsController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 47
+app/Actions/Servers/RecordServerInstallResult.php
+  s_a6e4d95112d140::t_c73326cbc521ba 18,35,37,40
+  s_a6e4d95112d140::t_15b57e93f38260 9
+app/Services/Daemon/NodeClient.php
+  s_a6e4d95112d140::t_0b7f9b31cb40e9 1-2,5,10,12,41-42
+  s_a6e4d95112d140::t_4a58df3a392c59 3-4,6-9,11,13-40
+tests/Integration/Api/Admin/Mounts/MountAttachmentTest.php
+  s_a6e4d95112d140::t_c82983df7ca16e 176,184
+  s_a6e4d95112d140::t_c9a47686b7af54 177-178,180-183,185
+  s_a6e4d95112d140::t_0bf7d4c4c58211 179
+  s_a6e4d95112d140::t_b5ef26e129bd55 154-175,186-208
+  s_a6e4d95112d140::t_de32d284d435bb 17
+  s_a6e4d95112d140::t_0ccc2cc49ae003 18,33,48,64,72,80,85,90,99,108,124,133,150
+tests/Integration/Services/Allocations/FindAssignableAllocationServiceTest.php
+  s_a6e4d95112d140::t_ef824f879275dc 8
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 18
+tests/Integration/Api/Application/Users/UserControllerTest.php
+  s_a6e4d95112d140::t_ec46ee084ea402 42-43,73,87
+app/Contracts/Files/CompressesFiles.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10-11,14,16
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,12-13,15
+app/Http/Controllers/Api/Admin/Servers/RebuildController.php
+  s_a6e4d95112d140::t_6427b57cef19ce 27,29
+  s_a6e4d95112d140::t_33c10a4860467a 12
+app/Actions/Users/ToggleTwoFactor.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,24,43
+app/Contracts/Files/DecompressesFiles.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,12
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11
+app/Http/Controllers/Api/Admin/Nodes/SystemInformationController.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 44,46
+  s_a6e4d95112d140::t_b0d3ba93c851fd 12
+app/Actions/Subusers/DeleteSubuser.php
+  s_a6e4d95112d140::t_c73326cbc521ba 24,28
+  s_a6e4d95112d140::t_7f5f89eb16def0 7,27
+  s_a6e4d95112d140::t_15b57e93f38260 8
+app/Actions/Databases/CreateDatabase.php
+  s_a6e4d95112d140::t_3ca4f14da9506d 82,90
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_c73326cbc521ba 7,61,67,74
+  s_a6e4d95112d140::t_3e90535a2fe90b 85-87
+  s_a6e4d95112d140::t_0b68f5c291ec29 69
+app/Notifications/AccountCreated.php
+  s_a6e4d95112d140::t_3e90535a2fe90b 21-24
+tests/Integration/Console/Commands/Server/BulkPowerActionCommandTest.php
+  s_a6e4d95112d140::t_8e7b1f6f3a7568 1-9,11-19,21-32
+  s_a6e4d95112d140::t_f981e89aa5ed1c 10,20
+tests/Integration/Services/Databases/DatabaseManagementServiceTest.php
+  s_a6e4d95112d140::t_506d3d1b21703e 30,35,40,46,53,59,70-71,73,76,94,98,106,123,129,139,142
+  s_a6e4d95112d140::t_de32d284d435bb 34,151
+  s_a6e4d95112d140::t_89d783858c425a 8,26
+  s_a6e4d95112d140::t_29458251f1b075 9,112-122,124-128,130
+  s_a6e4d95112d140::t_0b68f5c291ec29 15,22,133-138,140-141,143-148
+  s_a6e4d95112d140::t_4f22c197ae7a1c 131-132
+tests/Integration/Services/Daemon/DaemonClientTest.php
+  s_a6e4d95112d140::t_a77c803109ad12 1-227
+app/Console/Commands/UpgradeCommand.php
+  s_a6e4d95112d140::t_94251f5cb7ed9d 15,40,105,150,160
+  s_a6e4d95112d140::t_66d3e3efd610d2 12,14,152-154
+  s_a6e4d95112d140::t_5b101cda5bdc45 13,95,102-103,108,112,117,120-125,129-130,149,151,155-159,161-178
+app/Services/Extensions/ExtensionRegistration.php
+  s_a6e4d95112d140::t_43a89f25b49bf3 62-63,65
+  s_a6e4d95112d140::t_12313a01d43e42 75,77,79,88,95
+  s_a6e4d95112d140::t_c86ff74c438bba 1-2,5,13,16,110-111
+  s_a6e4d95112d140::t_674d3a48a05fdf 3-4,6-12,14-15,17-61,64,66-70,73-74,76,78,80-87,89-94,96-109
+  s_a6e4d95112d140::t_a6b00a21faf68c 71-72
+tests/Integration/Api/Admin/Locations/LocationControllerTest.php
+  s_a6e4d95112d140::t_280cb64cf1daba 23,40,42,46,52-53,55,63
+  s_a6e4d95112d140::t_8d2a93b499be37 8,24-25
+  s_a6e4d95112d140::t_de32d284d435bb 15-16
+  s_a6e4d95112d140::t_ef391302137c13 17,27,34,65,72,83,89,93,100,107,113
+app/Console/Commands/Server/BulkPowerActionCommand.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 29,65
+  s_a6e4d95112d140::t_7333f0a9b30808 56
+  s_a6e4d95112d140::t_59bf060ec88a88 94
+  s_a6e4d95112d140::t_e1e1956ce66e3c 14,61
+app/Actions/Backups/DeleteBackup.php
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_9389fb5bc30391 53
+  s_a6e4d95112d140::t_c73326cbc521ba 47,67
+  s_a6e4d95112d140::t_f461fba4e4a98b 49
+  s_a6e4d95112d140::t_fe50b9aa5a3b72 15
+app/Actions/Subusers/CreateSubuser.php
+  s_a6e4d95112d140::t_3e90535a2fe90b 37
+  s_a6e4d95112d140::t_c73326cbc521ba 7,20,36
+  s_a6e4d95112d140::t_0b68f5c291ec29 38,40-41,50-62
+  s_a6e4d95112d140::t_f1556246ab9b47 63
+app/Actions/Files/CreateDirectory.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,15
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,14,16-17
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11
+app/Http/Middleware/EnsureExtensionIsAvailable.php
+  s_a6e4d95112d140::t_674d3a48a05fdf 3-4,9,12,14-15,21,23-24
+  s_a6e4d95112d140::t_b64cf84a5d5592 1-2,5-8,10-11,13,16-20,22,25-27
+tests/Integration/Api/Client/Server/Schedule/UpdateServerScheduleTest.php
+  s_a6e4d95112d140::t_506d3d1b21703e 13,17,47,53,58,64
+  s_a6e4d95112d140::t_de32d284d435bb 16
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 27-44
+tests/Integration/Api/Client/SSHKeyControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 10
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 20-25
+  s_a6e4d95112d140::t_ceb5222f6a2a4a 12-13,27,42,48,54,72,79
+app/Services/Extensions/ExtensionRepository.php
+  s_a6e4d95112d140::t_e74f40fbaa0617 96,107,155,178,201-202,205-206,208-209,236
+  s_a6e4d95112d140::t_875fbeba82fccd 184-185
+  s_a6e4d95112d140::t_674d3a48a05fdf 31-33,119-120,173-175,200
+  s_a6e4d95112d140::t_43a89f25b49bf3 203
+  s_3f4b5347620927::t_30d7b2c14ad3f4 204
+app/Actions/Backups/CompleteBackup.php
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_c73326cbc521ba 20,33
+app/Actions/Eggs/CreateEgg.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,23
+app/Actions/Schedules/ProcessSchedule.php
+  s_a6e4d95112d140::t_15b57e93f38260 8-9
+  s_a6e4d95112d140::t_6a83462a84c526 64-69,72,86
+  s_a6e4d95112d140::t_f461fba4e4a98b 58
+  s_a6e4d95112d140::t_b570c425a26943 100,102,106
+  s_a6e4d95112d140::t_56873437409e77 30-32,34-35,37,42-43,45,49-54,56-57,59-63,75
+  s_a6e4d95112d140::t_59bf060ec88a88 7,27-28,44,73,76-80,82-85,87-98,101,103-105,107
+  s_a6e4d95112d140::t_dc1d4daca388d8 71,74
+  s_a6e4d95112d140::t_c73326cbc521ba 38,48,70,81,99
+  s_a6e4d95112d140::t_3a6317cdb8d153 13
+tests/Integration/Api/Client/Server/Subuser/CreateServerSubuserTest.php
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 28-37
+tests/Integration/Api/Admin/Nodes/AllocationControllerTest.php
+  s_a6e4d95112d140::t_280cb64cf1daba 31
+  s_a6e4d95112d140::t_de32d284d435bb 21
+  s_a6e4d95112d140::t_e13552458f15b6 100
+  s_a6e4d95112d140::t_8d2a93b499be37 8,32-33
+  s_a6e4d95112d140::t_373db94bdbeb15 192-201
+  s_a6e4d95112d140::t_b2280ce54663d8 16,22,35,44,54,64,71,81,87,94,102,108,114,122,130,133,141,144,149,154,160,164,168,174,179,185,202
+tests/Integration/Api/Application/Eggs/EggControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 9
+  s_a6e4d95112d140::t_ec46ee084ea402 20-48,51,53
+  s_a6e4d95112d140::t_7b7fa37ea64775 14,55,58,80,84,87,91
+app/Actions/Eggs/Sharing/UpdateEggFromImport.php
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_c73326cbc521ba 19,26
+tests/Integration/Api/Application/Location/LocationControllerTest.php
+  s_a6e4d95112d140::t_ec46ee084ea402 36,38,46,48,55,63
+  s_a6e4d95112d140::t_09886faffe588e 13,21,29,35,65,76,80
+app/Contracts/Files/DeletesFiles.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,13
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11-12
+app/Actions/Transfers/CompleteTransfer.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 44
+  s_a6e4d95112d140::t_c73326cbc521ba 7,11,26
+tests/Integration/Services/Databases/DeployServerDatabaseServiceTest.php
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 7,20
+tests/Integration/Services/BackendWriteConsistencyTest.php
+  s_a6e4d95112d140::t_506d3d1b21703e 64,71,80,92
+  s_a6e4d95112d140::t_7f5f89eb16def0 165-167,192,194
+  s_a6e4d95112d140::t_13dd9a85ee09ff 193,195
+  s_a6e4d95112d140::t_3ff4c5c7d17b95 1-27,29-57,59-63,65-70,72-74,76-77,79,81-91,93-164,168-191,196
+  s_a6e4d95112d140::t_42c2ab349aa1fa 78
+  s_a6e4d95112d140::t_a1a05c69bd6402 28,58,75
+tests/Integration/Api/Admin/DatabaseHosts/DatabaseHostControllerTest.php
+  s_a6e4d95112d140::t_8d2a93b499be37 29-30,39
+  s_a6e4d95112d140::t_de32d284d435bb 21
+  s_a6e4d95112d140::t_506d3d1b21703e 22,33,41,50,62,72,76,83,87,90,93,100,104,113,125,130,137,143,146,153
+  s_a6e4d95112d140::t_280cb64cf1daba 28,58,84,122
+  s_a6e4d95112d140::t_81fdec7990bba9 9
+tests/Integration/Services/Deployment/FindViableNodesServiceTest.php
+  s_a6e4d95112d140::t_ef824f879275dc 8
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 21
+tests/Integration/Console/SchedulerTest.php
+  s_a6e4d95112d140::t_a77c803109ad12 51
+  s_a6e4d95112d140::t_e2349774227398 8
+  s_a6e4d95112d140::t_7cc2e335c7ed7e 16,18,25
+database/migrations/2026_10_04_090113_add_unique_server_user_to_subusers_table.php
+  s_a6e4d95112d140::t_635d6b310d5387 1-2,5-12,15-19,22-24
+  s_a6e4d95112d140::t_3e90535a2fe90b 14,21
+  s_a6e4d95112d140::t_3ca4f14da9506d 3-4,13,20
+app/Providers/AppServiceProvider.php
+  s_a6e4d95112d140::t_b2aeaedf4a9dd9 42,110-111
+app/Actions/Eggs/Variables/ReorderEggVariables.php
+  s_a6e4d95112d140::t_820908d4740bb2 1-10,12,15-23
+  s_a6e4d95112d140::t_0d8b2dea37e8f6 11,13-14
+app/Services/Daemon/DaemonManager.php
+  s_a6e4d95112d140::t_0b7f9b31cb40e9 1-2,5,9,11,18,20-21
+  s_a6e4d95112d140::t_b888d99b8ddbe2 3-4,6-8,10,12-17,19
+app/Services/Extensions/ExtensionLock.php
+  s_a6e4d95112d140::t_9b2d01352928e4 7,19,23-34
+  s_a6e4d95112d140::t_8988277eaf724d 20-22
+  s_a6e4d95112d140::t_c3006183fbabd7 35
+app/Services/FilesystemChanges.php
+  s_a6e4d95112d140::t_4ac33677ee0c00 1-6,14-15,23,25,58,61,70,73,78,81-84
+  s_a6e4d95112d140::t_b62105abe46c43 7-13,16-22,24,26-57,59-60,62-69,71-72,74-77,79-80
+app/Http/Requests/Api/Admin/Tags/SyncTagsRequest.php
+  s_a6e4d95112d140::t_99c4a5022471c9 42
+app/Actions/Nodes/CreateNode.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,23
+app/Http/Requests/Api/Admin/Mounts/AttachEggsRequest.php
+  s_a6e4d95112d140::t_7a0e6876e12da3 49
+  s_a6e4d95112d140::t_4cd4e675a7277f 14,41,45-48
+  s_a6e4d95112d140::t_518bed33ab20d8 8,42
+  s_a6e4d95112d140::t_e20b504ed0288a 50
+app/Rules/ValidExtensionSettings.php
+  s_a6e4d95112d140::t_5e7cdfdfe84923 1-2,5-9,12,14-21,27-28
+  s_a6e4d95112d140::t_875fbeba82fccd 3-4,10-11,13,22-23,26
+  s_a6e4d95112d140::t_99847bb22edc06 24-25
+app/Http/Controllers/Api/Admin/Tags/TagController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 67
+  s_a6e4d95112d140::t_6427b57cef19ce 175,177,198,200,220,222
+  s_a6e4d95112d140::t_90ff48d820ea01 15
+app/Actions/Api/CreateAccountApiKey.php
+  s_a6e4d95112d140::t_9fa612a88e0a94 1-6,14,17-25
+  s_a6e4d95112d140::t_5280e52ad14aba 7-13,15-16
+app/Actions/Files/WriteFileContents.php
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,14,16-17
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,15
+app/Contracts/Files/CreatesDirectories.php
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,12
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11
+tests/Integration/Api/Admin/Servers/ServerTransferControllerTest.php
+  s_a6e4d95112d140::t_c8cde9cbb313c7 22-27,33,66,68-75,77-78,80-93
+  s_a6e4d95112d140::t_0bf7d4c4c58211 76
+  s_a6e4d95112d140::t_c82983df7ca16e 67,79
+  s_a6e4d95112d140::t_b5ef26e129bd55 43,49-64
+  s_a6e4d95112d140::t_472159cd58defd 12,15,21,34,42,94-95,104,115,119,124,128
+tests/Integration/Console/Commands/Themes/ThemeCommandsTest.php
+  s_a6e4d95112d140::t_daead88119a287 43-102
+  s_a6e4d95112d140::t_968bf8a783bbfd 9-10,12,16
+tests/Integration/Api/Client/Server/Startup/UpdateStartupVariableTest.php
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 28-38
+  s_a6e4d95112d140::t_de32d284d435bb 15
+  s_a6e4d95112d140::t_506d3d1b21703e 16,27,42,59,71,82
+app/Actions/Allocations/AssignAllocation.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,17,25
+app/Actions/Servers/ReinstallServer.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 26
+  s_a6e4d95112d140::t_c73326cbc521ba 7,10,24
+tests/Unit/ArchTest.php
+  s_a6e4d95112d140::t_3defac432ed955 7,9-13,15-17,54-62
+  s_a6e4d95112d140::t_b15a8ec5992637 51-53,63-64
+  s_a6e4d95112d140::t_94e0de9e92ed34 32
+tests/Integration/Services/Extensions/ExtensionInstallerTest.php
+  s_a6e4d95112d140::t_e74f40fbaa0617 324,329,334-338,341-354
+  s_a6e4d95112d140::t_f5e7e7a328213e 9,12,26,28-30,36,41,53,57,70-77,81,90-113,115-118,120-130,132-202,436
+  s_a6e4d95112d140::t_daead88119a287 114,119,131,414-435
+  s_a6e4d95112d140::t_89c32309ecb62c 7-8,203-204,214,228,236,243,252,260,271,278,292,311,313,315,319,355,362,384,386,405,408
+tests/Integration/Services/Servers/BuildModificationServiceTest.php
+  s_a6e4d95112d140::t_ef824f879275dc 7
+  s_a6e4d95112d140::t_e2349774227398 8
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 19
+  s_a6e4d95112d140::t_e165606a5de0f2 15,24,86
+tests/Integration/Services/Servers/SuspensionServiceTest.php
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 7,12,16
+  s_a6e4d95112d140::t_10b765a4b1f86a 21
+app/Http/Controllers/Api/Client/Servers/ResourceUtilizationController.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 65,68
+  s_a6e4d95112d140::t_fa76962087ab45 14
+app/Actions/Nodes/UpdateNode.php
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_f461fba4e4a98b 49
+  s_a6e4d95112d140::t_c73326cbc521ba 7,30,34
+  s_a6e4d95112d140::t_7a741324534afb 14
+app/Actions/Transfers/InitiateTransfer.php
+  s_a6e4d95112d140::t_3e90535a2fe90b 38,40,42-51,68
+  s_a6e4d95112d140::t_4f22c197ae7a1c 39
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_f461fba4e4a98b 76
+  s_a6e4d95112d140::t_c73326cbc521ba 37
+  s_a6e4d95112d140::t_c429e37a0e0c30 12
+app/Http/Requests/Api/Admin/Eggs/Variables/ReorderVariablesRequest.php
+  s_a6e4d95112d140::t_7a0e6876e12da3 35
+  s_a6e4d95112d140::t_c82983df7ca16e 28
+  s_a6e4d95112d140::t_4cd4e675a7277f 10,27,31-34
+  s_a6e4d95112d140::t_518bed33ab20d8 7
+  s_a6e4d95112d140::t_c374dbd2656c11 36
+app/Http/Controllers/Api/Admin/Servers/ServerController.php
+  s_a6e4d95112d140::t_bcffaadb4c32f8 242
+app/Actions/Schedules/UpdateScheduleTask.php
+  s_a6e4d95112d140::t_c73326cbc521ba 7,25
+  s_a6e4d95112d140::t_3e90535a2fe90b 26-28
+app/Actions/Files/ChangeFilePermissions.php
+  s_a6e4d95112d140::t_f461fba4e4a98b 13,16
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5-6,12,15,17-18
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,7-11,14
+app/Actions/Tags/SyncTags.php
+  s_a6e4d95112d140::t_5556da1b06fd05 12,39-42
+  s_a6e4d95112d140::t_6427b57cef19ce 7-10,13,15,17,19-20,22,25-26,28,31-32,34,38,44,46-49
+  s_a6e4d95112d140::t_820908d4740bb2 5,37,43
+  s_a6e4d95112d140::t_86d5b0005c4027 1-4,6,11,14,16,18,21,23-24,27,29-30,33,35-36,45,50-51
+app/Actions/Nodes/ResetServerStates.php
+  s_a6e4d95112d140::t_c73326cbc521ba 39
+  s_a6e4d95112d140::t_15b57e93f38260 8
+tests/Integration/Api/Client/Server/Allocation/CreateNewAllocationTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 22
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 32-39
+  s_a6e4d95112d140::t_dec726e6392f6b 17,23,29,41,47,54
+app/Services/Extensions/ExtensionPackageFiles.php
+  s_a6e4d95112d140::t_9b2d01352928e4 3-4,7-10,12-13,16-29,31,33
+  s_a6e4d95112d140::t_d191f19e687a7e 11,15,30,32
+  s_a6e4d95112d140::t_5e7cdfdfe84923 1-2,5-6,14,34-35
+app/Services/Daemon/FilesClient.php
+  s_a6e4d95112d140::t_0b7f9b31cb40e9 5,143
+  s_a6e4d95112d140::t_fa3bb28d13cb42 7,9,11,13-14,16-21,23-24,26-28,31,34,37-39,46-56,59,63,67,71,74,78,82,86,90,98-103,106,111,115,119,122-123,128-130,132,135,139-142,144-154
+  s_a6e4d95112d140::t_799f21bfe890cb 25,36,42,45,61-62,66,69-70,76-77,81,84-85,95-97,108-110,114,117-118,138
+app/Services/Daemon/BackupsClient.php
+  s_a6e4d95112d140::t_a25733d1df96df 3-4,6-8,10,12-39
+  s_a6e4d95112d140::t_0b7f9b31cb40e9 1-2,5,9,11,40-41
+app/Extensions/ExtensionProvider.php
+  s_a6e4d95112d140::t_ac1fcdeae18425 14,19,31-32,36-37,43-57,75,84,96,104,113,143,152,176-188,208-210,224-246
+app/Http/Requests/Api/Admin/Servers/StoreServerRequest.php
+  s_a6e4d95112d140::t_4058199f0b033a 9
+  s_a6e4d95112d140::t_88e1075a7491cb 66,68-69,135
+  s_a6e4d95112d140::t_7a0e6876e12da3 136
+  s_a6e4d95112d140::t_c82983df7ca16e 67
+tests/Integration/Api/Admin/Extensions/ExtensionControllerTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 11
+  s_a6e4d95112d140::t_f5e7e7a328213e 104,106-137
+  s_a6e4d95112d140::t_14528e399d2e6f 105,219
+app/Jobs/Schedule/RunTaskJob.php
+  s_a6e4d95112d140::t_59bf060ec88a88 11,24,91,93,97,120-121,124-125,128-130,132
+  s_a6e4d95112d140::t_dc1d4daca388d8 78,81,122-123,126,131
+  s_a6e4d95112d140::t_f461fba4e4a98b 73-74
+  s_a6e4d95112d140::t_b570c425a26943 17,94-96
+  s_a6e4d95112d140::t_f509af6fa85519 16,127
+app/Http/Controllers/Api/Client/Servers/CommandController.php
+  s_a6e4d95112d140::t_6427b57cef19ce 18,42,44-45
+  s_a6e4d95112d140::t_464aa6332bbb99 12
+app/Actions/Themes/ResetTheme.php
+  s_a6e4d95112d140::t_6aa7a46b715595 8,13,18-21
+tests/Integration/Api/Client/Server/Schedule/CreateServerScheduleTest.php
+  s_a6e4d95112d140::t_de32d284d435bb 13
+  s_a6e4d95112d140::t_b3be0a9200b08b 14,18,50,59,62
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 30-47
+app/Actions/Extensions/RemoveExtension.php
+  s_a6e4d95112d140::t_d191f19e687a7e 20,30,45-47
+  s_a6e4d95112d140::t_15b57e93f38260 8
+  s_a6e4d95112d140::t_c73326cbc521ba 44,56
+  s_a6e4d95112d140::t_a10ac36b433864 7,36,54-55,57
+  s_a6e4d95112d140::t_ced33560f21e6c 48-52
+tests/Integration/Services/Extensions/ExtensionProviderLoaderTest.php
+  s_a6e4d95112d140::t_4049cce8380073 20,189-199,207-208,215,217-220
+  s_a6e4d95112d140::t_f5c2460487009e 1-2,4,183
+  s_a6e4d95112d140::t_f5e7e7a328213e 11,165-182
+  s_a6e4d95112d140::t_2967a72415ec3d 3,5-10,12-18,21-42,46-72,74-80,101-125,127-155,157-164,184-187,200-206,209-214,222-251,253-267
+  s_a6e4d95112d140::t_43a89f25b49bf3 19,43-45,126,156
+  s_a6e4d95112d140::t_12313a01d43e42 73,81-100,216,252
+  s_a6e4d95112d140::t_77cc01d604d2ac 188,221
+app/Http/Requests/Api/Application/Servers/StoreServerRequest.php
+  s_a6e4d95112d140::t_c82983df7ca16e 71
+  s_a6e4d95112d140::t_88e1075a7491cb 70,73,141
+  s_a6e4d95112d140::t_4058199f0b033a 9
+  s_a6e4d95112d140::t_7a0e6876e12da3 142
+app/Contracts/Files/RenamesFiles.php
+  s_a6e4d95112d140::t_7a7c68d6ac37ea 3-4,6-7,9,11-12
+  s_a6e4d95112d140::t_7d0851142ac51f 1-2,5,8,10,13
+tests/Integration/Jobs/Schedule/RunTaskJobTest.php
+  s_a6e4d95112d140::t_6a83462a84c526 9-10,23-24,26,101-118,120-124,126-129
+  s_a6e4d95112d140::t_de32d284d435bb 12,27
+  s_a6e4d95112d140::t_c4519e667891a2 15,125
+  s_a6e4d95112d140::t_506d3d1b21703e 28,43,54,60,69,75-76,80,91,93,100
+  s_a6e4d95112d140::t_dcb2165c0fd070 13,22,119
+tests/Integration/Api/Client/Server/ScheduleTask/CreateServerScheduleTaskTest.php
+  s_a6e4d95112d140::t_e7a9f7ecdfb781 36-46
+  s_a6e4d95112d140::t_506d3d1b21703e 23,48,57,62,66-67,91,99,106
+  s_a6e4d95112d140::t_de32d284d435bb 14
+app/Http/Requests/Api/Admin/Nodes/Allocations/StoreAllocationRequest.php
+  s_a6e4d95112d140::t_88e1075a7491cb 25,28
+tests/Integration/Services/Servers/ServerCreationServiceTest.php
+  s_a6e4d95112d140::t_ef824f879275dc 8
+  s_a6e4d95112d140::t_14e5b21ec1cfc4 28
+  s_a6e4d95112d140::t_e2349774227398 11
+  s_a6e4d95112d140::t_c79e55f83933e8 24,37,98
+app/Services/Extensions/ExtensionProviderLoader.php
+  s_a6e4d95112d140::t_12313a01d43e42 140
+  s_a6e4d95112d140::t_674d3a48a05fdf 42,56,58,62,67,138
+app/Contracts/Api/CreatesAccountApiKeys.php
+  s_a6e4d95112d140::t_820908d4740bb2 1-9,11,14
+  s_a6e4d95112d140::t_13923976bbd9b5 10,12-13
+app/Actions/Allocations/CreateAllocations.php
+  s_a6e4d95112d140::t_c73326cbc521ba 57
+  s_a6e4d95112d140::t_15b57e93f38260 8
+.ai/rules/actions.md
+  s_a6e4d95112d140::t_0eb266864e9bc3 10-15
+.ai/rules/daemon.md
+  s_a6e4d95112d140::t_3eec66a11b525a 1-9
+.ai/rules/index.md
+  s_a6e4d95112d140::t_a9060b0bf08f0c 13,30
+.ai/rules/subusers.md
+  s_a6e4d95112d140::t_d5129c5d8a3772 1-9
+.ai/rules/tests.md
+  s_a6e4d95112d140::t_1dda00acf1fa0a 10-12
+app/Contracts/Servers/SendsServerCommands.php
+  s_a6e4d95112d140::t_a4d76eea3f43b5 1-12
+app/Contracts/Servers/SendsServerPower.php
+  s_a6e4d95112d140::t_d3c93daa45bec8 1-12
+tests/Integration/Api/Admin/Nodes/NodeIntrospectionControllerTest.php
+  s_a6e4d95112d140::t_259fa628e74620 7,9,15,25,32
+tests/Integration/Api/Admin/Servers/ServerManagementTest.php
+  s_a6e4d95112d140::t_3a07a7fcf4df09 7,10,18,23,34,43,52,63,68,109
+tests/Integration/Api/Application/Nodes/NodeController/UpdateNodeTest.php
+  s_a6e4d95112d140::t_71c582900a08dc 7-8,12,18,22
+tests/Integration/Api/Client/ClientApiIntegrationTestCase.php
+  s_a6e4d95112d140::t_d72a18548d2aa4 60
+tests/Integration/Api/Client/Server/Backup/BackupAuthorizationTest.php
+  s_a6e4d95112d140::t_cd835cd4f9932b 11,30
+tests/Integration/Api/Client/Server/Backup/BackupControllerTest.php
+  s_a6e4d95112d140::t_08fa563208835d 12,32,61,70,89
+tests/Integration/Api/Client/Server/Backup/DeleteBackupTest.php
+  s_a6e4d95112d140::t_2921c98cdc1497 13,17
+tests/Integration/Api/Client/Server/CommandControllerTest.php
+  s_a6e4d95112d140::t_44b125b17e6306 7,9,13,29,33,37-38
+tests/Integration/Api/Client/Server/Files/CompressFilesTest.php
+  s_a6e4d95112d140::t_94dad050d54a00 10,21,29
+tests/Integration/Api/Client/Server/Files/FileControllerTest.php
+  s_a6e4d95112d140::t_3c9f3cd2808982 11,26,33,40,50,74,80,87,93,99,105,112,118
+tests/Integration/Api/Client/Server/PowerControllerTest.php
+  s_a6e4d95112d140::t_58028f3b60cf0c 11,44
+tests/Integration/Api/Client/Server/ResourceUtilizationControllerTest.php
+  s_a6e4d95112d140::t_379d4c784ec60a 9,13,22
+tests/Integration/Api/Client/Server/SettingsControllerTest.php
+  s_a6e4d95112d140::t_21d4d484ce98c9 11,44,53
+tests/Integration/Api/Remote/ServerTransferControllerTest.php
+  s_a6e4d95112d140::t_8ca96116cf71fb 7-9,16,24-26,30-33
+tests/Integration/Jobs/RevokeSftpAccessJobTest.php
+  s_a6e4d95112d140::t_407c1b4caf0b1e 7,13,27-28,39,45-46,52-53
+tests/Support/Fakes/FakeDaemonBackup.php
+  s_a6e4d95112d140::t_cfdd8e0dc7897b 7-8,11-12,21,38,55,63-88
+tests/Support/Fakes/FakeDaemonCommand.php
+  s_a6e4d95112d140::t_e904f94b8addb3 1-37
+tests/Support/Fakes/FakeDaemonConfiguration.php
+  s_a6e4d95112d140::t_f46fa1d6d383d6 7-8,11,16,18,21,23,26,28-30,32,35-36,38,41
+tests/Support/Fakes/FakeDaemonFile.php
+  s_a6e4d95112d140::t_073c987e4b8f4b 7-8,11,187-231
+tests/Support/Fakes/FakeDaemonHttpClient.php
+  s_a6e4d95112d140::t_0d821cd33cebda 7-9,14,18-19,23,25-26,28,30-33,36,38,41-42,44-45,47-49,54-56,58,61-62,64,66
+tests/Support/Fakes/FakeDaemonPower.php
+  s_a6e4d95112d140::t_981884f25f1c5c 7-8,11,36-37,42,49-59
+tests/Support/Fakes/FakeDaemonRevocation.php
+  s_a6e4d95112d140::t_6aa11a824b5f57 7-8,11,34-44
+tests/Support/Fakes/FakeDaemonServer.php
+  s_a6e4d95112d140::t_ef6964e158f6e9 7-8,11,70-99
+tests/Support/Fakes/FakeDaemonTransfer.php
+  s_a6e4d95112d140::t_c152a8cd81692e 7-8,11,13,15,18,20-21,24,26
+tests/Unit/Exceptions/Http/Connection/DaemonConnectionExceptionTest.php
+  s_a6e4d95112d140::t_41dca57b659b3b 7,19,25,32,38
+---
+{
+  "schema_version": "authorship/3.0.0",
+  "git_ai_version": "1.7.5",
+  "base_commit_sha": "06cd57d218c0fbe34a5a4d71c994bd112d8c9653",
+  "prompts": {},
+  "sessions": {
+    "s_3f4b5347620927": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1052f-291b-7aa2-897e-1b9a6fb3f082",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_a6e4d95112d140": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a1059a-8f61-7901-a112-fc4aa27737ae",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    },
+    "s_c202351b3d1826": {
+      "agent_id": {
+        "tool": "codex",
+        "id": "01a0fe2d-4e63-7e41-b719-caa999b24fd9",
+        "model": "gpt-6.1-sol"
+      },
+      "human_author": "robert dennis <31261583+robertdrakedennis@users.noreply.github.com>"
+    }
+  }
+}
