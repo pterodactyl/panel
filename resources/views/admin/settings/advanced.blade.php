@@ -115,6 +115,7 @@
                         </div>
                     </div>
                 </div>
+                @include('admin.settings.debug')
                 <div class="box box-primary">
                     <div class="box-footer">
                         {{ csrf_field() }}
