@@ -158,6 +158,19 @@ test('install rejects a package with an invalid manifest', function (): void {
 
     $this->assertDatabaseMissing('extensions', ['identifier' => 'Bad_Probe']);
 });
+test('install accepts multipart boolean strings for enable', function (string $enable): void {
+    $this->post(route('api.admin.extensions.install'), ['package' => extensionPackage(['id' => 'Bad_Probe', 'name' => 'Bad', 'version' => '1.0.0']), 'enable' => $enable], ['Accept' => 'application/json'])
+        ->assertUnprocessable()
+        ->assertJsonPath('errors.0.code', 'InvalidExtensionException');
+})->with(['true', 'false', '1', '0']);
+test('install rejects a non boolean enable value', function (): void {
+    $response = $this->post(route('api.admin.extensions.install'), ['package' => extensionPackage(['id' => 'admin-fixture', 'name' => 'Fixture', 'version' => '1.0.0']), 'enable' => 'maybe'], ['Accept' => 'application/json']);
+    $response->assertUnprocessable();
+
+    $error = collect($response->json('errors'))->firstWhere('meta.source_field', 'enable');
+    expect($error)->not->toBeNull();
+    expect($error['meta']['rule'])->toBe('boolean');
+});
 test('non admin forbidden', function (string $method, string $routeName, array $parameters = []): void {
     writeExtension('admin-fixture');
     $this->actingAsNonAdmin();

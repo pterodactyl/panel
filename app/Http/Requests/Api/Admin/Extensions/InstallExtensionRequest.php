@@ -47,4 +47,19 @@ class InstallExtensionRequest extends AdminApiRequest
             'enable' => $this->boolean('enable', false),
         ];
     }
+
+    /**
+     * @inheritdoc
+     */
+    protected function prepareForValidation(): void
+    {
+        if (! $this->has('enable')) {
+            return;
+        }
+
+        $enable = filter_var($this->input('enable'), FILTER_VALIDATE_BOOL, FILTER_NULL_ON_FAILURE);
+        if ($enable !== null) {
+            $this->merge(['enable' => $enable]);
+        }
+    }
 }
