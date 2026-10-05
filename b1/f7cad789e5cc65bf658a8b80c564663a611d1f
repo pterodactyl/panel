@@ -54,6 +54,7 @@ resources/scripts/components/admin/servers/CreateServerForm.tsx
   s_32282483846156::t_b1d7f4656f92a7 585
 resources/scripts/api/admin/database-hosts/queries.ts
   s_32282483846156::t_85f836d4d769f9 1,3,5,7-12,19,21,25,42,45-46,65-68,82,85-89,97-99,101-108,129-130,132-133,135-136,159,174-176
+  s_32282483846156::t_654a14aa97a7fa 6,100
 resources/scripts/components/server/InstallListener.spec.tsx
   s_32282483846156::t_b3f1ceebe9c51e 6
   s_32282483846156::t_df94be2d4d653c 18
@@ -64,6 +65,7 @@ packages/sdk/types/components/ui/Switch.d.ts
 resources/scripts/api/admin/nodes/queries.ts
   s_32282483846156::t_85f836d4d769f9 1-8,11,13-18,20-25,36,38,40,43,48,61,71,123,125-130,234,239-246,266-269,272,301,328-341,343,349,352-353,355-356,358-359,361-362,364-365,387-390,404-406,427,438,447,457,469
   s_32282483846156::t_a6093c1d6e08f7 346-347
+  s_32282483846156::t_1154b0d2c305e3 12,124
 packages/sdk/theme-tokens.spec.ts
   s_32282483846156::t_757e2455adb11f 16
 resources/scripts/lib/clipboard.ts
@@ -118,6 +120,7 @@ resources/scripts/api/admin/servers/queries.ts
   s_32282483846156::t_da3d9459404218 567-572
   s_32282483846156::t_85f836d4d769f9 3,5,7-13,29,44,56,58,76,225-228,247-256,287-297,301,325,363,371-378,388-389,391-395,402-403,417-418,420-421,423-424,431-434,450,466-467,485,496-507,513,527,542,545,549-552,661,678,695
   s_32282483846156::t_f3d496513a37a7 585-590
+  s_32282483846156::t_9e7a2b60a402f5 41
 resources/scripts/extensions/ExtensionMount.tsx
   s_32282483846156::t_6d9356dc160340 88
   s_32282483846156::t_3db03f93e9a60b 1,9-33,45-49,51-53,92,107
@@ -156,6 +159,7 @@ resources/scripts/vite-env.d.ts
   s_32282483846156::t_17da713a9a289c 3
 resources/scripts/components/elements/ListToolbar.tsx
   s_32282483846156::t_f471c8a0561b8d 1,5-8,12-20
+  s_32282483846156::t_11c43c12bcc0d2 2-4,9-11
 resources/scripts/components/server/console/useGhosttyTerminal.spec.tsx
   s_32282483846156::t_5cb5d6e564a494 2,5-6,9,12,37-40,43,45-51,57-63,76,114-147
   s_32282483846156::t_356445484942ce 35
@@ -199,6 +203,7 @@ resources/scripts/router/routeTree.ts
   s_32282483846156::t_c509f85fa6e40b 23
   s_32282483846156::t_a08e71c1178aab 53
   s_32282483846156::t_8a4c76c8743271 262
+  s_32282483846156::t_010aa3cba077a9 1163
 resources/scripts/components/admin/eggs/EggsContainer.tsx
   s_32282483846156::t_0927ccb9c59947 14
   s_32282483846156::t_945735f3247a13 98-101,103-104,108-124
@@ -422,6 +427,8 @@ packages/sdk/types/sdk/theme.d.ts
   s_32282483846156::t_88273912efe9c6 3-4
 resources/scripts/api/admin/locations/queries.ts
   s_32282483846156::t_85f836d4d769f9 1,3,5,7-12,19,23,34,55,57-58,71,80-85,91,101,103-104,128,143
+  s_32282483846156::t_c1033c516eb7b5 77-79
+  s_32282483846156::t_654a14aa97a7fa 6
 resources/scripts/components/admin/servers/ServerManageTab.tsx
   s_32282483846156::t_5539b4dc06c6f1 29,36-37,41-42,44-53
   s_32282483846156::t_bf3087c16c104b 64,72,104,136,162,194,260,269,271
@@ -559,6 +566,8 @@ resources/scripts/components/server/files/FileObjectRow.tsx
   s_32282483846156::t_cd5290d568724c 9,66-71,73,75-76,89,94-125
 resources/scripts/api/admin/eggs/queries.ts
   s_32282483846156::t_85f836d4d769f9 4-8,10,19,30,121,125,152-153,155-156,160-165,187,203,219,236,253-256,271,284,297
+  s_32282483846156::t_9e7a2b60a402f5 27
+  s_32282483846156::t_c14f6b5985fcb5 1
 resources/scripts/components/admin/servers/ServerTable.tsx
   s_32282483846156::t_3db03f93e9a60b 100,125
   s_32282483846156::t_f215a44b6f311e 97,101,122,126,141,144-162,195,202,209,236
@@ -589,6 +598,7 @@ resources/scripts/components/server/transfer.spec.ts
   s_32282483846156::t_5cb5d6e564a494 1-37
 resources/scripts/api/pagination.ts
   s_32282483846156::t_85f836d4d769f9 1-3,9-11,14-16,19,21,23-24,27-29,31-36,38,40-45,47-49,51-55,57-59
+  s_32282483846156::t_e682d2c3105e9c 12,50,56
 resources/scripts/components/server/console/useConsoleSocketLogs.spec.tsx
   s_32282483846156::t_5cb5d6e564a494 1-92
 resources/scripts/components/admin/nodes/NodeAllocationTab.spec.tsx
@@ -1034,6 +1044,7 @@ resources/scripts/components/admin/nodes/NodeSettingsTab.tsx
   s_32282483846156::t_bf3087c16c104b 2,4-9,13,17,20,30-32,155,158-161,166,169,177,187,192
 resources/scripts/api/admin/users/queries.ts
   s_32282483846156::t_85f836d4d769f9 1,3,5,7-14,21,25,42,49,51-52,65-66,92-93,95-99,113,115-116,118-124,144-146,149,163
+  s_32282483846156::t_654a14aa97a7fa 6,94
 resources/scripts/api/server/activity/queries.ts
   s_32282483846156::t_85f836d4d769f9 9,43-45
 resources/scripts/extensions/screen.spec.tsx
@@ -1159,6 +1170,8 @@ resources/scripts/components/elements/iconCatalog.ts
 resources/scripts/components/elements/table/RowActions.spec.tsx
   s_32282483846156::t_82664d5475e1f9 1-3,5-14,19-50,54-120
   s_32282483846156::t_8b7569e620fce7 15-18
+  s_32282483846156::t_220737e13813e6 4
+  s_32282483846156::t_50d5591215ab01 51-53
 resources/scripts/components/admin/databases/DatabaseHostNodeSelect.tsx
   s_32282483846156::t_09007831882619 11-12
   s_32282483846156::t_5e9e1ecc3d8a61 36
@@ -1325,6 +1338,8 @@ resources/scripts/lib/strings.spec.ts
   s_32282483846156::t_c64c1fbe6f69fb 8-13
 resources/scripts/lib/strings.ts
   s_32282483846156::t_c3845abcf4fe71 2
+resources/scripts/api/admin/completeLists.spec.ts
+  s_32282483846156::t_628967a163cbee 8-9,80,93
 ---
 {
   "schema_version": "authorship/3.0.0",
