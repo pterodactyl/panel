@@ -1,30 +1,49 @@
+import { useEffect, useRef } from 'react';
+import { useServerRouteId } from '@/router/params';
+import { useQueryClient } from '@tanstack/react-query';
+import { serverQueryFilters, useCurrentServer, useUpdateCurrentServer } from '@/api/server/queries';
+import type { Server } from '@/api/server/queries';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { ServerContext } from '@/state/server';
+import { useSocketConnected } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
+import { isTransferSuccessful, normalizeTransferStatus } from '@/components/server/transfer';
+
+const selectIsTransferring = (server: Server) => server.attributes.is_transferring;
 
 const TransferListener = () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
-    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const id = useServerRouteId();
+    const queryClient = useQueryClient();
+    const updateCurrentServer = useUpdateCurrentServer();
+    const connected = useSocketConnected();
+    const isTransferring = useCurrentServer(selectIsTransferring) ?? false;
+    const wasConnected = useRef(connected);
 
-    // Listen for the transfer status event, so we can update the state of the server.
-    useWebsocketEvent(SocketEvent.TRANSFER_STATUS, (status: string) => {
-        if (status === 'pending' || status === 'processing') {
-            setServerFromState((s) => ({ ...s, isTransferring: true }));
+    useEffect(() => {
+        const disconnected = wasConnected.current && !connected;
+        wasConnected.current = connected;
+
+        if (disconnected && isTransferring) {
+            queryClient.invalidateQueries(serverQueryFilters(id ?? '')).catch((error) => console.error(error));
+        }
+    }, [connected, id, isTransferring, queryClient]);
+
+    useWebsocketEvent(SocketEvent.TRANSFER_STATUS, (value: string) => {
+        const status = normalizeTransferStatus(value);
+        if (!status) {
             return;
         }
 
-        if (status === 'failed') {
-            setServerFromState((s) => ({ ...s, isTransferring: false }));
+        if (isTransferSuccessful(status)) {
+            queryClient.refetchQueries(serverQueryFilters(id ?? '')).catch((error) => console.error(error));
             return;
         }
 
-        if (status !== 'completed') {
-            return;
-        }
-
-        // Refresh the server's information as it's node and allocations were just updated.
-        getServer(uuid).catch((error) => console.error(error));
+        const transferring = status !== 'failed';
+        updateCurrentServer((server) =>
+            server.attributes.is_transferring === transferring
+                ? server
+                : { ...server, attributes: { ...server.attributes, is_transferring: transferring } }
+        );
     });
 
     return null;

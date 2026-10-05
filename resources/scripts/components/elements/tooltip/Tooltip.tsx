@@ -1,12 +1,12 @@
 import React, { cloneElement, useRef, useState } from 'react';
+import type { Placement, Side } from '@floating-ui/react';
 import {
     arrow,
     autoUpdate,
     flip,
+    FloatingPortal,
     offset,
-    Placement,
     shift,
-    Side,
     useClick,
     useDismiss,
     useFloating,
@@ -14,38 +14,50 @@ import {
     useHover,
     useInteractions,
     useRole,
-} from '@floating-ui/react-dom-interactions';
-import { AnimatePresence, motion } from 'framer-motion';
-import classNames from 'classnames';
+    useMergeRefs,
+    useTransitionStyles,
+} from '@floating-ui/react';
+import { cn } from '@/lib/cn';
 
 type Interaction = 'hover' | 'click' | 'focus';
+type TooltipChildProps = React.DOMAttributes<Element> &
+    React.RefAttributes<Element> & {
+        className?: string;
+    };
 
 interface Props {
     rest?: number;
     delay?: number | Partial<{ open: number; close: number }>;
-    content: string | React.ReactChild;
+    content: string | React.ReactNode;
     disabled?: boolean;
     arrow?: boolean;
     interactions?: Interaction[];
     placement?: Placement;
     className?: string;
-    children: React.ReactElement;
+    children: React.ReactElement<TooltipChildProps>;
 }
 
-const arrowSides: Record<Side, string> = {
+const arrowSides = {
     top: 'bottom-[-6px] left-0',
     bottom: 'top-[-6px] left-0',
     right: 'top-0 left-[-6px]',
     left: 'top-0 right-[-6px]',
-};
+} satisfies Record<Side, string>;
 
-export default ({ children, ...props }: Props) => {
+export default function Tooltip({ children, ...props }: Props) {
     const arrowEl = useRef<HTMLDivElement>(null);
     const [open, setOpen] = useState(false);
+    const enabled = !props.disabled;
 
-    const { x, y, reference, floating, middlewareData, strategy, context } = useFloating({
-        open,
+    if (!enabled && open) {
+        setOpen(false);
+    }
+
+    const { refs, floatingStyles, middlewareData, context, placement } = useFloating({
+        open: open && enabled,
         strategy: 'fixed',
+        // Positions with top/left; the transition below owns the transform.
+        transform: false,
         placement: props.placement || 'top',
         middleware: [
             offset(props.arrow ? 10 : 6),
@@ -62,40 +74,38 @@ export default ({ children, ...props }: Props) => {
         useHover(context, {
             restMs: props.rest ?? 30,
             delay: props.delay ?? 0,
-            enabled: interactions.includes('hover'),
+            enabled: enabled && interactions.includes('hover'),
         }),
-        useFocus(context, { enabled: interactions.includes('focus') }),
-        useClick(context, { enabled: interactions.includes('click') }),
-        useRole(context, { role: 'tooltip' }),
-        useDismiss(context),
+        useFocus(context, { enabled: enabled && interactions.includes('focus') }),
+        useClick(context, { enabled: enabled && interactions.includes('click') }),
+        useRole(context, { role: 'tooltip', enabled }),
+        useDismiss(context, { enabled }),
     ]);
 
-    const side = arrowSides[(props.placement || 'top').split('-')[0] as Side];
-    const { x: ax, y: ay } = middlewareData.arrow || {};
+    const { isMounted, styles: transitionStyles } = useTransitionStyles(context, {
+        duration: { open: 100, close: 75 },
+        initial: { opacity: 0, transform: 'scale(0.85)' },
+        open: { opacity: 1, transform: 'scale(1)' },
+        close: { opacity: 0 },
+    });
 
-    if (props.disabled) {
-        return children;
-    }
+    const side = arrowSides[placement.split('-')[0] as Side];
+    const { x: ax, y: ay } = middlewareData.arrow || {};
+    const referenceRef = useMergeRefs([refs.setReference, children.props.ref]);
 
     return (
         <>
-            {cloneElement(children, getReferenceProps({ ref: reference, ...children.props }))}
-            <AnimatePresence>
-                {open && (
-                    <motion.div
-                        initial={{ opacity: 0, scale: 0.85 }}
-                        animate={{ opacity: 1, scale: 1 }}
-                        exit={{ opacity: 0 }}
-                        transition={{ type: 'spring', damping: 20, stiffness: 300, duration: 0.075 }}
+            {cloneElement(children, getReferenceProps({ ...children.props, ref: referenceRef }))}
+            {isMounted && (
+                <FloatingPortal>
+                    <div
                         {...getFloatingProps({
-                            ref: floating,
-                            className:
-                                'bg-gray-900 text-sm text-gray-200 px-3 py-2 rounded pointer-events-none max-w-[24rem]',
-                            style: {
-                                position: strategy,
-                                top: `${y || 0}px`,
-                                left: `${x || 0}px`,
-                            },
+                            ref: refs.setFloating,
+                            className: cn(
+                                'bg-popover text-sm text-popover-foreground px-3 py-2 rounded-sm pointer-events-none max-w-[24rem] z-9999',
+                                props.className
+                            ),
+                            style: { ...floatingStyles, ...transitionStyles },
                         })}
                     >
                         {props.content}
@@ -107,12 +117,12 @@ export default ({ children, ...props }: Props) => {
                                         ay || 0
                                     )}px) rotate(45deg)`,
                                 }}
-                                className={classNames('absolute bg-gray-900 w-3 h-3', side)}
+                                className={cn('absolute bg-popover w-3 h-3', side)}
                             />
                         )}
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    </div>
+                </FloatingPortal>
+            )}
         </>
     );
-};
+}

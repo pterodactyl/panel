@@ -1,0 +1,21 @@
+name: Extension CI
+on: [push, pull_request]
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - uses: actions/checkout@v4
+        with:
+          repository: pterodactyl/panel-next
+          ref: 2.0-develop
+          path: .panel
+      - run: npm ci && npm run sdk:generate && npm run sdk:testing
+        working-directory: .panel
+      - run: npm pkg set 'devDependencies.@pterodactyl/sdk=file:./.panel/packages/sdk' && npm install
+      - run: npm run typecheck
+      - run: npm test
+      - run: npm run build

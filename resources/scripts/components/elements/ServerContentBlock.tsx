@@ -1,16 +1,17 @@
-import PageContentBlock, { PageContentBlockProps } from '@/components/elements/PageContentBlock';
-import React from 'react';
-import { ServerContext } from '@/state/server';
+import type { PageContentBlockProps } from '@/components/elements/PageContentBlock';
+import PageContentBlock from '@/components/elements/PageContentBlock';
+import { useCurrentServerName } from '@/api/server/queries';
 
 interface Props extends PageContentBlockProps {
-    title: string;
+    /** Shown after the server name in the document title; omit to leave the title alone. */
+    title?: string;
 }
 
-const ServerContentBlock: React.FC<Props> = ({ title, children, ...props }) => {
-    const name = ServerContext.useStoreState((state) => state.server.data!.name);
+const ServerContentBlock = ({ title, children, ...props }: Props) => {
+    const name = useCurrentServerName()!;
 
     return (
-        <PageContentBlock title={`${name} | ${title}`} {...props}>
+        <PageContentBlock title={title ? `${name} | ${title}` : undefined} {...props}>
             {children}
         </PageContentBlock>
     );

@@ -1,99 +1,112 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link } from '@tanstack/react-router';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import Translate from '@/components/elements/Translate';
-import { format, formatDistanceToNowStrict } from 'date-fns';
-import { ActivityLog } from '@definitions/user';
+import type { TranslationValue, TranslationValues } from '@/components/elements/Translate';
+import dayjs from '@/lib/dayjs';
 import ActivityLogMetaButton from '@/components/elements/activity/ActivityLogMetaButton';
-import { FolderOpenIcon, TerminalIcon } from '@heroicons/react/solid';
-import classNames from 'classnames';
-import style from './style.module.css';
+import { FolderOpen, Terminal } from 'lucide-react';
+import { cn } from '@/lib/cn';
 import Avatar from '@/components/Avatar';
-import useLocationHash from '@/plugins/useLocationHash';
-import { getObjectKeys, isObject } from '@/lib/objects';
+import type { ActivityLog } from '@/api/activity';
+import { isNumber, isString } from '@/lib/objects';
+import { relationshipAttributes } from '@/api/relationships';
+
+type ActorAttributes = { username?: string; email?: string };
 
 interface Props {
     activity: ActivityLog;
     children?: React.ReactNode;
 }
 
-function wrapProperties(value: unknown): any {
-    if (value === null || typeof value === 'string' || typeof value === 'number') {
+const activityIconClass =
+    'flex space-x-1 mx-2 transition-colors duration-100 text-muted-foreground [&_svg]:px-1 [&_svg]:py-px [&_svg]:cursor-pointer [&_svg]:h-5 [&_svg]:w-auto [&_svg]:hover:text-foreground';
+
+const activityDescriptionClass =
+    'mt-1 text-sm break-words line-clamp-2 pr-4 [&_strong]:break-all [&_strong]:font-semibold [&_strong]:text-foreground';
+
+function wrapProperty(value: TranslationValue): TranslationValue {
+    if (value === null || isString(value) || isNumber(value)) {
         return `<strong>${String(value)}</strong>`;
     }
 
-    if (isObject(value)) {
-        return getObjectKeys(value).reduce((obj, key) => {
-            if (key === 'count' || (typeof key === 'string' && key.endsWith('_count'))) {
-                return { ...obj, [key]: value[key] };
-            }
-            return { ...obj, [key]: wrapProperties(value[key]) };
-        }, {} as Record<string, unknown>);
-    }
-
     if (Array.isArray(value)) {
-        return value.map(wrapProperties);
+        return value.map(wrapProperty);
     }
 
-    return value;
+    if (value === true || value === false) return value;
+
+    return Object.fromEntries(
+        Object.entries(value).map(([key, item]) => [
+            key,
+            key === 'count' || key.endsWith('_count') ? item : wrapProperty(item),
+        ])
+    );
 }
 
-export default ({ activity, children }: Props) => {
-    const { pathTo } = useLocationHash();
-    const actor = activity.relationships.actor;
-    const properties = wrapProperties(activity.properties);
+const wrapProperties = (properties: TranslationValues): TranslationValues =>
+    Object.fromEntries(Object.entries(properties).map(([key, value]) => [key, wrapProperty(value)]));
+
+export default function ActivityLogEntry({ activity, children }: Props) {
+    const { attributes } = activity;
+    const actor = relationshipAttributes<ActorAttributes>(attributes.relationships?.actor);
+    const properties = wrapProperties(attributes.properties);
 
     return (
-        <div className={'grid grid-cols-10 py-4 border-b-2 border-gray-800 last:rounded-b last:border-0 group'}>
+        <div className={'grid grid-cols-10 py-4 border-b-2 border-border last:rounded-b-sm last:border-0 group'}>
             <div className={'hidden sm:flex sm:col-span-1 items-center justify-center select-none'}>
-                <div className={'flex items-center w-10 h-10 rounded-full bg-gray-600 overflow-hidden'}>
-                    <Avatar name={actor?.uuid || 'system'} />
+                <div className={'flex items-center w-10 h-10 rounded-full bg-popover overflow-hidden'}>
+                    <Avatar name={actor?.username || actor?.email || 'system'} />
                 </div>
             </div>
             <div className={'col-span-10 sm:col-span-9 flex'}>
                 <div className={'flex-1 px-4 sm:px-0'}>
-                    <div className={'flex items-center text-gray-50'}>
+                    <div className={'flex items-center text-foreground'}>
                         <Tooltip placement={'top'} content={actor?.email || 'System User'}>
                             <span>{actor?.username || 'System'}</span>
                         </Tooltip>
-                        <span className={'text-gray-400'}>&nbsp;&mdash;&nbsp;</span>
+                        <span className={'text-muted-foreground'}>&nbsp;&mdash;&nbsp;</span>
                         <Link
-                            to={`#${pathTo({ event: activity.event })}`}
-                            className={'transition-colors duration-75 active:text-cyan-400 hover:text-cyan-400'}
+                            to={'.'}
+                            search={{ event: attributes.event }}
+                            className={'transition-colors duration-75 active:text-accent hover:text-accent'}
                         >
-                            {activity.event}
+                            {attributes.event}
                         </Link>
-                        <div className={classNames(style.icons, 'group-hover:text-gray-300')}>
-                            {activity.isApi && (
+                        <div className={cn(activityIconClass, 'group-hover:text-muted-foreground')}>
+                            {attributes.is_api && (
                                 <Tooltip placement={'top'} content={'Using API Key'}>
-                                    <TerminalIcon />
+                                    <Terminal />
                                 </Tooltip>
                             )}
-                            {activity.event.startsWith('server:sftp.') && (
+                            {attributes.event.startsWith('server:sftp.') && (
                                 <Tooltip placement={'top'} content={'Using SFTP'}>
-                                    <FolderOpenIcon />
+                                    <FolderOpen />
                                 </Tooltip>
                             )}
                             {children}
                         </div>
                     </div>
-                    <p className={style.description}>
-                        <Translate ns={'activity'} values={properties} i18nKey={activity.event.replace(':', '.')} />
+                    <p className={activityDescriptionClass}>
+                        <Translate ns={'activity'} values={properties} i18nKey={attributes.event.replace(':', '.')} />
                     </p>
                     <div className={'mt-1 flex items-center text-sm'}>
-                        {activity.ip && (
+                        {attributes.ip && (
                             <span>
-                                {activity.ip}
-                                <span className={'text-gray-400'}>&nbsp;|&nbsp;</span>
+                                {attributes.ip}
+                                <span className={'text-muted-foreground'}>&nbsp;|&nbsp;</span>
                             </span>
                         )}
-                        <Tooltip placement={'right'} content={format(activity.timestamp, 'MMM do, yyyy H:mm:ss')}>
-                            <span>{formatDistanceToNowStrict(activity.timestamp, { addSuffix: true })}</span>
+                        <Tooltip
+                            placement={'right'}
+                            content={dayjs(attributes.timestamp).format('MMM Do, YYYY H:mm:ss')}
+                        >
+                            <span>{dayjs(attributes.timestamp).fromNow()}</span>
                         </Tooltip>
                     </div>
                 </div>
-                {activity.hasAdditionalMetadata && <ActivityLogMetaButton meta={activity.properties} />}
+                {attributes.has_additional_metadata && <ActivityLogMetaButton meta={attributes.properties} />}
             </div>
         </div>
     );
-};
+}

@@ -1,15 +1,7 @@
-import React, { useContext } from 'react';
-import { DialogContext } from './';
-import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
+import React from 'react';
 
-export default ({ children }: { children: React.ReactNode }) => {
-    const { setFooter } = useContext(DialogContext);
-
-    useDeepCompareEffect(() => {
-        setFooter(
-            <div className={'px-6 py-3 bg-gray-700 flex items-center justify-end space-x-3 rounded-b'}>{children}</div>
-        );
-    }, [children]);
-
-    return null;
+const DialogFooter = ({ children }: { children: React.ReactNode }) => {
+    return <div className={'px-6 py-3 bg-card flex items-center justify-end space-x-3 rounded-b-sm'}>{children}</div>;
 };
+
+export default DialogFooter;

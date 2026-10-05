@@ -1,64 +1,48 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Startup;
+declare(strict_types=1);
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Permission;
+namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\Startup\GetStartupAndVariablesTest;
+
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\EggVariable;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
-class GetStartupAndVariablesTest extends ClientApiIntegrationTestCase
-{
-    /**
-     * Test that the startup command and variables are returned for a server, but only the variables
-     * that can be viewed by a user (e.g. user_viewable=true).
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
-    public function testStartupVariablesAreReturnedForServer(array $permissions)
-    {
-        /** @var \Pterodactyl\Models\Server $server */
-        [$user, $server] = $this->generateTestAccount($permissions);
+uses(ClientApiIntegrationTestCase::class);
+dataset('permissionsDataProvider', fn (): array => [[[]], [[Permissions::StartupRead->value]]]);
+test('startup variables are returned for server', function (array $permissions): void {
+    /** @var Server $server */
+    [$user, $server] = $this->generateTestAccount($permissions);
+    $egg = $this->cloneEggAndVariables($server->egg);
+    // BUNGEE_VERSION should never be returned to the user in this API call, either in
+    // the array of variables, or revealed in the startup command.
+    $egg->variables()->first()->update(['user_viewable' => false]);
+    $server->fill(['egg_id' => $egg->id, 'startup' => 'java {{SERVER_JARFILE}} --version {{BUNGEE_VERSION}}'])->save();
+    $server = $server->refresh();
+    $response = $this->actingAs($user)->getJson($this->link($server).'/startup');
+    $response->assertOk();
+    $response->assertJsonPath('meta.startup_command', 'java bungeecord.jar --version [hidden]');
+    $response->assertJsonPath('meta.raw_startup_command', $server->startup);
+    $response->assertJsonPath('object', 'list');
+    $response->assertJsonCount(1, 'data');
+    $response->assertJsonPath('data.0.object', EggVariable::RESOURCE_NAME);
 
-        $egg = $this->cloneEggAndVariables($server->egg);
-        // BUNGEE_VERSION should never be returned to the user in this API call, either in
-        // the array of variables, or revealed in the startup command.
-        $egg->variables()->first()->update([
-            'user_viewable' => false,
-        ]);
-
-        $server->fill([
-            'egg_id' => $egg->id,
-            'startup' => 'java {{SERVER_JARFILE}} --version {{BUNGEE_VERSION}}',
-        ])->save();
-        $server = $server->refresh();
-
-        $response = $this->actingAs($user)->getJson($this->link($server) . '/startup');
-
-        $response->assertOk();
-        $response->assertJsonPath('meta.startup_command', 'java bungeecord.jar --version [hidden]');
-        $response->assertJsonPath('meta.raw_startup_command', $server->startup);
-
-        $response->assertJsonPath('object', 'list');
-        $response->assertJsonCount(1, 'data');
-        $response->assertJsonPath('data.0.object', EggVariable::RESOURCE_NAME);
-        $this->assertJsonTransformedWith($response->json('data.0.attributes'), $egg->variables[1]);
-    }
-
-    /**
-     * Test that a user without the required permission, or who does not have any permission to
-     * access the server cannot get the startup information for it.
-     */
-    public function testStartupDataIsNotReturnedWithoutPermission()
-    {
-        [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
-        $this->actingAs($user)->getJson($this->link($server) . '/startup')->assertForbidden();
-
-        $user2 = User::factory()->create();
-        $this->actingAs($user2)->getJson($this->link($server) . '/startup')->assertNotFound();
-    }
-
-    public static function permissionsDataProvider(): array
-    {
-        return [[[]], [[Permission::ACTION_STARTUP_READ]]];
-    }
-}
+    $variable = $egg->variables[1];
+    expect($response->json('data.0.attributes'))->toBe([
+        'name' => $variable->name,
+        'description' => $variable->description,
+        'env_variable' => 'SERVER_JARFILE',
+        'default_value' => 'bungeecord.jar',
+        'server_value' => null,
+        'is_editable' => true,
+        'rules' => $variable->rules,
+    ]);
+})->with('permissionsDataProvider');
+test('startup data is not returned without permission', function (): void {
+    [$user, $server] = $this->generateTestAccount([Permissions::WebsocketConnect->value]);
+    $this->actingAs($user)->getJson($this->link($server).'/startup')->assertForbidden();
+    $user2 = User::factory()->create();
+    $this->actingAs($user2)->getJson($this->link($server).'/startup')->assertNotFound();
+});

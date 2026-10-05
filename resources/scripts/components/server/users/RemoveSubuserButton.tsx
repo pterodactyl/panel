@@ -1,59 +1,42 @@
-import React, { useState } from 'react';
-import ConfirmationModal from '@/components/elements/ConfirmationModal';
-import { ServerContext } from '@/state/server';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { Subuser } from '@/state/server/subusers';
-import deleteSubuser from '@/api/server/users/deleteSubuser';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import { httpErrorToHuman } from '@/api/http';
-import tw from 'twin.macro';
+import { Dialog } from '@/components/elements/dialog';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { DeleteAction } from '@/components/elements/table/RowActions';
+import { useCurrentServer } from '@/api/server/queries';
+import { deleteServerSubuserInput, useDeleteSubuser } from '@/api/server/users/queries';
+import type { Subuser } from '@/api/server/users/queries';
 
-export default ({ subuser }: { subuser: Subuser }) => {
-    const [loading, setLoading] = useState(false);
-    const [showConfirmation, setShowConfirmation] = useState(false);
+type Props = {
+    subuser: Subuser;
+};
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const removeSubuser = ServerContext.useStoreActions((actions) => actions.subusers.removeSubuser);
-    const { addError, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
+const RemoveSubuserButton = ({ subuser }: Props) => {
+    const server = useCurrentServer();
+    const uuid = server?.attributes.uuid ?? '';
+    const deleteSubuser = useDeleteSubuser(subuser);
+    const loading = deleteSubuser.isPending;
 
-    const doDeletion = () => {
-        setLoading(true);
-        clearFlashes('users');
-        deleteSubuser(uuid, subuser.uuid)
-            .then(() => {
-                setLoading(false);
-                removeSubuser(subuser.uuid);
-            })
-            .catch((error) => {
-                console.error(error);
-                addError({ key: 'users', message: httpErrorToHuman(error) });
-                setShowConfirmation(false);
-            });
+    const doDeletion = (close: () => void) => {
+        deleteSubuser
+            .mutateAsync(deleteServerSubuserInput(uuid, subuser))
+            .catch(() => {})
+            .then(close);
     };
 
     return (
-        <>
-            <ConfirmationModal
-                title={'Delete this subuser?'}
-                buttonText={'Yes, remove subuser'}
-                visible={showConfirmation}
-                showSpinnerOverlay={loading}
-                onConfirmed={() => doDeletion()}
-                onModalDismissed={() => setShowConfirmation(false)}
-            >
-                Are you sure you wish to remove this subuser? They will have all access to this server revoked
-                immediately.
-            </ConfirmationModal>
-            <button
-                type={'button'}
-                aria-label={'Delete subuser'}
-                css={tw`block text-sm p-2 text-neutral-500 hover:text-red-600 transition-colors duration-150`}
-                onClick={() => setShowConfirmation(true)}
-            >
-                <FontAwesomeIcon icon={faTrashAlt} />
-            </button>
-        </>
+        <Dialog.ConfirmTrigger
+            title={'Delete this subuser?'}
+            confirm={'Yes, remove subuser'}
+            preventExternalClose={loading}
+            pending={loading}
+            onConfirmed={(_event, close) => doDeletion(close)}
+            trigger={({ onClick }) => (
+                <DeleteAction aria-label={`Delete ${subuser.attributes.email}`} onClick={onClick} />
+            )}
+        >
+            <SpinnerOverlay visible={loading} />
+            Are you sure you wish to remove this subuser? They will have all access to this server revoked immediately.
+        </Dialog.ConfirmTrigger>
     );
 };
+
+export default RemoveSubuserButton;

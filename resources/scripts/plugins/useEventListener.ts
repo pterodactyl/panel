@@ -1,24 +1,32 @@
 import { useEffect, useRef } from 'react';
 
-export default (
+export default <TEvent extends Event = Event>(
     eventName: string,
-    handler: (e: Event | CustomEvent | UIEvent | any) => void,
-    options?: boolean | EventListenerOptions
+    handler: (event: TEvent) => void,
+    options?: boolean | AddEventListenerOptions
 ) => {
-    const savedHandler = useRef<any>(null);
+    const savedHandler = useRef(handler);
+    const normalizedOptions = options === true || options === false ? undefined : options;
+    const capture = options === true || normalizedOptions?.capture === true;
+    const hasOptions = options !== undefined;
+    const once = normalizedOptions?.once;
+    const passive = normalizedOptions?.passive;
+    const signal = normalizedOptions?.signal;
 
     useEffect(() => {
         savedHandler.current = handler;
     }, [handler]);
 
     useEffect(() => {
-        const isSupported = window && window.addEventListener;
-        if (!isSupported) return;
+        const target = globalThis.window;
+        if (!target?.addEventListener) return;
 
-        const eventListener = (event: any) => savedHandler.current(event);
-        window.addEventListener(eventName, eventListener, options);
+        const eventListener = (event: Event) => savedHandler.current(event as TEvent);
+        const listenerOptions = hasOptions ? { capture, once, passive, signal } : undefined;
+
+        target.addEventListener(eventName, eventListener, listenerOptions);
         return () => {
-            window.removeEventListener(eventName, eventListener);
+            target.removeEventListener(eventName, eventListener, capture);
         };
-    }, [eventName, window]);
+    }, [capture, eventName, hasOptions, once, passive, signal]);
 };

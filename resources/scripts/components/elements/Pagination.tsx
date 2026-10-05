@@ -1,10 +1,8 @@
 import React from 'react';
-import { PaginatedResult } from '@/api/http';
-import tw from 'twin.macro';
-import styled from 'styled-components/macro';
+import { cn } from '@/lib/cn';
 import Button from '@/components/elements/Button';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDoubleLeft, faAngleDoubleRight } from '@fortawesome/free-solid-svg-icons';
+import { ChevronsLeft, ChevronsRight } from 'lucide-react';
+import Icon from '@/components/elements/Icon';
 
 interface RenderFuncProps<T> {
     items: T[];
@@ -13,29 +11,56 @@ interface RenderFuncProps<T> {
 }
 
 interface Props<T> {
-    data: PaginatedResult<T>;
+    data: GeneratedPaginatedResult<T>;
     showGoToLast?: boolean;
     showGoToFirst?: boolean;
     onPageSelect: (page: number) => void;
     children: (props: RenderFuncProps<T>) => React.ReactNode;
 }
 
-const Block = styled(Button)`
-    ${tw`p-0 w-10 h-10`}
+interface GeneratedPaginatedResult<T> {
+    data: T[];
+    meta: {
+        pagination: {
+            total: number;
+            count: number;
+            per_page: number;
+            current_page: number;
+            total_pages: number;
+        };
+    };
+}
 
-    &:not(:last-of-type) {
-        ${tw`mr-2`};
-    }
-`;
+interface PaginationDataSet {
+    total: number;
+    count: number;
+    perPage: number;
+    currentPage: number;
+    totalPages: number;
+}
 
-function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: Props<T>) {
+const Block = ({ className, ...props }: React.ComponentProps<typeof Button>) => (
+    <Button type={'button'} className={cn('p-0 w-10 h-10 not-last-of-type:mr-2', className)} {...props} />
+);
+
+const normalizeGeneratedPagination = (
+    pagination: GeneratedPaginatedResult<unknown>['meta']['pagination']
+): PaginationDataSet => ({
+    total: pagination.total,
+    count: pagination.count,
+    perPage: pagination.per_page,
+    currentPage: pagination.current_page,
+    totalPages: pagination.total_pages,
+});
+
+function Pagination<T>({ data, onPageSelect, children }: Props<T>) {
+    const items = data.data;
+    const pagination = normalizeGeneratedPagination(data.meta.pagination);
     const isFirstPage = pagination.currentPage === 1;
     const isLastPage = pagination.currentPage >= pagination.totalPages;
 
     const pages = [];
 
-    // Start two spaces before the current page. If that puts us before the starting page default
-    // to the first page as the starting point.
     const start = Math.max(pagination.currentPage - 2, 1);
     const end = Math.min(pagination.totalPages, pagination.currentPage + 5);
 
@@ -47,25 +72,25 @@ function Pagination<T>({ data: { items, pagination }, onPageSelect, children }: 
         <>
             {children({ items, isFirstPage, isLastPage })}
             {pages.length > 1 && (
-                <div css={tw`mt-4 flex justify-center`}>
+                <div className={'mt-4 flex justify-center'}>
                     {pages[0] > 1 && !isFirstPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(1)}>
-                            <FontAwesomeIcon icon={faAngleDoubleLeft} />
+                            <Icon icon={ChevronsLeft} />
                         </Block>
                     )}
-                    {pages.map((i) => (
+                    {pages.map((page) => (
                         <Block
-                            isSecondary={pagination.currentPage !== i}
+                            isSecondary={pagination.currentPage !== page}
                             color={'primary'}
-                            key={`block_page_${i}`}
-                            onClick={() => onPageSelect(i)}
+                            key={`block_page_${page}`}
+                            onClick={() => onPageSelect(page)}
                         >
-                            {i}
+                            {page}
                         </Block>
                     ))}
                     {pages[4] < pagination.totalPages && !isLastPage && (
                         <Block isSecondary color={'primary'} onClick={() => onPageSelect(pagination.totalPages)}>
-                            <FontAwesomeIcon icon={faAngleDoubleRight} />
+                            <Icon icon={ChevronsRight} />
                         </Block>
                     )}
                 </div>

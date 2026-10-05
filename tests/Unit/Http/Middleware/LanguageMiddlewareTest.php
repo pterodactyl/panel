@@ -1,56 +1,28 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Http\Middleware;
+declare(strict_types=1);
 
-use Mockery as m;
-use Mockery\MockInterface;
-use Pterodactyl\Models\User;
-use Illuminate\Foundation\Application;
+namespace Pterodactyl\Tests\Pest\Unit\Http\Middleware\LanguageMiddlewareTest;
+
 use Pterodactyl\Http\Middleware\LanguageMiddleware;
+use Pterodactyl\Models\User;
 
-class LanguageMiddlewareTest extends MiddlewareTestCase
+uses(\Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase::class);
+test('language is set for guest', function () {
+    $this->setRequestUserModel(null);
+    getMiddleware()->handle($this->request, $this->getClosureAssertions());
+    expect($this->app->getLocale())->toBe('en');
+});
+test('language is set with authenticated user', function () {
+    $user = User::factory()->make(['language' => 'de']);
+    $this->setRequestUserModel($user);
+    getMiddleware()->handle($this->request, $this->getClosureAssertions());
+    expect($this->app->getLocale())->toBe('de');
+});
+/**
+ * Return an instance of the middleware using the real application.
+ */
+function getMiddleware(): LanguageMiddleware
 {
-    private MockInterface $appMock;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->appMock = m::mock(Application::class);
-    }
-
-    /**
-     * Test that a language is defined via the middleware for guests.
-     */
-    public function testLanguageIsSetForGuest()
-    {
-        $this->request->shouldReceive('user')->withNoArgs()->andReturnNull();
-        $this->appMock->shouldReceive('setLocale')->with('en')->once()->andReturnNull();
-
-        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-    }
-
-    /**
-     * Test that a language is defined via the middleware for a user.
-     */
-    public function testLanguageIsSetWithAuthenticatedUser()
-    {
-        $user = User::factory()->make(['language' => 'de']);
-
-        $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
-        $this->appMock->shouldReceive('setLocale')->with('de')->once()->andReturnNull();
-
-        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-    }
-
-    /**
-     * Return an instance of the middleware using mocked dependencies.
-     */
-    private function getMiddleware(): LanguageMiddleware
-    {
-        return new LanguageMiddleware($this->appMock);
-    }
+    return app(LanguageMiddleware::class);
 }

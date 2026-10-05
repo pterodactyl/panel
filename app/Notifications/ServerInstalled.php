@@ -1,20 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Notifications;
 
-use Pterodactyl\Models\User;
 use Illuminate\Bus\Queueable;
-use Pterodactyl\Events\Event;
-use Pterodactyl\Models\Server;
-use Illuminate\Container\Container;
-use Pterodactyl\Events\Server\Installed;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Pterodactyl\Contracts\Core\ReceivesEvents;
-use Illuminate\Contracts\Notifications\Dispatcher;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
+use Pterodactyl\Contracts\Core\ReceivesEvents;
+use Pterodactyl\Events\Event;
+use Pterodactyl\Events\Server\Installed;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 
-class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvents
+class ServerInstalled extends Notification implements ReceivesEvents, ShouldQueue
 {
     use Queueable;
 
@@ -35,13 +35,13 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
         $this->server = $event->server;
         $this->user = $event->server->user;
 
-        // Since we are calling this notification directly from an event listener we need to fire off the dispatcher
-        // to send the email now. Don't use send() or you'll end up firing off two different events.
-        Container::getInstance()->make(Dispatcher::class)->sendNow($this->user, $this);
+        $this->user->notifyNow($this);
     }
 
     /**
      * Get the notification's delivery channels.
+     *
+     * @return list<string>
      */
     public function via(): array
     {
@@ -53,10 +53,10 @@ class ServerInstalled extends Notification implements ShouldQueue, ReceivesEvent
      */
     public function toMail(): MailMessage
     {
-        return (new MailMessage())
-            ->greeting('Hello ' . $this->user->username . '.')
+        return (new MailMessage)
+            ->greeting('Hello '.$this->user->username.'.')
             ->line('Your server has finished installing and is now ready for you to use.')
-            ->line('Server Name: ' . $this->server->name)
+            ->line('Server Name: '.$this->server->name)
             ->action('Login and Begin Using', route('index'));
     }
 }

@@ -1,67 +1,65 @@
-import React, { useEffect, useRef } from 'react';
-import { ServerContext } from '@/state/server';
+import { useEffect, useRef } from 'react';
+import { useCurrentServer } from '@/api/server/queries';
+import { useServerStatus } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { Line } from 'react-chartjs-2';
-import { useChart, useChartTickLabel } from '@/components/server/console/chart';
-import { hexToRgba } from '@/lib/helpers';
+import { CHART_WINDOW_MS, useRollingData } from '@/components/server/console/chart';
+import AreaChart from '@/components/server/console/AreaChart';
+import type { ChartSeries } from '@/components/server/console/types';
+import { parseServerStatsPayload } from '@/components/server/console/stats';
 import { bytesToString } from '@/lib/formatters';
-import { CloudDownloadIcon, CloudUploadIcon } from '@heroicons/react/solid';
-import { theme } from 'twin.macro';
+import { CloudDownload, CloudUpload } from 'lucide-react';
 import ChartBlock from '@/components/server/console/ChartBlock';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 
-export default () => {
-    const status = ServerContext.useStoreState((state) => state.status.value);
-    const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
+const CYAN = 'var(--chart-1)';
+const YELLOW = 'var(--chart-2)';
+
+const SINGLE_KEYS = ['value'] as const;
+const NETWORK_KEYS = ['tx', 'rx'] as const;
+
+const CPU_SERIES: ChartSeries[] = [{ dataKey: 'value', color: CYAN }];
+const MEMORY_SERIES: ChartSeries[] = [{ dataKey: 'value', color: CYAN }];
+const NETWORK_SERIES: ChartSeries[] = [
+    { dataKey: 'tx', color: CYAN },
+    { dataKey: 'rx', color: YELLOW },
+];
+
+export default function StatGraphs() {
+    const status = useServerStatus();
+    const limits = useCurrentServer()!.attributes.limits;
     const previous = useRef<Record<'tx' | 'rx', number>>({ tx: -1, rx: -1 });
 
-    const cpu = useChartTickLabel('CPU', limits.cpu, '%', 2);
-    const memory = useChartTickLabel('Memory', limits.memory, 'MiB');
-    const network = useChart('Network', {
-        sets: 2,
-        options: {
-            scales: {
-                y: {
-                    ticks: {
-                        callback(value) {
-                            return bytesToString(typeof value === 'string' ? parseInt(value, 10) : value);
-                        },
-                    },
-                },
-            },
-        },
-        callback(opts, index) {
-            return {
-                ...opts,
-                label: !index ? 'Network In' : 'Network Out',
-                borderColor: !index ? theme('colors.cyan.400') : theme('colors.yellow.400'),
-                backgroundColor: hexToRgba(!index ? theme('colors.cyan.700') : theme('colors.yellow.700'), 0.5),
-            };
-        },
-    });
+    const { data: cpuData, push: pushCpu, clear: clearCpu } = useRollingData(SINGLE_KEYS);
+    const { data: memoryData, push: pushMemory, clear: clearMemory } = useRollingData(SINGLE_KEYS);
+    const { data: networkData, push: pushNetwork, clear: clearNetwork } = useRollingData(NETWORK_KEYS);
+
+    const live = status === 'starting' || status === 'running' || status === 'stopping';
 
     useEffect(() => {
         if (status === 'offline') {
-            cpu.clear();
-            memory.clear();
-            network.clear();
+            clearCpu();
+            clearMemory();
+            clearNetwork();
         }
-    }, [status]);
+    }, [clearCpu, clearMemory, clearNetwork, status]);
 
     useWebsocketEvent(SocketEvent.STATS, (data: string) => {
-        let values: any = {};
-        try {
-            values = JSON.parse(data);
-        } catch (e) {
+        const values = parseServerStatsPayload(data);
+        if (!values) {
             return;
         }
-        cpu.push(values.cpu_absolute);
-        memory.push(Math.floor(values.memory_bytes / 1024 / 1024));
-        network.push([
-            previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),
-            previous.current.rx < 0 ? 0 : Math.max(0, values.network.rx_bytes - previous.current.rx),
-        ]);
+
+        const t = performance.now();
+        pushCpu({ value: values.cpu_absolute }, t);
+        pushMemory({ value: Math.floor(values.memory_bytes / 1024 / 1024) }, t);
+        pushNetwork(
+            {
+                tx: previous.current.tx < 0 ? 0 : Math.max(0, values.network.tx_bytes - previous.current.tx),
+                rx: previous.current.rx < 0 ? 0 : Math.max(0, values.network.rx_bytes - previous.current.rx),
+            },
+            t
+        );
 
         previous.current = { tx: values.network.tx_bytes, rx: values.network.rx_bytes };
     });
@@ -69,26 +67,46 @@ export default () => {
     return (
         <>
             <ChartBlock title={'CPU Load'}>
-                <Line {...cpu.props} />
+                <AreaChart
+                    data={cpuData}
+                    series={CPU_SERIES}
+                    live={live}
+                    windowMs={CHART_WINDOW_MS}
+                    suggestedMax={limits.cpu}
+                    tickFormatter={(value) => `${value.toFixed(2)}%`}
+                />
             </ChartBlock>
             <ChartBlock title={'Memory'}>
-                <Line {...memory.props} />
+                <AreaChart
+                    data={memoryData}
+                    series={MEMORY_SERIES}
+                    live={live}
+                    windowMs={CHART_WINDOW_MS}
+                    suggestedMax={limits.memory}
+                    tickFormatter={(value) => `${value}MiB`}
+                />
             </ChartBlock>
             <ChartBlock
                 title={'Network'}
                 legend={
                     <>
                         <Tooltip arrow content={'Inbound'}>
-                            <CloudDownloadIcon className={'mr-2 w-4 h-4 text-yellow-400'} />
+                            <CloudDownload className={'mr-2 w-4 h-4 text-chart-2'} />
                         </Tooltip>
                         <Tooltip arrow content={'Outbound'}>
-                            <CloudUploadIcon className={'w-4 h-4 text-cyan-400'} />
+                            <CloudUpload className={'w-4 h-4 text-chart-1'} />
                         </Tooltip>
                     </>
                 }
             >
-                <Line {...network.props} />
+                <AreaChart
+                    data={networkData}
+                    series={NETWORK_SERIES}
+                    live={live}
+                    windowMs={CHART_WINDOW_MS}
+                    tickFormatter={bytesToString}
+                />
             </ChartBlock>
         </>
     );
-};
+}

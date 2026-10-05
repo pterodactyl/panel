@@ -1,53 +1,42 @@
-import * as React from 'react';
 import ContentBox from '@/components/elements/ContentBox';
 import UpdatePasswordForm from '@/components/dashboard/forms/UpdatePasswordForm';
 import UpdateEmailAddressForm from '@/components/dashboard/forms/UpdateEmailAddressForm';
 import ConfigureTwoFactorForm from '@/components/dashboard/forms/ConfigureTwoFactorForm';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import tw from 'twin.macro';
-import { breakpoint } from '@/theme';
-import styled from 'styled-components/macro';
-import MessageBox from '@/components/MessageBox';
-import { useLocation } from 'react-router-dom';
+import { cn } from '@/lib/cn';
+import { Alert } from '@/components/elements/alert';
+import { useLocation } from '@tanstack/react-router';
+import AccountOverviewCardGrid from '@/components/dashboard/AccountOverviewCardGrid';
+import Slot from '@/extensions/Slot';
+import PageHeading from '@/components/elements/PageHeading';
 
-const Container = styled.div`
-    ${tw`flex flex-wrap`};
+const CARD_WIDTH = 'w-full sm:w-[calc(50%_-_1rem)] md:w-auto md:flex-1';
 
-    & > div {
-        ${tw`w-full`};
-
-        ${breakpoint('sm')`
-      width: calc(50% - 1rem);
-    `}
-
-        ${breakpoint('md')`
-      ${tw`w-auto flex-1`};
-    `}
-    }
-`;
-
-export default () => {
-    const { state } = useLocation<undefined | { twoFactorRedirect?: boolean }>();
+export default function AccountOverviewContainer() {
+    const state = useLocation().state as { twoFactorRedirect?: boolean } | null;
 
     return (
         <PageContentBlock title={'Account Overview'}>
+            <PageHeading title={'Account'} description={'Manage your profile, credentials, and account security.'} />
             {state?.twoFactorRedirect && (
-                <MessageBox title={'2-Factor Required'} type={'error'}>
+                <Alert title={'2-Factor Required'} type={'danger'}>
                     Your account must have two-factor authentication enabled in order to continue.
-                </MessageBox>
+                </Alert>
             )}
 
-            <Container css={[tw`lg:grid lg:grid-cols-3 mb-10`, state?.twoFactorRedirect ? tw`mt-4` : tw`mt-10`]}>
-                <ContentBox title={'Update Password'} showFlashes={'account:password'}>
+            <Slot name={'account.overview.before'} />
+            <AccountOverviewCardGrid className={cn('lg:grid lg:grid-cols-3 mb-10', state?.twoFactorRedirect && 'mt-4')}>
+                <ContentBox className={CARD_WIDTH} title={'Update Password'}>
                     <UpdatePasswordForm />
                 </ContentBox>
-                <ContentBox css={tw`mt-8 sm:mt-0 sm:ml-8`} title={'Update Email Address'} showFlashes={'account:email'}>
+                <ContentBox className={cn(CARD_WIDTH, 'mt-8 sm:mt-0 sm:ml-8')} title={'Update Email Address'}>
                     <UpdateEmailAddressForm />
                 </ContentBox>
-                <ContentBox css={tw`md:ml-8 mt-8 md:mt-0`} title={'Two-Step Verification'}>
+                <ContentBox className={cn(CARD_WIDTH, 'md:ml-8 mt-8 md:mt-0')} title={'Two-Step Verification'}>
                     <ConfigureTwoFactorForm />
                 </ContentBox>
-            </Container>
+            </AccountOverviewCardGrid>
+            <Slot name={'account.overview.after'} />
         </PageContentBlock>
     );
-};
+}

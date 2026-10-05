@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Services\Servers;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 
 class GetUserPermissionsService
 {
@@ -11,6 +13,8 @@ class GetUserPermissionsService
      * Returns the server specific permissions that a user has. This checks
      * if they are an admin or a subuser for the server. If no permissions are
      * found, an empty array is returned.
+     *
+     * @return array<array-key, string>
      */
     public function handle(Server $server, User $user): array
     {
@@ -26,7 +30,6 @@ class GetUserPermissionsService
             return $permissions;
         }
 
-        /** @var \Pterodactyl\Models\Subuser|null $subuserPermissions */
         $subuserPermissions = $server->subusers()->where('user_id', $user->id)->first();
 
         return $subuserPermissions ? $subuserPermissions->permissions : [];

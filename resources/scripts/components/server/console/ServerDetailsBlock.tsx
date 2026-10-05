@@ -1,32 +1,27 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import {
-    faClock,
-    faCloudDownloadAlt,
-    faCloudUploadAlt,
-    faHdd,
-    faMemory,
-    faMicrochip,
-    faWifi,
-} from '@fortawesome/free-solid-svg-icons';
+import React, { useEffect, useState } from 'react';
+import { Clock, CloudDownload, CloudUpload, HardDrive, MemoryStick, Cpu, Wifi } from 'lucide-react';
 import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
-import { ServerContext } from '@/state/server';
+import { useServerStatus, useSocketConnected, useSocketInstance } from '@/state/server';
 import { SocketEvent, SocketRequest } from '@/components/server/events';
 import UptimeDuration from '@/components/server/UptimeDuration';
-import StatBlock from '@/components/server/console/StatBlock';
+import StatBlock, { type StatBlockTone } from '@/components/server/console/StatBlock';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import classNames from 'classnames';
+import { cn } from '@/lib/cn';
 import { capitalize } from '@/lib/strings';
+import { useCurrentServer } from '@/api/server/queries';
+import { relationshipData } from '@/api/relationships';
+import { parseServerStatsPayload } from '@/components/server/console/stats';
 
 type Stats = Record<'memory' | 'cpu' | 'disk' | 'uptime' | 'rx' | 'tx', number>;
 
-const getBackgroundColor = (value: number, max: number | null): string | undefined => {
+const getTone = (value: number, max: number | null): StatBlockTone | undefined => {
     const delta = !max ? 0 : value / max;
 
     if (delta > 0.8) {
         if (delta > 0.9) {
-            return 'bg-red-500';
+            return 'destructive';
         }
-        return 'bg-yellow-500';
+        return 'warning';
     }
 
     return undefined;
@@ -35,32 +30,30 @@ const getBackgroundColor = (value: number, max: number | null): string | undefin
 const Limit = ({ limit, children }: { limit: string | null; children: React.ReactNode }) => (
     <>
         {children}
-        <span className={'ml-1 text-gray-300 text-[70%] select-none'}>/ {limit || <>&infin;</>}</span>
+        <span className={'ml-1 text-xs text-muted-foreground select-none'}>/ {limit || <>&infin;</>}</span>
     </>
 );
 
 const ServerDetailsBlock = ({ className }: { className?: string }) => {
     const [stats, setStats] = useState<Stats>({ memory: 0, cpu: 0, disk: 0, uptime: 0, tx: 0, rx: 0 });
 
-    const status = ServerContext.useStoreState((state) => state.status.value);
-    const connected = ServerContext.useStoreState((state) => state.socket.connected);
-    const instance = ServerContext.useStoreState((state) => state.socket.instance);
-    const limits = ServerContext.useStoreState((state) => state.server.data!.limits);
+    const status = useServerStatus();
+    const connected = useSocketConnected();
+    const instance = useSocketInstance();
+    const server = useCurrentServer()!;
+    const limits = server.attributes.limits;
 
-    const textLimits = useMemo(
-        () => ({
-            cpu: limits?.cpu ? `${limits.cpu}%` : null,
-            memory: limits?.memory ? bytesToString(mbToBytes(limits.memory)) : null,
-            disk: limits?.disk ? bytesToString(mbToBytes(limits.disk)) : null,
-        }),
-        [limits]
+    const textLimits = {
+        cpu: limits?.cpu ? `${limits.cpu}%` : null,
+        memory: limits?.memory ? bytesToString(mbToBytes(limits.memory)) : null,
+        disk: limits?.disk ? bytesToString(mbToBytes(limits.disk)) : null,
+    };
+    const defaultAllocation = relationshipData(server.attributes.relationships?.allocations).find(
+        (allocation) => allocation.attributes.is_default
     );
-
-    const allocation = ServerContext.useStoreState((state) => {
-        const match = state.server.data!.allocations.find((allocation) => allocation.isDefault);
-
-        return !match ? 'n/a' : `${match.alias || ip(match.ip)}:${match.port}`;
-    });
+    const allocation = defaultAllocation
+        ? `${defaultAllocation.attributes.ip_alias || ip(defaultAllocation.attributes.ip)}:${defaultAllocation.attributes.port}`
+        : 'n/a';
 
     useEffect(() => {
         if (!connected || !instance) {
@@ -71,10 +64,8 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     }, [instance, connected]);
 
     useWebsocketEvent(SocketEvent.STATS, (data) => {
-        let stats: any = {};
-        try {
-            stats = JSON.parse(data);
-        } catch (e) {
+        const stats = parseServerStatsPayload(data);
+        if (!stats) {
             return;
         }
 
@@ -89,14 +80,14 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
     });
 
     return (
-        <div className={classNames('grid grid-cols-6 gap-2 md:gap-4', className)}>
-            <StatBlock icon={faWifi} title={'Address'} copyOnClick={allocation}>
+        <div className={cn('grid grid-cols-6 gap-2 md:gap-4', className)}>
+            <StatBlock icon={Wifi} title={'Address'} copyOnClick={allocation}>
                 {allocation}
             </StatBlock>
             <StatBlock
-                icon={faClock}
+                icon={Clock}
                 title={'Uptime'}
-                color={getBackgroundColor(status === 'running' ? 0 : status !== 'offline' ? 9 : 10, 10)}
+                tone={getTone(status === 'running' ? 0 : status !== 'offline' ? 9 : 10, 10)}
             >
                 {status === null ? (
                     'Offline'
@@ -106,32 +97,36 @@ const ServerDetailsBlock = ({ className }: { className?: string }) => {
                     capitalize(status)
                 )}
             </StatBlock>
-            <StatBlock icon={faMicrochip} title={'CPU Load'} color={getBackgroundColor(stats.cpu, limits.cpu)}>
+            <StatBlock icon={Cpu} title={'CPU Load'} tone={getTone(stats.cpu, limits.cpu)}>
                 {status === 'offline' ? (
-                    <span className={'text-gray-400'}>Offline</span>
+                    <span className={'text-muted-foreground'}>Offline</span>
                 ) : (
                     <Limit limit={textLimits.cpu}>{stats.cpu.toFixed(2)}%</Limit>
                 )}
             </StatBlock>
-            <StatBlock
-                icon={faMemory}
-                title={'Memory'}
-                color={getBackgroundColor(stats.memory / 1024, limits.memory * 1024)}
-            >
+            <StatBlock icon={MemoryStick} title={'Memory'} tone={getTone(stats.memory / 1024, limits.memory * 1024)}>
                 {status === 'offline' ? (
-                    <span className={'text-gray-400'}>Offline</span>
+                    <span className={'text-muted-foreground'}>Offline</span>
                 ) : (
                     <Limit limit={textLimits.memory}>{bytesToString(stats.memory)}</Limit>
                 )}
             </StatBlock>
-            <StatBlock icon={faHdd} title={'Disk'} color={getBackgroundColor(stats.disk / 1024, limits.disk * 1024)}>
+            <StatBlock icon={HardDrive} title={'Disk'} tone={getTone(stats.disk / 1024, limits.disk * 1024)}>
                 <Limit limit={textLimits.disk}>{bytesToString(stats.disk)}</Limit>
             </StatBlock>
-            <StatBlock icon={faCloudDownloadAlt} title={'Network (Inbound)'}>
-                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.rx)}
+            <StatBlock icon={CloudDownload} title={'Network (Inbound)'}>
+                {status === 'offline' ? (
+                    <span className={'text-muted-foreground'}>Offline</span>
+                ) : (
+                    bytesToString(stats.rx)
+                )}
             </StatBlock>
-            <StatBlock icon={faCloudUploadAlt} title={'Network (Outbound)'}>
-                {status === 'offline' ? <span className={'text-gray-400'}>Offline</span> : bytesToString(stats.tx)}
+            <StatBlock icon={CloudUpload} title={'Network (Outbound)'}>
+                {status === 'offline' ? (
+                    <span className={'text-muted-foreground'}>Offline</span>
+                ) : (
+                    bytesToString(stats.tx)
+                )}
             </StatBlock>
         </div>
     );

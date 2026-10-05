@@ -1,9 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Console;
 
+use Illuminate\Console\Command;
+use Illuminate\Database\Migrations\Migrator;
+
 /**
- * @mixin \Illuminate\Console\Command
+ * @mixin Command
  */
 trait RequiresDatabaseMigrations
 {
@@ -12,20 +17,15 @@ trait RequiresDatabaseMigrations
      */
     protected function hasCompletedMigrations(): bool
     {
-        /** @var \Illuminate\Database\Migrations\Migrator $migrator */
-        $migrator = $this->getLaravel()->make('migrator');
+        $migrator = $this->getLaravel()->make(Migrator::class);
 
         $files = $migrator->getMigrationFiles(database_path('migrations'));
 
-        if (!$migrator->repositoryExists()) {
+        if (! $migrator->repositoryExists()) {
             return false;
         }
 
-        if (array_diff(array_keys($files), $migrator->getRepository()->getRan())) {
-            return false;
-        }
-
-        return true;
+        return ! array_diff(array_keys($files), $migrator->getRepository()->getRan());
     }
 
     /**

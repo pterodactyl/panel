@@ -1,10 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Observers;
 
-use Pterodactyl\Events;
-use Pterodactyl\Models\Server;
 use Illuminate\Foundation\Bus\DispatchesJobs;
+use Pterodactyl\Events\Server\Created;
+use Pterodactyl\Events\Server\Creating;
+use Pterodactyl\Events\Server\Deleted;
+use Pterodactyl\Events\Server\Deleting;
+use Pterodactyl\Events\Server\Saved;
+use Pterodactyl\Events\Server\Saving;
+use Pterodactyl\Events\Server\Updated;
+use Pterodactyl\Events\Server\Updating;
+use Pterodactyl\Models\Server;
 
 class ServerObserver
 {
@@ -15,7 +24,7 @@ class ServerObserver
      */
     public function creating(Server $server): void
     {
-        event(new Events\Server\Creating($server));
+        event(new Creating($server));
     }
 
     /**
@@ -23,7 +32,7 @@ class ServerObserver
      */
     public function created(Server $server): void
     {
-        event(new Events\Server\Created($server));
+        event(new Created($server));
     }
 
     /**
@@ -31,7 +40,7 @@ class ServerObserver
      */
     public function deleting(Server $server): void
     {
-        event(new Events\Server\Deleting($server));
+        event(new Deleting($server));
     }
 
     /**
@@ -39,7 +48,7 @@ class ServerObserver
      */
     public function deleted(Server $server): void
     {
-        event(new Events\Server\Deleted($server));
+        event(new Deleted($server));
     }
 
     /**
@@ -47,7 +56,7 @@ class ServerObserver
      */
     public function saving(Server $server): void
     {
-        event(new Events\Server\Saving($server));
+        event(new Saving($server));
     }
 
     /**
@@ -55,7 +64,7 @@ class ServerObserver
      */
     public function saved(Server $server): void
     {
-        event(new Events\Server\Saved($server));
+        event(new Saved($server));
     }
 
     /**
@@ -63,14 +72,11 @@ class ServerObserver
      */
     public function updating(Server $server): void
     {
-        event(new Events\Server\Updating($server));
+        event(new Updating($server));
     }
 
-    /**
-     * Listen to the Server saved event.
-     */
     public function updated(Server $server): void
     {
-        event(new Events\Server\Updated($server));
+        event(new Updated($server));
     }
 }

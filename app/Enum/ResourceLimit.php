@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Enum;
 
-use Illuminate\Http\Request;
-use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
 use Illuminate\Cache\RateLimiting\Limit;
-use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Http\Request;
 use Illuminate\Routing\Middleware\ThrottleRequests;
+use Illuminate\Support\Facades\RateLimiter;
+use InvalidArgumentException;
+use Pterodactyl\Models\Server;
 
 /**
  * A basic resource throttler for individual servers. This is applied in addition
@@ -24,6 +26,21 @@ enum ResourceLimit
     case Subuser;
     case Websocket;
     case FilePull;
+
+    public static function boot(): void
+    {
+        foreach (self::cases() as $case) {
+            RateLimiter::for($case->throttleKey(), function (Request $request) use ($case) {
+                $route = $request->route();
+                throw_if($route === null, InvalidArgumentException::class, 'Expected an active route when applying a server resource limit.');
+
+                $server = $route->parameter('server');
+                throw_unless($server instanceof Server, InvalidArgumentException::class, 'Expected route parameter [server] to be a server.');
+
+                return $case->limit()->by($server->uuid);
+            });
+        }
+    }
 
     public function throttleKey(): string
     {
@@ -42,7 +59,7 @@ enum ResourceLimit
 
     public function limit(): Limit
     {
-        return match($this) {
+        return match ($this) {
             self::Backup => Limit::perMinutes(15, 3),
             self::Database => Limit::perMinute(2),
             self::FilePull => Limit::perMinutes(10, 5),
@@ -50,16 +67,5 @@ enum ResourceLimit
             self::Websocket => Limit::perMinute(5),
             default => Limit::perMinute(2),
         };
-    }
-
-    public static function boot(): void
-    {
-        foreach (self::cases() as $case) {
-            RateLimiter::for($case->throttleKey(), function (Request $request) use ($case) {
-                Assert::isInstanceOf($server = $request->route()->parameter('server'), Server::class);
-
-                return $case->limit()->by($server->uuid);
-            });
-        }
     }
 }

@@ -1,15 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\DatabaseHost;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class DatabaseHostTransformer extends BaseTransformer
 {
+    protected array $includeRelations = [
+        'databases' => ['relation' => 'databases', 'transformer' => ServerDatabaseTransformer::class, 'ability' => AdminAcl::RESOURCE_SERVER_DATABASES],
+    ];
+
+    /**
+     * @var list<string>
+     */
     protected array $availableIncludes = [
         'databases',
     ];
@@ -24,6 +34,8 @@ class DatabaseHostTransformer extends BaseTransformer
 
     /**
      * Transform database host into a representation for the application API.
+     *
+     * @return ApiPayload
      */
     public function transform(DatabaseHost $model): array
     {
@@ -42,11 +54,11 @@ class DatabaseHostTransformer extends BaseTransformer
     /**
      * Include the databases associated with this host.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeDatabases(DatabaseHost $model): Collection|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_SERVER_DATABASES)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVER_DATABASES)) {
             return $this->null();
         }
 

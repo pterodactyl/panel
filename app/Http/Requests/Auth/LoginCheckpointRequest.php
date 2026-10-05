@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Auth;
 
-use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Rule;
 
 class LoginCheckpointRequest extends FormRequest
 {
@@ -17,24 +19,22 @@ class LoginCheckpointRequest extends FormRequest
 
     /**
      * Rules to apply to the request.
+     *
+     * @return ValidationRules
      */
     public function rules(): array
     {
         return [
-            'confirmation_token' => 'required|string',
+            'confirmation_token' => ['required', 'string'],
             'authentication_code' => [
                 'nullable',
                 'numeric',
-                Rule::requiredIf(function () {
-                    return empty($this->input('recovery_token'));
-                }),
+                Rule::requiredIf(fn (): bool => empty($this->input('recovery_token'))),
             ],
             'recovery_token' => [
                 'nullable',
                 'string',
-                Rule::requiredIf(function () {
-                    return empty($this->input('authentication_code'));
-                }),
+                Rule::requiredIf(fn (): bool => empty($this->input('authentication_code'))),
             ],
         ];
     }

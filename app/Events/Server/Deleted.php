@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Events\Server;
 
+use Illuminate\Queue\SerializesModels;
 use Pterodactyl\Events\Event;
 use Pterodactyl\Models\Server;
-use Illuminate\Queue\SerializesModels;
 
 class Deleted extends Event
 {
@@ -13,7 +15,5 @@ class Deleted extends Event
     /**
      * Create a new event instance.
      */
-    public function __construct(public Server $server)
-    {
-    }
+    public function __construct(public Server $server) {}
 }

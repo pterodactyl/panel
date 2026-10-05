@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import Fade from '@/components/elements/Fade';
 import Portal from '@/components/elements/Portal';
-import copy from 'copy-to-clipboard';
-import classNames from 'classnames';
+import Button from '@/components/elements/Button';
+import { TextArea, TextInput } from '@/components/form/controls';
+import copyToClipboard from '@/lib/clipboard';
+import { cn } from '@/lib/cn';
 
 interface CopyOnClickProps {
     text: string | number | null | undefined;
@@ -10,54 +11,93 @@ interface CopyOnClickProps {
     children: React.ReactNode;
 }
 
-const CopyOnClick = ({ text, showInNotification = true, children }: CopyOnClickProps) => {
-    const [copied, setCopied] = useState(false);
+interface ClickableChildProps {
+    className?: string;
+    role?: React.AriaRole;
+    tabIndex?: number;
+    onClick?: React.MouseEventHandler<HTMLElement>;
+    onKeyDown?: React.KeyboardEventHandler<HTMLElement>;
+}
+
+type CopyStatus = 'copied' | 'failed';
+
+const interactiveTypes = new Set<React.ReactElement['type']>([
+    'a',
+    'button',
+    'input',
+    'select',
+    'textarea',
+    Button,
+    Button.Text,
+    Button.Danger,
+    TextInput,
+    TextArea,
+]);
+
+/** Copies `text` when its single child is clicked; a non-interactive child becomes a focusable button. */
+const CopyOnClick = ({ text, showInNotification = false, children }: CopyOnClickProps) => {
+    const [status, setStatus] = useState<CopyStatus | null>(null);
 
     useEffect(() => {
-        if (!copied) return;
+        if (!status) return;
 
         const timeout = setTimeout(() => {
-            setCopied(false);
+            setStatus(null);
         }, 2500);
 
         return () => {
             clearTimeout(timeout);
         };
-    }, [copied]);
+    }, [status]);
 
-    if (!React.isValidElement(children)) {
+    if (!React.isValidElement<ClickableChildProps>(children)) {
         throw new Error('Component passed to <CopyOnClick/> must be a valid React element.');
     }
 
+    const element = React.Children.only(children);
+
+    const copy = () => {
+        void copyToClipboard(String(text)).then((copied) => setStatus(copied ? 'copied' : 'failed'));
+    };
+
+    const interactive = interactiveTypes.has(element.type);
+
+    const onKeyDown = (e: React.KeyboardEvent<HTMLElement>) => {
+        element.props.onKeyDown?.(e);
+        if (!e.defaultPrevented && e.target === e.currentTarget && (e.key === 'Enter' || e.key === ' ')) {
+            e.preventDefault();
+            copy();
+        }
+    };
+
     const child = !text
-        ? React.Children.only(children)
-        : React.cloneElement(React.Children.only(children), {
-              // @ts-expect-error todo: check on this
-              className: classNames(children.props.className || '', 'cursor-pointer'),
+        ? element
+        : React.cloneElement(element, {
+              role: interactive ? element.props.role : (element.props.role ?? 'button'),
+              tabIndex: interactive ? element.props.tabIndex : (element.props.tabIndex ?? 0),
+              onKeyDown: interactive ? element.props.onKeyDown : onKeyDown,
+              className: cn(element.props.className || '', 'cursor-pointer'),
               onClick: (e: React.MouseEvent<HTMLElement>) => {
-                  copy(String(text));
-                  setCopied(true);
-                  if (typeof children.props.onClick === 'function') {
-                      children.props.onClick(e);
-                  }
+                  copy();
+                  element.props.onClick?.(e);
               },
           });
 
     return (
         <>
-            {copied && (
+            {status && (
                 <Portal>
-                    <Fade in appear timeout={250} key={copied ? 'visible' : 'invisible'}>
-                        <div className={'fixed z-50 bottom-0 right-0 m-4'}>
-                            <div className={'rounded-md py-3 px-4 text-gray-200 bg-neutral-600/95 shadow'}>
-                                <p>
-                                    {showInNotification
-                                        ? `Copied "${String(text)}" to clipboard.`
-                                        : 'Copied text to clipboard.'}
-                                </p>
-                            </div>
+                    <div className={'fixed z-50 bottom-0 right-0 m-4'}>
+                        <div role={'status'} className={'rounded-md py-3 px-4 text-foreground bg-popover/95 shadow-sm'}>
+                            <p>
+                                {status === 'failed'
+                                    ? 'Unable to copy text to clipboard.'
+                                    : showInNotification
+                                      ? `Copied "${String(text)}" to clipboard.`
+                                      : 'Copied text to clipboard.'}
+                            </p>
                         </div>
-                    </Fade>
+                    </div>
                 </Portal>
             )}
             {child}

@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
-use Cron\CronExpression;
 use Carbon\CarbonImmutable;
-use Illuminate\Container\Container;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Cron\CronExpression;
+use Database\Factories\ScheduleFactory;
+use Exception;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Support\Carbon;
+use Pterodactyl\Models\Traits\HasHashid;
 
 /**
  * @property int $id
@@ -22,62 +28,44 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property bool $is_active
  * @property bool $is_processing
  * @property bool $only_when_online
- * @property \Carbon\Carbon|null $last_run_at
- * @property \Carbon\Carbon|null $next_run_at
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $hashid
+ * @property Carbon|null $last_run_at
+ * @property Carbon|null $next_run_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property Server $server
- * @property \Illuminate\Database\Eloquent\Collection<int, \Pterodactyl\Models\Task> $tasks
+ * @property Collection<int, Task> $tasks
  */
+#[Fillable([
+    'server_id',
+    'name',
+    'cron_day_of_week',
+    'cron_month',
+    'cron_day_of_month',
+    'cron_hour',
+    'cron_minute',
+    'is_active',
+    'is_processing',
+    'only_when_online',
+    'last_run_at',
+    'next_run_at',
+])]
 class Schedule extends Model
 {
-    /** @use HasFactory<\Database\Factories\ScheduleFactory> */
+    /** @use HasFactory<ScheduleFactory> */
     use HasFactory;
+
+    use HasHashid;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'server_schedule';
-
-    /**
-     * The table associated with the model.
-     */
-    protected $table = 'schedules';
+    public const string RESOURCE_NAME = 'server_schedule';
 
     /**
      * Always return the tasks associated with this schedule.
      */
     protected $with = ['tasks'];
-
-    /**
-     * Mass assignable attributes on this model.
-     */
-    protected $fillable = [
-        'server_id',
-        'name',
-        'cron_day_of_week',
-        'cron_month',
-        'cron_day_of_month',
-        'cron_hour',
-        'cron_minute',
-        'is_active',
-        'is_processing',
-        'only_when_online',
-        'last_run_at',
-        'next_run_at',
-    ];
-
-    protected $casts = [
-        'id' => 'integer',
-        'server_id' => 'integer',
-        'is_active' => 'boolean',
-        'is_processing' => 'boolean',
-        'only_when_online' => 'boolean',
-        'last_run_at' => 'datetime',
-        'next_run_at' => 'datetime',
-    ];
 
     protected $attributes = [
         'name' => null,
@@ -91,20 +79,21 @@ class Schedule extends Model
         'only_when_online' => false,
     ];
 
-    public static array $validationRules = [
-        'server_id' => 'required|exists:servers,id',
-        'name' => 'required|string|max:191',
-        'cron_day_of_week' => 'required|string',
-        'cron_month' => 'required|string',
-        'cron_day_of_month' => 'required|string',
-        'cron_hour' => 'required|string',
-        'cron_minute' => 'required|string',
-        'is_active' => 'boolean',
-        'is_processing' => 'boolean',
-        'only_when_online' => 'boolean',
-        'last_run_at' => 'nullable|date',
-        'next_run_at' => 'nullable|date',
-    ];
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'server_id' => 'integer',
+            'is_active' => 'boolean',
+            'is_processing' => 'boolean',
+            'only_when_online' => 'boolean',
+            'last_run_at' => 'datetime',
+            'next_run_at' => 'datetime',
+        ];
+    }
 
     public function getRouteKeyName(): string
     {
@@ -114,7 +103,7 @@ class Schedule extends Model
     /**
      * Returns the schedule's execution crontab entry as a string.
      *
-     * @throws \Exception
+     * @throws Exception
      */
     public function getNextRunDate(): CarbonImmutable
     {
@@ -124,27 +113,19 @@ class Schedule extends Model
     }
 
     /**
-     * Return a hashid encoded string to represent the ID of the schedule.
-     */
-    public function getHashidAttribute(): string
-    {
-        return Container::getInstance()->make(HashidsInterface::class)->encode($this->id);
-    }
-
-    /**
      * Return tasks belonging to a schedule.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Task, $this>
+     * @return HasMany<Task, $this>
      */
     public function tasks(): HasMany
     {
-        return $this->hasMany(Task::class);
+        return $this->hasMany(Task::class)->chaperone('schedule');
     }
 
     /**
      * Return the server model that a schedule belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo
     {

@@ -1,0 +1,225 @@
+# rules — generic PHPStan rule set. Vendored; edit to fit your team.
+#
+# Include from the consuming project's phpstan.neon:
+#     includes:
+#         - tools/phpstan/rules/extension.neon
+#
+# The vendor includes below assume this directory lives at
+# tools/phpstan/rules/ inside a repository whose composer vendor dir is at
+# the repository root. Adjust the relative paths if your layout differs.
+
+includes:
+    - ../../../vendor/phpstan/phpstan-strict-rules/rules.neon
+    - ../../../vendor/spaze/phpstan-disallowed-calls/extension.neon
+
+parameters:
+    # Resolve allowIn paths from the consuming project instead of from the
+    # location of whichever config file includes this extension.
+    filesRootDir: %rootDir%/../../..
+
+    # rules rule 11 (`no-known-value-widening`), inline @var half.
+    reportAnyTypeWideningInVarTag: true
+
+    rules:
+        # Paths where runtime type checks are legitimate boundary parsing.
+        # Mirrors anti-slop's allowInTypeGuards option (default off — these
+        # paths are the PHP equivalent of "inside a type guard").
+        boundaryPaths:
+            - src/Boundary/**
+            - app/Http/Requests/**
+            - app/Http/Middleware/**
+            - app/Http/Controllers/Api/Client/ClientApiController.php
+            - app/Http/Controllers/Api/Admin/Nodes/AllocationController.php
+            - app/Http/Controllers/Base/LocaleController.php
+            - app/Http/Middleware/Api/Daemon/DaemonAuthenticate.php
+            - app/Http/Middleware/MaintenanceMiddleware.php
+            - app/Exceptions/ApiErrorResponse.php
+            - app/Exceptions/Http/Connection/DaemonConnectionException.php
+            - app/Models/ActivityLog.php
+            - app/Models/Database.php
+            - app/Models/Node.php
+            - app/Transformers/Api/Client/ActivityLogTransformer.php
+            - app/Transformers/Api/Admin/NodeTransformer.php
+            - app/Transformers/Api/Admin/ApiKeyTransformer.php
+            - app/Transformers/Api/Admin/DatabaseHostTransformer.php
+            - app/Transformers/Api/Application/NodeTransformer.php
+            - app/Data/**
+            - app/Extensions/Scribe/**
+            - app/Services/Extensions/ExtensionManifestValidator.php
+            - app/Services/Extensions/ExtensionSettingValueGuard.php
+            - app/Services/Extensions/ExtensionSettings.php
+            - app/Services/Extensions/Scaffolding/ExtensionScaffolder.php
+            - app/Services/Eggs/EggConfigurationService.php
+            - app/Services/Eggs/EggImportData.php
+            - app/Services/Helpers/AssetHashService.php
+            - app/Services/Helpers/SoftwareVersionService.php
+            - app/Extensions/Backups/BackupManager.php
+            - app/Console/Commands/Environment/EmailSettingsCommand.php
+            - app/Console/Commands/Environment/AppSettingsCommand.php
+            - app/Console/Commands/Environment/DatabaseSettingsCommand.php
+            - app/Console/Commands/UpgradeCommand.php
+            - app/Console/Commands/Maintenance/PruneOrphanedBackupsCommand.php
+            - app/Console/Commands/User/DeleteUserCommand.php
+            - app/Console/Commands/Node/NodeConfigurationCommand.php
+            - app/Console/Commands/Node/MakeNodeCommand.php
+            - app/Helpers/Utilities.php
+            - app/Traits/Helpers/AvailableLanguages.php
+            - app/Http/Controllers/Api/Application/ApplicationApiController.php
+            - app/Http/Controllers/Api/Application/Nodes/AllocationController.php
+            - app/Http/Controllers/Api/Application/Servers/ServerController.php
+            - app/Http/Controllers/Auth/LoginCheckpointController.php
+            - app/Models/Model.php
+            - app/Providers/SettingsServiceProvider.php
+            - app/Rules/**
+            - app/Services/Acl/Api/AdminAcl.php
+            - app/Services/Activity/ActivityLogService.php
+            - app/Services/Extensions/ExtensionManifest.php
+            - app/Services/Themes/ThemeService.php
+            - app/Services/Tags/TagBackfiller.php
+            - app/Services/Deployment/AllocationSelectionService.php
+            - app/Services/Deployment/FindViableNodesService.php
+            - app/Services/Servers/EnvironmentService.php
+            - app/Support/JsonValueGuard.php
+            - app/Support/JsonValueTree.php
+            - app/Support/Alerts/AlertsMessageBag.php
+            - app/Http/Controllers/Api/Admin/DatabaseHosts/DatabaseHostController.php
+            - app/Http/Controllers/Api/Admin/Servers/ServerMountController.php
+            - app/Http/Controllers/Api/Remote/Backups/BackupStatusController.php
+            - app/Http/Resources/Wings/ServerConfigurationCollection.php
+            - app/Models/Server.php
+        # Rule 14: case-insensitive substrings banned from symbol names.
+        forbiddenSymbolTerms:
+            - shape
+
+    disallowedFunctionCalls:
+        # Rule 6 (`no-runtime-typeof`): ad hoc runtime type checks.
+        -
+            function:
+                - 'is_string()'
+                - 'is_int()'
+                - 'is_float()'
+                - 'is_bool()'
+                - 'is_array()'
+                - 'is_object()'
+                - 'is_null()'
+                - 'is_numeric()'
+                - 'is_scalar()'
+                - 'is_iterable()'
+                - 'is_callable()'
+                - 'gettype()'
+                - 'get_debug_type()'
+                - 'settype()'
+            message: 'runtime type checks narrow a representation without establishing its contract; parse input at its I/O boundary (cuyz/valinor, spatie/laravel-data), then branch on the domain value'
+            allowIn: %rules.boundaryPaths%
+            errorIdentifier: 'rules.noRuntimeTypeChecks'
+        # Rule 7 (`no-reflect-apply`): dynamic dispatch through strings.
+        -
+            function:
+                - 'call_user_func()'
+                - 'call_user_func_array()'
+            message: 'dynamic dispatch bypasses typed function calls; call the function directly or model dispatch behind a named interface'
+            errorIdentifier: 'rules.noDynamicAccess'
+        # Rule 8 (`no-module-mocking`): runtime patching of loaded code.
+        -
+            function:
+                - 'uopz_set_return()'
+                - 'uopz_set_mock()'
+                - 'uopz_redefine()'
+                - 'uopz_function()'
+                - 'runkit7_function_redefine()'
+                - 'runkit7_method_redefine()'
+                - 'runkit_function_redefine()'
+                - 'runkit_method_redefine()'
+            message: 'runtime patching replaces loaded code instead of a real dependency seam; extract an interface and inject a faithful in-memory fake'
+            errorIdentifier: 'rules.noClassLoadingMocks'
+
+    disallowedMethodCalls:
+        # Rule 7 (`no-reflect-get` / `no-reflect-apply`): reflection access.
+        -
+            method:
+                - 'ReflectionProperty::getValue()'
+                - 'ReflectionProperty::setValue()'
+                - 'ReflectionMethod::invoke()'
+                - 'ReflectionMethod::invokeArgs()'
+                - 'Closure::call()'
+                - 'Closure::bindTo()'
+            message: 'reflection bypasses typed member access; use typed property access or parse dynamic input into a named domain type'
+            errorIdentifier: 'rules.noDynamicAccess'
+
+    disallowedStaticCalls:
+        -
+            method: 'Closure::bind()'
+            message: 'rebinding closures bypasses the type system; model the behavior behind a named interface'
+            errorIdentifier: 'rules.noDynamicAccess'
+
+parametersSchema:
+    rules: structure([
+        boundaryPaths: listOf(string())
+        forbiddenSymbolTerms: listOf(string())
+    ])
+
+rules:
+    # Rule 7 (`no-reflect-get`): dynamic names ($obj->$name, $obj->{$expr},
+    # $$var, $class::$name) and [$obj, 'method'] callables come from
+    # symplify/phpstan-rules; fixtures under tests/ prove the coverage.
+    - Symplify\PHPStanRules\Rules\NoDynamicNameRule
+    - Symplify\PHPStanRules\Rules\Complexity\ForbiddenArrayMethodCallRule
+
+services:
+    - Symplify\PHPStanRules\TypeAnalyzer\CallableTypeAnalyzer
+    - Rules\Support\AssertionForms
+    - Rules\Support\SignatureResolver
+    - Rules\Support\TypeAliasDocblock
+    - Rules\Support\TypeClassifier
+    -
+        class: Rules\Rules\NoMixedParametersRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoMixedReturnsRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoMixedTypeAliasesRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoObjectParametersRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoUnsafeDictionaryTypeRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoUnsafeDictionaryPropertyRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoInstanceofOnMixedRule
+        arguments:
+            boundaryPaths: %rules.boundaryPaths%
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoClassLoadingMocksRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\RequireSafetyCommentForAssertionRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoChainedAssertionsRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoChainedVarTagsRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoKnownValueWideningPropertyRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoKnownValueWideningReturnRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoWidenThenAssertRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoConditionalEmptyArraySpreadRule
+        tags: [phpstan.rules.rule]
+    -
+        class: Rules\Rules\NoForbiddenTermsInSymbolNamesRule
+        arguments:
+            forbiddenTerms: %rules.forbiddenSymbolTerms%
+        tags: [phpstan.rules.rule]

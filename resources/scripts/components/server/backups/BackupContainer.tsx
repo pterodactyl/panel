@@ -1,85 +1,150 @@
-import React, { useContext, useEffect, useState } from 'react';
+import { useCallback, useMemo } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
+import { getCoreRowModel, useReactTable, type OnChangeFn, type PaginationState } from '@tanstack/react-table';
+import { useNavigate, useParams } from '@tanstack/react-router';
+import { Archive, ArrowLeft } from 'lucide-react';
 import Spinner from '@/components/elements/Spinner';
-import useFlash from '@/plugins/useFlash';
-import Can from '@/components/elements/Can';
+import ListToolbar from '@/components/elements/ListToolbar';
+import { NewButton } from '@/components/elements/NewButton';
 import CreateBackupButton from '@/components/server/backups/CreateBackupButton';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import BackupRow from '@/components/server/backups/BackupRow';
-import tw from 'twin.macro';
-import getServerBackups, { Context as ServerBackupContext } from '@/api/swr/getServerBackups';
-import { ServerContext } from '@/state/server';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import Pagination from '@/components/elements/Pagination';
+import { useCurrentServer } from '@/api/server/queries';
+import { updateServerBackup, useServerBackups } from '@/api/server/backups/queries';
+import { httpErrorToHuman } from '@/api/http';
+import { ServerError } from '@/components/elements/ScreenBlock';
+import { getPageSearch, usePageSearch } from '@/router/search';
+import DataTable from '@/components/elements/table/DataTable';
+import DataTablePagination from '@/components/elements/table/DataTablePagination';
+import { backupColumns } from '@/components/server/backups/BackupTable';
+import { completeBackup, parseBackupCompletedPayload } from '@/components/server/backups/backupCompletion';
+import { SocketEvent } from '@/components/server/events';
+import useWebsocketEvent from '@/plugins/useWebsocketEvent';
+import { usePermissions } from '@/plugins/usePermissions';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { emptyCompactClass } from '@/components/ui/styles';
 
-const BackupContainer = () => {
-    const { page, setPage } = useContext(ServerBackupContext);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const { data: backups, error, isValidating } = getServerBackups();
+export default function BackupContainer() {
+    const navigate = useNavigate();
+    const { id } = useParams({ from: '/authenticated/server/$id' });
+    const page = usePageSearch();
+    const server = useCurrentServer()!;
+    const [canCreate] = usePermissions('backup.create');
+    const queryClient = useQueryClient();
+    const { data: backups, error, refetch } = useServerBackups(server.attributes.uuid, page);
+    const columns = useMemo(() => backupColumns(page), [page]);
+    const data = useMemo(() => backups?.data ?? [], [backups?.data]);
+    const pagination = useMemo<PaginationState>(
+        () => ({ pageIndex: page - 1, pageSize: backups?.meta.pagination.per_page ?? 20 }),
+        [backups?.meta.pagination.per_page, page]
+    );
+    const onPaginationChange = useCallback<OnChangeFn<PaginationState>>(
+        (updater) => {
+            const next = updater instanceof Function ? updater(pagination) : updater;
+            if (next.pageIndex === pagination.pageIndex) return;
 
-    const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
+            navigate({
+                to: '/server/$id/backups',
+                params: { id },
+                search: getPageSearch(next.pageIndex + 1),
+                replace: true,
+                viewTransition: false,
+            });
+        },
+        [id, navigate, pagination]
+    );
+    const table = useReactTable({
+        data,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getRowId: (backup) => backup.attributes.uuid,
+        manualPagination: true,
+        rowCount: backups?.meta.pagination.total ?? 0,
+        state: { pagination },
+        onPaginationChange,
+    });
 
-    useEffect(() => {
-        if (!error) {
-            clearFlashes('backups');
-
+    useWebsocketEvent(SocketEvent.BACKUP_COMPLETED, (data) => {
+        const payload = parseBackupCompletedPayload(data);
+        if (!payload) {
+            console.warn('Ignoring a malformed backup completion event.', data);
             return;
         }
 
-        clearAndAddHttpError({ error, key: 'backups' });
-    }, [error]);
+        updateServerBackup(queryClient, server.attributes.uuid, page, payload.uuid, (backup) =>
+            completeBackup(backup, payload, new Date().toISOString())
+        );
+    });
 
-    if (!backups || (error && isValidating)) {
+    const backupLimit = server.attributes.feature_limits.backups ?? 0;
+
+    if (error && !backups) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
+
+    if (!backups) {
         return <Spinner size={'large'} centered />;
     }
 
+    const backupCount = backups.meta.backup_count;
+    const canAddBackup = canCreate && backupLimit > backupCount;
+    const usage =
+        backupLimit === 0 && backups.data.length > 0
+            ? 'Backups cannot be created for this server because the backup limit is set to 0.'
+            : canCreate && backupLimit > 0 && backupCount > 0
+              ? `${backupCount} of ${backupLimit} backups have been created for this server.`
+              : null;
+
     return (
         <ServerContentBlock title={'Backups'}>
-            <FlashMessageRender byKey={'backups'} css={tw`mb-4`} />
-            <Pagination data={backups} onPageSelect={setPage}>
-                {({ items }) =>
-                    !items.length ? (
-                        // Don't show any error messages if the server has no backups and the user cannot
-                        // create additional ones for the server.
-                        !backupLimit ? null : (
-                            <p css={tw`text-center text-sm text-neutral-300`}>
-                                {page > 1
-                                    ? "Looks like we've run out of backups to show you, try going back a page."
-                                    : 'It looks like there are no backups currently stored for this server.'}
-                            </p>
-                        )
+            {(usage || canAddBackup) && (
+                <ListToolbar summary={usage}>{canAddBackup && <CreateBackupButton />}</ListToolbar>
+            )}
+            <DataTable
+                table={table}
+                emptyState={
+                    page > 1 ? (
+                        <Empty className={emptyCompactClass}>
+                            <EmptyHeader>
+                                <EmptyMedia variant={'icon'}>
+                                    <Archive />
+                                </EmptyMedia>
+                                <EmptyTitle>No backups on this page</EmptyTitle>
+                                <EmptyDescription>This page is past the end of the backup list.</EmptyDescription>
+                            </EmptyHeader>
+                            <EmptyContent>
+                                <NewButton isSecondary icon={ArrowLeft} onClick={() => table.setPageIndex(0)}>
+                                    First page
+                                </NewButton>
+                            </EmptyContent>
+                        </Empty>
                     ) : (
-                        items.map((backup, index) => (
-                            <BackupRow key={backup.uuid} backup={backup} css={index > 0 ? tw`mt-2` : undefined} />
-                        ))
+                        <Empty className={emptyCompactClass}>
+                            <EmptyHeader>
+                                <EmptyMedia variant={'icon'}>
+                                    <Archive />
+                                </EmptyMedia>
+                                <EmptyTitle>No backups</EmptyTitle>
+                                <EmptyDescription>
+                                    {backupLimit > 0
+                                        ? "This server doesn't have any backups yet."
+                                        : "Backups can't be created because this server's backup limit is 0."}
+                                </EmptyDescription>
+                            </EmptyHeader>
+                            {canAddBackup && (
+                                <EmptyContent>
+                                    <CreateBackupButton />
+                                </EmptyContent>
+                            )}
+                        </Empty>
                     )
                 }
-            </Pagination>
-            {backupLimit === 0 && (
-                <p css={tw`text-center text-sm text-neutral-300`}>
-                    Backups cannot be created for this server because the backup limit is set to 0.
-                </p>
-            )}
-            <Can action={'backup.create'}>
-                <div css={tw`mt-6 sm:flex items-center justify-end`}>
-                    {backupLimit > 0 && backups.backupCount > 0 && (
-                        <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
-                            {backups.backupCount} of {backupLimit} backups have been created for this server.
-                        </p>
-                    )}
-                    {backupLimit > 0 && backupLimit > backups.backupCount && (
-                        <CreateBackupButton css={tw`w-full sm:w-auto`} />
-                    )}
-                </div>
-            </Can>
+            />
+            <DataTablePagination
+                table={table}
+                total={backups.meta.pagination.total}
+                count={backups.meta.pagination.count}
+                itemLabel={'backups'}
+            />
         </ServerContentBlock>
     );
-};
-
-export default () => {
-    const [page, setPage] = useState<number>(1);
-    return (
-        <ServerBackupContext.Provider value={{ page, setPage }}>
-            <BackupContainer />
-        </ServerBackupContext.Provider>
-    );
-};
+}

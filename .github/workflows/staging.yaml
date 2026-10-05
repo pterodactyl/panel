@@ -1,0 +1,21 @@
+name: Staging
+
+on:
+  push:
+    branches:
+      - 2.0-develop
+
+concurrency:
+  group: staging-dispatch
+
+jobs:
+  dispatch:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Notify staging deployment
+        run: |
+          curl -sf -X POST \
+            -H "Authorization: Bearer ${{ secrets.STAGING_DISPATCH_TOKEN }}" \
+            -H "Accept: application/vnd.github+json" \
+            "https://api.github.com/repos/${{ secrets.STAGING_DISPATCH_REPO }}/dispatches" \
+            -d "{\"event_type\":\"panel-next-push\",\"client_payload\":{\"sha\":\"${GITHUB_SHA}\",\"ref\":\"${GITHUB_REF_NAME}\"}}"

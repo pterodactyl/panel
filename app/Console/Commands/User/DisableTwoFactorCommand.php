@@ -1,43 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Console\Commands\User;
 
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Pterodactyl\Contracts\Repository\UserRepositoryInterface;
+use Pterodactyl\Models\User;
 
+#[Description('Disable two-factor authentication for a specific user in the Panel.')]
+#[Signature('p:user:disable2fa {--email= : The email of the user to disable 2-Factor for.}')]
 class DisableTwoFactorCommand extends Command
 {
-    protected $description = 'Disable two-factor authentication for a specific user in the Panel.';
-
-    protected $signature = 'p:user:disable2fa {--email= : The email of the user to disable 2-Factor for.}';
-
-    /**
-     * DisableTwoFactorCommand constructor.
-     */
-    public function __construct(private UserRepositoryInterface $repository)
-    {
-        parent::__construct();
-    }
-
     /**
      * Handle command execution process.
-     *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function handle()
+    public function handle(): void
     {
         if ($this->input->isInteractive()) {
             $this->output->warning(trans('command/messages.user.2fa_help_text'));
         }
 
         $email = $this->option('email') ?? $this->ask(trans('command/messages.user.ask_email'));
-        $user = $this->repository->setColumns(['id', 'email'])->findFirstWhere([['email', '=', $email]]);
 
-        $this->repository->withoutFreshModel()->update($user->id, [
+        $user = User::query()->where('email', $email)->firstOrFail();
+        $user->update([
             'use_totp' => false,
             'totp_secret' => null,
         ]);
+
         $this->info(trans('command/messages.user.2fa_disabled', ['email' => $user->email]));
     }
 }

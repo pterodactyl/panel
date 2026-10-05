@@ -1,76 +1,65 @@
 import React from 'react';
-import { Actions, State, useStoreActions, useStoreState } from 'easy-peasy';
-import { Form, Formik, FormikHelpers } from 'formik';
-import * as Yup from 'yup';
+import { useStore } from '@tanstack/react-form';
+import { useAppForm, Form } from '@/components/form';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import Field from '@/components/elements/Field';
-import { httpErrorToHuman } from '@/api/http';
-import { ApplicationStore } from '@/state';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
+import { useCurrentUser, useUpdateAccountEmail } from '@/api/account/queries';
 
-interface Values {
-    email: string;
-    password: string;
-}
+const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-const schema = Yup.object().shape({
-    email: Yup.string().email().required(),
-    password: Yup.string().required('You must provide your current account password.'),
-});
+function UpdateEmailAddressForm() {
+    const user = useCurrentUser();
+    const updateEmail = useUpdateAccountEmail();
 
-export default () => {
-    const user = useStoreState((state: State<ApplicationStore>) => state.user.data);
-    const updateEmail = useStoreActions((state: Actions<ApplicationStore>) => state.user.updateUserEmail);
+    const form = useAppForm({
+        defaultValues: { email: user.email, password: '' },
+        onSubmit: async ({ value, formApi }) => {
+            try {
+                await updateEmail.mutateAsync({ body: value });
+                formApi.setFieldValue('password', '');
+            } catch {
+                // Error toast is handled by the mutation.
+            } finally {
+                formApi.setFieldMeta('password', (meta) => ({ ...meta, errors: [] }));
+            }
+        },
+    });
 
-    const { clearFlashes, addFlash } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-
-    const submit = (values: Values, { resetForm, setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('account:email');
-
-        updateEmail({ ...values })
-            .then(() =>
-                addFlash({
-                    type: 'success',
-                    key: 'account:email',
-                    message: 'Your primary email has been updated.',
-                })
-            )
-            .catch((error) =>
-                addFlash({
-                    type: 'error',
-                    key: 'account:email',
-                    title: 'Error',
-                    message: httpErrorToHuman(error),
-                })
-            )
-            .then(() => {
-                resetForm();
-                setSubmitting(false);
-            });
-    };
+    const isSubmitting = useStore(form.store, (state) => state.isSubmitting) || updateEmail.isPending;
 
     return (
-        <Formik onSubmit={submit} validationSchema={schema} initialValues={{ email: user!.email, password: '' }}>
-            {({ isSubmitting, isValid }) => (
-                <React.Fragment>
-                    <SpinnerOverlay size={'large'} visible={isSubmitting} />
-                    <Form css={tw`m-0`}>
-                        <Field id={'current_email'} type={'email'} name={'email'} label={'Email'} />
-                        <div css={tw`mt-6`}>
-                            <Field
-                                id={'confirm_password'}
-                                type={'password'}
-                                name={'password'}
-                                label={'Confirm Password'}
-                            />
-                        </div>
-                        <div css={tw`mt-6`}>
-                            <Button disabled={isSubmitting || !isValid}>Update Email</Button>
-                        </div>
-                    </Form>
-                </React.Fragment>
-            )}
-        </Formik>
+        <React.Fragment>
+            <SpinnerOverlay size={'large'} visible={isSubmitting} />
+            <Form form={form} className={'m-0'}>
+                <form.AppField
+                    name={'email'}
+                    validators={{
+                        onChange: ({ value }) =>
+                            isEmail(value) ? undefined : 'A valid email address must be provided.',
+                    }}
+                >
+                    {(field) => <field.TextField id={'current_email'} type={'email'} label={'Email'} />}
+                </form.AppField>
+                <div className={'mt-6'}>
+                    <form.AppField
+                        name={'password'}
+                        validators={{
+                            onChange: ({ value }) =>
+                                value.length >= 1 ? undefined : 'You must provide your current account password.',
+                        }}
+                    >
+                        {(field) => (
+                            <field.TextField id={'confirm_password'} type={'password'} label={'Confirm Password'} />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className={'mt-6'}>
+                    <form.AppForm>
+                        <form.SubmitButton disabled={updateEmail.isPending}>Update Email</form.SubmitButton>
+                    </form.AppForm>
+                </div>
+            </Form>
+        </React.Fragment>
     );
-};
+}
+
+export default UpdateEmailAddressForm;

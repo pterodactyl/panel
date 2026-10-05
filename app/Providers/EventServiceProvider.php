@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Providers;
 
-use Pterodactyl\Models\User;
+use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
+use Pterodactyl\Listeners\AuthenticationListener;
+use Pterodactyl\Listeners\RevocationListener;
+use Pterodactyl\Listeners\TwoFactorListener;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\EggVariable;
-use Pterodactyl\Observers\UserObserver;
+use Pterodactyl\Models\User;
+use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
 use Pterodactyl\Observers\ServerObserver;
 use Pterodactyl\Observers\SubuserObserver;
-use Pterodactyl\Listeners\TwoFactorListener;
-use Pterodactyl\Listeners\RevocationListener;
-use Pterodactyl\Observers\EggVariableObserver;
-use Pterodactyl\Listeners\AuthenticationListener;
-use Pterodactyl\Events\Server\Installed as ServerInstalledEvent;
-use Pterodactyl\Notifications\ServerInstalled as ServerInstalledNotification;
-use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
+use Pterodactyl\Observers\UserObserver;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -26,6 +26,11 @@ class EventServiceProvider extends ServiceProvider
         ServerInstalledEvent::class => [ServerInstalledNotification::class],
     ];
 
+    /**
+     * The event subscribers to register.
+     *
+     * @var list<class-string>
+     */
     protected $subscribe = [
         AuthenticationListener::class,
         RevocationListener::class,
@@ -44,6 +49,5 @@ class EventServiceProvider extends ServiceProvider
         User::observe(UserObserver::class);
         Server::observe(ServerObserver::class);
         Subuser::observe(SubuserObserver::class);
-        EggVariable::observe(EggVariableObserver::class);
     }
 }

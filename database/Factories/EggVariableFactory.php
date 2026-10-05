@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Illuminate\Support\Str;
-use Pterodactyl\Models\EggVariable;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\EggVariable;
 
+/**
+ * @extends Factory<EggVariable>
+ */
 class EggVariableFactory extends Factory
 {
     /**
@@ -21,13 +27,15 @@ class EggVariableFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->unique()->firstName,
-            'description' => $this->faker->sentence(),
-            'env_variable' => Str::upper(Str::replaceArray(' ', ['_'], $this->faker->words(2, true))),
-            'default_value' => $this->faker->colorName,
+            'egg_id' => Egg::factory(),
+            'name' => fake()->unique()->firstName(),
+            'description' => fake()->sentence(),
+            'env_variable' => Str::upper(Str::replaceArray(' ', ['_'], fake()->words(2, true))),
+            'default_value' => fake()->colorName(),
             'user_viewable' => 0,
             'user_editable' => 0,
             'rules' => 'required|string',
+            'sort_order' => 0,
         ];
     }
 
@@ -36,11 +44,9 @@ class EggVariableFactory extends Factory
      */
     public function viewable(): static
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'user_viewable' => 1,
-            ];
-        });
+        return $this->state(fn (array $attributes): array => [
+            'user_viewable' => 1,
+        ]);
     }
 
     /**
@@ -48,10 +54,8 @@ class EggVariableFactory extends Factory
      */
     public function editable(): static
     {
-        return $this->state(function (array $attributes) {
-            return [
-                'user_editable' => 1,
-            ];
-        });
+        return $this->state(fn (array $attributes): array => [
+            'user_editable' => 1,
+        ]);
     }
 }

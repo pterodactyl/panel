@@ -1,68 +1,49 @@
-import React, { useEffect, useRef, useState } from 'react';
-import styled from 'styled-components/macro';
-import { useStoreActions, useStoreState } from 'easy-peasy';
+import { useEffect } from 'react';
+import { setHttpProgress, useHttpProgress } from '@/state/httpProgress';
 import { randomInt } from '@/helpers';
-import { CSSTransition } from 'react-transition-group';
-import tw from 'twin.macro';
 
-const BarFill = styled.div`
-    ${tw`h-full bg-cyan-400`};
-    transition: 250ms ease-in-out;
-    box-shadow: 0 -2px 10px 2px hsl(178, 78%, 57%);
-`;
-
-type Timer = ReturnType<typeof setTimeout>;
-
-export default () => {
-    const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
-    const timeout = useRef<Timer>(null) as React.MutableRefObject<Timer>;
-    const [visible, setVisible] = useState(false);
-    const progress = useStoreState((state) => state.progress.progress);
-    const continuous = useStoreState((state) => state.progress.continuous);
-    const setProgress = useStoreActions((actions) => actions.progress.setProgress);
+export default function ProgressBar() {
+    const { progress, continuous } = useHttpProgress();
+    const visible = (progress || 0) > 0;
 
     useEffect(() => {
-        return () => {
-            timeout.current && clearTimeout(timeout.current);
-            interval.current && clearInterval(interval.current);
-        };
-    }, []);
-
-    useEffect(() => {
-        setVisible((progress || 0) > 0);
-
-        if (progress === 100) {
-            timeout.current = setTimeout(() => setProgress(undefined), 500);
+        if (progress !== 100) {
+            return undefined;
         }
+
+        const timeout = setTimeout(() => setHttpProgress(undefined), 500);
+
+        return () => clearTimeout(timeout);
     }, [progress]);
 
     useEffect(() => {
         if (!continuous) {
-            interval.current && clearInterval(interval.current);
             return;
         }
 
         if (!progress || progress === 0) {
-            setProgress(randomInt(20, 30));
+            setHttpProgress(randomInt(20, 30));
+            return;
         }
-    }, [continuous]);
 
-    useEffect(() => {
-        if (continuous) {
-            interval.current && clearInterval(interval.current);
-            if ((progress || 0) >= 90) {
-                setProgress(90);
-            } else {
-                interval.current = setTimeout(() => setProgress((progress || 0) + randomInt(1, 5)), 500);
-            }
+        if (progress >= 90) {
+            setHttpProgress(90);
+            return;
         }
-    }, [progress, continuous]);
+
+        const timeout = setTimeout(() => setHttpProgress(progress + randomInt(1, 5)), 500);
+
+        return () => clearTimeout(timeout);
+    }, [continuous, progress]);
 
     return (
-        <div css={tw`w-full fixed`} style={{ height: '2px' }}>
-            <CSSTransition timeout={150} appear in={visible} unmountOnExit classNames={'fade'}>
-                <BarFill style={{ width: progress === undefined ? '100%' : `${progress}%` }} />
-            </CSSTransition>
+        <div className={'fixed h-0.5 w-full'}>
+            {visible && (
+                <div
+                    className={'h-full bg-accent shadow-progress transition-[width] duration-300 ease-in-out'}
+                    style={{ width: progress === undefined ? '100%' : `${progress}%` }}
+                />
+            )}
         </div>
     );
-};
+}

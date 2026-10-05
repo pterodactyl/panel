@@ -1,11 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Pterodactyl\Models\DatabaseHost;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Crypt;
+use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Models\Node;
 
+/**
+ * @extends Factory<DatabaseHost>
+ */
 class DatabaseHostFactory extends Factory
 {
     /**
@@ -21,11 +27,12 @@ class DatabaseHostFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->colorName,
-            'host' => $this->faker->unique()->ipv4,
+            'node_id' => Node::factory()->withLocation(),
+            'name' => fake()->colorName(),
+            'host' => fake()->unique()->ipv4(),
             'port' => 3306,
-            'username' => $this->faker->colorName,
-            'password' => Crypt::encrypt($this->faker->word),
+            'username' => fake()->colorName(),
+            'password' => Crypt::encrypt(fake()->word()),
         ];
     }
 }

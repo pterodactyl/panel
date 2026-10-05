@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use phpseclib3\Crypt\PublicKeyLoader;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use phpseclib3\Crypt\PublicKeyLoader;
+use Pterodactyl\Models\User;
 
 class UserSSHKeyFactory extends Factory
 {
@@ -29,7 +32,8 @@ class UserSSHKeyFactory extends Factory
         $key = PublicKeyLoader::loadPublicKey(static::$keys['ed25519']);
 
         return [
-            'name' => $this->faker->name(),
+            'user_id' => User::factory(),
+            'name' => fake()->name(),
             'public_key' => $key->toString('PKCS8'),
             'fingerprint' => $key->getFingerprint('sha256'),
         ];

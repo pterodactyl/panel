@@ -1,0 +1,29 @@
+<?php
+
+namespace {{namespace}};
+
+use Pterodactyl\Extensions\ExtensionProvider;
+
+class {{provider}} extends ExtensionProvider
+{
+    public function register(): void
+    {
+        // Container bindings go here.
+    }
+
+    public function boot(): void
+    {
+        // Mounts routes/client.php at /api/client/extensions/{{id}} — and
+        // routes/server.php (per-server, at /api/client/servers/{server}/extensions/{{id}}),
+        // routes/admin.php + routes/application.php at their prefixes when added.
+        $this->registerApiRoutes();
+
+        // Uncomment as the extension grows:
+        // $this->loadExtensionMigrations();
+        // $this->loadExtensionTranslations();
+        // $this->registerCommands([...]) and $this->registerSchedule(fn (Schedule $schedule) => ...)
+        // $this->wrapAction(Contract::class, fn (Contract $inner): Contract => new Wrapper($inner));
+        // $this->registerHeadTags([['tag' => 'meta', 'name' => 'theme-color', 'content' => '#0f172a']]);
+        // $this->registerRootRoutes(...) for prefixes claimed under "routes.root" in extension.json
+    }
+}

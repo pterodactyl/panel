@@ -1,11 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Permission;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\User;
 
+/**
+ * @extends Factory<Subuser>
+ */
 class SubuserFactory extends Factory
 {
     /**
@@ -21,8 +28,10 @@ class SubuserFactory extends Factory
     public function definition(): array
     {
         return [
+            'user_id' => User::factory(),
+            'server_id' => Server::factory()->withRelationships(),
             'permissions' => [
-                Permission::ACTION_WEBSOCKET_CONNECT,
+                Permissions::WebsocketConnect->value,
             ],
         ];
     }

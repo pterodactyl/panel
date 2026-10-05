@@ -1,23 +1,24 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Tests\Integration\Api\Client;
 
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use InvalidArgumentException;
+use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\DatabaseHost;
+use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Task;
 use Pterodactyl\Models\User;
-use Pterodactyl\Models\Model;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Schedule;
-use Illuminate\Support\Collection;
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\DatabaseHost;
-use Pterodactyl\Tests\Integration\TestResponse;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Illuminate\Database\Eloquent\Model as EloquentModel;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Pterodactyl\Tests\Integration\TestResponse;
 
 abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -42,9 +43,8 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      * just dump 500-level errors to the screen in the tests without having
      * to keep re-assigning variables.
      *
-     * @param \Illuminate\Http\Response $response
-     * @param \Illuminate\Http\Request $request
-     *
+     * @param  Response  $response
+     * @param  Request  $request
      * @return \Illuminate\Testing\TestResponse
      */
     protected function createTestResponse($response, $request)
@@ -57,7 +57,7 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
      */
     protected function link(mixed $model, ?string $append = null): string
     {
-        switch (get_class($model)) {
+        switch ($model::class) {
             case Server::class:
                 $link = "/api/client/servers/$model->uuid";
                 break;
@@ -74,27 +74,9 @@ abstract class ClientApiIntegrationTestCase extends IntegrationTestCase
                 $link = "/api/client/servers/{$model->server->uuid}/backups/$model->uuid";
                 break;
             default:
-                throw new \InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
+                throw new InvalidArgumentException(sprintf('Cannot create link for Model of type %s', class_basename($model)));
         }
 
-        return $link . ($append ? '/' . ltrim($append, '/') : '');
-    }
-
-    /**
-     * Asserts that the data passed through matches the output of the data from the transformer. This
-     * will remove the "relationships" key when performing the comparison.
-     */
-    protected function assertJsonTransformedWith(array $data, Model|EloquentModel $model)
-    {
-        $reflect = new \ReflectionClass($model);
-        $transformer = sprintf('\\Pterodactyl\\Transformers\\Api\\Client\\%sTransformer', $reflect->getShortName());
-
-        $transformer = new $transformer();
-        $this->assertInstanceOf(BaseClientTransformer::class, $transformer);
-
-        $this->assertSame(
-            $transformer->transform($model),
-            Collection::make($data)->except(['relationships'])->toArray()
-        );
+        return $link.($append ? '/'.mb_ltrim($append, '/') : '');
     }
 }

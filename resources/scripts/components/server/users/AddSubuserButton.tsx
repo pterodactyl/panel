@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import EditSubuserModal from '@/components/server/users/EditSubuserModal';
-import { Button } from '@/components/elements/button/index';
+import { useParams } from '@tanstack/react-router';
+import { NewLinkButton } from '@/components/elements/NewButton';
 
-export default () => {
-    const [visible, setVisible] = useState(false);
+const AddSubuserButton = () => {
+    const { id } = useParams({ strict: false });
 
-    return (
-        <>
-            <EditSubuserModal visible={visible} onModalDismissed={() => setVisible(false)} />
-            <Button onClick={() => setVisible(true)}>New User</Button>
-        </>
-    );
+    return <NewLinkButton to={`/server/${id}/users/new`}>New user</NewLinkButton>;
 };
+
+export default AddSubuserButton;

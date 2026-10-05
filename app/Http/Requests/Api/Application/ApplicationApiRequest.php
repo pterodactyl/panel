@@ -1,23 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Application;
 
-use Webmozart\Assert\Assert;
-use Pterodactyl\Models\ApiKey;
 use Laravel\Sanctum\TransientToken;
-use Illuminate\Validation\Validator;
-use Illuminate\Database\Eloquent\Model;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Illuminate\Foundation\Http\FormRequest;
 use Pterodactyl\Exceptions\PterodactylException;
+use Pterodactyl\Http\Requests\Api\ApiRequest;
+use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
 
-abstract class ApplicationApiRequest extends FormRequest
+abstract class ApplicationApiRequest extends ApiRequest
 {
     /**
      * The resource that should be checked when performing the authorization
      * function for this request.
      */
-    protected ?string $resource;
+    protected ?string $resource = null;
 
     /**
      * The permission level that a given API key should have for accessing
@@ -33,12 +32,13 @@ abstract class ApplicationApiRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        if (is_null($this->resource)) {
-            throw new PterodactylException('An ACL resource must be defined on API requests.');
-        }
+        throw_if(($this->resource) === null, PterodactylException::class, 'An ACL resource must be defined on API requests.');
 
-        $token = $this->user()->currentAccessToken();
-        if ($token instanceof TransientToken) { // @phpstan-ignore instanceof.alwaysFalse
+        $user = $this->user();
+        throw_if($user === null, PterodactylException::class, 'Application API requests require an authenticated user.');
+
+        $token = $user->currentAccessToken();
+        if ($token === null || $token instanceof TransientToken) {
             return true;
         }
 
@@ -47,47 +47,5 @@ abstract class ApplicationApiRequest extends FormRequest
         }
 
         return AdminAcl::check($token, $this->resource, $this->permission);
-    }
-
-    /**
-     * Default set of rules to apply to API requests.
-     */
-    public function rules(): array
-    {
-        return [];
-    }
-
-    /**
-     * Helper method allowing a developer to easily hook into this logic without having
-     * to remember what the method name is called or where to use it. By default this is
-     * a no-op.
-     */
-    public function withValidator(Validator $validator): void
-    {
-        // do nothing
-    }
-
-    /**
-     * Returns the named route parameter and asserts that it is a real model that
-     * exists in the database.
-     *
-     * @template T of \Illuminate\Database\Eloquent\Model
-     *
-     * @param class-string<T> $expect
-     *
-     * @return T
-     *
-     * @noinspection PhpDocSignatureInspection
-     */
-    public function parameter(string $key, string $expect)
-    {
-        $value = $this->route()->parameter($key);
-
-        Assert::isInstanceOf($value, $expect);
-        Assert::isInstanceOf($value, Model::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
-        Assert::true($value->exists);
-
-        /* @var T $value */
-        return $value;
     }
 }

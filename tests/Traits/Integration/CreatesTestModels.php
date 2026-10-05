@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Tests\Traits\Integration;
 
-use Ramsey\Uuid\Uuid;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Location;
 use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
 use Pterodactyl\Models\Subuser;
-use Pterodactyl\Models\Location;
-use Pterodactyl\Models\Allocation;
+use Pterodactyl\Models\User;
+use Ramsey\Uuid\Uuid;
 
 trait CreatesTestModels
 {
@@ -26,14 +28,14 @@ trait CreatesTestModels
             $attributes['owner_id'] = $attributes['user_id'];
         }
 
-        if (!isset($attributes['owner_id'])) {
+        if (! isset($attributes['owner_id'])) {
             /** @var User $user */
             $user = User::factory()->create();
             $attributes['owner_id'] = $user->id;
         }
 
-        if (!isset($attributes['node_id'])) {
-            if (!isset($attributes['location_id'])) {
+        if (! isset($attributes['node_id'])) {
+            if (! isset($attributes['location_id'])) {
                 /** @var Location $location */
                 $location = Location::factory()->create();
                 $attributes['location_id'] = $location->id;
@@ -44,23 +46,14 @@ trait CreatesTestModels
             $attributes['node_id'] = $node->id;
         }
 
-        if (!isset($attributes['allocation_id'])) {
+        if (! isset($attributes['allocation_id'])) {
             /** @var Allocation $allocation */
             $allocation = Allocation::factory()->create(['node_id' => $attributes['node_id']]);
             $attributes['allocation_id'] = $allocation->id;
         }
 
         if (empty($attributes['egg_id'])) {
-            $egg = !empty($attributes['nest_id'])
-                ? Egg::query()->where('nest_id', $attributes['nest_id'])->firstOrFail()
-                : $this->getBungeecordEgg();
-
-            $attributes['egg_id'] = $egg->id;
-            $attributes['nest_id'] = $egg->nest_id;
-        }
-
-        if (empty($attributes['nest_id'])) {
-            $attributes['nest_id'] = Egg::query()->findOrFail($attributes['egg_id'])->nest_id;
+            $attributes['egg_id'] = $this->getBungeecordEgg()->id;
         }
 
         unset($attributes['user_id'], $attributes['location_id']);
@@ -71,7 +64,7 @@ trait CreatesTestModels
         Allocation::query()->where('id', $server->allocation_id)->update(['server_id' => $server->id]);
 
         return $server->fresh([
-            'location', 'user', 'node', 'allocation', 'nest', 'egg',
+            'location', 'user', 'node', 'allocation', 'egg',
         ]);
     }
 
@@ -79,9 +72,8 @@ trait CreatesTestModels
      * Generates a user and a server for that user. If an array of permissions is passed it
      * is assumed that the user is actually a subuser of the server.
      *
-     * @param string[] $permissions
-     *
-     * @return array{\Pterodactyl\Models\User, \Pterodactyl\Models\Server}
+     * @param  string[]  $permissions
+     * @return array{User, Server}
      */
     public function generateTestAccount(array $permissions = []): array
     {

@@ -1,102 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
+use Illuminate\Database\Eloquent\Attributes\Guarded;
+use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
 use Illuminate\Support\Collection;
 
+#[Guarded(['id', 'created_at', 'updated_at'])]
+#[WithoutTimestamps]
 class Permission extends Model
 {
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'subuser_permission';
-
-    /**
-     * Constants defining different permissions available.
-     */
-    public const ACTION_WEBSOCKET_CONNECT = 'websocket.connect';
-    public const ACTION_CONTROL_CONSOLE = 'control.console';
-    public const ACTION_CONTROL_START = 'control.start';
-    public const ACTION_CONTROL_STOP = 'control.stop';
-    public const ACTION_CONTROL_RESTART = 'control.restart';
-
-    public const ACTION_DATABASE_READ = 'database.read';
-    public const ACTION_DATABASE_CREATE = 'database.create';
-    public const ACTION_DATABASE_UPDATE = 'database.update';
-    public const ACTION_DATABASE_DELETE = 'database.delete';
-    public const ACTION_DATABASE_VIEW_PASSWORD = 'database.view_password';
-
-    public const ACTION_SCHEDULE_READ = 'schedule.read';
-    public const ACTION_SCHEDULE_CREATE = 'schedule.create';
-    public const ACTION_SCHEDULE_UPDATE = 'schedule.update';
-    public const ACTION_SCHEDULE_DELETE = 'schedule.delete';
-
-    public const ACTION_USER_READ = 'user.read';
-    public const ACTION_USER_CREATE = 'user.create';
-    public const ACTION_USER_UPDATE = 'user.update';
-    public const ACTION_USER_DELETE = 'user.delete';
-
-    public const ACTION_BACKUP_READ = 'backup.read';
-    public const ACTION_BACKUP_CREATE = 'backup.create';
-    public const ACTION_BACKUP_DELETE = 'backup.delete';
-    public const ACTION_BACKUP_DOWNLOAD = 'backup.download';
-    public const ACTION_BACKUP_RESTORE = 'backup.restore';
-
-    public const ACTION_ALLOCATION_READ = 'allocation.read';
-    public const ACTION_ALLOCATION_CREATE = 'allocation.create';
-    public const ACTION_ALLOCATION_UPDATE = 'allocation.update';
-    public const ACTION_ALLOCATION_DELETE = 'allocation.delete';
-
-    public const ACTION_FILE_READ = 'file.read';
-    public const ACTION_FILE_READ_CONTENT = 'file.read-content';
-    public const ACTION_FILE_CREATE = 'file.create';
-    public const ACTION_FILE_UPDATE = 'file.update';
-    public const ACTION_FILE_DELETE = 'file.delete';
-    public const ACTION_FILE_ARCHIVE = 'file.archive';
-    public const ACTION_FILE_SFTP = 'file.sftp';
-
-    public const ACTION_STARTUP_READ = 'startup.read';
-    public const ACTION_STARTUP_UPDATE = 'startup.update';
-    public const ACTION_STARTUP_DOCKER_IMAGE = 'startup.docker-image';
-
-    public const ACTION_SETTINGS_RENAME = 'settings.rename';
-    public const ACTION_SETTINGS_REINSTALL = 'settings.reinstall';
-
-    public const ACTION_ACTIVITY_READ = 'activity.read';
-
-    /**
-     * Should timestamps be used on this model.
-     */
-    public $timestamps = false;
-
-    /**
-     * The table associated with the model.
-     */
-    protected $table = 'permissions';
-
-    /**
-     * Fields that are not mass assignable.
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Cast values to correct type.
-     */
-    protected $casts = [
-        'subuser_id' => 'integer',
-    ];
-
-    public static array $validationRules = [
-        'subuser_id' => 'required|numeric|min:1',
-        'permission' => 'required|string',
-    ];
+    public const string RESOURCE_NAME = 'subuser_permission';
 
     /**
      * All the permissions available on the system. You should use self::permissions()
      * to retrieve them, and not directly access this array as it is subject to change.
      *
-     * @see \Pterodactyl\Models\Permission::permissions()
+     * @see Permission::permissions()
+     *
+     * @var array<string, array{description: string, keys: array<string, string>}>
      */
     protected static array $permissions = [
         'websocket' => [
@@ -107,7 +35,7 @@ class Permission extends Model
         ],
 
         'control' => [
-            'description' => 'Permissions that control a user\'s ability to control the power state of a server, or send commands.',
+            'description' => "Permissions that control a user's ability to control the power state of a server, or send commands.",
             'keys' => [
                 'console' => 'Allows a user to send commands to the server instance via the console.',
                 'start' => 'Allows a user to start the server if it is stopped.',
@@ -127,7 +55,7 @@ class Permission extends Model
         ],
 
         'file' => [
-            'description' => 'Permissions that control a user\'s ability to modify the filesystem for this server.',
+            'description' => "Permissions that control a user's ability to modify the filesystem for this server.",
             'keys' => [
                 'create' => 'Allows a user to create additional files and folders via the Panel or direct upload.',
                 'read' => 'Allows a user to view the contents of a directory, but not view the contents of or download files.',
@@ -140,7 +68,7 @@ class Permission extends Model
         ],
 
         'backup' => [
-            'description' => 'Permissions that control a user\'s ability to generate and manage server backups.',
+            'description' => "Permissions that control a user's ability to generate and manage server backups.",
             'keys' => [
                 'create' => 'Allows a user to create new backups for this server.',
                 'read' => 'Allows a user to view all backups that exist for this server.',
@@ -152,7 +80,7 @@ class Permission extends Model
 
         // Controls permissions for editing or viewing a server's allocations.
         'allocation' => [
-            'description' => 'Permissions that control a user\'s ability to modify the port allocations for this server.',
+            'description' => "Permissions that control a user's ability to modify the port allocations for this server.",
             'keys' => [
                 'read' => 'Allows a user to view all allocations currently assigned to this server. Users with any level of access to this server can always view the primary allocation.',
                 'create' => 'Allows a user to assign additional allocations to the server.',
@@ -163,7 +91,7 @@ class Permission extends Model
 
         // Controls permissions for editing or viewing a server's startup parameters.
         'startup' => [
-            'description' => 'Permissions that control a user\'s ability to view this server\'s startup parameters.',
+            'description' => "Permissions that control a user's ability to view this server's startup parameters.",
             'keys' => [
                 'read' => 'Allows a user to view the startup variables for a server.',
                 'update' => 'Allows a user to modify the startup variables for the server.',
@@ -172,7 +100,7 @@ class Permission extends Model
         ],
 
         'database' => [
-            'description' => 'Permissions that control a user\'s access to the database management for this server.',
+            'description' => "Permissions that control a user's access to the database management for this server.",
             'keys' => [
                 'create' => 'Allows a user to create a new database for this server.',
                 'read' => 'Allows a user to view the database associated with this server.',
@@ -183,7 +111,7 @@ class Permission extends Model
         ],
 
         'schedule' => [
-            'description' => 'Permissions that control a user\'s access to the schedule management for this server.',
+            'description' => "Permissions that control a user's access to the schedule management for this server.",
             'keys' => [
                 'create' => 'Allows a user to create new schedules for this server.', // task.create-schedule
                 'read' => 'Allows a user to view schedules and the tasks associated with them for this server.', // task.view-schedule, task.list-schedules
@@ -193,7 +121,7 @@ class Permission extends Model
         ],
 
         'settings' => [
-            'description' => 'Permissions that control a user\'s access to the settings for this server.',
+            'description' => "Permissions that control a user's access to the settings for this server.",
             'keys' => [
                 'rename' => 'Allows a user to rename this server and change the description of it.',
                 'reinstall' => 'Allows a user to trigger a reinstall of this server.',
@@ -201,7 +129,7 @@ class Permission extends Model
         ],
 
         'activity' => [
-            'description' => 'Permissions that control a user\'s access to the server activity logs.',
+            'description' => "Permissions that control a user's access to the server activity logs.",
             'keys' => [
                 'read' => 'Allows a user to view the activity logs for the server.',
             ],
@@ -209,8 +137,20 @@ class Permission extends Model
     ];
 
     /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'subuser_id' => 'integer',
+        ];
+    }
+
+    /**
      * Returns all the permissions available on the system for a user to
      * have when controlling a server.
+     *
+     * @return Collection<string, array{description: string, keys: array<string, string>}>
      */
     public static function permissions(): Collection
     {

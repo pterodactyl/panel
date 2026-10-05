@@ -1,17 +1,22 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Application\Servers;
 
 use Pterodactyl\Models\Server;
+use Pterodactyl\Validation\ServerRules;
 
 class UpdateServerDetailsRequest extends ServerWriteRequest
 {
     /**
      * Rules to apply to a server details update request.
+     *
+     * @return ValidationRules
      */
     public function rules(): array
     {
-        $rules = Server::getRulesForUpdate($this->parameter('server', Server::class));
+        $rules = ServerRules::rules($this->parameter('server', Server::class));
 
         return [
             'external_id' => $rules['external_id'],
@@ -24,14 +29,16 @@ class UpdateServerDetailsRequest extends ServerWriteRequest
     /**
      * Convert the posted data into the correct format that is expected
      * by the application.
+     *
+     * @return ServerDetailsModificationData
      */
-    public function validated($key = null, $default = null): array
+    public function payload(): array
     {
         return [
-            'external_id' => $this->input('external_id'),
-            'name' => $this->input('name'),
-            'owner_id' => $this->input('user'),
-            'description' => $this->input('description'),
+            'external_id' => $this->filled('external_id') ? $this->string('external_id')->toString() : null,
+            'name' => $this->string('name')->toString(),
+            'owner_id' => $this->integer('user'),
+            'description' => $this->filled('description') ? $this->string('description')->toString() : null,
         ];
     }
 

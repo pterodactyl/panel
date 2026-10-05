@@ -1,74 +1,62 @@
-import { fileBitsToString } from '@/helpers';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import React from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
-import chmodFiles from '@/api/server/files/chmodFiles';
-import { ServerContext } from '@/state/server';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import useFlash from '@/plugins/useFlash';
-
-interface FormikValues {
-    mode: string;
-}
+import { useStore } from '@tanstack/react-form';
+import { useAppForm, Form } from '@/components/form';
+import type { DialogProps } from '@/components/elements/dialog';
+import { Dialog } from '@/components/elements/dialog';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { useServerDirectory, useServerStore } from '@/state/server';
+import { useCurrentServerUuid } from '@/api/server/queries';
+import { chmodFilesInput, useChmodFiles } from '@/api/server/files/queries';
 
 interface File {
     file: string;
     mode: string;
 }
 
-type OwnProps = RequiredModalProps & { files: File[] };
+type OwnProps = DialogProps & { files: File[] };
 
 const ChmodFileModal = ({ files, ...props }: OwnProps) => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const { mutate } = useFileManagerSwr();
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
+    const uuid = useCurrentServerUuid()!;
+    const directory = useServerDirectory();
+    const clearSelectedFiles = useServerStore((state) => state.files.clearSelectedFiles);
+    const chmodFiles = useChmodFiles();
 
-    const submit = ({ mode }: FormikValues, { setSubmitting }: FormikHelpers<FormikValues>) => {
-        clearFlashes('files');
+    const form = useAppForm({
+        defaultValues: { mode: files.length > 1 ? '' : files[0].mode || '' },
+        onSubmit: async ({ value: { mode } }) => {
+            const data = files.map((f) => ({ file: f.file, mode: mode }));
 
-        mutate(
-            (data) =>
-                data.map((f) =>
-                    f.name === files[0].file ? { ...f, mode: fileBitsToString(mode, !f.isFile), modeBits: mode } : f
-                ),
-            false
-        );
+            try {
+                await chmodFiles.mutateAsync(chmodFilesInput(uuid, directory, data));
+                clearSelectedFiles();
+            } catch {
+                // Error toast is handled by the mutation.
+            }
+            props.onClose();
+        },
+    });
 
-        const data = files.map((f) => ({ file: f.file, mode: mode }));
-
-        chmodFiles(uuid, directory, data)
-            .then((): Promise<any> => (files.length > 0 ? mutate() : Promise.resolve()))
-            .then(() => setSelectedFiles([]))
-            .catch((error) => {
-                mutate();
-                setSubmitting(false);
-                clearAndAddHttpError({ key: 'files', error });
-            })
-            .then(() => props.onDismissed());
-    };
+    const isSubmitting = useStore(form.store, (state) => state.isSubmitting);
 
     return (
-        <Formik onSubmit={submit} initialValues={{ mode: files.length > 1 ? '' : files[0].mode || '' }}>
-            {({ isSubmitting }) => (
-                <Modal {...props} dismissable={!isSubmitting} showSpinnerOverlay={isSubmitting}>
-                    <Form css={tw`m-0`}>
-                        <div css={tw`flex flex-wrap items-end`}>
-                            <div css={tw`w-full sm:flex-1 sm:mr-4`}>
-                                <Field type={'string'} id={'file_mode'} name={'mode'} label={'File Mode'} autoFocus />
-                            </div>
-                            <div css={tw`w-full sm:w-auto mt-4 sm:mt-0`}>
-                                <Button css={tw`w-full`}>Update</Button>
-                            </div>
-                        </div>
-                    </Form>
-                </Modal>
-            )}
-        </Formik>
+        <Dialog {...props} preventExternalClose={isSubmitting} hideCloseIcon={isSubmitting}>
+            <SpinnerOverlay visible={isSubmitting} />
+            <Form form={form} className={'m-0'}>
+                <div className={'flex flex-wrap items-end'}>
+                    <div className={'w-full sm:flex-1 sm:mr-4'}>
+                        <form.AppField name={'mode'}>
+                            {(field) => (
+                                <field.TextField type={'string'} id={'file_mode'} label={'File Mode'} autoFocus />
+                            )}
+                        </form.AppField>
+                    </div>
+                    <div className={'w-full sm:w-auto mt-4 sm:mt-0'}>
+                        <form.AppForm>
+                            <form.SubmitButton className={'w-full'}>Update</form.SubmitButton>
+                        </form.AppForm>
+                    </div>
+                </div>
+            </Form>
+        </Dialog>
     );
 };
 

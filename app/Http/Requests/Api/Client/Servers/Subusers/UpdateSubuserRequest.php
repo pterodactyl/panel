@@ -1,21 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Enum\Permissions;
 
 class UpdateSubuserRequest extends SubuserRequest
 {
     public function permission(): string
     {
-        return Permission::ACTION_USER_UPDATE;
+        return Permissions::UserUpdate->value;
     }
 
+    /**
+     * @return ValidationRules
+     */
     public function rules(): array
     {
         return [
-            'permissions' => 'required|array',
-            'permissions.*' => 'string',
+            'permissions' => ['required', 'array'],
+            'permissions.*' => ['string'],
         ];
     }
 }

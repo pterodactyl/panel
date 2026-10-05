@@ -1,67 +1,50 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Application;
 
-use Illuminate\Http\Request;
-use Webmozart\Assert\Assert;
 use Illuminate\Http\Response;
-use Illuminate\Support\Collection;
-use Illuminate\Container\Container;
+use Illuminate\Support\Facades\App;
+use InvalidArgumentException;
 use Pterodactyl\Http\Controllers\Controller;
-use Pterodactyl\Extensions\Spatie\Fractalistic\Fractal;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer;
+use UnexpectedValueException;
 
 abstract class ApplicationApiController extends Controller
 {
-    protected Request $request;
-
-    protected Fractal $fractal;
-
-    /**
-     * ApplicationApiController constructor.
-     */
-    public function __construct()
-    {
-        Container::getInstance()->call([$this, 'loadDependencies']);
-
-        // Parse all the includes to use on this request.
-        $input = $this->request->input('include', []);
-        $input = is_array($input) ? $input : explode(',', $input);
-
-        $includes = (new Collection($input))->map(function ($value) {
-            return trim($value);
-        })->filter()->toArray();
-
-        $this->fractal->parseIncludes($includes);
-        $this->fractal->limitRecursion(2);
-    }
-
-    /**
-     * Perform dependency injection of certain classes needed for core functionality
-     * without littering the constructors of classes that extend this abstract.
-     */
-    public function loadDependencies(Fractal $fractal, Request $request)
-    {
-        $this->fractal = $fractal;
-        $this->request = $request;
-    }
-
     /**
      * Return an instance of an application transformer.
      *
      * @template T of \Pterodactyl\Transformers\Api\Application\BaseTransformer
      *
-     * @param class-string<T> $abstract
-     *
+     * @param  class-string<T>  $abstract
      * @return T
      *
      * @noinspection PhpDocSignatureInspection
      */
-    public function getTransformer(string $abstract)
+    public function getTransformer(string $abstract): BaseTransformer
     {
-        Assert::subclassOf($abstract, BaseTransformer::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
+        return $this->makeTransformer($abstract, BaseTransformer::class);
+    }
 
-        return $abstract::fromRequest($this->request);
+    /**
+     * Resolve a transformer through the container, asserting it extends the API's base transformer.
+     *
+     * @template T of \Pterodactyl\Transformers\Api\Application\BaseTransformer
+     *
+     * @param  class-string<T>  $abstract
+     * @param  class-string<BaseTransformer>  $base
+     * @return T
+     */
+    protected function makeTransformer(string $abstract, string $base): BaseTransformer
+    {
+        throw_unless(is_subclass_of($abstract, $base), InvalidArgumentException::class, "Transformer [$abstract] must extend ".$base.'.');
+
+        $transformer = App::make($abstract);
+        throw_unless($transformer instanceof $abstract, UnexpectedValueException::class, "The container did not resolve transformer [$abstract].");
+
+        return $transformer;
     }
 
     /**

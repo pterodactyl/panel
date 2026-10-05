@@ -1,3 +1,4 @@
+import { describe, expect, it } from 'vitest';
 import { hexToRgba } from '@/lib/helpers';
 
 describe('@/lib/helpers.ts', function () {

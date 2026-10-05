@@ -1,0 +1,7 @@
+<?php
+
+use Illuminate\Support\Facades\Route;
+use {{namespace}}\Http\Controllers\StatusController;
+
+// Final URL: GET /api/client/extensions/{{id}}/status
+Route::get('/status', StatusController::class)->name('status');

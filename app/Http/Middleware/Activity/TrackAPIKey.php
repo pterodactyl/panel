@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Middleware\Activity;
 
+use Closure;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\ApiKey;
 use Pterodactyl\Facades\LogTarget;
+use Pterodactyl\Models\ApiKey;
+use Symfony\Component\HttpFoundation\Response;
 
 class TrackAPIKey
 {
@@ -14,12 +18,18 @@ class TrackAPIKey
      * request singleton so that all tracked activity log events are properly associated
      * with the given API key.
      */
-    public function handle(Request $request, \Closure $next): mixed
+    /**
+     * @param  Closure(Request):Response  $next
+     * @return Response
+     */
+    public function handle(Request $request, Closure $next): mixed
     {
         if ($request->user()) {
             $token = $request->user()->currentAccessToken();
 
-            LogTarget::setApiKeyId($token instanceof ApiKey ? $token->id : null); // @phpstan-ignore instanceof.alwaysTrue
+            $id = $token instanceof ApiKey ? $token->id : null;
+
+            LogTarget::setApiKeyId($id !== null && $id > 0 ? $id : null);
         }
 
         return $next($request);

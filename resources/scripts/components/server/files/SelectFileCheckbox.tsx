@@ -1,39 +1,25 @@
-import React from 'react';
-import tw from 'twin.macro';
-import { ServerContext } from '@/state/server';
-import styled from 'styled-components/macro';
-import Input from '@/components/elements/Input';
+import { useServerDirectory, useServerStore } from '@/state/server';
+import Checkbox from '@/components/ui/Checkbox';
 
-export const FileActionCheckbox = styled(Input)`
-    && {
-        ${tw`border-neutral-500 bg-transparent`};
-
-        &:not(:checked) {
-            ${tw`hover:border-neutral-300`};
-        }
-    }
-`;
-
-export default ({ name }: { name: string }) => {
-    const isChecked = ServerContext.useStoreState((state) => state.files.selectedFiles.indexOf(name) >= 0);
-    const appendSelectedFile = ServerContext.useStoreActions((actions) => actions.files.appendSelectedFile);
-    const removeSelectedFile = ServerContext.useStoreActions((actions) => actions.files.removeSelectedFile);
+export default function SelectFileCheckbox({ name }: { name: string }) {
+    const directory = useServerDirectory();
+    const isChecked = useServerStore(
+        (state) => state.files.selectedDirectory === directory && state.files.selectedFiles.includes(name)
+    );
+    const appendSelectedFile = useServerStore((state) => state.files.appendSelectedFile);
+    const removeSelectedFile = useServerStore((state) => state.files.removeSelectedFile);
 
     return (
-        <label css={tw`flex-none px-4 py-2 absolute self-center z-30 cursor-pointer`}>
-            <FileActionCheckbox
+        <div className={'flex-none px-4 py-2 absolute self-center z-30'}>
+            <Checkbox
                 name={'selectedFiles'}
                 value={name}
+                aria-label={`Select ${name}`}
                 checked={isChecked}
-                type={'checkbox'}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (e.currentTarget.checked) {
-                        appendSelectedFile(name);
-                    } else {
-                        removeSelectedFile(name);
-                    }
-                }}
+                onChange={(checked) =>
+                    checked ? appendSelectedFile({ directory, name }) : removeSelectedFile({ directory, name })
+                }
             />
-        </label>
+        </div>
     );
-};
+}

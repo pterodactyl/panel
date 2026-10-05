@@ -1,108 +1,95 @@
-import React, { useEffect, useState } from 'react';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
-import Fade from '@/components/elements/Fade';
+import Button from '@/components/elements/Button';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import useFileManagerSwr from '@/plugins/useFileManagerSwr';
-import useFlash from '@/plugins/useFlash';
-import compressFiles from '@/api/server/files/compressFiles';
-import { ServerContext } from '@/state/server';
-import deleteFiles from '@/api/server/files/deleteFiles';
+import { useCurrentServerUuid } from '@/api/server/queries';
+import { useServerDirectory, useServerStore } from '@/state/server';
 import RenameFileModal from '@/components/server/files/RenameFileModal';
 import Portal from '@/components/elements/Portal';
+import Slot from '@/extensions/Slot';
+import useFileManagerExtensionData from './useFileManagerExtensionData';
 import { Dialog } from '@/components/elements/dialog';
+import { compressFilesInput, deleteFilesInput, useCompressFiles, useDeleteFiles } from '@/api/server/files/queries';
 
-const MassActionsBar = () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
+/** `selectedFiles` must be entries of the current listing. */
+const MassActionsBar = ({ selectedFiles }: { selectedFiles: readonly string[] }) => {
+    const uuid = useCurrentServerUuid()!;
 
-    const { mutate } = useFileManagerSwr();
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [loading, setLoading] = useState(false);
-    const [loadingMessage, setLoadingMessage] = useState('');
-    const [showConfirm, setShowConfirm] = useState(false);
-    const [showMove, setShowMove] = useState(false);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const directory = useServerDirectory();
 
-    const selectedFiles = ServerContext.useStoreState((state) => state.files.selectedFiles);
-    const setSelectedFiles = ServerContext.useStoreActions((actions) => actions.files.setSelectedFiles);
-
-    useEffect(() => {
-        if (!loading) setLoadingMessage('');
-    }, [loading]);
+    const clearSelectedFiles = useServerStore((state) => state.files.clearSelectedFiles);
+    const compressFiles = useCompressFiles();
+    const deleteFiles = useDeleteFiles();
 
     const onClickCompress = () => {
-        setLoading(true);
-        clearFlashes('files');
-        setLoadingMessage('Archiving files...');
-
-        compressFiles(uuid, directory, selectedFiles)
-            .then(() => mutate())
-            .then(() => setSelectedFiles([]))
-            .catch((error) => clearAndAddHttpError({ key: 'files', error }))
-            .then(() => setLoading(false));
+        compressFiles
+            .mutateAsync(compressFilesInput(uuid, directory, [...selectedFiles]))
+            .then(() => clearSelectedFiles())
+            .catch(() => {});
     };
 
-    const onClickConfirmDeletion = () => {
-        setLoading(true);
-        setShowConfirm(false);
-        clearFlashes('files');
-        setLoadingMessage('Deleting files...');
+    const onClickConfirmDeletion = (close: () => void) => {
+        close();
 
-        deleteFiles(uuid, directory, selectedFiles)
+        deleteFiles
+            .mutateAsync(deleteFilesInput(uuid, directory, [...selectedFiles]))
             .then(() => {
-                mutate((files) => files.filter((f) => selectedFiles.indexOf(f.name) < 0), false);
-                setSelectedFiles([]);
+                clearSelectedFiles();
             })
-            .catch((error) => {
-                mutate();
-                clearAndAddHttpError({ key: 'files', error });
-            })
-            .then(() => setLoading(false));
+            .catch(() => {});
     };
+
+    const loading = compressFiles.isPending || deleteFiles.isPending;
+    const extensionData = useFileManagerExtensionData();
 
     return (
         <>
-            <div css={tw`pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center`}>
-                <SpinnerOverlay visible={loading} size={'large'} fixed>
-                    {loadingMessage}
-                </SpinnerOverlay>
-                <Dialog.Confirm
-                    title={'Delete Files'}
-                    open={showConfirm}
-                    confirm={'Delete'}
-                    onClose={() => setShowConfirm(false)}
-                    onConfirmed={onClickConfirmDeletion}
-                >
-                    <p className={'mb-2'}>
-                        Are you sure you want to delete&nbsp;
-                        <span className={'font-semibold text-gray-50'}>{selectedFiles.length} files</span>? This is a
-                        permanent action and the files cannot be recovered.
-                    </p>
-                    {selectedFiles.slice(0, 15).map((file) => (
-                        <li key={file}>{file}</li>
-                    ))}
-                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
-                </Dialog.Confirm>
-                {showMove && (
-                    <RenameFileModal
-                        files={selectedFiles}
-                        visible
-                        appear
-                        useMoveTerminology
-                        onDismissed={() => setShowMove(false)}
-                    />
-                )}
+            <div className={'pointer-events-none fixed bottom-0 z-20 left-0 right-0 flex justify-center'}>
+                <SpinnerOverlay visible={loading} size={'large'} fixed />
                 <Portal>
                     <div className={'pointer-events-none fixed bottom-0 mb-6 flex justify-center w-full z-50'}>
-                        <Fade timeout={75} in={selectedFiles.length > 0} unmountOnExit>
-                            <div css={tw`flex items-center space-x-4 pointer-events-auto rounded p-4 bg-black/50`}>
-                                <Button onClick={() => setShowMove(true)}>Move</Button>
+                        {selectedFiles.length > 0 && (
+                            <div
+                                className={
+                                    'flex items-center space-x-4 pointer-events-auto rounded-sm p-4 bg-background/50'
+                                }
+                            >
+                                {extensionData && <Slot name={'server.files.selectionActions'} data={extensionData} />}
+                                <Dialog.Trigger trigger={({ onClick }) => <Button onClick={onClick}>Move</Button>}>
+                                    {({ open, onClose }) =>
+                                        open && (
+                                            <RenameFileModal
+                                                files={[...selectedFiles]}
+                                                open={open}
+                                                useMoveTerminology
+                                                onClose={onClose}
+                                            />
+                                        )
+                                    }
+                                </Dialog.Trigger>
                                 <Button onClick={onClickCompress}>Archive</Button>
-                                <Button.Danger variant={Button.Variants.Secondary} onClick={() => setShowConfirm(true)}>
-                                    Delete
-                                </Button.Danger>
+                                <Dialog.ConfirmTrigger
+                                    title={'Delete Files'}
+                                    confirm={'Delete'}
+                                    trigger={({ onClick }) => (
+                                        <Button.Danger isSecondary onClick={onClick}>
+                                            Delete
+                                        </Button.Danger>
+                                    )}
+                                    onConfirmed={(_event, close) => onClickConfirmDeletion(close)}
+                                >
+                                    <p className={'mb-2'}>
+                                        Are you sure you want to delete&nbsp;
+                                        <span className={'font-semibold text-foreground'}>
+                                            {selectedFiles.length} files
+                                        </span>
+                                        ? This is a permanent action and the files cannot be recovered.
+                                    </p>
+                                    {selectedFiles.slice(0, 15).map((file) => (
+                                        <li key={file}>{file}</li>
+                                    ))}
+                                    {selectedFiles.length > 15 && <li>and {selectedFiles.length - 15} others</li>}
+                                </Dialog.ConfirmTrigger>
                             </div>
-                        </Fade>
+                        )}
                     </div>
                 </Portal>
             </div>

@@ -1,28 +1,33 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Exceptions;
 
-use Exception;
-use Illuminate\Http\Request;
-use Psr\Log\LoggerInterface;
-use Illuminate\Http\Response;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Container\Container;
 use Illuminate\Http\RedirectResponse;
-use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Exceptions;
+use Illuminate\Support\Facades\Log;
+use Pterodactyl\Facades\Alert;
 use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Throwable;
 
 class DisplayException extends PterodactylException implements HttpExceptionInterface
 {
-    public const LEVEL_DEBUG = 'debug';
-    public const LEVEL_INFO = 'info';
-    public const LEVEL_WARNING = 'warning';
-    public const LEVEL_ERROR = 'error';
+    public const string LEVEL_DEBUG = 'debug';
+
+    public const string LEVEL_INFO = 'info';
+
+    public const string LEVEL_WARNING = 'warning';
+
+    public const string LEVEL_ERROR = 'error';
 
     /**
      * DisplayException constructor.
      */
-    public function __construct(string $message, ?\Throwable $previous = null, protected string $level = self::LEVEL_ERROR, int $code = 0)
+    public function __construct(string $message, ?Throwable $previous = null, protected string $level = self::LEVEL_ERROR, int $code = 0)
     {
         parent::__construct($message, $code, $previous);
     }
@@ -37,6 +42,9 @@ class DisplayException extends PterodactylException implements HttpExceptionInte
         return Response::HTTP_BAD_REQUEST;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getHeaders(): array
     {
         return [];
@@ -50,32 +58,32 @@ class DisplayException extends PterodactylException implements HttpExceptionInte
     public function render(Request $request): JsonResponse|RedirectResponse
     {
         if ($request->expectsJson()) {
-            return response()->json(Handler::toArray($this), $this->getStatusCode(), $this->getHeaders());
+            return response()->json(ApiErrorResponse::toArray($this), $this->getStatusCode(), $this->getHeaders());
         }
 
-        app(AlertsMessageBag::class)->danger($this->getMessage())->flash();
+        Alert::danger($this->getMessage())->flash();
 
-        return redirect()->back()->withInput();
+        return back()->withInput();
     }
 
     /**
      * Log the exception to the logs using the defined error level only if the previous
      * exception is set.
-     *
-     * @throws \Throwable
      */
-    public function report()
+    public function report(): void
     {
-        if (!$this->getPrevious() instanceof \Exception || !Handler::isReportable($this->getPrevious())) {
-            return null;
+        $previous = $this->getPrevious();
+        if (! $previous instanceof Throwable || ! Exceptions::shouldReport($previous)) {
+            return;
         }
 
-        try {
-            $logger = Container::getInstance()->make(LoggerInterface::class);
-        } catch (\Exception) {
-            throw $this->getPrevious();
-        }
+        $context = ['exception' => $previous];
 
-        return $logger->{$this->getErrorLevel()}($this->getPrevious());
+        match ($this->getErrorLevel()) {
+            self::LEVEL_DEBUG => Log::debug($previous->getMessage(), $context),
+            self::LEVEL_INFO => Log::info($previous->getMessage(), $context),
+            self::LEVEL_WARNING => Log::warning($previous->getMessage(), $context),
+            default => Log::error($previous->getMessage(), $context),
+        };
     }
 }

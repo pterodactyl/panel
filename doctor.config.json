@@ -1,0 +1,11 @@
+{
+    "ignore": {
+        "files": [
+            "resources/scripts/api/generated/**",
+            "packages/sdk/types/**",
+            "examples/**",
+            "tools/**",
+            "scripts/**"
+        ]
+    }
+}

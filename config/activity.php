@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     // The number of days elapsed before old activity log entries are deleted.
     'prune_days' => env('APP_ACTIVITY_PRUNE_DAYS', 90),

@@ -1,65 +1,61 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Http\Middleware;
+declare(strict_types=1);
 
-use Mockery as m;
-use Mockery\MockInterface;
-use Pterodactyl\Models\Node;
-use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
+namespace Pterodactyl\Tests\Pest\Unit\Http\Middleware\MaintenanceMiddlewareTest;
+
 use Illuminate\Contracts\Routing\ResponseFactory;
+use Illuminate\Http\Response;
+use InvalidArgumentException;
 use Pterodactyl\Http\Middleware\MaintenanceMiddleware;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Tests\Support\Fakes\FakeResponseFactory;
 
-class MaintenanceMiddlewareTest extends MiddlewareTestCase
+use function pterodactylTestCase;
+
+uses(\Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase::class);
+beforeEach(function () {
+    $this->factory = new FakeResponseFactory();
+    $this->app->instance(ResponseFactory::class, $this->factory);
+});
+test('continues requests when the node is available', function () {
+    $server = Server::factory()->make();
+    $node = Node::factory()->make(['maintenance_mode' => false]);
+    $server->setRelation('node', $node);
+    $this->setRequestAttribute('server', $server);
+
+    getMiddleware()->handle($this->request, $this->getClosureAssertions());
+});
+test('renders the maintenance response when the node is unavailable', function () {
+    $server = Server::factory()->make();
+    $node = Node::factory()->make(['maintenance_mode' => true]);
+    $server->setRelation('node', $node);
+    $this->setRequestAttribute('server', $server);
+
+    $response = getMiddleware()->handle($this->request, $this->getClosureAssertions());
+
+    expect($response)->toBeInstanceOf(Response::class);
+    expect($this->factory->views)->toBe(['errors.maintenance']);
+});
+test('rejects requests without a server attribute', function () {
+    $this->expectException(InvalidArgumentException::class);
+    $this->expectExceptionMessage('The maintenance middleware requires a server request attribute.');
+
+    getMiddleware()->handle($this->request, $this->getClosureAssertions());
+});
+test('rejects servers with an invalid node relation', function () {
+    $server = Server::factory()->make();
+    $server->setRelation('node', null);
+    $this->setRequestAttribute('server', $server);
+    $this->expectException(InvalidArgumentException::class);
+    $this->expectExceptionMessage('The maintenance middleware requires the server node relation.');
+
+    getMiddleware()->handle($this->request, $this->getClosureAssertions());
+});
+function getMiddleware(): MaintenanceMiddleware
 {
-    private MockInterface $response;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->response = m::mock(ResponseFactory::class);
-    }
-
-    /**
-     * Test that a node not in maintenance mode continues through the request cycle.
-     */
-    public function testHandle()
-    {
-        $server = Server::factory()->make();
-        $node = Node::factory()->make(['maintenance' => 0]);
-
-        $server->setRelation('node', $node);
-        $this->setRequestAttribute('server', $server);
-
-        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-    }
-
-    /**
-     * Test that a node in maintenance mode returns an error view.
-     */
-    public function testHandleInMaintenanceMode()
-    {
-        $server = Server::factory()->make();
-        $node = Node::factory()->make(['maintenance_mode' => 1]);
-
-        $server->setRelation('node', $node);
-        $this->setRequestAttribute('server', $server);
-
-        $this->response->shouldReceive('view')
-            ->once()
-            ->with('errors.maintenance')
-            ->andReturn(new Response());
-
-        $response = $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        $this->assertInstanceOf(Response::class, $response);
-    }
-
-    private function getMiddleware(): MaintenanceMiddleware
-    {
-        return new MaintenanceMiddleware($this->response);
-    }
+    return (function () {
+        return new MaintenanceMiddleware($this->app->make(ResponseFactory::class));
+    })->call(pterodactylTestCase());
 }

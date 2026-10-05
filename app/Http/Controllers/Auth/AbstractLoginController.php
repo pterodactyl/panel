@@ -1,66 +1,37 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Http\JsonResponse;
 use Illuminate\Auth\Events\Failed;
-use Illuminate\Container\Container;
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Event;
-use Pterodactyl\Events\Auth\DirectLogin;
+use Pterodactyl\Data\LoginResult;
 use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Controller;
-use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Pterodactyl\Traits\Helpers\ThrottlesLogins;
 
 abstract class AbstractLoginController extends Controller
 {
-    use AuthenticatesUsers;
-
-    protected AuthManager $auth;
-
-    /**
-     * Lockout time for failed login requests.
-     */
-    protected int $lockoutTime;
-
-    /**
-     * After how many attempts should logins be throttled and locked.
-     */
-    protected int $maxLoginAttempts;
-
-    /**
-     * Where to redirect users after login / registration.
-     */
-    protected string $redirectTo = '/';
-
-    /**
-     * LoginController constructor.
-     */
-    public function __construct()
-    {
-        $this->lockoutTime = config('auth.lockout.time');
-        $this->maxLoginAttempts = config('auth.lockout.attempts');
-        $this->auth = Container::getInstance()->make(AuthManager::class);
-    }
+    use ThrottlesLogins;
 
     /**
      * Get the failed login response instance.
      *
-     * @return never-return
-     *
      * @throws DisplayException
      */
-    protected function sendFailedLoginResponse(Request $request, ?Authenticatable $user = null, ?string $message = null)
+    protected function sendFailedLoginResponse(Request $request, ?Authenticatable $user = null, ?string $message = null): never
     {
         $this->incrementLoginAttempts($request);
+        $login = $request->string('user')->toString();
         $this->fireFailedLoginEvent($user, [
-            $this->getField($request->input('user')) => $request->input('user'),
+            $this->getField($login) => $login,
         ]);
 
-        if ($request->route()->named('auth.login-checkpoint')) {
+        if ($request->route()?->named('auth.login-checkpoint')) {
             throw new DisplayException($message ?? trans('auth.two_factor.checkpoint_failed'));
         }
 
@@ -68,26 +39,17 @@ abstract class AbstractLoginController extends Controller
     }
 
     /**
-     * Send the response after the user was authenticated.
+     * Send the response for a completed login step. The throttle is only
+     * reset once a session exists, so a pending two-factor checkpoint keeps
+     * counting failed attempts.
      */
-    protected function sendLoginResponse(User $user, Request $request): JsonResponse
+    protected function sendLoginResponse(LoginResult $result, Request $request): JsonResponse
     {
-        $request->session()->remove('auth_confirmation_token');
-        $request->session()->regenerate();
+        if ($result->complete) {
+            $this->clearLoginAttempts($request);
+        }
 
-        $this->clearLoginAttempts($request);
-
-        $this->auth->guard()->login($user, true);
-
-        Event::dispatch(new DirectLogin($user, true));
-
-        return new JsonResponse([
-            'data' => [
-                'complete' => true,
-                'intended' => $this->redirectPath(),
-                'user' => $user->toVueObject(),
-            ],
-        ]);
+        return new JsonResponse(['data' => $result->toResponseData()]);
     }
 
     /**
@@ -100,8 +62,10 @@ abstract class AbstractLoginController extends Controller
 
     /**
      * Fire a failed login event.
+     *
+     * @param  array<string, string>  $credentials
      */
-    protected function fireFailedLoginEvent(?Authenticatable $user = null, array $credentials = [])
+    protected function fireFailedLoginEvent(?Authenticatable $user = null, array $credentials = []): void
     {
         Event::dispatch(new Failed('auth', $user, $credentials));
     }

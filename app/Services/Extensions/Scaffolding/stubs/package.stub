@@ -1,0 +1,43 @@
+{
+    "name": "{{id}}",
+    "private": true,
+    "version": "1.0.0",
+    "type": "module",
+    "scripts": {
+        "build": "vite build",
+        "dev": "vite build --watch",
+        "typecheck": "tsc",
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "api:generate": "openapi-ts && node scripts/externalize-api.mjs"
+    },
+    "devDependencies": {
+        "@pterodactyl/sdk": "{{sdkDependency}}",
+        "@tanstack/react-query": "^5",
+        "@base-ui/react": "^1.6.0",
+        "@tanstack/form-core": "^1.33.0",
+        "@tanstack/react-form": "^1.33.0",
+        "@tanstack/react-router": "^1.170.17",
+        "axios": "^1.18.1",
+        "lucide-react": "^1.17.0",
+        "sonner": "^2.0.7",
+        "@types/react": "^19",
+        "@types/react-dom": "^19",
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+        "typescript": "^6",
+        "vite": "^8",
+        "vitest": "^4.1.9",
+        "jsdom": "^26.1.0",
+        "@testing-library/react": "^16",
+        "@testing-library/dom": "^10",
+        "@hey-api/openapi-ts": "0.99.0",
+        "@types/node": "^22",
+        "tailwindcss": "^4.3.0",
+        "@tailwindcss/postcss": "^4",
+        "postcss": "^8.5.6"
+    },
+    "overrides": {
+        "js-yaml": "^4.3.2"
+    }
+}

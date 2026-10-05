@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Pterodactyl\Models\Schedule;
 
 class TaskFactory extends Factory
 {
@@ -12,7 +15,8 @@ class TaskFactory extends Factory
     public function definition(): array
     {
         return [
-            'sequence_id' => $this->faker->numberBetween(1, 10),
+            'schedule_id' => Schedule::factory(),
+            'sequence_id' => fake()->numberBetween(1, 10),
             'action' => 'command',
             'payload' => 'test command',
             'time_offset' => 120,

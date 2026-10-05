@@ -1,0 +1,23 @@
+/*
+ * Extension entry point. Import it after Tailwind built with the extension's own prefix,
+ * the one declared as `ui.prefix` in extension.json (`hw` here):
+ *
+ *   @import 'tailwindcss/theme.css' layer(theme) prefix(hw);
+ *   @import 'tailwindcss/utilities.css' layer(utilities) prefix(hw);
+ *   @import '@pterodactyl/sdk/theme.css';
+ *
+ * The panel itself imports theme-tokens.css directly. The block below is for prefixed
+ * builds only: it points the theme variables a panel theme may override at the panel's
+ * live values instead of Tailwind defaults copied under `--hw-*`, so `hw:p-4` follows the
+ * panel's density and `hw:font-sans` its typeface. `inline` keeps the references out of
+ * `:root`; an unprefixed build would declare `--spacing: var(--spacing)` there and break the
+ * panel, which is why `p:extension:doctor` and the installer reject unprefixed builds.
+ */
+@import './theme-tokens.css';
+
+@theme inline {
+    --spacing: var(--spacing);
+    --font-sans: var(--font-sans);
+    --font-header: var(--font-header);
+    --font-mono: var(--font-mono);
+}

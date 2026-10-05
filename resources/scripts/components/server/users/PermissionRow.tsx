@@ -1,64 +1,46 @@
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
-import Checkbox from '@/components/elements/Checkbox';
-import React from 'react';
-import { useStoreState } from 'easy-peasy';
+import { useStore } from '@tanstack/react-form';
+import type { AnyFormApi } from '@tanstack/react-form';
 import Label from '@/components/elements/Label';
-
-const Container = styled.label`
-    ${tw`flex items-center border border-transparent rounded md:p-2 transition-colors duration-75`};
-    text-transform: none;
-
-    &:not(.disabled) {
-        ${tw`cursor-pointer`};
-
-        &:hover {
-            ${tw`border-neutral-500 bg-neutral-800`};
-        }
-    }
-
-    &:not(:first-of-type) {
-        ${tw`mt-4 sm:mt-2`};
-    }
-
-    &.disabled {
-        ${tw`opacity-50`};
-
-        & input[type='checkbox']:not(:checked) {
-            ${tw`border-0`};
-        }
-    }
-`;
+import Checkbox from '@/components/ui/Checkbox';
+import PermissionRowContainer from '@/components/server/users/PermissionRowContainer';
 
 interface Props {
+    form: AnyFormApi;
     permission: string;
+    label: string;
+    description: string;
     disabled: boolean;
 }
 
-const PermissionRow = ({ permission, disabled }: Props) => {
-    const [key, pkey] = permission.split('.', 2);
-    const permissions = useStoreState((state) => state.permissions.data);
+const PermissionRow = ({ form, permission, label, description, disabled }: Props) => {
+    const selected = useStore(form.store, (state) => (state.values.permissions ?? []) as string[]);
 
     return (
-        <Container htmlFor={`permission_${permission}`} className={disabled ? 'disabled' : undefined}>
-            <div css={tw`p-2`}>
+        <PermissionRowContainer htmlFor={`permission_${permission}`} className={disabled ? 'disabled' : undefined}>
+            <div className={'p-2'}>
                 <Checkbox
                     id={`permission_${permission}`}
-                    name={'permissions'}
-                    value={permission}
-                    css={tw`w-5 h-5 mr-2`}
+                    checked={selected.includes(permission)}
                     disabled={disabled}
+                    onChange={(checked) => {
+                        const set = new Set(selected);
+                        if (checked) {
+                            set.add(permission);
+                        } else {
+                            set.delete(permission);
+                        }
+                        form.setFieldValue('permissions', Array.from(set));
+                    }}
+                    className={'w-5 h-5 mr-2'}
                 />
             </div>
-            <div css={tw`flex-1`}>
-                <Label as={'p'} css={tw`font-medium`}>
-                    {pkey}
+            <div className={'flex-1'}>
+                <Label as={'p'} className={'font-medium'}>
+                    {label}
                 </Label>
-                {permissions[key].keys[pkey].length > 0 && (
-                    <p css={tw`text-xs text-neutral-400 mt-1`}>{permissions[key].keys[pkey]}</p>
-                )}
+                {description.length > 0 && <p className={'text-xs text-muted-foreground mt-1'}>{description}</p>}
             </div>
-        </Container>
+        </PermissionRowContainer>
     );
 };
 

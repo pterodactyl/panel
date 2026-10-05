@@ -1,16 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Events;
 
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\ActivityLog;
-use Illuminate\Database\Eloquent\Model;
 
 class ActivityLogged extends Event
 {
-    public function __construct(public ActivityLog $model)
-    {
-    }
+    public function __construct(public ActivityLog $model) {}
 
     public function is(string $event): bool
     {
@@ -29,6 +29,6 @@ class ActivityLogged extends Event
 
     public function isSystem(): bool
     {
-        return is_null($this->model->actor_id);
+        return $this->model->actor_id === null;
     }
 }

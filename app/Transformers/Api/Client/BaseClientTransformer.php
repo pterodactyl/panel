@@ -1,11 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\User;
-use Webmozart\Assert\Assert;
+use InvalidArgumentException;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 use Pterodactyl\Transformers\Api\Application\BaseTransformer as BaseApplicationTransformer;
+use UnexpectedValueException;
 
 abstract class BaseClientTransformer extends BaseApplicationTransformer
 {
@@ -14,7 +18,7 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      */
     public function getUser(): User
     {
-        return $this->request->user();
+        return $this->request()->user() ?? throw new UnexpectedValueException('Client API transformers require an authenticated user.');
     }
 
     /**
@@ -26,14 +30,20 @@ abstract class BaseClientTransformer extends BaseApplicationTransformer
      */
     protected function authorize(string $ability, ?Server $server = null): bool
     {
-        Assert::isInstanceOf($server, Server::class);
+        throw_unless($server instanceof Server, InvalidArgumentException::class, 'Expected a server when authorizing client transformer includes.');
 
-        return $this->request->user()->can($ability, [$server]);
+        return $this->getUser()->can($ability, [$server]);
     }
 
-    protected function makeTransformer(string $abstract)
+    /**
+     * @template T of BaseClientTransformer
+     *
+     * @param  class-string<T>  $abstract
+     * @return T
+     */
+    protected function makeTransformer(string $abstract): self
     {
-        Assert::subclassOf($abstract, self::class);
+        throw_unless(is_subclass_of($abstract, self::class), InvalidTransformerLevelException::class, "Transformer [$abstract] must extend ".self::class.'.');
 
         return parent::makeTransformer($abstract);
     }

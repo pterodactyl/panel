@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Illuminate\Support\Str;
@@ -18,6 +20,8 @@ class UserTransformer extends BaseClientTransformer
     /**
      * Transforms a User model into a representation that can be shown to regular
      * users of the API.
+     *
+     * @return ApiPayload
      */
     public function transform(User $model): array
     {
@@ -26,9 +30,9 @@ class UserTransformer extends BaseClientTransformer
             'identifier' => $model->identifier,
             'username' => $model->username,
             'email' => $model->email,
-            'image' => 'https://gravatar.com/avatar/' . md5(Str::lower($model->email)),
+            'image' => 'https://gravatar.com/avatar/'.md5(Str::lower($model->email)),
             '2fa_enabled' => $model->use_totp,
-            'created_at' => $model->created_at->toAtomString(),
+            'created_at' => $this->formatTimestamp($model->created_at),
         ];
     }
 }

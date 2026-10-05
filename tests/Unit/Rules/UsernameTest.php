@@ -1,72 +1,37 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Rules;
+declare(strict_types=1);
+
+namespace Pterodactyl\Tests\Pest\Unit\Rules\UsernameTest;
 
 use Pterodactyl\Rules\Username;
 use Pterodactyl\Tests\TestCase;
 
-class UsernameTest extends TestCase
+uses(TestCase::class);
+/**
+ * Provide valid usernames.
+ */
+dataset('validUsernameDataProvider', function () {
+    return [['username'], ['user_name'], ['user.name'], ['user-name'], ['123username123'], ['123-user.name'], ['123456']];
+});
+/**
+ * Provide invalid usernames.
+ */
+dataset('invalidUsernameDataProvider', function () {
+    return [['_username'], ['username_'], ['_username_'], ['-username'], ['.username'], ['username-'], ['username.'], ['user*name'], ['user^name'], ['user#name'], ['user+name'], ['1234_']];
+});
+test('valid usernames', function (string $username) {
+    expect(passes($username))->toBeTrue('Assert username is valid.');
+})->with('validUsernameDataProvider');
+test('invalid usernames', function (string $username) {
+    expect(passes($username))->toBeFalse('Assert username is not valid.');
+})->with('invalidUsernameDataProvider');
+function passes(string $username): bool
 {
-    /**
-     * Test that this rule can be cast to a string correctly.
-     */
-    public function testRuleIsStringable()
-    {
-        $this->assertSame('p_username', (string) new Username());
-    }
+    $failed = false;
+    (new Username)->validate('test', $username, function () use (&$failed): void {
+        $failed = true;
+    });
 
-    /**
-     * Test valid usernames.
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('validUsernameDataProvider')]
-    public function testValidUsernames(string $username)
-    {
-        $this->assertTrue((new Username())->passes('test', $username), 'Assert username is valid.');
-    }
-
-    /**
-     * Test invalid usernames return false.
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('invalidUsernameDataProvider')]
-    public function testInvalidUsernames(string $username)
-    {
-        $this->assertFalse((new Username())->passes('test', $username), 'Assert username is not valid.');
-    }
-
-    /**
-     * Provide valid usernames.
-     */
-    public static function validUsernameDataProvider(): array
-    {
-        return [
-            ['username'],
-            ['user_name'],
-            ['user.name'],
-            ['user-name'],
-            ['123username123'],
-            ['123-user.name'],
-            ['123456'],
-        ];
-    }
-
-    /**
-     * Provide invalid usernames.
-     */
-    public static function invalidUsernameDataProvider(): array
-    {
-        return [
-            ['_username'],
-            ['username_'],
-            ['_username_'],
-            ['-username'],
-            ['.username'],
-            ['username-'],
-            ['username.'],
-            ['user*name'],
-            ['user^name'],
-            ['user#name'],
-            ['user+name'],
-            ['1234_'],
-        ];
-    }
+    return ! $failed;
 }

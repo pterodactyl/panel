@@ -1,112 +1,118 @@
-import React, { useState } from 'react';
-import Modal from '@/components/elements/Modal';
-import { Form, Formik, FormikHelpers } from 'formik';
-import Field from '@/components/elements/Field';
-import { object, string } from 'yup';
-import createServerDatabase from '@/api/server/databases/createServerDatabase';
-import { ServerContext } from '@/state/server';
-import { httpErrorToHuman } from '@/api/http';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import useFlash from '@/plugins/useFlash';
+import { useStore } from '@tanstack/react-form';
+import { useAppForm, Form } from '@/components/form';
+import { Dialog } from '@/components/elements/dialog';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
+import { useCurrentServerUuid } from '@/api/server/queries';
+import { createServerDatabaseInput, useCreateServerDatabase } from '@/api/server/databases/queries';
 import Button from '@/components/elements/Button';
-import tw from 'twin.macro';
+import { NewButton } from '@/components/elements/NewButton';
+import type { WithClassname } from '@/components/types';
 
-interface Values {
-    databaseName: string;
-    connectionsFrom: string;
-}
+const CreateDatabaseDialogContent = ({ onClose }: { onClose: () => void }) => {
+    const uuid = useCurrentServerUuid()!;
+    const createDatabase = useCreateServerDatabase();
 
-const schema = object().shape({
-    databaseName: string()
-        .required('A database name must be provided.')
-        .min(3, 'Database name must be at least 3 characters.')
-        .max(48, 'Database name must not exceed 48 characters.')
-        .matches(
-            /^[\w\-.]{3,48}$/,
-            'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.'
-        ),
-    connectionsFrom: string().matches(/^[\w\-/.%:]+$/, 'A valid host address must be provided.'),
-});
+    const form = useAppForm({
+        defaultValues: { databaseName: '', connectionsFrom: '' },
+        onSubmit: async ({ value }) => {
+            try {
+                await createDatabase.mutateAsync(
+                    createServerDatabaseInput(uuid, {
+                        databaseName: value.databaseName,
+                        connectionsFrom: value.connectionsFrom || '%',
+                    })
+                );
+                onClose();
+            } catch {
+                // Error toast is handled by the mutation.
+            }
+        },
+    });
 
-export default () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const { addError, clearFlashes } = useFlash();
-    const [visible, setVisible] = useState(false);
-
-    const appendDatabase = ServerContext.useStoreActions((actions) => actions.databases.appendDatabase);
-
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('database:create');
-        createServerDatabase(uuid, {
-            databaseName: values.databaseName,
-            connectionsFrom: values.connectionsFrom || '%',
-        })
-            .then((database) => {
-                appendDatabase(database);
-                setVisible(false);
-            })
-            .catch((error) => {
-                addError({ key: 'database:create', message: httpErrorToHuman(error) });
-                setSubmitting(false);
-            });
-    };
+    const isSubmitting = useStore(form.store, (state) => state.isSubmitting) || createDatabase.isPending;
 
     return (
-        <>
-            <Formik
-                onSubmit={submit}
-                initialValues={{ databaseName: '', connectionsFrom: '' }}
-                validationSchema={schema}
-            >
-                {({ isSubmitting, resetForm }) => (
-                    <Modal
-                        visible={visible}
-                        dismissable={!isSubmitting}
-                        showSpinnerOverlay={isSubmitting}
-                        onDismissed={() => {
-                            resetForm();
-                            setVisible(false);
+        <Dialog
+            open
+            title={'Create new database'}
+            preventExternalClose={isSubmitting}
+            hideCloseIcon={isSubmitting}
+            onClose={() => {
+                form.reset();
+                onClose();
+            }}
+        >
+            <SpinnerOverlay visible={isSubmitting} />
+            <Form form={form} className={'m-0'}>
+                <form.AppField
+                    name={'databaseName'}
+                    validators={{
+                        onChange: ({ value }) =>
+                            value.length < 1
+                                ? 'A database name must be provided.'
+                                : value.length < 3
+                                  ? 'Database name must be at least 3 characters.'
+                                  : value.length > 48
+                                    ? 'Database name must not exceed 48 characters.'
+                                    : /^[\w\-.]{3,48}$/.test(value)
+                                      ? undefined
+                                      : 'Database name should only contain alphanumeric characters, underscores, dashes, and/or periods.',
+                    }}
+                >
+                    {(field) => (
+                        <field.TextField
+                            type={'string'}
+                            id={'database_name'}
+                            label={'Database Name'}
+                            description={'A descriptive name for your database instance.'}
+                        />
+                    )}
+                </form.AppField>
+                <div className={'mt-6'}>
+                    <form.AppField
+                        name={'connectionsFrom'}
+                        validators={{
+                            onChange: ({ value }) =>
+                                /^[\w\-/.%:]*$/.test(value) ? undefined : 'A valid host address must be provided.',
                         }}
                     >
-                        <FlashMessageRender byKey={'database:create'} css={tw`mb-6`} />
-                        <h2 css={tw`text-2xl mb-6`}>Create new database</h2>
-                        <Form css={tw`m-0`}>
-                            <Field
+                        {(field) => (
+                            <field.TextField
                                 type={'string'}
-                                id={'database_name'}
-                                name={'databaseName'}
-                                label={'Database Name'}
-                                description={'A descriptive name for your database instance.'}
+                                id={'connections_from'}
+                                label={'Connections From'}
+                                description={
+                                    'Where connections should be allowed from. Leave blank to allow connections from anywhere.'
+                                }
                             />
-                            <div css={tw`mt-6`}>
-                                <Field
-                                    type={'string'}
-                                    id={'connections_from'}
-                                    name={'connectionsFrom'}
-                                    label={'Connections From'}
-                                    description={
-                                        'Where connections should be allowed from. Leave blank to allow connections from anywhere.'
-                                    }
-                                />
-                            </div>
-                            <div css={tw`flex flex-wrap justify-end mt-6`}>
-                                <Button
-                                    type={'button'}
-                                    isSecondary
-                                    css={tw`w-full sm:w-auto sm:mr-2`}
-                                    onClick={() => setVisible(false)}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button css={tw`w-full mt-4 sm:w-auto sm:mt-0`} type={'submit'}>
-                                    Create Database
-                                </Button>
-                            </div>
-                        </Form>
-                    </Modal>
-                )}
-            </Formik>
-            <Button onClick={() => setVisible(true)}>New Database</Button>
-        </>
+                        )}
+                    </form.AppField>
+                </div>
+                <div className={'flex flex-wrap justify-end mt-6'}>
+                    <Button type={'button'} isSecondary className={'w-full sm:w-auto sm:mr-2'} onClick={onClose}>
+                        Cancel
+                    </Button>
+                    <form.AppForm>
+                        <form.SubmitButton className={'w-full mt-4 sm:w-auto sm:mt-0'}>
+                            Create Database
+                        </form.SubmitButton>
+                    </form.AppForm>
+                </div>
+            </Form>
+        </Dialog>
     );
 };
+
+const CreateDatabaseButton = ({ className }: WithClassname) => (
+    <Dialog.Trigger
+        trigger={({ onClick }) => (
+            <NewButton className={className} onClick={onClick}>
+                New database
+            </NewButton>
+        )}
+    >
+        {({ open, onClose }) => open && <CreateDatabaseDialogContent onClose={onClose} />}
+    </Dialog.Trigger>
+);
+
+export default CreateDatabaseButton;

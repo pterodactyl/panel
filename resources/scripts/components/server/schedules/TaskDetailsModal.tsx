@@ -1,197 +1,204 @@
-import React, { useContext, useEffect } from 'react';
-import { Schedule, Task } from '@/api/server/schedules/getServerSchedules';
-import { Field as FormikField, Form, Formik, FormikHelpers, useField } from 'formik';
-import { ServerContext } from '@/state/server';
-import createOrUpdateScheduleTask from '@/api/server/schedules/createOrUpdateScheduleTask';
-import { httpErrorToHuman } from '@/api/http';
-import Field from '@/components/elements/Field';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import { boolean, number, object, string } from 'yup';
-import useFlash from '@/plugins/useFlash';
-import FormikFieldWrapper from '@/components/elements/FormikFieldWrapper';
-import tw from 'twin.macro';
-import Label from '@/components/elements/Label';
-import { Textarea } from '@/components/elements/Input';
-import { Button } from '@/components/elements/button/index';
-import Select from '@/components/elements/Select';
-import ModalContext from '@/context/ModalContext';
-import asModal from '@/hoc/asModal';
-import FormikSwitch from '@/components/elements/FormikSwitch';
+import { useState } from 'react';
+import { type Schedule, type Task } from '@/api/server/schedules/queries';
+import { useStore } from '@tanstack/react-form';
+import { useAppForm, Form } from '@/components/form';
+import {
+    createScheduleTaskInput,
+    updateScheduleTaskInput,
+    useCreateServerScheduleTask,
+    useUpdateServerScheduleTask,
+} from '@/api/server/schedules/queries';
+import { Dialog, type DialogProps } from '@/components/elements/dialog';
+import { useCurrentServer } from '@/api/server/queries';
 
 interface Props {
     schedule: Schedule;
-    // If a task is provided we can assume we're editing it. If not provided,
-    // we are creating a new one.
     task?: Task;
 }
 
-interface Values {
-    action: string;
+type Action = 'command' | 'power' | 'backup';
+
+interface TaskFormValues {
+    action: Action;
     payload: string;
-    timeOffset: string;
+    timeOffset: number | null;
     continueOnFailure: boolean;
 }
 
-const schema = object().shape({
-    action: string().required().oneOf(['command', 'power', 'backup']),
-    payload: string().when('action', {
-        is: (v) => v !== 'backup',
-        then: string().required('A task payload must be provided.'),
-        otherwise: string(),
-    }),
-    continueOnFailure: boolean(),
-    timeOffset: number()
-        .typeError('The time offset must be a valid number between 0 and 900.')
-        .required('A time offset value must be provided.')
-        .min(0, 'The time offset must be at least 0 seconds.')
-        .max(900, 'The time offset must be less than 900 seconds.'),
-});
+const TaskDetailsForm = ({ schedule, task, onClose }: Props & { onClose: () => void }) => {
+    const [formError, setFormError] = useState<string | null>(null);
 
-const ActionListener = () => {
-    const [{ value }, { initialValue: initialAction }] = useField<string>('action');
-    const [, { initialValue: initialPayload }, { setValue, setTouched }] = useField<string>('payload');
+    const server = useCurrentServer()!;
+    const uuid = server.attributes.uuid;
+    const createTask = useCreateServerScheduleTask(schedule);
+    const updateTask = useUpdateServerScheduleTask(schedule);
+    const backupLimit = server.attributes.feature_limits.backups;
 
-    useEffect(() => {
-        if (value !== initialAction) {
-            setValue(value === 'power' ? 'start' : '');
-            setTouched(false);
-        } else {
-            setValue(initialPayload || '');
-            setTouched(false);
-        }
-    }, [value]);
+    const initialAction = (task?.attributes.action || 'command') as Action;
+    const initialPayload = task?.attributes.payload || '';
 
-    return null;
-};
+    const defaultValues: TaskFormValues = {
+        action: initialAction,
+        payload: initialPayload,
+        timeOffset: task?.attributes.time_offset ?? 0,
+        continueOnFailure: task?.attributes.continue_on_failure || false,
+    };
 
-const TaskDetailsModal = ({ schedule, task }: Props) => {
-    const { dismiss } = useContext(ModalContext);
-    const { clearFlashes, addError } = useFlash();
+    const form = useAppForm({
+        defaultValues,
+        onSubmit: async ({ value }) => {
+            setFormError(null);
+            if (backupLimit === 0 && value.action === 'backup') {
+                setFormError("A backup task cannot be created when the server's backup limit is set to 0.");
+                return;
+            }
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
-    const backupLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.backups);
+            const { timeOffset } = value;
+            if (timeOffset === null) {
+                return;
+            }
 
-    useEffect(() => {
-        return () => {
-            clearFlashes('schedule:task');
-        };
-    }, []);
+            const values = { ...value, timeOffset };
 
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        clearFlashes('schedule:task');
-        if (backupLimit === 0 && values.action === 'backup') {
-            setSubmitting(false);
-            addError({
-                message: "A backup task cannot be created when the server's backup limit is set to 0.",
-                key: 'schedule:task',
-            });
-        } else {
-            createOrUpdateScheduleTask(uuid, schedule.id, task?.id, values)
-                .then((task) => {
-                    let tasks = schedule.tasks.map((t) => (t.id === task.id ? task : t));
-                    if (!schedule.tasks.find((t) => t.id === task.id)) {
-                        tasks = [...tasks, task];
-                    }
+            try {
+                if (task) {
+                    await updateTask.mutateAsync(updateScheduleTaskInput(uuid, schedule, task.attributes.id, values));
+                } else {
+                    await createTask.mutateAsync(createScheduleTaskInput(uuid, schedule, values));
+                }
+                onClose();
+            } catch {
+                // Error toast is handled by the mutation.
+            }
+        },
+    });
 
-                    appendSchedule({ ...schedule, tasks });
-                    dismiss();
-                })
-                .catch((error) => {
-                    console.error(error);
-                    setSubmitting(false);
-                    addError({ message: httpErrorToHuman(error), key: 'schedule:task' });
-                });
-        }
+    const action = useStore(form.store, (state) => state.values.action);
+    const setPayloadForAction = (nextAction: Action) => {
+        form.setFieldValue(
+            'payload',
+            nextAction === initialAction ? initialPayload || '' : nextAction === 'power' ? 'start' : ''
+        );
     };
 
     return (
-        <Formik
-            onSubmit={submit}
-            validationSchema={schema}
-            initialValues={{
-                action: task?.action || 'command',
-                payload: task?.payload || '',
-                timeOffset: task?.timeOffset.toString() || '0',
-                continueOnFailure: task?.continueOnFailure || false,
-            }}
-        >
-            {({ isSubmitting, values }) => (
-                <Form css={tw`m-0`}>
-                    <FlashMessageRender byKey={'schedule:task'} css={tw`mb-4`} />
-                    <h2 css={tw`text-2xl mb-6`}>{task ? 'Edit Task' : 'Create Task'}</h2>
-                    <div css={tw`flex`}>
-                        <div css={tw`mr-2 w-1/3`}>
-                            <Label>Action</Label>
-                            <ActionListener />
-                            <FormikFieldWrapper name={'action'}>
-                                <FormikField as={Select} name={'action'}>
-                                    <option value={'command'}>Send command</option>
-                                    <option value={'power'}>Send power action</option>
-                                    <option value={'backup'}>Create backup</option>
-                                </FormikField>
-                            </FormikFieldWrapper>
-                        </div>
-                        <div css={tw`flex-1 ml-6`}>
-                            <Field
-                                name={'timeOffset'}
+        <Form form={form} className={'m-0'}>
+            {formError && (
+                <div
+                    className={
+                        'rounded-sm border border-destructive/40 bg-destructive/10 p-3 text-sm text-foreground mb-4'
+                    }
+                >
+                    {formError}
+                </div>
+            )}
+            <div className={'flex'}>
+                <div className={'mr-2 w-1/3'}>
+                    <form.AppField name={'action'}>
+                        {(field) => (
+                            <field.SelectField
+                                label={'Action'}
+                                options={[
+                                    { value: 'command', label: 'Send command' },
+                                    { value: 'power', label: 'Send power action' },
+                                    { value: 'backup', label: 'Create backup' },
+                                ]}
+                                onChange={(value) => setPayloadForAction(value as Action)}
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+                <div className={'flex-1 ml-6'}>
+                    <form.AppField
+                        name={'timeOffset'}
+                        validators={{
+                            onChange: ({ value }) =>
+                                value === null
+                                    ? 'A time offset must be provided.'
+                                    : value < 0
+                                      ? 'The time offset must be at least 0 seconds.'
+                                      : value > 900
+                                        ? 'The time offset must be less than 900 seconds.'
+                                        : undefined,
+                        }}
+                    >
+                        {(field) => (
+                            <field.NumberField
                                 label={'Time offset (in seconds)'}
+                                min={0}
+                                max={900}
                                 description={
                                     'The amount of time to wait after the previous task executes before running this one. If this is the first task on a schedule this will not be applied.'
                                 }
                             />
-                        </div>
-                    </div>
-                    <div css={tw`mt-6`}>
-                        {values.action === 'command' ? (
-                            <div>
-                                <Label>Payload</Label>
-                                <FormikFieldWrapper name={'payload'}>
-                                    <FormikField as={Textarea} name={'payload'} rows={6} />
-                                </FormikFieldWrapper>
-                            </div>
-                        ) : values.action === 'power' ? (
-                            <div>
-                                <Label>Payload</Label>
-                                <FormikFieldWrapper name={'payload'}>
-                                    <FormikField as={Select} name={'payload'}>
-                                        <option value={'start'}>Start the server</option>
-                                        <option value={'restart'}>Restart the server</option>
-                                        <option value={'stop'}>Stop the server</option>
-                                        <option value={'kill'}>Terminate the server</option>
-                                    </FormikField>
-                                </FormikFieldWrapper>
-                            </div>
-                        ) : (
-                            <div>
-                                <Label>Ignored Files</Label>
-                                <FormikFieldWrapper
-                                    name={'payload'}
-                                    description={
-                                        'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used. If you have reached your backup limit, the oldest backup will be rotated.'
-                                    }
-                                >
-                                    <FormikField as={Textarea} name={'payload'} rows={6} />
-                                </FormikFieldWrapper>
-                            </div>
                         )}
-                    </div>
-                    <div css={tw`mt-6 bg-neutral-700 border border-neutral-800 shadow-inner p-4 rounded`}>
-                        <FormikSwitch
-                            name={'continueOnFailure'}
+                    </form.AppField>
+                </div>
+            </div>
+            <div className={'mt-6'}>
+                {action === 'command' ? (
+                    <form.AppField
+                        name={'payload'}
+                        validators={{
+                            onChange: ({ value }) =>
+                                value.length > 0 ? undefined : 'A task payload must be provided.',
+                        }}
+                    >
+                        {(field) => <field.TextAreaField label={'Payload'} rows={6} />}
+                    </form.AppField>
+                ) : action === 'power' ? (
+                    <form.AppField name={'payload'}>
+                        {(field) => (
+                            <field.SelectField
+                                label={'Payload'}
+                                options={[
+                                    { value: 'start', label: 'Start the server' },
+                                    { value: 'restart', label: 'Restart the server' },
+                                    { value: 'stop', label: 'Stop the server' },
+                                    { value: 'kill', label: 'Terminate the server' },
+                                ]}
+                            />
+                        )}
+                    </form.AppField>
+                ) : (
+                    <form.AppField name={'payload'}>
+                        {(field) => (
+                            <field.TextAreaField
+                                label={'Ignored Files'}
+                                rows={6}
+                                description={
+                                    'Optional. Include the files and folders to be excluded in this backup. By default, the contents of your .pteroignore file will be used. If you have reached your backup limit, the oldest backup will be rotated.'
+                                }
+                            />
+                        )}
+                    </form.AppField>
+                )}
+            </div>
+            <div className={'mt-6 bg-card border border-border shadow-inner p-4 rounded-sm'}>
+                <form.AppField name={'continueOnFailure'}>
+                    {(field) => (
+                        <field.SwitchField
                             description={'Future tasks will be run when this task fails.'}
                             label={'Continue on Failure'}
                         />
-                    </div>
-                    <div css={tw`flex justify-end mt-6`}>
-                        <Button type={'submit'} disabled={isSubmitting}>
-                            {task ? 'Save Changes' : 'Create Task'}
-                        </Button>
-                    </div>
-                </Form>
-            )}
-        </Formik>
+                    )}
+                </form.AppField>
+            </div>
+            <div className={'flex justify-end mt-6'}>
+                <form.AppForm>
+                    <form.SubmitButton>{task ? 'Save Changes' : 'Create Task'}</form.SubmitButton>
+                </form.AppForm>
+            </div>
+        </Form>
     );
 };
 
-export default asModal<Props>()(TaskDetailsModal);
+export default function TaskDetailsModal({ open, onClose, ...props }: Props & DialogProps) {
+    const formKey = `${props.schedule.attributes.id}:${props.task?.attributes.id ?? 'new'}`;
+
+    return (
+        <Dialog open={open} title={props.task ? 'Edit task' : 'Create task'} onClose={onClose}>
+            <TaskDetailsForm key={formKey} {...props} onClose={onClose} />
+        </Dialog>
+    );
+}

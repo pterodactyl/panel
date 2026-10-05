@@ -1,30 +1,32 @@
-import React, { memo } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import tw from 'twin.macro';
-import isEqual from 'react-fast-compare';
+import type React from 'react';
+import type { LucideIcon } from 'lucide-react';
+import Icon from '@/components/elements/Icon';
+import { cn } from '@/lib/cn';
+import { cardTitleClass } from '@/components/ui/typography';
+import { isString } from '@/lib/objects';
 
 interface Props {
-    icon?: IconProp;
+    icon?: LucideIcon;
     title: string | React.ReactNode;
     className?: string;
+    contentClassName?: string;
     children: React.ReactNode;
 }
 
-const TitledGreyBox = ({ icon, title, children, className }: Props) => (
-    <div css={tw`rounded shadow-md bg-neutral-700`} className={className}>
-        <div css={tw`bg-neutral-900 rounded-t p-3 border-b border-black`}>
-            {typeof title === 'string' ? (
-                <p css={tw`text-sm uppercase`}>
-                    {icon && <FontAwesomeIcon icon={icon} css={tw`mr-2 text-neutral-300`} />}
+const TitledGreyBox = ({ icon, title, children, className, contentClassName }: Props) => (
+    <div className={cn('rounded-sm shadow-md bg-card', className)}>
+        <div className={'bg-muted rounded-t-sm p-3 border-b border-border'}>
+            {isString(title) ? (
+                <h2 className={cardTitleClass}>
+                    {icon && <Icon icon={icon} className={'mr-2 text-muted-foreground'} />}
                     {title}
-                </p>
+                </h2>
             ) : (
                 title
             )}
         </div>
-        <div css={tw`p-3`}>{children}</div>
+        <div className={cn('p-3', contentClassName)}>{children}</div>
     </div>
 );
 
-export default memo(TitledGreyBox, isEqual);
+export default TitledGreyBox;

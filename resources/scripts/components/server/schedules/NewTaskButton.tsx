@@ -1,21 +1,25 @@
-import React, { useState } from 'react';
-import { Schedule } from '@/api/server/schedules/getServerSchedules';
+import { type Schedule } from '@/api/server/schedules/queries';
 import TaskDetailsModal from '@/components/server/schedules/TaskDetailsModal';
-import { Button } from '@/components/elements/button/index';
+import { NewButton } from '@/components/elements/NewButton';
+import { Dialog } from '@/components/elements/dialog';
+import type { WithClassname } from '@/components/types';
 
-interface Props {
+interface Props extends WithClassname {
     schedule: Schedule;
 }
 
-export default ({ schedule }: Props) => {
-    const [visible, setVisible] = useState(false);
-
+const NewTaskButton = ({ schedule, className }: Props) => {
     return (
-        <>
-            <TaskDetailsModal schedule={schedule} visible={visible} onModalDismissed={() => setVisible(false)} />
-            <Button onClick={() => setVisible(true)} className={'flex-1'}>
-                New Task
-            </Button>
-        </>
+        <Dialog.Trigger
+            trigger={({ onClick }) => (
+                <NewButton onClick={onClick} className={className}>
+                    New task
+                </NewButton>
+            )}
+        >
+            {(dialog) => <TaskDetailsModal schedule={schedule} {...dialog} />}
+        </Dialog.Trigger>
     );
 };
+
+export default NewTaskButton;

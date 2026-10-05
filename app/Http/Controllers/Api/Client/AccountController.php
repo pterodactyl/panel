@@ -1,62 +1,82 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
-use Illuminate\Auth\AuthManager;
-use Illuminate\Http\JsonResponse;
+use Knuckles\Scribe\Attributes\BodyParam;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\Response as ScribeResponse;
+use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Users\UpdatesUserEmails;
+use Pterodactyl\Contracts\Users\UpdatesUserPasswords;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
-use Illuminate\Support\Facades\RateLimiter;
-use Pterodactyl\Services\Users\UserUpdateService;
-use Pterodactyl\Transformers\Api\Client\AccountTransformer;
+use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdateEmailRequest;
 use Pterodactyl\Http\Requests\Api\Client\Account\UpdatePasswordRequest;
-use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
+use Pterodactyl\Models\User;
+use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Transformers\Api\Client\AccountTransformer;
+use Throwable;
 
+#[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
+#[Subgroup('Account', 'View and update the authenticated user account.')]
 class AccountController extends ClientApiController
 {
-    /**
-     * The number of seconds that must elapse before the email change throttle resets.
-     */
-    private const EMAIL_UPDATE_THROTTLE = 60 * 60 * 24;
+    private const array INVALID_PASSWORD_ERROR = [
+        'errors' => [
+            [
+                'code' => 'InvalidPasswordProvidedException',
+                'status' => '400',
+                'detail' => 'The password provided was invalid for this account.',
+            ],
+        ],
+    ];
+
+    private const array THROTTLED_ERROR = [
+        'errors' => [
+            [
+                'code' => 'TooManyRequestsHttpException',
+                'status' => '429',
+                'detail' => 'Your email address has been changed too many times today. Please try again later.',
+            ],
+        ],
+    ];
 
     /**
-     * AccountController constructor.
+     * @return ApiPayload
      */
-    public function __construct(private AuthManager $manager, private UserUpdateService $updateService)
-    {
-        parent::__construct();
-    }
-
+    #[Endpoint('Get account', 'Returns profile details for the authenticated user.')]
+    #[ResponseFromTransformer(AccountTransformer::class, User::class, resourceKey: 'user')]
     public function index(Request $request): array
     {
-        return $this->fractal->item($request->user())
+        return Fractal::item($request->user())
             ->transformWith($this->getTransformer(AccountTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Update the authenticated user's email address.
      */
-    public function updateEmail(UpdateEmailRequest $request): JsonResponse
+    #[Endpoint('Update account email', "Updates the authenticated user's email address after verifying their current password.")]
+    #[BodyParam('password', 'string', 'The current account password.', required: true, example: 'current-password')]
+    #[ScribeResponse(status: 204, description: 'Email address updated.')]
+    #[ScribeResponse(self::INVALID_PASSWORD_ERROR, status: 400, description: 'The current password is invalid.')]
+    #[ScribeResponse(self::THROTTLED_ERROR, status: 429, description: 'The account has changed email too many times in the current throttle window.')]
+    public function updateEmail(UpdateEmailRequest $request, UpdatesUserEmails $emails): JsonResponse
     {
-        $user = $request->user();
-        // Only allow a user to change their email three times in the span
-        // of 24 hours. This prevents malicious users from trying to find
-        // existing accounts in the system by constantly changing their email.
-        if (RateLimiter::tooManyAttempts($key = "user:update-email:{$user->uuid}", 3)) {
-            throw new TooManyRequestsHttpException(message: 'Your email address has been changed too many times today. Please try again later.');
-        }
+        $email = JsonValueGuard::string($request->validated('email'));
 
-        $original = $user->email;
-        if (mb_strtolower($original) !== mb_strtolower($request->validated('email'))) {
-            RateLimiter::hit($key, self::EMAIL_UPDATE_THROTTLE);
+        $result = $emails->update($request->user(), $email);
 
-            $this->updateService->handle($user, $request->validated());
-
+        if ($result['changed']) {
             Activity::event('user:account.email-changed')
-                ->property(['old' => $original, 'new' => $request->validated('email')])
+                ->property(['old' => $result['original'], 'new' => $result['email']])
                 ->log();
         }
 
@@ -67,25 +87,20 @@ class AccountController extends ClientApiController
      * Update the authenticated user's password. All existing sessions will be logged
      * out immediately.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function updatePassword(UpdatePasswordRequest $request): JsonResponse
+    #[Endpoint('Update account password', "Updates the authenticated user's password and revokes other active sessions where supported.")]
+    #[BodyParam('current_password', 'string', 'The current account password.', required: true, example: 'current-password')]
+    #[BodyParam('password_confirmation', 'string', 'Confirmation matching the new password.', required: true, example: 'correct-horse-battery-staple')]
+    #[ScribeResponse(status: 204, description: 'Password updated.')]
+    #[ScribeResponse(self::INVALID_PASSWORD_ERROR, status: 400, description: 'The current password is invalid.')]
+    public function updatePassword(UpdatePasswordRequest $request, UpdatesUserPasswords $passwords): JsonResponse
     {
-        $user = Activity::event('user:account.password-changed')->transaction(function () use ($request) {
-            return $this->updateService->handle($request->user(), $request->validated());
-        });
+        $password = JsonValueGuard::string($request->validated('password'));
 
-        $guard = $this->manager->guard();
-        // If you do not update the user in the session you'll end up working with a
-        // cached copy of the user that does not include the updated password. Do this
-        // to correctly store the new user details in the guard and allow the logout
-        // other devices functionality to work.
-        $guard->setUser($user);
+        $user = $passwords->update($request->user(), $password);
 
-        // This method doesn't exist in the stateless Sanctum world.
-        if (method_exists($guard, 'logoutOtherDevices')) { // @phpstan-ignore function.alreadyNarrowedType
-            $guard->logoutOtherDevices($request->input('password'));
-        }
+        Activity::event('user:account.password-changed')->subject($user)->log();
 
         return new JsonResponse([], Response::HTTP_NO_CONTENT);
     }

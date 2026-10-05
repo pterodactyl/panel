@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +30,7 @@ return [
     /*
      * Matches the request origin. `['*']` allows all origins. Wildcards can be used, eg `*.mydomain.com`
      */
-    'allowed_origins' => explode(',', env('APP_CORS_ALLOWED_ORIGINS') ?? ''),
+    'allowed_origins' => explode(',', env('APP_CORS_ALLOWED_ORIGINS', '')),
 
     /*
      * Patterns that can be used with `preg_match` to match the origin.

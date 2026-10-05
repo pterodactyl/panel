@@ -1,10 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Providers;
 
-use Pterodactyl\Extensions\Hashids;
+use Illuminate\Contracts\Config\Repository;
 use Illuminate\Support\ServiceProvider;
 use Pterodactyl\Contracts\Extensions\HashidsInterface;
+use Pterodactyl\Extensions\Hashids;
+use Pterodactyl\Support\JsonValueGuard;
 
 class HashidsServiceProvider extends ServiceProvider
 {
@@ -13,14 +17,14 @@ class HashidsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->app->singleton(HashidsInterface::class, function () {
-            /** @var \Illuminate\Contracts\Config\Repository $config */
-            $config = $this->app['config'];
+        $this->app->singleton(function (): HashidsInterface {
+            $config = $this->app->make(Repository::class);
+            $length = filter_var($config->get('hashids.length', 0), FILTER_VALIDATE_INT);
 
             return new Hashids(
-                $config->get('hashids.salt', ''),
-                $config->get('hashids.length', 0),
-                $config->get('hashids.alphabet', 'abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890')
+                JsonValueGuard::string($config->get('hashids.salt', '')),
+                $length === false ? 0 : $length,
+                JsonValueGuard::string($config->get('hashids.alphabet', 'abcdefghijkmlnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890'))
             );
         });
 

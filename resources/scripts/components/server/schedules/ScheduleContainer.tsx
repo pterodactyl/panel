@@ -1,79 +1,85 @@
-import React, { useEffect, useState } from 'react';
-import getServerSchedules from '@/api/server/schedules/getServerSchedules';
-import { ServerContext } from '@/state/server';
+import { useMemo } from 'react';
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import { CalendarClock } from 'lucide-react';
+import { useServerSchedules } from '@/api/server/schedules/queries';
 import Spinner from '@/components/elements/Spinner';
-import { useHistory, useRouteMatch } from 'react-router-dom';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import ScheduleRow from '@/components/server/schedules/ScheduleRow';
-import { httpErrorToHuman } from '@/api/http';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
-import Can from '@/components/elements/Can';
-import useFlash from '@/plugins/useFlash';
-import tw from 'twin.macro';
-import GreyRowBox from '@/components/elements/GreyRowBox';
-import { Button } from '@/components/elements/button/index';
+import ListToolbar from '@/components/elements/ListToolbar';
+import { NewButton } from '@/components/elements/NewButton';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
+import { useCurrentServer } from '@/api/server/queries';
+import { httpErrorToHuman } from '@/api/http';
+import { ServerError } from '@/components/elements/ScreenBlock';
+import { Dialog } from '@/components/elements/dialog';
+import DataTable from '@/components/elements/table/DataTable';
+import { scheduleColumns } from '@/components/server/schedules/ScheduleTable';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { emptyCompactClass } from '@/components/ui/styles';
+import { usePermissions } from '@/plugins/usePermissions';
 
-export default () => {
-    const match = useRouteMatch();
-    const history = useHistory();
+const CreateScheduleButton = () => (
+    <Dialog.Trigger trigger={({ onClick }) => <NewButton onClick={onClick}>New schedule</NewButton>}>
+        {(dialog) => <EditScheduleModal {...dialog} />}
+    </Dialog.Trigger>
+);
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const { clearFlashes, addError } = useFlash();
-    const [loading, setLoading] = useState(true);
-    const [visible, setVisible] = useState(false);
+const ScheduleContainer = () => {
+    const server = useCurrentServer()!;
+    const id = server.attributes.identifier;
+    const uuid = server.attributes.uuid;
+    const [canCreate] = usePermissions('schedule.create');
 
-    const schedules = ServerContext.useStoreState((state) => state.schedules.data);
-    const setSchedules = ServerContext.useStoreActions((actions) => actions.schedules.setSchedules);
+    const { data: schedulesResponse, error, isLoading, refetch } = useServerSchedules(uuid);
+    const schedules = useMemo(() => schedulesResponse?.data ?? [], [schedulesResponse?.data]);
+    const columns = useMemo(() => scheduleColumns(id), [id]);
+    const table = useReactTable({
+        data: schedules,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getRowId: (schedule) => String(schedule.attributes.id),
+    });
 
-    useEffect(() => {
-        clearFlashes('schedules');
-        getServerSchedules(uuid)
-            .then((schedules) => setSchedules(schedules))
-            .catch((error) => {
-                addError({ message: httpErrorToHuman(error), key: 'schedules' });
-                console.error(error);
-            })
-            .then(() => setLoading(false));
-    }, []);
+    if (error && !schedulesResponse) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
 
     return (
         <ServerContentBlock title={'Schedules'}>
-            <FlashMessageRender byKey={'schedules'} css={tw`mb-4`} />
-            {!schedules.length && loading ? (
+            {!schedules.length && isLoading ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
-                    {schedules.length === 0 ? (
-                        <p css={tw`text-sm text-center text-neutral-300`}>
-                            There are no schedules configured for this server.
-                        </p>
-                    ) : (
-                        schedules.map((schedule) => (
-                            <GreyRowBox
-                                as={'a'}
-                                key={schedule.id}
-                                href={`${match.url}/${schedule.id}`}
-                                css={tw`cursor-pointer mb-2 flex-wrap`}
-                                onClick={(e: any) => {
-                                    e.preventDefault();
-                                    history.push(`${match.url}/${schedule.id}`);
-                                }}
-                            >
-                                <ScheduleRow schedule={schedule} />
-                            </GreyRowBox>
-                        ))
+                    {canCreate && (
+                        <ListToolbar>
+                            <CreateScheduleButton />
+                        </ListToolbar>
                     )}
-                    <Can action={'schedule.create'}>
-                        <div css={tw`mt-8 flex justify-end`}>
-                            <EditScheduleModal visible={visible} onModalDismissed={() => setVisible(false)} />
-                            <Button type={'button'} onClick={() => setVisible(true)}>
-                                Create schedule
-                            </Button>
-                        </div>
-                    </Can>
+                    <DataTable
+                        table={table}
+                        emptyState={
+                            <Empty className={emptyCompactClass}>
+                                <EmptyHeader>
+                                    <EmptyMedia variant={'icon'}>
+                                        <CalendarClock />
+                                    </EmptyMedia>
+                                    <EmptyTitle>No schedules</EmptyTitle>
+                                    <EmptyDescription>
+                                        Schedules run commands, power actions and backups automatically.
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                                {canCreate && (
+                                    <EmptyContent>
+                                        <CreateScheduleButton />
+                                    </EmptyContent>
+                                )}
+                            </Empty>
+                        }
+                    />
                 </>
             )}
         </ServerContentBlock>
     );
 };
+
+export default ScheduleContainer;

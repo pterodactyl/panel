@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Services\Activity;
 
+use Closure;
 use Ramsey\Uuid\Uuid;
 
 class ActivityLogBatchService
 {
     protected int $transaction = 0;
+
     protected ?string $uuid = null;
 
     /**
@@ -28,7 +32,7 @@ class ActivityLogBatchService
             $this->uuid = Uuid::uuid4()->toString();
         }
 
-        ++$this->transaction;
+        $this->transaction++;
     }
 
     /**
@@ -47,8 +51,13 @@ class ActivityLogBatchService
     /**
      * Executes the logic provided within the callback in the scope of an activity
      * log batch transaction.
+     *
+     * @template TReturn of object|ApiValue10
+     *
+     * @param  Closure(?string): TReturn  $callback
+     * @return TReturn
      */
-    public function transaction(\Closure $callback): mixed
+    public function transaction(Closure $callback): mixed
     {
         $this->start();
         $result = $callback($this->uuid());

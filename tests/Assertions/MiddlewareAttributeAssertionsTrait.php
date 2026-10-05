@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Tests\Assertions;
 
 use PHPUnit\Framework\Assert;
@@ -11,7 +13,7 @@ trait MiddlewareAttributeAssertionsTrait
      */
     public function assertRequestHasAttribute(string $attribute): void
     {
-        Assert::assertTrue($this->request->attributes->has($attribute), 'Assert that request mock has ' . $attribute . ' attribute.');
+        Assert::assertTrue($this->request->attributes->has($attribute), 'Assert that request mock has '.$attribute.' attribute.');
     }
 
     /**
@@ -19,7 +21,7 @@ trait MiddlewareAttributeAssertionsTrait
      */
     public function assertRequestMissingAttribute(string $attribute): void
     {
-        Assert::assertFalse($this->request->attributes->has($attribute), 'Assert that request mock does not have ' . $attribute . ' attribute.');
+        Assert::assertFalse($this->request->attributes->has($attribute), 'Assert that request mock does not have '.$attribute.' attribute.');
     }
 
     /**

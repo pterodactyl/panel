@@ -1,18 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Application;
 
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\NullResource;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Models\Allocation;
 use Pterodactyl\Models\Node;
 use Pterodactyl\Models\Server;
-use League\Fractal\Resource\Item;
-use Pterodactyl\Models\Allocation;
-use League\Fractal\Resource\NullResource;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class AllocationTransformer extends BaseTransformer
 {
+    protected array $includeRelations = [
+        'node' => ['relation' => 'node', 'transformer' => NodeTransformer::class, 'ability' => AdminAcl::RESOURCE_NODES],
+        'server' => ['relation' => 'server', 'transformer' => ServerTransformer::class, 'ability' => AdminAcl::RESOURCE_SERVERS],
+    ];
+
     /**
      * Relationships that can be loaded onto allocation transformations.
+     *
+     * @var list<string>
      */
     protected array $availableIncludes = ['node', 'server'];
 
@@ -26,6 +36,8 @@ class AllocationTransformer extends BaseTransformer
 
     /**
      * Return a generic transformed allocation array.
+     *
+     * @return ApiPayload
      */
     public function transform(Allocation $allocation): array
     {
@@ -35,18 +47,18 @@ class AllocationTransformer extends BaseTransformer
             'alias' => $allocation->ip_alias,
             'port' => $allocation->port,
             'notes' => $allocation->notes,
-            'assigned' => !is_null($allocation->server_id),
+            'assigned' => ($allocation->server_id) !== null,
         ];
     }
 
     /**
      * Load the node relationship onto a given transformation.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeNode(Allocation $allocation): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_NODES)) {
             return $this->null();
         }
 
@@ -60,11 +72,11 @@ class AllocationTransformer extends BaseTransformer
     /**
      * Load the server relationship onto a given transformation.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeServer(Allocation $allocation): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS) || !$allocation->server) {
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS) || ! $allocation->server) {
             return $this->null();
         }
 

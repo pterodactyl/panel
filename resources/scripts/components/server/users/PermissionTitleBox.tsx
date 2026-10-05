@@ -1,41 +1,41 @@
-import React, { memo, useCallback } from 'react';
-import { useField } from 'formik';
+import React from 'react';
+import { useStore } from '@tanstack/react-form';
+import type { AnyFormApi } from '@tanstack/react-form';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import tw from 'twin.macro';
-import Input from '@/components/elements/Input';
-import isEqual from 'react-fast-compare';
+import Checkbox from '@/components/ui/Checkbox';
+import { setPermissionsSelected } from '@/components/server/users/permissionSelection';
 
 interface Props {
+    form: AnyFormApi;
     isEditable: boolean;
     title: string;
-    permissions: string[];
+    editablePermissions: string[];
     className?: string;
+    children?: React.ReactNode;
 }
 
-const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissions, className, children }) => {
-    const [{ value }, , { setValue }] = useField<string[]>('permissions');
+const PermissionTitleBox = ({ form, isEditable, title, editablePermissions, className, children }: Props) => {
+    const value = useStore(form.store, (state) => (state.values.permissions ?? []) as string[]);
+    const valueSet = new Set(value);
+    const canToggleGroup = isEditable && editablePermissions.length > 0;
+    const allChecked = editablePermissions.length > 0 && editablePermissions.every((p) => valueSet.has(p));
 
-    const onCheckboxClicked = useCallback(
-        (e: React.ChangeEvent<HTMLInputElement>) => {
-            if (e.currentTarget.checked) {
-                setValue([...value, ...permissions.filter((p) => !value.includes(p))]);
-            } else {
-                setValue(value.filter((p) => !permissions.includes(p)));
-            }
-        },
-        [permissions, value]
-    );
+    const onCheckedChange = (checked: boolean) => {
+        form.setFieldValue('permissions', setPermissionsSelected(value, editablePermissions, checked));
+    };
 
     return (
         <TitledGreyBox
             title={
-                <div css={tw`flex items-center`}>
-                    <p css={tw`text-sm uppercase flex-1`}>{title}</p>
-                    {isEditable && (
-                        <Input
-                            type={'checkbox'}
-                            checked={permissions.every((p) => value.includes(p))}
-                            onChange={onCheckboxClicked}
+                <div className={'flex items-center'}>
+                    <p className={'text-sm uppercase flex-1'}>{title}</p>
+                    {canToggleGroup && (
+                        <Checkbox
+                            aria-label={`Select all ${title} permissions`}
+                            checked={allChecked}
+                            indeterminate={!allChecked && editablePermissions.some((p) => valueSet.has(p))}
+                            onChange={onCheckedChange}
+                            className={'w-5 h-5'}
                         />
                     )}
                 </div>
@@ -45,6 +45,6 @@ const PermissionTitleBox: React.FC<Props> = memo(({ isEditable, title, permissio
             {children}
         </TitledGreyBox>
     );
-}, isEqual);
+};
 
 export default PermissionTitleBox;

@@ -1,10 +1,9 @@
 import React from 'react';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faArrowLeft, faSyncAlt } from '@fortawesome/free-solid-svg-icons';
-import styled, { keyframes } from 'styled-components/macro';
-import tw from 'twin.macro';
+import { ArrowLeft, RefreshCw } from 'lucide-react';
+import { cn } from '@/lib/cn';
 import Button from '@/components/elements/Button';
+import Icon from '@/components/elements/Icon';
 import NotFoundSvg from '@/assets/images/not_found.svg';
 import ServerErrorSvg from '@/assets/images/server_error.svg';
 
@@ -28,37 +27,29 @@ interface PropsWithBack extends BaseProps {
 
 export type ScreenBlockProps = PropsWithBack | PropsWithRetry;
 
-const spin = keyframes`
-    to { transform: rotate(360deg) }
-`;
-
-const ActionButton = styled(Button)`
-    ${tw`rounded-full w-8 h-8 flex items-center justify-center p-0`};
-
-    &.hover\\:spin:hover {
-        animation: ${spin} 2s linear infinite;
-    }
-`;
+const ActionButton = ({ className, ...props }: React.ComponentProps<typeof Button>) => (
+    <Button className={cn('rounded-full w-8 h-8 flex items-center justify-center p-0', className)} {...props} />
+);
 
 const ScreenBlock = ({ title, image, message, onBack, onRetry }: ScreenBlockProps) => (
     <PageContentBlock>
-        <div css={tw`flex justify-center`}>
-            <div
-                css={tw`w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-neutral-100 rounded-lg shadow-lg text-center relative`}
-            >
-                {(typeof onBack === 'function' || typeof onRetry === 'function') && (
-                    <div css={tw`absolute left-0 top-0 ml-4 mt-4`}>
+        <div className={'flex justify-center'}>
+            <div className={'w-full sm:w-3/4 md:w-1/2 p-12 md:p-20 bg-card rounded-lg shadow-lg text-center relative'}>
+                {(onBack || onRetry) && (
+                    <div className={'absolute left-0 top-0 ml-4 mt-4'}>
                         <ActionButton
+                            aria-label={onRetry ? 'Retry' : 'Go back'}
+                            title={onRetry ? 'Retry' : 'Go back'}
                             onClick={() => (onRetry ? onRetry() : onBack ? onBack() : null)}
-                            className={onRetry ? 'hover:spin' : undefined}
+                            className={onRetry ? 'hover:animate-[spin_2s_linear_infinite]' : undefined}
                         >
-                            <FontAwesomeIcon icon={onRetry ? faSyncAlt : faArrowLeft} />
+                            <Icon icon={onRetry ? RefreshCw : ArrowLeft} />
                         </ActionButton>
                     </div>
                 )}
-                <img src={image} css={tw`w-2/3 h-auto select-none mx-auto`} />
-                <h2 css={tw`mt-10 text-neutral-900 font-bold text-4xl`}>{title}</h2>
-                <p css={tw`text-sm text-neutral-700 mt-2`}>{message}</p>
+                <img src={image} alt={''} className={'w-2/3 h-auto select-none mx-auto'} />
+                <h2 className={'mt-10 text-foreground font-bold text-4xl'}>{title}</h2>
+                <p className={'text-sm text-muted-foreground mt-2'}>{message}</p>
             </div>
         </div>
     </PageContentBlock>
@@ -68,8 +59,15 @@ type ServerErrorProps = (Omit<PropsWithBack, 'image' | 'title'> | Omit<PropsWith
     title?: string;
 };
 
-const ServerError = ({ title, ...props }: ServerErrorProps) => (
-    <ScreenBlock title={title || 'Something went wrong'} image={ServerErrorSvg} {...props} />
+const ServerError = ({ title = 'Something went wrong', message, onBack, onRetry }: ServerErrorProps) =>
+    onRetry ? (
+        <ScreenBlock title={title} image={ServerErrorSvg} message={message} onRetry={onRetry} />
+    ) : (
+        <ScreenBlock title={title} image={ServerErrorSvg} message={message} onBack={onBack} />
+    );
+
+const AccessDenied = ({ message }: Pick<BaseProps, 'message'>) => (
+    <ScreenBlock title={'Access Denied'} image={ServerErrorSvg} message={message} />
 );
 
 const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'title' | 'message' | 'onBack'>>) => (
@@ -81,5 +79,5 @@ const NotFound = ({ title, message, onBack }: Partial<Pick<ScreenBlockProps, 'ti
     />
 );
 
-export { ServerError, NotFound };
+export { AccessDenied, ServerError, NotFound };
 export default ScreenBlock;

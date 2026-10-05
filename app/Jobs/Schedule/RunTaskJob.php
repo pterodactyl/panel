@@ -1,23 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Jobs\Schedule;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Models\Task;
 use Illuminate\Bus\Queueable;
-use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\DispatchesJobs;
-use Pterodactyl\Services\Backups\InitiateBackupService;
-use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
-use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use InvalidArgumentException;
+use Pterodactyl\Contracts\Backups\InitiatesBackups;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Facades\Daemon;
+use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\Task;
+use Throwable;
 
 class RunTaskJob implements ShouldQueue
 {
-    use Queueable;
     use DispatchesJobs;
+    use InteractsWithQueue;
+    use Queueable;
     use SerializesModels;
+
+    public int $timeout = 30;
+
+    /** @var list<int> */
+    public array $backoff = [10, 30, 60];
+
+    public int $tries = 3;
 
     /**
      * RunTaskJob constructor.
@@ -30,15 +43,13 @@ class RunTaskJob implements ShouldQueue
     /**
      * Run the job and send actions to the daemon running the server.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
     public function handle(
-        DaemonCommandRepository $commandRepository,
-        InitiateBackupService $backupService,
-        DaemonPowerRepository $powerRepository,
-    ) {
+        InitiatesBackups $backupService,
+    ): void {
         // Do not process a task that is not set to active, unless it's been manually triggered.
-        if (!$this->task->schedule->is_active && !$this->manualRun) {
+        if (! $this->task->schedule->is_active && ! $this->manualRun) {
             $this->markTaskNotQueued();
             $this->markScheduleComplete();
 
@@ -48,9 +59,9 @@ class RunTaskJob implements ShouldQueue
         $server = $this->task->server;
         // If we made it to this point and the server status is not null it means the
         // server was likely suspended or marked as reinstalling after the schedule
-        // was queued up. Just end the task right now — this should be a very rare
+        // was queued up. Just end the task right now - this should be a very rare
         // condition.
-        if (!is_null($server->status)) {
+        if (($server->status) !== null) {
             $this->failed();
 
             return;
@@ -58,25 +69,16 @@ class RunTaskJob implements ShouldQueue
 
         // Perform the provided task against the daemon.
         try {
-            switch ($this->task->action) {
-                case Task::ACTION_POWER:
-                    $powerRepository->setServer($server)->send($this->task->payload);
-                    break;
-                case Task::ACTION_COMMAND:
-                    $commandRepository->setServer($server)->send($this->task->payload);
-                    break;
-                case Task::ACTION_BACKUP:
-                    $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->handle($server, null, true);
-                    break;
-                default:
-                    throw new \InvalidArgumentException('Invalid task action provided: ' . $this->task->action);
-            }
-        } catch (\Exception $exception) {
+            match ($this->task->action) {
+                Task::ACTION_POWER => Daemon::server($server)->power($this->task->payload),
+                Task::ACTION_COMMAND => Daemon::server($server)->commands($this->task->payload),
+                Task::ACTION_BACKUP => $backupService->setIgnoredFiles(explode(PHP_EOL, $this->task->payload))->initiate($server, null, true),
+                default => throw new InvalidArgumentException('Invalid task action provided: '.$this->task->action),
+            };
+        } catch (Throwable $throwable) {
             // If this isn't a DaemonConnectionException on a task that allows for failures
             // throw the exception back up the chain so that the task is stopped.
-            if (!($this->task->continue_on_failure && $exception instanceof DaemonConnectionException)) {
-                throw $exception;
-            }
+            throw_if(! $this->task->continue_on_failure || ! $throwable instanceof DaemonConnectionException, $throwable);
         }
 
         $this->markTaskNotQueued();
@@ -86,24 +88,28 @@ class RunTaskJob implements ShouldQueue
     /**
      * Handle a failure while sending the action to the daemon or otherwise processing the job.
      */
-    public function failed(?\Exception $exception = null)
+    public function failed(?Throwable $exception = null): void
     {
-        $this->markTaskNotQueued();
-        $this->markScheduleComplete();
+        $this->task->getConnection()->transaction(function (): void {
+            $schedule = Schedule::query()->without('tasks')->lockForUpdate()->findOrFail($this->task->schedule_id);
+            $schedule->tasks()->where('is_queued', true)->update(['is_queued' => false]);
+            $schedule->forceFill(['is_processing' => false, 'last_run_at' => CarbonImmutable::now()])->saveOrFail();
+        });
     }
 
     /**
      * Get the next task in the schedule and queue it for running after the defined period of wait time.
      */
-    private function queueNextTask()
+    private function queueNextTask(): void
     {
+        // SAFETY: this query is rooted in the Task model and first() therefore returns Task|null.
         /** @var Task|null $nextTask */
         $nextTask = Task::query()->where('schedule_id', $this->task->schedule_id)
             ->orderBy('sequence_id', 'asc')
             ->where('sequence_id', '>', $this->task->sequence_id)
             ->first();
 
-        if (is_null($nextTask)) {
+        if (($nextTask) === null) {
             $this->markScheduleComplete();
 
             return;
@@ -111,13 +117,25 @@ class RunTaskJob implements ShouldQueue
 
         $nextTask->update(['is_queued' => true]);
 
-        $this->dispatch((new self($nextTask, $this->manualRun))->delay($nextTask->time_offset));
+        try {
+            $this->dispatch((new self($nextTask, $this->manualRun))->delay($nextTask->time_offset));
+        } catch (Throwable $throwable) {
+            rescue(fn () => $this->failed($throwable));
+
+            if ($this->job !== null) {
+                $this->fail($throwable);
+
+                return;
+            }
+
+            throw $throwable;
+        }
     }
 
     /**
      * Marks the parent schedule as being complete.
      */
-    private function markScheduleComplete()
+    private function markScheduleComplete(): void
     {
         $this->task->schedule()->update([
             'is_processing' => false,
@@ -128,7 +146,7 @@ class RunTaskJob implements ShouldQueue
     /**
      * Mark a specific task as no longer being queued.
      */
-    private function markTaskNotQueued()
+    private function markTaskNotQueued(): void
     {
         $this->task->update(['is_queued' => false]);
     }

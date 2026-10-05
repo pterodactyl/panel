@@ -1,29 +1,14 @@
-import React, { CSSProperties } from 'react';
-import { IconDefinition } from '@fortawesome/fontawesome-svg-core';
-import tw from 'twin.macro';
+import type { LucideIcon, LucideProps } from 'lucide-react';
+import { cn } from '@/lib/cn';
 
-interface Props {
-    icon: IconDefinition;
+interface Props extends Omit<LucideProps, 'ref'> {
+    icon: LucideIcon;
     className?: string;
-    style?: CSSProperties;
 }
 
-const Icon = ({ icon, className, style }: Props) => {
-    const [width, height, , , paths] = icon.icon;
-
-    return (
-        <svg
-            xmlns={'http://www.w3.org/2000/svg'}
-            viewBox={`0 0 ${width} ${height}`}
-            css={tw`fill-current inline-block`}
-            className={className}
-            style={style}
-        >
-            {(Array.isArray(paths) ? paths : [paths]).map((path, index) => (
-                <path key={`svg_path_${index}`} d={path} />
-            ))}
-        </svg>
-    );
-};
+/** Renders a lucide icon inline at the surrounding text size (1em). */
+const Icon = ({ icon: IconComponent, className, size = '1em', ...rest }: Props) => (
+    <IconComponent className={cn('inline-block', className)} size={size} {...rest} />
+);
 
 export default Icon;

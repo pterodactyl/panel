@@ -1,180 +1,195 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
-use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\QueryParam;
+use Knuckles\Scribe\Attributes\Response as ScribeResponse;
+use Knuckles\Scribe\Attributes\Subgroup;
+use League\Fractal\Pagination\IlluminatePaginatorAdapter;
+use Pterodactyl\Contracts\Backups\DeletesBackups;
+use Pterodactyl\Contracts\Backups\GeneratesBackupDownloadLinks;
+use Pterodactyl\Contracts\Backups\InitiatesBackups;
+use Pterodactyl\Contracts\Backups\RestoresBackups;
+use Pterodactyl\Contracts\Backups\TogglesBackupLocks;
+use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Facades\Activity;
+use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DeleteBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\DownloadBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\ListBackupsRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\RestoreBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\ToggleBackupLockRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\ViewBackupRequest;
 use Pterodactyl\Models\Backup;
 use Pterodactyl\Models\Server;
-use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Models\Permission;
-use Illuminate\Auth\Access\AuthorizationException;
-use Pterodactyl\Services\Backups\DeleteBackupService;
-use Pterodactyl\Services\Backups\DownloadLinkService;
-use Pterodactyl\Repositories\Eloquent\BackupRepository;
-use Pterodactyl\Services\Backups\InitiateBackupService;
-use Pterodactyl\Repositories\Wings\DaemonBackupRepository;
+use Pterodactyl\Services\Backups\BackupListService;
 use Pterodactyl\Transformers\Api\Client\BackupTransformer;
-use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\StoreBackupRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Backups\RestoreBackupRequest;
+use Spatie\Fractalistic\Exceptions\InvalidTransformation;
+use Spatie\Fractalistic\Exceptions\NoTransformerSpecified;
+use Throwable;
 
+#[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
+#[Subgroup('Server Backups', 'Create, inspect, download, restore, lock, and delete server backups.')]
 class BackupController extends ClientApiController
 {
-    /**
-     * BackupController constructor.
-     */
-    public function __construct(
-        private DaemonBackupRepository $daemonRepository,
-        private DeleteBackupService $deleteBackupService,
-        private InitiateBackupService $initiateBackupService,
-        private DownloadLinkService $downloadLinkService,
-        private BackupRepository $repository,
-    ) {
-        parent::__construct();
-    }
+    private const array SIGNED_URL_EXAMPLE = [
+        'object' => 'signed_url',
+        'attributes' => [
+            'url' => 'https://node.example.test/download/backup?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.example.signature',
+        ],
+    ];
+
+    private const array BAD_REQUEST_ERROR = [
+        'errors' => [
+            [
+                'code' => 'BadRequestHttpException',
+                'status' => '400',
+                'detail' => 'This backup cannot be restored at this time: not completed or failed.',
+            ],
+        ],
+    ];
 
     /**
      * Returns all the backups for a given server instance in a paginated
      * result set.
      *
-     * @throws AuthorizationException
+     *
+     * @return ApiPayload
      */
-    public function index(Request $request, Server $server): array
+    #[Endpoint('List server backups', 'Returns a paginated list of backups for the server.')]
+    #[QueryParam('page', 'integer', 'The page number to return.', required: false, example: 1)]
+    #[QueryParam('per_page', 'integer', 'Number of backups to return per page. The maximum is 50.', required: false, example: 20)]
+    #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backups returned.', collection: true, resourceKey: 'backup', paginate: [IlluminatePaginatorAdapter::class, 20], meta: ['backup_count' => 1])]
+    public function index(ListBackupsRequest $request, BackupListService $listing, Server $server): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new AuthorizationException();
-        }
+        $validated = $request->payload();
 
-        $limit = min($request->query('per_page') ?? 20, 50);
+        $result = $listing->handle($server, $validated['per_page']);
 
-        return $this->fractal->collection($server->backups()->paginate($limit))
+        return Fractal::collection($result['backups'])
             ->transformWith($this->getTransformer(BackupTransformer::class))
             ->addMeta([
-                'backup_count' => $this->repository->getNonFailedBackups($server)->count(),
+                'backup_count' => $result['backup_count'],
             ])
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Starts the backup process for a server.
      *
-     * @throws \Spatie\Fractalistic\Exceptions\InvalidTransformation
-     * @throws \Spatie\Fractalistic\Exceptions\NoTransformerSpecified
-     * @throws \Throwable
+     *
+     * @return ApiPayload
+     *
+     * @throws InvalidTransformation
+     * @throws NoTransformerSpecified
+     * @throws Throwable
      */
-    public function store(StoreBackupRequest $request, Server $server): array
+    #[Endpoint('Create server backup', 'Starts a new backup for the server.')]
+    #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Backup started.', resourceKey: 'backup')]
+    public function store(StoreBackupRequest $request, InitiatesBackups $initiate, Server $server): array
     {
-        $action = $this->initiateBackupService
-            ->setIgnoredFiles(explode(PHP_EOL, $request->input('ignored') ?? ''));
+        $user = $this->authenticatedUser($request);
+        $validated = $request->payload();
+        $action = $initiate
+            ->setIgnoredFiles(explode(PHP_EOL, $validated['ignored'] ?? ''));
 
         // Only set the lock status if the user even has permission to delete backups,
         // otherwise ignore this status. This gets a little funky since it isn't clear
         // how best to allow a user to create a backup that is locked without also preventing
         // them from just filling up a server with backups that can never be deleted?
-        if ($request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            $action->setIsLocked($request->boolean('is_locked'));
+        if ($user->can(Permissions::BackupDelete->value, $server)) {
+            $action->setIsLocked($validated['is_locked']);
         }
 
-        $backup = Activity::event('server:backup.start')->transaction(function ($log) use ($action, $server, $request) {
-            $server->backups()->lockForUpdate()->count();
+        $backup = $action->initiate($server, $validated['name']);
 
-            $backup = $action->handle($server, $request->input('name'));
+        Activity::event('server:backup.start')->subject($backup)->property([
+            'name' => $backup->name,
+            'locked' => $backup->is_locked,
+        ])->log();
 
-            $log->subject($backup)->property([
-                'name' => $backup->name,
-                'locked' => $request->boolean('is_locked'),
-            ]);
-
-            return $backup;
-        });
-
-        return $this->fractal->item($backup)
+        return Fractal::item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Toggles the lock status of a given backup for a server.
      *
-     * @throws \Throwable
-     * @throws AuthorizationException
+     *
+     * @return ApiPayload
+     *
+     * @throws Throwable
      */
-    public function toggleLock(Request $request, Server $server, Backup $backup): array
+    #[Endpoint('Toggle backup lock', 'Toggles whether a backup is locked against deletion.')]
+    #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Backup lock state toggled.', resourceKey: 'backup')]
+    public function toggleLock(ToggleBackupLockRequest $request, TogglesBackupLocks $toggle, Server $server, Backup $backup): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            throw new AuthorizationException();
-        }
+        $backup = $toggle->toggle($backup);
 
-        $action = $backup->is_locked ? 'server:backup.unlock' : 'server:backup.lock';
-
-        $backup->update(['is_locked' => !$backup->is_locked]);
+        $action = $backup->is_locked ? 'server:backup.lock' : 'server:backup.unlock';
 
         Activity::event($action)->subject($backup)->property('name', $backup->name)->log();
 
-        return $this->fractal->item($backup)
+        return Fractal::item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Returns information about a single backup.
      *
-     * @throws AuthorizationException
+     *
+     * @return ApiPayload
      */
-    public function view(Request $request, Server $server, Backup $backup): array
+    #[Endpoint('Get server backup', 'Returns information about one server backup.')]
+    #[ResponseFromTransformer(BackupTransformer::class, Backup::class, description: 'Server backup returned.', resourceKey: 'backup')]
+    public function view(ViewBackupRequest $request, Server $server, Backup $backup): array
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_READ, $server)) {
-            throw new AuthorizationException();
-        }
-
-        return $this->fractal->item($backup)
+        return Fractal::item($backup)
             ->transformWith($this->getTransformer(BackupTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Deletes a backup from the panel as well as the remote source where it is currently
      * being stored.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function delete(Request $request, Server $server, Backup $backup): JsonResponse
+    #[Endpoint('Delete server backup', 'Deletes a backup record and its stored archive.')]
+    #[ScribeResponse(status: 204, description: 'Backup deleted.')]
+    public function delete(DeleteBackupRequest $request, DeletesBackups $delete, Server $server, Backup $backup): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DELETE, $server)) {
-            throw new AuthorizationException();
-        }
-
-        $this->deleteBackupService->handle($backup);
+        $delete->delete($backup);
 
         Activity::event('server:backup.delete')
             ->subject($backup)
-            ->property(['name' => $backup->name, 'failed' => !$backup->is_successful])
+            ->property(['name' => $backup->name, 'failed' => ! $backup->is_successful])
             ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }
 
     /**
-     * Download the backup for a given server instance. For daemon local files, the file
-     * will be streamed back through the Panel. For AWS S3 files, a signed URL will be generated
-     * which the user is redirected to.
-     *
-     * @throws \Throwable
-     * @throws AuthorizationException
+     * @throws Throwable
      */
-    public function download(Request $request, Server $server, Backup $backup): JsonResponse
+    #[Endpoint('Get backup download URL', 'Returns a signed URL for downloading a server backup.')]
+    #[ScribeResponse(self::SIGNED_URL_EXAMPLE, description: 'Signed backup download URL returned.')]
+    #[ScribeResponse(self::BAD_REQUEST_ERROR, status: 400, description: 'The backup cannot be downloaded from its storage driver.')]
+    public function download(DownloadBackupRequest $request, GeneratesBackupDownloadLinks $downloadLink, Server $server, Backup $backup): JsonResponse
     {
-        if (!$request->user()->can(Permission::ACTION_BACKUP_DOWNLOAD, $server)) {
-            throw new AuthorizationException();
-        }
+        $user = $this->authenticatedUser($request);
 
-        if ($backup->disk !== Backup::ADAPTER_AWS_S3 && $backup->disk !== Backup::ADAPTER_WINGS) {
-            throw new BadRequestHttpException('The backup requested references an unknown disk driver type and cannot be downloaded.');
-        }
-
-        $url = $this->downloadLinkService->handle($backup, $request->user());
+        $url = $downloadLink->generate($backup, $user);
 
         Activity::event('server:backup.download')->subject($backup)->property('name', $backup->name)->log();
 
@@ -193,37 +208,23 @@ class BackupController extends ClientApiController
      * files that currently exist on the server will be deleted before restoring.
      * Otherwise, the archive will simply be unpacked over the existing files.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function restore(RestoreBackupRequest $request, Server $server, Backup $backup): JsonResponse
+    #[Endpoint('Restore server backup', 'Restores a backup over the server files.')]
+    #[ScribeResponse(status: 204, description: 'Backup restore started.')]
+    #[ScribeResponse(self::BAD_REQUEST_ERROR, status: 400, description: 'The server or backup is not in a restorable state.')]
+    public function restore(RestoreBackupRequest $request, RestoresBackups $restore, Server $server, Backup $backup): JsonResponse
     {
-        // Cannot restore a backup unless a server is fully installed and not currently
-        // processing a different backup restoration request.
-        if (!is_null($server->status)) {
-            throw new BadRequestHttpException('This server is not currently in a state that allows for a backup to be restored.');
-        }
+        $user = $this->authenticatedUser($request);
+        $validated = $request->payload();
+        $truncate = $validated['truncate'];
 
-        if (!$backup->is_successful && is_null($backup->completed_at)) {
-            throw new BadRequestHttpException('This backup cannot be restored at this time: not completed or failed.');
-        }
+        $restore->restore($server, $backup, $user, $truncate);
 
-        $log = Activity::event('server:backup.restore')
+        Activity::event('server:backup.restore')
             ->subject($backup)
-            ->property(['name' => $backup->name, 'truncate' => $request->input('truncate')]);
-
-        $log->transaction(function () use ($backup, $server, $request) {
-            // If the backup is for an S3 file we need to generate a unique Download link for
-            // it that will allow Wings to actually access the file.
-            if ($backup->disk === Backup::ADAPTER_AWS_S3) {
-                $url = $this->downloadLinkService->handle($backup, $request->user());
-            }
-
-            // Update the status right away for the server so that we know not to allow certain
-            // actions against it via the Panel API.
-            $server->update(['status' => Server::STATUS_RESTORING_BACKUP]);
-
-            $this->daemonRepository->setServer($server)->restore($backup, $url ?? null, $request->input('truncate'));
-        });
+            ->property(['name' => $backup->name, 'truncate' => $truncate])
+            ->log();
 
         return new JsonResponse([], JsonResponse::HTTP_NO_CONTENT);
     }

@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Extensions\Lcobucci\JWT\Encoding;
 
+use DateTimeImmutable;
 use Lcobucci\JWT\ClaimsFormatter;
 use Lcobucci\JWT\Token\RegisteredClaims;
+use UnexpectedValueException;
 
 final class TimestampDates implements ClaimsFormatter
 {
@@ -13,15 +17,21 @@ final class TimestampDates implements ClaimsFormatter
      * cannot be parsed correctly. The default is time with microseconds, we just need
      * to use the normal unix timestamp here.
      */
+    /**
+     * @param  JwtClaims  $claims
+     * @return JwtClaims
+     */
     public function formatClaims(array $claims): array
     {
         foreach (RegisteredClaims::DATE_CLAIMS as $claim) {
-            if (!array_key_exists($claim, $claims)) {
+            if (! array_key_exists($claim, $claims)) {
                 continue;
             }
 
-            assert($claims[$claim] instanceof \DateTimeImmutable);
-            $claims[$claim] = $claims[$claim]->getTimestamp();
+            $date = $claims[$claim];
+            throw_unless($date instanceof DateTimeImmutable, UnexpectedValueException::class, "JWT date claim [$claim] must be a DateTimeImmutable instance.");
+
+            $claims[$claim] = $date->getTimestamp();
         }
 
         return $claims;

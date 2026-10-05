@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'validation' => [
         'fqdn_not_resolvable' => 'The FQDN or IP address provided does not resolve to a valid IP address.',

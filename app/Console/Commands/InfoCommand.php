@@ -1,21 +1,21 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Console\Commands;
 
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Pterodactyl\Services\Helpers\SoftwareVersionService;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
+use Pterodactyl\Services\Helpers\SoftwareVersionService;
+use Pterodactyl\Support\JsonValueGuard;
 
+#[Description('Displays the application, database, and email configurations along with the panel version.')]
+#[Signature('p:info')]
 class InfoCommand extends Command
 {
-    protected $description = 'Displays the application, database, and email configurations along with the panel version.';
-
-    protected $signature = 'p:info';
-
-    /**
-     * VersionCommand constructor.
-     */
-    public function __construct(private ConfigRepository $config, private SoftwareVersionService $versionService)
+    public function __construct(private readonly ConfigRepository $config, private readonly SoftwareVersionService $versionService)
     {
         parent::__construct();
     }
@@ -23,7 +23,7 @@ class InfoCommand extends Command
     /**
      * Handle execution of command.
      */
-    public function handle()
+    public function handle(): void
     {
         $this->output->title('Version Information');
         $this->table([], [
@@ -35,8 +35,8 @@ class InfoCommand extends Command
 
         $this->output->title('Application Configuration');
         $this->table([], [
-            ['Environment', $this->formatText($this->config->get('app.env'), $this->config->get('app.env') === 'production' ?: 'bg=red')],
-            ['Debug Mode', $this->formatText($this->config->get('app.debug') ? 'Yes' : 'No', !$this->config->get('app.debug') ?: 'bg=red')],
+            ['Environment', $this->formatText(JsonValueGuard::string($this->config->get('app.env')), $this->config->get('app.env') === 'production' ? '' : 'bg=red')],
+            ['Debug Mode', $this->formatText($this->config->get('app.debug') ? 'Yes' : 'No', $this->config->get('app.debug') ? 'bg=red' : '')],
             ['Installation URL', $this->config->get('app.url')],
             ['Installation Directory', base_path()],
             ['Timezone', $this->config->get('app.timezone')],
@@ -49,7 +49,7 @@ class InfoCommand extends Command
         ], 'compact');
 
         $this->output->title('Database Configuration');
-        $driver = $this->config->get('database.default');
+        $driver = JsonValueGuard::string($this->config->get('database.default'));
         $this->table([], [
             ['Driver', $driver],
             ['Host', $this->config->get("database.connections.$driver.host")],
@@ -76,6 +76,10 @@ class InfoCommand extends Command
      */
     private function formatText(string $value, string $opts = ''): string
     {
+        if ($opts === '') {
+            return $value;
+        }
+
         return sprintf('<%s>%s</>', $opts, $value);
     }
 }

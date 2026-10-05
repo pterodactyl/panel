@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\User;
@@ -16,6 +18,8 @@ class AccountTransformer extends BaseClientTransformer
 
     /**
      * Return basic information about the currently logged-in user.
+     *
+     * @return ApiPayload
      */
     public function transform(User $model): array
     {

@@ -1,18 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Tests\Integration\Api\Application;
 
-use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use PHPUnit\Framework\Assert;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Pterodactyl\Models\ApiKey;
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
-use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
-use Pterodactyl\Transformers\Api\Application\BaseTransformer;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 use Pterodactyl\Tests\Traits\Http\IntegrationJsonRequestAssertions;
+use Pterodactyl\Tests\Traits\Integration\CreatesTestModels;
 
 abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 {
@@ -28,7 +26,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
      * Bootstrap application API tests. Creates a default admin user and associated API key
      * and also sets some default headers required for accessing the API.
      */
-    public function setUp(): void
+    protected function setUp(): void
     {
         parent::setUp();
 
@@ -37,7 +35,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
 
         $this
             ->withHeader('Accept', 'application/vnd.pterodactyl.v1+json')
-            ->withHeader('Authorization', 'Bearer ' . $this->key->identifier . decrypt($this->key->token));
+            ->withHeader('Authorization', 'Bearer '.$this->key->identifier.decrypt($this->key->token));
     }
 
     public function getApiUser(): User
@@ -57,7 +55,7 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
     {
         $this->key = $this->createApiKey($user, $permissions);
 
-        $this->withHeader('Authorization', 'Bearer ' . $this->key->identifier . decrypt($this->key->token));
+        $this->withHeader('Authorization', 'Bearer '.$this->key->identifier.decrypt($this->key->token));
 
         return $this->key;
     }
@@ -85,28 +83,9 @@ abstract class ApplicationApiIntegrationTestCase extends IntegrationTestCase
             'r_allocations' => AdminAcl::READ | AdminAcl::WRITE,
             'r_users' => AdminAcl::READ | AdminAcl::WRITE,
             'r_locations' => AdminAcl::READ | AdminAcl::WRITE,
-            'r_nests' => AdminAcl::READ | AdminAcl::WRITE,
             'r_eggs' => AdminAcl::READ | AdminAcl::WRITE,
             'r_database_hosts' => AdminAcl::READ | AdminAcl::WRITE,
             'r_server_databases' => AdminAcl::READ | AdminAcl::WRITE,
         ], $permissions));
-    }
-
-    /**
-     * Return a transformer that can be used for testing purposes.
-     */
-    protected function getTransformer(string $abstract): BaseTransformer
-    {
-        $request = Request::createFromGlobals();
-        $request->setUserResolver(function () {
-            return $this->getApiKey()->user;
-        });
-
-        $transformer = $abstract::fromRequest($request);
-
-        Assert::assertInstanceOf(BaseTransformer::class, $transformer);
-        Assert::assertNotInstanceOf(BaseClientTransformer::class, $transformer);
-
-        return $transformer;
     }
 }

@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Application\Locations;
 
-use Pterodactyl\Models\Location;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Validation\LocationRules;
 
 class StoreLocationRequest extends ApplicationApiRequest
 {
@@ -14,13 +16,12 @@ class StoreLocationRequest extends ApplicationApiRequest
 
     /**
      * Rules to validate the request against.
+     *
+     * @return ValidationRules
      */
     public function rules(): array
     {
-        return collect(Location::getRules())->only([
-            'long',
-            'short',
-        ])->toArray();
+        return LocationRules::rules();
     }
 
     /**
@@ -31,6 +32,15 @@ class StoreLocationRequest extends ApplicationApiRequest
         return [
             'long' => 'Location Description',
             'short' => 'Location Identifier',
+        ];
+    }
+
+    /** @return LocationCreationData */
+    public function payload(): array
+    {
+        return [
+            'short' => $this->string('short')->toString(),
+            'long' => $this->filled('long') ? $this->string('long')->toString() : null,
         ];
     }
 }

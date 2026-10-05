@@ -1,15 +1,9 @@
-import styled from 'styled-components/macro';
-import { breakpoint } from '@/theme';
-import tw from 'twin.macro';
+import React from 'react';
+import { cn } from '@/lib/cn';
 
-const ContentContainer = styled.div`
-    max-width: 1200px;
-    ${tw`mx-4`};
-
-    ${breakpoint('xl')`
-        ${tw`mx-auto`};
-    `};
-`;
+const ContentContainer = ({ className, ...props }: React.ComponentProps<'div'>) => (
+    <div className={cn('mx-4 max-w-panel xl:mx-auto', className)} {...props} />
+);
 ContentContainer.displayName = 'ContentContainer';
 
 export default ContentContainer;

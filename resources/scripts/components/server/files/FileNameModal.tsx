@@ -1,59 +1,51 @@
-import React from 'react';
-import Modal, { RequiredModalProps } from '@/components/elements/Modal';
-import { Form, Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import { ServerContext } from '@/state/server';
+import { useAppForm, Form } from '@/components/form';
+import type { DialogProps } from '@/components/elements/dialog';
+import { Dialog } from '@/components/elements/dialog';
+import { useServerDirectory } from '@/state/server';
 import { join } from 'pathe';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
 
-type Props = RequiredModalProps & {
+type Props = DialogProps & {
     onFileNamed: (name: string) => void;
 };
 
-interface Values {
-    fileName: string;
-}
+export default function FileNameModal({ onFileNamed, onClose, ...props }: Props) {
+    const directory = useServerDirectory();
 
-export default ({ onFileNamed, onDismissed, ...props }: Props) => {
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
-
-    const submit = (values: Values, { setSubmitting }: FormikHelpers<Values>) => {
-        onFileNamed(join(directory, values.fileName));
-        setSubmitting(false);
-    };
+    const form = useAppForm({
+        defaultValues: { fileName: '' },
+        onSubmit: async ({ value }) => {
+            onFileNamed(join(directory, value.fileName));
+        },
+    });
 
     return (
-        <Formik
-            onSubmit={submit}
-            initialValues={{ fileName: '' }}
-            validationSchema={object().shape({
-                fileName: string().required().min(1),
-            })}
+        <Dialog
+            onClose={() => {
+                form.reset();
+                onClose();
+            }}
+            {...props}
         >
-            {({ resetForm }) => (
-                <Modal
-                    onDismissed={() => {
-                        resetForm();
-                        onDismissed();
-                    }}
-                    {...props}
+            <Form form={form}>
+                <form.AppField
+                    name={'fileName'}
+                    validators={{ onChange: ({ value }) => (value.length >= 1 ? undefined : 'Required') }}
                 >
-                    <Form>
-                        <Field
+                    {(field) => (
+                        <field.TextField
                             id={'fileName'}
-                            name={'fileName'}
                             label={'File Name'}
                             description={'Enter the name that this file should be saved as.'}
                             autoFocus
                         />
-                        <div css={tw`mt-6 text-right`}>
-                            <Button>Create File</Button>
-                        </div>
-                    </Form>
-                </Modal>
-            )}
-        </Formik>
+                    )}
+                </form.AppField>
+                <div className={'mt-6 text-right'}>
+                    <form.AppForm>
+                        <form.SubmitButton>Create File</form.SubmitButton>
+                    </form.AppForm>
+                </div>
+            </Form>
+        </Dialog>
     );
-};
+}

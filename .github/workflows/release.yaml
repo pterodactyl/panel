@@ -14,10 +14,10 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: yarn
-      - run: yarn install --frozen-lockfile
-      - run: yarn tsc
-      - run: yarn build:production
+          cache: npm
+      - run: npm ci
+      - run: npm run tsc
+      - run: npm run build:production
       - name: create release branch and bump version
         env:
           VERSION: ${{ github.ref_name }}
@@ -34,7 +34,7 @@ jobs:
       - name: create release archive
         run: |
           rm -rf node_modules tests CONTRIBUTING.md flake.lock flake.nix phpunit.xml shell.nix
-          tar -czf panel.tar.gz * .editorconfig .env.example .eslintignore .eslintrc.js .gitignore .prettierrc.json
+          tar -czf panel.tar.gz * .editorconfig .env.example .gitignore .oxfmtrc.json
       - name: write changelog
         run: |
           sed -n "/^## ${{ github.ref_name }}/,/^## /{/^## /b;p}" CHANGELOG.md > ./RELEASE_CHANGELOG
@@ -47,3 +47,15 @@ jobs:
           body_path: ./RELEASE_CHANGELOG
           files: |
             panel.tar.gz
+
+      # Publishes the tagged version to https://cdn.pterodactyl.io/releases/latest.json
+      # through pterodactyl/pterodactyl-cdn, which every panel polls for updates.
+      - name: Update CDN release manifest
+        if: ${{ !contains(github.ref_name, 'rc') && !contains(github.ref_name, 'beta') && !contains(github.ref_name, 'alpha') }}
+        env:
+          GH_TOKEN: ${{ secrets.CDN_DISPATCH_TOKEN }}
+          VERSION: ${{ github.ref_name }}
+        run: |
+          jq -n --arg version "$VERSION" \
+            '{event_type: "release-tagged", client_payload: {component: "panel", version: $version}}' \
+            | gh api repos/pterodactyl/pterodactyl-cdn/dispatches --input -

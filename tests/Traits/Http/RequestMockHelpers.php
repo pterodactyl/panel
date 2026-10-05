@@ -1,18 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Tests\Traits\Http;
 
-use Mockery as m;
-use Mockery\Mock;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
+use InvalidArgumentException;
 use Pterodactyl\Models\User;
-use Symfony\Component\HttpFoundation\ParameterBag;
 
 trait RequestMockHelpers
 {
-    private string $requestMockClass = Request::class;
+    protected Request $request;
 
-    protected Request|Mock $request;
+    private string $requestMockClass = Request::class;
 
     /**
      * Set the class to mock for requests.
@@ -25,11 +26,11 @@ trait RequestMockHelpers
     }
 
     /**
-     * Configure the user model that the request mock should return with.
+     * Configure the user model that the request should return with.
      */
     public function setRequestUserModel(?User $user = null): void
     {
-        $this->request->shouldReceive('user')->andReturn($user);
+        $this->request->setUserResolver(fn () => $user);
     }
 
     /**
@@ -57,20 +58,35 @@ trait RequestMockHelpers
      */
     public function setRequestRouteName(string $name): void
     {
-        $this->request->shouldReceive('route->getName')->andReturn($name);
+        $route = new Route(['GET'], '/', ['as' => $name, 'uses' => fn () => null]);
+        $this->request->setRouteResolver(fn () => $route);
     }
 
     /**
-     * Set the active request object to be an instance of a mocked request.
+     * Set the bearer token carried by the request's Authorization header.
+     */
+    public function setRequestBearerToken(?string $token): void
+    {
+        if ($token === null) {
+            $this->request->headers->remove('Authorization');
+
+            return;
+        }
+
+        $this->request->headers->set('Authorization', 'Bearer '.$token);
+    }
+
+    /**
+     * Set the active request object to be a real request instance.
      */
     protected function buildRequestMock(): void
     {
-        $this->request = m::mock($this->requestMockClass);
-        if (!$this->request instanceof Request) {
-            throw new \InvalidArgumentException('Request mock class must be an instance of ' . Request::class . ' when mocked.');
+        if (! is_a($this->requestMockClass, Request::class, true)) {
+            throw new InvalidArgumentException('Request mock class must be an instance of '.Request::class.' when mocked.');
         }
 
-        $this->request->attributes = new ParameterBag();
+        $class = $this->requestMockClass;
+        $this->request = $class::create('/', 'GET');
     }
 
     /**
@@ -82,7 +98,7 @@ trait RequestMockHelpers
     protected function setRequestUser(?User $user = null): User
     {
         $user = $user instanceof User ? $user : User::factory()->make();
-        $this->request->shouldReceive('user')->withNoArgs()->andReturn($user);
+        $this->setRequestUserModel($user);
 
         return $user;
     }

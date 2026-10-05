@@ -1,28 +1,22 @@
 import React from 'react';
-import { Route } from 'react-router-dom';
-import { RouteProps } from 'react-router';
 import Can from '@/components/elements/Can';
-import { ServerError } from '@/components/elements/ScreenBlock';
+import { AccessDenied } from '@/components/elements/ScreenBlock';
 
-interface Props extends Omit<RouteProps, 'path'> {
-    path: string;
+interface Props {
     permission: string | string[] | null;
+    children?: React.ReactNode;
 }
 
-export default ({ permission, children, ...props }: Props) => (
-    <Route {...props}>
-        {!permission ? (
-            children
-        ) : (
-            <Can
-                matchAny
-                action={permission}
-                renderOnError={
-                    <ServerError title={'Access Denied'} message={'You do not have permission to access this page.'} />
-                }
-            >
-                {children}
-            </Can>
-        )}
-    </Route>
-);
+const accessDenied = <AccessDenied message={'You do not have permission to access this page.'} />;
+
+export default function PermissionRoute({ permission, children }: Props) {
+    if (!permission) {
+        return <>{children}</>;
+    }
+
+    return (
+        <Can matchAny action={permission} renderOnError={accessDenied}>
+            {children}
+        </Can>
+    );
+}

@@ -1,80 +1,80 @@
-import React, { useEffect, useState } from 'react';
-import getServerDatabases from '@/api/server/databases/getServerDatabases';
-import { ServerContext } from '@/state/server';
-import { httpErrorToHuman } from '@/api/http';
-import FlashMessageRender from '@/components/FlashMessageRender';
-import DatabaseRow from '@/components/server/databases/DatabaseRow';
+import { useMemo } from 'react';
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import { Database } from 'lucide-react';
+import { useCurrentServer } from '@/api/server/queries';
+import { useServerDatabases } from '@/api/server/databases/queries';
 import Spinner from '@/components/elements/Spinner';
 import CreateDatabaseButton from '@/components/server/databases/CreateDatabaseButton';
-import Can from '@/components/elements/Can';
-import useFlash from '@/plugins/useFlash';
-import tw from 'twin.macro';
-import Fade from '@/components/elements/Fade';
+import ListToolbar from '@/components/elements/ListToolbar';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import { useDeepMemoize } from '@/plugins/useDeepMemoize';
+import { httpErrorToHuman } from '@/api/http';
+import { ServerError } from '@/components/elements/ScreenBlock';
+import DataTable from '@/components/elements/table/DataTable';
+import { databaseColumns } from '@/components/server/databases/DatabaseTable';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { emptyCompactClass } from '@/components/ui/styles';
+import { usePermissions } from '@/plugins/usePermissions';
 
-export default () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const databaseLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.databases);
+const DatabasesContainer = () => {
+    const server = useCurrentServer()!;
+    const databaseLimit = server.attributes.feature_limits.databases ?? 0;
+    const [canCreate] = usePermissions('database.create');
+    const { data: databasesResponse, error, isLoading, refetch } = useServerDatabases(server.attributes.uuid);
+    const databases = useMemo(() => databasesResponse?.data ?? [], [databasesResponse?.data]);
+    const table = useReactTable({
+        data: databases,
+        columns: databaseColumns,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getRowId: (database) => database.attributes.id,
+    });
 
-    const { addError, clearFlashes } = useFlash();
-    const [loading, setLoading] = useState(true);
+    if (error && !databasesResponse) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
 
-    const databases = useDeepMemoize(ServerContext.useStoreState((state) => state.databases.data));
-    const setDatabases = ServerContext.useStoreActions((state) => state.databases.setDatabases);
-
-    useEffect(() => {
-        setLoading(!databases.length);
-        clearFlashes('databases');
-
-        getServerDatabases(uuid)
-            .then((databases) => setDatabases(databases))
-            .catch((error) => {
-                console.error(error);
-                addError({ key: 'databases', message: httpErrorToHuman(error) });
-            })
-            .then(() => setLoading(false));
-    }, []);
+    const canAddDatabase = canCreate && databaseLimit > 0 && databases.length < databaseLimit;
+    const usage =
+        canCreate && databaseLimit > 0 && databases.length > 0
+            ? `${databases.length} of ${databaseLimit} databases have been allocated to this server.`
+            : null;
 
     return (
         <ServerContentBlock title={'Databases'}>
-            <FlashMessageRender byKey={'databases'} css={tw`mb-4`} />
-            {!databases.length && loading ? (
+            {!databases.length && isLoading ? (
                 <Spinner size={'large'} centered />
             ) : (
-                <Fade timeout={150}>
-                    <>
-                        {databases.length > 0 ? (
-                            databases.map((database, index) => (
-                                <DatabaseRow
-                                    key={database.id}
-                                    database={database}
-                                    className={index > 0 ? 'mt-1' : undefined}
-                                />
-                            ))
-                        ) : (
-                            <p css={tw`text-center text-sm text-neutral-300`}>
-                                {databaseLimit > 0
-                                    ? 'It looks like you have no databases.'
-                                    : 'Databases cannot be created for this server.'}
-                            </p>
-                        )}
-                        <Can action={'database.create'}>
-                            <div css={tw`mt-6 flex items-center justify-end`}>
-                                {databaseLimit > 0 && databases.length > 0 && (
-                                    <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
-                                        {databases.length} of {databaseLimit} databases have been allocated to this
-                                        server.
-                                    </p>
+                <>
+                    {(usage || canAddDatabase) && (
+                        <ListToolbar summary={usage}>{canAddDatabase && <CreateDatabaseButton />}</ListToolbar>
+                    )}
+                    <DataTable
+                        table={table}
+                        emptyState={
+                            <Empty className={emptyCompactClass}>
+                                <EmptyHeader>
+                                    <EmptyMedia variant={'icon'}>
+                                        <Database />
+                                    </EmptyMedia>
+                                    <EmptyTitle>No databases</EmptyTitle>
+                                    <EmptyDescription>
+                                        {databaseLimit > 0
+                                            ? "This server doesn't have any databases yet."
+                                            : "Databases can't be created because this server's database limit is 0."}
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                                {canAddDatabase && (
+                                    <EmptyContent>
+                                        <CreateDatabaseButton />
+                                    </EmptyContent>
                                 )}
-                                {databaseLimit > 0 && databaseLimit !== databases.length && (
-                                    <CreateDatabaseButton css={tw`flex justify-end mt-6`} />
-                                )}
-                            </div>
-                        </Can>
-                    </>
-                </Fade>
+                            </Empty>
+                        }
+                    />
+                </>
             )}
         </ServerContentBlock>
     );
 };
+
+export default DatabasesContainer;

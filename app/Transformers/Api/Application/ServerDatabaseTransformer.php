@@ -1,27 +1,29 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Database;
+use Illuminate\Support\Facades\Crypt;
 use League\Fractal\Resource\Item;
-use Pterodactyl\Models\DatabaseHost;
 use League\Fractal\Resource\NullResource;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\DatabaseHost;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Illuminate\Contracts\Encryption\Encrypter;
 
+#[ResponseField('max_connections', 'integer', example: 0, nullable: true)]
 class ServerDatabaseTransformer extends BaseTransformer
 {
-    protected array $availableIncludes = ['password', 'host'];
-
-    private Encrypter $encrypter;
+    protected array $includeRelations = [
+        'host' => ['relation' => 'host', 'transformer' => DatabaseHostTransformer::class, 'ability' => AdminAcl::RESOURCE_DATABASE_HOSTS],
+    ];
 
     /**
-     * Perform dependency injection.
+     * @var list<string>
      */
-    public function handle(Encrypter $encrypter)
-    {
-        $this->encrypter = $encrypter;
-    }
+    protected array $availableIncludes = ['password', 'host'];
 
     /**
      * Return the resource name for the JSONAPI output.
@@ -33,6 +35,8 @@ class ServerDatabaseTransformer extends BaseTransformer
 
     /**
      * Transform a database model in a representation for the application API.
+     *
+     * @return ApiPayload
      */
     public function transform(Database $model): array
     {
@@ -54,21 +58,19 @@ class ServerDatabaseTransformer extends BaseTransformer
      */
     public function includePassword(Database $model): Item
     {
-        return $this->item($model, function (Database $model) {
-            return [
-                'password' => $this->encrypter->decrypt($model->password),
-            ];
-        }, 'database_password');
+        return $this->item($model, fn (Database $model): array => [
+            'password' => Crypt::decrypt($model->password),
+        ], 'database_password');
     }
 
     /**
      * Return the database host relationship for this server database.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeHost(Database $model): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_DATABASE_HOSTS)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_DATABASE_HOSTS)) {
             return $this->null();
         }
 

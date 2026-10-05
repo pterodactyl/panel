@@ -1,90 +1,129 @@
-import React, { useEffect, useState } from 'react';
-import { Server } from '@/api/server/getServer';
-import getServers from '@/api/getServers';
+import { ComponentReplacementSession } from '@/extensions/componentSession';
+import { useEffect } from 'react';
+import { httpErrorToHuman } from '@/api/http';
+import { Server } from 'lucide-react';
 import ServerRow from '@/components/dashboard/ServerRow';
+import { NewLinkButton } from '@/components/elements/NewButton';
 import Spinner from '@/components/elements/Spinner';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import useFlash from '@/plugins/useFlash';
-import { useStoreState } from 'easy-peasy';
-import { usePersistedState } from '@/plugins/usePersistedState';
-import Switch from '@/components/elements/Switch';
-import tw from 'twin.macro';
-import useSWR from 'swr';
-import { PaginatedResult } from '@/api/http';
+import Switch from '@/components/ui/Switch';
 import Pagination from '@/components/elements/Pagination';
-import { useLocation } from 'react-router-dom';
+import { useNavigate } from '@tanstack/react-router';
+import { useAccountServers } from '@/api/account/servers/queries';
+import { ServerError } from '@/components/elements/ScreenBlock';
+import { useCurrentUser } from '@/api/account/queries';
+import { getPageSearch, useDashboardSearch } from '@/router/search';
+import Slot from '@/extensions/Slot';
+import PageHeading from '@/components/elements/PageHeading';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
 
-export default () => {
-    const { search } = useLocation();
-    const defaultPage = Number(new URLSearchParams(search).get('page') || '1');
+function DashboardContainerContent() {
+    const navigate = useNavigate();
+    const { page, type } = useDashboardSearch();
 
-    const [page, setPage] = useState(!isNaN(defaultPage) && defaultPage > 0 ? defaultPage : 1);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const uuid = useStoreState((state) => state.user.data!.uuid);
-    const rootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
-    const [showOnlyAdmin, setShowOnlyAdmin] = usePersistedState(`${uuid}:show_all_servers`, false);
+    const { rootAdmin } = useCurrentUser();
+    const serverType = rootAdmin ? type : undefined;
+    const showOnlyAdmin = serverType === 'admin';
 
-    const { data: servers, error } = useSWR<PaginatedResult<Server>>(
-        ['/api/client/servers', showOnlyAdmin && rootAdmin, page],
-        () => getServers({ page, type: showOnlyAdmin && rootAdmin ? 'admin' : undefined })
-    );
+    const navigateToPage = (page: number) => {
+        navigate({
+            to: '/',
+            search: serverType ? { ...getPageSearch(page), type: serverType } : getPageSearch(page),
+            replace: true,
+            viewTransition: false,
+        });
+    };
 
-    useEffect(() => {
-        setPage(1);
-    }, [showOnlyAdmin]);
+    const { data: servers, error, refetch } = useAccountServers({ page, type: serverType });
+
+    const toggleShowOnlyAdmin = () => {
+        navigate({
+            to: '/',
+            search: showOnlyAdmin ? {} : { type: 'admin' },
+            replace: true,
+            viewTransition: false,
+        });
+    };
 
     useEffect(() => {
         if (!servers) return;
-        if (servers.pagination.currentPage > 1 && !servers.items.length) {
-            setPage(1);
+        if (servers.meta.pagination.current_page > 1 && !servers.data.length) {
+            navigate({
+                to: '/',
+                search: serverType ? { type: serverType } : {},
+                replace: true,
+                viewTransition: false,
+            });
         }
-    }, [servers?.pagination.currentPage]);
+    }, [navigate, serverType, servers]);
 
-    useEffect(() => {
-        // Don't use react-router to handle changing this part of the URL, otherwise it
-        // triggers a needless re-render. We just want to track this in the URL incase the
-        // user refreshes the page.
-        window.history.replaceState(null, document.title, `/${page <= 1 ? '' : `?page=${page}`}`);
-    }, [page]);
-
-    useEffect(() => {
-        if (error) clearAndAddHttpError({ key: 'dashboard', error });
-        if (!error) clearFlashes('dashboard');
-    }, [error]);
+    if (error) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
 
     return (
-        <PageContentBlock title={'Dashboard'} showFlashKey={'dashboard'}>
-            {rootAdmin && (
-                <div css={tw`mb-2 flex justify-end items-center`}>
-                    <p css={tw`uppercase text-xs text-neutral-400 mr-2`}>
-                        {showOnlyAdmin ? "Showing others' servers" : 'Showing your servers'}
-                    </p>
-                    <Switch
-                        name={'show_all_servers'}
-                        defaultChecked={showOnlyAdmin}
-                        onChange={() => setShowOnlyAdmin((s) => !s)}
-                    />
-                </div>
-            )}
+        <PageContentBlock title={'Dashboard'}>
+            <PageHeading
+                title={'Servers'}
+                className={'mb-4'}
+                actions={
+                    rootAdmin && (
+                        <Switch
+                            checked={showOnlyAdmin}
+                            onChange={toggleShowOnlyAdmin}
+                            label={showOnlyAdmin ? "Showing others' servers" : 'Showing your servers'}
+                            controlPosition={'end'}
+                            className={'gap-2'}
+                        />
+                    )
+                }
+            />
+            <Slot name={'dashboard.before'} />
             {!servers ? (
                 <Spinner centered size={'large'} />
             ) : (
-                <Pagination data={servers} onPageSelect={setPage}>
+                <Pagination data={servers} onPageSelect={navigateToPage}>
                     {({ items }) =>
                         items.length > 0 ? (
                             items.map((server, index) => (
-                                <ServerRow key={server.uuid} server={server} css={index > 0 ? tw`mt-2` : undefined} />
+                                <ServerRow
+                                    key={server.attributes.uuid}
+                                    server={server}
+                                    className={index > 0 ? 'mt-2' : undefined}
+                                />
                             ))
                         ) : (
-                            <p css={tw`text-center text-sm text-neutral-400`}>
-                                {showOnlyAdmin
-                                    ? 'There are no other servers to display.'
-                                    : 'There are no servers associated with your account.'}
-                            </p>
+                            <Empty className={'border bg-card'}>
+                                <EmptyHeader>
+                                    <EmptyMedia variant={'icon'}>
+                                        <Server />
+                                    </EmptyMedia>
+                                    <EmptyTitle>{showOnlyAdmin ? 'No other servers' : 'No servers yet'}</EmptyTitle>
+                                    <EmptyDescription>
+                                        {showOnlyAdmin
+                                            ? 'There are no servers owned by other users.'
+                                            : 'Servers you own or are invited to will appear here.'}
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                                {rootAdmin && (
+                                    <EmptyContent>
+                                        <NewLinkButton to={'/panel/servers/new'}>New server</NewLinkButton>
+                                    </EmptyContent>
+                                )}
+                            </Empty>
                         )
                     }
                 </Pagination>
             )}
+            <Slot name={'dashboard.after'} />
         </PageContentBlock>
     );
-};
+}
+
+export default function DashboardContainer() {
+    return (
+        <ComponentReplacementSession>
+            <DashboardContainerContent />
+        </ComponentReplacementSession>
+    );
+}

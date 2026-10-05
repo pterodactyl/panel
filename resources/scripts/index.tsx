@@ -1,16 +1,22 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import App from '@/components/App';
-import { setConfig } from 'react-hot-loader';
+import { queryClient } from '@/api/queryClient';
+import { syncThemeColorMeta } from '@/lib/theme';
+import '@/assets/tailwind.css';
+import '@/router/view-transitions.css';
+import { followCurrentUserLanguage } from './i18n';
 
-// Enable language support.
-import './i18n';
+followCurrentUserLanguage(queryClient);
+syncThemeColorMeta();
 
-// Prevents page reloads while making component changes which
-// also avoids triggering constant loading indicators all over
-// the place in development.
-//
-// @see https://github.com/gaearon/react-hot-loader#hook-support
-setConfig({ reloadHooks: false });
+const container = document.getElementById('app');
+if (container) {
+    const root = createRoot(container);
 
-ReactDOM.render(<App />, document.getElementById('app'));
+    root.render(
+        <React.StrictMode>
+            <App />
+        </React.StrictMode>
+    );
+}

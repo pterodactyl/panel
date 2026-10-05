@@ -1,15 +1,14 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import features from './index';
 import { getObjectKeys } from '@/lib/objects';
 
 type ListItems = [string, React.ComponentType][];
 
-export default ({ enabled }: { enabled: string[] }) => {
-    const mapped: ListItems = useMemo(() => {
-        return getObjectKeys(features)
-            .filter((key) => enabled.map((v) => v.toLowerCase()).includes(key.toLowerCase()))
-            .reduce((arr, key) => [...arr, [key, features[key]]], [] as ListItems);
-    }, [enabled]);
+export default function Features({ enabled }: { enabled: string[] }) {
+    const enabledFeatures = new Set(enabled.map((value) => value.toLowerCase()));
+    const mapped = getObjectKeys(features).flatMap(
+        (key): ListItems => (enabledFeatures.has(key.toLowerCase()) ? [[key, features[key]]] : [])
+    );
 
     return (
         <React.Suspense fallback={null}>
@@ -18,4 +17,4 @@ export default ({ enabled }: { enabled: string[] }) => {
             ))}
         </React.Suspense>
     );
-};
+}

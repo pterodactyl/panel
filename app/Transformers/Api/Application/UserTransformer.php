@@ -1,16 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\User;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class UserTransformer extends BaseTransformer
 {
+    protected array $includeRelations = [
+        'servers' => ['relation' => 'servers', 'transformer' => ServerTransformer::class, 'ability' => AdminAcl::RESOURCE_SERVERS],
+    ];
+
     /**
      * List of resources that can be included.
+     *
+     * @var list<string>
      */
     protected array $availableIncludes = ['servers'];
 
@@ -24,6 +33,8 @@ class UserTransformer extends BaseTransformer
 
     /**
      * Return a transformed User model that can be consumed by external services.
+     *
+     * @return ApiPayload
      */
     public function transform(User $user): array
     {
@@ -38,6 +49,7 @@ class UserTransformer extends BaseTransformer
             'language' => $user->language,
             'root_admin' => (bool) $user->root_admin,
             '2fa' => (bool) $user->use_totp,
+            'relationships' => [],
             'created_at' => $this->formatTimestamp($user->created_at),
             'updated_at' => $this->formatTimestamp($user->updated_at),
         ];
@@ -46,11 +58,11 @@ class UserTransformer extends BaseTransformer
     /**
      * Return the servers associated with this user.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeServers(User $user): Collection|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
         }
 

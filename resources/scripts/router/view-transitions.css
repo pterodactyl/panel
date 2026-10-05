@@ -1,0 +1,35 @@
+/*
+ * Route cross-fade for the View Transitions API (driven by the router's
+ * `defaultViewTransition: true`). The browser snapshots old and new views and
+ * animates between them, so there is no JS transition wrapper.
+ *
+ * 150ms matches the previous Fade timeout. Browsers without same-document view
+ * transitions (older Firefox) simply navigate instantly - progressive
+ * enhancement, no errors.
+ */
+@keyframes ptero-vt-fade-in {
+    from {
+        opacity: 0;
+    }
+}
+
+@keyframes ptero-vt-fade-out {
+    to {
+        opacity: 0;
+    }
+}
+
+::view-transition-old(root) {
+    animation: 150ms ease-in both ptero-vt-fade-out;
+}
+
+::view-transition-new(root) {
+    animation: 150ms ease-in both ptero-vt-fade-in;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+        animation: none;
+    }
+}

@@ -1,20 +1,25 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Providers;
 
-use Psr\Log\LoggerInterface as Log;
-use Illuminate\Database\QueryException;
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Illuminate\Contracts\Encryption\DecryptException;
 use Illuminate\Contracts\Config\Repository as ConfigRepository;
-use Pterodactyl\Contracts\Repository\SettingsRepositoryInterface;
+use Illuminate\Contracts\Encryption\DecryptException;
+use Illuminate\Contracts\Encryption\Encrypter;
+use Illuminate\Database\QueryException;
+use Illuminate\Support\Arr;
+use Illuminate\Support\ServiceProvider;
+use Psr\Log\LoggerInterface as Log;
+use Pterodactyl\Models\Setting;
 
 class SettingsServiceProvider extends ServiceProvider
 {
     /**
      * An array of configuration keys to override with database values
      * if they exist.
+     *
+     * @var list<string>
      */
     protected array $keys = [
         'app:name',
@@ -35,6 +40,8 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Keys specific to the mail driver that are only grabbed from the database
      * when using the SMTP driver.
+     *
+     * @var list<string>
      */
     protected array $emailKeys = [
         'mail:mailers:smtp:host',
@@ -49,15 +56,25 @@ class SettingsServiceProvider extends ServiceProvider
     /**
      * Keys that are encrypted and should be decrypted when set in the
      * configuration array.
+     *
+     * @var list<string>
      */
     protected static array $encrypted = [
         'mail:mailers:smtp:password',
     ];
 
     /**
+     * @return list<string>
+     */
+    public static function getEncryptedKeys(): array
+    {
+        return self::$encrypted;
+    }
+
+    /**
      * Boot the service provider.
      */
-    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log, SettingsRepositoryInterface $settings): void
+    public function boot(ConfigRepository $config, Encrypter $encrypter, Log $log): void
     {
         // Only set the email driver settings from the database if we
         // are configured using SMTP as the driver.
@@ -66,25 +83,23 @@ class SettingsServiceProvider extends ServiceProvider
         }
 
         try {
-            $values = $settings->all()->mapWithKeys(function ($setting) {
-                return [$setting->key => $setting->value];
-            })->toArray();
-        } catch (QueryException $exception) {
-            $log->notice('A query exception was encountered while trying to load settings from the database: ' . $exception->getMessage());
+            $values = Setting::query()->pluck('value', 'key')->all();
+        } catch (QueryException $queryException) {
+            $log->notice('A query exception was encountered while trying to load settings from the database: '.$queryException->getMessage());
 
             return;
         }
 
         foreach ($this->keys as $key) {
-            $value = array_get($values, 'settings::' . $key, $config->get(str_replace(':', '.', $key)));
-            if (in_array($key, self::$encrypted)) {
+            $value = Arr::get($values, 'settings::'.$key, $config->get(str_replace(':', '.', $key)));
+            if (in_array($key, self::$encrypted, true) && is_string($value)) {
                 try {
                     $value = $encrypter->decrypt($value);
-                } catch (DecryptException $exception) {
+                } catch (DecryptException) {
                 }
             }
 
-            switch (strtolower($value)) {
+            switch (is_string($value) ? mb_strtolower($value) : $value) {
                 case 'true':
                 case '(true)':
                     $value = true;
@@ -104,10 +119,5 @@ class SettingsServiceProvider extends ServiceProvider
 
             $config->set(str_replace(':', '.', $key), $value);
         }
-    }
-
-    public static function getEncryptedKeys(): array
-    {
-        return self::$encrypted;
     }
 }

@@ -1,13 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client;
 
-use Pterodactyl\Models\Server;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 
 /**
- * @method \Pterodactyl\Models\User user($guard = null)
+ * @method User user($guard = null)
  */
 class ClientApiRequest extends ApplicationApiRequest
 {
@@ -16,16 +19,10 @@ class ClientApiRequest extends ApplicationApiRequest
      */
     public function authorize(): bool
     {
-        if ($this instanceof ClientPermissionsRequest || method_exists($this, 'permission')) {
-            $server = $this->route()->parameter('server');
+        if ($this instanceof ClientPermissionsRequest) {
+            $server = $this->parameter('server', Server::class);
 
-            if ($server instanceof Server) {
-                return $this->user()->can($this->permission(), $server);
-            }
-
-            // If there is no server available on the reqest, trigger a failure since
-            // we expect there to be one at this point.
-            return false;
+            return $this->user()->can($this->permission(), $server);
         }
 
         return true;

@@ -1,99 +1,121 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Database;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\QueryParam;
+use Knuckles\Scribe\Attributes\Response as ScribeResponse;
+use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Databases\DeletesDatabases;
+use Pterodactyl\Contracts\Databases\DeploysServerDatabases;
+use Pterodactyl\Contracts\Databases\RotatesDatabasePasswords;
+use Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException;
+use Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
 use Pterodactyl\Facades\Activity;
-use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Databases\DatabasePasswordService;
-use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
-use Pterodactyl\Services\Databases\DeployServerDatabaseService;
+use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest;
-use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\DeleteDatabaseRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\GetDatabasesRequest;
 use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\RotatePasswordRequest;
+use Pterodactyl\Http\Requests\Api\Client\Servers\Databases\StoreDatabaseRequest;
+use Pterodactyl\Models\Database;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Transformers\Api\Client\DatabaseTransformer;
+use Throwable;
 
+#[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
+#[Subgroup('Server Databases', 'Create, list, rotate, and delete databases for an accessible server.')]
 class DatabaseController extends ClientApiController
 {
-    /**
-     * DatabaseController constructor.
-     */
-    public function __construct(
-        private DeployServerDatabaseService $deployDatabaseService,
-        private DatabaseManagementService $managementService,
-        private DatabasePasswordService $passwordService,
-    ) {
-        parent::__construct();
-    }
+    private const array DATABASE_LIMIT_ERROR = [
+        'errors' => [
+            [
+                'code' => 'DisplayException',
+                'status' => '400',
+                'detail' => 'Cannot create additional databases on this server: limit has been reached.',
+            ],
+        ],
+    ];
 
     /**
      * Return all the databases that belong to the given server.
+     *
+     * @return ApiPayload
      */
+    #[Endpoint('List server databases', 'Returns databases attached to a server visible to the authenticated user.')]
+    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" when the user can view database passwords.', required: false, example: 'password', enum: ['password'])]
+    #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Server databases returned.', collection: true, resourceKey: 'server_database')]
     public function index(GetDatabasesRequest $request, Server $server): array
     {
-        return $this->fractal->collection($server->databases)
+        return Fractal::collection($server->databases)
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Create a new database for the given server and return it.
      *
-     * @throws \Throwable
-     * @throws \Pterodactyl\Exceptions\Service\Database\TooManyDatabasesException
-     * @throws \Pterodactyl\Exceptions\Service\Database\DatabaseClientFeatureNotEnabledException
+     *
+     * @return ApiPayload
+     *
+     * @throws Throwable
+     * @throws TooManyDatabasesException
+     * @throws DatabaseClientFeatureNotEnabledException
      */
-    public function store(StoreDatabaseRequest $request, Server $server): array
+    #[Endpoint('Create server database', 'Creates a database for a server on an automatically selected database host.')]
+    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" when the user can view database passwords.', required: false, example: 'password', enum: ['password'])]
+    #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Database created.', resourceKey: 'server_database', include: ['password'])]
+    #[ScribeResponse(self::DATABASE_LIMIT_ERROR, status: 400, description: 'The server has reached its configured database limit or client database creation is disabled.')]
+    public function store(StoreDatabaseRequest $request, DeploysServerDatabases $deployDatabase, Server $server): array
     {
-        $database = Activity::event('server:database.create')->transaction(function ($log) use ($request, $server) {
-            if ($server->databases()->lockForUpdate()->count() >= $server->database_limit) {
-                throw new DisplayException('Cannot create additional databases on this server: limit has been reached.');
-            }
+        $database = $deployDatabase->deploy($server, $request->payload());
 
-            $database = $this->deployDatabaseService->handle($server, $request->validated());
+        Activity::event('server:database.create')->subject($database)->property('name', $database->database)->log();
 
-            $log->subject($database)->property('name', $database->database);
-
-            return $database;
-        });
-
-        return $this->fractal->item($database)
+        return Fractal::item($database)
             ->parseIncludes(['password'])
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Rotates the password for the given server model and returns a fresh instance to
      * the caller.
      *
-     * @throws \Throwable
+     *
+     * @return ApiPayload
+     *
+     * @throws Throwable
      */
-    public function rotatePassword(RotatePasswordRequest $request, Server $server, Database $database): array
+    #[Endpoint('Rotate server database password', 'Rotates the password for a database attached to a server and returns the updated database.')]
+    #[QueryParam('include', 'string', 'Comma-separated relationships to include. Supports "password" when the user can view database passwords.', required: false, example: 'password', enum: ['password'])]
+    #[ResponseFromTransformer(DatabaseTransformer::class, Database::class, description: 'Database password rotated.', resourceKey: 'server_database', include: ['password'])]
+    public function rotatePassword(RotatePasswordRequest $request, RotatesDatabasePasswords $passwordService, Server $server, Database $database): array
     {
         Activity::event('server:database.rotate-password')
             ->subject($database)
             ->property('name', $database->database)
-            ->transaction(fn () => $this->passwordService->handle($database));
+            ->transaction(fn (): string => $passwordService->rotate($database));
 
-        return $this->fractal->item($database->refresh())
+        return Fractal::item($database->refresh())
             ->parseIncludes(['password'])
             ->transformWith($this->getTransformer(DatabaseTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 
     /**
      * Removes a database from the server.
-     *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
      */
-    public function delete(DeleteDatabaseRequest $request, Server $server, Database $database): Response
+    #[Endpoint('Delete server database', 'Deletes a database attached to a server.')]
+    #[ScribeResponse(status: 204, description: 'Database deleted.')]
+    public function delete(DeleteDatabaseRequest $request, DeletesDatabases $deleteDatabase, Server $server, Database $database): Response
     {
-        $this->managementService->delete($database);
+        $deleteDatabase->delete($database);
 
         Activity::event('server:database.delete')
             ->subject($database)

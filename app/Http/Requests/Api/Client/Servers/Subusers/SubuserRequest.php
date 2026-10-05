@@ -1,30 +1,41 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
+use Illuminate\Contracts\Container\BindingResolutionException;
 use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Subuser;
+use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Subuser;
+use Pterodactyl\Models\User;
 use Pterodactyl\Services\Servers\GetUserPermissionsService;
+use Pterodactyl\Services\Servers\SubuserPermissionCatalog;
+use UnexpectedValueException;
 
-abstract class SubuserRequest extends ClientApiRequest
+abstract class SubuserRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
-    protected ?Subuser $model;
+    protected ?Subuser $model = null;
 
     /**
      * Authorize the request and ensure that a user is not trying to modify themselves.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @throws BindingResolutionException
      */
     public function authorize(): bool
     {
-        if (!parent::authorize()) {
+        if (! parent::authorize()) {
             return false;
         }
 
-        $user = $this->route()->parameter('user');
+        $route = $this->route();
+        throw_if($route === null, UnexpectedValueException::class, 'The subuser request does not have an active route.');
+
+        $user = $route->parameter('user');
         // Don't allow a user to edit themselves on the server.
         if ($user instanceof User) {
             if ($user->uuid === $this->user()->uuid) {
@@ -35,25 +46,47 @@ abstract class SubuserRequest extends ClientApiRequest
         // If this is a POST request, validate that the user can even assign the permissions they
         // have selected to assign.
         if ($this->method() === Request::METHOD_POST && $this->has('permissions')) {
-            $this->validatePermissionsCanBeAssigned(
-                $this->input('permissions') ?? []
-            );
+            $this->validatePermissionsCanBeAssigned($this->permissionInput());
         }
 
         return true;
+    }
+
+    public function subuser(): Subuser
+    {
+        $subuser = $this->attributes->get('subuser');
+        throw_unless($subuser instanceof Subuser, UnexpectedValueException::class, 'The subuser request is missing its subuser attribute.');
+
+        return $subuser;
+    }
+
+    /**
+     * The permissions to store for the subuser: the submitted keys the panel or an enabled
+     * extension knows about, always including websocket access.
+     *
+     * @return list<string>
+     */
+    public function permissions(): array
+    {
+        $allowed = $this->container->make(SubuserPermissionCatalog::class)->keys();
+
+        $cleaned = array_intersect($this->permissionInput(), $allowed);
+
+        return array_values(array_unique(array_merge($cleaned, [Permissions::WebsocketConnect->value])));
     }
 
     /**
      * Validates that the permissions we are trying to assign can actually be assigned
      * by the user making the request.
      *
-     * @throws \Illuminate\Contracts\Container\BindingResolutionException
+     * @param  list<string>  $permissions  unvalidated input, this runs before validation
+     *
+     * @throws BindingResolutionException
      */
-    protected function validatePermissionsCanBeAssigned(array $permissions)
+    protected function validatePermissionsCanBeAssigned(array $permissions): void
     {
         $user = $this->user();
-        /** @var \Pterodactyl\Models\Server $server */
-        $server = $this->route()->parameter('server');
+        $server = $this->parameter('server', Server::class);
 
         // If we are a root admin or the server owner, no need to perform these checks.
         if ($user->root_admin || $user->id === $server->owner_id) {
@@ -65,8 +98,24 @@ abstract class SubuserRequest extends ClientApiRequest
         // already have.
         $service = $this->container->make(GetUserPermissionsService::class);
 
-        if (count(array_diff($permissions, $service->handle($server, $user))) > 0) {
-            throw new HttpForbiddenException('Cannot assign permissions to a subuser that your account does not actively possess.');
+        throw_if(count(array_diff($permissions, $service->handle($server, $user))) > 0, HttpForbiddenException::class, 'Cannot assign permissions to a subuser that your account does not actively possess.');
+    }
+
+    /** @return list<string> */
+    private function permissionInput(): array
+    {
+        $value = $this->input('permissions', []);
+        if (! is_array($value) || ! array_is_list($value)) {
+            return [];
         }
+
+        $permissions = [];
+        foreach ($value as $permission) {
+            if (is_string($permission)) {
+                $permissions[] = $permission;
+            }
+        }
+
+        return $permissions;
     }
 }

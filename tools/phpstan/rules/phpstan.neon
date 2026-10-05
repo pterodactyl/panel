@@ -1,0 +1,30 @@
+# Self-analysis config: the rule set analysed by the rule set it defines, at
+# maximum strictness. Run from the repository root:
+#     vendor/bin/phpstan analyse -c tools/phpstan/rules/phpstan.neon
+includes:
+    - extension.neon
+
+parameters:
+    level: 10
+    checkImplicitMixed: true
+    paths:
+        - src
+    rules:
+        # Rule source is itself a boundary parser: it receives php-parser AST
+        # nodes and PHPStan types (external, unparsed input by this set's own
+        # definition) and narrows them with instanceof / is_* checks. This is
+        # the path-scoped re-allow mechanism the set prescribes for boundaries,
+        # not a baseline.
+        boundaryPaths:
+            - tools/phpstan/rules/src/**
+        forbiddenSymbolTerms:
+            - shape
+    ignoreErrors:
+        # The per-parameter @phpstan-assert exemption (rule 1) requires reading
+        # which parameter an AssertTag targets; no BC-covered PHPStan API
+        # exposes that today. This acknowledges the advisory for that one call
+        # rather than dropping the exemption the spec requires.
+        -
+            identifier: phpstanApi.method
+            path: src/Support/SignatureResolver.php
+            count: 1

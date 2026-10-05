@@ -1,56 +1,28 @@
 <?php
 
-namespace Pterodactyl\Tests\Unit\Http\Middleware;
+declare(strict_types=1);
 
-use Mockery as m;
-use Mockery\MockInterface;
+namespace Pterodactyl\Tests\Pest\Unit\Http\Middleware\RedirectIfAuthenticatedTest;
+
 use Illuminate\Auth\AuthManager;
 use Illuminate\Http\RedirectResponse;
 use Pterodactyl\Http\Middleware\RedirectIfAuthenticated;
+use Pterodactyl\Models\User;
 
-class RedirectIfAuthenticatedTest extends MiddlewareTestCase
+uses(\Pterodactyl\Tests\Unit\Http\Middleware\MiddlewareTestCase::class);
+test('authenticated user is redirected', function () {
+    $this->be(User::factory()->make());
+    $response = getMiddleware()->handle($this->request, $this->getClosureAssertions());
+    expect($response)->toBeInstanceOf(RedirectResponse::class);
+    expect($response->getTargetUrl())->toEqual(route('index'));
+});
+test('non authenticated user is not redirected', function () {
+    getMiddleware()->handle($this->request, $this->getClosureAssertions());
+});
+/**
+ * Return an instance of the middleware using the real auth manager.
+ */
+function getMiddleware(): RedirectIfAuthenticated
 {
-    private MockInterface $authManager;
-
-    /**
-     * Setup tests.
-     */
-    public function setUp(): void
-    {
-        parent::setUp();
-
-        $this->authManager = m::mock(AuthManager::class);
-    }
-
-    /**
-     * Test that an authenticated user is redirected.
-     */
-    public function testAuthenticatedUserIsRedirected()
-    {
-        $this->authManager->shouldReceive('guard')->with(null)->once()->andReturnSelf();
-        $this->authManager->shouldReceive('check')->withNoArgs()->once()->andReturn(true);
-
-        $response = $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-        $this->assertInstanceOf(RedirectResponse::class, $response);
-        $this->assertEquals(route('index'), $response->getTargetUrl());
-    }
-
-    /**
-     * Test that a non-authenticated user continues through the middleware.
-     */
-    public function testNonAuthenticatedUserIsNotRedirected()
-    {
-        $this->authManager->shouldReceive('guard')->with(null)->once()->andReturnSelf();
-        $this->authManager->shouldReceive('check')->withNoArgs()->once()->andReturn(false);
-
-        $this->getMiddleware()->handle($this->request, $this->getClosureAssertions());
-    }
-
-    /**
-     * Return an instance of the middleware using mocked dependencies.
-     */
-    private function getMiddleware(): RedirectIfAuthenticated
-    {
-        return new RedirectIfAuthenticated($this->authManager);
-    }
+    return new RedirectIfAuthenticated(app(AuthManager::class));
 }

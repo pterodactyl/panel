@@ -1,44 +1,35 @@
 import React, { useEffect } from 'react';
 import ContentContainer from '@/components/elements/ContentContainer';
-import { CSSTransition } from 'react-transition-group';
-import tw from 'twin.macro';
-import FlashMessageRender from '@/components/FlashMessageRender';
+import { cn } from '@/lib/cn';
 
 export interface PageContentBlockProps {
     title?: string;
     className?: string;
-    showFlashKey?: string;
+    children?: React.ReactNode;
 }
 
-const PageContentBlock: React.FC<PageContentBlockProps> = ({ title, showFlashKey, className, children }) => {
+const PageContentBlock = ({ title, className, children }: PageContentBlockProps) => {
     useEffect(() => {
-        if (title) {
-            document.title = title;
-        }
+        document.title = title || document.title;
     }, [title]);
 
     return (
-        <CSSTransition timeout={150} classNames={'fade'} appear in>
-            <>
-                <ContentContainer css={tw`my-4 sm:my-10`} className={className}>
-                    {showFlashKey && <FlashMessageRender byKey={showFlashKey} css={tw`mb-4`} />}
-                    {children}
-                </ContentContainer>
-                <ContentContainer css={tw`mb-4`}>
-                    <p css={tw`text-center text-neutral-500 text-xs`}>
-                        <a
-                            rel={'noopener nofollow noreferrer'}
-                            href={'https://pterodactyl.io'}
-                            target={'_blank'}
-                            css={tw`no-underline text-neutral-500 hover:text-neutral-300`}
-                        >
-                            Pterodactyl&reg;
-                        </a>
-                        &nbsp;&copy; 2015 - {new Date().getFullYear()}
-                    </p>
-                </ContentContainer>
-            </>
-        </CSSTransition>
+        <div>
+            <ContentContainer className={cn('my-4 sm:my-6', className)}>{children}</ContentContainer>
+            <ContentContainer className={'mb-4'}>
+                <p className={'text-center text-muted-foreground text-xs'}>
+                    <a
+                        rel={'noopener nofollow noreferrer'}
+                        href={'https://pterodactyl.io'}
+                        target={'_blank'}
+                        className={'no-underline text-muted-foreground hover:text-muted-foreground'}
+                    >
+                        Pterodactyl&reg;
+                    </a>
+                    &nbsp;&copy; 2015 - <span suppressHydrationWarning>{new Date().getFullYear()}</span>
+                </p>
+            </ContentContainer>
+        </div>
     );
 };
 

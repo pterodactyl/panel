@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Console\Commands\Overrides;
 
-use Pterodactyl\Console\RequiresDatabaseMigrations;
 use Illuminate\Foundation\Console\UpCommand as BaseUpCommand;
+use Pterodactyl\Console\RequiresDatabaseMigrations;
 
 class UpCommand extends BaseUpCommand
 {
@@ -15,7 +17,7 @@ class UpCommand extends BaseUpCommand
      */
     public function handle(): int
     {
-        if (!$this->hasCompletedMigrations()) {
+        if (! $this->hasCompletedMigrations()) {
             $this->showMigrationWarning();
 
             return 1;

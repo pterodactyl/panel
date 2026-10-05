@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Observers;
 
-use Pterodactyl\Events;
+use Pterodactyl\Events\User\Created;
+use Pterodactyl\Events\User\Creating;
+use Pterodactyl\Events\User\Deleted;
+use Pterodactyl\Events\User\Deleting;
 use Pterodactyl\Models\User;
 
 class UserObserver
@@ -14,7 +19,7 @@ class UserObserver
      */
     public function creating(User $user): void
     {
-        event(new Events\User\Creating($user));
+        event(new Creating($user));
     }
 
     /**
@@ -22,7 +27,7 @@ class UserObserver
      */
     public function created(User $user): void
     {
-        event(new Events\User\Created($user));
+        event(new Created($user));
     }
 
     /**
@@ -30,7 +35,7 @@ class UserObserver
      */
     public function deleting(User $user): void
     {
-        event(new Events\User\Deleting($user));
+        event(new Deleting($user));
     }
 
     /**
@@ -38,6 +43,6 @@ class UserObserver
      */
     public function deleted(User $user): void
     {
-        event(new Events\User\Deleted($user));
+        event(new Deleted($user));
     }
 }

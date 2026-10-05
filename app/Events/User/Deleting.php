@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Events\User;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Events\Event;
 use Illuminate\Queue\SerializesModels;
+use Pterodactyl\Events\Event;
+use Pterodactyl\Models\User;
 
 class Deleting extends Event
 {
@@ -13,7 +15,5 @@ class Deleting extends Event
     /**
      * Create a new event instance.
      */
-    public function __construct(public User $user)
-    {
-    }
+    public function __construct(public User $user) {}
 }

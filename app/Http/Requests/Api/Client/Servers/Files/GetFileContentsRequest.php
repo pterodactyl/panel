@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class GetFileContentsRequest extends ClientApiRequest implements ClientPermissionsRequest
@@ -15,13 +17,16 @@ class GetFileContentsRequest extends ClientApiRequest implements ClientPermissio
      */
     public function permission(): string
     {
-        return Permission::ACTION_FILE_READ_CONTENT;
+        return Permissions::FileReadContent->value;
     }
 
+    /**
+     * @return ValidationRules
+     */
     public function rules(): array
     {
         return [
-            'file' => 'required|string',
+            'file' => ['required', 'string'],
         ];
     }
 }

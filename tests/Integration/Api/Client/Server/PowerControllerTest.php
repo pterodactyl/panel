@@ -1,97 +1,48 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server;
+declare(strict_types=1);
+
+namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\PowerControllerTest;
 
 use Illuminate\Http\Response;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Models\Permission;
-use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
+use Pterodactyl\Tests\Support\Fakes\FakeDaemonPower;
 
-class PowerControllerTest extends ClientApiIntegrationTestCase
-{
-    /**
-     * Test that a subuser without permission to send a command to the server receives
-     * an error in response. This checks against the specific permission needed to send
-     * the command to the server.
-     *
-     * @param string[] $permissions
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('invalidPermissionDataProvider')]
-    public function testSubuserWithoutPermissionsReceivesError(string $action, array $permissions)
-    {
-        [$user, $server] = $this->generateTestAccount($permissions);
-
-        $this->actingAs($user)
-            ->postJson("/api/client/servers/$server->uuid/power", ['signal' => $action])
-            ->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    /**
-     * Test that sending an invalid power signal returns an error.
-     */
-    public function testInvalidPowerSignalResultsInError()
-    {
-        [$user, $server] = $this->generateTestAccount();
-
-        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/power", [
-            'signal' => 'invalid',
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.meta.rule', 'in');
-        $response->assertJsonPath('errors.0.detail', 'The selected signal is invalid.');
-    }
-
-    /**
-     * Test that sending a valid power actions works.
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('validPowerActionDataProvider')]
-    public function testActionCanBeSentToServer(string $action, string $permission)
-    {
-        $service = \Mockery::mock(DaemonPowerRepository::class);
-        $this->app->instance(DaemonPowerRepository::class, $service);
-
-        [$user, $server] = $this->generateTestAccount([$permission]);
-
-        $service->expects('setServer')
-            ->with(\Mockery::on(function ($value) use ($server) {
-                return $server->uuid === $value->uuid;
-            }))
-            ->andReturnSelf()
-            ->getMock()
-            ->expects('send')
-            ->with(trim($action));
-
-        $this->actingAs($user)
-            ->postJson("/api/client/servers/$server->uuid/power", ['signal' => $action])
-            ->assertStatus(Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * Returns invalid permission combinations for a given power action.
-     */
-    public static function invalidPermissionDataProvider(): array
-    {
-        return [
-            ['start', [Permission::ACTION_CONTROL_STOP, Permission::ACTION_CONTROL_RESTART]],
-            ['stop', [Permission::ACTION_CONTROL_START]],
-            ['kill', [Permission::ACTION_CONTROL_START, Permission::ACTION_CONTROL_RESTART]],
-            ['restart', [Permission::ACTION_CONTROL_STOP, Permission::ACTION_CONTROL_START]],
-            ['random', [Permission::ACTION_CONTROL_START]],
-        ];
-    }
-
-    public static function validPowerActionDataProvider(): array
-    {
-        return [
-            ['start', Permission::ACTION_CONTROL_START],
-            ['stop', Permission::ACTION_CONTROL_STOP],
-            ['restart', Permission::ACTION_CONTROL_RESTART],
-            ['kill', Permission::ACTION_CONTROL_STOP],
-            // Yes, these spaces are intentional. You should be able to send values with or without
-            // a space on the start/end since we should be trimming the values.
-            [' restart', Permission::ACTION_CONTROL_RESTART],
-            ['kill ', Permission::ACTION_CONTROL_STOP],
-        ];
-    }
-}
+uses(ClientApiIntegrationTestCase::class);
+/**
+ * Returns invalid permission combinations for a given power action.
+ */
+dataset('invalidPermissionDataProvider', function () {
+    return [['start', [Permissions::ControlStop->value, Permissions::ControlRestart->value]], ['stop', [Permissions::ControlStart->value]], ['kill', [Permissions::ControlStart->value, Permissions::ControlRestart->value]], ['restart', [Permissions::ControlStop->value, Permissions::ControlStart->value]], ['random', [Permissions::ControlStart->value]]];
+});
+dataset('validPowerActionDataProvider', function () {
+    return [
+        ['start', Permissions::ControlStart->value],
+        ['stop', Permissions::ControlStop->value],
+        ['restart', Permissions::ControlRestart->value],
+        ['kill', Permissions::ControlStop->value],
+        // Yes, these spaces are intentional. You should be able to send values with or without
+        // a space on the start/end since we should be trimming the values.
+        [' restart', Permissions::ControlRestart->value],
+        ['kill ', Permissions::ControlStop->value],
+    ];
+});
+test('subuser without permissions receives error', function (string $action, array $permissions) {
+    [$user, $server] = $this->generateTestAccount($permissions);
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/power", ['signal' => $action])->assertStatus(Response::HTTP_FORBIDDEN);
+})->with('invalidPermissionDataProvider');
+test('invalid power signal results in error', function () {
+    [$user, $server] = $this->generateTestAccount();
+    $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/power", ['signal' => 'invalid']);
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    $response->assertJsonPath('errors.0.meta.rule', 'in');
+    $response->assertJsonPath('errors.0.detail', 'The selected signal is invalid.');
+});
+test('action can be sent to server', function (string $action, string $permission) {
+    $fake = new FakeDaemonPower;
+    [$user, $server] = $this->generateTestAccount([$permission]);
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/power", ['signal' => $action])->assertStatus(Response::HTTP_NO_CONTENT);
+    $fake->assertSentTo(mb_trim($action), $server->uuid);
+})->with('validPowerActionDataProvider');

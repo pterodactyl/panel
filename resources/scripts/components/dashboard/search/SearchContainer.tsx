@@ -1,29 +1,39 @@
-import React, { useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSearch } from '@fortawesome/free-solid-svg-icons';
+import { Search } from 'lucide-react';
 import useEventListener from '@/plugins/useEventListener';
 import SearchModal from '@/components/dashboard/search/SearchModal';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
+import Icon from '@/components/elements/Icon';
+import { cn } from '@/lib/cn';
+import { useDialogState } from '@/components/elements/dialog';
 
-export default () => {
-    const [visible, setVisible] = useState(false);
+interface Props {
+    className?: string;
+}
+
+export default function SearchContainer({ className }: Props) {
+    const searchDialog = useDialogState();
 
     useEventListener('keydown', (e: KeyboardEvent) => {
         if (['input', 'textarea'].indexOf(((e.target as HTMLElement).tagName || 'input').toLowerCase()) < 0) {
-            if (!visible && e.metaKey && e.key.toLowerCase() === '/') {
-                setVisible(true);
+            if (!searchDialog.open && e.metaKey && e.key.toLowerCase() === '/') {
+                searchDialog.show();
             }
         }
     });
 
     return (
         <>
-            {visible && <SearchModal appear visible={visible} onDismissed={() => setVisible(false)} />}
+            {searchDialog.open && <SearchModal open={searchDialog.open} onClose={searchDialog.hide} />}
             <Tooltip placement={'bottom'} content={'Search'}>
-                <div className={'navigation-link'} onClick={() => setVisible(true)}>
-                    <FontAwesomeIcon icon={faSearch} />
-                </div>
+                <button
+                    type={'button'}
+                    aria-label={'Search'}
+                    className={cn('navigation-link', className)}
+                    onClick={searchDialog.show}
+                >
+                    <Icon icon={Search} />
+                </button>
             </Tooltip>
         </>
     );
-};
+}

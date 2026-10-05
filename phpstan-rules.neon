@@ -1,0 +1,29 @@
+includes:
+    - phpstan.neon
+    - tools/phpstan/rules/extension.neon
+    - tools/phpstan/rules/laravel/extension.neon
+
+parameters:
+    # The documented rules dynamic-access rule relies on PHPStan's
+    # variable-variable checks. The extension's remaining bundled strict
+    # style rules are deliberately outside the panel adoption policy.
+    strictRules:
+        allRules: false
+        noVariableVariables: true
+    strictRulesInstalled: false
+
+    # phpstan-strict-rules also changes core PHPStan switches when its config
+    # is included. Those compatibility/style checks are not part of the
+    # documented rules adopted by the panel.
+    checkFunctionNameCase: false
+    checkInternalClassCaseSensitivity: false
+    checkDynamicProperties: false
+    checkExplicitMixedMissingReturn: false
+    polluteScopeWithLoopInitialAssignments: true
+    polluteScopeWithAlwaysIterableForeach: true
+    polluteScopeWithBlock: true
+    reportMaybesInMethodSignatures: false
+    reportStaticMethodSignatures: false
+    reportMaybesInPropertyPhpDocTypes: false
+    reportWrongPhpDocTypeInVarTag: false
+    checkStrictPrintfPlaceholderTypes: false

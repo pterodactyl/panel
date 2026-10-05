@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'email' => [
         'title' => 'Update your email',

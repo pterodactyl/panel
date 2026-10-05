@@ -1,23 +1,23 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Policies;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
 
 class ServerPolicy
 {
     /**
-     * Checks if the user has the given permission on/for the server.
+     * This is a horrendous hack to avoid Laravel's "smart" behavior that does
+     * not call the before() function if there isn't a function matching the
+     * policy permission.
      */
-    protected function checkPermission(User $user, Server $server, string $permission): bool
+    /** @param list<User|Server|ApiValue10> $arguments */
+    public function __call(string $name, array $arguments): void
     {
-        $subuser = $server->subusers->where('user_id', $user->id)->first();
-        if (!$subuser || empty($permission)) {
-            return false;
-        }
-
-        return in_array($permission, $subuser->permissions);
+        // do nothing
     }
 
     /**
@@ -33,12 +33,15 @@ class ServerPolicy
     }
 
     /**
-     * This is a horrendous hack to avoid Laravel's "smart" behavior that does
-     * not call the before() function if there isn't a function matching the
-     * policy permission.
+     * Checks if the user has the given permission on/for the server.
      */
-    public function __call(string $name, mixed $arguments)
+    protected function checkPermission(User $user, Server $server, string $permission): bool
     {
-        // do nothing
+        $subuser = $server->loadMissing('subusers')->subusers->where('user_id', $user->id)->first();
+        if (! $subuser || empty($permission)) {
+            return false;
+        }
+
+        return in_array($permission, $subuser->permissions);
     }
 }

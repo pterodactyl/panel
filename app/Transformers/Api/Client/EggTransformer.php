@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
 use Pterodactyl\Models\Egg;
@@ -14,6 +16,9 @@ class EggTransformer extends BaseClientTransformer
         return Egg::RESOURCE_NAME;
     }
 
+    /**
+     * @return ApiPayload
+     */
     public function transform(Egg $egg): array
     {
         return [

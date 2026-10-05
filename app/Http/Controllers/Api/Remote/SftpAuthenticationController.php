@@ -1,45 +1,47 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Remote;
 
-use Illuminate\Http\Request;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Facades\Activity;
-use Pterodactyl\Models\Permission;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\RateLimiter;
 use phpseclib3\Crypt\PublicKeyLoader;
-use Pterodactyl\Http\Controllers\Controller;
 use phpseclib3\Exception\NoKeyLoadedException;
-use Illuminate\Foundation\Auth\ThrottlesLogins;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
-use Pterodactyl\Services\Servers\GetUserPermissionsService;
-use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Pterodactyl\Facades\Activity;
+use Pterodactyl\Http\Controllers\Controller;
+use Pterodactyl\Http\Requests\Api\Remote\RemoteRequestNode;
 use Pterodactyl\Http\Requests\Api\Remote\SftpAuthenticationFormRequest;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
+use Pterodactyl\Services\Servers\GetUserPermissionsService;
+use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Traits\Helpers\ThrottlesLogins;
+use Pterodactyl\Validation\UserSSHKeyRules;
+use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\TooManyRequestsHttpException;
 
 class SftpAuthenticationController extends Controller
 {
     use ThrottlesLogins;
 
-    public function __construct(protected GetUserPermissionsService $permissions)
-    {
-    }
-
     /**
      * Authenticate a set of credentials and return the associated server details
      * for a SFTP connection on the daemon. This supports both public key and password
      * based credentials.
      */
-    public function __invoke(SftpAuthenticationFormRequest $request): JsonResponse
+    public function __invoke(SftpAuthenticationFormRequest $request, GetUserPermissionsService $permissions): JsonResponse
     {
-        $connection = $this->parseUsername($request->input('username'));
-        if (empty($connection['server'])) {
-            throw new BadRequestHttpException('No valid server identifier was included in the request.');
-        }
+        $connection = $this->parseUsername(JsonValueGuard::string($request->validated('username')));
+        throw_if(empty($connection['server']), BadRequestHttpException::class, 'No valid server identifier was included in the request.');
 
         if ($this->hasTooManyLoginAttempts($request)) {
-            $seconds = $this->limiter()->availableIn($this->throttleKey($request));
+            $seconds = RateLimiter::availableIn($this->throttleKey($request));
 
             throw new TooManyRequestsHttpException($seconds, "Too many login attempts for this account, please try again in $seconds seconds.");
         }
@@ -47,38 +49,36 @@ class SftpAuthenticationController extends Controller
         $user = $this->getUser($request, $connection['username']);
         $server = $this->getServer($request, $connection['server']);
 
-        if ($request->input('type') !== 'public_key') {
-            if (!password_verify($request->input('password'), $user->password)) {
+        if ($request->validated('type') !== 'public_key') {
+            if (! Hash::check(JsonValueGuard::string($request->validated('password')), $user->password)) {
                 Activity::event('auth:sftp.fail')->property('method', 'password')->subject($user)->log();
 
                 $this->reject($request);
             }
         } else {
             $key = null;
-            try {
-                $key = PublicKeyLoader::loadPublicKey(trim($request->input('password')));
-            } catch (NoKeyLoadedException) {
-                // do nothing
+            $publicKey = mb_trim(JsonValueGuard::string($request->validated('password')));
+            if (UserSSHKeyRules::isSupportedPublicKey($publicKey)) {
+                try {
+                    $key = PublicKeyLoader::loadPublicKey($publicKey);
+                } catch (NoKeyLoadedException) {
+                    // do nothing
+                }
             }
 
-            if (!$key || !$user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {
-                // We don't log here because of the way the SFTP system works. This endpoint
-                // will get hit for every key the user provides, which could be 4 or 5. That is
-                // a lot of unnecessary log noise.
-                //
-                // For now, we'll only log failures due to a bad password as those are not likely
-                // to occur more than once in a session for the user, and are more likely to be of
-                // value to the end user.
-                $this->reject($request, is_null($key));
+            if (! $key || ! $user->sshKeys()->where('fingerprint', $key->getFingerprint('sha256'))->exists()) {
+                // Don't log public key failures - this endpoint is hit once for every key the
+                // user offers, so only the (rarer, more meaningful) bad-password failures are logged.
+                $this->reject($request, ($key) === null);
             }
         }
 
-        $this->validateSftpAccess($user, $server);
+        $this->validateSftpAccess($user, $server, $permissions);
 
         return new JsonResponse([
             'user' => $user->uuid,
             'server' => $server->uuid,
-            'permissions' => $this->permissions->handle($server, $user),
+            'permissions' => $permissions->handle($server, $user),
         ]);
     }
 
@@ -88,12 +88,12 @@ class SftpAuthenticationController extends Controller
      */
     protected function getServer(Request $request, string $uuid): Server
     {
-        return Server::query()
-            ->where(fn ($builder) => $builder->where('uuid', $uuid)->orWhere('uuidShort', $uuid))
-            ->where('node_id', $request->attributes->get('node')->id)
-            ->firstOr(function () use ($request) {
-                $this->reject($request);
-            });
+        $server = Server::query()
+            ->where(fn (Builder $builder) => $builder->where('uuid', $uuid)->orWhere('uuidShort', $uuid))
+            ->where('node_id', RemoteRequestNode::get($request)->id)
+            ->first();
+
+        return $server ?? $this->reject($request);
     }
 
     /**
@@ -101,9 +101,9 @@ class SftpAuthenticationController extends Controller
      */
     protected function getUser(Request $request, string $username): User
     {
-        return User::query()->where('username', $username)->firstOr(function () use ($request) {
-            $this->reject($request);
-        });
+        $user = User::query()->where('username', $username)->first();
+
+        return $user ?? $this->reject($request);
     }
 
     /**
@@ -118,15 +118,15 @@ class SftpAuthenticationController extends Controller
 
         // Unreverse the strings after parsing them apart.
         return [
-            'username' => strrev(array_get($parts, 1)),
-            'server' => strrev(array_get($parts, 0)),
+            'username' => strrev($parts[1] ?? ''),
+            'server' => strrev($parts[0]),
         ];
     }
 
     /**
      * Rejects the request and increments the login attempts.
      */
-    protected function reject(Request $request, bool $increment = true): void
+    protected function reject(Request $request, bool $increment = true): never
     {
         if ($increment) {
             $this->incrementLoginAttempts($request);
@@ -138,12 +138,12 @@ class SftpAuthenticationController extends Controller
     /**
      * Validates that a user should have permission to use SFTP for the given server.
      */
-    protected function validateSftpAccess(User $user, Server $server): void
+    protected function validateSftpAccess(User $user, Server $server, GetUserPermissionsService $permissions): void
     {
-        if (!$user->root_admin && $server->owner_id !== $user->id) {
-            $permissions = $this->permissions->handle($server, $user);
+        if (! $user->root_admin && $server->owner_id !== $user->id) {
+            $resolved = $permissions->handle($server, $user);
 
-            if (!in_array(Permission::ACTION_FILE_SFTP, $permissions)) {
+            if (! in_array(Permissions::FileSftp->value, $resolved)) {
                 Activity::event('server:sftp.denied')->actor($user)->subject($server)->log();
 
                 throw new HttpForbiddenException('You do not have permission to access SFTP for this server.');
@@ -158,8 +158,9 @@ class SftpAuthenticationController extends Controller
      */
     protected function throttleKey(Request $request): string
     {
-        $username = explode('.', strrev($request->input('username', '')));
+        $raw = JsonValueGuard::nullableString($request->input('username', '')) ?? '';
+        $username = explode('.', strrev($raw));
 
-        return strtolower(strrev($username[0] ?? '') . '|' . $request->ip()); // @phpstan-ignore nullCoalesce.offset
+        return mb_strtolower(strrev($username[0] ?? '').'|'.$request->ip()); // @phpstan-ignore nullCoalesce.offset
     }
 }

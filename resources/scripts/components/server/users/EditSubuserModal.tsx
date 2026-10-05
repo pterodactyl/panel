@@ -1,174 +1,245 @@
-import React, { useContext, useEffect, useRef } from 'react';
-import { Subuser } from '@/state/server/subusers';
-import { Form, Formik } from 'formik';
-import { array, object, string } from 'yup';
-import Field from '@/components/elements/Field';
-import { Actions, useStoreActions, useStoreState } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import createOrUpdateSubuser from '@/api/server/users/createOrUpdateSubuser';
-import { ServerContext } from '@/state/server';
-import FlashMessageRender from '@/components/FlashMessageRender';
+import React from 'react';
+import Slot from '@/extensions/Slot';
+import type { SubuserPermissionsSlotData } from '@/extensions/registry';
+import { permissionGroupRows, replaceEditablePermissions } from './permissionSelection';
+import type { Subuser, SubuserPermission } from '@/api/server/users/queries';
+import { useStore } from '@tanstack/react-form';
+import { useAppForm, Form } from '@/components/form';
+import { useCurrentUser } from '@/api/account/queries';
+import { useCurrentServer, useCurrentServerPermissions } from '@/api/server/queries';
+import {
+    createServerSubuserInput,
+    updateServerSubuserInput,
+    useCreateSubuser,
+    useUpdateSubuser,
+} from '@/api/server/users/queries';
+import { useSystemPermissions } from '@/api/system/queries';
 import Can from '@/components/elements/Can';
 import { usePermissions } from '@/plugins/usePermissions';
-import { useDeepCompareMemo } from '@/plugins/useDeepCompareMemo';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
 import PermissionTitleBox from '@/components/server/users/PermissionTitleBox';
-import asModal from '@/hoc/asModal';
 import PermissionRow from '@/components/server/users/PermissionRow';
-import ModalContext from '@/context/ModalContext';
+import { Dialog, type DialogProps } from '@/components/elements/dialog';
+import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 
 type Props = {
     subuser?: Subuser;
+    onClose?: () => void;
+    onSaved?: (subuser: Subuser) => void;
 };
 
-interface Values {
-    email: string;
-    permissions: string[];
-}
+const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-const EditSubuserModal = ({ subuser }: Props) => {
-    const ref = useRef<HTMLHeadingElement>(null);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const appendSubuser = ServerContext.useStoreActions((actions) => actions.subusers.appendSubuser);
-    const { clearFlashes, clearAndAddHttpError } = useStoreActions(
-        (actions: Actions<ApplicationStore>) => actions.flashes
-    );
-    const { dismiss, setPropOverrides } = useContext(ModalContext);
+const useSubuserFormState = ({ subuser, onClose, onSaved }: Props) => {
+    const server = useCurrentServer();
+    const uuid = server?.attributes.uuid ?? '';
+    const createSubuser = useCreateSubuser();
+    const updateSubuser = useUpdateSubuser();
 
-    const isRootAdmin = useStoreState((state) => state.user.data!.rootAdmin);
-    const permissions = useStoreState((state) => state.permissions.data);
-    // The currently logged in user's permissions. We're going to filter out any permissions
-    // that they should not need.
-    const loggedInPermissions = ServerContext.useStoreState((state) => state.server.permissions);
+    const {
+        data: permissionsResponse,
+        isError: hasPermissionsError,
+        isLoading: isLoadingPermissions,
+    } = useSystemPermissions();
+    const permissions = permissionsResponse?.attributes.permissions ?? {};
+    const isRootAdmin = useCurrentUser().rootAdmin;
+    const loggedInPermissions = useCurrentServerPermissions();
     const [canEditUser] = usePermissions(subuser ? ['user.update'] : ['user.create']);
 
-    // The permissions that can be modified by this user.
-    const editablePermissions = useDeepCompareMemo(() => {
-        const cleaned = Object.keys(permissions).map((key) =>
-            Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)
-        );
-
-        const list: string[] = ([] as string[]).concat.apply([], Object.values(cleaned));
-
-        if (isRootAdmin || (loggedInPermissions.length === 1 && loggedInPermissions[0] === '*')) {
-            return list;
-        }
-
-        return list.filter((key) => loggedInPermissions.indexOf(key) >= 0);
-    }, [isRootAdmin, permissions, loggedInPermissions]);
-
-    const submit = (values: Values) => {
-        setPropOverrides({ showSpinnerOverlay: true });
-        clearFlashes('user:edit');
-
-        createOrUpdateSubuser(uuid, values, subuser)
-            .then((subuser) => {
-                appendSubuser(subuser);
-                dismiss();
-            })
-            .catch((error) => {
-                console.error(error);
-                setPropOverrides(null);
-                clearAndAddHttpError({ key: 'user:edit', error });
-
-                if (ref.current) {
-                    ref.current.scrollIntoView();
-                }
-            });
-    };
-
-    useEffect(
-        () => () => {
-            clearFlashes('user:edit');
-        },
-        []
+    const systemPermissions = Object.entries(permissions).flatMap(([key, permission]) =>
+        Object.keys(permission.keys).map((pkey) => `${key}.${pkey}` as SubuserPermission)
+    );
+    const loggedInPermissionSet = new Set(loggedInPermissions);
+    const editablePermissionSet = new Set(
+        isRootAdmin || (loggedInPermissions.length === 1 && loggedInPermissions[0] === '*')
+            ? systemPermissions
+            : systemPermissions.filter((key) => loggedInPermissionSet.has(key))
     );
 
-    return (
-        <Formik
-            onSubmit={submit}
-            initialValues={
-                {
-                    email: subuser?.email || '',
-                    permissions: subuser?.permissions || [],
-                } as Values
+    const form = useAppForm({
+        defaultValues: {
+            email: subuser?.attributes.email || '',
+            permissions: subuser?.attributes.permissions || ([] as SubuserPermission[]),
+        },
+        onSubmit: async ({ value }) => {
+            try {
+                const updated = subuser
+                    ? await updateSubuser.mutateAsync(updateServerSubuserInput(uuid, subuser, value))
+                    : await createSubuser.mutateAsync(createServerSubuserInput(uuid, value));
+                onSaved ? onSaved(updated) : onClose?.();
+            } catch {
+                // Error toast is handled by the mutation.
             }
-            validationSchema={object().shape({
-                email: string()
-                    .max(191, 'Email addresses must not exceed 191 characters.')
-                    .email('A valid email address must be provided.')
-                    .required('A valid email address must be provided.'),
-                permissions: array().of(string()),
-            })}
-        >
-            <Form>
-                <div css={tw`flex justify-between`}>
-                    <h2 css={tw`text-2xl`} ref={ref}>
-                        {subuser
-                            ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.email}`
-                            : 'Create new subuser'}
-                    </h2>
-                    <div>
-                        <Button type={'submit'} css={tw`w-full sm:w-auto`}>
+        },
+    });
+
+    const isSubmitting =
+        useStore(form.store, (state) => state.isSubmitting) || createSubuser.isPending || updateSubuser.isPending;
+    return {
+        canEditUser,
+        editablePermissionSet,
+        form,
+        hasPermissionsError,
+        isLoadingPermissions,
+        isRootAdmin,
+        isSubmitting,
+        loggedInPermissions,
+        permissions,
+        subuser,
+    };
+};
+
+const SubuserFormContent = ({ state }: { state: ReturnType<typeof useSubuserFormState> }) => {
+    const {
+        canEditUser,
+        editablePermissionSet,
+        form,
+        hasPermissionsError,
+        isLoadingPermissions,
+        isRootAdmin,
+        isSubmitting,
+        loggedInPermissions,
+        permissions,
+        subuser,
+    } = state;
+    const selectedPermissions = useStore(form.store, (current) => current.values.permissions);
+    const permissionSlot: SubuserPermissionsSlotData = {
+        mode: subuser ? 'edit' : 'create',
+        selectedPermissions,
+        editablePermissions: [...editablePermissionSet],
+        disabled: !canEditUser || isSubmitting,
+        setPermissions: (requested) => {
+            if (!canEditUser || isSubmitting || form.state.isSubmitting) {
+                return;
+            }
+            form.setFieldValue(
+                'permissions',
+                replaceEditablePermissions(form.state.values.permissions, requested, editablePermissionSet)
+            );
+        },
+    };
+    const permissionBoxes: React.ReactNode[] = [];
+
+    for (const [key, permissionGroup] of Object.entries(permissions)) {
+        if (key === 'websocket') {
+            continue;
+        }
+
+        const rows = permissionGroupRows(key, permissionGroup.keys);
+        const permissionKeys = rows.map(({ permission }) => permission as SubuserPermission);
+
+        permissionBoxes.push(
+            <PermissionTitleBox
+                key={`permission_${key}`}
+                form={form}
+                title={key}
+                isEditable={canEditUser}
+                editablePermissions={permissionKeys.filter((permission) => editablePermissionSet.has(permission))}
+                className={permissionBoxes.length > 0 ? 'mt-4' : undefined}
+            >
+                <p className={'text-sm text-muted-foreground mb-4'}>{permissionGroup.description}</p>
+                {rows.map(({ permission, key: label, description }) => (
+                    <PermissionRow
+                        key={`permission_${permission}`}
+                        form={form}
+                        permission={permission}
+                        label={label}
+                        description={description}
+                        disabled={!canEditUser || !editablePermissionSet.has(permission as SubuserPermission)}
+                    />
+                ))}
+            </PermissionTitleBox>
+        );
+    }
+
+    if (isLoadingPermissions) {
+        return <SpinnerOverlay visible />;
+    }
+
+    if (hasPermissionsError) {
+        return null;
+    }
+
+    return (
+        <Form form={form}>
+            <SpinnerOverlay visible={isSubmitting} />
+            <div className={'flex justify-between'}>
+                <h2 className={'text-2xl'}>
+                    {subuser
+                        ? `${canEditUser ? 'Modify' : 'View'} permissions for ${subuser.attributes.email}`
+                        : 'Create new subuser'}
+                </h2>
+                <div>
+                    <form.AppForm>
+                        <form.SubmitButton className={'w-full sm:w-auto'}>
                             {subuser ? 'Save' : 'Invite User'}
-                        </Button>
-                    </div>
+                        </form.SubmitButton>
+                    </form.AppForm>
                 </div>
-                <FlashMessageRender byKey={'user:edit'} css={tw`mt-4`} />
-                {!isRootAdmin && loggedInPermissions[0] !== '*' && (
-                    <div css={tw`mt-4 pl-4 py-2 border-l-4 border-cyan-400`}>
-                        <p css={tw`text-sm text-neutral-300`}>
-                            Only permissions which your account is currently assigned may be selected when creating or
-                            modifying other users.
-                        </p>
-                    </div>
-                )}
-                {!subuser && (
-                    <div css={tw`mt-6`}>
-                        <Field
-                            name={'email'}
-                            label={'User Email'}
-                            description={
-                                'Enter the email address of the user you wish to invite as a subuser for this server.'
-                            }
-                        />
-                    </div>
-                )}
-                <div css={tw`my-6`}>
-                    {Object.keys(permissions)
-                        .filter((key) => key !== 'websocket')
-                        .map((key, index) => (
-                            <PermissionTitleBox
-                                key={`permission_${key}`}
-                                title={key}
-                                isEditable={canEditUser}
-                                permissions={Object.keys(permissions[key].keys).map((pkey) => `${key}.${pkey}`)}
-                                css={index > 0 ? tw`mt-4` : undefined}
-                            >
-                                <p css={tw`text-sm text-neutral-400 mb-4`}>{permissions[key].description}</p>
-                                {Object.keys(permissions[key].keys).map((pkey) => (
-                                    <PermissionRow
-                                        key={`permission_${key}.${pkey}`}
-                                        permission={`${key}.${pkey}`}
-                                        disabled={!canEditUser || editablePermissions.indexOf(`${key}.${pkey}`) < 0}
-                                    />
-                                ))}
-                            </PermissionTitleBox>
-                        ))}
+            </div>
+            {!isRootAdmin && loggedInPermissions[0] !== '*' && (
+                <div className={'mt-4 pl-4 py-2 border-l-4 border-accent'}>
+                    <p className={'text-sm text-muted-foreground'}>
+                        Only permissions which your account is currently assigned may be selected when creating or
+                        modifying other users.
+                    </p>
                 </div>
-                <Can action={subuser ? 'user.update' : 'user.create'}>
-                    <div css={tw`pb-6 flex justify-end`}>
-                        <Button type={'submit'} css={tw`w-full sm:w-auto`}>
+            )}
+            {!subuser && (
+                <div className={'mt-6'}>
+                    <form.AppField
+                        name={'email'}
+                        validators={{
+                            onChange: ({ value }) =>
+                                value.length > 191
+                                    ? 'Email addresses must not exceed 191 characters.'
+                                    : isEmail(value)
+                                      ? undefined
+                                      : 'A valid email address must be provided.',
+                        }}
+                    >
+                        {(field) => (
+                            <field.TextField
+                                label={'User Email'}
+                                description={
+                                    'Enter the email address of the user you wish to invite as a subuser for this server.'
+                                }
+                            />
+                        )}
+                    </form.AppField>
+                </div>
+            )}
+            <Slot name={'server.users.permissions.before'} data={permissionSlot} />
+            <div className={'my-6'}>{permissionBoxes}</div>
+            <Can action={subuser ? 'user.update' : 'user.create'}>
+                <div className={'pb-6 flex justify-end'}>
+                    <form.AppForm>
+                        <form.SubmitButton className={'w-full sm:w-auto'}>
                             {subuser ? 'Save' : 'Invite User'}
-                        </Button>
-                    </div>
-                </Can>
-            </Form>
-        </Formik>
+                        </form.SubmitButton>
+                    </form.AppForm>
+                </div>
+            </Can>
+        </Form>
     );
 };
 
-export default asModal<Props>({
-    top: false,
-})(EditSubuserModal);
+export const SubuserForm = (props: Props) => {
+    const state = useSubuserFormState(props);
+
+    return <SubuserFormContent state={state} />;
+};
+
+export default function EditSubuserModal({ open, onClose, ...props }: Props & DialogProps) {
+    const state = useSubuserFormState({ ...props, onClose });
+
+    return (
+        <Dialog
+            open={open}
+            onClose={onClose}
+            preventExternalClose={state.isSubmitting}
+            hideCloseIcon={state.isSubmitting}
+        >
+            <SubuserFormContent state={state} />
+        </Dialog>
+    );
+}

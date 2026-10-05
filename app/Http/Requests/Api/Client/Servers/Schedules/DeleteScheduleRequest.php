@@ -1,13 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Schedules;
 
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Enum\Permissions;
 
 class DeleteScheduleRequest extends ViewScheduleRequest
 {
     public function permission(): string
     {
-        return Permission::ACTION_SCHEDULE_DELETE;
+        return Permissions::ScheduleDelete->value;
     }
 }

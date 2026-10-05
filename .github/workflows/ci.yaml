@@ -4,8 +4,60 @@ on:
   pull_request:
     branches:
       - "1.0-develop"
+      - "2.0-develop"
 
 jobs:
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      # SDK tests exercise the PHP extension OpenAPI generator.
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: mbstring
+          coverage: none
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run api:check
+      - run: npm test
+      - run: npm run build:vite
+
+  static-analysis:
+    name: Static Analysis
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - id: composer-cache
+        run: |
+          echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+      - uses: actions/cache@v4
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-8.4-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-composer-8.4-
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: 8.4
+          extensions: bcmath, cli, curl, gd, mbstring, mysql, openssl, pdo, tokenizer, xml, zip
+          tools: composer:v2
+          coverage: none
+      - run: cp .env.ci .env
+      - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
+      - run: vendor/bin/phpstan analyse -c phpstan-rules.neon --no-progress --memory-limit=2G
+      - run: vendor/bin/rector --dry-run --no-progress-bar
+      - run: vendor/bin/phpstan analyse -c tools/phpstan/rules/phpstan.neon --no-progress --memory-limit=2G
+      - run: vendor/bin/phpunit -c tools/phpstan/rules/phpunit.xml
+
   tests:
     name: Tests
     runs-on: ubuntu-24.04
@@ -15,8 +67,8 @@ jobs:
       fail-fast: false
       matrix:
         php:
-          - 8.2
           - 8.3
+          - 8.4
         database:
           - mariadb:10
           - mariadb:11
@@ -49,11 +101,22 @@ jobs:
           coverage: none
       - run: cp .env.ci .env
       - run: composer install --no-interaction --no-progress --no-suggest --prefer-dist
-      - run: vendor/bin/php-cs-fixer fix --dry-run --diff
-      - run: vendor/bin/phpunit --bootstrap vendor/autoload.php tests/Unit
+      - run: vendor/bin/pint --test --parallel --cache-file=.pint.cache app bootstrap/app.php bootstrap/tests.php config database routes tests
+      - run: vendor/bin/pest --bootstrap vendor/autoload.php tests/Unit
         env:
           DB_HOST: UNIT_NO_DB
-      - run: vendor/bin/phpunit tests/Integration
+      - run: php -d variables_order=EGPCS vendor/bin/pest --type-coverage --min=100
         env:
+          __PEST_PLUGIN_ENV: 1
+      - run: vendor/bin/pest tests/Integration
+        env:
+          DB_PORT: ${{ job.services.database.ports[3306] }}
+          DB_USERNAME: root
+      - run: composer docs:openapi:verify
+        if: matrix.php == '8.4' && matrix.database == 'mysql:8'
+        env:
+          APP_ENV: testing
+          CACHE_STORE: array
+          PTERODACTYL_EXTENSIONS_ENABLED: 'false'
           DB_PORT: ${{ job.services.database.ports[3306] }}
           DB_USERNAME: root

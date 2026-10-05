@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Illuminate\Support\Arr;
+use Pterodactyl\Data\ServerState;
 
 class StatsTransformer extends BaseClientTransformer
 {
@@ -12,21 +14,23 @@ class StatsTransformer extends BaseClientTransformer
     }
 
     /**
-     * Transform stats from the daemon into a result set that can be used in
-     * the client API.
+     * Transform the live state of a server into a result set that can be used
+     * in the client API.
+     *
+     * @return ApiPayload
      */
-    public function transform(array $data): array
+    public function transform(ServerState $state): array
     {
         return [
-            'current_state' => Arr::get($data, 'state', 'stopped'),
-            'is_suspended' => Arr::get($data, 'is_suspended', false),
+            'current_state' => $state->state,
+            'is_suspended' => $state->isSuspended,
             'resources' => [
-                'memory_bytes' => Arr::get($data, 'utilization.memory_bytes', 0),
-                'cpu_absolute' => Arr::get($data, 'utilization.cpu_absolute', 0),
-                'disk_bytes' => Arr::get($data, 'utilization.disk_bytes', 0),
-                'network_rx_bytes' => Arr::get($data, 'utilization.network.rx_bytes', 0),
-                'network_tx_bytes' => Arr::get($data, 'utilization.network.tx_bytes', 0),
-                'uptime' => Arr::get($data, 'utilization.uptime', 0),
+                'memory_bytes' => $state->memoryBytes,
+                'cpu_absolute' => $state->cpuAbsolute,
+                'disk_bytes' => $state->diskBytes,
+                'network_rx_bytes' => $state->networkRxBytes,
+                'network_tx_bytes' => $state->networkTxBytes,
+                'uptime' => $state->uptime,
             ],
         ];
     }

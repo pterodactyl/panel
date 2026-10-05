@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'sign_in' => 'Sign In',
     'go_to_login' => 'Go to Login',

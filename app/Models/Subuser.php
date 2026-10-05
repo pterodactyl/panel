@@ -1,72 +1,59 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
+use Database\Factories\SubuserFactory;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Notifications\Notifiable;
+use Pterodactyl\Models\Traits\HasHashid;
 
 /**
  * @property int $id
  * @property int $user_id
  * @property int $server_id
- * @property array $permissions
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property list<string> $permissions
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property User $user
  * @property Server $server
  */
+#[Guarded(['id', 'created_at', 'updated_at'])]
 class Subuser extends Model
 {
-    /** @use HasFactory<\Database\Factories\SubuserFactory> */
+    /** @use HasFactory<SubuserFactory> */
     use HasFactory;
+
+    use HasHashid;
     use Notifiable;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'server_subuser';
+    public const string RESOURCE_NAME = 'server_subuser';
 
     /**
-     * The table associated with the model.
+     * @return array<string, string>
      */
-    protected $table = 'subusers';
-
-    /**
-     * Fields that are not mass assignable.
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Cast values to correct type.
-     */
-    protected $casts = [
-        'user_id' => 'int',
-        'server_id' => 'int',
-        'permissions' => 'array',
-    ];
-
-    public static array $validationRules = [
-        'user_id' => 'required|numeric|exists:users,id',
-        'server_id' => 'required|numeric|exists:servers,id',
-        'permissions' => 'nullable|array',
-        'permissions.*' => 'string',
-    ];
-
-    /**
-     * Return a hashid encoded string to represent the ID of the subuser.
-     */
-    public function getHashidAttribute(): string
+    protected function casts(): array
     {
-        return app()->make('hashids')->encode($this->id);
+        return [
+            'user_id' => 'int',
+            'server_id' => 'int',
+            'permissions' => 'array',
+        ];
     }
 
     /**
      * Gets the server associated with a subuser.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo
     {
@@ -76,7 +63,7 @@ class Subuser extends Model
     /**
      * Gets the user associated with a subuser.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\User, $this>
+     * @return BelongsTo<User, $this>
      */
     public function user(): BelongsTo
     {
@@ -86,7 +73,7 @@ class Subuser extends Model
     /**
      * Gets the permissions associated with a subuser.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Permission, $this>
+     * @return HasMany<Permission, $this>
      */
     public function permissions(): HasMany
     {

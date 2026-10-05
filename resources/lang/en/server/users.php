@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'permissions' => [
         'websocket_*' => 'Allows access to the websocket for this server.',

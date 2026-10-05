@@ -1,23 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Extensions\Laravel\Sanctum;
 
 use Pterodactyl\Models\ApiKey;
-use Laravel\Sanctum\NewAccessToken as SanctumAccessToken;
 
 /**
- * @property ApiKey $accessToken
+ * Panel equivalent of Sanctum's NewAccessToken value object. It is intentionally
+ * not a subclass: Sanctum natively types its token property as
+ * PersonalAccessToken, which the panel's ApiKey model does not extend.
  */
-class NewAccessToken extends SanctumAccessToken
+class NewAccessToken
 {
-    /**
-     * NewAccessToken constructor.
-     *
-     * @noinspection PhpMissingParentConstructorInspection
-     */
-    public function __construct(ApiKey $accessToken, string $plainTextToken)
-    {
-        $this->accessToken = $accessToken;
-        $this->plainTextToken = $plainTextToken;
-    }
+    public function __construct(
+        public ApiKey $accessToken,
+        public string $plainTextToken,
+    ) {}
 }

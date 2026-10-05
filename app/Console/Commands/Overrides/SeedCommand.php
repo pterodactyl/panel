@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Console\Commands\Overrides;
 
-use Pterodactyl\Console\RequiresDatabaseMigrations;
 use Illuminate\Database\Console\Seeds\SeedCommand as BaseSeedCommand;
+use Pterodactyl\Console\RequiresDatabaseMigrations;
 
 class SeedCommand extends BaseSeedCommand
 {
@@ -15,7 +17,7 @@ class SeedCommand extends BaseSeedCommand
      */
     public function handle(): int
     {
-        if (!$this->hasCompletedMigrations()) {
+        if (! $this->hasCompletedMigrations()) {
             $this->showMigrationWarning();
 
             return 1;

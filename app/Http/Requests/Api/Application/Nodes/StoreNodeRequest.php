@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Application\Nodes;
 
-use Pterodactyl\Models\Node;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Str;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Support\ValidationRuleSubset;
+use Pterodactyl\Validation\NodeRules;
 
 class StoreNodeRequest extends ApplicationApiRequest
 {
@@ -14,10 +20,13 @@ class StoreNodeRequest extends ApplicationApiRequest
 
     /**
      * Validation rules to apply to this request.
+     *
+     * @param  NormalizedValidationRules|null  $rules
+     * @return ValidationRules
      */
     public function rules(?array $rules = null): array
     {
-        return collect($rules ?? Node::getRules())->only([
+        $selected = ValidationRuleSubset::select($rules ?? NodeRules::rules(), [
             'public',
             'name',
             'description',
@@ -34,11 +43,15 @@ class StoreNodeRequest extends ApplicationApiRequest
             'daemonListen',
             'daemonSFTP',
             'daemonBase',
-        ])->mapWithKeys(function ($value, $key) {
-            $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
+        ]);
 
-            return [snake_case($key) => $value];
-        })->toArray();
+        $normalized = [];
+        foreach ($selected as $key => $value) {
+            $key = ($key === 'daemonSFTP') ? 'daemonSftp' : $key;
+            $normalized[Str::snake($key)] = $value;
+        }
+
+        return $normalized;
     }
 
     /**
@@ -57,15 +70,44 @@ class StoreNodeRequest extends ApplicationApiRequest
     /**
      * Change the formatting of some data keys in the validated response data
      * to match what the application expects in the services.
+     *
+     * @return NodeCreationData
      */
-    public function validated($key = null, $default = null): array
+    public function payload(): array
     {
-        $response = parent::validated();
-        $response['daemonListen'] = $response['daemon_listen'];
-        $response['daemonSFTP'] = $response['daemon_sftp'];
-        $response['daemonBase'] = $response['daemon_base'] ?? (new Node())->getAttribute('daemonBase');
+        $data = parent::validated();
 
-        unset($response['daemon_base'], $response['daemon_listen'], $response['daemon_sftp']);
+        $daemonBase = Arr::get($data, 'daemon_base');
+
+        $response = [
+            'name' => JsonValueGuard::string(Arr::get($data, 'name')),
+            'location_id' => JsonValueGuard::integer(Arr::get($data, 'location_id')),
+            'fqdn' => JsonValueGuard::string(Arr::get($data, 'fqdn')),
+            'scheme' => JsonValueGuard::string(Arr::get($data, 'scheme')),
+            'memory' => JsonValueGuard::integer(Arr::get($data, 'memory')),
+            'memory_overallocate' => JsonValueGuard::integer(Arr::get($data, 'memory_overallocate')),
+            'disk' => JsonValueGuard::integer(Arr::get($data, 'disk')),
+            'disk_overallocate' => JsonValueGuard::integer(Arr::get($data, 'disk_overallocate')),
+            'daemonListen' => JsonValueGuard::integer(Arr::get($data, 'daemon_listen')),
+            'daemonSFTP' => JsonValueGuard::integer(Arr::get($data, 'daemon_sftp')),
+            'daemonBase' => $daemonBase !== null && $daemonBase !== '' ? JsonValueGuard::string($daemonBase) : '/var/lib/pterodactyl/volumes',
+        ];
+
+        if (array_key_exists('description', $data)) {
+            $description = Arr::get($data, 'description');
+            $response['description'] = $description !== null && $description !== '' ? JsonValueGuard::string($description) : null;
+        }
+
+        foreach (['public', 'behind_proxy', 'maintenance_mode'] as $boolean) {
+            if (array_key_exists($boolean, $data)) {
+                $response[$boolean] = JsonValueGuard::boolean(Arr::get($data, $boolean));
+            }
+        }
+
+        $uploadSize = Arr::get($data, 'upload_size');
+        if ($uploadSize !== null && $uploadSize !== '') {
+            $response['upload_size'] = JsonValueGuard::integer($uploadSize);
+        }
 
         return $response;
     }

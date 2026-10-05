@@ -1,8 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Observers;
 
-use Pterodactyl\Events;
+use Pterodactyl\Events\Subuser\Created;
+use Pterodactyl\Events\Subuser\Creating;
+use Pterodactyl\Events\Subuser\Deleted;
+use Pterodactyl\Events\Subuser\Deleting;
 use Pterodactyl\Models\Subuser;
 use Pterodactyl\Notifications\AddedToServer;
 use Pterodactyl\Notifications\RemovedFromServer;
@@ -14,7 +19,7 @@ class SubuserObserver
      */
     public function creating(Subuser $subuser): void
     {
-        event(new Events\Subuser\Creating($subuser));
+        event(new Creating($subuser));
     }
 
     /**
@@ -22,10 +27,10 @@ class SubuserObserver
      */
     public function created(Subuser $subuser): void
     {
-        event(new Events\Subuser\Created($subuser));
+        event(new Created($subuser));
 
         $subuser->user->notify(new AddedToServer([
-            'user' => $subuser->user->name_first,
+            'user' => $subuser->user->name_first ?? $subuser->user->username,
             'name' => $subuser->server->name,
             'uuidShort' => $subuser->server->uuidShort,
         ]));
@@ -36,7 +41,7 @@ class SubuserObserver
      */
     public function deleting(Subuser $subuser): void
     {
-        event(new Events\Subuser\Deleting($subuser));
+        event(new Deleting($subuser));
     }
 
     /**
@@ -44,10 +49,10 @@ class SubuserObserver
      */
     public function deleted(Subuser $subuser): void
     {
-        event(new Events\Subuser\Deleted($subuser));
+        event(new Deleted($subuser));
 
         $subuser->user->notify(new RemovedFromServer([
-            'user' => $subuser->user->name_first,
+            'user' => $subuser->user->name_first ?? $subuser->user->username,
             'name' => $subuser->server->name,
         ]));
     }

@@ -1,14 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Application\Servers\Databases;
 
-use Webmozart\Assert\Assert;
-use Pterodactyl\Models\Server;
-use Illuminate\Validation\Rule;
 use Illuminate\Database\Query\Builder;
-use Pterodactyl\Services\Acl\Api\AdminAcl;
-use Pterodactyl\Services\Databases\DatabaseManagementService;
+use Illuminate\Validation\Rule;
 use Pterodactyl\Http\Requests\Api\Application\ApplicationApiRequest;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Acl\Api\AdminAcl;
+use Pterodactyl\Support\DatabaseName;
+use Pterodactyl\Support\JsonValueGuard;
 
 class StoreServerDatabaseRequest extends ApplicationApiRequest
 {
@@ -18,6 +20,8 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
 
     /**
      * Validation rules for database creation.
+     *
+     * @return ValidationRules
      */
     public function rules(): array
     {
@@ -29,24 +33,26 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
                 'alpha_dash',
                 'min:1',
                 'max:48',
-                Rule::unique('databases')->where(function (Builder $query) use ($server) {
+                Rule::unique('databases')->where(function (Builder $query) use ($server): void {
                     $query->where('server_id', $server->id)->where('database', $this->databaseName());
                 }),
             ],
-            'remote' => 'required|string|regex:/^[0-9%.]{1,15}$/',
-            'host' => 'required|integer|exists:database_hosts,id',
+            'remote' => ['required', 'string', 'regex:/^[0-9%.]{1,15}$/'],
+            'host' => ['required', 'integer', 'exists:database_hosts,id'],
         ];
     }
 
     /**
      * Return data formatted in the correct format for the service to consume.
+     *
+     * @return DatabaseCreationData
      */
-    public function validated($key = null, $default = null): array
+    public function payload(): array
     {
         return [
-            'database' => $this->input('database'),
-            'remote' => $this->input('remote'),
-            'database_host_id' => $this->input('host'),
+            'database' => $this->string('database')->toString(),
+            'remote' => $this->string('remote')->toString(),
+            'database_host_id' => $this->integer('host'),
         ];
     }
 
@@ -67,10 +73,8 @@ class StoreServerDatabaseRequest extends ApplicationApiRequest
      */
     public function databaseName(): string
     {
-        $server = $this->route()->parameter('server');
+        $server = $this->parameter('server', Server::class);
 
-        Assert::isInstanceOf($server, Server::class);
-
-        return DatabaseManagementService::generateUniqueDatabaseName($this->input('database'), $server->id);
+        return DatabaseName::generateUnique(JsonValueGuard::string($this->input('database')), $server->id);
     }
 }

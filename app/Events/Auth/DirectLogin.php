@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Events\Auth;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Events\Event;
+use Pterodactyl\Models\User;
 
 class DirectLogin extends Event
 {
-    public function __construct(public User $user, public bool $remember)
-    {
-    }
+    public function __construct(public User $user, public bool $remember) {}
 }

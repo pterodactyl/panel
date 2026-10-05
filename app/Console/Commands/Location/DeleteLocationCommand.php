@@ -1,55 +1,48 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Console\Commands\Location;
 
+use Illuminate\Console\Attributes\Description;
+use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
-use Pterodactyl\Services\Locations\LocationDeletionService;
-use Pterodactyl\Contracts\Repository\LocationRepositoryInterface;
+use Illuminate\Database\Eloquent\Collection;
+use Pterodactyl\Contracts\Locations\DeletesLocations;
+use Pterodactyl\Exceptions\Service\Location\HasActiveNodesException;
+use Pterodactyl\Models\Location;
 
+#[Description('Deletes a location from the Panel.')]
+#[Signature('p:location:delete {--short= : The short code of the location to delete.}')]
 class DeleteLocationCommand extends Command
 {
-    protected $description = 'Deletes a location from the Panel.';
-
-    protected $signature = 'p:location:delete {--short= : The short code of the location to delete.}';
-
-    protected Collection $locations;
-
-    /**
-     * DeleteLocationCommand constructor.
-     */
-    public function __construct(
-        private LocationDeletionService $deletionService,
-        private LocationRepositoryInterface $repository,
-    ) {
-        parent::__construct();
-    }
+    /** @var Collection<int, Location> */
+    protected Collection $allLocations;
 
     /**
      * Respond to the command request.
      *
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
-     * @throws \Pterodactyl\Exceptions\Service\Location\HasActiveNodesException
+     * @throws HasActiveNodesException
      */
-    public function handle()
+    public function handle(DeletesLocations $locations): void
     {
-        $this->locations = $this->locations ?? $this->repository->all();
+        $this->allLocations ??= Location::all();
         $short = $this->option('short') ?? $this->anticipate(
             trans('command/messages.location.ask_short'),
-            $this->locations->pluck('short')->toArray()
+            $this->allLocations->pluck('short')->toArray()
         );
 
-        $location = $this->locations->where('short', $short)->first();
-        if (is_null($location)) {
+        $location = $this->allLocations->where('short', $short)->first();
+        if ($location === null) {
             $this->error(trans('command/messages.location.no_location_found'));
             if ($this->input->isInteractive()) {
-                $this->handle();
+                $this->handle($locations);
             }
 
             return;
         }
 
-        $this->deletionService->handle($location->id);
+        $locations->delete($location);
         $this->line(trans('command/messages.location.deleted'));
     }
 }

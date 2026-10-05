@@ -1,6 +1,4 @@
-import React from 'react';
-
-export default ({ uptime }: { uptime: number }) => {
+export default function UptimeDuration({ uptime }: { uptime: number }) {
     const days = Math.floor(uptime / (24 * 60 * 60));
     const hours = Math.floor((Math.floor(uptime) / 60 / 60) % 24);
     const remainder = Math.floor(uptime - hours * 60 * 60);
@@ -20,4 +18,4 @@ export default ({ uptime }: { uptime: number }) => {
             {hours}h {minutes}m {seconds}s
         </>
     );
-};
+}

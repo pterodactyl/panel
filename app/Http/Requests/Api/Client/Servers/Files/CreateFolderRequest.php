@@ -1,25 +1,31 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class CreateFolderRequest extends ClientApiRequest
+class CreateFolderRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
     /**
      * Checks that the authenticated user is allowed to create files on the server.
      */
     public function permission(): string
     {
-        return Permission::ACTION_FILE_CREATE;
+        return Permissions::FileCreate->value;
     }
 
+    /**
+     * @return ValidationRules
+     */
     public function rules(): array
     {
         return [
-            'root' => 'sometimes|nullable|string',
-            'name' => 'required|string',
+            'root' => ['sometimes', 'nullable', 'string'],
+            'name' => ['required', 'string'],
         ];
     }
 }

@@ -1,43 +1,28 @@
-import React, { useState } from 'react';
-import rotateDatabasePassword from '@/api/server/databases/rotateDatabasePassword';
-import { Actions, useStoreActions } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
-import { ServerContext } from '@/state/server';
-import { ServerDatabase } from '@/api/server/databases/getServerDatabases';
-import { httpErrorToHuman } from '@/api/http';
+import { useCurrentServerUuid } from '@/api/server/queries';
+import { rotateServerDatabasePasswordInput, useRotateDatabasePassword } from '@/api/server/databases/queries';
 import Button from '@/components/elements/Button';
-import tw from 'twin.macro';
 
-export default ({ databaseId, onUpdate }: { databaseId: string; onUpdate: (database: ServerDatabase) => void }) => {
-    const [loading, setLoading] = useState(false);
-    const { addFlash, clearFlashes } = useStoreActions((actions: Actions<ApplicationStore>) => actions.flashes);
-    const server = ServerContext.useStoreState((state) => state.server.data!);
+type Props = {
+    databaseId: string;
+};
+
+const RotatePasswordButton = ({ databaseId }: Props) => {
+    const uuid = useCurrentServerUuid()!;
+    const rotatePassword = useRotateDatabasePassword();
 
     if (!databaseId) {
         return null;
     }
 
     const rotate = () => {
-        setLoading(true);
-        clearFlashes();
-
-        rotateDatabasePassword(server.uuid, databaseId)
-            .then((database) => onUpdate(database))
-            .catch((error) => {
-                console.error(error);
-                addFlash({
-                    type: 'error',
-                    title: 'Error',
-                    message: httpErrorToHuman(error),
-                    key: 'database-connection-modal',
-                });
-            })
-            .then(() => setLoading(false));
+        rotatePassword.mutate(rotateServerDatabasePasswordInput(uuid, databaseId));
     };
 
     return (
-        <Button isSecondary color={'primary'} css={tw`mr-2`} onClick={rotate} isLoading={loading}>
+        <Button isSecondary color={'primary'} className={'mr-2'} onClick={rotate} isLoading={rotatePassword.isPending}>
             Rotate Password
         </Button>
     );
 };
+
+export default RotatePasswordButton;

@@ -1,17 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Tests\Assertions;
 
-use PHPUnit\Framework\Assert;
-use Illuminate\Support\Facades\Event;
-use Pterodactyl\Events\ActivityLogged;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Event;
+use PHPUnit\Framework\Assert;
+use Pterodactyl\Events\ActivityLogged;
 use Pterodactyl\Models\ActivityLogSubject;
 
 trait AssertsActivityLogged
 {
     /**
-     * @param Model|array $subjects
+     * @param  Model|array  $subjects
      */
     public function assertActivityFor(string $event, ?Model $actor, ...$subjects): void
     {
@@ -35,7 +37,7 @@ trait AssertsActivityLogged
     public function assertActivitySubjects(string $event, Model|array $subjects): void
     {
         if (is_array($subjects)) {
-            \Webmozart\Assert\Assert::lessThanEq(count(func_get_args()), 2, 'Invalid call to ' . __METHOD__ . ': cannot provide additional arguments if providing an array.');
+            Assert::assertLessThanOrEqual(2, count(func_get_args()), 'Invalid call to '.__METHOD__.': cannot provide additional arguments if providing an array.');
         } else {
             $subjects = array_slice(func_get_args(), 1);
         }

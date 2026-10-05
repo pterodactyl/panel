@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Exceptions;
 
-use Spatie\Ignition\Contracts\Solution;
-use Spatie\Ignition\Contracts\ProvidesSolution;
+use Exception;
 
-class ManifestDoesNotExistException extends \Exception implements ProvidesSolution
+class ManifestDoesNotExistException extends Exception
 {
-    public function getSolution(): Solution
+    public function __construct()
     {
-        return new Solutions\ManifestDoesNotExistSolution();
+        parent::__construct('The Vite manifest has not been generated yet. Run "npm run build:production" to build the frontend first.');
     }
 }

@@ -3,6 +3,34 @@ This file is a running track of new features and fixes to each version of the pa
 
 This project follows [Semantic Versioning](http://semver.org) guidelines.
 
+## v2.0.0 (unreleased)
+Extension SDK `2.0.0-beta.4`.
+
+### Fixed
+* Extension web routes under `/extensions/<id>` are now matched before the SPA catch-all route, which previously answered them.
+* A `theme-color` meta tag registered by an extension is no longer overwritten by the `--theme-color` theme token.
+* An enabled extension's Tailwind utilities no longer override the panel's own or another extension's, which showed the mobile menu button beside the admin sidebar and collapsed one extension's responsive grid when a second was enabled.
+
+### Changed
+* Core file reads, directory listings, live server state and login completion now run through action contracts that extensions can call and wrap.
+* `nav.icon` in an extension manifest accepts any lucide icon name instead of a fixed list of nine.
+* `ExtensionRepository::frontendPayload()` takes whether the viewer is authenticated; guests only receive settings marked `->public()`.
+* The client API server resource includes `egg_tags`.
+* Each extension builds Tailwind with its own prefix, declared as `ui.prefix` in the manifest (2-12 lowercase letters; `hw` gives `hw:flex`, `hw:lg:hidden` and theme variables under `--hw-*`). Tailwind variant names, theme namespaces and panel names are reserved, two enabled extensions cannot share a prefix, and `p:extension:doctor`, `p:extension:pack`, install and enable reject a build whose utilities or theme variables do not carry the declared prefix. `p:extension:make` derives a prefix from the id or takes `--prefix`.
+* `@pterodactyl/sdk/theme.css` points prefixed extension builds at the panel's live `--spacing` and font tokens; the panel imports the shared mapping from `packages/sdk/theme-tokens.css`.
+* Class names passed to core components resolve the prefixed utilities of every enabled extension against the panel utility they replace; the SDK test hosts take the `prefix` to do the same.
+
+### Added
+* Adds `ReadsFileContents`, `ListsDirectories`, `ReadsServerLogs`, `ReadsServerState`, `ChangesServerEgg` and `CompletesLogins` action contracts.
+* Adds `GET /api/client/servers/{server}/logs` and the SDK `serverLogsQueryOptions` to read recent console output.
+* Adds `wrapAction`, `registerCommands`, `registerSchedule`, `registerHeadTags` and `registerRootRoutes` (with the manifest's `routes.root`) to extension providers.
+* `OperationCompleted` now also reports `delete`, `suspend`, `unsuspend` and `transfer`.
+* Adds public extension settings (`->frontend()->public()`) and the `color`, `textarea`, `multiselect`, `list` and `file` setting fields, with uploads served from `/extension-files/<id>/`.
+* Adds conditional extension screens (`ui.screens[].when` and a runtime `visible` predicate), live navigation badges, `NamedIcon` and `@pterodactyl/sdk/icons.json`.
+* Adds the replaceable `server.files.editor` and `server.files.manager` components, `useNavigationBlocker`, `serverResourcesQueryOptions`, `useServerResources`, `useSendServerPower` and `useSendServerCommand` to the SDK.
+* Adds layout, terminal, selection, scrollbar and browser chrome theme tokens, a sidebar sub-navigation mode (`data-sub-navigation="side"`), and `onThemeChange`, `notifyThemeChange` and `readThemeToken`.
+* Scaffolded extensions set `preserveSymlinks` so a linked SDK resolves its peer types from the extension.
+
 ## v1.12.3
 ### Fixed
 * Adds a rate limit when changing email addresses on an account to prevent account enumeration.

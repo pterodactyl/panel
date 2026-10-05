@@ -1,0 +1,233 @@
+{
+    "$schema": "./node_modules/oxlint/configuration_schema.json",
+    "plugins": ["eslint", "typescript", "react", "oxc"],
+    "jsPlugins": [
+        {
+            "name": "rules",
+            "specifier": "./tools/oxlint/rules/index.ts"
+        }
+    ],
+    "categories": {
+        "correctness": "error",
+        "suspicious": "off",
+        "perf": "warn",
+        "style": "off",
+        "pedantic": "off",
+        "restriction": "off",
+        "nursery": "off"
+    },
+    "env": {
+        "builtin": true,
+        "browser": true,
+        "es2022": true
+    },
+    "settings": {
+        "react": {
+            "version": "19.0.0",
+            "linkComponents": [
+                {
+                    "name": "Link",
+                    "linkAttribute": "to"
+                },
+                {
+                    "name": "NavLink",
+                    "linkAttribute": "to"
+                }
+            ]
+        }
+    },
+    "options": {
+        "reportUnusedDisableDirectives": "warn",
+        "respectEslintDisableDirectives": true
+    },
+    "ignorePatterns": [
+        "public/**",
+        "resources/views/**",
+        ".claude/**",
+        "**/generated/*",
+        "!resources/scripts/api/generated/types.gen.ts"
+    ],
+    "overrides": [
+        {
+            "files": ["**/*.{ts,tsx,js,jsx,mjs}"],
+            "excludeFiles": ["**/generated/**"],
+            "rules": {
+                "rules/no-chained-type-assertions": "error",
+                "rules/no-conditional-empty-object-spread": "error",
+                "rules/no-known-value-widening": "error",
+                "rules/no-object-parameters": "error",
+                "rules/no-runtime-typeof": "error",
+                "rules/no-shape-in-symbol-names": "error",
+                "rules/no-unknown-parameters": "error",
+                "rules/no-unknown-type-aliases": "error",
+                "rules/no-unsafe-dictionary-type": "error",
+                "rules/no-widen-then-assert": "error",
+                "eqeqeq": "error",
+                "no-use-before-define": "warn",
+                "no-unused-expressions": [
+                    "error",
+                    {
+                        "allowShortCircuit": true,
+                        "allowTernary": true
+                    }
+                ],
+                "no-unused-vars": [
+                    "warn",
+                    {
+                        "argsIgnorePattern": "^_",
+                        "varsIgnorePattern": "^_"
+                    }
+                ],
+                "react/display-name": "off",
+                "react/react-in-jsx-scope": "off",
+                "react/rules-of-hooks": "error",
+                "react/exhaustive-deps": "warn",
+                "typescript/no-explicit-any": "error",
+                "typescript/no-non-null-assertion": "off",
+                "typescript/consistent-type-imports": [
+                    "error",
+                    {
+                        "fixStyle": "inline-type-imports"
+                    }
+                ],
+                "typescript/ban-ts-comment": [
+                    "error",
+                    {
+                        "ts-expect-error": "allow-with-description"
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["resources/scripts/**"],
+            "excludeFiles": ["resources/scripts/state/**", "**/generated/**"],
+            "rules": {
+                "no-restricted-imports": [
+                    "error",
+                    {
+                        "patterns": [
+                            {
+                                "group": ["zustand", "zustand/*"],
+                                "message": "Access state through resources/scripts/state."
+                            },
+                            {
+                                "group": ["@/state/hooks", "@/api/useGeneratedMutation"],
+                                "message": "Use the current state and generated API interfaces."
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        {
+            "files": ["resources/scripts/**"],
+            "excludeFiles": ["**/generated/**"],
+            "rules": {
+                "rules/generated-api-imports": "error"
+            }
+        },
+        {
+            "files": ["resources/scripts/**", "packages/hello-world/src/client/**"],
+            "excludeFiles": ["**/generated/**", "**/*.spec.{ts,tsx}"],
+            "rules": {
+                "rules/design-tokens": "error"
+            }
+        },
+        {
+            "files": ["resources/scripts/api/**", "packages/hello-world/src/client/**"],
+            "excludeFiles": ["**/generated/**", "**/*.spec.{ts,tsx}"],
+            "rules": {
+                "rules/generated-api-mutations": "error",
+                "no-restricted-properties": [
+                    "error",
+                    {
+                        "object": "http",
+                        "property": "get",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "http",
+                        "property": "post",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "http",
+                        "property": "put",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "http",
+                        "property": "patch",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "http",
+                        "property": "delete",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "http",
+                        "property": "request",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "axios",
+                        "property": "get",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "axios",
+                        "property": "post",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "axios",
+                        "property": "put",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "axios",
+                        "property": "patch",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "axios",
+                        "property": "delete",
+                        "message": "Use the generated API client."
+                    },
+                    {
+                        "object": "axios",
+                        "property": "request",
+                        "message": "Use the generated API client."
+                    }
+                ]
+            }
+        },
+        {
+            "files": [
+                "resources/scripts/api/server/backups/queries.ts",
+                "resources/scripts/api/server/files/queries.ts"
+            ],
+            "rules": {
+                "rules/generated-api-mutations": "off"
+            }
+        },
+        {
+            "files": [
+                "resources/scripts/api/http.ts",
+                "resources/scripts/api/interceptors.ts",
+                "resources/scripts/api/server/files/queries.ts"
+            ],
+            "rules": {
+                "no-restricted-properties": "off"
+            }
+        },
+        {
+            "files": ["resources/scripts/api/generated/types.gen.ts"],
+            "rules": {
+                "rules/generated-api-types": "error",
+                "typescript/no-empty-object-type": "error"
+            }
+        }
+    ]
+}

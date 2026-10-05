@@ -1,48 +1,36 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Carbon\Carbon;
+use Database\Factories\LocationFactory;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 /**
  * @property int $id
  * @property string $short
  * @property string $long
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Pterodactyl\Models\Node[] $nodes
- * @property \Pterodactyl\Models\Server[] $servers
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
+ * @property Node[] $nodes
+ * @property Server[] $servers
  */
+#[Guarded(['id', 'created_at', 'updated_at'])]
 class Location extends Model
 {
-    /** @use HasFactory<\Database\Factories\LocationFactory> */
+    /** @use HasFactory<LocationFactory> */
     use HasFactory;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'location';
-
-    /**
-     * The table associated with the model.
-     */
-    protected $table = 'locations';
-
-    /**
-     * Fields that are not mass assignable.
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Rules ensuring that the raw data stored in the database meets expectations.
-     */
-    public static array $validationRules = [
-        'short' => 'required|string|between:1,60|unique:locations,short',
-        'long' => 'string|nullable|between:1,191',
-    ];
+    public const string RESOURCE_NAME = 'location';
 
     public function getRouteKeyName(): string
     {
@@ -52,7 +40,7 @@ class Location extends Model
     /**
      * Gets the nodes in a specified location.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Node, $this>
+     * @return HasMany<Node, $this>
      */
     public function nodes(): HasMany
     {
@@ -62,7 +50,7 @@ class Location extends Model
     /**
      * Gets the servers within a given location.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasManyThrough<\Pterodactyl\Models\Server, \Pterodactyl\Models\Node, $this>
+     * @return HasManyThrough<Server, Node, $this>
      */
     public function servers(): HasManyThrough
     {

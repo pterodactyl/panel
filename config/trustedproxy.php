@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     /*
      * Set trusted proxy IP addresses.
@@ -23,6 +25,9 @@ return [
      * how many proxies that client's request has
      * subsequently passed through.
      */
-    'proxies' => in_array(env('TRUSTED_PROXIES', []), ['*', '**']) ?
-        env('TRUSTED_PROXIES') : explode(',', env('TRUSTED_PROXIES') ?? ''),
+    'proxies' => (function (): string|array {
+        $value = (string) env('TRUSTED_PROXIES', '');
+
+        return in_array($value, ['*', '**'], true) ? $value : array_values(array_filter(explode(',', $value)));
+    })(),
 ];

@@ -1,0 +1,59 @@
+{
+    "name": "@pterodactyl/sdk",
+    "version": "2.0.0-beta.4",
+    "description": "SDK for building Pterodactyl panel extensions: types for the runtime API and the Vite build preset.",
+    "license": "MIT",
+    "type": "module",
+    "types": "./types/index.d.ts",
+    "exports": {
+        ".": {
+            "types": "./types/index.d.ts",
+            "default": "./runtime-stub.mjs"
+        },
+        "./api": {
+            "types": "./types/api.d.ts",
+            "default": "./api-runtime-stub.mjs"
+        },
+        "./vite": "./vite.mjs",
+        "./testing": {
+            "types": "./types/testing.d.ts",
+            "default": "./testing-runtime/testing.js"
+        },
+        "./vitest": "./vitest.mjs",
+        "./openapi": "./openapi.mjs",
+        "./theme.css": "./theme.css",
+        "./icons.json": "./icons.json",
+        "./manifest.schema.json": "./manifest.schema.json"
+    },
+    "files": [
+        "types",
+        "api-runtime-stub.mjs",
+        "runtime-stub.mjs",
+        "vite.mjs",
+        "README.md",
+        "testing-runtime",
+        "vitest.mjs",
+        "vitest-setup.mjs",
+        "prepack.mjs",
+        "openapi.mjs",
+        "theme.css",
+        "theme-tokens.css",
+        "icons.json",
+        "manifest.schema.json"
+    ],
+    "peerDependencies": {
+        "@tanstack/react-query": "^5",
+        "react": "^19.2.0",
+        "react-dom": "^19.2.0",
+        "@base-ui/react": "^1.6.0",
+        "@tanstack/form-core": "^1.33.0",
+        "@tanstack/react-form": "^1.33.0",
+        "@tanstack/react-router": "^1.170.17",
+        "axios": "^1.18.1",
+        "lucide-react": "^1.17.0",
+        "sonner": "^2.0.7"
+    },
+    "scripts": {
+        "prepack": "node ./prepack.mjs"
+    }
+}

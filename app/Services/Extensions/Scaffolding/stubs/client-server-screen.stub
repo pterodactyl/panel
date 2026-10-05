@@ -1,0 +1,13 @@
+import { ServerContentBlock, TitledGreyBox } from '@pterodactyl/sdk';
+
+export default function ServerScreen() {
+    return (
+        <ServerContentBlock title={'{{name}}'}>
+            <TitledGreyBox title={'{{name}}'}>
+                <p className={'{{prefix}}:text-sm {{prefix}}:text-muted-foreground'}>
+                    Edit src/client/screens/ServerScreen.tsx to build this page.
+                </p>
+            </TitledGreyBox>
+        </ServerContentBlock>
+    );
+}

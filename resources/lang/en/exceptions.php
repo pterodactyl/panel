@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'daemon_connection_failed' => 'There was an exception while attempting to communicate with the daemon resulting in a HTTP/:code response code. This exception has been logged.',
     'node' => [
@@ -13,16 +15,11 @@ return [
         'cidr_out_of_range' => 'CIDR notation only allows masks between /25 and /32.',
         'port_out_of_range' => 'Ports in an allocation must be greater than 1024 and less than or equal to 65535.',
     ],
-    'nest' => [
-        'delete_has_servers' => 'A Nest with active servers attached to it cannot be deleted from the Panel.',
-        'egg' => [
-            'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
-            'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
-            'must_be_child' => 'The "Copy Settings From" directive for this Egg must be a child option for the selected Nest.',
-            'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
-        ],
+    'egg' => [
+        'delete_has_servers' => 'An Egg with active servers attached to it cannot be deleted from the Panel.',
+        'invalid_copy_id' => 'The Egg selected for copying a script from either does not exist, or is copying a script itself.',
+        'has_children' => 'This Egg is a parent to one or more other Eggs. Please delete those Eggs before deleting this Egg.',
         'variables' => [
-            'env_not_unique' => 'The environment variable :name must be unique to this Egg.',
             'reserved_name' => 'The environment variable :name is protected and cannot be assigned to a variable.',
             'bad_validation_rule' => 'The validation rule ":rule" is not a valid rule for this application.',
         ],

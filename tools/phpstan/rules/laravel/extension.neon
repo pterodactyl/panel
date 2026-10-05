@@ -1,0 +1,40 @@
+# rules — Laravel opt-in rules. Include only in Laravel projects:
+#     includes:
+#         - tools/phpstan/rules/extension.neon
+#         - tools/phpstan/rules/laravel/extension.neon
+#
+# larastan/larastan must be installed (its stubs make app()/resolve()/
+# App::make() resolve to class types this rule can inspect). Larastan's own
+# noModelMake and noEnvCallsOutsideOfConfig checks share this set's spirit —
+# enable them in your project config.
+#
+# canvural/larastan-strict-rules (^3, larastan-3 compatible) was evaluated and
+# deliberately not included: its facade / global-helper / dynamic-where bans
+# are whole-app architecture policy beyond this rule set's scope. Add it yourself
+# with `composer require --dev canvural/larastan-strict-rules` if your team
+# wants that policy.
+
+parameters:
+    rulesLaravel:
+        serviceNamespaces:
+            - App\Services\
+            - App\Actions\
+            - App\Repositories\
+        allowedPaths:
+            - app/Providers/**
+            - tests/**
+            - database/factories/**
+
+parametersSchema:
+    rulesLaravel: structure([
+        serviceNamespaces: listOf(string())
+        allowedPaths: listOf(string())
+    ])
+
+services:
+    -
+        class: Rules\Laravel\Rules\NoServiceConstructionRule
+        arguments:
+            serviceNamespaces: %rulesLaravel.serviceNamespaces%
+            allowedPaths: %rulesLaravel.allowedPaths%
+        tags: [phpstan.rules.rule]

@@ -1,92 +1,85 @@
-import * as React from 'react';
-import { useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCogs, faLayerGroup, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
-import { useStoreState } from 'easy-peasy';
-import { ApplicationStore } from '@/state';
+import { Link } from '@tanstack/react-router';
+import { Layers, LogOut, UserCog } from 'lucide-react';
+import { useCurrentUser } from '@/api/account/queries';
+import { useSiteSettings } from '@/api/settings/queries';
+import { useLogout } from '@/api/auth/queries';
 import SearchContainer from '@/components/dashboard/search/SearchContainer';
-import tw, { theme } from 'twin.macro';
-import styled from 'styled-components/macro';
-import http from '@/api/http';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
 import Avatar from '@/components/Avatar';
+import Icon from '@/components/elements/Icon';
+import Slot from '@/extensions/Slot';
+import { interactiveSurfaceClass } from '@/components/ui/styles';
 
-const RightNavigation = styled.div`
-    & > a,
-    & > button,
-    & > .navigation-link {
-        ${tw`flex items-center h-full no-underline text-neutral-300 px-6 cursor-pointer transition-all duration-150`};
+const navItemClass = [
+    'flex h-full shrink-0 items-center px-3 sm:px-6 no-underline text-muted-foreground cursor-pointer',
+    interactiveSurfaceClass,
+    'hover:text-foreground active:text-foreground',
+    'hover:shadow-navigation-active active:shadow-navigation-active',
+    'data-[status=active]:shadow-navigation-active',
+].join(' ');
 
-        &:active,
-        &:hover {
-            ${tw`text-neutral-100 bg-black`};
-        }
+export default function NavigationBar() {
+    const name = useSiteSettings().name;
+    const rootAdmin = useCurrentUser().rootAdmin;
+    const logout = useLogout();
 
-        &:active,
-        &:hover,
-        &.active {
-            box-shadow: inset 0 -2px ${theme`colors.cyan.600`.toString()};
-        }
-    }
-`;
-
-export default () => {
-    const name = useStoreState((state: ApplicationStore) => state.settings.data!.name);
-    const rootAdmin = useStoreState((state: ApplicationStore) => state.user.data!.rootAdmin);
-    const [isLoggingOut, setIsLoggingOut] = useState(false);
-
-    const onTriggerLogout = () => {
-        setIsLoggingOut(true);
-        http.post('/auth/logout').finally(() => {
-            // @ts-expect-error this is valid
-            window.location = '/';
-        });
-    };
+    const onTriggerLogout = () => logout.mutate({});
 
     return (
-        <div className={'w-full bg-neutral-900 shadow-md overflow-x-auto'}>
-            <SpinnerOverlay visible={isLoggingOut} />
-            <div className={'mx-auto w-full flex items-center h-[3.5rem] max-w-[1200px]'}>
-                <div id={'logo'} className={'flex-1'}>
+        <div className={'w-full bg-background shadow-md overflow-x-auto scrollbar-none [&::-webkit-scrollbar]:hidden'}>
+            <SpinnerOverlay visible={logout.isPending} />
+            <div className={'mx-auto flex h-14 w-full max-w-panel items-center'}>
+                <div id={'logo'} className={'flex-1 min-w-0'}>
                     <Link
                         to={'/'}
                         className={
-                            'text-2xl font-header font-medium px-4 no-underline text-neutral-200 hover:text-neutral-100 transition-colors duration-150'
+                            'block truncate text-xl sm:text-2xl font-header font-medium px-4 no-underline text-foreground hover:text-accent transition-colors duration-150'
                         }
                     >
                         {name}
                     </Link>
                 </div>
-                <RightNavigation className={'flex h-full items-center justify-center'}>
-                    <SearchContainer />
+                <div className={'flex h-full shrink-0 items-center justify-center'}>
+                    <Slot name={'nav.items.before'} />
+                    <SearchContainer className={navItemClass} />
                     <Tooltip placement={'bottom'} content={'Dashboard'}>
-                        <NavLink to={'/'} exact>
-                            <FontAwesomeIcon icon={faLayerGroup} />
-                        </NavLink>
+                        <Link
+                            to={'/'}
+                            activeOptions={{ exact: true, includeSearch: false }}
+                            className={navItemClass}
+                            aria-label={'Dashboard'}
+                        >
+                            <Icon icon={Layers} />
+                        </Link>
                     </Tooltip>
                     {rootAdmin && (
                         <Tooltip placement={'bottom'} content={'Admin'}>
-                            <a href={'/admin'} rel={'noreferrer'}>
-                                <FontAwesomeIcon icon={faCogs} />
-                            </a>
+                            <Link to={'/panel'} className={navItemClass} aria-label={'Admin'}>
+                                <Icon icon={UserCog} />
+                            </Link>
                         </Tooltip>
                     )}
                     <Tooltip placement={'bottom'} content={'Account Settings'}>
-                        <NavLink to={'/account'}>
+                        <Link to={'/account'} className={navItemClass} aria-label={'Account Settings'}>
                             <span className={'flex items-center w-5 h-5'}>
                                 <Avatar.User />
                             </span>
-                        </NavLink>
+                        </Link>
                     </Tooltip>
                     <Tooltip placement={'bottom'} content={'Sign Out'}>
-                        <button onClick={onTriggerLogout}>
-                            <FontAwesomeIcon icon={faSignOutAlt} />
+                        <button
+                            type={'button'}
+                            aria-label={'Sign Out'}
+                            onClick={onTriggerLogout}
+                            className={navItemClass}
+                        >
+                            <Icon icon={LogOut} />
                         </button>
                     </Tooltip>
-                </RightNavigation>
+                    <Slot name={'nav.items.after'} />
+                </div>
             </div>
         </div>
     );
-};
+}

@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class WriteFileContentRequest extends ClientApiRequest implements ClientPermissionsRequest
@@ -15,18 +17,20 @@ class WriteFileContentRequest extends ClientApiRequest implements ClientPermissi
      */
     public function permission(): string
     {
-        return Permission::ACTION_FILE_CREATE;
+        return Permissions::FileCreate->value;
     }
 
     /**
      * There is no rule here for the file contents since we just use the body content
      * on the request to set the file contents. If nothing is passed that is fine since
      * it just means we want to set the file to be empty.
+     *
+     * @return ValidationRules
      */
     public function rules(): array
     {
         return [
-            'file' => 'required|string',
+            'file' => ['required', 'string'],
         ];
     }
 }

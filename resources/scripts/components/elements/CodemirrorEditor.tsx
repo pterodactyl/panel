@@ -1,221 +1,245 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import CodeMirror from 'codemirror';
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
-import modes from '@/modes';
-
-require('codemirror/lib/codemirror.css');
-require('codemirror/theme/ayu-mirage.css');
-require('codemirror/addon/edit/closebrackets');
-require('codemirror/addon/edit/closetag');
-require('codemirror/addon/edit/matchbrackets');
-require('codemirror/addon/edit/matchtags');
-require('codemirror/addon/edit/trailingspace');
-require('codemirror/addon/fold/foldcode');
-require('codemirror/addon/fold/foldgutter.css');
-require('codemirror/addon/fold/foldgutter');
-require('codemirror/addon/fold/brace-fold');
-require('codemirror/addon/fold/comment-fold');
-require('codemirror/addon/fold/indent-fold');
-require('codemirror/addon/fold/markdown-fold');
-require('codemirror/addon/fold/xml-fold');
-require('codemirror/addon/hint/css-hint');
-require('codemirror/addon/hint/html-hint');
-require('codemirror/addon/hint/javascript-hint');
-require('codemirror/addon/hint/show-hint.css');
-require('codemirror/addon/hint/show-hint');
-require('codemirror/addon/hint/sql-hint');
-require('codemirror/addon/hint/xml-hint');
-require('codemirror/addon/mode/simple');
-require('codemirror/addon/dialog/dialog.css');
-require('codemirror/addon/dialog/dialog');
-require('codemirror/addon/scroll/annotatescrollbar');
-require('codemirror/addon/scroll/scrollpastend');
-require('codemirror/addon/scroll/simplescrollbars.css');
-require('codemirror/addon/scroll/simplescrollbars');
-require('codemirror/addon/search/jump-to-line');
-require('codemirror/addon/search/match-highlighter');
-require('codemirror/addon/search/matchesonscrollbar.css');
-require('codemirror/addon/search/matchesonscrollbar');
-require('codemirror/addon/search/search');
-require('codemirror/addon/search/searchcursor');
-
-require('codemirror/mode/brainfuck/brainfuck');
-require('codemirror/mode/clike/clike');
-require('codemirror/mode/css/css');
-require('codemirror/mode/dart/dart');
-require('codemirror/mode/diff/diff');
-require('codemirror/mode/dockerfile/dockerfile');
-require('codemirror/mode/erlang/erlang');
-require('codemirror/mode/gfm/gfm');
-require('codemirror/mode/go/go');
-require('codemirror/mode/handlebars/handlebars');
-require('codemirror/mode/htmlembedded/htmlembedded');
-require('codemirror/mode/htmlmixed/htmlmixed');
-require('codemirror/mode/http/http');
-require('codemirror/mode/javascript/javascript');
-require('codemirror/mode/jsx/jsx');
-require('codemirror/mode/julia/julia');
-require('codemirror/mode/lua/lua');
-require('codemirror/mode/markdown/markdown');
-require('codemirror/mode/nginx/nginx');
-require('codemirror/mode/perl/perl');
-require('codemirror/mode/php/php');
-require('codemirror/mode/properties/properties');
-require('codemirror/mode/protobuf/protobuf');
-require('codemirror/mode/pug/pug');
-require('codemirror/mode/python/python');
-require('codemirror/mode/rpm/rpm');
-require('codemirror/mode/ruby/ruby');
-require('codemirror/mode/rust/rust');
-require('codemirror/mode/sass/sass');
-require('codemirror/mode/shell/shell');
-require('codemirror/mode/smarty/smarty');
-require('codemirror/mode/sql/sql');
-require('codemirror/mode/swift/swift');
-require('codemirror/mode/toml/toml');
-require('codemirror/mode/twig/twig');
-require('codemirror/mode/vue/vue');
-require('codemirror/mode/xml/xml');
-require('codemirror/mode/yaml/yaml');
-
-const EditorContainer = styled.div`
-    min-height: 16rem;
-    height: calc(100vh - 20rem);
-    ${tw`relative`};
-
-    > div {
-        ${tw`rounded h-full`};
-    }
-
-    .CodeMirror {
-        font-size: 12px;
-        line-height: 1.375rem;
-    }
-
-    .CodeMirror-linenumber {
-        padding: 1px 12px 0 12px !important;
-    }
-
-    .CodeMirror-foldmarker {
-        color: #cbccc6;
-        text-shadow: none;
-        margin-left: 0.25rem;
-        margin-right: 0.25rem;
-    }
-`;
+import React, { useEffect, useImperativeHandle, useMemo, useRef, useState } from 'react';
+import { basicSetup } from 'codemirror';
+import { Compartment, EditorState, Prec } from '@codemirror/state';
+import { HighlightStyle, indentUnit, syntaxHighlighting } from '@codemirror/language';
+import { EditorView, keymap } from '@codemirror/view';
+import { tags } from '@lezer/highlight';
+import { resolveCodemirrorLanguage } from '@/components/elements/codemirror/languages';
+import { editorContainerClass } from '@/components/elements/codemirror/layout';
+import { cn } from '@/lib/cn';
 
 export interface Props {
-    style?: React.CSSProperties;
+    ref?: React.Ref<CodemirrorEditorHandle>;
+    className?: string;
+    /** The document the editor opens with; later changes are ignored until the editor remounts. */
     initialContent?: string;
     mode: string;
-    filename?: string;
-    onModeChanged: (mode: string) => void;
-    fetchContent: (callback: () => Promise<string>) => void;
     onContentSaved: () => void;
+    onContentChanged?: (content: string) => void;
 }
 
-const findModeByFilename = (filename: string) => {
-    for (let i = 0; i < modes.length; i++) {
-        const info = modes[i];
+export interface CodemirrorEditorHandle {
+    getValue: () => string;
+}
 
-        if (info.file && info.file.test(filename)) {
-            return info;
-        }
-    }
+const panelEditorTheme = EditorView.theme(
+    {
+        '&': {
+            backgroundColor: 'var(--editor-background)',
+            color: 'var(--editor-foreground)',
+            fontSize: 'var(--text-xs)',
+            height: '100%',
+        },
+        '&.cm-focused': {
+            outline: '2px solid var(--ring)',
+            outlineOffset: '-2px',
+        },
+        '.cm-scroller': {
+            fontFamily: 'var(--font-mono)',
+            lineHeight: 'var(--text-sm--line-height)',
+            overflow: 'auto',
+        },
+        '.cm-content': {
+            caretColor: 'var(--editor-caret)',
+            minHeight: '100%',
+            padding: 'calc(var(--spacing) * 3) 0 50vh',
+        },
+        '.cm-line': {
+            padding: '0 calc(var(--spacing) * 3)',
+        },
+        '.cm-selectionBackground, &.cm-focused .cm-selectionBackground': {
+            backgroundColor: 'var(--editor-selection)',
+        },
+        '.cm-cursor': {
+            borderLeftColor: 'var(--editor-caret)',
+        },
+        '.cm-gutters': {
+            backgroundColor: 'var(--editor-background)',
+            borderRight: '1px solid var(--editor-border)',
+            color: 'var(--editor-muted)',
+        },
+        '.cm-lineNumbers .cm-gutterElement': {
+            padding: '0 calc(var(--spacing) * 3)',
+        },
+        '.cm-foldGutter .cm-gutterElement': {
+            color: 'var(--editor-muted)',
+            padding: '0 calc(var(--spacing) * 1.5)',
+        },
+        '.cm-foldPlaceholder': {
+            backgroundColor: 'var(--editor-border)',
+            border: 'none',
+            color: 'var(--editor-foreground)',
+            margin: '0 var(--spacing)',
+        },
+        '.cm-activeLine, .cm-activeLineGutter': {
+            backgroundColor: 'var(--editor-active-line)',
+        },
+        '.cm-matchingBracket, .cm-nonmatchingBracket': {
+            backgroundColor: 'var(--editor-selection)',
+            color: 'var(--editor-caret)',
+        },
+        '.cm-searchMatch': {
+            backgroundColor: 'var(--editor-search-match)',
+        },
+        '.cm-searchMatch.cm-searchMatch-selected': {
+            backgroundColor: 'var(--editor-search-match-selected)',
+        },
+        '.cm-tooltip, .cm-tooltip.cm-tooltip-autocomplete': {
+            backgroundColor: 'var(--editor-tooltip)',
+            border: '1px solid var(--editor-tooltip-border)',
+            color: 'var(--editor-foreground)',
+        },
+        '.cm-tooltip-autocomplete ul li[aria-selected]': {
+            backgroundColor: 'var(--editor-selection)',
+            color: 'var(--editor-selected-foreground)',
+        },
+    },
+    { dark: true }
+);
 
-    const dot = filename.lastIndexOf('.');
-    const ext = dot > -1 && filename.substring(dot + 1, filename.length);
+const panelHighlightStyle = HighlightStyle.define([
+    { tag: tags.keyword, color: 'var(--editor-syntax-keyword)' },
+    {
+        tag: [tags.name, tags.deleted, tags.character, tags.macroName],
+        color: 'var(--editor-syntax-name)',
+    },
+    {
+        tag: [tags.propertyName, tags.variableName],
+        color: 'var(--editor-foreground)',
+    },
+    {
+        tag: [tags.function(tags.variableName), tags.labelName],
+        color: 'var(--editor-syntax-function)',
+    },
+    {
+        tag: [tags.color, tags.constant(tags.name), tags.standard(tags.name)],
+        color: 'var(--editor-syntax-constant)',
+    },
+    {
+        tag: [tags.definition(tags.name), tags.separator],
+        color: 'var(--editor-syntax-definition)',
+    },
+    {
+        tag: [tags.typeName, tags.className, tags.number, tags.changed, tags.annotation, tags.modifier],
+        color: 'var(--editor-syntax-type)',
+    },
+    {
+        tag: [tags.operator, tags.operatorKeyword, tags.url, tags.escape, tags.regexp],
+        color: 'var(--editor-syntax-operator)',
+    },
+    { tag: [tags.meta, tags.comment], color: 'var(--editor-muted)' },
+    { tag: tags.strong, fontWeight: 'var(--font-weight-bold)' },
+    { tag: tags.emphasis, fontStyle: 'italic' },
+    { tag: tags.strikethrough, textDecoration: 'line-through' },
+    {
+        tag: tags.link,
+        color: 'var(--editor-syntax-definition)',
+        textDecoration: 'underline',
+    },
+    {
+        tag: [tags.string, tags.special(tags.brace)],
+        color: 'var(--editor-syntax-string)',
+    },
+    { tag: tags.invalid, color: 'var(--editor-syntax-invalid)' },
+]);
 
-    if (ext) {
-        for (let i = 0; i < modes.length; i++) {
-            const info = modes[i];
-            if (info.ext) {
-                for (let j = 0; j < info.ext.length; j++) {
-                    if (info.ext[j] === ext) {
-                        return info;
-                    }
+const createEditorState = (
+    doc: string,
+    mode: string,
+    languageCompartment: Compartment,
+    onContentSaved: { current: () => void },
+    onContentChanged: { current: Props['onContentChanged'] }
+) =>
+    EditorState.create({
+        doc,
+        extensions: [
+            basicSetup,
+            panelEditorTheme,
+            syntaxHighlighting(panelHighlightStyle),
+            EditorState.tabSize.of(4),
+            indentUnit.of('    '),
+            EditorView.lineWrapping,
+            EditorView.contentAttributes.of({
+                'aria-label': 'File editor',
+                autocapitalize: 'off',
+                autocorrect: 'off',
+            }),
+            Prec.high(
+                keymap.of([
+                    {
+                        key: 'Mod-s',
+                        preventDefault: true,
+                        run: () => {
+                            onContentSaved.current();
+                            return true;
+                        },
+                    },
+                ])
+            ),
+            languageCompartment.of(resolveCodemirrorLanguage(mode)),
+            EditorView.updateListener.of((update) => {
+                if (update.docChanged) {
+                    onContentChanged.current?.(update.state.doc.toString());
                 }
-            }
-        }
-    }
+            }),
+        ],
+    });
 
-    return undefined;
-};
-
-export default ({ style, initialContent, filename, mode, fetchContent, onContentSaved, onModeChanged }: Props) => {
-    const [editor, setEditor] = useState<CodeMirror.Editor>();
-
-    const ref = useCallback((node) => {
-        if (!node) return;
-
-        const e = CodeMirror.fromTextArea(node, {
-            mode: 'text/plain',
-            theme: 'ayu-mirage',
-            indentUnit: 4,
-            smartIndent: true,
-            tabSize: 4,
-            indentWithTabs: false,
-            lineWrapping: true,
-            lineNumbers: true,
-            foldGutter: true,
-            fixedGutter: true,
-            scrollbarStyle: 'overlay',
-            coverGutterNextToScrollbar: false,
-            readOnly: false,
-            showCursorWhenSelecting: false,
-            autofocus: false,
-            spellcheck: true,
-            autocorrect: false,
-            autocapitalize: false,
-            lint: false,
-            // @ts-expect-error this property is actually used, the d.ts file for CodeMirror is incorrect.
-            autoCloseBrackets: true,
-            matchBrackets: true,
-            gutters: ['CodeMirror-linenumbers', 'CodeMirror-foldgutter'],
-        });
-
-        setEditor(e);
-    }, []);
+export default function CodemirrorEditor({
+    ref,
+    className,
+    initialContent,
+    mode,
+    onContentSaved,
+    onContentChanged,
+}: Props) {
+    const editor = useRef<EditorView | null>(null);
+    const mount = useRef<HTMLDivElement | null>(null);
+    const onContentSavedRef = useRef(onContentSaved);
+    const onContentChangedRef = useRef(onContentChanged);
+    const modeRef = useRef(mode);
+    const [doc] = useState(initialContent ?? '');
+    const languageCompartment = useMemo(() => new Compartment(), []);
 
     useEffect(() => {
-        if (filename === undefined) {
-            return;
-        }
+        onContentSavedRef.current = onContentSaved;
+        onContentChangedRef.current = onContentChanged;
+        modeRef.current = mode;
+    });
 
-        onModeChanged(findModeByFilename(filename)?.mime || 'text/plain');
-    }, [filename]);
-
-    useEffect(() => {
-        editor && editor.setOption('mode', mode);
-    }, [editor, mode]);
-
-    useEffect(() => {
-        if (editor) {
-            editor.setValue(initialContent || '');
-            // Reset the history so that "Ctrl+Z" doesn't delete the intial content
-            // we just set above.
-            editor.setHistory({ done: [], undone: [] });
-        }
-    }, [editor, initialContent]);
-
-    useEffect(() => {
-        if (!editor) {
-            fetchContent(() => Promise.reject(new Error('no editor session has been configured')));
-            return;
-        }
-
-        editor.addKeyMap({
-            'Ctrl-S': () => onContentSaved(),
-            'Cmd-S': () => onContentSaved(),
-        });
-
-        fetchContent(() => Promise.resolve(editor.getValue()));
-    }, [editor, fetchContent, onContentSaved]);
-
-    return (
-        <EditorContainer style={style}>
-            <textarea ref={ref} />
-        </EditorContainer>
+    useImperativeHandle(
+        ref,
+        () => ({
+            getValue: () => editor.current?.state.doc.toString() ?? '',
+        }),
+        []
     );
-};
+
+    useEffect(() => {
+        if (!mount.current) {
+            return;
+        }
+
+        const view = new EditorView({
+            parent: mount.current,
+            state: createEditorState(doc, modeRef.current, languageCompartment, onContentSavedRef, onContentChangedRef),
+        });
+
+        editor.current = view;
+
+        return () => {
+            view.destroy();
+            if (editor.current === view) {
+                editor.current = null;
+            }
+        };
+    }, [doc, languageCompartment]);
+
+    useEffect(() => {
+        editor.current?.dispatch({
+            effects: languageCompartment.reconfigure(resolveCodemirrorLanguage(mode)),
+        });
+    }, [languageCompartment, mode]);
+
+    return <div ref={mount} className={cn(editorContainerClass, className)} />;
+}

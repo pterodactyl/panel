@@ -1,24 +1,28 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Network;
 
-use Pterodactyl\Models\Allocation;
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Validation\AllocationRules;
 
-class UpdateAllocationRequest extends ClientApiRequest
+class UpdateAllocationRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
     public function permission(): string
     {
-        return Permission::ACTION_ALLOCATION_UPDATE;
+        return Permissions::AllocationUpdate->value;
     }
 
+    /**
+     * @return ValidationRules
+     */
     public function rules(): array
     {
-        $rules = Allocation::getRules();
-
         return [
-            'notes' => array_merge($rules['notes'], ['present']),
+            'notes' => [...AllocationRules::rules()['notes'], 'present'],
         ];
     }
 }

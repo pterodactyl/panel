@@ -1,8 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Providers;
 
 use Illuminate\Support\ServiceProvider;
+use Illuminate\View\Compilers\BladeCompiler;
 
 class BladeServiceProvider extends ServiceProvider
 {
@@ -11,9 +14,7 @@ class BladeServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        $this->app->make('blade.compiler')
-            ->directive('datetimeHuman', function ($expression) {
-                return "<?php echo \Carbon\CarbonImmutable::createFromFormat(\Carbon\CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $expression)->setTimezone(config('app.timezone'))->toDateTimeString(); ?>";
-            });
+        $this->app->make(BladeCompiler::class)
+            ->directive('datetimeHuman', fn (string $expression): string => "<?php echo \Carbon\CarbonImmutable::createFromFormat(\Carbon\CarbonImmutable::DEFAULT_TO_STRING_FORMAT, $expression)->setTimezone(config('app.timezone'))->toDateTimeString(); ?>");
     }
 }

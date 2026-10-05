@@ -1,10 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
-use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
+use Database\Factories\ServerTransferFactory;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * @property int $id
@@ -13,69 +18,50 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  * @property int $new_node
  * @property int $old_allocation
  * @property int $new_allocation
- * @property array|null $old_additional_allocations
- * @property array|null $new_additional_allocations
+ * @property list<int>|null $old_additional_allocations
+ * @property list<int>|null $new_additional_allocations
  * @property bool|null $successful
  * @property bool $archived
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property Server $server
  * @property Node $oldNode
  * @property Node $newNode
  */
+#[Guarded(['id', 'created_at', 'updated_at'])]
 class ServerTransfer extends Model
 {
-    /** @use HasFactory<\Database\Factories\ServerTransferFactory> */
+    /** @use HasFactory<ServerTransferFactory> */
     use HasFactory;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'server_transfer';
+    public const string RESOURCE_NAME = 'server_transfer';
 
     /**
-     * The table associated with the model.
+     * @return array<string, string>
      */
-    protected $table = 'server_transfers';
-
-    /**
-     * Fields that are not mass assignable.
-     */
-    protected $guarded = ['id', 'created_at', 'updated_at'];
-
-    /**
-     * Cast values to correct type.
-     */
-    protected $casts = [
-        'server_id' => 'int',
-        'old_node' => 'int',
-        'new_node' => 'int',
-        'old_allocation' => 'int',
-        'new_allocation' => 'int',
-        'old_additional_allocations' => 'array',
-        'new_additional_allocations' => 'array',
-        'successful' => 'bool',
-        'archived' => 'bool',
-    ];
-
-    public static array $validationRules = [
-        'server_id' => 'required|numeric|exists:servers,id',
-        'old_node' => 'required|numeric',
-        'new_node' => 'required|numeric',
-        'old_allocation' => 'required|numeric',
-        'new_allocation' => 'required|numeric',
-        'old_additional_allocations' => 'nullable|array',
-        'old_additional_allocations.*' => 'numeric',
-        'new_additional_allocations' => 'nullable|array',
-        'new_additional_allocations.*' => 'numeric',
-        'successful' => 'sometimes|nullable|boolean',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'server_id' => 'int',
+            'old_node' => 'int',
+            'new_node' => 'int',
+            'old_allocation' => 'int',
+            'new_allocation' => 'int',
+            'old_additional_allocations' => 'array',
+            'new_additional_allocations' => 'array',
+            'successful' => 'bool',
+            'archived' => 'bool',
+        ];
+    }
 
     /**
      * Gets the server associated with a server transfer.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Server, $this>
+     * @return BelongsTo<Server, $this>
      */
     public function server(): BelongsTo
     {
@@ -85,7 +71,7 @@ class ServerTransfer extends Model
     /**
      * Gets the source node associated with a server transfer.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\Node, $this>
+     * @return HasOne<Node, $this>
      */
     public function oldNode(): HasOne
     {
@@ -95,7 +81,7 @@ class ServerTransfer extends Model
     /**
      * Gets the target node associated with a server transfer.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasOne<\Pterodactyl\Models\Node, $this>
+     * @return HasOne<Node, $this>
      */
     public function newNode(): HasOne
     {

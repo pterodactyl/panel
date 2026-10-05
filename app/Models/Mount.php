@@ -1,11 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
-use Illuminate\Validation\Rules\NotIn;
+use Database\Factories\MountFactory;
+use Illuminate\Database\Eloquent\Attributes\Guarded;
+use Illuminate\Database\Eloquent\Attributes\Scope;
+use Illuminate\Database\Eloquent\Attributes\WithoutTimestamps;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Pterodactyl\Contracts\Models\Identifiable;
 use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
-use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 /**
  * @property int $id
@@ -16,75 +24,32 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
  * @property string $target
  * @property bool $read_only
  * @property bool $user_mountable
- * @property \Pterodactyl\Models\Egg[]|\Illuminate\Database\Eloquent\Collection $eggs
- * @property \Pterodactyl\Models\Node[]|\Illuminate\Database\Eloquent\Collection $nodes
- * @property \Pterodactyl\Models\Server[]|\Illuminate\Database\Eloquent\Collection $servers
+ * @property Egg[]|Collection $eggs
+ * @property Node[]|Collection $nodes
+ * @property Server[]|Collection $servers
  */
 #[Attributes\Identifiable('moun')]
+#[Guarded(['id', 'uuid'])]
+#[WithoutTimestamps]
 class Mount extends Model implements Identifiable
 {
+    /** @use HasFactory<MountFactory> */
+    use HasFactory;
+
     use HasRealtimeIdentifier;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'mount';
-
-    /**
-     * The table associated with the model.
-     */
-    protected $table = 'mounts';
-
-    /**
-     * Fields that are not mass assignable.
-     */
-    protected $guarded = ['id', 'uuid'];
-
-    /**
-     * Default values for specific fields in the database.
-     */
-    protected $casts = [
-        'id' => 'int',
-        'read_only' => 'bool',
-        'user_mountable' => 'bool',
-    ];
-
-    /**
-     * Rules verifying that the data being stored matches the expectations of the database.
-     */
-    public static array $validationRules = [
-        'name' => 'required|string|min:2|max:64|unique:mounts,name',
-        'description' => 'nullable|string|max:191',
-        'source' => 'required|string',
-        'target' => 'required|string',
-        'read_only' => 'sometimes|boolean',
-        'user_mountable' => 'sometimes|boolean',
-    ];
-
-    /**
-     * Implement language verification by overriding Eloquence's gather
-     * rules function.
-     */
-    public static function getRules(): array
-    {
-        $rules = parent::getRules();
-
-        $rules['source'][] = new NotIn(Mount::$invalidSourcePaths);
-        $rules['target'][] = new NotIn(Mount::$invalidTargetPaths);
-
-        return $rules;
-    }
-
-    /**
-     * Disable timestamps on this model.
-     */
-    public $timestamps = false;
+    public const string RESOURCE_NAME = 'mount';
 
     /**
      * Blacklisted source paths.
+     *
+     * @var list<string>
      */
-    public static $invalidSourcePaths = [
+    public static array $invalidSourcePaths = [
         '/etc/pterodactyl',
         '/var/lib/pterodactyl/volumes',
         '/srv/daemon-data',
@@ -92,15 +57,29 @@ class Mount extends Model implements Identifiable
 
     /**
      * Blacklisted target paths.
+     *
+     * @var list<string>
      */
-    public static $invalidTargetPaths = [
+    public static array $invalidTargetPaths = [
         '/home/container',
     ];
 
     /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'int',
+            'read_only' => 'bool',
+            'user_mountable' => 'bool',
+        ];
+    }
+
+    /**
      * Returns all eggs that have this mount assigned.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Egg, $this>
+     * @return BelongsToMany<Egg, $this>
      */
     public function eggs(): BelongsToMany
     {
@@ -110,7 +89,7 @@ class Mount extends Model implements Identifiable
     /**
      * Returns all nodes that have this mount assigned.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Node, $this>
+     * @return BelongsToMany<Node, $this>
      */
     public function nodes(): BelongsToMany
     {
@@ -120,10 +99,24 @@ class Mount extends Model implements Identifiable
     /**
      * Returns all servers that have this mount assigned.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany<\Pterodactyl\Models\Server, $this>
+     * @return BelongsToMany<Server, $this>
      */
     public function servers(): BelongsToMany
     {
         return $this->belongsToMany(Server::class);
+    }
+
+    /**
+     * Mounts attached to both the server's egg and its node, whether or not the
+     * server currently has them mounted.
+     *
+     * @param  Builder<self>  $query
+     */
+    #[Scope]
+    protected function availableToServer(Builder $query, Server $server): void
+    {
+        $query
+            ->whereHas('eggs', fn (Builder $eggs) => $eggs->whereKey($server->egg_id))
+            ->whereHas('nodes', fn (Builder $nodes) => $nodes->whereKey($server->node_id));
     }
 }

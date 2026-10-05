@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 /**
  * Contains all of the translation strings for different activity log
  * events. These should be keyed by the value in front of the colon (:)
@@ -21,6 +23,9 @@ return [
         ],
     ],
     'user' => [
+        'user' => [
+            'create' => 'Created a new user :email',
+        ],
         'account' => [
             'email-changed' => 'Changed email from :old to :new',
             'password-changed' => 'Changed password',
@@ -67,7 +72,7 @@ return [
             'delete' => 'Deleted database :name',
         ],
         'file' => [
-            'compress_one' => 'Compressed :directory:file',
+            'compress_one' => 'Compressed :directory:files.0',
             'compress_other' => 'Compressed :count files in :directory',
             'read' => 'Viewed the contents of :file',
             'copy' => 'Created a copy of :file',
@@ -125,6 +130,105 @@ return [
             'create' => 'Added :email as a subuser',
             'update' => 'Updated the subuser permissions for :email',
             'delete' => 'Removed :email as a subuser',
+        ],
+    ],
+    'admin' => [
+        'api-key' => [
+            'create' => 'Created application API key :identifier',
+            'update' => 'Updated application API key :identifier',
+            'delete' => 'Deleted application API key :identifier',
+        ],
+        'database-host' => [
+            'create' => 'Created the :name database host',
+            'update' => 'Updated the :name database host',
+            'delete' => 'Deleted the :name database host',
+        ],
+        'egg' => [
+            'create' => 'Created the :name egg',
+            'update' => 'Updated the :name egg',
+            'delete' => 'Deleted the :name egg',
+            'import' => 'Imported the :name egg',
+            'update-import' => 'Updated the :name egg from an import',
+            'scripts' => 'Updated the install script for the :name egg',
+            'tags' => 'Updated the tags for an egg',
+            'tags_one' => 'Set the egg tags to :tags.0',
+            'tags_other' => 'Set :count tags on the egg',
+        ],
+        'egg-variable' => [
+            'create' => 'Created the :name egg variable',
+            'update' => 'Updated the :name egg variable',
+            'delete' => 'Deleted the :name egg variable',
+            'reorder' => 'Reordered the variables for an egg',
+        ],
+        'location' => [
+            'create' => 'Created the :short location',
+            'update' => 'Updated the :short location',
+            'delete' => 'Deleted the :short location',
+        ],
+        'mount' => [
+            'create' => 'Created the :name mount',
+            'update' => 'Updated the :name mount',
+            'delete' => 'Deleted the :name mount',
+            'attach-egg' => 'Attached a mount to eggs :eggs',
+            'attach-egg_one' => 'Attached an egg to the mount',
+            'attach-egg_other' => 'Attached :count eggs to the mount',
+            'detach-egg' => 'Detached a mount from egg :egg',
+            'attach-node' => 'Attached a mount to nodes :nodes',
+            'attach-node_one' => 'Attached a node to the mount',
+            'attach-node_other' => 'Attached :count nodes to the mount',
+            'detach-node' => 'Detached a mount from node :node',
+        ],
+        'node' => [
+            'create' => 'Created the :name node',
+            'update' => 'Updated the :name node',
+            'delete' => 'Deleted the :name node',
+            'deploy-token' => 'Generated a deployment token for the :name node',
+            'tags' => 'Updated the egg tags for a node',
+            'tags_one' => 'Set the node tags to :tags.0',
+            'tags_other' => 'Set :count tags on the node',
+            'deployment-tags' => 'Updated the deployment tags for a node',
+            'deployment-tags_one' => 'Set the node deployment tags to :tags.0',
+            'deployment-tags_other' => 'Set :count deployment tags on the node',
+        ],
+        'node-allocation' => [
+            'create' => 'Added :ports_count ports across :address_count addresses to the node',
+            'alias' => 'Set an allocation alias to :alias',
+            'delete' => 'Deleted port :port on :address',
+            'delete-block' => 'Deleted the unassigned allocations on :address',
+        ],
+        'server' => [
+            'create' => 'Created the :name server',
+            'delete' => 'Deleted the :name server',
+            'details' => 'Updated the details for :name',
+            'build' => 'Updated the build configuration for :name',
+            'startup' => 'Updated the startup configuration for :name',
+            'reinstall' => 'Reinstalled :name',
+            'rebuild' => 'Triggered a rebuild of :name',
+            'suspend' => 'Suspended :name',
+            'unsuspend' => 'Unsuspended :name',
+            'toggle-install' => 'Toggled the install status of :name',
+            'transfer' => 'Started transferring :name to node :node_id',
+            'mount' => 'Added the :name mount to a server',
+            'unmount' => 'Removed the :name mount from a server',
+        ],
+        'server-backup' => [
+            'toggle-lock' => 'Toggled the lock on the :name backup',
+        ],
+        'server-database' => [
+            'create' => 'Created the :name database',
+            'delete' => 'Deleted the :name database',
+            'rotate-password' => 'Rotated the password for the :name database',
+        ],
+        'tag' => [
+            'create' => 'Created the :slug tag',
+            'update' => 'Updated the :slug tag',
+            'delete' => 'Deleted the :slug tag',
+        ],
+        'user' => [
+            'create' => 'Created the user :email',
+            'update' => 'Updated the user :email',
+            'delete' => 'Deleted the user :email',
+            'disable-2fa' => 'Disabled two-factor authentication for :email',
         ],
     ],
 ];

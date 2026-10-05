@@ -1,13 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Events\Auth;
 
-use Pterodactyl\Models\User;
 use Pterodactyl\Events\Event;
+use Pterodactyl\Models\User;
 
 class ProvidedAuthenticationToken extends Event
 {
-    public function __construct(public User $user, public bool $recovery = false)
-    {
-    }
+    public function __construct(public User $user, public bool $recovery = false) {}
 }

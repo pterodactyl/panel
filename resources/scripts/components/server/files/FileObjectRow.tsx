@@ -1,76 +1,131 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faFileAlt, faFileArchive, faFileImport, faFolder } from '@fortawesome/free-solid-svg-icons';
+import ComponentView from '@/extensions/ComponentView';
+import type { FileDetailsModel } from '@/extensions/componentTypes';
+import { DefaultFileDetails, FileDetailsContext, fileDetailsParts } from './FileDetailsView';
+import { MoreHorizontal } from 'lucide-react';
+import Icon from '@/components/elements/Icon';
 import { encodePathSegments } from '@/helpers';
-import { differenceInHours, format, formatDistanceToNow } from 'date-fns';
-import React, { memo } from 'react';
-import { FileObject } from '@/api/server/files/loadDirectory';
-import FileDropdownMenu from '@/components/server/files/FileDropdownMenu';
-import { ServerContext } from '@/state/server';
-import { NavLink, useRouteMatch } from 'react-router-dom';
-import tw from 'twin.macro';
+import React, { memo, useMemo } from 'react';
+import { fileObjectKind, isFileObjectEditable, type FileObject } from '@/api/server/files/queries';
+import { useCurrentServerIdentifier, useCurrentServerUuid } from '@/api/server/queries';
+import DropdownMenu, { ContextDropdownMenu } from '@/components/elements/dropdown/DropdownMenu';
+import useFileActions from '@/components/server/files/useFileActions';
+import { useServerDirectory } from '@/state/server';
+import { Link } from '@tanstack/react-router';
 import isEqual from 'react-fast-compare';
 import SelectFileCheckbox from '@/components/server/files/SelectFileCheckbox';
 import { usePermissions } from '@/plugins/usePermissions';
 import { join } from 'pathe';
-import { bytesToString } from '@/lib/formatters';
-import styles from './style.module.css';
+import { cn } from '@/lib/cn';
+import Slot from '@/extensions/Slot';
+import useFileManagerExtensionData from './useFileManagerExtensionData';
 
-const Clickable: React.FC<{ file: FileObject }> = memo(({ file, children }) => {
+const fileRowClass =
+    'flex items-center cursor-pointer bg-card rounded-xs mb-px text-sm no-underline hover:text-foreground hover:bg-popover';
+const detailsClass = 'flex flex-1 items-center text-muted-foreground no-underline px-4 py-2 overflow-hidden truncate';
+
+interface ClickableProps {
+    file: FileObject;
+    children: React.ReactNode;
+}
+
+const Clickable = memo(({ file, children }: ClickableProps) => {
     const [canRead] = usePermissions(['file.read']);
     const [canReadContents] = usePermissions(['file.read-content']);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
+    const directory = useServerDirectory();
+    const id = useCurrentServerIdentifier()!;
+    const { attributes } = file;
 
-    const match = useRouteMatch();
+    const hash = encodePathSegments(join(directory, attributes.name));
 
-    return (file.isFile && (!file.isEditable() || !canReadContents)) || (!file.isFile && !canRead) ? (
-        <div className={styles.details}>{children}</div>
-    ) : (
-        <NavLink
-            className={styles.details}
-            to={`${match.url}${file.isFile ? '/edit' : ''}#${encodePathSegments(join(directory, file.name))}`}
+    return (attributes.is_file && (!isFileObjectEditable(file) || !canReadContents)) ||
+        (!attributes.is_file && !canRead) ? (
+        <div className={cn(detailsClass, 'cursor-default')}>{children}</div>
+    ) : attributes.is_file ? (
+        <Link
+            aria-label={attributes.name}
+            className={detailsClass}
+            to={'/server/$id/files/$action'}
+            params={{ id, action: 'edit' }}
+            hash={hash}
         >
             {children}
-        </NavLink>
+        </Link>
+    ) : (
+        <Link
+            aria-label={attributes.name}
+            className={detailsClass}
+            to={'/server/$id/files'}
+            params={{ id }}
+            hash={hash}
+        >
+            {children}
+        </Link>
     );
 }, isEqual);
 
-const FileObjectRow = ({ file }: { file: FileObject }) => (
-    <div
-        className={styles.file_row}
-        key={file.name}
-        onContextMenu={(e) => {
-            e.preventDefault();
-            window.dispatchEvent(new CustomEvent(`pterodactyl:files:ctx:${file.key}`, { detail: e.clientX }));
-        }}
-    >
-        <SelectFileCheckbox name={file.name} />
-        <Clickable file={file}>
-            <div css={tw`flex-none text-neutral-400 ml-6 mr-4 text-lg pl-3`}>
-                {file.isFile ? (
-                    <FontAwesomeIcon
-                        icon={file.isSymlink ? faFileImport : file.isArchiveType() ? faFileArchive : faFileAlt}
+const RowActionsSlot = ({ file }: { file: FileObject }) => {
+    const extensionData = useFileManagerExtensionData();
+
+    return extensionData && <Slot name={'server.files.rowActions'} data={{ ...extensionData, file }} />;
+};
+
+const FileObjectRow = ({ file }: { file: FileObject }) => {
+    const { items } = useFileActions(file);
+    const { attributes } = file;
+    const uuid = useCurrentServerUuid();
+    const directory = useServerDirectory();
+    const model = useMemo<FileDetailsModel>(
+        () => ({
+            name: attributes.name,
+            kind: fileObjectKind(file),
+            size: attributes.size ?? 0,
+            modifiedAt: attributes.modified_at,
+        }),
+        [attributes, file]
+    );
+    const actionItems = (
+        <>
+            {items}
+            <RowActionsSlot file={file} />
+        </>
+    );
+
+    return (
+        <ContextDropdownMenu className={fileRowClass} menuClassName={'w-64'} items={actionItems}>
+            <SelectFileCheckbox name={attributes.name} />
+            <Clickable file={file}>
+                <FileDetailsContext.Provider value={model}>
+                    <ComponentView
+                        name='server.files.details'
+                        resetKey={`${uuid ?? ''}:${directory}:${attributes.name}`}
+                        props={{ model, Default: DefaultFileDetails, parts: fileDetailsParts }}
+                        loading={
+                            <div
+                                className='h-5 w-full animate-pulse rounded-sm bg-muted'
+                                aria-label='Loading file details'
+                            />
+                        }
                     />
-                ) : (
-                    <FontAwesomeIcon icon={faFolder} />
-                )}
-            </div>
-            <div css={tw`flex-1 truncate`}>{file.name}</div>
-            {file.isFile && <div css={tw`w-1/6 text-right mr-4 hidden sm:block`}>{bytesToString(file.size)}</div>}
-            <div css={tw`w-1/5 text-right mr-4 hidden md:block`} title={file.modifiedAt.toString()}>
-                {Math.abs(differenceInHours(file.modifiedAt, new Date())) > 48
-                    ? format(file.modifiedAt, 'MMM do, yyyy h:mma')
-                    : formatDistanceToNow(file.modifiedAt, { addSuffix: true })}
-            </div>
-        </Clickable>
-        <FileDropdownMenu file={file} />
-    </div>
-);
+                </FileDetailsContext.Provider>
+            </Clickable>
+            <DropdownMenu
+                className={'w-64'}
+                triggerClassName={
+                    'mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-sm text-muted-foreground transition-colors hover:bg-muted hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring'
+                }
+                triggerContent={
+                    <>
+                        <Icon icon={MoreHorizontal} className={'h-4 w-4'} />
+                        <span className={'sr-only'}>Open file options</span>
+                    </>
+                }
+            >
+                {actionItems}
+            </DropdownMenu>
+        </ContextDropdownMenu>
+    );
+};
 
 export default memo(FileObjectRow, (prevProps, nextProps) => {
-    /* eslint-disable @typescript-eslint/no-unused-vars */
-    const { isArchiveType, isEditable, ...prevFile } = prevProps.file;
-    const { isArchiveType: nextIsArchiveType, isEditable: nextIsEditable, ...nextFile } = nextProps.file;
-    /* eslint-enable @typescript-eslint/no-unused-vars */
-
-    return isEqual(prevFile, nextFile);
+    return isEqual(prevProps.file, nextProps.file);
 });

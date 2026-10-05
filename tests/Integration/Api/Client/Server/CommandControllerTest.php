@@ -1,92 +1,44 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server;
+declare(strict_types=1);
 
-use GuzzleHttp\Psr7\Request;
+namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\CommandControllerTest;
+
+use Illuminate\Http\Client\Request as HttpRequest;
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Permission;
-use GuzzleHttp\Exception\BadResponseException;
-use GuzzleHttp\Psr7\Response as GuzzleResponse;
-use Pterodactyl\Repositories\Wings\DaemonCommandRepository;
+use Illuminate\Support\Facades\Http;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
+use Pterodactyl\Tests\Support\Fakes\FakeDaemonCommand;
 
-class CommandControllerTest extends ClientApiIntegrationTestCase
-{
-    /**
-     * Test that a validation error is returned if there is no command present in the
-     * request.
-     */
-    public function testValidationErrorIsReturnedIfNoCommandIsPresent()
-    {
-        [$user, $server] = $this->generateTestAccount();
-
-        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
-            'command' => '',
-        ]);
-
-        $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
-        $response->assertJsonPath('errors.0.meta.rule', 'required');
-    }
-
-    /**
-     * Test that a subuser without the required permission receives an error when trying to
-     * execute the command.
-     */
-    public function testSubuserWithoutPermissionReceivesError()
-    {
-        [$user, $server] = $this->generateTestAccount([Permission::ACTION_WEBSOCKET_CONNECT]);
-
-        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
-            'command' => 'say Test',
-        ]);
-
-        $response->assertStatus(Response::HTTP_FORBIDDEN);
-    }
-
-    /**
-     * Test that a command can be sent to the server.
-     */
-    public function testCommandCanSendToServer()
-    {
-        [$user, $server] = $this->generateTestAccount([Permission::ACTION_CONTROL_CONSOLE]);
-
-        $mock = $this->mock(DaemonCommandRepository::class);
-        $mock->expects('setServer')
-            ->with(\Mockery::on(fn (Server $value) => $value->is($server)))
-            ->andReturnSelf();
-
-        $mock->expects('send')->with('say Test')->andReturn(new GuzzleResponse());
-
-        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
-            'command' => 'say Test',
-        ]);
-
-        $response->assertStatus(Response::HTTP_NO_CONTENT);
-    }
-
-    /**
-     * Test that an error is returned when the server is offline that is more specific than the
-     * regular daemon connection error.
-     */
-    public function testErrorIsReturnedWhenServerIsOffline()
-    {
-        [$user, $server] = $this->generateTestAccount();
-
-        $mock = $this->mock(DaemonCommandRepository::class);
-        $mock->expects('setServer->send')->andThrows(
-            new DaemonConnectionException(
-                new BadResponseException('', new Request('GET', 'test'), new GuzzleResponse(Response::HTTP_BAD_GATEWAY))
-            )
-        );
-
-        $response = $this->actingAs($user)->postJson("/api/client/servers/$server->uuid/command", [
-            'command' => 'say Test',
-        ]);
-
-        $response->assertStatus(Response::HTTP_BAD_GATEWAY);
-        $response->assertJsonPath('errors.0.code', 'HttpException');
-        $response->assertJsonPath('errors.0.detail', 'Server must be online in order to send commands.');
-    }
-}
+uses(ClientApiIntegrationTestCase::class);
+test('validation error is returned if no command is present', function () {
+    [$user, $server] = $this->generateTestAccount();
+    $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", ['command' => '']);
+    $response->assertStatus(Response::HTTP_UNPROCESSABLE_ENTITY);
+    $response->assertJsonPath('errors.0.meta.rule', 'required');
+});
+test('subuser without permission receives error', function () {
+    [$user, $server] = $this->generateTestAccount([Permissions::WebsocketConnect->value]);
+    $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", ['command' => 'say Test']);
+    $response->assertStatus(Response::HTTP_FORBIDDEN);
+});
+test('command can send to server', function () {
+    [$user, $server] = $this->generateTestAccount([Permissions::ControlConsole->value]);
+    $fake = new FakeDaemonCommand;
+    $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", ['command' => 'say Test']);
+    $response->assertStatus(Response::HTTP_NO_CONTENT);
+    $fake->assertSent('say Test');
+    Http::assertSent(fn (HttpRequest $request): bool => str_contains($request->url(), "/api/servers/{$server->uuid}/"));
+});
+test('error is returned when server is offline', function () {
+    [$user, $server] = $this->generateTestAccount();
+    $fake = new FakeDaemonCommand;
+    $fake->throwable = new DaemonConnectionException(Http::failedRequest([], Response::HTTP_BAD_GATEWAY));
+    $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/command", ['command' => 'say Test']);
+    $response->assertStatus(Response::HTTP_BAD_GATEWAY);
+    $response->assertJsonPath('errors.0.code', 'HttpException');
+    $response->assertJsonPath('errors.0.detail', 'Server must be online in order to send commands.');
+    $fake->assertSent('say Test');
+});

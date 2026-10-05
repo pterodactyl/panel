@@ -1,12 +1,26 @@
-import styled from 'styled-components/macro';
-import tw from 'twin.macro';
+import React from 'react';
+import { cn } from '@/lib/cn';
+import { interactiveSurfaceClass } from '@/components/ui/styles';
 
-export default styled.div<{ $hoverable?: boolean }>`
-    ${tw`flex rounded no-underline text-neutral-200 items-center bg-neutral-700 p-4 border border-transparent transition-colors duration-150 overflow-hidden`};
+type Props<E extends React.ElementType = 'div'> = {
+    as?: E;
+    $hoverable?: boolean;
+} & Omit<React.ComponentPropsWithoutRef<E>, 'as' | '$hoverable'>;
 
-    ${(props) => props.$hoverable !== false && tw`hover:border-neutral-500`};
+const GreyRowBox = <E extends React.ElementType = 'div'>({ as, $hoverable, className, ...props }: Props<E>) => {
+    const Component = (as || 'div') as React.ElementType;
 
-    & .icon {
-        ${tw`rounded-full w-16 flex items-center justify-center bg-neutral-500 p-3`};
-    }
-`;
+    return (
+        <Component
+            className={cn(
+                'flex rounded-sm no-underline text-foreground items-center bg-card p-4 border border-transparent overflow-hidden',
+                '[&_.icon]:flex [&_.icon]:w-16 [&_.icon]:items-center [&_.icon]:justify-center [&_.icon]:rounded-full [&_.icon]:bg-popover [&_.icon]:p-3',
+                $hoverable !== false && interactiveSurfaceClass,
+                className
+            )}
+            {...props}
+        />
+    );
+};
+
+export default GreyRowBox;

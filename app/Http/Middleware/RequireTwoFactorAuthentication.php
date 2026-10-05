@@ -1,17 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Middleware;
 
-use Illuminate\Support\Str;
+use Closure;
 use Illuminate\Http\Request;
-use Prologue\Alerts\AlertsMessageBag;
+use Illuminate\Support\Str;
 use Pterodactyl\Exceptions\Http\TwoFactorAuthRequiredException;
+use Pterodactyl\Http\Concerns\ResolvesRequestContext;
+use Pterodactyl\Support\Alerts\AlertsMessageBag;
+use Symfony\Component\HttpFoundation\Response;
 
 class RequireTwoFactorAuthentication
 {
-    public const LEVEL_NONE = 0;
-    public const LEVEL_ADMIN = 1;
-    public const LEVEL_ALL = 2;
+    use ResolvesRequestContext;
+
+    public const int LEVEL_NONE = 0;
+
+    public const int LEVEL_ADMIN = 1;
+
+    public const int LEVEL_ALL = 2;
 
     /**
      * The route to redirect a user to enable 2FA.
@@ -21,9 +30,7 @@ class RequireTwoFactorAuthentication
     /**
      * RequireTwoFactorAuthentication constructor.
      */
-    public function __construct(private AlertsMessageBag $alert)
-    {
-    }
+    public function __construct(private readonly AlertsMessageBag $alert) {}
 
     /**
      * Check the user state on the incoming request to determine if they should be allowed to
@@ -33,31 +40,36 @@ class RequireTwoFactorAuthentication
      *
      * @throws TwoFactorAuthRequiredException
      */
-    public function handle(Request $request, \Closure $next): mixed
+    /**
+     * @param  Closure(Request):Response  $next
+     * @return Response
+     */
+    public function handle(Request $request, Closure $next): mixed
     {
         $user = $request->user();
-        $uri = rtrim($request->getRequestUri(), '/') . '/';
-        $current = $request->route()->getName();
+        $uri = mb_rtrim($request->getRequestUri(), '/').'/';
+        $current = $this->resolvedRoute($request)->getName() ?? '';
 
-        if (!$user || Str::startsWith($uri, ['/auth/']) || Str::startsWith($current, ['auth.', 'account.'])) {
+        if (! $user || Str::startsWith($uri, ['/auth/']) || Str::startsWith($current, ['auth.', 'account.'])) {
             return $next($request);
         }
 
-        $level = (int) config('pterodactyl.auth.2fa_required');
+        $configuredLevel = filter_var(config('pterodactyl.auth.2fa_required'), FILTER_VALIDATE_INT);
+        $level = $configuredLevel === false ? self::LEVEL_NONE : $configuredLevel;
         // If this setting is not configured, or the user is already using 2FA then we can just
         // send them right through, nothing else needs to be checked.
         //
         // If the level is set as admin and the user is not an admin, pass them through as well.
         if ($level === self::LEVEL_NONE || $user->use_totp) {
             return $next($request);
-        } elseif ($level === self::LEVEL_ADMIN && !$user->root_admin) {
+        }
+
+        if ($level === self::LEVEL_ADMIN && ! $user->root_admin) {
             return $next($request);
         }
 
         // For API calls return an exception which gets rendered nicely in the API response.
-        if ($request->isJson() || Str::startsWith($uri, '/api/')) {
-            throw new TwoFactorAuthRequiredException();
-        }
+        throw_if($request->isJson() || Str::startsWith($uri, '/api/'), TwoFactorAuthRequiredException::class);
 
         $this->alert->danger(trans('auth.2fa_must_be_enabled'))->flash();
 

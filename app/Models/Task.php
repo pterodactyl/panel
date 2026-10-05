@@ -1,12 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
-use Illuminate\Container\Container;
-use Znck\Eloquent\Traits\BelongsToThrough;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Carbon\Carbon;
+use Database\Factories\TaskFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Touches;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Models\Traits\HasHashid;
 
 /**
  * @property int $id
@@ -17,65 +23,49 @@ use Pterodactyl\Contracts\Extensions\HashidsInterface;
  * @property int $time_offset
  * @property bool $is_queued
  * @property bool $continue_on_failure
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property string $hashid
+ * @property Carbon $created_at
+ * @property Carbon $updated_at
  * @property Schedule $schedule
  * @property Server $server
  */
+#[Fillable([
+    'schedule_id',
+    'sequence_id',
+    'action',
+    'payload',
+    'time_offset',
+    'is_queued',
+    'continue_on_failure',
+])]
+#[Touches(['schedule'])]
 class Task extends Model
 {
-    /** @use HasFactory<\Database\Factories\TaskFactory> */
+    /** @use HasFactory<TaskFactory> */
     use HasFactory;
-    use BelongsToThrough;
+
+    use HasHashid;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'schedule_task';
+    public const string RESOURCE_NAME = 'schedule_task';
 
     /**
      * The default actions that can exist for a task in Pterodactyl.
      */
-    public const ACTION_POWER = 'power';
-    public const ACTION_COMMAND = 'command';
-    public const ACTION_BACKUP = 'backup';
+    public const string ACTION_POWER = 'power';
+
+    public const string ACTION_COMMAND = 'command';
+
+    public const string ACTION_BACKUP = 'backup';
 
     /**
-     * The table associated with the model.
+     * The signals a power task may send.
+     *
+     * @var list<string>
      */
-    protected $table = 'tasks';
-
-    /**
-     * Relationships to be updated when this model is updated.
-     */
-    protected $touches = ['schedule'];
-
-    /**
-     * Fields that are mass assignable.
-     */
-    protected $fillable = [
-        'schedule_id',
-        'sequence_id',
-        'action',
-        'payload',
-        'time_offset',
-        'is_queued',
-        'continue_on_failure',
-    ];
-
-    /**
-     * Cast values to correct type.
-     */
-    protected $casts = [
-        'id' => 'integer',
-        'schedule_id' => 'integer',
-        'sequence_id' => 'integer',
-        'time_offset' => 'integer',
-        'is_queued' => 'boolean',
-        'continue_on_failure' => 'boolean',
-    ];
+    public const array POWER_ACTIONS = ['start', 'stop', 'restart', 'kill'];
 
     /**
      * Default attributes when creating a new model.
@@ -86,15 +76,39 @@ class Task extends Model
         'continue_on_failure' => false,
     ];
 
-    public static array $validationRules = [
-        'schedule_id' => 'required|numeric|exists:schedules,id',
-        'sequence_id' => 'required|numeric|min:1',
-        'action' => 'required|string',
-        'payload' => 'required_unless:action,backup|string',
-        'time_offset' => 'required|numeric|between:0,900',
-        'is_queued' => 'boolean',
-        'continue_on_failure' => 'boolean',
-    ];
+    /**
+     * @return array<string, string>
+     */
+    protected function casts(): array
+    {
+        return [
+            'id' => 'integer',
+            'schedule_id' => 'integer',
+            'sequence_id' => 'integer',
+            'time_offset' => 'integer',
+            'is_queued' => 'boolean',
+            'continue_on_failure' => 'boolean',
+        ];
+    }
+
+    /**
+     * The permission a user needs to run a task with the given action and payload, or
+     * null when the action or power signal is not one a task can perform.
+     */
+    public static function permissionForAction(string $action, ?string $payload = null): ?Permissions
+    {
+        return match ($action) {
+            self::ACTION_COMMAND => Permissions::ControlConsole,
+            self::ACTION_BACKUP => Permissions::BackupCreate,
+            self::ACTION_POWER => match (mb_trim((string) $payload)) {
+                'start' => Permissions::ControlStart,
+                'stop', 'kill' => Permissions::ControlStop,
+                'restart' => Permissions::ControlRestart,
+                default => null,
+            },
+            default => null,
+        };
+    }
 
     public function getRouteKeyName(): string
     {
@@ -102,17 +116,9 @@ class Task extends Model
     }
 
     /**
-     * Return a hashid encoded string to represent the ID of the task.
-     */
-    public function getHashidAttribute(): string
-    {
-        return Container::getInstance()->make(HashidsInterface::class)->encode($this->id);
-    }
-
-    /**
      * Return the schedule that a task belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo<\Pterodactyl\Models\Schedule, $this>
+     * @return BelongsTo<Schedule, $this>
      */
     public function schedule(): BelongsTo
     {
@@ -120,12 +126,13 @@ class Task extends Model
     }
 
     /**
-     * Return the server a task is assigned to, acts as a belongsToThrough.
+     * The server a task runs against is whatever its schedule belongs to, so this
+     * resolves through the schedule with local keys.
      *
-     * @return \Znck\Eloquent\Relations\BelongsToThrough<\Pterodactyl\Models\Server, \Pterodactyl\Models\Schedule>
+     * @return HasOneThrough<Server, Schedule, $this>
      */
-    public function server(): \Znck\Eloquent\Relations\BelongsToThrough
+    public function server(): HasOneThrough
     {
-        return $this->belongsToThrough(Server::class, Schedule::class); // @phpstan-ignore return.type
+        return $this->hasOneThrough(Server::class, Schedule::class, 'id', 'id', 'schedule_id', 'server_id');
     }
 }

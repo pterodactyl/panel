@@ -1,27 +1,35 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Services\Deployment;
 
-use Pterodactyl\Models\Allocation;
+use Illuminate\Database\Eloquent\Builder;
+use Pterodactyl\Actions\Allocations\CreateAllocations;
 use Pterodactyl\Exceptions\DisplayException;
-use Pterodactyl\Services\Allocations\AssignmentService;
-use Pterodactyl\Contracts\Repository\AllocationRepositoryInterface;
 use Pterodactyl\Exceptions\Service\Deployment\NoViableAllocationException;
+use Pterodactyl\Models\Allocation;
 
 class AllocationSelectionService
 {
     protected bool $dedicated = false;
 
+    /** @var list<int> */
     protected array $nodes = [];
 
+    /**
+     * Single ports as they were provided.
+     *
+     * @var list<int>
+     */
     protected array $ports = [];
 
     /**
-     * AllocationSelectionService constructor.
+     * Port ranges reduced to [start, end] pairs for the Allocation::onPorts() scope.
+     *
+     * @var list<array{int, int}>
      */
-    public function __construct(private AllocationRepositoryInterface $repository)
-    {
-    }
+    protected array $portRanges = [];
 
     /**
      * Toggle if the selected allocation should be the only allocation belonging
@@ -38,6 +46,8 @@ class AllocationSelectionService
     /**
      * A list of node IDs that should be used when selecting an allocation. If empty, all
      * nodes will be used to filter with.
+     *
+     * @param  list<int>  $nodes
      */
     public function setNodes(array $nodes): self
     {
@@ -51,28 +61,36 @@ class AllocationSelectionService
      * empty, all ports will be considered when finding an allocation. If set, only ports appearing
      * in the array or range will be used.
      *
+     * @param  list<ApiScalar>  $ports  Entries that are neither a port nor a port range
+     *                                  are discarded rather than rejected.
+     *
      * @throws DisplayException
      */
     public function setPorts(array $ports): self
     {
         $stored = [];
+        $ranges = [];
         foreach ($ports as $port) {
-            if (is_digit($port)) {
-                $stored[] = $port;
+            // SAFETY: deployment ports are JSON scalars; string conversion is used only to test decimal port syntax.
+            if (! is_bool($port) && ctype_digit((string) $port)) {
+                // SAFETY: ctype_digit() above proves the scalar is a decimal integer before normalization.
+                $stored[] = (int) $port;
             }
 
-            // Ranges are stored in the ports array as an array which can be
-            // better processed in the repository.
-            if (preg_match(AssignmentService::PORT_RANGE_REGEX, $port, $matches)) {
-                if (abs($matches[2] - $matches[1]) > AssignmentService::PORT_RANGE_LIMIT) {
+            // Ranges are stored as a [start, end] pair for the onPorts() scope.
+            // SAFETY: deployment ports are JSON scalars; string conversion is used only to match the anchored range grammar.
+            if (preg_match(CreateAllocations::PORT_RANGE_REGEX, (string) $port, $matches)) {
+                if (abs($matches[2] - $matches[1]) > CreateAllocations::PORT_RANGE_LIMIT) {
                     throw new DisplayException(trans('exceptions.allocations.too_many_ports'));
                 }
 
-                $stored[] = [$matches[1], $matches[2]];
+                // SAFETY: PORT_RANGE_REGEX captures two decimal integer strings.
+                $ranges[] = [(int) $matches[1], (int) $matches[2]];
             }
         }
 
         $this->ports = $stored;
+        $this->portRanges = $ranges;
 
         return $this;
     }
@@ -84,9 +102,15 @@ class AllocationSelectionService
      */
     public function handle(): Allocation
     {
-        $allocation = $this->repository->getRandomAllocation($this->nodes, $this->ports, $this->dedicated);
+        $allocation = Allocation::query()
+            ->unassigned()
+            ->onNodes($this->nodes)
+            ->onPorts($this->ports, $this->portRanges)
+            ->when($this->dedicated, fn (Builder $query) => $query->onDedicatedIp($this->nodes))
+            ->inRandomOrder()
+            ->first();
 
-        if (is_null($allocation)) {
+        if ($allocation === null) {
             throw new NoViableAllocationException(trans('exceptions.deployment.no_viable_allocations'));
         }
 

@@ -1,3 +1,333 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss';
+@import '../../../packages/sdk/theme-tokens.css';
+
+@plugin '@tailwindcss/forms' {
+    strategy: 'class';
+}
+
+/*
+ * Sub-navigation orientation is a layout decision rather than a value, so it is switched by
+ * `<html data-sub-navigation="side">` instead of a token. The variant only applies from the
+ * `lg` breakpoint up; narrower viewports keep the horizontal tab bar.
+ */
+@custom-variant side-navigation {
+    @media (width >= 64rem) {
+        &:is([data-sub-navigation='side'] *) {
+            @slot;
+        }
+    }
+}
+
+/*
+ * Semantic role tokens (shadcn/ui convention).
+ *
+ * Values are bare tokens defined per theme: `.dark` is Pterodactyl - the shipping
+ * default, forced via `<html class="dark">` (templates/wrapper.blade.php) - and `:root`
+ * holds a light scaffold (not yet audited). The `@theme inline` block bridges each bare
+ * token to a Tailwind colour utility (e.g. `.bg-card { background-color: var(--card) }`),
+ * so toggling the `dark` class re-skins the whole panel. Names follow shadcn; Pterodactyl
+ * extras are limited to success/warning product states and terminal-specific colours.
+ */
+:root {
+    --radius: 0.5rem;
+    --spinner-overlay-opacity: 45%;
+
+    /* Layout: bridged to the `panel`, `auth` and `sidebar` container utilities (max-w-panel, w-sidebar, …). */
+    --layout-content-width: 75rem;
+    --layout-auth-width: 43.75rem;
+    --layout-sidebar-width: 16rem;
+
+    /* Browser chrome: native widget scheme and the `<meta name="theme-color">` the SPA keeps in sync. */
+    --color-scheme: light;
+    --theme-color: #0e4688;
+
+    /* LIGHT scaffold - provisional; dark is forced for now, this gets its own audit later. */
+    --background: oklch(0.975 0.005 258.3);
+    --foreground: oklch(0.275 0.023 248.7);
+    --card: oklch(0.975 0.005 258.3);
+    --card-foreground: oklch(0.275 0.023 248.7);
+    --popover: oklch(0.975 0.005 258.3);
+    --popover-foreground: oklch(0.275 0.023 248.7);
+    --primary: oklch(0.55 0.188 259.8);
+    --primary-foreground: oklch(0.975 0.005 258.3);
+    --secondary: oklch(0.929 0.006 255);
+    --secondary-foreground: oklch(0.275 0.023 248.7);
+    --muted: oklch(0.929 0.006 255);
+    --muted-foreground: oklch(0.53 0.026 250.1);
+    --accent: oklch(0.609 0.111 221.7);
+    --accent-foreground: oklch(0.975 0.005 258.3);
+    --destructive: oklch(0.637 0.237 25.331);
+    --destructive-foreground: var(--primary-foreground);
+    --border: oklch(0.858 0.013 248);
+    --input: var(--border);
+    --ring: oklch(0.714 0.143 254.6);
+    --chart-1: oklch(0.797 0.134 211.5);
+    --chart-2: oklch(0.852 0.199 91.936);
+    --chart-3: var(--primary);
+    --chart-4: oklch(0.723 0.219 149.579);
+    --chart-5: var(--destructive);
+    --state-foreground: oklch(0.275 0.023 248.7);
+    --success: var(--chart-4);
+    --success-foreground: var(--state-foreground);
+    --warning: var(--chart-2);
+    --warning-foreground: var(--state-foreground);
+    --caution: oklch(0.6 0.17 52);
+    --caution-foreground: var(--primary-foreground);
+    --sidebar: var(--card);
+    --sidebar-foreground: var(--card-foreground);
+    --sidebar-primary: var(--primary);
+    --sidebar-primary-foreground: var(--primary-foreground);
+    --sidebar-accent: var(--popover);
+    --sidebar-accent-foreground: var(--foreground);
+    --sidebar-border: var(--border);
+    --sidebar-ring: var(--ring);
+}
+
+.dark {
+    /* DARK - Pterodactyl (the shipping theme). */
+    --color-scheme: dark;
+    --background: oklch(0.366 0.027 246.8);
+    --foreground: oklch(0.858 0.013 248);
+    --card: oklch(0.413 0.029 246.8);
+    --card-foreground: oklch(0.858 0.013 248);
+    --popover: oklch(0.478 0.027 246.6);
+    --popover-foreground: oklch(0.858 0.013 248);
+    --primary: oklch(0.55 0.188 259.8);
+    --primary-foreground: oklch(0.975 0.005 258.3);
+    --secondary: oklch(0.478 0.027 246.6);
+    --secondary-foreground: oklch(0.929 0.006 255);
+    --muted: oklch(0.413 0.029 246.8);
+    --muted-foreground: oklch(0.617 0.023 250);
+    --accent: oklch(0.715 0.126 215.2);
+    --accent-foreground: oklch(0.975 0.005 258.3);
+    --destructive: oklch(0.637 0.237 25.331);
+    --destructive-foreground: var(--primary-foreground);
+    --border: oklch(0.478 0.027 246.6);
+    --input: var(--border);
+    --ring: oklch(0.714 0.143 254.6);
+    --chart-1: oklch(0.797 0.134 211.5);
+    --chart-2: oklch(0.852 0.199 91.936);
+    --chart-3: var(--primary);
+    --chart-4: oklch(0.723 0.219 149.579);
+    --chart-5: var(--destructive);
+    --success: var(--chart-4);
+    --success-foreground: var(--state-foreground);
+    --warning: var(--chart-2);
+    --warning-foreground: var(--state-foreground);
+    --caution: oklch(0.6 0.17 52);
+    --caution-foreground: var(--primary-foreground);
+}
+
+/* Recessed surface on a card (progress tracks, code chips); --muted is identical to --card in the dark theme. */
+:root {
+    --sunken: color-mix(in oklab, var(--card) 85%, black);
+}
+
+/*
+ * CodeMirror renders its own internal DOM, so its domain palette lives here rather
+ * than in component code. Keeping the values behind named tokens makes the editor
+ * independently themeable without allowing raw colours to leak into React.
+ */
+:root {
+    --editor-background: #1f2430;
+    --editor-foreground: #cbccc6;
+    --editor-caret: #ffcc66;
+    --editor-selection: #34455a;
+    --editor-border: #2d3444;
+    --editor-muted: color-mix(in oklab, var(--muted-foreground) 80%, var(--foreground));
+    --editor-active-line: #272d3a;
+    --editor-search-match: #5c4f1f;
+    --editor-search-match-selected: #755f24;
+    --editor-tooltip: #252b38;
+    --editor-tooltip-border: #3d4657;
+    --editor-selected-foreground: #ffffff;
+    --editor-syntax-keyword: #ffad66;
+    --editor-syntax-name: #f28779;
+    --editor-syntax-function: #ffd580;
+    --editor-syntax-constant: #dfbfff;
+    --editor-syntax-definition: #73d0ff;
+    --editor-syntax-type: #d5ff80;
+    --editor-syntax-operator: #f29e74;
+    --editor-syntax-string: #bae67e;
+    --editor-syntax-invalid: #ff3333;
+}
+
+/* Scrollbars: `--scrollbar-thumb-fill` at rest, `--scrollbar-thumb` on hover and for `scrollbar-color`. */
+:root {
+    --scrollbar-thumb: var(--muted-foreground);
+    --scrollbar-thumb-fill: color-mix(in oklch, var(--muted-foreground) 45%, transparent);
+    --scrollbar-track: transparent;
+}
+
+/* Bridge the bare role tokens to Tailwind colour utilities (bg-*, text-*, border-*, …). */
+
+/*
+ * Terminal (Ghostty console) palette - exposed as CSS variables so the console themes
+ * alongside the rest of the panel. Ghostty renders to a canvas and can't read `var()`
+ * itself, so `server/console/useTerminal.ts` resolves these to concrete colours at mount and again
+ * whenever the theme changes (lib/theme.ts).
+ * `--terminal-background` is terminal-specific; the ANSI 16 are a curated palette.
+ */
+:root {
+    --terminal-background: oklch(0.929 0.006 255);
+    --terminal-foreground: #cccccc; /* uncoloured output; the Ghostty VT default it replaces */
+    --terminal-cursor: var(--terminal-background); /* read-only log: cursor hidden by matching bg */
+    --terminal-selection: #faf089;
+    --terminal-selection-foreground: #131a20;
+
+    --terminal-ansi-black: #131a20;
+    --terminal-ansi-red: #e54b4b;
+    --terminal-ansi-green: #9ece58;
+    --terminal-ansi-yellow: #faed70;
+    --terminal-ansi-blue: #396fe2;
+    --terminal-ansi-magenta: #bb80b3;
+    --terminal-ansi-cyan: #2ddafd;
+    --terminal-ansi-white: #d0d0d0;
+
+    --terminal-ansi-bright-black: rgba(255, 255, 255, 0.2);
+    --terminal-ansi-bright-red: #ff5370;
+    --terminal-ansi-bright-green: #c3e88d;
+    --terminal-ansi-bright-yellow: #ffcb6b;
+    --terminal-ansi-bright-blue: #82aaff;
+    --terminal-ansi-bright-magenta: #c792ea;
+    --terminal-ansi-bright-cyan: #89ddff;
+    --terminal-ansi-bright-white: #ffffff;
+}
+
+.dark {
+    --terminal-background: oklch(0.275 0.023 248.7);
+}
+
+/* Native widgets (form control popups, autofill, non-WebKit scrollbars) follow the theme. */
+:root {
+    color-scheme: var(--color-scheme);
+}
+
+/*
+ * Text selection. `--selection` has no default: the rule sits behind a style query so the
+ * browser's own highlight stays in place until a theme defines the token.
+ */
+@container style(--selection) {
+    ::selection {
+        background-color: var(--selection);
+        color: var(--selection-foreground, currentColor);
+    }
+}
+
+body {
+    position: relative;
+}
+
+#app {
+    isolation: isolate;
+}
+
+@layer base {
+    * {
+        @apply border-border outline-ring/50;
+    }
+
+    /* Tailwind 4 leaves buttons on the default cursor; controls that act on click point. */
+    button:not(:disabled),
+    [role='button']:not([aria-disabled='true']),
+    summary {
+        cursor: pointer;
+    }
+}
+
+@layer base {
+    @font-face {
+        font-family: 'IBM Plex Sans';
+        font-style: normal;
+        font-display: swap;
+        font-weight: 100 700;
+        src: url('./fonts/ibm-plex-sans-latin-wght-normal.woff2') format('woff2-variations');
+        unicode-range:
+            U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F,
+            U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+    }
+
+    body {
+        @apply font-sans bg-background text-foreground;
+        letter-spacing: 0.015em;
+    }
+
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+        @apply font-medium tracking-normal font-header;
+    }
+
+    p {
+        @apply text-foreground leading-snug font-sans;
+    }
+
+    form {
+        @apply m-0;
+    }
+
+    input[type='number']::-webkit-outer-spin-button,
+    input[type='number']::-webkit-inner-spin-button {
+        -webkit-appearance: none !important;
+        margin: 0;
+    }
+
+    input[type='number'] {
+        -moz-appearance: textfield !important;
+    }
+}
+
+/* Field description and error text. */
+@layer components {
+    .input-help {
+        @apply mt-1 text-xs leading-relaxed text-foreground/70;
+    }
+
+    .input-help.error {
+        @apply text-destructive;
+    }
+}
+
+/* Focus outline for links and button-like controls; form controls draw their own ring. */
+:where(
+    a[href],
+    button,
+    [role='button'],
+    [role='switch'],
+    [role='checkbox'],
+    [tabindex]:not([tabindex='-1'])
+):focus-visible {
+    outline: 2px solid var(--ring);
+    outline-offset: 2px;
+}
+
+/* `scrollbar-color` disables `::-webkit-scrollbar` in Chromium, so it is only set where those are unsupported. */
+@supports not selector(::-webkit-scrollbar) {
+    :root {
+        scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+    }
+}
+
+::-webkit-scrollbar {
+    background: var(--scrollbar-track);
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--scrollbar-thumb-fill);
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background-color: var(--scrollbar-thumb);
+}
+
+::-webkit-scrollbar-corner {
+    background: transparent;
+}

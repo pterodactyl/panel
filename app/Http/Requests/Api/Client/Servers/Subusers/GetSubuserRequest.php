@@ -1,8 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Subusers;
 
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Enum\Permissions;
 
 class GetSubuserRequest extends SubuserRequest
 {
@@ -11,6 +13,6 @@ class GetSubuserRequest extends SubuserRequest
      */
     public function permission(): string
     {
-        return Permission::ACTION_USER_READ;
+        return Permissions::UserRead->value;
     }
 }

@@ -1,173 +1,187 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { useHistory, useParams } from 'react-router-dom';
-import getServerSchedule from '@/api/server/schedules/getServerSchedule';
+import { useMemo } from 'react';
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import { useNavigate, useParams } from '@tanstack/react-router';
+import { ListTodo } from 'lucide-react';
+import { type Schedule, useServerSchedule } from '@/api/server/schedules/queries';
 import Spinner from '@/components/elements/Spinner';
-import FlashMessageRender from '@/components/FlashMessageRender';
 import EditScheduleModal from '@/components/server/schedules/EditScheduleModal';
 import NewTaskButton from '@/components/server/schedules/NewTaskButton';
 import DeleteScheduleButton from '@/components/server/schedules/DeleteScheduleButton';
 import Can from '@/components/elements/Can';
-import useFlash from '@/plugins/useFlash';
-import { ServerContext } from '@/state/server';
 import PageContentBlock from '@/components/elements/PageContentBlock';
-import tw from 'twin.macro';
-import { Button } from '@/components/elements/button/index';
-import ScheduleTaskRow from '@/components/server/schedules/ScheduleTaskRow';
-import isEqual from 'react-fast-compare';
-import { format } from 'date-fns';
+import { cn } from '@/lib/cn';
+import Button from '@/components/elements/Button';
+import dayjs from '@/lib/dayjs';
 import ScheduleCronRow from '@/components/server/schedules/ScheduleCronRow';
 import RunScheduleButton from '@/components/server/schedules/RunScheduleButton';
-
-interface Params {
-    id: string;
-}
+import { useCurrentServerIdentifier, useCurrentServerUuid } from '@/api/server/queries';
+import { httpErrorToHuman } from '@/api/http';
+import { ServerError } from '@/components/elements/ScreenBlock';
+import { Dialog } from '@/components/elements/dialog';
+import DataTable from '@/components/elements/table/DataTable';
+import { scheduleTaskColumns } from '@/components/server/schedules/ScheduleTaskTable';
+import { relationshipData } from '@/api/relationships';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { emptyCompactClass } from '@/components/ui/styles';
+import { usePermissions } from '@/plugins/usePermissions';
 
 const CronBox = ({ title, value }: { title: string; value: string }) => (
-    <div css={tw`bg-neutral-700 rounded p-3`}>
-        <p css={tw`text-neutral-300 text-sm`}>{title}</p>
-        <p css={tw`text-xl font-medium text-neutral-100`}>{value}</p>
+    <div className={'bg-card rounded-sm p-3'}>
+        <p className={'text-muted-foreground text-sm'}>{title}</p>
+        <p className={'text-xl font-medium text-foreground'}>{value}</p>
     </div>
 );
 
 const ActivePill = ({ active }: { active: boolean }) => (
     <span
-        css={[
-            tw`rounded-full px-2 py-px text-xs ml-4 uppercase`,
-            active ? tw`bg-green-600 text-green-100` : tw`bg-red-600 text-red-100`,
-        ]}
+        className={cn(
+            'rounded-full px-2 py-px text-xs ml-4 uppercase',
+            active ? 'bg-success/90 text-success-foreground' : 'bg-destructive/90 text-destructive-foreground'
+        )}
     >
         {active ? 'Active' : 'Inactive'}
     </span>
 );
 
-export default () => {
-    const history = useHistory();
-    const { id: scheduleId } = useParams<Params>();
+const ScheduleDetails = ({ schedule }: { schedule: Schedule }) => {
+    const navigate = useNavigate();
+    const id = useCurrentServerIdentifier() ?? '';
+    const [canUpdate] = usePermissions('schedule.update');
 
-    const id = ServerContext.useStoreState((state) => state.server.data!.id);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
-    const [isLoading, setIsLoading] = useState(true);
-    const [showEditModal, setShowEditModal] = useState(false);
-
-    const schedule = ServerContext.useStoreState(
-        (st) => st.schedules.data.find((s) => s.id === Number(scheduleId)),
-        isEqual
+    const tasks = useMemo(() => relationshipData(schedule.attributes.relationships?.tasks), [schedule]);
+    const orderedTasks = useMemo(
+        () => [...tasks].sort((a, b) => a.attributes.sequence_id - b.attributes.sequence_id),
+        [tasks]
     );
-    const appendSchedule = ServerContext.useStoreActions((actions) => actions.schedules.appendSchedule);
-
-    useEffect(() => {
-        if (schedule?.id === Number(scheduleId)) {
-            setIsLoading(false);
-            return;
-        }
-
-        clearFlashes('schedules');
-        getServerSchedule(uuid, Number(scheduleId))
-            .then((schedule) => appendSchedule(schedule))
-            .catch((error) => {
-                console.error(error);
-                clearAndAddHttpError({ error, key: 'schedules' });
-            })
-            .then(() => setIsLoading(false));
-    }, [scheduleId]);
-
-    const toggleEditModal = useCallback(() => {
-        setShowEditModal((s) => !s);
-    }, []);
+    const columns = useMemo(() => scheduleTaskColumns(schedule), [schedule]);
+    const table = useReactTable({
+        data: orderedTasks,
+        columns,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getRowId: (task) => String(task.attributes.id),
+    });
 
     return (
         <PageContentBlock title={'Schedules'}>
-            <FlashMessageRender byKey={'schedules'} css={tw`mb-4`} />
-            {!schedule || isLoading ? (
-                <Spinner size={'large'} centered />
-            ) : (
-                <>
-                    <ScheduleCronRow cron={schedule.cron} css={tw`sm:hidden bg-neutral-700 rounded mb-4 p-3`} />
-                    <div css={tw`rounded shadow`}>
-                        <div
-                            css={tw`sm:flex items-center bg-neutral-900 p-3 sm:p-6 border-b-4 border-neutral-600 rounded-t`}
-                        >
-                            <div css={tw`flex-1`}>
-                                <h3 css={tw`flex items-center text-neutral-100 text-2xl`}>
-                                    {schedule.name}
-                                    {schedule.isProcessing ? (
-                                        <span
-                                            css={tw`flex items-center rounded-full px-2 py-px text-xs ml-4 uppercase bg-neutral-600 text-white`}
-                                        >
-                                            <Spinner css={tw`w-3! h-3! mr-2`} />
-                                            Processing
-                                        </span>
-                                    ) : (
-                                        <ActivePill active={schedule.isActive} />
-                                    )}
-                                </h3>
-                                <p css={tw`mt-1 text-sm text-neutral-200`}>
-                                    Last run at:&nbsp;
-                                    {schedule.lastRunAt ? (
-                                        format(schedule.lastRunAt, "MMM do 'at' h:mma")
-                                    ) : (
-                                        <span css={tw`text-neutral-300`}>n/a</span>
-                                    )}
-                                    <span css={tw`ml-4 pl-4 border-l-4 border-neutral-600 py-px`}>
-                                        Next run at:&nbsp;
-                                        {schedule.nextRunAt ? (
-                                            format(schedule.nextRunAt, "MMM do 'at' h:mma")
-                                        ) : (
-                                            <span css={tw`text-neutral-300`}>n/a</span>
-                                        )}
-                                    </span>
-                                </p>
-                            </div>
-                            <div css={tw`flex sm:block mt-3 sm:mt-0`}>
-                                <Can action={'schedule.update'}>
-                                    <Button.Text className={'flex-1 mr-4'} onClick={toggleEditModal}>
+            <ScheduleCronRow cron={schedule.attributes.cron} className={'sm:hidden bg-card rounded-sm mb-4 p-3'} />
+            <div className={'rounded-sm shadow-sm'}>
+                <div className={'sm:flex items-center bg-muted p-3 sm:p-6 border-b-4 border-border rounded-t-sm'}>
+                    <div className={'flex-1'}>
+                        <h3 className={'flex items-center text-foreground text-2xl'}>
+                            {schedule.attributes.name}
+                            {schedule.attributes.is_processing ? (
+                                <span
+                                    className={
+                                        'flex items-center rounded-full px-2 py-px text-xs ml-4 uppercase bg-popover text-foreground'
+                                    }
+                                >
+                                    <Spinner />
+                                    Processing
+                                </span>
+                            ) : (
+                                <ActivePill active={schedule.attributes.is_active} />
+                            )}
+                        </h3>
+                        <p className={'mt-1 text-sm text-foreground'}>
+                            Last run at:&nbsp;
+                            {schedule.attributes.last_run_at ? (
+                                dayjs(schedule.attributes.last_run_at).format('MMM Do [at] h:mmA')
+                            ) : (
+                                <span className={'text-muted-foreground'}>n/a</span>
+                            )}
+                            <span className={'ml-4 pl-4 border-l-4 border-border py-px'}>
+                                Next run at:&nbsp;
+                                {schedule.attributes.next_run_at ? (
+                                    dayjs(schedule.attributes.next_run_at).format('MMM Do [at] h:mmA')
+                                ) : (
+                                    <span className={'text-muted-foreground'}>n/a</span>
+                                )}
+                            </span>
+                        </p>
+                    </div>
+                    <div className={'flex sm:block mt-3 sm:mt-0'}>
+                        <Can action={'schedule.update'}>
+                            <Dialog.Trigger
+                                trigger={({ onClick }) => (
+                                    <Button.Text className={'flex-1 mr-4'} onClick={onClick}>
                                         Edit
                                     </Button.Text>
-                                    <NewTaskButton schedule={schedule} />
-                                </Can>
-                            </div>
-                        </div>
-                        <div css={tw`hidden sm:grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 mt-4`}>
-                            <CronBox title={'Minute'} value={schedule.cron.minute} />
-                            <CronBox title={'Hour'} value={schedule.cron.hour} />
-                            <CronBox title={'Day (Month)'} value={schedule.cron.dayOfMonth} />
-                            <CronBox title={'Month'} value={schedule.cron.month} />
-                            <CronBox title={'Day (Week)'} value={schedule.cron.dayOfWeek} />
-                        </div>
-                        <div css={tw`bg-neutral-700 rounded-b`}>
-                            {schedule.tasks.length > 0
-                                ? schedule.tasks
-                                      .sort((a, b) =>
-                                          a.sequenceId === b.sequenceId ? 0 : a.sequenceId > b.sequenceId ? 1 : -1
-                                      )
-                                      .map((task) => (
-                                          <ScheduleTaskRow
-                                              key={`${schedule.id}_${task.id}`}
-                                              task={task}
-                                              schedule={schedule}
-                                          />
-                                      ))
-                                : null}
-                        </div>
-                    </div>
-                    <EditScheduleModal visible={showEditModal} schedule={schedule} onModalDismissed={toggleEditModal} />
-                    <div css={tw`mt-6 flex sm:justify-end`}>
-                        <Can action={'schedule.delete'}>
-                            <DeleteScheduleButton
-                                scheduleId={schedule.id}
-                                onDeleted={() => history.push(`/server/${id}/schedules`)}
-                            />
+                                )}
+                            >
+                                {({ open, onClose }) => (
+                                    <EditScheduleModal open={open} schedule={schedule} onClose={onClose} />
+                                )}
+                            </Dialog.Trigger>
+                            <NewTaskButton schedule={schedule} className={'flex-1'} />
                         </Can>
-                        {schedule.tasks.length > 0 && (
-                            <Can action={'schedule.update'}>
-                                <RunScheduleButton schedule={schedule} />
-                            </Can>
-                        )}
                     </div>
-                </>
-            )}
+                </div>
+                <div className={'hidden sm:grid grid-cols-5 md:grid-cols-5 gap-4 mb-4 mt-4'}>
+                    <CronBox title={'Minute'} value={schedule.attributes.cron.minute} />
+                    <CronBox title={'Hour'} value={schedule.attributes.cron.hour} />
+                    <CronBox title={'Day (Month)'} value={schedule.attributes.cron.day_of_month} />
+                    <CronBox title={'Month'} value={schedule.attributes.cron.month} />
+                    <CronBox title={'Day (Week)'} value={schedule.attributes.cron.day_of_week} />
+                </div>
+                <DataTable
+                    table={table}
+                    emptyState={
+                        <Empty className={emptyCompactClass}>
+                            <EmptyHeader>
+                                <EmptyMedia variant={'icon'}>
+                                    <ListTodo />
+                                </EmptyMedia>
+                                <EmptyTitle>No tasks</EmptyTitle>
+                                <EmptyDescription>
+                                    Add a task to tell this schedule what to do when it runs.
+                                </EmptyDescription>
+                            </EmptyHeader>
+                            {canUpdate && (
+                                <EmptyContent>
+                                    <NewTaskButton schedule={schedule} />
+                                </EmptyContent>
+                            )}
+                        </Empty>
+                    }
+                    className={'rounded-t-none'}
+                />
+            </div>
+            <div className={'mt-6 flex sm:justify-end'}>
+                <Can action={'schedule.delete'}>
+                    <DeleteScheduleButton
+                        scheduleId={schedule.attributes.id}
+                        onDeleted={() => navigate({ to: '/server/$id/schedules', params: { id } })}
+                    />
+                </Can>
+                {orderedTasks.length > 0 && (
+                    <Can action={'schedule.update'}>
+                        <RunScheduleButton schedule={schedule} />
+                    </Can>
+                )}
+            </div>
         </PageContentBlock>
     );
 };
+
+const ScheduleEditContainer = () => {
+    const { scheduleId } = useParams({ strict: false });
+    const uuid = useCurrentServerUuid() ?? '';
+    const { data: schedule, error, isFetching, refetch } = useServerSchedule(uuid, Number(scheduleId));
+
+    if (schedule) {
+        return <ScheduleDetails schedule={schedule} />;
+    }
+
+    if (error && !isFetching) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
+
+    return (
+        <PageContentBlock title={'Schedules'}>
+            <Spinner size={'large'} centered />
+        </PageContentBlock>
+    );
+};
+
+export default ScheduleEditContainer;

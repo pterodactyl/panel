@@ -1,176 +1,129 @@
-import React, { memo, useEffect, useRef, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEthernet, faHdd, faMemory, faMicrochip, faServer } from '@fortawesome/free-solid-svg-icons';
-import { Link } from 'react-router-dom';
-import { Server } from '@/api/server/getServer';
-import getServerResourceUsage, { ServerPowerState, ServerStats } from '@/api/server/getServerResourceUsage';
-import { bytesToString, ip, mbToBytes } from '@/lib/formatters';
-import tw from 'twin.macro';
+import { useMemo, type ComponentProps } from 'react';
+import { createLink } from '@tanstack/react-router';
+import type { AccountServer, ClientStatsAttributes, ServerPowerState } from '@/api/account/servers/queries';
+import { useServerResourceUsage } from '@/api/account/servers/queries';
+import { ip, mbToBytes } from '@/lib/formatters';
+import { cn } from '@/lib/cn';
 import GreyRowBox from '@/components/elements/GreyRowBox';
-import Spinner from '@/components/elements/Spinner';
-import styled from 'styled-components/macro';
-import isEqual from 'react-fast-compare';
+import Slot from '@/extensions/Slot';
+import ComponentView from '@/extensions/ComponentView';
+import type { ServerCardModel, ServerCardState } from '@/extensions/componentTypes';
+import { relationshipData } from '@/api/relationships';
+import { DefaultServerCard, ServerCardContext, serverCardParts } from './ServerCardView';
 
-// Determines if the current value is in an alarm threshold so we can show it in red rather
-// than the more faded default style.
+const ServerRowLink = createLink((props: ComponentProps<'a'>) => <GreyRowBox as={'a'} {...props} />);
+
 const isAlarmState = (current: number, limit: number): boolean => limit > 0 && current / (limit * 1024 * 1024) >= 0.9;
 
-const Icon = memo(
-    styled(FontAwesomeIcon)<{ $alarm: boolean }>`
-        ${(props) => (props.$alarm ? tw`text-red-400` : tw`text-neutral-500`)};
-    `,
-    isEqual
-);
+const statusToColor = (status: ServerPowerState | undefined): string =>
+    !status || status === 'offline' ? 'bg-destructive' : status === 'running' ? 'bg-success' : 'bg-warning';
 
-const IconDescription = styled.p<{ $alarm: boolean }>`
-    ${tw`text-sm ml-2`};
-    ${(props) => (props.$alarm ? tw`text-white` : tw`text-neutral-400`)};
-`;
+type ServerAlarms = { cpu: boolean; memory: boolean; disk: boolean };
 
-const StatusIndicatorBox = styled(GreyRowBox)<{ $status: ServerPowerState | undefined }>`
-    ${tw`grid grid-cols-12 gap-4 relative`};
+type ServerLimits = AccountServer['attributes']['limits'];
 
-    & .status-bar {
-        ${tw`w-2 bg-red-500 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-all duration-150`};
-        height: calc(100% - 0.5rem);
-
-        ${({ $status }) =>
-            !$status || $status === 'offline'
-                ? tw`bg-red-500`
-                : $status === 'running'
-                ? tw`bg-green-500`
-                : tw`bg-yellow-500`};
+const computeAlarms = (statsAttributes: ClientStatsAttributes | undefined, limits: ServerLimits): ServerAlarms => {
+    if (!statsAttributes) {
+        return { cpu: false, memory: false, disk: false };
     }
 
-    &:hover .status-bar {
-        ${tw`opacity-75`};
-    }
-`;
+    return {
+        cpu: limits.cpu === 0 ? false : statsAttributes.resources.cpu_absolute >= limits.cpu * 0.9,
+        memory: isAlarmState(statsAttributes.resources.memory_bytes, limits.memory),
+        disk: limits.disk === 0 ? false : isAlarmState(statsAttributes.resources.disk_bytes, limits.disk),
+    };
+};
 
-type Timer = ReturnType<typeof setInterval>;
-
-export default ({ server, className }: { server: Server; className?: string }) => {
-    const interval = useRef<Timer>(null) as React.MutableRefObject<Timer>;
-    const [isSuspended, setIsSuspended] = useState(server.status === 'suspended');
-    const [stats, setStats] = useState<ServerStats | null>(null);
-
-    const getStats = () =>
-        getServerResourceUsage(server.uuid)
-            .then((data) => setStats(data))
-            .catch((error) => console.error(error));
-
-    useEffect(() => {
-        setIsSuspended(stats?.isSuspended || server.status === 'suspended');
-    }, [stats?.isSuspended, server.status]);
-
-    useEffect(() => {
-        // Don't waste a HTTP request if there is nothing important to show to the user because
-        // the server is suspended.
-        if (isSuspended) return;
-
-        getStats().then(() => {
-            interval.current = setInterval(() => getStats(), 30000);
-        });
-
-        return () => {
-            interval.current && clearInterval(interval.current);
+function resolveState(
+    attributes: AccountServer['attributes'],
+    stats: ClientStatsAttributes | undefined,
+    suspended: boolean | undefined,
+    alarms: ServerAlarms
+): ServerCardState {
+    if (suspended)
+        return { kind: 'unavailable', reason: attributes.status === 'suspended' ? 'suspended' : 'connection-error' };
+    if (attributes.is_node_under_maintenance) return { kind: 'unavailable', reason: 'maintenance' };
+    if (stats)
+        return {
+            kind: 'ready',
+            power: stats.current_state,
+            cpu: { value: stats.resources.cpu_absolute, limit: attributes.limits.cpu, alarm: alarms.cpu },
+            memory: {
+                value: stats.resources.memory_bytes,
+                limit: mbToBytes(attributes.limits.memory),
+                alarm: alarms.memory,
+            },
+            disk: { value: stats.resources.disk_bytes, limit: mbToBytes(attributes.limits.disk), alarm: alarms.disk },
         };
-    }, [isSuspended]);
+    if (attributes.is_transferring) return { kind: 'unavailable', reason: 'transferring' };
+    if (attributes.status === 'installing') return { kind: 'unavailable', reason: 'installing' };
+    if (attributes.status === 'restoring_backup') return { kind: 'unavailable', reason: 'restoring-backup' };
+    return attributes.status ? { kind: 'unavailable', reason: 'unavailable' } : { kind: 'loading' };
+}
 
-    const alarms = { cpu: false, memory: false, disk: false };
-    if (stats) {
-        alarms.cpu = server.limits.cpu === 0 ? false : stats.cpuUsagePercent >= server.limits.cpu * 0.9;
-        alarms.memory = isAlarmState(stats.memoryUsageInBytes, server.limits.memory);
-        alarms.disk = server.limits.disk === 0 ? false : isAlarmState(stats.diskUsageInBytes, server.limits.disk);
-    }
+export default function ServerRow({ server, className }: { server: AccountServer; className?: string }) {
+    const { attributes } = server;
+    const statsAttributes = useServerResourceUsage(
+        attributes.uuid,
+        attributes.status !== 'suspended' && !attributes.is_node_under_maintenance
+    ).data?.attributes;
+    const fallbackSuspended = attributes.status === 'suspended';
 
-    const diskLimit = server.limits.disk !== 0 ? bytesToString(mbToBytes(server.limits.disk)) : 'Unlimited';
-    const memoryLimit = server.limits.memory !== 0 ? bytesToString(mbToBytes(server.limits.memory)) : 'Unlimited';
-    const cpuLimit = server.limits.cpu !== 0 ? server.limits.cpu + ' %' : 'Unlimited';
+    const isSuspended = statsAttributes?.is_suspended || fallbackSuspended;
+
+    const model = useMemo<ServerCardModel>(
+        () => ({
+            identifier: attributes.identifier,
+            uuid: attributes.uuid,
+            name: attributes.name,
+            description: attributes.description,
+            address:
+                relationshipData(attributes.relationships?.allocations)
+                    .filter((allocation) => allocation.attributes.is_default)
+                    .map(
+                        ({ attributes: allocation }) => `${allocation.ip_alias || ip(allocation.ip)}:${allocation.port}`
+                    )
+                    .join('') || null,
+            state: resolveState(
+                attributes,
+                statsAttributes,
+                isSuspended,
+                computeAlarms(statsAttributes, attributes.limits)
+            ),
+        }),
+        [attributes, statsAttributes, isSuspended]
+    );
+    const context = useMemo(() => ({ model, server }), [model, server]);
 
     return (
-        <StatusIndicatorBox as={Link} to={`/server/${server.id}`} className={className} $status={stats?.status}>
-            <div css={tw`flex items-center col-span-12 sm:col-span-5 lg:col-span-6`}>
-                <div className={'icon mr-4'}>
-                    <FontAwesomeIcon icon={faServer} />
-                </div>
-                <div>
-                    <p css={tw`text-lg break-words`}>{server.name}</p>
-                    {!!server.description && (
-                        <p css={tw`text-sm text-neutral-300 break-words line-clamp-2`}>{server.description}</p>
-                    )}
-                </div>
+        <ServerRowLink
+            to={'/server/$id'}
+            params={{ id: attributes.identifier }}
+            aria-label={attributes.name}
+            className={cn('group grid grid-cols-12 gap-4 relative', className)}
+        >
+            <Slot name={'dashboard.serverRow.before'} data={server} />
+            <div className='col-span-12'>
+                <ServerCardContext.Provider value={context}>
+                    <ComponentView
+                        name='dashboard.serverCard'
+                        resetKey={attributes.uuid}
+                        props={{ model, Default: DefaultServerCard, parts: serverCardParts }}
+                        loading={
+                            <div className='h-12 animate-pulse rounded-sm bg-muted' aria-label='Loading server card' />
+                        }
+                    />
+                </ServerCardContext.Provider>
             </div>
-            <div css={tw`flex-1 ml-4 lg:block lg:col-span-2 hidden`}>
-                <div css={tw`flex justify-center`}>
-                    <FontAwesomeIcon icon={faEthernet} css={tw`text-neutral-500`} />
-                    <p css={tw`text-sm text-neutral-400 ml-2`}>
-                        {server.allocations
-                            .filter((alloc) => alloc.isDefault)
-                            .map((allocation) => (
-                                <React.Fragment key={allocation.ip + allocation.port.toString()}>
-                                    {allocation.alias || ip(allocation.ip)}:{allocation.port}
-                                </React.Fragment>
-                            ))}
-                    </p>
-                </div>
-            </div>
-            <div css={tw`hidden col-span-7 lg:col-span-4 sm:flex items-baseline justify-center`}>
-                {!stats || isSuspended ? (
-                    isSuspended ? (
-                        <div css={tw`flex-1 text-center`}>
-                            <span css={tw`bg-red-500 rounded px-2 py-1 text-red-100 text-xs`}>
-                                {server.status === 'suspended' ? 'Suspended' : 'Connection Error'}
-                            </span>
-                        </div>
-                    ) : server.isTransferring || server.status ? (
-                        <div css={tw`flex-1 text-center`}>
-                            <span css={tw`bg-neutral-500 rounded px-2 py-1 text-neutral-100 text-xs`}>
-                                {server.isTransferring
-                                    ? 'Transferring'
-                                    : server.status === 'installing'
-                                    ? 'Installing'
-                                    : server.status === 'restoring_backup'
-                                    ? 'Restoring Backup'
-                                    : 'Unavailable'}
-                            </span>
-                        </div>
-                    ) : (
-                        <Spinner size={'small'} />
-                    )
-                ) : (
-                    <React.Fragment>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faMicrochip} $alarm={alarms.cpu} />
-                                <IconDescription $alarm={alarms.cpu}>
-                                    {stats.cpuUsagePercent.toFixed(2)} %
-                                </IconDescription>
-                            </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {cpuLimit}</p>
-                        </div>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faMemory} $alarm={alarms.memory} />
-                                <IconDescription $alarm={alarms.memory}>
-                                    {bytesToString(stats.memoryUsageInBytes)}
-                                </IconDescription>
-                            </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {memoryLimit}</p>
-                        </div>
-                        <div css={tw`flex-1 ml-4 sm:block hidden`}>
-                            <div css={tw`flex justify-center`}>
-                                <Icon icon={faHdd} $alarm={alarms.disk} />
-                                <IconDescription $alarm={alarms.disk}>
-                                    {bytesToString(stats.diskUsageInBytes)}
-                                </IconDescription>
-                            </div>
-                            <p css={tw`text-xs text-neutral-600 text-center mt-1`}>of {diskLimit}</p>
-                        </div>
-                    </React.Fragment>
+            <Slot name={'dashboard.serverRow.metrics.after'} data={server} />
+            <Slot name={'dashboard.serverRow.after'} data={server} />
+            <div
+                className={cn(
+                    'status-bar w-2 absolute right-0 z-20 rounded-full m-1 opacity-50 transition-opacity duration-150',
+                    'h-[calc(100%-0.5rem)] group-hover:opacity-75',
+                    statusToColor(statsAttributes?.current_state)
                 )}
-            </div>
-            <div className={'status-bar'} />
-        </StatusIndicatorBox>
+            />
+        </ServerRowLink>
     );
-};
+}

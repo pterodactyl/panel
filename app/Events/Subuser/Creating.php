@@ -1,10 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Events\Subuser;
 
+use Illuminate\Queue\SerializesModels;
 use Pterodactyl\Events\Event;
 use Pterodactyl\Models\Subuser;
-use Illuminate\Queue\SerializesModels;
 
 class Creating extends Event
 {
@@ -13,7 +15,5 @@ class Creating extends Event
     /**
      * Create a new event instance.
      */
-    public function __construct(public Subuser $subuser)
-    {
-    }
+    public function __construct(public Subuser $subuser) {}
 }

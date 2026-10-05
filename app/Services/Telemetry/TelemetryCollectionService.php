@@ -1,65 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Services\Telemetry;
 
-use Ramsey\Uuid\Uuid;
+use Exception;
 use Illuminate\Support\Arr;
-use Pterodactyl\Models\Egg;
-use Pterodactyl\Models\Nest;
-use Pterodactyl\Models\Node;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Mount;
-use Pterodactyl\Models\Backup;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Location;
 use Illuminate\Support\Facades\DB;
+use PDO;
+use Pterodactyl\Facades\Daemon;
 use Pterodactyl\Models\Allocation;
-use Illuminate\Support\Facades\Http;
-use Pterodactyl\Repositories\Eloquent\SettingsRepository;
-use Pterodactyl\Repositories\Wings\DaemonConfigurationRepository;
+use Pterodactyl\Models\Backup;
+use Pterodactyl\Models\Egg;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Mount;
+use Pterodactyl\Models\Node;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Setting;
+use Pterodactyl\Models\User;
+use Pterodactyl\Support\JsonValueGuard;
+use Ramsey\Uuid\Uuid;
 
 class TelemetryCollectionService
 {
     /**
-     * TelemetryCollectionService constructor.
-     */
-    public function __construct(
-        private DaemonConfigurationRepository $daemonConfigurationRepository,
-        private SettingsRepository $settingsRepository,
-    ) {
-    }
-
-    /**
-     * Collects telemetry data and sends it to the Pterodactyl Telemetry Service.
-     */
-    public function __invoke(): void
-    {
-        try {
-            $data = $this->collect();
-        } catch (\Exception) {
-            return;
-        }
-
-        Http::post('https://telemetry.pterodactyl.io', $data);
-    }
-
-    /**
      * Collects telemetry data and returns it as an array.
      *
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
+     * @return ApiPayload
      */
     public function collect(): array
     {
-        $uuid = $this->settingsRepository->get('app:telemetry:uuid');
-        if (is_null($uuid)) {
+        $uuid = Setting::fetch('app:telemetry:uuid');
+        if (($uuid) === null) {
             $uuid = Uuid::uuid4()->toString();
-            $this->settingsRepository->set('app:telemetry:uuid', $uuid);
+            Setting::put('app:telemetry:uuid', $uuid);
         }
 
-        $nodes = Node::all()->map(function ($node) {
+        $nodes = Node::all()->map(function (Node $node): ?array {
             try {
-                $info = $this->daemonConfigurationRepository->setNode($node)->getSystemInformation(2);
-            } catch (\Exception) {
+                $info = Daemon::node($node)->systemInformation(2);
+            } catch (Exception) {
                 return null;
             }
 
@@ -101,9 +81,9 @@ class TelemetryCollectionService
                     'osType' => Arr::get($info, 'system.os_type', ''),
                 ],
             ];
-        })->filter(fn ($node) => !is_null($node))->toArray();
+        })->filter(fn (?array $node): bool => $node !== null)->all();
 
-        return [
+        $payload = [
             'id' => $uuid,
 
             'panel' => [
@@ -121,24 +101,24 @@ class TelemetryCollectionService
 
                     'database' => [
                         'type' => config('database.default'),
-                        'version' => DB::getPdo()->getAttribute(\PDO::ATTR_SERVER_VERSION),
+                        'version' => DB::getPdo()->getAttribute(PDO::ATTR_SERVER_VERSION),
                     ],
                 ],
             ],
 
             'resources' => [
                 'allocations' => [
-                    'count' => Allocation::count(),
-                    'used' => Allocation::whereNotNull('server_id')->count(),
+                    'count' => Allocation::query()->count(),
+                    'used' => Allocation::query()->whereNotNull('server_id')->count(),
                 ],
 
                 'backups' => [
-                    'count' => Backup::count(),
-                    'bytes' => Backup::sum('bytes'),
+                    'count' => Backup::query()->count(),
+                    'bytes' => Backup::query()->sum('bytes'),
                 ],
 
                 'eggs' => [
-                    'count' => Egg::count(),
+                    'count' => Egg::query()->count(),
                     // Egg UUIDs are generated randomly on import, so there is not a consistent way to
                     // determine if servers are using default eggs or not.
                     //                    'server_usage' => Egg::all()
@@ -148,39 +128,32 @@ class TelemetryCollectionService
                 ],
 
                 'locations' => [
-                    'count' => Location::count(),
+                    'count' => Location::query()->count(),
                 ],
 
                 'mounts' => [
-                    'count' => Mount::count(),
-                ],
-
-                'nests' => [
-                    'count' => Nest::count(),
-                    // Nest UUIDs are generated randomly on import, so there is not a consistent way to
-                    // determine if servers are using default eggs or not.
-                    //                    'server_usage' => Nest::all()
-                    //                        ->flatMap(fn (Nest $nest) => [$nest->uuid => $nest->eggs->sum(fn (Egg $egg) => $egg->servers->count())])
-                    //                        ->filter(fn (int $count) => $count > 0)
-                    //                        ->toArray(),
+                    'count' => Mount::query()->count(),
                 ],
 
                 'nodes' => [
-                    'count' => Node::count(),
+                    'count' => Node::query()->count(),
                 ],
 
                 'servers' => [
-                    'count' => Server::count(),
-                    'suspended' => Server::where('status', Server::STATUS_SUSPENDED)->count(),
+                    'count' => Server::query()->count(),
+                    'suspended' => Server::query()->where('status', Server::STATUS_SUSPENDED)->count(),
                 ],
 
                 'users' => [
-                    'count' => User::count(),
-                    'admins' => User::where('root_admin', true)->count(),
+                    'count' => User::query()->count(),
+                    'admins' => User::query()->where('root_admin', true)->count(),
                 ],
             ],
 
             'nodes' => $nodes,
         ];
+        JsonValueGuard::assertPayload($payload);
+
+        return $payload;
     }
 }

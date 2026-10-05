@@ -1,45 +1,45 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\Database;
+use Illuminate\Support\Facades\Crypt;
 use League\Fractal\Resource\Item;
-use Pterodactyl\Models\Permission;
 use League\Fractal\Resource\NullResource;
-use Illuminate\Contracts\Encryption\Encrypter;
-use Pterodactyl\Contracts\Extensions\HashidsInterface;
+use Pterodactyl\Enum\Permissions;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
+use Pterodactyl\Facades\Hashids;
+use Pterodactyl\Models\Database;
 
+#[ResponseField('max_connections', 'integer', example: 0, nullable: true)]
 class DatabaseTransformer extends BaseClientTransformer
 {
-    protected array $availableIncludes = ['password'];
-
-    private Encrypter $encrypter;
-
-    private HashidsInterface $hashids;
+    protected array $eagerLoads = ['host', 'server.subusers'];
 
     /**
-     * Handle dependency injection.
+     * @var list<string>
      */
-    public function handle(Encrypter $encrypter, HashidsInterface $hashids)
-    {
-        $this->encrypter = $encrypter;
-        $this->hashids = $hashids;
-    }
+    protected array $availableIncludes = ['password'];
 
     public function getResourceName(): string
     {
         return Database::RESOURCE_NAME;
     }
 
+    /**
+     * @return ApiPayload
+     */
     public function transform(Database $model): array
     {
         $model->loadMissing('host');
+        $host = $model->host;
 
         return [
-            'id' => $this->hashids->encode($model->id),
+            'id' => Hashids::encode($model->id),
             'host' => [
-                'address' => $model->getRelation('host')->host,
-                'port' => $model->getRelation('host')->port,
+                'address' => $host->host,
+                'port' => $host->port,
             ],
             'name' => $model->database,
             'username' => $model->username,
@@ -53,14 +53,12 @@ class DatabaseTransformer extends BaseClientTransformer
      */
     public function includePassword(Database $database): Item|NullResource
     {
-        if (!$this->request->user()->can(Permission::ACTION_DATABASE_VIEW_PASSWORD, $database->server)) {
+        if (! $this->getUser()->can(Permissions::DatabaseViewPassword->value, $database->server)) {
             return $this->null();
         }
 
-        return $this->item($database, function (Database $model) {
-            return [
-                'password' => $this->encrypter->decrypt($model->password),
-            ];
-        }, 'database_password');
+        return $this->item($database, fn (Database $model): array => [
+            'password' => Crypt::decrypt($model->password),
+        ], 'database_password');
     }
 }

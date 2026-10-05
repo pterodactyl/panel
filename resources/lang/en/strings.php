@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'email' => 'Email',
     'email_address' => 'Email address',

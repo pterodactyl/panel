@@ -1,14 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models\Traits;
 
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Str;
-use Webmozart\Assert\Assert;
-use ParagonIE\ConstantTime\Base32;
+use Illuminate\Database\Eloquent\Attributes\Scope;
 use Illuminate\Database\Eloquent\Builder;
-use Pterodactyl\Models\Attributes\Identifiable;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
+use InvalidArgumentException;
+use ParagonIE\ConstantTime\Base32;
+use Pterodactyl\Models\Attributes\Identifiable;
+use Pterodactyl\Support\JsonValueGuard;
+use Ramsey\Uuid\Uuid;
+use ReflectionClass;
 
 /**
  * Support realtime identifiers on models that do not track an "identifier" column in
@@ -18,9 +24,9 @@ use Illuminate\Database\Eloquent\Casts\Attribute;
  *
  * @property-read string $identifier
  *
- * @method static Builder whereIdentifier(string $identifier)
+ * @method static Builder<static> whereIdentifier(string $identifier)
  *
- * @mixin \Illuminate\Database\Eloquent\Model
+ * @mixin Model
  */
 trait HasRealtimeIdentifier
 {
@@ -28,24 +34,21 @@ trait HasRealtimeIdentifier
 
     private static string $identifierDataColumn;
 
-    protected function identifier(): Attribute
+    /**
+     * @param  Builder<Model>  $builder  matches the Pterodactyl\Contracts\Models\Identifiable
+     *                                   contract; Eloquent always hands the scope a builder for
+     *                                   the model the trait is used on
+     */
+    #[Scope]
+    public function whereIdentifier(Builder $builder, string $identifier): void
     {
-        return Attribute::get(function () {
-            $bytes = Uuid::fromString($this->getRawOriginal(static::$identifierDataColumn))->getBytes();
-
-            return sprintf('%s_%s', static::$identifierPrefix, Base32::encodeUnpadded($bytes));
-        });
-    }
-
-    public function scopeWhereIdentifier(Builder $builder, string $identifier): void
-    {
-        if (!str_starts_with($identifier, $prefix = self::$identifierPrefix . '_')) {
+        if (! str_starts_with($identifier, $prefix = self::$identifierPrefix.'_')) {
             $builder->whereRaw('0 = 1');
 
             return;
         }
 
-        $bytes = rescue(fn () => Base32::decode(Str::replaceFirst($prefix, '', $identifier)), report: false);
+        $bytes = rescue(fn (): string => Base32::decode(Str::replaceFirst($prefix, '', $identifier)), report: false);
         if (empty($bytes)) {
             $builder->whereRaw('0 = 1');
 
@@ -57,17 +60,25 @@ trait HasRealtimeIdentifier
 
     protected static function bootHasRealtimeIdentifier(): void
     {
-        $attrs = (new \ReflectionClass(static::class))->getAttributes(Identifiable::class);
+        $attrs = (new ReflectionClass(static::class))->getAttributes(Identifiable::class);
 
-        Assert::count(
-            $attrs,
-            1,
-            'The #[' . Identifiable::class . '] attribute must be set on ' . static::class . ' to use realtime identifiers.'
-        );
+        throw_if(count($attrs) !== 1, InvalidArgumentException::class, 'The #['.Identifiable::class.'] attribute must be set on '.static::class.' to use realtime identifiers.');
 
         $instance = $attrs[0]->newInstance();
 
         self::$identifierPrefix = $instance->prefix;
         self::$identifierDataColumn = $instance->column;
+    }
+
+    /**
+     * @return Attribute<non-falsy-string, never>
+     */
+    protected function identifier(): Attribute
+    {
+        return Attribute::get(function (): string {
+            $bytes = Uuid::fromString(JsonValueGuard::string($this->getRawOriginal(self::$identifierDataColumn)))->getBytes();
+
+            return sprintf('%s_%s', self::$identifierPrefix, Base32::encodeUnpadded($bytes));
+        });
     }
 }

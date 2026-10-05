@@ -1,14 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Carbon\Carbon;
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Str;
+use Pterodactyl\Models\User;
+use Ramsey\Uuid\Uuid;
 
 /**
- * @extends \Illuminate\Database\Eloquent\Factories\Factory<\Pterodactyl\Models\User>
+ * @extends Factory<User>
  */
 class UserFactory extends Factory
 {
@@ -22,16 +25,17 @@ class UserFactory extends Factory
         return [
             'external_id' => null,
             'uuid' => Uuid::uuid4()->toString(),
-            'username' => $this->faker->userName . '_' . Str::random(10),
-            'email' => Str::random(32) . '@example.com',
-            'name_first' => $this->faker->firstName,
-            'name_last' => $this->faker->lastName,
+            'username' => fake()->userName().'_'.Str::random(10),
+            'email' => Str::random(32).'@example.com',
+            'name_first' => fake()->firstName(),
+            'name_last' => fake()->lastName(),
             'password' => $password ?: $password = bcrypt('password'),
+            'remember_token' => Str::random(10),
             'language' => 'en',
             'root_admin' => false,
             'use_totp' => false,
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
         ];
     }
 

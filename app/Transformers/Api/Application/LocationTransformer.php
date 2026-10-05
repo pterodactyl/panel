@@ -1,16 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Location;
 use League\Fractal\Resource\Collection;
 use League\Fractal\Resource\NullResource;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Models\Location;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class LocationTransformer extends BaseTransformer
 {
+    protected array $includeRelations = [
+        'servers' => ['relation' => 'servers', 'transformer' => ServerTransformer::class, 'ability' => AdminAcl::RESOURCE_SERVERS],
+        'nodes' => ['relation' => 'nodes', 'transformer' => NodeTransformer::class, 'ability' => AdminAcl::RESOURCE_NODES],
+    ];
+
     /**
      * List of resources that can be included.
+     *
+     * @var list<string>
      */
     protected array $availableIncludes = ['nodes', 'servers'];
 
@@ -24,6 +34,8 @@ class LocationTransformer extends BaseTransformer
 
     /**
      * Return a generic transformed location array.
+     *
+     * @return ApiPayload
      */
     public function transform(Location $location): array
     {
@@ -31,19 +43,18 @@ class LocationTransformer extends BaseTransformer
             'id' => $location->id,
             'short' => $location->short,
             'long' => $location->long,
+            'relationships' => [],
             $location->getUpdatedAtColumn() => $this->formatTimestamp($location->updated_at),
             $location->getCreatedAtColumn() => $this->formatTimestamp($location->created_at),
         ];
     }
 
     /**
-     * Return the nodes associated with this location.
-     *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeServers(Location $location): Collection|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
         }
 
@@ -55,11 +66,11 @@ class LocationTransformer extends BaseTransformer
     /**
      * Return the nodes associated with this location.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeNodes(Location $location): Collection|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_NODES)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_NODES)) {
             return $this->null();
         }
 

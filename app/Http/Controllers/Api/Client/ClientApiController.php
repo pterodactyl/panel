@@ -1,56 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Client;
 
-use Webmozart\Assert\Assert;
-use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
+use Pterodactyl\Facades\Fractal;
+use Pterodactyl\Http\Concerns\ResolvesRequestContext;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Pterodactyl\Transformers\Api\Client\BaseClientTransformer;
 
 abstract class ClientApiController extends ApplicationApiController
 {
-    /**
-     * Returns only the includes which are valid for the given transformer.
-     */
-    protected function getIncludesForTransformer(BaseClientTransformer $transformer, array $merge = []): array
-    {
-        $filtered = array_filter($this->parseIncludes(), function ($datum) use ($transformer) {
-            return in_array($datum, $transformer->getAvailableIncludes());
-        });
-
-        return array_merge($filtered, $merge);
-    }
-
-    /**
-     * Returns the parsed includes for this request.
-     */
-    protected function parseIncludes(): array
-    {
-        $includes = $this->request->query('include') ?? [];
-
-        if (!is_string($includes)) {
-            return $includes;
-        }
-
-        return array_map(function ($item) {
-            return trim($item);
-        }, explode(',', $includes));
-    }
+    use ResolvesRequestContext;
 
     /**
      * Return an instance of an application transformer.
      *
      * @template T of \Pterodactyl\Transformers\Api\Client\BaseClientTransformer
      *
-     * @param class-string<T> $abstract
-     *
+     * @param  class-string<T>  $abstract
      * @return T
      *
      * @noinspection PhpDocSignatureInspection
      */
-    public function getTransformer(string $abstract)
+    public function getTransformer(string $abstract): BaseClientTransformer
     {
-        Assert::subclassOf($abstract, BaseClientTransformer::class); // @phpstan-ignore staticMethod.alreadyNarrowedType
+        return $this->makeTransformer($abstract, BaseClientTransformer::class);
+    }
 
-        return $abstract::fromRequest($this->request);
+    /**
+     * Returns only the includes which are valid for the given transformer.
+     *
+     * @param  list<string>  $merge
+     * @return list<string>
+     */
+    protected function getIncludesForTransformer(BaseClientTransformer $transformer, array $merge = []): array
+    {
+        $filtered = array_filter(
+            $this->parseIncludes(),
+            fn (string $datum): bool => in_array($datum, $transformer->getAvailableIncludes(), true),
+        );
+
+        return array_merge($filtered, $merge);
+    }
+
+    /**
+     * Returns the parsed includes for this request.
+     *
+     * @return list<string>
+     */
+    protected function parseIncludes(): array
+    {
+        return Fractal::requestedIncludes();
     }
 }

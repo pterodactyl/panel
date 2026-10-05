@@ -1,0 +1,16 @@
+<?php
+
+namespace Illuminate\Database\Eloquent\Concerns;
+
+trait HasAttributes
+{
+    /**
+     * @param  array<string, mixed>  $attributes
+     * @param  list<string>  $mutatedAttributes
+     * @return array<string, mixed>
+     */
+    protected function addCastAttributesToArray(array $attributes, array $mutatedAttributes);
+
+    /** @return list<string> */
+    public function getMutatedAttributes();
+}

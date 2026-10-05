@@ -1,121 +1,100 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import { Variable } from 'lucide-react';
 import TitledGreyBox from '@/components/elements/TitledGreyBox';
-import tw from 'twin.macro';
 import VariableBox from '@/components/server/startup/VariableBox';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import getServerStartup from '@/api/swr/getServerStartup';
 import Spinner from '@/components/elements/Spinner';
 import { ServerError } from '@/components/elements/ScreenBlock';
 import { httpErrorToHuman } from '@/api/http';
-import { ServerContext } from '@/state/server';
-import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
-import Select from '@/components/elements/Select';
-import isEqual from 'react-fast-compare';
-import Input from '@/components/elements/Input';
-import setSelectedDockerImage from '@/api/server/setSelectedDockerImage';
+import Select from '@/components/ui/Select';
+import { TextInput } from '@/components/form/controls';
 import InputSpinner from '@/components/elements/InputSpinner';
-import useFlash from '@/plugins/useFlash';
+import { useCurrentServer } from '@/api/server/queries';
+import { useServerStartup, useSetSelectedDockerImage } from '@/api/server/startup/queries';
+import Slot from '@/extensions/Slot';
+import { usePermissions } from '@/plugins/usePermissions';
+import { Empty, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { emptyCompactClass } from '@/components/ui/styles';
+import { cn } from '@/lib/cn';
 
 const StartupContainer = () => {
-    const [loading, setLoading] = useState(false);
-    const { clearFlashes, clearAndAddHttpError } = useFlash();
+    const server = useCurrentServer()!;
+    const uuid = server.attributes.uuid;
 
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const variables = ServerContext.useStoreState(
-        ({ server }) => ({
-            variables: server.data!.variables,
-            invocation: server.data!.invocation,
-            dockerImage: server.data!.dockerImage,
-        }),
-        isEqual
-    );
+    const { data, error, isFetching, refetch } = useServerStartup(uuid);
 
-    const { data, error, isValidating, mutate } = getServerStartup(uuid, {
-        ...variables,
-        dockerImages: { [variables.dockerImage]: variables.dockerImage },
-    });
-
-    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const updateDockerImage = useSetSelectedDockerImage(uuid);
+    const [canChangeDockerImage] = usePermissions(['startup.docker-image']);
+    const dockerImages = data?.meta?.docker_images ?? {};
     const isCustomImage =
         data &&
-        !Object.values(data.dockerImages)
+        !Object.values(dockerImages)
             .map((v) => v.toLowerCase())
-            .includes(variables.dockerImage.toLowerCase());
+            .includes(server.attributes.docker_image.toLowerCase());
 
-    useEffect(() => {
-        // Since we're passing in initial data this will not trigger on mount automatically. We
-        // want to always fetch fresh information from the API however when we're loading the startup
-        // information.
-        mutate();
-    }, []);
-
-    useDeepCompareEffect(() => {
-        if (!data) return;
-
-        setServerFromState((s) => ({
-            ...s,
-            invocation: data.invocation,
-            variables: data.variables,
-        }));
-    }, [data]);
-
-    const updateSelectedDockerImage = useCallback(
-        (v: React.ChangeEvent<HTMLSelectElement>) => {
-            setLoading(true);
-            clearFlashes('startup:image');
-
-            const image = v.currentTarget.value;
-            setSelectedDockerImage(uuid, image)
-                .then(() => setServerFromState((s) => ({ ...s, dockerImage: image })))
-                .catch((error) => {
-                    console.error(error);
-                    clearAndAddHttpError({ key: 'startup:image', error });
-                })
-                .then(() => setLoading(false));
-        },
-        [uuid]
-    );
+    const updateSelectedDockerImage = (image: string) => {
+        updateDockerImage.mutate({ path: { server_uuid: uuid }, body: { docker_image: image } });
+    };
 
     return !data ? (
-        !error || (error && isValidating) ? (
+        !error || (error && isFetching) ? (
             <Spinner centered size={Spinner.Size.LARGE} />
         ) : (
-            <ServerError title={'Oops!'} message={httpErrorToHuman(error)} onRetry={() => mutate()} />
+            <ServerError title={'Oops!'} message={httpErrorToHuman(error)} onRetry={() => refetch()} />
         )
     ) : (
-        <ServerContentBlock title={'Startup Settings'} showFlashKey={'startup:image'}>
-            <div css={tw`md:flex`}>
-                <TitledGreyBox title={'Startup Command'} css={tw`flex-1`}>
-                    <div css={tw`px-1 py-2`}>
-                        <p css={tw`font-mono bg-neutral-900 rounded py-2 px-4`}>{data.invocation}</p>
+        <ServerContentBlock title={'Startup Settings'}>
+            <Slot
+                name={'server.startup.form'}
+                data={{
+                    server,
+                    configuration: data,
+                    isPending: updateDockerImage.isPending,
+                    canChangeDockerImage: canChangeDockerImage && !isCustomImage,
+                    setDockerImage: async (image) => {
+                        if (!canChangeDockerImage || isCustomImage || !Object.values(dockerImages).includes(image)) {
+                            throw new Error('This Docker image cannot be selected for the current server.');
+                        }
+                        await updateDockerImage.mutateAsync({
+                            path: { server_uuid: uuid },
+                            body: { docker_image: image },
+                        });
+                    },
+                    refresh: async () => {
+                        const result = await refetch();
+                        if (result.error) throw result.error;
+                    },
+                }}
+            />
+            <div className={'md:flex'}>
+                <TitledGreyBox title={'Startup Command'} className={'flex-1'}>
+                    <div className={'px-1 py-2'}>
+                        <p className={'rounded-sm bg-terminal px-4 py-2 font-mono'}>{data.meta?.startup_command}</p>
                     </div>
                 </TitledGreyBox>
-                <TitledGreyBox title={'Docker Image'} css={tw`flex-1 lg:flex-none lg:w-1/3 mt-8 md:mt-0 md:ml-10`}>
-                    {Object.keys(data.dockerImages).length > 1 && !isCustomImage ? (
+                <TitledGreyBox title={'Docker Image'} className={'flex-1 lg:flex-none lg:w-1/3 mt-8 md:mt-0 md:ml-10'}>
+                    {Object.keys(dockerImages).length > 1 && !isCustomImage ? (
                         <>
-                            <InputSpinner visible={loading}>
+                            <InputSpinner visible={updateDockerImage.isPending}>
                                 <Select
-                                    disabled={Object.keys(data.dockerImages).length < 2}
-                                    onChange={updateSelectedDockerImage}
-                                    defaultValue={variables.dockerImage}
-                                >
-                                    {Object.keys(data.dockerImages).map((key) => (
-                                        <option key={data.dockerImages[key]} value={data.dockerImages[key]}>
-                                            {key}
-                                        </option>
-                                    ))}
-                                </Select>
+                                    disabled={Object.keys(dockerImages).length < 2}
+                                    value={server.attributes.docker_image}
+                                    onChange={(value) => updateSelectedDockerImage(String(value))}
+                                    options={Object.keys(dockerImages).map((key) => ({
+                                        value: dockerImages[key],
+                                        label: key,
+                                    }))}
+                                />
                             </InputSpinner>
-                            <p css={tw`text-xs text-neutral-300 mt-2`}>
+                            <p className={'text-xs text-muted-foreground mt-2'}>
                                 This is an advanced feature allowing you to select a Docker image to use when running
                                 this server instance.
                             </p>
                         </>
                     ) : (
                         <>
-                            <Input disabled readOnly value={variables.dockerImage} />
+                            <TextInput disabled readOnly value={server.attributes.docker_image} />
                             {isCustomImage && (
-                                <p css={tw`text-xs text-neutral-300 mt-2`}>
+                                <p className={'text-xs text-muted-foreground mt-2'}>
                                     This {"server's"} Docker image has been manually set by an administrator and cannot
                                     be changed through this UI.
                                 </p>
@@ -124,12 +103,26 @@ const StartupContainer = () => {
                     )}
                 </TitledGreyBox>
             </div>
-            <h3 css={tw`mt-8 mb-2 text-2xl`}>Variables</h3>
-            <div css={tw`grid gap-8 md:grid-cols-2`}>
-                {data.variables.map((variable) => (
-                    <VariableBox key={variable.envVariable} variable={variable} />
-                ))}
-            </div>
+            <h3 className={'mt-8 mb-2 text-2xl'}>Variables</h3>
+            {data.data.length === 0 ? (
+                <Empty className={cn(emptyCompactClass, 'border')}>
+                    <EmptyHeader>
+                        <EmptyMedia variant={'icon'}>
+                            <Variable />
+                        </EmptyMedia>
+                        <EmptyTitle>No variables</EmptyTitle>
+                        <EmptyDescription>
+                            This server doesn&apos;t have any startup variables to configure.
+                        </EmptyDescription>
+                    </EmptyHeader>
+                </Empty>
+            ) : (
+                <div className={'grid gap-8 md:grid-cols-2'}>
+                    {data.data.map((variable) => (
+                        <VariableBox key={variable.attributes.env_variable} variable={variable} />
+                    ))}
+                </div>
+            )}
         </ServerContentBlock>
     );
 };

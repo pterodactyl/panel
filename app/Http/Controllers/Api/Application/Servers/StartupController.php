@@ -1,40 +1,56 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
 
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Servers\StartupModificationService;
-use Pterodactyl\Transformers\Api\Application\ServerTransformer;
+use Illuminate\Validation\ValidationException;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\Response as ScribeResponse;
+use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Servers\UpdatesServerStartup;
+use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseFromTransformer;
+use Pterodactyl\Facades\Fractal;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
 use Pterodactyl\Http\Requests\Api\Application\Servers\UpdateServerStartupRequest;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\User;
+use Pterodactyl\Transformers\Api\Application\ServerTransformer;
 
+#[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
+#[Subgroup('Servers', 'Create, update, retrieve, manage, and delete servers.')]
 class StartupController extends ApplicationApiController
 {
-    /**
-     * StartupController constructor.
-     */
-    public function __construct(private StartupModificationService $modificationService)
-    {
-        parent::__construct();
-    }
+    private const array DAEMON_CONNECTION_ERROR = [
+        'errors' => [
+            [
+                'code' => 'DaemonConnectionException',
+                'status' => '504',
+                'detail' => 'Could not establish a connection to the machine running this server. Please try again.',
+            ],
+        ],
+    ];
 
     /**
      * Update the startup and environment settings for a specific server.
      *
-     * @throws \Illuminate\Validation\ValidationException
-     * @throws \Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     *
+     * @return ApiPayload
+     *
+     * @throws ValidationException
+     * @throws DaemonConnectionException
      */
-    public function index(UpdateServerStartupRequest $request, Server $server): array
+    #[Endpoint('Update server startup', 'Updates startup command, image, egg, and environment variables for a server.')]
+    #[ResponseFromTransformer(ServerTransformer::class, Server::class, factoryStates: ['withRelationships'], resourceKey: 'server')]
+    #[ScribeResponse(self::DAEMON_CONNECTION_ERROR, status: 504, description: 'Wings could not be reached while syncing startup changes.')]
+    public function index(UpdateServerStartupRequest $request, UpdatesServerStartup $modification, Server $server): array
     {
-        $server = $this->modificationService
-            ->setUserLevel(User::USER_LEVEL_ADMIN)
-            ->handle($server, $request->validated());
+        $server = $modification->update($server, $request->payload(), User::USER_LEVEL_ADMIN);
 
-        return $this->fractal->item($server)
+        return Fractal::item($server)
             ->transformWith($this->getTransformer(ServerTransformer::class))
-            ->toArray();
+            ->toResponseArray();
     }
 }

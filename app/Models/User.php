@@ -1,27 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Models;
 
-use Pterodactyl\Rules\Username;
-use Pterodactyl\Facades\Activity;
-use Illuminate\Support\Collection;
-use Illuminate\Validation\Rules\In;
-use Illuminate\Auth\Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use Database\Factories\UserFactory;
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Attributes\Hidden;
+use Illuminate\Database\Eloquent\Attributes\RouteKey;
 use Illuminate\Database\Eloquent\Builder;
-use Pterodactyl\Contracts\Models\Identifiable;
-use Pterodactyl\Models\Traits\HasAccessTokens;
-use Illuminate\Auth\Passwords\CanResetPassword;
-use Pterodactyl\Traits\Helpers\AvailableLanguages;
-use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Foundation\Auth\Access\Authorizable;
-use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Concerns\HasVersion4Uuids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
-use Illuminate\Contracts\Auth\Access\Authorizable as AuthorizableContract;
-use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\DatabaseNotification;
+use Illuminate\Notifications\DatabaseNotificationCollection;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
+use Laravel\Sanctum\TransientToken;
+use Pterodactyl\Contracts\Models\Identifiable;
+use Pterodactyl\Facades\Activity;
+use Pterodactyl\Models\Traits\HasAccessTokens;
+use Pterodactyl\Models\Traits\HasRealtimeIdentifier;
 use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
+use Pterodactyl\Support\JsonValueGuard;
+use Pterodactyl\Traits\Helpers\AvailableLanguages;
 
 /**
  * Pterodactyl\Models\User.
@@ -39,25 +46,26 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @property bool $root_admin
  * @property bool $use_totp
  * @property string|null $totp_secret
- * @property \Illuminate\Support\Carbon|null $totp_authenticated_at
+ * @property Carbon|null $totp_authenticated_at
  * @property bool $gravatar
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $apiKeys
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @property \Illuminate\Database\Eloquent\Collection|ApiKey[] $apiKeys
  * @property int|null $api_keys_count
  * @property string $name
- * @property \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
+ * @property DatabaseNotificationCollection<int, DatabaseNotification>|DatabaseNotification[] $notifications
  * @property int|null $notifications_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\RecoveryToken[] $recoveryTokens
+ * @property \Illuminate\Database\Eloquent\Collection|RecoveryToken[] $recoveryTokens
  * @property int|null $recovery_tokens_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\Server[] $servers
+ * @property \Illuminate\Database\Eloquent\Collection|Server[] $servers
  * @property int|null $servers_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\UserSSHKey[] $sshKeys
+ * @property int|null $subuser_of_count
+ * @property \Illuminate\Database\Eloquent\Collection|UserSSHKey[] $sshKeys
  * @property int|null $ssh_keys_count
- * @property \Illuminate\Database\Eloquent\Collection|\Pterodactyl\Models\ApiKey[] $tokens
+ * @property \Illuminate\Database\Eloquent\Collection|ApiKey[] $tokens
  * @property int|null $tokens_count
  *
- * @method static \Database\Factories\UserFactory factory(...$parameters)
+ * @method static UserFactory factory(...$parameters)
  * @method static Builder|User newModelQuery()
  * @method static Builder|User newQuery()
  * @method static Builder|User query()
@@ -79,77 +87,48 @@ use Pterodactyl\Notifications\SendPasswordReset as ResetPasswordNotification;
  * @method static Builder|User whereUsername($value)
  * @method static Builder|User whereUuid($value)
  *
- * @mixin \Eloquent
+ * @mixin Model
  */
 #[Attributes\Identifiable('user')]
-class User extends Model implements
-    AuthenticatableContract,
-    AuthorizableContract,
-    CanResetPasswordContract,
-    Identifiable
+#[Fillable([
+    'external_id',
+    'username',
+    'email',
+    'name_first',
+    'name_last',
+    'password',
+    'language',
+    'use_totp',
+    'totp_secret',
+    'totp_authenticated_at',
+    'gravatar',
+    'root_admin',
+])]
+#[Hidden(['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'])]
+#[RouteKey('uuid')]
+class User extends Authenticatable implements Identifiable
 {
-    use Authenticatable;
-    use Authorizable;
     use AvailableLanguages;
-    use CanResetPassword;
-    /** @use \Pterodactyl\Models\Traits\HasAccessTokens<\Pterodactyl\Models\ApiKey> */
-    use HasAccessTokens;
-    use Notifiable;
-    /** @use \Illuminate\Database\Eloquent\Factories\HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory;
-    use HasRealtimeIdentifier;
 
-    public const USER_LEVEL_USER = 0;
-    public const USER_LEVEL_ADMIN = 1;
+    /** @use HasAccessTokens<ApiKey|TransientToken> */
+    use HasAccessTokens;
+
+    /** @use HasFactory<UserFactory> */
+    use HasFactory;
+
+    use HasRealtimeIdentifier;
+    use HasVersion4Uuids;
+    use Notifiable;
+
+    public const int USER_LEVEL_USER = 0;
+
+    public const int USER_LEVEL_ADMIN = 1;
 
     /**
      * The resource name for this model when it is transformed into an
      * API representation using fractal.
      */
-    public const RESOURCE_NAME = 'user';
-
-    /**
-     * Level of servers to display when using access() on a user.
-     */
-    protected string $accessLevel = 'all';
-
-    /**
-     * The table associated with the model.
-     */
-    protected $table = 'users';
-
-    /**
-     * A list of mass-assignable variables.
-     */
-    protected $fillable = [
-        'external_id',
-        'username',
-        'email',
-        'name_first',
-        'name_last',
-        'password',
-        'language',
-        'use_totp',
-        'totp_secret',
-        'totp_authenticated_at',
-        'gravatar',
-        'root_admin',
-    ];
-
-    /**
-     * Cast values to correct type.
-     */
-    protected $casts = [
-        'root_admin' => 'boolean',
-        'use_totp' => 'boolean',
-        'gravatar' => 'boolean',
-        'totp_authenticated_at' => 'datetime',
-    ];
-
-    /**
-     * The attributes excluded from the model's JSON form.
-     */
-    protected $hidden = ['password', 'remember_token', 'totp_secret', 'totp_authenticated_at'];
+    public const string RESOURCE_NAME = 'user';
 
     /**
      * Default values for specific fields in the database.
@@ -163,52 +142,48 @@ class User extends Model implements
     ];
 
     /**
-     * Rules verifying that the data being stored matches the expectations of the database.
+     * @return array<string, string>
      */
-    public static array $validationRules = [
-        'uuid' => 'required|string|size:36|unique:users,uuid',
-        'email' => 'required|email|between:1,191|unique:users,email',
-        'external_id' => 'sometimes|nullable|string|max:191|unique:users,external_id',
-        'username' => 'required|between:1,191|unique:users,username',
-        'name_first' => 'required|string|between:1,191',
-        'name_last' => 'required|string|between:1,191',
-        'password' => 'sometimes|nullable|string',
-        'root_admin' => 'boolean',
-        'language' => 'string',
-        'use_totp' => 'boolean',
-        'totp_secret' => 'nullable|string',
-    ];
-
-    /**
-     * Implement language verification by overriding Eloquence's gather
-     * rules function.
-     */
-    public static function getRules(): array
+    protected function casts(): array
     {
-        $rules = parent::getRules();
-
-        $rules['language'][] = new In(array_keys((new self())->getAvailableLanguages()));
-        $rules['username'][] = new Username();
-
-        return $rules;
+        return [
+            'root_admin' => 'boolean',
+            'use_totp' => 'boolean',
+            'gravatar' => 'boolean',
+            'password' => 'hashed',
+            'totp_authenticated_at' => 'datetime',
+        ];
     }
 
     /**
-     * Return the user model in a format that can be passed over to Vue templates.
+     * The column holding the automatically generated v4 UUID for the user.
+     *
+     * @return list<string>
+     */
+    public function uniqueIds(): array
+    {
+        return ['uuid'];
+    }
+
+    /**
+     * @return ApiPayload
      */
     public function toVueObject(): array
     {
-        return Collection::make($this->toArray())->except(['id', 'external_id'])
+        $payload = Collection::make($this->toArray())->except(['id', 'external_id'])
             ->merge(['identifier' => $this->identifier])
             ->toArray();
+        JsonValueGuard::assertPayload($payload);
+
+        return $payload;
     }
 
     /**
      * Send the password reset notification.
      *
-     * @param string $token
+     * @param  string  $token
      */
-    public function sendPasswordResetNotification($token)
+    public function sendPasswordResetNotification($token): void
     {
         Activity::event('auth:reset-password')
             ->withRequestMetadata()
@@ -219,25 +194,9 @@ class User extends Model implements
     }
 
     /**
-     * Store the username as a lowercase string.
-     */
-    public function setUsernameAttribute(string $value)
-    {
-        $this->attributes['username'] = mb_strtolower($value);
-    }
-
-    /**
-     * Return a concatenated result for the accounts full name.
-     */
-    public function getNameAttribute(): string
-    {
-        return trim($this->name_first . ' ' . $this->name_last);
-    }
-
-    /**
      * Returns all servers that a user owns.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\Server, $this>
+     * @return HasMany<Server, $this>
      */
     public function servers(): HasMany
     {
@@ -245,7 +204,7 @@ class User extends Model implements
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\ApiKey, $this>
+     * @return HasMany<ApiKey, $this>
      */
     public function apiKeys(): HasMany
     {
@@ -254,7 +213,7 @@ class User extends Model implements
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\RecoveryToken, $this>
+     * @return HasMany<RecoveryToken, $this>
      */
     public function recoveryTokens(): HasMany
     {
@@ -262,7 +221,7 @@ class User extends Model implements
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany<\Pterodactyl\Models\UserSSHKey, $this>
+     * @return HasMany<UserSSHKey, $this>
      */
     public function sshKeys(): HasMany
     {
@@ -270,10 +229,10 @@ class User extends Model implements
     }
 
     /**
-     * Returns all the activity logs where this user is the subject — not to
+     * Returns all the activity logs where this user is the subject - not to
      * be confused by activity logs where this user is the _actor_.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\MorphToMany<\Pterodactyl\Models\ActivityLog, $this>
+     * @return MorphToMany<ActivityLog, $this>
      */
     public function activity(): MorphToMany
     {
@@ -284,16 +243,41 @@ class User extends Model implements
      * Returns all the servers that a user can access by way of being the owner of the
      * server, or because they are assigned as a subuser for that server.
      *
-     * @return \Illuminate\Database\Eloquent\Builder<\Pterodactyl\Models\Server>
+     * @return Builder<Server>
      */
     public function accessibleServers(): Builder
     {
         return Server::query()
             ->select('servers.*')
             ->leftJoin('subusers', 'subusers.server_id', '=', 'servers.id')
-            ->where(function (Builder $builder) {
+            ->where(function (Builder $builder): void {
                 $builder->where('servers.owner_id', $this->id)->orWhere('subusers.user_id', $this->id);
             })
             ->groupBy('servers.id');
+    }
+
+    /**
+     * Store the username as a lowercase string. Reads fall through to the stored
+     * column, so the get side is the string it was written as.
+     *
+     * @return Attribute<string, string>
+     */
+    protected function username(): Attribute
+    {
+        return Attribute::make(
+            set: fn (string $value): string => mb_strtolower($value),
+        );
+    }
+
+    /**
+     * Return a concatenated result for the accounts full name.
+     *
+     * @return Attribute<string, never>
+     */
+    protected function name(): Attribute
+    {
+        return Attribute::make(
+            get: fn (): string => mb_trim($this->name_first.' '.$this->name_last),
+        );
     }
 }

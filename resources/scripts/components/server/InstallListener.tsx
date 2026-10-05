@@ -1,30 +1,36 @@
+import { useServerRouteId } from '@/router/params';
+import { useQueryClient } from '@tanstack/react-query';
+import {
+    serverQueryFilters,
+    serverResourceQueryFilters,
+    useUpdateCurrentServer,
+    useCurrentServerUuid,
+} from '@/api/server/queries';
 import useWebsocketEvent from '@/plugins/useWebsocketEvent';
-import { ServerContext } from '@/state/server';
 import { SocketEvent } from '@/components/server/events';
-import { mutate } from 'swr';
-import { getDirectorySwrKey } from '@/plugins/useFileManagerSwr';
 
+// Server resources answer 409 while an install or restore runs, so refetch them once it ends.
 const InstallListener = () => {
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const getServer = ServerContext.useStoreActions((actions) => actions.server.getServer);
-    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const id = useServerRouteId();
+    const uuid = useCurrentServerUuid()!;
+    const queryClient = useQueryClient();
+    const updateCurrentServer = useUpdateCurrentServer();
+
+    const refreshServer = () =>
+        Promise.all([
+            queryClient.refetchQueries(serverQueryFilters(id ?? '')),
+            queryClient.invalidateQueries(serverResourceQueryFilters(uuid)),
+        ]).catch((error) => console.error(error));
 
     useWebsocketEvent(SocketEvent.BACKUP_RESTORE_COMPLETED, () => {
-        mutate(getDirectorySwrKey(uuid, '/'), undefined);
-        setServerFromState((s) => ({ ...s, status: null }));
+        updateCurrentServer((server) => ({ ...server, attributes: { ...server.attributes, status: null } }));
+        void refreshServer();
     });
 
-    // Listen for the installation completion event and then fire off a request to fetch the updated
-    // server information. This allows the server to automatically become available to the user if they
-    // just sit on the page.
-    useWebsocketEvent(SocketEvent.INSTALL_COMPLETED, () => {
-        getServer(uuid).catch((error) => console.error(error));
-    });
+    useWebsocketEvent(SocketEvent.INSTALL_COMPLETED, () => void refreshServer());
 
-    // When we see the install started event immediately update the state to indicate such so that the
-    // screens automatically update.
     useWebsocketEvent(SocketEvent.INSTALL_STARTED, () => {
-        setServerFromState((s) => ({ ...s, status: 'installing' }));
+        updateCurrentServer((server) => ({ ...server, attributes: { ...server.attributes, status: 'installing' } }));
     });
 
     return null;

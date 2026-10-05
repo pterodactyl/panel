@@ -1,16 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Application;
 
-use Pterodactyl\Models\Subuser;
 use League\Fractal\Resource\Item;
 use League\Fractal\Resource\NullResource;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Models\Subuser;
 use Pterodactyl\Services\Acl\Api\AdminAcl;
 
 class SubuserTransformer extends BaseTransformer
 {
+    protected array $includeRelations = [
+        'user' => ['relation' => 'user', 'transformer' => UserTransformer::class, 'ability' => AdminAcl::RESOURCE_USERS],
+        'server' => ['relation' => 'server', 'transformer' => ServerTransformer::class, 'ability' => AdminAcl::RESOURCE_SERVERS],
+    ];
+
     /**
      * List of resources that can be included.
+     *
+     * @var list<string>
      */
     protected array $availableIncludes = ['user', 'server'];
 
@@ -24,6 +34,8 @@ class SubuserTransformer extends BaseTransformer
 
     /**
      * Return a transformed Subuser model that can be consumed by external services.
+     *
+     * @return ApiPayload
      */
     public function transform(Subuser $subuser): array
     {
@@ -40,11 +52,11 @@ class SubuserTransformer extends BaseTransformer
     /**
      * Return a generic item of user for this subuser.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeUser(Subuser $subuser): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_USERS)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_USERS)) {
             return $this->null();
         }
 
@@ -56,11 +68,11 @@ class SubuserTransformer extends BaseTransformer
     /**
      * Return a generic item of server for this subuser.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeServer(Subuser $subuser): Item|NullResource
     {
-        if (!$this->authorize(AdminAcl::RESOURCE_SERVERS)) {
+        if (! $this->authorize(AdminAcl::RESOURCE_SERVERS)) {
             return $this->null();
         }
 

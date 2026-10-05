@@ -20,18 +20,32 @@ public/assets/manifest.json
 
 # For local development with docker
 # Remove if we ever put the Dockerfile in the repo
-.dockerignore
 docker-compose.*
 !docker-compose.example.yml
 !docker-compose.example.yaml
 
 # for image related files
 misc
-.php-cs-fixer.cache
+.pint.cache
 coverage.xml
 resources/lang/locales.js
 .phpunit.result.cache
+.phpunit.cache/
 
 /public/build
 /public/hot
 result
+
+# Scribe generated output
+.scribe/
+/public/vendor/scribe/
+/resources/views/scribe/
+
+# Extension example build output
+/examples/*/dist
+
+# Local extension development checkouts
+/extensions/
+
+# Generated SDK test host bundles
+/packages/sdk/testing-runtime/

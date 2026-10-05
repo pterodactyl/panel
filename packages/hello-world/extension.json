@@ -1,0 +1,26 @@
+{
+    "id": "hello-world",
+    "name": "Hello World",
+    "version": "1.0.0",
+    "description": "A frontend example demonstrating slots, server pages, component replacements, React state, and SDK hooks.",
+    "ui": {
+        "entry": "dist/client.js",
+        "mode": "native",
+        "prefix": "hw",
+        "screens": [
+            {
+                "id": "hello-world",
+                "area": "server",
+                "path": "hello-world",
+                "nav": {
+                    "label": "Hello World",
+                    "icon": "hand"
+                }
+            }
+        ],
+        "components": ["dashboard.serverCard", "server.files.details", "server.files.editor"]
+    },
+    "requires": {
+        "sdk": ">=2.0.0-beta.4 <3.0"
+    }
+}

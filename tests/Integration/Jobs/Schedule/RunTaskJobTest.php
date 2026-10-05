@@ -1,178 +1,130 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Jobs\Schedule;
+declare(strict_types=1);
 
-use Carbon\Carbon;
+namespace Pterodactyl\Tests\Pest\Integration\Jobs\Schedule\RunTaskJobTest;
+
 use Carbon\CarbonImmutable;
-use GuzzleHttp\Psr7\Request;
-use Pterodactyl\Models\Task;
-use GuzzleHttp\Psr7\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Models\Schedule;
+use DateTimeInterface;
+use Illuminate\Contracts\Bus\Dispatcher;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\Bus;
-use Pterodactyl\Jobs\Schedule\RunTaskJob;
-use GuzzleHttp\Exception\BadResponseException;
-use Pterodactyl\Tests\Integration\IntegrationTestCase;
-use Pterodactyl\Repositories\Wings\DaemonPowerRepository;
+use Illuminate\Support\Facades\Date;
+use Illuminate\Support\Facades\Http;
+use InvalidArgumentException;
+use LogicException;
 use Pterodactyl\Exceptions\Http\Connection\DaemonConnectionException;
+use Pterodactyl\Jobs\Schedule\RunTaskJob;
+use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Models\Task;
+use Pterodactyl\Tests\Integration\IntegrationTestCase;
+use Pterodactyl\Tests\Support\Fakes\FakeDaemonPower;
+use Pterodactyl\Tests\Support\Fakes\ThrowingDispatcher;
+use TypeError;
 
-class RunTaskJobTest extends IntegrationTestCase
-{
-    /**
-     * An inactive job should not be run by the system.
-     */
-    public function testInactiveJobIsNotRun()
-    {
-        $server = $this->createServerModel();
+uses(IntegrationTestCase::class, DatabaseTransactions::class);
+dataset('isManualRunDataProvider', fn (): array => [[true], [false]]);
+test('inactive job is not run', function (): void {
+    $server = $this->createServerModel();
+    /** @var Schedule $schedule */
+    $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_processing' => true, 'last_run_at' => null, 'is_active' => false]);
+    /** @var Task $task */
+    $task = Task::factory()->create(['schedule_id' => $schedule->id, 'is_queued' => true]);
+    $job = new RunTaskJob($task);
+    Bus::dispatchSync($job);
+    $task->refresh();
+    $schedule->refresh();
+    expect($task->is_queued)->toBeFalse();
+    expect($schedule->is_processing)->toBeFalse();
+    expect($schedule->is_active)->toBeFalse();
+    expect(CarbonImmutable::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at))->toBeTrue();
+});
+test('job with invalid action throws exception', function (): void {
+    $server = $this->createServerModel();
+    /** @var Schedule $schedule */
+    $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+    /** @var Task $task */
+    $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => 'foobar']);
+    $job = new RunTaskJob($task);
+    $this->expectException(InvalidArgumentException::class);
+    $this->expectExceptionMessage('Invalid task action provided: foobar');
+    Bus::dispatchSync($job);
+});
+test('job is executed', function (bool $isManualRun): void {
+    $server = $this->createServerModel();
+    /** @var Schedule $schedule */
+    $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_active' => ! $isManualRun, 'is_processing' => true, 'last_run_at' => null]);
+    /** @var Task $task */
+    $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true, 'continue_on_failure' => false]);
+    $fake = new FakeDaemonPower;
+    Bus::dispatchSync(new RunTaskJob($task, $isManualRun));
+    $fake->assertSent('start');
+    $task->refresh();
+    $schedule->refresh();
+    expect($task->is_queued)->toBeFalse();
+    expect($schedule->is_processing)->toBeFalse();
+    expect(CarbonImmutable::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at))->toBeTrue();
+})->with('isManualRunDataProvider');
+test('exception during run is handled correctly', function (bool $continueOnFailure): void {
+    $server = $this->createServerModel();
+    /** @var Schedule $schedule */
+    $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+    /** @var Task $task */
+    $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => Task::ACTION_POWER, 'payload' => 'start', 'continue_on_failure' => $continueOnFailure]);
+    $fake = new FakeDaemonPower;
+    $fake->throwable = new DaemonConnectionException(Http::failedRequest([], 200));
+    if (! $continueOnFailure) {
+        $this->expectException(DaemonConnectionException::class);
+    }
 
-        /** @var Schedule $schedule */
-        $schedule = Schedule::factory()->create([
-            'server_id' => $server->id,
-            'is_processing' => true,
-            'last_run_at' => null,
-            'is_active' => false,
-        ]);
-        /** @var Task $task */
-        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'is_queued' => true]);
-
-        $job = new RunTaskJob($task);
-
-        Bus::dispatchSync($job);
-
+    Bus::dispatchSync(new RunTaskJob($task));
+    $fake->assertSent('start');
+    if ($continueOnFailure) {
         $task->refresh();
         $schedule->refresh();
-
-        $this->assertFalse($task->is_queued);
-        $this->assertFalse($schedule->is_processing);
-        $this->assertFalse($schedule->is_active);
-        $this->assertTrue(CarbonImmutable::now()->isSameAs(\DateTimeInterface::ATOM, $schedule->last_run_at));
+        expect($task->is_queued)->toBeFalse();
+        expect($schedule->is_processing)->toBeFalse();
+        expect(CarbonImmutable::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at))->toBeTrue();
     }
+})->with('isManualRunDataProvider');
+test('task is not run if server is suspended', function (): void {
+    $server = $this->createServerModel(['status' => Server::STATUS_SUSPENDED]);
+    $schedule = Schedule::factory()->for($server)->create(['last_run_at' => Date::now()->subHour()]);
+    $task = Task::factory()->for($schedule)->create(['action' => Task::ACTION_POWER, 'payload' => 'start']);
+    Bus::dispatchSync(new RunTaskJob($task));
+    $task->refresh();
+    $schedule->refresh();
+    expect($task->is_queued)->toBeFalse();
+    expect($schedule->is_processing)->toBeFalse();
+    expect(Date::now()->isSameAs(DateTimeInterface::ATOM, $schedule->last_run_at))->toBeTrue();
+});
 
-    public function testJobWithInvalidActionThrowsException()
-    {
-        $server = $this->createServerModel();
+test('failure cleanup accepts PHP errors and clears every queued task in the run', function (): void {
+    $schedule = Schedule::factory()->for($this->createServerModel())->create(['is_processing' => true]);
+    $task = Task::factory()->for($schedule)->create(['is_queued' => true, 'sequence_id' => 1]);
+    $next = Task::factory()->for($schedule)->create(['is_queued' => true, 'sequence_id' => 2]);
 
-        /** @var Schedule $schedule */
-        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-        /** @var Task $task */
-        $task = Task::factory()->create(['schedule_id' => $schedule->id, 'action' => 'foobar']);
+    (new RunTaskJob($task))->failed(new TypeError('Task execution failed'));
 
-        $job = new RunTaskJob($task);
+    expect($task->refresh()->is_queued)->toBeFalse();
+    expect($next->refresh()->is_queued)->toBeFalse();
+    expect($schedule->refresh()->is_processing)->toBeFalse();
+});
 
-        $this->expectException(\InvalidArgumentException::class);
-        $this->expectExceptionMessage('Invalid task action provided: foobar');
-        Bus::dispatchSync($job);
-    }
+test('failed next task publication terminates the queue job without retrying the completed command', function (): void {
+    $schedule = Schedule::factory()->for($this->createServerModel())->create(['is_processing' => true]);
+    $task = Task::factory()->for($schedule)->create(['action' => Task::ACTION_POWER, 'payload' => 'start', 'is_queued' => true, 'sequence_id' => 1]);
+    $next = Task::factory()->for($schedule)->create(['sequence_id' => 2]);
+    $power = new FakeDaemonPower;
+    $this->swap(Dispatcher::class, new ThrowingDispatcher(new TypeError('Unused synchronous failure')));
+    $job = (new RunTaskJob($task))->withFakeQueueInteractions();
 
-    #[\PHPUnit\Framework\Attributes\DataProvider('isManualRunDataProvider')]
-    public function testJobIsExecuted(bool $isManualRun)
-    {
-        $server = $this->createServerModel();
+    $this->app->call($job->handle(...));
 
-        /** @var Schedule $schedule */
-        $schedule = Schedule::factory()->create([
-            'server_id' => $server->id,
-            'is_active' => !$isManualRun,
-            'is_processing' => true,
-            'last_run_at' => null,
-        ]);
-        /** @var Task $task */
-        $task = Task::factory()->create([
-            'schedule_id' => $schedule->id,
-            'action' => Task::ACTION_POWER,
-            'payload' => 'start',
-            'is_queued' => true,
-            'continue_on_failure' => false,
-        ]);
-
-        $mock = \Mockery::mock(DaemonPowerRepository::class);
-        $this->instance(DaemonPowerRepository::class, $mock);
-
-        $mock->expects('setServer')->with(\Mockery::on(function ($value) use ($server) {
-            return $value instanceof Server && $value->id === $server->id;
-        }))->andReturnSelf();
-        $mock->expects('send')->with('start')->andReturn(new Response());
-
-        Bus::dispatchSync(new RunTaskJob($task, $isManualRun));
-
-        $task->refresh();
-        $schedule->refresh();
-
-        $this->assertFalse($task->is_queued);
-        $this->assertFalse($schedule->is_processing);
-        $this->assertTrue(CarbonImmutable::now()->isSameAs(\DateTimeInterface::ATOM, $schedule->last_run_at));
-    }
-
-    #[\PHPUnit\Framework\Attributes\DataProvider('isManualRunDataProvider')]
-    public function testExceptionDuringRunIsHandledCorrectly(bool $continueOnFailure)
-    {
-        $server = $this->createServerModel();
-
-        /** @var Schedule $schedule */
-        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-        /** @var Task $task */
-        $task = Task::factory()->create([
-            'schedule_id' => $schedule->id,
-            'action' => Task::ACTION_POWER,
-            'payload' => 'start',
-            'continue_on_failure' => $continueOnFailure,
-        ]);
-
-        $mock = \Mockery::mock(DaemonPowerRepository::class);
-        $this->instance(DaemonPowerRepository::class, $mock);
-
-        $mock->expects('setServer->send')->andThrow(
-            new DaemonConnectionException(new BadResponseException('Bad request', new Request('GET', '/test'), new Response()))
-        );
-
-        if (!$continueOnFailure) {
-            $this->expectException(DaemonConnectionException::class);
-        }
-
-        Bus::dispatchSync(new RunTaskJob($task));
-
-        if ($continueOnFailure) {
-            $task->refresh();
-            $schedule->refresh();
-
-            $this->assertFalse($task->is_queued);
-            $this->assertFalse($schedule->is_processing);
-            $this->assertTrue(CarbonImmutable::now()->isSameAs(\DateTimeInterface::ATOM, $schedule->last_run_at));
-        }
-    }
-
-    /**
-     * Test that a schedule is not executed if the server is suspended.
-     *
-     * @see https://github.com/pterodactyl/panel/issues/4008
-     */
-    public function testTaskIsNotRunIfServerIsSuspended()
-    {
-        $server = $this->createServerModel([
-            'status' => Server::STATUS_SUSPENDED,
-        ]);
-
-        $schedule = Schedule::factory()->for($server)->create([
-            'last_run_at' => Carbon::now()->subHour(),
-        ]);
-
-        $task = Task::factory()->for($schedule)->create([
-            'action' => Task::ACTION_POWER,
-            'payload' => 'start',
-        ]);
-
-        Bus::dispatchSync(new RunTaskJob($task));
-
-        $task->refresh();
-        $schedule->refresh();
-
-        $this->assertFalse($task->is_queued);
-        $this->assertFalse($schedule->is_processing);
-        $this->assertTrue(Carbon::now()->isSameAs(\DateTimeInterface::ATOM, $schedule->last_run_at));
-    }
-
-    public static function isManualRunDataProvider(): array
-    {
-        return [[true], [false]];
-    }
-}
+    $job->assertFailedWith(LogicException::class);
+    $power->assertSentTimes('start', 1);
+    expect($task->refresh()->is_queued)->toBeFalse();
+    expect($next->refresh()->is_queued)->toBeFalse();
+    expect($schedule->refresh()->is_processing)->toBeFalse();
+});

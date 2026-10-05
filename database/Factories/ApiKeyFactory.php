@@ -1,12 +1,18 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Date;
 use Illuminate\Support\Str;
 use Pterodactyl\Models\ApiKey;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Pterodactyl\Models\User;
 
+/**
+ * @extends Factory<ApiKey>
+ */
 class ApiKeyFactory extends Factory
 {
     /**
@@ -24,13 +30,24 @@ class ApiKeyFactory extends Factory
         static $token;
 
         return [
+            'user_id' => User::factory(),
             'key_type' => ApiKey::TYPE_APPLICATION,
             'identifier' => ApiKey::generateTokenIdentifier(ApiKey::TYPE_APPLICATION),
             'token' => $token ?: $token = encrypt(Str::random(ApiKey::KEY_LENGTH)),
             'allowed_ips' => null,
             'memo' => 'Test Function Key',
-            'created_at' => Carbon::now(),
-            'updated_at' => Carbon::now(),
+            'created_at' => Date::now(),
+            'updated_at' => Date::now(),
         ];
+    }
+
+    /**
+     * Restrict the key to an example IP range for documentation purposes.
+     */
+    public function withAllowedIps(): self
+    {
+        return $this->state([
+            'allowed_ips' => ['127.0.0.1'],
+        ]);
     }
 }

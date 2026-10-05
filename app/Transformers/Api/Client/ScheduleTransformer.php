@@ -1,15 +1,30 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Pterodactyl\Models\Task;
-use Pterodactyl\Models\Schedule;
 use League\Fractal\Resource\Collection;
+use Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
+use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\Task;
 
+#[ResponseField('next_run_at', example: '2026-06-30T04:00:00+00:00', nullable: true)]
 class ScheduleTransformer extends BaseClientTransformer
 {
+    protected array $includeRelations = [
+        'tasks' => ['relation' => 'tasks', 'transformer' => TaskTransformer::class],
+    ];
+
+    /**
+     * @var list<string>
+     */
     protected array $availableIncludes = ['tasks'];
 
+    /**
+     * @var list<string>
+     */
     protected array $defaultIncludes = ['tasks'];
 
     public function getResourceName(): string
@@ -19,6 +34,8 @@ class ScheduleTransformer extends BaseClientTransformer
 
     /**
      * Returns a transformed schedule model such that a client can view the information.
+     *
+     * @return ApiPayload
      */
     public function transform(Schedule $model): array
     {
@@ -45,7 +62,7 @@ class ScheduleTransformer extends BaseClientTransformer
     /**
      * Allows attaching the tasks specific to the schedule in the response.
      *
-     * @throws \Pterodactyl\Exceptions\Transformer\InvalidTransformerLevelException
+     * @throws InvalidTransformerLevelException
      */
     public function includeTasks(Schedule $model): Collection
     {

@@ -1,32 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { ServerContext } from '@/state/server';
-import { NavLink, useLocation } from 'react-router-dom';
-import { encodePathSegments, hashToPath } from '@/helpers';
-import tw from 'twin.macro';
+import React from 'react';
+import { Link } from '@tanstack/react-router';
+import { useCurrentServerIdentifier } from '@/api/server/queries';
+import { useServerDirectory } from '@/state/server';
+import { encodePathSegments } from '@/helpers';
+import { dirname } from 'pathe';
 
 interface Props {
-    renderLeft?: JSX.Element;
+    children?: React.ReactNode;
     withinFileEditor?: boolean;
     isNewFile?: boolean;
 }
 
-export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
-    const [file, setFile] = useState<string | null>(null);
-    const id = ServerContext.useStoreState((state) => state.server.data!.id);
-    const directory = ServerContext.useStoreState((state) => state.files.directory);
-    const { hash } = useLocation();
-
-    useEffect(() => {
-        const path = hashToPath(hash);
-
-        if (withinFileEditor && !isNewFile) {
-            const name = path.split('/').pop() || null;
-            setFile(name);
-        }
-    }, [withinFileEditor, isNewFile, hash]);
+export default function FileManagerBreadcrumbs({ children, withinFileEditor, isNewFile }: Props) {
+    const id = useCurrentServerIdentifier()!;
+    const directory = useServerDirectory();
+    const file = withinFileEditor && !isNewFile ? directory.split('/').pop() || null : null;
+    const breadcrumbDirectory: string = file ? dirname(directory) : directory;
 
     const breadcrumbs = (): { name: string; path?: string }[] =>
-        directory
+        breadcrumbDirectory
             .split('/')
             .filter((directory) => !!directory)
             .map((directory, index, dirs) => {
@@ -38,34 +30,43 @@ export default ({ renderLeft, withinFileEditor, isNewFile }: Props) => {
             });
 
     return (
-        <div css={tw`flex flex-grow-0 items-center text-sm text-neutral-500 overflow-x-hidden`}>
-            {renderLeft || <div css={tw`w-12`} />}/<span css={tw`px-1 text-neutral-300`}>home</span>/
-            <NavLink to={`/server/${id}/files`} css={tw`px-1 text-neutral-200 no-underline hover:text-neutral-100`}>
+        <div className={'flex grow-0 items-center text-sm text-muted-foreground overflow-x-hidden'}>
+            {children || <div className={'w-12'} />}/<span className={'px-1 text-muted-foreground'}>home</span>/
+            <Link
+                to={'/server/$id/files'}
+                params={{ id }}
+                hash={'/'}
+                className={'px-1 text-foreground no-underline transition-colors duration-150 hover:text-accent'}
+            >
                 container
-            </NavLink>
+            </Link>
             /
-            {breadcrumbs().map((crumb, index) =>
+            {breadcrumbs().map((crumb) =>
                 crumb.path ? (
-                    <React.Fragment key={index}>
-                        <NavLink
-                            to={`/server/${id}/files#${encodePathSegments(crumb.path)}`}
-                            css={tw`px-1 text-neutral-200 no-underline hover:text-neutral-100`}
+                    <React.Fragment key={crumb.path}>
+                        <Link
+                            to={'/server/$id/files'}
+                            params={{ id }}
+                            hash={encodePathSegments(crumb.path)}
+                            className={
+                                'px-1 text-foreground no-underline transition-colors duration-150 hover:text-accent'
+                            }
                         >
                             {crumb.name}
-                        </NavLink>
+                        </Link>
                         /
                     </React.Fragment>
                 ) : (
-                    <span key={index} css={tw`px-1 text-neutral-300`}>
+                    <span key={`current:${crumb.name}`} className={'px-1 text-muted-foreground'}>
                         {crumb.name}
                     </span>
                 )
             )}
             {file && (
                 <React.Fragment>
-                    <span css={tw`px-1 text-neutral-300`}>{file}</span>
+                    <span className={'px-1 text-muted-foreground'}>{file}</span>
                 </React.Fragment>
             )}
         </div>
     );
-};
+}

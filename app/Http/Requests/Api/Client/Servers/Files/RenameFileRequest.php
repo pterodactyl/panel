@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Models\Permission;
 use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
 class RenameFileRequest extends ClientApiRequest implements ClientPermissionsRequest
@@ -14,17 +16,20 @@ class RenameFileRequest extends ClientApiRequest implements ClientPermissionsReq
      */
     public function permission(): string
     {
-        return Permission::ACTION_FILE_UPDATE;
+        return Permissions::FileUpdate->value;
     }
 
+    /**
+     * @return ValidationRules
+     */
     public function rules(): array
     {
         return [
-            'root' => 'required|nullable|string',
-            'files' => 'required|array',
-            'files.*' => 'array',
-            'files.*.to' => 'required|string',
-            'files.*.from' => 'required|string',
+            'root' => ['required', 'nullable', 'string'],
+            'files' => ['required', 'array'],
+            'files.*' => ['array'],
+            'files.*.to' => ['required', 'string'],
+            'files.*.from' => ['required', 'string'],
         ];
     }
 }

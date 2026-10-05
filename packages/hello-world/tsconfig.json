@@ -1,0 +1,19 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "ESNext",
+        "moduleResolution": "bundler",
+        "jsx": "react-jsx",
+        "lib": ["ES2022", "DOM", "DOM.Iterable"],
+        "types": ["vite/client"],
+        "strict": true,
+        "noEmit": true,
+        "skipLibCheck": true,
+        "paths": {
+            "@pterodactyl/sdk": ["../sdk/types/index.d.ts"],
+            "@pterodactyl/sdk/testing": ["../sdk/types/testing.d.ts"],
+            "@pterodactyl/sdk/api": ["../sdk/types/api.d.ts"]
+        }
+    },
+    "include": ["src/client/**/*"]
+}

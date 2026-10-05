@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Events\Auth;
 
-use Pterodactyl\Events\Event;
 use Illuminate\Queue\SerializesModels;
+use Pterodactyl\Events\Event;
 
 class FailedCaptcha extends Event
 {
@@ -12,7 +14,5 @@ class FailedCaptcha extends Event
     /**
      * Create a new event instance.
      */
-    public function __construct(public string $ip, public string $domain)
-    {
-    }
+    public function __construct(public string $ip, public string $domain) {}
 }

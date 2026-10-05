@@ -1,14 +1,32 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
-use Illuminate\Support\Str;
-use Pterodactyl\Models\User;
-use Pterodactyl\Models\ActivityLog;
 use Illuminate\Database\Eloquent\Model;
+use League\Fractal\Resource\Item;
+use League\Fractal\Resource\NullResource;
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
+use Pterodactyl\Models\ActivityLog;
+use Pterodactyl\Models\ActivityLogSubject;
+use Pterodactyl\Models\User;
+use Pterodactyl\Transformers\Concerns\FormatsActivityLogs;
 
+#[ResponseField('ip', example: '192.0.2.10', nullable: true)]
+#[ResponseField('description', example: 'Changed account email address.', nullable: true)]
+#[ResponseField('properties', schema: ['type' => 'object', 'additionalProperties' => ['oneOf' => [['type' => 'string'], ['type' => 'integer'], ['type' => 'number'], ['type' => 'boolean'], ['type' => 'array', 'items' => ['type' => 'string']], ['type' => 'object', 'additionalProperties' => ['type' => 'string']]]], 'example' => ['old' => 'old-user@example.com', 'new' => 'new-user@example.com']])]
 class ActivityLogTransformer extends BaseClientTransformer
 {
+    use FormatsActivityLogs;
+
+    protected array $includeRelations = [
+        'actor' => ['relation' => 'actor', 'transformer' => UserTransformer::class],
+    ];
+
+    /**
+     * @var list<string>
+     */
     protected array $availableIncludes = ['actor'];
 
     public function getResourceName(): string
@@ -16,27 +34,17 @@ class ActivityLogTransformer extends BaseClientTransformer
         return ActivityLog::RESOURCE_NAME;
     }
 
+    /**
+     * @return array{id: string, batch: string|null, event: string, is_api: bool, ip: string|null, description: string|null, properties: object, has_additional_metadata: bool, timestamp: string}
+     */
     public function transform(ActivityLog $model): array
     {
-        return [
-            // This is not for security, it is only to provide a unique identifier to
-            // the front-end for each entry to improve rendering performance since there
-            // is nothing else sufficiently unique to key off at this point.
-            'id' => sha1($model->id),
-            'batch' => $model->batch,
-            'event' => $model->event,
-            'is_api' => !is_null($model->api_key_id),
-            'ip' => $this->canViewIP($model->actor) ? $model->ip : null,
-            'description' => $model->description,
-            'properties' => $this->properties($model),
-            'has_additional_metadata' => $this->hasAdditionalMetadata($model),
-            'timestamp' => $model->timestamp->toAtomString(),
-        ];
+        return $this->activityAttributes($model, $this->canViewIP($model));
     }
 
-    public function includeActor(ActivityLog $model)
+    public function includeActor(ActivityLog $model): NullResource|Item
     {
-        if (!$model->actor instanceof User) {
+        if (! $model->actor instanceof User) {
             return $this->null();
         }
 
@@ -44,75 +52,27 @@ class ActivityLogTransformer extends BaseClientTransformer
     }
 
     /**
-     * Transforms any array values in the properties into a countable field for easier
-     * use within the translation outputs.
+     * Determines if the user can view the IP address in the output because they are an
+     * administrator, because they are the actor that performed the action, or because
+     * the entry has no actor at all and the action was performed against them. That last
+     * case covers anonymous attempts such as a failed log in, where the address belongs
+     * to whoever made the attempt rather than to an identified user.
      */
-    protected function properties(ActivityLog $model): object
+    protected function canViewIP(ActivityLog $model): bool
     {
-        if (!$model->properties || $model->properties->isEmpty()) {
-            return (object) [];
+        $user = $this->getUser();
+        if ($user->root_admin) {
+            return true;
         }
 
-        $properties = $model->properties
-            ->mapWithKeys(function ($value, $key) use ($model) {
-                if ($key === 'ip' && !optional($model->actor)->is($this->request->user())) {
-                    return [$key => '[hidden]'];
-                }
-
-                if (!is_array($value)) {
-                    // Perform some directory normalization at this point.
-                    if ($key === 'directory') {
-                        $value = str_replace('//', '/', '/' . trim($value, '/') . '/');
-                    }
-
-                    return [$key => $value];
-                }
-
-                return [$key => $value, "{$key}_count" => count($value)];
-            });
-
-        $keys = $properties->keys()->filter(fn ($key) => Str::endsWith($key, '_count'))->values();
-        if ($keys->containsOneItem()) {
-            $properties = $properties->merge(['count' => $properties->get($keys[0])])->except($keys[0]);
+        $actor = $model->actor;
+        if ($actor instanceof Model) {
+            return $actor->is($user);
         }
 
-        return (object) $properties->toArray();
-    }
-
-    /**
-     * Determines if there are any log properties that we've not already exposed
-     * in the response language string and that are not just the IP address or
-     * the browser useragent.
-     *
-     * This is used by the front-end to selectively display an "additional metadata"
-     * button that is pointless if there is nothing the user can't already see from
-     * the event description.
-     */
-    protected function hasAdditionalMetadata(ActivityLog $model): bool
-    {
-        if (is_null($model->properties) || $model->properties->isEmpty()) {
-            return false;
-        }
-
-        $str = trans('activity.' . str_replace(':', '.', $model->event));
-        preg_match_all('/:(?<key>[\w.-]+\w)(?:[^\w:]?|$)/', $str, $matches);
-
-        $exclude = array_merge($matches['key'], ['ip', 'useragent', 'using_sftp']);
-        foreach ($model->properties->keys() as $key) {
-            if (!in_array($key, $exclude, true)) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-     * Determines if the user can view the IP address in the output either because they are the
-     * actor that performed the action, or because they are an administrator on the Panel.
-     */
-    protected function canViewIP(?Model $actor = null): bool
-    {
-        return optional($actor)->is($this->request->user()) || $this->request->user()->root_admin;
+        return $model->subjects->contains(
+            fn (ActivityLogSubject $subject): bool => $subject->subject_type === $user->getMorphClass()
+                && $subject->subject_id === $user->getKey()
+        );
     }
 }

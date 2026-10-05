@@ -1,12 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Base;
 
+use Illuminate\Contracts\Translation\Loader;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Translation\Translator;
-use Illuminate\Contracts\Translation\Loader;
 use Pterodactyl\Http\Controllers\Controller;
 use Pterodactyl\Http\Requests\Base\LocaleRequest;
+use Pterodactyl\Support\JsonValueGuard;
+use UnexpectedValueException;
 
 class LocaleController extends Controller
 {
@@ -22,16 +26,21 @@ class LocaleController extends Controller
      */
     public function __invoke(LocaleRequest $request): JsonResponse
     {
-        $locale = $request->input('locale');
-        $namespace = $request->input('namespace');
-        $response[$locale][$namespace] = $this->i18n($this->loader->load($locale, $namespace));
+        $locale = JsonValueGuard::string($request->validated('locale'));
+        $namespace = JsonValueGuard::string($request->validated('namespace'));
+        $segments = explode('::', $namespace, 2);
+        $translations = count($segments) === 2
+            ? $this->loader->load($locale, $segments[1], $segments[0])
+            : $this->loader->load($locale, $namespace);
+        JsonValueGuard::assertValue($translations);
+        $response[$locale][$namespace] = $this->i18n($translations);
 
         return new JsonResponse($response, 200, [
             // Cache this in the browser for an hour, and allow the browser to use a stale
             // cache for up to a day after it was created while it fetches an updated set
             // of translation keys.
             'Cache-Control' => 'public, max-age=3600, stale-while-revalidate=86400',
-            'ETag' => md5(json_encode($response, JSON_THROW_ON_ERROR)),
+            'ETag' => hash('sha256', json_encode($response, JSON_THROW_ON_ERROR)),
         ]);
     }
 
@@ -39,6 +48,9 @@ class LocaleController extends Controller
      * Convert standard Laravel translation keys that look like ":foo"
      * into key structures that are supported by the front-end i18n
      * library, like "{{foo}}".
+     *
+     * @param  array<array-key, JsonInputValue>  $data
+     * @return array<array-key, JsonInputValue>
      */
     protected function i18n(array $data): array
     {
@@ -46,15 +58,9 @@ class LocaleController extends Controller
             if (is_array($value)) {
                 $data[$key] = $this->i18n($value);
             } else {
-                // Find a Laravel style translation replacement in the string and replace it with
-                // one that the front-end is able to use. This won't always be present, especially
-                // for complex strings or things where we'd never have a backend component anyways.
-                //
-                // For example:
-                // "Hello :name, the :notifications.0.title notification needs :count actions :foo.0.bar."
-                //
-                // Becomes:
-                // "Hello {{name}}, the {{notifications.0.title}} notification needs {{count}} actions {{foo.0.bar}}."
+                throw_unless(is_string($value), UnexpectedValueException::class, 'Translation leaves must be strings.');
+                // Rewrite any Laravel-style ":name" placeholders into the "{{name}}" form the
+                // front-end i18n library understands.
                 $data[$key] = preg_replace('/:([\w.-]+\w)([^\w:]?|$)/m', '{{$1}}$2', $value);
             }
         }

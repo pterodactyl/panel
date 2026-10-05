@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Traits\Services;
 
 use Pterodactyl\Models\User;

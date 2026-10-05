@@ -1,0 +1,62 @@
+{
+  "resources/scripts/index.tsx": {
+    "file": "bundle.test.js",
+    "name": "main",
+    "src": "resources/scripts/index.tsx",
+    "isEntry": true,
+    "css": ["main.test.css"],
+    "integrity": "sha384-test-main",
+    "cssIntegrity": {
+      "main.test.css": "sha384-test-main-css"
+    }
+  },
+  "resources/scripts/ext-runtime/react.ts": {
+    "file": "ext-runtime.react.test.js",
+    "name": "react",
+    "src": "resources/scripts/ext-runtime/react.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-react"
+  },
+  "resources/scripts/ext-runtime/react-jsx-runtime.ts": {
+    "file": "ext-runtime.react-jsx-runtime.test.js",
+    "name": "react-jsx-runtime",
+    "src": "resources/scripts/ext-runtime/react-jsx-runtime.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-react-jsx-runtime"
+  },
+  "resources/scripts/ext-runtime/react-dom.ts": {
+    "file": "ext-runtime.react-dom.test.js",
+    "name": "react-dom",
+    "src": "resources/scripts/ext-runtime/react-dom.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-react-dom"
+  },
+  "resources/scripts/ext-runtime/react-dom-client.ts": {
+    "file": "ext-runtime.react-dom-client.test.js",
+    "name": "react-dom-client",
+    "src": "resources/scripts/ext-runtime/react-dom-client.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-react-dom-client"
+  },
+  "resources/scripts/ext-runtime/tanstack-react-query.ts": {
+    "file": "ext-runtime.tanstack-react-query.test.js",
+    "name": "tanstack-react-query",
+    "src": "resources/scripts/ext-runtime/tanstack-react-query.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-tanstack-react-query"
+  },
+  "resources/scripts/sdk/index.ts": {
+    "file": "ext-runtime.sdk.test.js",
+    "name": "sdk",
+    "src": "resources/scripts/sdk/index.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-sdk"
+  },
+  "resources/scripts/sdk/api.ts": {
+    "file": "ext-runtime.sdk-api.test.js",
+    "name": "sdk-api",
+    "src": "resources/scripts/sdk/api.ts",
+    "isEntry": true,
+    "integrity": "sha384-test-sdk-api"
+  }
+}

@@ -1,5 +1,9 @@
 <?php
 
+declare(strict_types=1);
+
+use Pterodactyl\Models\User;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -82,7 +86,7 @@ return [
     'providers' => [
         'users' => [
             'driver' => 'eloquent',
-            'model' => Pterodactyl\Models\User::class,
+            'model' => User::class,
         ],
     ],
 

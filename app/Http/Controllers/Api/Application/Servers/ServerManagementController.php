@@ -1,34 +1,58 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Application\Servers;
 
 use Illuminate\Http\Response;
-use Pterodactyl\Models\Server;
-use Pterodactyl\Services\Servers\SuspensionService;
-use Pterodactyl\Services\Servers\ReinstallServerService;
-use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\Response as ScribeResponse;
+use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Contracts\Servers\ReinstallsServers;
+use Pterodactyl\Contracts\Servers\TogglesServerSuspension;
+use Pterodactyl\Exceptions\DisplayException;
 use Pterodactyl\Http\Controllers\Api\Application\ApplicationApiController;
+use Pterodactyl\Http\Requests\Api\Application\Servers\ServerWriteRequest;
+use Pterodactyl\Models\Server;
+use Throwable;
 
+#[Group('Application API', 'Root administrator endpoints for managing panel resources using application API tokens.')]
+#[Subgroup('Servers', 'Create, update, retrieve, manage, and delete servers.')]
 class ServerManagementController extends ApplicationApiController
 {
-    /**
-     * ServerManagementController constructor.
-     */
-    public function __construct(
-        private ReinstallServerService $reinstallServerService,
-        private SuspensionService $suspensionService,
-    ) {
-        parent::__construct();
-    }
+    private const array TRANSFER_CONFLICT_ERROR = [
+        'errors' => [
+            [
+                'code' => 'ConflictHttpException',
+                'status' => '409',
+                'detail' => 'Cannot toggle suspension status on a server that is currently being transferred.',
+            ],
+        ],
+    ];
+
+    private const array DAEMON_CONNECTION_ERROR = [
+        'errors' => [
+            [
+                'code' => 'DaemonConnectionException',
+                'status' => '504',
+                'detail' => 'Could not establish a connection to the machine running this server. Please try again.',
+            ],
+        ],
+    ];
 
     /**
      * Suspend a server on the Panel.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function suspend(ServerWriteRequest $request, Server $server): Response
+    #[Endpoint('Suspend server', 'Marks a server as suspended and syncs the state to Wings.')]
+    #[ScribeResponse(status: 204, description: 'Server suspended.')]
+    #[ScribeResponse(self::TRANSFER_CONFLICT_ERROR, status: 409, description: 'The server is currently being transferred.')]
+    #[ScribeResponse(self::DAEMON_CONNECTION_ERROR, status: 504, description: 'Wings could not be reached while syncing suspension state.')]
+    public function suspend(ServerWriteRequest $request, TogglesServerSuspension $suspension, Server $server): Response
     {
-        $this->suspensionService->toggle($server);
+        $suspension->toggle($server);
 
         return $this->returnNoContent();
     }
@@ -36,11 +60,15 @@ class ServerManagementController extends ApplicationApiController
     /**
      * Unsuspend a server on the Panel.
      *
-     * @throws \Throwable
+     * @throws Throwable
      */
-    public function unsuspend(ServerWriteRequest $request, Server $server): Response
+    #[Endpoint('Unsuspend server', 'Clears a server suspension and syncs the state to Wings.')]
+    #[ScribeResponse(status: 204, description: 'Server unsuspended.')]
+    #[ScribeResponse(self::TRANSFER_CONFLICT_ERROR, status: 409, description: 'The server is currently being transferred.')]
+    #[ScribeResponse(self::DAEMON_CONNECTION_ERROR, status: 504, description: 'Wings could not be reached while syncing suspension state.')]
+    public function unsuspend(ServerWriteRequest $request, TogglesServerSuspension $suspension, Server $server): Response
     {
-        $this->suspensionService->toggle($server, SuspensionService::ACTION_UNSUSPEND);
+        $suspension->toggle($server, TogglesServerSuspension::ACTION_UNSUSPEND);
 
         return $this->returnNoContent();
     }
@@ -48,13 +76,14 @@ class ServerManagementController extends ApplicationApiController
     /**
      * Mark a server as needing to be reinstalled.
      *
-     * @throws \Pterodactyl\Exceptions\DisplayException
-     * @throws \Pterodactyl\Exceptions\Model\DataValidationException
-     * @throws \Pterodactyl\Exceptions\Repository\RecordNotFoundException
+     * @throws DisplayException
      */
-    public function reinstall(ServerWriteRequest $request, Server $server): Response
+    #[Endpoint('Reinstall server', 'Marks a server for reinstall and asks Wings to reinstall it.')]
+    #[ScribeResponse(status: 204, description: 'Server marked for reinstall.')]
+    #[ScribeResponse(self::DAEMON_CONNECTION_ERROR, status: 504, description: 'Wings could not be reached while starting reinstall.')]
+    public function reinstall(ServerWriteRequest $request, ReinstallsServers $reinstall, Server $server): Response
     {
-        $this->reinstallServerService->handle($server);
+        $reinstall->reinstall($server);
 
         return $this->returnNoContent();
     }

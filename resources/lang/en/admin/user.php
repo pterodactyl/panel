@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'exceptions' => [
         'delete_self' => 'You cannot delete your own account.',

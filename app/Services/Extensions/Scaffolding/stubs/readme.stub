@@ -1,0 +1,22 @@
+# {{name}}
+
+A Pterodactyl panel extension, scaffolded by `p:extension:make`.
+
+## Layout
+
+- `extension.json` — the manifest; `provider` is the boot entry point.
+- `src/` — PSR-4 PHP (`{{namespace}}\`), booted through `src/{{provider}}.php`.
+  Runs fully trusted, in-process, with the same middleware stacks core uses.
+- `routes/client.php` — mounted at `/api/client/extensions/{{id}}`. Add
+  `routes/admin.php` / `routes/application.php` for the other API surfaces.
+- `database/migrations/` — extension-owned migrations. Prefix tables with
+  `ext_{{id}}_` by convention.
+
+{{frontend}}## Install
+
+```sh
+php artisan p:extension:install /path/to/{{id}} --enable
+```
+
+Package for distribution by zipping the directory as `{{id}}.pteroext`
+(exclude `node_modules/`; include `dist/`).

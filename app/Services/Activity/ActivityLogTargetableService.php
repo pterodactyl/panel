@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Services\Activity;
 
 use Illuminate\Database\Eloquent\Model;

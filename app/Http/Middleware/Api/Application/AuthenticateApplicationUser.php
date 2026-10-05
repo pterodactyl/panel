@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Middleware\Api\Application;
 
+use Closure;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
 
 class AuthenticateApplicationUser
@@ -11,13 +15,14 @@ class AuthenticateApplicationUser
      * Authenticate that the currently authenticated user is an administrator
      * and should be allowed to proceed through the application API.
      */
-    public function handle(Request $request, \Closure $next): mixed
+    /**
+     * @param  Closure(Request):Response  $next
+     * @return Response
+     */
+    public function handle(Request $request, Closure $next): mixed
     {
-        /** @var \Pterodactyl\Models\User|null $user */
         $user = $request->user();
-        if (!$user || !$user->root_admin) {
-            throw new AccessDeniedHttpException('This account does not have permission to access the API.');
-        }
+        throw_if(! $user || ! $user->root_admin, AccessDeniedHttpException::class, 'This account does not have permission to access the API.');
 
         return $next($request);
     }

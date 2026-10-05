@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Requests\Api\Client\Servers\Files;
 
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Contracts\Http\ClientPermissionsRequest;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
 
-class ListFilesRequest extends ClientApiRequest
+class ListFilesRequest extends ClientApiRequest implements ClientPermissionsRequest
 {
     /**
      * Check that the user making this request to the API is authorized to list all
@@ -13,13 +16,16 @@ class ListFilesRequest extends ClientApiRequest
      */
     public function permission(): string
     {
-        return Permission::ACTION_FILE_READ;
+        return Permissions::FileRead->value;
     }
 
+    /**
+     * @return ValidationRules
+     */
     public function rules(): array
     {
         return [
-            'directory' => 'sometimes|nullable|string',
+            'directory' => ['sometimes', 'nullable', 'string'],
         ];
     }
 }

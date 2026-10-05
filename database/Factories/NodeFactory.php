@@ -1,13 +1,19 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Ramsey\Uuid\Uuid;
-use Illuminate\Support\Str;
-use Pterodactyl\Models\Node;
-use Illuminate\Support\Facades\Crypt;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Facades\Crypt;
+use Illuminate\Support\Str;
+use Pterodactyl\Models\Location;
+use Pterodactyl\Models\Node;
+use Ramsey\Uuid\Uuid;
 
+/**
+ * @extends Factory<Node>
+ */
 class NodeFactory extends Factory
 {
     /**
@@ -25,8 +31,8 @@ class NodeFactory extends Factory
         return [
             'uuid' => Uuid::uuid4()->toString(),
             'public' => true,
-            'name' => 'FactoryNode_' . Str::random(10),
-            'fqdn' => $this->faker->unique()->ipv4,
+            'name' => 'FactoryNode_'.Str::random(10),
+            'fqdn' => fake()->unique()->ipv4(),
             'scheme' => 'http',
             'behind_proxy' => false,
             'memory' => 1024,
@@ -40,5 +46,10 @@ class NodeFactory extends Factory
             'daemonSFTP' => 2022,
             'daemonBase' => '/var/lib/pterodactyl/volumes',
         ];
+    }
+
+    public function withLocation(): self
+    {
+        return $this->for(Location::factory());
     }
 }

@@ -1,158 +1,199 @@
-import React, { useEffect, useState } from 'react';
-import getFileContents from '@/api/server/files/getFileContents';
+import { useCallback, useMemo, useRef, useState } from 'react';
+import { basename, dirname, join, normalize } from 'pathe';
+import { useCurrentServer } from '@/api/server/queries';
 import { httpErrorToHuman } from '@/api/http';
-import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import saveFileContents from '@/api/server/files/saveFileContents';
+import Spinner from '@/components/elements/Spinner';
 import FileManagerBreadcrumbs from '@/components/server/files/FileManagerBreadcrumbs';
-import { useHistory, useLocation, useParams } from 'react-router';
+import { useLocation, useNavigate, useParams, useRouter } from '@tanstack/react-router';
 import FileNameModal from '@/components/server/files/FileNameModal';
-import Can from '@/components/elements/Can';
-import FlashMessageRender from '@/components/FlashMessageRender';
 import PageContentBlock from '@/components/elements/PageContentBlock';
 import { ServerError } from '@/components/elements/ScreenBlock';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Select from '@/components/elements/Select';
-import modes from '@/modes';
-import useFlash from '@/plugins/useFlash';
-import { ServerContext } from '@/state/server';
 import ErrorBoundary from '@/components/elements/ErrorBoundary';
 import { encodePathSegments, hashToPath } from '@/helpers';
-import { dirname } from 'pathe';
-import CodemirrorEditor from '@/components/elements/CodemirrorEditor';
+import { useSaveFileContent, useServerFileContent, writeFileContentsInput } from '@/api/server/files/queries';
+import { useDialogState } from '@/components/elements/dialog';
+import { clearNewFileDraft, readNewFileDraft, writeNewFileDraft } from '@/lib/fileDrafts';
+import { useDebouncedCallback } from '@/plugins/useDebouncedCallback';
+import { useNavigationBlocker } from '@/plugins/useNavigationBlocker';
+import { usePermissions } from '@/plugins/usePermissions';
+import ComponentView from '@/extensions/ComponentView';
+import type { FileEditorModel } from '@/extensions/componentTypes';
+import { DefaultFileEditor, FileEditorContext, fileEditorParts, modeForFile } from './FileEditorView';
 
-export default () => {
-    const [error, setError] = useState('');
-    const { action } = useParams<{ action: 'new' | string }>();
-    const [loading, setLoading] = useState(action === 'edit');
-    const [content, setContent] = useState('');
-    const [modalVisible, setModalVisible] = useState(false);
-    const [mode, setMode] = useState('text/plain');
+interface FileEditSessionProps {
+    id: string;
+    uuid: string;
+    file: string;
+    isNew: boolean;
+    content: string;
+}
 
-    const history = useHistory();
+// A new file's draft stays in session storage, so leaving it needs no confirmation.
+const keepDraft = () => true;
+
+function FileEditSession({ id, uuid, file, isNew, content }: FileEditSessionProps) {
+    const navigate = useNavigate();
+    const saveFileContent = useSaveFileContent();
+    const fileNameDialog = useDialogState();
+    const [canUpdate, canCreate] = usePermissions(['file.update', 'file.create']);
+    const readOnly = !(isNew ? canCreate : canUpdate);
+
+    const buffer = useRef(content);
+    const saved = useRef(isNew ? '' : content);
+    const naming = useRef<((saved: boolean) => void) | null>(null);
+    const [dirty, setDirty] = useState(isNew && !readOnly && content !== '');
+    const [saving, setSaving] = useState(false);
+    const [language, setLanguage] = useState(() => modeForFile(file));
+    const saveDraft = useDebouncedCallback((value: string) => writeNewFileDraft(uuid, file, value), 300);
+
+    useNavigationBlocker(dirty, isNew ? { confirm: keepDraft } : undefined);
+
+    const change = useCallback(
+        (value: string) => {
+            buffer.current = value;
+            if (isNew) saveDraft(value);
+            setDirty(!readOnly && value !== saved.current);
+        },
+        [isNew, readOnly, saveDraft]
+    );
+    const write = useCallback(
+        async (target: string): Promise<boolean> => {
+            const value = buffer.current;
+            setSaving(true);
+            try {
+                await saveFileContent.mutateAsync(writeFileContentsInput(uuid, target, value));
+            } catch {
+                // Error toast is handled by the mutation.
+                return false;
+            } finally {
+                setSaving(false);
+            }
+            if (!isNew && target === file) {
+                saved.current = value;
+                setDirty(buffer.current !== value);
+                return true;
+            }
+            if (isNew) {
+                saveDraft.cancel();
+                clearNewFileDraft(uuid, file);
+            }
+            await navigate({
+                to: '/server/$id/files/$action',
+                params: { id, action: 'edit' },
+                hash: encodePathSegments(target),
+                ignoreBlocker: true,
+            });
+            return true;
+        },
+        [saveFileContent, navigate, saveDraft, id, uuid, file, isNew]
+    );
+    const save = useCallback(async (): Promise<boolean> => {
+        if (readOnly || saving) return false;
+        if (!isNew) return write(file);
+        naming.current?.(false);
+        const named = new Promise<boolean>((resolve) => {
+            naming.current = resolve;
+        });
+        fileNameDialog.show();
+        return named;
+    }, [readOnly, saving, isNew, write, file, fileNameDialog]);
+    const saveAs = useCallback(
+        async (name: string): Promise<boolean> => {
+            if (!canCreate || saving || !name) return false;
+            return write(normalize(name.startsWith('/') ? name : join(isNew ? file : dirname(file), name)));
+        },
+        [canCreate, saving, write, isNew, file]
+    );
+    const model = useMemo<FileEditorModel>(
+        () => ({
+            path: file,
+            name: isNew ? '' : basename(file),
+            isNew,
+            content,
+            language,
+            readOnly,
+            dirty,
+            saving,
+            change,
+            save,
+            saveAs,
+        }),
+        [file, isNew, content, language, readOnly, dirty, saving, change, save, saveAs]
+    );
+    const session = useMemo(() => ({ model, read: () => buffer.current, setLanguage }), [model]);
+
+    return (
+        <>
+            <FileNameModal
+                open={fileNameDialog.open}
+                onClose={() => {
+                    fileNameDialog.hide();
+                    naming.current?.(false);
+                    naming.current = null;
+                }}
+                onFileNamed={(name) => {
+                    fileNameDialog.hide();
+                    const resolve = naming.current;
+                    naming.current = null;
+                    void write(name).then(resolve ?? undefined);
+                }}
+            />
+            <FileEditorContext.Provider value={session}>
+                <ComponentView
+                    name='server.files.editor'
+                    resetKey={`${uuid}:${file}`}
+                    props={{ model, Default: DefaultFileEditor, parts: fileEditorParts }}
+                    loading={<Spinner size={'large'} centered />}
+                />
+            </FileEditorContext.Provider>
+        </>
+    );
+}
+
+export default function FileEditContainer() {
+    const { action } = useParams({ strict: false });
+    const isEditingFile = action === 'edit';
+    const router = useRouter();
     const { hash } = useLocation();
+    const file = hashToPath(hash);
 
-    const id = ServerContext.useStoreState((state) => state.server.data!.id);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const setDirectory = ServerContext.useStoreActions((actions) => actions.files.setDirectory);
-    const { addError, clearFlashes } = useFlash();
+    const server = useCurrentServer()!;
+    const id = server.attributes.identifier;
+    const uuid = server.attributes.uuid;
 
-    let fetchFileContent: null | (() => Promise<string>) = null;
+    const hasFile = isEditingFile && file !== '/';
+    const { data, error, isFetching } = useServerFileContent(uuid, file, hasFile);
+    const key = `${uuid}:${action}:${file}`;
+    // Captured once per document; later cache writes must not replace the buffer.
+    const [opened, setOpened] = useState<{ key: string; content: string } | null>(null);
+    if (opened?.key !== key) {
+        const loaded = hasFile ? (isFetching ? undefined : data) : isEditingFile ? '' : readNewFileDraft(uuid, file);
+        if (loaded !== undefined) setOpened({ key, content: loaded });
+    }
 
-    useEffect(() => {
-        if (action === 'new') return;
-
-        setError('');
-        setLoading(true);
-        const path = hashToPath(hash);
-        setDirectory(dirname(path));
-        getFileContents(uuid, path)
-            .then(setContent)
-            .catch((error) => {
-                console.error(error);
-                setError(httpErrorToHuman(error));
-            })
-            .then(() => setLoading(false));
-    }, [action, uuid, hash]);
-
-    const save = (name?: string) => {
-        if (!fetchFileContent) {
-            return;
-        }
-
-        setLoading(true);
-        clearFlashes('files:view');
-        fetchFileContent()
-            .then((content) => saveFileContents(uuid, name || hashToPath(hash), content))
-            .then(() => {
-                if (name) {
-                    history.push(`/server/${id}/files/edit#/${encodePathSegments(name)}`);
-                    return;
-                }
-
-                return Promise.resolve();
-            })
-            .catch((error) => {
-                console.error(error);
-                addError({ message: httpErrorToHuman(error), key: 'files:view' });
-            })
-            .then(() => setLoading(false));
-    };
-
-    if (error) {
-        return <ServerError message={error} onBack={() => history.goBack()} />;
+    if (hasFile && error && opened?.key !== key) {
+        return <ServerError message={httpErrorToHuman(error)} onBack={() => router.history.back()} />;
     }
 
     return (
         <PageContentBlock>
-            <FlashMessageRender byKey={'files:view'} css={tw`mb-4`} />
             <ErrorBoundary>
-                <div css={tw`mb-4`}>
-                    <FileManagerBreadcrumbs withinFileEditor isNewFile={action !== 'edit'} />
+                <div className={'mb-4'}>
+                    <FileManagerBreadcrumbs withinFileEditor isNewFile={!isEditingFile} />
                 </div>
             </ErrorBoundary>
-            {hash.replace(/^#/, '').endsWith('.pteroignore') && (
-                <div css={tw`mb-4 p-4 border-l-4 bg-neutral-900 rounded border-cyan-400`}>
-                    <p css={tw`text-neutral-300 text-sm`}>
-                        You&apos;re editing a <code css={tw`font-mono bg-black rounded py-px px-1`}>.pteroignore</code>{' '}
-                        file. Any files or directories listed in here will be excluded from backups. Wildcards are
-                        supported by using an asterisk (<code css={tw`font-mono bg-black rounded py-px px-1`}>*</code>).
-                        You can negate a prior rule by prepending an exclamation point (
-                        <code css={tw`font-mono bg-black rounded py-px px-1`}>!</code>).
-                    </p>
-                </div>
-            )}
-            <FileNameModal
-                visible={modalVisible}
-                onDismissed={() => setModalVisible(false)}
-                onFileNamed={(name) => {
-                    setModalVisible(false);
-                    save(name);
-                }}
-            />
-            <div css={tw`relative`}>
-                <SpinnerOverlay visible={loading} />
-                <CodemirrorEditor
-                    mode={mode}
-                    filename={hash.replace(/^#/, '')}
-                    onModeChanged={setMode}
-                    initialContent={content}
-                    fetchContent={(value) => {
-                        fetchFileContent = value;
-                    }}
-                    onContentSaved={() => {
-                        if (action !== 'edit') {
-                            setModalVisible(true);
-                        } else {
-                            save();
-                        }
-                    }}
+            {opened?.key === key ? (
+                <FileEditSession
+                    key={key}
+                    id={id}
+                    uuid={uuid}
+                    file={file}
+                    isNew={!isEditingFile}
+                    content={opened.content}
                 />
-            </div>
-            <div css={tw`flex justify-end mt-4`}>
-                <div css={tw`flex-1 sm:flex-none rounded bg-neutral-900 mr-4`}>
-                    <Select value={mode} onChange={(e) => setMode(e.currentTarget.value)}>
-                        {modes.map((mode) => (
-                            <option key={`${mode.name}_${mode.mime}`} value={mode.mime}>
-                                {mode.name}
-                            </option>
-                        ))}
-                    </Select>
-                </div>
-                {action === 'edit' ? (
-                    <Can action={'file.update'}>
-                        <Button css={tw`flex-1 sm:flex-none`} onClick={() => save()}>
-                            Save Content
-                        </Button>
-                    </Can>
-                ) : (
-                    <Can action={'file.create'}>
-                        <Button css={tw`flex-1 sm:flex-none`} onClick={() => setModalVisible(true)}>
-                            Create File
-                        </Button>
-                    </Can>
-                )}
-            </div>
+            ) : (
+                <Spinner size={'large'} centered />
+            )}
         </PageContentBlock>
     );
-};
+}

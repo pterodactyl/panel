@@ -1,0 +1,564 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "title": "Pterodactyl extension manifest",
+    "type": "object",
+    "required": [
+        "id",
+        "name",
+        "version"
+    ],
+    "properties": {
+        "$schema": {
+            "type": "string"
+        },
+        "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]{0,47}$",
+            "not": {
+                "enum": [
+                    "pterodactyl",
+                    "panel",
+                    "core"
+                ]
+            }
+        },
+        "name": {
+            "type": "string",
+            "minLength": 1
+        },
+        "version": {
+            "type": "string",
+            "minLength": 1,
+            "maxLength": 64
+        },
+        "description": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "author": {
+            "type": [
+                "string",
+                "null"
+            ]
+        },
+        "provider": {
+            "type": [
+                "string",
+                "null"
+            ],
+            "minLength": 1
+        },
+        "autoload": {
+            "type": "object",
+            "propertyNames": {
+                "pattern": "\\\\$"
+            },
+            "additionalProperties": {
+                "type": "string",
+                "pattern": "^(?!/)(?!.*\\.\\.).*$"
+            }
+        },
+        "requires": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "panel": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "description": "Composer version constraint, such as ^2.0 or >=8.3 <9."
+                },
+                "sdk": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "description": "Composer version constraint, such as ^2.0 or >=8.3 <9."
+                },
+                "php": {
+                    "type": "string",
+                    "minLength": 1,
+                    "maxLength": 255,
+                    "description": "Composer version constraint, such as ^2.0 or >=8.3 <9."
+                },
+                "extensions": {
+                    "type": "object",
+                    "maxProperties": 64,
+                    "propertyNames": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9-]{0,47}$"
+                    },
+                    "additionalProperties": {
+                        "type": "string",
+                        "minLength": 1,
+                        "maxLength": 255,
+                        "description": "Composer version constraint, such as ^2.0 or >=8.3 <9."
+                    }
+                }
+            }
+        },
+        "routes": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "root": {
+                    "type": "array",
+                    "maxItems": 8,
+                    "uniqueItems": true,
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z][a-z0-9-]{0,47}$",
+                        "not": {
+                            "enum": [
+                                "account",
+                                "admin",
+                                "api",
+                                "assets",
+                                "auth",
+                                "daemon",
+                                "extension-files",
+                                "extensions",
+                                "favicons",
+                                "locales",
+                                "panel",
+                                "sanctum",
+                                "server",
+                                "servers",
+                                "storage",
+                                "themes",
+                                "up"
+                            ]
+                        }
+                    },
+                    "description": "Top-level URL prefixes this extension claims, mounted with registerRootRoutes(). Prefixes used by the panel or by another enabled extension are rejected."
+                }
+            }
+        },
+        "ui": {
+            "type": "object",
+            "required": [
+                "entry"
+            ],
+            "properties": {
+                "entry": {
+                    "const": "dist/client.js"
+                },
+                "mode": {
+                    "const": "native"
+                },
+                "prefix": {
+                    "type": "string",
+                    "pattern": "^[a-z]{2,12}$",
+                    "not": {
+                        "enum": [
+                            "accent",
+                            "active",
+                            "after",
+                            "animate",
+                            "aria",
+                            "aspect",
+                            "autofill",
+                            "backdrop",
+                            "background",
+                            "before",
+                            "blur",
+                            "border",
+                            "breakpoint",
+                            "card",
+                            "caution",
+                            "chart",
+                            "checked",
+                            "color",
+                            "container",
+                            "core",
+                            "dark",
+                            "data",
+                            "default",
+                            "destructive",
+                            "disabled",
+                            "drop",
+                            "ease",
+                            "editor",
+                            "empty",
+                            "enabled",
+                            "even",
+                            "file",
+                            "first",
+                            "focus",
+                            "font",
+                            "foreground",
+                            "group",
+                            "has",
+                            "hover",
+                            "in",
+                            "inert",
+                            "input",
+                            "inset",
+                            "invalid",
+                            "landscape",
+                            "last",
+                            "layout",
+                            "leading",
+                            "lg",
+                            "ltr",
+                            "marker",
+                            "max",
+                            "md",
+                            "min",
+                            "muted",
+                            "noscript",
+                            "not",
+                            "nth",
+                            "odd",
+                            "only",
+                            "open",
+                            "optional",
+                            "panel",
+                            "peer",
+                            "perspective",
+                            "placeholder",
+                            "popover",
+                            "portrait",
+                            "primary",
+                            "print",
+                            "ptero",
+                            "radius",
+                            "radix",
+                            "required",
+                            "ring",
+                            "rtl",
+                            "scrollbar",
+                            "secondary",
+                            "selection",
+                            "shadow",
+                            "sidebar",
+                            "sm",
+                            "spacing",
+                            "spinner",
+                            "starting",
+                            "state",
+                            "success",
+                            "sunken",
+                            "supports",
+                            "target",
+                            "terminal",
+                            "text",
+                            "theme",
+                            "tracking",
+                            "tw",
+                            "valid",
+                            "visited",
+                            "warning",
+                            "xl"
+                        ]
+                    },
+                    "description": "The Tailwind prefix this extension builds with: prefix(<prefix>) on both Tailwind imports, classes written as <prefix>:flex. Required when the build ships Tailwind utilities or theme variables; Tailwind variant names, theme namespaces and panel names are reserved, and two enabled extensions cannot share one."
+                },
+                "screens": {
+                    "type": "array",
+                    "maxItems": 64,
+                    "items": {
+                        "type": "object",
+                        "additionalProperties": false,
+                        "required": [
+                            "id",
+                            "area",
+                            "path"
+                        ],
+                        "properties": {
+                            "id": {
+                                "type": "string",
+                                "pattern": "^[a-z][a-z0-9-]{0,47}$"
+                            },
+                            "area": {
+                                "enum": [
+                                    "account",
+                                    "server",
+                                    "admin"
+                                ]
+                            },
+                            "parent": {
+                                "enum": [
+                                    "admin.node",
+                                    "admin.server",
+                                    "admin.egg",
+                                    "admin.user"
+                                ]
+                            },
+                            "path": {
+                                "type": "string",
+                                "maxLength": 255,
+                                "pattern": "^[a-z][a-z0-9-]*(?:/(?:[a-z][a-z0-9-]*|\\$[a-zA-Z][a-zA-Z0-9_]*))*/?$"
+                            },
+                            "permission": {
+                                "type": "array",
+                                "items": {
+                                    "type": "string",
+                                    "minLength": 1,
+                                    "maxLength": 100
+                                }
+                            },
+                            "nav": {
+                                "type": "object",
+                                "required": [
+                                    "label"
+                                ],
+                                "additionalProperties": false,
+                                "properties": {
+                                    "label": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
+                                    },
+                                    "exact": {
+                                        "type": "boolean"
+                                    },
+                                    "params": {
+                                        "type": "object",
+                                        "additionalProperties": {
+                                            "type": "string",
+                                            "minLength": 1,
+                                            "maxLength": 255
+                                        },
+                                        "description": "Supply every path parameter for the navigation entry."
+                                    },
+                                    "order": {
+                                        "type": "integer",
+                                        "minimum": -10000,
+                                        "maximum": 10000
+                                    },
+                                    "group": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 100
+                                    },
+                                    "badge": {
+                                        "type": "string",
+                                        "minLength": 1,
+                                        "maxLength": 32
+                                    },
+                                    "icon": {
+                                        "type": "string",
+                                        "maxLength": 64,
+                                        "pattern": "^[a-z][a-z0-9]*(?:-[a-z0-9]+)*$",
+                                        "description": "A lucide icon name (https://lucide.dev/icons), such as life-buoy. Names this panel does not ship render the default icon."
+                                    }
+                                }
+                            },
+                            "when": {
+                                "type": "object",
+                                "additionalProperties": false,
+                                "properties": {
+                                    "eggFeatures": {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "minProperties": 1,
+                                        "properties": {
+                                            "any": {
+                                                "type": "array",
+                                                "minItems": 1,
+                                                "maxItems": 32,
+                                                "items": {
+                                                    "type": "string",
+                                                    "minLength": 1,
+                                                    "maxLength": 100
+                                                }
+                                            },
+                                            "all": {
+                                                "type": "array",
+                                                "minItems": 1,
+                                                "maxItems": 32,
+                                                "items": {
+                                                    "type": "string",
+                                                    "minLength": 1,
+                                                    "maxLength": 100
+                                                }
+                                            }
+                                        },
+                                        "description": "Server screens only. Matches the features of the server's egg, ignoring case."
+                                    },
+                                    "eggTags": {
+                                        "type": "object",
+                                        "additionalProperties": false,
+                                        "minProperties": 1,
+                                        "properties": {
+                                            "any": {
+                                                "type": "array",
+                                                "minItems": 1,
+                                                "maxItems": 32,
+                                                "items": {
+                                                    "type": "string",
+                                                    "minLength": 1,
+                                                    "maxLength": 100
+                                                }
+                                            },
+                                            "all": {
+                                                "type": "array",
+                                                "minItems": 1,
+                                                "maxItems": 32,
+                                                "items": {
+                                                    "type": "string",
+                                                    "minLength": 1,
+                                                    "maxLength": 100
+                                                }
+                                            }
+                                        },
+                                        "description": "Server screens only. Matches the tag slugs of the server's egg, ignoring case."
+                                    },
+                                    "match": {
+                                        "enum": [
+                                            "all",
+                                            "any"
+                                        ],
+                                        "description": "How eggFeatures and eggTags combine when both are declared. Defaults to all."
+                                    },
+                                    "runtime": {
+                                        "type": "boolean",
+                                        "description": "The bundle registers a visibility predicate for this screen; the screen stays hidden until it has answered."
+                                    }
+                                },
+                                "anyOf": [
+                                    {
+                                        "required": [
+                                            "eggFeatures"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "eggTags"
+                                        ]
+                                    },
+                                    {
+                                        "required": [
+                                            "runtime"
+                                        ],
+                                        "properties": {
+                                            "runtime": {
+                                                "const": true
+                                            }
+                                        }
+                                    }
+                                ],
+                                "dependentRequired": {
+                                    "match": [
+                                        "eggFeatures",
+                                        "eggTags"
+                                    ]
+                                },
+                                "description": "Conditions under which the screen exists. A screen whose conditions fail is absent from navigation and not routable."
+                            }
+                        },
+                        "allOf": [
+                            {
+                                "if": {
+                                    "required": [
+                                        "parent"
+                                    ]
+                                },
+                                "then": {
+                                    "properties": {
+                                        "area": {
+                                            "const": "admin"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "if": {
+                                    "required": [
+                                        "permission"
+                                    ]
+                                },
+                                "then": {
+                                    "properties": {
+                                        "area": {
+                                            "const": "server"
+                                        }
+                                    }
+                                }
+                            },
+                            {
+                                "if": {
+                                    "required": [
+                                        "when"
+                                    ],
+                                    "properties": {
+                                        "when": {
+                                            "anyOf": [
+                                                {
+                                                    "required": [
+                                                        "eggFeatures"
+                                                    ]
+                                                },
+                                                {
+                                                    "required": [
+                                                        "eggTags"
+                                                    ]
+                                                }
+                                            ]
+                                        }
+                                    }
+                                },
+                                "then": {
+                                    "properties": {
+                                        "area": {
+                                            "const": "server"
+                                        }
+                                    }
+                                }
+                            }
+                        ]
+                    }
+                },
+                "components": {
+                    "type": "array",
+                    "maxItems": 64,
+                    "uniqueItems": true,
+                    "items": {
+                        "enum": [
+                            "dashboard.serverCard",
+                            "server.files.details",
+                            "server.files.editor",
+                            "server.files.manager"
+                        ]
+                    },
+                    "description": "Exclusive component replacements activated with this extension. Declare a requires.sdk constraint."
+                }
+            }
+        }
+    },
+    "allOf": [
+        {
+            "if": {
+                "required": [
+                    "ui"
+                ],
+                "properties": {
+                    "ui": {
+                        "required": [
+                            "components"
+                        ],
+                        "properties": {
+                            "components": {
+                                "minItems": 1
+                            }
+                        }
+                    }
+                }
+            },
+            "then": {
+                "required": [
+                    "requires"
+                ],
+                "properties": {
+                    "requires": {
+                        "required": [
+                            "sdk"
+                        ]
+                    }
+                }
+            }
+        }
+    ]
+}

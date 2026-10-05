@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Tests\Traits\Http;
 
 use Illuminate\Http\Response;

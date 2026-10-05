@@ -1,29 +1,34 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Http\Controllers\Api\Client\Servers;
 
 use Carbon\CarbonImmutable;
-use Pterodactyl\Enum\JwtScope;
-use Pterodactyl\Models\Server;
 use Illuminate\Http\JsonResponse;
-use Pterodactyl\Models\Permission;
-use Pterodactyl\Services\Nodes\NodeJWTService;
+use Knuckles\Scribe\Attributes\Endpoint;
+use Knuckles\Scribe\Attributes\Group;
+use Knuckles\Scribe\Attributes\Response as ScribeResponse;
+use Knuckles\Scribe\Attributes\Subgroup;
+use Pterodactyl\Enum\JwtScope;
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Exceptions\Http\HttpForbiddenException;
-use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
-use Pterodactyl\Services\Servers\GetUserPermissionsService;
 use Pterodactyl\Http\Controllers\Api\Client\ClientApiController;
+use Pterodactyl\Http\Requests\Api\Client\ClientApiRequest;
+use Pterodactyl\Models\Server;
+use Pterodactyl\Services\Nodes\NodeJWTService;
+use Pterodactyl\Services\Servers\GetUserPermissionsService;
 
+#[Group('Client API', 'Endpoints authenticated as a panel user using a client API token.')]
+#[Subgroup('Server Overview', 'Inspect and control an accessible server.')]
 class WebsocketController extends ClientApiController
 {
-    /**
-     * WebsocketController constructor.
-     */
-    public function __construct(
-        private NodeJWTService $jwtService,
-        private GetUserPermissionsService $permissionsService,
-    ) {
-        parent::__construct();
-    }
+    private const array WEBSOCKET_EXAMPLE = [
+        'data' => [
+            'token' => 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.example.signature',
+            'socket' => 'wss://node.example.test/api/servers/4fcb1f44-0f90-4a1a-a8bf-7cc8a14d0f26/ws',
+        ],
+    ];
 
     /**
      * Generates a one-time token that is sent along in every websocket call to the Daemon.
@@ -31,21 +36,19 @@ class WebsocketController extends ClientApiController
      * allows us to continually renew this token and avoid users maintaining sessions wrongly,
      * as well as ensure that user's only perform actions they're allowed to.
      */
-    public function __invoke(ClientApiRequest $request, Server $server): JsonResponse
+    #[Endpoint('Get websocket credentials', 'Returns a short-lived Wings websocket token and socket URL for the server.')]
+    #[ScribeResponse(self::WEBSOCKET_EXAMPLE, description: 'Websocket credentials returned.')]
+    public function __invoke(ClientApiRequest $request, GetUserPermissionsService $permissionsService, NodeJWTService $jwtService, Server $server): JsonResponse
     {
         $user = $request->user();
-        if ($user->cannot(Permission::ACTION_WEBSOCKET_CONNECT, $server)) {
-            throw new HttpForbiddenException('You do not have permission to connect to this server\'s websocket.');
-        }
+        throw_if($user->cannot(Permissions::WebsocketConnect->value, $server), HttpForbiddenException::class, "You do not have permission to connect to this server's websocket.");
 
-        $permissions = $this->permissionsService->handle($server, $user);
+        $permissions = $permissionsService->handle($server, $user);
 
         $node = $server->node;
-        if (!is_null($server->transfer)) {
+        if (($server->transfer) !== null) {
             // Check if the user has permissions to receive transfer logs.
-            if (!in_array('admin.websocket.transfer', $permissions)) {
-                throw new HttpForbiddenException('You do not have permission to view server transfer logs.');
-            }
+            throw_unless(in_array('admin.websocket.transfer', $permissions), HttpForbiddenException::class, 'You do not have permission to view server transfer logs.');
 
             // Redirect the websocket request to the new node if the server has been archived.
             if ($server->transfer->archived) {
@@ -53,7 +56,7 @@ class WebsocketController extends ClientApiController
             }
         }
 
-        $token = $this->jwtService
+        $token = $jwtService
             ->setExpiresAt(CarbonImmutable::now()->addMinutes(10))
             ->setUser($request->user())
             ->setClaims([
@@ -61,14 +64,14 @@ class WebsocketController extends ClientApiController
                 'permissions' => $permissions,
             ])
             ->setScopes(JwtScope::Websocket)
-            ->handle($node, $user->id . $server->uuid);
+            ->handle($node, $user->id.$server->uuid);
 
         $socket = str_replace(['https://', 'http://'], ['wss://', 'ws://'], $node->getConnectionAddress());
 
         return new JsonResponse([
             'data' => [
                 'token' => $token->toString(),
-                'socket' => $socket . sprintf('/api/servers/%s/ws', $server->uuid),
+                'socket' => $socket.sprintf('/api/servers/%s/ws', $server->uuid),
             ],
         ]);
     }

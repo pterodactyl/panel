@@ -1,63 +1,57 @@
-import React, { useContext, useEffect, useState } from 'react';
-import asDialog from '@/hoc/asDialog';
-import { Dialog, DialogWrapperContext } from '@/components/elements/dialog';
-import { Button } from '@/components/elements/button/index';
-import { Input } from '@/components/elements/inputs';
+import React, { useState } from 'react';
+import { Dialog, type DialogProps } from '@/components/elements/dialog';
+import Button from '@/components/elements/Button';
+import { TextInput } from '@/components/form/controls';
 import Tooltip from '@/components/elements/tooltip/Tooltip';
-import disableAccountTwoFactor from '@/api/account/disableAccountTwoFactor';
-import { useFlashKey } from '@/plugins/useFlash';
-import { useStoreActions } from '@/state/hooks';
-import FlashMessageRender from '@/components/FlashMessageRender';
+import { useDisableAccountTwoFactor } from '@/api/account/two-factor/queries';
 
-const DisableTOTPDialog = () => {
-    const [submitting, setSubmitting] = useState(false);
+const DisableTOTPDialogContent = ({
+    disableTwoFactor,
+    onClose,
+}: {
+    disableTwoFactor: ReturnType<typeof useDisableAccountTwoFactor>;
+    onClose: () => void;
+}) => {
     const [password, setPassword] = useState('');
-    const { clearAndAddHttpError } = useFlashKey('account:two-step');
-    const { close, setProps } = useContext(DialogWrapperContext);
-    const updateUserData = useStoreActions((actions) => actions.user.updateUserData);
 
-    useEffect(() => {
-        setProps((state) => ({ ...state, preventExternalClose: submitting }));
-    }, [submitting]);
-
-    const submit = (e: React.FormEvent<HTMLFormElement>) => {
+    const submit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         e.stopPropagation();
 
-        if (submitting) return;
+        if (disableTwoFactor.isPending) return;
 
-        setSubmitting(true);
-        clearAndAddHttpError();
-        disableAccountTwoFactor(password)
-            .then(() => {
-                updateUserData({ useTotp: false });
-                close();
-            })
-            .catch(clearAndAddHttpError)
-            .then(() => setSubmitting(false));
+        try {
+            await disableTwoFactor.mutateAsync({ body: { password } });
+            onClose();
+        } catch {
+            // Error toast is handled by the mutation.
+        }
     };
 
     return (
         <form id={'disable-totp-form'} className={'mt-6'} onSubmit={submit}>
-            <FlashMessageRender byKey={'account:two-step'} className={'-mt-2 mb-6'} />
             <label className={'block pb-1'} htmlFor={'totp-password'}>
                 Password
             </label>
-            <Input.Text
+            <TextInput
                 id={'totp-password'}
                 type={'password'}
-                variant={Input.Text.Variants.Loose}
                 value={password}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.currentTarget.value)}
             />
             <Dialog.Footer>
-                <Button.Text onClick={close}>Cancel</Button.Text>
+                <Button.Text onClick={onClose}>Cancel</Button.Text>
                 <Tooltip
                     delay={100}
                     disabled={password.length > 0}
                     content={'You must enter your account password to continue.'}
                 >
-                    <Button.Danger type={'submit'} form={'disable-totp-form'} disabled={submitting || !password.length}>
+                    <Button.Danger
+                        type={'submit'}
+                        form={'disable-totp-form'}
+                        disabled={disableTwoFactor.isPending || !password.length}
+                        isLoading={disableTwoFactor.isPending}
+                    >
                         Disable
                     </Button.Danger>
                 </Tooltip>
@@ -66,7 +60,19 @@ const DisableTOTPDialog = () => {
     );
 };
 
-export default asDialog({
-    title: 'Disable Two-Step Verification',
-    description: 'Disabling two-step verification will make your account less secure.',
-})(DisableTOTPDialog);
+export default function DisableTOTPDialog({ open, onClose }: DialogProps) {
+    const disableTwoFactor = useDisableAccountTwoFactor();
+
+    return (
+        <Dialog
+            open={open}
+            onClose={onClose}
+            preventExternalClose={disableTwoFactor.isPending}
+            hideCloseIcon={disableTwoFactor.isPending}
+            title={'Disable Two-Step Verification'}
+            description={'Disabling two-step verification will make your account less secure.'}
+        >
+            <DisableTOTPDialogContent disableTwoFactor={disableTwoFactor} onClose={onClose} />
+        </Dialog>
+    );
+}

@@ -1,9 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Transformers\Api\Client;
 
+use Pterodactyl\Extensions\Scribe\Attributes\ResponseField;
 use Pterodactyl\Models\Task;
 
+#[ResponseField('action', example: 'power', enum: ['power', 'command', 'backup'])]
 class TaskTransformer extends BaseClientTransformer
 {
     public function getResourceName(): string
@@ -13,6 +17,8 @@ class TaskTransformer extends BaseClientTransformer
 
     /**
      * Transforms a schedule's task into a client viewable format.
+     *
+     * @return ApiPayload
      */
     public function transform(Task $model): array
     {

@@ -1,0 +1,10 @@
+/*
+ * Every extension builds Tailwind with its own prefix, declared as `ui.prefix` in
+ * extension.json (`hw:flex`, `hw:lg:hidden`), so its utilities and theme variables never
+ * collide with the panel build or with another extension's. A real extension imports
+ * `@pterodactyl/sdk/theme.css`; this example lives next to the SDK.
+ */
+@import 'tailwindcss/theme.css' layer(theme) prefix(hw);
+@import 'tailwindcss/utilities.css' layer(utilities) prefix(hw);
+@import '../../../sdk/theme.css';
+@source './**/*.{ts,tsx}';

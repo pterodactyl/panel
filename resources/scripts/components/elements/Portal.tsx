@@ -1,8 +1,6 @@
-import React, { useRef } from 'react';
+import type React from 'react';
 import { createPortal } from 'react-dom';
 
-export default ({ children }: { children: React.ReactNode }) => {
-    const element = useRef(document.getElementById('modal-portal'));
-
-    return createPortal(children, element!.current!);
-};
+export default function Portal({ children }: { children: React.ReactNode }) {
+    return createPortal(children, document.getElementById('modal-portal')!);
+}

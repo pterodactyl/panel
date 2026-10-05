@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 return [
     'search' => 'Search for servers...',
     'no_matches' => 'There were no servers found matching the search criteria provided.',

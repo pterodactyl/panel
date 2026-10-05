@@ -1,115 +1,70 @@
 <?php
 
-namespace Pterodactyl\Tests\Integration\Api\Client\Server\Schedule;
+declare(strict_types=1);
 
-use Pterodactyl\Models\Schedule;
+namespace Pterodactyl\Tests\Pest\Integration\Api\Client\Server\Schedule\UpdateServerScheduleTest;
+
+use Pterodactyl\Enum\Permissions;
 use Pterodactyl\Helpers\Utilities;
-use Pterodactyl\Models\Permission;
+use Pterodactyl\Models\Schedule;
 use Pterodactyl\Tests\Integration\Api\Client\ClientApiIntegrationTestCase;
 
-class UpdateServerScheduleTest extends ClientApiIntegrationTestCase
-{
-    /**
-     * The data to use when updating a schedule.
-     */
-    private array $updateData = [
-        'name' => 'Updated Schedule Name',
-        'minute' => '5',
-        'hour' => '*',
-        'day_of_week' => '*',
-        'month' => '*',
-        'day_of_month' => '*',
-        'is_active' => false,
-    ];
+uses(ClientApiIntegrationTestCase::class);
+beforeEach(function (): void {
+    $this->updateData = ['name' => 'Updated Schedule Name', 'minute' => '5', 'hour' => '*', 'day_of_week' => '*', 'month' => '*', 'day_of_month' => '*', 'is_active' => false];
+});
+dataset('permissionsDataProvider', fn (): array => [[[]], [[Permissions::ScheduleUpdate->value]]]);
+test('schedule can be updated', function (array $permissions): void {
+    [$user, $server] = $this->generateTestAccount($permissions);
+    /** @var Schedule $schedule */
+    $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+    $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
+    $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", $this->updateData);
+    $schedule = $schedule->refresh();
+    $response->assertOk();
+    expect($schedule->name)->toBe('Updated Schedule Name');
+    expect($schedule->is_active)->toBeFalse();
+    expect(collect($response->json('attributes'))->except('relationships')->all())->toBe([
+        'id' => $schedule->id,
+        'name' => $schedule->name,
+        'cron' => [
+            'day_of_week' => $schedule->cron_day_of_week,
+            'day_of_month' => $schedule->cron_day_of_month,
+            'month' => $schedule->cron_month,
+            'hour' => $schedule->cron_hour,
+            'minute' => $schedule->cron_minute,
+        ],
+        'is_active' => $schedule->is_active,
+        'is_processing' => $schedule->is_processing,
+        'only_when_online' => $schedule->only_when_online,
+        'last_run_at' => $schedule->last_run_at?->toAtomString(),
+        'next_run_at' => $schedule->next_run_at?->toAtomString(),
+        'created_at' => $schedule->created_at->toAtomString(),
+        'updated_at' => $schedule->updated_at->toAtomString(),
+    ]);
+    expect($schedule->next_run_at->toAtomString())->toBe($expected->toAtomString());
+})->with('permissionsDataProvider');
+test('error is returned if schedule does not belong to server', function (): void {
+    [$user, $server] = $this->generateTestAccount();
+    $server2 = $this->createServerModel(['owner_id' => $user->id]);
+    $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")->assertNotFound();
+});
+test('error is returned if subuser does not have permission to modify schedule', function (): void {
+    [$user, $server] = $this->generateTestAccount([Permissions::ScheduleCreate->value]);
+    $schedule = Schedule::factory()->create(['server_id' => $server->id]);
+    $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")->assertForbidden();
+});
+test('schedule is processing is set to false when active state changes', function (): void {
+    [$user, $server] = $this->generateTestAccount();
+    /** @var Schedule $schedule */
+    $schedule = Schedule::factory()->create(['server_id' => $server->id, 'is_active' => true, 'is_processing' => true]);
+    expect($schedule->is_active)->toBeTrue();
+    expect($schedule->is_processing)->toBeTrue();
 
-    /**
-     * Test that a schedule can be updated.
-     */
-    #[\PHPUnit\Framework\Attributes\DataProvider('permissionsDataProvider')]
-    public function testScheduleCanBeUpdated(array $permissions)
-    {
-        [$user, $server] = $this->generateTestAccount($permissions);
-
-        /** @var Schedule $schedule */
-        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-        $expected = Utilities::getScheduleNextRunDate('5', '*', '*', '*', '*');
-
-        $response = $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", $this->updateData);
-
-        $schedule = $schedule->refresh();
-
-        $response->assertOk();
-        $this->assertSame('Updated Schedule Name', $schedule->name);
-        $this->assertFalse($schedule->is_active);
-        $this->assertJsonTransformedWith($response->json('attributes'), $schedule);
-
-        $this->assertSame($expected->toAtomString(), $schedule->next_run_at->toAtomString());
-    }
-
-    /**
-     * Test that an error is returned if the schedule exists but does not belong to this
-     * specific server instance.
-     */
-    public function testErrorIsReturnedIfScheduleDoesNotBelongToServer()
-    {
-        [$user, $server] = $this->generateTestAccount();
-        $server2 = $this->createServerModel(['owner_id' => $user->id]);
-
-        $schedule = Schedule::factory()->create(['server_id' => $server2->id]);
-
-        $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
-            ->assertNotFound();
-    }
-
-    /**
-     * Test that an error is returned if the subuser does not have permission to modify a
-     * server schedule.
-     */
-    public function testErrorIsReturnedIfSubuserDoesNotHavePermissionToModifySchedule()
-    {
-        [$user, $server] = $this->generateTestAccount([Permission::ACTION_SCHEDULE_CREATE]);
-
-        $schedule = Schedule::factory()->create(['server_id' => $server->id]);
-
-        $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}")
-            ->assertForbidden();
-    }
-
-    /**
-     * Test that the "is_processing" field gets reset to false when the schedule is enabled
-     * or disabled so that an invalid state can be more easily fixed.
-     *
-     * @see https://github.com/pterodactyl/panel/issues/2425
-     */
-    public function testScheduleIsProcessingIsSetToFalseWhenActiveStateChanges()
-    {
-        [$user, $server] = $this->generateTestAccount();
-
-        /** @var Schedule $schedule */
-        $schedule = Schedule::factory()->create([
-            'server_id' => $server->id,
-            'is_active' => true,
-            'is_processing' => true,
-        ]);
-
-        $this->assertTrue($schedule->is_active);
-        $this->assertTrue($schedule->is_processing);
-
-        $response = $this->actingAs($user)
-            ->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", $this->updateData);
-
-        $schedule = $schedule->refresh();
-
-        $response->assertOk();
-        $this->assertFalse($schedule->is_active);
-        $this->assertFalse($schedule->is_processing);
-    }
-
-    public static function permissionsDataProvider(): array
-    {
-        return [[[]], [[Permission::ACTION_SCHEDULE_UPDATE]]];
-    }
-}
+    $response = $this->actingAs($user)->postJson("/api/client/servers/{$server->uuid}/schedules/{$schedule->id}", $this->updateData);
+    $schedule = $schedule->refresh();
+    $response->assertOk();
+    expect($schedule->is_active)->toBeFalse();
+    expect($schedule->is_processing)->toBeFalse();
+});

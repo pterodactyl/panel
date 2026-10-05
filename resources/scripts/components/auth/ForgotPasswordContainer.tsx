@@ -1,117 +1,83 @@
-import * as React from 'react';
-import { useEffect, useRef, useState } from 'react';
-import { Link } from 'react-router-dom';
-import requestPasswordResetEmail from '@/api/auth/requestPasswordResetEmail';
-import { httpErrorToHuman } from '@/api/http';
+import { useRef } from 'react';
+import { Link } from '@tanstack/react-router';
 import LoginFormContainer from '@/components/auth/LoginFormContainer';
-import { useStoreState } from 'easy-peasy';
-import Field from '@/components/elements/Field';
-import { Formik, FormikHelpers } from 'formik';
-import { object, string } from 'yup';
-import tw from 'twin.macro';
-import Button from '@/components/elements/Button';
-import Reaptcha from 'reaptcha';
-import useFlash from '@/plugins/useFlash';
+import { useAppForm } from '@/components/form';
+import type { InvisibleRecaptchaHandle } from '@/components/elements/InvisibleRecaptcha';
+import InvisibleRecaptcha from '@/components/elements/InvisibleRecaptcha';
+import { useSiteSettings } from '@/api/settings/queries';
+import { useRequestPasswordResetEmail } from '@/api/auth/queries';
+import { toast } from 'sonner';
 
-interface Values {
-    email: string;
-}
+const isEmail = (value: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value);
 
-export default () => {
-    const ref = useRef<Reaptcha>(null);
-    const [token, setToken] = useState('');
+export default function ForgotPasswordContainer() {
+    const recaptchaRef = useRef<InvisibleRecaptchaHandle>(null);
 
-    const { clearFlashes, addFlash } = useFlash();
-    const { enabled: recaptchaEnabled, siteKey } = useStoreState((state) => state.settings.data!.recaptcha);
+    const requestReset = useRequestPasswordResetEmail();
+    const { enabled: recaptchaEnabled, siteKey } = useSiteSettings().recaptcha;
 
-    useEffect(() => {
-        clearFlashes();
-    }, []);
+    const form = useAppForm({
+        defaultValues: { email: '' },
+        onSubmit: async ({ value }) => {
+            let token = '';
+            if (recaptchaEnabled) {
+                token = (await recaptchaRef.current?.execute()) ?? '';
+                if (!token) {
+                    toast.error('Captcha verification failed, please try again.');
+                    return;
+                }
+            }
 
-    const handleSubmission = ({ email }: Values, { setSubmitting, resetForm }: FormikHelpers<Values>) => {
-        clearFlashes();
-
-        // If there is no token in the state yet, request the token and then abort this submit request
-        // since it will be re-submitted when the recaptcha data is returned by the component.
-        if (recaptchaEnabled && !token) {
-            ref.current!.execute().catch((error) => {
-                console.error(error);
-
-                setSubmitting(false);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
-            });
-
-            return;
-        }
-
-        requestPasswordResetEmail(email, token)
-            .then((response) => {
-                resetForm();
-                addFlash({ type: 'success', title: 'Success', message: response });
-            })
-            .catch((error) => {
-                console.error(error);
-                addFlash({ type: 'error', title: 'Error', message: httpErrorToHuman(error) });
-            })
-            .then(() => {
-                setToken('');
-                if (ref.current) ref.current.reset();
-
-                setSubmitting(false);
-            });
-    };
+            try {
+                await requestReset.mutateAsync({
+                    body: {
+                        email: value.email,
+                        'g-recaptcha-response': token,
+                    },
+                });
+                form.reset();
+            } catch {
+                // Error toast is handled by the mutation.
+            }
+        },
+    });
 
     return (
-        <Formik
-            onSubmit={handleSubmission}
-            initialValues={{ email: '' }}
-            validationSchema={object().shape({
-                email: string()
-                    .email('A valid email address must be provided to continue.')
-                    .required('A valid email address must be provided to continue.'),
-            })}
-        >
-            {({ isSubmitting, setSubmitting, submitForm }) => (
-                <LoginFormContainer title={'Request Password Reset'} css={tw`w-full flex`}>
-                    <Field
+        <LoginFormContainer form={form} title={'Request Password Reset'} className={'w-full flex'}>
+            <form.AppField
+                name={'email'}
+                validators={{
+                    onChange: ({ value }) =>
+                        isEmail(value) ? undefined : 'A valid email address must be provided to continue.',
+                }}
+            >
+                {(field) => (
+                    <field.TextField
                         light
+                        type={'email'}
                         label={'Email'}
                         description={
                             'Enter your account email address to receive instructions on resetting your password.'
                         }
-                        name={'email'}
-                        type={'email'}
                     />
-                    <div css={tw`mt-6`}>
-                        <Button type={'submit'} size={'xlarge'} disabled={isSubmitting} isLoading={isSubmitting}>
-                            Send Email
-                        </Button>
-                    </div>
-                    {recaptchaEnabled && (
-                        <Reaptcha
-                            ref={ref}
-                            size={'invisible'}
-                            sitekey={siteKey || '_invalid_key'}
-                            onVerify={(response) => {
-                                setToken(response);
-                                submitForm();
-                            }}
-                            onExpire={() => {
-                                setSubmitting(false);
-                                setToken('');
-                            }}
-                        />
-                    )}
-                    <div css={tw`mt-6 text-center`}>
-                        <Link
-                            to={'/auth/login'}
-                            css={tw`text-xs text-neutral-500 tracking-wide uppercase no-underline hover:text-neutral-700`}
-                        >
-                            Return to Login
-                        </Link>
-                    </div>
-                </LoginFormContainer>
-            )}
-        </Formik>
+                )}
+            </form.AppField>
+            <div className={'mt-6'}>
+                <form.AppForm>
+                    <form.SubmitButton size={'xlarge'}>Send Email</form.SubmitButton>
+                </form.AppForm>
+            </div>
+            {recaptchaEnabled && <InvisibleRecaptcha ref={recaptchaRef} siteKey={siteKey || ''} />}
+            <div className={'mt-6 text-center'}>
+                <Link
+                    to={'/auth/login'}
+                    className={
+                        'text-xs text-muted-foreground tracking-wide uppercase no-underline hover:text-foreground'
+                    }
+                >
+                    Return to Login
+                </Link>
+            </div>
+        </LoginFormContainer>
     );
-};
+}

@@ -1,10 +1,16 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Factories;
 
-use Pterodactyl\Models\Schedule;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Pterodactyl\Models\Schedule;
+use Pterodactyl\Models\Server;
 
+/**
+ * @extends Factory<Schedule>
+ */
 class ScheduleFactory extends Factory
 {
     /**
@@ -20,7 +26,8 @@ class ScheduleFactory extends Factory
     public function definition(): array
     {
         return [
-            'name' => $this->faker->firstName(),
+            'server_id' => Server::factory()->withRelationships(),
+            'name' => fake()->firstName(),
         ];
     }
 }

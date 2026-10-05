@@ -1,80 +1,85 @@
-import React, { useEffect, useState } from 'react';
+import { useMemo } from 'react';
+import { getCoreRowModel, getSortedRowModel, useReactTable } from '@tanstack/react-table';
+import { Network } from 'lucide-react';
 import Spinner from '@/components/elements/Spinner';
-import { useFlashKey } from '@/plugins/useFlash';
 import ServerContentBlock from '@/components/elements/ServerContentBlock';
-import { ServerContext } from '@/state/server';
-import AllocationRow from '@/components/server/network/AllocationRow';
-import Button from '@/components/elements/Button';
-import createServerAllocation from '@/api/server/network/createServerAllocation';
-import tw from 'twin.macro';
-import Can from '@/components/elements/Can';
+import ListToolbar from '@/components/elements/ListToolbar';
+import { NewButton } from '@/components/elements/NewButton';
 import SpinnerOverlay from '@/components/elements/SpinnerOverlay';
-import getServerAllocations from '@/api/swr/getServerAllocations';
-import isEqual from 'react-fast-compare';
-import { useDeepCompareEffect } from '@/plugins/useDeepCompareEffect';
+import { useCurrentServer } from '@/api/server/queries';
+import {
+    createServerAllocationInput,
+    useCreateServerAllocation,
+    useServerAllocations,
+} from '@/api/server/network/queries';
+import { httpErrorToHuman } from '@/api/http';
+import { ServerError } from '@/components/elements/ScreenBlock';
+import DataTable from '@/components/elements/table/DataTable';
+import { allocationColumns } from '@/components/server/network/AllocationTable';
+import { Empty, EmptyContent, EmptyDescription, EmptyHeader, EmptyMedia, EmptyTitle } from '@/components/ui/empty';
+import { emptyCompactClass } from '@/components/ui/styles';
+import { usePermissions } from '@/plugins/usePermissions';
 
 const NetworkContainer = () => {
-    const [loading, setLoading] = useState(false);
-    const uuid = ServerContext.useStoreState((state) => state.server.data!.uuid);
-    const allocationLimit = ServerContext.useStoreState((state) => state.server.data!.featureLimits.allocations);
-    const allocations = ServerContext.useStoreState((state) => state.server.data!.allocations, isEqual);
-    const setServerFromState = ServerContext.useStoreActions((actions) => actions.server.setServerFromState);
+    const server = useCurrentServer()!;
+    const uuid = server.attributes.uuid;
+    const allocationLimit = server.attributes.feature_limits.allocations ?? 0;
+    const [canCreate] = usePermissions('allocation.create');
 
-    const { clearFlashes, clearAndAddHttpError } = useFlashKey('server:network');
-    const { data, error, mutate } = getServerAllocations();
-
-    useEffect(() => {
-        mutate(allocations);
-    }, []);
-
-    useEffect(() => {
-        clearAndAddHttpError(error);
-    }, [error]);
-
-    useDeepCompareEffect(() => {
-        if (!data) return;
-
-        setServerFromState((state) => ({ ...state, allocations: data }));
-    }, [data]);
+    const { data, error, refetch } = useServerAllocations(uuid);
+    const createAllocation = useCreateServerAllocation();
+    const allocations = useMemo(() => data?.data ?? [], [data?.data]);
+    const table = useReactTable({
+        data: allocations,
+        columns: allocationColumns,
+        getCoreRowModel: getCoreRowModel(),
+        getSortedRowModel: getSortedRowModel(),
+        getRowId: (allocation) => String(allocation.attributes.id),
+    });
 
     const onCreateAllocation = () => {
-        clearFlashes();
-
-        setLoading(true);
-        createServerAllocation(uuid)
-            .then((allocation) => {
-                setServerFromState((s) => ({ ...s, allocations: s.allocations.concat(allocation) }));
-                return mutate(data?.concat(allocation), false);
-            })
-            .catch((error) => clearAndAddHttpError(error))
-            .then(() => setLoading(false));
+        createAllocation.mutate(createServerAllocationInput(uuid));
     };
 
+    if (error && !data) {
+        return <ServerError message={httpErrorToHuman(error)} onRetry={() => refetch()} />;
+    }
+
+    const canManage = canCreate && allocationLimit > 0;
+    const canAddAllocation = canManage && allocationLimit > allocations.length;
+    const newAllocationButton = <NewButton onClick={onCreateAllocation}>New allocation</NewButton>;
+
     return (
-        <ServerContentBlock showFlashKey={'server:network'} title={'Network'}>
+        <ServerContentBlock title={'Network'}>
             {!data ? (
                 <Spinner size={'large'} centered />
             ) : (
                 <>
-                    {data.map((allocation) => (
-                        <AllocationRow key={`${allocation.ip}:${allocation.port}`} allocation={allocation} />
-                    ))}
-                    {allocationLimit > 0 && (
-                        <Can action={'allocation.create'}>
-                            <SpinnerOverlay visible={loading} />
-                            <div css={tw`mt-6 sm:flex items-center justify-end`}>
-                                <p css={tw`text-sm text-neutral-300 mb-4 sm:mr-6 sm:mb-0`}>
-                                    You are currently using {data.length} of {allocationLimit} allowed allocations for
-                                    this server.
-                                </p>
-                                {allocationLimit > data.length && (
-                                    <Button css={tw`w-full sm:w-auto`} color={'primary'} onClick={onCreateAllocation}>
-                                        Create Allocation
-                                    </Button>
-                                )}
-                            </div>
-                        </Can>
+                    <SpinnerOverlay visible={createAllocation.isPending} />
+                    {canManage && (
+                        <ListToolbar
+                            summary={`You are currently using ${allocations.length} of ${allocationLimit} allowed allocations for this server.`}
+                        >
+                            {canAddAllocation && newAllocationButton}
+                        </ListToolbar>
                     )}
+                    <DataTable
+                        table={table}
+                        emptyState={
+                            <Empty className={emptyCompactClass}>
+                                <EmptyHeader>
+                                    <EmptyMedia variant={'icon'}>
+                                        <Network />
+                                    </EmptyMedia>
+                                    <EmptyTitle>No allocations</EmptyTitle>
+                                    <EmptyDescription>
+                                        This server doesn&apos;t have any network allocations assigned.
+                                    </EmptyDescription>
+                                </EmptyHeader>
+                                {canAddAllocation && <EmptyContent>{newAllocationButton}</EmptyContent>}
+                            </Empty>
+                        }
+                    />
                 </>
             )}
         </ServerContentBlock>

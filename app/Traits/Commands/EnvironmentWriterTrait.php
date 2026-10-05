@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Traits\Commands;
 
 use Pterodactyl\Exceptions\PterodactylException;
@@ -13,11 +15,11 @@ trait EnvironmentWriterTrait
      */
     public function escapeEnvironmentValue(?string $value): string
     {
-        if (is_null($value)) {
+        if (($value) === null) {
             return '';
         }
 
-        if (!preg_match('/^\"(.*)\"$/', $value) && preg_match('/([^\w.\-+\/])+/', $value)) {
+        if (! preg_match('/^\"(.*)\"$/', $value) && preg_match('/([^\w.\-+\/])+/', $value)) {
             return sprintf('"%s"', addslashes($value));
         }
 
@@ -27,24 +29,29 @@ trait EnvironmentWriterTrait
     /**
      * Update the .env file for the application using the passed in values.
      *
+     * @param  array<string, EnvironmentValue>  $values  keyed by environment variable name
+     *
      * @throws PterodactylException
      */
     public function writeToEnvironment(array $values = []): void
     {
         $path = base_path('.env');
-        if (!file_exists($path)) {
-            throw new PterodactylException('Cannot locate .env file, was this software installed correctly?');
-        }
+        throw_unless(file_exists($path), PterodactylException::class, 'Cannot locate .env file, was this software installed correctly?');
 
         $saveContents = file_get_contents($path);
-        collect($values)->each(function ($value, $key) use (&$saveContents) {
-            $key = strtoupper($key);
-            $saveValue = sprintf('%s=%s', $key, $this->escapeEnvironmentValue($value));
+        throw_if($saveContents === false, PterodactylException::class, 'Unable to read the contents of the .env file.');
 
-            if (preg_match_all('/^' . $key . '=(.*)$/m', $saveContents) < 1) {
-                $saveContents = $saveContents . PHP_EOL . $saveValue;
+        collect($values)->each(function ($value, $key) use (&$saveContents): void {
+            $key = mb_strtoupper($key);
+            // SAFETY: EnvironmentValue is restricted to JSON scalars, which have deterministic string representations for .env persistence.
+            $saveValue = sprintf('%s=%s', $key, $this->escapeEnvironmentValue($value === null ? null : (string) $value));
+
+            if (preg_match_all('/^'.$key.'=(.*)$/m', $saveContents) < 1) {
+                $saveContents = $saveContents.PHP_EOL.$saveValue;
             } else {
-                $saveContents = preg_replace('/^' . $key . '=(.*)$/m', $saveValue, $saveContents);
+                // preg_replace() only returns null on a PCRE engine failure (e.g. the
+                // backtrack limit); keep the existing contents rather than losing them.
+                $saveContents = preg_replace('/^'.$key.'=(.*)$/m', $saveValue, $saveContents) ?? $saveContents;
             }
         });
 

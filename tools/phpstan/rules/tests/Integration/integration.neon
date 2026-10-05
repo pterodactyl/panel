@@ -1,0 +1,7 @@
+includes:
+    - ../../extension.neon
+
+parameters:
+    level: 0
+    paths:
+        - data

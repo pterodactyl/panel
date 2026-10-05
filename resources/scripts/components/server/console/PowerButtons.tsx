@@ -1,76 +1,78 @@
-import React, { useEffect, useState } from 'react';
-import { Button } from '@/components/elements/button/index';
+import React from 'react';
+import Button from '@/components/elements/Button';
 import Can from '@/components/elements/Can';
-import { ServerContext } from '@/state/server';
-import { PowerAction } from '@/components/server/console/ServerConsoleContainer';
+import { useServerStatus, useSocketConnected, useSocketInstance } from '@/state/server';
+import type { PowerAction } from '@/components/server/console/types';
 import { Dialog } from '@/components/elements/dialog';
 
 interface PowerButtonProps {
     className?: string;
 }
 
-export default ({ className }: PowerButtonProps) => {
-    const [open, setOpen] = useState(false);
-    const status = ServerContext.useStoreState((state) => state.status.value);
-    const instance = ServerContext.useStoreState((state) => state.socket.instance);
+export default function PowerButtons({ className }: PowerButtonProps) {
+    const status = useServerStatus();
+    const instance = useSocketInstance();
+    const connected = useSocketConnected();
 
     const killable = status === 'stopping';
-    const onButtonClick = (
-        action: PowerAction | 'kill-confirmed',
-        e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-    ): void => {
+    const onButtonClick = (action: PowerAction, e: React.MouseEvent<HTMLButtonElement, MouseEvent>): void => {
         e.preventDefault();
-        if (action === 'kill') {
-            return setOpen(true);
-        }
 
         if (instance) {
-            setOpen(false);
-            instance.send('set state', action === 'kill-confirmed' ? 'kill' : action);
+            instance.send('set state', action);
         }
     };
 
-    useEffect(() => {
-        if (status === 'offline') {
-            setOpen(false);
-        }
-    }, [status]);
-
     return (
         <div className={className}>
-            <Dialog.Confirm
-                open={open}
-                hideCloseIcon
-                onClose={() => setOpen(false)}
-                title={'Forcibly Stop Process'}
-                confirm={'Continue'}
-                onConfirmed={onButtonClick.bind(this, 'kill-confirmed')}
-            >
-                Forcibly stopping a server can lead to data corruption.
-            </Dialog.Confirm>
             <Can action={'control.start'}>
                 <Button
                     className={'flex-1'}
-                    disabled={status !== 'offline'}
-                    onClick={onButtonClick.bind(this, 'start')}
+                    disabled={!connected || status !== 'offline'}
+                    onClick={onButtonClick.bind(null, 'start')}
                 >
                     Start
                 </Button>
             </Can>
             <Can action={'control.restart'}>
-                <Button.Text className={'flex-1'} disabled={!status} onClick={onButtonClick.bind(this, 'restart')}>
+                <Button.Text
+                    className={'flex-1'}
+                    disabled={!connected || !status}
+                    onClick={onButtonClick.bind(null, 'restart')}
+                >
                     Restart
                 </Button.Text>
             </Can>
             <Can action={'control.stop'}>
-                <Button.Danger
-                    className={'flex-1'}
-                    disabled={status === 'offline'}
-                    onClick={onButtonClick.bind(this, killable ? 'kill' : 'stop')}
-                >
-                    {killable ? 'Kill' : 'Stop'}
-                </Button.Danger>
+                {killable ? (
+                    <Dialog.ConfirmTrigger
+                        key={'killable'}
+                        hideCloseIcon
+                        title={'Forcibly Stop Process'}
+                        confirm={'Continue'}
+                        trigger={({ onClick }) => (
+                            <Button.Danger className={'flex-1'} disabled={!connected} onClick={onClick}>
+                                Kill
+                            </Button.Danger>
+                        )}
+                        onConfirmed={(event, close) => {
+                            close();
+                            onButtonClick('kill', event);
+                        }}
+                    >
+                        Forcibly stopping a server can lead to data corruption.
+                    </Dialog.ConfirmTrigger>
+                ) : (
+                    <Button.Danger
+                        key={'stoppable'}
+                        className={'flex-1'}
+                        disabled={!connected || status === 'offline'}
+                        onClick={onButtonClick.bind(null, 'stop')}
+                    >
+                        Stop
+                    </Button.Danger>
+                )}
             </Can>
         </div>
     );
-};
+}

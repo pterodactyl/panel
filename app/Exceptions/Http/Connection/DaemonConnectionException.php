@@ -1,83 +1,43 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Pterodactyl\Exceptions\Http\Connection;
 
+use Illuminate\Http\Client\RequestException;
+use Illuminate\Http\Client\Response as ClientResponse;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\Log;
-use GuzzleHttp\Exception\GuzzleException;
 use Pterodactyl\Exceptions\DisplayException;
+use Throwable;
 
-/**
- * @method \GuzzleHttp\Exception\GuzzleException getPrevious()
- */
+/** @method Throwable getPrevious() */
 class DaemonConnectionException extends DisplayException
 {
-    private int $statusCode = Response::HTTP_GATEWAY_TIMEOUT;
+    private readonly int $statusCode;
 
-    /**
-     * Every request to the Wings instance will return a unique X-Request-Id header
-     * which allows for all errors to be efficiently tied to a specific request that
-     * triggered them, and gives users a more direct method of informing hosts when
-     * something goes wrong.
-     */
-    private ?string $requestId;
+    private readonly ?string $requestId;
 
-    /**
-     * Throw a displayable exception caused by a daemon connection error.
-     */
-    public function __construct(GuzzleException $previous, bool $useStatusCode = true)
+    public function __construct(Throwable $previous, bool $useStatusCode = true, ?ClientResponse $response = null)
     {
-        /** @var \GuzzleHttp\Psr7\Response|null $response */
-        $response = method_exists($previous, 'getResponse') ? $previous->getResponse() : null;
-        $this->requestId = $response?->getHeaderLine('X-Request-Id');
+        $response ??= $previous instanceof RequestException ? $previous->response : null;
+        $this->requestId = $response?->header('X-Request-Id');
+        $this->statusCode = $this->statusFor($response, $useStatusCode);
+        $level = $this->statusCode >= 500 && $this->statusCode !== Response::HTTP_GATEWAY_TIMEOUT
+            ? self::LEVEL_ERROR
+            : self::LEVEL_WARNING;
 
-        if ($useStatusCode) {
-            $this->statusCode = is_null($response) ? $this->statusCode : $response->getStatusCode();
-            // There are rare conditions where wings encounters a panic condition and crashes the
-            // request being made after content has already been sent over the wire. In these cases
-            // you can end up with a "successful" response code that is actual an error.
-            //
-            // Handle those better here since we shouldn't ever end up in this exception state and
-            // be returning a 2XX level response.
-            if ($this->statusCode < 400) {
-                $this->statusCode = Response::HTTP_BAD_GATEWAY;
-            }
-        }
-
-        if (is_null($response)) {
-            $message = 'Could not establish a connection to the machine running this server. Please try again.';
-        } else {
-            $message = sprintf('There was an error while communicating with the machine running this server. This error has been logged, please try again. (code: %s) (request_id: %s)', $response->getStatusCode(), $this->requestId ?? '<nil>');
-        }
-
-        // Attempt to pull the actual error message off the response and return that if it is not
-        // a 500 level error.
-        if ($this->statusCode < 500 && !is_null($response)) {
-            $body = json_decode($response->getBody()->__toString(), true);
-            $message = sprintf('An error occurred on the remote host: %s. (request id: %s)', $body['error'] ?? $message, $this->requestId ?? '<nil>');
-        }
-
-        $level = $this->statusCode >= 500 && $this->statusCode !== 504
-            ? DisplayException::LEVEL_ERROR
-            : DisplayException::LEVEL_WARNING;
-
-        parent::__construct($message, $previous, $level);
+        parent::__construct($this->messageFor($response), $previous, $level);
     }
 
-    /**
-     * Override the default reporting method for DisplayException by just logging immediately
-     * here and including the specific X-Request-Id header that was returned by the call.
-     */
-    public function report()
+    public function report(): void
     {
-        Log::{$this->getErrorLevel()}($this->getPrevious(), [
+        Log::log($this->getErrorLevel(), $this->getPrevious()->getMessage(), [
             'request_id' => $this->requestId,
+            'exception' => $this->getPrevious(),
         ]);
     }
 
-    /**
-     * Return the HTTP status code for this exception.
-     */
     public function getStatusCode(): int
     {
         return $this->statusCode;
@@ -86,5 +46,32 @@ class DaemonConnectionException extends DisplayException
     public function getRequestId(): ?string
     {
         return $this->requestId;
+    }
+
+    private function statusFor(?ClientResponse $response, bool $useStatusCode): int
+    {
+        if (! $useStatusCode || ! $response instanceof ClientResponse) {
+            return Response::HTTP_GATEWAY_TIMEOUT;
+        }
+
+        // A truncated or malformed successful response is still an upstream failure.
+        return $response->status() < 400 ? Response::HTTP_BAD_GATEWAY : $response->status();
+    }
+
+    private function messageFor(?ClientResponse $response): string
+    {
+        if (! $response instanceof ClientResponse) {
+            return 'Could not establish a connection to the machine running this server. Please try again.';
+        }
+
+        $message = sprintf('There was an error while communicating with the machine running this server. This error has been logged, please try again. (code: %s) (request_id: %s)', $response->status(), $this->requestId ?? '<nil>');
+        if ($this->statusCode >= 500) {
+            return $message;
+        }
+
+        $body = $response->json();
+        $remoteError = is_array($body) && is_string($body['error'] ?? null) ? $body['error'] : $message;
+
+        return sprintf('An error occurred on the remote host: %s. (request id: %s)', $remoteError, $this->requestId ?? '<nil>');
     }
 }

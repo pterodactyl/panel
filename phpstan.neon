@@ -1,19 +1,125 @@
-includes:
-    - ./vendor/larastan/larastan/extension.neon
-    - ./vendor/phpstan/phpstan-webmozart-assert/extension.neon
-
 rules:
     - PHPStan\Rules\DeadCode\UnreachableStatementRule
     - PHPStan\Rules\DeadCode\UnusedPrivateConstantRule
     - PHPStan\Rules\DeadCode\UnusedPrivateMethodRule
 
 parameters:
-    level: 4
+    level: 10
+    checkImplicitMixed: true
+    stubFiles:
+        - tools/phpstan/stubs/EloquentHasAttributes.stub
+    typeAliases:
+        ValidationRule: 'string|\Stringable|\Closure|\Illuminate\Contracts\Validation\Rule|\Illuminate\Contracts\Validation\ValidationRule'
+        ValidationRuleSet: 'array<int, ValidationRule>'
+        ValidationRules: 'array<string, ValidationRule|ValidationRuleSet>'
+        NormalizedValidationRules: 'array<string, ValidationRuleSet>'
+        ApiScalar: 'bool|float|int|string|null'
+        EnvironmentValue: 'ApiScalar'
+        ApiValue0: 'ApiScalar|\Pterodactyl\Support\JsonEmptyObject'
+        ApiValue1: 'ApiScalar|array<array-key, ApiValue0>'
+        ApiValue2: 'ApiScalar|array<array-key, ApiValue1>'
+        ApiValue3: 'ApiScalar|array<array-key, ApiValue2>'
+        ApiValue4: 'ApiScalar|array<array-key, ApiValue3>'
+        ApiValue5: 'ApiScalar|array<array-key, ApiValue4>'
+        ApiValue6: 'ApiScalar|array<array-key, ApiValue5>'
+        ApiValue7: 'ApiScalar|array<array-key, ApiValue6>'
+        ApiValue8: 'ApiScalar|array<array-key, ApiValue7>'
+        ApiValue9: 'ApiScalar|array<array-key, ApiValue8>'
+        ApiValue10: 'ApiScalar|array<array-key, ApiValue9>'
+        JsonValue: 'ApiValue10'
+        JsonInputValue: 'ApiValue0|ApiValue1|ApiValue2|ApiValue3|ApiValue4|ApiValue5|ApiValue6|ApiValue7|ApiValue8|ApiValue9|ApiValue10'
+        ModelAttributeValue: 'JsonInputValue|\DateTimeInterface|\UnitEnum|\Stringable|\Illuminate\Contracts\Support\Arrayable<array-key, JsonValue>'
+        ModelAttributes: 'array<string, ModelAttributeValue>'
+        ServerCreationAttributes: 'array{external_id: string|null, name: string, description: string|null, owner_id: int, egg_id: int, image: string, startup: string, environment: array<string, ApiScalar>, memory: int, swap: int, disk: int, io: int, cpu: int, threads: string|null, skip_scripts: bool, allocation_id: int|null, allocation_additional: list<int>|null, start_on_completion: bool, database_limit: int|null, allocation_limit: int|null, backup_limit: int|null, oom_disabled: bool|null, node_id?: int}'
+        ApiErrorSource: 'array{line: int, file: string}'
+        ApiErrorMetadata: 'array<string, JsonValue>'
+        ApiError: 'array{code: string, status: string, detail: string, source?: ApiErrorSource, meta?: ApiErrorMetadata}'
+        ApiErrorOverride: 'array{code?: string, status?: string, detail?: string, source?: ApiErrorSource, meta?: ApiErrorMetadata}'
+        ApiErrorEnvelope: 'array{errors: list<ApiError>}'
+        ActivityEvent: 'array{user: string|null, server: string, event: string, metadata: array<string, ApiValue7>, ip: string|null, timestamp: string}'
+        ActivityEvents: 'list<ActivityEvent>'
+        AllocationAssignmentData: 'array{allocation_ip: string, allocation_ports: list<int|string>, allocation_alias?: string|null}'
+        ViteManifestEntry: 'array{file: string, integrity?: string, css?: list<string>, cssIntegrity?: array<string, string>}'
+        ViteManifest: 'array<string, ViteManifestEntry>'
+        JwtClaimValue: 'JsonValue|\DateTimeImmutable'
+        JwtClaims: 'array<non-empty-string, JwtClaimValue>'
+        ApiKeyCreationData: 'array{memo: string, user_id: int, allowed_ips?: list<string>}'
+        ValidationData: 'array<string, JsonValue>'
+        SoftwareVersionData: 'array{panel?: string, wings?: string, discord?: string, donations?: string}'
+        ServerBuildModificationData: 'array{oom_disabled?: bool, memory?: int, swap?: int, io?: int, cpu?: int, threads?: string|null, disk?: int, allocation_id?: int, database_limit?: int|null, allocation_limit?: int|null, backup_limit?: int|null, add_allocations?: list<int>, remove_allocations?: list<int>}'
+        ServerStartupModificationData: 'array{environment?: array<string, ApiScalar>, egg_id?: int, startup?: string, skip_scripts?: bool, docker_image?: string}'
+        NodeConfiguration: 'array{debug: bool, uuid: string, token_id: string, token: string, api: array{host: string, port: int, ssl: array{enabled: bool, cert: string, key: string}, upload_limit: int}, system: array{data: string, sftp: array{bind_port: int}}, allowed_mounts: list<string>, remote: string}'
+        BackupDiskConfig: 'array{}|array{adapter: string, key?: string, secret?: string, token?: string, bucket?: string, prefix?: string, options?: array<string, JsonValue>, ...<string, ApiValue9>}'
+        S3BackupDiskConfig: 'array{adapter: string, bucket: string, key?: string, secret?: string, token?: string, prefix?: string, options?: array<string, JsonValue>, ...<string, ApiValue9>}'
+        EggConfigurationFiles: 'array<string, array{find: array<array-key, ApiValue7>, ...<string, ApiValue8>}>'
+        EggConfigurationReplacement: 'array{match: array-key, if_value?: array-key, replace_with: ApiValue6}'
+        EggConfigurationOutput: 'array{file: string, replace: list<EggConfigurationReplacement>, ...<string, ApiValue8>}'
+        EggConfigurationOutputs: 'list<EggConfigurationOutput>'
+        OpenApiSchema: 'array<string, ApiValue7>'
+        DeepOpenApiSchema: 'array<string, ApiValue9>'
+        OpenApiSchemaMap: 'array<string, DeepOpenApiSchema>'
+        OpenApiSchemaInput: 'array<string, ApiValue8|OpenApiSchemaMap>'
+        OpenApiRecursiveNode: 'array<array-key, ApiValue9>'
+        OpenApiObjectSchema: 'array{type: string, properties: array<string, DeepOpenApiSchema>, required?: list<string>}'
+        OpenApiMedia: 'array{schema?: DeepOpenApiSchema|ApiScalar, ...<string, ApiValue4>}'
+        OpenApiContent: 'array<string, OpenApiMedia>'
+        OpenApiResponse: 'array{description?: ApiScalar, content?: OpenApiContent|ApiScalar, ...<string, ApiValue4>}'
+        OpenApiResponses: 'array<array-key, OpenApiResponse>'
+        OpenApiRequestBody: 'array{required?: ApiScalar, content?: OpenApiContent|ApiScalar, ...<string, ApiValue4>}'
+        OpenApiParameter: 'array{name?: ApiScalar, in?: ApiScalar, required?: ApiScalar, schema?: DeepOpenApiSchema|ApiScalar, ...<string, ApiValue4>}'
+        OpenApiParameters: 'list<OpenApiParameter>'
+        ScribeParameter: 'array<string, JsonInputValue>'
+        ScribeParameters: 'array<string, ScribeParameter>'
+        ScribeResponse: 'array{status: int, content: ApiPayload, description: string}'
+        OpenApiOperation: 'array{operationId?: ApiScalar, responses?: OpenApiResponses|ApiScalar, requestBody?: OpenApiRequestBody|ApiScalar, parameters?: OpenApiParameters|ApiScalar, security?: list<array<string, list<string>>>, ...<string, ApiValue4>}'
+        OpenApiPathItem: 'array<string, OpenApiOperation|ApiValue4>'
+        OpenApiRoot: 'array{components: array{securitySchemes: OpenApiSchemaMap, schemas: OpenApiSchemaMap, ...<string, ApiValue4>}, paths?: array<string, OpenApiPathItem>, ...<string, ApiValue4>}'
+        FractalListOpenApiSchema: 'array{type: string, required: list<string>, properties: array{object: OpenApiSchema, data: OpenApiSchema}}'
+        FractalPaginatedOpenApiSchema: 'array{type: string, required: list<string>, properties: array{object: OpenApiSchema, data: OpenApiSchema, meta: OpenApiSchema}}'
+        ApiPayload: 'array<string, ApiValue10>'
+        ApiPayload9: 'array<string, ApiValue9>'
+        FractalTransformedPayload: 'array{relationships?: array<string, ApiValue9>, ...<string, ApiValue9>}'
+        DaemonFileObject: 'array{name?: string, mode?: string, mode_bits?: string, size?: int, file?: bool, symlink?: bool, mime?: string, created?: string, modified?: string}'
+        DaemonStats: 'array{state?: string, is_suspended?: bool, utilization?: array{memory_bytes?: int, cpu_absolute?: float|int, disk_bytes?: int, network?: array{rx_bytes?: int, tx_bytes?: int}, uptime?: int}}'
+        DatabaseCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null}'
+        DatabaseDeploymentData: 'array{database: string, remote: string, database_host_id?: int|null, max_connections?: int|null}'
+        DatabaseModelCreationData: 'array{database: string, remote: string, database_host_id: int, max_connections?: int|null, server_id: int, username: string, password: string}'
+        DatabaseHostUpdateData: 'array{name: string, host: string, port: int, username: string, password?: string|null, node_id: int|null}'
+        EggVariableData: 'array{name: string, description: string, env_variable: string, default_value: string, user_viewable: bool, user_editable: bool, rules: string}'
+        MultipartUploadPart: 'array{etag: string, part_number: int}'
+        LocationCreationData: 'array{short: string, long?: string|null}'
+        LocationUpdateData: 'array{short?: string, long?: string|null}'
+        NodeUpdateData: 'NodeCreationData&array{daemon_token?: string, daemon_token_id?: string}'
+        NodeCreationData: 'array{name: string, location_id: int, fqdn: string, scheme: string, memory: int, memory_overallocate: int, disk: int, disk_overallocate: int, daemonListen: int, daemonSFTP: int, daemonBase: string, description?: string|null, public?: bool, behind_proxy?: bool, maintenance_mode?: bool, upload_size?: int}'
+        UserCreationData: 'array{email: string, username: string, name_first: string, name_last: string, external_id?: string|null, password?: string|null, root_admin?: bool, language?: string}'
+        SftpAuthenticationData: 'array{type: string|null, username: string, password: string}'
+        EggCreationData: 'array{name: string, description: string|null, docker_images: array<string, string>, force_outgoing_ip: bool, features: list<string>, startup: string, file_denylist?: list<string>, config_from?: int|null, config_stop?: string|null, config_startup?: string|null, config_logs?: string|null, config_files?: string|null}'
+        ServerTransferData: 'array{node_id: int, allocation_id: int, allocation_additional: list<int>}'
+        TaskData: 'array{action: string, payload: string, time_offset: int, sequence_id: int|null, continue_on_failure: bool}'
+        ScheduleCreationData: 'array{name: string, is_active: bool, minute: string, hour: string, day_of_month: string, month: string, day_of_week: string, only_when_online: bool}'
+        ScheduleUpdateData: 'array{name: string, is_active: bool, minute: string, hour: string, day_of_month: string, month: string, day_of_week: string, only_when_online: bool}'
+        BackupCompletionData: 'array{successful: bool, checksum: string|null, checksum_type: string|null, size: int, parts: list<MultipartUploadPart>|null}'
+        BackupUploadParts: 'array{parts: list<string>, part_size: int}'
+        ServerDetailsModificationData: 'array{external_id: string|null, name: string, owner_id: int, description: string|null}'
+        GeneralSettingsData: "array{'app:name': string, 'pterodactyl:auth:2fa_required': int, 'app:locale': string}"
+        AdvancedSettingsData: "array{'recaptcha:enabled': string, 'recaptcha:secret_key': string, 'recaptcha:website_key': string, 'pterodactyl:guzzle:timeout': int, 'pterodactyl:guzzle:connect_timeout': int, 'pterodactyl:client_features:allocations:enabled': string, 'pterodactyl:client_features:allocations:range_start': int|null, 'pterodactyl:client_features:allocations:range_end': int|null}"
+        MailSettingsData: "array{'mail:mailers:smtp:host': string, 'mail:mailers:smtp:port': int, 'mail:mailers:smtp:encryption': string|null, 'mail:mailers:smtp:username': string|null, 'mail:from:address': string, 'mail:from:name': string|null, 'mail:mailers:smtp:password'?: string}"
+        ExtensionSettingValue: 'JsonValue'
+        ExtensionSettingValues: 'array<string, ExtensionSettingValue>'
+        ExtensionSettingField: 'array{input: string, label: string, help: string|null, tab: string|null, field: string, options: list<array{value: string|int|bool, label: string}>, value: ExtensionSettingValue, constraints: array{max_length: int|null, max_items: int|null, max_kilobytes: int|null, accept: list<string>}, visibility: ''admin''|''frontend''|''public''}'
+        ExtensionScreenMatcher: 'array{any?: list<string>, all?: list<string>}'
+        ExtensionScreenCondition: 'array{eggFeatures?: ExtensionScreenMatcher, eggTags?: ExtensionScreenMatcher, match?: string, runtime?: bool}'
+        ExtensionScreenDefinition: 'array{id: string, area: string, path: string, parent?: string, nav?: array{label: string, exact?: bool, params?: array<string, string>, order?: int, group?: string, badge?: string, icon?: string}, permission?: list<string>, when?: ExtensionScreenCondition}'
+        ExtensionManifestInput: 'array{id: string, name: string, version: string, requires?: array{panel?: string, sdk?: string, php?: string, extensions?: array<string, string>}, description?: string|null, author?: string|null, provider?: string|null, autoload?: array<array-key, ApiValue9>, ui?: array{entry: string, mode?: string, prefix?: string, screens?: list<ExtensionScreenDefinition>, components?: list<string>}, routes?: array{root?: list<string>}, ...<string, ApiValue10>}'
     paths:
         - app
     ignoreErrors:
-        - '#Call to an undefined method Illuminate\\Database\\Eloquent\\Builder::allowed(\w+)\(\)#'
-        - '#Call to an undefined method Prologue\\Alerts\\AlertsMessageBag::(success|warning|danger|info)\(\)#'
+        # ApiKey is a deliberate custom Sanctum token model (implements HasAbilities and
+        # findToken()); Sanctum's class-string<PersonalAccessToken> generic is narrower
+        # than the extension point it documents.
+        -
+            identifier: argument.type
+            message: '#usePersonalAccessTokenModel#'
+            path: app/Providers/AuthServiceProvider.php
     excludePaths:
-        - app/Repositories
         - app/Extensions/Spatie/Fractalistic/Fractal.php

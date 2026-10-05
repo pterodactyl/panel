@@ -1,31 +1,46 @@
-import React, { useContext, useEffect } from 'react';
-import { CheckIcon, ExclamationIcon, InformationCircleIcon, ShieldExclamationIcon } from '@heroicons/react/outline';
-import classNames from 'classnames';
-import { DialogContext, DialogIconProps, styles } from './';
+import { use, useEffect } from 'react';
+import { Check, TriangleAlert, Info, ShieldAlert } from 'lucide-react';
+import { cn } from '@/lib/cn';
+import { DialogContext } from './context';
+import type { DialogIconProps } from './types';
 
 const icons = {
-    danger: ShieldExclamationIcon,
-    warning: ExclamationIcon,
-    success: CheckIcon,
-    info: InformationCircleIcon,
+    danger: ShieldAlert,
+    warning: TriangleAlert,
+    success: Check,
+    info: Info,
 };
 
-export default ({ type, position, className }: DialogIconProps) => {
-    const { setIcon, setIconPosition } = useContext(DialogContext);
+const iconClass = 'flex items-center justify-center w-10 h-10 rounded-full mr-4';
+const iconTypeClass = {
+    danger: 'bg-destructive text-destructive-foreground',
+    warning: 'bg-warning text-warning-foreground',
+    success: 'bg-success text-success-foreground',
+    info: 'bg-primary text-primary-foreground',
+};
+
+const DialogIcon = ({ type, position, className }: DialogIconProps) => {
+    const { setIcon, setIconPosition } = use(DialogContext);
 
     useEffect(() => {
         const Icon = icons[type];
 
         setIcon(
-            <div className={classNames(styles.dialog_icon, styles[type], className)}>
+            <div className={cn(iconClass, iconTypeClass[type], className)}>
                 <Icon className={'w-6 h-6'} />
             </div>
         );
-    }, [type, className]);
+
+        return () => setIcon(undefined);
+    }, [className, setIcon, type]);
 
     useEffect(() => {
         setIconPosition(position);
-    }, [position]);
+
+        return () => setIconPosition('title');
+    }, [position, setIconPosition]);
 
     return null;
 };
+
+export default DialogIcon;
